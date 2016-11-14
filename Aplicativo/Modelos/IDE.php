@@ -8,6 +8,9 @@
 
 	<link rel="stylesheet" type="text/css" href="https://cdn.rawgit.com/ax5ui/ax5ui-layout/master/dist/ax5layout.css" />
 	<style type="text/css" media="screen">
+		body{
+			background-color: #333;
+		}
 		#editor, #output, #input {
 			margin: 0;
 			width: 100%;
@@ -59,11 +62,12 @@
 </head>
 <body>
 	<div data-ax5layout="ax1" data-config="{layout:'dock-panel'}" id="layout">
-		<!-- <div style="padding-top:10px; width:100%; text-align:center; background-color:#333;" data-dock-panel="{dock:'top',split:true,height:140,minHeight:140,maxHeight:140}">
+		<!-- <div style="padding-top:10px; margin-botton:2px; width:100%; text-align:center; background-color:#333;" data-dock-panel="{dock:'top',split:true,height:140,minHeight:140,maxHeight:140}">
 			<img style="height:128px;" src="https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/src/br/univali/ps/ui/icones/grande/lite/lite.png"/>
 		</div> -->
-		<div style="padding-top: 32px; width:100%; background-color:#333;" data-dock-panel="{dock:'left',split:true,height:250,minHeight:250,maxHeight:250,width:64,minWidth:64,maxWidth:64}">
-			<button id="submit"><img src="https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/src/br/univali/ps/ui/icones/grande/resultset_next.png"/></button>
+		<div style="text-align:center; padding-top:6px; width:100%; background-color:#333;" data-dock-panel="{dock:'left',split:true,height:250,minHeight:250,maxHeight:250,width:64,minWidth:64,maxWidth:64}">
+			<img style="height:40px;" src="https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/src/br/univali/ps/ui/icones/grande/lite/lite.png"/>
+			<button style="margin-top: 5px;" id="submit"><img src="https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/src/br/univali/ps/ui/icones/grande/resultset_next.png"/></button>
 		</div>
 
 		<div data-dock-panel="{dock:'bottom',split:true,height:150,minHeight:10,maxHeight:300}">
