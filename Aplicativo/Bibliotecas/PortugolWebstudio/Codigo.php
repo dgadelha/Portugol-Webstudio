@@ -39,22 +39,6 @@ class Codigo {
 			}
 		}
 
-		$CodeHash = md5(PortugolMin::minify($Codigo));
-
-		if (!empty($Entrada)) {
-			if (!Util::endsWith($Entrada, "\n")) {
-				$Entrada .= "\n";
-			}
-
-			$CodeHash .= "-" . md5($Entrada);
-		}
-
-		$CodeHashPath = BASE_PATH . DS . "Arquivos" . DS . "Hashes" . DS . $CodeHash . ".por.out";
-
-		if (is_file($CodeHashPath)) {
-			return file_get_contents($CodeHashPath);
-		}
-
 		$Path = BASE_PATH . DS . "Arquivos" . DS . "c_" . Util::GUID() . "-" . rand(00000, 99999) . ".por";
 		file_put_contents($Path, $Codigo);
 
@@ -72,8 +56,7 @@ class Codigo {
 		}
 
 		unlink($Path);
-		file_put_contents($CodeHashPath, $Saida);
-
+		
 		return $Saida;
 	}
 }
