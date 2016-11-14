@@ -58,6 +58,9 @@
 			text-align: center;
 			text-transform: uppercase;
 		}
+		[data-ax5layout]>[data-splitter]{
+			background-color: #666;
+		}
 	</style>
 </head>
 <body>
