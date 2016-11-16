@@ -39,7 +39,13 @@ class Codigo {
 			}
 		}
 
-		$CodeHash = md5(PortugolMin::minify($Codigo));
+		$CodigoMin = PortugolMin::minify($Codigo);
+		$CodeHash = md5($CodigoMin);
+		$Cachear = true;
+
+		if (strstr($CodigoMin, "sorteia")) {
+			$Cachear = false;
+		} /* colocar mais condições de cache aqui */
 
 		if (!empty($Entrada)) {
 			if (!Util::endsWith($Entrada, "\n")) {
@@ -51,7 +57,7 @@ class Codigo {
 
 		$CodeHashPath = BASE_PATH . DS . "Arquivos" . DS . "Hashes" . DS . $CodeHash . ".por.out";
 
-		if (is_file($CodeHashPath)) {
+		if (is_file($CodeHashPath) and $Cachear) {
 			return file_get_contents($CodeHashPath);
 		}
 
@@ -59,11 +65,11 @@ class Codigo {
 		file_put_contents($Path, $Codigo);
 
 		$jarPath = BASE_PATH . DS . "Arquivos" . DS . "Portugol" . DS . "portugol-console.jar";
-		$Comando = "java -Dfile.encoding=utf-8 -Xms128m -Xmx512m -d64 -jar \"" . $jarPath ."\" \"" . $Path . "\"";
+		$Comando = "java -Dfile.encoding=ISO-8859-1 -Xms128m -Xmx512m -d64 -jar \"" . $jarPath ."\" \"" . $Path . "\"";
 
 		$commandInfo = Util::runCommand($Comando, $Entrada, 10);
-		$Saida = self::LimparSaida(mb_convert_encoding($commandInfo["stdout"], "ISO-8859-1", "UTF-8"));
-		$Saida .= self::LimparSaida(mb_convert_encoding($commandInfo["stderr"], "ISO-8859-1", "UTF-8"));
+		$Saida = self::LimparSaida($commandInfo["stdout"]);
+		$Saida .= self::LimparSaida($commandInfo["stderr"]);
 
 		$Saida = trim($Saida);
 
@@ -72,7 +78,7 @@ class Codigo {
 		}
 
 		unlink($Path);
-		file_put_contents($CodeHashPath, $Saida);
+		if ($Cachear) file_put_contents($CodeHashPath, $Saida);
 
 		return $Saida;
 	}
