@@ -54,7 +54,7 @@ class PortugolWebstudio_Autoloader {
 $app = new \Slim\Slim(["templates.path" => BASE_PATH . DS . "Modelos"]);
 
 $app->get("/", function() use ($app) {
-	$app->render("IDE.php", ["siteURL" => $app->urlFor("/"), "ajaxURL" => $app->urlFor("executar")]);
+	$app->render("IDE.php", ["siteURL" => $app->urlFor("/"), "ajaxURL" => $app->urlFor("/") . "index.php/executar"]);
 })->name("/");
 
 $app->post("/executar", function() use ($app) {
