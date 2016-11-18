@@ -20,7 +20,8 @@ $(window).bind("load", function() {
 
 	d.input = ace.edit("input");
 	d.input.$blockScrolling = Infinity;
-	d.input.setTheme("ace/theme/twilight");
+	d.input.setTheme("ace/theme/tomorrow_night_eighties");
+	d.input.getSession().setMode("ace/mode/sh");
 	d.input.getSession().setUseSoftTabs(true);
 	d.input.setShowPrintMargin(false);
 	d.input.renderer.setShowGutter(false);
