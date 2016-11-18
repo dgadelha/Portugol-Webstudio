@@ -1,0 +1,17 @@
+# Travis CI Configuration File
+# Author: Douglas Gadêlha <douglas.gadelha@ifba.edu.br>
+
+language: php
+
+before_install:
+- sudo apt-get update -qq
+- sudo apt-get install -qqy ncftp curl zip
+
+script:
+- php -l index.php
+- php -l Aplicativo/Bibliotecas/PortugolWebstudio/Codigo.php
+
+after_success:
+- zip -r release.zip *
+- ncftpput -u "$DEPLOY_FTP_USER" -p "$DEPLOY_FTP_PASS" -P "$DEPLOY_FTP_PORT" "$DEPLOY_FTP_HOST" "$DEPLOY_FTP_PATH" "./release.zip"
+- curl -ks "$DEPLOY_HTTP_CALLBACK"
