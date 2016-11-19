@@ -45,7 +45,7 @@ body {
 	height: 100%;
 }
 
-.submit {
+.tbb {
 	display: block;
 	margin: 0;
 	width: 100%;
@@ -54,14 +54,15 @@ body {
 	background-color: #263238;
 	color: #FFF;
 	height: 45px;
+	margin-top: 5px;
 	border-radius: 0;
 }
 
-.submit:hover {
+.tbb:hover {
 	background-color: rgba(0,0,0,.1);
 }
 
-#submit[disabled], #submit[disabled]:hover {
+.tbb[disabled], .tbb[disabled]:hover {
 	border: 1px solid #333;
 	background-color: #444;
 }
@@ -179,18 +180,21 @@ body {
 	text-align: center;
 }
 
-#btl button {
+#btl button, #btl a {
+	display: block;
+	color: #FFF;
+	text-decoration: none;
 	background-color: transparent;
 	border: 0 none transparent;
 	width: 100%;
 	padding: 15px 0;
 }
 
-#btl button span {
+#btl button span, #btl a span {
 	display: block;
 	margin-top: 10px;
 }
 
-#btl button:hover {
+#btl button:hover, #btl a:hover {
 	background-color: rgba(0,0,0,.1);
 }

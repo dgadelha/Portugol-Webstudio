@@ -28,22 +28,22 @@
 						</button>
 					</div>
 					<div class="col-md-3">
-						<button>
+						<a href="javascript:alert('Não implementado.')">
 							<img src="https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/src/br/univali/ps/ui/icones/grande/lite/ajuda.png">
 							<span>Ajuda</span>
-						</button>
+						</a>
 					</div>
 					<div class="col-md-3">
-						<button>
+						<a href="https://www.youtube.com/watch?v=K02TnB3IGnQ&list=PLb9yvNDCid3jQAEbNoPHtPR0SWwmRSM-t" target="_blank" rel="nofollow">
 							<img src="https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/src/br/univali/ps/ui/icones/grande/lite/videoaulas.png">
 							<span>Videoaulas</span>
-						</button>
+						</a>
 					</div>
 					<div class="col-md-3">
-						<button>
+						<a href="javascript:alert('Não implementado.')">
 							<img src="https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/src/br/univali/ps/ui/icones/grande/lite/bibliotecas.png">
 							<span>Bibliotecas</span>
-						</button>
+						</a>
 					</div>
 				</div>
 			</div>
@@ -56,6 +56,8 @@
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.5/ace.js"></script>
 	<script type="text/javascript" src="https://cdn.rawgit.com/ax5ui/ax5core/master/dist/ax5core.min.js?e2df1421a819efa43b46c0cab92940ef4410776d"></script>
 	<script type="text/javascript" src="https://cdn.rawgit.com/ax5ui/ax5ui-layout/master/dist/ax5layout.min.js?7544f5a6f789ebaf83e5f070a19a881725c16b6f"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/blob-polyfill/1.0.20150320/Blob.min.js"></script>
+	<script typr="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.3/FileSaver.min.js"></script>
 	<script type="text/javascript" src="<?=$siteURL;?>assets/mode-portugol.js"></script>
 	<script type="text/javascript" src="<?=$siteURL;?>assets/portugol.js"></script>
 	<script type="text/javascript">var d={ajaxUrl:"<?=$ajaxURL;?>",tabs:[],scrollDown:function(tid){var r=d.tabs[tid].output.session.getLength()-1;var c=d.tabs[tid].output.session.getLine(r).length;d.tabs[tid].output.gotoLine(r+1,c)}};</script>

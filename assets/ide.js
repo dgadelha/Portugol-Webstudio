@@ -38,7 +38,8 @@ function addTab(name = "Sem título", content = "") {
 	var tpl = '<div id="tab-' + id + '" class="tab">';
 	tpl += '<div data-ax5layout="' + id + '-ax" data-config="{layout:\'dock-panel\'}" class=\"ide-layout\" id="' + id + '-layout">';
 	tpl += '<div class="tbar" data-dock-panel="{dock:\'left\',split:false,height:250,minHeight:250,maxHeight:250,width:64,minWidth:64,maxWidth:64}">';
-	tpl += '<button style="margin-top: 5px;" class="submit"><img src="https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/src/br/univali/ps/ui/icones/grande/resultset_next.png"></button>';
+	tpl += '<button class="tbb submit"><img src="https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/src/br/univali/ps/ui/icones/grande/resultset_next.png"></button>';
+	tpl += '<button class="tbb save"><img src="https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/src/br/univali/ps/ui/icones/grande/save_as.png"></button>';
 	tpl += '</div>';
 
 	tpl += '<div data-dock-panel="{dock:\'bottom\',split:true,height:150,minHeight:50,maxHeight:300}">';
@@ -60,6 +61,7 @@ function addTab(name = "Sem título", content = "") {
 	bindHTML();
 
 	d.tabs[id] = {
+		filename: name,
 		editor: null,
 		input: null,
 		output: null,
@@ -118,6 +120,18 @@ function addTab(name = "Sem título", content = "") {
 		$(this).parent().parent().remove();
 		$("#tab-" + id).remove();
 		$("#anchor-inicio").trigger("click");
+	});
+
+	$("#tab-" + id + " .save").bind("click", function() {
+		var id = $(this).parent().parent().attr("id");
+		id = id.substr(0, id.length - 7);
+		if (d.tabs[id].running) return;
+
+		var blob = new Blob([d.tabs[id].editor.getSession().getValue()], {
+			type: "text/plain;charset=utf-8;",
+		});
+
+		saveAs(blob, d.tabs[id].filename + ".por");
 	});
 
 	$("#tab-" + id + " .submit").bind("click", function() {
