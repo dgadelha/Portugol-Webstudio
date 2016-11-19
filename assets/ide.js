@@ -10,6 +10,27 @@ function e7() { /*! @see: http://stackoverflow.com/a/21963136 !*/
 	lut[d3&0xff]+lut[d3>>8&0xff]+lut[d3>>16&0xff]+lut[d3>>24&0xff];
 }
 
+var fileName = "";
+function openFile() {
+	$("#special").html("<input type=\"file\" id=\"file-input\" />");
+	$("#file-input").trigger("click");
+
+	document.getElementById("file-input").addEventListener("change", function(e) {
+		var file = e.target.files[0];
+		if (!file) return;
+
+		var reader = new FileReader();
+		fileName = file.name.replace(/\.[^/.]+$/, "");
+
+		reader.onload = function(e) {
+			var contents = e.target.result;
+			addTab(fileName, contents);
+		};
+
+		reader.readAsText(file);
+	}, false);
+}
+
 function addTab(name = "Sem título", content = "") {
 	var id = "t" + e7();
 	$(".tabs").append("<li><a href=\"#tab-" + id + "\" id=\"anchor-" + id + "\"><span class=\"portugol-icon\"></span> " + name + " <span class=\"close-icon\"></span></a></li>");
@@ -50,11 +71,16 @@ function addTab(name = "Sem título", content = "") {
 	d.tabs[id].editor.setTheme("ace/theme/portugol");
 	d.tabs[id].editor.setFontSize(14);
 	d.tabs[id].editor.getSession().setMode("ace/mode/portugol");
-	d.tabs[id].editor.getSession().setValue("programa {\n\tfuncao inicio() {\n\t\t\n\t}\n}");
 	d.tabs[id].editor.setShowPrintMargin(false);
 	d.tabs[id].editor.getSession().setUseSoftTabs(true);
-	d.tabs[id].editor.gotoLine(3);
-	d.tabs[id].editor.selection.moveTo(2, 2);
+	if (content == "") {
+		d.tabs[id].editor.getSession().setValue("programa {\n\tfuncao inicio() {\n\t\t\n\t}\n}");
+		d.tabs[id].editor.gotoLine(3);
+		d.tabs[id].editor.selection.moveTo(2, 2);
+	} else {
+		d.tabs[id].editor.getSession().setValue(content);
+		//d.scrollDown(id);
+	}
 
 	d.tabs[id].input = ace.edit(id + "-input");
 	d.tabs[id].input.$blockScrolling = Infinity;

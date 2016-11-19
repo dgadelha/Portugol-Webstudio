@@ -15,7 +15,7 @@
 <body>
 	<div id="ide">
 		<ul class="tabs">
-			<li><a id="anchor-inicio" href="#tab-inicio">Portugol Webstudio <span class="portugol-icon"></span><span class="spacing-icon"></span><span class="add-icon" onClick="addTab();return false"></span></a></li>
+			<li><a id="anchor-inicio" href="#tab-inicio">Portugol Webstudio <span class="portugol-icon"></span><span class="spacing-icon"></span><span class="open-icon" onClick="openFile();return false"></span><span class="mini-spacing-icon"></span><span class="add-icon" onClick="addTab();return false"></span></a></li>
 		</ul>
 
 		<div class="tab" id="tab-inicio">
@@ -49,6 +49,8 @@
 			</div>
 		</div>
 	</div>
+
+	<div class="hide" id="special"></div>
 
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.3/jquery.min.js"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.5/ace.js"></script>
