@@ -65,15 +65,15 @@ body {
 .title {
 	margin: 0;
 	padding: 5px;
-	background-color: #444;
-	border: 1px solid #333;
+	background-color: rgb(68,80,86);
+	border: 1px solid transparent;
 	color: #FFF;
 	text-align: center;
 	text-transform: uppercase;
 }
 
 [data-ax5layout] > [data-splitter]{
-	background-color: #666;
+	background-color: rgb(25,36,42)
 }
 
 .tabs {

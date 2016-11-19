@@ -47,7 +47,7 @@ function addTab(name = "Sem título", content = "") {
 
 	d.tabs[id].editor = ace.edit(id + "-editor");
 	d.tabs[id].editor.$blockScrolling = Infinity;
-	d.tabs[id].editor.setTheme("ace/theme/tomorrow_night_eighties");
+	d.tabs[id].editor.setTheme("ace/theme/portugol");
 	d.tabs[id].editor.setFontSize(14);
 	d.tabs[id].editor.getSession().setMode("ace/mode/portugol");
 	d.tabs[id].editor.getSession().setValue("programa {\n\tfuncao inicio() {\n\t\t\n\t}\n}");
@@ -58,7 +58,7 @@ function addTab(name = "Sem título", content = "") {
 
 	d.tabs[id].input = ace.edit(id + "-input");
 	d.tabs[id].input.$blockScrolling = Infinity;
-	d.tabs[id].input.setTheme("ace/theme/tomorrow_night_eighties");
+	d.tabs[id].input.setTheme("ace/theme/portugol");
 	d.tabs[id].input.setFontSize(14);
 	d.tabs[id].input.getSession().setMode("ace/mode/sh");
 	d.tabs[id].input.getSession().setUseSoftTabs(true);
@@ -67,7 +67,7 @@ function addTab(name = "Sem título", content = "") {
 
 	d.tabs[id].output = ace.edit(id + "-output");
 	d.tabs[id].output.$blockScrolling = Infinity;
-	d.tabs[id].output.setTheme("ace/theme/tomorrow_night_eighties");
+	d.tabs[id].output.setTheme("ace/theme/portugol");
 	d.tabs[id].output.setFontSize(14);
 	d.tabs[id].output.getSession().setMode("ace/mode/sh");
 	d.tabs[id].output.getSession().setValue("");
