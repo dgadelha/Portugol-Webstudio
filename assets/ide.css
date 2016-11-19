@@ -1,4 +1,4 @@
-a, a:hover, a:focus, a:visited {
+a, a:hover, a:focus, a:visited, button, button:hover, button:focus {
 	outline: 0 none transparent;
 	outline-width: 0;
 	outline-color: transparent;
