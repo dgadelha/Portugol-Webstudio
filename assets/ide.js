@@ -80,8 +80,17 @@ function addTab(name = "Sem título", content = "") {
 		d.tabs[id].editor.gotoLine(3);
 		d.tabs[id].editor.selection.moveTo(2, 2);
 	} else {
+		var inicioComentario = content.indexOf("/* $$$ Portugol Studio $$$ ");
+
+		if (inicioComentario != -1) {
+			fimComentario = content.indexOf("*/", inicioComentario + 1);
+
+			if (fimComentario != -1) {
+				content = content.substring(0, inicioComentario - 2) + content.substring(fimComentario + 2);
+			}
+		}
+
 		d.tabs[id].editor.getSession().setValue(content);
-		//d.scrollDown(id);
 	}
 
 	d.tabs[id].input = ace.edit(id + "-input");
