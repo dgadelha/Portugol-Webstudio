@@ -142,6 +142,7 @@ body {
 	flex-grow: 1;
 	margin: 0 5px 5px 5px;
 	padding: 7px;
+	height: calc(100% - 60px)
 }
 
 .tab-content {

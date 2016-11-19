@@ -7,7 +7,7 @@
 	<title>Portugol Webstudio</title>
 
 	<link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
-	<link rel="stylesheet" type="text/css" href="https://cdn.rawgit.com/ax5ui/ax5ui-layout/master/dist/ax5layout.css">
+	<link rel="stylesheet" type="text/css" href="https://cdn.rawgit.com/ax5ui/ax5ui-layout/master/dist/ax5layout.css?7544f5a6f789ebaf83e5f070a19a881725c16b6f">
 	<link rel="stylesheet" type="text/css" href="<?=$siteURL;?>assets/bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="<?=$siteURL;?>assets/portugol.css">
 	<link rel="stylesheet" type="text/css" href="<?=$siteURL;?>assets/ide.css">
@@ -52,8 +52,8 @@
 
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.3/jquery.min.js"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.5/ace.js"></script>
-	<script type="text/javascript" src="https://cdn.rawgit.com/ax5ui/ax5core/master/dist/ax5core.min.js?5cbc9cc42d9824913945da0260f2eb9d5773b317"></script>
-	<script type="text/javascript" src="https://cdn.rawgit.com/ax5ui/ax5ui-layout/master/dist/ax5layout.min.js?c28a8add0b87fc4d5ad0ce4b1bb7ff6e7c681ea1"></script>
+	<script type="text/javascript" src="https://cdn.rawgit.com/ax5ui/ax5core/master/dist/ax5core.min.js?e2df1421a819efa43b46c0cab92940ef4410776d"></script>
+	<script type="text/javascript" src="https://cdn.rawgit.com/ax5ui/ax5ui-layout/master/dist/ax5layout.min.js?7544f5a6f789ebaf83e5f070a19a881725c16b6f"></script>
 	<script type="text/javascript" src="<?=$siteURL;?>assets/mode-portugol.js"></script>
 	<script type="text/javascript" src="<?=$siteURL;?>assets/portugol.js"></script>
 	<script type="text/javascript">var d={ajaxUrl:"<?=$ajaxURL;?>",tabs:[],scrollDown:function(tid){var r=d.tabs[tid].output.session.getLength()-1;var c=d.tabs[tid].output.session.getLine(r).length;d.tabs[tid].output.gotoLine(r+1,c)}};</script>
