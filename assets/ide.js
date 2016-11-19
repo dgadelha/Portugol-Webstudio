@@ -27,7 +27,7 @@ function openFile() {
 			addTab(fileName, contents);
 		};
 
-		reader.readAsText(file);
+		reader.readAsText(file, "ISO-8859-1");
 	}, false);
 }
 
@@ -127,11 +127,14 @@ function addTab(name = "Sem título", content = "") {
 		id = id.substr(0, id.length - 7);
 		if (d.tabs[id].running) return;
 
-		var blob = new Blob([d.tabs[id].editor.getSession().getValue()], {
-			type: "text/plain;charset=utf-8;",
+		var textEncoder = new TextEncoder("iso-8859-1", { NONSTANDARD_allowLegacyEncoding: true });
+		var contentEncoded = textEncoder.encode([d.tabs[id].editor.getSession().getValue()]);
+
+		var blob = new Blob([contentEncoded], {
+			type: "application/octet-stream; charset=ISO-8859-1",
 		});
 
-		saveAs(blob, d.tabs[id].filename + ".por");
+		saveAs(blob, d.tabs[id].filename + ".por", false);
 	});
 
 	$("#tab-" + id + " .submit").bind("click", function() {
