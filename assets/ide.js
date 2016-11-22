@@ -97,7 +97,7 @@ function addTab(name = "Sem título", content = "") {
 	d.tabs[id].input.$blockScrolling = Infinity;
 	d.tabs[id].input.setTheme("ace/theme/portugol");
 	d.tabs[id].input.setFontSize(14);
-	d.tabs[id].input.getSession().setMode("ace/mode/sh");
+	d.tabs[id].input.getSession().setMode("ace/mode/text");
 	d.tabs[id].input.getSession().setUseSoftTabs(true);
 	d.tabs[id].input.setShowPrintMargin(false);
 	d.tabs[id].input.renderer.setShowGutter(false);
@@ -106,7 +106,7 @@ function addTab(name = "Sem título", content = "") {
 	d.tabs[id].output.$blockScrolling = Infinity;
 	d.tabs[id].output.setTheme("ace/theme/portugol");
 	d.tabs[id].output.setFontSize(14);
-	d.tabs[id].output.getSession().setMode("ace/mode/sh");
+	d.tabs[id].output.getSession().setMode("ace/mode/text");
 	d.tabs[id].output.getSession().setValue("");
 	d.tabs[id].output.setShowPrintMargin(false);
 	d.tabs[id].output.renderer.setShowGutter(false);
