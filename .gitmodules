@@ -1,0 +1,3 @@
+[submodule "Recursos"]
+	path = Recursos
+	url = https://github.com/UNIVALI-LITE/Portugol-Studio-Recursos.git

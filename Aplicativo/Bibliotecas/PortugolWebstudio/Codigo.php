@@ -79,7 +79,7 @@ class Codigo {
 		}
 
 		/* condições de cache para saída */
-		if (strstr($Saida, "Error occurred during initialization of VM") || strstr($Saida, "Traduzindo erro sintático")) {
+		if (strstr($Saida, "Error occurred during initialization of VM") || strstr($Saida, "Traduzindo erro sintático") || strstr($Saida, "Erro de execução")) {
 			$Cachear = false;
 		}
 		unlink($Path);

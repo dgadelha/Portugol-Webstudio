@@ -18,7 +18,9 @@
 <body>
 	<div id="ide">
 		<ul class="tabs">
-			<li><a id="anchor-inicio" href="#tab-inicio">Portugol Webstudio <span class="portugol-icon"></span><span class="spacing-icon"></span><span class="open-icon" onClick="openFile();return false"></span><span class="mini-spacing-icon"></span><span class="add-icon" onClick="addTab();return false"></span></a></li>
+			<li><a id="anchor-inicio" href="#tab-inicio">Portugol Webstudio <span class="portugol-icon"></span></a></li>
+			<li><span id="action-open" class="action"><span class="open-icon"></span></span></li>
+			<li><span id="action-add" class="action"><span class="add-icon"></span></span></li>
 		</ul>
 
 		<div class="tab" id="tab-inicio">
@@ -31,10 +33,10 @@
 						</button>
 					</div>
 					<div class="col-md-3">
-						<a href="javascript:alert('Não implementado.')">
+						<button onClick="abrirAjuda()">
 							<img src="https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/src/br/univali/ps/ui/icones/grande/lite/ajuda.png">
 							<span>Ajuda</span>
-						</a>
+						</button>
 					</div>
 					<div class="col-md-3">
 						<a href="https://www.youtube.com/watch?v=K02TnB3IGnQ&list=PLb9yvNDCid3jQAEbNoPHtPR0SWwmRSM-t" target="_blank" rel="nofollow">

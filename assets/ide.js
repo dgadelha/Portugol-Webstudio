@@ -20,7 +20,7 @@ function openFile() {
 		if (!file) return;
 
 		var reader = new FileReader();
-		fileName = file.name.replace(/\.[^/.]+$/, "");
+		fileName = file.name;//.replace(/\.[^/.]+$/, "");
 
 		reader.onload = function(e) {
 			var contents = e.target.result;
@@ -113,6 +113,7 @@ function addTab(name = "Sem título", content = "") {
 	d.tabs[id].output.setReadOnly(true);
 	d.tabs[id].output.selection.moveTo(0, 2);
 
+	$("ul.tabs a").blur();
 	d.tabs[id].editor.focus();
 	$("#anchor-" + id).trigger("click");
 
@@ -200,13 +201,19 @@ function bindHTML() {
 		$active = $($links.filter("[href=\"" + location.hash + "\"]")[0] || $links[0]);
 		$active.addClass("active");
 
+		if ($active.attr("id") == "anchor-inicio") {
+			$(".action").addClass("active");
+		} else {
+			$(".action").removeClass("active");
+		}
+
 		$content = $($active[0].hash);
 
 		$links.not($active).each(function () {
 			$(this.hash).hide();
 		});
 
-		$(this).on("click", "a", function(e){
+		$(this).on("click", "a", function(e) {
 			$active.removeClass("active");
 			$content.hide();
 
@@ -217,6 +224,12 @@ function bindHTML() {
 			$content.show();
 
 			var ttid = $content.attr("id");
+
+			if ($active.attr("id") == "anchor-inicio") {
+				$(".action").addClass("active");
+			} else {
+				$(".action").removeClass("active");
+			}
 
 			if (ttid.startsWith("tab-t")) {
 				var id = ttid.substr(4);
@@ -249,6 +262,41 @@ function bindHTML() {
 	});
 }
 
+function abrirAjuda() {
+	if ($("#anchor-ajuda")[0]) {
+		$("#anchor-ajuda").trigger("click");
+	} else {
+		$(".tabs").append("<li><a href=\"#tab-ajuda\" id=\"anchor-ajuda\"><span class=\"help-icon\"></span> Ajuda <span class=\"close-icon\"></span></a></li>");
+
+		var tpl = '<div id="tab-ajuda" class="tab">';
+		tpl += '<iframe src="Recursos/ajuda/topicos/linguagem_portugol/index.html"></iframe>'
+		tpl += '</div>';
+
+		$("#ide").append(tpl);
+		bindHTML();
+
+		$("#anchor-ajuda").trigger("click");
+
+		$("#anchor-ajuda .close-icon").bind("click", function() {
+			$(this).parent().parent().remove();
+			$("#tab-ajuda").remove();
+			$("#anchor-inicio").trigger("click");
+		});
+	}
+}
+
 $(window).bind("load", function() {
 	bindHTML();
+
+	$("#action-open").bind("click", function(e) {
+		e.preventDefault();
+		e.defaultPrevented = true;
+		openFile();
+	});
+
+	$("#action-add").bind("click", function(e) {
+		e.preventDefault();
+		e.defaultPrevented = true;
+		addTab();
+	});
 });
