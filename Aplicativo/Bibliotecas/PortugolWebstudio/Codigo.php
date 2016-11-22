@@ -43,9 +43,10 @@ class Codigo {
 		$CodeHash = md5($CodigoMin);
 		$Cachear = true;
 
+		/* condições de cache para código */
 		if (strstr($CodigoMin, "sorteia")) {
 			$Cachear = false;
-		} /* colocar mais condições de cache aqui */
+		}
 
 		if (!empty($Entrada)) {
 			if (!Util::endsWith($Entrada, "\n")) {
@@ -77,6 +78,10 @@ class Codigo {
 			$Saida .= "\n" . Util::Caixa("Tempo limite de 10 segundos excedido\nPROCESSO ENCERRADO");
 		}
 
+		/* condições de cache para saída */
+		if (strstr($Saida, "Error occurred during initialization of VM") || strstr($Saida, "Traduzindo erro sintático")) {
+			$Cachear = false;
+		}
 		unlink($Path);
 		if ($Cachear) file_put_contents($CodeHashPath, $Saida);
 
