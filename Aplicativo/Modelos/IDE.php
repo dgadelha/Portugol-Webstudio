@@ -11,9 +11,9 @@
 
 	<link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
 	<link rel="stylesheet" type="text/css" href="https://cdn.rawgit.com/ax5ui/ax5ui-layout/master/dist/ax5layout.css?7544f5a6f789ebaf83e5f070a19a881725c16b6f">
-	<link rel="stylesheet" type="text/css" href="<?=$siteURL;?>assets/bootstrap.min.css">
-	<link rel="stylesheet" type="text/css" href="<?=$siteURL;?>assets/portugol.css">
-	<link rel="stylesheet" type="text/css" href="<?=$siteURL;?>assets/ide.css">
+	<link rel="stylesheet" type="text/css" href="<?=$siteURL;?>assets/bootstrap.min.css?<?=RELEASE;?>">
+	<link rel="stylesheet" type="text/css" href="<?=$siteURL;?>assets/portugol.css?<?=RELEASE;?>">
+	<link rel="stylesheet" type="text/css" href="<?=$siteURL;?>assets/ide.css?<?=RELEASE;?>">
 </head>
 <body>
 	<div id="ide">
@@ -39,7 +39,7 @@
 						</button>
 					</div>
 					<div class="col-md-3">
-						<a href="https://www.youtube.com/watch?v=K02TnB3IGnQ&list=PLb9yvNDCid3jQAEbNoPHtPR0SWwmRSM-t" target="_blank" rel="nofollow">
+						<a href="https://www.youtube.com/user/portugolstudio" target="_blank" rel="nofollow">
 							<img src="https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/src/br/univali/ps/ui/icones/grande/lite/videoaulas.png">
 							<span>Videoaulas</span>
 						</a>
@@ -66,9 +66,9 @@
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.3/FileSaver.min.js"></script>
 	<script type="text/javascript" src="https://cdn.rawgit.com/inexorabletash/text-encoding/master/lib/encoding-indexes.js?192293ea17e775bdd6a66ab85db05f34c5104a34"></script>
 	<script type="text/javascript" src="https://cdn.rawgit.com/inexorabletash/text-encoding/master/lib/encoding.js?b8503e781cfe62c80582ff36ae467435baa35ba1"></script>
-	<script type="text/javascript" src="<?=$siteURL;?>assets/mode-portugol.js"></script>
-	<script type="text/javascript" src="<?=$siteURL;?>assets/portugol.js"></script>
+	<script type="text/javascript" src="<?=$siteURL;?>assets/mode-portugol.js?<?=RELEASE;?>"></script>
+	<script type="text/javascript" src="<?=$siteURL;?>assets/portugol.js?<?=RELEASE;?>"></script>
 	<script type="text/javascript">var d={ajaxUrl:"<?=$ajaxURL;?>",tabs:[],scrollDown:function(tid){var r=d.tabs[tid].output.session.getLength()-1;var c=d.tabs[tid].output.session.getLine(r).length;d.tabs[tid].output.gotoLine(r+1,c)}};</script>
-	<script type="text/javascript" src="<?=$siteURL;?>assets/ide.js"></script>
+	<script type="text/javascript" src="<?=$siteURL;?>assets/ide.js?<?=RELEASE;?>"></script>
 </body>
 </html>
