@@ -269,7 +269,7 @@ function abrirAjuda() {
 		$(".tabs").append("<li><a href=\"#tab-ajuda\" id=\"anchor-ajuda\"><span class=\"help-icon\"></span> Ajuda <span class=\"close-icon\"></span></a></li>");
 
 		var tpl = '<div id="tab-ajuda" class="tab">';
-		tpl += '<iframe src="Recursos/ajuda/topicos/linguagem_portugol/index.html"></iframe>'
+		tpl += '<iframe src="' + d.baseUrl + 'index.php/ajuda"></iframe>';
 		tpl += '</div>';
 
 		$("#ide").append(tpl);
@@ -288,15 +288,21 @@ function abrirAjuda() {
 $(window).bind("load", function() {
 	bindHTML();
 
-	$("#action-open").bind("click", function(e) {
+	$(".action-open").bind("click", function(e) {
 		e.preventDefault();
 		e.defaultPrevented = true;
 		openFile();
 	});
 
-	$("#action-add").bind("click", function(e) {
+	$(".action-add").bind("click", function(e) {
 		e.preventDefault();
 		e.defaultPrevented = true;
 		addTab();
+	});
+
+	$(".action-ajuda").bind("click", function(e) {
+		e.preventDefault();
+		e.defaultPrevented = true;
+		abrirAjuda();
 	});
 });

@@ -218,3 +218,7 @@ body {
 #btl button:hover, #btl a:hover {
 	background-color: rgba(0,0,0,.1);
 }
+
+.dp-highlighter {
+	pointer-events: initial !important;
+}

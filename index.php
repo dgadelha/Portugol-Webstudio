@@ -58,11 +58,15 @@ if (file_exists(realpath(__DIR__) . DS . "release")) {
 	$releaseTime = trim(file_get_contents(realpath(__DIR__) . DS . "release"));
 }
 
-define("RELEASE", $releaseTime);
+define("RELEASE", time());///$releaseTime);
 
 $app->get("/", function() use ($app) {
 	$app->render("IDE.php", ["siteURL" => $app->urlFor("/"), "ajaxURL" => $app->urlFor("/") . "index.php/executar"]);
 })->name("/");
+
+$app->get("/ajuda", function() use ($app) {
+	$app->render("Ajuda.php", ["siteURL" => str_replace("index.php/", "", $app->urlFor("/"))]);
+});
 
 $app->post("/executar", function() use ($app) {
 	$Codigo = $app->request->post("codigo");

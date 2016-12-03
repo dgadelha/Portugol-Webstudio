@@ -16,20 +16,6 @@ namespace PortugolWebstudio;
 class Codigo {
 	private static $BibliotecasProibidas = ["Arquivos", "Graficos", "Mouse", "Sons", "Teclado"];
 
-	private static function LimparSaida($Saida) {
-		$EOL1 = "Programa finalizado";
-		if (strstr($Saida, $EOL1)) {
-			$Saida = substr($Saida, 0, strpos($Saida, $EOL1) + strlen($EOL1));
-		}
-
-		$EOL2 = "Pressione ENTER para continuar";
-		if (strstr($Saida, $EOL2)) {
-			$Saida = rtrim(substr($Saida, 0, strpos($Saida, $EOL2)));
-		}
-
-		return $Saida;
-	}
-
 	public static function Compilar($Codigo, $Entrada) {
 		$CodigoLimpo = preg_replace("/[^A-Za-z0-9]/", "", strtolower($Codigo));
 
@@ -66,11 +52,11 @@ class Codigo {
 		file_put_contents($Path, $Codigo);
 
 		$jarPath = BASE_PATH . DS . "Arquivos" . DS . "Portugol" . DS . "portugol-console.jar";
-		$Comando = "java -Dfile.encoding=ISO-8859-1 -Xms128m -Xmx512m -d64 -jar \"" . $jarPath ."\" \"" . $Path . "\"";
+		$Comando = "java -Dfile.encoding=UTF-8 -Xms128m -Xmx512m -d64 -jar \"" . $jarPath ."\" \"" . $Path . "\"";
 
 		$commandInfo = Util::runCommand($Comando, $Entrada, 10);
-		$Saida = self::LimparSaida($commandInfo["stdout"]);
-		$Saida .= self::LimparSaida($commandInfo["stderr"]);
+		$Saida = $commandInfo["stdout"];
+		$Saida .= $commandInfo["stderr"];
 
 		$Saida = trim($Saida);
 
@@ -82,6 +68,7 @@ class Codigo {
 		if (strstr($Saida, "Error occurred during initialization of VM") || strstr($Saida, "Traduzindo erro sintático") || strstr($Saida, "Erro de execução")) {
 			$Cachear = false;
 		}
+
 		unlink($Path);
 		if ($Cachear) file_put_contents($CodeHashPath, $Saida);
 
