@@ -52,13 +52,13 @@ class PortugolWebstudio_Autoloader {
 \Slim\Slim::registerAutoloader();
 
 $app = new \Slim\Slim(["templates.path" => BASE_PATH . DS . "Modelos"]);
-$releaseTime = "local";
+$releaseTime = time();
 
 if (file_exists(realpath(__DIR__) . DS . "release")) {
 	$releaseTime = trim(file_get_contents(realpath(__DIR__) . DS . "release"));
 }
 
-define("RELEASE", time());///$releaseTime);
+define("RELEASE", $releaseTime);
 
 $app->get("/", function() use ($app) {
 	$app->render("IDE.php", ["siteURL" => $app->urlFor("/"), "ajaxURL" => $app->urlFor("/") . "index.php/executar"]);
