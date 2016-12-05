@@ -64,13 +64,19 @@ body {
 
 .tbb[disabled], .tbb[disabled]:hover {
 	border: 0 none transparent;
-	background-color: #263238;
+	/* background-color: #263238; */
+	background-color: transparent;
+	-webkit-filter: grayscale(100%);
+	-moz-filter: grayscale(100%);
+	-ms-filter: grayscale(100%);
+	-o-filter: grayscale(100%);
+	filter: grayscale(100%);
 }
 
 .title {
 	margin: 0;
 	padding: 5px;
-	background-color: rgb(68,80,86);
+	background-color: rgb(68, 80, 86);
 	border: 1px solid transparent;
 	color: #FFF;
 	text-align: center;
@@ -208,6 +214,21 @@ body {
 	border: 0 none transparent;
 	width: 100%;
 	padding: 15px 0;
+	display: block;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	max-width: 100%;
+}
+
+#btl button img, #btl a img {
+	margin: auto;
+}
+
+@media (max-width: 545px) {
+	#btl a, #btl button {
+		font-size: 13px;
+	}
 }
 
 #btl button span, #btl a span {
@@ -217,8 +238,4 @@ body {
 
 #btl button:hover, #btl a:hover {
 	background-color: rgba(0,0,0,.1);
-}
-
-.dp-highlighter {
-	pointer-events: initial !important;
 }

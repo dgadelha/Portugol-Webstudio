@@ -1,3 +1,10 @@
+window.portugol = {
+	abrirExemplo: function(codigo, arquivo) {
+		arquivo = arquivo.substring(arquivo.lastIndexOf("/") + 1);
+		addTab(arquivo, codigo);
+	}
+};
+
 var lut = []; for (var i=0; i<256; i++) { lut[i] = (i<16?'0':'')+(i).toString(16); }
 function e7() { /*! @see: http://stackoverflow.com/a/21963136 !*/
 	var d0 = Math.random()*0xffffffff|0;
@@ -86,7 +93,7 @@ function addTab(name = "Sem título", content = "") {
 			fimComentario = content.indexOf("*/", inicioComentario + 1);
 
 			if (fimComentario != -1) {
-				content = content.substring(0, inicioComentario - 2) + content.substring(fimComentario + 2);
+				content = content.substring(0, inicioComentario - 1) + content.substring(fimComentario + 2);
 			}
 		}
 

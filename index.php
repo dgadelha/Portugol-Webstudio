@@ -61,7 +61,7 @@ if (file_exists(realpath(__DIR__) . DS . "release")) {
 define("RELEASE", $releaseTime);
 
 $app->get("/", function() use ($app) {
-	$app->render("IDE.php", ["siteURL" => $app->urlFor("/"), "ajaxURL" => $app->urlFor("/") . "index.php/executar"]);
+	$app->render("IDE.php", ["siteURL" => str_replace("index.php/", "", $app->urlFor("/")), "ajaxURL" => str_replace("index.php/", "", $app->urlFor("/")) . "index.php/executar"]);
 })->name("/");
 
 $app->get("/ajuda", function() use ($app) {
@@ -93,9 +93,48 @@ $app->post("/expect", function() use ($app) {
 
 	$Saida = \PortugolWebstudio\Codigo::Compilar($Codigo, $Entrada);
 	$Saida = trim(preg_replace("/[^A-Za-z0-9 ]/", "", \PortugolWebstudio\Util::ReplaceAccents(strtolower($Saida))));
-	$Saida = substr($Saida, 0, strpos($Saida, "Programa finalizado") - 1);
 
 	\PortugolWebstudio\Util::outputJson(["output" => $Saida, "result" => ($Expect == $Output) ? "ok" : "fail"]);
 })->name("expect");
+
+$app->get("/resp", function() use ($app) {
+	$File = $app->request->get("file");
+
+	if (strlen($File) >= 8 and substr($File, 0, 8) == "Recursos") {
+		$basePath = realpath(__DIR__ . DS . "Recursos");
+		$filePath = realpath($File);
+
+		if (substr($filePath, 0, strlen($basePath)) == $basePath and file_exists($filePath) and is_file($filePath) and is_readable($filePath)) {
+			$fileExt = end(explode(".", $filePath));
+			$allowedExts = ["por", "html", "htm"];
+
+			if (in_array($fileExt, $allowedExts)) {
+				$baseURL = str_replace("index.php/", "", $app->urlFor("/"));
+
+				$fileData = file_get_contents($filePath);
+
+				if ($fileExt == "htm" || $fileExt == "html") { /* sorry for this, foi necessário */
+					$Style = ".dp-highlighter{pointer-events:initial !important}html,body{margin:0;padding:0}body{padding-bottom:25px}";
+					$fileData = str_replace("<head>", "<head><meta charset=\"utf-8\"><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><script type=\"text/javascript\">var d={baseUrl:\"" . $baseURL . "\"};</script>", $fileData);
+					$fileData = str_replace("</head>", "<style type=\"text/css\">" . $Style . "</style></head>", $fileData);
+					$fileData = str_replace(["../../../../scripts/exemplos.js", "../../../scripts/exemplos.js", "../../scripts/exemplos.js"], $baseURL . "assets/Recursos-exemplos.js", $fileData);
+					$fileData = str_replace(["../../../../scripts/", "../../../scripts/", "../../scripts/"], $baseURL . "Recursos/ajuda/scripts/", $fileData);
+					$fileData = str_replace(["../../../../estilos/", "../../../estilos/", "../../estilos/"], $baseURL . "Recursos/ajuda/estilos/", $fileData);
+					$fileData = str_replace(["../../../../recursos/imagens/", "../../../recursos/imagens/", "../../recursos/imagens/"], $baseURL . "Recursos/ajuda/recursos/imagens/", $fileData);
+					$fileData = str_replace(["../../../../recursos/", "../../../recursos/", "../../recursos/"], "Recursos/ajuda/recursos/", $fileData);
+					$fileData = str_replace("topicos/linguagem_portugol/", $baseURL . "index.php/resp?file=Recursos/ajuda/topicos/linguagem_portugol/", $fileData);
+				} else if ($fileExt == "por") {
+					$fileData = mb_convert_encoding($fileData, "UTF-8", "ISO-8859-1");
+					$app->response->headers->set("Content-Type", "text/plain; charset=UTF-8");
+				}
+
+				echo $fileData;
+				return true;
+			}
+		}
+	}
+
+	return false;
+});
 
 $app->run();

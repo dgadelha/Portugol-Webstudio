@@ -17,15 +17,7 @@
 				<img src="https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/src/br/univali/ps/ui/icones/pequeno/help.png"> <span>Ajuda</span>
 			</div>
 
-			<div class="jstree">
-				<ul>
-					<li data-jstree='{"opened":true,"type":"lib","selected":true}'>Linguagem Portugol
-						<ul>
-							<li>Bibliotecas</li>
-						</ul>
-					</li>
-				</ul>
-			</div>
+			<div class="jstree"></div>
 		</div>
 
 		<div data-dock-panel="{dock:'center'}">
