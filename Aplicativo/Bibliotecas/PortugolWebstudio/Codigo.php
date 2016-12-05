@@ -54,6 +54,10 @@ class Codigo {
 		$jarPath = BASE_PATH . DS . "Arquivos" . DS . "Portugol" . DS . "portugol-console.jar";
 		$Comando = "java -Dfile.encoding=UTF-8 -Xms128m -Xmx512m -d64 -jar \"" . $jarPath ."\" \"" . $Path . "\"";
 
+		if (getenv("SERVER_NAME") == "sf1.hashbang.sh") {
+			$Comando = "/home/dgadelha/.local/bin/" . $Comando;
+		}
+
 		$commandInfo = Util::runCommand($Comando, $Entrada, 10);
 		$Saida = $commandInfo["stdout"];
 		$Saida .= $commandInfo["stderr"];
