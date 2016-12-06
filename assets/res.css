@@ -27,21 +27,58 @@ body {
 	background-image: url("https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/src/br/univali/ps/ui/icones/pequeno/page_white_copy.png") !important;
 }
 
+.icone-pasta {
+	background-image: url("https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/src/br/univali/ps/ui/icones/pequeno/folder_closed.png") !important;
+}
+
+.icone-exemplo {
+	background-image: url("https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/src/br/univali/ps/ui/icones/pequeno/light_pix_off.png") !important;
+}
+
+.jstree-clicked .icone-exemplo {
+	background-image: url("https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/src/br/univali/ps/ui/icones/pequeno/light_pix.png") !important;
+}
+
 .res-cat {
 	display: block;
 	background-color: rgb(38, 50, 56);
 	margin: 7.5px;
 	padding: 7.5px 10px;
 	font-size: 14px;
+	vertical-align: middle;
+}
+
+.res-cat-link {
+	text-align: center;
+	color: rgb(255, 194, 0);
+	font-size: 16px;
+	padding: 6px 10px;
+	background-color: #1e282c;
+}
+
+.res-cat-link:focus {
+	color: rgb(255, 194, 0);
+	background-color: #1e282c;
+	text-decoration: none;
+}
+
+.res-cat-link:hover {
+	color: #FFF;
+	background-color: #2e383c;
+	text-decoration: none;
 }
 
 .res-cat span {
-	vertical-align: middle;
+	vertical-align: 0;
 	margin-left: 3px;
 }
 
+.res-cat-link span {
+	vertical-align: 0;
+}
+
 .res-cat img {
-	vertical-align: middle;
+	vertical-align: -2.5px;
 }
 
 .jstree {
@@ -77,5 +114,14 @@ body {
 }
 
 #leftPanel {
-	background: rgb(68, 80, 86);
+	background-color: rgb(68, 80, 86);
+}
+
+#exc-content {
+	display: block;
+	width: calc(100% - 10px);
+	height: calc(100% - 10px);
+	margin: 5px auto;
+	padding: 5px;
+	background-color: rgb(58, 70, 76);
 }

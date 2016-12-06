@@ -7,8 +7,6 @@
 	<title>Portugol Webstudio - Ajuda</title>
 
 	<?php include "Meta.inc.php"; ?>
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.3/themes/default-dark/style.min.css" />
-	<link rel="stylesheet" type="text/css" href="<?=$siteURL;?>assets/res.css?<?=RELEASE;?>">
 </head>
 <body>
 	<div data-ax5layout="ax1" class="ax5layout" data-config="{layout:'dock-panel'}" id="layout">
@@ -25,7 +23,6 @@
 		</div>
 	</div>
 	<?php include "Scripts.inc.php"; ?>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.3/jstree.min.js"></script>
 	<script type="text/javascript">var d={ajaxUrl:"<?=$ajaxURL;?>",baseUrl:"<?=$siteURL;?>",res:"ajuda"};</script>
 	<script type="text/javascript" src="<?=$siteURL;?>assets/res-ajuda.js?<?=RELEASE;?>"></script>
 </body>

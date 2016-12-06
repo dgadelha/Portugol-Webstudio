@@ -9,3 +9,4 @@
 <script type="text/javascript" src="https://cdn.rawgit.com/inexorabletash/text-encoding/master/lib/encoding.js?b8503e781cfe62c80582ff36ae467435baa35ba1"></script>
 <script type="text/javascript" src="<?=$siteURL;?>assets/mode-portugol.js?<?=RELEASE;?>"></script>
 <script type="text/javascript" src="<?=$siteURL;?>assets/portugol.js?<?=RELEASE;?>"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.3/jstree.min.js"></script>
