@@ -29,25 +29,25 @@
 		<div class="tab" id="tab-inicio">
 			<div class="tab-content">
 				<div class="row" id="btl">
-					<div class="col-xs-3 col-md-3 col-lg-3">
+					<div class="col-xs-6 col-md-3 col-lg-3">
 						<button class="action-add">
 							<img src="https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/src/br/univali/ps/ui/icones/grande/lite/programar.png" class="img-responsive">
 							<span>Programar</span>
 						</button>
 					</div>
-					<div class="col-xs-3 col-md-3 col-lg-3">
+					<div class="hidden-xs visible-md visible-lg col-xs-0 col-md-3 col-lg-3">
 						<button class="action-ajuda">
 							<img src="https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/src/br/univali/ps/ui/icones/grande/lite/ajuda.png" class="img-responsive">
 							<span>Ajuda</span>
 						</button>
 					</div>
-					<div class="col-xs-3 col-md-3 col-lg-3">
+					<div class="col-xs-6 col-md-3 col-lg-3">
 						<a href="https://www.youtube.com/user/portugolstudio" target="_blank" rel="nofollow">
 							<img src="https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/src/br/univali/ps/ui/icones/grande/lite/videoaulas.png" class="img-responsive">
 							<span>Videoaulas</span>
 						</a>
 					</div>
-					<div class="col-xs-3 col-md-3 col-lg-3">
+					<div class="hidden-xs visible-md visible-lg col-xs-0 col-md-3 col-lg-3">
 						<a href="javascript:alert('Não implementado.')">
 							<img src="https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/src/br/univali/ps/ui/icones/grande/lite/bibliotecas.png" class="img-responsive">
 							<span>Bibliotecas</span>
