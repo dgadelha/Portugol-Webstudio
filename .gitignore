@@ -1,4 +1,6 @@
 teste/
+/temp/*
+!/temp/README.md
 set-env.sh
 # Byte-compiled / optimized / DLL files
 __pycache__/
