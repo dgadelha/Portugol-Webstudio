@@ -16,15 +16,16 @@
         <input type="submit" value="Enviar código">
     </form>
     <br><br><br>
-    <form id="input_response" method="POST" action='#'>
-      <input type="text" name="in-resp" id="in-resp" placeholder="Resposta do input: ">
-      <input type="submit" value="Enviar resposta">
-    </form>
+
     <br><br>
     <form id="disconnect" method="POST" action="#">
         <input type="submit" value="Desconectar">
     </form>
     <h2>Respostas:</h2>
     <div id="log"></div>
+    <form id="input_response" method="POST" action='#' style="display: none;">
+      <input type="text" name="in-resp" id="in-resp" placeholder="Resposta do input: ">
+      <input type="submit" value="Enviar resposta">
+    </form>
 </body>
 </html>

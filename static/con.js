@@ -6,26 +6,31 @@ $(document).ready(function() {
     // can set the namespace to an empty string.
     namespace = '/portugol';
     dev_space = Math.random().toString(12).substring(7);
+
     // Connect to the Socket.IO server.
     // The connection URL has the following format:
     //     http[s]://<domain>:<port>[/<namespace>]
     var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + namespace);
-    socket.emit('join', {room: dev_space});
+
     // Event handler for new connections.
     // The callback function is invoked when a connection with the
     // server is established.
     socket.on('connect', function() {
-        socket.emit('my_event', {data: 'Console iniciado!'});
+        socket.emit('event', {data: 'Console iniciado!'});
+        socket.emit('join_devspace', {room: dev_space});
     });
 
     // Event handler for server sent data.
     // The callback function is invoked whenever the server emits data
     // to the client. The data is then displayed in the "Received"
     // section of the page.
-    socket.on('my_response', function(msg) {
+    socket.on('response', function(msg) {
         $('#log').append('<br>' + $('<div/>').text(msg.data).html());
     });
 
+    socket.on('awayting', function() {
+        $("#input_response").css("display", "block");
+    });
     // Interval function that tests message latency by sending a "ping"
     // message. The server then responds with a "pong" message and the
     // round trip time is measured.
@@ -33,13 +38,13 @@ $(document).ready(function() {
     var start_time;
     window.setInterval(function() {
         start_time = (new Date).getTime();
-        socket.emit('my_ping');
+        socket.emit('ping');
     }, 1000);
 
     // Handler for the "pong" message. When the pong is received, the
     // time from the ping is stored, and the average of the last 30
     // samples is average and displayed.
-    socket.on('my_pong', function() {
+    socket.on('pong', function() {
         var latency = (new Date).getTime() - start_time;
         ping_pong_times.push(latency);
         ping_pong_times = ping_pong_times.slice(-30); // keep last 30 samples
@@ -53,15 +58,14 @@ $(document).ready(function() {
     // These accept data from the user and send it to the server in a
     // variety of ways
     $('form#emit').submit(function(event) {
-        socket.emit('my_room_event', {room: dev_space, data: $('#emit_data').val()});
+        $("#input_response").css("display", "none");
+        socket.emit('my_devspace', {room: dev_space, data: $('#emit_data').val()});
         return false;
     });
-    $('form#close').submit(function(event) {
-        socket.emit('close_room', {room: $('#close_room').val()});
+    $('form#input_response').submit(function(event) {
+        $("#input_response").css("display", "none");
+        socket.emit('response_awayting', {room: dev_space, data: $('#in-resp').val()});
         return false;
     });
-    $('form#disconnect').submit(function(event) {
-        socket.emit('disconnect_request');
-        return false;
-    });
+
 });
