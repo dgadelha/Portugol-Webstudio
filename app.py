@@ -98,6 +98,7 @@ def receive_portugol(message):
     emit('response',
          {'data': "## Fim da execução ##"},
          room=message['room'])
+    os.remove(name)
 
 '''
 Funções extras
