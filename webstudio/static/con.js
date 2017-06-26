@@ -27,10 +27,6 @@ $(document).ready(function() {
     socket.on('response', function(msg) {
         $('#log').append('<br>' + $('<div/>').text(msg.data).html());
     });
-
-    socket.on('awayting', function() {
-        $("#input_response").css("display", "block");
-    });
     // Interval function that tests message latency by sending a "ping"
     // message. The server then responds with a "pong" message and the
     // round trip time is measured.
@@ -60,11 +56,6 @@ $(document).ready(function() {
     $('form#emit').submit(function(event) {
         $("#input_response").css("display", "none");
         socket.emit('my_devspace', {room: dev_space, data: $('#emit_data').val()});
-        return false;
-    });
-    $('form#input_response').submit(function(event) {
-        $("#input_response").css("display", "none");
-        socket.emit('response_awayting', {room: dev_space, data: $('#in-resp').val()});
         return false;
     });
 
