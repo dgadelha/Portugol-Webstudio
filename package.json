@@ -1,0 +1,29 @@
+{
+  "name": "portugol-webstudio",
+  "version": "1.0.0",
+  "description": "IDE online para o Portugol (UNIVALI)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/guiscaranse/Portugol-Webstudio.git"
+  },
+  "keywords": [
+    "portugol",
+    "univali",
+    "webstudio"
+  ],
+  "author": "guiscaranse, dgadelha",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/guiscaranse/Portugol-Webstudio/issues"
+  },
+  "homepage": "https://github.com/guiscaranse/Portugol-Webstudio#readme",
+  "dependencies": {
+    "express": "^4.15.3",
+    "fs": "0.0.1-security",
+    "pty.js": "github:chjj/pty.js"
+  }
+}
