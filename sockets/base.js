@@ -17,7 +17,7 @@ module.exports = function (io){
       fs.writeFile(file, data, function(err){}); // Escrevemos o código em portugol temporariamente
       term.write("~|^!+RUNTIME+!^|~" + file + "\r");
       }else{
-        socket.emit('output', "Aguarde o fim da execução!");
+        socket.emit('output', "\nAguarde o fim da execução!");
       }
     });
 
@@ -28,6 +28,7 @@ module.exports = function (io){
     });
     // Listen on the terminal for output and send it to the client
     term.on('data', function(data){
+      data = data.replace("~|^!+INPUT+!^|~", "");
       if(listen){
         if(data.includes("~|^!+END+!^|~")){
           listen = false;
