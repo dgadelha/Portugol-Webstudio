@@ -4,7 +4,7 @@ module.exports = function (io){
   io.on('connection', function(socket){
     var listen = false;
     var term = pty.spawn('python', ["libs/runtime.py"], {
-      name: 'xterm-color',
+      name: 'xterm',
       cols: 80,
       rows: 30,
       cwd: require('path').dirname(require.main.filename) + "/../",
@@ -29,6 +29,7 @@ module.exports = function (io){
     // Listen on the terminal for output and send it to the client
     term.on('data', function(data){
       data = data.replace("~|^!+INPUT+!^|~", "");
+      //console.log(data + " = " + data.indexOf("~|^!+START+!^|~"))
       if(listen){
         if(data.includes("~|^!+END+!^|~")){
           listen = false;
