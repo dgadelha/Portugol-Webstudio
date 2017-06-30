@@ -19,7 +19,7 @@ def timeout(seconds=10):
 
     return decorator
 
-@timeout(3)
+@timeout(300)
 def timed_shell(comando):
     child = pexpect.spawnu(comando)
     child.interact()
