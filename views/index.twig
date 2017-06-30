@@ -14,6 +14,10 @@
     <textarea name="emit_data" id="emit_data" placeholder="Código em Portugol" rows="10" cols="100"></textarea><br>
     <input type="submit" value="Enviar código">
   </form>
+  <form id="response" method="POST" action='#' style="display: none;">
+    <input type="text" name="response_data" id="response_data" placeholder="Input">
+    <input type="submit" value="Responder">
+  </form>
   <br><br><br>
 
   <h2>Respostas:</h2>
@@ -30,11 +34,22 @@
         // Append the data to our terminal
         $('#log').append(data);
       });
-
+      socket.on('hide-response', function(data) {
+        $("#response").css("display", "none");
+      });
+      socket.on('show-response', function(data) {
+        $("#response").css("display", "block");
+      });
       // Listen for user input and pass it to the server
       $('form#emit').submit(function(event) {
         event.preventDefault();
         socket.emit('input', $('#emit_data').val() + "\r");
+        return false;
+      });
+
+      $('form#response').submit(function(event) {
+        event.preventDefault();
+        socket.emit('response', $('#response_data').val() + "\r");
         return false;
       });
     });
