@@ -1,35 +1,49 @@
 # Portugol Webstudio [![Build Status](https://travis-ci.org/dgadelha/Portugol-Webstudio.svg?branch=master)](https://travis-ci.org/dgadelha/Portugol-Webstudio)
 IDE online para o Portugol (UNIVALI)
 
-![Captura de Tela](assets/screenshot.png)
-
-## Como funciona?
-É criado um Ambiente de Desenvolvimento Integrado virtual no navegador (para isso, usamos algumas bibliotecas como ax5ui-layout e Ace), que torna possível a criação e edição de arquivos no formato Portugol.
-
-Quando o usuário clica o botão Executar (Play), o código digitado é enviado via AJAX para o servidor, que irá executar o **Portugol-Console**, inserir a _Entrada de Dados_ do usuário, coletar a saída, enviar para o navegador e então exibir na tela.
-
 ## Bibliotecas Utilizadas
-- [Ace](https://ace.c9.io/) para o Editor de Código
-- [ax5ui-layout](http://ax5.io/ax5ui-layout/) para o Layout do IDE
-- [Blob.js](https://github.com/bjornstar/blob-polyfill) para baixar/salvar o código digitado
-- [Bootstrap](https://getbootstrap.com/) para os Grids responsivos
-- [FileSaver.js](https://github.com/eligrey/FileSaver.js) para baixar/salvar o código digitado
 - [jQuery](https://jquery.com/) para diminuir a dor de cabeça
-- [JSMin](https://github.com/mrclay/minify/blob/2.x/min/lib/JSMin.php) (modificado para Portugol) para gerar um "hash" do código e diminuir o trabalho do servidor
+- [Socket.io](https://github.com/socketio/socket.io) para permitir saídas e interação em tempo real
+- [Twig](https://twig.sensiolabs.org/) templating framework para ajudar na construção de páginas sem ter que realizar muita programação no node
+- [pty.js](https://github.com/chjj/pty.js) para emular um terminal virtual
+- [Express](http://expressjs.com/) framework para gerar as páginas, configurar rotas e permitir uma fácil integração
+- [Nodemon](https://nodemon.io/) para monitorar alterações no código e reiniciar o node manualmente
+- [Pexpect](https://pexpect.readthedocs.io) resposável por controlar o console do portugol dentro do runtime.py
 - [Portugol-Console](https://github.com/UNIVALI-LITE/Portugol-Console) [(modificado com saída limpa / UTF-8)](https://github.com/dgadelha/Portugol-Console) para executar o código inserido pelo usuário
 - [Portugol-Nucleo](https://github.com/UNIVALI-LITE/Portugol-Nucleo) [(modificado para UTF-8)](https://github.com/dgadelha/Portugol-Nucleo) - necessário para o Portugol-Console
-- [Slim 2](https://docs.slimframework.com/) para facilitar a vida
-- [text-encoding](https://github.com/inexorabletash/text-encoding) para converter a codificação usada por padrão nos arquivos **.por** de ISO-8859-1 para UTF-8
+
+## Compilando
+Certifique-se de possuir instalado:
+* [NodeJS e NPM](https://nodejs.org/en/download/)
+* [Python 3 (ou superior)](https://www.python.org/downloads/)
+* [Pexpect](https://pypi.python.org/pypi/pexpect)
+
+Instale as dependências utilizando:
+
+	npm install
+
+Após a instalação, é necessário instalar o pexpect antes de iniciar o aplicativo. Você pode instalar manualmente utilizando pip ou tentar instalar usando:
+
+	npm preinstall
+
+Logo, você poderá iniciar o sistema utilizando:
+
+	npm start
+
+Após isto, você poderá acessar o aplicativo em: [http://127.0.0.1:3000](http://127.0.0.1:3000)
 
 ## Contribuidores
-- [Douglas Gadêlha](https://github.com/dgadelha)
 - [Alisson Steffens](https://github.com/AlissonSteffens)
+- [Douglas Gadêlha](https://github.com/dgadelha)
+- [Guilherme Scaranse](https://github.com/guiscaranse)
 - [Laboratório de Inovação Tecnológica na Educação (LITE) da Universidade do Vale do Itajaí (UNIVALI)](https://github.com/UNIVALI-LITE)
 
 ## Sobre o Projeto
 Este projeto foi criado graças ao Programa Institucional de Bolsa de Iniciação à Docência (Pibid), programa da Coordenação de Aperfeiçoamento de Pessoal de Nível Superior (CAPES), fundação vinculada ao Ministério da Educação (MEC).
 
 **Autor:** [Douglas Gadêlha Souza Silva](mailto:douglas.gadelha@ifba.edu.br)
+
+**Co-autor:** [Guilherme Scaranse](mailto:guilherme.scaranse@ifba.edu.br)
 
 **Orientador:** [Douglas Xavier Teodoro de Oliveira](mailto:douglasteodoro@ifba.edu.br)
 
