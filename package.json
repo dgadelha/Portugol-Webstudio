@@ -4,7 +4,7 @@
   "description": "IDE online para o Portugol (UNIVALI)",
   "private": true,
   "scripts": {
-    "preinstall" : "pip install pexpect",
+    "preinstall" : "pip3 install pexpect",
     "start": "nodemon ./bin/www --watch ./",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

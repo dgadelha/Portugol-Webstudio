@@ -3,7 +3,7 @@ module.exports = function (io){
   var pty = require('pty.js');
   io.on('connection', function(socket){
     var listen = false;
-    var term = pty.spawn('python', ["libs/runtime.py"], {
+    var term = pty.spawn('python3', ["libs/runtime.py"], {
       name: 'xterm',
       cols: 80,
       rows: 30,
