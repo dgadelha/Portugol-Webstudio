@@ -10,19 +10,22 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/guiscaranse/Portugol-Webstudio.git"
+    "url": "git+https://github.com/dgadelha/Portugol-Webstudio.git"
   },
   "keywords": [
     "portugol",
     "univali",
     "webstudio"
   ],
-  "author": "Guilherme Scaranse, Douglas Gadêlha",
+  "author": "Douglas Gadêlha Souza Silva <douglas.gadelha@ifba.edu.br>",
+  "contributors": [
+    "Guilherme Scaranse de Castro <guilherme.scaranse@ifba.edu.br>"
+  ],
   "license": "GPL-3.0",
   "bugs": {
-    "url": "https://github.com/guiscaranse/Portugol-Webstudio/issues"
+    "url": "https://github.com/dgadelha/Portugol-Webstudio/issues"
   },
-  "homepage": "https://github.com/guiscaranse/Portugol-Webstudio#readme",
+  "homepage": "https://github.com/dgadelha/Portugol-Webstudio/Portugol-Webstudio#readme",
   "dependencies": {
     "body-parser": "^1.17.2",
     "cookie-parser": "^1.4.3",
