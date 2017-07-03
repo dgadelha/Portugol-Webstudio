@@ -30,7 +30,6 @@
       socket.on('output', function(data) {
         // Insert some line breaks where they belong
         data = data.replace("\n", "<br>");
-        data = data.replace("\r", "<br>");
         // Append the data to our terminal
         $('#log').append(data);
       });

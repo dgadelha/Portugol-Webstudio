@@ -53,6 +53,7 @@ while(True):
                 time.sleep(0.1)
                 print("\n")
         time.sleep(0.1)
+        print("\n")
         print("~|^!+END+!^|~")
         if(os.path.isfile(path)):
             os.unlink(path)
