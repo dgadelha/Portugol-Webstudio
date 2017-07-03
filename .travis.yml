@@ -1,6 +1,5 @@
 language: node_js
 node_js:
-- iojs
 - '8'
 env:
   global:
@@ -8,11 +7,11 @@ env:
 addons:
   ssh_known_hosts: "${STUDIOHOST}"
 before_install:
-- openssl aes-256-cbc -K $encrypted_79549f35fab0_key -iv $encrypted_79549f35fab0_iv
-  -in ./.travis/webstudio_rsa.enc -out ./.travis/webstudio_rsa -d
+- openssl aes-256-cbc -K $encrypted_333052a4aa11_key -iv $encrypted_333052a4aa11_iv
+  -in ./.travis/webstudio_rsa.enc -out /tmp/webstudio_rsa -d
 - eval "$(ssh-agent -s)"
-- chmod 600 ./.travis/webstudio_rsa
-- ssh-add ./.travis/webstudio_rsa
+- chmod 600 /tmp/webstudio_rsa
+- ssh-add /tmp/webstudio_rsa
 - chmod u+x ./travis/deploy.sh
 install:
 - yarn install
