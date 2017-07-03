@@ -1,0 +1,23 @@
+language: node_js
+node_js:
+  - "iojs"
+  - "8"
+env:
+  global:
+    - STUDIOHOST=dgadelha@sf1.hashbang.sh
+addons:
+  ssh_known_hosts: ${STUDIOHOST}
+before_install:
+- eval "$(ssh-agent -s)"
+- chmod 600 /tmp/webstudio_rsa
+- ssh-add /tmp/webstudio_rsa
+- chmod u+x ./travis/deploy.sh
+install:
+- yarn install
+script:
+- yarn start
+deploy:
+  provider: script
+  script: "./travis/deploy.sh"
+  on:
+    all_branches: true
