@@ -1,3 +1,4 @@
+sudo: required
 language: node_js
 node_js:
 - '8'
@@ -12,11 +13,10 @@ before_install:
 - eval "$(ssh-agent -s)"
 - chmod 600 /tmp/webstudio_rsa
 - ssh-add /tmp/webstudio_rsa
+- sudo apt-get update > /dev/null
+- sudo apt-get install python3 python3-setuptools -y > /dev/null
 - chmod u+x ./.travis/deploy.sh
-install:
-- npm install
-script:
-- npm start
+
 deploy:
   provider: script
   script: "./.travis/deploy.sh"
