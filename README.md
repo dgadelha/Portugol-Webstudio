@@ -12,26 +12,25 @@ IDE online para o Portugol (UNIVALI)
 - [Portugol-Console](https://github.com/UNIVALI-LITE/Portugol-Console) [(modificado com saída limpa / UTF-8)](https://github.com/dgadelha/Portugol-Console) para executar o código inserido pelo usuário
 - [Portugol-Nucleo](https://github.com/UNIVALI-LITE/Portugol-Nucleo) [(modificado para UTF-8)](https://github.com/dgadelha/Portugol-Nucleo) - necessário para o Portugol-Console
 
+***
 ## Compilando
 Certifique-se de possuir instalado:
-* [NodeJS e NPM](https://nodejs.org/en/download/)
-* [Python 3 (ou superior)](https://www.python.org/downloads/)
+* [NodeJS](https://nodejs.org/en/download/) (>= 8.1)
+* [NPM](https://nodejs.org/en/download/) (>= 5.0)
+* [Python 3](https://www.python.org/downloads/) (ou superior)
 * [Pexpect](https://pypi.python.org/pypi/pexpect)
 
-Instale as dependências utilizando:
-
-	npm install
-
-Após a instalação, é necessário instalar o pexpect antes de iniciar o aplicativo. Você pode instalar manualmente utilizando pip ou tentar instalar usando:
-
-	npm preinstall
-
-Logo, você poderá iniciar o sistema utilizando:
-
-	npm start
+Compile o Portugol Webstudio com:
+```sh
+npm install
+npm start
+```
 
 Após isto, você poderá acessar o aplicativo em: [http://127.0.0.1:3000](http://127.0.0.1:3000)
 
+> Versões anteriores do NPM e NodeJS podem funcionar, embora não tenham sido testadas.
+
+***
 ## Contribuidores
 - [Alisson Steffens](https://github.com/AlissonSteffens)
 - [Douglas Gadêlha](https://github.com/dgadelha)
