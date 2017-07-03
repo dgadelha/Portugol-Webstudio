@@ -29,6 +29,10 @@
       // Wait for data from the server
       socket.on('output', function(data) {
         // Insert some line breaks where they belong
+        if(data.includes("~|^!+LIMPAR+!^|~")){
+          data = data.replace("~|^!+LIMPAR+!^|~", "");
+          $( "#log" ).empty();
+        }
         data = data.replace("\n", "<br>");
         // Append the data to our terminal
         $('#log').append(data);
