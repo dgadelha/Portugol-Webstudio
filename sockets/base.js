@@ -23,6 +23,7 @@ module.exports = function (io){
 
     socket.on("response", function(resp){
       if(listen){
+        resp = resp.replace("~|^!+", "").replace("+!^|~", "");
         term.write(resp + "\r");
       }
     });
