@@ -14,7 +14,7 @@ module.exports = function (io){
     // Create terminal
     socket.on("input", function(data){
       if(!listen){
-      fs.writeFile(file, data, function(err){}); // Escrevemos o código em portugol temporariamente
+      fs.writeFile(__dirname + "/../" + file, data, function(err){}); // Escrevemos o código em portugol temporariamente
       term.write("~|^!+RUNTIME+!^|~" + file + "\r");
       }else{
         socket.emit('output', "\nAguarde o fim da execução!");
@@ -52,8 +52,8 @@ module.exports = function (io){
 
     // When socket disconnects, destroy the terminal
     socket.on("disconnect", function(){
-      if (fs.existsSync(file)) {
-          fs.unlinkSync(file);
+      if (fs.existsSync(__dirname + "/../"+ file)) {
+          fs.unlinkSync(__dirname + "/../"+ file);
           console.log('Found file');
       }
       term.destroy();
