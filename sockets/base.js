@@ -3,18 +3,20 @@ module.exports = function (io){
   var pty = require('pty.js');
   io.on('connection', function(socket){
     var listen = false;
-    var term = pty.spawn('python3', ["libs/runtime.py"], {
+    var term = pty.spawn('./libs/runtime/linux/runtime', [""], {
       name: 'xterm',
       cols: 80,
       rows: 30,
       cwd: require('path').dirname(require.main.filename) + "/../",
       env: process.env
     });
-    var file = "libs/__temp/"+ Math.random().toString(12).substring(7) +".por";
+    var file = "libs/runtime/__temp/"+ Math.random().toString(12).substring(7) +".por";
     // Create terminal
     socket.on("input", function(data){
       if(!listen){
+      socket.emit('output', "Iniciando compilação...\n");
       fs.writeFile(__dirname + "/../" + file, data, function(err){}); // Escrevemos o código em portugol temporariamente
+      console.log("~|^!+RUNTIME+!^|~" + file);
       term.write("~|^!+RUNTIME+!^|~" + file + "\r");
       }else{
         socket.emit('output', "\nAguarde o fim da execução!");

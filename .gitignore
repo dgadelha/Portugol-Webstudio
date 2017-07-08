@@ -1,4 +1,4 @@
-libs/__temp/*.por
+libs/runtime/__temp/*.por
 # Logs
 logs
 *.log
