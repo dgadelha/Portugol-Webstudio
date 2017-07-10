@@ -14,10 +14,11 @@ IDE online para o Portugol (UNIVALI)
 
 ***
 ## Compilando
+**Apenas suporte para plataformas *NIX.** Ver [#8](https://github.com/dgadelha/Portugol-Webstudio/issues/8) em caso de dúvidas.
 Certifique-se de possuir instalado:
-* [NodeJS](https://nodejs.org/en/download/) (>= 8.1)
-* [NPM](https://nodejs.org/en/download/) (>= 5.0)
-* [Python 3](https://www.python.org/downloads/) (ou superior)
+* [NodeJS](https://nodejs.org/en/download/) (8+)
+* [NPM](https://nodejs.org/en/download/) (5.0+)
+* [Python 3](https://www.python.org/downloads/) (3.0+)
 * [Pexpect](https://pypi.python.org/pypi/pexpect)
 
 Compile o Portugol Webstudio com:
