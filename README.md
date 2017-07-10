@@ -39,19 +39,14 @@ Após isto, você poderá acessar o aplicativo em: [http://127.0.0.1:3000](http:
 - [Laboratório de Inovação Tecnológica na Educação (LITE) da Universidade do Vale do Itajaí (UNIVALI)](https://github.com/UNIVALI-LITE)
 
 ## Sobre o Projeto
-Este projeto foi criado graças ao Programa Institucional de Bolsa de Iniciação à Docência (Pibid), programa da Coordenação de Aperfeiçoamento de Pessoal de Nível Superior (CAPES), fundação vinculada ao Ministério da Educação (MEC).
 
-**Autor:** [Douglas Gadêlha Souza Silva](mailto:douglas.gadelha@ifba.edu.br)
+**Autor:** [Douglas Gadêlha](mailto:dgadelha@live.com)
 
 **Co-autor:** [Guilherme Scaranse](mailto:guilherme.scaranse@ifba.edu.br)
 
-**Orientador:** [Douglas Xavier Teodoro de Oliveira](mailto:douglasteodoro@ifba.edu.br)
-
-**Instituição:** [Instituto Federal de Educação, Ciência e Tecnologia da Bahia (IFBA) - Campus Porto Seguro](http://portoseguro.ifba.edu.br/)
-
 ## Licença
     Portugol Webstudio - IDE online para o Portugol (UNIVALI)
-    Copyright (C) 2016  Douglas Gadêlha / Ministério da Educação (MEC)
+    Copyright (C) 2016  Douglas Gadêlha, Guilherme Scaranse e contribuidores
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
