@@ -12,7 +12,7 @@ String.prototype.replaceArray = function(find, replace) {
 router.get('/', function(req, res, next) {
   res.render('index');
 });
-router.get('/resp/:file', function(req, res, next) {
+router.get('/resp', function(req, res, next) {
   var file = req.query.file;
   if(file.lenght >= 8 && file.substring(0, 8) == "Recursos"){
     var basePath = fs.realpath(path.dirname(require.main.filename) + "/../");
