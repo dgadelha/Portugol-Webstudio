@@ -28,12 +28,12 @@ router.get('/resp', function(req, res, next) {
               var style = ".dp-highlighter{pointer-events:initial !important}html,body{margin:0;padding:0}body{padding-bottom:25px}";
             	data = data.replace("<head>", "<head><meta charset=\"utf-8\"><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><script type=\"text/javascript\">var d={baseURL:\""+ baseURL +"\"};</script>");
             	data = data.replace("</head>", "<style type=\"text/css\">" + style + "</style></head>");
-            	data = data.replaceArray(["../../../../scripts/exemplos.js", "../../../scripts/exemplos.js", "../../scripts/exemplos.js"], baseURL . "assets/Recursos-exemplos.js");
-              data = data.replaceArray(["../../../../scripts/", "../../../scripts/", "../../scripts/"], baseURL . "Recursos/ajuda/scripts/");
-            	data = data.replaceArray(["../../../../estilos/", "../../../estilos/", "../../estilos/"], baseURL . "Recursos/ajuda/estilos/");
-            	data = data.replaceArray(["../../../../recursos/imagens/", "../../../recursos/imagens/", "../../recursos/imagens/"], baseURL . "Recursos/ajuda/recursos/imagens/");
+            	data = data.replaceArray(["../../../../scripts/exemplos.js", "../../../scripts/exemplos.js", "../../scripts/exemplos.js"], baseURL + "assets/Recursos-exemplos.js");
+              data = data.replaceArray(["../../../../scripts/", "../../../scripts/", "../../scripts/"], baseURL + "Recursos/ajuda/scripts/");
+            	data = data.replaceArray(["../../../../estilos/", "../../../estilos/", "../../estilos/"], baseURL + "Recursos/ajuda/estilos/");
+            	data = data.replaceArray(["../../../../recursos/imagens/", "../../../recursos/imagens/", "../../recursos/imagens/"], baseURL + "Recursos/ajuda/recursos/imagens/");
             	data = data.replaceArray(["../../../../recursos/", "../../../recursos/", "../../recursos/"], "Recursos/ajuda/recursos/");
-            	data = data.replace("topicos/linguagem_portugol/", baseURL . "index.php/resp?file=Recursos/ajuda/topicos/linguagem_portugol/");
+            	data = data.replace("topicos/linguagem_portugol/", baseURL + "index.php/resp?file=Recursos/ajuda/topicos/linguagem_portugol/");
           }
           res.send(data);
         });
