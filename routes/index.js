@@ -22,6 +22,7 @@ router.get('/resp/:file', function(req, res, next) {
       var allowedExt = ['.por', '.html', '.htm'];
       if(allowedExt.indexOf(extName) > -1){
         fs.readFile(filePath, function (err, origin) {
+          var baseURL = "/";
           var data = origin.toString('utf8');
           if(extName == ".htm" || extName == ".html"){
               var style = ".dp-highlighter{pointer-events:initial !important}html,body{margin:0;padding:0}body{padding-bottom:25px}";
