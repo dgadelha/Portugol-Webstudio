@@ -20,7 +20,7 @@ module.exports = function(io) {
     socket.on(input):
     trigger responsável por receber o código do portugol, escrever no arquivo temporário e passar para o RUNTIME
     */
-    socket.on("input", function(data) {
+    socket.on("input", function(code) {
       // Verifica se a trava está ativa e o código está ouvindo inputs do usuário. Se estiver ativa, emite a mensagem indicando para aguardar
       if (!listen) {
         var data = new Date(); // Autoexplicativo
@@ -28,7 +28,7 @@ module.exports = function(io) {
         var minutos = (data.getMinutes() < 10 ? "0" : "") + data.getMinutes();
         var segundos = (data.getSeconds() < 10 ? "0" : "") + data.getSeconds();
         socket.emit('output', "Iniciando compilação... (" + hora + ":" + minutos + ":" + segundos + ")\n"); // Envia mensagem dizendo que vai compilar
-        fs.writeFile(__dirname + "/../" + file, data, function(err) {}); // Escrevemos o código em portugol temporariamente
+        fs.writeFile(__dirname + "/../" + file, code, function(err) {}); // Escrevemos o código em portugol temporariamente
         term.write("~|^!+RUNTIME+!^|~" + file + "\r"); // Indicamos qual arquivo o RUNTIME deve ler
       } else {
         socket.emit('output', "\nAguarde o fim da execução!");
