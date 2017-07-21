@@ -1,4 +1,4 @@
-// Função que permite executar loops de forma assíncrona e executar 
+// Função que permite executar loops de forma assíncrona e executar
 // uma função de callback ao final do loop
 function asyncLoop(iterations, func, callback) {
 	var index = 0;
@@ -53,7 +53,7 @@ function carregarExemplos(callback) {
 	var exemplos = obterExemplos();
 
 	asyncLoop(exemplos.length, function(loop) {
-		$.get(d.baseUrl + "index.php/resp?file=" + exemplos[loop.index].caminho, function(content) {
+		$.get(d.baseUrl + "resp?file=" + exemplos[loop.index].caminho, function(content) {
 			exemplos[loop.index].codigo = content;
 			loop.next();
 		}, "text");
@@ -103,4 +103,3 @@ $(document).ready(function() {
 		});
 	});
 });
-	
