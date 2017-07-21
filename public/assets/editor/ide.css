@@ -1,0 +1,299 @@
+a, a:hover, a:focus, a:visited, button, button:hover, button:focus {
+	outline: 0 none transparent;
+	outline-width: 0;
+	outline-color: transparent;
+}
+
+.alert-res {
+	z-index: 9999;
+	width: 100%;
+	height: 100%;
+	background-color: #263238;
+
+}
+
+.alert-res-content {
+	width: 100%;
+	height: 100%;
+	display: table;
+}
+
+.alert-res .alert-res-content span {
+	font-size: 28px;
+	color: #FFF;
+	text-align: center;
+	padding: 0 10px;
+	display: table-cell;
+	vertical-align: middle;
+}
+
+.alert-res .alert-res-close {
+	font-size: 16px;
+	text-align: center;
+	padding: 10px 5px;
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	right: 0;
+}
+
+.alert-res .alert-res-close a {
+	color: #CCC;
+}
+
+.row {
+	margin-left: 0;
+	margin-right: 0;
+}
+
+.col-xs-1, .col-sm-1, .col-md-1, .col-lg-1, .col-xs-2, .col-sm-2, .col-md-2, .col-lg-2, .col-xs-3, .col-sm-3, .col-md-3, .col-lg-3, .col-xs-4, .col-sm-4, .col-md-4, .col-lg-4, .col-xs-5, .col-sm-5, .col-md-5, .col-lg-5, .col-xs-6, .col-sm-6, .col-md-6, .col-lg-6, .col-xs-7, .col-sm-7, .col-md-7, .col-lg-7, .col-xs-8, .col-sm-8, .col-md-8, .col-lg-8, .col-xs-9, .col-sm-9, .col-md-9, .col-lg-9, .col-xs-10, .col-sm-10, .col-md-10, .col-lg-10, .col-xs-11, .col-sm-11, .col-md-11, .col-lg-11, .col-xs-12, .col-sm-12, .col-md-12, .col-lg-12 {
+	padding-left: 0;
+	padding-right: 0;
+}
+
+.hide {
+	display: none;
+}
+
+html, body {
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	height: 100%;
+	font-family: 'PT Sans', sans-serif;
+	font-size: 11pt;
+}
+
+body {
+	background-color: #121E24;
+}
+
+#ide {
+	display: flex;
+	flex-direction: column;
+	float: left;
+	width: 100%;
+	height: 100%;
+}
+
+.editor, .output, .input {
+	margin: 0;
+	width: 100%;
+	height: 100%;
+}
+
+.ide-layout {
+	width: 100%;
+	height: 100%;
+}
+
+.tbb {
+	display: block;
+	margin: 0;
+	width: 100%;
+	font-size: 22px;
+	border: none;
+	background-color: #263238;
+	color: #FFF;
+	height: 45px;
+	margin-top: 5px;
+	border-radius: 0;
+}
+
+.tbb:hover {
+	background-color: rgba(0,0,0,.1);
+}
+
+.tbb[disabled], .tbb[disabled]:hover {
+	border: 0 none transparent;
+	/* background-color: #263238; */
+	background-color: transparent;
+	-webkit-filter: grayscale(100%);
+	-moz-filter: grayscale(100%);
+	-ms-filter: grayscale(100%);
+	-o-filter: grayscale(100%);
+	filter: grayscale(100%);
+}
+
+.title {
+	margin: 0;
+	padding: 5px;
+	background-color: rgb(68, 80, 86);
+	border: 1px solid transparent;
+	color: #FFF;
+	text-align: center;
+	text-transform: uppercase;
+}
+
+[data-ax5layout] > [data-splitter]{
+	background-color: rgb(25,36,42)
+}
+
+.tabs {
+	margin: 0;
+	padding: 0;
+	margin: 15px 5px 0 5px;
+}
+
+.tabs li {
+	margin-left: -5px;
+	list-style: none;
+	display: inline-block;
+}
+
+.tabs li:first-child {
+	margin-left: 2px;
+}
+
+.tabs a, .tabs > li > span.action {
+	padding: 5px 10px;
+	display: inline-block;
+	background: rgb(68,80,86);
+	color: #fff;
+	text-decoration: none;
+}
+
+.tabs a span.spacing-icon {
+	width: 13px;
+	display: inline-block;
+}
+
+.tabs a span.mini-spacing-icon {
+	width: 8px;
+	display: inline-block;
+}
+
+.tabs > li > span.action > span.add-icon {
+	display: inline-block;
+	background-image: url("https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/src/br/univali/ps/ui/icones/Dark/pequeno/page_white_add.png");
+	width: 16px;
+	height: 16px;
+	vertical-align: -2px;
+}
+
+.tabs > li > span.action > span.open-icon {
+	display: inline-block;
+	background-image: url("https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/src/br/univali/ps/ui/icones/Dark/pequeno/folder_closed.png");
+	width: 16px;
+	height: 16px;
+	vertical-align: -2px;
+}
+
+.tabs a span.portugol-icon, .tabs a span.help-icon {
+	display: inline-block;
+	width: 16px;
+	height: 16px;
+	vertical-align: -2px;
+}
+
+.tabs a span.portugol-icon {
+	background-image: url("https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/src/br/univali/ps/ui/icones/Dark/pequeno/light_pix_off.png");
+}
+
+.tabs a.active span.portugol-icon {
+	background-image: url("https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/src/br/univali/ps/ui/icones/Dark/pequeno/light_pix.png");
+}
+
+.tabs a span.help-icon, .tabs a.active span.help-icon {
+	background-image: url("https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/src/br/univali/ps/ui/icones/Dark/pequeno/help.png");
+}
+
+.tabs a span.close-icon {
+	display: inline-block;
+	background-image: url("https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/src/br/univali/ps/ui/icones/Dark/pequeno/white_close.png");
+	width: 16px;
+	height: 16px;
+	vertical-align: -2px;
+}
+
+.tabs a.active, .tabs span.active, .tab {
+	background-color: #263238 !important;
+	color: #FFF !important;
+}
+
+.tabs > li > span.action {
+	padding-left: 6px;
+	padding-right: 6px;
+	cursor: pointer;
+}
+
+.tab {
+	flex-grow: 1;
+	margin: 0 5px 5px 5px;
+	padding: 7px;
+	height: calc(100% - 60px)
+}
+
+.tab iframe {
+	width: 100%;
+	height: 100%;
+	display: block;
+	border: 0 none transparent;
+}
+
+.tab-content {
+	background-color: #445056;
+	width: 100%;
+	height: 100%;
+}
+
+.tbar {
+	background-color: #263238;
+	text-align: center;
+	padding-top: 6px;
+}
+
+#btl {
+	padding-top: 10px;
+	text-align: center;
+}
+
+#btl button, #btl a {
+	display: block;
+	color: #FFF;
+	text-decoration: none;
+	background-color: transparent;
+	border: 0 none transparent;
+	width: 100%;
+	padding: 15px 0;
+	display: block;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	max-width: 100%;
+}
+
+#btl button img, #btl a img {
+	margin: auto;
+}
+
+@media (max-width: 545px) {
+	#btl a, #btl button {
+		font-size: 13px;
+	}
+}
+
+#btl button span, #btl a span {
+	display: block;
+	margin-top: 10px;
+}
+
+#btl button:hover, #btl a:hover {
+	background-color: rgba(0,0,0,.1);
+}
+
+#tab-inicio .tab-content {
+	display: flex;
+	flex-direction: column;
+}
+
+#exp {
+	flex: 1;
+	flex-grow: 1;
+	width: 100%;
+	display: block;
+}
+
+.row-exemplo-editor {
+	height: calc(100% - 52px);
+}

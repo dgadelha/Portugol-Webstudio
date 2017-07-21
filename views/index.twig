@@ -1,62 +1,10 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html>
-
-<head>
-  <title>Portugol SocketIO Test</title>
-  <script type="text/javascript" src="//code.jquery.com/jquery-1.4.2.min.js"></script>
-  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.5/socket.io.min.js"></script>
-</head>
-
-<body>
-  <h1>Teste de Portugol</h1>
-  <h2>Enviar:</h2>
-  <form id="emit" method="POST" action='#'>
-    <textarea name="emit_data" id="emit_data" placeholder="Código em Portugol" rows="10" cols="100"></textarea><br>
-    <input type="submit" value="Enviar código">
-  </form>
-  <form id="response" method="POST" action='#' style="display: none;">
-    <input type="text" name="response_data" id="response_data" placeholder="Input">
-    <input type="submit" value="Responder">
-  </form>
-  <br><br><br>
-
-  <h2>Respostas:</h2>
-  <div id="log"></div>
-  <script>
-    $(document).ready(function() {
-      var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
-
-      // Wait for data from the server
-      socket.on('output', function(data) {
-        // Insert some line breaks where they belong
-        if(data.includes("~|^!+LIMPAR+!^|~")){
-          data = data.replace("~|^!+LIMPAR+!^|~", "");
-          $( "#log" ).empty();
-        }
-        data = data.replace("\n", "<br>");
-        // Append the data to our terminal
-        $('#log').append(data);
-      });
-      socket.on('hide-response', function(data) {
-        $("#response").css("display", "none");
-      });
-      socket.on('show-response', function(data) {
-        $("#response").css("display", "block");
-      });
-      // Listen for user input and pass it to the server
-      $('form#emit').submit(function(event) {
-        event.preventDefault();
-        socket.emit('input', $('#emit_data').val() + "\r");
-        return false;
-      });
-
-      $('form#response').submit(function(event) {
-        event.preventDefault();
-        socket.emit('response', $('#response_data').val() + "\r");
-        return false;
-      });
-    });
-  </script>
-</body>
-
+  <head>
+    <title>Portugol</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <meta http-equiv="refresh" content="0; url=/ide" />
+  </body>
 </html>

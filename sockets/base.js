@@ -40,7 +40,7 @@ module.exports = function(io) {
     */
     socket.on("response", function(resp) {
       if (listen) {
-        resp = resp.replace("~|^!+", "").replace("+!^|~", ""); // Filtro de palavras reservadas
+        resp = resp.replace(new RegExp("~|^!+", "g"), "").replace(new RegExp("+!^|~", "g"), ""); // Filtro de palavras reservadas
         term.write(resp + "\r"); // Escreve input para o console virtual
       }
     });

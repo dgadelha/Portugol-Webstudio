@@ -1,0 +1,124 @@
+.ace-portugol .ace_gutter {
+  background: #263238;
+  color: rgb(205,205,205)
+}
+
+.ace-portugol .ace_print-margin {
+  width: 1px;
+  background: #272727
+}
+
+.ace-portugol {
+  background-color: #263238;
+  color: rgb(205,205,205)
+}
+
+.ace-portugol .ace_constant.ace_other,
+.ace-portugol .ace_cursor {
+  color: rgb(205,205,205)
+}
+
+.ace-portugol .ace_marker-layer .ace_selection {
+  background: rgba(0,0,0,.2)
+}
+
+.ace-portugol.ace_multiselect .ace_selection.ace_start {
+  box-shadow: 0 0 3px 0px #2D2D2D;
+}
+
+.ace-portugol .ace_marker-layer .ace_step {
+  background: rgb(102, 82, 0)
+}
+
+.ace-portugol .ace_marker-layer .ace_bracket {
+  margin: -1px 0 0 -1px;
+  border: 1px solid #6A6A6A
+}
+
+.ace-tomorrow-night-bright .ace_stack {
+  background: rgb(66, 90, 44)
+}
+
+.ace-portugol .ace_marker-layer .ace_active-line {
+  background: rgb(18,30,36)
+}
+
+.ace-portugol .ace_gutter-active-line {
+  background-color: rgb(18,30,36)
+}
+
+.ace-portugol .ace_marker-layer .ace_selected-word {
+  border: 1px solid #515151
+}
+
+.ace-portugol .ace_invisible {
+  color: #6A6A6A
+}
+
+.ace-portugol .ace_keyword,
+.ace-portugol .ace_meta,
+.ace-portugol .ace_storage,
+.ace-portugol .ace_storage.ace_type,
+.ace-portugol .ace_support.ace_type {
+  color: rgb(240,67,59)
+}
+
+.ace-portugol .ace_keyword.ace_operator {
+  color: #66CCCC
+}
+
+.ace-portugol .ace_constant.ace_character,
+.ace-portugol .ace_constant.ace_language,
+.ace-portugol .ace_constant.ace_numeric,
+.ace-portugol .ace_keyword.ace_other.ace_unit,
+.ace-portugol .ace_support.ace_constant,
+.ace-portugol .ace_variable.ace_parameter {
+  color: rgb(0,239,192)
+}
+
+.ace-portugol .ace_invalid {
+  color: #CDCDCD;
+  background-color: #F2777A
+}
+
+.ace-portugol .ace_invalid.ace_deprecated {
+  color: #CDCDCD;
+  background-color: #CC99CC
+}
+
+.ace-portugol .ace_fold {
+  background-color: #6699CC;
+  border-color: #CCCCCC
+}
+
+.ace-portugol .ace_entity.ace_name.ace_function,
+.ace-portugol .ace_support.ace_function,
+.ace-portugol .ace_variable {
+  color: /*#6699CC*/ rgb(205,205,205)
+}
+
+.ace-portugol .ace_support.ace_class,
+.ace-portugol .ace_support.ace_type {
+  color: #FFCC66
+}
+
+.ace-portugol .ace_heading,
+.ace-portugol .ace_markup.ace_heading,
+.ace-portugol .ace_string {
+  color: rgb(255,194,0)
+}
+
+.ace-portugol .ace_comment {
+  color: #999999
+}
+
+.ace-portugol .ace_entity.ace_name.ace_tag,
+.ace-portugol .ace_entity.ace_other.ace_attribute-name,
+.ace-portugol .ace_meta.ace_tag,
+.ace-portugol .ace_variable {
+  color: /*#F2777A*/ rgb(240,67,59)
+}
+
+.ace-portugol .ace_indent-guide {
+  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAACCAYAAACZgbYnAAAAEklEQVQImWPQ09NrYAgMjP4PAAtGAwchHMyAAAAAAElFTkSuQmCC) right repeat-y
+}
