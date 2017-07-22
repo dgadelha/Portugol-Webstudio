@@ -36,9 +36,9 @@ router.group("/ide", function(router) {
             if(extName == ".htm" || extName == ".html"){
                 data = data.toString('utf8');
                 var style = ".dp-highlighter{pointer-events:initial !important}html,body{margin:0;padding:0}body{padding-bottom:25px}";
-              	data = data.replace("<head>", "<head><meta charset=\"utf-8\"><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><script type=\"text/javascript\">var d={baseURL:\""+ baseURL +"\"};</script>");
+              	data = data.replace("<head>", "<head><meta charset=\"utf-8\"><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><script type=\"text/javascript\">var d={baseURL:\""+ baseRoute +"\"};</script>");
               	data = data.replace("</head>", "<style type=\"text/css\">" + style + "</style></head>");
-              	data = data.replaceArray(["../../../../scripts/exemplos.js", "../../../scripts/exemplos.js", "../../scripts/exemplos.js"], baseURL + "assets/Recursos-exemplos.js");
+              	data = data.replaceArray(["../../../../scripts/exemplos.js", "../../../scripts/exemplos.js", "../../scripts/exemplos.js"], baseURL + "assets/editor/Recursos-exemplos.js");
                 data = data.replaceArray(["../../../../scripts/", "../../../scripts/", "../../scripts/"], baseURL + "Recursos/ajuda/scripts/");
               	data = data.replaceArray(["../../../../estilos/", "../../../estilos/", "../../estilos/"], baseURL + "Recursos/ajuda/estilos/");
               	data = data.replaceArray(["../../../../recursos/imagens/", "../../../recursos/imagens/", "../../recursos/imagens/"], baseURL + "Recursos/ajuda/recursos/imagens/");
