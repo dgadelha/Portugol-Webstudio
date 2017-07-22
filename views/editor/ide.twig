@@ -1,22 +1,4 @@
-<!doctype html>
-<html>
-<head>
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Portugol Webstudio</title>
-	<link rel="shortcut icon" href="https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/src/br/univali/ps/ui/icones/Dark/grande/light-bulb.png">
-	<link rel="icon" href="https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/src/br/univali/ps/ui/icones/Dark/grande/light-bulb.png">
-
-	<link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
-	<link rel="stylesheet" type="text/css" href="https://cdn.rawgit.com/ax5ui/ax5ui-layout/master/dist/ax5layout.css?69808cd7242797ca27e5a27b85436e1186edf53c">
-	<link rel="stylesheet" type="text/css" href="/assets/editor/bootstrap.min.css">
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.4/themes/default-dark/style.min.css">
-	<link rel="stylesheet" type="text/css" href="/assets/editor/res.css">
-	<link rel="stylesheet" type="text/css" href="/assets/editor/portugol.css">
-	<link rel="stylesheet" type="text/css" href="/assets/editor/ide.css">
-</head>
-<body>
+{% include "editor/meta.twig" %}
 	<div class="visible-xs hidden-md hidden-lg alert-res">
 		<div class="alert-res-content">
 			<span>Esta resolução é muito pequena para usar o Portugol Webstudio.</span>
@@ -97,21 +79,4 @@
 	</div>
 
 	<div class="hide" id="special"></div>
-
-	<script type="text/javascript"> window.TextEncoder = window.TextDecoder = null; </script>
-	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.8/ace.js"></script>
-	<script type="text/javascript" src="https://cdn.rawgit.com/ax5ui/ax5core/master/dist/ax5core.min.js?01226b0e44ca16840c438d914083c749b0dc486c"></script>
-	<script type="text/javascript" src="https://cdn.rawgit.com/ax5ui/ax5ui-layout/master/dist/ax5layout.min.js?69808cd7242797ca27e5a27b85436e1186edf53c"></script>
-	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/blob-polyfill/1.0.20150320/Blob.min.js"></script>
-	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.3/FileSaver.min.js"></script>
-	<script type="text/javascript" src="https://cdn.rawgit.com/inexorabletash/text-encoding/master/lib/encoding-indexes.js?b98ab30bf27aef214ff19d0badfbf6f6323a1513"></script>
-	<script type="text/javascript" src="https://cdn.rawgit.com/inexorabletash/text-encoding/master/lib/encoding.js?b98ab30bf27aef214ff19d0badfbf6f6323a1513"></script>
-	<script type="text/javascript" src="/assets/editor/mode-portugol.js"></script>
-	<script type="text/javascript" src="/assets/editor/portugol.js"></script>
-	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.4/jstree.min.js"></script>
-	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.5/socket.io.min.js"></script>
-	<script type="text/javascript">var d={baseUrl:((window.location.pathname.length<2)?"/":window.location.pathname+"/"),exemplo:{nome:false,codigo:false},tabs:[],scrollDown:function(tid){var r=d.tabs[tid].output.session.getLength()-1;var c=d.tabs[tid].output.session.getLine(r).length;d.tabs[tid].output.gotoLine(r+1,c)}};</script>
-	<script type="text/javascript" src="/assets/editor/ide.js"></script>
-</body>
-</html>
+{% include "editor/scripts.twig" with {'ide': true} only %}

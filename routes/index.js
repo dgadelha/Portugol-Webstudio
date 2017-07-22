@@ -21,6 +21,9 @@ router.group("/ide", function(router) {
   router.get('/ajuda', function(req, res, next) {
     res.render('editor/ajuda');
   });
+  router.get('/editor', function(req, res, next) {
+    res.render('editor/tab', {cid: req.query.cid, fnam: req.query.fnam});
+  });
   router.get('/resp', function(req, res, next) {
     var file = req.query.file;
     if (file.includes("Recursos") && file.substring(0,8) == "Recursos"){

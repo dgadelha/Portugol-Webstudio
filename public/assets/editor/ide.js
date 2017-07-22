@@ -1,4 +1,8 @@
+var editor;
+
 window.portugol = {
+	codes: {},
+
 	abrirExemplo: function(codigo, arquivo) {
 		arquivo = arquivo.substring(arquivo.lastIndexOf("/") + 1);
 		addTab(arquivo, codigo);
@@ -54,256 +58,52 @@ function limparCodigo(content) {
 
 function addTab(name = "Sem título", content = "") {
 	var id = "t" + e7();
+	var nid = id.replace(/-/g, "");
 	$(".tabs").append("<li><a href=\"#tab-" + id + "\" id=\"anchor-" + id + "\"><span class=\"portugol-icon\"></span> " + name + " <span class=\"close-icon\"></span></a></li>");
 
+	if (content != "") {
+		window.portugol.codes[nid] = content;
+	}
+
 	var tpl = '<div id="tab-' + id + '" class="tab">';
-	tpl += '<div data-ax5layout="' + id + '-ax" data-config="{layout:\'dock-panel\'}" class=\"ide-layout\" id="' + id + '-layout">';
-	tpl += '<div class="tbar" data-dock-panel="{dock:\'left\',split:false,height:250,minHeight:250,maxHeight:250,width:64,minWidth:64,maxWidth:64}">';
-	tpl += '<button class="tbb submit"><img src="https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/src/br/univali/ps/ui/icones/Dark/grande/resultset_next.png"></button>';
-	tpl += '<button class="tbb save"><img src="https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/src/br/univali/ps/ui/icones/Dark/grande/save_as.png"></button>';
-	tpl += '</div>';
-
-	tpl += '<div data-dock-panel="{dock:\'bottom\',split:true,height:150,minHeight:50,maxHeight:300}">';
-	tpl += '<pre id="' + id + '-output" class="output"></pre>';
-	tpl += '</div>';
-
-	tpl += '<div data-dock-panel="{dock:\'center\'}">';
-	tpl += '<pre id="' + id + '-editor" class="editor"></pre>';
-	tpl += '</div>';
-	tpl += '</div>';
+	tpl += '<iframe src="' + d.baseUrl + 'editor?fnam=' + encodeURIComponent(name) + '&cid=' + encodeURIComponent(nid) + '"></iframe>';
 	tpl += '</div>';
 
 	$("#ide").append(tpl);
-	bindHTML();
-
-	d.tabs[id] = {
-		filename: name,
-		editor: null,
-		input: null,
-		output: null,
-		running: false
-	};
-
-	d.tabs[id].editor = ace.edit(id + "-editor");
-	d.tabs[id].editor.$blockScrolling = Infinity;
-	d.tabs[id].editor.setTheme("ace/theme/portugol");
-	d.tabs[id].editor.setFontSize(14);
-	d.tabs[id].editor.getSession().setMode("ace/mode/portugol");
-	d.tabs[id].editor.setShowPrintMargin(false);
-	d.tabs[id].editor.getSession().setUseSoftTabs(true);
-	if (content == "") {
-		d.tabs[id].editor.getSession().setValue("programa {\n\tfuncao inicio() {\n\t\t\n\t}\n}");
-		d.tabs[id].editor.gotoLine(3);
-		d.tabs[id].editor.selection.moveTo(2, 2);
-	} else {
-		d.tabs[id].editor.getSession().setValue(limparCodigo(content));
-	}
-
-	d.tabs[id].input = "";
-
-	d.tabs[id].output = ace.edit(id + "-output");
-	d.tabs[id].output.$blockScrolling = Infinity;
-	d.tabs[id].output.setTheme("ace/theme/portugol");
-	d.tabs[id].output.setFontSize(14);
-	d.tabs[id].output.getSession().setMode("ace/mode/text");
-	d.tabs[id].output.getSession().setValue("");
-	d.tabs[id].output.setShowPrintMargin(false);
-	d.tabs[id].output.renderer.setShowGutter(false);
-	d.tabs[id].output.setReadOnly(true);
-	d.tabs[id].output.selection.moveTo(0, 2);
-	d.tabs[id].output.keyBinding.addKeyboardHandler({
-		handleKeyboard: function(data, hash, keyString, keyCode, event) {
-			console.log("handleKeyboard(data = '" + data + "', hash = '" + hash + "', keyString = '" + keyString + "', keyCode = '" + keyCode + "', event = '" + event + "')");
-
-			if (d.tabs[id].running == false) {
-				console.log("-> Evento de Keyboard IGNORADO - o programa não está em execução!");
-				return;
-			}
-
-			if (keyCode == 13 || keyString == "return") { // enter
-				// Enviar os dados de input pro socket
-				if (d.tabs[id].input != "") {
-					console.log("Input: " + d.tabs[id].input);
-					d.tabs[id].socket.emit("response", d.tabs[id].input.trim() + "\r");
-					d.tabs[id].output.getSession().setValue(d.tabs[id].output.getSession().getValue() + "\n");
-					d.scrollDown(id);
-				}
-			} else if (keyCode == 8 || keyString == "backspace") { // backspace
-				if (d.tabs[id].input.length >= 1) {
-					d.tabs[id].input = d.tabs[id].input.substring(0, d.tabs[id].input.length - 1);
-					d.tabs[id].output.getSession().setValue(d.tabs[id].output.getSession().getValue().substring(0, d.tabs[id].output.getSession().getValue().length - 1));
-					d.scrollDown(id);
-				}
-			} else if (typeof event == 'undefined' && !event) {
-				if (keyString != "" && keyString != "\n" && keyString != "\r\n" && keyString != "\r") {
-					d.tabs[id].input += keyString;
-					d.tabs[id].output.getSession().setValue(d.tabs[id].output.getSession().getValue() + keyString);
-					d.scrollDown(id);
-				} else {
-					// @TODO: keyCode -> HEX
-					// d.tabs[id].input += "\xHEX";
-					console.log("-> Evento de Keyboard IGNORADO - keyString vazia e suporte a HEX não concluído");
-				}
-			}
-		}
-	});
-
-	d.tabs[id].socket = io.connect(location.protocol + "//" + document.domain + ":" + location.port);
-
-	d.tabs[id].socket.on("output", function(data) {
-		console.log("socket.onOutput: " + data);
-
-		if (d.tabs[id].input != "" && data.indexOf(d.tabs[id].input) > -1) {
-			console.log("Ajeitando output...");
-			data = data.substring(d.tabs[id].input.length + 4); /* ficar de olho nesse 4 aí, pode dar merda em alguma coisa! */
-			d.tabs[id].input = "";
-			console.log("Output novo: " + data);
-		}
-
-		if (data.includes("~|^!+LIMPAR+!^|~")) {
-			data = data.substring(data.indexOf("~|^!+LIMPAR+!^|~") + 16);
-			d.tabs[id].output.getSession().setValue("");
-		}
-
-		d.tabs[id].output.getSession().setValue(d.tabs[id].output.getSession().getValue() + data);
-		d.scrollDown(id);
-	});
-
-	d.tabs[id].socket.on("hide-response", function(data) {
-		console.log("socket.onHideResponse: " + data);
-		$("#response").css("display", "none");
-		d.tabs[id].running = false;
-		d.tabs[id].editor.setReadOnly(false);
-		$("#tab-" + id + " .submit").removeAttr("disabled");
-		d.scrollDown(id);
-	});
-
-	d.tabs[id].socket.on("show-response", function(data) {
-		console.log("socket.onShowResponse: " + data);
-		$("#response").css("display", "block");
-		d.tabs[id].running = true;
-		d.tabs[id].editor.setReadOnly(true);
-		$("#tab-" + id + " .submit").attr("disabled", "disabled");
-		d.scrollDown(id);
-	});
-
-	$("ul.tabs a").blur();
-	d.tabs[id].editor.focus();
+	bindHTML($("#anchor-" + id));
 	$("#anchor-" + id).trigger("click");
 
-	$("#anchor-" + id + " .close-icon").bind("click", function() {
+	$("#anchor-" + id + " .close-icon").bind("click", function(e) {
+		e.preventDefault();
 		var id = $(this).parent().attr("id").substr(7);
-
-		d.tabs[id].editor.destroy();
-		d.tabs[id].output.destroy();
-
-		d.tabs[id] = false;
-		delete d.tabs[id];
 
 		$(this).parent().parent().remove();
 		$("#tab-" + id).remove();
 		$("#anchor-inicio").trigger("click");
 	});
-
-	$("#tab-" + id + " .save").bind("click", function() {
-		var id = $(this).parent().parent().attr("id");
-		id = id.substr(0, id.length - 7);
-		if (d.tabs[id].running) return;
-
-		var textEncoder = new TextEncoder("iso-8859-1", { NONSTANDARD_allowLegacyEncoding: true });
-		var contentEncoded = textEncoder.encode([d.tabs[id].editor.getSession().getValue()]);
-
-		var blob = new Blob([contentEncoded], {
-			type: "application/octet-stream; charset=ISO-8859-1",
-		});
-
-		if (d.tabs[id].filename.indexOf(".por") == (-1)) {
-			d.tabs[id].filename += ".por";
-		}
-
-		saveAs(blob, d.tabs[id].filename, false);
-	});
-
-	$("#tab-" + id + " .submit").bind("click", function() {
-		var id = $(this).parent().parent().attr("id");
-		id = id.substr(0, id.length - 7);
-		if (d.tabs[id].running) return;
-
-		d.tabs[id].running = true;
-		d.tabs[id].editor.setReadOnly(true);
-		$("#tab-" + id + " .submit").attr("disabled", "disabled");
-		d.tabs[id].output.getSession().setValue("");
-		d.scrollDown(id);
-
-		d.tabs[id].socket.emit("input", d.tabs[id].editor.getSession().getValue() + "\r");
-	});
 }
 
-function bindHTML() {
-	$("ul.tabs").each(function(){
-		var $active, $content, $links = $(this).find("a");
+function bindHTML(tag) {
+	tag.bind("click", function(e) {
+		e.preventDefault();
 
-		$active = $($links.filter("[href=\"" + location.hash + "\"]")[0] || $links[0]);
-		$active.addClass("active");
+		$("ul.tabs a.active").removeClass("active");
+		$(".tab").hide();
 
-		if ($active.attr("id") == "anchor-inicio") {
+		$(this).addClass("active");
+		$(this.hash).show();
+
+		var ttid = $(this.hash).attr("id");
+		console.log("Exibindo: " + ttid);
+
+		if ($(".active").attr("id") == "anchor-inicio") {
 			$(".action").addClass("active");
 		} else {
 			$(".action").removeClass("active");
 		}
 
-		$content = $($active[0].hash);
-
-		$links.not($active).each(function () {
-			$(this.hash).hide();
-		});
-
-		$(this).on("click", "a", function(e) {
-			$(window).trigger("resize");
-
-			$active.removeClass("active");
-			$content.hide();
-
-			$active = $(this);
-			$content = $(this.hash);
-
-			$active.addClass("active");
-			$content.show();
-
-			var ttid = $content.attr("id");
-
-			if ($active.attr("id") == "anchor-inicio") {
-				$(".action").addClass("active");
-			} else {
-				$(".action").removeClass("active");
-			}
-
-			if (ttid.startsWith("tab-t")) {
-				var id = ttid.substr(4);
-
-				d.tabs[id].editor.resize();
-				d.tabs[id].output.resize();
-
-				if (!d.tabs[id].ax5initialized) {
-					d.tabs[id].ax5initialized = true;
-
-					$("#" + id + "-layout").ax5layout({
-						onResize: function() {
-							var id = this.name.substr(0, this.name.length - 3)
-
-							if (id.startsWith("t")) {
-								if (!d.tabs[id]) return;
-
-								d.tabs[id].editor.resize();
-								d.tabs[id].output.resize();
-							}
-						}
-					});
-				}
-			}
-
-			e.preventDefault();
-		});
+		$(window).trigger("resize");
+		$(".ax5layout").trigger("resize");
 	});
 }
 
@@ -318,7 +118,7 @@ function abrirAjuda() {
 		tpl += '</div>';
 
 		$("#ide").append(tpl);
-		bindHTML();
+		bindHTML($("#anchor-ajuda"));
 
 		$("#anchor-ajuda").trigger("click");
 
@@ -331,7 +131,8 @@ function abrirAjuda() {
 }
 
 $(window).bind("load", function() {
-	bindHTML();
+	bindHTML($("#anchor-inicio"));
+	$("#anchor-inicio").trigger("click");
 	$("#ax1").ax5layout();
 
 	$(".alert-res-close a").bind("click", function(e) {
@@ -353,7 +154,7 @@ $(window).bind("load", function() {
 			d.exemplo.nome = file.substring(file.lastIndexOf("/") + 1);
 			$.get(d.baseUrl + "resp?file=" + file, function(data) {
 				data = limparCodigo(data);
-				d.tabs["tinicio"].editor.getSession().setValue(data);
+				editor.getSession().setValue(data);
 				d.exemplo.codigo = data;
 				$("#exemplo-desc").text($("#" + sid).attr("data-description"));
 				$("#exemplo-go").removeClass("hide");
@@ -411,13 +212,12 @@ $(window).bind("load", function() {
 
 	});
 
-	d.tabs["tinicio"] = {};
-	d.tabs["tinicio"].editor = ace.edit("exemplo-editor");
-	d.tabs["tinicio"].editor.$blockScrolling = Infinity;
-	d.tabs["tinicio"].editor.setTheme("ace/theme/portugol");
-	d.tabs["tinicio"].editor.setFontSize(14);
-	d.tabs["tinicio"].editor.getSession().setMode("ace/mode/portugol");
-	d.tabs["tinicio"].editor.setShowPrintMargin(false);
-	d.tabs["tinicio"].editor.getSession().setUseSoftTabs(true);
-	d.tabs["tinicio"].editor.setReadOnly(true);
+	editor = ace.edit("exemplo-editor");
+	editor.$blockScrolling = Infinity;
+	editor.setTheme("ace/theme/portugol");
+	editor.setFontSize(14);
+	editor.getSession().setMode("ace/mode/portugol");
+	editor.setShowPrintMargin(false);
+	editor.getSession().setUseSoftTabs(true);
+	editor.setReadOnly(true);
 });
