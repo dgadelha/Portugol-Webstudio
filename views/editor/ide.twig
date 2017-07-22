@@ -110,7 +110,15 @@
   <script type="text/javascript" src="/assets/editor/mode-portugol.js"></script>
   <script type="text/javascript" src="/assets/editor/portugol.js"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.3/jstree.min.js"></script>
-	<script type="text/javascript">if(window.location.pathname.length > 0){ base = window.location.pathname + "/" }else{ base = "/" } var d={baseUrl: base,isXs:false,exemplo:{nome:false,codigo:false},tabs:[],scrollDown:function(tid){var r=d.tabs[tid].output.session.getLength()-1;var c=d.tabs[tid].output.session.getLine(r).length;d.tabs[tid].output.gotoLine(r+1,c)}};</script>
+	<script>
+	var path = window.location.pathname;
+	if(path.length < 2){
+		var base = "/";
+	}else{
+		var base = window.location.pathname + "/";
+	}
+	</script>
+	<script type="text/javascript">var d={baseUrl:  base,isXs:false,exemplo:{nome:false,codigo:false},tabs:[],scrollDown:function(tid){var r=d.tabs[tid].output.session.getLength()-1;var c=d.tabs[tid].output.session.getLine(r).length;d.tabs[tid].output.gotoLine(r+1,c)}};</script>
 	<script type="text/javascript" src="/assets/editor/ide.js"></script>
 </body>
 </html>
