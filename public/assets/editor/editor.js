@@ -7,6 +7,8 @@ function scrollDown() {
 }
 
 $(window).bind("load", function() {
+	$("#splash").slideUp(300, function() {$(this).remove() });
+
 	editor = ace.edit("editor");
 	editor.$blockScrolling = Infinity;
 	editor.setTheme("ace/theme/portugol");

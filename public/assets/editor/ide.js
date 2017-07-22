@@ -121,8 +121,8 @@ function abrirAjuda() {
 		bindHTML($("#anchor-ajuda"));
 
 		$("#anchor-ajuda").trigger("click");
-
-		$("#anchor-ajuda .close-icon").bind("click", function() {
+		$("#anchor-ajuda .close-icon").bind("click", function(e) {
+			e.preventDefault();
 			$(this).parent().parent().remove();
 			$("#tab-ajuda").remove();
 			$("#anchor-inicio").trigger("click");
