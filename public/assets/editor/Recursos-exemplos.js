@@ -53,7 +53,7 @@ function carregarExemplos(callback) {
 	var exemplos = obterExemplos();
 
 	asyncLoop(exemplos.length, function(loop) {
-		$.get(d.baseUrl + "resp?file=" + exemplos[loop.index].caminho, function(content) {
+		$.get("resp?file=" + exemplos[loop.index].caminho, function(content) {
 			exemplos[loop.index].codigo = content;
 			loop.next();
 		}, "text");
