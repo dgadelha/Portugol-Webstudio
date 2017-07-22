@@ -23,11 +23,6 @@ module.exports = function(io) {
     socket.on("input", function(code) {
       // Verifica se a trava está ativa e o código está ouvindo inputs do usuário. Se estiver ativa, emite a mensagem indicando para aguardar
       if (!listen) {
-        var data = new Date(); // Autoexplicativo
-        var hora = (data.getHours() < 10 ? "0" : "") + data.getHours();
-        var minutos = (data.getMinutes() < 10 ? "0" : "") + data.getMinutes();
-        var segundos = (data.getSeconds() < 10 ? "0" : "") + data.getSeconds();
-        socket.emit('output', "Iniciando compilação... (" + hora + ":" + minutos + ":" + segundos + ")\n"); // Envia mensagem dizendo que vai compilar
         fs.writeFile(__dirname + "/../" + file, code, function(err) {}); // Escrevemos o código em portugol temporariamente
         term.write("~|^!+RUNTIME+!^|~" + file + "\r"); // Indicamos qual arquivo o RUNTIME deve ler
       } else {
@@ -40,7 +35,7 @@ module.exports = function(io) {
     */
     socket.on("response", function(resp) {
       if (listen) {
-        resp = resp.replace(new RegExp("~|^!+", "g"), "").replace(new RegExp("+!^|~", "g"), ""); // Filtro de palavras reservadas
+        resp = resp.replace("~|^!+", "").replace("+!^|~", ""); // Filtro de palavras reservadas
         term.write(resp + "\r"); // Escreve input para o console virtual
       }
     });
@@ -50,7 +45,7 @@ module.exports = function(io) {
     É responsável por escrever de volta as informações por console, e determinar a trava de leitura e escrita.
     */
     term.on('data', function(data) {
-      data = data.replace(new RegExp("~|^!+INPUT+!^|~", "g"), ""); // Filtro de palavra reservada descontinuada
+      data = data.replace("~|^!+INPUT+!^|~", ""); // Filtro de palavra reservada descontinuada
       //console.log(data + " = " + data.indexOf("~|^!+START+!^|~"))
       if (listen) { // Verifica se está executando alguma coisa
         // Portugol está sendo executado no console
@@ -58,7 +53,7 @@ module.exports = function(io) {
           // RUNTIME indicou que execução acabou
           listen = false; // Define que não está executando (ouvindo) nada
           socket.emit('hide-response', ""); // Desliga input de resposta
-          socket.emit('output', "Execução terminou.\n");
+          socket.emit('output', "\nPrograma finalizado.");
         } else {
           // Execução não acabou
           socket.emit('output', data); // Emite para o cliente o texto do console

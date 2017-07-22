@@ -217,6 +217,10 @@ body {
 	cursor: pointer;
 }
 
+.tabs > li > span.action:last-child {
+	padding-right: 10px;
+}
+
 .tab {
 	flex-grow: 1;
 	margin: 0 5px 5px 5px;

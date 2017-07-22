@@ -67,13 +67,6 @@ function addTab(name = "Sem título", content = "") {
 	tpl += '<pre id="' + id + '-output" class="output"></pre>';
 	tpl += '</div>';
 
-	if (!d.isXs) {
-		tpl += '<div data-dock-panel="{dock:\'right\',split:true,width:250,minWidth:100,maxWidth:350}">';
-		tpl += '<p class="title">Entrada de Dados</p>';
-		tpl += '<pre id="' + id + '-input" class="input"></pre>';
-		tpl += '</div>';
-	}
-
 	tpl += '<div data-dock-panel="{dock:\'center\'}">';
 	tpl += '<pre id="' + id + '-editor" class="editor"></pre>';
 	tpl += '</div>';
@@ -106,16 +99,7 @@ function addTab(name = "Sem título", content = "") {
 		d.tabs[id].editor.getSession().setValue(limparCodigo(content));
 	}
 
-	if (!d.isXs) {
-		d.tabs[id].input = ace.edit(id + "-input");
-		d.tabs[id].input.$blockScrolling = Infinity;
-		d.tabs[id].input.setTheme("ace/theme/portugol");
-		d.tabs[id].input.setFontSize(14);
-		d.tabs[id].input.getSession().setMode("ace/mode/text");
-		d.tabs[id].input.getSession().setUseSoftTabs(true);
-		d.tabs[id].input.setShowPrintMargin(false);
-		d.tabs[id].input.renderer.setShowGutter(false);
-	}
+	d.tabs[id].input = "";
 
 	d.tabs[id].output = ace.edit(id + "-output");
 	d.tabs[id].output.$blockScrolling = Infinity;
@@ -127,6 +111,81 @@ function addTab(name = "Sem título", content = "") {
 	d.tabs[id].output.renderer.setShowGutter(false);
 	d.tabs[id].output.setReadOnly(true);
 	d.tabs[id].output.selection.moveTo(0, 2);
+	d.tabs[id].output.keyBinding.addKeyboardHandler({
+		handleKeyboard: function(data, hash, keyString, keyCode, event) {
+			console.log("handleKeyboard(data = '" + data + "', hash = '" + hash + "', keyString = '" + keyString + "', keyCode = '" + keyCode + "', event = '" + event + "')");
+
+			if (d.tabs[id].running == false) {
+				console.log("-> Evento de Keyboard IGNORADO - o programa não está em execução!");
+				return;
+			}
+
+			if (keyCode == 13 || keyString == "return") { // enter
+				// Enviar os dados de input pro socket
+				if (d.tabs[id].input != "") {
+					console.log("Input: " + d.tabs[id].input);
+					d.tabs[id].socket.emit("response", d.tabs[id].input.trim() + "\r");
+					d.tabs[id].output.getSession().setValue(d.tabs[id].output.getSession().getValue() + "\n");
+					d.scrollDown(id);
+				}
+			} else if (keyCode == 8 || keyString == "backspace") { // backspace
+				if (d.tabs[id].input.length >= 1) {
+					d.tabs[id].input = d.tabs[id].input.substring(0, d.tabs[id].input.length - 1);
+					d.tabs[id].output.getSession().setValue(d.tabs[id].output.getSession().getValue().substring(0, d.tabs[id].output.getSession().getValue().length - 1));
+					d.scrollDown(id);
+				}
+			} else if (typeof event == 'undefined' && !event) {
+				if (keyString != "" && keyString != "\n" && keyString != "\r\n" && keyString != "\r") {
+					d.tabs[id].input += keyString;
+					d.tabs[id].output.getSession().setValue(d.tabs[id].output.getSession().getValue() + keyString);
+					d.scrollDown(id);
+				} else {
+					// @TODO: keyCode -> HEX
+					// d.tabs[id].input += "\xHEX";
+					console.log("-> Evento de Keyboard IGNORADO - keyString vazia e suporte a HEX não concluído");
+				}
+			}
+		}
+	});
+
+	d.tabs[id].socket = io.connect(location.protocol + "//" + document.domain + ":" + location.port);
+
+	d.tabs[id].socket.on("output", function(data) {
+		console.log("socket.onOutput: " + data);
+
+		if (d.tabs[id].input != "" && data.indexOf(d.tabs[id].input) > -1) {
+			console.log("Ajeitando output...");
+			data = data.substring(d.tabs[id].input.length + 4); /* ficar de olho nesse 4 aí, pode dar merda em alguma coisa! */
+			d.tabs[id].input = "";
+			console.log("Output novo: " + data);
+		}
+
+		if (data.includes("~|^!+LIMPAR+!^|~")) {
+			data = data.substring(data.indexOf("~|^!+LIMPAR+!^|~") + 16);
+			d.tabs[id].output.getSession().setValue("");
+		}
+
+		d.tabs[id].output.getSession().setValue(d.tabs[id].output.getSession().getValue() + data);
+		d.scrollDown(id);
+	});
+
+	d.tabs[id].socket.on("hide-response", function(data) {
+		console.log("socket.onHideResponse: " + data);
+		$("#response").css("display", "none");
+		d.tabs[id].running = false;
+		d.tabs[id].editor.setReadOnly(false);
+		$("#tab-" + id + " .submit").removeAttr("disabled");
+		d.scrollDown(id);
+	});
+
+	d.tabs[id].socket.on("show-response", function(data) {
+		console.log("socket.onShowResponse: " + data);
+		$("#response").css("display", "block");
+		d.tabs[id].running = true;
+		d.tabs[id].editor.setReadOnly(true);
+		$("#tab-" + id + " .submit").attr("disabled", "disabled");
+		d.scrollDown(id);
+	});
 
 	$("ul.tabs a").blur();
 	d.tabs[id].editor.focus();
@@ -136,7 +195,6 @@ function addTab(name = "Sem título", content = "") {
 		var id = $(this).parent().attr("id").substr(7);
 
 		d.tabs[id].editor.destroy();
-		if (!d.isXs) d.tabs[id].input.destroy();
 		d.tabs[id].output.destroy();
 
 		d.tabs[id] = false;
@@ -173,49 +231,11 @@ function addTab(name = "Sem título", content = "") {
 
 		d.tabs[id].running = true;
 		d.tabs[id].editor.setReadOnly(true);
-		if (!d.isXs) d.tabs[id].input.setReadOnly(true);
 		$("#tab-" + id + " .submit").attr("disabled", "disabled");
 		d.tabs[id].output.getSession().setValue("");
 		d.scrollDown(id);
 
-		var _entrada = "";
-
-		if (!d.isXs) {
-			_entrada = d.tabs[id].input.getSession().getValue();
-		}
-
-		$.ajax({
-			_id: id,
-			async: true,
-			cache: false,
-			crossDomain: true,
-			data: { codigo: d.tabs[id].editor.getSession().getValue(), entrada: _entrada },
-			dataType: 'json',
-			method: 'POST',
-			processData: true,
-			timeout: 60000,
-			url: d.ajaxUrl,
-
-			error: function(jqXHR, textStatus, errorThrown) {
-				var id = this._id;
-				d.tabs[id].output.getSession().setValue(d.output.getSession().getValue() + "Falha ao enviar o código para o servidor:\n" + textStatus + " " + errorThrown + "\n\n$ ");
-				d.tabs[id].running = false;
-				d.tabs[id].editor.setReadOnly(false);
-				if (!d.isXs) d.tabs[id].input.setReadOnly(false);
-				$("#tab-" + id + " .submit").removeAttr("disabled");
-				d.scrollDown(id);
-			},
-
-			success: function(data, textStatus, jqXHR) {
-				var id = this._id;
-				d.tabs[id].output.getSession().setValue(d.tabs[id].output.getSession().getValue() + data.output);
-				d.tabs[id].running = false;
-				d.tabs[id].editor.setReadOnly(false);
-				if (!d.isXs) d.tabs[id].input.setReadOnly(false);
-				$("#tab-" + id + " .submit").removeAttr("disabled");
-				d.scrollDown(id);
-			}
-		});
+		d.tabs[id].socket.emit("input", d.tabs[id].editor.getSession().getValue() + "\r");
 	});
 }
 
@@ -263,7 +283,6 @@ function bindHTML() {
 
 				d.tabs[id].editor.resize();
 				d.tabs[id].output.resize();
-				if (!d.isXs) d.tabs[id].input.resize();
 
 				if (!d.tabs[id].ax5initialized) {
 					d.tabs[id].ax5initialized = true;
@@ -277,7 +296,6 @@ function bindHTML() {
 
 								d.tabs[id].editor.resize();
 								d.tabs[id].output.resize();
-								if (!d.isXs) d.tabs[id].input.resize();
 							}
 						}
 					});
@@ -319,8 +337,6 @@ $(window).bind("load", function() {
 	$(".alert-res-close a").bind("click", function(e) {
 		e.preventDefault();
 		e.defaultPrevented = true;
-
-		d.isXs = true;
 
 		$(".alert-res").remove();
 		$("#ide").removeClass("hidden-xs");
