@@ -1,0 +1,47 @@
+.brand {
+	width: 190px;
+	height: 46px;
+	left: 30px;
+}
+
+.level-hero.hero-home .container {
+	position: static;
+}
+
+.brand.brand-color {
+	width: 300px;
+	height: 72px;
+}
+
+.hero-press {
+	background-color: #000;
+}
+
+.level-hero .container {
+	max-width: 1200px;
+}
+
+.v-align-parent {
+	padding: 0 30px;
+}
+
+.iphone-mobile,
+.close-modal {
+	display: none;
+}
+
+.iphone-inline { 
+	display: block;
+}
+
+.level-img-right {
+	padding-bottom: 50px;
+}
+
+.level-outro {
+	text-align: center !important;
+}
+
+.dropdown-append  {
+	
+}

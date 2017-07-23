@@ -1,0 +1,172 @@
+
+
+.modal-open {
+  overflow: hidden;
+}
+
+.modal {
+	visibility: hidden;
+	overflow: hidden;
+	position: fixed;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	z-index: 1040;
+	-webkit-overflow-scrolling: touch;
+	outline: 0;
+	opacity: 0;
+	-webkit-transition: visibility .4s, opacity .4s;
+	transition: visibility .4s, opacity .4s;
+}
+
+.modal.in {
+	visibility: visible;
+	opacity: 1;
+	
+}
+
+.modal.fade .modal-dialog {
+	-webkit-transform: translate(0, -50%);
+	-ms-transform: translate(0, -50%);
+	-o-transform: translate(0, -50%);
+	transform: translate(0, -50%);
+	-webkit-transition: -webkit-transform 0.3s ease-out, opacity .3s;
+	-o-transition: -o-transform 0.3s ease-out, opacity .3s;
+	transition: transform 0.3s ease-out, opacity .3s;
+	opacity: 0;
+}
+
+.modal.in .modal-dialog {
+	-webkit-transform: translate(0, 0);
+	-ms-transform: translate(0, 0);
+	-o-transform: translate(0, 0);
+	transform: translate(0, 0);
+	opacity: 1;
+}
+.modal-open .modal {
+	overflow-x: hidden;
+	overflow-y: auto;
+}
+.modal-dialog {
+	position: relative;
+	width: auto;
+  /* margin: 10px; */
+}
+.modal-content {
+	position: relative;
+	background-color: #fff;
+	-webkit-background-clip: padding-box;
+		  background-clip: padding-box;
+	outline: 0;
+	padding: 40px;
+	border-left: 6px solid #ff9100;
+}
+
+@media ( min-width: 768px ) {
+	.modal-content {
+		-webkit-box-shadow: 0 0 30px rgba(0,0,0,0.75);
+		box-shadow: 0 0 30px rgba(0,0,0,0.75);
+	}
+}
+
+@media ( min-width: 1200px ) and ( min-height: 600px )  {
+
+	.modal-content {
+			padding: 5.909rem 40px 50px;
+	}
+
+}
+
+.modal-backdrop {
+	position: absolute;
+	top: 0;
+	right: 0;
+	left: 0;
+	background-color: #000;
+}
+
+@media ( min-width: 768px ) {
+	.modal-backdrop {
+		
+	}
+}
+
+.modal-backdrop.fade {
+	opacity: 0;
+}
+.modal-backdrop.in {
+	opacity: .45;
+}
+
+.modal-close {
+	position: absolute;
+	top: 30px;
+	right: 30px;
+	
+}
+
+.modal-scrollbar-measure {
+	position: absolute;
+	top: -9999px;
+	width: 50px;
+	height: 50px;
+	overflow: scroll;
+}
+
+@media (min-width: 768px) {
+ 
+	.modal-dialog {
+		width: 600px;
+		margin: 30px auto;
+	}
+
+	.modal-sm {
+		width: 300px;
+	}
+}
+
+@media ( min-width:992px ) {
+	.modal-dialog {
+		width: 700px;
+	}
+}
+
+@media ( min-width:1200px ) {
+	.modal-dialog {
+		width: 850px;
+	}
+}
+
+.modal-dialog.wide {
+	width: 1320px;
+	max-width: 100%;
+}
+
+/* see http://jsfiddle.net/sRmLV/22/ */
+.modal-valign-helper {
+	position: relative;
+	display: table;
+	height: 100%;
+	width: 100%;
+	z-index: 1;
+}
+.modal-valign-center {
+	/* To center vertically */
+	display: table-cell;
+	vertical-align: middle;
+}
+.modal-content {
+	/* Bootstrap sets the size of the modal in the modal-dialog class, we need to inherit it */
+	width: inherit;
+	height: inherit;
+	margin: 40px auto;
+}
+
+@media ( min-height: 600px ) {
+	.modal-content {
+		min-height: 400px;
+	}
+
+}
+
