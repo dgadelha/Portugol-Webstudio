@@ -40,6 +40,8 @@
     "twig": "^0.10.3"
   },
   "devDependencies": {
+    "chai": "^4.1.0",
+    "chai-http": "^3.0.0",
     "mocha": "^3.4.2",
     "really-need": "^1.9.2",
     "supertest": "^3.0.0"
