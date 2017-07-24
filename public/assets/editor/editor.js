@@ -105,6 +105,7 @@ $(window).bind("load", function() {
 		running = false;
 		editor.setReadOnly(false);
 		$("#submit-btn").removeAttr("disabled");
+		$("#stop-btn").attr("disabled", "disabled");
 		scrollDown();
 	});
 
@@ -113,6 +114,7 @@ $(window).bind("load", function() {
 		running = true;
 		editor.setReadOnly(true);
 		$("#submit-btn").attr("disabled", "disabled");
+		$("#stop-btn").removeAttr("disabled");
 		scrollDown();
 	});
 
@@ -133,6 +135,19 @@ $(window).bind("load", function() {
 		}
 
 		saveAs(blob, efnam, false);
+	});
+
+	$("#stop-btn").bind("click", function() {
+		if (!running) return;
+
+		running = false;
+		editor.setReadOnly(false);
+		$("#submit-btn").removeAttr("disabled");
+		$("#stop-btn").attr("disabled", "disabled");
+		socket.disconnect();
+		socket.connect();
+		output.getSession().setValue(output.getSession().getValue() + "\nPrograma finalizado.");
+		scrollDown();
 	});
 
 	$("#submit-btn").bind("click", function() {
