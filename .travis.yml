@@ -15,9 +15,9 @@ before_install:
 - ssh-add /tmp/webstudio_rsa
 - chmod u+x ./.travis/deploy.sh
 install:
-- npm --version
+- npm install --dev
 script:
-- echo "Hello World"
+- npm test
 deploy:
   provider: script
   script: "./.travis/deploy.sh"
