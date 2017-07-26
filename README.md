@@ -1,5 +1,12 @@
-# Portugol Webstudio [![Build Status](https://travis-ci.org/dgadelha/Portugol-Webstudio.svg?branch=master)](https://travis-ci.org/dgadelha/Portugol-Webstudio)
-IDE online para o Portugol (UNIVALI)
+<img src="https://univali-lite.github.io/Portugol-Studio/img/logo.svg" width="123px" alt="Portugol Webstudio" align="right">
+
+# Portugol Webstudio
+
+*IDE online para o Portugol (UNIVALI)*
+
+[![Estado de Build](https://travis-ci.org/dgadelha/Portugol-Webstudio.svg?branch=master)](https://travis-ci.org/dgadelha/Portugol-Webstudio) [![Licença](https://img.shields.io/badge/licen%C3%A7a-AGPL-blue.svg)](https://github.com/dgadelha/Portugol-Webstudio/blob/master/LICENSE)
+
+Baseado no Portugol Studio (UNIVALI), o **Portugol Webstudio** tenta trazer todo ambiente de desenvolvimento que é possível se encontrar no desktop, para a internet. Ele constitui-se de um ambiente de desenvolvimento construído para permitir a criação e a execução dos programas escritos em Portugol, trazendo assim uma experiência o mais próxima do que você pode encontrar da IDE do Portugol Studio. Portugol, também conhecido como Português estruturado, é um pseudocódigo escrito em português.
 
 ## Bibliotecas Utilizadas
 - [jQuery](https://jquery.com/) para diminuir a dor de cabeça
@@ -11,15 +18,25 @@ IDE online para o Portugol (UNIVALI)
 - [Pexpect](https://pexpect.readthedocs.io) resposável por controlar o console do portugol dentro do runtime.py
 - [Portugol-Console](https://github.com/UNIVALI-LITE/Portugol-Console) [(modificado com saída limpa / UTF-8)](https://github.com/dgadelha/Portugol-Console) para executar o código inserido pelo usuário
 - [Portugol-Nucleo](https://github.com/UNIVALI-LITE/Portugol-Nucleo) [(modificado para UTF-8)](https://github.com/dgadelha/Portugol-Nucleo) - necessário para o Portugol-Console
+- [Ace](https://ace.c9.io/) para o Editor de Código
+- [ax5ui-layout](http://ax5.io/ax5ui-layout/) para o Layout do IDE
+- [jQuery](https://jquery.com/) para diminuir a dor de cabeça
+- [Bootstrap](https://getbootstrap.com/) para os Grids responsivos
+
+## Características
+
+- suporta abertura e escrita de arquivos `.por`
+- permite editar e rodar múltiplos códigos ao mesmo tempo
+- executado no console original do Portugol com interação em tempo real
+- interface simples e idêntica ao Portugol Studio
 
 ***
 ## Compilando
-**Apenas suporte para plataformas *NIX.** Ver [#8](https://github.com/dgadelha/Portugol-Webstudio/issues/8) em caso de dúvidas.
+**Apenas suporte para plataformas Linux.** Ver [#8](https://github.com/dgadelha/Portugol-Webstudio/issues/8) em caso de dúvidas.
+
 Certifique-se de possuir instalado:
 * [NodeJS](https://nodejs.org/en/download/) (8+)
 * [NPM](https://nodejs.org/en/download/) (5.0+)
-* [Python 3](https://www.python.org/downloads/) (3.0+)
-* [Pexpect](https://pypi.python.org/pypi/pexpect)
 
 Compile o Portugol Webstudio com:
 ```sh
