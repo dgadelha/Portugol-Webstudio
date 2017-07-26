@@ -24,6 +24,7 @@ module.exports = function(io) {
       // Verifica se a trava está ativa e o código está ouvindo inputs do usuário. Se estiver ativa, emite a mensagem indicando para aguardar
       if (!listen) {
         fs.writeFile(__dirname + "/../" + file, code, function(err) {}); // Escrevemos o código em portugol temporariamente
+        term.write("~|^!+SETIP+!^|~" + socket.handshake.address + "\r"); // Indicamos qual ip RUNTIME deve trabalhar
         term.write("~|^!+RUNTIME+!^|~" + file + "\r"); // Indicamos qual arquivo o RUNTIME deve ler
       } else {
         socket.emit('output', "\nAguarde o fim da execução!");
