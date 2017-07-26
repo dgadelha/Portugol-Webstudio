@@ -8,6 +8,8 @@
 
 Baseado no Portugol Studio (UNIVALI), o **Portugol Webstudio** tenta trazer todo ambiente de desenvolvimento que é possível se encontrar no desktop, para a internet. Ele constitui-se de um ambiente de desenvolvimento construído para permitir a criação e a execução dos programas escritos em Portugol, trazendo assim uma experiência o mais próxima do que você pode encontrar da IDE do Portugol Studio. Portugol, também conhecido como Português estruturado, é um pseudocódigo escrito em português.
 
+![Captura de Tela](https://raw.githubusercontent.com/dgadelha/Portugol-Webstudio/master/public/assets/screenshot.png)
+
 ## Bibliotecas Utilizadas
 - [jQuery](https://jquery.com/) para diminuir a dor de cabeça
 - [Socket.io](https://github.com/socketio/socket.io) para permitir saídas e interação em tempo real
@@ -25,10 +27,10 @@ Baseado no Portugol Studio (UNIVALI), o **Portugol Webstudio** tenta trazer todo
 
 ## Características
 
-- suporta abertura e escrita de arquivos `.por`
-- permite editar e rodar múltiplos códigos ao mesmo tempo
-- executado no console original do Portugol com interação em tempo real
-- interface simples e idêntica ao Portugol Studio
+- Suporta abertura e escrita de arquivos `.por`
+- Permite editar e rodar múltiplos códigos ao mesmo tempo
+- Executado no console original do Portugol com interação em tempo real
+- Interface simples e idêntica ao Portugol Studio
 
 ***
 ## Compilando
@@ -63,7 +65,7 @@ Após isto, você poderá acessar o aplicativo em: [http://127.0.0.1:3000](http:
 
 ## Licença
     Portugol Webstudio - IDE online para o Portugol (UNIVALI)
-    Copyright (C) 2016  Douglas Gadêlha, Guilherme Scaranse e contribuidores
+    Copyright (C) 2017  Douglas Gadêlha, Guilherme Scaranse e contribuidores
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
