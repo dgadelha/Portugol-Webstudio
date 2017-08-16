@@ -16,8 +16,7 @@ String.prototype.replaceArray = function(find, replace) {
 };
 router.group("/ide", function(router) {
   router.get('/', function(req, res, next) {
-    //res.render('editor/ide');
-    res.redirect('https://portugol-webstudio.github.io/?ref=ide');
+    res.render('editor/ide');
   });
   router.get('/ajuda', function(req, res, next) {
     res.render('editor/ajuda');
@@ -77,7 +76,8 @@ router.get('/old', function(req, res, next) {
   res.render('old');
 });
 router.get('/', function(req, res, next) {
-  res.render('index');
+  //res.render('index');
+  res.redirect('https://portugol-webstudio.github.io/?ref=server');
 });
 
 module.exports = router;
