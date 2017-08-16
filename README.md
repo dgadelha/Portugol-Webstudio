@@ -22,7 +22,6 @@ Baseado no Portugol Studio (UNIVALI), o **Portugol Webstudio** tenta trazer todo
 - [Portugol-Nucleo](https://github.com/UNIVALI-LITE/Portugol-Nucleo) [(modificado para UTF-8)](https://github.com/dgadelha/Portugol-Nucleo) - necessário para o Portugol-Console
 - [Ace](https://ace.c9.io/) para o Editor de Código
 - [ax5ui-layout](http://ax5.io/ax5ui-layout/) para o Layout do IDE
-- [jQuery](https://jquery.com/) para diminuir a dor de cabeça
 - [Bootstrap](https://getbootstrap.com/) para os Grids responsivos
 
 ## Características
