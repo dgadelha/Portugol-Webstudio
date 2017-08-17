@@ -112,7 +112,8 @@ function abrirAjuda() {
 	if ($("#anchor-ajuda")[0]) {
 		$("#anchor-ajuda").trigger("click");
 	} else {
-		$(".tabs").append("<li><a href=\"#tab-ajuda\" id=\"anchor-ajuda\"><span class=\"help-icon\"></span> Ajuda <span class=\"close-icon\"></span></a></li>");
+		$(".tabs").append("<li><a href=\"#tab-ajuda\" id=\"anchor-ajuda\"><span class=\"help-icon\"></span> Ajuda <span data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"Fechar aba\" class=\"close-icon\"></span></a></li>");
+		$("#anchor-ajuda span[data-toggle=\"tooltip\"]").tooltip();
 
 		var tpl = '<div id="tab-ajuda" class="tab">';
 		tpl += '<iframe src="' + d.baseUrl + 'ajuda"></iframe>';
