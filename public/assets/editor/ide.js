@@ -60,6 +60,7 @@ function addTab(name = "Sem título", content = "") {
 	var id = "t" + e7();
 	var nid = id.replace(/-/g, "");
 	$(".tabs").append("<li><a href=\"#tab-" + id + "\" id=\"anchor-" + id + "\"><span class=\"portugol-icon\"></span> " + name + " <span data-toggle='tooltip' data-placement='bottom' title='Fechar aba' class=\"close-icon\"></span></a></li>");
+	$('[data-toggle="tooltip"]').tooltip();
 
 	if (content != "") {
 		window.portugol.codes[nid] = content;
