@@ -27,7 +27,7 @@ $(window).bind("load", function() {
 	}
 
 	if (!found) {
-		editor.getSession().setValue("programa {\n\tfuncao inicio() {\n\t\t\n\t}\n}");
+		editor.getSession().setValue("programa {\n\tfuncao inicio() {\n\t\t\n\t}\n}\n");
 		editor.gotoLine(3);
 		editor.selection.moveTo(2, 2);
 	}

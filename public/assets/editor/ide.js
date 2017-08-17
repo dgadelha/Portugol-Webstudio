@@ -59,8 +59,8 @@ function limparCodigo(content) {
 function addTab(name = "Sem título", content = "") {
 	var id = "t" + e7();
 	var nid = id.replace(/-/g, "");
-	$(".tabs").append("<li><a href=\"#tab-" + id + "\" id=\"anchor-" + id + "\"><span class=\"portugol-icon\"></span> " + name + " <span data-toggle='tooltip' data-placement='bottom' title='Fechar aba' class=\"close-icon\"></span></a></li>");
-	$('[data-toggle="tooltip"]').tooltip();
+	$(".tabs").append("<li><a href=\"#tab-" + id + "\" id=\"anchor-" + id + "\"><span class=\"portugol-icon\"></span> " + name + " <span data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"Fechar aba\" class=\"close-icon\"></span></a></li>");
+	$("#anchor-" + id + " span[data-toggle=\"tooltip\"]").tooltip();
 
 	if (content != "") {
 		window.portugol.codes[nid] = content;
@@ -133,6 +133,7 @@ function abrirAjuda() {
 
 $(window).bind("load", function() {
 	bindHTML($("#anchor-inicio"));
+	$("[data-toggle=\"tooltip\"]").tooltip();
 	$("#anchor-inicio").trigger("click");
 	$("#ax1").ax5layout();
 
