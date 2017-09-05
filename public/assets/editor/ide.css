@@ -165,7 +165,7 @@ body {
 
 .tabs > li > span.action > span.add-icon {
 	display: inline-block;
-	background-image: url("https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/src/br/univali/ps/ui/icones/Dark/pequeno/page_white_add.png");
+	background-image: url("https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/ide/src/main/resources/br/univali/ps/ui/icones/Dark/pequeno/page_white_add.png");
 	width: 16px;
 	height: 16px;
 	vertical-align: -2px;
@@ -173,7 +173,7 @@ body {
 
 .tabs > li > span.action > span.open-icon {
 	display: inline-block;
-	background-image: url("https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/src/br/univali/ps/ui/icones/Dark/pequeno/folder_closed.png");
+	background-image: url("https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/ide/src/main/resources/br/univali/ps/ui/icones/Dark/pequeno/folder_closed.png");
 	width: 16px;
 	height: 16px;
 	vertical-align: -2px;
@@ -187,20 +187,20 @@ body {
 }
 
 .tabs a span.portugol-icon {
-	background-image: url("https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/src/br/univali/ps/ui/icones/Dark/pequeno/light_pix_off.png");
+	background-image: url("https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/ide/src/main/resources/br/univali/ps/ui/icones/Dark/pequeno/light_pix_off.png");
 }
 
 .tabs a.active span.portugol-icon {
-	background-image: url("https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/src/br/univali/ps/ui/icones/Dark/pequeno/light_pix.png");
+	background-image: url("https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/ide/src/main/resources/br/univali/ps/ui/icones/Dark/pequeno/light_pix.png");
 }
 
 .tabs a span.help-icon, .tabs a.active span.help-icon {
-	background-image: url("https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/src/br/univali/ps/ui/icones/Dark/pequeno/help.png");
+	background-image: url("https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/ide/src/main/resources/br/univali/ps/ui/icones/Dark/pequeno/help.png");
 }
 
 .tabs a span.close-icon {
 	display: inline-block;
-	background-image: url("https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/src/br/univali/ps/ui/icones/Dark/pequeno/white_close.png");
+	background-image: url("https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/ide/src/main/resources/br/univali/ps/ui/icones/Dark/pequeno/white_close.png");
 	width: 16px;
 	height: 16px;
 	vertical-align: -2px;

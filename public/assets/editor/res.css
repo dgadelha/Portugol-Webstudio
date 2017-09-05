@@ -20,23 +20,23 @@ body {
 }
 
 .icone-lib {
-	background-image: url("https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/src/br/univali/ps/ui/icones/Dark/pequeno/biblioteca.png") !important;
+	background-image: url("https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/ide/src/main/resources/br/univali/ps/ui/icones/Dark/pequeno/biblioteca.png") !important;
 }
 
 .icone-def {
-	background-image: url("https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/src/br/univali/ps/ui/icones/Dark/pequeno/page_white_copy.png") !important;
+	background-image: url("https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/ide/src/main/resources/br/univali/ps/ui/icones/Dark/pequeno/page_white_copy.png") !important;
 }
 
 .icone-pasta {
-	background-image: url("https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/src/br/univali/ps/ui/icones/Dark/pequeno/folder_closed.png") !important;
+	background-image: url("https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/ide/src/main/resources/br/univali/ps/ui/icones/Dark/pequeno/folder_closed.png") !important;
 }
 
 .icone-exemplo {
-	background-image: url("https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/src/br/univali/ps/ui/icones/Dark/pequeno/light_pix_off.png") !important;
+	background-image: url("https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/ide/src/main/resources/br/univali/ps/ui/icones/Dark/pequeno/light_pix_off.png") !important;
 }
 
 .jstree-clicked .icone-exemplo {
-	background-image: url("https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/src/br/univali/ps/ui/icones/Dark/pequeno/light_pix.png") !important;
+	background-image: url("https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/ide/src/main/resources/br/univali/ps/ui/icones/Dark/pequeno/light_pix.png") !important;
 }
 
 .res-cat {
