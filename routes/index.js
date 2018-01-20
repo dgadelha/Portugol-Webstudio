@@ -76,8 +76,8 @@ router.get('/old', function(req, res, next) {
   res.render('old');
 });
 router.get('/', function(req, res, next) {
-  //res.render('index');
-  res.redirect('https://portugol-webstudio.github.io/?ref=server');
+  res.render('index');
+  //res.redirect('https://portugol-webstudio.github.io/?ref=server');
 });
 
 module.exports = router;
