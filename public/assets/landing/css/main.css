@@ -1,9 +1,9 @@
-@import url(http://fonts.googleapis.com/css?family=Open+Sans:400,300,800,700);
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,300,800,700);
 @import url("normalize.css");
 @import url("grid.css");
 @import url("modal.css");
 i.portugol-icon {
-	 background-image: url("https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/src/br/univali/ps/ui/icones/Dark/grande/light-bulb.png");
+	 background-image: url("https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/ide/src/main/resources/br/univali/ps/ui/icones/Dark/grande/light-bulb.png");
 }
 *,
 *:before,
