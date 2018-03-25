@@ -2,25 +2,13 @@ sudo: required
 language: node_js
 node_js:
 - '8'
-env:
-  global:
-  - STUDIOHOST=dgadelha@sf1.hashbang.sh
-addons:
-  ssh_known_hosts: "dgadelha@sf1.hashbang.sh"
-before_install:
-- openssl aes-256-cbc -K $encrypted_333052a4aa11_key -iv $encrypted_333052a4aa11_iv
-  -in ./.travis/webstudio_rsa.enc -out /tmp/webstudio_rsa -d
-- eval "$(ssh-agent -s)"
-- chmod 600 /tmp/webstudio_rsa
-- ssh-add /tmp/webstudio_rsa
-- chmod u+x ./.travis/deploy.sh
 install:
 - npm install
 script:
 - npm test
 deploy:
   provider: script
-  script: "./.travis/deploy.sh"
+  script: "curl https://dgadelha.xyz/whpsweb"
   skip_cleanup: true
   on:
     all_branches: true
