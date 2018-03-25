@@ -5,7 +5,8 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "test": "echo 'Procurando erros de sintaxe...' && find . -type f -not -path \"*node_modules*\" -name \"*.js\" -exec node -c {} \\; && mocha -R spec spec.js"
+    "postinstall": "node nightwatch.conf.js",
+    "test": "echo 'Procurando erros de sintaxe...' && find . -type f -not -path \"*node_modules*\" -name \"*.js\" -exec node -c {} \\; && ./node_modules/.bin/nightwatch -e chrome,ie11,android_s4_emulator,iphone_6_simulator"
   },
   "repository": {
     "type": "git",
@@ -42,8 +43,11 @@
   "devDependencies": {
     "chai": "^4.1.0",
     "chai-http": "^3.0.0",
+    "chromedriver": "^2.37.0",
     "mocha": "^3.4.2",
+    "nightwatch": "^0.9.20",
     "really-need": "^1.9.2",
+    "selenium-server": "^3.11.0",
     "supertest": "^3.0.0"
   }
 }
