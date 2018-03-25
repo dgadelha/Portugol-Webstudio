@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node ./bin/www",
     "postinstall": "node nightwatch.conf.js",
-    "test": "echo 'Procurando erros de sintaxe...' && find . -type f -not -path \"*node_modules*\" -name \"*.js\" -exec node -c {} \\; && nohup node ./bin/www && ./node_modules/.bin/nightwatch -e chrome"
+    "test": "echo 'Procurando erros de sintaxe...' && find . -type f -not -path \"*node_modules*\" -name \"*.js\" -exec node -c {} \\; && ./node_modules/.bin/nightwatch -e chrome"
   },
   "repository": {
     "type": "git",
