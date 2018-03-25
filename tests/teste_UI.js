@@ -1,7 +1,7 @@
 module.exports = {
     'demo test google' : function (client) {
         client
-            .url('http://google.com')
+            .url('http://127.0.0.1:3000')
             .waitForElementPresent('body', 1000);
     },
 
