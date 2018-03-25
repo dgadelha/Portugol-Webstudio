@@ -1,4 +1,4 @@
-<img src="https://univali-lite.github.io/Portugol-Studio/img/logo.svg" width="123px" alt="Portugol Webstudio" align="right">
+<img src="https://cdn.rawgit.com/dgadelha/Portugol-Webstudio/06fd49b6/public/assets/landing/img/lightbulb.svg" width="123px" alt="Portugol Webstudio" align="right">
 
 # Portugol Webstudio
 
