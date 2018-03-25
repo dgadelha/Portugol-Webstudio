@@ -47,6 +47,7 @@
     "mocha": "^3.4.2",
     "nightwatch": "^0.9.20",
     "really-need": "^1.9.2",
+    "selenium-download": "^2.0.12",
     "selenium-server": "^3.11.0",
     "supertest": "^3.0.0"
   }
