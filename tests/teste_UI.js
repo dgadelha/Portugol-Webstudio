@@ -1,3 +1,4 @@
+var app = require('../bin/www');
 module.exports = {
     'demo test google' : function (client) {
         client
