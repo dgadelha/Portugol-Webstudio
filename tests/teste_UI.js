@@ -1,5 +1,12 @@
-var app = require('../bin/www');
 module.exports = {
+    before: function (browser, done) {
+        server = require('../bin/www')(done)
+    },
+
+    after: function () {
+        server.close()
+    },
+
     'demo test google' : function (client) {
         client
             .url('http://127.0.0.1:3000')
