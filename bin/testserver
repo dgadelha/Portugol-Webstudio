@@ -1,0 +1,8 @@
+#!/usr/bin/env node
+
+function makeServer(done) {
+    var server = require('www');
+    done();
+    return server;
+}
+module.exports = makeServer;

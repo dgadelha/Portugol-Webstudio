@@ -1,23 +1,19 @@
 module.exports = {
     before: function (browser, done) {
-        server = require('../bin/www')(done)
+        server = require('../bin/testserver')(done) // done is a callback that executes when the server is started
     },
 
     after: function () {
         server.close()
     },
 
-    'demo test google' : function (client) {
-        client
-            .url('http://127.0.0.1:3000')
-            .waitForElementPresent('body', 1000);
-    },
+    'Demo test': function (browser) {
+        browser
+            .url('localhost:3000')   // visit the local url
+            .waitForElementVisible('body'); // wait for the body to be rendered
 
-    'part two' : function(client) {
-        client
-            .setValue('input[type=text]', ['nightwatch', client.Keys.ENTER])
-            .pause(1000)
-            .assert.containsText('#main', 'Night Watch')
-            .end();
+        browser
+            .assert.containsText('body','hello') // assert contains
+            .end()
     }
-};
+}
