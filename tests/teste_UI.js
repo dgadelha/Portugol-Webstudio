@@ -18,8 +18,9 @@ module.exports = {
         client
             .click('#j1_1')
             .pause(1000)
+            .waitForElementPresent('#j1_1_anchor', 5000)
             .click('#j1_1_anchor')
-            .pause(1000)
+            .waitForElementPresent('#exemplo-go', 5000)
             .click('#exemplo-go')
             .pause(5000)
             .frame(0)
