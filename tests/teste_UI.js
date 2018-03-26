@@ -21,7 +21,8 @@ module.exports = {
             .waitForElementVisible('iframe', 5000)
             .frame(0)
             .pause(5000)
-            .click('#submit-btn')
+            .click('#submit')
+            .expect.element('#stop-btn').to.be.enabled.after(5000)
             .pause(10000)
             .assert.containsText('#output .ace_content', 'Programa finalizado')
             .end();
