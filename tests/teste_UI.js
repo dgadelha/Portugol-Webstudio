@@ -24,6 +24,7 @@ module.exports = {
             .click('a#exemplo-go > span')
             .pause(5000)
             .waitForElementVisible('iframe', 5000)
+            .frame(0)
             .waitForElementVisible('#submit-btn', 5000)
             .click('#submit-btn')
             .pause(5000)
