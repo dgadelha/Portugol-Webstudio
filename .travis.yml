@@ -3,7 +3,9 @@ language: node_js
 node_js:
 - '8'
 addons:
-  sauce_connect: true
+  sauce_connect:
+    username: "guiscaranse"
+    no_ssl_bump_domains: all
 install:
 - npm install
 script:
