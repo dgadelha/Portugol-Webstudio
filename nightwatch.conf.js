@@ -48,9 +48,11 @@ const config = {
         },
         "firefox": {
             "desiredCapabilities": {
-                "platform": "XP",
+                "platform": "Windows 10",
+                "javascriptEnabled": true,
+                "acceptSslCerts": true,
                 "browserName": "firefox",
-                "version": "33"
+                "version": "59"
             }
         }
     }
