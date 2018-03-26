@@ -8,11 +8,11 @@ module.exports = function(io) {
     */
     console.log('Usuário conectado!');
     var listen = false;
-    var term = pty.spawn(appRoot + '/libs/runtime/linux/runtime', [""], {
+    var term = pty.spawn(appRoot.path + '/libs/runtime/linux/runtime', [""], {
       name: 'xterm',
       cols: 80,
       rows: 30,
-      cwd: appRoot + "/",
+      cwd: appRoot.path + "/",
       env: process.env
     });
     // Arquivo temporário onde o código do portugol será armazenado
@@ -25,7 +25,7 @@ module.exports = function(io) {
     socket.on("input", function(code) {
       // Verifica se a trava está ativa e o código está ouvindo inputs do usuário. Se estiver ativa, emite a mensagem indicando para aguardar
       if (!listen) {
-        fs.writeFile(appRoot + "/" + file, code, function(err) {}); // Escrevemos o código em portugol temporariamente
+        fs.writeFile(appRoot.path + "/" + file, code, function(err) {}); // Escrevemos o código em portugol temporariamente
         term.write("~|^!+SETIP+!^|~" + socket.handshake.address + "\r"); // Indicamos qual ip RUNTIME deve trabalhar
         term.write("~|^!+RUNTIME+!^|~" + file + "\r"); // Indicamos qual arquivo o RUNTIME deve ler
       } else {
@@ -80,8 +80,8 @@ module.exports = function(io) {
     */
     socket.on("disconnect", function() {
       console.log('Usuário desconectado');
-      if (fs.existsSync(appRoot + "/" + file)) {
-        fs.unlinkSync(appRoot + "/" + file);
+      if (fs.existsSync(appRoot.path + "/" + file)) {
+        fs.unlinkSync(appRoot.path + "/" + file);
         console.log('Found file');
       }
       term.destroy();
