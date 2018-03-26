@@ -36,6 +36,12 @@ const config = {
         "chrome": {
             "desiredCapabilities": {
                 "browserName": "chrome",
+                "webStorageEnabled": true,
+                "browserConnectionEnabled": true,
+                "applicationCacheEnabled": true,
+                "locationContextEnabled": true,
+                "databaseEnabled": true,
+                "nativeEvents": true,
                 "javascriptEnabled": true,
                 "acceptSslCerts": true
             }
