@@ -7,13 +7,17 @@ module.exports = {
         server.close()
     },
 
-    'Demo test': function (browser) {
-        browser
-            .url('localhost:3000')   // visit the local url
-            .waitForElementVisible('body'); // wait for the body to be rendered
+    'demo test google' : function (client) {
+        client
+            .url('http://127.0.0.1:3000')
+            .waitForElementPresent('body', 1000);
+    },
 
-        browser
-            .assert.containsText('body','hello') // assert contains
-            .end()
+    'part two' : function(client) {
+        client
+            .setValue('input[type=text]', ['nightwatch', client.Keys.ENTER])
+            .pause(1000)
+            .assert.containsText('#main', 'Night Watch')
+            .end();
     }
 }
