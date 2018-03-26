@@ -49,6 +49,12 @@ const config = {
         "firefox": {
             "desiredCapabilities": {
                 "platform": "Windows 10",
+                "webStorageEnabled": true,
+                "browserConnectionEnabled": true,
+                "applicationCacheEnabled": true,
+                "locationContextEnabled": true,
+                "databaseEnabled": true,
+                "nativeEvents": true,
                 "javascriptEnabled": true,
                 "acceptSslCerts": true,
                 "browserName": "firefox",
