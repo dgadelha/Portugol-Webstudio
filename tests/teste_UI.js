@@ -16,12 +16,15 @@ module.exports = {
 
     'Usar IDE' : function(client) {
         client
-            .click('.action-add')
+            .click('#j1_1')
             .pause(1000)
+            .click('#j1_1_anchor')
+            .pause(1000)
+            .click('#exemplo-go')
+            .pause(5000)
             .frame(0)
-            .setValue('pre#editor', 'programa { funcao inicio() { escreva("Olá mundo") } }')
             .click('#submit-btn')
-            .pause(2000)
+            .pause(5000)
             .assert.containsText('pre#output', 'Olá mundo')
             .end();
     }
