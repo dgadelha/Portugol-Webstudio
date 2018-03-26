@@ -21,7 +21,8 @@ module.exports = {
             .frame(0)
             .setValue('pre#editor', 'programa { funcao inicio() { escreva("Olá mundo") } }')
             .click('#submit-btn')
-            .assert.containsText('pre#output', 'Night Watch')
+            .pause(2000)
+            .assert.containsText('pre#output', 'Olá mundo')
             .end();
     }
 }
