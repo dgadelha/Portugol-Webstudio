@@ -1,6 +1,7 @@
 var express = require('express');
 require('express-group-routes');
 var fs = require('fs');
+var appRoot = require('app-root-path');
 var rp = require('fs.realpath');
 var router = express.Router();
 var path = require('path');
@@ -27,8 +28,8 @@ router.group("/ide", function(router) {
   router.get('/resp', function(req, res, next) {
     var file = req.query.file;
     if (file.includes("Recursos") && file.substring(0,8) == "Recursos"){
-      var basePath = rp.realpathSync(path.dirname(require.main.filename) + "/../");
-      var filePath = rp.realpathSync(basePath + "/public/" + file);
+      var basePath = appRoot.path;
+      var filePath =appRoot.path + "/public/" + file;
       if(fs.existsSync(filePath)){
         var extName = path.extname(filePath);
         var allowedExt = ['.por', '.html', '.htm'];
