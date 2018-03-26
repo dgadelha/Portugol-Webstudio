@@ -28,7 +28,7 @@ module.exports = {
             .waitForElementVisible('#submit-btn', 5000)
             .click('#submit-btn')
             .pause(5000)
-            .assert.containsText('pre#output', 'Olá mundo')
+            .assert.containsText('pre#output', 'Olá Mundo!')
             .end();
     }
 }
