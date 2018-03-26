@@ -7,17 +7,21 @@ module.exports = {
         server.close()
     },
 
-    'demo test google' : function (client) {
+    'Carregar IDE' : function (client) {
         client
-            .url('http://127.0.0.1:3000')
-            .waitForElementPresent('body', 1000);
+            .url('http://127.0.0.1:3000/ide')
+            .waitForElementPresent('body', 1000)
+            .assert.containsText('#anchor-inicio', 'Portugol Webstudio');
     },
 
-    'part two' : function(client) {
+    'Usar IDE' : function(client) {
         client
-            .setValue('input[type=text]', ['nightwatch', client.Keys.ENTER])
+            .click('.action-add')
             .pause(1000)
-            .assert.containsText('#main', 'Night Watch')
+            .frame(0)
+            .setValue('pre#editor', 'programa { funcao inicio() { escreva("Olá mundo") } }')
+            .click('#submit-btn')
+            .assert.containsText('pre#output', 'Night Watch')
             .end();
     }
 }
