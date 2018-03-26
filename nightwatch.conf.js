@@ -28,6 +28,7 @@ const config = {
                 "waitForConditionTimeout": 10000
             },
             "desiredCapabilities": {
+                "extendedDebugging: true",
                 "tunnel-identifier": process.env.TRAVIS_JOB_NUMBER,
                 build: "build-" + process.env.TRAVIS_JOB_NUMBER
             }
