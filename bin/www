@@ -4,7 +4,7 @@
  * Module dependencies.
  */
 var appRoot = require('app-root-path');
-var app = require(appRoot + '/app');
+var app = require(appRoot.path + '/app');
 var debug = require('debug')('webstudio:server');
 var http = require('http');
 
@@ -21,7 +21,7 @@ app.set('port', port);
 
 var server = http.createServer(app);
 var io = require('socket.io').listen(server);
-require(appRoot + '/sockets/base')(io);
+require(appRoot.path + '/sockets/base')(io);
 /**
  * Listen on provided port, on all network interfaces.
  */

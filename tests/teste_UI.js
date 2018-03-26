@@ -9,7 +9,7 @@ module.exports = {
 
     'Carregar IDE' : function (client) {
         client
-            .url('http://127.0.0.1:3000/ide')
+            .url('http://localhost:3000/ide')
             .waitForElementPresent('body', 1000)
             .assert.containsText('#anchor-inicio', 'Portugol Webstudio');
     },
