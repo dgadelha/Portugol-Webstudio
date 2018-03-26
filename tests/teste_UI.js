@@ -20,10 +20,9 @@ module.exports = {
             .click('.action-add')
             .waitForElementVisible('iframe', 5000)
             .frame(0)
-            .pause(5000)
-            .click('#submit')
-            .expect.element('#stop-btn').to.be.enabled.after(5000)
-            .pause(10000)
+            .waitForElementVisible('button.submit', 5000)
+            .click('button.submit')
+            .pause(60000)
             .assert.containsText('#output .ace_content', 'Programa finalizado')
             .end();
     }
