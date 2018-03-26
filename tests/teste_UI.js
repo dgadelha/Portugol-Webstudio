@@ -16,12 +16,12 @@ module.exports = {
 
     'Usar IDE' : function(client) {
         client
-            .click('i.jstree-icon.jstree-ocl')
+            .click('li#j1_1 > i')
             .pause(1000)
-            .waitForElementPresent('#j1_1_anchor', 5000)
-            .click('#j1_1_anchor')
-            .waitForElementPresent('#exemplo-go', 5000)
-            .click('#exemplo-go')
+            .waitForElementVisible('a#j1_2_anchor', 5000)
+            .click('a#j1_2_anchor')
+            .waitForElementVisible('a#exemplo-go > span', 5000)
+            .click('a#exemplo-go > span')
             .pause(5000)
             .frame(0)
             .click('#submit-btn')
