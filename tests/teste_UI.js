@@ -16,14 +16,18 @@ module.exports = {
 
     'Usar IDE' : function(client) {
         client
-            .waitForElementVisible('.action-add', 5000)
-            .click('.action-add')
+            .click('li#j1_1 > i')
+            .pause(1000)
+            .waitForElementVisible('a#j1_2_anchor', 5000)
+            .click('a#j1_2_anchor')
+            .waitForElementVisible('a#exemplo-go > span', 5000)
+            .click('a#exemplo-go > span')
+            .pause(5000)
             .waitForElementVisible('iframe', 5000)
-            .frame(0)
-            .waitForElementVisible('button.submit', 5000)
-            .click('button.submit')
-            .pause(60000)
-            //.assert.containsText('#output .ace_content', 'Programa finalizado')
+            .waitForElementVisible('#submit-btn', 5000)
+            .click('#submit-btn')
+            .pause(5000)
+            .assert.containsText('pre#output', 'Olá mundo')
             .end();
     }
 }
