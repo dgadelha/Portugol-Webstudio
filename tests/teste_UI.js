@@ -17,6 +17,7 @@ module.exports = {
     'Usar IDE' : function(client) {
         client
             .click('#j1_1')
+            .click('#j1_1')
             .pause(1000)
             .waitForElementPresent('#j1_1_anchor', 5000)
             .click('#j1_1_anchor')
