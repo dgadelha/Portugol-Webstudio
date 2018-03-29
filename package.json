@@ -6,6 +6,8 @@
   "scripts": {
     "start": "node ./bin/www",
     "postinstall": "node nightwatch.conf.js",
+    "deploy": "now -e NODE_ENV=production --token $NOW_TOKEN --npm",
+    "alias": "now alias --token=$NOW_TOKEN",
     "test": "echo 'Procurando erros de sintaxe...' && find . -type f -not -path \"*node_modules*\" -name \"*.js\" -exec node -c {} \\; && ./node_modules/.bin/nightwatch -e firefox"
   },
   "repository": {
@@ -24,6 +26,10 @@
   "license": "GPL-3.0",
   "bugs": {
     "url": "https://github.com/dgadelha/Portugol-Webstudio/issues"
+  },
+  "now": {
+    "name": "Portugol-Webstudio",
+    "alias": "portugol-webstudio.now.sh"
   },
   "homepage": "https://github.com/dgadelha/Portugol-Webstudio/Portugol-Webstudio#readme",
   "dependencies": {
