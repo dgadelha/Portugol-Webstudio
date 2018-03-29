@@ -10,7 +10,7 @@ COPY package*.json ./
 
 # Install Java-8
 RUN apt-get update && \
-    apt-get install apt-utils software-properties-common -y && \
+    apt-get install software-properties-common -y && \
     add-apt-repository "deb http://ppa.launchpad.net/webupd8team/java/ubuntu xenial main" -y && \
     apt-get update && \
     echo "oracle-java8-installer shared/accepted-oracle-license-v1-1 select true" | debconf-set-selections && \
@@ -19,7 +19,7 @@ RUN apt-get update && \
 
 # Fix certificate issues
 RUN apt-get update && \
-    apt-get install ca-certificates-java && \
+    apt-get install ca-certificates-java -y && \
     apt-get clean && \
     update-ca-certificates -f;
 
