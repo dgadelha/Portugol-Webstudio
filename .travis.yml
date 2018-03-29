@@ -12,7 +12,6 @@ script:
 - npm test
 before_deploy:
 - npm install -g now now-purge
-- now-purge -t $NOW_TOKEN --team $NOW_TEAM
 deploy:
   provider: script
   script: npm run deploy
@@ -21,6 +20,7 @@ deploy:
     branch: master
 after_deploy:
 - npm run alias
+- now-purge -t $NOW_TOKEN --team $NOW_TEAM
 env:
   global:
   - NOW_TEAM: portwebstudio
