@@ -9,6 +9,7 @@ addons:
 install:
 - npm install
 script:
+- npm install -g now
 - npm test
 deploy:
   provider: script
