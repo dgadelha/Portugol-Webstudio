@@ -13,6 +13,8 @@ RUN apt-get update && \
     apt-get install apt-utils software-properties-common -y && \
     add-apt-repository "deb http://ppa.launchpad.net/webupd8team/java/ubuntu xenial main" -y && \
     apt-get update && \
+    echo debconf shared/accepted-oracle-license-v1-1 select true && \
+    debconf-set-selections && \
     apt-get install -y oracle-java8-installer ant && \
     apt-get clean;
 
