@@ -1,3 +1,4 @@
+
 <img src="https://cdn.rawgit.com/dgadelha/Portugol-Webstudio/06fd49b6/public/assets/landing/img/lightbulb.svg" width="123px" alt="Portugol Webstudio" align="right">
 
 # Portugol Webstudio
@@ -61,6 +62,9 @@ Após isto, você poderá acessar o aplicativo em: [http://127.0.0.1:3000](http:
 **Autor:** [Douglas Gadêlha](mailto:dgadelha@live.com)
 
 **Co-autor:** [Guilherme Scaranse](mailto:guilherme.scaranse@ifba.edu.br)
+
+# Patrocinado por
+<a href="https://zeit.co/now"><img src="https://assets.zeit.co/image/upload/front/logos/white-bg-text-logo.svg" height="160" /></a>
 
 ## Licença
     Portugol Webstudio - IDE online para o Portugol (UNIVALI)
