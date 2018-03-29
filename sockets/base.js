@@ -50,7 +50,6 @@ module.exports = function(io) {
     term.on('data', function(data) {
       data = data.replace("~|^!+INPUT+!^|~", ""); // Filtro de palavra reservada descontinuada
       //console.log(data + " = " + data.indexOf("~|^!+START+!^|~"))
-      listen = true;
       if (listen) { // Verifica se está executando alguma coisa
         // Portugol está sendo executado no console
         if (data.includes("~|^!+END+!^|~")) { // Verifica se RUNTIME indicou que execução acabou
