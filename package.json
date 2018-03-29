@@ -6,8 +6,8 @@
   "scripts": {
     "start": "node ./bin/www",
     "postinstall": "node nightwatch.conf.js",
-    "deploy": "now --public -e NODE_ENV=production --token $NOW_TOKEN --npm",
-    "alias": "now --public alias --token=$NOW_TOKEN",
+    "deploy": "now --public --team portwebstudio -e NODE_ENV=production --token $NOW_TOKEN --npm",
+    "alias": "now --public --team portwebstudio alias --token=$NOW_TOKEN",
     "test": "echo 'Procurando erros de sintaxe...' && find . -type f -not -path \"*node_modules*\" -name \"*.js\" -exec node -c {} \\; && ./node_modules/.bin/nightwatch -e firefox"
   },
   "repository": {

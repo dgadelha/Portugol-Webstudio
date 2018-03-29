@@ -9,8 +9,9 @@ addons:
 install:
 - npm install
 script:
-- npm install -g now
 - npm test
+before_deploy:
+- npm install -g now
 deploy:
   provider: script
   script: npm run deploy && npm run alias
