@@ -11,7 +11,8 @@ install:
 script:
 - npm test
 before_deploy:
-- npm install -g now
+- npm install -g now now-purge
+- now-purge -t $NOW_TOKEN -n Portugol-Webstudio --team portwebstudio
 deploy:
   provider: script
   script: npm run deploy
