@@ -8,10 +8,12 @@ WORKDIR /usr/src/app
 # where available (npm@5+)
 COPY package*.json ./
 
-# Install OpenJDK-8
+# Install Java-8
 RUN apt-get update && \
-    apt-get install -y openjdk-8-jdk && \
-    apt-get install -y ant && \
+    apt-get install software-properties-common -y && \
+    add-apt-repository ppa:webupd8team/java -y && \
+    apt-get update && \
+    apt-get install -y oracle-java8-installer ant && \
     apt-get clean;
 
 # Fix certificate issues
