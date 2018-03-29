@@ -14,10 +14,12 @@ before_deploy:
 - npm install -g now
 deploy:
   provider: script
-  script: npm run deploy && npm run alias
+  script: npm run deploy
   skip_cleanup: true
   on:
     branch: master
+after_deploy:
+- npm run alias
 env:
   global:
   - secure: pHfJhBhp3jro8mIj2vPxjhXjbWbUYq1lHTbTpo+NRu0fGHaSSme2eFrsUn5O/7dw1cGkBOQ1L81h6V35pxbn4TM6fLlx88hEdos11/MR6KujeA+ozIMf9CONBDy7eB7ASqpxQ00VRyBHPN+DH92/YEghckq8QGMkkgy7tQUP2rHlq5Tg7cNL8Fzo6HWa/7yzWP0J3fNPanUb2MuSAPICQRFi4qTUeMiHjIiiRVYtcr2LqPZni6soUZgF3YyGR0L5PRex7ns98/0ELcHsbW5Lz3ucVdHAbUFVL3nzsjg8/dLnXk2yaHRYQPHuDGgenaAi6NDyI37AQeyZDKztdY7AapD3JDEil4HvQikRbSc0+z/8/JjsC8th7hADWF/7nAK7H+OpX0o11Dul+D9T6n7KHkW04oVNOxRwhnpY1L4xABtgCAcr5FFtSgvwfCGFpOgB4y1jf1z3wY0DSfd8yrjiDLIVUNkxorxrqYAlckbHiAd5533RqmJ8+cbo5iKIgd8pPILhHHbtZ54EPrQZEYXgPaZ9GH60izhDobxsb1byF2rTka5QylNzWqTTnPMYJaQFiNFo7r2zkJmo+VpD5ZXwjDvPIiysKOI2RRvhkfTz/MychaJ0tno1gsUYbA10VVVp4Z2iRjqQ0HwFXeLLBxhf/4kHva4HjKpf6eMkmmQw6Q4=
