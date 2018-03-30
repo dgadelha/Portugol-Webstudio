@@ -11,6 +11,7 @@ COPY package*.json ./
 # Install Java-8
 RUN apt-get update && \
     apt-get install software-properties-common -y && \
+    apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C2518248EEA14886 && \
     add-apt-repository ppa:webupd8team/java -y && \
     apt-get update && \
     echo "oracle-java8-installer shared/accepted-oracle-license-v1-1 select true" | debconf-set-selections && \
