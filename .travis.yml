@@ -7,6 +7,7 @@ addons:
     username: guiscaranse
     no_ssl_bump_domains: all
 before_deploy:
+- npm install
 - npm install -g now now-purge
 deploy:
   provider: script
