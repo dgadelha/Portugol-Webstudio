@@ -1,5 +1,4 @@
 sudo: required
-dist: trusty
 language: node_js
 node_js:
 - '8'
@@ -7,16 +6,6 @@ addons:
   sauce_connect:
     username: guiscaranse
     no_ssl_bump_domains: all
-before_install:
-- curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
-- sudo mv microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg
-- sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-ubuntu-trusty-prod trusty main" > /etc/apt/sources.list.d/dotnetdev.list'
-- sudo apt-get install apt-transport-https -y && sudo apt-get update
-- sudo apt-get install dotnet-runtime-2.0.6 dotnet-sdk-2.1.101 -y
-install:
-- npm install
-script:
-- npm test
 before_deploy:
 - npm install -g now now-purge
 deploy:
