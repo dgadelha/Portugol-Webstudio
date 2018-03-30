@@ -15,9 +15,9 @@ RUN apt-get update && \
     apt-get update && \
     echo "oracle-java8-installer shared/accepted-oracle-license-v1-1 select true" | debconf-set-selections && \
     apt-get install -y oracle-java8-installer ant && \
-    apt-get clean;
 
-RUN apt-get install curl libunwind8 gettext apt-transport-https && \
+# Install DotNet Core
+RUN apt-get install curl libunwind8 gettext apt-transport-https -y && \
     curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg && \
     mv microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg && \
     add-apt-repository "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-debian-jessie-prod jessie main" -y && \
