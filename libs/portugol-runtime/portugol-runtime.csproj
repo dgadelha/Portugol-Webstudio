@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <RuntimeIdentifiers>win-x64;debian.8-x64</RuntimeIdentifiers>
+  </PropertyGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="javalibs\lib\antlr-runtime-3.4.jar">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="javalibs\lib\jlayer-1.0.1.jar">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="javalibs\lib\portugol-nucleo.jar">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="javalibs\portugol-console.jar">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="javalibs\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include=".temp\README.md">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove=".travis.yml" />
+  </ItemGroup>
+</Project>
