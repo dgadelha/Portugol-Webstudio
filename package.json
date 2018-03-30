@@ -8,7 +8,7 @@
     "postinstall": "node nightwatch.conf.js",
     "deploy": "now --public --team $NOW_TEAM -e NODE_ENV=production --token $NOW_TOKEN --docker",
     "alias": "now --public --team $NOW_TEAM alias --token=$NOW_TOKEN",
-    "test": "echo 'Procurando erros de sintaxe...' && find . -type f -not -path \"*node_modules*\" -name \"*.js\" -exec node -c {} \\; && ./node_modules/.bin/nightwatch -e firefox"
+    "test": "echo 'Procurando erros de sintaxe...' && find . -type f -not -path \"*node_modules*\" -name \"*.js\" -exec node -c {} \\;"
   },
   "repository": {
     "type": "git",
