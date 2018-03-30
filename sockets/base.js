@@ -11,7 +11,7 @@ module.exports = function (io) {
         */
         console.log('Usuário conectado!');
         var listen = false;
-        var shell_location = appRoot.path + "/libs/portugol-runtime" + (os.platform() === 'win32' ? 'dist/win-x64' : 'dist/debian8.-x64');
+        var shell_location = appRoot.path + "/libs/portugol-runtime" + (os.platform() === 'win32' ? '/dist/win-x64' : '/dist/debian8.-x64');
         var shell = os.platform() === 'win32' ? shell_location + '/portugol-runtime.exe' : shell_location +
             '/portugol-runtime';
 
