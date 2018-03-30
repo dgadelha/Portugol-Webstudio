@@ -8,14 +8,8 @@ WORKDIR /usr/src/app
 # where available (npm@5+)
 COPY package*.json ./
 
-# Install Java-8
 RUN apt-get update && \
-    apt-get install software-properties-common -y && \
-    apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C2518248EEA14886 && \
-    add-apt-repository ppa:webupd8team/java -y && \
-    apt-get update && \
-    echo "oracle-java8-installer shared/accepted-oracle-license-v1-1 select true" | debconf-set-selections && \
-    apt-get install -y oracle-java8-installer ant
+    apt-get install software-properties-common -y
 
 # Install NetCore
 RUN apt-get install curl libunwind8 gettext apt-transport-https -y && \
@@ -24,6 +18,13 @@ RUN apt-get install curl libunwind8 gettext apt-transport-https -y && \
     sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-ubuntu-xenial-prod xenial main" > /etc/apt/sources.list.d/dotnetdev.list' && \
     apt-get update && \
     apt-get install dotnet-sdk-2.1.4 -y
+
+# Install Java-8
+RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C2518248EEA14886 && \
+    add-apt-repository ppa:webupd8team/java -y && \
+    apt-get update && \
+    echo "oracle-java8-installer shared/accepted-oracle-license-v1-1 select true" | debconf-set-selections && \
+    apt-get install -y oracle-java8-installer ant
 
 # Fix certificate issues
 RUN apt-get install ca-certificates-java -y && \
