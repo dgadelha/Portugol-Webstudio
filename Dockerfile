@@ -10,13 +10,13 @@ COPY package*.json ./
 
 # Install Java-8
 RUN apt-get update && \
-    apt-get install software-properties-common curl -y && \
+    apt-get install software-properties-common -y && \
     add-apt-repository "deb http://ppa.launchpad.net/webupd8team/java/ubuntu xenial main" -y && \
     apt-get update && \
     echo "oracle-java8-installer shared/accepted-oracle-license-v1-1 select true" | debconf-set-selections && \
-    apt-get install -y oracle-java8-installer ant && \
+    apt-get install -y oracle-java8-installer ant
 
-# Install DotNet Core
+# Install NetCore
 RUN apt-get install curl libunwind8 gettext apt-transport-https -y && \
     curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg && \
     mv microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg && \
