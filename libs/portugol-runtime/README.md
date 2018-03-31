@@ -19,3 +19,4 @@ Suporte para Linux (Debian-based) e Windows, para compilar é só rodar o script
 ```
 
 Não é preciso fazer outras alterações neste projeto, o Portugol Webstudio detectará o binário da sua plataforma automaticamente.
+Ambos scripts compilam para ambas plataformas (Linux e Windows)
