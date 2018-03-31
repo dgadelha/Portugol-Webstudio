@@ -7,7 +7,7 @@ before_deploy:
 - npm install -g now now-purge
 deploy:
   provider: script
-  script: travis_wait npm run deploy
+  script: travis_wait now --public --team $NOW_TEAM -e NODE_ENV=production --token $NOW_TOKEN --docker
   skip_cleanup: true
   on:
     branch: master
