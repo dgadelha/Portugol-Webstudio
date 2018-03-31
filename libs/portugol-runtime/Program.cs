@@ -56,7 +56,7 @@ namespace portugol_runtime
         }
         static void Main(string[] args)
         {
-            Console.WriteLine("Iniciando Portugol Runtime...");
+            // Iniciando portugol-runtime
             while (true)
             {
                 var comando = Console.ReadLine();
