@@ -11,12 +11,12 @@ module.exports = function (io) {
         */
         console.log('Usuário conectado!');
         var listen = false;
-        var shell_location = appRoot.path + "/libs/portugol-runtime" + (os.platform() === 'win32' ? '/dist/win-x64' : '/dist/debian8.-x64');
+        var shell_location = appRoot.path + "/libs/portugol-runtime" + (os.platform() === 'win32' ? '/dist/win-x64' : '/dist/debian.8-x64');
         var shell = os.platform() === 'win32' ? shell_location + '/portugol-runtime.exe' : shell_location +
             '/portugol-runtime';
-
+        console.log("Iniciando em " + shell);
         var term = pty.spawn(shell, [""], {
-            name: 'cmd',
+            name: 'xterm',
             cols: 80,
             rows: 30,
             cwd: appRoot.path + "/",
@@ -34,7 +34,6 @@ module.exports = function (io) {
             if (!listen) {
                 fs.writeFile(file, code, function (err) {
                 }); // Escrevemos o código em portugol temporariamente
-                term.write("~|^!+SETIP+!^|~" + socket.handshake.address + "\r"); // Indicamos qual ip RUNTIME deve trabalhar
                 term.write("~|^!+RUNTIME+!^|~" + file + "\r"); // Indicamos qual arquivo o RUNTIME deve ler
             } else {
                 socket.emit('output', "\nAguarde o fim da execução!");
