@@ -2,7 +2,6 @@ var express = require('express');
 require('express-group-routes');
 var fs = require('fs');
 var appRoot = require('app-root-path');
-var rp = require('fs.realpath');
 var router = express.Router();
 var path = require('path');
 var iconv = require('iconv-lite');
