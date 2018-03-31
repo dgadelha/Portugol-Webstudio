@@ -28,7 +28,6 @@ namespace portugol_runtime
                               AppDomain.CurrentDomain.BaseDirectory + "javalibs/portugol-console.jar" + "\" " + "\"" +
                               filepath + "\"";
                 if (!Filter(filepath)) return;
-                Console.WriteLine("Iniciando Portugol...");
                 var proc = new Process();
                 var startInfo = new ProcessStartInfo
                 {
