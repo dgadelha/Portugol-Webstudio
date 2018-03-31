@@ -1,1 +1,0 @@
-Local onde os arquivos temporários do Webstudio serão armazenados
