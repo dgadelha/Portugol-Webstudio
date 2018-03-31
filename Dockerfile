@@ -38,5 +38,12 @@ RUN npm install
 
 # Bundle app source
 COPY . .
+RUN cd libs/portugol-runtime && \
+    dotnet restore && \
+    dotnet publish -r debian.8-x64 && \
+    rm -rf ./bin/Debug/netcoreapp2.0/debian.8-x64/publish && \
+    rm -rf ./dist/ && \
+    mkdir dist && \
+    mv ./bin/Debug/netcoreapp2.0/debian.8-x64/ ./dist/debian.8-x64/;
 EXPOSE 3000
 CMD [ "npm", "start" ]

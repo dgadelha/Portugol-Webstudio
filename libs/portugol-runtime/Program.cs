@@ -25,7 +25,7 @@ namespace portugol_runtime
             try
             {
                 var caminho = "-Dfile.encoding=UTF-8 -Xms128m -Xmx512m -d64 -jar " + "\"" +
-                              AppDomain.CurrentDomain.BaseDirectory + "javalibs\\portugol-console.jar" + "\" " + "\"" +
+                              AppDomain.CurrentDomain.BaseDirectory + "javalibs/portugol-console.jar" + "\" " + "\"" +
                               filepath + "\"";
                 if (!Filter(filepath)) return;
                 Console.WriteLine("Iniciando Portugol...");
