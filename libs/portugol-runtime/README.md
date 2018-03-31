@@ -15,7 +15,7 @@ Suporte para Linux (Debian-based) e Windows, para compilar é só rodar o script
 ```
 ##### Linux
 ```sh
-./compile_linux.bat
+./compile_linux.sh
 ```
 
 Não é preciso fazer outras alterações neste projeto, o Portugol Webstudio detectará o binário da sua plataforma automaticamente.
