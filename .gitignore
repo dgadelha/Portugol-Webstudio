@@ -67,6 +67,7 @@ __pycache__/
 
 # C#
 dist/*
+*.so
 
 # Distribution / packaging
 .Python
