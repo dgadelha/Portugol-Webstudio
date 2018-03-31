@@ -20,7 +20,7 @@ RUN apt-get install curl libunwind8 gettext apt-transport-https -y && \
     apt-get install dotnet-sdk-2.1.4 -y --quiet
 
 # Install Java-8
-RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C2518248EEA14886 >/dev/null && \
+RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C2518248EEA14886 E074D16EB6FF4DE3 >/dev/null && \
     add-apt-repository ppa:webupd8team/java -y && \
     apt-get update --quiet && \
     echo "oracle-java8-installer shared/accepted-oracle-license-v1-1 select true" | debconf-set-selections && \
