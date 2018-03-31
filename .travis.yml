@@ -7,7 +7,7 @@ before_deploy:
 - npm install -g now now-purge
 deploy:
   provider: script
-  script: npm run deploy
+  script: travis_wait npm run deploy
   skip_cleanup: true
   on:
     branch: master
