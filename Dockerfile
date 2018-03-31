@@ -1,4 +1,4 @@
-FROM starlabio/ubuntu-base:1.3
+FROM starlabio/ubuntu-nodejs-build:1.3
 
 # Create app directory
 WORKDIR /usr/src/app
