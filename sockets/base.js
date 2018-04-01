@@ -55,7 +55,7 @@ module.exports = function (io) {
         É responsável por escrever de volta as informações por console, e determinar a trava de leitura e escrita.
         */
         term.on('data', function (data) {
-            data = stripAnsi(data);
+            data = stripAnsi(data.replace("~|^!+INPUT+!^|~", ""));
             //console.log(data + " = " + data.indexOf("~|^!+START+!^|~"))
             if (listen) { // Verifica se está executando alguma coisa
                 // Portugol está sendo executado no console
