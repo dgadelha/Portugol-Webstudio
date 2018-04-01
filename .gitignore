@@ -66,7 +66,9 @@ __pycache__/
 *$py.class
 
 # C#
-dist/*
+dist/
+!/dist/.gitkeep
+
 *.so
 
 # Distribution / packaging
