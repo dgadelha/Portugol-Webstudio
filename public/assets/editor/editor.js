@@ -52,8 +52,6 @@ $(window).bind("load", function() {
             }
 
             if (keyCode == 13 || keyString == "return") { // enter
-                console.log("-> Evento de Keyboard: ENTER (input: " + input + ")");
-
                 // Enviar os dados de input pro socket
                 if (input != "") {
                     console.log("Input: " + input);
@@ -62,16 +60,12 @@ $(window).bind("load", function() {
                     scrollDown();
                 }
             } else if (keyCode == 8 || keyString == "backspace") { // backspace
-                console.log("-> Evento de Keyboard: BACKSPACE (input: " + input + ")");
-
                 if (input.length >= 1) {
                     input = input.substring(0, input.length - 1);
                     output.getSession().setValue(output.getSession().getValue().substring(0, output.getSession().getValue().length - 1));
                     scrollDown();
                 }
             } else if (typeof event == 'undefined' && !event) {
-                console.log("-> Evento de KeyBoard: " + keyString);
-
                 if (keyString != "" && keyString != "\n" && keyString != "\r\n" && keyString != "\r") {
                     input += keyString;
                     output.getSession().setValue(output.getSession().getValue() + keyString);
@@ -80,14 +74,6 @@ $(window).bind("load", function() {
                     // @TODO: keyCode -> HEX
                     // input += "\xHEX";
                     console.log("-> Evento de Keyboard IGNORADO - keyString vazia e suporte a HEX não concluído");
-                }
-            } else {
-                console.log("-> Evento de Keyboard: ", event);
-
-                if (event.type == "keydown" && (event.code.startsWith("Key") || event.code == "Space")) {
-                    input += event.key;
-                    output.getSession().setValue(output.getSession().getValue() + event.key);
-                    scrollDown();
                 }
             }
         }
@@ -100,7 +86,7 @@ $(window).bind("load", function() {
 
         if (input != "" && data.indexOf(input) > -1) {
             console.log("Ajeitando output...");
-            data = data.substring(input.length + 4); /* ficar de olho nesse 4 aí, pode dar merda em alguma coisa! */
+            data = data.substring(input.length + 4);
             input = "";
             console.log("Output novo: " + data);
         }
