@@ -1,4 +1,4 @@
-FROM node:6-stretch
+FROM node:10-stretch
 
 # Create app directory
 WORKDIR /usr/src/app
@@ -9,41 +9,26 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 
 RUN apt-get -qq update && \
-    apt-get -qq install build-essential software-properties-common dirmngr curl libunwind8 gettext apt-transport-https -y;
+    apt-get -qq install build-essential software-properties-common dirmngr curl wget libunwind8 gettext apt-transport-https -y;
 
 # Install repos
-RUN curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg && \
-    mv microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg && \
-    sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-debian-stretch-prod stretch main" > /etc/apt/sources.list.d/dotnetdev.list' && \
-    add-apt-repository "deb http://ppa.launchpad.net/webupd8team/java/ubuntu yakkety main" -y && \
-    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys C2518248EEA14886 && \
-    apt-get -qq update && \
-    echo "oracle-java8-installer shared/accepted-oracle-license-v1-1 select true" | debconf-set-selections;
-
+RUN wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.asc.gpg && \
+    mv microsoft.asc.gpg /etc/apt/trusted.gpg.d/ && \
+    wget -q https://packages.microsoft.com/config/debian/9/prod.list -O /etc/apt/sources.list.d/microsoft-prod.list && \
+    apt-get -qq update;
 
 # Install Java-8 and NetCore
-RUN apt-get -qq install dotnet-sdk-2.1.101 oracle-java8-installer ant ca-certificates-java  -y;
+RUN apt-get -qq install dotnet-sdk-2.1 openjdk-8-jre -y;
 
-# Fix certificate issues
-RUN apt-get clean && \
-    update-ca-certificates -f;
+# Cleanup APT cache
+RUN apt-get clean;
 
-# Setup JAVA_HOME -- useful for docker commandline
-ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64/
-RUN export JAVA_HOME
-
-RUN npm install
-# If you are building your code for production
-# RUN npm install --only=production
+RUN npm install;
 
 # Bundle app source
 COPY . .
 RUN cd libs/portugol-runtime && \
-    dotnet restore && \
-    dotnet publish -r debian.8-x64 && \
-    rm -rf ./bin/Debug/netcoreapp2.0/debian.8-x64/publish && \
-    rm -rf ./dist/ && \
-    mkdir dist && \
-    mv ./bin/Debug/netcoreapp2.0/debian.8-x64/ ./dist/debian.8-x64/;
+    bash compile_linux.sh;
+
 EXPOSE 3000
 CMD [ "npm", "start" ]
