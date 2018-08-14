@@ -59,8 +59,7 @@ function limparCodigo(content) {
 function addTab(name = "Sem título", content = "") {
     var id = "t" + e7();
     var nid = id.replace(/-/g, "");
-    $(".tabs").append("<li><a href=\"#tab-" + id + "\" id=\"anchor-" + id + "\"><span class=\"portugol-icon\"></span> " + name + " <span data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"Fechar aba\" class=\"close-icon\"></span></a></li>");
-    $("#anchor-" + id + " span[data-toggle=\"tooltip\"]").tooltip();
+    $(".tabs").append("<li><a href=\"#tab-" + id + "\" id=\"anchor-" + id + "\"><span class=\"portugol-icon\"></span> " + name + " <span title=\"Fechar aba\" class=\"close-icon\"></span></a></li>");
 
     if (content != "") {
         window.portugol.codes[nid] = content;
@@ -112,8 +111,7 @@ function abrirAjuda() {
     if ($("#anchor-ajuda")[0]) {
         $("#anchor-ajuda").trigger("click");
     } else {
-        $(".tabs").append("<li><a href=\"#tab-ajuda\" id=\"anchor-ajuda\"><span class=\"help-icon\"></span> Ajuda <span data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"Fechar aba\" class=\"close-icon\"></span></a></li>");
-        $("#anchor-ajuda span[data-toggle=\"tooltip\"]").tooltip();
+        $(".tabs").append("<li><a href=\"#tab-ajuda\" id=\"anchor-ajuda\"><span class=\"help-icon\"></span> Ajuda <span title=\"Fechar aba\" class=\"close-icon\"></span></a></li>");
 
         var tpl = '<div id="tab-ajuda" class="tab">';
         tpl += '<iframe src="' + d.baseUrl + 'ajuda"></iframe>';
@@ -134,7 +132,6 @@ function abrirAjuda() {
 
 $(window).bind("load", function() {
     bindHTML($("#anchor-inicio"));
-    $("[data-toggle=\"tooltip\"]").tooltip();
     $("#anchor-inicio").trigger("click");
     $("#ax1").ax5layout();
 

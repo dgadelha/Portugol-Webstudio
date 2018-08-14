@@ -32,18 +32,13 @@
   },
   "homepage": "https://github.com/dgadelha/Portugol-Webstudio/Portugol-Webstudio#readme",
   "dependencies": {
-    "app-root-path": "^2.1.0",
-    "body-parser": "^1.18.3",
-    "cookie-parser": "^1.4.3",
-    "debug": "^3.1.0",
     "express": "^4.16.3",
-    "express-group-routes": "^1.1.0",
-    "fs": "0.0.1-security",
+    "iconv-lite": "^0.4.23",
     "morgan": "^1.9.0",
     "node-pty-prebuilt": "^0.7.6",
-    "serve-favicon": "^2.5.0",
     "socket.io": "^2.1.1",
     "strip-ansi": "^4.0.0",
     "twig": "^1.12.0"
-  }
+  },
+  "devDependencies": {}
 }

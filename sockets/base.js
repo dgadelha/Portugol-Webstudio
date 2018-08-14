@@ -1,4 +1,3 @@
-const appRoot = require('app-root-path');
 const fs = require('fs');
 const os = require('os');
 const pty = require('node-pty-prebuilt');
@@ -12,7 +11,7 @@ module.exports = io => {
         console.log('Usuário conectado!');
 
         let listen = false;
-        const shell_location = `${appRoot.path}/libs/portugol-runtime` + (os.platform() === 'win32' ? '/dist/win-x64' : '/dist/debian.8-x64');
+        const shell_location = fs.realpathSync(`${__dirname}/../libs/portugol-runtime` + (os.platform() === 'win32' ? '/dist/win-x64' : '/dist/debian.8-x64'));
         const shell = `${shell_location}/portugol-runtime` + (os.platform() === 'win32' ? '.exe' : '');
 
         console.log(`Iniciando em ${shell}`);
@@ -21,12 +20,12 @@ module.exports = io => {
             name: 'xterm',
             cols: 80,
             rows: 30,
-            cwd: appRoot.path + '/',
+            cwd: `${__dirname}/../`,
             env: process.env
         });
 
         // Arquivo temporário onde o código do portugol será armazenado CAMINHO TEM QUE SER ABSOLUTO
-        const file = shell_location + '/.temp/' + Math.random().toString(12).substring(7) + '.por';
+        const file = shell_location + '/temp/' + Math.random().toString(12).substring(7) + '.por';
 
         /**
          * socket.on(input):
@@ -94,11 +93,10 @@ module.exports = io => {
 
             if (fs.existsSync(file)) {
                 fs.unlinkSync(file);
-                console.log('Found file');
+                console.log('Arquivo temporário removido');
             }
 
             term.destroy();
-            console.log('bye');
         });
     });
 }

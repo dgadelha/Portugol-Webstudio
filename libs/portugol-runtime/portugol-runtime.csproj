@@ -22,11 +22,6 @@
     <None Include="javalibs\**" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include=".temp\README.md">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
     <None Remove=".travis.yml" />
   </ItemGroup>
 </Project>
