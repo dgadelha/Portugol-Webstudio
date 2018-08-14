@@ -1,5 +1,4 @@
 .idea/
-libs/runtime/__temp/*.por
 
 # Logs
 *.log
@@ -10,3 +9,8 @@ yarn-error.log*
 # Dependency directories
 node_modules/
 jspm_packages/
+
+# Portugol Runtime
+runtime/bin/
+runtime/obj/
+runtime/dist/*/

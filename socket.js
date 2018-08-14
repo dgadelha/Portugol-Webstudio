@@ -11,7 +11,7 @@ module.exports = io => {
         console.log('Usuário conectado!');
 
         let listen = false;
-        const shell_location = fs.realpathSync(`${__dirname}/../libs/portugol-runtime` + (os.platform() === 'win32' ? '/dist/win-x64' : '/dist/debian.8-x64'));
+        const shell_location = `${__dirname}/runtime` + (os.platform() === 'win32' ? '/dist/win-x64' : '/dist/debian.8-x64');
         const shell = `${shell_location}/portugol-runtime` + (os.platform() === 'win32' ? '.exe' : '');
 
         console.log(`Iniciando em ${shell}`);
@@ -20,7 +20,7 @@ module.exports = io => {
             name: 'xterm',
             cols: 80,
             rows: 30,
-            cwd: `${__dirname}/../`,
+            cwd: __dirname,
             env: process.env
         });
 

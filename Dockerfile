@@ -27,7 +27,7 @@ RUN npm install;
 
 # Bundle app source
 COPY . .
-RUN cd libs/portugol-runtime && \
+RUN cd runtime && \
     bash compile_linux.sh;
 
 EXPOSE 3000

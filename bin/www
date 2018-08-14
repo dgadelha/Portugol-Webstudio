@@ -17,7 +17,7 @@ app.set('port', port);
  */
 const server = http.createServer(app);
 const io = require('socket.io').listen(server);
-require('../sockets/base')(io);
+require('../socket')(io);
 
 /**
  * Listen on provided port, on all network interfaces.

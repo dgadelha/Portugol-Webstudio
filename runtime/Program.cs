@@ -7,9 +7,11 @@ using System.Threading;
 
 namespace portugol_runtime {
     class Program {
+        private static readonly string[] reservadas = new[] { "~|^!+RUNTIME+!^|~", "~|^!+START+!^|~", "~|^!+END+!^|~", "~|^!+INPUT+!^|~", "~|^!+LIMPA+!^|~", "~|^!+SETIP+!^|~" };
+
         private static void Filter(string filePath) {
             var texto = File.ReadAllText(filePath);
-            var reservadas = new List<string>{ "~|^!+RUNTIME+!^|~", "~|^!+START+!^|~", "~|^!+END+!^|~", "~|^!+INPUT+!^|~", "~|^!+LIMPA+!^|~", "~|^!+SETIP+!^|~" };
+
             if (reservadas.Any(texto.Contains)) {
                 throw new InvalidOperationException("Código em Portugol contêm palavras reservadas do Webstudio");
             }
@@ -27,13 +29,11 @@ namespace portugol_runtime {
                 };
 
                 new Thread(() => {
-                    Thread.CurrentThread.IsBackground = true;
                     Thread.Sleep(1000);
-                    if (proc.WaitForExit(500000)) return;
+                    if (proc.WaitForExit(300000)) return;
                     proc.Kill();
                     Console.WriteLine("\nERRO >> Execuções com Portugol estão limitadas a 5 minutos (timeout)");
-                    Thread.CurrentThread.Interrupt();
-                }).Start();
+                }) { IsBackground = true }.Start();
 
                 proc.Start();
                 proc.WaitForExit();
@@ -46,7 +46,7 @@ namespace portugol_runtime {
             while (true) {
                 var comando = Console.ReadLine();
                 if (!comando.Contains("~|^!+RUNTIME+!^|~")) continue;
-                var filePath = comando.Replace("~|^!+RUNTIME+!^|~", "");
+                var filePath = comando.Replace("~|^!+RUNTIME+!^|~", string.Empty);
 
                 Console.WriteLine("~|^!+START+!^|~");
                 Run(filePath);

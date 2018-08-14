@@ -21,7 +21,4 @@
   <ItemGroup>
     <None Include="javalibs\**" />
   </ItemGroup>
-  <ItemGroup>
-    <None Remove=".travis.yml" />
-  </ItemGroup>
 </Project>

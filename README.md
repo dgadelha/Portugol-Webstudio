@@ -27,9 +27,9 @@ Certifique-se de possuir instalado:
 
 Compile o Portugol Webstudio com:
 ```sh
-cd libs/portugol-runtime/
+cd runtime
 ./compile_linux.sh OU .\\compile_windows.bat
-cd ../../
+cd ..
 npm install
 npm start
 ```
