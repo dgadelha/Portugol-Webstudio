@@ -1,6 +1,4 @@
 #!/bin/bash
-BASEDIR=$(dirname "$0")
-cd $BASEDIR
 dotnet restore
 dotnet publish -r win-x64
 rm -rf ./bin/Debug/netcoreapp2.0/win-x64/publish
