@@ -57,10 +57,13 @@
 
 .ace-portugol .ace_keyword,
 .ace-portugol .ace_meta,
-.ace-portugol .ace_storage,
+.ace-portugol .ace_storage {
+  color: rgb(240,67,59)
+}
+
 .ace-portugol .ace_storage.ace_type,
 .ace-portugol .ace_support.ace_type {
-  color: rgb(240,67,59)
+  color: #39BDFF
 }
 
 .ace-portugol .ace_keyword.ace_operator {
