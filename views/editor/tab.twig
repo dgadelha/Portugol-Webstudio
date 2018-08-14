@@ -1,29 +1,29 @@
 {% include "editor/meta.twig" %}
 <div id="splash">
-	<p>Carregando...</p>
+    <p>Carregando...</p>
 </div>
 
 <div data-ax5layout="editor-ax" data-config="{layout:'dock-panel'}" class="ide-layout" id="layout">
-	<div class="tbar" data-dock-panel="{dock:'left',split:false,height:250,minHeight:250,maxHeight:250,width:64,minWidth:64,maxWidth:64}">
-		<button title="Executar" class="tbb submit" id="submit-btn">
-			<img src="https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/ide/src/main/resources/br/univali/ps/ui/icones/Dark/grande/resultset_next.png">
-		</button>
+    <div class="tbar" data-dock-panel="{dock:'left',split:false,height:250,minHeight:250,maxHeight:250,width:64,minWidth:64,maxWidth:64}">
+        <button title="Executar" class="tbb submit" id="submit-btn">
+            <img src="https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/ide/src/main/resources/br/univali/ps/ui/icones/Dark/grande/resultset_next.png">
+        </button>
 
-		<button title="Parar" class="tbb stop" id="stop-btn" disabled="disabled">
-			<img src="https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/ide/src/main/resources/br/univali/ps/ui/icones/Dark/grande/stop.png">
-		</button>
+        <button title="Parar" class="tbb stop" id="stop-btn" disabled="disabled">
+            <img src="https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/ide/src/main/resources/br/univali/ps/ui/icones/Dark/grande/stop.png">
+        </button>
 
-		<button title="Salvar" class="tbb save" id="save-btn">
-			<img src="https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/ide/src/main/resources/br/univali/ps/ui/icones/Dark/grande/save_as.png">
-		</button>
-	</div>
+        <button title="Salvar" class="tbb save" id="save-btn">
+            <img src="https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/ide/src/main/resources/br/univali/ps/ui/icones/Dark/grande/save_as.png">
+        </button>
+    </div>
 
-	<div data-dock-panel="{dock:'bottom',split:true,height:150,minHeight:50,maxHeight:300}">
-		<pre id="output" class="output"></pre>
-	</div>
-	<div data-dock-panel="{dock:'center'}">
-		<pre id="editor" class="editor"></pre>
-	</div>
+    <div data-dock-panel="{dock:'bottom',split:true,height:150,minHeight:50,maxHeight:300}">
+        <pre id="output" class="output"></pre>
+    </div>
+    <div data-dock-panel="{dock:'center'}">
+        <pre id="editor" class="editor"></pre>
+    </div>
 </div>
 <script type="text/javascript">var ecid="{{ cid|e('js') }}";var efnam="{{ fnam|e('js') }}";</script>
 {% include "editor/scripts.twig" with {'tab': true} only %}

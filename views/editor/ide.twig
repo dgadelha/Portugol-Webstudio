@@ -1,82 +1,82 @@
 {% include "editor/meta.twig" %}
-	<div class="visible-xs hidden-md hidden-lg alert-res">
-		<div class="alert-res-content">
-			<span>Esta resolução é muito pequena para usar o Portugol Webstudio.</span>
-		</div>
+    <div class="visible-xs hidden-md hidden-lg alert-res">
+        <div class="alert-res-content">
+            <span>Esta resolução é muito pequena para usar o Portugol Webstudio.</span>
+        </div>
 
-		<div class="alert-res-close"><a href="#">Entendo as consequências e quero usar mesmo assim!</a></div>
-	</div>
+        <div class="alert-res-close"><a href="#">Entendo as consequências e quero usar mesmo assim!</a></div>
+    </div>
 
-	<div id="ide" class="hidden-xs">
-		<ul class="tabs">
-			<li><a id="anchor-inicio" href="#tab-inicio">Portugol Webstudio <span class="portugol-icon"></span></a></li>
-			<li data-toggle="tooltip" data-placement="bottom" title="Abrir"><span class="action action-open"><span class="open-icon"></span></span></li>
-			<li data-toggle="tooltip" data-placement="bottom" title="Novo"><span class="action action-add"><span class="add-icon"></span></span></li>
-		</ul>
+    <div id="ide" class="hidden-xs">
+        <ul class="tabs">
+            <li><a id="anchor-inicio" href="#tab-inicio">Portugol Webstudio <span class="portugol-icon"></span></a></li>
+            <li data-toggle="tooltip" data-placement="bottom" title="Abrir"><span class="action action-open"><span class="open-icon"></span></span></li>
+            <li data-toggle="tooltip" data-placement="bottom" title="Novo"><span class="action action-add"><span class="add-icon"></span></span></li>
+        </ul>
 
-		<div class="tab" id="tab-inicio">
-			<div class="tab-content">
-				<div class="row" id="btl">
-					<div class="col-xs-6 col-md-3 col-lg-3">
-						<button class="action-add">
-							<img src="https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/ide/src/main/resources/br/univali/ps/ui/icones/Dark/grande/lite/programar.png" class="img-responsive">
-							<span>Programar</span>
-						</button>
-					</div>
-					<div class="hidden-xs visible-md visible-lg col-xs-0 col-md-3 col-lg-3">
-						<button class="action-ajuda">
-							<img src="https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/ide/src/main/resources/br/univali/ps/ui/icones/Dark/grande/lite/ajuda.png" class="img-responsive">
-							<span>Ajuda</span>
-						</button>
-					</div>
-					<div class="col-xs-6 col-md-3 col-lg-3">
-						<a href="https://www.youtube.com/user/portugolstudio" target="_blank" rel="nofollow">
-							<img src="https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/ide/src/main/resources/br/univali/ps/ui/icones/Dark/grande/lite/videoaulas.png" class="img-responsive">
-							<span>Videoaulas</span>
-						</a>
-					</div>
-					<div class="hidden-xs visible-md visible-lg col-xs-0 col-md-3 col-lg-3">
-						<a href="https://github.com/dgadelha/Portugol-Webstudio" target="_blank">
-							<img src="https://git-scm.com/images/logos/downloads/Git-Icon-White.png" style="max-height:100px;padding-top:5px;padding-bottom:5px" class="img-responsive">
-							<span>Código-fonte</span>
-						</a>
-					</div>
-				</div>
+        <div class="tab" id="tab-inicio">
+            <div class="tab-content">
+                <div class="row" id="btl">
+                    <div class="col-xs-6 col-md-3 col-lg-3">
+                        <button class="action-add">
+                            <img src="https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/ide/src/main/resources/br/univali/ps/ui/icones/Dark/grande/lite/programar.png" class="img-responsive">
+                            <span>Programar</span>
+                        </button>
+                    </div>
+                    <div class="hidden-xs visible-md visible-lg col-xs-0 col-md-3 col-lg-3">
+                        <button class="action-ajuda">
+                            <img src="https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/ide/src/main/resources/br/univali/ps/ui/icones/Dark/grande/lite/ajuda.png" class="img-responsive">
+                            <span>Ajuda</span>
+                        </button>
+                    </div>
+                    <div class="col-xs-6 col-md-3 col-lg-3">
+                        <a href="https://www.youtube.com/user/portugolstudio" target="_blank" rel="nofollow">
+                            <img src="https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/ide/src/main/resources/br/univali/ps/ui/icones/Dark/grande/lite/videoaulas.png" class="img-responsive">
+                            <span>Videoaulas</span>
+                        </a>
+                    </div>
+                    <div class="hidden-xs visible-md visible-lg col-xs-0 col-md-3 col-lg-3">
+                        <a href="https://github.com/dgadelha/Portugol-Webstudio" target="_blank">
+                            <img src="https://git-scm.com/images/logos/downloads/Git-Icon-White.png" style="max-height:100px;padding-top:5px;padding-bottom:5px" class="img-responsive">
+                            <span>Código-fonte</span>
+                        </a>
+                    </div>
+                </div>
 
-				<div class="row hidden-xs" id="exp">
-					<div data-ax5layout="ax1" class="ax5layout" data-config="{layout:'dock-panel'}" id="ax1">
-						<div data-dock-panel="{dock:'left',split:true,width:250,minWidth:200,maxWidth:400}" style="overflow-y:auto" id="leftPanel">
-							<div class="res-cat">
-								<img src="https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/ide/src/main/resources/br/univali/ps/ui/icones/Dark/pequeno/light_pix.png"> <span>Exemplos</span>
-							</div>
+                <div class="row hidden-xs" id="exp">
+                    <div data-ax5layout="ax1" class="ax5layout" data-config="{layout:'dock-panel'}" id="ax1">
+                        <div data-dock-panel="{dock:'left',split:true,width:250,minWidth:200,maxWidth:400}" style="overflow-y:auto" id="leftPanel">
+                            <div class="res-cat">
+                                <img src="https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/ide/src/main/resources/br/univali/ps/ui/icones/Dark/pequeno/light_pix.png"> <span>Exemplos</span>
+                            </div>
 
-							<div class="jstree"></div>
-						</div>
+                            <div class="jstree"></div>
+                        </div>
 
-						<div data-dock-panel="{dock:'center'}" id="exc">
-							<div id="exc-content">
-								<div class="row row-exemplo-desc">
-									<div class="col-xs-9 col-md-9 col-lg-9">
-										<div class="res-cat" id="exemplo-desc-holder">
-											<span id="exemplo-desc">Selecione um exemplo ao lado para ver a descrição.</span>
-										</div>
-									</div>
+                        <div data-dock-panel="{dock:'center'}" id="exc">
+                            <div id="exc-content">
+                                <div class="row row-exemplo-desc">
+                                    <div class="col-xs-9 col-md-9 col-lg-9">
+                                        <div class="res-cat" id="exemplo-desc-holder">
+                                            <span id="exemplo-desc">Selecione um exemplo ao lado para ver a descrição.</span>
+                                        </div>
+                                    </div>
 
-									<div class="col-xs-3 col-md-3 col-lg-3">
-										<a class="res-cat res-cat-link hide" id="exemplo-go" href="#"><span>Explorar Exemplo</span></a>
-									</div>
-								</div>
+                                    <div class="col-xs-3 col-md-3 col-lg-3">
+                                        <a class="res-cat res-cat-link hide" id="exemplo-go" href="#"><span>Explorar Exemplo</span></a>
+                                    </div>
+                                </div>
 
-								<div class="row row-exemplo-editor hide">
-									<pre id="exemplo-editor" class="input"></pre>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+                                <div class="row row-exemplo-editor hide">
+                                    <pre id="exemplo-editor" class="input"></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-	<div class="hide" id="special"></div>
+    <div class="hide" id="special"></div>
 {% include "editor/scripts.twig" with {'ide': true} only %}
