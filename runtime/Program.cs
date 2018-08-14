@@ -1,13 +1,11 @@
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Threading;
 
 namespace portugol_runtime {
-    class Program {
-        private static readonly string[] reservadas = new[] { "~|^!+RUNTIME+!^|~", "~|^!+START+!^|~", "~|^!+END+!^|~", "~|^!+INPUT+!^|~", "~|^!+LIMPA+!^|~", "~|^!+SETIP+!^|~" };
+    internal static class Program {
+        private static readonly string[] reservadas = { "~|^!+RUNTIME+!^|~", "~|^!+START+!^|~", "~|^!+END+!^|~", "~|^!+INPUT+!^|~", "~|^!+LIMPA+!^|~", "~|^!+SETIP+!^|~" };
 
         private static void Filter(string filePath) {
             var texto = File.ReadAllText(filePath);
@@ -28,21 +26,17 @@ namespace portugol_runtime {
                     }
                 };
 
-                new Thread(() => {
-                    Thread.Sleep(1000);
-                    if (proc.WaitForExit(300000)) return;
-                    proc.Kill();
-                    Console.WriteLine("\nERRO >> Execuções com Portugol estão limitadas a 5 minutos (timeout)");
-                }) { IsBackground = true }.Start();
-
                 proc.Start();
-                proc.WaitForExit();
+                if (proc.WaitForExit(300000)) return;
+
+                proc.Kill();
+                Console.WriteLine("\nERRO >> Execuções com Portugol estão limitadas a 5 minutos (timeout)");
             } catch (Exception e) {
                 Console.WriteLine($"\nERRO >> {e.Message}");
             }
         }
 
-        static void Main(string[] args) {
+        private static void Main() {
             while (true) {
                 var comando = Console.ReadLine();
                 if (!comando.Contains("~|^!+RUNTIME+!^|~")) continue;
