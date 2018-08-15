@@ -18,7 +18,7 @@ RUN wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor 
     apt-get -qq update;
 
 # Install Java-8 and NetCore
-RUN apt-get -qq install dotnet-sdk-2.1 openjdk-8-jre -y;
+RUN apt-get -qq install dotnet-sdk-2.1 openjdk-8-jdk openjdk-8-jre -y;
 
 # Cleanup APT cache
 RUN apt-get clean;
