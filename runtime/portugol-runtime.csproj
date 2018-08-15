@@ -5,13 +5,16 @@
     <RuntimeIdentifiers>win-x64;debian.8-x64</RuntimeIdentifiers>
   </PropertyGroup>
   <ItemGroup>
-    <EmbeddedResource Include="javalibs\lib\antlr-runtime-3.4.jar">
+    <EmbeddedResource Include="javalibs\lib\antlr-runtime-3.5.2.jar">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="javalibs\lib\jlayer-1.0.1.jar">
+    <EmbeddedResource Include="javalibs\lib\commons-exec-1.3.jar">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="javalibs\lib\portugol-nucleo.jar">
+    <EmbeddedResource Include="javalibs\lib\jlayer-1.0.1-1.jar">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="javalibs\lib\portugol-core-2.6.9.jar">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="javalibs\portugol-console.jar">

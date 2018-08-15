@@ -1,7 +1,10 @@
 const fs = require('fs');
 const os = require('os');
+const iconv = require('iconv-lite');
 const pty = require('node-pty-prebuilt');
 const stripAnsi = require('strip-ansi');
+
+iconv.skipDecodeWarning = true;
 
 module.exports = io => {
     io.on('connection', socket => {
@@ -34,7 +37,7 @@ module.exports = io => {
         socket.on('input', code => {
             // Verifica se a trava está ativa e o código está ouvindo inputs do usuário. Se estiver ativa, emite a mensagem indicando para aguardar
             if (!listen) {
-                fs.writeFile(file, code, _ => {}); // Escrevemos o código em portugol temporariamente
+                fs.writeFile(file, iconv.encode(code, 'ISO-8859-1'), _ => {}); // Escrevemos o código em portugol temporariamente
                 term.write('~|^!+RUNTIME+!^|~' + file + '\r'); // Indicamos qual arquivo o RUNTIME deve ler
             } else {
                 socket.emit('output', '\nAguarde o fim da execução!');
@@ -48,7 +51,7 @@ module.exports = io => {
         socket.on('response', resp => {
             if (listen) {
                 resp = resp.replace('~|^!+', '').replace('+!^|~', ''); // Filtro de palavras reservadas
-                term.write(resp + '\r'); // Escreve input para o console virtual
+                term.write(resp.trim() + '\n'); // Escreve input para o console virtual
             }
         });
 
@@ -58,7 +61,7 @@ module.exports = io => {
          * É responsável por escrever de volta as informações por console, e determinar a trava de leitura e escrita.
          */
         term.on('data', data => {
-            data = stripAnsi(data.replace('~|^!+INPUT+!^|~', ''));
+            data = iconv.decode(stripAnsi(data.replace('~|^!+INPUT+!^|~', '')), 'ISO-8859-1');
 
             //console.log(data + ' = ' + data.indexOf('~|^!+START+!^|~'))
             if (listen) { // Verifica se está executando alguma coisa

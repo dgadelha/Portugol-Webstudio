@@ -21,7 +21,7 @@ namespace portugol_runtime {
 
                 var proc = new Process {
                     StartInfo = new ProcessStartInfo {
-                        Arguments = $"-Dfile.encoding=UTF-8 -Xms128m -Xmx512m -d64 -jar \"{AppDomain.CurrentDomain.BaseDirectory}javalibs/portugol-console.jar\" \"{filePath}\"",
+                        Arguments = $"-Dfile.encoding=UTF-8 -Xms128m -Xmx512m -d64 -jar \"{AppDomain.CurrentDomain.BaseDirectory}javalibs/portugol-console.jar\" -no-wait -webstudio \"{filePath}\"",
                         FileName = "java"
                     }
                 };
