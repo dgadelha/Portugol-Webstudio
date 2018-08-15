@@ -67,7 +67,7 @@ module.exports = io => {
                     // RUNTIME indicou que execução acabou
                     listen = false; // Define que não está executando (ouvindo) nada
                     socket.emit('hide-response', ''); // Desliga input de resposta
-                    socket.emit('output', data.replace('~|^!+END+!^|~', 'Programa finalizado.')); // Emite para o cliente o texto do console
+                    socket.emit('output', data.replace('~|^!+END+!^|~', '\nPrograma finalizado.')); // Emite para o cliente o texto do console
                 } else {
                     // Execução não acabou
                     socket.emit('output', data); // Emite para o cliente o texto do console
