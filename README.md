@@ -1,4 +1,4 @@
-<img src="https://raw.githubusercontent.com/dgadelha/Portugol-Webstudio/master/public/assets/landing/lightbulb.svg" width="123px" alt="Portugol Webstudio" align="right">
+<img src="https://cdn.rawgit.com/dgadelha/Portugol-Webstudio/master/public/assets/landing/lightbulb.svg" width="123px" alt="Portugol Webstudio" align="right">
 
 # Portugol Webstudio
 
