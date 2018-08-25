@@ -1,3 +1,5 @@
+'use strict';
+
 const express = require('express');
 const router = express.Router();
 const iconv = require('iconv-lite');
@@ -23,7 +25,7 @@ router.get('/ide/editor', (req, res) =>
 router.get('/ide/resp', (req, res, next) => {
     const file = req.query.file;
 
-    if (!file || !file.includes('Recursos') || file.substring(0,8) !== 'Recursos') {
+    if (!file || !file.startsWith('recursos/')) {
         return next();
     }
 

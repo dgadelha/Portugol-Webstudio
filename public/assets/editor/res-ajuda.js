@@ -7,7 +7,7 @@ $(window).bind("load", function() {
         var sid = data.changed.selected[0];
         var html = $("#" + sid).attr("data-html");
 
-        $("#mainFrame").attr("src", d.baseUrl + "resp?file=Recursos/ajuda/" + html);
+        $("#mainFrame").attr("src", d.baseUrl + "resp?file=recursos/ajuda/" + html);
     }).jstree({
         "core": {
             "themes": {

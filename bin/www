@@ -22,9 +22,11 @@ require('../socket')(io);
 /**
  * Listen on provided port, on all network interfaces.
  */
-server.listen(port);
-server.on('listening', () => {
-    console.log('Listening on', server.address());
+require('../recursos')(() => {
+    server.listen(port);
+    server.on('listening', () => {
+        console.log('\nListening on', server.address());
+    });
 });
 
 module.exports = server;

@@ -14,3 +14,8 @@ jspm_packages/
 runtime/bin/
 runtime/obj/
 runtime/dist/*/
+
+# Recursos
+public/recursos/
+public/recursos.temp/
+public/Portugol-Studio.zip
