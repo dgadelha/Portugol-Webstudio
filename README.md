@@ -8,7 +8,7 @@
 
 Baseado no Portugol Studio (UNIVALI), o **Portugol Webstudio** tenta trazer todo ambiente de desenvolvimento que é possível se encontrar no desktop, para a internet. Ele constitui-se de um ambiente de desenvolvimento construído para permitir a criação e a execução dos programas escritos em Portugol, trazendo assim uma experiência o mais próxima do que você pode encontrar da IDE do Portugol Studio. Portugol, também conhecido como Português estruturado, é um pseudocódigo escrito em português.
 
-![Captura de Tela](https://raw.githubusercontent.com/dgadelha/Portugol-Webstudio/master/public/assets/screenshot.png)
+![Captura de Tela](https://raw.githubusercontent.com/dgadelha/Portugol-Webstudio/7f44e82de38f8b5fa9fdda9201d060e42751ba85/public/assets/screenshot.png)
 
 ## Características
 
