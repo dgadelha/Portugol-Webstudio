@@ -2,6 +2,7 @@
 
 const AdmZip = require('adm-zip');
 const fs = require('fs');
+const ini = require('ini');
 const path = require('path');
 const request = require('request');
 
@@ -99,6 +100,55 @@ global.Tree = {
     }
 };
 
+function gerarIndiceExemplos(raiz) {
+    const excluidos = ['Jogos', 'Música', 'Arquivos', 'Graficos', 'Calendario', 'Internet'];
+    const jsTreeConfig = {
+        core: {
+            themes: {
+                name: 'default-dark',
+                dots: true,
+                icons: true
+            },
+
+            data: []
+        },
+
+        plugins: ['changed', 'types', 'wholerow']
+    };
+
+    const lerRecursivo = (parent, out) => {
+        const indice = ini.parse(fs.readFileSync(path.join(parent, 'index.properties')).toString());
+        const itens = parseInt(indice.items);
+
+        for (let i = 0; i < itens; i++) {
+            if (excluidos.includes(indice[`item${i}.name`])) continue;
+
+            const type = indice[`item${i}.type`];
+            let obj = {
+                text: indice[`item${i}.name`]
+            };
+
+            if (type === 'file') {
+                obj['icon'] = 'icone icone-exemplo';
+                obj['li_attr'] = {
+                    'data-description': indice[`item${i}.description`],
+                    'data-file': path.join(parent, indice[`item${i}.file`]).substring(__dirname.length + 8 /* /public/ */)
+                };
+            } else if (type === 'dir') {
+                obj['icon'] = 'icone icone-pasta';
+                obj['children'] = [];
+
+                lerRecursivo(path.join(parent, indice[`item${i}.dir`]), obj['children']);
+            }
+
+            out.push(obj);
+        }
+    };
+
+    lerRecursivo(raiz, jsTreeConfig.core.data);
+    fs.writeFileSync(path.join(raiz, 'index.json'), JSON.stringify(jsTreeConfig));
+}
+
 module.exports = callback => {
     const assetsPath = 'Portugol-Studio-master/ide/src/main/assets/';
     const recursos = path.join(__dirname, 'public', 'recursos/');
@@ -140,6 +190,9 @@ module.exports = callback => {
 
                 console.log('Gerando índice da aba Ajuda...');
                 require('./public/recursos/ajuda/scripts/topicos');
+
+                console.log('Gerando índice da seção Exemplos...');
+                gerarIndiceExemplos(path.join(recursos, 'exemplos/'));
 
                 console.log('Configuração de recursos concluída!');
                 callback();
