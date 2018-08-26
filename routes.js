@@ -50,6 +50,8 @@ router.post('/ide/editor/share', (req, res, next) => {
         body: req.rawBody,
         headers: {
             'Content-Type': 'application/json; charset=utf-8',
+            'X-Forwarded-For': req.ip,
+            'Client-IP': req.ip,
             'TE': 'Trailers'
         }
     }, (err, resp, body) => {

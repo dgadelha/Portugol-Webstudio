@@ -148,7 +148,9 @@ $(window).bind("load", function() {
         var key = document.location.hash.substring(7);
 
         $.get("/ide/editor/share/" + key, function(data) {
-            addTab('Código compartilado (#' + data.key + ')', data.data);
+            if (data && data.key && data.data) {
+                addTab('Código compartilhado (#' + data.key + ')', data.data);
+            }
         });
     }
 
