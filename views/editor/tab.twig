@@ -3,18 +3,30 @@
     <p>Carregando...</p>
 </div>
 
-<div data-ax5layout="editor-ax" data-config="{layout:'dock-panel'}" class="ide-layout" id="layout">
-    <div class="tbar" data-dock-panel="{dock:'left',split:false,height:250,minHeight:250,maxHeight:250,width:64,minWidth:64,maxWidth:64}">
-        <button title="Executar" class="tbb submit" id="submit-btn">
+<div data-ax5layout="editor-ax" data-config="{layout:'dock-panel',splitter:{size:6}}" class="ide-layout" id="layout">
+    <div class="tbar" data-dock-panel="{dock:'left',split:false,height:250,minHeight:250,maxHeight:250,width:54,minWidth:54,maxWidth:54}">
+        <button title="Executa o programa" class="tbb submit" id="submit-btn">
             <img src="https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/ide/src/main/resources/br/univali/ps/ui/icones/Dark/grande/resultset_next.png">
         </button>
 
-        <button title="Parar" class="tbb stop" id="stop-btn" disabled="disabled">
+        <button title="Interrompe a execução do programa atual" class="tbb stop" id="stop-btn" disabled="disabled">
             <img src="https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/ide/src/main/resources/br/univali/ps/ui/icones/Dark/grande/stop.png">
         </button>
 
-        <button title="Salvar" class="tbb save" id="save-btn">
+        <hr>
+
+        <button title="Salva uma nova cópia do programa atual no computador, em uma pasta escolhida pelo usuário" class="tbb save" id="save-btn">
             <img src="https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/ide/src/main/resources/br/univali/ps/ui/icones/Dark/grande/save_as.png">
+        </button>
+
+        <button title="Abre um arquivo .por" class="tbb open" id="open-btn">
+            <img src="https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/ide/src/main/resources/br/univali/ps/ui/icones/Dark/grande/open.png">
+        </button>
+
+        <hr>
+
+        <button title="Abre a ajuda com sintaxe e bibliotecas" class="tbb help" id="help-btn">
+            <img src="https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/ide/src/main/resources/br/univali/ps/ui/icones/Dark/grande/helplow.png">
         </button>
     </div>
 

@@ -96,12 +96,16 @@ body {
     background-color: #263238;
     color: #FFF;
     height: 45px;
-    margin-top: 10px;
-    border-radius: 0;
+    margin-top: 5px;
+    border-radius: 3px;
+}
+
+.tbb:first-child {
+    margin-top: 0;
 }
 
 .tbb:hover {
-    background-color: rgba(0,0,0,.1);
+    background-color: rgba(255,255,255,.1);
 }
 
 .tbb[disabled], .tbb[disabled]:hover {
@@ -126,7 +130,7 @@ body {
 }
 
 [data-ax5layout] > [data-splitter]{
-    background-color: rgb(25,36,42)
+    background-color: #263238;
 }
 
 .tabs {
@@ -136,13 +140,18 @@ body {
 }
 
 .tabs li {
-    margin-left: -5px;
+    margin-left: 1px;
     list-style: none;
     display: inline-block;
+    box-sizing: border-box;
 }
 
 .tabs li:first-child {
-    margin-left: 2px;
+    margin-left: 0;
+}
+
+.tabs li.secondary a.active {
+    box-shadow: 0 1px 0 #FFC200 inset;
 }
 
 .tabs a, .tabs > li > span.action {
@@ -151,6 +160,7 @@ body {
     background: rgb(68,80,86);
     color: #fff;
     text-decoration: none;
+    box-sizing: border-box;
 }
 
 .tabs a span.spacing-icon {
@@ -186,7 +196,14 @@ body {
     vertical-align: -2px;
 }
 
+.tabs a span.portugol-icon,
+.tabs a.active span.portugol-icon,
+.tabs a span.help-icon, .tabs a.active span.help-icon {
+    margin-right: 2.5px;
+}
+
 .tabs a span.portugol-icon {
+    margin-left: -1px;
     background-image: url("https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/ide/src/main/resources/br/univali/ps/ui/icones/Dark/pequeno/light_pix_off.png");
 }
 
@@ -203,6 +220,7 @@ body {
     background-image: url("https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/ide/src/main/resources/br/univali/ps/ui/icones/Dark/pequeno/white_close.png");
     width: 16px;
     height: 16px;
+    margin-left: 2.5px;
     vertical-align: -2px;
 }
 
@@ -212,13 +230,9 @@ body {
 }
 
 .tabs > li > span.action {
-    padding-left: 6px;
-    padding-right: 6px;
+    padding-left: 12.5px;
+    padding-right: 12.5px;
     cursor: pointer;
-}
-
-.tabs > li > span.action:last-child {
-    padding-right: 10px;
 }
 
 .tab {
@@ -236,7 +250,7 @@ body {
 }
 
 .tab-content {
-    background-color: #445056;
+    background-color: #263238;
     width: 100%;
     height: 100%;
 }
@@ -244,7 +258,12 @@ body {
 .tbar {
     background-color: #263238;
     text-align: center;
-    padding-top: 6px;
+}
+
+.tbar hr {
+    border-top: 1px solid #3A464C;
+    margin-bottom: 10px;
+    margin-top: 10px;
 }
 
 #btl {
@@ -252,23 +271,27 @@ body {
     text-align: center;
 }
 
+#btl button:first-child {
+    margin-left: 10px;
+}
+
 #btl button, #btl a {
-    display: block;
+    display: inline-block;
     color: #FFF;
     text-decoration: none;
     background-color: transparent;
     border: 0 none transparent;
-    width: 100%;
-    padding: 15px 0;
-    display: block;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 100%;
+    float: left;
+    box-sizing: border-box;
+    padding: 7.5px 15px;
+    font-size: 13px;
+    border-radius: 3px;
+    margin-right: 5px;
 }
 
 #btl button img, #btl a img {
     margin: auto;
+    height: 32px;
 }
 
 @media (max-width: 545px) {
@@ -279,27 +302,33 @@ body {
 
 #btl button span, #btl a span {
     display: block;
-    margin-top: 10px;
+    margin-top: 7.5px;
 }
 
 #btl button:hover, #btl a:hover {
-    background-color: rgba(0,0,0,.1);
+    background-color: rgba(255,255,255,.1);
 }
 
 #tab-inicio .tab-content {
-    display: flex;
-    flex-direction: column;
-}
-
-#exp {
-    flex: 1;
-    flex-grow: 1;
-    width: 100%;
     display: block;
+    width: 100%;
+    height: 100%;
 }
 
-.row-exemplo-editor {
-    height: calc(100% - 52px);
+.row-exemplo-desc {
+    width: 100%;
+    margin: 0;
+    background-color: #3A464C;
+    padding: 15px;
+
+    position: absolute;
+    bottom: 0;
+}
+
+#exemplo-desc-holder {
+    padding: 0;
+    margin: 0;
+    background-color: transparent;
 }
 
 #splash {
@@ -315,4 +344,16 @@ body {
     background-color: #263238;
     padding-left: 25px;
     padding-top: 15px;
+}
+
+@media (max-width: 767px) {
+    #exc {
+        width: 100% !important;
+        text-align: center;
+    }
+
+    #btl button, #btl a {
+        width: calc(100% - 30px);
+        margin: 7.5px 15px !important;
+    }
 }

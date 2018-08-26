@@ -1,11 +1,17 @@
-var editor;
-
 window.portugol = {
     codes: {},
 
     abrirExemplo: function(codigo, arquivo) {
         arquivo = arquivo.substring(arquivo.lastIndexOf("/") + 1);
         addTab(arquivo, codigo);
+    },
+
+    abrirArquivo: function() {
+        openFile();
+    },
+
+    abrirAjuda: function() {
+        abrirAjuda();
     }
 };
 
@@ -59,7 +65,7 @@ function limparCodigo(content) {
 function addTab(name = "Sem título", content = "") {
     var id = "t" + e7();
     var nid = id.replace(/-/g, "");
-    $(".tabs").append("<li><a href=\"#tab-" + id + "\" id=\"anchor-" + id + "\"><span class=\"portugol-icon\"></span> " + name + " <span title=\"Fechar aba\" class=\"close-icon\"></span></a></li>");
+    $("#tab-add").before("<li class=\"secondary\"><a href=\"#tab-" + id + "\" id=\"anchor-" + id + "\"><span class=\"portugol-icon\"></span> " + name + " <span title=\"Fechar aba\" class=\"close-icon\"></span></a></li>");
 
     if (content != "") {
         window.portugol.codes[nid] = content;
@@ -96,12 +102,6 @@ function bindHTML(tag) {
         var ttid = $(this.hash).attr("id");
         console.log("Exibindo: " + ttid);
 
-        if ($(".active").attr("id") == "anchor-inicio") {
-            $(".action").addClass("active");
-        } else {
-            $(".action").removeClass("active");
-        }
-
         $(window).trigger("resize");
         $(".ax5layout").trigger("resize");
     });
@@ -111,7 +111,7 @@ function abrirAjuda() {
     if ($("#anchor-ajuda")[0]) {
         $("#anchor-ajuda").trigger("click");
     } else {
-        $(".tabs").append("<li><a href=\"#tab-ajuda\" id=\"anchor-ajuda\"><span class=\"help-icon\"></span> Ajuda <span title=\"Fechar aba\" class=\"close-icon\"></span></a></li>");
+        $("#tab-add").before("<li class=\"secondary\"><a href=\"#tab-ajuda\" id=\"anchor-ajuda\"><span class=\"help-icon\"></span> Ajuda <span title=\"Fechar aba\" class=\"close-icon\"></span></a></li>");
 
         var tpl = '<div id="tab-ajuda" class="tab">';
         tpl += '<iframe src="' + d.baseUrl + 'ajuda"></iframe>';
@@ -154,19 +154,13 @@ $(window).bind("load", function() {
             d.exemplo.nome = file.substring(file.lastIndexOf("/") + 1);
             $.get(d.baseUrl + "resp?file=" + file, function(data) {
                 data = limparCodigo(data);
-                editor.getSession().setValue(data);
                 d.exemplo.codigo = data;
                 $("#exemplo-desc").text($("#" + sid).attr("data-description"));
                 $("#exemplo-go").removeClass("hide");
-                $(".row-exemplo-editor").removeClass("hide");
-                $(".row-exemplo-editor").height($("#exc-content").height() - $(".row-exemplo-desc").height());
-                var nheight = $("#exemplo-desc-holder").height() + 3;
-                $("#exemplo-go").height(nheight).css({ "line-height": nheight + "px" });
             });
         } else {
             d.exemplo.nome = false;
             d.exemplo.codigo = false;
-            $(".row-exemplo-editor").addClass("hide");
             $("#exemplo-go").addClass("hide");
             $("#exemplo-desc").text("Selecione um exemplo ao lado para ver a descrição.");
         }
@@ -209,15 +203,5 @@ $(window).bind("load", function() {
         if (d.exemplo.nome && d.exemplo.codigo) {
             addTab(d.exemplo.nome, d.exemplo.codigo);
         }
-
     });
-
-    editor = ace.edit("exemplo-editor");
-    editor.$blockScrolling = Infinity;
-    editor.setTheme("ace/theme/portugol");
-    editor.setFontSize(14);
-    editor.getSession().setMode("ace/mode/portugol");
-    editor.setShowPrintMargin(false);
-    editor.getSession().setUseSoftTabs(true);
-    editor.setReadOnly(true);
 });

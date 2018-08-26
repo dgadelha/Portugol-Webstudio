@@ -162,6 +162,14 @@ $(window).bind("load", function() {
         socket.emit("input", editor.getSession().getValue() + "\r");
     });
 
+    $("#open-btn").bind("click", function() {
+        window.parent.portugol.abrirArquivo();
+    });
+
+    $("#help-btn").bind("click", function() {
+        window.parent.portugol.abrirAjuda();
+    });
+
     $("#layout").ax5layout({
         onResize: function() {
             editor.resize();
