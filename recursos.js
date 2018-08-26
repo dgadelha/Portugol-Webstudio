@@ -44,6 +44,61 @@ function download(url, dest) {
     });
 }
 
+global.Tree = {
+    create: data => {
+        const jsTreeConfig = {
+            core: {
+                themes: {
+                    name: 'default-dark',
+                    dots: true,
+                    icons: true
+                },
+
+                data: []
+            },
+
+            types: {
+                default: {
+                    icon: 'icone icone-def'
+                }
+            },
+
+            plugins: ['changed', 'types', 'wholerow']
+        };
+
+        const lerRecursivo = (parent, out) => {
+            for (let i = 0; i < parent.length; i++) {
+                const obj = parent[i];
+                let jsTreeObj = {
+                    text: obj.titulo,
+
+                    li_attr: {
+                        'data-html': obj.html
+                    }
+                };
+
+                if (obj.subTopicos && obj.subTopicos.length > 0) {
+                    jsTreeObj['icon'] = 'icone icone-lib';
+                    jsTreeObj['children'] = [];
+
+                    lerRecursivo(obj.subTopicos, jsTreeObj['children']);
+                }
+
+                out.push(jsTreeObj);
+            }
+        }
+
+        lerRecursivo(data.data, jsTreeConfig.core.data);
+
+        jsTreeConfig.core.data[0]['state'] = {
+            selected: true,
+            opened: true
+        };
+
+        fs.writeFileSync(path.join(__dirname, 'public', 'recursos', 'ajuda', 'scripts', 'topicos.json'), JSON.stringify(jsTreeConfig));
+    }
+};
+
 module.exports = callback => {
     const assetsPath = 'Portugol-Studio-master/ide/src/main/assets/';
     const recursos = path.join(__dirname, 'public', 'recursos/');
@@ -82,6 +137,9 @@ module.exports = callback => {
                 fs.rmdirSync(path.join(recursosTemp, 'Portugol-Studio-master'));
                 fs.rmdirSync(recursosTemp);
                 fs.unlinkSync(psZip);
+
+                console.log('Gerando índice da aba Ajuda...');
+                require('./public/recursos/ajuda/scripts/topicos');
 
                 console.log('Configuração de recursos concluída!');
                 callback();
