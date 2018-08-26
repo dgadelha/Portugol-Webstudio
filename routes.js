@@ -3,6 +3,7 @@
 const express = require('express');
 const router = express.Router();
 const iconv = require('iconv-lite');
+const request = require('request');
 const path = require('path');
 const fs = require('fs');
 
@@ -21,6 +22,44 @@ router.get('/ide/ajuda', (_, res) => res.render('editor/ajuda'));
 
 router.get('/ide/editor', (req, res) =>
     res.render('editor/tab', { cid: req.query.cid, fnam: req.query.fnam }));
+
+router.get('/ide/editor/share/:id', (req, res, next) => {
+    request.get(`https://hastebin.com/documents/${req.params.id}`, (err, resp, body) => {
+        if (err) {
+            return next();
+        }
+
+        res.status(resp.statusCode).set(resp.headers).send(body).end();
+    })
+});
+
+router.post('/ide/editor/share', (req, res, next) => {
+    let data = '';
+    req.setEncoding('utf8');
+
+    req.on('data', function(chunk) {
+        data += chunk;
+    });
+
+    req.on('end', function() {
+        req.rawBody = data;
+        next();
+    });
+}, (req, res, next) => {
+    request.post('https://hastebin.com/documents', {
+        body: req.rawBody,
+        headers: {
+            'Content-Type': 'application/json; charset=utf-8',
+            'TE': 'Trailers'
+        }
+    }, (err, resp, body) => {
+        if (err) {
+            return next();
+        }
+
+        res.send(body).end();
+    });
+});
 
 router.get('/ide/resp', (req, res, next) => {
     const file = req.query.file;

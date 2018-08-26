@@ -144,6 +144,14 @@ $(window).bind("load", function() {
         $(window).trigger("resize");
     });
 
+    if (document.location.hash.length > 8) {
+        var key = document.location.hash.substring(7);
+
+        $.get("/ide/editor/share/" + key, function(data) {
+            addTab('Código compartilado (#' + data.key + ')', data.data);
+        });
+    }
+
     $.get("/recursos/exemplos/index.json", function(data) {
         $(".jstree")
             .on("changed.jstree", function(e, data) {

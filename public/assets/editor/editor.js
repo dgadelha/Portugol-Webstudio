@@ -170,6 +170,35 @@ $(window).bind("load", function() {
         window.parent.portugol.abrirAjuda();
     });
 
+    $("#share-btn").bind("click", function() {
+        if ($("#share-btn").attr("disabled") == "disabled") {
+            return;
+        }
+
+        $("#share-btn").attr("disabled", "disabled");
+
+        $.ajax({
+            type: "POST",
+            url: "/ide/editor/share",
+            contentType: 'text/plain; charset=UTF-8',
+            data: editor.getSession().getValue(),
+
+            success: function(data, textStatus, jqXHR) {
+                data = JSON.parse(data);
+                var key = data.key;
+                var outUrl = document.location.toString().substring(0, document.location.toString().indexOf(document.location.pathname)) + '/ide#share=' + key;
+                prompt('Copie o link de compartilhamento do seu código:', outUrl);
+                $("#share-btn").removeAttr("disabled");
+            },
+
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.error(errorThrown);
+                $("#share-btn").removeAttr("disabled");
+                alert("Ocorreu uma falha ao compartilhar o seu código. Por favor, tente novamente mais tarde.");
+            }
+        });
+    });
+
     $("#layout").ax5layout({
         onResize: function() {
             editor.resize();
