@@ -28,7 +28,13 @@
   },
   "now": {
     "name": "Portugol-Webstudio",
-    "alias": "portugol-webstudio.now.sh"
+    "alias": "portugol-webstudio.now.sh",
+    "public": true,
+    "type": "docker",
+    "version": 1,
+    "features": {
+        "cloud": "v1"
+    }
   },
   "homepage": "https://github.com/dgadelha/Portugol-Webstudio/Portugol-Webstudio#readme",
   "dependencies": {
