@@ -106,7 +106,9 @@ module.exports = io => {
             });
         } catch (e) {
             // declarações para manipular quaisquer exceções
-            socket.emit('output', "\nERRO => Serviço de compilação indisponível no momento!"); // passa o objeto de exceção para o manipulador de erro
+            socket.emit('hide-response', ''); // Desliga input de resposta
+            socket.emit('output', "\nERRO => Serviço de compilação indisponível no momento! Tente novamente em alguns segundos."); // passa o objeto de exceção para o manipulador de erro
+            listen = false;
         }
     });
 }
