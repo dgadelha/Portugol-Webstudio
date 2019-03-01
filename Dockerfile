@@ -8,6 +8,9 @@ WORKDIR /usr/src/app
 # where available (npm@5+)
 COPY package*.json ./
 
+RUN echo "*\thard\t64000" >> /etc/security/limits.conf && \
+    echo "*\tsoft\tnproc  64000" >> /etc/security/limits.conf;
+
 RUN apt-get -qq update && \
     apt-get -qq install build-essential software-properties-common dirmngr curl wget libunwind8 gettext apt-transport-https -y;
 
