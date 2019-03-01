@@ -63,6 +63,22 @@ router.post('/ide/editor/share', (req, res, next) => {
     });
 });
 
+const ajudaCss = fs.readFileSync(`${__dirname}/public/recursos/ajuda/estilos/ajuda.css`)
+    .toString()
+    .replace("${cor_letra}", "cdcdcd")
+    .replace("${cor_destaque}", "3a464c")
+    .replace("${cor_letra_titulo}", "cdcdcd")
+    .replace("${fundo_escuro}", "121e24")
+    .replace("${fundo_medio}", "263238")
+    .replace("${cor_3}", "f0433b")
+    .replace("${valor_cadeia}", "FFC200")
+    .replace("${valor_inteiro}", "00F0C0")
+    .replace("${valor_logico}", "F1433C")
+    .replace("${palavras_reservadas}", "F1433C")
+    .replace("${operador}", "E8E2B7")
+    .replace("${tipos}", "45BEFF")
+    .replace("${comentario_linha}", "66747B");
+
 router.get('/ide/resp', (req, res, next) => {
     const file = req.query.file;
 
@@ -100,8 +116,8 @@ router.get('/ide/resp', (req, res, next) => {
             data = data.replaceArray(['../../../../recursos/imagens/', '../../../recursos/imagens/', '../../recursos/imagens/'], '/recursos/ajuda/recursos/imagens/');
             data = data.replaceArray(['../../../../recursos/', '../../../recursos/', '../../recursos/'], 'recursos/ajuda/recursos/');
             data = data.replace(new RegExp('topicos/linguagem_portugol/', 'g'), '/ide/resp?file=recursos/ajuda/topicos/linguagem_portugol/');
-            data = data.replace('${ajuda}', 'Dark/ajuda.css');
-            data = data.replace('${syntax}', 'Dark/SyntaxHighlighter.css');
+            data = data.replace('/*${css}*/', ajudaCss);
+            data = data.replace('${syntax}', 'SyntaxHighlighter.css');
         } else if (extName == '.por') {
             data = iconv.decode(data, 'ISO-8859-1');
 
