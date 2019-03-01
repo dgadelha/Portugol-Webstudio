@@ -65,19 +65,19 @@ router.post('/ide/editor/share', (req, res, next) => {
 
 const ajudaCss = fs.readFileSync(`${__dirname}/public/recursos/ajuda/estilos/ajuda.css`)
     .toString()
-    .replace("${cor_letra}", "cdcdcd")
-    .replace("${cor_destaque}", "3a464c")
-    .replace("${cor_letra_titulo}", "cdcdcd")
-    .replace("${fundo_escuro}", "121e24")
-    .replace("${fundo_medio}", "263238")
-    .replace("${cor_3}", "f0433b")
-    .replace("${valor_cadeia}", "FFC200")
-    .replace("${valor_inteiro}", "00F0C0")
-    .replace("${valor_logico}", "F1433C")
-    .replace("${palavras_reservadas}", "F1433C")
-    .replace("${operador}", "E8E2B7")
-    .replace("${tipos}", "45BEFF")
-    .replace("${comentario_linha}", "66747B");
+    .replace(/\$\{cor_letra\}/g, "cdcdcd")
+    .replace(/\$\{cor_destaque\}/g, "3a464c")
+    .replace(/\$\{cor_letra_titulo\}/g, "cdcdcd")
+    .replace(/\$\{fundo_escuro\}/g, "121e24")
+    .replace(/\$\{fundo_medio\}/g, "263238")
+    .replace(/\$\{cor_3\}/g, "f0433b")
+    .replace(/\$\{valor_cadeia\}/g, "FFC200")
+    .replace(/\$\{valor_inteiro\}/g, "00F0C0")
+    .replace(/\$\{valor_logico\}/g, "F1433C")
+    .replace(/\$\{palavras_reservadas\}/g, "F1433C")
+    .replace(/\$\{operador\}/g, "E8E2B7")
+    .replace(/\$\{tipos\}/g, "45BEFF")
+    .replace(/\$\{comentario_linha\}/g, "66747B");
 
 router.get('/ide/resp', (req, res, next) => {
     const file = req.query.file;
