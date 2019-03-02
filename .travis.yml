@@ -2,25 +2,9 @@ sudo: required
 language: node_js
 node_js:
 - '8'
-
-before_deploy:
+install:
 - npm install
-- npm install -g now now-purge
-
-deploy:
-  provider: script
-  script: npm run deploy
-  skip_cleanup: true
-  on:
-    branch: master
-
-after_deploy:
-- npm run alias
-- now-purge -t $NOW_TOKEN --team $NOW_TEAM
-
-env:
-  global:
-  - NOW_TEAM: portwebstudio
-  - secure: pHfJhBhp3jro8mIj2vPxjhXjbWbUYq1lHTbTpo+NRu0fGHaSSme2eFrsUn5O/7dw1cGkBOQ1L81h6V35pxbn4TM6fLlx88hEdos11/MR6KujeA+ozIMf9CONBDy7eB7ASqpxQ00VRyBHPN+DH92/YEghckq8QGMkkgy7tQUP2rHlq5Tg7cNL8Fzo6HWa/7yzWP0J3fNPanUb2MuSAPICQRFi4qTUeMiHjIiiRVYtcr2LqPZni6soUZgF3YyGR0L5PRex7ns98/0ELcHsbW5Lz3ucVdHAbUFVL3nzsjg8/dLnXk2yaHRYQPHuDGgenaAi6NDyI37AQeyZDKztdY7AapD3JDEil4HvQikRbSc0+z/8/JjsC8th7hADWF/7nAK7H+OpX0o11Dul+D9T6n7KHkW04oVNOxRwhnpY1L4xABtgCAcr5FFtSgvwfCGFpOgB4y1jf1z3wY0DSfd8yrjiDLIVUNkxorxrqYAlckbHiAd5533RqmJ8+cbo5iKIgd8pPILhHHbtZ54EPrQZEYXgPaZ9GH60izhDobxsb1byF2rTka5QylNzWqTTnPMYJaQFiNFo7r2zkJmo+VpD5ZXwjDvPIiysKOI2RRvhkfTz/MychaJ0tno1gsUYbA10VVVp4Z2iRjqQ0HwFXeLLBxhf/4kHva4HjKpf6eMkmmQw6Q4=
-  - secure: dYzXvZ3DXdqwFacztdXjiia30pFHvJ2O+Eaa+5C4XwTtgPzf6enhbGnBDVbThlyOxCpECW4GFbJqygiJNcDofRa93avyaqrZo8R/ukVj/HBPaGd5eYWjr0noTBVyMrhsKYziF6b8LgeSkP1XwEt5jU3BzU0LUHKnawZM95YSaN8pYgTKnKl+4L1vkLCbWWa5YpcV/+Rx7a5cCDhd9MvAewG3KKHB+vnPpWiEIqC78OrYGBRi5Xb9ODaY+btkJcgK46Zi+yK58AGCcY/9Ygbl4SNtTTkYJOnyla6C9zsduy6/tVOYDDYD4PtTRoVMgWa3lR/hRLbOZnqroe4XCaqaEWcC8DG8mkf5SHFxakIgBGtq7Yy9+IkgWCrpugdlaq4mKh1nFxGCfizIGbxlVNAPSbXqgJ3XQIkx7O2Xe8FBozLZtLXuwKRW5mZv6e2d4dvqr2HcNaKgIdt95PsACQ7o3u7ajug+fTAJHQkmzuTbYu/GKhUYrl/YyiCIHqChsNOJz0jMB4py/JAmZmEvoKnByQgyBQhy55TXNYE3ZHZclkXXerSkZPAnCLcTZuFilROn1lp2x+6zjvmoe/PL0v4NBp8TSrJdtX2OkjGpYNkcNHAi2FMZO0FoUcHhVmH22bHJ8nH6cf5XErM1vWASj3Kx9/OrkjYB1xqNsGQlXD4GZZk=
-  - secure: jgXDQGTpZ1dPHJ2nlCmVltZejv1fPJjpJ9k3499ijpuh54mHJqwZlw/wiSbJrm6pDyrveGxki4yJIo1XFJkInoFbyGM/kHm1n1YPiaIZx0Z/rriXTwVmdEwzAAs2HTpQ4FeRfqqS9E19tssbb6IPPUC+0rp3PqfdtNhB8epDWicFHKx0LQOq1B9ylieECXwaD6hkN2OkBsC3fU3+KKrkef5cezM7YCvQGcYEE/Zwr0N3fP/DOMrHXtibbUOBXKmwcUU3WXy0K/HHamR2qw8pGKu/aNwifoygz24R9a+m+CF/WntygqCst300kXEYgc4VPvoKmVREkHPOyIPcOqkN6IlJyy0gK5BO353ivyyt9seHt8J6Ra/tBPxTJPipI6axnY3MxI5yG87kXs1K+g4iTdVQi6qkDVRl9StsKokm0U5m5knCKKmcOjNOygYtxN5csSLGkX+ktbfGMm1qIHN1h2lKAmALffd/kxm0zP3zSvN0yhsM8wl3v9JfNu5OqpISki00wE8lvRuz3Vmm5U3zXdr6GmLdrEeC4eaPtBGmqEGljAJ6tw9QhRIJ+z2Qh2JdTScpg4h+PRWTBeQa/lX4FY1na/7UNz0N164JmOuwVcCg/Jte539YCGL5zaXylxAU9namP1svIOPO4vfP0iUhQwc9eb8Bm2BvCskwXICikDA=
+- npm install -g eslint
+script:
+- find . -path ./node_modules -prune -o -name "*.js" -exec node -c {} \;
+- eslint ./*.js ./bin/www
