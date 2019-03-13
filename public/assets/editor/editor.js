@@ -86,7 +86,7 @@ $(window).bind("load", function() {
 
         if (input != "" && data.indexOf(input) > -1) {
             console.log("Ajeitando output...");
-            data = data.substring(input.length + 4);
+            data = data.substring(input.length + 2);
             input = "";
             console.log("Output novo: " + data);
         }
