@@ -118,6 +118,8 @@ router.get('/ide/resp', (req, res, next) => {
             data = data.replace(new RegExp('topicos/linguagem_portugol/', 'g'), '/ide/resp?file=recursos/ajuda/topicos/linguagem_portugol/');
             data = data.replace('/*${css}*/', ajudaCss);
             data = data.replace('${syntax}', 'SyntaxHighlighter.css');
+            data = data.replace('SyntaxHighlighter.css/>', 'SyntaxHighlighter.css"/>');
+            data = data.replace(/\$\{tema\}/g, 'Dark');
         } else if (extName == '.por') {
             data = iconv.decode(data, 'ISO-8859-1');
 
