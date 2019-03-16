@@ -5,8 +5,6 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "deploy": "now --public --team $NOW_TEAM -e NODE_ENV=production --token $NOW_TOKEN --docker",
-    "alias": "now alias --team $NOW_TEAM --token=$NOW_TOKEN",
     "test": "echo 'Procurando erros de sintaxe...' && find . -type f -not -path \"*node_modules*\" -name \"*.js\" -exec node -c {} \\;"
   },
   "repository": {

@@ -1,8 +1,8 @@
-<img src="https://cdn.rawgit.com/dgadelha/Portugol-Webstudio/master/public/assets/landing/lightbulb.svg" width="123px" alt="Portugol Webstudio" align="right">
+<img src="https://cdn.jsdelivr.net/gh/dgadelha/Portugol-Webstudio@master/public/assets/landing/lightbulb.svg" width="123px" alt="Portugol Webstudio" align="right">
 
 # Portugol Webstudio
 
-*IDE online para o Portugol (UNIVALI)*
+_IDE online para o Portugol (UNIVALI)_
 
 [![Estado de Build](https://travis-ci.org/dgadelha/Portugol-Webstudio.svg?branch=master)](https://travis-ci.org/dgadelha/Portugol-Webstudio) [![Licença](https://img.shields.io/badge/licen%C3%A7a-GPL-blue.svg)](https://github.com/dgadelha/Portugol-Webstudio/blob/master/LICENSE) [![Uptime Robot ratio (30 dias)](https://img.shields.io/uptimerobot/ratio/m779527785-838b3e8aaad99ab74a5ca00f.svg)](https://stats.uptimerobot.com/Z4wPBuEq7)
 
@@ -12,19 +12,21 @@ Baseado no Portugol Studio (UNIVALI), o **Portugol Webstudio** tenta trazer todo
 
 ## Características
 
-- Suporta abertura e escrita de arquivos `.por`
-- Permite editar e rodar múltiplos códigos ao mesmo tempo
-- Executado no console original do Portugol com interação em tempo real
-- Interface simples e idêntica ao Portugol Studio
+-   Suporta abertura e escrita de arquivos `.por`
+-   Permite editar e rodar múltiplos códigos ao mesmo tempo
+-   Executado no console original do Portugol com interação em tempo real
+-   Interface simples e idêntica ao Portugol Studio
 
 ## Compilando
 
 Certifique-se de possuir instalado:
-* [.NET SDK](https://www.microsoft.com/net/learn/get-started)
-* [Node.js](https://nodejs.org/en/download/) (8+)
-* [NPM](https://nodejs.org/en/download/) (5.0+)
+
+-   [.NET SDK](https://www.microsoft.com/net/learn/get-started)
+-   [Node.js](https://nodejs.org/en/download/) (8+)
+-   [NPM](https://nodejs.org/en/download/) (5.0+)
 
 Compile o Portugol Webstudio com:
+
 ```sh
 cd runtime
 ./compile_linux.sh OU .\\compile_windows.bat
@@ -35,13 +37,12 @@ npm start
 
 Após isto, você poderá acessar o aplicativo em: [http://127.0.0.1:3000](http://127.0.0.1:3000)
 
-> Versões anteriores do NPM e Node.js podem funcionar, embora não tenham sido testadas.
-
 ## Contribuidores
-- [Alisson Steffens](https://github.com/AlissonSteffens)
-- [Douglas Gadêlha](https://github.com/dgadelha)
-- [Guilherme Scaranse](https://github.com/guiscaranse)
-- [Laboratório de Inovação Tecnológica na Educação (LITE) da Universidade do Vale do Itajaí (UNIVALI)](https://github.com/UNIVALI-LITE)
+
+-   [Alisson Steffens](https://github.com/AlissonSteffens)
+-   [Douglas Gadêlha](https://github.com/dgadelha)
+-   [Guilherme Scaranse](https://github.com/guiscaranse)
+-   [Laboratório de Inovação Tecnológica na Educação (LITE) da Universidade do Vale do Itajaí (UNIVALI)](https://github.com/UNIVALI-LITE)
 
 ## Sobre o Projeto
 
@@ -49,12 +50,10 @@ Após isto, você poderá acessar o aplicativo em: [http://127.0.0.1:3000](http:
 
 **Co-autor:** [Guilherme Scaranse](mailto:guilherme.scaranse@ifba.edu.br)
 
-# Patrocinado por
-<a href="https://zeit.co/now"><img src="https://assets.zeit.co/image/upload/front/logos/white-bg-text-logo.svg" height="160"></a>
-
 ## Licença
+
     Portugol Webstudio - IDE online para o Portugol (UNIVALI)
-    Copyright (C) 2018  Douglas Gadêlha, Guilherme Scaranse e contribuidores
+    Copyright (C) 2019  Douglas Gadêlha, Guilherme Scaranse e contribuidores
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
