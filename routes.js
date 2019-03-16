@@ -7,6 +7,8 @@ const request = require('request');
 const path = require('path');
 const fs = require('fs');
 
+let ajudaCss = null;
+
 String.prototype.replaceArray = function(find, replace) {
     let replaceString = this;
 
@@ -63,21 +65,33 @@ router.post('/ide/editor/share', (req, res, next) => {
     });
 });
 
-const ajudaCss = fs.readFileSync(`${__dirname}/public/recursos/ajuda/estilos/ajuda.css`)
-    .toString()
-    .replace(/\$\{cor_letra\}/g, "cdcdcd")
-    .replace(/\$\{cor_destaque\}/g, "3a464c")
-    .replace(/\$\{cor_letra_titulo\}/g, "cdcdcd")
-    .replace(/\$\{fundo_escuro\}/g, "121e24")
-    .replace(/\$\{fundo_medio\}/g, "263238")
-    .replace(/\$\{cor_3\}/g, "f0433b")
-    .replace(/\$\{valor_cadeia\}/g, "FFC200")
-    .replace(/\$\{valor_inteiro\}/g, "00F0C0")
-    .replace(/\$\{valor_logico\}/g, "F1433C")
-    .replace(/\$\{palavras_reservadas\}/g, "F1433C")
-    .replace(/\$\{operador\}/g, "E8E2B7")
-    .replace(/\$\{tipos\}/g, "45BEFF")
-    .replace(/\$\{comentario_linha\}/g, "66747B");
+function getAjudaCss() {
+    if (ajudaCss !== null) {
+        return ajudaCss;
+    }
+
+    const fileName = `${__dirname}/public/recursos/ajuda/estilos/ajuda.css`;
+
+    if (fs.existsSync(fileName)) {
+        ajudaCss = fs.readFileSync()
+            .toString()
+            .replace(/\$\{cor_letra\}/g, "cdcdcd")
+            .replace(/\$\{cor_destaque\}/g, "3a464c")
+            .replace(/\$\{cor_letra_titulo\}/g, "cdcdcd")
+            .replace(/\$\{fundo_escuro\}/g, "121e24")
+            .replace(/\$\{fundo_medio\}/g, "263238")
+            .replace(/\$\{cor_3\}/g, "f0433b")
+            .replace(/\$\{valor_cadeia\}/g, "FFC200")
+            .replace(/\$\{valor_inteiro\}/g, "00F0C0")
+            .replace(/\$\{valor_logico\}/g, "F1433C")
+            .replace(/\$\{palavras_reservadas\}/g, "F1433C")
+            .replace(/\$\{operador\}/g, "E8E2B7")
+            .replace(/\$\{tipos\}/g, "45BEFF")
+            .replace(/\$\{comentario_linha\}/g, "66747B");
+    }
+
+    return ajudaCss;
+}
 
 router.get('/ide/resp', (req, res, next) => {
     const file = req.query.file;
@@ -116,7 +130,7 @@ router.get('/ide/resp', (req, res, next) => {
             data = data.replaceArray(['../../../../recursos/imagens/', '../../../recursos/imagens/', '../../recursos/imagens/'], '/recursos/ajuda/recursos/imagens/');
             data = data.replaceArray(['../../../../recursos/', '../../../recursos/', '../../recursos/'], 'recursos/ajuda/recursos/');
             data = data.replace(new RegExp('topicos/linguagem_portugol/', 'g'), '/ide/resp?file=recursos/ajuda/topicos/linguagem_portugol/');
-            data = data.replace('/*${css}*/', ajudaCss);
+            data = data.replace('/*${css}*/', getAjudaCss());
             data = data.replace('${syntax}', 'SyntaxHighlighter.css');
             data = data.replace('SyntaxHighlighter.css/>', 'SyntaxHighlighter.css"/>');
             data = data.replace(/\$\{tema\}/g, 'Dark');
