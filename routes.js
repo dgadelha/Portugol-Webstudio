@@ -73,7 +73,7 @@ function getAjudaCss() {
     const fileName = `${__dirname}/public/recursos/ajuda/estilos/ajuda.css`;
 
     if (fs.existsSync(fileName)) {
-        ajudaCss = fs.readFileSync()
+        ajudaCss = fs.readFileSync(fileName)
             .toString()
             .replace(/\$\{cor_letra\}/g, "cdcdcd")
             .replace(/\$\{cor_destaque\}/g, "3a464c")
