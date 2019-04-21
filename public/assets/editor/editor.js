@@ -126,6 +126,8 @@ $(window).bind("load", function() {
             type: "application/octet-stream; charset=ISO-8859-1",
         });
 
+        efnam = window.parent.portugol.fileNames[ecid];
+
         if (!efnam) {
             efnam = "Sem título";
         }

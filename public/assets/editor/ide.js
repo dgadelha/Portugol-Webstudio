@@ -1,5 +1,6 @@
 window.portugol = {
     codes: {},
+    fileNames: {},
 
     abrirExemplo: function(codigo, arquivo) {
         arquivo = arquivo.substring(arquivo.lastIndexOf("/") + 1);
@@ -65,11 +66,13 @@ function limparCodigo(content) {
 function addTab(name = "Sem título", content = "") {
     var id = "t" + e7();
     var nid = id.replace(/-/g, "");
-    $("#tab-add").before("<li class=\"secondary\"><a href=\"#tab-" + id + "\" id=\"anchor-" + id + "\"><span class=\"portugol-icon\"></span> " + name + " <span title=\"Fechar aba\" class=\"close-icon\"></span></a></li>");
+    $("#tab-add").before("<li class=\"secondary\"><a href=\"#tab-" + id + "\" id=\"anchor-" + id + "\"><span class=\"portugol-icon\"></span> <span class=\"name\">" + name + "</span> <span title=\"Fechar aba\" class=\"close-icon\"></span></a></li>");
 
     if (content != "") {
         window.portugol.codes[nid] = content;
     }
+
+    window.portugol.fileNames[nid] = name;
 
     var tpl = '<div id="tab-' + id + '" class="tab">';
     tpl += '<iframe src="' + d.baseUrl + 'editor?fnam=' + encodeURIComponent(name) + '&cid=' + encodeURIComponent(nid) + '"></iframe>';
@@ -93,13 +96,24 @@ function bindHTML(tag) {
     tag.bind("click", function(e) {
         e.preventDefault();
 
+        var ttid = $(this.hash).attr("id");
+        var nid = ttid.substring(4).replace(/-/g, "");
+
+        if ($(this).hasClass("active") && $(this).parent().hasClass("secondary")) {
+            var name = prompt("Informe o novo nome:", $(this).children(".name").text());
+
+            if (name) {
+                $(this).children(".name").text(name);
+                window.portugol.fileNames[nid] = name;
+            }
+        }
+
         $("ul.tabs a.active").removeClass("active");
         $(".tab").hide();
 
         $(this).addClass("active");
         $(this.hash).show();
 
-        var ttid = $(this.hash).attr("id");
         console.log("Exibindo: " + ttid);
 
         $(window).trigger("resize");
