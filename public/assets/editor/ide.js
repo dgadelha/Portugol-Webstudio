@@ -66,7 +66,7 @@ function limparCodigo(content) {
 function addTab(name = "Sem título", content = "") {
     var id = "t" + e7();
     var nid = id.replace(/-/g, "");
-    $("#tab-add").before("<li class=\"secondary\"><a href=\"#tab-" + id + "\" id=\"anchor-" + id + "\"><span class=\"portugol-icon\"></span> <span class=\"name\">" + name + "</span> <span title=\"Fechar aba\" class=\"close-icon\"></span></a></li>");
+    $("#tab-add").before("<li class=\"secondary secondary-file\"><a href=\"#tab-" + id + "\" id=\"anchor-" + id + "\"><span class=\"portugol-icon\"></span> <span class=\"name\">" + name + "</span> <span title=\"Fechar aba\" class=\"close-icon\"></span></a></li>");
 
     if (content != "") {
         window.portugol.codes[nid] = content;
@@ -99,7 +99,7 @@ function bindHTML(tag) {
         var ttid = $(this.hash).attr("id");
         var nid = ttid.substring(4).replace(/-/g, "");
 
-        if ($(this).hasClass("active") && $(this).parent().hasClass("secondary")) {
+        if ($(this).hasClass("active") && $(this).parent().hasClass("secondary-file")) {
             var name = prompt("Informe o novo nome:", $(this).children(".name").text());
 
             if (name) {
