@@ -191,6 +191,7 @@ $(window).bind("load", function() {
                     $("#exemplo-desc").text("Selecione um exemplo ao lado para ver a descrição.");
                 }
             })
+            .dblclick(abrirArquivoParaEdicao)
             .jstree(data);
     });
 
@@ -212,12 +213,14 @@ $(window).bind("load", function() {
         abrirAjuda();
     });
 
-    $("#exemplo-go").bind("click", function(e) {
+    $("#exemplo-go").bind("click", abrirArquivoParaEdicao);
+
+    function abrirArquivoParaEdicao(e) {
         e.preventDefault();
         e.defaultPrevented = true;
 
         if (d.exemplo.nome && d.exemplo.codigo) {
             addTab(d.exemplo.nome, d.exemplo.codigo);
         }
-    });
+    }
 });
