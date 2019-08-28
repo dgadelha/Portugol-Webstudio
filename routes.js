@@ -26,7 +26,7 @@ router.get('/ide/editor', (req, res) =>
     res.render('editor/tab', { cid: req.query.cid, fnam: req.query.fnam }));
 
 router.get('/ide/editor/share/:id', (req, res, next) => {
-    request.get(`https://hastebin.com/documents/${req.params.id}`, (err, resp, body) => {
+    request.get(`https://pastie.io/documents/${req.params.id}`, (err, resp, body) => {
         if (err) {
             return next();
         }
@@ -48,7 +48,7 @@ router.post('/ide/editor/share', (req, res, next) => {
         next();
     });
 }, (req, res, next) => {
-    request.post('https://hastebin.com/documents', {
+    request.post('https://pastie.io/documents', {
         body: req.rawBody,
         headers: {
             'Content-Type': 'application/json; charset=utf-8',
