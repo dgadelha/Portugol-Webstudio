@@ -41,7 +41,7 @@
     "iconv-lite": "^0.4.24",
     "ini": "^1.3.5",
     "morgan": "^1.9.1",
-    "node-pty-prebuilt": "^0.7.6",
+    "node-pty": "^0.9.0-beta27",
     "request": "^2.88.0",
     "socket.io": "^2.2.0",
     "strip-ansi": "^5.2.0",
