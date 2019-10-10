@@ -1,37 +1,20 @@
-FROM node:10-stretch
+FROM mcr.microsoft.com/dotnet/core/sdk:2.2-alpine AS dotnet-build
+WORKDIR /app
+COPY runtime .
+RUN sh compile_linux.sh
 
-# Create app directory
+FROM alpine:3.9
+RUN apk add --no-cache nodejs npm openjdk8 python2 make g++ icu libintl
+
 WORKDIR /usr/src/app
-
-# Install app dependencies
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
-# where available (npm@5+)
 COPY package*.json ./
 
-RUN echo -e "*\thard\t64000" >> /etc/security/limits.conf && \
-    echo -e "*\tsoft\tnproc  64000" >> /etc/security/limits.conf;
+RUN npm ci --prod
 
-RUN apt-get -qq update && \
-    apt-get -qq install build-essential software-properties-common dirmngr curl wget libunwind8 gettext apt-transport-https -y;
-
-# Install repos
-RUN wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.asc.gpg && \
-    mv microsoft.asc.gpg /etc/apt/trusted.gpg.d/ && \
-    wget -q https://packages.microsoft.com/config/debian/9/prod.list -O /etc/apt/sources.list.d/microsoft-prod.list && \
-    apt-get -qq update;
-
-# Install Java-8 and NetCore
-RUN apt-get -qq install dotnet-sdk-2.1 openjdk-8-jdk openjdk-8-jre -y;
-
-# Cleanup APT cache
-RUN apt-get clean;
-
-RUN npm install;
-
-# Bundle app source
 COPY . .
-RUN cd runtime && \
-    bash compile_linux.sh;
+COPY --from=dotnet-build /app/dist/ runtime/dist/
+
+ENV PATH="/usr/lib/jvm/java-1.8-openjdk/bin:$PATH"
 
 EXPOSE 3000
 CMD [ "npm", "start" ]
