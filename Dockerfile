@@ -3,8 +3,8 @@ WORKDIR /app
 COPY runtime .
 RUN sh compile_linux.sh
 
-FROM alpine:3.9
-RUN apk add --no-cache nodejs npm openjdk8 python2 make g++ icu libintl
+FROM node:12-alpine
+RUN apk add --no-cache openjdk8 python2 make g++ icu libintl
 
 WORKDIR /usr/src/app
 COPY package*.json ./

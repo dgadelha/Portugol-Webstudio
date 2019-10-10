@@ -56,7 +56,7 @@ router.post('/ide/editor/share', (req, res, next) => {
             'Client-IP': req.ip,
             'TE': 'Trailers'
         }
-    }, (err, resp, body) => {
+    }, (err, _, body) => {
         if (err) {
             return next();
         }
