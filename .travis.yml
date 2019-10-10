@@ -11,8 +11,8 @@ script:
 deploy:
   provider: script
   script: |
-    echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-    docker build --pull -t dgadelha/portugol-webstudio:v$TRAVIS_BUILD_NUMBER .
+    echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin && \
+    docker build --pull -t dgadelha/portugol-webstudio:v$TRAVIS_BUILD_NUMBER . && \
     docker push dgadelha/portugol-webstudio:v$TRAVIS_BUILD_NUMBER
   on:
     branch: master
