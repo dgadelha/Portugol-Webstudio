@@ -1,19 +1,19 @@
-sudo: required
+os: linux
 language: node_js
 node_js:
-- '8'
+- '10'
 install:
-- npm install
-- npm install -g eslint
+- npm ci
+- npm i -g eslint
 script:
 - find . -path ./node_modules -prune -o -name "*.js" -exec node -c {} \;
 - eslint ./*.js ./bin/www
 deploy:
   provider: script
-  script:
-  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-  - docker build --pull -t dgadelha/portugol-webstudio:v$TRAVIS_BUILD_NUMBER .
-  - docker push dgadelha/portugol-webstudio:v$TRAVIS_BUILD_NUMBER
+  script: |
+    echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+    docker build --pull -t dgadelha/portugol-webstudio:v$TRAVIS_BUILD_NUMBER .
+    docker push dgadelha/portugol-webstudio:v$TRAVIS_BUILD_NUMBER
   on:
     branch: master
 env:
