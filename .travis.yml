@@ -8,3 +8,14 @@ install:
 script:
 - find . -path ./node_modules -prune -o -name "*.js" -exec node -c {} \;
 - eslint ./*.js ./bin/www
+deploy:
+  provider: script
+  script:
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  - docker build --pull -t dgadelha/portugol-webstudio:v$TRAVIS_BUILD_NUMBER .
+  - docker push dgadelha/portugol-webstudio:v$TRAVIS_BUILD_NUMBER
+  on:
+    branch: master
+env:
+  global:
+    secure: vRJcmaayrlGbuf8jgRByDWCSzRbuOoJkiqm+Fu6/Qf3wkulxkvfj024HzorR9XWJ9He/d5zoX6rYxFWuv4hArZxKb8B09Z0qditFGu0P3fI/j2+omZn8/ueQU/CdAOHZGBdANJtaDjQLRi51ED6kF6Efo3UVeJXkQvFhQqxloODJ8Vxl2HyaUbOqXeYVOlCGOnwLYGocqfVCNzNtCkvgGpA6SJ/+pEPoUUZZyJ6rjJEjkmH6MPfgxTMWXyJPTkhIXaWeXLo4Guv2kQHJfwzqq5hpXU/nAqDgxGW2gfVWc/YTWmh+/Q69pKd3qkC5YEH5CasNTBLKEIdq5qo+ZB11VCt2wUAi5cWMqMM8qXpJACDtzNTlBaivbdgUOD4E7h1XW/VIKwWJGpOah7iH/zLBggDnhr60G0Gv3S0b5SJ9jimMyNGsYSXVVa42gJnC71FRsSdlZi5aFb5lRUiq8GWAcaVwcyEyIMlNmqiXr84KRjtnnNsiMRoIhdukudKo182jGcwFDH7VB7GUZZ4dLq+JxuY8xXkJ8m7JoZaaEo1T2yrQ7i/7mvQbS2IQcSxTGUuGPMV8GrQzLIISiOn4Xk40E3S8txwEA2RzVW/MbGM6TDXdLuTSknd4LdyuX1pV3lsQ8kY37O/Cocyw0hHgn6wbFPyywnjFmwgCrkvwc2sXVyY=
