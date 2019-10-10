@@ -3,7 +3,7 @@
 const fs = require('fs');
 const os = require('os');
 const iconv = require('iconv-lite');
-const pty = require('node-pty-prebuilt');
+const pty = require('node-pty');
 const stripAnsi = require('strip-ansi');
 
 iconv.skipDecodeWarning = true;
@@ -16,10 +16,11 @@ module.exports = io => {
         console.log('Usuário conectado!');
 
         let listen = false;
-        const shell_location = `${__dirname}/runtime` + (os.platform() === 'win32' ? '/dist/win-x64' : '/dist/debian.8-x64');
+        const shell_location = `${__dirname}/runtime/dist`;
         const shell = `${shell_location}/portugol-runtime` + (os.platform() === 'win32' ? '.exe' : '');
         let term;
         console.log(`Iniciando em ${shell}`);
+
         try {
             term = pty.spawn(shell, [''], {
                 name: 'xterm',
@@ -105,6 +106,8 @@ module.exports = io => {
                 term.destroy();
             });
         } catch (e) {
+            console.error(e);
+
             // declarações para manipular quaisquer exceções
             socket.emit('hide-response', ''); // Desliga input de resposta
             socket.emit('output', "\nERRO => Serviço de compilação indisponível no momento! Tente novamente em alguns segundos."); // passa o objeto de exceção para o manipulador de erro
