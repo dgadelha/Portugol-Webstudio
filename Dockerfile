@@ -3,8 +3,8 @@ WORKDIR /app
 COPY runtime .
 RUN sh compile_linux.sh
 
-FROM mcr.microsoft.com/dotnet/core/runtime:2.2-alpine
-RUN apk add --no-cache nodejs npm openjdk8 python2 make g++
+FROM alpine:3.9
+RUN apk add --no-cache nodejs npm openjdk8 python2 make g++ icu libintl
 
 WORKDIR /usr/src/app
 COPY package*.json ./
