@@ -2,11 +2,11 @@
 
 # Portugol Webstudio
 
-_IDE online para o Portugol (UNIVALI)_
+_IDE online para o Portugol_
 
 [![Estado de Build](https://travis-ci.org/dgadelha/Portugol-Webstudio.svg?branch=master)](https://travis-ci.org/dgadelha/Portugol-Webstudio) [![Licença](https://img.shields.io/badge/licen%C3%A7a-GPL-blue.svg)](https://github.com/dgadelha/Portugol-Webstudio/blob/master/LICENSE) [![Uptime Robot ratio (30 dias)](https://img.shields.io/uptimerobot/ratio/m779527785-838b3e8aaad99ab74a5ca00f.svg)](https://stats.uptimerobot.com/Z4wPBuEq7)
 
-Baseado no Portugol Studio (UNIVALI), o **Portugol Webstudio** tenta trazer todo ambiente de desenvolvimento que é possível se encontrar no desktop, para a internet. Ele constitui-se de um ambiente de desenvolvimento construído para permitir a criação e a execução dos programas escritos em Portugol, trazendo assim uma experiência o mais próxima do que você pode encontrar da IDE do Portugol Studio. Portugol, também conhecido como Português estruturado, é um pseudocódigo escrito em português.
+Baseado no Portugol Studio, o **Portugol Webstudio** tenta trazer todo ambiente de desenvolvimento que é possível se encontrar no desktop, para a internet. Ele constitui-se de um ambiente de desenvolvimento construído para permitir a criação e a execução dos programas escritos em Portugol, trazendo assim uma experiência o mais próxima do que você pode encontrar da IDE do Portugol Studio. Portugol, também conhecido como Português estruturado, é um pseudocódigo escrito em português.
 
 ![Captura de Tela](https://raw.githubusercontent.com/dgadelha/Portugol-Webstudio/7f44e82de38f8b5fa9fdda9201d060e42751ba85/public/assets/screenshot.png)
 
@@ -21,9 +21,8 @@ Baseado no Portugol Studio (UNIVALI), o **Portugol Webstudio** tenta trazer todo
 
 Certifique-se de possuir instalado:
 
--   [.NET SDK](https://www.microsoft.com/net/learn/get-started)
--   [Node.js](https://nodejs.org/en/download/) (8+)
--   [NPM](https://nodejs.org/en/download/) (5.0+)
+-   [.NET Core SDK 2.2+](https://www.microsoft.com/net/learn/get-started)
+-   [Node.js](https://nodejs.org/en/download/) (12+)
 
 Compile o Portugol Webstudio com:
 
@@ -31,7 +30,7 @@ Compile o Portugol Webstudio com:
 cd runtime
 ./compile_linux.sh OU .\\compile_windows.bat
 cd ..
-npm install
+npm ci
 npm start
 ```
 
@@ -48,11 +47,11 @@ Após isto, você poderá acessar o aplicativo em: [http://127.0.0.1:3000](http:
 
 **Autor:** [Douglas Gadêlha](mailto:dgadelha@live.com)
 
-**Co-autor:** [Guilherme Scaranse](mailto:guilherme.scaranse@ifba.edu.br)
+**Co-autor:** [Guilherme Scaranse](mailto:guiscaranse@gmail.com)
 
 ## Licença
 
-    Portugol Webstudio - IDE online para o Portugol (UNIVALI)
+    Portugol Webstudio - IDE online para o Portugol
     Copyright (C) 2019  Douglas Gadêlha, Guilherme Scaranse e contribuidores
 
     This program is free software: you can redistribute it and/or modify
