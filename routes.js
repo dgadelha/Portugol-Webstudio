@@ -19,6 +19,8 @@ String.prototype.replaceArray = function(find, replace) {
     return replaceString;
 };
 
+router.get('/_health', (_, res) => res.send('OK'));
+
 router.get('/ide', (_, res) => res.render('editor/ide'));
 router.get('/ide/ajuda', (_, res) => res.render('editor/ajuda'));
 
