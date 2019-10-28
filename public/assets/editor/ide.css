@@ -305,6 +305,11 @@ body {
     margin-top: 7.5px;
 }
 
+#btl button.partner-info span, #btl a.partner-info span {
+    margin-top: 0;
+    margin-bottom: 7.5px;
+}
+
 #btl button:hover, #btl a:hover {
     background-color: rgba(255,255,255,.1);
 }

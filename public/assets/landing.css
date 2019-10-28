@@ -738,3 +738,15 @@ a {
         text-align: center;
     }
 }
+
+a.partner-info {
+    display: block;
+    margin-top: 25px;
+    text-decoration: none;
+}
+
+.partner-info img {
+    display: block;
+    margin-top: 15px;
+    max-width: 150px;
+}
