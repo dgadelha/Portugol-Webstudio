@@ -7,5 +7,5 @@ fi
 
 dotnet publish -c Release -r $RUNTIME_ID
 rm -rf dist
-mv ./bin/Release/netcoreapp2.2/$RUNTIME_ID/publish ./dist
+mv ./bin/Release/netcoreapp3.1/$RUNTIME_ID/publish ./dist
 mkdir ./dist/temp/

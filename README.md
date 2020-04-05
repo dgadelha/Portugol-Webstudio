@@ -21,8 +21,9 @@ Baseado no Portugol Studio, o **Portugol Webstudio** tenta trazer todo ambiente 
 
 Certifique-se de possuir instalado:
 
--   [.NET Core SDK 2.2+](https://www.microsoft.com/net/learn/get-started)
--   [Node.js](https://nodejs.org/en/download/) (12+)
+-   [.NET Core SDK 3.1+](https://www.microsoft.com/net/learn/get-started)
+-   [Node.js LTS](https://nodejs.org/en/download/)
+-   [JDK 11](https://www.oracle.com/java/technologies/javase-jdk11-downloads.html)
 
 Compile o Portugol Webstudio com:
 
@@ -52,7 +53,7 @@ Após isto, você poderá acessar o aplicativo em: [http://127.0.0.1:3000](http:
 ## Licença
 
     Portugol Webstudio - IDE online para o Portugol
-    Copyright (C) 2019  Douglas Gadêlha, Guilherme Scaranse e contribuidores
+    Copyright (C) 2020  Douglas Gadêlha, Guilherme Scaranse e contribuidores
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
