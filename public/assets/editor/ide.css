@@ -131,6 +131,7 @@ body {
 
 [data-ax5layout] > [data-splitter]{
     background-color: #263238;
+    top: 0;
 }
 
 .tabs {
@@ -355,6 +356,10 @@ body {
     #exc {
         width: 100% !important;
         text-align: center;
+    }
+
+    #srv {
+        display: none;
     }
 
     #btl button, #btl a {
