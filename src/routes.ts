@@ -82,7 +82,7 @@ function getAjudaCss() {
 router.get("/ide/resp", (req, res, next) => {
   const { file } = req.query;
 
-  if (!file || typeof file !== "string" || !file.startsWith("recursos/")) {
+  if (!file || typeof file !== "string" || !/^\/?recursos\//u.test(file)) {
     return next();
   }
 

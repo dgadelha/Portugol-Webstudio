@@ -7,17 +7,13 @@ import stripAnsi from "strip-ansi";
 
 export default (io: SocketIo.Server) => {
   io.on("connection", socket => {
-    /**
-     * Usuário se conectou então nós criamos o terminal e definimos a trava (listen)
-     */
-    console.log("Usuário conectado!");
+    // Usuário se conectou então nós criamos o terminal e definimos a trava (listen)
+    console.log(`Usuário ${socket.id} conectado!`);
 
     let listen = false;
     const shell_location = `${__dirname}/runtime/dist`;
     const shell = `${shell_location}/portugol-runtime${os.platform() === "win32" ? ".exe" : ""}`;
     let term: pty.IPty;
-
-    console.log(`Iniciando em ${shell}`);
 
     try {
       term = pty.spawn(shell, [""], {
@@ -35,7 +31,7 @@ export default (io: SocketIo.Server) => {
        * socket.on(input):
        * trigger responsável por receber o código do portugol, escrever no arquivo temporário e passar para o RUNTIME
        */
-      socket.on("input", code => {
+      socket.on("input", (code: string) => {
         // Verifica se a trava está ativa e o código está ouvindo inputs do usuário. Se estiver ativa, emite a mensagem indicando para aguardar
         if (listen) {
           socket.emit("output", "\nAguarde o fim da execução!");
@@ -58,11 +54,11 @@ export default (io: SocketIo.Server) => {
       });
 
       /**
-       * term.on(data):
+       * term.onData:
        * trigger que é ativado quando existe movimentação de texto no console virtual.
        * É responsável por escrever de volta as informações por console, e determinar a trava de leitura e escrita.
        */
-      term.on("data", data => {
+      term.onData(data => {
         const content = iconv.decode(
           Buffer.from(stripAnsi(data.replace("~|^!+INPUT+!^|~", "")), "latin1"),
           "ISO-8859-1",
@@ -123,6 +119,7 @@ export default (io: SocketIo.Server) => {
         "output",
         "\nERRO => Serviço de compilação indisponível no momento! Tente novamente em alguns segundos.",
       ); // passa o objeto de exceção para o manipulador de erro
+
       listen = false;
     }
   });

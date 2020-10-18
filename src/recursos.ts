@@ -1,6 +1,6 @@
 import AdmZip from "adm-zip";
 import axios from "axios";
-import { createWriteStream, existsSync, readFileSync, renameSync, rmdirSync, unlinkSync, writeFileSync } from "fs";
+import { createWriteStream, existsSync, promises as fs, readFileSync, writeFileSync } from "fs";
 import { parse } from "ini";
 import { join } from "path";
 import { Stream } from "stream";
@@ -17,12 +17,12 @@ async function download(url: string, dest: string) {
       });
     } else {
       file.close();
-      unlinkSync(dest); // Delete temp file
+      await fs.unlink(dest); // Delete temp file
       throw `Server responded with ${res.status}`;
     }
   } catch (e) {
     file.close();
-    unlinkSync(dest); // Delete temp file
+    await fs.unlink(dest); // Delete temp file
 
     throw e;
   }
@@ -154,7 +154,7 @@ function gerarIndiceExemplos(raiz: string) {
   writeFileSync(join(raiz, "index.json"), JSON.stringify(jsTreeConfig));
 }
 
-export default async (callback: () => void) => {
+export async function configurarRecursos() {
   const assetsPath = "Portugol-Studio-master/ide/src/main/assets/";
   const recursos = join(__dirname, "public", "recursos/");
   const recursosTemp = join(__dirname, "public", "recursos.temp/");
@@ -162,7 +162,7 @@ export default async (callback: () => void) => {
 
   // Excluir o ZIP caso tenha havido uma interrupção durante o download anterior
   if (existsSync(psZip)) {
-    unlinkSync(psZip);
+    await fs.unlink(psZip);
   }
 
   if (existsSync(recursos)) {
@@ -171,7 +171,6 @@ export default async (callback: () => void) => {
     );
 
     console.log(`-> ${recursos}`);
-    callback();
   } else {
     console.log("O diretório de recursos não foi encontrado!");
     console.log("Baixando a versão mais recente do código-fonte do Portugol Studio...");
@@ -187,15 +186,15 @@ export default async (callback: () => void) => {
       zip.extractEntryTo(assetsPath, recursosTemp, true, true);
 
       console.log(`Refazendo estrutura do diretório...`);
-      renameSync(recursosTemp + assetsPath, recursos);
+      await fs.rename(recursosTemp + assetsPath, recursos);
 
       console.log("Removendo arquivos temporários...");
-      rmdirSync(join(recursosTemp, "Portugol-Studio-master", "ide", "src", "main"));
-      rmdirSync(join(recursosTemp, "Portugol-Studio-master", "ide", "src"));
-      rmdirSync(join(recursosTemp, "Portugol-Studio-master", "ide"));
-      rmdirSync(join(recursosTemp, "Portugol-Studio-master"));
-      rmdirSync(recursosTemp);
-      unlinkSync(psZip);
+      await fs.rmdir(join(recursosTemp, "Portugol-Studio-master", "ide", "src", "main"));
+      await fs.rmdir(join(recursosTemp, "Portugol-Studio-master", "ide", "src"));
+      await fs.rmdir(join(recursosTemp, "Portugol-Studio-master", "ide"));
+      await fs.rmdir(join(recursosTemp, "Portugol-Studio-master"));
+      await fs.rmdir(recursosTemp);
+      await fs.unlink(psZip);
 
       console.log("Gerando índice da aba Ajuda...");
       // eslint-disable-next-line
@@ -205,13 +204,10 @@ export default async (callback: () => void) => {
       gerarIndiceExemplos(join(recursos, "exemplos/"));
 
       console.log("Configuração de recursos concluída!");
-      callback();
     } catch (err) {
       console.error(
         `Falha ao baixar o código-fonte do Portugol Studio: ${err} - Reinicie o Portugol Webstudio para tentar novamente.`,
       );
-
-      callback();
     }
   }
-};
+}

@@ -1,36 +1,38 @@
-#!/usr/bin/env node
-
-/**
- * Module dependencies.
- */
+import express from "express";
 import http from "http";
+import logger from "morgan";
+import path from "path";
 import socketIO from "socket.io";
-import app from "./app";
-import recursos from "./recursos";
+import { configurarRecursos } from "./recursos";
+import routes from "./routes";
 import socket from "./socket";
 
-/**
- * Get port from environment and store in Express.
- */
+const app = express();
 const port = process.env.PORT ?? 3000;
 
+app.enable("trust proxy");
+app.set("views", path.join(__dirname, "views"));
+app.set("view engine", "twig");
 app.set("port", port);
 
-/**
- * Create HTTP server.
- */
-const server = http.createServer(app);
-const io = socketIO.listen(server);
+app.use(
+  logger("dev", {
+    skip: req => req.url === "/_health",
+  }),
+);
 
-socket(io);
+app.use(express.static(path.join(__dirname, "public")));
+app.use("/", routes);
 
-/**
- * Listen on provided port, on all network interfaces.
- */
-recursos(() => {
-  server.listen(port, () => {
-    console.log("\nListening on", server.address());
-  });
-});
+configurarRecursos()
+  .then(() => {
+    const server = http.createServer(app);
+    const io = socketIO.listen(server);
 
-module.exports = server;
+    socket(io);
+
+    server.listen(port, () => {
+      console.log("\nListening on", server.address());
+    });
+  })
+  .catch(console.error);
