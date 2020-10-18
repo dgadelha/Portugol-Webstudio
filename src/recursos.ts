@@ -1,52 +1,48 @@
-'use strict';
-
-const AdmZip = require('adm-zip');
-const fs = require('fs');
-const ini = require('ini');
-const path = require('path');
-const request = require('request');
+import AdmZip from 'adm-zip';
+import axios from "axios";
+import { createWriteStream, existsSync, readFileSync, renameSync, rmdirSync, unlink, unlinkSync, writeFileSync } from "fs";
+import { parse } from 'ini';
+import { join } from 'path';
+import { Stream } from 'stream';
 
 // https://stackoverflow.com/a/45007624/4379921
-function download(url, dest) {
-    return new Promise((resolve, reject) => {
-        const file = fs.createWriteStream(dest, { flags: 'wx' });
-        const req = request.get(url);
+async function download(url: string, dest: string) {
+    const file = createWriteStream(dest, { flags: 'wx' });
 
-        req.on('response', res => {
-            if (res.statusCode === 200) {
-                res.pipe(file);
-            } else {
-                file.close();
-                fs.unlink(dest, () => {}); // Delete temp file
-                reject(`Server responded with ${res.statusCode}: ${res.statusMessage}`);
-            }
-        });
+    try {
+        const res = await axios.get<Stream>(url, { responseType: "stream" });
 
-        req.on('error', err => {
+        if (res.status === 200) {
+            await new Promise((resolve, reject) => {
+                res.data.pipe(file)
+                    .once("error", reject)
+                    .once("close", resolve);
+            })
+        } else {
             file.close();
-            fs.unlink(dest, () => {}); // Delete temp file
-            reject(err.message);
-        });
+            unlink(dest, () => {}); // Delete temp file
+            throw `Server responded with ${res.status}`;
+        }
+    } catch (e) {
+        file.close();
+        unlink(dest, () => {}); // Delete temp file
 
-        file.on('finish', () => {
-            resolve();
-        });
-
-        file.on('error', err => {
-            file.close();
-
-            if (err.code === 'EEXIST') {
-                reject('File already exists');
-            } else {
-                fs.unlink(dest, () => {}); // Delete temp file
-                reject(err.message);
-            }
-        });
-    });
+        throw e;
+    }
 }
 
+interface PortugolAjudaItem { titulo: string; subTopicos: PortugolAjudaItem[]; html: string }
+
+interface JsTreeItem {
+    text: string;
+    icon?: string;
+    li_attr?: Record<string, string>;
+    children?: JsTreeItem[];
+}
+
+// @ts-ignore
 global.Tree = {
-    create: data => {
+    create: (data: any) => {
         const jsTreeConfig = {
             core: {
                 themes: {
@@ -55,7 +51,7 @@ global.Tree = {
                     icons: true
                 },
 
-                data: []
+                data: [] as any[]
             },
 
             types: {
@@ -67,10 +63,10 @@ global.Tree = {
             plugins: ['changed', 'types', 'wholerow']
         };
 
-        const lerRecursivo = (parent, out) => {
+        function lerRecursivo(parent: PortugolAjudaItem[], out: JsTreeItem[]) {
             for (let i = 0; i < parent.length; i++) {
                 const obj = parent[i];
-                let jsTreeObj = {
+                let jsTreeObj: JsTreeItem = {
                     text: obj.titulo,
 
                     li_attr: {
@@ -96,11 +92,11 @@ global.Tree = {
             opened: true
         };
 
-        fs.writeFileSync(path.join(__dirname, 'public', 'recursos', 'ajuda', 'scripts', 'topicos.json'), JSON.stringify(jsTreeConfig));
+        writeFileSync(join(__dirname, 'public', 'recursos', 'ajuda', 'scripts', 'topicos.json'), JSON.stringify(jsTreeConfig));
     }
 };
 
-function gerarIndiceExemplos(raiz) {
+function gerarIndiceExemplos(raiz: string) {
     const excluidos = ['Jogos', 'Música', 'Arquivos', 'Graficos', 'Calendario', 'Internet'];
     const jsTreeConfig = {
         core: {
@@ -116,15 +112,15 @@ function gerarIndiceExemplos(raiz) {
         plugins: ['changed', 'types', 'wholerow']
     };
 
-    const lerRecursivo = (parent, out) => {
-        const indice = ini.parse(fs.readFileSync(path.join(parent, 'index.properties')).toString());
+    function lerRecursivo(parent: string, out: JsTreeItem[]) {
+        const indice = parse(readFileSync(join(parent, 'index.properties')).toString());
         const itens = parseInt(indice.items);
 
         for (let i = 0; i < itens; i++) {
             if (excluidos.includes(indice[`item${i}.name`])) continue;
 
             const type = indice[`item${i}.type`];
-            let obj = {
+            let obj: JsTreeItem = {
                 text: indice[`item${i}.name`]
             };
 
@@ -132,13 +128,13 @@ function gerarIndiceExemplos(raiz) {
                 obj['icon'] = 'icone icone-exemplo';
                 obj['li_attr'] = {
                     'data-description': indice[`item${i}.description`],
-                    'data-file': path.join(parent, indice[`item${i}.file`]).substring(__dirname.length + 8 /* /public/ */)
+                    'data-file': join(parent, indice[`item${i}.file`]).substring(__dirname.length + 8 /* /public/ */)
                 };
             } else if (type === 'dir') {
                 obj['icon'] = 'icone icone-pasta';
                 obj['children'] = [];
 
-                lerRecursivo(path.join(parent, indice[`item${i}.dir`]), obj['children']);
+                lerRecursivo(join(parent, indice[`item${i}.dir`]), obj['children']);
             }
 
             out.push(obj);
@@ -146,21 +142,21 @@ function gerarIndiceExemplos(raiz) {
     };
 
     lerRecursivo(raiz, jsTreeConfig.core.data);
-    fs.writeFileSync(path.join(raiz, 'index.json'), JSON.stringify(jsTreeConfig));
+    writeFileSync(join(raiz, 'index.json'), JSON.stringify(jsTreeConfig));
 }
 
-module.exports = callback => {
+export default (callback: () => void) => {
     const assetsPath = 'Portugol-Studio-master/ide/src/main/assets/';
-    const recursos = path.join(__dirname, 'public', 'recursos/');
-    const recursosTemp = path.join(__dirname, 'public', 'recursos.temp/');
-    const psZip = path.join(__dirname, 'public', 'Portugol-Studio.zip');
+    const recursos = join(__dirname, 'public', 'recursos/');
+    const recursosTemp = join(__dirname, 'public', 'recursos.temp/');
+    const psZip = join(__dirname, 'public', 'Portugol-Studio.zip');
 
     // Excluir o ZIP caso tenha havido uma interrupção durante o download anterior
-    if (fs.existsSync(psZip)) {
-        fs.unlinkSync(psZip);
+    if (existsSync(psZip)) {
+        unlinkSync(psZip);
     }
 
-    if (fs.existsSync(recursos)) {
+    if (existsSync(recursos)) {
         console.log('O diretório Recursos foi encontrado! Caso queira atualizar os recursos basta excluir o seguinte diretório:');
         console.log(`-> ${recursos}`);
         callback();
@@ -178,25 +174,28 @@ module.exports = callback => {
                 zip.extractEntryTo(assetsPath, recursosTemp, true, true);
 
                 console.log(`Refazendo estrutura do diretório...`);
-                fs.renameSync(recursosTemp + assetsPath, recursos);
+                renameSync(recursosTemp + assetsPath, recursos);
 
                 console.log('Removendo arquivos temporários...');
-                fs.rmdirSync(path.join(recursosTemp, 'Portugol-Studio-master', 'ide', 'src', 'main'));
-                fs.rmdirSync(path.join(recursosTemp, 'Portugol-Studio-master', 'ide', 'src'));
-                fs.rmdirSync(path.join(recursosTemp, 'Portugol-Studio-master', 'ide'));
-                fs.rmdirSync(path.join(recursosTemp, 'Portugol-Studio-master'));
-                fs.rmdirSync(recursosTemp);
-                fs.unlinkSync(psZip);
+                rmdirSync(join(recursosTemp, 'Portugol-Studio-master', 'ide', 'src', 'main'));
+                rmdirSync(join(recursosTemp, 'Portugol-Studio-master', 'ide', 'src'));
+                rmdirSync(join(recursosTemp, 'Portugol-Studio-master', 'ide'));
+                rmdirSync(join(recursosTemp, 'Portugol-Studio-master'));
+                rmdirSync(recursosTemp);
+                unlinkSync(psZip);
 
                 console.log('Gerando índice da aba Ajuda...');
                 require('./public/recursos/ajuda/scripts/topicos');
 
                 console.log('Gerando índice da seção Exemplos...');
-                gerarIndiceExemplos(path.join(recursos, 'exemplos/'));
+                gerarIndiceExemplos(join(recursos, 'exemplos/'));
 
                 console.log('Configuração de recursos concluída!');
                 callback();
             })
-            .catch(err => console.error(`Falha ao baixar o código-fonte do Portugol Studio: ${err} - Reinicie o Portugol Webstudio para tentar novamente.`) && callback())
+            .catch(err => {
+                console.error(`Falha ao baixar o código-fonte do Portugol Studio: ${err} - Reinicie o Portugol Webstudio para tentar novamente.`);
+                callback();
+            });
     }
 }

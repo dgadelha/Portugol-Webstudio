@@ -1,14 +1,11 @@
-'use strict';
+import fs from 'fs';
+import iconv from 'iconv-lite';
+import * as pty from 'node-pty';
+import os from 'os';
+import SocketIo from "socket.io";
+import stripAnsi from 'strip-ansi';
 
-const fs = require('fs');
-const os = require('os');
-const iconv = require('iconv-lite');
-const pty = require('node-pty');
-const stripAnsi = require('strip-ansi');
-
-iconv.skipDecodeWarning = true;
-
-module.exports = io => {
+export default (io: SocketIo.Server) => {
     io.on('connection', socket => {
         /**
          * Usuário se conectou então nós criamos o terminal e definimos a trava (listen)
@@ -18,7 +15,7 @@ module.exports = io => {
         let listen = false;
         const shell_location = `${__dirname}/runtime/dist`;
         const shell = `${shell_location}/portugol-runtime` + (os.platform() === 'win32' ? '.exe' : '');
-        let term;
+        let term: pty.IPty;
         console.log(`Iniciando em ${shell}`);
 
         try {
@@ -27,7 +24,7 @@ module.exports = io => {
                 cols: 80,
                 rows: 30,
                 cwd: __dirname,
-                env: process.env
+                env: process.env as Record<string, string>
             });
 
             // Arquivo temporário onde o código do portugol será armazenado CAMINHO TEM QUE SER ABSOLUTO
@@ -65,7 +62,7 @@ module.exports = io => {
              * É responsável por escrever de volta as informações por console, e determinar a trava de leitura e escrita.
              */
             term.on('data', data => {
-                data = iconv.decode(stripAnsi(data.replace('~|^!+INPUT+!^|~', '')), 'ISO-8859-1');
+                data = iconv.decode(Buffer.from(stripAnsi(data.replace('~|^!+INPUT+!^|~', '')), "latin1"), 'ISO-8859-1');
 
                 //console.log(data + ' = ' + data.indexOf('~|^!+START+!^|~'))
                 if (listen) { // Verifica se está executando alguma coisa
@@ -103,7 +100,7 @@ module.exports = io => {
                     console.log('Arquivo temporário removido');
                 }
 
-                term.destroy();
+                term.kill();
             });
         } catch (e) {
             console.error(e);
