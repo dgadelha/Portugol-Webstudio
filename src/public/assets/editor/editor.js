@@ -51,14 +51,12 @@ $(window).bind("load", () => {
   output.setReadOnly(true);
   output.selection.moveTo(0, 2);
   output.keyBinding.addKeyboardHandler({
-    handleKeyboard: function (data, hash, keyString, keyCode, event) {
-      console.log(
-        `handleKeyboard(data = '${data}', hash = '${hash}', keyString = '${keyString}', keyCode = '${keyCode}', event = '${event}')`,
-      );
+    handleKeyboard: function (_data, hash, keyString, keyCode, event) {
+      console.log(`handleKeyboard(hash = '${hash}', keyString = '${keyString}', keyCode = '${keyCode}')`);
 
       if (!running) {
         console.log("-> Evento de Keyboard IGNORADO - o programa não está em execução!");
-        return;
+        return null;
       }
 
       if (keyCode == 13 || keyString == "return") {
@@ -96,6 +94,8 @@ $(window).bind("load", () => {
            */
           console.log("-> Evento de Keyboard IGNORADO - keyString vazia e suporte a HEX não concluído");
         }
+
+        return { command: "null" };
       }
     },
   });
@@ -124,6 +124,7 @@ $(window).bind("load", () => {
   socket.on("hide-response", data => {
     console.log(`socket.onHideResponse: ${data}`);
     running = false;
+    output.setReadOnly(true);
     editor.setReadOnly(false);
     $("#submit-btn").removeAttr("disabled");
     $("#stop-btn").attr("disabled", "disabled");
@@ -133,6 +134,7 @@ $(window).bind("load", () => {
   socket.on("show-response", data => {
     console.log(`socket.onShowResponse: ${data}`);
     running = true;
+    output.setReadOnly(false);
     editor.setReadOnly(true);
     $("#submit-btn").attr("disabled", "disabled");
     $("#stop-btn").removeAttr("disabled");
