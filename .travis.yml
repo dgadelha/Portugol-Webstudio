@@ -1,13 +1,11 @@
 os: linux
 language: node_js
 node_js:
-- '10'
+  - '14'
 install:
-- npm ci
-- npm i -g eslint
+  - npm ci --also=dev
 script:
-- find . -path ./node_modules -prune -o -name "*.js" -exec node -c {} \;
-- eslint ./*.js ./bin/www
+  - npm run eslint:check
 deploy:
   provider: script
   script: echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin && docker build --pull -t dgadelha/portugol-webstudio:v$TRAVIS_BUILD_NUMBER . && docker push dgadelha/portugol-webstudio:v$TRAVIS_BUILD_NUMBER

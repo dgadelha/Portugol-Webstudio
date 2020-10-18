@@ -6,7 +6,6 @@
     "build": "tsc",
     "dev": "ts-node-dev -T src/index.ts",
     "start": "node -r source-map-support/register index.js",
-    "test": "echo 'Procurando erros de sintaxe...' && find . -type f -not -path \"*node_modules*\" -name \"*.js\" -exec node -c {} \\;",
     "eslint:fix": "eslint --fix '**/*.{t,j}s'",
     "eslint:check": "eslint '**/*.{t,j}s'",
     "prettier:fix": "prettier --write 'src/**/*.{t,j}s'",
