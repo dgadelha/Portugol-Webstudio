@@ -3,8 +3,11 @@
 /**
  * Module dependencies.
  */
-const app = require('../app');
-const http = require('http');
+import http from 'http';
+import socketIo from "socket.io";
+import app from './app';
+import recursos from "./recursos";
+import socket from "./socket";
 
 /**
  * Get port from environment and store in Express.
@@ -16,13 +19,13 @@ app.set('port', port);
  * Create HTTP server.
  */
 const server = http.createServer(app);
-const io = require('socket.io').listen(server);
-require('../socket')(io);
+const io = socketIo.listen(server);
+socket(io);
 
 /**
  * Listen on provided port, on all network interfaces.
  */
-require('../recursos')(() => {
+recursos(() => {
     server.listen(port);
     server.on('listening', () => {
         console.log('\nListening on', server.address());

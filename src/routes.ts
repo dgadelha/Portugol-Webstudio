@@ -1,17 +1,14 @@
-'use strict';
+import axios from 'axios';
+import express from 'express';
+import fs from 'fs';
+import iconv from 'iconv-lite';
+import path from 'path';
+import { Stream } from 'stream';
 
-const express = require('express');
 const router = express.Router();
-const iconv = require('iconv-lite');
-const request = require('request');
-const path = require('path');
-const fs = require('fs');
+let ajudaCss: string | null = null;
 
-let ajudaCss = null;
-
-String.prototype.replaceArray = function(find, replace) {
-    let replaceString = this;
-
+function replaceArray(replaceString: string, find: string[], replace: string) {
     for (let i = 0; i < find.length; i++) {
         replaceString = replaceString.replace(new RegExp(find[i], 'g'), replace);
     }
@@ -27,17 +24,11 @@ router.get('/ide/ajuda', (_, res) => res.render('editor/ajuda'));
 router.get('/ide/editor', (req, res) =>
     res.render('editor/tab', { cid: req.query.cid, fnam: req.query.fnam }));
 
-router.get('/ide/editor/share/:id', (req, res, next) => {
-    request.get(`https://pastie.io/documents/${req.params.id}`, (err, resp, body) => {
-        if (err) {
-            return next();
-        }
-
-        res.status(resp.statusCode).set(resp.headers).send(body).end();
-    })
+router.get('/ide/editor/share/:id', async (req, res) => {
+    (await axios.get<Stream>(`https://pastie.io/documents/${req.params.id}`, { responseType: "stream" })).data.pipe(res);
 });
 
-router.post('/ide/editor/share', (req, res, next) => {
+router.post('/ide/editor/share', (req, _, next) => {
     let data = '';
     req.setEncoding('utf8');
 
@@ -49,8 +40,8 @@ router.post('/ide/editor/share', (req, res, next) => {
         req.rawBody = data;
         next();
     });
-}, (req, res, next) => {
-    request.post('https://pastie.io/documents', {
+}, async (req, res) => {
+    const response = await axios.post('https://pastie.io/documents', {
         body: req.rawBody,
         headers: {
             'Content-Type': 'application/json; charset=utf-8',
@@ -58,13 +49,9 @@ router.post('/ide/editor/share', (req, res, next) => {
             'Client-IP': req.ip,
             'TE': 'Trailers'
         }
-    }, (err, _, body) => {
-        if (err) {
-            return next();
-        }
-
-        res.send(body).end();
     });
+
+    res.send(response.data).end();
 });
 
 function getAjudaCss() {
@@ -98,7 +85,7 @@ function getAjudaCss() {
 router.get('/ide/resp', (req, res, next) => {
     const file = req.query.file;
 
-    if (!file || !file.startsWith('recursos/')) {
+    if (!file || typeof file !== "string" || !file.startsWith('recursos/')) {
         return next();
     }
 
@@ -120,19 +107,19 @@ router.get('/ide/resp', (req, res, next) => {
             return next(err);
         }
 
-        let data = origin;
+        let data: string | Buffer = origin;
 
         if (extName == '.htm' || extName == '.html') {
             data = data.toString('utf8');
             data = data.replace('<head>', '<head><meta charset=\'utf-8\'><meta http-equiv=\'X-UA-Compatible\' content=\'IE=edge\'><meta name=\'viewport\' content=\'width=device-width, initial-scale=1\'><script type=\'text/javascript\'>var d={baseURL:\'/ide/resp\'};</script>');
             data = data.replace('</head>', '<link href=\'https://fonts.googleapis.com/css?family=PT+Sans\' rel=\'stylesheet\'><style type=\'text/css\'>.dp-highlighter{pointer-events:initial !important}html,body{margin:0;padding:0;font-family:\'PT Sans\',sans-serif;font-size:15px}body{padding-bottom:25px}p{line-height:18pt}h1,h2{padding-left:15px;font-family:\'PT Sans\',sans-serif}h1{font-size:18pt}ul>li{margin-top:10px}ul>li:first-child{margin-top:0}</style></head>');
-            data = data.replaceArray(['../../../../scripts/exemplos.js', '../../../scripts/exemplos.js', '../../scripts/exemplos.js'], '/assets/editor/recursos-exemplos.js');
-            data = data.replaceArray(['../../../../scripts/', '../../../scripts/', '../../scripts/'], '/recursos/ajuda/scripts/');
-            data = data.replaceArray(['../../../../estilos/', '../../../estilos/', '../../estilos/'], '/recursos/ajuda/estilos/');
-            data = data.replaceArray(['../../../../recursos/imagens/', '../../../recursos/imagens/', '../../recursos/imagens/'], '/recursos/ajuda/recursos/imagens/');
-            data = data.replaceArray(['../../../../recursos/', '../../../recursos/', '../../recursos/'], 'recursos/ajuda/recursos/');
+            data = replaceArray(data, ['../../../../scripts/exemplos.js', '../../../scripts/exemplos.js', '../../scripts/exemplos.js'], '/assets/editor/recursos-exemplos.js');
+            data = replaceArray(data, ['../../../../scripts/', '../../../scripts/', '../../scripts/'], '/recursos/ajuda/scripts/');
+            data = replaceArray(data, ['../../../../estilos/', '../../../estilos/', '../../estilos/'], '/recursos/ajuda/estilos/');
+            data = replaceArray(data, ['../../../../recursos/imagens/', '../../../recursos/imagens/', '../../recursos/imagens/'], '/recursos/ajuda/recursos/imagens/');
+            data = replaceArray(data, ['../../../../recursos/', '../../../recursos/', '../../recursos/'], 'recursos/ajuda/recursos/');
             data = data.replace(new RegExp('topicos/linguagem_portugol/', 'g'), '/ide/resp?file=recursos/ajuda/topicos/linguagem_portugol/');
-            data = data.replace('/*${css}*/', getAjudaCss());
+            data = data.replace('/*${css}*/', getAjudaCss() ?? "");
             data = data.replace('${syntax}', 'SyntaxHighlighter.css');
             data = data.replace('SyntaxHighlighter.css/>', 'SyntaxHighlighter.css"/>');
             data = data.replace(/\$\{tema\}/g, 'Dark');
@@ -152,4 +139,4 @@ router.get('/ide/resp', (req, res, next) => {
 
 router.get('/', (_, res) => res.render('index'));
 
-module.exports = router;
+export default router;
