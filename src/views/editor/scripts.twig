@@ -1,22 +1,22 @@
 
-    <script type="text/javascript"> window.TextEncoder = window.TextDecoder = null; </script>
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/ace-builds@1.4.12/src-min/ace.js" integrity="sha256-Q9hnBpgBFstzZOr+OKFOWZWfcF5nFXO8Qz48Nmndo6U=" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/ax5core@1.4.126/dist/ax5core.min.js" integrity="sha256-tDNeD6BLE+000MFqAWAr8fCAkLSoDx5tfEXlsIWs1Pk=" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/ax5ui-layout@1.4.126/dist/ax5layout.min.js" integrity="sha256-qE7zhoPWS5gzEc10S5h0BCWLYflsYjL6oqCflBYMQ5A=" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/blob-polyfill@4.0.20200601/Blob.js" integrity="sha256-fUYF5g6NkOqLRjd00TvPnGgyz3HyXCU+4hqLdlbRLSg=" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.2/dist/FileSaver.min.js" integrity="sha256-u/J1Urdrk3nCYFefpoeTMgI5viU1ujCDu2fXXoSJjhg=" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/text-encoding@0.7.0/lib/encoding-indexes.js" integrity="sha256-0P1P7TKtsEVwY070xQ4v2Ss8fyQLaORAPbHPXfYJZj8=" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/text-encoding@0.7.0/lib/encoding.js" integrity="sha256-E9b12NeEmrVSXHs978RmbR1TsqL7+Xd+tHA5lWzi0Mc=" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jstree@3.3.10/dist/jstree.min.js" integrity="sha256-JiOOIA72TmGkpHu/8zzlDxMSI0gG25mLjpPr79oBWmw=" crossorigin="anonymous"></script>
-    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
-    <script type="text/javascript">var d={baseUrl:((window.location.pathname.length<2)?"/":window.location.pathname+"/"),exemplo:{nome:false,codigo:false},tabs:[]};</script>
-    <script type="text/javascript" src="/assets/editor/mode-portugol.js"></script>
-    <script type="text/javascript" src="/assets/editor/portugol.js"></script>
-    {% if ide %}
-    <script type="text/javascript" src="/assets/editor/ide.js"></script>
-    {% elseif tab %}
-    <script type="text/javascript" src="/assets/editor/editor.js"></script>
-    {% endif %}
+  <script type="text/javascript"> window.TextEncoder = window.TextDecoder = null; </script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/ace-builds@1.4.12/src-min/ace.js" integrity="sha256-Q9hnBpgBFstzZOr+OKFOWZWfcF5nFXO8Qz48Nmndo6U=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/ax5core@1.4.126/dist/ax5core.min.js" integrity="sha256-tDNeD6BLE+000MFqAWAr8fCAkLSoDx5tfEXlsIWs1Pk=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/ax5ui-layout@1.4.126/dist/ax5layout.min.js" integrity="sha256-qE7zhoPWS5gzEc10S5h0BCWLYflsYjL6oqCflBYMQ5A=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/blob-polyfill@4.0.20200601/Blob.js" integrity="sha256-fUYF5g6NkOqLRjd00TvPnGgyz3HyXCU+4hqLdlbRLSg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.2/dist/FileSaver.min.js" integrity="sha256-u/J1Urdrk3nCYFefpoeTMgI5viU1ujCDu2fXXoSJjhg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/text-encoding@0.7.0/lib/encoding-indexes.js" integrity="sha256-0P1P7TKtsEVwY070xQ4v2Ss8fyQLaORAPbHPXfYJZj8=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/text-encoding@0.7.0/lib/encoding.js" integrity="sha256-E9b12NeEmrVSXHs978RmbR1TsqL7+Xd+tHA5lWzi0Mc=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jstree@3.3.10/dist/jstree.min.js" integrity="sha256-JiOOIA72TmGkpHu/8zzlDxMSI0gG25mLjpPr79oBWmw=" crossorigin="anonymous"></script>
+  <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+  <script type="text/javascript">var d={baseUrl:((window.location.pathname.length<2)?"/":window.location.pathname+"/"),exemplo:{nome:false,codigo:false},tabs:[]};</script>
+  <script type="text/javascript" src="/assets/editor/mode-portugol.js"></script>
+  <script type="text/javascript" src="/assets/editor/portugol.js"></script>
+  {% if ide %}
+  <script type="text/javascript" src="/assets/editor/ide.js"></script>
+  {% elseif tab %}
+  <script type="text/javascript" src="/assets/editor/editor.js"></script>
+  {% endif %}
 </body>
 </html>
