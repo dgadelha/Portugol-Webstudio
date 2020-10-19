@@ -16,6 +16,7 @@ router.get("/ide/ajuda", (_, res) => res.render("editor/ajuda"));
 router.get("/ide/editor", (req, res) => res.render("editor/tab", { cid: req.query.cid, fnam: req.query.fnam }));
 
 router.get("/ide/editor/share/:id", async (req, res) => {
+  res.header("Content-Type", "application/json");
   (await axios.get<Stream>(`https://pastie.io/documents/${req.params.id}`, { responseType: "stream" })).data.pipe(res);
 });
 
@@ -36,8 +37,7 @@ router.post(
     });
   },
   async (req, res) => {
-    const response = await axios.post("https://pastie.io/documents", {
-      body: req.rawBody,
+    const response = await axios.post("https://pastie.io/documents", req.rawBody, {
       headers: {
         "Content-Type": "application/json; charset=utf-8",
         "X-Forwarded-For": req.ip,

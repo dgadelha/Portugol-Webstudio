@@ -212,8 +212,7 @@ $(window).bind("load", () => {
       contentType: "text/plain; charset=UTF-8",
       data: editor.getSession().getValue(),
 
-      success: function (data, textStatus, jqXHR) {
-        data = JSON.parse(data);
+      success: function (data) {
         const { key } = data;
         const outUrl = `${document.location
           .toString()
