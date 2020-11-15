@@ -367,3 +367,7 @@ body {
         margin: 7.5px 15px !important;
     }
 }
+
+.modal {
+    color: #333;
+}

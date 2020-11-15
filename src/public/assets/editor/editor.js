@@ -199,6 +199,15 @@ $(window).bind("load", () => {
     window.parent.portugol.abrirAjuda();
   });
 
+  $("#share-clp-copy").bind("click", () => {
+    navigator.clipboard.writeText($("#share-url").val()).then(() => {
+      $("#share-ctn-feedback").text("COPIADO");
+      setTimeout(() => {
+        $("#share-ctn-feedback").text("COPIAR");
+      }, 750);
+    });
+  });
+
   $("#share-btn").bind("click", () => {
     if ($("#share-btn").attr("disabled") == "disabled") {
       return;
@@ -218,7 +227,9 @@ $(window).bind("load", () => {
           .toString()
           .substring(0, document.location.toString().indexOf(document.location.pathname))}/ide#share=${key}`;
 
-        prompt("Copie o link de compartilhamento do seu código:", outUrl);
+        $("#share-ctn-feedback").text("COPIAR");
+        $("#share-url").val(outUrl);
+        $("#share-modal").modal("show");
         $("#share-btn").removeAttr("disabled");
       },
 

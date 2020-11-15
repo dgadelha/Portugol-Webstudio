@@ -42,5 +42,36 @@
   </div>
 </div>
 
+<div class="modal fade" id="share-modal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Código compartilhado</h4>
+      </div>
+      <div class="modal-body">
+        <p>Copie o link de compartilhamento do seu código abaixo:</p>
+
+        <div class="form-group">
+          <div class="input-group">
+            <input class="form-control" type="text" id="share-url">
+            <span class="input-group-btn">
+              <button id="share-clp-copy" class="btn btn-default" type="button">
+                <svg style="width:15px;height:15px;vertical-align:-2px" viewBox="0 0 24 24">
+                  <path fill="currentColor" d="M15 23C13.9 23 13 22.11 13 21V12C13 10.9 13.9 10 15 10H19L23 14V21C23 22.11 22.11 23 21 23H15M15 21H21V14.83L18.17 12H15V21M19 3C20.1 3 21 3.9 21 5V9.17L19.83 8H19V5H17V7H7V5H5V19H11V21H5C3.9 21 3 20.1 3 19V5C3 3.9 3.9 3 5 3H9.18C9.6 1.84 10.7 1 12 1C13.3 1 14.4 1.84 14.82 3H19M12 3C11.45 3 11 3.45 11 4C11 4.55 11.45 5 12 5C12.55 5 13 4.55 13 4C13 3.45 12.55 3 12 3Z" />
+                </svg>
+                &nbsp;<span id="share-ctn-feedback">COPIAR</span>
+              </button>
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Fechar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script type="text/javascript"> var ecid="{{ cid|e('js') }}";var efnam="{{ fnam|e('js') }}"; </script>
 {% include "editor/scripts.twig" with {'tab': true} only %}
