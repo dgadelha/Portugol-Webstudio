@@ -2,7 +2,7 @@ import express from "express";
 import http from "http";
 import logger from "morgan";
 import path from "path";
-import socketIO from "socket.io";
+import { Server as SocketIoServer } from "socket.io";
 import { configurarRecursos } from "./recursos";
 import routes from "./routes";
 import socket from "./socket";
@@ -27,7 +27,7 @@ app.use("/", routes);
 configurarRecursos()
   .then(() => {
     const server = http.createServer(app);
-    const io = socketIO.listen(server);
+    const io = new SocketIoServer(server);
 
     socket(io);
 
