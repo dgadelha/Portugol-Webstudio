@@ -15,9 +15,20 @@ router.get("/ide/ajuda", (_, res) => res.render("editor/ajuda"));
 
 router.get("/ide/editor", (req, res) => res.render("editor/tab", { cid: req.query.cid, fnam: req.query.fnam }));
 
-router.get("/ide/editor/share/:id", async (req, res) => {
+router.get("/ide/editor/share/:id", (req, res) => {
   res.header("Content-Type", "application/json");
-  (await axios.get<Stream>(`https://pastie.io/documents/${req.params.id}`, { responseType: "stream" })).data.pipe(res);
+
+  axios
+    .get<Stream>(`https://pastie.io/documents/${req.params.id}`, { responseType: "stream" })
+    .then(result => {
+      result.data.pipe(res);
+    })
+    .catch(err => {
+      res
+        .status(500)
+        .json({ error: typeof err === "object" ? err.message : err })
+        .end();
+    });
 });
 
 router.post(
@@ -42,7 +53,6 @@ router.post(
         "Content-Type": "application/json; charset=utf-8",
         "X-Forwarded-For": req.ip,
         "Client-IP": req.ip,
-        TE: "Trailers",
       },
     });
 
