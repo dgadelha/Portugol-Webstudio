@@ -6,13 +6,14 @@ import SocketIo from "socket.io";
 import stripAnsi from "strip-ansi";
 
 export default (io: SocketIo.Server) => {
+  const shell_location = `${__dirname}/runtime/dist`;
+  const shell = `${shell_location}/portugol-runtime${os.platform() === "win32" ? ".exe" : ""}`;
+
   io.on("connection", socket => {
     // Usuário se conectou então nós criamos o terminal e definimos a trava (listen)
     console.log(`Usuário ${socket.id} conectado!`);
 
     let listen = false;
-    const shell_location = `${__dirname}/runtime/dist`;
-    const shell = `${shell_location}/portugol-runtime${os.platform() === "win32" ? ".exe" : ""}`;
     let term: pty.IPty;
 
     try {
@@ -105,9 +106,10 @@ export default (io: SocketIo.Server) => {
 
         if (fs.existsSync(file)) {
           fs.unlinkSync(file);
-          console.log("Arquivo temporário removido");
         }
 
+        term.write("~|^!+DIE+!^|~");
+        term.write("\x03;\r\x03;\r");
         term.kill();
       });
     } catch (e) {
@@ -121,6 +123,13 @@ export default (io: SocketIo.Server) => {
       ); // passa o objeto de exceção para o manipulador de erro
 
       listen = false;
+
+      // eslint-disable-next-line
+      if (term!) {
+        term!.write("~|^!+DIE+!^|~");
+        term!.write("\x03;\r\x03;\r");
+        term!.kill();
+      }
     }
   });
 };
