@@ -191,7 +191,6 @@ $(window).bind("load", () => {
     $.get({
       url: "/ide/editor/proxy/",
       data: { url },
-      crossDomain: false,
       dataType: "text",
       error: () => {
         alert(
@@ -207,10 +206,15 @@ $(window).bind("load", () => {
   if (document.location.hash.startsWith("#share=")) {
     const key = document.location.hash.substring(7);
 
-    $.get(`/ide/editor/share/${key}`, data => {
-      if (data && data.key && data.data) {
-        addTab(`Código compartilhado (#${data.key})`, data.data);
-      }
+    $.get({
+      url: `/ide/editor/share/${key}`,
+      dataType: "text",
+      error: () => {
+        alert(`Ocorreu um erro ao carregar o código compartilhado, é possível que já tenha expirado.`);
+      },
+      success: data => {
+        addTab(`Código compartilhado (#${key})`, data);
+      },
     });
   }
 
