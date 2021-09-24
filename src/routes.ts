@@ -19,7 +19,21 @@ router.get("/ide/editor/share/:id", (req, res) => {
   res.header("Content-Type", "application/json");
 
   axios
-    .get<Stream>(`https://pastie.io/documents/${req.params.id}`, { responseType: "stream" })
+    .get<Stream>(`https://pastie.io/documents/${req.params.id}`, {
+      responseType: "stream",
+      headers: {
+        Accept: "application/json, text/javascript, */*; q=0.01",
+        "Cache-Control": "no-cache",
+        Origin: "https://pastie.io",
+        Pragma: "no-cache",
+        Referer: "https://pastie.io/",
+        "Sec-Fetch-Dest": "empty",
+        "Sec-Fetch-Mode": "cors",
+        "Sec-Fetch-Site": "same-origin",
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:93.0) Gecko/20100101 Firefox/93.0",
+        "X-Requested-With": "XMLHttpRequest",
+      },
+    })
     .then(result => {
       result.data.pipe(res);
     })
@@ -50,9 +64,18 @@ router.post(
   async (req, res) => {
     const response = await axios.post("https://pastie.io/documents", req.rawBody, {
       headers: {
-        "Content-Type": "application/json; charset=utf-8",
-        "X-Forwarded-For": req.ip,
+        Accept: "application/json, text/javascript, */*; q=0.01",
         "Client-IP": req.ip,
+        "Content-Type": "application/json; charset=utf-8",
+        Origin: "https://pastie.io",
+        Pragma: "no-cache",
+        Referer: "https://pastie.io/",
+        "Sec-Fetch-Dest": "empty",
+        "Sec-Fetch-Mode": "cors",
+        "Sec-Fetch-Site": "same-origin",
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:93.0) Gecko/20100101 Firefox/93.0",
+        "X-Forwarded-For": req.ip,
+        "X-Requested-With": "XMLHttpRequest",
       },
     });
 
