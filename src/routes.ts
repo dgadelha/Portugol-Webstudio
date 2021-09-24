@@ -5,6 +5,9 @@ import iconv from "iconv-lite";
 import path from "path";
 import { Stream } from "stream";
 
+// eslint-disable-next-line
+const ced: (data: Buffer) => string = require("ced");
+
 const router = express.Router();
 let ajudaCss: string | null = null;
 
@@ -14,6 +17,51 @@ router.get("/ide", (_, res) => res.render("editor/ide"));
 router.get("/ide/ajuda", (_, res) => res.render("editor/ajuda"));
 
 router.get("/ide/editor", (req, res) => res.render("editor/tab", { cid: req.query.cid, fnam: req.query.fnam }));
+
+router.get("/ide/editor/proxy", (req, res) => {
+  const { url } = req.query;
+
+  if (
+    !url ||
+    typeof url !== "string" ||
+    ![".por", ".txt"].some(ext => url.toLowerCase().endsWith(ext)) ||
+    !url.startsWith("https://")
+  ) {
+    res
+      .status(500)
+      .json({ error: "URL não aceita, verifique se a extensão termina com .por/.txt e começa com https://" })
+      .end();
+
+    return;
+  }
+
+  axios
+    .get<ArrayBuffer>(url, {
+      responseType: "arraybuffer",
+      maxContentLength: 100 * 1024 /* 100 KiB */,
+      headers: {
+        "Client-IP": req.ip,
+        "X-Forwarded-For": req.ip,
+      },
+    })
+    .then(result => {
+      const buf = Buffer.from(result.data);
+      const charset = ced(buf);
+      let data = charset.startsWith("ASCII") ? iconv.decode(buf, "ISO-8859-1") : buf.toString();
+
+      if (data.indexOf("/* $$$ Portugol Studio $$$ ") > -1) {
+        data = data.substring(0, data.indexOf("/* $$$ Portugol Studio $$$ "));
+      }
+
+      res.send(data);
+    })
+    .catch(err => {
+      res
+        .status(500)
+        .json({ error: typeof err === "object" ? err.message : err })
+        .end();
+    });
+});
 
 router.get("/ide/editor/share/:id", (req, res) => {
   res.header("Content-Type", "application/json");

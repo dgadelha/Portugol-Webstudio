@@ -185,7 +185,26 @@ $(window).bind("load", () => {
     $(window).trigger("resize");
   });
 
-  if (document.location.hash.length > 8) {
+  if (document.location.hash.startsWith("#url=")) {
+    const url = document.location.hash.substring(5);
+
+    $.get({
+      url: "/ide/editor/proxy/",
+      data: { url },
+      crossDomain: false,
+      dataType: "text",
+      error: () => {
+        alert(
+          `Ocorreu um erro ao carregar o código compartilhado, talvez o código seja muito pesado, a URL esteja inacessível ou insegura ou não termine com a extensão .por/.txt`,
+        );
+      },
+      success: data => {
+        addTab("Código carregado", data);
+      },
+    });
+  }
+
+  if (document.location.hash.startsWith("#share=")) {
     const key = document.location.hash.substring(7);
 
     $.get(`/ide/editor/share/${key}`, data => {
