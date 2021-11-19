@@ -4,7 +4,7 @@
   "description": "IDE online para o Portugol",
   "scripts": {
     "build": "tsc",
-    "dev": "ts-node-dev --rs --watch 'src/**' -T src/index.ts",
+    "dev": "ts-node-dev --rs --watch 'src/' --ignore-watch 'src/public' -T src/index.ts",
     "start": "node -r source-map-support/register index.js",
     "eslint:fix": "eslint --fix '**/*.{t,j}s'",
     "eslint:check": "eslint '**/*.{t,j}s'",
