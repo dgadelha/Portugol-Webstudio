@@ -1,0 +1,44 @@
+{
+  "name": "@portugol-webstudio/runner",
+  "version": "0.0.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dgadelha/Portugol-Webstudio.git"
+  },
+  "keywords": [
+    "portugol",
+    "webstudio"
+  ],
+  "author": "Douglas Gadêlha <dgadelha@live.com>",
+  "contributors": [
+    "Danilo Gadêlha <dngadelha@outlook.com>"
+  ],
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/dgadelha/Portugol-Webstudio/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "homepage": "https://github.com/dgadelha/Portugol-Webstudio#readme",
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
+  "directories": {
+    "lib": "lib"
+  },
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@portugol-webstudio/antlr": "*",
+    "@portugol-webstudio/runtime": "*",
+    "antlr4ts": "^0.5.0-alpha.4",
+    "rxjs": "^7.5.7"
+  },
+  "devDependencies": {
+    "typescript": "~4.8.4"
+  }
+}

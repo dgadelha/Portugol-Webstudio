@@ -1,0 +1,20 @@
+diff --git a/PortugolLexico.g4 b/PortugolLexico.g4
+index ebb05c2..8fe1a58 100644
+--- a/PortugolLexico.g4
++++ b/PortugolLexico.g4
+@@ -85,13 +85,8 @@ REAL:   DIGITO+ '.' DIGITO*
+ fragment DIGITO: [0-9] ; 
+ 
+ INT:    DIGITO+ { 
+-    try {
+-        Integer.parseInt(getText());
+-    }
+-    catch(NumberFormatException e) {
+-        LexerNoViableAltException ex = new LexerNoViableAltException(this, _input, actionIndex, null);
+-        ex.initCause(e);
+-	throw ex;
++    if (isNaN(parseInt(this.text))) {
++      throw new Error(`Dígito inválido: ${this.text}`);
+     }
+ };
+ 

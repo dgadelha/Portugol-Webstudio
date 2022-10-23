@@ -1,0 +1,88 @@
+@import "variables";
+@import "utils";
+
+:host {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  width: 100%;
+  height: 100%;
+}
+
+.editor-inner {
+  background-color: shade($background-200, 15);
+  flex-grow: 1;
+  display: flex;
+
+  as-split-area {
+    overflow: hidden;
+  }
+
+  ngx-monaco-editor {
+    flex-grow: 1;
+  }
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.sidebar-button {
+  appearance: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background-color: $background-200;
+  color: $foreground-200;
+  border: none;
+  transition: all 0.2s ease;
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    background-color: tint($background-200, 7);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+
+    svg {
+      filter: grayscale(1);
+    }
+  }
+}
+
+.sidebar-button svg {
+  width: 1.5rem;
+  height: 1.5rem;
+  fill: currentColor;
+}
+
+.sidebar-divider {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  width: 100%;
+  height: 1px;
+  background-color: $background-300;
+}
+
+::ng-deep #output {
+  .monaco-editor-overlaymessage {
+    display: none !important;
+  }
+}
+
+#bug {
+  position: absolute;
+  bottom: 7.5px;
+  right: 7.5px;
+}
+
+.share-snack small {
+  font-size: 9pt;
+  margin: 0;
+  display: block;
+  text-align: center;
+}

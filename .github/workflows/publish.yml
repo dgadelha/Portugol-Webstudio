@@ -1,0 +1,35 @@
+name: Publish
+on:
+  push:
+    branches:
+      - main
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js 📦
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          registry-url: "https://npm.pkg.github.com"
+          scope: "@portugol-webstudio"
+
+      - name: Install dependencies 🔧
+        run: |
+          npm ci --also=dev
+          npm run bootstrap
+
+      - name: Build code 🚚
+        run: |
+          npm run build
+          npm run release
+
+      - name: Publish 🚀
+        run: |
+          cp -r LICENSE packages/*
+          npx lerna publish 0.0.0-dev.${{ github.run_number }} --skip-git --yes
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.REGISTRY_GITHUB_TOKEN }}

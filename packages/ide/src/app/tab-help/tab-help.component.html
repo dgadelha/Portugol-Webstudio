@@ -1,0 +1,41 @@
+<as-split [direction]="isBelowMd ? 'vertical' : 'horizontal'" unit="pixel">
+  <as-split-area [size]="350">
+    <header>
+      <svg-icon src="assets/icon-help-circle-outline.svg"></svg-icon>
+      <span>Ajuda</span>
+    </header>
+
+    <ul id="root">
+      <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
+        <mat-tree-node *matTreeNodeDef="let node">
+          <li mat-ripple (click)="loadItem(node)" [class.active]="current?.id === node.id">
+            <button mat-icon-button disabled>
+              <mat-icon></mat-icon>
+            </button>
+            <span>{{ node.text }}</span>
+          </li>
+        </mat-tree-node>
+
+        <mat-nested-tree-node *matTreeNodeDef="let node; when: hasChildren">
+          <li (click)="loadItem(node)" [class.active]="current?.id === node.id">
+            <button mat-icon-button matTreeNodeToggle>
+              <mat-icon class="mat-icon-rtl-mirror">
+                {{ treeControl.isExpanded(node) ? "expand_more" : "chevron_right" }}
+              </mat-icon>
+            </button>
+
+            <span>{{ node.text }}</span>
+          </li>
+
+          <ul [class.hidden]="!treeControl.isExpanded(node)">
+            <ng-container matTreeNodeOutlet></ng-container>
+          </ul>
+        </mat-nested-tree-node>
+      </mat-tree>
+    </ul>
+  </as-split-area>
+
+  <as-split-area>
+    <iframe *ngIf="current" [src]="currentUrl"></iframe>
+  </as-split-area>
+</as-split>

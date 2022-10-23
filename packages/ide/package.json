@@ -1,0 +1,80 @@
+{
+  "name": "@portugol-webstudio/ide",
+  "version": "0.0.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dgadelha/Portugol-Webstudio.git"
+  },
+  "keywords": [
+    "portugol",
+    "webstudio"
+  ],
+  "author": "Douglas Gadêlha <dgadelha@live.com>",
+  "contributors": [
+    "Danilo Gadêlha <dngadelha@outlook.com>"
+  ],
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/dgadelha/Portugol-Webstudio/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "homepage": "https://github.com/dgadelha/Portugol-Webstudio#readme",
+  "scripts": {
+    "start": "ng serve",
+    "release": "ng build --base-href /Portugol-Webstudio/",
+    "watch": "ng build --watch --configuration development",
+    "lint": "ng lint"
+  },
+  "dependencies": {
+    "@angular/animations": "^14.2.5",
+    "@angular/cdk": "^14.2.4",
+    "@angular/common": "^14.2.5",
+    "@angular/compiler": "^14.2.5",
+    "@angular/core": "^14.2.5",
+    "@angular/fire": "^7.4.1",
+    "@angular/forms": "^14.2.5",
+    "@angular/material": "^14.2.4",
+    "@angular/platform-browser": "^14.2.5",
+    "@angular/platform-browser-dynamic": "^14.2.5",
+    "@angular/router": "^14.2.5",
+    "@materia-ui/ngx-monaco-editor": "^6.0.0",
+    "@portugol-webstudio/resources": "*",
+    "@portugol-webstudio/runner": "*",
+    "@portugol-webstudio/runtime": "*",
+    "@sentry/angular": "^7.15.0",
+    "angular-split": "^14.1.0",
+    "angular-svg-icon": "^14.0.0",
+    "assert": "^2.0.0",
+    "file-saver": "^2.0.5",
+    "firebase": "^9.12.0",
+    "monaco-editor": "^0.34.0",
+    "ng-keyboard-shortcuts": "^13.0.8",
+    "ngx-google-analytics": "^14.0.1",
+    "rxfire": "^6.0.3",
+    "rxjs": "~7.5.7",
+    "text-encoding": "^0.7.0",
+    "tslib": "^2.4.0",
+    "util": "^0.12.4",
+    "zone.js": "~0.11.8"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "^14.2.5",
+    "@angular-eslint/builder": "^14.1.2",
+    "@angular-eslint/eslint-plugin": "^14.1.2",
+    "@angular-eslint/eslint-plugin-template": "^14.1.2",
+    "@angular-eslint/schematics": "^14.1.2",
+    "@angular-eslint/template-parser": "^14.1.2",
+    "@angular/cli": "^14.2.5",
+    "@angular/compiler-cli": "^14.2.5",
+    "@types/file-saver": "^2.0.5",
+    "@types/text-encoding": "^0.0.36",
+    "@typescript-eslint/eslint-plugin": "^5.40.0",
+    "@typescript-eslint/parser": "^5.40.0",
+    "angular-cli-ghpages": "^1.0.3",
+    "eslint": "^8.25.0",
+    "ts-node": "^10.9.1",
+    "typescript": "~4.8.4"
+  }
+}

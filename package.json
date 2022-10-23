@@ -1,0 +1,42 @@
+{
+  "name": "portugol-webstudio",
+  "description": "IDE online para o Portugol",
+  "version": "0.0.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dgadelha/Portugol-Webstudio.git"
+  },
+  "keywords": [
+    "portugol",
+    "webstudio"
+  ],
+  "author": "Douglas Gadêlha <dgadelha@live.com>",
+  "contributors": [
+    "Danilo Gadêlha <dngadelha@outlook.com>"
+  ],
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/dgadelha/Portugol-Webstudio/issues"
+  },
+  "homepage": "https://github.com/dgadelha/Portugol-Webstudio#readme",
+  "scripts": {
+    "antlr4ts": "antlr4ts -visitor src/antlr/Portugol.g4",
+    "bootstrap": "lerna bootstrap",
+    "eslint:fix": "eslint --fix 'packages/**/*.{t,j}s'",
+    "eslint:check": "eslint 'packages/**/*.{t,j}s'",
+    "start": "lerna run start --scope=@portugol-webstudio/ide",
+    "build": "lerna run build",
+    "build:runner": "lerna run build --scope=@portugol-webstudio/runner",
+    "build:runtime": "lerna run build --scope=@portugol-webstudio/runtime",
+    "release": "lerna run release",
+    "postinstall": "patch-package"
+  },
+  "devDependencies": {
+    "@cubos/eslint-config": "^2.0.664038",
+    "lerna": "^5.6.2",
+    "patch-package": "^6.4.7"
+  },
+  "workspaces": [
+    "packages/*"
+  ]
+}

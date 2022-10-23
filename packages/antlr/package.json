@@ -1,0 +1,46 @@
+{
+  "name": "@portugol-webstudio/antlr",
+  "version": "0.0.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dgadelha/Portugol-Webstudio.git"
+  },
+  "keywords": [
+    "portugol",
+    "webstudio"
+  ],
+  "author": "Douglas Gadêlha <dgadelha@live.com>",
+  "contributors": [
+    "Danilo Gadêlha <dngadelha@outlook.com>"
+  ],
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/dgadelha/Portugol-Webstudio/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "homepage": "https://github.com/dgadelha/Portugol-Webstudio#readme",
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
+  "directories": {
+    "lib": "lib"
+  },
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "antlr-update:Portugol": "wget https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/core/src/main/antlr/Portugol.g4 -O src/Portugol.g4",
+    "antlr-update:PortugolLexico": "wget https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/core/src/main/antlr/PortugolLexico.g4 -O src/PortugolLexico.g4",
+    "antlr-update:PortugolLexico:patch": "patch src/PortugolLexico.g4 < src/lexico.patch",
+    "antlr-update": "npm run antlr-update:Portugol && npm run antlr-update:PortugolLexico && npm run antlr-update:PortugolLexico:patch",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "antlr4ts": "^0.5.0-alpha.4"
+  },
+  "devDependencies": {
+    "antlr4ts-cli": "^0.5.0-alpha.4",
+    "typescript": "~4.8.4"
+  }
+}

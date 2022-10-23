@@ -1,0 +1,121 @@
+@import "variables";
+
+:host {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 100%;
+  min-height: 100%;
+  padding: 2rem;
+}
+
+.logo {
+  max-width: 20rem;
+  margin-bottom: 2rem;
+}
+
+nav {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+
+  @media (min-width: 768px) {
+    max-width: 50vw;
+  }
+
+  button,
+  a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    margin: 0.25rem;
+    background-color: $background-100;
+    appearance: none;
+    border: none;
+    border-radius: 0.25rem;
+    color: $foreground-100;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    font-size: 0.85rem;
+    user-select: none;
+
+    &:hover {
+      background-color: tint($background-100, 15);
+      color: tint($foreground-100, 15);
+    }
+
+    > img {
+      margin-bottom: 1rem;
+      max-width: 2rem;
+    }
+  }
+}
+
+section {
+  max-width: 455px;
+  margin: 20px;
+  text-align: justify;
+  padding: 0 15px;
+  font-family: "Lato", sans-serif;
+  color: #fff;
+  border: 1px solid rgba(30, 30, 30, 0.1);
+  border-radius: 15px;
+  box-shadow: 0.3px 0.5px 0.7px hsl(200deg 54% 2% / 0.36), 0.8px 1.6px 2px -0.8px hsl(200deg 54% 2% / 0.36),
+    2.1px 4.1px 5.2px -1.7px hsl(200deg 54% 2% / 0.36), 5px 10px 12.6px -2.5px hsl(200deg 54% 2% / 0.36);
+
+  h3,
+  h4,
+  p {
+    margin: 0.75rem 0;
+  }
+
+  mat-icon {
+    vertical-align: -5px;
+    margin-right: 7.5px;
+  }
+
+  a {
+    text-decoration: underline;
+    color: #fafafa;
+  }
+}
+
+section.alert {
+  background: #8c2626;
+}
+
+section.info {
+  background-color: #2559b3;
+}
+
+hr {
+  margin: 1rem 0;
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+footer {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  user-select: none;
+
+  summary {
+    font-size: 0.75rem;
+    color: #fff;
+
+    span {
+      font-family: monospace;
+      color: #c2c2c3;
+      text-transform: uppercase;
+    }
+  }
+}

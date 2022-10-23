@@ -1,0 +1,111 @@
+@import "variables";
+
+:host {
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  padding-bottom: 5px;
+  border-bottom: 1px solid rgba(229, 229, 229, 0.4);
+}
+
+mat-spinner {
+  margin: 0 auto;
+}
+
+.hidden {
+  display: none !important;
+}
+
+as-split-area {
+  scrollbar-width: thin;
+}
+
+.mat-tree-node {
+  min-height: 0 !important;
+}
+
+ul {
+  padding-left: 1rem;
+  padding-right: 1rem;
+  box-sizing: border-box;
+  user-select: none;
+
+  li {
+    list-style: none;
+    overflow: hidden;
+    width: 100%;
+    cursor: pointer;
+
+    &.active {
+      background-color: rgba(0, 0, 0, 0.2);
+    }
+
+    span {
+      vertical-align: middle;
+    }
+  }
+}
+
+.mat-dialog-content,
+main {
+  display: flex;
+  max-height: 100%;
+}
+
+main,
+main > div {
+  flex-grow: 1;
+}
+
+::ng-deep .as-split-gutter {
+  background-color: rgba(0, 0, 0, 0.2) !important;
+}
+
+#empty {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+
+  p {
+    margin: 0 auto;
+  }
+}
+
+#content {
+  width: 100%;
+  padding: 1rem 1.5rem 1.5rem 1.5rem;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+
+  h3 {
+    margin: 0;
+  }
+
+  p {
+    text-align: justify;
+  }
+
+  ngx-monaco-editor {
+    flex-grow: 1;
+    margin-bottom: 3.75rem;
+  }
+
+  button {
+    $left: 15px;
+    $right: 7.5px;
+
+    width: calc(100% - (#{$left} + #{$right}));
+    text-transform: uppercase;
+    position: absolute;
+    bottom: 20px;
+    left: $left;
+    right: $right;
+    font-size: 1.15rem;
+    line-height: 3rem;
+  }
+}

@@ -1,0 +1,40 @@
+//////////////////////
+// Cores Principais //
+//////////////////////
+
+$primary: #ffc200;
+$secondary: #00f0c0;
+$tertiary: #f1433c;
+$quaternary: #45beff;
+
+/////////////////////
+// Cores de Textos //
+/////////////////////
+
+$foreground-100: #fff;
+$foreground-200: #cdcdcd;
+$foreground-300: #cdcdcd;
+
+////////////////////
+// Cores de Fundo //
+////////////////////
+
+$background-100: #121e24;
+$background-200: #263238;
+$background-300: #445056;
+
+///////////
+// Fonte //
+///////////
+
+$font: "Lato", sans-serif;
+
+// body
+$body-bg: $background-100;
+$body-color: $foreground-100;
+
+// tabs
+$tab-bg: $background-300;
+$tab-color: $foreground-300;
+$tab-active-bg: $background-200;
+$tab-active-color: $foreground-200;

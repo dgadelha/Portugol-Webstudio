@@ -1,0 +1,87 @@
+<img src="assets/logo.svg" width="100%" class="logo" />
+
+<nav>
+  <button mat-ripple (click)="newTab.emit()">
+    <img
+      src="https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/ide/src/main/resources/br/univali/ps/ui/icones/Dark/grande/newfile.png"
+    />
+
+    <span>Novo Arquivo</span>
+  </button>
+
+  <button mat-ripple (click)="fileInput.click()">
+    <img
+      src="https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/ide/src/main/resources/br/univali/ps/ui/icones/Dark/grande/openfile.png"
+    />
+
+    <span>Abrir Arquivo</span>
+
+    <input #fileInput type="file" hidden multiple accept=".por,text/plain" (change)="openFile($event)" />
+  </button>
+
+  <button mat-ripple (click)="openExamplesDialog()">
+    <img src="assets/icon-book-open-page-variant-outline.svg" />
+    <span>Abrir Exemplo</span>
+  </button>
+
+  <button mat-ripple (click)="help.emit()">
+    <img
+      src="https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/ide/src/main/resources/br/univali/ps/ui/icones/Dark/grande/help.png"
+    />
+
+    <span>Ajuda</span>
+  </button>
+
+  <a
+    href="https://feedback.userreport.com/95eb7601-de5d-4774-9b22-38a6c60e83bc/"
+    target="_blank"
+    rel="external nofollow"
+    mat-ripple
+    (click)="gaService.event('suggest_features', 'Aba Inicial', 'Enviar sugestões')"
+  >
+    <img src="assets/icon-lightbulb-on-outline.svg" />
+    <span>Sugestões</span>
+  </a>
+
+  <a
+    href="https://github.com/dgadelha/Portugol-Webstudio"
+    target="_blank"
+    rel="external nofollow"
+    mat-ripple
+    (click)="gaService.event('view_source_code', 'Aba Inicial', 'Ver código-fonte')"
+  >
+    <img src="assets/icon-github.svg" />
+    <span>Código-fonte</span>
+  </a>
+
+  <a
+    href="https://portugol-webstudio.dgadelha.xyz/ide"
+    target="_blank"
+    rel="external nofollow"
+    mat-ripple
+    (click)="gaService.event('back_to_old_version', 'Aba Inicial', 'Voltar à versão antiga')"
+  >
+    <img src="assets/icon-history.svg" />
+    <span>Versão antiga</span>
+  </a>
+</nav>
+
+<section class="info">
+  <p>
+    <strong>Nova versão:</strong> Podem existir problemas, caso encontre algum ou tenha sugestões/comentários,
+    <a href="https://feedback.userreport.com/95eb7601-de5d-4774-9b22-38a6c60e83bc/" target="_blank" rel="external">
+      nos envie por aqui, estamos sempre acompanhando</a
+    >.
+  </p>
+
+  <hr />
+
+  <h4>📰 Novidades</h4>
+  <p><strong>20/10/2022:</strong> Correção na atribuição de valores às variáveis para garantir as tipagens corretas e correção na exibição de erros em tempo de execução.</p>
+  <p><strong>19/10/2022:</strong> Correção ao pressionar <em>backspace</em> e suporte a múltiplos parâmetros na entrada de dados pela função <code>leia</code>.</p>
+  <p><strong>12/10/2022:</strong> Melhorias internas de componentização e organização de código.</p>
+</section>
+
+<footer>
+  <summary>Versão: <span matTooltip="%DATE%">%COMMIT_SHA%</span></summary>
+</footer>

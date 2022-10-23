@@ -1,0 +1,59 @@
+@import "variables";
+
+header {
+  display: block;
+  background-color: #121e24;
+  margin: 7.5px;
+  padding: 12.5px 15px;
+  font-size: 14px;
+
+  svg {
+    width: 1.3rem;
+    height: 1.3rem;
+    vertical-align: -0.3125em;
+    margin-right: 0.4rem;
+  }
+}
+
+.hidden {
+  display: none !important;
+}
+
+as-split-area {
+  scrollbar-width: thin;
+}
+
+.mat-tree-node {
+  min-height: 0 !important;
+}
+
+ul {
+  padding-left: 1rem;
+  padding-right: 1rem;
+  box-sizing: border-box;
+  user-select: none;
+  background-color: $background-200;
+
+  li {
+    list-style: none;
+    overflow: hidden;
+    width: 100%;
+    background-color: $background-200;
+    cursor: pointer;
+
+    &.active {
+      background-color: $background-100;
+    }
+
+    span {
+      vertical-align: middle;
+    }
+  }
+}
+
+iframe {
+  width: 100%;
+  height: 100%;
+  display: block;
+  border: 0 none;
+}

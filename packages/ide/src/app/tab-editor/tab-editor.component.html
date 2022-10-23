@@ -1,0 +1,74 @@
+<ng-keyboard-shortcuts [shortcuts]="shortcuts"></ng-keyboard-shortcuts>
+
+<div class="sidebar">
+  <button mat-ripple type="button" class="sidebar-button" (click)="runCode()" [disabled]="executor.running">
+    <svg-icon src="assets/icon-start.svg"></svg-icon>
+  </button>
+
+  <button mat-ripple type="button" class="sidebar-button" (click)="stopCode()" [disabled]="!executor.running">
+    <svg-icon src="assets/icon-stop.svg"></svg-icon>
+  </button>
+
+  <div class="sidebar-divider"></div>
+
+  <button mat-ripple type="button" class="sidebar-button" (click)="saveFile()">
+    <svg-icon src="assets/icon-file-save.svg"></svg-icon>
+  </button>
+
+  <button mat-ripple type="button" class="sidebar-button" (click)="fileInput.click()">
+    <svg-icon src="assets/icon-file-open.svg"></svg-icon>
+    <input #fileInput type="file" hidden accept=".por,text/plain" (change)="openFile($event)" />
+  </button>
+
+  <button [disabled]="sharing" mat-ripple type="button" class="sidebar-button" (click)="shareFile()">
+    <svg-icon src="assets/icon-share.svg"></svg-icon>
+  </button>
+
+  <div class="sidebar-divider"></div>
+
+  <button mat-ripple type="button" class="sidebar-button" (click)="openHelp()">
+    <svg-icon src="assets/icon-help-circle-outline.svg"></svg-icon>
+  </button>
+</div>
+
+<div class="editor-inner">
+  <as-split direction="vertical">
+    <as-split-area [size]="80">
+      <as-split direction="horizontal">
+        <as-split-area [size]="100">
+          <ngx-monaco-editor
+            [options]="codeEditorOptions"
+            [(ngModel)]="code"
+            (init)="onEditorInit($event)"
+          ></ngx-monaco-editor>
+        </as-split-area>
+
+        <as-split-area [size]="0">
+          <ngx-monaco-editor [options]="generatedCodeEditorOptions" [(ngModel)]="executor.byteCode"></ngx-monaco-editor>
+        </as-split-area>
+      </as-split>
+    </as-split-area>
+
+    <as-split-area [size]="20">
+      <ngx-monaco-editor
+        id="output"
+        [options]="stdOutEditorOptions"
+        [(ngModel)]="executor.stdOut"
+        (init)="onStdOutEditorInit($event)"
+      ></ngx-monaco-editor>
+    </as-split-area>
+  </as-split>
+</div>
+
+<ng-template #shareSnackTemplate let-data>
+  <span class="share-snack">
+    <strong>Link gerado:</strong>&nbsp;&nbsp;<code>
+      <a target="_blank" [href]="data.url">
+        {{ data.url | slice: 0:10 }}…{{ data.url | slice: data.url.length - 14 }}
+      </a>
+    </code>
+    &nbsp;&nbsp;&nbsp;
+    <button mat-raised-button color="primary" (click)="copyStringAndCloseSnack(data.url)">COPIAR</button>
+    <small>ℹ️ Irá expirar em 15 dias!</small>
+  </span>
+</ng-template>

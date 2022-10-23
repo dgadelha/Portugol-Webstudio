@@ -1,0 +1,38 @@
+name: Build and Deploy
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js 📦
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: Install dependencies 🔧
+        run: |
+          npm ci --also=dev
+          npm run bootstrap
+
+      - name: Build code 🚚
+        run: BASE_HTML_PATH=/Portugol-Webstudio/ npm run build
+
+      - name: Release front-end 🎢
+        run: |
+          sed -i -e 's/%COMMIT_SHA%/'"${GITHUB_SHA::7}"'/g' packages/ide/src/app/tab-start/tab-start.component.html
+          export DATE_NOW_FORMATTED=$(date +'%d/%m/%Y %I:%M:%S %p %Z')
+          sed -i -e 's*%DATE%*'"${DATE_NOW_FORMATTED}"'*g' packages/ide/src/app/tab-start/tab-start.component.html
+          npm run release
+
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@releases/v3
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: gh-pages
+          FOLDER: packages/ide/dist

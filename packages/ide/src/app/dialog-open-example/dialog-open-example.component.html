@@ -1,0 +1,62 @@
+<header mat-dialog-title>
+  <span>Abrir Exemplo…</span>
+  <s></s>
+  <button tabindex="-1" mat-dialog-close mat-icon-button><mat-icon>close</mat-icon></button>
+</header>
+
+<main mat-dialog-content [ngSwitch]="loading">
+  <mat-spinner *ngSwitchCase="true" [diameter]="50"></mat-spinner>
+  <div *ngSwitchCase="false">
+    <as-split [direction]="isBelowMd ? 'vertical' : 'horizontal'">
+      <as-split-area [size]="40">
+        <ul id="root">
+          <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
+            <mat-tree-node *matTreeNodeDef="let node">
+              <li mat-ripple (click)="loadItem(node)" [class.active]="current?.id === node.id">
+                <button mat-icon-button disabled>
+                  <mat-icon></mat-icon>
+                </button>
+                <span>{{ node.name }}</span>
+              </li>
+            </mat-tree-node>
+
+            <mat-nested-tree-node *matTreeNodeDef="let node; when: hasChildren">
+              <li matTreeNodeToggle>
+                <button tabindex="-1" mat-icon-button matTreeNodeToggle>
+                  <mat-icon class="mat-icon-rtl-mirror">
+                    {{ treeControl.isExpanded(node) ? "expand_more" : "chevron_right" }}
+                  </mat-icon>
+                </button>
+
+                <span>{{ node.name }}</span>
+              </li>
+
+              <ul [class.hidden]="!treeControl.isExpanded(node)">
+                <ng-container matTreeNodeOutlet></ng-container>
+              </ul>
+            </mat-nested-tree-node>
+          </mat-tree>
+        </ul>
+      </as-split-area>
+
+      <as-split-area class="d-flex" [size]="60" [ngSwitch]="current">
+        <div id="empty" *ngSwitchCase="null">
+          <p>Selecione um exemplo ao lado.</p>
+        </div>
+
+        <div id="content" *ngSwitchDefault>
+          <h3>{{ current?.name }}</h3>
+          <p>{{ current?.description }}</p>
+
+          <ngx-monaco-editor
+            [options]="editorOptions"
+            [(ngModel)]="exampleCode"
+            (init)="editor = $event"
+          ></ngx-monaco-editor>
+
+          <button mat-raised-button color="primary" (click)="openExample(current!)">Abrir</button>
+        </div>
+      </as-split-area>
+    </as-split>
+  </div>
+</main>

@@ -1,0 +1,56 @@
+<ng-keyboard-shortcuts [shortcuts]="shortcuts"></ng-keyboard-shortcuts>
+
+<div id="preload">
+  <ngx-monaco-editor></ngx-monaco-editor>
+</div>
+
+<mat-tab-group [selectedIndex]="selected.value" (selectedIndexChange)="selected.setValue($event)" animationDuration="0">
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <span class="tab-icon">
+        <img
+          src="https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/ide/src/main/resources/br/univali/ps/ui/icones/Dark/pequeno/light_pix.png"
+        />
+      </span>
+      <span class="tab-text">Portugol Webstudio</span>
+    </ng-template>
+
+    <app-tab-start (newTab)="addTab($event?.name, $event?.contents)" (help)="upsertHelpTab()"></app-tab-start>
+  </mat-tab>
+
+  <mat-tab *ngFor="let tab of tabs">
+    <ng-template mat-tab-label>
+      <span (click)="changeTabTitle(tab)" (auxclick)="closeTab(tab)">
+        <span class="tab-icon" [ngSwitch]="tab.type">
+          <svg-icon *ngSwitchCase="'editor'" src="assets/icon-file.svg"></svg-icon>
+          <svg-icon *ngSwitchCase="'help'" src="assets/icon-help-circle-outline.svg"></svg-icon>
+        </span>
+
+        <span class="tab-text">{{ tab.title }}</span>
+      </span>
+
+      <button mat-icon-button matTooltip="Fechar aba" (click)="closeTab(tab)">
+        <mat-icon>close</mat-icon>
+      </button>
+    </ng-template>
+
+    <ng-container [ngSwitch]="tab.type">
+      <app-tab-editor
+        *ngSwitchCase="'editor'"
+        [(title)]="tab.title"
+        [code]="tab.contents"
+        (help)="upsertHelpTab()"
+      ></app-tab-editor>
+
+      <app-tab-help *ngSwitchCase="'help'" (newTab)="addTab($event?.name, $event?.contents)"></app-tab-help>
+    </ng-container>
+  </mat-tab>
+
+  <mat-tab disabled>
+    <ng-template mat-tab-label class="tab-add">
+      <button class="add-button" mat-icon-button matTooltip="Nova aba de editor de código" (click)="addTab()">
+        <mat-icon>add</mat-icon>
+      </button>
+    </ng-template>
+  </mat-tab>
+</mat-tab-group>
