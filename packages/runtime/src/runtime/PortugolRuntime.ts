@@ -151,13 +151,15 @@ class PortugolRuntime {
       let arg = args.shift().clone();
       console.log("mathOperation.ongoing", { arg, result });
 
-      if (!["real", "inteiro"].includes(arg.type)) {
+      if (!["real", "inteiro"].includes(arg.type) || ([">>", "<<"].includes(op) && (arg.type !== "inteiro" || result.type !== "inteiro"))) {
         const mathOpDesc = {
           "+": ["somar", "à"],
           "-": ["subtrair", "de"],
           "*": ["multiplicar", "por"],
           "/": ["dividir", "por"],
           "%": ["obter o módulo entre", "e"],
+          ">>": ["deslocar os bits para a direita de", "para"],
+          "<<": ["deslocar os bits para a esquerda de", "para"],
         };
 
         const [verb, preposition] = mathOpDesc[op];
@@ -184,6 +186,14 @@ class PortugolRuntime {
 
         case "%":
           result.value %= arg.value;
+          break;
+
+        case ">>":
+          result.value = result.value >> arg.value;
+          break;
+
+        case "<<":
+          result.value = result.value << arg.value;
           break;
 
         default:
