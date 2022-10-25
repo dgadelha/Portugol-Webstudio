@@ -409,7 +409,14 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
   }
 
   visitOperacaoMatematica(
-    ctx: MultiplicacaoContext | DivisaoContext | ModuloContext | AdicaoContext | SubtracaoContext,
+    ctx:
+      | MultiplicacaoContext
+      | DivisaoContext
+      | ModuloContext
+      | AdicaoContext
+      | SubtracaoContext
+      | OperacaoShiftLeftContext
+      | OperacaoShiftRightContext,
   ) {
     const sb = new StringBuilder();
 
@@ -424,6 +431,10 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
         ? "+"
         : ctx instanceof SubtracaoContext
         ? "-"
+        : ctx instanceof OperacaoShiftLeftContext
+        ? "<<"
+        : ctx instanceof OperacaoShiftRightContext
+        ? ">>"
         : "?";
 
     sb.append(this.PAD(), `runtime.mathOperation("${op}", [`, `\n`);
@@ -629,34 +640,20 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     return sb.toString();
   }
 
-  // TODO
   visitOperacaoShiftLeft(ctx: OperacaoShiftLeftContext) {
     const sb = new StringBuilder();
 
-    if (!PortugolJs.thrown.visitOperacaoShiftLeft) {
-      captureException("visitOperacaoShiftLeft", { extra: { text: ctx.text } });
-      PortugolJs.thrown.visitOperacaoShiftLeft = true;
-    }
-
     sb.append(this.DEBUG(`visitOperacaoShiftLeft`, ctx));
-    sb.append(super.visitChildren(ctx));
+    sb.append(this.visitOperacaoMatematica(ctx));
 
     return sb.toString();
   }
 
-  // TODO
   visitOperacaoShiftRight(ctx: OperacaoShiftRightContext) {
     const sb = new StringBuilder();
 
-    if (!PortugolJs.thrown.visitOperacaoShiftRight) {
-      captureException("visitOperacaoShiftRight", {
-        extra: { text: ctx.text },
-      });
-      PortugolJs.thrown.visitOperacaoShiftRight = true;
-    }
-
     sb.append(this.DEBUG(`visitOperacaoShiftRight`, ctx));
-    sb.append(super.visitChildren(ctx));
+    sb.append(this.visitOperacaoMatematica(ctx));
 
     return sb.toString();
   }
