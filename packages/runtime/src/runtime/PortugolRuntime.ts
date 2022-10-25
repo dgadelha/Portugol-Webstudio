@@ -257,7 +257,7 @@ class PortugolRuntime {
       console.log("bitwiseOperation.ongoing", { arg, result });
 
       if (arg.type !== "inteiro" || result.type !== "inteiro") {
-        const mathOpDesc = {
+        const bitwiseOpDesc = {
           "&": ["fazer uma operação bitwise AND (&) em", "para"],
           "|": ["fazer uma operação bitwise OR (|) em", "para"],
           "^": ["fazer uma operação bitwise XOR (^) em", "para"],
@@ -265,7 +265,7 @@ class PortugolRuntime {
           "<<": ["deslocar os bits para a esquerda de", "para"],
         };
 
-        const [verb, preposition] = mathOpDesc[op];
+        const [verb, preposition] = bitwiseOpDesc[op];
 
         throw new Error("Tipos incompatíveis! Não é possível " + verb + " uma expressão do tipo '" + result.type + "' (" + result.toString() + ") " + preposition + " uma expressão do tipo '" + arg.type + "' (" + arg.toString() + ").");
       }
