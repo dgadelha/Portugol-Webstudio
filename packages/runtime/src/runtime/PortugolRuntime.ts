@@ -151,15 +151,13 @@ class PortugolRuntime {
       let arg = args.shift().clone();
       console.log("mathOperation.ongoing", { arg, result });
 
-      if (!["real", "inteiro"].includes(arg.type) || ([">>", "<<"].includes(op) && (arg.type !== "inteiro" || result.type !== "inteiro"))) {
+      if (!["real", "inteiro"].includes(arg.type)) {
         const mathOpDesc = {
           "+": ["somar", "à"],
           "-": ["subtrair", "de"],
           "*": ["multiplicar", "por"],
           "/": ["dividir", "por"],
           "%": ["obter o módulo entre", "e"],
-          ">>": ["deslocar os bits para a direita de", "para"],
-          "<<": ["deslocar os bits para a esquerda de", "para"],
         };
 
         const [verb, preposition] = mathOpDesc[op];
@@ -186,14 +184,6 @@ class PortugolRuntime {
 
         case "%":
           result.value %= arg.value;
-          break;
-
-        case ">>":
-          result.value = result.value >> arg.value;
-          break;
-
-        case "<<":
-          result.value = result.value << arg.value;
           break;
 
         default:
@@ -246,18 +236,6 @@ class PortugolRuntime {
           result = result || arg;
           break;
 
-        case "|":
-          result = result | arg;
-          break;
-
-        case "&":
-          result = result & arg;
-          break;
-
-        case "^":
-          result = result ^ arg;
-          break;
-
         default:
           throw new Error("Operação comparativa inválida: " + op);
       }
@@ -265,6 +243,61 @@ class PortugolRuntime {
 
     console.log("comparativeOp.finish", { result });
     return new PortugolVar("logico", result);
+  }
+
+  bitwiseOperation(op, args) {
+    console.log("bitwiseOperation.preinit", { op, args });
+
+    let result = args.shift().clone();
+
+    console.log("bitwiseOperation.init", { op, args, result });
+
+    while (args.length) {
+      let arg = args.shift().clone();
+      console.log("bitwiseOperation.ongoing", { arg, result });
+
+      if (arg.type !== "inteiro" || result.type !== "inteiro") {
+        const mathOpDesc = {
+          "&": ["fazer uma operação bitwise AND (&) em", "para"],
+          "|": ["fazer uma operação bitwise OR (|) em", "para"],
+          "^": ["fazer uma operação bitwise XOR (^) em", "para"],
+          ">>": ["deslocar os bits para a direita de", "para"],
+          "<<": ["deslocar os bits para a esquerda de", "para"],
+        };
+
+        const [verb, preposition] = mathOpDesc[op];
+
+        throw new Error("Tipos incompatíveis! Não é possível " + verb + " uma expressão do tipo '" + result.type + "' (" + result.toString() + ") " + preposition + " uma expressão do tipo '" + arg.type + "' (" + arg.toString() + ").");
+      }
+
+      switch (op) {
+        case "&":
+          result.value = result.value & arg.value;
+          break;
+
+        case "|":
+          result.value = result.value | arg.value;
+          break;
+
+        case "^":
+          result.value = result.value ^ arg.value;
+          break;
+
+        case ">>":
+          result.value = result.value >> arg.value;
+          break;
+
+        case "<<":
+          result.value = result.value << arg.value;
+          break;
+
+        default:
+          throw new Error("Operação bitwise inválida: " + op);
+      }
+    }
+
+    console.log("bitwiseOperation.finish", { result });
+    return result;
   }
 
   applyModifier(mod, item) {
