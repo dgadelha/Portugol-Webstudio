@@ -88,6 +88,8 @@ import { StringBuilder } from "./utils/StringBuilder";
 
 export class PortugolJs extends AbstractParseTreeVisitor<string> implements PortugolVisitor<string> {
   static thrown: Record<string, boolean> = {};
+  private tree = "";
+
   debug = false;
   pad = 0;
   hasScope = false;
@@ -799,7 +801,7 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
 
     if (!PortugolJs.thrown.visitAtribuicaoCompostaSoma) {
       captureException("visitAtribuicaoCompostaSoma", {
-        extra: { text: ctx.text },
+        extra: { text: ctx.text, code: this.tree },
       });
       PortugolJs.thrown.visitAtribuicaoCompostaSoma = true;
     }
@@ -816,7 +818,7 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
 
     if (!PortugolJs.thrown.visitAtribuicaoCompostaSubtracao) {
       captureException("visitAtribuicaoCompostaSubtracao", {
-        extra: { text: ctx.text },
+        extra: { text: ctx.text, code: this.tree },
       });
       PortugolJs.thrown.visitAtribuicaoCompostaSubtracao = true;
     }
@@ -833,7 +835,7 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
 
     if (!PortugolJs.thrown.visitAtribuicaoCompostaMultiplicacao) {
       captureException("visitAtribuicaoCompostaMultiplicacao", {
-        extra: { text: ctx.text },
+        extra: { text: ctx.text, code: this.tree },
       });
       PortugolJs.thrown.visitAtribuicaoCompostaMultiplicacao = true;
     }
@@ -850,7 +852,7 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
 
     if (!PortugolJs.thrown.visitAtribuicaoCompostaDivisao) {
       captureException("visitAtribuicaoCompostaDivisao", {
-        extra: { text: ctx.text },
+        extra: { text: ctx.text, code: this.tree },
       });
       PortugolJs.thrown.visitAtribuicaoCompostaDivisao = true;
     }
@@ -864,6 +866,8 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
   visitArquivo(ctx: ArquivoContext) {
     const sb = new StringBuilder();
 
+    this.tree = ctx.text;
+
     sb.append(this.DEBUG(`visitArquivo`, ctx));
     sb.append(`(async (initScope) => {`, `\n`);
 
@@ -875,6 +879,9 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     sb.append(`\n`, this.PAD(), `await runtime.callFunction("inicio");\n})`);
 
     this.pad--;
+
+    // free
+    this.tree = "";
 
     return sb.toString();
   }
@@ -1064,7 +1071,7 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
 
     if (!PortugolJs.thrown.visitDeclaracaoVariavel) {
       captureException("visitDeclaracaoVariavel", {
-        extra: { text: ctx.text },
+        extra: { text: ctx.text, code: this.tree },
       });
       PortugolJs.thrown.visitDeclaracaoVariavel = true;
     }
@@ -1334,7 +1341,7 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
 
     if (!PortugolJs.thrown.visitAtribuicaoComposta) {
       captureException("visitAtribuicaoComposta", {
-        extra: { text: ctx.text },
+        extra: { text: ctx.text, code: this.tree },
       });
       PortugolJs.thrown.visitAtribuicaoComposta = true;
     }
