@@ -1474,7 +1474,7 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     const sb = new StringBuilder();
 
     sb.append(this.DEBUG(`visitPara`, ctx));
-    sb.append(this.PAD(), `for (`, `\n`);
+    sb.append(this.PAD(), `{`, `\n`);
 
     this.pad++;
 
@@ -1483,6 +1483,11 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     if (declr) {
       sb.append(this.visit(declr));
     }
+
+    sb.append(this.PAD(), `;`, `\n`);
+    sb.append(this.PAD(), `for (`, `\n`);
+
+    this.pad++;
 
     sb.append(this.PAD(), `;`, `\n`);
     sb.append(this.visit(ctx.condicao()));
@@ -1496,6 +1501,10 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     this.pad++;
 
     sb.append(this.visit(ctx.listaComandos()));
+
+    this.pad--;
+
+    sb.append(this.PAD(), `}`, `\n`);
 
     this.pad--;
 
