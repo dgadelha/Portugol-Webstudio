@@ -13,6 +13,7 @@ import { uploadString, ref, Storage } from "@angular/fire/storage";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { PortugolExecutor, PortugolWebWorkersRunner } from "@portugol-webstudio/runner";
 import { PortugolJsRuntime } from "@portugol-webstudio/runtime";
+import { captureException } from "@sentry/angular";
 import { saveAs } from "file-saver";
 import { ShortcutInput } from "ng-keyboard-shortcuts";
 import { GoogleAnalyticsService } from "ngx-google-analytics";
@@ -104,15 +105,23 @@ export class TabEditorComponent implements OnInit, OnDestroy {
       this.stdOutEditorCursorEnd();
     });
 
-    this._events$ = this.executor.events.subscribe(event => {
-      switch (event.type) {
-        case "error":
-          this.gaService.event("execution_error", "Execução", "Erro em execução de código");
-          break;
+    this._events$ = this.executor.events.subscribe({
+      next: event => {
+        switch (event.type) {
+          case "error":
+            this.gaService.event("execution_error", "Execução", "Erro em execução de código");
+            break;
 
-        default:
-          break;
-      }
+          default:
+            break;
+        }
+      },
+
+      error: error => {
+        this.gaService.event("execution_runner_error", "Execução", "Erro ao carregar o runner para rodar o código");
+
+        captureException(error, { extra: { code: this.code } });
+      },
     });
 
     console.log(`Runtime has ${PortugolJsRuntime.split("\n").length} lines`);
