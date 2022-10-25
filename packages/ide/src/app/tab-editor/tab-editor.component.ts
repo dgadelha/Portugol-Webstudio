@@ -13,7 +13,7 @@ import { uploadString, ref, Storage } from "@angular/fire/storage";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { PortugolExecutor, PortugolWebWorkersRunner } from "@portugol-webstudio/runner";
 import { PortugolJsRuntime } from "@portugol-webstudio/runtime";
-import { captureException } from "@sentry/angular";
+import { captureException, setExtra } from "@sentry/angular";
 import { saveAs } from "file-saver";
 import { ShortcutInput } from "ng-keyboard-shortcuts";
 import { GoogleAnalyticsService } from "ngx-google-analytics";
@@ -135,6 +135,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
 
   runCode() {
     this.gaService.event("editor_start_execution", "Editor", "Botão de Iniciar Execução");
+    setExtra("code", this.code);
     this.executor.run(this.code ?? "");
   }
 
