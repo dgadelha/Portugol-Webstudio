@@ -455,6 +455,47 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     return sb.toString();
   }
 
+  visitOperacaoBitwise(
+    ctx:
+      | OperacaoAndBitwiseContext
+      | OperacaoOrBitwiseContext
+      | OperacaoXorContext
+      | OperacaoShiftLeftContext
+      | OperacaoShiftRightContext,
+  ) {
+    const sb = new StringBuilder();
+
+    const op =
+      ctx instanceof OperacaoAndBitwiseContext
+        ? "&"
+        : ctx instanceof OperacaoOrBitwiseContext
+        ? "|"
+        : ctx instanceof OperacaoXorContext
+        ? "^"
+        : ctx instanceof OperacaoShiftLeftContext
+        ? "<<"
+        : ctx instanceof OperacaoShiftRightContext
+        ? ">>"
+        : "?";
+
+    sb.append(this.PAD(), `runtime.bitwiseOperation("${op}", [`, `\n`);
+
+    this.pad++;
+
+    const exprs = ctx.expressao();
+
+    for (const expr of exprs) {
+      sb.append(super.visit(expr).trimEnd());
+      sb.append(",", `\n`);
+    }
+
+    this.pad--;
+
+    sb.append(this.PAD(), `])`, `\n`);
+
+    return sb.toString();
+  }
+
   visitMultiplicacao(ctx: MultiplicacaoContext) {
     const sb = new StringBuilder();
 
@@ -635,7 +676,7 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     const sb = new StringBuilder();
 
     sb.append(this.DEBUG(`visitOperacaoXor`, ctx));
-    sb.append(this.visitOperacaoComparacao(ctx));
+    sb.append(this.visitOperacaoBitwise(ctx));
 
     return sb.toString();
   }
@@ -644,7 +685,7 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     const sb = new StringBuilder();
 
     sb.append(this.DEBUG(`visitOperacaoShiftLeft`, ctx));
-    sb.append(this.visitOperacaoMatematica(ctx));
+    sb.append(this.visitOperacaoBitwise(ctx));
 
     return sb.toString();
   }
@@ -653,7 +694,7 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     const sb = new StringBuilder();
 
     sb.append(this.DEBUG(`visitOperacaoShiftRight`, ctx));
-    sb.append(this.visitOperacaoMatematica(ctx));
+    sb.append(this.visitOperacaoBitwise(ctx));
 
     return sb.toString();
   }
@@ -662,7 +703,7 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     const sb = new StringBuilder();
 
     sb.append(this.DEBUG(`visitOperacaoAndBitwise`, ctx));
-    sb.append(this.visitOperacaoComparacao(ctx));
+    sb.append(this.visitOperacaoBitwise(ctx));
 
     return sb.toString();
   }
@@ -671,7 +712,7 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     const sb = new StringBuilder();
 
     sb.append(this.DEBUG(`visitOperacaoOrBitwise`, ctx));
-    sb.append(this.visitOperacaoComparacao(ctx));
+    sb.append(this.visitOperacaoBitwise(ctx));
 
     return sb.toString();
   }
