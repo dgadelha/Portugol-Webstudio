@@ -1014,8 +1014,8 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
         const init = arr.inicializacaoArray();
 
         if (arr.OP_ATRIBUICAO() && init) {
-          sb.append(this.PAD(), `${scopeStr}.variables["${arr.ID().text}"] = new PortugolVar(`);
-          sb.append(`"vetor", `, this.visit(init).trim(), `)`, `\n`);
+          sb.append(this.PAD(), `${scopeStr}.variables["${arr.ID().text}"] = `);
+          sb.append(this.visit(init).trim(), `\n`);
         } else {
           sb.append(this.PAD(), `${scopeStr}.variables["${arr.ID().text}"] = new PortugolVar(`);
           sb.append(`"vetor", `);
