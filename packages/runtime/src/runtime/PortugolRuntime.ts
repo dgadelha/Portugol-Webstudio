@@ -126,7 +126,7 @@ class PortugolRuntime {
         return result;
       }
 
-      case "caractere":
+      case "caracter":
         return String(value).charAt(0);
 
       case "cadeia":
@@ -140,10 +140,32 @@ class PortugolRuntime {
     }
   }
 
+  concat(result, args) {
+    console.log("concat.preinit", { result, args });
+
+    while (args.length) {
+      let arg = args.shift().clone();
+      console.log("concat.ongoing", { arg, result });
+
+      if (!["cadeia", "caracter"].includes(arg.type)) {
+        throw new Error("Tipos incompatíveis! Não é possível concatenar uma expressão do tipo '" + result.type + "' (" + result.toString() + ") com uma expressão do tipo '" + arg.type + "' (" + arg.toString() + ").");
+      }
+
+      result.value += arg.value;
+    }
+
+    console.log("concat.finish", { result });
+    return result;
+  }
+
   mathOperation(op, args) {
-    console.log("mathOp.preinit", { op, args });
+    console.log("mathOperation.preinit", { op, args });
 
     let result = args.shift().clone();
+
+    if (op === "+" && result.type === "cadeia") {
+      return self.runtime.concat(result, args);
+    }
 
     console.log("mathOperation.init", { op, args, result });
 
