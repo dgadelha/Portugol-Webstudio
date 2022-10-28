@@ -104,12 +104,12 @@ class PortugolRuntime {
     this.globalScope.libAliases[alias || name] = name;
   }
 
-  isTypesConvertible(from, to) {
+  areTypesConvertible(from, to) {
     return (from === to || from === "inteiro" && to === "real" || from === "real" && to === "inteiro");
   }
 
   coerceToType(type, value, valueType) {
-    if (valueType !== type && !this.isTypesConvertible(valueType, type)) {
+    if (valueType !== type && !this.areTypesConvertible(valueType, type)) {
       throw new Error("Tipos incompatíveis! Não é possível atribuir uma expressão do tipo '" + valueType + "' à uma expressão do tipo '" + type + "'.");
     }
 
