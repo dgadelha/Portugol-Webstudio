@@ -12,6 +12,7 @@ npm run antlr-update
 
 Os arquivos gerados serão salvos na pasta `src`, dentre eles:
 
+- `PortugolErrorListener.ts`: contém um `ANTLRErrorListener` que armazena os erros em memória
 - `PortugolLexer.ts`: contém a implementação do analisador léxico
 - `PortugolParser.ts`: contém a implementação do analisador sintático
 - `PortugolVisitor.ts`: contém a implementação do visitor

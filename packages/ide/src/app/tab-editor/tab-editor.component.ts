@@ -11,6 +11,7 @@ import {
 } from "@angular/core";
 import { uploadString, ref, Storage } from "@angular/fire/storage";
 import { MatSnackBar } from "@angular/material/snack-bar";
+import { PortugolSyntaxError } from "@portugol-webstudio/antlr";
 import { PortugolExecutor, PortugolWebWorkersRunner } from "@portugol-webstudio/runner";
 import { PortugolJsRuntime } from "@portugol-webstudio/runtime";
 import { captureException, setExtra } from "@sentry/angular";
@@ -42,6 +43,8 @@ export class TabEditorComponent implements OnInit, OnDestroy {
   fileInput!: ElementRef<HTMLInputElement>;
 
   executor = new PortugolExecutor(PortugolWebWorkersRunner);
+
+  codeEditor?: monaco.editor.IStandaloneCodeEditor;
 
   codeEditorOptions: monaco.editor.IStandaloneEditorConstructionOptions = {
     theme: "portugol",
@@ -112,6 +115,10 @@ export class TabEditorComponent implements OnInit, OnDestroy {
             this.gaService.event("execution_error", "Execução", "Erro em execução de código");
             break;
 
+          case "parseError":
+            this.setEditorErrors(event.errors);
+            break;
+
           default:
             break;
         }
@@ -136,6 +143,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
   runCode() {
     this.gaService.event("editor_start_execution", "Editor", "Botão de Iniciar Execução");
     setExtra("code", this.code);
+    this.setEditorErrors([]);
     this.executor.run(this.code ?? "");
   }
 
@@ -260,6 +268,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
   }
 
   onEditorInit(editor: monaco.editor.IStandaloneCodeEditor) {
+    this.codeEditor = editor;
     this.initShortcuts(editor);
   }
 
@@ -305,5 +314,26 @@ export class TabEditorComponent implements OnInit, OnDestroy {
   async copyStringAndCloseSnack(url: string) {
     await navigator.clipboard.writeText(url);
     this.snack.dismiss();
+  }
+
+  setEditorErrors(errors: PortugolSyntaxError[]) {
+    const model = this.codeEditor?.getModel();
+
+    if (model) {
+      monaco.editor.setModelMarkers(
+        model,
+        "owner",
+        errors.map(error => {
+          return {
+            startLineNumber: error.startLine,
+            startColumn: error.startCol,
+            endLineNumber: error.endLine,
+            endColumn: error.endCol,
+            message: error.message,
+            severity: monaco.MarkerSeverity.Error,
+          };
+        }),
+      );
+    }
   }
 }

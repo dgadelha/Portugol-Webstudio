@@ -1,4 +1,4 @@
-import { ArquivoContext } from "@portugol-webstudio/antlr";
+import { ArquivoContext, PortugolSyntaxError } from "@portugol-webstudio/antlr";
 import { Observable, Subject } from "rxjs";
 
 export type PortugolEvent =
@@ -6,6 +6,7 @@ export type PortugolEvent =
   | { type: "clear" }
   | { type: "stdIn" }
   | { type: "error"; error: Error }
+  | { type: "parseError"; errors: PortugolSyntaxError[] }
   | { type: "finish"; time: number };
 
 export abstract class IPortugolRunner {
