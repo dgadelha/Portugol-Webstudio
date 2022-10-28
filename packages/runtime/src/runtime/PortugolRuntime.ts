@@ -109,7 +109,7 @@ class PortugolRuntime {
   }
 
   coerceToType(type, value, valueType) {
-    if (valueType !== type && !this.areTypesConvertible(valueType, type)) {
+    if (valueType !== type && !this.canCoerceType(valueType, type)) {
       throw new Error("Tipos incompatíveis! Não é possível atribuir uma expressão do tipo '" + valueType + "' à uma expressão do tipo '" + type + "'.");
     }
 
