@@ -104,7 +104,7 @@ class PortugolRuntime {
     this.globalScope.libAliases[alias || name] = name;
   }
 
-  areTypesConvertible(from, to) {
+  canCoerceType(from, to) {
     return (from === to || from === "inteiro" && to === "real" || from === "real" && to === "inteiro");
   }
 
