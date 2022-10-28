@@ -1,4 +1,4 @@
-import { PortugolLexer, PortugolParser } from "@portugol-webstudio/antlr";
+import { PortugolErrorListener, PortugolLexer, PortugolParser } from "@portugol-webstudio/antlr";
 import { CharStreams, CommonTokenStream } from "antlr4ts";
 import { Subject, Subscription } from "rxjs";
 
@@ -44,6 +44,7 @@ export class PortugolExecutor {
   private _running$?: Subscription;
 
   events = new Subject<PortugolEvent>();
+  errorListener = new PortugolErrorListener();
 
   run(code: string) {
     try {
@@ -53,6 +54,12 @@ export class PortugolExecutor {
       const lexer = new PortugolLexer(inputStream);
       const tokenStream = new CommonTokenStream(lexer);
       const parser = new PortugolParser(tokenStream);
+
+      this.errorListener.reset();
+
+      parser.removeErrorListeners();
+      parser.addErrorListener(this.errorListener);
+
       const tree = parser.arquivo();
 
       // @ts-ignore
@@ -92,13 +99,20 @@ export class PortugolExecutor {
         error: error => {
           console.error(error);
 
-          this.stdOut += `\⛔ ${error.message}\n`;
+          this.stdOut += `⛔ ${error.message}\n`;
           this.stdOut$.next(this.stdOut);
 
           this.reset(false);
         },
       });
     } catch (err) {
+      console.error(err);
+
+      this.stdOut += `⛔ O seu código possui um erro de compilação!\n`;
+      this.stdOut$.next(this.stdOut);
+
+      this.reset(false);
+      this.events.next({ type: "parseError", errors: this.errorListener.getErrors() });
       this.events.error(err);
     }
   }
