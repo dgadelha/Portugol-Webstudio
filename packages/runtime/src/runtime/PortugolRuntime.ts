@@ -79,7 +79,7 @@ class PortugolRuntime {
         throw new Error("Não é possível alterar o valor de uma constante");
       }
 
-      const value = this.coerceToType(initial.type, arg.value);
+      const value = this.coerceToType(initial.type, arg.value, arg.type);
 
       if (initial.isReference) {
         initial.value.value = value;
@@ -104,7 +104,15 @@ class PortugolRuntime {
     this.globalScope.libAliases[alias || name] = name;
   }
 
-  coerceToType(type, value) {
+  canCoerceType(from, to) {
+    return (from === to || from === "inteiro" && to === "real" || from === "real" && to === "inteiro");
+  }
+
+  coerceToType(type, value, valueType) {
+    if (valueType !== type && !this.canCoerceType(valueType, type)) {
+      throw new Error("Tipos incompatíveis! Não é possível atribuir uma expressão do tipo '" + valueType + "' à uma expressão do tipo '" + type + "'.");
+    }
+
     switch (type) {
       case "inteiro": {
         const result = parseInt(value, 10);
@@ -126,7 +134,7 @@ class PortugolRuntime {
         return result;
       }
 
-      case "caractere":
+      case "caracter":
         return String(value).charAt(0);
 
       case "cadeia":
@@ -140,10 +148,34 @@ class PortugolRuntime {
     }
   }
 
+  concat(args) {
+    console.log("concat.preinit", { args });
+
+    let result = "";
+
+    while (args.length) {
+      let arg = args.shift().clone();
+      console.log("concat.ongoing", { arg, result });
+
+      if (!["cadeia", "caracter"].includes(arg.type)) {
+        throw new Error("Tipos incompatíveis! Não é possível concatenar uma expressão do tipo '" + result.type + "' (" + result.toString() + ") com uma expressão do tipo '" + arg.type + "' (" + arg.toString() + ").");
+      }
+
+      result += arg.value;
+    }
+
+    console.log("concat.finish", { result });
+    return new PortugolVar("cadeia", result);
+  }
+
   mathOperation(op, args) {
-    console.log("mathOp.preinit", { op, args });
+    console.log("mathOperation.preinit", { op, args });
 
     let result = args.shift().clone();
+
+    if (op === "+" && ["cadeia", "caracter"].includes(result.type)) {
+      return self.runtime.concat([result, ...args]);
+    }
 
     console.log("mathOperation.init", { op, args, result });
 
