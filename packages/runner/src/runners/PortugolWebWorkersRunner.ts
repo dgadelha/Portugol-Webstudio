@@ -39,6 +39,12 @@ export class PortugolWebWorkersRunner extends IPortugolRunner {
 
             await exec({
               functions: {
+                __debug: async (...args) => {
+                  for (const arg of args) {
+                    console.debug("➡️ DEBUG", arg);
+                  }
+                },
+
                 limpa: async () => {
                   self.postMessage({ type: "clear" });
                 },
