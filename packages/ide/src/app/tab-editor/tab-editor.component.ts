@@ -231,6 +231,11 @@ export class TabEditorComponent implements OnInit, OnDestroy {
           lineNumber: model.getLineCount(),
           column: model.getLineMaxColumn(model.getLineCount()),
         });
+
+        editor.setScrollPosition({
+          scrollLeft: 0,
+          scrollTop: editor.getScrollHeight(),
+        });
       }, 1);
 
       editor.focus();
