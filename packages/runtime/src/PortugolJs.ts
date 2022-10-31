@@ -806,22 +806,20 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     const first = exprs.shift();
 
     if (first) {
-      sb.append(super.visit(first).trimEnd());
-      sb.append(`,\n`);
+      sb.append(super.visit(first).trimEnd(), `,\n`);
+      sb.append(this.PAD(), `runtime.mathOperation("+", [`, `\n`);
+
+      this.pad++;
+
+      sb.append(super.visit(first).trimEnd(), ",", `\n`);
 
       for (const expr of exprs) {
-        sb.append(this.PAD(), `runtime.mathOperation("+", [`, `\n`);
-
-        this.pad++;
-
-        sb.append(super.visit(first).trimEnd(), ",", `\n`);
-
         sb.append(super.visit(expr).trimEnd(), ",\n");
-
-        this.pad--;
-
-        sb.append(this.PAD(), "])", ",", `\n`);
       }
+
+      this.pad--;
+
+      sb.append(this.PAD(), "])", ",", `\n`);
     }
 
     this.pad--;
@@ -843,22 +841,20 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     const first = exprs.shift();
 
     if (first) {
-      sb.append(super.visit(first).trimEnd());
-      sb.append(`,\n`);
+      sb.append(super.visit(first).trimEnd(), `,\n`);
+      sb.append(this.PAD(), `runtime.mathOperation("-", [`, `\n`);
+
+      this.pad++;
+
+      sb.append(super.visit(first).trimEnd(), ",", `\n`);
 
       for (const expr of exprs) {
-        sb.append(this.PAD(), `runtime.mathOperation("-", [`, `\n`);
-
-        this.pad++;
-
-        sb.append(super.visit(first).trimEnd(), ",", `\n`);
-
         sb.append(super.visit(expr).trimEnd(), ",\n");
-
-        this.pad--;
-
-        sb.append(this.PAD(), "])", ",", `\n`);
       }
+
+      this.pad--;
+
+      sb.append(this.PAD(), "])", ",", `\n`);
     }
 
     this.pad--;
@@ -880,22 +876,20 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     const first = exprs.shift();
 
     if (first) {
-      sb.append(super.visit(first).trimEnd());
-      sb.append(`,\n`);
+      sb.append(super.visit(first).trimEnd(), `,\n`);
+      sb.append(this.PAD(), `runtime.mathOperation("*", [`, `\n`);
+
+      this.pad++;
+
+      sb.append(super.visit(first).trimEnd(), ",", `\n`);
 
       for (const expr of exprs) {
-        sb.append(this.PAD(), `runtime.mathOperation("*", [`, `\n`);
-
-        this.pad++;
-
-        sb.append(super.visit(first).trimEnd(), ",", `\n`);
-
         sb.append(super.visit(expr).trimEnd(), ",\n");
-
-        this.pad--;
-
-        sb.append(this.PAD(), "])", ",", `\n`);
       }
+
+      this.pad--;
+
+      sb.append(this.PAD(), "])", ",", `\n`);
     }
 
     this.pad--;
@@ -917,22 +911,20 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     const first = exprs.shift();
 
     if (first) {
-      sb.append(super.visit(first).trimEnd());
-      sb.append(`,\n`);
+      sb.append(super.visit(first).trimEnd(), `,\n`);
+      sb.append(this.PAD(), `runtime.mathOperation("/", [`, `\n`);
+
+      this.pad++;
+
+      sb.append(super.visit(first).trimEnd(), ",", `\n`);
 
       for (const expr of exprs) {
-        sb.append(this.PAD(), `runtime.mathOperation("/", [`, `\n`);
-
-        this.pad++;
-
-        sb.append(super.visit(first).trimEnd(), ",", `\n`);
-
         sb.append(super.visit(expr).trimEnd(), ",\n");
-
-        this.pad--;
-
-        sb.append(this.PAD(), "])", ",", `\n`);
       }
+
+      this.pad--;
+
+      sb.append(this.PAD(), "])", ",", `\n`);
     }
 
     this.pad--;
