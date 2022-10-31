@@ -794,70 +794,38 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     return sb.toString();
   }
 
-  // TODO
   visitAtribuicaoCompostaSoma(ctx: AtribuicaoCompostaSomaContext) {
     const sb = new StringBuilder();
 
-    if (!PortugolJs.thrown.visitAtribuicaoCompostaSoma) {
-      captureException("visitAtribuicaoCompostaSoma", {
-        extra: { text: ctx.text },
-      });
-      PortugolJs.thrown.visitAtribuicaoCompostaSoma = true;
-    }
-
     sb.append(this.DEBUG(`visitAtribuicaoCompostaSoma`, ctx));
-    sb.append(super.visitChildren(ctx));
+    sb.append(this.visitAtribuicaoComposta(ctx));
 
     return sb.toString();
   }
 
-  // TODO
   visitAtribuicaoCompostaSubtracao(ctx: AtribuicaoCompostaSubtracaoContext) {
     const sb = new StringBuilder();
 
-    if (!PortugolJs.thrown.visitAtribuicaoCompostaSubtracao) {
-      captureException("visitAtribuicaoCompostaSubtracao", {
-        extra: { text: ctx.text },
-      });
-      PortugolJs.thrown.visitAtribuicaoCompostaSubtracao = true;
-    }
-
     sb.append(this.DEBUG(`visitAtribuicaoCompostaSubtracao`, ctx));
-    sb.append(super.visitChildren(ctx));
+    sb.append(this.visitAtribuicaoComposta(ctx));
 
     return sb.toString();
   }
 
-  // TODO
   visitAtribuicaoCompostaMultiplicacao(ctx: AtribuicaoCompostaMultiplicacaoContext) {
     const sb = new StringBuilder();
 
-    if (!PortugolJs.thrown.visitAtribuicaoCompostaMultiplicacao) {
-      captureException("visitAtribuicaoCompostaMultiplicacao", {
-        extra: { text: ctx.text },
-      });
-      PortugolJs.thrown.visitAtribuicaoCompostaMultiplicacao = true;
-    }
-
     sb.append(this.DEBUG(`visitAtribuicaoCompostaMultiplicacao`, ctx));
-    sb.append(super.visitChildren(ctx));
+    sb.append(this.visitAtribuicaoComposta(ctx));
 
     return sb.toString();
   }
 
-  // TODO
   visitAtribuicaoCompostaDivisao(ctx: AtribuicaoCompostaDivisaoContext) {
     const sb = new StringBuilder();
 
-    if (!PortugolJs.thrown.visitAtribuicaoCompostaDivisao) {
-      captureException("visitAtribuicaoCompostaDivisao", {
-        extra: { text: ctx.text },
-      });
-      PortugolJs.thrown.visitAtribuicaoCompostaDivisao = true;
-    }
-
     sb.append(this.DEBUG(`visitAtribuicaoCompostaDivisao`, ctx));
-    sb.append(super.visitChildren(ctx));
+    sb.append(this.visitAtribuicaoComposta(ctx));
 
     return sb.toString();
   }
@@ -1329,19 +1297,48 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     return sb.toString();
   }
 
-  // TODO
   visitAtribuicaoComposta(ctx: AtribuicaoCompostaContext) {
     const sb = new StringBuilder();
 
-    if (!PortugolJs.thrown.visitAtribuicaoComposta) {
-      captureException("visitAtribuicaoComposta", {
-        extra: { text: ctx.text },
-      });
-      PortugolJs.thrown.visitAtribuicaoComposta = true;
-    }
+    const op =
+      ctx instanceof AtribuicaoCompostaSomaContext
+        ? "+"
+        : ctx instanceof AtribuicaoCompostaSubtracaoContext
+        ? "-"
+        : ctx instanceof AtribuicaoCompostaDivisaoContext
+        ? "/"
+        : ctx instanceof AtribuicaoCompostaMultiplicacaoContext
+        ? "*"
+        : "?";
 
     sb.append(this.DEBUG(`visitAtribuicaoComposta`, ctx));
-    sb.append(super.visitChildren(ctx));
+    sb.append(this.PAD(), `runtime.assign([`, `\n`);
+
+    this.pad++;
+
+    const exprs = (ctx as unknown as AtribuicaoCompostaSomaContext).expressao();
+    const first = exprs.shift();
+
+    if (first) {
+      sb.append(super.visit(first).trimEnd(), `,\n`);
+      sb.append(this.PAD(), `runtime.mathOperation("`, op, `", [`, `\n`);
+
+      this.pad++;
+
+      sb.append(super.visit(first).trimEnd(), ",", `\n`);
+
+      for (const expr of exprs) {
+        sb.append(super.visit(expr).trimEnd(), ",\n");
+      }
+
+      this.pad--;
+
+      sb.append(this.PAD(), "])", ",", `\n`);
+    }
+
+    this.pad--;
+
+    sb.append(this.PAD(), `])`, `\n`);
 
     return sb.toString();
   }
