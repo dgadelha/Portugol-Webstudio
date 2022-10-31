@@ -798,33 +798,7 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     const sb = new StringBuilder();
 
     sb.append(this.DEBUG(`visitAtribuicaoCompostaSoma`, ctx));
-    sb.append(this.PAD(), `runtime.assign([`, `\n`);
-
-    this.pad++;
-
-    const exprs = ctx.expressao();
-    const first = exprs.shift();
-
-    if (first) {
-      sb.append(super.visit(first).trimEnd(), `,\n`);
-      sb.append(this.PAD(), `runtime.mathOperation("+", [`, `\n`);
-
-      this.pad++;
-
-      sb.append(super.visit(first).trimEnd(), ",", `\n`);
-
-      for (const expr of exprs) {
-        sb.append(super.visit(expr).trimEnd(), ",\n");
-      }
-
-      this.pad--;
-
-      sb.append(this.PAD(), "])", ",", `\n`);
-    }
-
-    this.pad--;
-
-    sb.append(this.PAD(), `])`, `\n`);
+    sb.append(this.visitAtribuicaoComposta(ctx));
 
     return sb.toString();
   }
@@ -833,33 +807,7 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     const sb = new StringBuilder();
 
     sb.append(this.DEBUG(`visitAtribuicaoCompostaSubtracao`, ctx));
-    sb.append(this.PAD(), `runtime.assign([`, `\n`);
-
-    this.pad++;
-
-    const exprs = ctx.expressao();
-    const first = exprs.shift();
-
-    if (first) {
-      sb.append(super.visit(first).trimEnd(), `,\n`);
-      sb.append(this.PAD(), `runtime.mathOperation("-", [`, `\n`);
-
-      this.pad++;
-
-      sb.append(super.visit(first).trimEnd(), ",", `\n`);
-
-      for (const expr of exprs) {
-        sb.append(super.visit(expr).trimEnd(), ",\n");
-      }
-
-      this.pad--;
-
-      sb.append(this.PAD(), "])", ",", `\n`);
-    }
-
-    this.pad--;
-
-    sb.append(this.PAD(), `])`, `\n`);
+    sb.append(this.visitAtribuicaoComposta(ctx));
 
     return sb.toString();
   }
@@ -868,33 +816,7 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     const sb = new StringBuilder();
 
     sb.append(this.DEBUG(`visitAtribuicaoCompostaMultiplicacao`, ctx));
-    sb.append(this.PAD(), `runtime.assign([`, `\n`);
-
-    this.pad++;
-
-    const exprs = ctx.expressao();
-    const first = exprs.shift();
-
-    if (first) {
-      sb.append(super.visit(first).trimEnd(), `,\n`);
-      sb.append(this.PAD(), `runtime.mathOperation("*", [`, `\n`);
-
-      this.pad++;
-
-      sb.append(super.visit(first).trimEnd(), ",", `\n`);
-
-      for (const expr of exprs) {
-        sb.append(super.visit(expr).trimEnd(), ",\n");
-      }
-
-      this.pad--;
-
-      sb.append(this.PAD(), "])", ",", `\n`);
-    }
-
-    this.pad--;
-
-    sb.append(this.PAD(), `])`, `\n`);
+    sb.append(this.visitAtribuicaoComposta(ctx));
 
     return sb.toString();
   }
@@ -903,33 +825,7 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     const sb = new StringBuilder();
 
     sb.append(this.DEBUG(`visitAtribuicaoCompostaDivisao`, ctx));
-    sb.append(this.PAD(), `runtime.assign([`, `\n`);
-
-    this.pad++;
-
-    const exprs = ctx.expressao();
-    const first = exprs.shift();
-
-    if (first) {
-      sb.append(super.visit(first).trimEnd(), `,\n`);
-      sb.append(this.PAD(), `runtime.mathOperation("/", [`, `\n`);
-
-      this.pad++;
-
-      sb.append(super.visit(first).trimEnd(), ",", `\n`);
-
-      for (const expr of exprs) {
-        sb.append(super.visit(expr).trimEnd(), ",\n");
-      }
-
-      this.pad--;
-
-      sb.append(this.PAD(), "])", ",", `\n`);
-    }
-
-    this.pad--;
-
-    sb.append(this.PAD(), `])`, `\n`);
+    sb.append(this.visitAtribuicaoComposta(ctx));
 
     return sb.toString();
   }
@@ -1401,19 +1297,48 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     return sb.toString();
   }
 
-  // TODO
   visitAtribuicaoComposta(ctx: AtribuicaoCompostaContext) {
     const sb = new StringBuilder();
 
-    if (!PortugolJs.thrown.visitAtribuicaoComposta) {
-      captureException("visitAtribuicaoComposta", {
-        extra: { text: ctx.text },
-      });
-      PortugolJs.thrown.visitAtribuicaoComposta = true;
-    }
+    const op =
+      ctx instanceof AtribuicaoCompostaSomaContext
+        ? "+"
+        : ctx instanceof AtribuicaoCompostaSubtracaoContext
+        ? "-"
+        : ctx instanceof AtribuicaoCompostaDivisaoContext
+        ? "/"
+        : ctx instanceof AtribuicaoCompostaMultiplicacaoContext
+        ? "*"
+        : "?";
 
     sb.append(this.DEBUG(`visitAtribuicaoComposta`, ctx));
-    sb.append(super.visitChildren(ctx));
+    sb.append(this.PAD(), `runtime.assign([`, `\n`);
+
+    this.pad++;
+
+    const exprs = (ctx as unknown as AtribuicaoCompostaSomaContext).expressao();
+    const first = exprs.shift();
+
+    if (first) {
+      sb.append(super.visit(first).trimEnd(), `,\n`);
+      sb.append(this.PAD(), `runtime.mathOperation("`, op, `", [`, `\n`);
+
+      this.pad++;
+
+      sb.append(super.visit(first).trimEnd(), ",", `\n`);
+
+      for (const expr of exprs) {
+        sb.append(super.visit(expr).trimEnd(), ",\n");
+      }
+
+      this.pad--;
+
+      sb.append(this.PAD(), "])", ",", `\n`);
+    }
+
+    this.pad--;
+
+    sb.append(this.PAD(), `])`, `\n`);
 
     return sb.toString();
   }
