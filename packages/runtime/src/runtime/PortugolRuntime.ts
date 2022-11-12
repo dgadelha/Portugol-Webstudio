@@ -3,6 +3,7 @@ import { portugolLibs } from "../libs";
 export const portugolRuntime = /* javascript */ `
 class PortugolRuntime {
   globalScope = {};
+  currentFunction = null;
 
   constructor(initScope) {
     this.initScope = initScope;
@@ -40,7 +41,7 @@ class PortugolRuntime {
     this.globalScope.functions[name] = call;
   }
 
-  callFunction(name, functionScope = "", args = []) {
+  async callFunction(name, functionScope = "", args = []) {
     let func;
 
     if (functionScope) {
@@ -61,7 +62,15 @@ class PortugolRuntime {
       func = this.globalScope.functions[name];
     }
 
-    return func(...args);
+    const last = this.currentFunction;
+
+    this.currentFunction = name;
+
+    const ret = await func(...args);
+
+    this.currentFunction = last;
+
+    return ret;
   }
 
   assign(args) {
@@ -377,6 +386,18 @@ class PortugolRuntime {
     if (!types.includes(obj.type) || obj.value === undefined) {
       let multipleTypesPlural = types.length > 1 ? "s" : "";
       throw new Error("Tipos incompatíveis! O parâmetro '" + param + "' da função '" + fn + "' espera uma expressão do" + multipleTypesPlural + " tipo" + multipleTypesPlural + " " + types.map((c) => "'" + c + "'").join(" ou ") + (obj.value === undefined ? " com valor" : "") + ", mas foi passada uma expressão do tipo '" + obj.type + "'" + (obj.value === undefined ? " vazia" : ""));
+    }
+  }
+
+  checkParams(args, params) {
+    if (args.length != params.length) {
+      throw new Error("Número de parâmetros inválido! A função '" + this.currentFunction + "' espera " + params.length + " parâmetro" + (params.length > 1 ? "s" : "") + ", mas fo" + (args.length > 1 ? "ram" : "i") + " passado" + (args.length > 1 ? "s" : "") + " " + args.length + ".");
+    }
+
+    for (let i = 0; i < args.length; i++) {
+      if (args[i].type != params[i].type) {
+        throw new Error("Tipos incompatíveis! O " + (i + 1) + "º parâmetro da função '" + this.currentFunction + "', '" + params[i].name + "', espera uma expressão do tipo '" + params[i].type + "', mas foi passada uma expressão do tipo '" + args[i].type + "'.");
+      }
     }
   }
 }

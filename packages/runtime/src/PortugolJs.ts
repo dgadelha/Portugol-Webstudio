@@ -1196,13 +1196,48 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
 
     const params = ctx.parametro();
 
+    sb.append(this.PAD(), `runtime.checkParams(`, `args, [`, `\n`);
+
+    this.pad++;
+
+    for (const param of params) {
+      let type: string;
+
+      if (param.parametroArray()) {
+        type = "vetor";
+      } else if (param.parametroMatriz()) {
+        type = "matriz";
+      } else {
+        type = param.TIPO().text;
+      }
+
+      sb.append(
+        this.PAD(),
+        `{ name: "${param.ID().text}", type: "${type}", reference: ${Boolean(param.E_COMERCIAL())} },`,
+        `\n`,
+      );
+    }
+
+    this.pad--;
+
+    sb.append(this.PAD(), `]`, `);`, `\n\n`);
+
     for (let i = 0; i < params.length; i++) {
       const param = params[i];
+      let type: string;
+
+      if (param.parametroArray()) {
+        type = "vetor";
+      } else if (param.parametroMatriz()) {
+        type = "matriz";
+      } else {
+        type = param.TIPO().text;
+      }
 
       sb.append(this.PAD(), `scope.variables["${param.ID().text}"] = new PortugolVar(`, `\n`);
 
       this.pad++;
-      sb.append(this.PAD(), `"${param.TIPO().text}"`, `,\n`);
+      sb.append(this.PAD(), `"${type}"`, `,\n`);
       sb.append(this.PAD(), `args[${i}]`);
 
       if (!param.E_COMERCIAL()) {
