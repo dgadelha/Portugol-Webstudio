@@ -160,21 +160,17 @@ class PortugolRuntime {
   concat(args) {
     console.log("concat.preinit", { args });
 
-    let result = "";
+    let result = args.shift().clone();
 
     while (args.length) {
       let arg = args.shift().clone();
       console.log("concat.ongoing", { arg, result });
 
-      if (!["cadeia", "caracter"].includes(arg.type)) {
-        throw new Error("Tipos incompatíveis! Não é possível concatenar uma expressão do tipo '" + result.type + "' (" + result.toString() + ") com uma expressão do tipo '" + arg.type + "' (" + arg.toString() + ").");
-      }
-
-      result += arg.value;
+      result.value += arg.stringValue();
     }
 
     console.log("concat.finish", { result });
-    return new PortugolVar("cadeia", result);
+    return new PortugolVar("cadeia", result.value);
   }
 
   mathOperation(op, args) {
