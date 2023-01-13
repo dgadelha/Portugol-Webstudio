@@ -39,7 +39,7 @@
     "iconv-lite": "^0.6.3",
     "ini": "^3.0.1",
     "readdirp": "^3.6.0",
-    "rimraf": "^3.0.2",
+    "rimraf": "^4.0.0",
     "slugify": "^1.6.5",
     "typescript": "~4.8.4"
   }
