@@ -4,7 +4,7 @@
   <ngx-monaco-editor></ngx-monaco-editor>
 </div>
 
-<mat-tab-group [selectedIndex]="selected.value" (selectedIndexChange)="selected.setValue($event)" animationDuration="0">
+<mat-tab-group [selectedIndex]="selected.value" (selectedIndexChange)="selected.setValue($event)" animationDuration="0" mat-stretch-tabs="false" mat-align-tabs="start">
   <mat-tab>
     <ng-template mat-tab-label>
       <span class="tab-icon">

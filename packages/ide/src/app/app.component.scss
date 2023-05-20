@@ -23,15 +23,18 @@
   border-radius: 10px;
   overflow: hidden;
 
-  .mat-ink-bar {
-    display: none;
-  }
+  .mat-mdc-tab {
+    --mdc-secondary-navigation-tab-container-height: 40px;
+    --mat-tab-header-active-label-text-color: $tab-active-color;
+    --mat-tab-header-active-focus-label-text-color: $tab-active-color;
+    --mat-tab-header-active-hover-label-text-color: $tab-active-color;
+    --mat-tab-header-active-hover-indicator-color: $tab-active-color;
 
-  .mat-tab-label {
     position: relative;
     background-color: $tab-bg;
     color: $tab-color;
     font-weight: 700;
+    font-size: 14px;
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
@@ -47,7 +50,20 @@
     font-family: $font;
     user-select: none;
 
-    .mat-tab-label-content > span {
+    &:hover .mdc-tab__ripple::before {
+      opacity: 0;
+    }
+
+    &.mat-mdc-tab-disabled {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .mdc-tab-indicator {
+      display: none;
+    }
+
+    .mdc-tab__text-label > span {
       display: inline-flex;
     }
 
@@ -60,24 +76,21 @@
       }
     }
 
-    &.mat-ripple:not(#mat-tab-label-0-0) {
+    &:not(#mat-tab-label-0-0) {
       padding-right: 0;
 
       button:not(.add-button) {
         border-radius: 0;
         display: inline-block;
         margin-left: 10px;
+        padding: 0;
 
         $size: 30px;
         width: $size;
         height: $size;
         line-height: $size;
 
-        &::ng-deep .mat-button-wrapper {
-          line-height: $size;
-        }
-
-        &::ng-deep .mat-icon {
+        .mat-icon {
           $isize: $size - 10px;
           width: $isize;
           height: $isize;
@@ -87,7 +100,7 @@
       }
     }
 
-    &.mat-tab-label-active,
+    &.mdc-tab--active,
     &:focus {
       background-color: $tab-active-bg !important;
       color: $tab-active-color !important;
@@ -123,7 +136,7 @@
     }
   }
 
-  .mat-tab-body-wrapper {
+  .mat-mdc-tab-body-wrapper {
     flex-grow: 1;
 
     mat-tab-body {

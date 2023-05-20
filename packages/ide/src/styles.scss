@@ -66,11 +66,7 @@ $PortugolWebstudio-theme: mat.define-dark-theme(
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
 @include mat.all-component-themes($PortugolWebstudio-theme);
-
 @import "variables";
-// @import "tabs";
-// @import "editor";
-// @import "start";
 
 * {
   box-sizing: border-box;
@@ -115,7 +111,7 @@ s {
   flex-grow: 1;
 }
 
-.mat-dialog-container {
+.mat-mdc-dialog-container {
   display: flex !important;
 
   > * {

@@ -24,7 +24,7 @@ as-split-area {
   scrollbar-width: thin;
 }
 
-.mat-tree-node {
+.mat-mdc-tree-node {
   min-height: 0 !important;
 }
 
@@ -50,7 +50,7 @@ ul {
   }
 }
 
-.mat-dialog-content,
+.mat-mdc-dialog-content,
 main {
   display: flex;
   max-height: 100%;
