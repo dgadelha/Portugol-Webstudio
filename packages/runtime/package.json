@@ -1,6 +1,7 @@
 {
   "name": "@portugol-webstudio/runtime",
   "version": "0.0.0",
+  "type": "module",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/dgadelha/Portugol-Webstudio.git"
@@ -34,10 +35,10 @@
   },
   "dependencies": {
     "@portugol-webstudio/antlr": "*",
-    "@sentry/core": "^7.15.0",
+    "@sentry/core": "^7.52.1",
     "antlr4ts": "^0.5.0-alpha.4"
   },
   "devDependencies": {
-    "typescript": "~4.8.4"
+    "typescript": "~5.0.4"
   }
 }

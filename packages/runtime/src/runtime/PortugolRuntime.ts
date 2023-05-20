@@ -1,4 +1,4 @@
-import { portugolLibs } from "../libs";
+import { portugolLibs } from "../libs/index.js";
 
 export const portugolRuntime = /* javascript */ `
 class PortugolRuntime {

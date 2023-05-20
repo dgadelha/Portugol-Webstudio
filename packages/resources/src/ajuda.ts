@@ -3,7 +3,7 @@ import { join } from "path";
 
 import slugify from "slugify";
 
-import { baseDir } from "./config";
+import { baseDir } from "./config.js";
 
 interface PortugolAjudaItem {
   titulo: string;

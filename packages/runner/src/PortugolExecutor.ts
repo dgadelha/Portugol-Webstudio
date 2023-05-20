@@ -2,7 +2,7 @@ import { PortugolErrorListener, PortugolLexer, PortugolParser } from "@portugol-
 import { CharStreams, CommonTokenStream } from "antlr4ts";
 import { Subject, Subscription } from "rxjs";
 
-import { IPortugolRunner, PortugolEvent } from "./runners/IPortugolRunner";
+import { IPortugolRunner, PortugolEvent } from "./runners/IPortugolRunner.js";
 
 export class PortugolExecutor {
   private _runner?: IPortugolRunner;

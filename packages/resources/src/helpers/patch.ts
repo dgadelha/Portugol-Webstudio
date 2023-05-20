@@ -4,7 +4,7 @@ import { join } from "path";
 import iconv from "iconv-lite";
 import readdirp from "readdirp";
 
-import { baseDir, baseHtmlPath } from "../config";
+import { baseDir, baseHtmlPath } from "../config.js";
 
 let _ajudaCss: string | null = null;
 

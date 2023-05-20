@@ -32,11 +32,26 @@
     "postinstall": "patch-package"
   },
   "devDependencies": {
-    "@cubos/eslint-config": "^2.0.664038",
-    "lerna": "^6.0.0",
-    "patch-package": "^6.4.7"
+    "@cubos/eslint-config": "^2.1.0",
+    "lerna": "^6.6.2",
+    "patch-package": "^7.0.0"
   },
   "workspaces": [
     "packages/*"
-  ]
+  ],
+  "overrides": {
+    "@angular/fire": {
+      "@angular/common": "^16.0.0",
+      "@angular/core": "^16.0.0",
+      "@angular/platform-browser": "^16.0.0",
+      "@angular/platform-browser-dynamic": "^16.0.0"
+    },
+    "@sentry/angular": {
+      "@angular/common": "^16.0.0",
+      "@angular/core": "^16.0.0",
+      "@angular/platform-browser": "^16.0.0",
+      "@angular/platform-browser-dynamic": "^16.0.0",
+      "@angular/router": "^16.0.0"
+    }
+  }
 }
