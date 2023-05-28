@@ -46,7 +46,7 @@
     "@portugol-webstudio/runtime": "*",
     "@sentry/angular": "^7.15.0",
     "angular-split": "^14.1.0",
-    "angular-svg-icon": "^14.0.0",
+    "angular-svg-icon": "^16.0.0",
     "assert": "^2.0.0",
     "file-saver": "^2.0.5",
     "firebase": "^9.12.0",
