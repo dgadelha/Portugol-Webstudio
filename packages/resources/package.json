@@ -41,6 +41,6 @@
     "readdirp": "^3.6.0",
     "rimraf": "^3.0.2",
     "slugify": "^1.6.5",
-    "typescript": "~4.8.4"
+    "typescript": "~4.9.0"
   }
 }
