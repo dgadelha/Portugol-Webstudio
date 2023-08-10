@@ -379,9 +379,9 @@ class PortugolRuntime {
   }
 
   expectType(fn, param, obj, ...types) {
-    if (!types.includes(obj.type) || obj.value === undefined) {
+    if (!obj || !types.includes(obj.type) || obj.value === undefined) {
       let multipleTypesPlural = types.length > 1 ? "s" : "";
-      throw new Error("Tipos incompatíveis! O parâmetro '" + param + "' da função '" + fn + "' espera uma expressão do" + multipleTypesPlural + " tipo" + multipleTypesPlural + " " + types.map((c) => "'" + c + "'").join(" ou ") + (obj.value === undefined ? " com valor" : "") + ", mas foi passada uma expressão do tipo '" + obj.type + "'" + (obj.value === undefined ? " vazia" : ""));
+      throw new Error("Tipos incompatíveis! O parâmetro '" + param + "' da função '" + fn + "' espera uma expressão do" + multipleTypesPlural + " tipo" + multipleTypesPlural + " " + types.map((c) => "'" + c + "'").join(" ou ") + (obj?.value === undefined ? " com valor" : "") + ", mas foi passada uma expressão do tipo '" + (obj?.type ?? "vazio") + "'" + (obj?.value === undefined ? " vazia" : ""));
     }
   }
 

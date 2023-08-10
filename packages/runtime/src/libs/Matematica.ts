@@ -24,9 +24,9 @@ export default /* javascript */ `{
 
   arredondar(numero, casas) {
     self.runtime.expectType("arredondar", "numero", numero, "inteiro", "real");
-    self.runtime.expectType("arredondar", "casas", casas, "inteiro", "real");
+    self.runtime.expectType("arredondar", "casas", casas, "inteiro");
 
-    return new PortugolVar(self.runtime.assumeMathType(numero, casas), Math.round(numero.value * Math.pow(10, casas.value)) / Math.pow(10, casas.value));
+    return new PortugolVar(self.runtime.assumeMathType(numero, casas), Number(numero.value.toFixed(casas.value)));
   },
 
   valor_absoluto(numero) {
