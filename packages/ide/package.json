@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/dgadelha/Portugol-Webstudio#readme",
   "scripts": {
-    "start": "ng serve",
+    "start": "ng serve --disable-host-check",
     "release": "ng build --base-href /Portugol-Webstudio/",
     "watch": "ng build --watch --configuration development",
     "lint": "ng lint"
