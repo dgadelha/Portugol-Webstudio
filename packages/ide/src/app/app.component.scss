@@ -50,6 +50,10 @@
     font-family: $font;
     user-select: none;
 
+    .mat-mdc-icon-button .mat-mdc-button-persistent-ripple {
+      border-radius: 0;
+    }
+
     &:hover .mdc-tab__ripple::before {
       opacity: 0;
     }
