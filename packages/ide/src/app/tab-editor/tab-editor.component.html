@@ -63,9 +63,7 @@
 <ng-template #shareSnackTemplate let-data>
   <span class="share-snack">
     <strong>Link gerado:</strong>&nbsp;&nbsp;<code>
-      <a target="_blank" [href]="data.url">
-        {{ data.url | slice: 0:10 }}…{{ data.url | slice: data.url.length - 14 }}
-      </a>
+      <a target="_blank" [href]="data.url">{{ data.url | slice: 0:10 }}…{{ data.url | slice: data.url.length - 14 }}</a>
     </code>
     &nbsp;&nbsp;&nbsp;
     <button mat-raised-button color="primary" (click)="copyStringAndCloseSnack(data.url)">COPIAR</button>

@@ -68,6 +68,12 @@ $PortugolWebstudio-theme: mat.define-dark-theme(
 @include mat.all-component-themes($PortugolWebstudio-theme);
 @import "variables";
 
+.mat-mdc-tooltip, .mdc-tooltip__surface {
+  --mdc-plain-tooltip-supporting-text-line-height: normal;
+  --mdc-plain-tooltip-supporting-text-size: 0.75rem;
+  --mdc-plain-tooltip-supporting-text-weight: 400;
+}
+
 * {
   box-sizing: border-box;
 }

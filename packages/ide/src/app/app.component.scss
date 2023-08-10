@@ -79,6 +79,17 @@
     &:not(#mat-tab-label-0-0) {
       padding-right: 0;
 
+      .add-button {
+        --mdc-icon-button-state-layer-size: 40px;
+        padding: 8px 0;
+      }
+
+      &.mat-mdc-tab-disabled {
+        .mdc-tab__content, .mat-mdc-tab-ripple, .mdc-tab__ripple::before {
+          pointer-events: all;
+        }
+      }
+
       button:not(.add-button) {
         border-radius: 0;
         display: inline-block;
@@ -101,7 +112,7 @@
     }
 
     &.mdc-tab--active,
-    &:focus {
+    &:focus:not(.mat-mdc-tab-disabled) {
       background-color: $tab-active-bg !important;
       color: $tab-active-color !important;
 
@@ -133,6 +144,7 @@
       white-space: nowrap;
       text-overflow: ellipsis;
       overflow: hidden;
+      line-height: normal;
     }
   }
 
