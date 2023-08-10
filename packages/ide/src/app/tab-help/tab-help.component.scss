@@ -23,7 +23,7 @@ as-split-area {
   scrollbar-width: thin;
 }
 
-.mat-tree-node {
+.mat-mdc-tree-node {
   min-height: 0 !important;
 }
 
@@ -40,13 +40,14 @@ ul {
     width: 100%;
     background-color: $background-200;
     cursor: pointer;
+    display: flex;
 
     &.active {
       background-color: $background-100;
     }
 
     span {
-      vertical-align: middle;
+      align-self: center;
     }
   }
 }

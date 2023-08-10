@@ -13,14 +13,13 @@ jobs:
       - name: Setup Node.js 📦
         uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 20
           registry-url: "https://npm.pkg.github.com"
           scope: "@portugol-webstudio"
 
       - name: Install dependencies 🔧
         run: |
           npm ci --also=dev
-          npm run bootstrap
 
       - name: Build code 🚚
         run: |

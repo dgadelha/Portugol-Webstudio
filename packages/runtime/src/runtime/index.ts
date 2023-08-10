@@ -1,5 +1,5 @@
-import { portugolRuntime } from "./PortugolRuntime";
-import { portugolVar } from "./PortugolVar";
+import { portugolRuntime } from "./PortugolRuntime.js";
+import { portugolVar } from "./PortugolVar.js";
 
 export const runtime = /* javascript */ `
 //region Runtime

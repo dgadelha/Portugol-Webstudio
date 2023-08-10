@@ -1,6 +1,7 @@
 {
   "name": "@portugol-webstudio/resources",
   "version": "0.0.0",
+  "type": "module",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/dgadelha/Portugol-Webstudio.git"
@@ -28,19 +29,19 @@
     "assets"
   ],
   "scripts": {
-    "build": "ts-node src/atualizar.ts"
+    "build": "node --no-warnings --loader ts-node/esm src/atualizar.ts"
   },
   "devDependencies": {
+    "@swc/core": "^1.3.75",
     "@types/adm-zip": "^0.5.0",
     "@types/ini": "^1.3.31",
-    "@types/rimraf": "^3.0.2",
-    "adm-zip": "^0.5.9",
-    "axios": "^1.1.2",
+    "adm-zip": "^0.5.10",
+    "axios": "^1.4.0",
     "iconv-lite": "^0.6.3",
-    "ini": "^3.0.1",
+    "ini": "^4.1.1",
     "readdirp": "^3.6.0",
-    "rimraf": "^3.0.2",
-    "slugify": "^1.6.5",
-    "typescript": "~4.8.4"
+    "rimraf": "^5.0.1",
+    "slugify": "^1.6.6",
+    "typescript": "~5.1.6"
   }
 }

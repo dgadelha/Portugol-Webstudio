@@ -14,7 +14,7 @@ import { MatSnackBar } from "@angular/material/snack-bar";
 import { PortugolSyntaxError } from "@portugol-webstudio/antlr";
 import { PortugolExecutor, PortugolWebWorkersRunner } from "@portugol-webstudio/runner";
 import { PortugolJsRuntime } from "@portugol-webstudio/runtime";
-import { captureException, setExtra } from "@sentry/angular";
+import { captureException, setExtra } from "@sentry/angular-ivy";
 import { saveAs } from "file-saver";
 import { ShortcutInput } from "ng-keyboard-shortcuts";
 import { GoogleAnalyticsService } from "ngx-google-analytics";
@@ -97,7 +97,11 @@ export class TabEditorComponent implements OnInit, OnDestroy {
   @ViewChild("shareSnackTemplate", { read: TemplateRef })
   shareSnackTemplate!: TemplateRef<{ data: { url: string } }>;
 
-  constructor(private gaService: GoogleAnalyticsService, private storage: Storage, private snack: MatSnackBar) {}
+  constructor(
+    private gaService: GoogleAnalyticsService,
+    private storage: Storage,
+    private snack: MatSnackBar,
+  ) {}
 
   ngOnInit() {
     if (!this.code) {

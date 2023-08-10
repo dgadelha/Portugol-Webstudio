@@ -1,9 +1,9 @@
-import { writeFileSync } from "fs";
-import { join } from "path";
+import { writeFileSync } from "node:fs";
+import { join } from "node:path";
 
 import slugify from "slugify";
 
-import { baseDir } from "./config";
+import { baseDir } from "./config.js";
 
 interface PortugolAjudaItem {
   titulo: string;

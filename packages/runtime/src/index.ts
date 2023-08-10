@@ -1,2 +1,2 @@
-export * from "./PortugolJs";
-export { runtime as PortugolJsRuntime } from "./runtime";
+export * from "./PortugolJs.js";
+export { runtime as PortugolJsRuntime } from "./runtime/index.js";

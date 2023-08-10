@@ -50,7 +50,10 @@ export class DialogOpenExampleComponent implements OnInit, OnDestroy, AfterViewI
     language: "portugol",
   };
 
-  constructor(private http: HttpClient, private responsive: ResponsiveService) {
+  constructor(
+    private http: HttpClient,
+    private responsive: ResponsiveService,
+  ) {
     this.treeControl = new NestedTreeControl<ExampleItem>(node => node.children);
     this.dataSource = new MatTreeNestedDataSource();
   }

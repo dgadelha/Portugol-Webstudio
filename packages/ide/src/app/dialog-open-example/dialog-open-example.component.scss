@@ -3,12 +3,16 @@
 :host {
   display: flex;
   flex-direction: column;
+  --mdc-dialog-supporting-text-size: 14px;
+  --mdc-dialog-supporting-text-line-height: 21px;
+  --mdc-dialog-supporting-text-color: #fff;
+  height: 100%;
 }
 
 header {
   display: flex;
   align-items: center;
-  padding-bottom: 5px;
+  padding: 8px 16px;
   border-bottom: 1px solid rgba(229, 229, 229, 0.4);
 }
 
@@ -24,7 +28,7 @@ as-split-area {
   scrollbar-width: thin;
 }
 
-.mat-tree-node {
+.mat-mdc-tree-node {
   min-height: 0 !important;
 }
 
@@ -39,18 +43,19 @@ ul {
     overflow: hidden;
     width: 100%;
     cursor: pointer;
+    display: flex;
 
     &.active {
       background-color: rgba(0, 0, 0, 0.2);
     }
 
     span {
-      vertical-align: middle;
+      align-self: center;
     }
   }
 }
 
-.mat-dialog-content,
+.mat-mdc-dialog-content,
 main {
   display: flex;
   max-height: 100%;

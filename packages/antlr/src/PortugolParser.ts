@@ -23,8 +23,8 @@ import { VocabularyImpl } from "antlr4ts/VocabularyImpl";
 
 import * as Utils from "antlr4ts/misc/Utils";
 
-import { PortugolListener } from "./PortugolListener";
-import { PortugolVisitor } from "./PortugolVisitor";
+import { PortugolListener } from "./PortugolListener.js";
+import { PortugolVisitor } from "./PortugolVisitor.js";
 
 
 export class PortugolParser extends Parser {
@@ -134,39 +134,39 @@ export class PortugolParser extends Parser {
 	public static readonly RULE_escopoBiblioteca = 37;
 	// tslint:disable:no-trailing-whitespace
 	public static readonly ruleNames: string[] = [
-		"arquivo", "inclusaoBiblioteca", "listaDeclaracoes", "declaracao", "declaracaoVariavel", 
-		"declaracaoMatriz", "inicializacaoMatriz", "linhaMatriz", "colunaMatriz", 
-		"declaracaoArray", "inicializacaoArray", "tamanhoArray", "declaracaoFuncao", 
-		"parametroFuncao", "listaParametros", "parametro", "parametroArray", "parametroMatriz", 
-		"comando", "atribuicao", "atribuicaoComposta", "retorne", "se", "senao", 
-		"enquanto", "facaEnquanto", "para", "listaComandos", "inicializacaoPara", 
-		"condicao", "incrementoPara", "escolha", "caso", "pare", "indiceArray", 
+		"arquivo", "inclusaoBiblioteca", "listaDeclaracoes", "declaracao", "declaracaoVariavel",
+		"declaracaoMatriz", "inicializacaoMatriz", "linhaMatriz", "colunaMatriz",
+		"declaracaoArray", "inicializacaoArray", "tamanhoArray", "declaracaoFuncao",
+		"parametroFuncao", "listaParametros", "parametro", "parametroArray", "parametroMatriz",
+		"comando", "atribuicao", "atribuicaoComposta", "retorne", "se", "senao",
+		"enquanto", "facaEnquanto", "para", "listaComandos", "inicializacaoPara",
+		"condicao", "incrementoPara", "escolha", "caso", "pare", "indiceArray",
 		"expressao", "listaExpressoes", "escopoBiblioteca",
 	];
 
 	private static readonly _LITERAL_NAMES: Array<string | undefined> = [
-		undefined, "'('", "')'", "'['", "']'", "'{'", "'}'", undefined, "'faca'", 
-		"'enquanto'", "'para'", "'se'", "'senao'", "'const'", "'funcao'", "'programa'", 
-		"'escolha'", "'caso'", "'contrario'", "'pare'", "'retorne'", "'inclua'", 
-		"'biblioteca'", "'nao'", "'e'", "'ou'", "'-'", "'+'", "'*'", "'/'", "'%'", 
-		"'='", "'=='", "'!='", "'>'", "'<'", "'<='", "'>='", "'++'", "'--'", "'<<'", 
-		"'>>'", "'^'", "'|'", "'~'", "'-->'", "'&'", "'+='", "'-='", "'*='", "'/='", 
-		undefined, "'verdadeiro'", "'falso'", undefined, undefined, undefined, 
-		undefined, undefined, undefined, undefined, undefined, undefined, "'.'", 
+		undefined, "'('", "')'", "'['", "']'", "'{'", "'}'", undefined, "'faca'",
+		"'enquanto'", "'para'", "'se'", "'senao'", "'const'", "'funcao'", "'programa'",
+		"'escolha'", "'caso'", "'contrario'", "'pare'", "'retorne'", "'inclua'",
+		"'biblioteca'", "'nao'", "'e'", "'ou'", "'-'", "'+'", "'*'", "'/'", "'%'",
+		"'='", "'=='", "'!='", "'>'", "'<'", "'<='", "'>='", "'++'", "'--'", "'<<'",
+		"'>>'", "'^'", "'|'", "'~'", "'-->'", "'&'", "'+='", "'-='", "'*='", "'/='",
+		undefined, "'verdadeiro'", "'falso'", undefined, undefined, undefined,
+		undefined, undefined, undefined, undefined, undefined, undefined, "'.'",
 		"','", "';'", "':'",
 	];
 	private static readonly _SYMBOLIC_NAMES: Array<string | undefined> = [
-		undefined, "ABRE_PARENTESES", "FECHA_PARENTESES", "ABRE_COLCHETES", "FECHA_COLCHETES", 
-		"ABRE_CHAVES", "FECHA_CHAVES", "TIPO", "FACA", "ENQUANTO", "PARA", "SE", 
-		"SENAO", "CONSTANTE", "FUNCAO", "PROGRAMA", "ESCOLHA", "CASO", "CONTRARIO", 
-		"PARE", "RETORNE", "INCLUA", "BIBLIOTECA", "OP_NAO", "OP_E_LOGICO", "OP_OU_LOGICO", 
-		"OP_SUBTRACAO", "OP_ADICAO", "OP_MULTIPLICACAO", "OP_DIVISAO", "OP_MOD", 
-		"OP_ATRIBUICAO", "OP_IGUALDADE", "OP_DIFERENCA", "OP_MAIOR", "OP_MENOR", 
-		"OP_MENOR_IGUAL", "OP_MAIOR_IGUAL", "OP_INCREMENTO_UNARIO", "OP_DECREMENTO_UNARIO", 
-		"OP_SHIFT_LEFT", "OP_SHIFT_RIGHT", "OP_XOR", "OP_OU_BITWISE", "OP_NOT_BITWISE", 
-		"OP_ALIAS_BIBLIOTECA", "E_COMERCIAL", "OP_MAIS_IGUAL", "OP_MENOS_IGUAL", 
-		"OP_MULTIPLICACAO_IGUAL", "OP_DIVISAO_IGUAL", "LOGICO", "VERDADEIRO", 
-		"FALSO", "CARACTER", "STRING", "ID", "REAL", "INT", "HEXADECIMAL", "COMENTARIO", 
+		undefined, "ABRE_PARENTESES", "FECHA_PARENTESES", "ABRE_COLCHETES", "FECHA_COLCHETES",
+		"ABRE_CHAVES", "FECHA_CHAVES", "TIPO", "FACA", "ENQUANTO", "PARA", "SE",
+		"SENAO", "CONSTANTE", "FUNCAO", "PROGRAMA", "ESCOLHA", "CASO", "CONTRARIO",
+		"PARE", "RETORNE", "INCLUA", "BIBLIOTECA", "OP_NAO", "OP_E_LOGICO", "OP_OU_LOGICO",
+		"OP_SUBTRACAO", "OP_ADICAO", "OP_MULTIPLICACAO", "OP_DIVISAO", "OP_MOD",
+		"OP_ATRIBUICAO", "OP_IGUALDADE", "OP_DIFERENCA", "OP_MAIOR", "OP_MENOR",
+		"OP_MENOR_IGUAL", "OP_MAIOR_IGUAL", "OP_INCREMENTO_UNARIO", "OP_DECREMENTO_UNARIO",
+		"OP_SHIFT_LEFT", "OP_SHIFT_RIGHT", "OP_XOR", "OP_OU_BITWISE", "OP_NOT_BITWISE",
+		"OP_ALIAS_BIBLIOTECA", "E_COMERCIAL", "OP_MAIS_IGUAL", "OP_MENOS_IGUAL",
+		"OP_MULTIPLICACAO_IGUAL", "OP_DIVISAO_IGUAL", "LOGICO", "VERDADEIRO",
+		"FALSO", "CARACTER", "STRING", "ID", "REAL", "INT", "HEXADECIMAL", "COMENTARIO",
 		"COMENTARIO_SIMPLES", "WS", "PONTO", "VIRGULA", "PONTOVIRGULA", "DOISPONTOS",
 	];
 	public static readonly VOCABULARY: Vocabulary = new VocabularyImpl(PortugolParser._LITERAL_NAMES, PortugolParser._SYMBOLIC_NAMES, []);

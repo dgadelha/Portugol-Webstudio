@@ -84,7 +84,7 @@ import { ParserRuleContext } from "antlr4ts";
 import { AbstractParseTreeVisitor } from "antlr4ts/tree/AbstractParseTreeVisitor";
 import { RuleNode } from "antlr4ts/tree/RuleNode";
 
-import { StringBuilder } from "./utils/StringBuilder";
+import { StringBuilder } from "./utils/StringBuilder.js";
 
 export class PortugolJs extends AbstractParseTreeVisitor<string> implements PortugolVisitor<string> {
   static thrown: Record<string, boolean> = {};

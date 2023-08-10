@@ -39,19 +39,13 @@ O Portugol Webstudio é um projeto que utiliza o framework [Angular](https://ang
 npm ci
 ```
 
-3. Faça o _bootstrap_ do Lerna:
-
-```sh
-npm run bootstrap
-```
-
-4. Compile os pacotes:
+3. Compile os pacotes:
 
 ```sh
 npm run build
 ```
 
-5. Inicie o servidor de desenvolvimento:
+4. Inicie o servidor de desenvolvimento:
 
 ```sh
 npm start

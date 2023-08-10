@@ -1,15 +1,15 @@
-import { existsSync, promises as fs } from "fs";
-import { join } from "path";
+import { existsSync, promises as fs } from "node:fs";
+import { join } from "node:path";
 
 import AdmZip from "adm-zip";
-import rimraf from "rimraf";
+import * as rimraf from "rimraf";
 
-import { baseDir } from "./config";
-import { generateExamplesJson } from "./helpers/exemplos";
-import { download } from "./helpers/internet";
-import { patchHtmlFiles, patchPortugolFiles } from "./helpers/patch";
+import { baseDir } from "./config.js";
+import { generateExamplesJson } from "./helpers/exemplos.js";
+import { download } from "./helpers/internet.js";
+import { patchHtmlFiles, patchPortugolFiles } from "./helpers/patch.js";
 
-import "./ajuda";
+import "./ajuda.js";
 
 export async function configurarRecursos() {
   const assetsPath = "Portugol-Studio-master/ide/src/main/assets/";
@@ -44,8 +44,9 @@ export async function configurarRecursos() {
     await fs.unlink(psZip);
 
     console.log("Gerando índice da aba Ajuda...");
-    // eslint-disable-next-line
-    require(join(baseDir, "ajuda", "scripts", "topicos"));
+    // @ts-ignore
+    await import(join(baseDir, "ajuda", "scripts", "topicos.js"));
+    // require(join(baseDir, "ajuda", "scripts", "topicos"));
 
     console.log("Ajustando arquivos HTML...");
     await patchHtmlFiles();

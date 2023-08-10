@@ -87,7 +87,7 @@ export class MonacoService {
           });
 
           // @see: https://microsoft.github.io/monaco-editor/monarch.html
-          monaco.languages.setMonarchTokensProvider("portugol", <monaco.languages.IMonarchLanguage>{
+          monaco.languages.setMonarchTokensProvider("portugol", {
             defaultToken: "invalid",
             tokenPostfix: ".portugol",
             autoClosingPairs: [
@@ -230,7 +230,7 @@ export class MonacoService {
                 { include: "common" },
               ],
             },
-          });
+          } as monaco.languages.IMonarchLanguage);
 
           monaco.editor.defineTheme("portugol", {
             base: "vs-dark",
