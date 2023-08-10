@@ -1,5 +1,5 @@
-import fs from "fs/promises";
-import { join } from "path";
+import fs from "node:fs/promises";
+import { join } from "node:path";
 
 import iconv from "iconv-lite";
 import readdirp from "readdirp";
