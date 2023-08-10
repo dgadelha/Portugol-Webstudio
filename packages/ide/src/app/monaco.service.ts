@@ -164,9 +164,9 @@ export class MonacoService {
             // The main tokenizer for our languages
             tokenizer: {
               root: [
-                [/[{}]/, "delimiter.bracket"], 
+                [/[{}]/, "delimiter.bracket"],
                 [/([a-zA-Z_{1}][a-zA-Z0-9_]+)(?=\s*\()/, "functions"],
-                { include: "common" }
+                { include: "common" },
               ],
               common: [
                 // identifiers and keywords
@@ -239,9 +239,7 @@ export class MonacoService {
           monaco.editor.defineTheme("portugol", {
             base: "vs-dark",
             inherit: true,
-            rules: [
-              { token: "functions", foreground: 'F5D7A9' }
-            ],
+            rules: [{ token: "functions", foreground: "F5D7A9" }],
             colors: {},
           });
         } catch (e) {
