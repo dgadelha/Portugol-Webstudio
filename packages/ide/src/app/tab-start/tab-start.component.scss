@@ -60,9 +60,9 @@ nav {
 }
 
 section {
-  max-width: 455px;
+  max-width: 600px;
   margin: 20px;
-  text-align: justify;
+  letter-spacing: 0.25px;
   padding: 0 15px;
   font-family: "Lato", sans-serif;
   color: #fff;
@@ -73,8 +73,16 @@ section {
 
   h3,
   h4,
-  p {
-    margin: 0.75rem 0;
+  p,
+  li {
+    margin: 0.5rem 0;
+    line-height: 1.5;
+    list-style-type: square;
+  }
+
+  ul {
+    margin: 0;
+    padding-left: 1.25rem;
   }
 
   mat-icon {

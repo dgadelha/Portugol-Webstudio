@@ -47,9 +47,11 @@
 
   &:disabled {
     cursor: not-allowed;
+    pointer-events: none;
 
     svg {
       filter: grayscale(1);
+      -webkit-transform: translateZ(0);
     }
   }
 }

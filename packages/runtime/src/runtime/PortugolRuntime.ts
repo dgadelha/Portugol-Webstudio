@@ -339,30 +339,31 @@ class PortugolRuntime {
 
   applyModifier(mod, item) {
     console.log("applyModifier.init", { mod, item });
+    const result = item.clone();
 
     switch (mod) {
       case "+":
-        item.value = +item.value;
+        result.value = +item.value;
         break;
 
       case "-":
-        item.value = -item.value;
+        result.value = -item.value;
         break;
 
       case "!":
-        item.value = !item.value;
+        result.value = !item.value;
         break;
 
       case "~":
-        item.value = ~item.value;
+        result.value = ~item.value;
         break;
 
       default:
         throw new Error("Modificador inválido: " + mod);
     }
 
-    console.log("applyModifier.finish", { item });
-    return item;
+    console.log("applyModifier.finish", { result });
+    return result;
   }
 
   assumeMathType(...args) {
