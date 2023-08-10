@@ -76,9 +76,17 @@ class PortugolRuntime {
   assign(args) {
     let initial = args.shift();
 
+    if (typeof initial === "undefined") {
+      throw new Error("Não é possível atribuir valor à uma variável não declarada");
+    }
+
     while (args.length) {
       const arg = args.pop();
       console.log("assign", { initial, arg });
+
+      if (typeof arg === "undefined") {
+        throw new Error("Não é possível atribuir uma variável não declarada a uma variável declarada");
+      }
 
       if (initial.type === "vazio") {
         throw new Error("Não é possível atribuir valor ao tipo vazio");
