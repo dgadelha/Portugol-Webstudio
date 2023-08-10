@@ -35,7 +35,11 @@ export class AppComponent implements OnInit {
     },
   ];
 
-  constructor(private gaService: GoogleAnalyticsService, private storage: Storage, private snack: MatSnackBar) {}
+  constructor(
+    private gaService: GoogleAnalyticsService,
+    private storage: Storage,
+    private snack: MatSnackBar,
+  ) {}
 
   async ngOnInit() {
     try {

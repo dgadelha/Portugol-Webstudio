@@ -17,7 +17,10 @@ export class TabStartComponent {
   private _dialogExample$?: Subscription;
   private _dialogRef$?: Subscription;
 
-  constructor(public gaService: GoogleAnalyticsService, private dialog: MatDialog) {}
+  constructor(
+    public gaService: GoogleAnalyticsService,
+    private dialog: MatDialog,
+  ) {}
 
   openFile(event: Event) {
     this.gaService.event("home_open_file", "Aba Inicial", "Abrir arquivo através da aba Inicial");
