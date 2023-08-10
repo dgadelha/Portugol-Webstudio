@@ -15,7 +15,7 @@ import { MatTreeModule } from "@angular/material/tree";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { MonacoEditorModule } from "@materia-ui/ngx-monaco-editor";
-import * as Sentry from "@sentry/angular";
+import * as Sentry from "@sentry/angular-ivy";
 import { AngularSplitModule } from "angular-split";
 import { AngularSvgIconModule } from "angular-svg-icon";
 import { KeyboardShortcutsModule } from "ng-keyboard-shortcuts";
