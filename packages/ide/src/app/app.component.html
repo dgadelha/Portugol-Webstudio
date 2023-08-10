@@ -4,7 +4,13 @@
   <ngx-monaco-editor></ngx-monaco-editor>
 </div>
 
-<mat-tab-group [selectedIndex]="selected.value" (selectedIndexChange)="selected.setValue($event)" animationDuration="0" mat-stretch-tabs="false" mat-align-tabs="start">
+<mat-tab-group
+  [selectedIndex]="selected.value"
+  (selectedIndexChange)="selected.setValue($event)"
+  animationDuration="0"
+  mat-stretch-tabs="false"
+  mat-align-tabs="start"
+>
   <mat-tab>
     <ng-template mat-tab-label>
       <span class="tab-icon">
@@ -20,7 +26,7 @@
 
   <mat-tab *ngFor="let tab of tabs">
     <ng-template mat-tab-label>
-      <span (click)="changeTabTitle(tab)" (auxclick)="closeTab(tab)">
+      <span>
         <span class="tab-icon" [ngSwitch]="tab.type">
           <svg-icon *ngSwitchCase="'editor'" src="assets/icon-file.svg"></svg-icon>
           <svg-icon *ngSwitchCase="'help'" src="assets/icon-help-circle-outline.svg"></svg-icon>
@@ -29,9 +35,20 @@
         <span class="tab-text">{{ tab.title }}</span>
       </span>
 
-      <button mat-icon-button matTooltip="Fechar aba" (click)="closeTab(tab)">
-        <mat-icon>close</mat-icon>
-      </button>
+      <span class="tab-actions">
+        <button mat-icon-button matTooltip="Renomear aba" (click)="changeTabTitle(tab)" *ngIf="tab.type === 'editor'">
+          <mat-icon>drive_file_rename_outline</mat-icon>
+        </button>
+
+        <button
+          mat-icon-button
+          matTooltip="Fechar aba"
+          (click)="closeTab(tab)"
+          [style]="tab.type === 'editor' ? { marginLeft: 0 } : {}"
+        >
+          <mat-icon>close</mat-icon>
+        </button>
+      </span>
     </ng-template>
 
     <ng-container [ngSwitch]="tab.type">

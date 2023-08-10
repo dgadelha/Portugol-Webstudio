@@ -75,6 +75,14 @@ export class AppComponent implements OnInit {
   }
 
   closeTab(tab: Tab) {
+    if (tab.type === "editor") {
+      const confirm = window.confirm("Tem certeza que deseja fechar a aba? O código não salvo será perdido.");
+
+      if (!confirm) {
+        return;
+      }
+    }
+
     this.tabs.splice(this.tabs.indexOf(tab), 1);
     this.selected.setValue(0);
     this.gaService.event("close_tab", "Interface", "Fechar aba", this.tabs.length);
@@ -86,7 +94,7 @@ export class AppComponent implements OnInit {
     }
 
     this.gaService.event("edit_tab_title", "Interface", "Editar título de aba");
-    const title = prompt("Digite o novo título");
+    const title = prompt("Digite o novo título", tab.title);
 
     if (title) {
       tab.title = title;

@@ -83,6 +83,14 @@
     &:not(#mat-tab-label-0-0) {
       padding-right: 0;
 
+      &:not(.mdc-tab--active) {
+        padding-right: 16px;
+
+        .tab-actions {
+          display: none;
+        }
+      }
+
       .add-button {
         --mdc-icon-button-state-layer-size: 40px;
         padding: 8px 0;
