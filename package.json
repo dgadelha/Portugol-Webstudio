@@ -21,7 +21,6 @@
   "homepage": "https://github.com/dgadelha/Portugol-Webstudio#readme",
   "scripts": {
     "antlr4ts": "antlr4ts -visitor src/antlr/Portugol.g4",
-    "bootstrap": "lerna bootstrap",
     "eslint:fix": "eslint --fix 'packages/**/*.{t,j}s'",
     "eslint:check": "eslint 'packages/**/*.{t,j}s'",
     "start": "lerna run start --scope=@portugol-webstudio/ide",
