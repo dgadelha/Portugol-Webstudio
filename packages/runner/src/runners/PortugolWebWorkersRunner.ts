@@ -100,12 +100,11 @@ export class PortugolWebWorkersRunner extends IPortugolRunner {
                         if (arg.type === "logico") {
                           str += arg.value ? "verdadeiro" : "falso";
                         } else {
-                          str += \`\${arg.value}\`;
+                          str += String(arg.value);
                         }
                       }
                     } else {
                       throw new Error("Argumento inválido");
-                      // str += \`\${arg}\`;
                     }
                   }
 

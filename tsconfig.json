@@ -18,10 +18,9 @@
     "skipLibCheck": true,
     "esModuleInterop": true,
     "useDefineForClassFields": false,
-    "lib": [
-      "ES2022",
-      "dom"
-    ]
+    "alwaysStrict": true,
+    "strictPropertyInitialization": true,
+    "lib": ["ES2022", "dom"]
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

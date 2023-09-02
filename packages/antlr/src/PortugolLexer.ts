@@ -1,18 +1,18 @@
 // Generated from src/antlr/Portugol.g4 by ANTLR 4.9.0-SNAPSHOT
 
 
-import { ATN } from "antlr4ts/atn/ATN";
-import { ATNDeserializer } from "antlr4ts/atn/ATNDeserializer";
-import { CharStream } from "antlr4ts/CharStream";
-import { Lexer } from "antlr4ts/Lexer";
-import { LexerATNSimulator } from "antlr4ts/atn/LexerATNSimulator";
-import { NotNull } from "antlr4ts/Decorators";
-import { Override } from "antlr4ts/Decorators";
-import { RuleContext } from "antlr4ts/RuleContext";
-import { Vocabulary } from "antlr4ts/Vocabulary";
-import { VocabularyImpl } from "antlr4ts/VocabularyImpl";
+import { ATN } from "antlr4ts/atn/ATN.js";
+import { ATNDeserializer } from "antlr4ts/atn/ATNDeserializer.js";
+import { CharStream } from "antlr4ts/CharStream.js";
+import { Lexer } from "antlr4ts/Lexer.js";
+import { LexerATNSimulator } from "antlr4ts/atn/LexerATNSimulator.js";
+import { NotNull } from "antlr4ts/Decorators.js";
+import { Override } from "antlr4ts/Decorators.js";
+import { RuleContext } from "antlr4ts/RuleContext.js";
+import { Vocabulary } from "antlr4ts/Vocabulary.js";
+import { VocabularyImpl } from "antlr4ts/VocabularyImpl.js";
 
-import * as Utils from "antlr4ts/misc/Utils";
+import * as Utils from "antlr4ts/misc/Utils.js";
 
 
 export class PortugolLexer extends Lexer {
@@ -94,45 +94,45 @@ export class PortugolLexer extends Lexer {
 	];
 
 	public static readonly ruleNames: string[] = [
-		"ABRE_PARENTESES", "FECHA_PARENTESES", "ABRE_COLCHETES", "FECHA_COLCHETES", 
-		"ABRE_CHAVES", "FECHA_CHAVES", "TIPO", "FACA", "ENQUANTO", "PARA", "SE", 
-		"SENAO", "CONSTANTE", "FUNCAO", "PROGRAMA", "ESCOLHA", "CASO", "CONTRARIO", 
-		"PARE", "RETORNE", "INCLUA", "BIBLIOTECA", "OP_NAO", "OP_E_LOGICO", "OP_OU_LOGICO", 
-		"OP_SUBTRACAO", "OP_ADICAO", "OP_MULTIPLICACAO", "OP_DIVISAO", "OP_MOD", 
-		"OP_ATRIBUICAO", "OP_IGUALDADE", "OP_DIFERENCA", "OP_MAIOR", "OP_MENOR", 
-		"OP_MENOR_IGUAL", "OP_MAIOR_IGUAL", "OP_INCREMENTO_UNARIO", "OP_DECREMENTO_UNARIO", 
-		"OP_SHIFT_LEFT", "OP_SHIFT_RIGHT", "OP_XOR", "OP_OU_BITWISE", "OP_NOT_BITWISE", 
-		"OP_ALIAS_BIBLIOTECA", "E_COMERCIAL", "OP_MAIS_IGUAL", "OP_MENOS_IGUAL", 
-		"OP_MULTIPLICACAO_IGUAL", "OP_DIVISAO_IGUAL", "LOGICO", "VERDADEIRO", 
-		"FALSO", "CARACTER", "SEQ_ESC", "ESC_OCTAL", "ESC_UNICODE", "ESC_CARACTER", 
-		"DIGIT_HEX", "STRING", "ID", "LETRA", "REAL", "DIGITO", "INT", "HEXADECIMAL", 
-		"SIMBOLO_HEXADECIMAL", "COMENTARIO", "COMENTARIO_SIMPLES", "WS", "PONTO", 
+		"ABRE_PARENTESES", "FECHA_PARENTESES", "ABRE_COLCHETES", "FECHA_COLCHETES",
+		"ABRE_CHAVES", "FECHA_CHAVES", "TIPO", "FACA", "ENQUANTO", "PARA", "SE",
+		"SENAO", "CONSTANTE", "FUNCAO", "PROGRAMA", "ESCOLHA", "CASO", "CONTRARIO",
+		"PARE", "RETORNE", "INCLUA", "BIBLIOTECA", "OP_NAO", "OP_E_LOGICO", "OP_OU_LOGICO",
+		"OP_SUBTRACAO", "OP_ADICAO", "OP_MULTIPLICACAO", "OP_DIVISAO", "OP_MOD",
+		"OP_ATRIBUICAO", "OP_IGUALDADE", "OP_DIFERENCA", "OP_MAIOR", "OP_MENOR",
+		"OP_MENOR_IGUAL", "OP_MAIOR_IGUAL", "OP_INCREMENTO_UNARIO", "OP_DECREMENTO_UNARIO",
+		"OP_SHIFT_LEFT", "OP_SHIFT_RIGHT", "OP_XOR", "OP_OU_BITWISE", "OP_NOT_BITWISE",
+		"OP_ALIAS_BIBLIOTECA", "E_COMERCIAL", "OP_MAIS_IGUAL", "OP_MENOS_IGUAL",
+		"OP_MULTIPLICACAO_IGUAL", "OP_DIVISAO_IGUAL", "LOGICO", "VERDADEIRO",
+		"FALSO", "CARACTER", "SEQ_ESC", "ESC_OCTAL", "ESC_UNICODE", "ESC_CARACTER",
+		"DIGIT_HEX", "STRING", "ID", "LETRA", "REAL", "DIGITO", "INT", "HEXADECIMAL",
+		"SIMBOLO_HEXADECIMAL", "COMENTARIO", "COMENTARIO_SIMPLES", "WS", "PONTO",
 		"VIRGULA", "PONTOVIRGULA", "DOISPONTOS",
 	];
 
 	private static readonly _LITERAL_NAMES: Array<string | undefined> = [
-		undefined, "'('", "')'", "'['", "']'", "'{'", "'}'", undefined, "'faca'", 
-		"'enquanto'", "'para'", "'se'", "'senao'", "'const'", "'funcao'", "'programa'", 
-		"'escolha'", "'caso'", "'contrario'", "'pare'", "'retorne'", "'inclua'", 
-		"'biblioteca'", "'nao'", "'e'", "'ou'", "'-'", "'+'", "'*'", "'/'", "'%'", 
-		"'='", "'=='", "'!='", "'>'", "'<'", "'<='", "'>='", "'++'", "'--'", "'<<'", 
-		"'>>'", "'^'", "'|'", "'~'", "'-->'", "'&'", "'+='", "'-='", "'*='", "'/='", 
-		undefined, "'verdadeiro'", "'falso'", undefined, undefined, undefined, 
-		undefined, undefined, undefined, undefined, undefined, undefined, "'.'", 
+		undefined, "'('", "')'", "'['", "']'", "'{'", "'}'", undefined, "'faca'",
+		"'enquanto'", "'para'", "'se'", "'senao'", "'const'", "'funcao'", "'programa'",
+		"'escolha'", "'caso'", "'contrario'", "'pare'", "'retorne'", "'inclua'",
+		"'biblioteca'", "'nao'", "'e'", "'ou'", "'-'", "'+'", "'*'", "'/'", "'%'",
+		"'='", "'=='", "'!='", "'>'", "'<'", "'<='", "'>='", "'++'", "'--'", "'<<'",
+		"'>>'", "'^'", "'|'", "'~'", "'-->'", "'&'", "'+='", "'-='", "'*='", "'/='",
+		undefined, "'verdadeiro'", "'falso'", undefined, undefined, undefined,
+		undefined, undefined, undefined, undefined, undefined, undefined, "'.'",
 		"','", "';'", "':'",
 	];
 	private static readonly _SYMBOLIC_NAMES: Array<string | undefined> = [
-		undefined, "ABRE_PARENTESES", "FECHA_PARENTESES", "ABRE_COLCHETES", "FECHA_COLCHETES", 
-		"ABRE_CHAVES", "FECHA_CHAVES", "TIPO", "FACA", "ENQUANTO", "PARA", "SE", 
-		"SENAO", "CONSTANTE", "FUNCAO", "PROGRAMA", "ESCOLHA", "CASO", "CONTRARIO", 
-		"PARE", "RETORNE", "INCLUA", "BIBLIOTECA", "OP_NAO", "OP_E_LOGICO", "OP_OU_LOGICO", 
-		"OP_SUBTRACAO", "OP_ADICAO", "OP_MULTIPLICACAO", "OP_DIVISAO", "OP_MOD", 
-		"OP_ATRIBUICAO", "OP_IGUALDADE", "OP_DIFERENCA", "OP_MAIOR", "OP_MENOR", 
-		"OP_MENOR_IGUAL", "OP_MAIOR_IGUAL", "OP_INCREMENTO_UNARIO", "OP_DECREMENTO_UNARIO", 
-		"OP_SHIFT_LEFT", "OP_SHIFT_RIGHT", "OP_XOR", "OP_OU_BITWISE", "OP_NOT_BITWISE", 
-		"OP_ALIAS_BIBLIOTECA", "E_COMERCIAL", "OP_MAIS_IGUAL", "OP_MENOS_IGUAL", 
-		"OP_MULTIPLICACAO_IGUAL", "OP_DIVISAO_IGUAL", "LOGICO", "VERDADEIRO", 
-		"FALSO", "CARACTER", "STRING", "ID", "REAL", "INT", "HEXADECIMAL", "COMENTARIO", 
+		undefined, "ABRE_PARENTESES", "FECHA_PARENTESES", "ABRE_COLCHETES", "FECHA_COLCHETES",
+		"ABRE_CHAVES", "FECHA_CHAVES", "TIPO", "FACA", "ENQUANTO", "PARA", "SE",
+		"SENAO", "CONSTANTE", "FUNCAO", "PROGRAMA", "ESCOLHA", "CASO", "CONTRARIO",
+		"PARE", "RETORNE", "INCLUA", "BIBLIOTECA", "OP_NAO", "OP_E_LOGICO", "OP_OU_LOGICO",
+		"OP_SUBTRACAO", "OP_ADICAO", "OP_MULTIPLICACAO", "OP_DIVISAO", "OP_MOD",
+		"OP_ATRIBUICAO", "OP_IGUALDADE", "OP_DIFERENCA", "OP_MAIOR", "OP_MENOR",
+		"OP_MENOR_IGUAL", "OP_MAIOR_IGUAL", "OP_INCREMENTO_UNARIO", "OP_DECREMENTO_UNARIO",
+		"OP_SHIFT_LEFT", "OP_SHIFT_RIGHT", "OP_XOR", "OP_OU_BITWISE", "OP_NOT_BITWISE",
+		"OP_ALIAS_BIBLIOTECA", "E_COMERCIAL", "OP_MAIS_IGUAL", "OP_MENOS_IGUAL",
+		"OP_MULTIPLICACAO_IGUAL", "OP_DIVISAO_IGUAL", "LOGICO", "VERDADEIRO",
+		"FALSO", "CARACTER", "STRING", "ID", "REAL", "INT", "HEXADECIMAL", "COMENTARIO",
 		"COMENTARIO_SIMPLES", "WS", "PONTO", "VIRGULA", "PONTOVIRGULA", "DOISPONTOS",
 	];
 	public static readonly VOCABULARY: Vocabulary = new VocabularyImpl(PortugolLexer._LITERAL_NAMES, PortugolLexer._SYMBOLIC_NAMES, []);
@@ -176,7 +176,7 @@ export class PortugolLexer extends Lexer {
 	private INT_action(_localctx: RuleContext, actionIndex: number): void {
 		switch (actionIndex) {
 		case 0:
-			 
+
 			    if (isNaN(parseInt(this.text))) {
 			      throw new Error(`Dígito inválido: ${this.text}`);
 			    }

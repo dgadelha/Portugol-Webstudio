@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./lib",
+    "declaration": true,
+    "sourceMap": false,
+    "inlineSourceMap": true,
+    "strictPropertyInitialization": false
+  },
+  "files": ["src/index.ts"],
+  "ts-node": {
+    "swc": true
+  }
+}
