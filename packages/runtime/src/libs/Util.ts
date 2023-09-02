@@ -10,7 +10,7 @@ export default /* javascript */ `{
   },
 
   tempo_decorrido() {
-    return new PortugolVar("inteiro", Date.now() - this.libs.Util.__loadedAt);
+    return new PortugolVar("inteiro", Date.now() - self.runtime.libs.Util.__loadedAt);
   },
 
   sorteia(minimo, maximo) {
