@@ -9,8 +9,15 @@ export abstract class Node {
   children: Node[];
 
   unexpectedChild(child: Node) {
+    const childName = child.ctx.constructor.name.replace("Context", "");
+    const parentName = this.ctx.constructor.name.replace("Context", "");
+
+    if (childName === "ErrorNode") {
+      throw new ParseError(`Expressão inválida: ${child.ctx.text}`, child.ctx);
+    }
+
     throw new ParseError(
-      `Encontrado ${child.ctx.constructor.name} como filho de ${this.ctx.constructor.name}, não esperado: ${child.ctx.text}`,
+      `Encontrado '${childName}' como filho de '${parentName}', não esperado: '${child.ctx.text}'`,
       child.ctx,
     );
   }

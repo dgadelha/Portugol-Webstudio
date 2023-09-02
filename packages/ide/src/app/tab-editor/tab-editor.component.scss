@@ -9,6 +9,13 @@
   height: 100%;
 }
 
+::ng-deep .editor-inner {
+  .monaco-editor .monaco-hover {
+    position: fixed;
+    z-index: 9999;
+  }
+}
+
 .editor-inner {
   background-color: shade($background-200, 15);
   flex-grow: 1;
