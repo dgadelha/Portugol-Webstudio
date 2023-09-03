@@ -39,8 +39,9 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "builder": "ngx-build-plus:browser",
           "options": {
+            "plugin": "~angular-build-plugin.cjs",
             "allowedCommonJsDependencies": ["antlr4ts", "text-encoding"],
             "outputPath": "packages/ide/dist",
             "index": "packages/ide/src/index.html",
@@ -102,7 +103,10 @@
           "defaultConfiguration": "production"
         },
         "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
+          "builder": "ngx-build-plus:dev-server",
+          "options": {
+            "plugin": "~angular-build-plugin.cjs"
+          },
           "configurations": {
             "production": {
               "browserTarget": "ide:build:production"
@@ -114,7 +118,7 @@
           "defaultConfiguration": "development"
         },
         "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "builder": "ngx-build-plus:extract-i18n",
           "options": {
             "browserTarget": "ide:build"
           }

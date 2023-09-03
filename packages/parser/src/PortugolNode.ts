@@ -1,9 +1,10 @@
 import { PortugolVisitor } from "@portugol-webstudio/antlr";
+import { ParserRuleContext } from "antlr4ts";
 import { AbstractParseTreeVisitor } from "antlr4ts/tree/AbstractParseTreeVisitor.js";
 import { ParseTree } from "antlr4ts/tree/ParseTree.js";
 import { RuleNode } from "antlr4ts/tree/RuleNode.js";
 
-import { Bypass, ContextNodeMapping, UnhandledNode, Node } from "./nodes/index.js";
+import { Bypass, UnhandledNode, Node, ContextNodeMap } from "./nodes/index.js";
 
 export interface Empty {}
 
@@ -42,9 +43,7 @@ export class PortugolNode extends AbstractParseTreeVisitor<Empty> implements Por
 
   visit(ctx: ParseTree) {
     const children = this.visitChildrenArray(ctx as RuleNode);
-    const ctor = (ContextNodeMapping as Record<string, (new (_ctx: any, _children: Node[]) => Node) | undefined>)[
-      ctx.constructor.name
-    ];
+    const ctor = ContextNodeMap.get(ctx.constructor as new (...args: any[]) => ParserRuleContext);
 
     if (ctor) {
       return new ctor(ctx, children);
