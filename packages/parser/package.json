@@ -31,8 +31,7 @@
     "lib"
   ],
   "scripts": {
-    "build": "tsc",
-    "test": "node --loader ts-node/esm --no-warnings ./src/welp.ts"
+    "build": "tsc"
   },
   "dependencies": {
     "@portugol-webstudio/antlr": "*",
