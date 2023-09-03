@@ -1,7 +1,7 @@
-import type { NumeroRealContext } from "@portugol-webstudio/antlr";
+import { NumeroRealContext } from "@portugol-webstudio/antlr";
 
 import { Expressão } from "./Expressão.js";
-import type { Node } from "./Node.js";
+import { Node } from "./Node.js";
 
 export class RealExpr extends Expressão {
   valor: number;

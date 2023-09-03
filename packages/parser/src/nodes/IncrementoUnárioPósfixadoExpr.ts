@@ -1,7 +1,7 @@
-import type { IncrementoUnarioPosfixadoContext } from "@portugol-webstudio/antlr";
+import { IncrementoUnarioPosfixadoContext } from "@portugol-webstudio/antlr";
 
 import { ExpressãoUnária } from "./ExpressãoUnária.js";
-import type { Node } from "./Node.js";
+import { Node } from "./Node.js";
 
 export class IncrementoUnárioPósfixadoExpr extends ExpressãoUnária {
   constructor(

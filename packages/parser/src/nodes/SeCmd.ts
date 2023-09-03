@@ -1,8 +1,8 @@
-import type { SeContext } from "@portugol-webstudio/antlr";
+import { SeContext } from "@portugol-webstudio/antlr";
 
 import { Comando } from "./Comando.js";
 import { Expressão } from "./Expressão.js";
-import type { Node } from "./Node.js";
+import { Node } from "./Node.js";
 import { SenãoCmd } from "./SenãoCmd.js";
 import { invariant } from "../helpers/nodes.js";
 

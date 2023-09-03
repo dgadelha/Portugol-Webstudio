@@ -1,7 +1,7 @@
-import type { PareContext } from "@portugol-webstudio/antlr";
+import { PareContext } from "@portugol-webstudio/antlr";
 
 import { Comando } from "./Comando.js";
-import type { Node } from "./Node.js";
+import { Node } from "./Node.js";
 import { invariant } from "../helpers/nodes.js";
 
 export class PareCmd extends Comando {

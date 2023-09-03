@@ -1,7 +1,7 @@
-import type { AtribuicaoCompostaMultiplicacaoContext } from "@portugol-webstudio/antlr";
+import { AtribuicaoCompostaMultiplicacaoContext } from "@portugol-webstudio/antlr";
 
 import { AtribuiçãoCmd } from "./AtribuiçãoCmd.js";
-import type { Node } from "./Node.js";
+import { Node } from "./Node.js";
 
 export class AtribuiçãoCompostaMultiplicaçãoCmd extends AtribuiçãoCmd {
   constructor(

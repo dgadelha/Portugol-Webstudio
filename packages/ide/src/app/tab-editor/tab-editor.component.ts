@@ -1,17 +1,25 @@
-import type { ElementRef, OnDestroy, OnInit } from "@angular/core";
-import { Component, EventEmitter, Inject, Input, Output, TemplateRef, ViewChild } from "@angular/core";
+import {
+  ElementRef,
+  OnDestroy,
+  OnInit,
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  TemplateRef,
+  ViewChild,
+} from "@angular/core";
 import { Storage, uploadString, ref } from "@angular/fire/storage";
 import { MatSnackBar } from "@angular/material/snack-bar";
-import type { PortugolCodeError } from "@portugol-webstudio/antlr";
+import { PortugolCodeError } from "@portugol-webstudio/antlr";
 import { PortugolErrorChecker } from "@portugol-webstudio/parser";
 import { PortugolExecutor, PortugolWebWorkersRunner } from "@portugol-webstudio/runner";
 import { PortugolJsRuntime } from "@portugol-webstudio/runtime";
 import { captureException, setExtra } from "@sentry/angular-ivy";
 import { saveAs } from "file-saver";
-import type { ShortcutInput } from "ng-keyboard-shortcuts";
+import { ShortcutInput } from "ng-keyboard-shortcuts";
 import { GoogleAnalyticsService } from "ngx-google-analytics";
-import type { Subscription } from "rxjs";
-import { debounceTime, fromEventPattern } from "rxjs";
+import { Subscription, debounceTime, fromEventPattern } from "rxjs";
 import { TextEncoder } from "text-encoding";
 
 @Component({
@@ -92,9 +100,9 @@ export class TabEditorComponent implements OnInit, OnDestroy {
   shareSnackTemplate!: TemplateRef<{ data: { url: string } }>;
 
   constructor(
-    @Inject(GoogleAnalyticsService) private gaService: GoogleAnalyticsService,
-    @Inject(Storage) private storage: Storage,
-    @Inject(MatSnackBar) private snack: MatSnackBar,
+    private gaService: GoogleAnalyticsService,
+    private storage: Storage,
+    private snack: MatSnackBar,
   ) {}
 
   ngOnInit() {

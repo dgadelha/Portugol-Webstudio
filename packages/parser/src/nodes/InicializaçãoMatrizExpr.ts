@@ -1,7 +1,7 @@
-import type { ParserRuleContext } from "antlr4ts";
+import { ParserRuleContext } from "antlr4ts";
 
 import { Expressão } from "./Expressão.js";
-import type { Node } from "./Node.js";
+import { Node } from "./Node.js";
 
 export class InicializaçãoMatrizExpr extends Expressão {
   linhas: Expressão[] = [];

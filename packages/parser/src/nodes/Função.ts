@@ -1,11 +1,10 @@
-import type { DeclaracaoFuncaoContext } from "@portugol-webstudio/antlr";
+import { DeclaracaoFuncaoContext } from "@portugol-webstudio/antlr";
 
 import { Comando } from "./Comando.js";
 import { Expressão } from "./Expressão.js";
 import { Node } from "./Node.js";
 import { Parâmetro } from "./Parâmetro.js";
-import type { Tipo } from "../helpers/Tipo.js";
-import { parseTipoPrimitivo } from "../helpers/Tipo.js";
+import { Tipo, parseTipoPrimitivo } from "../helpers/Tipo.js";
 
 export class Função extends Node {
   nome: string;

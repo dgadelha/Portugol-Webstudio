@@ -1,17 +1,17 @@
 import { PortugolCodeError } from "@portugol-webstudio/antlr";
 
-import type { Tipo } from "../helpers/Tipo.js";
-import type { Arquivo } from "../nodes/Arquivo.js";
+import { Tipo } from "../helpers/Tipo.js";
+import { Arquivo } from "../nodes/Arquivo.js";
 import { AtribuiçãoCmd } from "../nodes/AtribuiçãoCmd.js";
 import { CadeiaExpr } from "../nodes/CadeiaExpr.js";
 import { CaractereExpr } from "../nodes/CaractereExpr.js";
 import { ChamadaFunçãoExpr } from "../nodes/ChamadaFunçãoExpr.js";
-import type { Comando } from "../nodes/Comando.js";
+import { Comando } from "../nodes/Comando.js";
 import { DeclaraçãoCmd } from "../nodes/DeclaraçãoCmd.js";
-import type { Expressão } from "../nodes/Expressão.js";
+import { Expressão } from "../nodes/Expressão.js";
 import { InteiroExpr } from "../nodes/InteiroExpr.js";
 import { LógicoExpr } from "../nodes/LógicoExpr.js";
-import type { Node } from "../nodes/Node.js";
+import { Node } from "../nodes/Node.js";
 import { RealExpr } from "../nodes/RealExpr.js";
 import { ReferênciaVarExpr } from "../nodes/ReferênciaVarExpr.js";
 

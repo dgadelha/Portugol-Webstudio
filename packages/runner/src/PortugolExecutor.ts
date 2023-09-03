@@ -1,9 +1,8 @@
 import { PortugolErrorListener, PortugolLexer, PortugolParser } from "@portugol-webstudio/antlr";
 import { CharStreams, CommonTokenStream } from "antlr4ts";
-import type { Subscription } from "rxjs";
-import { Subject } from "rxjs";
+import { Subscription, Subject } from "rxjs";
 
-import type { IPortugolRunner, PortugolEvent } from "./runners/IPortugolRunner.js";
+import { IPortugolRunner, PortugolEvent } from "./runners/IPortugolRunner.js";
 
 export class PortugolExecutor {
   private _runner?: IPortugolRunner;

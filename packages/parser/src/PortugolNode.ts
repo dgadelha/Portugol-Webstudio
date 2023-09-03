@@ -1,10 +1,9 @@
-import type { PortugolVisitor } from "@portugol-webstudio/antlr";
+import { PortugolVisitor } from "@portugol-webstudio/antlr";
 import { AbstractParseTreeVisitor } from "antlr4ts/tree/AbstractParseTreeVisitor.js";
-import type { ParseTree } from "antlr4ts/tree/ParseTree.js";
-import type { RuleNode } from "antlr4ts/tree/RuleNode.js";
+import { ParseTree } from "antlr4ts/tree/ParseTree.js";
+import { RuleNode } from "antlr4ts/tree/RuleNode.js";
 
-import type { Node } from "./nodes/index.js";
-import { Bypass, ContextNodeMapping, UnhandledNode } from "./nodes/index.js";
+import { Bypass, ContextNodeMapping, UnhandledNode, Node } from "./nodes/index.js";
 
 export interface Empty {}
 

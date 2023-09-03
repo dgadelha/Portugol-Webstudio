@@ -1,4 +1,4 @@
-import type {
+import {
   ArquivoContext,
   AtribuicaoCompostaContext,
   AtribuicaoContext,
@@ -55,8 +55,6 @@ import type {
   TamanhoArrayContext,
   ValorLogicoContext,
   PortugolVisitor,
-} from "@portugol-webstudio/antlr";
-import {
   AdicaoContext,
   AtribuicaoCompostaDivisaoContext,
   AtribuicaoCompostaMultiplicacaoContext,
@@ -82,9 +80,9 @@ import {
   SubtracaoContext,
 } from "@portugol-webstudio/antlr";
 import { captureException } from "@sentry/core";
-import type { ParserRuleContext } from "antlr4ts";
+import { ParserRuleContext } from "antlr4ts";
 import { AbstractParseTreeVisitor } from "antlr4ts/tree/AbstractParseTreeVisitor";
-import type { RuleNode } from "antlr4ts/tree/RuleNode";
+import { RuleNode } from "antlr4ts/tree/RuleNode";
 
 import { StringBuilder } from "./utils/StringBuilder.js";
 

@@ -1,11 +1,9 @@
-import type { ParametroContext } from "@portugol-webstudio/antlr";
-import { ParametroArrayContext, ParametroMatrizContext } from "@portugol-webstudio/antlr";
+import { ParametroContext, ParametroArrayContext, ParametroMatrizContext } from "@portugol-webstudio/antlr";
 
 import { Node } from "./Node.js";
 import { UnhandledNode } from "./UnhandledNode.js";
 import { invariant } from "../helpers/nodes.js";
-import type { Tipo } from "../helpers/Tipo.js";
-import { parseTipoPrimitivo } from "../helpers/Tipo.js";
+import { Tipo, parseTipoPrimitivo } from "../helpers/Tipo.js";
 
 export class Parâmetro extends Node {
   nome: string;

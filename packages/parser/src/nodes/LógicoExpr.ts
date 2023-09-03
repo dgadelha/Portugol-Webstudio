@@ -1,7 +1,7 @@
-import type { ValorLogicoContext } from "@portugol-webstudio/antlr";
+import { ValorLogicoContext } from "@portugol-webstudio/antlr";
 
 import { Expressão } from "./Expressão.js";
-import type { Node } from "./Node.js";
+import { Node } from "./Node.js";
 
 export class LógicoExpr extends Expressão {
   valor: boolean;

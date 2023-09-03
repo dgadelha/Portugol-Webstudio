@@ -1,9 +1,9 @@
-import type { DeclaracaoArrayContext } from "@portugol-webstudio/antlr";
+import { DeclaracaoArrayContext } from "@portugol-webstudio/antlr";
 
 import { Expressão } from "./Expressão.js";
 import { InicializaçãoVetorExpr } from "./InicializaçãoVetorExpr.js";
 import { InteiroExpr } from "./InteiroExpr.js";
-import type { Node } from "./Node.js";
+import { Node } from "./Node.js";
 import { ReferênciaVarExpr } from "./ReferênciaVarExpr.js";
 import { invariant } from "../helpers/nodes.js";
 

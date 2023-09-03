@@ -1,7 +1,7 @@
-import type { SubtracaoContext } from "@portugol-webstudio/antlr";
+import { SubtracaoContext } from "@portugol-webstudio/antlr";
 
 import { ExpressãoMatemática } from "./ExpressãoMatemática.js";
-import type { Node } from "./Node.js";
+import { Node } from "./Node.js";
 
 export class SubtraçãoExpr extends ExpressãoMatemática {
   constructor(

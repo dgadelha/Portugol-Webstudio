@@ -1,15 +1,13 @@
-import type { DeclaracaoContext } from "@portugol-webstudio/antlr";
-import { ListaDeclaracoesContext } from "@portugol-webstudio/antlr";
+import { DeclaracaoContext, ListaDeclaracoesContext } from "@portugol-webstudio/antlr";
 
 import { Comando } from "./Comando.js";
 import { DeclaraçãoMatrizExpr } from "./DeclaraçãoMatrizExpr.js";
 import { DeclaraçãoVariávelExpr } from "./DeclaraçãoVariávelExpr.js";
 import { DeclaraçãoVetorExpr } from "./DeclaraçãoVetorExpr.js";
 import { Expressão } from "./Expressão.js";
-import type { Node } from "./Node.js";
+import { Node } from "./Node.js";
 import { invariant } from "../helpers/nodes.js";
-import type { Tipo } from "../helpers/Tipo.js";
-import { parseTipoPrimitivo } from "../helpers/Tipo.js";
+import { Tipo, parseTipoPrimitivo } from "../helpers/Tipo.js";
 
 export class DeclaraçãoCmd extends Comando {
   nome: string;

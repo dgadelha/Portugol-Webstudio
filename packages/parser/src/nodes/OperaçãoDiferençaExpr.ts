@@ -1,7 +1,7 @@
-import type { OperacaoDiferencaContext } from "@portugol-webstudio/antlr";
+import { OperacaoDiferencaContext } from "@portugol-webstudio/antlr";
 
 import { ExpressãoMatemática } from "./ExpressãoMatemática.js";
-import type { Node } from "./Node.js";
+import { Node } from "./Node.js";
 
 export class OperaçãoDiferençaExpr extends ExpressãoMatemática {
   constructor(

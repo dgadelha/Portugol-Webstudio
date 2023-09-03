@@ -1,7 +1,7 @@
-import type { NumeroInteiroContext } from "@portugol-webstudio/antlr";
+import { NumeroInteiroContext } from "@portugol-webstudio/antlr";
 
 import { Expressão } from "./Expressão.js";
-import type { Node } from "./Node.js";
+import { Node } from "./Node.js";
 import { invariant } from "../helpers/nodes.js";
 
 export class InteiroExpr extends Expressão {

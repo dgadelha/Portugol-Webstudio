@@ -1,7 +1,7 @@
-import type { TerminalNode } from "antlr4ts/tree/TerminalNode.js";
+import { TerminalNode } from "antlr4ts/tree/TerminalNode.js";
 
-import type { InteiroExpr } from "../nodes/InteiroExpr.js";
-import type { ReferênciaVarExpr } from "../nodes/ReferênciaVarExpr.js";
+import { InteiroExpr } from "../nodes/InteiroExpr.js";
+import { ReferênciaVarExpr } from "../nodes/ReferênciaVarExpr.js";
 
 export type TipoPrimitivo = "inteiro" | "real" | "cadeia" | "logico" | "vazio" | "caracter";
 export type Tipo = { primitivo: TipoPrimitivo } & (

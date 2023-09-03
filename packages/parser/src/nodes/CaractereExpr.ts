@@ -1,7 +1,7 @@
-import type { CaracterContext } from "@portugol-webstudio/antlr";
+import { CaracterContext } from "@portugol-webstudio/antlr";
 
 import { Expressão } from "./Expressão.js";
-import type { Node } from "./Node.js";
+import { Node } from "./Node.js";
 import { invariant } from "../helpers/nodes.js";
 
 export class CaractereExpr extends Expressão {

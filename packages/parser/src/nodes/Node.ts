@@ -1,6 +1,6 @@
-import type { ParserRuleContext } from "antlr4ts";
-import type { ParseTree } from "antlr4ts/tree/ParseTree.js";
-import type { TerminalNode } from "antlr4ts/tree/TerminalNode.js";
+import { ParserRuleContext } from "antlr4ts";
+import { ParseTree } from "antlr4ts/tree/ParseTree.js";
+import { TerminalNode } from "antlr4ts/tree/TerminalNode.js";
 
 import { ParseError } from "../helpers/ParseError.js";
 

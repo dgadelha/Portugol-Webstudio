@@ -1,7 +1,7 @@
-import type { StringContext } from "@portugol-webstudio/antlr";
+import { StringContext } from "@portugol-webstudio/antlr";
 
 import { Expressão } from "./Expressão.js";
-import type { Node } from "./Node.js";
+import { Node } from "./Node.js";
 
 export class CadeiaExpr extends Expressão {
   conteúdo: string;

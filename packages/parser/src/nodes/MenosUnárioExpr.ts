@@ -1,8 +1,8 @@
-import type { MenosUnarioContext } from "@portugol-webstudio/antlr";
+import { MenosUnarioContext } from "@portugol-webstudio/antlr";
 
 import { Expressão } from "./Expressão.js";
 import { InteiroExpr } from "./InteiroExpr.js";
-import type { Node } from "./Node.js";
+import { Node } from "./Node.js";
 import { RealExpr } from "./RealExpr.js";
 import { ReferênciaArrayExpr } from "./ReferênciaArrayExpr.js";
 import { ReferênciaMatrizExpr } from "./ReferênciaMatrizExpr.js";

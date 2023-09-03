@@ -1,7 +1,7 @@
-import type { DecrementoUnarioPrefixadoContext } from "@portugol-webstudio/antlr";
+import { DecrementoUnarioPrefixadoContext } from "@portugol-webstudio/antlr";
 
 import { ExpressãoUnária } from "./ExpressãoUnária.js";
-import type { Node } from "./Node.js";
+import { Node } from "./Node.js";
 
 export class DecrementoUnárioPrefixadoExpr extends ExpressãoUnária {
   constructor(

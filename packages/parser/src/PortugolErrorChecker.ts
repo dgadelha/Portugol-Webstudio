@@ -3,7 +3,7 @@ import { CharStreams, CommonTokenStream } from "antlr4ts";
 
 import errorCheckers from "./errors/index.js";
 import { ParseError } from "./helpers/ParseError.js";
-import type { Arquivo } from "./nodes/index.js";
+import { Arquivo } from "./nodes/index.js";
 import { PortugolNode } from "./PortugolNode.js";
 
 export class PortugolErrorChecker {

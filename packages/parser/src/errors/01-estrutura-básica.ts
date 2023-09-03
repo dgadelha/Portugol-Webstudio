@@ -1,6 +1,6 @@
 import { PortugolCodeError } from "@portugol-webstudio/antlr";
 
-import type { Arquivo } from "../nodes/Arquivo.js";
+import { Arquivo } from "../nodes/Arquivo.js";
 import { RetorneCmd } from "../nodes/RetorneCmd.js";
 
 export function* checarFunçãoInício(arquivo: Arquivo) {

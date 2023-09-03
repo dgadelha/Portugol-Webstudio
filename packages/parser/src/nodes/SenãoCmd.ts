@@ -1,8 +1,8 @@
-import type { SenaoContext } from "@portugol-webstudio/antlr";
+import { SenaoContext } from "@portugol-webstudio/antlr";
 
 import { Comando } from "./Comando.js";
 import { Expressão } from "./Expressão.js";
-import type { Node } from "./Node.js";
+import { Node } from "./Node.js";
 
 export class SenãoCmd extends Comando {
   instruções: Array<Expressão | Comando> = [];

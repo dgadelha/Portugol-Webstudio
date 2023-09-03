@@ -1,5 +1,5 @@
-import type { ArquivoContext, PortugolCodeError } from "@portugol-webstudio/antlr";
-import type { Observable, Subject } from "rxjs";
+import { ArquivoContext, PortugolCodeError } from "@portugol-webstudio/antlr";
+import { Observable, Subject } from "rxjs";
 
 export type PortugolEvent =
   | { type: "start" }

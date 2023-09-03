@@ -1,4 +1,4 @@
-import type { ArquivoContext } from "@portugol-webstudio/antlr";
+import { ArquivoContext } from "@portugol-webstudio/antlr";
 
 import { DeclaraçãoCmd } from "./DeclaraçãoCmd.js";
 import { Função } from "./Função.js";

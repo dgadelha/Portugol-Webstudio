@@ -1,9 +1,9 @@
-import type { DeclaracaoMatrizContext } from "@portugol-webstudio/antlr";
+import { DeclaracaoMatrizContext } from "@portugol-webstudio/antlr";
 
 import { Expressão } from "./Expressão.js";
 import { InicializaçãoMatrizExpr } from "./InicializaçãoMatrizExpr.js";
 import { InteiroExpr } from "./InteiroExpr.js";
-import type { Node } from "./Node.js";
+import { Node } from "./Node.js";
 import { ReferênciaVarExpr } from "./ReferênciaVarExpr.js";
 import { invariant } from "../helpers/nodes.js";
 

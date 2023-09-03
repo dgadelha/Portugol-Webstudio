@@ -1,8 +1,8 @@
-import type { ReferenciaParaVariavelContext } from "@portugol-webstudio/antlr";
+import { ReferenciaParaVariavelContext } from "@portugol-webstudio/antlr";
 
 import { EscopoBibliotecaExpr } from "./EscopoBibliotecaExpr.js";
 import { Expressão } from "./Expressão.js";
-import type { Node } from "./Node.js";
+import { Node } from "./Node.js";
 import { invariant } from "../helpers/nodes.js";
 
 export class ReferênciaVarExpr extends Expressão {

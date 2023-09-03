@@ -1,8 +1,8 @@
-import type { ParserRuleContext } from "antlr4ts";
+import { ParserRuleContext } from "antlr4ts";
 
 import { Comando } from "./Comando.js";
 import { Expressão } from "./Expressão.js";
-import type { Node } from "./Node.js";
+import { Node } from "./Node.js";
 import { ReferênciaArrayExpr } from "./ReferênciaArrayExpr.js";
 import { ReferênciaMatrizExpr } from "./ReferênciaMatrizExpr.js";
 import { ReferênciaVarExpr } from "./ReferênciaVarExpr.js";

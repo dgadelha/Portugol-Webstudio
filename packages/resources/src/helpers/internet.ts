@@ -1,5 +1,5 @@
 import { createWriteStream, promises as fs } from "node:fs";
-import type { Stream } from "node:stream";
+import { Stream } from "node:stream";
 
 import axios from "axios";
 

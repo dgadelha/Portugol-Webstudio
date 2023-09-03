@@ -1,7 +1,7 @@
-import { Component, EventEmitter, Inject, Output } from "@angular/core";
+import { Component, EventEmitter, Output } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { GoogleAnalyticsService } from "ngx-google-analytics";
-import type { Subscription } from "rxjs";
+import { Subscription } from "rxjs";
 
 import { DialogOpenExampleComponent } from "../dialog-open-example/dialog-open-example.component";
 
@@ -18,8 +18,8 @@ export class TabStartComponent {
   private _dialogRef$?: Subscription;
 
   constructor(
-    @Inject(GoogleAnalyticsService) public gaService: GoogleAnalyticsService,
-    @Inject(MatDialog) private dialog: MatDialog,
+    public gaService: GoogleAnalyticsService,
+    private dialog: MatDialog,
   ) {}
 
   openFile(event: Event) {

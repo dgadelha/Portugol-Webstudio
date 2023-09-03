@@ -1,7 +1,7 @@
-import type { OperacaoShiftRightContext } from "@portugol-webstudio/antlr";
+import { OperacaoShiftRightContext } from "@portugol-webstudio/antlr";
 
 import { ExpressãoMatemática } from "./ExpressãoMatemática.js";
-import type { Node } from "./Node.js";
+import { Node } from "./Node.js";
 
 export class OperaçãoShiftRightExpr extends ExpressãoMatemática {
   constructor(

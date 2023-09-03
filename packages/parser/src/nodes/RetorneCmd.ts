@@ -1,8 +1,8 @@
-import type { RetorneContext } from "@portugol-webstudio/antlr";
+import { RetorneContext } from "@portugol-webstudio/antlr";
 
 import { Comando } from "./Comando.js";
 import { Expressão } from "./Expressão.js";
-import type { Node } from "./Node.js";
+import { Node } from "./Node.js";
 import { invariant } from "../helpers/nodes.js";
 
 export class RetorneCmd extends Comando {

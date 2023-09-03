@@ -1,8 +1,8 @@
-import type { PortugolCodeError } from "@portugol-webstudio/antlr";
+import { PortugolCodeError } from "@portugol-webstudio/antlr";
 
 import * as ec01 from "./01-estrutura-básica";
 import * as ec02 from "./02-variáveis";
-import type { Arquivo } from "../nodes";
+import { Arquivo } from "../nodes";
 
 export default [
   ec01,
