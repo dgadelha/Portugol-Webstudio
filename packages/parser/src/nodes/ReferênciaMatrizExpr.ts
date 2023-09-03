@@ -1,7 +1,7 @@
-import { ReferenciaMatrizContext } from "@portugol-webstudio/antlr";
+import type { ReferenciaMatrizContext } from "@portugol-webstudio/antlr";
 
 import { Expressão } from "./Expressão.js";
-import { Node } from "./Node.js";
+import type { Node } from "./Node.js";
 import { ReferênciaVarExpr } from "./ReferênciaVarExpr.js";
 import { ÍndiceArrayExpr } from "./ÍndiceArrayExpr.js";
 import { invariant } from "../helpers/nodes.js";

@@ -1,4 +1,4 @@
-import { TerminalNode } from "antlr4ts/tree/TerminalNode.js";
+import type { TerminalNode } from "antlr4ts/tree/TerminalNode.js";
 
 import type { InteiroExpr } from "../nodes/InteiroExpr.js";
 import type { ReferênciaVarExpr } from "../nodes/ReferênciaVarExpr.js";

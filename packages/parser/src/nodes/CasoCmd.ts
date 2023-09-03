@@ -1,9 +1,9 @@
-import { CasoContext } from "@portugol-webstudio/antlr";
+import type { CasoContext } from "@portugol-webstudio/antlr";
 
 import { CasoContrárioExpr } from "./CasoContrárioExpr.js";
 import { Comando } from "./Comando.js";
 import { Expressão } from "./Expressão.js";
-import { Node } from "./Node.js";
+import type { Node } from "./Node.js";
 import { invariant } from "../helpers/nodes.js";
 
 export class CasoCmd extends Comando {

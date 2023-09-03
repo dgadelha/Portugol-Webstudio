@@ -1,4 +1,4 @@
-import { ParseTree } from "antlr4ts/tree/ParseTree.js";
+import type { ParseTree } from "antlr4ts/tree/ParseTree.js";
 
 import { Node } from "./Node.js";
 

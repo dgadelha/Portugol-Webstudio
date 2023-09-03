@@ -1,9 +1,9 @@
-import { EscolhaContext } from "@portugol-webstudio/antlr";
+import type { EscolhaContext } from "@portugol-webstudio/antlr";
 
 import { CasoCmd } from "./CasoCmd.js";
 import { Comando } from "./Comando.js";
 import { Expressão } from "./Expressão.js";
-import { Node } from "./Node.js";
+import type { Node } from "./Node.js";
 import { invariant } from "../helpers/nodes.js";
 
 export class EscolhaCmd extends Comando {

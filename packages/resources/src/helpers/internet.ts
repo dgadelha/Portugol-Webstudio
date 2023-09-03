@@ -1,7 +1,13 @@
 import { createWriteStream, promises as fs } from "node:fs";
-import { Stream } from "node:stream";
+import type { Stream } from "node:stream";
 
 import axios from "axios";
+
+export async function getETag(url: string) {
+  const res = await axios.head(url);
+
+  return String(res.headers.etag ?? Date.now());
+}
 
 export async function download(url: string, dest: string) {
   const file = createWriteStream(dest, { flags: "wx" });

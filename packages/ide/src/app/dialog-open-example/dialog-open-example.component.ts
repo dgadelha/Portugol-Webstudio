@@ -1,8 +1,10 @@
 import { NestedTreeControl } from "@angular/cdk/tree";
 import { HttpClient } from "@angular/common/http";
-import { AfterViewInit, Component, EventEmitter, OnDestroy, OnInit, Output } from "@angular/core";
+import type { AfterViewInit, OnDestroy, OnInit } from "@angular/core";
+import { Component, EventEmitter, Inject, Output } from "@angular/core";
 import { MatTreeNestedDataSource } from "@angular/material/tree";
-import { retry, Subscription } from "rxjs";
+import type { Subscription } from "rxjs";
+import { retry } from "rxjs";
 
 import { ResponsiveService } from "../responsive.service";
 
@@ -51,8 +53,8 @@ export class DialogOpenExampleComponent implements OnInit, OnDestroy, AfterViewI
   };
 
   constructor(
-    private http: HttpClient,
-    private responsive: ResponsiveService,
+    @Inject(HttpClient) private http: HttpClient,
+    @Inject(ResponsiveService) private responsive: ResponsiveService,
   ) {
     this.treeControl = new NestedTreeControl<ExampleItem>(node => node.children);
     this.dataSource = new MatTreeNestedDataSource();

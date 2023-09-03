@@ -1,11 +1,6 @@
-import {
-  AdicaoContext,
+import type {
   ArquivoContext,
   AtribuicaoCompostaContext,
-  AtribuicaoCompostaDivisaoContext,
-  AtribuicaoCompostaMultiplicacaoContext,
-  AtribuicaoCompostaSomaContext,
-  AtribuicaoCompostaSubtracaoContext,
   AtribuicaoContext,
   CaracterContext,
   CasoContext,
@@ -20,7 +15,6 @@ import {
   DeclaracaoVariavelContext,
   DecrementoUnarioPosfixadoContext,
   DecrementoUnarioPrefixadoContext,
-  DivisaoContext,
   EnquantoContext,
   EscolhaContext,
   EscopoBibliotecaContext,
@@ -32,7 +26,6 @@ import {
   IncrementoUnarioPosfixadoContext,
   IncrementoUnarioPrefixadoContext,
   IndiceArrayContext,
-  InicializacaoArrayContext,
   InicializacaoMatrizContext,
   InicializacaoParaContext,
   LinhaMatrizContext,
@@ -42,25 +35,10 @@ import {
   ListaParametrosContext,
   MaisUnarioContext,
   MenosUnarioContext,
-  ModuloContext,
-  MultiplicacaoContext,
   NegacaoBitwiseContext,
   NegacaoContext,
   NumeroInteiroContext,
   NumeroRealContext,
-  OperacaoAndBitwiseContext,
-  OperacaoDiferencaContext,
-  OperacaoELogicoContext,
-  OperacaoIgualdadeContext,
-  OperacaoMaiorContext,
-  OperacaoMaiorIgualContext,
-  OperacaoMenorContext,
-  OperacaoMenorIgualContext,
-  OperacaoOrBitwiseContext,
-  OperacaoOuLogicoContext,
-  OperacaoShiftLeftContext,
-  OperacaoShiftRightContext,
-  OperacaoXorContext,
   ParaContext,
   ParametroArrayContext,
   ParametroContext,
@@ -74,15 +52,39 @@ import {
   SeContext,
   SenaoContext,
   StringContext,
-  SubtracaoContext,
   TamanhoArrayContext,
   ValorLogicoContext,
   PortugolVisitor,
 } from "@portugol-webstudio/antlr";
+import {
+  AdicaoContext,
+  AtribuicaoCompostaDivisaoContext,
+  AtribuicaoCompostaMultiplicacaoContext,
+  AtribuicaoCompostaSomaContext,
+  AtribuicaoCompostaSubtracaoContext,
+  DivisaoContext,
+  InicializacaoArrayContext,
+  ModuloContext,
+  MultiplicacaoContext,
+  OperacaoAndBitwiseContext,
+  OperacaoDiferencaContext,
+  OperacaoELogicoContext,
+  OperacaoIgualdadeContext,
+  OperacaoMaiorContext,
+  OperacaoMaiorIgualContext,
+  OperacaoMenorContext,
+  OperacaoMenorIgualContext,
+  OperacaoOrBitwiseContext,
+  OperacaoOuLogicoContext,
+  OperacaoShiftLeftContext,
+  OperacaoShiftRightContext,
+  OperacaoXorContext,
+  SubtracaoContext,
+} from "@portugol-webstudio/antlr";
 import { captureException } from "@sentry/core";
-import { ParserRuleContext } from "antlr4ts";
+import type { ParserRuleContext } from "antlr4ts";
 import { AbstractParseTreeVisitor } from "antlr4ts/tree/AbstractParseTreeVisitor";
-import { RuleNode } from "antlr4ts/tree/RuleNode";
+import type { RuleNode } from "antlr4ts/tree/RuleNode";
 
 import { StringBuilder } from "./utils/StringBuilder.js";
 

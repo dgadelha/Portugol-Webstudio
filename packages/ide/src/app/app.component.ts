@@ -1,8 +1,9 @@
-import { Component, OnInit } from "@angular/core";
+import type { OnInit } from "@angular/core";
+import { Component, Inject } from "@angular/core";
 import { Storage, getBlob, ref } from "@angular/fire/storage";
 import { FormControl } from "@angular/forms";
 import { MatSnackBar } from "@angular/material/snack-bar";
-import { ShortcutInput } from "ng-keyboard-shortcuts";
+import type { ShortcutInput } from "ng-keyboard-shortcuts";
 import { GoogleAnalyticsService } from "ngx-google-analytics";
 
 interface Tab {
@@ -36,9 +37,9 @@ export class AppComponent implements OnInit {
   ];
 
   constructor(
-    private gaService: GoogleAnalyticsService,
-    private storage: Storage,
-    private snack: MatSnackBar,
+    @Inject(GoogleAnalyticsService) private gaService: GoogleAnalyticsService,
+    @Inject(Storage) private storage: Storage,
+    @Inject(MatSnackBar) private snack: MatSnackBar,
   ) {}
 
   async ngOnInit() {

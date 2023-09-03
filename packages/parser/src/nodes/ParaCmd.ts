@@ -1,8 +1,8 @@
-import { ParaContext } from "@portugol-webstudio/antlr";
+import type { ParaContext } from "@portugol-webstudio/antlr";
 
 import { Comando } from "./Comando.js";
 import { Expressão } from "./Expressão.js";
-import { Node } from "./Node.js";
+import type { Node } from "./Node.js";
 import { invariant, getAllChildrenFromContext } from "../helpers/nodes.js";
 
 export class ParaCmd extends Comando {

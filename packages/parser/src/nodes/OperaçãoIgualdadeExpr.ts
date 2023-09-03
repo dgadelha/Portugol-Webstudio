@@ -1,7 +1,7 @@
-import { OperacaoIgualdadeContext } from "@portugol-webstudio/antlr";
+import type { OperacaoIgualdadeContext } from "@portugol-webstudio/antlr";
 
 import { ExpressãoMatemática } from "./ExpressãoMatemática.js";
-import { Node } from "./Node.js";
+import type { Node } from "./Node.js";
 
 export class OperaçãoIgualdadeExpr extends ExpressãoMatemática {
   constructor(

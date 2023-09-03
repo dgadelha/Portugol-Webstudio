@@ -6,7 +6,7 @@ import * as rimraf from "rimraf";
 
 import { baseDir } from "./config.js";
 import { generateExamplesJson } from "./helpers/exemplos.js";
-import { download } from "./helpers/internet.js";
+import { download, getETag } from "./helpers/internet.js";
 import { patchHtmlFiles, patchPortugolFiles } from "./helpers/patch.js";
 
 import "./ajuda.js";
@@ -16,18 +16,35 @@ export async function configurarRecursos() {
   const tempDir = join(baseDir, "..", "recursos.temp/");
   const psZip = join(baseDir, "..", "Portugol-Studio.zip");
 
-  // Excluir o ZIP caso tenha havido uma interrupção durante o download anterior
-  if (existsSync(psZip)) {
-    await fs.unlink(psZip);
-  }
-
-  // Excluir o diretório de recursos caso exista
-  if (existsSync(baseDir)) {
-    rimraf.sync(baseDir);
-  }
-
   try {
-    await download("https://github.com/UNIVALI-LITE/Portugol-Studio/archive/master.zip", psZip);
+    // Excluir o ZIP caso tenha havido uma interrupção durante o download anterior
+    if (existsSync(psZip)) {
+      await fs.unlink(psZip);
+    }
+
+    const url = "https://github.com/UNIVALI-LITE/Portugol-Studio/archive/master.zip";
+    const remoteEtag = await getETag(url);
+    const localEtag = join(baseDir, ".etag");
+
+    console.log("Remote ETag:", remoteEtag);
+
+    if (existsSync(localEtag)) {
+      const localETagContents = await fs.readFile(localEtag, "utf-8");
+
+      console.log("Local ETag:", localETagContents);
+
+      if (localETagContents === remoteEtag) {
+        console.log("Recursos de ajuda já estão atualizados.");
+        return;
+      }
+    }
+
+    // Excluir o diretório de recursos caso exista
+    if (existsSync(baseDir)) {
+      rimraf.sync(baseDir);
+    }
+
+    await download(url, psZip);
 
     console.log("Download concluído, extraindo os recursos de ajuda...");
 
@@ -59,6 +76,8 @@ export async function configurarRecursos() {
       join(baseDir, "exemplos", "index.json"),
       JSON.stringify(await generateExamplesJson(join(baseDir, "exemplos"), "")),
     );
+
+    await fs.writeFile(localEtag, remoteEtag);
 
     console.log("Configuração de recursos concluída!");
   } catch (err) {

@@ -1,7 +1,7 @@
-import { OperacaoAndBitwiseContext } from "@portugol-webstudio/antlr";
+import type { OperacaoAndBitwiseContext } from "@portugol-webstudio/antlr";
 
 import { ExpressãoMatemática } from "./ExpressãoMatemática.js";
-import { Node } from "./Node.js";
+import type { Node } from "./Node.js";
 
 export class OperaçãoAndBitwiseExpr extends ExpressãoMatemática {
   constructor(

@@ -1,4 +1,4 @@
-import { InclusaoBibliotecaContext } from "@portugol-webstudio/antlr";
+import type { InclusaoBibliotecaContext } from "@portugol-webstudio/antlr";
 
 import { Node } from "./Node.js";
 import { invariant } from "../helpers/nodes.js";

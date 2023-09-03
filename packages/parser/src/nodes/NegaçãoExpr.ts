@@ -1,7 +1,7 @@
-import { NegacaoContext } from "@portugol-webstudio/antlr";
+import type { NegacaoContext } from "@portugol-webstudio/antlr";
 
 import { Expressão } from "./Expressão.js";
-import { Node } from "./Node.js";
+import type { Node } from "./Node.js";
 import { invariant } from "../helpers/nodes.js";
 
 export class NegaçãoExpr extends Expressão {

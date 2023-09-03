@@ -1,7 +1,7 @@
-import { OperacaoOuLogicoContext } from "@portugol-webstudio/antlr";
+import type { OperacaoOuLogicoContext } from "@portugol-webstudio/antlr";
 
 import { ExpressãoMatemática } from "./ExpressãoMatemática.js";
-import { Node } from "./Node.js";
+import type { Node } from "./Node.js";
 
 export class OperaçãoOrLógicoExpr extends ExpressãoMatemática {
   constructor(

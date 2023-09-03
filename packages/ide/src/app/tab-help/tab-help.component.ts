@@ -1,10 +1,12 @@
 import { NestedTreeControl } from "@angular/cdk/tree";
 import { HttpClient } from "@angular/common/http";
-import { AfterViewInit, Component, EventEmitter, NgZone, OnDestroy, OnInit, Output } from "@angular/core";
+import type { AfterViewInit, OnDestroy, OnInit } from "@angular/core";
+import { Component, EventEmitter, Inject, NgZone, Output } from "@angular/core";
 import { MatTreeNestedDataSource } from "@angular/material/tree";
-import { DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
+import type { SafeResourceUrl } from "@angular/platform-browser";
+import { DomSanitizer } from "@angular/platform-browser";
 import { GoogleAnalyticsService } from "ngx-google-analytics";
-import { Subscription } from "rxjs";
+import type { Subscription } from "rxjs";
 
 import { ResponsiveService } from "../responsive.service";
 
@@ -35,11 +37,11 @@ export class TabHelpComponent implements OnInit, OnDestroy, AfterViewInit {
   @Output() newTab = new EventEmitter();
 
   constructor(
-    private http: HttpClient,
-    private sanitizer: DomSanitizer,
-    private ngZone: NgZone,
-    private gaService: GoogleAnalyticsService,
-    private responsive: ResponsiveService,
+    @Inject(HttpClient) private http: HttpClient,
+    @Inject(DomSanitizer) private sanitizer: DomSanitizer,
+    @Inject(NgZone) private ngZone: NgZone,
+    @Inject(GoogleAnalyticsService) private gaService: GoogleAnalyticsService,
+    @Inject(ResponsiveService) private responsive: ResponsiveService,
   ) {
     this.treeControl = new NestedTreeControl<TreeItem>(node => node.children);
     this.dataSource = new MatTreeNestedDataSource();

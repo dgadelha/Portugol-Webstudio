@@ -1,7 +1,7 @@
-import { InicializacaoArrayContext } from "@portugol-webstudio/antlr";
+import type { InicializacaoArrayContext } from "@portugol-webstudio/antlr";
 
 import { Expressão } from "./Expressão.js";
-import { Node } from "./Node.js";
+import type { Node } from "./Node.js";
 
 export class InicializaçãoVetorExpr extends Expressão {
   valores: Expressão[] = [];

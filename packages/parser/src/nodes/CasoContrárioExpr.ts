@@ -1,7 +1,7 @@
-import { TerminalNode } from "antlr4ts/tree/TerminalNode.js";
+import type { TerminalNode } from "antlr4ts/tree/TerminalNode.js";
 
 import { Expressão } from "./Expressão.js";
-import { Node } from "./Node.js";
+import type { Node } from "./Node.js";
 import { invariant } from "../helpers/nodes.js";
 
 export class CasoContrárioExpr extends Expressão {

@@ -1,26 +1,17 @@
-import {
-  Component,
-  ElementRef,
-  EventEmitter,
-  Input,
-  OnDestroy,
-  OnInit,
-  Output,
-  TemplateRef,
-  ViewChild,
-} from "@angular/core";
-import { uploadString, ref, Storage } from "@angular/fire/storage";
+import type { ElementRef, OnDestroy, OnInit } from "@angular/core";
+import { Component, EventEmitter, Inject, Input, Output, TemplateRef, ViewChild } from "@angular/core";
+import { Storage, uploadString, ref } from "@angular/fire/storage";
 import { MatSnackBar } from "@angular/material/snack-bar";
-import { PortugolLexer, PortugolParser, PortugolSyntaxError } from "@portugol-webstudio/antlr";
-import { PortugolNode, ParseError } from "@portugol-webstudio/parser";
+import type { PortugolCodeError } from "@portugol-webstudio/antlr";
+import { PortugolErrorChecker } from "@portugol-webstudio/parser";
 import { PortugolExecutor, PortugolWebWorkersRunner } from "@portugol-webstudio/runner";
 import { PortugolJsRuntime } from "@portugol-webstudio/runtime";
 import { captureException, setExtra } from "@sentry/angular-ivy";
-import { CharStreams, CommonTokenStream } from "antlr4ts";
 import { saveAs } from "file-saver";
-import { ShortcutInput } from "ng-keyboard-shortcuts";
+import type { ShortcutInput } from "ng-keyboard-shortcuts";
 import { GoogleAnalyticsService } from "ngx-google-analytics";
-import { Subscription, debounceTime, fromEventPattern } from "rxjs";
+import type { Subscription } from "rxjs";
+import { debounceTime, fromEventPattern } from "rxjs";
 import { TextEncoder } from "text-encoding";
 
 @Component({
@@ -101,9 +92,9 @@ export class TabEditorComponent implements OnInit, OnDestroy {
   shareSnackTemplate!: TemplateRef<{ data: { url: string } }>;
 
   constructor(
-    private gaService: GoogleAnalyticsService,
-    private storage: Storage,
-    private snack: MatSnackBar,
+    @Inject(GoogleAnalyticsService) private gaService: GoogleAnalyticsService,
+    @Inject(Storage) private storage: Storage,
+    @Inject(MatSnackBar) private snack: MatSnackBar,
   ) {}
 
   ngOnInit() {
@@ -287,35 +278,9 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     this._code$?.unsubscribe();
 
     this._code$ = fromEventPattern(editor.onDidChangeModelContent)
-      .pipe(debounceTime(1000))
+      .pipe(debounceTime(500))
       .subscribe(() => {
-        const code = this.code;
-
-        if (code) {
-          try {
-            const inputStream = CharStreams.fromString(code);
-            const lexer = new PortugolLexer(inputStream);
-            const tokenStream = new CommonTokenStream(lexer);
-            const parser = new PortugolParser(tokenStream);
-
-            new PortugolNode().visit(parser.arquivo());
-            this.setEditorErrors([]);
-          } catch (error) {
-            if (error instanceof ParseError && error.ctx.parent) {
-              const { _start, _stop } = error.ctx.parent as unknown as { _start: any; _stop: any };
-
-              this.setEditorErrors([
-                new PortugolSyntaxError(
-                  _start._line,
-                  _stop._line,
-                  _start._charPositionInLine + 1,
-                  _stop._charPositionInLine + 1 + error.ctx.text.length,
-                  error.message,
-                ),
-              ]);
-            }
-          }
-        }
+        this.setEditorErrors(PortugolErrorChecker.check(this.code ?? ""));
       });
   }
 
@@ -363,7 +328,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     this.snack.dismiss();
   }
 
-  setEditorErrors(errors: PortugolSyntaxError[]) {
+  setEditorErrors(errors: PortugolCodeError[]) {
     const model = this.codeEditor?.getModel();
 
     if (model) {

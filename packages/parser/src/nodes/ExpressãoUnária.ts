@@ -1,11 +1,11 @@
-import {
+import type {
   DecrementoUnarioPosfixadoContext,
   IncrementoUnarioPosfixadoContext,
   IncrementoUnarioPrefixadoContext,
 } from "@portugol-webstudio/antlr";
 
 import { Expressão } from "./Expressão.js";
-import { Node } from "./Node.js";
+import type { Node } from "./Node.js";
 import { ReferênciaVarExpr } from "./ReferênciaVarExpr.js";
 
 export class ExpressãoUnária extends Expressão {

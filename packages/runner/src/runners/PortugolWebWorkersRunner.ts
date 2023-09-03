@@ -1,8 +1,10 @@
-import { ArquivoContext } from "@portugol-webstudio/antlr";
+import type { ArquivoContext } from "@portugol-webstudio/antlr";
 import { PortugolJs, PortugolJsRuntime } from "@portugol-webstudio/runtime";
-import { Subject, Subscription } from "rxjs";
+import type { Subscription } from "rxjs";
+import { Subject } from "rxjs";
 
-import { IPortugolRunner, PortugolEvent } from "./IPortugolRunner.js";
+import type { PortugolEvent } from "./IPortugolRunner.js";
+import { IPortugolRunner } from "./IPortugolRunner.js";
 
 export class PortugolWebWorkersRunner extends IPortugolRunner {
   private worker: Worker;
