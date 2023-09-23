@@ -16,8 +16,10 @@ jobs:
         run: |
           npm ci --also=dev
 
-      - name: Build code 🚚
-        run: npm run build
-
       - name: Lint 🚨
         run: npm run eslint:check
+
+      - name: Build code 🚚
+        run: |
+          npm run build
+          npm run release
