@@ -19,7 +19,7 @@ jobs:
 
       - name: Install dependencies 🔧
         run: |
-          npm ci --also=dev
+          npm ci --include=dev
 
       - name: Build code 🚚
         run: |
@@ -29,6 +29,6 @@ jobs:
       - name: Publish 🚀
         run: |
           cp -r LICENSE packages/*
-          npx lerna publish 0.0.0-dev.${{ github.run_number }}  --no-git-tag-version --no-push --yes
+          npx lerna publish 0.0.0-dev.${{ github.run_number }} --no-git-tag-version --no-push --yes
         env:
           NODE_AUTH_TOKEN: ${{ secrets.REGISTRY_GITHUB_TOKEN }}
