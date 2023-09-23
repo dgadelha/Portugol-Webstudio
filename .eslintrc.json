@@ -5,10 +5,12 @@
     "node_modules/",
     ".angular/",
     "packages/**/lib/",
+    "packages/**/dist/",
     "packages/**/node_modules/",
     // Arquivos gerados:
     "packages/antlr/src/Portugol*.ts",
-    "packages/resources/assets/"
+    "packages/resources/assets/",
+    "packages/resources/recursos.temp/"
   ],
   "overrides": [
     {
