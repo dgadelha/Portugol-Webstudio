@@ -53,7 +53,7 @@
     "assert": "^2.0.0",
     "file-saver": "^2.0.5",
     "firebase": "^9.23.0",
-    "monaco-editor": "^0.41.0",
+    "monaco-editor": "^0.43.0",
     "ng-keyboard-shortcuts": "^13.0.8",
     "ngx-build-plus": "^16.0.0",
     "ngx-google-analytics": "^14.0.1",
@@ -62,7 +62,7 @@
     "text-encoding": "^0.7.0",
     "tslib": "^2.6.1",
     "util": "^0.12.5",
-    "zone.js": "~0.13.1"
+    "zone.js": "~0.14.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^16.2.0",
@@ -74,12 +74,12 @@
     "@angular/cli": "^16.2.0",
     "@angular/compiler-cli": "^16.2.0",
     "@types/file-saver": "^2.0.5",
-    "@types/text-encoding": "^0.0.36",
+    "@types/text-encoding": "^0.0.37",
     "@typescript-eslint/eslint-plugin": "^6.3.0",
     "@typescript-eslint/parser": "^6.3.0",
     "angular-cli-ghpages": "^1.0.6",
     "eslint": "^8.46.0",
     "ts-node": "^10.9.1",
-    "typescript": "~5.1.6"
+    "typescript": "~5.2.0"
   }
 }
