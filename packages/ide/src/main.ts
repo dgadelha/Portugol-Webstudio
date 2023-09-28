@@ -8,9 +8,8 @@ import { environment } from "./environments/environment";
 Sentry.init({
   dsn: "https://620518162f784d2aa3e3ee7223d08594@o1070945.ingest.sentry.io/6067438",
   debug: false,
-  tracesSampleRate: 1.0,
-  replaysSessionSampleRate: 0.1,
-  replaysOnErrorSampleRate: 1.0,
+  tracesSampleRate: 0.1,
+  replaysOnErrorSampleRate: 0.1,
   integrations: [new Sentry.Replay(), new Sentry.BrowserTracing()],
 });
 

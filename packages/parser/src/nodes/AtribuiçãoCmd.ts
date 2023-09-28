@@ -18,8 +18,6 @@ export class AtribuiçãoCmd extends Comando {
   ) {
     super(ctx, children);
 
-    console.log(children);
-
     for (const child of children) {
       if (
         (child instanceof ReferênciaVarExpr ||
