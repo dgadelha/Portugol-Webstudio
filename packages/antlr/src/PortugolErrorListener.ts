@@ -20,7 +20,12 @@ export class PortugolCodeError extends Error {
       possibleContext = ctx.parent;
     }
 
-    if (possibleContext.hasOwnProperty("_start") && possibleContext.hasOwnProperty("_stop")) {
+    if (
+      possibleContext.hasOwnProperty("_start") &&
+      possibleContext.hasOwnProperty("_stop") &&
+      typeof (possibleContext as unknown as { _start: any })._start === "object" &&
+      typeof (possibleContext as unknown as { _stop: any })._stop === "object"
+    ) {
       const { _start, _stop } = possibleContext as unknown as { _start: any; _stop: any };
 
       return new PortugolCodeError(
