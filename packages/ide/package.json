@@ -53,7 +53,7 @@
     "assert": "^2.0.0",
     "file-saver": "^2.0.5",
     "firebase": "^10.0.0",
-    "monaco-editor": "^0.43.0",
+    "monaco-editor": "^0.44.0",
     "ng-keyboard-shortcuts": "^13.0.8",
     "ngx-build-plus": "^16.0.0",
     "ngx-google-analytics": "^14.0.1",
