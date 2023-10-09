@@ -15,8 +15,6 @@ export abstract class IPortugolRunner {
   abstract byteCode: string;
 
   abstract stdIn: Subject<string>;
-
-  abstract stdOut: string;
   abstract stdOut$: Observable<string>;
 
   abstract waitingForInput: boolean;

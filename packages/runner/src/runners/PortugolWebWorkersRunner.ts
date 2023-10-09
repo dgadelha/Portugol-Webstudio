@@ -12,7 +12,6 @@ export class PortugolWebWorkersRunner extends IPortugolRunner {
   stdIn = new Subject<string>();
   private _stdIn$?: Subscription;
 
-  stdOut = "";
   stdOut$ = new Subject<string>();
 
   waitingForInput = false;
@@ -135,8 +134,7 @@ export class PortugolWebWorkersRunner extends IPortugolRunner {
     this.worker.addEventListener("message", (message: MessageEvent) => {
       switch (message.data.type) {
         case "stdOut":
-          this.stdOut += message.data.content;
-          this.stdOut$.next(this.stdOut);
+          this.stdOut$.next(message.data.content);
           break;
 
         case "stdIn":
@@ -151,14 +149,11 @@ export class PortugolWebWorkersRunner extends IPortugolRunner {
 
           error.stack = message.data.error.stack;
 
-          this._run.error(error);
           this._run.next({ type: "error", error });
+          this.destroy();
           break;
 
         case "clear":
-          this.stdOut = "";
-          this.stdOut$.next(this.stdOut);
-
           this._run.next({ type: "clear" });
           break;
 
@@ -168,19 +163,17 @@ export class PortugolWebWorkersRunner extends IPortugolRunner {
       }
     });
 
-    this.worker.onerror = error => {
-      console.error(error);
+    this.worker.onerror = err => {
+      const error = err.error ?? new Error(err.message);
 
-      this._run.error(error);
+      this._run.next({ type: "error", error });
+      this.destroy();
     };
 
     this._stdIn$ = this.stdIn.subscribe(content => {
       if (this.waitingForInput) {
         this.waitingForInput = false;
         this.waitingForInput$.next(this.waitingForInput);
-
-        this.stdOut += `${content}\n`;
-        this.stdOut$.next(this.stdOut);
 
         this.worker.postMessage({ type: "stdIn", content });
       }

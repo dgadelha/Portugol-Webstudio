@@ -288,7 +288,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     this._code$ = fromEventPattern(editor.onDidChangeModelContent)
       .pipe(debounceTime(500))
       .subscribe(() => {
-        this.setEditorErrors(PortugolErrorChecker.check(this.code ?? ""));
+        this.setEditorErrors(PortugolErrorChecker.checkCode(this.code ?? ""));
       });
   }
 

@@ -31,7 +31,8 @@
     "lib"
   ],
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "build:w": "tsc -w"
   },
   "dependencies": {
     "@portugol-webstudio/antlr": "*",

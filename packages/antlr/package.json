@@ -35,7 +35,8 @@
     "antlr-update:PortugolLexico": "wget https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/core/src/main/antlr/PortugolLexico.g4 -O src/PortugolLexico.g4",
     "antlr-update:PortugolLexico:patch": "patch src/PortugolLexico.g4 < src/lexico.patch",
     "antlr-update": "npm run antlr-update:Portugol && npm run antlr-update:PortugolLexico && npm run antlr-update:PortugolLexico:patch",
-    "build": "tsc"
+    "build": "tsc",
+    "build:w": "tsc -w"
   },
   "dependencies": {
     "antlr4ts": "^0.5.0-alpha.4"

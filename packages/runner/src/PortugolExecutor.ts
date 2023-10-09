@@ -1,4 +1,5 @@
 import { PortugolErrorListener, PortugolLexer, PortugolParser } from "@portugol-webstudio/antlr";
+import { PortugolErrorChecker } from "@portugol-webstudio/parser";
 import { CharStreams, CommonTokenStream } from "antlr4ts";
 import { Subscription, Subject } from "rxjs";
 
@@ -61,6 +62,20 @@ export class PortugolExecutor {
       parser.addErrorListener(this.errorListener);
 
       const tree = parser.arquivo();
+      const errors = PortugolErrorChecker.checkTree(tree);
+
+      if (errors.length > 0) {
+        this.stdOut += `⛔ O seu código possui ${errors.length} erro${errors.length > 1 ? "s" : ""} de compilação:\n`;
+        this.stdOut += errors
+          .map(error => `   - ${error.message} (linha ${error.startLine}, posição ${error.startCol})\n`)
+          .join("");
+
+        this.stdOut +=
+          "\n⚠️ Durante essa fase experimental, o código ainda será executado mesmo com erros, porém se não corrigi-los, a execução abaixo pode exibir mensagens de erro em inglês ou sem explicação.\n";
+        this.stdOut += `   Caso acredite que o erro não faça sentido, por favor, abra uma issue em https://github.com/dgadelha/Portugol-Webstudio/issues/new e anexe o código que você está tentando executar.\n`;
+        this.stdOut += "\n- O seu programa irá iniciar abaixo -\n";
+        this.stdOut$.next(this.stdOut);
+      }
 
       // @ts-ignore
       this._runner = new this.runner(tree);
@@ -72,7 +87,7 @@ export class PortugolExecutor {
       this.byteCode = this._runner.byteCode;
 
       this._runner.stdOut$.subscribe(data => {
-        this.stdOut = data;
+        this.stdOut += data;
         this.stdOut$.next(data);
       });
 
@@ -88,9 +103,24 @@ export class PortugolExecutor {
 
       this._runner.run().subscribe({
         next: event => {
-          if (event.type === "finish") {
-            this.stdOut += `\nPrograma finalizado. Tempo de execução: ${event.time} ms\n`;
-            this.stdOut$.next(this.stdOut);
+          switch (event.type) {
+            case "finish":
+              this.stdOut += `\nPrograma finalizado. Tempo de execução: ${event.time} ms\n`;
+              this.stdOut$.next(this.stdOut);
+              break;
+
+            case "clear":
+              this.stdOut = "";
+              this.stdOut$.next(this.stdOut);
+              break;
+
+            case "error":
+              this.stdOut += `\n⛔ ${event.error.message}\n`;
+              this.stdOut$.next(this.stdOut);
+              break;
+
+            default:
+              break;
           }
 
           this.events.next(event);
@@ -98,17 +128,12 @@ export class PortugolExecutor {
 
         error: error => {
           console.error(error);
-
-          this.stdOut += `⛔ ${error.message}\n`;
-          this.stdOut$.next(this.stdOut);
-
-          this.reset(false);
         },
       });
     } catch (err) {
       console.error(err);
 
-      this.stdOut += `⛔ O seu código possui um erro de compilação!\n`;
+      this.stdOut += `\n⛔ O seu código possui um erro de compilação!\n`;
       this.stdOut$.next(this.stdOut);
 
       this.reset(false);

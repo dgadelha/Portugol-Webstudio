@@ -1,4 +1,10 @@
-import { PortugolCodeError, PortugolErrorListener, PortugolLexer, PortugolParser } from "@portugol-webstudio/antlr";
+import {
+  ArquivoContext,
+  PortugolCodeError,
+  PortugolErrorListener,
+  PortugolLexer,
+  PortugolParser,
+} from "@portugol-webstudio/antlr";
 import { CharStreams, CommonTokenStream } from "antlr4ts";
 
 import errorCheckers from "./errors/index.js";
@@ -10,17 +16,20 @@ export class PortugolErrorChecker {
   private static portugolNode = new PortugolNode();
   private static errorListener = new PortugolErrorListener();
 
-  public static check(code: string): PortugolCodeError[] {
+  public static checkCode(code: string): PortugolCodeError[] {
     const inputStream = CharStreams.fromString(code);
     const lexer = new PortugolLexer(inputStream);
     const tokenStream = new CommonTokenStream(lexer);
     const parser = new PortugolParser(tokenStream);
-
-    this.errorListener.reset();
+    const tree = parser.arquivo();
 
     parser.addErrorListener(this.errorListener);
 
-    const tree = parser.arquivo();
+    return this.checkTree(tree);
+  }
+
+  public static checkTree(tree: ArquivoContext): PortugolCodeError[] {
+    this.errorListener.reset();
 
     try {
       const arquivo = this.portugolNode.visit(tree) as Arquivo;
