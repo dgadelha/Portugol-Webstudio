@@ -239,7 +239,11 @@ export class MonacoService {
           monaco.editor.defineTheme("portugol", {
             base: "vs-dark",
             inherit: true,
-            rules: [{ token: "functions", foreground: "F5D7A9" }],
+            rules: [
+              { token: "functions", foreground: "F5D7A9" },
+              { token: "string.escape", foreground: "D2BB85" },
+              { token: "string.escape.invalid", foreground: "DF5953" },
+            ],
             colors: {},
           });
         } catch (e) {
