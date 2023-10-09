@@ -2,6 +2,7 @@
   "name": "portugol-webstudio",
   "description": "IDE online para o Portugol",
   "version": "0.0.0",
+  "private": true,
   "repository": {
     "type": "git",
     "url": "git+https://github.com/dgadelha/Portugol-Webstudio.git"
@@ -21,6 +22,7 @@
   "homepage": "https://github.com/dgadelha/Portugol-Webstudio#readme",
   "scripts": {
     "antlr4ts": "antlr4ts -visitor src/antlr/Portugol.g4",
+    "lint": "sherif && npm run eslint:check",
     "eslint:fix": "eslint --fix 'packages/**/*.{t,j}s'",
     "eslint:check": "eslint 'packages/**/*.{t,j}s'",
     "start": "lerna run start --scope=@portugol-webstudio/ide",
@@ -36,7 +38,8 @@
   "devDependencies": {
     "@cubos/eslint-config": "^2.2.0",
     "lerna": "^7.1.5",
-    "patch-package": "^8.0.0"
+    "patch-package": "^8.0.0",
+    "sherif": "^0.3.1"
   },
   "workspaces": [
     "packages/*"

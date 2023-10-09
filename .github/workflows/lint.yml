@@ -22,4 +22,4 @@ jobs:
           npm run release
 
       - name: Lint 🚨
-        run: npm run eslint:check
+        run: npm run lint
