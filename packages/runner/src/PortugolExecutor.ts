@@ -18,6 +18,7 @@ export class PortugolExecutor {
       } else if (data === "\r") {
         this._runner?.stdIn.next(this.stdInBuffer);
         this.stdInBuffer = "";
+        this.stdOut += "\n";
       } else {
         this.stdInBuffer += data;
         this.stdOut += data;
