@@ -35,8 +35,6 @@ export class PortugolErrorChecker {
       const arquivo = this.portugolNode.visit(tree) as Arquivo;
       const errors: PortugolCodeError[] = [];
 
-      console.log({ arquivo });
-
       for (const checker of errorCheckers) {
         for (const error of checker(arquivo)) {
           errors.push(error);

@@ -1,5 +1,6 @@
 import { PortugolCodeError } from "@portugol-webstudio/antlr";
 
+import { getAllChildrenFromNode } from "../helpers/nodes.js";
 import { Arquivo } from "../nodes/Arquivo.js";
 import { RetorneCmd } from "../nodes/RetorneCmd.js";
 
@@ -21,8 +22,10 @@ export function* checarFunçãoInício(arquivo: Arquivo) {
 
 export function* checarFunçõesComRetorno(arquivo: Arquivo) {
   for (const func of arquivo.funções) {
-    if (func.retorno.primitivo !== "vazio" && !func.instruções.some(instrução => instrução instanceof RetorneCmd)) {
-      yield PortugolCodeError.fromContext(func.ctx, `A função '${func.nome}' deve retornar um valor`);
+    if (func.retorno.primitivo !== "vazio") {
+      if (!getAllChildrenFromNode(func).some(instrução => instrução instanceof RetorneCmd)) {
+        yield PortugolCodeError.fromContext(func.ctx, `A função '${func.nome}' deve retornar um valor`);
+      }
     }
   }
 }

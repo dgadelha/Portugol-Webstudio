@@ -1,5 +1,6 @@
 import { PortugolCodeError } from "@portugol-webstudio/antlr";
 
+import { getAllChildrenFromNode } from "../helpers/nodes.js";
 import { Tipo } from "../helpers/Tipo.js";
 import { Arquivo } from "../nodes/Arquivo.js";
 import { AtribuiçãoCmd } from "../nodes/AtribuiçãoCmd.js";
@@ -11,17 +12,12 @@ import { DeclaraçãoCmd } from "../nodes/DeclaraçãoCmd.js";
 import { Expressão } from "../nodes/Expressão.js";
 import { InteiroExpr } from "../nodes/InteiroExpr.js";
 import { LógicoExpr } from "../nodes/LógicoExpr.js";
-import { Node } from "../nodes/Node.js";
 import { RealExpr } from "../nodes/RealExpr.js";
 import { ReferênciaVarExpr } from "../nodes/ReferênciaVarExpr.js";
 
 interface Escopo {
   variáveis: Map<string, Tipo>;
   funções: Map<string, Tipo>;
-}
-
-function getAllChildren(node: Node): Node[] {
-  return node.children.flatMap(child => [child, ...getAllChildren(child)]);
 }
 
 export function* checarUsoEscopo(arquivo: Arquivo) {
@@ -65,7 +61,7 @@ export function* checarUsoEscopo(arquivo: Arquivo) {
     }
 
     const instruções: Array<Comando | Expressão> = func.instruções.concat(
-      func.instruções.flatMap(getAllChildren) as Array<Comando | Expressão>,
+      func.instruções.flatMap(getAllChildrenFromNode) as Array<Comando | Expressão>,
     );
 
     for (const expr of instruções) {
