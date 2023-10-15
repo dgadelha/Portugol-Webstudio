@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Output } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
+import { DomSanitizer } from "@angular/platform-browser";
 import { GoogleAnalyticsService } from "ngx-google-analytics";
 import { Subscription } from "rxjs";
 
@@ -17,10 +18,30 @@ export class TabStartComponent {
   private _dialogExample$?: Subscription;
   private _dialogRef$?: Subscription;
 
+  public logo;
+
   constructor(
     public gaService: GoogleAnalyticsService,
+    private sanitizer: DomSanitizer,
     private dialog: MatDialog,
-  ) {}
+  ) {
+    const currentMonth = new Date().getMonth() + 1;
+    const currentDay = new Date().getDate();
+
+    if ((currentMonth === 2 && currentDay >= 10) || (currentMonth === 3 && currentDay <= 5)) {
+      this.logo = this.sanitizer.bypassSecurityTrustResourceUrl("assets/logo/carnaval.svg");
+    } else if ((currentMonth === 3 && currentDay >= 20) || (currentMonth === 4 && currentDay <= 25)) {
+      this.logo = this.sanitizer.bypassSecurityTrustResourceUrl("assets/logo/pascoa.svg");
+    } else if ((currentMonth === 10 && currentDay >= 20) || (currentMonth === 11 && currentDay <= 5)) {
+      this.logo = this.sanitizer.bypassSecurityTrustResourceUrl("assets/logo/halloween.svg");
+    } else if (currentMonth === 12 && currentDay >= 15 && currentDay <= 29) {
+      this.logo = this.sanitizer.bypassSecurityTrustResourceUrl("assets/logo/natal.svg");
+    } else if ((currentMonth === 12 && currentDay >= 30) || (currentMonth === 1 && currentDay <= 5)) {
+      this.logo = this.sanitizer.bypassSecurityTrustResourceUrl("assets/logo/ano-novo.svg");
+    } else {
+      this.logo = this.sanitizer.bypassSecurityTrustResourceUrl("assets/logo/default.svg");
+    }
+  }
 
   openFile(event: Event) {
     this.gaService.event("home_open_file", "Aba Inicial", "Abrir arquivo através da aba Inicial");
