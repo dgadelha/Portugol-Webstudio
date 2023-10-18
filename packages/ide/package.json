@@ -74,7 +74,7 @@
     "@angular/cli": "^16.2.0",
     "@angular/compiler-cli": "^16.2.0",
     "@types/file-saver": "^2.0.5",
-    "@types/text-encoding": "^0.0.37",
+    "@types/text-encoding": "^0.0.38",
     "@typescript-eslint/eslint-plugin": "^6.3.0",
     "@typescript-eslint/parser": "^6.3.0",
     "angular-cli-ghpages": "^1.0.6",
