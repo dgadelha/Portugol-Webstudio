@@ -1,7 +1,25 @@
 {
-  "extends": [
-    "config:base",
-    ":preserveSemverRanges",
-    "group:allNonMajor"
+  "$schema": "https://json.schemastore.org/renovate",
+  "extends": ["config:base", ":preserveSemverRanges", "group:allNonMajor"],
+  "ignoreDeps": ["typescript"],
+  "packageRules": [
+    {
+      "groupName": "angular dependencies",
+      "groupSlug": "angular-related",
+      "matchPackagePatterns": [
+        "^@angular-devkit/",
+        "^@angular-eslint/",
+        "^@angular/",
+        "^@materia-ui/",
+        "^angular-",
+        "^angular-cli-",
+        "^ng-",
+        "^ngx-",
+        "firebase",
+        "rxfire",
+        "rxjs",
+        "zone.js"
+      ]
+    }
   ]
 }
