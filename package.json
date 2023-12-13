@@ -20,7 +20,7 @@
     "url": "https://github.com/dgadelha/Portugol-Webstudio/issues"
   },
   "homepage": "https://github.com/dgadelha/Portugol-Webstudio#readme",
-  "packageManager": "npm@10.2.0",
+  "packageManager": "npm@10.2.5",
   "scripts": {
     "antlr4ts": "antlr4ts -visitor src/antlr/Portugol.g4",
     "lint": "sherif && npm run eslint:check",
