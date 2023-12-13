@@ -109,10 +109,10 @@
           },
           "configurations": {
             "production": {
-              "browserTarget": "ide:build:production"
+              "buildTarget": "ide:build:production"
             },
             "development": {
-              "browserTarget": "ide:build:development"
+              "buildTarget": "ide:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -120,7 +120,7 @@
         "extract-i18n": {
           "builder": "ngx-build-plus:extract-i18n",
           "options": {
-            "browserTarget": "ide:build"
+            "buildTarget": "ide:build"
           }
         },
         "deploy": {

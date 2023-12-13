@@ -39,6 +39,6 @@
     "antlr4ts": "^0.5.0-alpha.4"
   },
   "devDependencies": {
-    "typescript": "~5.2.0"
+    "typescript": "~5.2.2"
   }
 }

@@ -425,18 +425,18 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
       ctx instanceof MultiplicacaoContext
         ? "*"
         : ctx instanceof DivisaoContext
-        ? "/"
-        : ctx instanceof ModuloContext
-        ? "%"
-        : ctx instanceof AdicaoContext
-        ? "+"
-        : ctx instanceof SubtracaoContext
-        ? "-"
-        : ctx instanceof OperacaoShiftLeftContext
-        ? "<<"
-        : ctx instanceof OperacaoShiftRightContext
-        ? ">>"
-        : "?";
+          ? "/"
+          : ctx instanceof ModuloContext
+            ? "%"
+            : ctx instanceof AdicaoContext
+              ? "+"
+              : ctx instanceof SubtracaoContext
+                ? "-"
+                : ctx instanceof OperacaoShiftLeftContext
+                  ? "<<"
+                  : ctx instanceof OperacaoShiftRightContext
+                    ? ">>"
+                    : "?";
 
     sb.append(this.PAD(), `runtime.mathOperation("${op}", [`, `\n`);
 
@@ -470,14 +470,14 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
       ctx instanceof OperacaoAndBitwiseContext
         ? "&"
         : ctx instanceof OperacaoOrBitwiseContext
-        ? "|"
-        : ctx instanceof OperacaoXorContext
-        ? "^"
-        : ctx instanceof OperacaoShiftLeftContext
-        ? "<<"
-        : ctx instanceof OperacaoShiftRightContext
-        ? ">>"
-        : "?";
+          ? "|"
+          : ctx instanceof OperacaoXorContext
+            ? "^"
+            : ctx instanceof OperacaoShiftLeftContext
+              ? "<<"
+              : ctx instanceof OperacaoShiftRightContext
+                ? ">>"
+                : "?";
 
     sb.append(this.PAD(), `runtime.bitwiseOperation("${op}", [`, `\n`);
 
@@ -562,26 +562,26 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
       ctx instanceof OperacaoIgualdadeContext
         ? "=="
         : ctx instanceof OperacaoDiferencaContext
-        ? "!="
-        : ctx instanceof OperacaoMaiorContext
-        ? ">"
-        : ctx instanceof OperacaoMenorContext
-        ? "<"
-        : ctx instanceof OperacaoMaiorIgualContext
-        ? ">="
-        : ctx instanceof OperacaoMenorIgualContext
-        ? "<="
-        : ctx instanceof OperacaoELogicoContext
-        ? "&&"
-        : ctx instanceof OperacaoOuLogicoContext
-        ? "||"
-        : ctx instanceof OperacaoAndBitwiseContext
-        ? "&"
-        : ctx instanceof OperacaoOrBitwiseContext
-        ? "|"
-        : ctx instanceof OperacaoXorContext
-        ? "^"
-        : "?";
+          ? "!="
+          : ctx instanceof OperacaoMaiorContext
+            ? ">"
+            : ctx instanceof OperacaoMenorContext
+              ? "<"
+              : ctx instanceof OperacaoMaiorIgualContext
+                ? ">="
+                : ctx instanceof OperacaoMenorIgualContext
+                  ? "<="
+                  : ctx instanceof OperacaoELogicoContext
+                    ? "&&"
+                    : ctx instanceof OperacaoOuLogicoContext
+                      ? "||"
+                      : ctx instanceof OperacaoAndBitwiseContext
+                        ? "&"
+                        : ctx instanceof OperacaoOrBitwiseContext
+                          ? "|"
+                          : ctx instanceof OperacaoXorContext
+                            ? "^"
+                            : "?";
 
     sb.append(this.PAD(), `runtime.comparativeOperation("${op}", [`, `\n`);
 
@@ -1339,12 +1339,12 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
       ctx instanceof AtribuicaoCompostaSomaContext
         ? "+"
         : ctx instanceof AtribuicaoCompostaSubtracaoContext
-        ? "-"
-        : ctx instanceof AtribuicaoCompostaDivisaoContext
-        ? "/"
-        : ctx instanceof AtribuicaoCompostaMultiplicacaoContext
-        ? "*"
-        : "?";
+          ? "-"
+          : ctx instanceof AtribuicaoCompostaDivisaoContext
+            ? "/"
+            : ctx instanceof AtribuicaoCompostaMultiplicacaoContext
+              ? "*"
+              : "?";
 
     sb.append(this.DEBUG(`visitAtribuicaoComposta`, ctx));
     sb.append(this.PAD(), `runtime.assign([`, `\n`);
