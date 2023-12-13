@@ -55,7 +55,7 @@
     "firebase": "^10.0.0",
     "monaco-editor": "^0.44.0",
     "ng-keyboard-shortcuts": "^13.0.8",
-    "ngx-build-plus": "^16.0.0",
+    "ngx-build-plus": "^17.0.0",
     "ngx-google-analytics": "^14.0.1",
     "rxfire": "^6.0.3",
     "rxjs": "~7.8.1",
