@@ -38,11 +38,22 @@
   },
   "devDependencies": {
     "@cubos/eslint-config": "^2.2.0",
-    "lerna": "^8.0.0",
+    "lerna": "^8.0.1",
     "patch-package": "^8.0.0",
     "sherif": "^0.6.1"
   },
   "workspaces": [
     "packages/*"
-  ]
+  ],
+  "overrides": {
+    "ngx-build-plus": {
+      "@angular-devkit/build-angular": {
+        "browser-sync": {
+          "localtunnel": {
+            "axios": "^1.6.0"
+          }
+        }
+      }
+    }
+  }
 }
