@@ -1,9 +1,10 @@
-<img [src]="logo" width="100%" class="logo" />
+<img [src]="logo" width="100%" class="logo" alt="Logomarca do Portugol Webstudio" />
 
 <nav>
   <button mat-ripple (click)="newTab.emit()">
     <img
       src="https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/ide/src/main/resources/br/univali/ps/ui/icones/Dark/grande/newfile.png"
+      alt="Ícone de novo arquivo"
     />
 
     <span>Novo Arquivo</span>
@@ -12,6 +13,7 @@
   <button mat-ripple (click)="fileInput.click()">
     <img
       src="https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/ide/src/main/resources/br/univali/ps/ui/icones/Dark/grande/openfile.png"
+      alt="Ícone de abrir arquivo"
     />
 
     <span>Abrir Arquivo</span>
@@ -20,37 +22,38 @@
   </button>
 
   <button mat-ripple (click)="openExamplesDialog()">
-    <img src="assets/icon-book-open-page-variant-outline.svg" />
+    <img src="assets/icon-book-open-page-variant-outline.svg" alt="Ícone de livro para ação de abrir exemplo" />
     <span>Abrir Exemplo</span>
   </button>
 
   <button mat-ripple (click)="help.emit()">
     <img
       src="https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/ide/src/main/resources/br/univali/ps/ui/icones/Dark/grande/help.png"
+      alt="Ícone de ajuda"
     />
 
     <span>Ajuda</span>
   </button>
 
   <a
-    href="https://feedback.userreport.com/95eb7601-de5d-4774-9b22-38a6c60e83bc/"
+    href="https://github.com/dgadelha/Portugol-Webstudio/discussions/categories/ideas"
     target="_blank"
-    rel="external nofollow"
+    rel="external noreferrer noopener nofollow"
     mat-ripple
     (click)="gaService.event('suggest_features', 'Aba Inicial', 'Enviar sugestões')"
   >
-    <img src="assets/icon-lightbulb-on-outline.svg" />
+    <img src="assets/icon-lightbulb-on-outline.svg" alt="Ícone de lâmpada para ação de enviar sugestões" />
     <span>Sugestões</span>
   </a>
 
   <a
     href="https://github.com/dgadelha/Portugol-Webstudio"
     target="_blank"
-    rel="external nofollow"
+    rel="external noreferrer noopener nofollow"
     mat-ripple
     (click)="gaService.event('view_source_code', 'Aba Inicial', 'Ver código-fonte')"
   >
-    <img src="assets/icon-github.svg" />
+    <img src="assets/icon-github.svg" alt="Ícone do GitHub" />
     <span>Código-fonte</span>
   </a>
 </nav>
@@ -58,7 +61,7 @@
 <section class="info">
   <p>
     <strong>Nova versão:</strong> Podem existir problemas, caso encontre algum ou tenha sugestões/comentários,
-    <a href="https://feedback.userreport.com/95eb7601-de5d-4774-9b22-38a6c60e83bc/" target="_blank" rel="external">
+    <a href="https://github.com/dgadelha/Portugol-Webstudio/discussions/categories/ideas" target="_blank" rel="external noopener">
       nos envie por aqui, estamos sempre acompanhando</a
     >.
   </p>
