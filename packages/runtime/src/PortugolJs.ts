@@ -840,6 +840,7 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
 
     sb.append(this.PAD(), `const runtime = new PortugolRuntime(initScope);`, `\n\n`);
     sb.append(this.PAD(), `self.runtime = runtime;`, `\n\n`);
+    sb.append(this.PAD(), `let scope = runtime.globalScope;`, `\n\n`);
     sb.append(super.visitChildren(ctx));
     sb.append(`\n`, this.PAD(), `await runtime.callFunction("inicio");\n})`);
 
@@ -985,22 +986,22 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
           const tam = arr.tamanhoArray();
 
           if (tam) {
-            sb.append(`[\n`);
+            sb.append(`\n`);
 
             this.pad++;
 
-            sb.append(
-              new Array(parseInt(tam.text, 10))
-                .fill(0)
-                .map(() => `${this.PAD()}new PortugolVar("${ctx.TIPO().text}", undefined)`)
-                .join(`,\n`),
-            );
+            sb.append(this.PAD(), `new Array(`, `\n`);
 
-            sb.append(`,\n`);
+            this.pad++;
+
+            sb.append(this.visit(tam.expressao()));
+            sb.append(this.PAD(), `.value`, `\n`);
 
             this.pad--;
 
-            sb.append(this.PAD(), `]`);
+            sb.append(this.PAD(), `).fill(0).map(() => new PortugolVar("${ctx.TIPO().text}", undefined))`, `\n`);
+
+            this.pad--;
           } else {
             sb.append(`[]`);
           }
