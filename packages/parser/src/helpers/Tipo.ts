@@ -3,7 +3,15 @@ import { TerminalNode } from "antlr4ts/tree/TerminalNode.js";
 import { InteiroExpr } from "../nodes/InteiroExpr.js";
 import { ReferênciaVarExpr } from "../nodes/ReferênciaVarExpr.js";
 
-export type TipoPrimitivo = "inteiro" | "real" | "cadeia" | "logico" | "vazio" | "caracter";
+export enum TipoPrimitivo {
+  INTEIRO = "inteiro",
+  REAL = "real",
+  CADEIA = "cadeia",
+  LÓGICO = "logico",
+  VAZIO = "vazio",
+  CARACTER = "caracter",
+}
+
 export type Tipo = { primitivo: TipoPrimitivo } & (
   | {}
   | ({ dimensão: "vetor" | "matriz"; primitivo: TipoPrimitivo } & (
@@ -14,7 +22,7 @@ export type Tipo = { primitivo: TipoPrimitivo } & (
 
 export function parseTipoPrimitivo(tipo: TerminalNode | undefined): TipoPrimitivo {
   if (!tipo) {
-    return "vazio";
+    return TipoPrimitivo.VAZIO;
   }
 
   switch (tipo.text) {
@@ -24,7 +32,7 @@ export function parseTipoPrimitivo(tipo: TerminalNode | undefined): TipoPrimitiv
     case "logico":
     case "vazio":
     case "caracter":
-      return tipo.text;
+      return tipo.text as TipoPrimitivo;
 
     default:
       throw new Error(`Tipo desconhecido: ${tipo.text}`);

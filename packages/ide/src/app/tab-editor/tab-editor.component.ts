@@ -346,9 +346,9 @@ export class TabEditorComponent implements OnInit, OnDestroy {
         errors.map(error => {
           return {
             startLineNumber: error.startLine,
-            startColumn: error.startCol,
+            startColumn: error.startCol + 1,
             endLineNumber: error.endLine,
-            endColumn: error.endCol,
+            endColumn: error.endCol + 2,
             message: error.message,
             severity: monaco.MarkerSeverity.Error,
           };

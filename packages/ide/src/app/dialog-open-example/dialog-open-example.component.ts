@@ -28,7 +28,7 @@ export class DialogOpenExampleComponent implements OnInit, OnDestroy, AfterViewI
 
   treeControl: NestedTreeControl<ExampleItem>;
   dataSource: MatTreeNestedDataSource<ExampleItem>;
-  current?: ExampleItem;
+  current: ExampleItem | null = null;
   loading = true;
 
   private _loadSubscription$?: Subscription;

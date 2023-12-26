@@ -27,15 +27,14 @@ export class PortugolCodeError extends Error {
       typeof (possibleContext as unknown as { _stop: any })._stop === "object"
     ) {
       const { _start, _stop } = possibleContext as unknown as { _start: any; _stop: any };
+      const { line: startLine, _charPositionInLine: startCol } = _start;
+      let { line: endLine, _charPositionInLine: endCol } = _stop;
 
-      return new PortugolCodeError(
-        message,
-        ctx,
-        _start.line,
-        _start._charPositionInLine + 1,
-        _stop.line,
-        _stop._charPositionInLine + 2,
-      );
+      if (startLine === endLine && startCol === endCol) {
+        endCol += ctx.text.length - 1;
+      }
+
+      return new PortugolCodeError(message, ctx, startLine, startCol, endLine, endCol);
     }
 
     const possibleSymbol: Token | RuleContext | undefined = (ctx as any).symbol || (ctx as any).payload;
@@ -51,9 +50,9 @@ export class PortugolCodeError extends Error {
         message,
         ctx,
         _line,
-        _charPositionInLine + 1,
+        _charPositionInLine,
         _line,
-        _charPositionInLine + 2 + ctx.text.length,
+        _charPositionInLine + ctx.text.length,
       );
     }
 
@@ -73,9 +72,7 @@ export class PortugolErrorListener implements ANTLRErrorListener<Token> {
     exception: RecognitionException | undefined,
   ) {
     const endColumn =
-      offendingSymbol && offendingSymbol.text
-        ? charPositionInLine + offendingSymbol.text.length
-        : charPositionInLine + 1;
+      offendingSymbol && offendingSymbol.text ? charPositionInLine + offendingSymbol.text.length : charPositionInLine;
 
     this.errors.push(
       new PortugolCodeError(
