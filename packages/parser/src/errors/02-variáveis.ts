@@ -37,6 +37,11 @@ export function* checarUsoEscopo(arquivo: Arquivo): Generator<PortugolCodeError>
       case ReferênciaVarExpr:
         const ref = nó as ReferênciaVarExpr;
 
+        // TODO: bibliotecas
+        if (ref.escopoBiblioteca) {
+          break;
+        }
+
         if (!escopo.hasVariável(ref.nome)) {
           yield PortugolCodeError.fromContext(ref.ctx, `Variável não declarada: ${ref.nome}`);
         }
