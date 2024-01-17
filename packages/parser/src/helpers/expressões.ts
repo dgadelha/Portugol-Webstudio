@@ -32,6 +32,10 @@ import {
   OperaçãoAndLógicoExpr,
   OperaçãoDiferençaExpr,
   OperaçãoIgualdadeExpr,
+  OperaçãoMaiorOuIgualQueExpr,
+  OperaçãoMaiorQueExpr,
+  OperaçãoMenorOuIgualQueExpr,
+  OperaçãoMenorQueExpr,
   OperaçãoOrBitwiseExpr,
   OperaçãoOrLógicoExpr,
   OperaçãoShiftLeftExpr,
@@ -199,6 +203,13 @@ export function resolverResultadoExpressão(expressão: Expressão, escopo: Esco
         );
       }
 
+      return TipoPrimitivo.LÓGICO;
+    }
+
+    case OperaçãoMaiorQueExpr:
+    case OperaçãoMaiorOuIgualQueExpr:
+    case OperaçãoMenorQueExpr:
+    case OperaçãoMenorOuIgualQueExpr: {
       return TipoPrimitivo.LÓGICO;
     }
 
