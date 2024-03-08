@@ -6,7 +6,7 @@ export class WorkerService {
   worker?: Worker;
 
   init() {
-    this.worker = new Worker("/assets/portugol-worker/worker.js");
+    this.worker = new Worker("assets/portugol-worker/worker.js");
   }
 
   async checkCode(code: string): Promise<{
