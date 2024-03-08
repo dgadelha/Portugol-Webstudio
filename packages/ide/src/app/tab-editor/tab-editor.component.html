@@ -17,7 +17,7 @@
     type="button"
     class="sidebar-button"
     (click)="stopCode()"
-    [disabled]="!executor.running || transpiling"
+    [disabled]="!executor.running && !transpiling"
     title="Parar execução"
   >
     <svg-icon src="assets/icon-stop.svg"></svg-icon>

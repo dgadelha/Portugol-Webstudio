@@ -182,6 +182,12 @@ export class TabEditorComponent implements OnInit, OnDestroy {
   stopCode() {
     this.gaService.event("editor_stop_execution", "Editor", "Botão de Parar Execução");
     this.executor.stop();
+
+    if (this.transpiling) {
+      this.worker.abortTranspilation();
+      this.transpiling = false;
+    }
+
     this.stdOutEditorCursorEnd();
   }
 
