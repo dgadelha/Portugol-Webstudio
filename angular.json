@@ -62,7 +62,7 @@
               },
               {
                 "glob": "**/*",
-                "input": "packages/worker/lib/",
+                "input": "node_modules/@portugol-webstudio/worker/lib",
                 "output": "assets/portugol-worker/"
               },
               "packages/ide/src/favicon.ico",
