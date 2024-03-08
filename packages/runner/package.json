@@ -38,7 +38,7 @@
     "@portugol-webstudio/antlr": "*",
     "@portugol-webstudio/parser": "*",
     "@portugol-webstudio/runtime": "*",
-    "antlr4ts": "^0.5.0-alpha.4",
+    "antlr4ng": "^3.0.3",
     "rxjs": "~7.8.1"
   },
   "devDependencies": {

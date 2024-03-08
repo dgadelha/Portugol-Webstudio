@@ -1,13 +1,10 @@
-import { ArquivoContext } from "@portugol-webstudio/antlr";
-import { PortugolJs, PortugolJsRuntime } from "@portugol-webstudio/runtime";
+import { PortugolJsRuntime } from "@portugol-webstudio/runtime";
 import { Subscription, Subject } from "rxjs";
 
 import { PortugolEvent, IPortugolRunner } from "./IPortugolRunner.js";
 
 export class PortugolWebWorkersRunner extends IPortugolRunner {
   private worker: Worker;
-
-  byteCode: string;
 
   stdIn = new Subject<string>();
   private _stdIn$?: Subscription;
@@ -24,10 +21,9 @@ export class PortugolWebWorkersRunner extends IPortugolRunner {
 
   private _run = new Subject<PortugolEvent>();
 
-  constructor(tree: ArquivoContext) {
-    super(tree);
+  constructor(public byteCode: string) {
+    super(byteCode);
 
-    this.byteCode = new PortugolJs().visit(tree);
     const runCode = /* javascript */ `
       const exec = ${this.byteCode};
 

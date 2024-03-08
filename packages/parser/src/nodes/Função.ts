@@ -18,7 +18,7 @@ export class Função extends Node {
   ) {
     super();
 
-    this.nome = ctx.ID().text;
+    this.nome = ctx.ID().getText();
     this.retorno = { primitivo: parseTipoPrimitivo(ctx.TIPO()) };
 
     for (const child of children) {

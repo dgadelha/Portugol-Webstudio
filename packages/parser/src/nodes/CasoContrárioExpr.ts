@@ -1,4 +1,4 @@
-import { TerminalNode } from "antlr4ts/tree/TerminalNode.js";
+import { TerminalNode } from "antlr4ng";
 
 import { Expressão } from "./Expressão.js";
 import { Node } from "./Node.js";
@@ -11,7 +11,7 @@ export class CasoContrárioExpr extends Expressão {
   ) {
     super(ctx, children);
 
-    invariant(ctx.text === "contrario", ctx);
+    invariant(ctx.getText() === "contrario", ctx);
 
     for (const child of children) {
       this.unexpectedChild(child);

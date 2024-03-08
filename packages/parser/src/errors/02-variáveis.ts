@@ -1,20 +1,22 @@
-import { PortugolCodeError } from "packages/antlr/lib/PortugolErrorListener.js";
+import { PortugolCodeError } from "@portugol-webstudio/antlr";
 
 import { ResultadoCompatibilidade, TabelaCompatibilidadeAtribuição } from "../helpers/compatibilidade.js";
 import { Escopo } from "../helpers/Escopo.js";
 import { resolverResultadoExpressão } from "../helpers/expressões.js";
-import { Arquivo } from "../nodes/Arquivo.js";
-import { AtribuiçãoCmd } from "../nodes/AtribuiçãoCmd.js";
-import { DeclaraçãoCmd } from "../nodes/DeclaraçãoCmd.js";
-import { EnquantoCmd } from "../nodes/EnquantoCmd.js";
-import { EscolhaCmd } from "../nodes/EscolhaCmd.js";
-import { FaçaEnquantoCmd } from "../nodes/FaçaEnquantoCmd.js";
-import { Função } from "../nodes/Função.js";
-import { Node } from "../nodes/Node.js";
-import { ParaCmd } from "../nodes/ParaCmd.js";
-import { Parâmetro } from "../nodes/Parâmetro.js";
-import { ReferênciaVarExpr } from "../nodes/ReferênciaVarExpr.js";
-import { SeCmd } from "../nodes/SeCmd.js";
+import {
+  Arquivo,
+  AtribuiçãoCmd,
+  DeclaraçãoCmd,
+  EnquantoCmd,
+  EscolhaCmd,
+  FaçaEnquantoCmd,
+  Função,
+  Node,
+  ParaCmd,
+  Parâmetro,
+  ReferênciaVarExpr,
+  SeCmd,
+} from "../nodes/index.js";
 
 export function* checarUsoEscopo(arquivo: Arquivo): Generator<PortugolCodeError> {
   const escopo = new Escopo();

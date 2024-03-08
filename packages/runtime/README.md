@@ -11,7 +11,7 @@ O transpilador é exposto através da classe `PortugolJs`, e o código transpila
 ```typescript
 import { PortugolLexer, PortugolParser } from "@portugol-webstudio/antlr";
 import { PortugolJs } from "@portugol-webstudio/runtime";
-import { CharStreams, CommonTokenStream } from "antlr4ts";
+import { CharStreams, CommonTokenStream } from "antlr4ng";
 
 const code = `programa {
   funcao inicio() {

@@ -1,7 +1,6 @@
 {
-  "name": "@portugol-webstudio/parser",
+  "name": "@portugol-webstudio/worker",
   "version": "0.0.0",
-  "type": "module",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/dgadelha/Portugol-Webstudio.git"
@@ -22,8 +21,7 @@
     "access": "public"
   },
   "homepage": "https://github.com/dgadelha/Portugol-Webstudio#readme",
-  "main": "lib/index.js",
-  "typings": "lib/index.d.ts",
+  "main": "lib/worker.js",
   "directories": {
     "lib": "lib"
   },
@@ -31,14 +29,18 @@
     "lib"
   ],
   "scripts": {
-    "build": "tsc",
-    "build:w": "tsc -w"
+    "build": "webpack",
+    "build:w": "webpack watch"
   },
   "dependencies": {
     "@portugol-webstudio/antlr": "*",
+    "@portugol-webstudio/parser": "*",
+    "@portugol-webstudio/runtime": "*",
     "antlr4ng": "^3.0.3"
   },
   "devDependencies": {
-    "typescript": "~5.2.2"
+    "antlr4ng-cli": "^2.0.0",
+    "webpack": "^5.90.3",
+    "webpack-cli": "^5.1.4"
   }
 }

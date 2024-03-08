@@ -12,7 +12,7 @@ export class LógicoExpr extends Expressão {
   ) {
     super(ctx, children);
 
-    this.valor = ctx.text === "verdadeiro";
+    this.valor = ctx.getText() === "verdadeiro";
 
     for (const child of children) {
       this.unexpectedChild(child);

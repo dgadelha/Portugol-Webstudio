@@ -17,7 +17,7 @@ export class ExpressãoUnária extends Expressão {
   ) {
     super(ctx, children);
 
-    const newCtx = Object.assign(ctx, { escopoBiblioteca: () => undefined });
+    const newCtx = Object.assign(ctx, { escopoBiblioteca: () => null });
 
     this.variável = new ReferênciaVarExpr(newCtx, []);
   }

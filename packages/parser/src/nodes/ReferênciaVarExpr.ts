@@ -15,7 +15,7 @@ export class ReferênciaVarExpr extends Expressão {
   ) {
     super(ctx, children);
 
-    this.nome = ctx.ID().text;
+    this.nome = ctx.ID().getText();
 
     for (const child of children) {
       if (child instanceof EscopoBibliotecaExpr) {

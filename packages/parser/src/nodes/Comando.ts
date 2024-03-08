@@ -1,4 +1,4 @@
-import { ParserRuleContext } from "antlr4ts";
+import { ParserRuleContext } from "antlr4ng";
 
 import { Node } from "./Node.js";
 

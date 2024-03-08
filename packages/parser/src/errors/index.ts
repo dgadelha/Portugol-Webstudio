@@ -1,8 +1,8 @@
 import { PortugolCodeError } from "@portugol-webstudio/antlr";
 
-import * as ec01 from "./01-estrutura-básica";
-import * as ec02 from "./02-variáveis";
-import { Arquivo } from "../nodes";
+import * as ec01 from "./01-estrutura-básica.js";
+import * as ec02 from "./02-variáveis.js";
+import { Arquivo } from "../nodes/index.js";
 
 export default [
   ec01,

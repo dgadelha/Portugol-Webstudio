@@ -1,5 +1,4 @@
-import { ParserRuleContext } from "antlr4ts";
-import { TerminalNode } from "antlr4ts/tree/TerminalNode.js";
+import { ParserRuleContext, TerminalNode } from "antlr4ng";
 
 import { Node } from "./Node.js";
 

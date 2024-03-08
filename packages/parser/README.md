@@ -11,7 +11,7 @@ O parser é exposto através da classe `PortugolNode`, que recebe uma árvore pr
 ```typescript
 import { PortugolLexer, PortugolParser } from "@portugol-webstudio/antlr";
 import { PortugolNode } from "@portugol-webstudio/runtime";
-import { CharStreams, CommonTokenStream } from "antlr4ts";
+import { CharStreams, CommonTokenStream } from "antlr4ng";
 
 const code = `programa {
   funcao inicio() {

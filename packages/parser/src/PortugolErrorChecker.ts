@@ -5,7 +5,7 @@ import {
   PortugolLexer,
   PortugolParser,
 } from "@portugol-webstudio/antlr";
-import { CharStreams, CommonTokenStream } from "antlr4ts";
+import { CharStream, CommonTokenStream } from "antlr4ng";
 
 import errorCheckers from "./errors/index.js";
 import { ParseError } from "./helpers/ParseError.js";
@@ -17,7 +17,7 @@ export class PortugolErrorChecker {
   private static errorListener = new PortugolErrorListener();
 
   public static checkCode(code: string): PortugolCodeError[] {
-    const inputStream = CharStreams.fromString(code);
+    const inputStream = CharStream.fromString(code);
     const lexer = new PortugolLexer(inputStream);
     const tokenStream = new CommonTokenStream(lexer);
     const parser = new PortugolParser(tokenStream);

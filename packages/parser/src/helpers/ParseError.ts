@@ -1,4 +1,4 @@
-import { ParseTree } from "antlr4ts/tree/ParseTree.js";
+import { ParseTree } from "antlr4ng";
 
 export class ParseError extends Error {
   constructor(

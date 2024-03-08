@@ -17,10 +17,10 @@ export class InclusãoBiblioteca extends Node {
 
     invariant(idCtx.length === 1 || idCtx.length === 2, ctx, "Inclusão de biblioteca inválida");
 
-    this.nome = idCtx[0].text;
+    this.nome = idCtx[0].getText();
 
     if (idCtx.length === 2) {
-      this.alias = idCtx[1].text;
+      this.alias = idCtx[1].getText();
     }
   }
 }

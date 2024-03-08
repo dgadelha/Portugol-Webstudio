@@ -80,9 +80,7 @@ import {
   SubtracaoContext,
 } from "@portugol-webstudio/antlr";
 import { captureException } from "@sentry/core";
-import { ParserRuleContext } from "antlr4ts";
-import { AbstractParseTreeVisitor } from "antlr4ts/tree/AbstractParseTreeVisitor";
-import { RuleNode } from "antlr4ts/tree/RuleNode";
+import { ParserRuleContext, AbstractParseTreeVisitor } from "antlr4ng";
 
 import { StringBuilder } from "./utils/StringBuilder.js";
 
@@ -93,7 +91,7 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
   pad = 0;
   hasScope = false;
 
-  DEBUG(fn: string, _ctx: ParserRuleContext) {
+  DEBUG(fn: string, _ctx: unknown) {
     if (!this.debug) {
       return ``;
     }
@@ -113,16 +111,16 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     return aggregate + nextResult;
   }
 
-  visitChildrenArray(node: RuleNode) {
+  visitChildrenArray(node: ParserRuleContext) {
     const result = [];
-    const n = node.childCount;
+    const n = node.getChildCount();
 
     for (let i = 0; i < n; i++) {
       if (!this.shouldVisitNextChild(node, result.join(""))) {
         break;
       }
 
-      const c = node.getChild(i);
+      const c = node.getChild(i)!;
       const childResult = c.accept(this);
 
       result.push(childResult);
@@ -140,10 +138,10 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     this.pad++;
 
     // Nome da função
-    sb.append(this.PAD(), `"${ctx.ID().text}",`, `\n`);
+    sb.append(this.PAD(), `"${ctx.ID().getText()}",`, `\n`);
 
     // Escopo
-    sb.append(this.PAD(), `"${ctx.escopoBiblioteca()?.ID()?.text ?? ""}",`, `\n`);
+    sb.append(this.PAD(), `"${ctx.escopoBiblioteca()?.ID()?.getText() ?? ""}",`, `\n`);
 
     // Expressões
     const expr = ctx.listaExpressoes();
@@ -168,7 +166,7 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
 
     this.pad++;
 
-    sb.append(this.visit(ctx.indiceArray().expressao()).trimEnd(), `.value`, `\n`);
+    sb.append(this.visit(ctx.indiceArray().expressao())?.trimEnd(), `.value`, `\n`);
 
     this.pad--;
 
@@ -191,7 +189,7 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
 
       this.pad++;
 
-      sb.append(this.visit(idx.expressao()).trimEnd(), `.value`, `\n`);
+      sb.append(this.visit(idx.expressao())?.trimEnd(), `.value`, `\n`);
 
       this.pad--;
 
@@ -287,17 +285,17 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
 
     this.pad++;
 
-    sb.append(this.PAD(), `const pre = scope.variables["${ctx.ID().text}"].clone();`, `\n\n`);
+    sb.append(this.PAD(), `const pre = scope.variables["${ctx.ID().getText()}"].clone();`, `\n\n`);
     sb.append(this.PAD(), `runtime.assign([`, `\n`);
 
     this.pad++;
 
-    sb.append(this.PAD(), `scope.variables["${ctx.ID().text}"],`, `\n`);
+    sb.append(this.PAD(), `scope.variables["${ctx.ID().getText()}"],`, `\n`);
     sb.append(this.PAD(), `runtime.mathOperation("+", [`, `\n`);
 
     this.pad++;
 
-    sb.append(this.PAD(), `scope.variables["${ctx.ID().text}"],`, `\n`);
+    sb.append(this.PAD(), `scope.variables["${ctx.ID().getText()}"],`, `\n`);
     sb.append(this.PAD(), `new PortugolVar("inteiro", 1),`, `\n`);
 
     this.pad--;
@@ -324,17 +322,17 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
 
     this.pad++;
 
-    sb.append(this.PAD(), `const pre = scope.variables["${ctx.ID().text}"].clone();`, `\n\n`);
+    sb.append(this.PAD(), `const pre = scope.variables["${ctx.ID().getText()}"].clone();`, `\n\n`);
     sb.append(this.PAD(), `runtime.assign([`, `\n`);
 
     this.pad++;
 
-    sb.append(this.PAD(), `scope.variables["${ctx.ID().text}"],`, `\n`);
+    sb.append(this.PAD(), `scope.variables["${ctx.ID().getText()}"],`, `\n`);
     sb.append(this.PAD(), `runtime.mathOperation("-", [`, `\n`);
 
     this.pad++;
 
-    sb.append(this.PAD(), `scope.variables["${ctx.ID().text}"],`, `\n`);
+    sb.append(this.PAD(), `scope.variables["${ctx.ID().getText()}"],`, `\n`);
     sb.append(this.PAD(), `new PortugolVar("inteiro", 1),`, `\n`);
 
     this.pad--;
@@ -361,12 +359,12 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
 
     this.pad++;
 
-    sb.append(this.PAD(), `scope.variables["${ctx.ID().text}"],`, `\n`);
+    sb.append(this.PAD(), `scope.variables["${ctx.ID().getText()}"],`, `\n`);
     sb.append(this.PAD(), `runtime.mathOperation("+", [`, `\n`);
 
     this.pad++;
 
-    sb.append(this.PAD(), `scope.variables["${ctx.ID().text}"],`, `\n`);
+    sb.append(this.PAD(), `scope.variables["${ctx.ID().getText()}"],`, `\n`);
     sb.append(this.PAD(), `new PortugolVar("inteiro", 1),`, `\n`);
 
     this.pad--;
@@ -389,12 +387,12 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
 
     this.pad++;
 
-    sb.append(this.PAD(), `scope.variables["${ctx.ID().text}"],`, `\n`);
+    sb.append(this.PAD(), `scope.variables["${ctx.ID().getText()}"],`, `\n`);
     sb.append(this.PAD(), `runtime.mathOperation("-", [`, `\n`);
 
     this.pad++;
 
-    sb.append(this.PAD(), `scope.variables["${ctx.ID().text}"],`, `\n`);
+    sb.append(this.PAD(), `scope.variables["${ctx.ID().getText()}"],`, `\n`);
     sb.append(this.PAD(), `new PortugolVar("inteiro", 1),`, `\n`);
 
     this.pad--;
@@ -445,7 +443,7 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     const exprs = ctx.expressao();
 
     for (const expr of exprs) {
-      sb.append(super.visit(expr).trimEnd());
+      sb.append(super.visit(expr)?.trimEnd());
       sb.append(",", `\n`);
     }
 
@@ -486,7 +484,7 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     const exprs = ctx.expressao();
 
     for (const expr of exprs) {
-      sb.append(super.visit(expr).trimEnd());
+      sb.append(super.visit(expr)?.trimEnd());
       sb.append(",", `\n`);
     }
 
@@ -590,7 +588,7 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     const exprs = ctx.expressao();
 
     for (const expr of exprs) {
-      sb.append(super.visit(expr).trimEnd());
+      sb.append(super.visit(expr)?.trimEnd());
       sb.append(",", `\n`);
     }
 
@@ -726,9 +724,13 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     const libScope = ctx.escopoBiblioteca()?.ID();
 
     if (libScope) {
-      sb.append(this.PAD(), `runtime.libs[runtime.globalScope.libAliases["${libScope}"]]["${ctx.ID().text}"]`, `\n`);
+      sb.append(
+        this.PAD(),
+        `runtime.libs[runtime.globalScope.libAliases["${libScope}"]]["${ctx.ID().getText()}"]`,
+        `\n`,
+      );
     } else {
-      sb.append(this.PAD(), `scope.variables["${ctx.ID().text}"]`, `\n`);
+      sb.append(this.PAD(), `scope.variables["${ctx.ID().getText()}"]`, `\n`);
     }
 
     return sb.toString();
@@ -738,7 +740,11 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     const sb = new StringBuilder();
 
     sb.append(this.DEBUG(`visitNumeroInteiro`, ctx));
-    sb.append(this.PAD(), `new PortugolVar("inteiro", ${ctx.INT()?.text ?? ctx.HEXADECIMAL()?.text ?? ""})`, `\n`);
+    sb.append(
+      this.PAD(),
+      `new PortugolVar("inteiro", ${ctx.INT()?.getText() ?? ctx.HEXADECIMAL()?.getText() ?? ""})`,
+      `\n`,
+    );
 
     return sb.toString();
   }
@@ -747,7 +753,7 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     const sb = new StringBuilder();
 
     sb.append(this.DEBUG(`visitNumeroReal`, ctx));
-    sb.append(this.PAD(), `new PortugolVar("real", ${ctx.REAL().text})`, `\n`);
+    sb.append(this.PAD(), `new PortugolVar("real", ${ctx.REAL().getText()})`, `\n`);
 
     return sb.toString();
   }
@@ -756,7 +762,7 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     const sb = new StringBuilder();
 
     sb.append(this.DEBUG(`visitValorLogico`, ctx));
-    sb.append(this.PAD(), `new PortugolVar("logico", ${ctx.LOGICO().text === "verdadeiro"})`, `\n`);
+    sb.append(this.PAD(), `new PortugolVar("logico", ${ctx.LOGICO().getText() === "verdadeiro"})`, `\n`);
 
     return sb.toString();
   }
@@ -765,7 +771,7 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     const sb = new StringBuilder();
 
     sb.append(this.DEBUG(`visitCaracter`, ctx));
-    sb.append(this.PAD(), `new PortugolVar("caracter", ${ctx.CARACTER().text})`, `\n`);
+    sb.append(this.PAD(), `new PortugolVar("caracter", ${ctx.CARACTER().getText()})`, `\n`);
 
     return sb.toString();
   }
@@ -774,7 +780,7 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     const sb = new StringBuilder();
 
     sb.append(this.DEBUG(`visitString`, ctx));
-    sb.append(this.PAD(), `new PortugolVar("cadeia", ${ctx.STRING().text})`, `\n`);
+    sb.append(this.PAD(), `new PortugolVar("cadeia", ${ctx.STRING().getText()})`, `\n`);
 
     return sb.toString();
   }
@@ -857,7 +863,7 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
       this.PAD(),
       `runtime.loadLibrary(${ctx
         .ID()
-        .map(x => `"${x.text}"`)
+        .map(x => `"${x.getText()}"`)
         .join(", ")});`,
       `\n`,
     );
@@ -881,26 +887,26 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
         const expr = varb.expressao();
 
         if (varb.OP_ATRIBUICAO() && expr) {
-          sb.append(this.PAD(), `${scopeStr}.variables["${varb.ID().text}"] = new PortugolVar(`);
-          sb.append(`"${ctx.TIPO().text}"`, `, undefined)`, `\n`);
+          sb.append(this.PAD(), `${scopeStr}.variables["${varb.ID().getText()}"] = new PortugolVar(`);
+          sb.append(`"${ctx.TIPO().getText()}"`, `, undefined)`, `\n`);
 
           sb.append(this.PAD(), `runtime.assign([`, `\n`);
 
           this.pad++;
 
-          sb.append(this.PAD(), `${scopeStr}.variables["${varb.ID().text}"]`, `,`, `\n`);
+          sb.append(this.PAD(), `${scopeStr}.variables["${varb.ID().getText()}"]`, `,`, `\n`);
           sb.append(this.visit(expr));
 
           this.pad--;
 
           sb.append(this.PAD(), `])`, `\n`);
         } else {
-          sb.append(this.PAD(), `${scopeStr}.variables["${varb.ID().text}"] = new PortugolVar(`);
-          sb.append(`"${ctx.TIPO().text}"`, `, undefined)`, `\n`);
+          sb.append(this.PAD(), `${scopeStr}.variables["${varb.ID().getText()}"] = new PortugolVar(`);
+          sb.append(`"${ctx.TIPO().getText()}"`, `, undefined)`, `\n`);
         }
 
         if (ctx.CONSTANTE()) {
-          sb.append(this.PAD(), `${scopeStr}.variables["${varb.ID().text}"].isConstant = true`, `\n`);
+          sb.append(this.PAD(), `${scopeStr}.variables["${varb.ID().getText()}"].isConstant = true`, `\n`);
         }
       }
 
@@ -908,10 +914,10 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
         const init = mtrx.inicializacaoMatriz();
 
         if (mtrx.OP_ATRIBUICAO() && init) {
-          sb.append(this.PAD(), `${scopeStr}.variables["${mtrx.ID().text}"] = new PortugolVar(`);
-          sb.append(`"matriz", `, this.visit(init).trim(), `)`, `\n`);
+          sb.append(this.PAD(), `${scopeStr}.variables["${mtrx.ID().getText()}"] = new PortugolVar(`);
+          sb.append(`"matriz", `, this.visit(init)?.trim(), `)`, `\n`);
         } else {
-          sb.append(this.PAD(), `${scopeStr}.variables["${mtrx.ID().text}"] = new PortugolVar(`);
+          sb.append(this.PAD(), `${scopeStr}.variables["${mtrx.ID().getText()}"] = new PortugolVar(`);
           sb.append(`"matriz", `);
 
           const rows = mtrx.linhaMatriz();
@@ -949,7 +955,7 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
 
               this.pad--;
 
-              sb.append(this.PAD(), `).fill(0).map(() => new PortugolVar("${ctx.TIPO().text}", undefined))`, `\n`);
+              sb.append(this.PAD(), `).fill(0).map(() => new PortugolVar("${ctx.TIPO().getText()}", undefined))`, `\n`);
 
               this.pad--;
 
@@ -977,10 +983,10 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
         const init = arr.inicializacaoArray();
 
         if (arr.OP_ATRIBUICAO() && init) {
-          sb.append(this.PAD(), `${scopeStr}.variables["${arr.ID().text}"] = `);
-          sb.append(this.visit(init).trim(), `\n`);
+          sb.append(this.PAD(), `${scopeStr}.variables["${arr.ID().getText()}"] = `);
+          sb.append(this.visit(init)?.trim(), `\n`);
         } else {
-          sb.append(this.PAD(), `${scopeStr}.variables["${arr.ID().text}"] = new PortugolVar(`);
+          sb.append(this.PAD(), `${scopeStr}.variables["${arr.ID().getText()}"] = new PortugolVar(`);
           sb.append(`"vetor", `);
 
           const tam = arr.tamanhoArray();
@@ -999,7 +1005,7 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
 
             this.pad--;
 
-            sb.append(this.PAD(), `).fill(0).map(() => new PortugolVar("${ctx.TIPO().text}", undefined))`, `\n`);
+            sb.append(this.PAD(), `).fill(0).map(() => new PortugolVar("${ctx.TIPO().getText()}", undefined))`, `\n`);
 
             this.pad--;
           } else {
@@ -1019,7 +1025,7 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     const sb = new StringBuilder();
 
     if (!PortugolJs.thrown.visitDeclaracao) {
-      captureException("visitDeclaracao", { extra: { text: ctx.text } });
+      captureException("visitDeclaracao", { extra: { text: ctx.getText() } });
       PortugolJs.thrown.visitDeclaracao = true;
     }
 
@@ -1034,7 +1040,7 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
 
     if (!PortugolJs.thrown.visitDeclaracaoVariavel) {
       captureException("visitDeclaracaoVariavel", {
-        extra: { text: ctx.text },
+        extra: { text: ctx.getText() },
       });
       PortugolJs.thrown.visitDeclaracaoVariavel = true;
     }
@@ -1051,7 +1057,7 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     const sb = new StringBuilder();
 
     if (!PortugolJs.thrown.visitDeclaracaoMatriz) {
-      captureException("visitDeclaracaoMatriz", { extra: { text: ctx.text } });
+      captureException("visitDeclaracaoMatriz", { extra: { text: ctx.getText() } });
       PortugolJs.thrown.visitDeclaracaoMatriz = true;
     }
 
@@ -1069,7 +1075,7 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
 
     this.pad++;
 
-    for (const child of ctx.children ?? []) {
+    for (const child of ctx.children) {
       if (child instanceof InicializacaoArrayContext) {
         sb.append(this.visit(child));
         sb.append(this.PAD(), `,`, `\n`);
@@ -1088,7 +1094,7 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     const sb = new StringBuilder();
 
     if (!PortugolJs.thrown.visitLinhaMatriz) {
-      captureException("visitLinhaMatriz", { extra: { text: ctx.text } });
+      captureException("visitLinhaMatriz", { extra: { text: ctx.getText() } });
       PortugolJs.thrown.visitLinhaMatriz = true;
     }
 
@@ -1103,7 +1109,7 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     const sb = new StringBuilder();
 
     if (!PortugolJs.thrown.visitColunaMatriz) {
-      captureException("visitColunaMatriz", { extra: { text: ctx.text } });
+      captureException("visitColunaMatriz", { extra: { text: ctx.getText() } });
       PortugolJs.thrown.visitColunaMatriz = true;
     }
 
@@ -1118,7 +1124,7 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     const sb = new StringBuilder();
 
     if (!PortugolJs.thrown.visitDeclaracaoArray) {
-      captureException("visitDeclaracaoArray", { extra: { text: ctx.text } });
+      captureException("visitDeclaracaoArray", { extra: { text: ctx.getText() } });
       PortugolJs.thrown.visitDeclaracaoArray = true;
     }
 
@@ -1150,7 +1156,7 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     const sb = new StringBuilder();
 
     if (!PortugolJs.thrown.visitTamanhoArray) {
-      captureException("visitTamanhoArray", { extra: { text: ctx.text } });
+      captureException("visitTamanhoArray", { extra: { text: ctx.getText() } });
       PortugolJs.thrown.visitTamanhoArray = true;
     }
 
@@ -1164,7 +1170,7 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     const sb = new StringBuilder();
 
     sb.append(this.DEBUG(`visitDeclaracaoFuncao`, ctx));
-    sb.append(this.PAD(), `runtime.declareFunction("${ctx.ID().text}", async (...args) => {`, `\n`);
+    sb.append(this.PAD(), `runtime.declareFunction("${ctx.ID().getText()}", async (...args) => {`, `\n`);
 
     this.hasScope = true;
     this.pad++;
@@ -1209,12 +1215,12 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
       } else if (param.parametroMatriz()) {
         type = "matriz";
       } else {
-        type = param.TIPO().text;
+        type = param.TIPO().getText();
       }
 
       sb.append(
         this.PAD(),
-        `{ name: "${param.ID().text}", type: "${type}", reference: ${Boolean(param.E_COMERCIAL())} },`,
+        `{ name: "${param.ID().getText()}", type: "${type}", reference: ${Boolean(param.E_COMERCIAL())} },`,
         `\n`,
       );
     }
@@ -1232,10 +1238,10 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
       } else if (param.parametroMatriz()) {
         type = "matriz";
       } else {
-        type = param.TIPO().text;
+        type = param.TIPO().getText();
       }
 
-      sb.append(this.PAD(), `scope.variables["${param.ID().text}"] = new PortugolVar(`, `\n`);
+      sb.append(this.PAD(), `scope.variables["${param.ID().getText()}"] = new PortugolVar(`, `\n`);
 
       this.pad++;
       sb.append(this.PAD(), `"${type}"`, `,\n`);
@@ -1261,7 +1267,7 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     const sb = new StringBuilder();
 
     if (!PortugolJs.thrown.visitParametro) {
-      captureException("visitParametro", { extra: { text: ctx.text } });
+      captureException("visitParametro", { extra: { text: ctx.getText() } });
       PortugolJs.thrown.visitParametro = true;
     }
 
@@ -1276,7 +1282,7 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     const sb = new StringBuilder();
 
     if (!PortugolJs.thrown.visitParametroArray) {
-      captureException("visitParametroArray", { extra: { text: ctx.text } });
+      captureException("visitParametroArray", { extra: { text: ctx.getText() } });
       PortugolJs.thrown.visitParametroArray = true;
     }
 
@@ -1291,7 +1297,7 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     const sb = new StringBuilder();
 
     if (!PortugolJs.thrown.visitParametroMatriz) {
-      captureException("visitParametroMatriz", { extra: { text: ctx.text } });
+      captureException("visitParametroMatriz", { extra: { text: ctx.getText() } });
       PortugolJs.thrown.visitParametroMatriz = true;
     }
 
@@ -1305,7 +1311,7 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     const sb = new StringBuilder();
 
     sb.append(this.DEBUG(`visitComando`, ctx));
-    sb.append(`\n`, `${super.visitChildren(ctx).trimEnd()};`, `\n`);
+    sb.append(`\n`, `${super.visitChildren(ctx)?.trimEnd()};`, `\n`);
 
     return sb.toString();
   }
@@ -1323,7 +1329,7 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     for (const expr of exprs) {
       const exprResult = this.visit(expr);
 
-      sb.append(exprResult.trimEnd(), ",", `\n`);
+      sb.append(exprResult?.trimEnd(), ",", `\n`);
     }
 
     this.pad--;
@@ -1356,15 +1362,15 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     const first = exprs.shift();
 
     if (first) {
-      sb.append(super.visit(first).trimEnd(), `,\n`);
+      sb.append(super.visit(first)?.trimEnd(), `,\n`);
       sb.append(this.PAD(), `runtime.mathOperation("`, op, `", [`, `\n`);
 
       this.pad++;
 
-      sb.append(super.visit(first).trimEnd(), ",", `\n`);
+      sb.append(super.visit(first)?.trimEnd(), ",", `\n`);
 
       for (const expr of exprs) {
-        sb.append(super.visit(expr).trimEnd(), ",\n");
+        sb.append(super.visit(expr)?.trimEnd(), ",\n");
       }
 
       this.pad--;
@@ -1570,7 +1576,7 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     const sb = new StringBuilder();
 
     sb.append(this.DEBUG(`visitCondicao`, ctx));
-    sb.append(this.visit(ctx.expressao()).trimEnd(), `.value === true`, `\n`);
+    sb.append(this.visit(ctx.expressao())?.trimEnd(), `.value === true`, `\n`);
 
     return sb.toString();
   }
@@ -1627,7 +1633,7 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
 
       this.pad++;
 
-      sb.append(this.visit(expr).trimEnd(), `.value:`, `\n`);
+      sb.append(this.visit(expr)?.trimEnd(), `.value:`, `\n`);
 
       this.pad--;
     } else {
@@ -1659,7 +1665,7 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     const sb = new StringBuilder();
 
     if (!PortugolJs.thrown.visitIndiceArray) {
-      captureException("visitIndiceArray", { extra: { text: ctx.text } });
+      captureException("visitIndiceArray", { extra: { text: ctx.getText() } });
       PortugolJs.thrown.visitIndiceArray = true;
     }
 
@@ -1688,6 +1694,10 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     this.pad++;
 
     for (const child of this.visitChildrenArray(ctx)) {
+      if (!child) {
+        continue;
+      }
+
       sb.append(child.substring(0, child.length - 1), ",\n");
     }
 
@@ -1702,12 +1712,12 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     const sb = new StringBuilder();
 
     if (!PortugolJs.thrown.visitEscopoBiblioteca) {
-      captureException("visitEscopoBiblioteca", { extra: { text: ctx.text } });
+      captureException("visitEscopoBiblioteca", { extra: { text: ctx.getText() } });
       PortugolJs.thrown.visitEscopoBiblioteca = true;
     }
 
     sb.append(this.DEBUG(`visitEscopoBiblioteca`, ctx));
-    // sb.append(this.PAD(), `"${ctx.ID()?.text}"`, `\n`);
+    // sb.append(this.PAD(), `"${ctx.ID()?.getText()}"`, `\n`);
 
     return sb.toString();
   }

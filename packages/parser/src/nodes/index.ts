@@ -74,7 +74,7 @@ import {
   TamanhoArrayContext,
   ValorLogicoContext,
 } from "@portugol-webstudio/antlr";
-import { ParserRuleContext } from "antlr4ts";
+import { ParserRuleContext } from "antlr4ng";
 
 import { Arquivo } from "./Arquivo.js";
 import { AtribuiçãoCmd } from "./AtribuiçãoCmd.js";

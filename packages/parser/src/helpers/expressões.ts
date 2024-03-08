@@ -6,9 +6,10 @@ import {
   TabelaCompatibilidadeEOu,
   TabelaCompatibilidadeModulo,
   TabelaCompatibilidadeSoma,
-} from "./compatibilidade";
-import { Escopo } from "./Escopo";
+} from "./compatibilidade.js";
+import { Escopo } from "./Escopo.js";
 import { TipoPrimitivo } from "./Tipo.js";
+import { Expressão } from "../nodes/Expressão.js";
 import {
   CadeiaExpr,
   CaractereExpr,
@@ -48,8 +49,7 @@ import {
   SomaExpr,
   SubtraçãoExpr,
   VazioExpr,
-} from "../nodes";
-import { Expressão } from "../nodes/Expressão.js";
+} from "../nodes/index.js";
 
 export function resolverResultadoExpressão(expressão: Expressão, escopo: Escopo): TipoPrimitivo {
   switch (expressão.constructor) {

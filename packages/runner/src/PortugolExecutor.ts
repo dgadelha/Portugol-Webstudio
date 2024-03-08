@@ -1,6 +1,7 @@
-import { PortugolErrorListener, PortugolLexer, PortugolParser } from "@portugol-webstudio/antlr";
+import { PortugolCodeError, PortugolErrorListener, PortugolLexer, PortugolParser } from "@portugol-webstudio/antlr";
 import { PortugolErrorChecker } from "@portugol-webstudio/parser";
-import { CharStreams, CommonTokenStream } from "antlr4ts";
+import { PortugolJs } from "@portugol-webstudio/runtime";
+import { CharStream, CommonTokenStream } from "antlr4ng";
 import { Subscription, Subject } from "rxjs";
 
 import { IPortugolRunner, PortugolEvent } from "./runners/IPortugolRunner.js";
@@ -49,10 +50,20 @@ export class PortugolExecutor {
   errorListener = new PortugolErrorListener();
 
   run(code: string) {
-    try {
-      this.reset();
+    let errors: PortugolCodeError[] = [];
+    let parseErrors: PortugolCodeError[] = [];
+    let js = "";
+    let parseStart = 0;
+    let parseEnd = 0;
+    let checkStart = 0;
+    let checkEnd = 0;
+    let transpileStart = 0;
+    let transpileEnd = 0;
 
-      const inputStream = CharStreams.fromString(code);
+    try {
+      parseStart = performance.now();
+
+      const inputStream = CharStream.fromString(code);
       const lexer = new PortugolLexer(inputStream);
       const tokenStream = new CommonTokenStream(lexer);
       const parser = new PortugolParser(tokenStream);
@@ -63,7 +74,65 @@ export class PortugolExecutor {
       parser.addErrorListener(this.errorListener);
 
       const tree = parser.arquivo();
-      const errors = PortugolErrorChecker.checkTree(tree);
+
+      parseEnd = performance.now();
+
+      checkStart = performance.now();
+      errors = PortugolErrorChecker.checkTree(tree);
+      checkEnd = performance.now();
+
+      transpileStart = performance.now();
+      js = new PortugolJs().visit(tree)!;
+      transpileEnd = performance.now();
+    } catch (err) {
+      parseErrors = this.errorListener.getErrors();
+    }
+
+    this.runTranspiled({
+      code,
+      js,
+      errors,
+      parseErrors: this.errorListener.getErrors(),
+      times: {
+        parse: parseEnd - parseStart,
+        check: checkEnd - checkEnd,
+        transpile: transpileEnd - transpileStart,
+      },
+    });
+  }
+
+  #printTimes(times: { parse: number; check: number; transpile: number; execution?: number }) {
+    this.stdOut += `\n⏱️ Desempenho:\n`;
+    this.stdOut += `   - Análise léxica e sintática: ${Math.ceil(times.parse)} ms\n`;
+    this.stdOut += `   - Análise semântica: ${Math.ceil(times.check)} ms\n`;
+    this.stdOut += `   - Transpilação: ${Math.ceil(times.transpile)} ms\n`;
+
+    if (times.execution) {
+      this.stdOut += `   - Execução: ${Math.ceil(times.execution)} ms\n`;
+    }
+
+    this.stdOut$.next(this.stdOut);
+  }
+
+  runTranspiled({
+    code,
+    js,
+    errors,
+    parseErrors,
+    times,
+  }: {
+    code: string;
+    js: string;
+    errors: PortugolCodeError[];
+    parseErrors: PortugolCodeError[];
+    times: { parse: number; check: number; transpile: number };
+  }) {
+    try {
+      this.reset();
+
+      if (parseErrors.length > 0) {
+        throw new Error("Parse errors");
+      }
 
       if (errors.length > 0) {
         const argueAboutAlgolIfNeeded = () => {
@@ -93,7 +162,7 @@ export class PortugolExecutor {
 
         this.stdOut +=
           "\n⚠️ Durante essa fase experimental, o código ainda será executado mesmo com erros, porém se não corrigi-los, a execução abaixo pode exibir mensagens de erro em inglês ou sem explicação.\n";
-        this.stdOut += `   Caso acredite que o erro não faça sentido, por favor, abra uma issue em https://github.com/dgadelha/Portugol-Webstudio/issues/new e anexe o código que você está tentando executar.\n\n`;
+        this.stdOut += `   Caso acredite que o erro não faça sentido, por favor, abra uma issue em https://github.com/dgadelha/Portugol-Webstudio/issues/new/choose e anexe o código que você está tentando executar.\n\n`;
 
         argueAboutAlgolIfNeeded();
 
@@ -102,7 +171,7 @@ export class PortugolExecutor {
       }
 
       // @ts-ignore
-      this._runner = new this.runner(tree);
+      this._runner = new this.runner(js);
 
       if (!this._runner) {
         throw new Error("Runner not found");
@@ -129,7 +198,8 @@ export class PortugolExecutor {
         next: event => {
           switch (event.type) {
             case "finish":
-              this.stdOut += `\nPrograma finalizado. Tempo de execução: ${event.time} ms\n`;
+              this.stdOut += `\nPrograma finalizado.\n`;
+              this.#printTimes({ ...times, execution: event.time });
               this.stdOut$.next(this.stdOut);
               break;
 
@@ -159,9 +229,10 @@ export class PortugolExecutor {
 
       this.stdOut += `\n⛔ O seu código possui um erro de compilação!\n`;
       this.stdOut$.next(this.stdOut);
+      this.#printTimes(times);
 
       this.reset(false);
-      this.events.next({ type: "parseError", errors: this.errorListener.getErrors() });
+      this.events.next({ type: "parseError", errors: parseErrors });
       this.events.error(err);
     }
   }

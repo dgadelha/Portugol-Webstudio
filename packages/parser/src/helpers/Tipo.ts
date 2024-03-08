@@ -1,7 +1,6 @@
-import { TerminalNode } from "antlr4ts/tree/TerminalNode.js";
+import { TerminalNode } from "antlr4ng";
 
-import { InteiroExpr } from "../nodes/InteiroExpr.js";
-import { ReferênciaVarExpr } from "../nodes/ReferênciaVarExpr.js";
+import { InteiroExpr, ReferênciaVarExpr } from "../nodes/index.js";
 
 export enum TipoPrimitivo {
   INTEIRO = "inteiro",
@@ -20,21 +19,21 @@ export type Tipo = { primitivo: TipoPrimitivo } & (
     ))
 );
 
-export function parseTipoPrimitivo(tipo: TerminalNode | undefined): TipoPrimitivo {
+export function parseTipoPrimitivo(tipo: TerminalNode | null): TipoPrimitivo {
   if (!tipo) {
     return TipoPrimitivo.VAZIO;
   }
 
-  switch (tipo.text) {
+  switch (tipo.getText()) {
     case "inteiro":
     case "real":
     case "cadeia":
     case "logico":
     case "vazio":
     case "caracter":
-      return tipo.text as TipoPrimitivo;
+      return tipo.getText() as TipoPrimitivo;
 
     default:
-      throw new Error(`Tipo desconhecido: ${tipo.text}`);
+      throw new Error(`Tipo desconhecido: ${tipo.getText()}`);
   }
 }

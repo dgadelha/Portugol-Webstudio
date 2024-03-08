@@ -11,7 +11,7 @@ export class RealExpr extends Expressão {
     public children: Node[],
   ) {
     super(ctx, children);
-    const valor = ctx.REAL().text;
+    const valor = ctx.REAL().getText();
 
     this.valor = parseFloat(valor);
 

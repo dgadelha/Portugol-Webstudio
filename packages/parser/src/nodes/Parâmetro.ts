@@ -16,7 +16,7 @@ export class Parâmetro extends Node {
   ) {
     super();
 
-    this.nome = ctx.ID().text;
+    this.nome = ctx.ID().getText();
 
     this.tipo = { primitivo: parseTipoPrimitivo(ctx.TIPO()) };
     this.referência = Boolean(ctx.E_COMERCIAL());

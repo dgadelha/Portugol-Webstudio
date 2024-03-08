@@ -22,7 +22,6 @@
   "homepage": "https://github.com/dgadelha/Portugol-Webstudio#readme",
   "packageManager": "npm@10.4.0",
   "scripts": {
-    "antlr4ts": "antlr4ts -visitor src/antlr/Portugol.g4",
     "lint": "sherif && npm run eslint:check",
     "eslint:fix": "eslint --fix 'packages/**/*.{t,j}s'",
     "eslint:check": "eslint 'packages/**/*.{t,j}s'",
@@ -33,13 +32,11 @@
     "build:runner": "lerna run build --scope=@portugol-webstudio/runner",
     "build:runtime": "lerna run build --scope=@portugol-webstudio/runtime",
     "test:parser": "lerna run test --scope=@portugol-webstudio/parser",
-    "release": "lerna run release",
-    "postinstall": "patch-package"
+    "release": "lerna run release"
   },
   "devDependencies": {
     "@cubos/eslint-config": "^2.2.0",
     "lerna": "^8.0.1",
-    "patch-package": "^8.0.0",
     "sherif": "^0.8.0"
   },
   "workspaces": [

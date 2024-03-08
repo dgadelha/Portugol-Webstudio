@@ -1,4 +1,4 @@
-import { ArquivoContext, PortugolCodeError } from "@portugol-webstudio/antlr";
+import { PortugolCodeError } from "@portugol-webstudio/antlr";
 import { Observable, Subject } from "rxjs";
 
 export type PortugolEvent =
@@ -10,9 +10,7 @@ export type PortugolEvent =
   | { type: "finish"; time: number };
 
 export abstract class IPortugolRunner {
-  constructor(private tree: ArquivoContext) {}
-
-  abstract byteCode: string;
+  constructor(public byteCode: string) {}
 
   abstract stdIn: Subject<string>;
   abstract stdOut$: Observable<string>;

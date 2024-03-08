@@ -1,4 +1,4 @@
-import { ParserRuleContext } from "antlr4ts";
+import { ParserRuleContext } from "antlr4ng";
 
 import { Comando } from "./Comando.js";
 import { Expressão } from "./Expressão.js";

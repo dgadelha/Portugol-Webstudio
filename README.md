@@ -21,7 +21,7 @@ Baseado no Portugol Studio, o **Portugol Webstudio** tenta trazer todo ambiente 
 
 ## Estrutura do projeto
 
-O Portugol Webstudio é um projeto que utiliza o framework [Angular](https://angular.io/), [RxJS](https://rxjs.dev/) e [antlr4ts](https://github.com/tunnelvisionlabs/antlr4ts). Ele é dividido em 6 pacotes (disponíveis na pasta `packages`):
+O Portugol Webstudio é um projeto que utiliza o framework [Angular](https://angular.io/), [RxJS](https://rxjs.dev/) e [antlr4ng](https://github.com/mike-lischke/antlr4ng). Ele é dividido em 7 pacotes (disponíveis na pasta `packages`):
 
 - `@portugol-webstudio/antlr`: Pacote que contém a gramática do Portugol e a geração do parser, lexer e visitor
 - `@portugol-webstudio/ide`: Pacote que contém a interface do usuário
@@ -29,6 +29,7 @@ O Portugol Webstudio é um projeto que utiliza o framework [Angular](https://ang
 - `@portugol-webstudio/resources`: Pacote que contém os recursos do Portugol, como os exemplos e a seção de ajuda
 - `@portugol-webstudio/runner`: Pacote que executa o código gerado pelo transpilador em Web Workers, tratando entrada, saída, erros e eventos.
 - `@portugol-webstudio/runtime`: Pacote que contém o transpilador de Portugol para JavaScript e o código de execução em _runtime_ necessário: variáveis, bibliotecas, etc.
+- `@portugol-webstudio/worker`: Pacote que contém o código que será executado em Web Workers, que é responsável por receber o código do Portugol, e executar a verificação de erros e transpilação do código em uma _thread_ separada.
 
 ## Executando o código localmente
 
@@ -67,7 +68,7 @@ Após isto, você poderá acessar a IDE em: [http://localhost:4200](http://local
 ## Licença
 
     Portugol Webstudio - IDE online para o Portugol
-    Copyright (C) 2023  Douglas Gadêlha, Danilo Gadêlha e contribuidores
+    Copyright (C) 2024  Douglas Gadêlha, Danilo Gadêlha e contribuidores
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by

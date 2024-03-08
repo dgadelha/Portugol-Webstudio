@@ -1,19 +1,19 @@
-import { ParseTree } from "antlr4ts/tree/ParseTree.js";
+import { ParseTree } from "antlr4ng";
 
 import { ParseError } from "./ParseError.js";
-import { Node } from "../nodes/Node.js";
+import { Node } from "../nodes/index.js";
 
-export function getAllChildrenFromContext(ctx: ParseTree | undefined) {
+export function getAllChildrenFromContext(ctx: ParseTree | null) {
   if (!ctx) {
     return [];
   }
 
   const children: ParseTree[] = [];
 
-  for (let i = 0; i < ctx.childCount; i++) {
+  for (let i = 0; i < ctx.getChildCount(); i++) {
     const child = ctx.getChild(i);
 
-    children.push(child);
+    children.push(child!);
     children.push(...getAllChildrenFromContext(child));
   }
 

@@ -13,7 +13,7 @@ export class EscopoBibliotecaExpr extends Expressão {
   ) {
     super(ctx, children);
 
-    const nome = ctx.ID()?.text;
+    const nome = ctx.ID()?.getText();
 
     invariant(nome, ctx);
 

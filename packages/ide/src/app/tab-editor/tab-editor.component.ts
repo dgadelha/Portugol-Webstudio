@@ -12,15 +12,16 @@ import {
 import { Storage, uploadString, ref } from "@angular/fire/storage";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { PortugolCodeError } from "@portugol-webstudio/antlr";
-import { PortugolErrorChecker } from "@portugol-webstudio/parser";
 import { PortugolExecutor, PortugolWebWorkersRunner } from "@portugol-webstudio/runner";
 import { PortugolJsRuntime } from "@portugol-webstudio/runtime";
 import { captureException, setExtra } from "@sentry/angular-ivy";
 import { saveAs } from "file-saver";
 import { ShortcutInput } from "ng-keyboard-shortcuts";
 import { GoogleAnalyticsService } from "ngx-google-analytics";
-import { Subscription, debounceTime, fromEventPattern } from "rxjs";
+import { Subscription, debounceTime, fromEventPattern, mergeMap } from "rxjs";
 import { TextEncoder } from "text-encoding";
+
+import { WorkerService } from "../worker.service";
 
 @Component({
   selector: "app-tab-editor",
@@ -44,6 +45,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
   @ViewChild("fileInput")
   fileInput!: ElementRef<HTMLInputElement>;
 
+  transpiling = false;
   executor = new PortugolExecutor(PortugolWebWorkersRunner);
 
   codeEditor?: monaco.editor.IStandaloneCodeEditor;
@@ -103,6 +105,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     private gaService: GoogleAnalyticsService,
     private storage: Storage,
     private snack: MatSnackBar,
+    private worker: WorkerService,
   ) {}
 
   ngOnInit() {
@@ -147,11 +150,33 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     this.executor.stop();
   }
 
-  runCode() {
+  async runCode() {
     this.gaService.event("editor_start_execution", "Editor", "Botão de Iniciar Execução");
     setExtra("code", this.code);
-    this.setEditorErrors([]);
-    this.executor.run(this.code ?? "");
+
+    this.transpiling = true;
+
+    const code = this.code ?? "";
+    let result;
+
+    try {
+      result = await this.worker.transpileCode(code);
+    } catch (e) {
+      captureException(e, { tags: { transpile: true }, extra: { code } });
+
+      alert(
+        "Ocorreu um erro ao transpilar o código, possivelmente o seu navegador não suporta Web Workers. Por favor, tente novamente em outro navegador. Caso o erro persista, acesse https://github.com/dgadelha/Portugol-Webstudio/issues/new/choose",
+      );
+
+      alert(e);
+    } finally {
+      this.transpiling = false;
+    }
+
+    if (result) {
+      this.setEditorErrors([]);
+      this.executor.runTranspiled({ ...result, code });
+    }
   }
 
   stopCode() {
@@ -286,9 +311,17 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     this._code$?.unsubscribe();
 
     this._code$ = fromEventPattern(editor.onDidChangeModelContent)
-      .pipe(debounceTime(500))
-      .subscribe(() => {
-        this.setEditorErrors(PortugolErrorChecker.checkCode(this.code ?? ""));
+      .pipe(
+        debounceTime(500),
+        mergeMap(async () => this.worker.checkCode(this.code ?? "")),
+      )
+      .subscribe({
+        next: result => {
+          this.setEditorErrors(result.errors);
+        },
+        error: err => {
+          console.error(err);
+        },
       });
   }
 

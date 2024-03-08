@@ -1,5 +1,16 @@
-import { ANTLRErrorListener, RecognitionException, Recognizer, RuleContext, Token } from "antlr4ts";
-import { ParseTree } from "antlr4ts/tree/ParseTree.js";
+import {
+  ANTLRErrorListener,
+  RecognitionException,
+  Recognizer,
+  ParserRuleContext,
+  Token,
+  ATNConfigSet,
+  ATNSimulator,
+  ParseTree,
+  BitSet,
+  DFA,
+  Parser,
+} from "antlr4ng";
 
 export class PortugolCodeError extends Error {
   constructor(
@@ -16,73 +27,66 @@ export class PortugolCodeError extends Error {
   static fromContext(ctx: ParseTree, message: string) {
     let possibleContext = ctx;
 
-    if (!ctx.hasOwnProperty("_start") && !ctx.hasOwnProperty("_stop") && ctx.parent) {
+    if (!ctx.hasOwnProperty("start") && !ctx.hasOwnProperty("stop") && ctx.parent) {
       possibleContext = ctx.parent;
     }
 
     if (
-      possibleContext.hasOwnProperty("_start") &&
-      possibleContext.hasOwnProperty("_stop") &&
-      typeof (possibleContext as unknown as { _start: any })._start === "object" &&
-      typeof (possibleContext as unknown as { _stop: any })._stop === "object"
+      possibleContext.hasOwnProperty("start") &&
+      possibleContext.hasOwnProperty("stop") &&
+      typeof (possibleContext as unknown as { start: unknown }).start === "object" &&
+      typeof (possibleContext as unknown as { stop: unknown }).stop === "object"
     ) {
-      const { _start, _stop } = possibleContext as unknown as { _start: any; _stop: any };
-      const { line: startLine, _charPositionInLine: startCol } = _start;
-      let { line: endLine, _charPositionInLine: endCol } = _stop;
+      const { start, stop } = possibleContext as unknown as { start: Token; stop: Token };
+      const { line: startLine, column: startCol } = start;
+      let { line: endLine, column: endCol } = stop;
 
       if (startLine === endLine && startCol === endCol) {
-        endCol += ctx.text.length - 1;
+        endCol += ctx.getText().length - 1;
       }
 
       return new PortugolCodeError(message, ctx, startLine, startCol, endLine, endCol);
     }
 
-    const possibleSymbol: Token | RuleContext | undefined = (ctx as any).symbol || (ctx as any).payload;
+    const possibleSymbol = ctx.getPayload() as Token | ParseTree | ParserRuleContext | undefined;
 
     if (
       possibleSymbol &&
-      possibleSymbol.hasOwnProperty("_charPositionInLine") &&
-      possibleSymbol.hasOwnProperty("_line")
+      possibleSymbol.hasOwnProperty("column") &&
+      possibleSymbol.hasOwnProperty("line")
     ) {
-      const { _charPositionInLine, _line } = (ctx as any).symbol as unknown as { _charPositionInLine: any; _line: any };
+      const { line, column } = possibleSymbol as unknown as Token;
 
       return new PortugolCodeError(
         message,
         ctx,
-        _line,
-        _charPositionInLine,
-        _line,
-        _charPositionInLine + ctx.text.length,
+        line,
+        column,
+        line,
+        column + ctx.getText().length,
       );
     }
 
-    return new PortugolCodeError(message, ctx, 1, 1, 1, 2 + ctx.text.length);
+    return new PortugolCodeError(message, ctx, 1, 1, 1, 2 + ctx.getText().length);
   }
 }
 
-export class PortugolErrorListener implements ANTLRErrorListener<Token> {
+export class PortugolErrorListener implements ANTLRErrorListener {
   private errors: PortugolCodeError[] = [];
 
-  syntaxError(
-    _recognizer: Recognizer<number, any>,
-    offendingSymbol: Token | undefined,
+  syntaxError<S extends Token, T extends ATNSimulator>(
+    _recognizer: Recognizer<T>,
+    offendingSymbol: S | null,
     line: number,
     charPositionInLine: number,
     msg: string,
-    exception: RecognitionException | undefined,
-  ) {
+    e: RecognitionException | null,
+  ): void {
     const endColumn =
       offendingSymbol && offendingSymbol.text ? charPositionInLine + offendingSymbol.text.length : charPositionInLine;
 
     this.errors.push(
-      new PortugolCodeError(
-        msg,
-        exception?.context || offendingSymbol || (null as any),
-        line,
-        charPositionInLine,
-        line,
-        endColumn,
-      ),
+      new PortugolCodeError(msg, e?.ctx || offendingSymbol || (null as any), line, charPositionInLine, line, endColumn),
     );
   }
 
@@ -92,5 +96,39 @@ export class PortugolErrorListener implements ANTLRErrorListener<Token> {
 
   reset() {
     this.errors = [];
+  }
+
+  reportAmbiguity(
+    recognizer: Parser,
+    dfa: DFA,
+    startIndex: number,
+    stopIndex: number,
+    exact: boolean,
+    ambigAlts: BitSet | undefined,
+    configs: ATNConfigSet,
+  ) {
+    console.debug("reportAmbiguity", { recognizer, dfa, startIndex, stopIndex, exact, ambigAlts, configs });
+  }
+
+  reportAttemptingFullContext(
+    recognizer: Parser,
+    dfa: DFA,
+    startIndex: number,
+    stopIndex: number,
+    conflictingAlts: BitSet | undefined,
+    configs: ATNConfigSet,
+  ) {
+    console.debug("reportAttemptingFullContext", { recognizer, dfa, startIndex, stopIndex, conflictingAlts, configs });
+  }
+
+  reportContextSensitivity(
+    recognizer: Parser,
+    dfa: DFA,
+    startIndex: number,
+    stopIndex: number,
+    prediction: number,
+    configs: ATNConfigSet,
+  ) {
+    console.debug("reportContextSensitivity", { recognizer, dfa, startIndex, stopIndex, prediction, configs });
   }
 }

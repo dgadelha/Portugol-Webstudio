@@ -14,7 +14,7 @@ export class InteiroExpr extends Expressão {
     super(ctx, children);
 
     const [int, hex] = [ctx.INT(), ctx.HEXADECIMAL()];
-    const valor = int?.text ?? hex?.text;
+    const valor = int?.getText() ?? hex?.getText();
 
     invariant(valor, ctx);
 

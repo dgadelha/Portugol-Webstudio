@@ -50,13 +50,3 @@ import "zone.js"; // Included with Angular CLI.
 /** *************************************************************************************************
  * APPLICATION IMPORTS
  */
-
-/**
- * antlr4ts polyfills
- * @ref https://github.com/tunnelvisionlabs/antlr4ts/issues/509
- */
-(window as any).process = {
-  env: { DEBUG: undefined },
-};
-
-(window as any).global = window;

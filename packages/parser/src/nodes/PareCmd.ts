@@ -11,7 +11,7 @@ export class PareCmd extends Comando {
   ) {
     super(ctx, children);
 
-    invariant(ctx.text === "pare", ctx);
+    invariant(ctx.getText() === "pare", ctx);
 
     for (const child of children) {
       this.unexpectedChild(child);
