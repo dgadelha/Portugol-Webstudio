@@ -20,7 +20,7 @@ jobs:
           npm ci --include=dev
 
       - name: Build code 🚚
-        run: BASE_HTML_PATH=/Portugol-Webstudio/ npm run build
+        run: npm run build
 
       - name: Release front-end 🎢
         run: |
