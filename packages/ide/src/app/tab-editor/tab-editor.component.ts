@@ -354,7 +354,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     if (result) {
       this.snack.openFromTemplate(this.shareSnackTemplate, {
         data: {
-          url: `https://dgadelha.github.io/Portugol-Webstudio/#share=${shareCode}`,
+          url: `https://portugol.dev/#share=${shareCode}`,
         },
       });
 

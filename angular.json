@@ -62,7 +62,7 @@
               },
               {
                 "glob": "**/*",
-                "input": "node_modules/@portugol-webstudio/worker/lib",
+                "input": "packages/worker/lib",
                 "output": "assets/portugol-worker/"
               },
               "packages/ide/src/favicon.ico",
@@ -131,7 +131,7 @@
         "deploy": {
           "builder": "angular-cli-ghpages:deploy",
           "options": {
-            "baseHref": "/Portugol-Webstudio/"
+            "baseHref": "/"
           }
         },
         "lint": {

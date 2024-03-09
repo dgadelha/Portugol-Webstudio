@@ -1,4 +1,4 @@
-<a href="https://dgadelha.github.io/Portugol-Webstudio/"><img src="./packages/ide/src/assets/lightbulb.svg" width="123px" alt="Portugol Webstudio" align="right"></a>
+<a href="https://portugol.dev/"><img src="./packages/ide/src/assets/lightbulb.svg" width="123px" alt="Portugol Webstudio" align="right"></a>
 
 # Portugol Webstudio
 
@@ -9,7 +9,7 @@ _IDE online para o Portugol_
 
 Baseado no Portugol Studio, o **Portugol Webstudio** tenta trazer todo ambiente de desenvolvimento que é possível se encontrar no desktop, para a internet. Ele constitui-se de um ambiente de desenvolvimento construído para permitir a criação e a execução dos programas escritos em Portugol, trazendo assim uma experiência o mais próxima do que você pode encontrar da IDE do Portugol Studio. Portugol, também conhecido como Português estruturado, é um pseudocódigo escrito em português.
 
-[![Captura de Tela](.github/screenshot.png)](https://dgadelha.github.io/Portugol-Webstudio/)
+[![Captura de Tela](.github/screenshot.png)](https://portugol.dev/)
 
 ## Características
 
