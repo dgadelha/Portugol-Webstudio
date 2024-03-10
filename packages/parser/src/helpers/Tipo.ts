@@ -24,16 +24,18 @@ export function parseTipoPrimitivo(tipo: TerminalNode | null): TipoPrimitivo {
     return TipoPrimitivo.VAZIO;
   }
 
-  switch (tipo.getText()) {
+  const text = tipo.getText();
+
+  switch (text) {
     case "inteiro":
     case "real":
     case "cadeia":
     case "logico":
     case "vazio":
     case "caracter":
-      return tipo.getText() as TipoPrimitivo;
+      return text as TipoPrimitivo;
 
     default:
-      throw new Error(`Tipo desconhecido: ${tipo.getText()}`);
+      throw new Error(`Tipo desconhecido: ${text}`);
   }
 }

@@ -9,7 +9,6 @@ import { CharStream, CommonTokenStream } from "antlr4ng";
 
 import errorCheckers from "./errors/index.js";
 import { ParseError } from "./helpers/ParseError.js";
-import { Arquivo } from "./nodes/index.js";
 import { PortugolNode } from "./PortugolNode.js";
 
 export class PortugolErrorChecker {
@@ -32,7 +31,7 @@ export class PortugolErrorChecker {
     this.errorListener.reset();
 
     try {
-      const arquivo = this.portugolNode.visit(tree) as Arquivo;
+      const arquivo = this.portugolNode.visit(tree);
       const errors: PortugolCodeError[] = [];
 
       for (const checker of errorCheckers) {

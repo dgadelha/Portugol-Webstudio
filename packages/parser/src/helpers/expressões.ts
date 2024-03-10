@@ -143,7 +143,7 @@ export function resolverResultadoExpressão(expressão: Expressão, escopo: Esco
     case IncrementoUnárioPósfixadoExpr:
     case DecrementoUnárioPrefixadoExpr:
     case DecrementoUnárioPósfixadoExpr:
-      return resolverResultadoExpressão((expressão as ExpressãoUnária).variável, escopo);
+      return resolverResultadoExpressão((expressão as ExpressãoUnária<any>).variável, escopo);
 
     case ExpressãoEntreParênteses:
       return resolverResultadoExpressão((expressão as ExpressãoEntreParênteses).expressão, escopo);

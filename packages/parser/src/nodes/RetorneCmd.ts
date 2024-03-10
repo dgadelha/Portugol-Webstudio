@@ -5,23 +5,18 @@ import { Expressão } from "./Expressão.js";
 import { Node } from "./Node.js";
 import { invariant } from "../helpers/nodes.js";
 
-export class RetorneCmd extends Comando {
+export class RetorneCmd extends Comando<RetorneContext> {
   expressão?: Expressão;
 
-  constructor(
-    public ctx: RetorneContext,
-    public children: Node[],
-  ) {
-    super(ctx, children);
+  addChild(child: Node) {
+    if (child instanceof Expressão) {
+      invariant(!this.expressão, child.ctx, "Expressão já definida");
 
-    for (const child of children) {
-      if (child instanceof Expressão) {
-        invariant(!this.expressão, child.ctx, "Expressão já definida");
-
-        this.expressão = child;
-      } else {
-        this.unexpectedChild(child);
-      }
+      this.expressão = child;
+    } else {
+      this.unexpectedChild(child);
     }
+
+    this.children.push(child);
   }
 }

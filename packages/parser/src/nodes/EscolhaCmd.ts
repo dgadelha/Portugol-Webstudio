@@ -6,27 +6,20 @@ import { Expressão } from "./Expressão.js";
 import { Node } from "./Node.js";
 import { invariant } from "../helpers/nodes.js";
 
-export class EscolhaCmd extends Comando {
+export class EscolhaCmd extends Comando<EscolhaContext> {
   condição: Expressão;
   casos: CasoCmd[] = [];
 
-  constructor(
-    public ctx: EscolhaContext,
-    public children: Node[],
-  ) {
-    super(ctx, children);
-
-    for (const child of children) {
-      if (child instanceof Expressão && child.ctx === ctx.expressao()) {
-        invariant(!this.condição, child.ctx, "Condição já definida");
-        this.condição = child;
-      } else if (child instanceof CasoCmd) {
-        this.casos.push(child);
-      } else {
-        this.unexpectedChild(child);
-      }
+  addChild(child: Node) {
+    if (child instanceof Expressão && child.ctx === this.ctx.expressao()) {
+      invariant(!this.condição, child.ctx, "Condição já definida");
+      this.condição = child;
+    } else if (child instanceof CasoCmd) {
+      this.casos.push(child);
+    } else {
+      this.unexpectedChild(child);
     }
 
-    invariant(this.condição, ctx, "Condição não definida");
+    this.children.push(child);
   }
 }

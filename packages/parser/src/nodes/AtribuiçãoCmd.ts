@@ -1,4 +1,4 @@
-import { ParserRuleContext } from "antlr4ng";
+import { ParseTree } from "antlr4ng";
 
 import { Comando } from "./Comando.js";
 import { Expressão } from "./Expressão.js";
@@ -8,34 +8,28 @@ import { ReferênciaMatrizExpr } from "./ReferênciaMatrizExpr.js";
 import { ReferênciaVarExpr } from "./ReferênciaVarExpr.js";
 import { invariant } from "../helpers/nodes.js";
 
-export class AtribuiçãoCmd extends Comando {
+export class AtribuiçãoCmd<T extends ParseTree = ParseTree> extends Comando<T> {
   variável: ReferênciaVarExpr | ReferênciaArrayExpr | ReferênciaMatrizExpr;
   expressão: Expressão;
 
-  constructor(
-    public ctx: ParserRuleContext,
-    public children: Node[],
-  ) {
-    super(ctx, children);
+  addChild(child: Node) {
+    super.addChild(child);
 
-    for (const child of children) {
-      if (
-        (child instanceof ReferênciaVarExpr ||
-          child instanceof ReferênciaArrayExpr ||
-          child instanceof ReferênciaMatrizExpr) &&
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-        !this.variável
-      ) {
-        this.variável = child;
-      } else if (child instanceof Expressão) {
-        invariant(!this.expressão, child.ctx, "Expressão já definida");
-        this.expressão = child;
-      } else {
-        this.unexpectedChild(child);
-      }
+    if (
+      (child instanceof ReferênciaVarExpr ||
+        child instanceof ReferênciaArrayExpr ||
+        child instanceof ReferênciaMatrizExpr) &&
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      !this.variável
+    ) {
+      this.variável = child;
+    } else if (child instanceof Expressão) {
+      invariant(!this.expressão, child.ctx, "Expressão já definida");
+      this.expressão = child;
+    } else {
+      this.unexpectedChild(child);
     }
 
-    invariant(this.variável, ctx, "Variável não definida");
-    invariant(this.expressão, ctx, "Expressão não definida");
+    this.children.push(child);
   }
 }

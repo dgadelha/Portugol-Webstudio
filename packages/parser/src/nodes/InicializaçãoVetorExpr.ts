@@ -3,21 +3,16 @@ import { InicializacaoArrayContext } from "@portugol-webstudio/antlr";
 import { Expressão } from "./Expressão.js";
 import { Node } from "./Node.js";
 
-export class InicializaçãoVetorExpr extends Expressão {
+export class InicializaçãoVetorExpr extends Expressão<InicializacaoArrayContext> {
   valores: Expressão[] = [];
 
-  constructor(
-    public ctx: InicializacaoArrayContext,
-    public children: Node[],
-  ) {
-    super(ctx, children);
-
-    for (const child of children) {
-      if (child instanceof Expressão) {
-        this.valores.push(child);
-      } else {
-        this.unexpectedChild(child);
-      }
+  addChild(child: Node) {
+    if (child instanceof Expressão) {
+      this.valores.push(child);
+    } else {
+      this.unexpectedChild(child);
     }
+
+    this.children.push(child);
   }
 }

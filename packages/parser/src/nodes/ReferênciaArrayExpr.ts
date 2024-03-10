@@ -6,27 +6,18 @@ import { ReferênciaVarExpr } from "./ReferênciaVarExpr.js";
 import { ÍndiceArrayExpr } from "./ÍndiceArrayExpr.js";
 import { invariant } from "../helpers/nodes.js";
 
-export class ReferênciaArrayExpr extends Expressão {
-  variável: ReferênciaVarExpr;
+export class ReferênciaArrayExpr extends Expressão<ReferenciaArrayContext> {
+  variável = new ReferênciaVarExpr(this.ctx);
   índice: ÍndiceArrayExpr;
 
-  constructor(
-    public ctx: ReferenciaArrayContext,
-    public children: Node[],
-  ) {
-    super(ctx, children);
-
-    this.variável = new ReferênciaVarExpr(ctx, []);
-
-    for (const child of children) {
-      if (child instanceof ÍndiceArrayExpr) {
-        invariant(!this.índice, child.ctx, "Índice já definido");
-        this.índice = child;
-      } else {
-        this.unexpectedChild(child);
-      }
+  addChild(child: Node) {
+    if (child instanceof ÍndiceArrayExpr) {
+      invariant(!this.índice, child.ctx, "Índice já definido");
+      this.índice = child;
+    } else {
+      this.unexpectedChild(child);
     }
 
-    invariant(this.índice, ctx, "Índice não definido");
+    this.children.push(child);
   }
 }

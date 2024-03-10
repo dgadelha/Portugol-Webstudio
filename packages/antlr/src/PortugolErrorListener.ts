@@ -50,21 +50,10 @@ export class PortugolCodeError extends Error {
 
     const possibleSymbol = ctx.getPayload() as Token | ParseTree | ParserRuleContext | undefined;
 
-    if (
-      possibleSymbol &&
-      possibleSymbol.hasOwnProperty("column") &&
-      possibleSymbol.hasOwnProperty("line")
-    ) {
+    if (possibleSymbol && possibleSymbol.hasOwnProperty("column") && possibleSymbol.hasOwnProperty("line")) {
       const { line, column } = possibleSymbol as unknown as Token;
 
-      return new PortugolCodeError(
-        message,
-        ctx,
-        line,
-        column,
-        line,
-        column + ctx.getText().length,
-      );
+      return new PortugolCodeError(message, ctx, line, column, line, column + ctx.getText().length);
     }
 
     return new PortugolCodeError(message, ctx, 1, 1, 1, 2 + ctx.getText().length);
@@ -99,36 +88,30 @@ export class PortugolErrorListener implements ANTLRErrorListener {
   }
 
   reportAmbiguity(
-    recognizer: Parser,
-    dfa: DFA,
-    startIndex: number,
-    stopIndex: number,
-    exact: boolean,
-    ambigAlts: BitSet | undefined,
-    configs: ATNConfigSet,
-  ) {
-    console.debug("reportAmbiguity", { recognizer, dfa, startIndex, stopIndex, exact, ambigAlts, configs });
-  }
+    _recognizer: Parser,
+    _dfa: DFA,
+    _startIndex: number,
+    _stopIndex: number,
+    _exact: boolean,
+    _ambigAlts: BitSet | undefined,
+    _configs: ATNConfigSet,
+  ) {}
 
   reportAttemptingFullContext(
-    recognizer: Parser,
-    dfa: DFA,
-    startIndex: number,
-    stopIndex: number,
-    conflictingAlts: BitSet | undefined,
-    configs: ATNConfigSet,
-  ) {
-    console.debug("reportAttemptingFullContext", { recognizer, dfa, startIndex, stopIndex, conflictingAlts, configs });
-  }
+    _recognizer: Parser,
+    _dfa: DFA,
+    _startIndex: number,
+    _stopIndex: number,
+    _conflictingAlts: BitSet | undefined,
+    _configs: ATNConfigSet,
+  ) {}
 
   reportContextSensitivity(
-    recognizer: Parser,
-    dfa: DFA,
-    startIndex: number,
-    stopIndex: number,
-    prediction: number,
-    configs: ATNConfigSet,
-  ) {
-    console.debug("reportContextSensitivity", { recognizer, dfa, startIndex, stopIndex, prediction, configs });
-  }
+    _recognizer: Parser,
+    _dfa: DFA,
+    _startIndex: number,
+    _stopIndex: number,
+    _prediction: number,
+    _configs: ATNConfigSet,
+  ) {}
 }

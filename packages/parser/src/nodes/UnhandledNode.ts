@@ -6,9 +6,11 @@ export class UnhandledNode extends Node {
   constructor(
     public ctx: ParseTree,
     public type: string,
-    public text: string,
-    public children: Node[],
   ) {
-    super();
+    super(ctx);
+  }
+
+  addChild(child: Node) {
+    this.unexpectedChild(child);
   }
 }

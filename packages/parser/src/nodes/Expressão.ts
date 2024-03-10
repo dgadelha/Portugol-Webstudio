@@ -1,12 +1,5 @@
-import { ParserRuleContext, TerminalNode } from "antlr4ng";
+import { ParseTree } from "antlr4ng";
 
 import { Node } from "./Node.js";
 
-export class Expressão extends Node {
-  constructor(
-    public ctx: ParserRuleContext | TerminalNode,
-    public children: Node[],
-  ) {
-    super();
-  }
-}
+export class Expressão<T extends ParseTree = ParseTree> extends Node<T> {}

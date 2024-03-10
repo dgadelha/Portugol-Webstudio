@@ -3,26 +3,18 @@ import { ChamadaFuncaoContext } from "@portugol-webstudio/antlr";
 import { Expressão } from "./Expressão.js";
 import { Node } from "./Node.js";
 
-export class ChamadaFunçãoExpr extends Expressão {
-  nome: string;
+export class ChamadaFunçãoExpr extends Expressão<ChamadaFuncaoContext> {
+  nome = this.ctx.ID().getText();
   argumentos: Expressão[] = [];
-  escopoBiblioteca?: string;
+  escopoBiblioteca?: string = this.ctx.escopoBiblioteca()?.ID()?.getText();
 
-  constructor(
-    public ctx: ChamadaFuncaoContext,
-    public children: Node[],
-  ) {
-    super(ctx, children);
-
-    this.nome = ctx.ID().getText();
-    this.escopoBiblioteca = ctx.escopoBiblioteca()?.ID()?.getText();
-
-    for (const child of children) {
-      if (child instanceof Expressão) {
-        this.argumentos.push(child);
-      } else {
-        this.unexpectedChild(child);
-      }
+  addChild(child: Node) {
+    if (child instanceof Expressão) {
+      this.argumentos.push(child);
+    } else {
+      this.unexpectedChild(child);
     }
+
+    this.children.push(child);
   }
 }

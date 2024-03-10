@@ -3,15 +3,12 @@ import { InclusaoBibliotecaContext } from "@portugol-webstudio/antlr";
 import { Node } from "./Node.js";
 import { invariant } from "../helpers/nodes.js";
 
-export class InclusãoBiblioteca extends Node {
+export class InclusãoBiblioteca extends Node<InclusaoBibliotecaContext> {
   nome: string;
   alias?: string;
 
-  constructor(
-    public ctx: InclusaoBibliotecaContext,
-    public children: Node[],
-  ) {
-    super();
+  constructor(public ctx: InclusaoBibliotecaContext) {
+    super(ctx);
 
     const idCtx = ctx.ID();
 
@@ -22,5 +19,9 @@ export class InclusãoBiblioteca extends Node {
     if (idCtx.length === 2) {
       this.alias = idCtx[1].getText();
     }
+  }
+
+  addChild(child: Node) {
+    this.unexpectedChild(child);
   }
 }

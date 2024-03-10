@@ -4,25 +4,18 @@ import { Expressão } from "./Expressão.js";
 import { Node } from "./Node.js";
 import { invariant } from "../helpers/nodes.js";
 
-export class DeclaraçãoVariávelExpr extends Expressão {
-  nome: string;
+export class DeclaraçãoVariávelExpr extends Expressão<DeclaracaoVariavelContext> {
+  nome = this.ctx.ID().getText();
   valor?: Expressão;
 
-  constructor(
-    public ctx: DeclaracaoVariavelContext,
-    public children: Node[],
-  ) {
-    super(ctx, children);
-
-    this.nome = ctx.ID().getText();
-
-    for (const child of children) {
-      if (child instanceof Expressão) {
-        invariant(!this.valor, child.ctx, "Valor já definido");
-        this.valor = child;
-      } else {
-        this.unexpectedChild(child);
-      }
+  addChild(child: Node) {
+    if (child instanceof Expressão) {
+      invariant(!this.valor, child.ctx, "Valor já definido");
+      this.valor = child;
+    } else {
+      this.unexpectedChild(child);
     }
+
+    this.children.push(child);
   }
 }

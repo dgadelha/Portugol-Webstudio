@@ -3,19 +3,10 @@ import { ValorLogicoContext } from "@portugol-webstudio/antlr";
 import { Expressão } from "./Expressão.js";
 import { Node } from "./Node.js";
 
-export class LógicoExpr extends Expressão {
-  valor: boolean;
+export class LógicoExpr extends Expressão<ValorLogicoContext> {
+  valor = this.ctx.getText() === "verdadeiro";
 
-  constructor(
-    public ctx: ValorLogicoContext,
-    public children: Node[],
-  ) {
-    super(ctx, children);
-
-    this.valor = ctx.getText() === "verdadeiro";
-
-    for (const child of children) {
-      this.unexpectedChild(child);
-    }
+  addChild(child: Node) {
+    this.unexpectedChild(child);
   }
 }

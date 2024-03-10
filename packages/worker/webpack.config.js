@@ -1,5 +1,6 @@
 /* eslint-disable */
 const path = require("path");
+const TerserPlugin = require("terser-webpack-plugin");
 
 /** @type {import("webpack").Configuration} */
 module.exports = {
@@ -15,6 +16,17 @@ module.exports = {
         test: /\.js$/u,
         use: "babel-loader",
       },
+    ],
+  },
+  optimization: {
+    minimize: true,
+    minimizer: [
+      new TerserPlugin({
+        terserOptions: {
+          keep_classnames: true,
+          keep_fnames: true,
+        },
+      }),
     ],
   },
 };

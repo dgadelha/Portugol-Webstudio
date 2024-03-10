@@ -1,36 +1,27 @@
-import { ParserRuleContext } from "antlr4ng";
+import { ParseTree } from "antlr4ng";
 
 import { Expressão } from "./Expressão.js";
 import { Node } from "./Node.js";
-import { invariant } from "../helpers/nodes.js";
 
-export class ExpressãoMatemática extends Expressão {
+export class ExpressãoMatemática<T extends ParseTree = ParseTree> extends Expressão<T> {
   esquerda: Expressão;
   direita: Expressão;
 
-  constructor(
-    public ctx: ParserRuleContext,
-    public children: Node[],
-  ) {
-    super(ctx, children);
-
-    for (const child of children) {
-      if (child instanceof Expressão) {
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-        if (!this.esquerda) {
-          this.esquerda = child;
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, no-negated-condition
-        } else if (!this.direita) {
-          this.direita = child;
-        } else {
-          this.unexpectedChild(child);
-        }
+  addChild(child: Node) {
+    if (child instanceof Expressão) {
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      if (!this.esquerda) {
+        this.esquerda = child;
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, no-negated-condition
+      } else if (!this.direita) {
+        this.direita = child;
       } else {
         this.unexpectedChild(child);
       }
+    } else {
+      this.unexpectedChild(child);
     }
 
-    invariant(this.esquerda, ctx, "Lado esquerdo da expressão matemática não definido");
-    invariant(this.direita, ctx, "Lado direito da expressão matemática não definido");
+    this.children.push(child);
   }
 }

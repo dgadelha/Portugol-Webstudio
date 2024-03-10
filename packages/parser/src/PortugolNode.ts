@@ -1,7 +1,7 @@
-import { PortugolVisitor } from "@portugol-webstudio/antlr";
-import { ParserRuleContext, ParseTree, AbstractParseTreeVisitor } from "antlr4ng";
+import { ArquivoContext, PortugolVisitor } from "@portugol-webstudio/antlr";
+import { ParseTree, AbstractParseTreeVisitor } from "antlr4ng";
 
-import { Bypass, UnhandledNode, Node, ContextNodeMap } from "./nodes/index.js";
+import { Node, Arquivo, ContextNodeObj, UnhandledNode, Bypass } from "./nodes/index.js";
 
 export interface Empty {}
 
@@ -14,38 +14,46 @@ export class PortugolNode extends AbstractParseTreeVisitor<Empty> implements Por
     throw new Error("Shouldn't need to aggregate results");
   }
 
-  visitChildrenArray(node: ParseTree): Node[] {
-    const result: Array<Node | undefined> = [];
-    const n = node.getChildCount();
+  visitChildrenFromParent(ctx: ParseTree, parent: Node) {
+    for (let i = 0; i < ctx.getChildCount(); i++) {
+      const child = ctx.getChild(i);
 
-    for (let i = 0; i < n; i++) {
-      const c = node.getChild(i);
-      const childResult = this.visit(c!);
-
-      // Vírgulas
-      if (childResult instanceof UnhandledNode && childResult.type === "TerminalNode") {
+      if (!child || child.constructor.name === "TerminalNode") {
         continue;
       }
 
-      if (childResult instanceof Bypass) {
-        result.push(...this.visitChildrenArray(childResult.ctx as ParseTree));
-        continue;
-      }
+      this.visitFromParent(child, parent);
+    }
+  }
 
-      result.push(childResult);
+  visitFromParent(ctx: ParseTree, parent: Node) {
+    const ctor = ContextNodeObj[ctx.constructor.name];
+    let obj;
+
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (ctor) {
+      obj = new ctor(ctx);
+    } else {
+      obj = new UnhandledNode(ctx, ctx.constructor.name);
     }
 
-    return result.map(x => x!);
+    if (obj instanceof Bypass) {
+      this.visitChildrenFromParent(ctx, parent);
+    } else {
+      parent.addChild(obj);
+      this.visitChildrenFromParent(ctx, obj);
+    }
   }
 
   visit(ctx: ParseTree) {
-    const children = this.visitChildrenArray(ctx);
-    const ctor = ContextNodeMap.get(ctx.constructor as new (...args: any[]) => ParserRuleContext);
-
-    if (ctor) {
-      return new ctor(ctx, children);
+    if (ctx.constructor.name !== "ArquivoContext") {
+      throw new Error("O algoritmo Portugol deve-se iniciar com um contexto de arquivo (palavra-chave 'programa')");
     }
 
-    return new UnhandledNode(ctx, ctx.constructor.name, ctx.getText(), children);
+    const arquivo = new Arquivo(ctx as ArquivoContext);
+
+    this.visitChildrenFromParent(ctx, arquivo);
+
+    return arquivo;
   }
 }

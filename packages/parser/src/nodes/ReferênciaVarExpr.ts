@@ -5,26 +5,19 @@ import { Expressão } from "./Expressão.js";
 import { Node } from "./Node.js";
 import { invariant } from "../helpers/nodes.js";
 
-export class ReferênciaVarExpr extends Expressão {
-  nome: string;
+export class ReferênciaVarExpr extends Expressão<ReferenciaParaVariavelContext> {
+  nome = this.ctx.ID().getText();
   escopoBiblioteca?: EscopoBibliotecaExpr;
 
-  constructor(
-    public ctx: ReferenciaParaVariavelContext,
-    public children: Node[],
-  ) {
-    super(ctx, children);
+  addChild(child: Node) {
+    if (child instanceof EscopoBibliotecaExpr) {
+      invariant(!this.escopoBiblioteca, child.ctx, "Escopo de biblioteca já definido");
 
-    this.nome = ctx.ID().getText();
-
-    for (const child of children) {
-      if (child instanceof EscopoBibliotecaExpr) {
-        invariant(!this.escopoBiblioteca, child.ctx, "Escopo de biblioteca já definido");
-
-        this.escopoBiblioteca = child;
-      } else {
-        this.unexpectedChild(child);
-      }
+      this.escopoBiblioteca = child;
+    } else {
+      this.unexpectedChild(child);
     }
+
+    this.children.push(child);
   }
 }
