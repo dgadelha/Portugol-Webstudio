@@ -102,16 +102,7 @@ export class PortugolExecutor {
   }
 
   #printTimes(times: { parse: number; check: number; transpile: number; execution?: number }) {
-    this.stdOut += `\n⏱️ Desempenho:\n`;
-    this.stdOut += `   - Análise léxica e sintática: ${Math.ceil(times.parse)} ms\n`;
-    this.stdOut += `   - Análise semântica: ${Math.ceil(times.check)} ms\n`;
-    this.stdOut += `   - Transpilação: ${Math.ceil(times.transpile)} ms\n`;
-
-    if (times.execution) {
-      this.stdOut += `   - Execução: ${Math.ceil(times.execution)} ms\n`;
-    }
-
-    this.stdOut$.next(this.stdOut);
+    console.debug(times);
   }
 
   runTranspiled({
@@ -198,7 +189,7 @@ export class PortugolExecutor {
         next: event => {
           switch (event.type) {
             case "finish":
-              this.stdOut += `\nPrograma finalizado.\n`;
+              this.stdOut += `\nPrograma finalizado. Tempo de execução: ${event.time} milissegundos\n`;
               this.#printTimes({ ...times, execution: event.time });
               this.stdOut$.next(this.stdOut);
               break;
