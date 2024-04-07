@@ -96,7 +96,7 @@
               "fileReplacements": [
                 {
                   "replace": "packages/ide/src/environments/environment.ts",
-                  "with": "packages/ide/src/environments/environment.production.ts"
+                  "with": "packages/ide/src/environments/environment.prod.ts"
                 }
               ],
               "outputHashing": "all"
