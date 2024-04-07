@@ -126,7 +126,7 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
       result.push(childResult);
     }
 
-    return result.filter(x => x);
+    return result.filter(Boolean);
   }
 
   visitChamadaFuncao(ctx: ChamadaFuncaoContext) {
@@ -1698,7 +1698,7 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
         continue;
       }
 
-      sb.append(child.substring(0, child.length - 1), ",\n");
+      sb.append(child.slice(0, Math.max(0, child.length - 1)), ",\n");
     }
 
     this.pad--;

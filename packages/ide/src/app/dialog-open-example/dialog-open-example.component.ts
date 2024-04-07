@@ -98,7 +98,7 @@ export class DialogOpenExampleComponent implements OnInit, OnDestroy, AfterViewI
           this.rawExampleCodeId = item.id;
           const commentEndPos = code.indexOf("*/");
 
-          this.exampleCode = code.substr(commentEndPos === -1 ? 0 : code.indexOf("*/") + 2).trim();
+          this.exampleCode = code.slice(commentEndPos === -1 ? 0 : code.indexOf("*/") + 2).trim();
         }
       });
   }

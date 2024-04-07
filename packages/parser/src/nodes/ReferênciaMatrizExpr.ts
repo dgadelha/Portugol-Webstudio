@@ -11,10 +11,8 @@ export class ReferênciaMatrizExpr extends Expressão<ReferenciaMatrizContext> {
   coluna: ÍndiceArrayExpr;
 
   addChild(child: Node) {
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (child instanceof ÍndiceArrayExpr && !this.linha) {
       this.linha = child;
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     } else if (child instanceof ÍndiceArrayExpr && !this.coluna) {
       this.coluna = child;
     } else {

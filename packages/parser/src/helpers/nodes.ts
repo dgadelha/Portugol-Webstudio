@@ -13,8 +13,7 @@ export function getAllChildrenFromContext(ctx: ParseTree | null) {
   for (let i = 0; i < ctx.getChildCount(); i++) {
     const child = ctx.getChild(i);
 
-    children.push(child!);
-    children.push(...getAllChildrenFromContext(child));
+    children.push(child!, ...getAllChildrenFromContext(child));
   }
 
   return children;

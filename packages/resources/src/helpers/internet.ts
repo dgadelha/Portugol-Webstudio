@@ -22,12 +22,12 @@ export async function download(url: string, dest: string) {
     } else {
       file.close();
       await fs.unlink(dest); // Delete temp file
-      throw `Server responded with ${res.status}`;
+      throw new Error(`Server responded with ${res.status}`);
     }
-  } catch (e) {
+  } catch (error) {
     file.close();
     await fs.unlink(dest); // Delete temp file
 
-    throw e;
+    throw error;
   }
 }

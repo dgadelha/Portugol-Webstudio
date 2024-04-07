@@ -30,13 +30,14 @@ export function* checarUsoEscopo(arquivo: Arquivo): Generator<PortugolCodeError>
   function* varrerNó(nó: Node): Generator<PortugolCodeError> {
     switch (nó.constructor) {
       case DeclaraçãoCmd:
-      case Parâmetro:
+      case Parâmetro: {
         const declr = nó as DeclaraçãoCmd | Parâmetro;
 
         escopo.variáveis.set(declr.nome, declr.tipo);
         break;
+      }
 
-      case ReferênciaVarExpr:
+      case ReferênciaVarExpr: {
         const ref = nó as ReferênciaVarExpr;
 
         // TODO: bibliotecas
@@ -49,8 +50,9 @@ export function* checarUsoEscopo(arquivo: Arquivo): Generator<PortugolCodeError>
         }
 
         break;
+      }
 
-      case AtribuiçãoCmd:
+      case AtribuiçãoCmd: {
         const attr = nó as AtribuiçãoCmd;
 
         yield* varrerNós(attr.children);
@@ -72,8 +74,8 @@ export function* checarUsoEscopo(arquivo: Arquivo): Generator<PortugolCodeError>
                 `Não é possível atribuir um valor do tipo '${tret}' a uma variável do tipo '${svar.primitivo}'`,
               );
             }
-          } catch (e) {
-            const message = e instanceof Error ? e.message : "Não foi possível resolver o tipo da expressão";
+          } catch (error) {
+            const message = error instanceof Error ? error.message : "Não foi possível resolver o tipo da expressão";
 
             if (message === "TODO") {
               break;
@@ -86,18 +88,20 @@ export function* checarUsoEscopo(arquivo: Arquivo): Generator<PortugolCodeError>
         // TODO: array e matriz
 
         break;
+      }
 
       case EnquantoCmd:
       case EscolhaCmd:
       case FaçaEnquantoCmd:
       case Função:
-      case ParaCmd:
+      case ParaCmd: {
         escopo.push();
         yield* varrerNós(nó.children);
         escopo.pop();
         break;
+      }
 
-      case SeCmd:
+      case SeCmd: {
         const se = nó as SeCmd;
 
         escopo.push();
@@ -112,10 +116,12 @@ export function* checarUsoEscopo(arquivo: Arquivo): Generator<PortugolCodeError>
         }
 
         break;
+      }
 
-      default:
+      default: {
         yield* varrerNós(nó.children);
         break;
+      }
     }
   }
 

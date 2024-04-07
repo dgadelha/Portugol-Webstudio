@@ -1,5 +1,5 @@
 import { writeFileSync } from "node:fs";
-import { join } from "node:path";
+import path from "node:path";
 
 import slugify from "slugify";
 
@@ -18,7 +18,7 @@ interface TreeItem {
   children?: TreeItem[];
 }
 
-// @ts-ignore
+// @ts-expect-error
 global.Tree = {
   create(data: { data: PortugolAjudaItem[] }) {
     const items: TreeItem[] = [];
@@ -41,6 +41,6 @@ global.Tree = {
     }
 
     lerRecursivo("", data.data, items);
-    writeFileSync(join(baseDir, "ajuda", "scripts", "topicos.json"), JSON.stringify(items, null, 2));
+    writeFileSync(path.join(baseDir, "ajuda", "scripts", "topicos.json"), JSON.stringify(items, null, 2));
   },
 };

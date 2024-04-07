@@ -19,7 +19,7 @@ export class WorkerService {
     }
 
     return new Promise(resolve => {
-      const id = Math.random().toString(36).substring(2, 9);
+      const id = Math.random().toString(36).slice(2, 9);
       const now = Date.now();
 
       const listener = (e: MessageEvent) => {
@@ -48,7 +48,7 @@ export class WorkerService {
     this.busy = true;
 
     return new Promise(resolve => {
-      const id = Math.random().toString(36).substring(2, 9);
+      const id = Math.random().toString(36).slice(2, 9);
       const now = Date.now();
 
       const listener = (e: MessageEvent) => {

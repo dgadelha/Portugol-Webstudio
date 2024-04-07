@@ -1,5 +1,5 @@
 import fs from "node:fs/promises";
-import { join } from "node:path";
+import path from "node:path";
 
 import iconv from "iconv-lite";
 import readdirp from "readdirp";
@@ -13,23 +13,23 @@ async function getAjudaCss() {
     return _ajudaCss;
   }
 
-  const fileName = join(baseDir, "ajuda", "estilos", "ajuda.css");
+  const fileName = path.join(baseDir, "ajuda", "estilos", "ajuda.css");
 
   _ajudaCss = (await fs.readFile(fileName))
     .toString()
-    .replace(/\$\{cor_letra\}/gu, "cdcdcd")
-    .replace(/\$\{cor_destaque\}/gu, "3a464c")
-    .replace(/\$\{cor_letra_titulo\}/gu, "cdcdcd")
-    .replace(/\$\{fundo_escuro\}/gu, "121e24")
-    .replace(/\$\{fundo_medio\}/gu, "263238")
-    .replace(/\$\{cor_3\}/gu, "f0433b")
-    .replace(/\$\{valor_cadeia\}/gu, "FFC200")
-    .replace(/\$\{valor_inteiro\}/gu, "00F0C0")
-    .replace(/\$\{valor_logico\}/gu, "F1433C")
-    .replace(/\$\{palavras_reservadas\}/gu, "F1433C")
-    .replace(/\$\{operador\}/gu, "E8E2B7")
-    .replace(/\$\{tipos\}/gu, "45BEFF")
-    .replace(/\$\{comentario_linha\}/gu, "66747B");
+    .replaceAll("${cor_letra}", "cdcdcd")
+    .replaceAll("${cor_destaque}", "3a464c")
+    .replaceAll("${cor_letra_titulo}", "cdcdcd")
+    .replaceAll("${fundo_escuro}", "121e24")
+    .replaceAll("${fundo_medio}", "263238")
+    .replaceAll("${cor_3}", "f0433b")
+    .replaceAll("${valor_cadeia}", "FFC200")
+    .replaceAll("${valor_inteiro}", "00F0C0")
+    .replaceAll("${valor_logico}", "F1433C")
+    .replaceAll("${palavras_reservadas}", "F1433C")
+    .replaceAll("${operador}", "E8E2B7")
+    .replaceAll("${tipos}", "45BEFF")
+    .replaceAll("${comentario_linha}", "66747B");
 
   return _ajudaCss;
 }
@@ -47,16 +47,16 @@ async function patchHtmlFile(data: Buffer) {
       "</head>",
       "<link href='https://fonts.googleapis.com/css?family=PT+Sans' rel='stylesheet'><style type='text/css'>.dp-highlighter{pointer-events:initial !important}html,body{margin:0;padding:0;font-family:'PT Sans',sans-serif;font-size:15px}body{padding-bottom:25px}p{line-height:18pt}h1,h2{padding-left:15px;font-family:'PT Sans',sans-serif}h1{font-size:18pt}ul>li{margin-top:10px}ul>li:first-child{margin-top:0}</style></head>",
     )
-    .replace(/(?:\.\.\/)+scripts\/exemplos\.js/gu, `${baseHtmlPath}/assets/exemplos.js`)
-    .replace(/(?:\.\.\/)+scripts\//gu, `${baseHtmlPath}/assets/recursos/ajuda/scripts/`)
-    .replace(/(?:\.\.\/)+estilos\//gu, `${baseHtmlPath}/assets/recursos/ajuda/estilos/`)
-    .replace(/(?:\.\.\/)+recursos\/imagens\//gu, `${baseHtmlPath}/assets/recursos/ajuda/recursos/imagens/`)
-    .replace(/(?:\.\.\/)+recursos\//gu, `${baseHtmlPath}/assets/recursos/ajuda/recursos/`)
-    .replace(/topicos\/linguagem_portugol\//gu, `${baseHtmlPath}/assets/recursos/ajuda/topicos/linguagem_portugol/`)
+    .replaceAll(/(?:\.\.\/)+scripts\/exemplos\.js/gu, `${baseHtmlPath}/assets/exemplos.js`)
+    .replaceAll(/(?:\.\.\/)+scripts\//gu, `${baseHtmlPath}/assets/recursos/ajuda/scripts/`)
+    .replaceAll(/(?:\.\.\/)+estilos\//gu, `${baseHtmlPath}/assets/recursos/ajuda/estilos/`)
+    .replaceAll(/(?:\.\.\/)+recursos\/imagens\//gu, `${baseHtmlPath}/assets/recursos/ajuda/recursos/imagens/`)
+    .replaceAll(/(?:\.\.\/)+recursos\//gu, `${baseHtmlPath}/assets/recursos/ajuda/recursos/`)
+    .replaceAll("topicos/linguagem_portugol/", `${baseHtmlPath}/assets/recursos/ajuda/topicos/linguagem_portugol/`)
     .replace("/*${css}*/", await getAjudaCss())
     .replace("${syntax}", "SyntaxHighlighter.css")
     .replace("SyntaxHighlighter.css/>", 'SyntaxHighlighter.css"/>')
-    .replace(/\$\{tema\}/gu, "Dark");
+    .replaceAll("${tema}", "Dark");
 }
 
 export async function patchHtmlFiles() {
@@ -86,7 +86,7 @@ export async function patchPortugolFiles() {
     const portugolSignaturePos = data.indexOf("/* $$$ Portugol Studio $$$ ");
 
     if (portugolSignaturePos > -1) {
-      data = data.substring(0, portugolSignaturePos);
+      data = data.slice(0, Math.max(0, portugolSignaturePos));
     }
 
     await fs.writeFile(fileName, data);

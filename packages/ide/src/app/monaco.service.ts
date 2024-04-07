@@ -19,7 +19,7 @@ export class MonacoService {
           });
 
           monaco.languages.setLanguageConfiguration("portugol", {
-            wordPattern: /(-?\d*\.\d\w*)|([^\`\~\!\@\#\%\^\&\*\(\)\-\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\?\s]+)/g,
+            wordPattern: /(-?\d*\.\d\w*)|([^\s!"#%&'()*+,./:;<=>?@[\\\]^`{|}~\-]+)/g,
 
             comments: {
               lineComment: "//",
@@ -35,7 +35,7 @@ export class MonacoService {
             onEnterRules: [
               {
                 // e.g. /** | */
-                beforeText: /^\s*\/\*\*(?!\/)([^\*]|\*(?!\/))*$/,
+                beforeText: /^\s*\/\*\*(?!\/)([^*]|\*(?!\/))*$/,
                 afterText: /^\s*\*\/$/,
                 action: {
                   indentAction: monaco.languages.IndentAction.IndentOutdent,
@@ -44,7 +44,7 @@ export class MonacoService {
               },
               {
                 // e.g. /** ...|
-                beforeText: /^\s*\/\*\*(?!\/)([^\*]|\*(?!\/))*$/,
+                beforeText: /^\s*\/\*\*(?!\/)([^*]|\*(?!\/))*$/,
                 action: {
                   indentAction: monaco.languages.IndentAction.None,
                   appendText: " * ",
@@ -52,7 +52,7 @@ export class MonacoService {
               },
               {
                 // e.g.  * ...|
-                beforeText: /^(\t|(\ \ ))*\ \*(\ ([^\*]|\*(?!\/))*)?$/,
+                beforeText: /^(\t|( {2}))* \*( ([^*]|\*(?!\/))*)?$/,
                 action: {
                   indentAction: monaco.languages.IndentAction.None,
                   appendText: "* ",
@@ -60,7 +60,7 @@ export class MonacoService {
               },
               {
                 // e.g.  */|
-                beforeText: /^(\t|(\ \ ))*\ \*\/\s*$/,
+                beforeText: /^(\t|( {2}))* \*\/\s*$/,
                 action: {
                   indentAction: monaco.languages.IndentAction.None,
                   removeText: 1,
@@ -154,24 +154,20 @@ export class MonacoService {
             ],
 
             // we include these common regular expressions
-            symbols: /[=><!~?:&|+\-*\/\^%]+/,
-            escapes: /\\(?:[abfnrtv\\"']|x[0-9A-Fa-f]{1,4}|u[0-9A-Fa-f]{4}|U[0-9A-Fa-f]{8})/,
+            symbols: /[!%&*+/:<=>?^|~\-]+/,
+            escapes: /\\(?:["'\\abfnrtv]|x[\dA-Fa-f]{1,4}|u[\dA-Fa-f]{4}|U[\dA-Fa-f]{8})/,
             digits: /\d+(_+\d+)*/,
             octaldigits: /[0-7]+(_+[0-7]+)*/,
-            binarydigits: /[0-1]+(_+[0-1]+)*/,
-            hexdigits: /[[0-9a-fA-F]+(_+[0-9a-fA-F]+)*/,
+            binarydigits: /[01]+(_+[01]+)*/,
+            hexdigits: /[\dA-F[a-f]+(_+[\dA-Fa-f]+)*/,
 
             // The main tokenizer for our languages
             tokenizer: {
-              root: [
-                [/[{}]/, "delimiter.bracket"],
-                [/([a-zA-Z_{1}][a-zA-Z0-9_]+)(?=\s*\()/, "functions"],
-                { include: "common" },
-              ],
+              root: [[/[{}]/, "delimiter.bracket"], [/([1A-Z_a-z{}]\w+)(?=\s*\()/, "functions"], { include: "common" }],
               common: [
                 // identifiers and keywords
                 [
-                  /[a-z_$][\w$]*/,
+                  /[$_a-z][\w$]*/,
                   {
                     cases: {
                       "@typeKeywords": "keyword",
@@ -180,57 +176,57 @@ export class MonacoService {
                     },
                   },
                 ],
-                [/[A-Z][\w\$]*/, "type.identifier"], // to show class names nicely
+                [/[A-Z][\w$]*/, "type.identifier"], // to show class names nicely
 
                 // whitespace
                 { include: "@whitespace" },
 
                 // delimiters and operators
-                [/[{}()\[\]]/, "@brackets"],
+                [/[()[\]{}]/, "@brackets"],
                 [/[<>](?!@symbols)/, "@brackets"],
                 [/@symbols/, { cases: { "@operators": "operator", "@default": "" } }],
 
                 // numbers
-                [/\d*\.\d+([eE][\-+]?\d+)?/, "number.float"],
-                [/0[xX][0-9a-fA-F]+/, "number.hex"],
+                [/\d*\.\d+([Ee][+\-]?\d+)?/, "number.float"],
+                [/0[Xx][\dA-Fa-f]+/, "number.hex"],
                 [/\d+/, "number"],
 
                 // delimiter: after number because of .\d floats
-                [/[;,.]/, "delimiter"],
+                [/[,.;]/, "delimiter"],
 
                 // strings
                 [/"([^"\\]|\\.)*$/, "string.invalid"], // non-teminated string
                 [/"/, { token: "string.quote", bracket: "@open", next: "@string" }],
 
                 // characters
-                [/'[^\\']'/, "string"],
+                [/'[^'\\]'/, "string"],
                 [/(')(@escapes)(')/, ["string", "string.escape", "string"]],
                 [/'/, "string.invalid"],
               ],
 
               comment: [
-                [/[^\/*]+/, "comment"],
+                [/[^*/]+/, "comment"],
                 [/\/\*/, "comment", "@push"], // nested comment
                 ["\\*/", "comment", "@pop"],
-                [/[\/*]/, "comment"],
+                [/[*/]/, "comment"],
               ],
 
               string: [
-                [/[^\\"]+/, "string"],
+                [/[^"\\]+/, "string"],
                 [/@escapes/, "string.escape"],
                 [/\\./, "string.escape.invalid"],
                 [/"/, { token: "string.quote", bracket: "@close", next: "@pop" }],
               ],
 
               whitespace: [
-                [/[ \t\r\n]+/, "white"],
+                [/[\t\n\r ]+/, "white"],
                 [/\/\*/, "comment", "@comment"],
                 [/\/\/.*$/, "comment"],
               ],
 
               bracketCounting: [
-                [/\{/, "delimiter.bracket", "@bracketCounting"],
-                [/\}/, "delimiter.bracket", "@pop"],
+                [/{/, "delimiter.bracket", "@bracketCounting"],
+                [/}/, "delimiter.bracket", "@pop"],
                 { include: "common" },
               ],
             },
@@ -246,8 +242,8 @@ export class MonacoService {
             ],
             colors: {},
           });
-        } catch (e) {
-          console.error(e);
+        } catch (error) {
+          console.error(error);
           window.location.reload();
         }
       });

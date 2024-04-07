@@ -17,11 +17,10 @@ export class DeclaraçãoMatrizExpr extends Expressão<DeclaracaoMatrizContext> 
     if (child instanceof InteiroExpr || child instanceof ReferênciaVarExpr) {
       if (!this.linhas) {
         this.linhas = child;
-        // eslint-disable-next-line no-negated-condition
-      } else if (!this.colunas) {
-        this.colunas = child;
-      } else {
+      } else if (this.colunas) {
         this.unexpectedChild(child);
+      } else {
+        this.colunas = child;
       }
     } else if (child instanceof InicializaçãoMatrizExpr) {
       invariant(!this.valor, child.ctx, "Valor já definido");

@@ -51,7 +51,6 @@ export class PortugolExecutor {
 
   run(code: string) {
     let errors: PortugolCodeError[] = [];
-    let parseErrors: PortugolCodeError[] = [];
     let js = "";
     let parseStart = 0;
     let parseEnd = 0;
@@ -84,9 +83,7 @@ export class PortugolExecutor {
       transpileStart = performance.now();
       js = new PortugolJs().visit(tree)!;
       transpileEnd = performance.now();
-    } catch (err) {
-      parseErrors = this.errorListener.getErrors();
-    }
+    } catch {}
 
     this.runTranspiled({
       code,
@@ -95,7 +92,7 @@ export class PortugolExecutor {
       parseErrors: this.errorListener.getErrors(),
       times: {
         parse: parseEnd - parseStart,
-        check: checkEnd - checkEnd,
+        check: checkEnd - checkStart,
         transpile: transpileEnd - transpileStart,
       },
     });
@@ -161,7 +158,7 @@ export class PortugolExecutor {
         this.stdOut$.next(this.stdOut);
       }
 
-      // @ts-ignore
+      // @ts-expect-error
       this._runner = new this.runner(js);
 
       if (!this._runner) {
@@ -188,35 +185,39 @@ export class PortugolExecutor {
       this._runner.run().subscribe({
         next: event => {
           switch (event.type) {
-            case "finish":
+            case "finish": {
               this.stdOut += `\nPrograma finalizado. Tempo de execução: ${event.time} milissegundos\n`;
               this.#printTimes({ ...times, execution: event.time });
               this.stdOut$.next(this.stdOut);
               break;
+            }
 
-            case "clear":
+            case "clear": {
               this.stdOut = "";
               this.stdOut$.next(this.stdOut);
               break;
+            }
 
-            case "error":
+            case "error": {
               this.stdOut += `\n⛔ ${event.error.message}\n`;
               this.stdOut$.next(this.stdOut);
               break;
+            }
 
-            default:
+            default: {
               break;
+            }
           }
 
           this.events.next(event);
         },
 
-        error: error => {
+        error(error) {
           console.error(error);
         },
       });
-    } catch (err) {
-      console.error(err);
+    } catch (error) {
+      console.error(error);
 
       this.stdOut += `\n⛔ O seu código possui um erro de compilação!\n`;
       this.stdOut$.next(this.stdOut);
@@ -224,7 +225,7 @@ export class PortugolExecutor {
 
       this.reset(false);
       this.events.next({ type: "parseError", errors: parseErrors });
-      this.events.error(err);
+      this.events.error(error);
     }
   }
 

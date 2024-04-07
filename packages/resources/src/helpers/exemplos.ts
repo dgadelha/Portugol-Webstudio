@@ -22,7 +22,7 @@ export async function generateExamplesJson(baseDir: string, dir: string) {
     const item = keys
       .filter(key => key.startsWith(`item${i}`))
       .reduce<Record<string, any>>((acc, cur) => {
-        acc[cur.substring(cur.indexOf(".") + 1)] = parsedProperties[cur];
+        acc[cur.slice(Math.max(0, cur.indexOf(".") + 1))] = parsedProperties[cur];
         return acc;
       }, {});
 
@@ -36,9 +36,7 @@ export async function generateExamplesJson(baseDir: string, dir: string) {
       item.children = await generateExamplesJson(baseDir, path.join(dir, item.dir));
     }
 
-    if (item.file) {
-      item.file = path.join(baseDir, dir, item.file).substring(baseDir.length + 1);
-    }
+    item.file &&= path.join(baseDir, dir, item.file).slice(Math.max(0, baseDir.length + 1));
 
     items.push(item);
   }

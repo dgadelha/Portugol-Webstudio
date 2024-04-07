@@ -30,7 +30,6 @@ export class PortugolNode extends AbstractParseTreeVisitor<Empty> implements Por
     const ctor = ContextNodeObj[ctx.constructor.name];
     let obj;
 
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (ctor) {
       obj = new ctor(ctx);
     } else {

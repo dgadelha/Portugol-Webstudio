@@ -56,14 +56,14 @@ export class TabStartComponent {
       const reader = new FileReader();
       const file = files[i];
 
-      reader.onload = e => {
+      reader.addEventListener("load", e => {
         const contents = e.target?.result;
 
         this.newTab.emit({
           name: file.name,
           contents,
         });
-      };
+      });
 
       reader.readAsText(file, "ISO-8859-1");
     }

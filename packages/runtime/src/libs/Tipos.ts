@@ -1,5 +1,5 @@
-const PADRAO_INTEIRO_NOTACAO_HEXADECIMAL = /^(0x|0X)?([0-9]|[a-f]|[A-F])+$/;
-const PADRAO_INTEIRO_NOTACAO_BINARIA = /^(0b|0B)?[0-1]+$/;
+const PADRAO_INTEIRO_NOTACAO_HEXADECIMAL = /^(0x|0X)?(\d|[a-f]|[A-F])+$/;
+const PADRAO_INTEIRO_NOTACAO_BINARIA = /^(0b|0B)?[01]+$/;
 const PADRAO_INTEIRO_NOTACAO_DECIMAL = /^-?\d+$/;
 const PADRAO_REAL = /^-?\d+\.\d+$/;
 const PADRAO_LOGICO = /^verdadeiro|falso$/i;

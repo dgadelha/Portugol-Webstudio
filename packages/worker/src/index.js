@@ -3,7 +3,6 @@ import { PortugolErrorChecker } from "@portugol-webstudio/parser";
 import { PortugolJs } from "@portugol-webstudio/runtime";
 import { CharStream, CommonTokenStream } from "antlr4ng";
 
-/* eslint-disable no-restricted-globals */
 function mapError(error) {
   return {
     message: error.message,
@@ -32,8 +31,8 @@ function checkCode(code) {
   const parseErrors = errorListener.getErrors();
 
   return {
-    errors: errors.map(mapError),
-    parseErrors: parseErrors.map(mapError),
+    errors: errors.map(error => mapError(error)),
+    parseErrors: parseErrors.map(error => mapError(error)),
   };
 }
 
@@ -65,8 +64,8 @@ function transpileCode(code) {
 
   return {
     js,
-    errors: errors.map(mapError),
-    parseErrors: parseErrors.map(mapError),
+    errors: errors.map(error => mapError(error)),
+    parseErrors: parseErrors.map(error => mapError(error)),
     times: {
       parse: parseEnd - parseStart,
       check: checkEnd - checkStart,
@@ -75,25 +74,28 @@ function transpileCode(code) {
   };
 }
 
-self.onmessage = function onmessage(e) {
+self.addEventListener("message", function onmessage(e) {
   const { action, id, code } = e.data;
   let result;
 
   switch (action) {
-    case "check":
+    case "check": {
       result = checkCode(code);
       break;
+    }
 
-    case "transpile":
+    case "transpile": {
       result = transpileCode(code);
       break;
+    }
 
-    default:
+    default: {
       throw new Error(`Unknown action: ${action}`);
+    }
   }
 
   self.postMessage({
     id,
     ...result,
   });
-};
+});

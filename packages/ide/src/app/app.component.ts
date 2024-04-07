@@ -46,7 +46,7 @@ export class AppComponent implements OnInit {
       if (window.location.hash.startsWith("#share=")) {
         this.snack.open("Carregando código compartilhado…", undefined, { duration: -1 });
 
-        const hash = window.location.hash.substring(7);
+        const hash = window.location.hash.slice(7);
         const data = await getBlob(ref(this.storage, hash));
         const contents = await data.text();
 
@@ -54,10 +54,10 @@ export class AppComponent implements OnInit {
         this.snack.dismiss();
         this.gaService.event("load_shared_code_success", "Interface", "Código compartilhado carregado");
       }
-    } catch (e) {
-      console.error(e);
+    } catch (error) {
+      console.error(error);
       this.snack.dismiss();
-      this.snack.open("Erro ao carregar código compartilhado", "FECHAR", { duration: 10000 });
+      this.snack.open("Erro ao carregar código compartilhado", "FECHAR", { duration: 10_000 });
       this.gaService.event("load_shared_code_error", "Interface", "Erro ao carregar código compartilhado");
     }
   }

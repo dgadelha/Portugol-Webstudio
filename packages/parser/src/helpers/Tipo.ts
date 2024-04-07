@@ -11,7 +11,7 @@ export enum TipoPrimitivo {
   CARACTER = "caracter",
 }
 
-export type Tipo = { primitivo: TipoPrimitivo } & (
+export type Tipo = { primitivo: TipoPrimitivo } & ( // eslint-disable-next-line @typescript-eslint/ban-types
   | {}
   | ({ dimensão: "vetor" | "matriz"; primitivo: TipoPrimitivo } & (
       | { dimensão: "vetor"; tamanho?: InteiroExpr | ReferênciaVarExpr }
@@ -32,10 +32,12 @@ export function parseTipoPrimitivo(tipo: TerminalNode | null): TipoPrimitivo {
     case "cadeia":
     case "logico":
     case "vazio":
-    case "caracter":
+    case "caracter": {
       return text as TipoPrimitivo;
+    }
 
-    default:
+    default: {
       throw new Error(`Tipo desconhecido: ${text}`);
+    }
   }
 }

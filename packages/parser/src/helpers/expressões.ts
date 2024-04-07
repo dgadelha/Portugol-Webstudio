@@ -53,23 +53,29 @@ import {
 
 export function resolverResultadoExpressão(expressão: Expressão, escopo: Escopo): TipoPrimitivo {
   switch (expressão.constructor) {
-    case CadeiaExpr:
+    case CadeiaExpr: {
       return TipoPrimitivo.CADEIA;
+    }
 
-    case CaractereExpr:
+    case CaractereExpr: {
       return TipoPrimitivo.CARACTER;
+    }
 
-    case InteiroExpr:
+    case InteiroExpr: {
       return TipoPrimitivo.INTEIRO;
+    }
 
-    case LógicoExpr:
+    case LógicoExpr: {
       return TipoPrimitivo.LÓGICO;
+    }
 
-    case RealExpr:
+    case RealExpr: {
       return TipoPrimitivo.REAL;
+    }
 
-    case VazioExpr:
+    case VazioExpr: {
       return TipoPrimitivo.VAZIO;
+    }
 
     case DivisãoExpr:
     case MultiplicaçãoExpr:
@@ -142,11 +148,13 @@ export function resolverResultadoExpressão(expressão: Expressão, escopo: Esco
     case IncrementoUnárioPrefixadoExpr:
     case IncrementoUnárioPósfixadoExpr:
     case DecrementoUnárioPrefixadoExpr:
-    case DecrementoUnárioPósfixadoExpr:
+    case DecrementoUnárioPósfixadoExpr: {
       return resolverResultadoExpressão((expressão as ExpressãoUnária<any>).variável, escopo);
+    }
 
-    case ExpressãoEntreParênteses:
+    case ExpressãoEntreParênteses: {
       return resolverResultadoExpressão((expressão as ExpressãoEntreParênteses).expressão, escopo);
+    }
 
     case ReferênciaVarExpr: {
       const ref = expressão as ReferênciaVarExpr;
@@ -234,8 +242,9 @@ export function resolverResultadoExpressão(expressão: Expressão, escopo: Esco
     }
 
     case NegaçãoBitwiseExpr:
-    case NegaçãoExpr:
+    case NegaçãoExpr: {
       return resolverResultadoExpressão((expressão as NegaçãoBitwiseExpr | NegaçãoExpr).expressão, escopo);
+    }
 
     case MaisUnárioExpr:
     case MenosUnárioExpr: {
@@ -264,7 +273,8 @@ export function resolverResultadoExpressão(expressão: Expressão, escopo: Esco
       return fun.primitivo;
     }
 
-    default:
+    default: {
       return TipoPrimitivo.VAZIO;
+    }
   }
 }

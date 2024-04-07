@@ -129,18 +129,20 @@ export class PortugolWebWorkersRunner extends IPortugolRunner {
 
     this.worker.addEventListener("message", (message: MessageEvent) => {
       switch (message.data.type) {
-        case "stdOut":
+        case "stdOut": {
           this.stdOut$.next(message.data.content);
           break;
+        }
 
-        case "stdIn":
+        case "stdIn": {
           this.waitingForInput = true;
           this.waitingForInput$.next(this.waitingForInput);
 
           this._run.next({ type: "stdIn" });
           break;
+        }
 
-        case "error":
+        case "error": {
           const error = new Error(message.data.error.message);
 
           error.stack = message.data.error.stack;
@@ -148,23 +150,30 @@ export class PortugolWebWorkersRunner extends IPortugolRunner {
           this._run.next({ type: "error", error });
           this.destroy();
           break;
+        }
 
-        case "clear":
+        case "clear": {
           this._run.next({ type: "clear" });
           break;
+        }
 
-        case "finish":
+        case "finish": {
           this.destroy();
           break;
+        }
+
+        default: {
+          throw new Error(`Unknown message type: ${message.data.type}`);
+        }
       }
     });
 
-    this.worker.onerror = err => {
+    this.worker.addEventListener("error", err => {
       const error = err.error ?? new Error(err.message);
 
       this._run.next({ type: "error", error });
       this.destroy();
-    };
+    });
 
     this._stdIn$ = this.stdIn.subscribe(content => {
       if (this.waitingForInput) {
@@ -196,7 +205,7 @@ export class PortugolWebWorkersRunner extends IPortugolRunner {
 
     this._run.next({
       type: "finish",
-      time: new Date().getTime() - (this.startedAt?.getTime() ?? 0),
+      time: Date.now() - (this.startedAt?.getTime() ?? 0),
     });
 
     this._run.complete();

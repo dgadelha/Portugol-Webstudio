@@ -38,10 +38,10 @@
     "@portugol-webstudio/antlr": "*",
     "@portugol-webstudio/parser": "*",
     "@portugol-webstudio/runtime": "*",
-    "antlr4ng": "^3.0.3",
+    "antlr4ng": "^3.0.4",
     "rxjs": "~7.8.1"
   },
   "devDependencies": {
-    "typescript": "~5.2.2"
+    "typescript": "~5.4.4"
   }
 }

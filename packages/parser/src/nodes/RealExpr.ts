@@ -11,9 +11,9 @@ export class RealExpr extends Expressão<NumeroRealContext> {
     super(ctx);
     const valor = ctx.REAL().getText();
 
-    this.valor = parseFloat(valor);
+    this.valor = Number.parseFloat(valor);
 
-    invariant(!isNaN(this.valor), ctx, "Valor inválido");
+    invariant(!Number.isNaN(this.valor), ctx, "Valor inválido");
   }
 
   addChild(child: Node) {

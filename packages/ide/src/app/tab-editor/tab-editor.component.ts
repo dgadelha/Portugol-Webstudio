@@ -109,9 +109,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    if (!this.code) {
-      this.code = `programa {\n  funcao inicio() {\n    \n  }\n}\n`;
-    }
+    this.code ||= `programa {\n  funcao inicio() {\n    \n  }\n}\n`;
 
     this._stdOut$ = this.executor.stdOut$.subscribe(() => {
       this.stdOutEditorCursorEnd();
@@ -120,16 +118,19 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     this._events$ = this.executor.events.subscribe({
       next: event => {
         switch (event.type) {
-          case "error":
+          case "error": {
             this.gaService.event("execution_error", "Execução", "Erro em execução de código");
             break;
+          }
 
-          case "parseError":
+          case "parseError": {
             this.setEditorErrors(event.errors);
             break;
+          }
 
-          default:
+          default: {
             break;
+          }
         }
       },
 
@@ -161,14 +162,14 @@ export class TabEditorComponent implements OnInit, OnDestroy {
 
     try {
       result = await this.worker.transpileCode(code);
-    } catch (e) {
-      captureException(e, { tags: { transpile: true }, extra: { code } });
+    } catch (error) {
+      captureException(error, { tags: { transpile: true }, extra: { code } });
 
       alert(
         "Ocorreu um erro ao transpilar o código, possivelmente o seu navegador não suporta Web Workers. Por favor, tente novamente em outro navegador. Caso o erro persista, acesse https://github.com/dgadelha/Portugol-Webstudio/issues/new/choose",
       );
 
-      alert(e);
+      alert(error);
     } finally {
       this.transpiling = false;
     }
@@ -202,13 +203,13 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     const reader = new FileReader();
     const file = files[0];
 
-    reader.onload = e => {
+    reader.addEventListener("load", e => {
       const contents = e.target?.result;
 
       this.title = file.name;
       this.titleChange.emit(file.name);
       this.code = contents?.toString();
-    };
+    });
 
     reader.readAsText(file, "ISO-8859-1");
   }
@@ -325,7 +326,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
         next: result => {
           this.setEditorErrors(result.errors);
         },
-        error: err => {
+        error(err) {
           console.error(err);
         },
       });
@@ -343,11 +344,11 @@ export class TabEditorComponent implements OnInit, OnDestroy {
 
     this.sharing = true;
 
-    const shareCode = (Math.random() + 1).toString(36).substring(2, 9);
+    const shareCode = (Math.random() + 1).toString(36).slice(2, 9);
     const result = await uploadString(ref(this.storage, shareCode), this.code, undefined, {
       contentType: "text/plain",
-    }).catch(err => {
-      console.error(err);
+    }).catch(error => {
+      console.error(error);
       return null;
     });
 
@@ -367,7 +368,9 @@ export class TabEditorComponent implements OnInit, OnDestroy {
       this.gaService.event("share_code_error", "Editor", "Erro ao compartilhar código");
     }
 
-    setTimeout(() => (this.sharing = false), 1000);
+    setTimeout(() => {
+      this.sharing = false;
+    }, 1000);
   }
 
   async copyStringAndCloseSnack(url: string) {

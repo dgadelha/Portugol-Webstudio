@@ -1,5 +1,5 @@
 import { existsSync, promises as fs } from "node:fs";
-import { join } from "node:path";
+import path from "node:path";
 
 import AdmZip from "adm-zip";
 import * as rimraf from "rimraf";
@@ -13,8 +13,8 @@ import "./ajuda.js";
 
 export async function configurarRecursos() {
   const assetsPath = "Portugol-Studio-master/ide/src/main/assets/";
-  const tempDir = join(baseDir, "..", "recursos.temp/");
-  const psZip = join(baseDir, "..", "Portugol-Studio.zip");
+  const tempDir = path.join(baseDir, "..", "recursos.temp/");
+  const psZip = path.join(baseDir, "..", "Portugol-Studio.zip");
 
   try {
     // Excluir o ZIP caso tenha havido uma interrupção durante o download anterior
@@ -24,12 +24,12 @@ export async function configurarRecursos() {
 
     const url = "https://github.com/UNIVALI-LITE/Portugol-Studio/archive/master.zip";
     const remoteEtag = await getETag(url);
-    const localEtag = join(baseDir, ".etag");
+    const localEtag = path.join(baseDir, ".etag");
 
     console.log("Remote ETag:", remoteEtag);
 
     if (existsSync(localEtag)) {
-      const localETagContents = await fs.readFile(localEtag, "utf-8");
+      const localETagContents = await fs.readFile(localEtag, "utf8");
 
       console.log("Local ETag:", localETagContents);
 
@@ -61,7 +61,7 @@ export async function configurarRecursos() {
     await fs.unlink(psZip);
 
     console.log("Gerando índice da aba Ajuda...");
-    // @ts-ignore
+    // @ts-expect-error
     await import(join(baseDir, "ajuda", "scripts", "topicos.js"));
     // require(join(baseDir, "ajuda", "scripts", "topicos"));
 
@@ -73,18 +73,18 @@ export async function configurarRecursos() {
 
     console.log("Gerando índice da seção Exemplos...");
     await fs.writeFile(
-      join(baseDir, "exemplos", "index.json"),
-      JSON.stringify(await generateExamplesJson(join(baseDir, "exemplos"), "")),
+      path.join(baseDir, "exemplos", "index.json"),
+      JSON.stringify(await generateExamplesJson(path.join(baseDir, "exemplos"), "")),
     );
 
     await fs.writeFile(localEtag, remoteEtag);
 
     console.log("Configuração de recursos concluída!");
-  } catch (err) {
+  } catch (error) {
     console.error(
-      `Falha ao baixar o código-fonte do Portugol Studio: ${err} - Reinicie o Portugol Webstudio para tentar novamente.`,
+      `Falha ao baixar o código-fonte do Portugol Studio: ${error} - Reinicie o Portugol Webstudio para tentar novamente.`,
     );
-    console.error(err);
+    console.error(error);
   }
 }
 

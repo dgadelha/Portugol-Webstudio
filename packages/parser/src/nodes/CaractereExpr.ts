@@ -10,9 +10,7 @@ export class CaractereExpr extends Expressão<CaracterContext> {
   constructor(public ctx: CaracterContext) {
     super(ctx);
 
-    const text = ctx.CARACTER().getText();
-
-    this.conteúdo = text.substring(1, text.length - 1);
+    this.conteúdo = ctx.CARACTER().getText().slice(1, -1);
 
     invariant(this.conteúdo.length === 1, ctx, "Caractere inválido");
   }

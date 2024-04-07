@@ -34,7 +34,7 @@ export class Escopo {
   }
 
   get atual(): IEscopo {
-    return this.pilha[this.pilha.length - 1];
+    return this.pilha.at(-1)!;
   }
 
   get global(): IEscopo {

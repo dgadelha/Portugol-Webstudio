@@ -15,7 +15,7 @@ export class InteiroExpr extends Expressão<NumeroInteiroContext> {
 
     invariant(valor, ctx);
 
-    this.valor = parseInt(valor, hex ? 16 : 10);
+    this.valor = Number.parseInt(valor, hex ? 16 : 10);
   }
 
   addChild(child: Node) {

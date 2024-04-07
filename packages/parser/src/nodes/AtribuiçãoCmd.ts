@@ -19,7 +19,6 @@ export class AtribuiçãoCmd<T extends ParseTree = ParseTree> extends Comando<T>
       (child instanceof ReferênciaVarExpr ||
         child instanceof ReferênciaArrayExpr ||
         child instanceof ReferênciaMatrizExpr) &&
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       !this.variável
     ) {
       this.variável = child;

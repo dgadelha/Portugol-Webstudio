@@ -11,12 +11,12 @@ export class Parâmetro extends Node<ParametroContext> {
 
   addChild(child: Node) {
     if (child instanceof UnhandledNode) {
-      if (child.ctx instanceof ParametroArrayContext && !this.tipo.hasOwnProperty("dimensão")) {
+      if (child.ctx instanceof ParametroArrayContext && !Object.hasOwn(this.tipo, "dimensão")) {
         this.tipo = {
           dimensão: "vetor",
           primitivo: this.tipo.primitivo,
         };
-      } else if (child.ctx instanceof ParametroMatrizContext && !this.tipo.hasOwnProperty("dimensão")) {
+      } else if (child.ctx instanceof ParametroMatrizContext && !Object.hasOwn(this.tipo, "dimensão")) {
         this.tipo = {
           dimensão: "matriz",
           primitivo: this.tipo.primitivo,

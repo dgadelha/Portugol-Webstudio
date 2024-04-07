@@ -39,6 +39,7 @@ function asyncLoop(iterations, func, callback) {
   return loop;
 }
 
+// @ts-expect-error
 String.prototype.escapeHtml = function () {
   return this.replace(/&/g, "&amp;")
     .replace(/>/g, "&gt;")
@@ -50,6 +51,7 @@ String.prototype.escapeHtml = function () {
 function obterExemplos() {
   const exemplos = [];
 
+  // @ts-expect-error
   $(".codigo-portugol").each((indice, elemento) => {
     exemplos.push({ div: elemento, caminho: elemento.dataset.file });
   });
@@ -63,6 +65,7 @@ function carregarExemplos(callback) {
   asyncLoop(
     exemplos.length,
     loop => {
+      // @ts-expect-error
       $.get(
         exemplos[loop.index].caminho,
         content => {
@@ -78,6 +81,7 @@ function carregarExemplos(callback) {
   );
 }
 
+// @ts-expect-error
 $(document).ready(() => {
   carregarExemplos(exemplos => {
     asyncLoop(
@@ -91,14 +95,17 @@ $(document).ready(() => {
 
         const htmlCabecalho = `<div>${titulo.escapeHtml()}</div>`;
 
+        // @ts-expect-error
         const cabecalho = $(htmlCabecalho).attr({
           class: "cabecalho-codigo-portugol",
           style: "color:white",
         });
 
+        // @ts-expect-error
         $(div)
           .append(cabecalho)
           .append(
+            // @ts-expect-error
             $(`<pre>${codigo.escapeHtml()}</pre>`).attr({
               name: "code",
               class: "portugol:nocontrols",
@@ -106,7 +113,9 @@ $(document).ready(() => {
           );
 
         if (tipo == "exemplo") {
+          // @ts-expect-error
           $(div).after(
+            // @ts-expect-error
             $("<a>Tente você mesmo</a>").attr({
               class: "botao-codigo-fonte",
               href: "#",
@@ -115,9 +124,12 @@ $(document).ready(() => {
             }),
           );
 
+          // @ts-expect-error
           $(`#tvml${loop.index}`).bind("click", function (e) {
             e.preventDefault();
             e.defaultPrevented = true;
+
+            // @ts-expect-error
             window.parent.portugol.abrirExemplo(codigo, $(this).data("file").split("/").pop());
           });
         }
@@ -125,6 +137,7 @@ $(document).ready(() => {
         loop.next();
       },
       () => {
+        // @ts-expect-error
         dp.SyntaxHighlighter.HighlightAll("code");
       },
     );
