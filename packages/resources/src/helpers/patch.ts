@@ -60,14 +60,14 @@ async function patchHtmlFile(data: Buffer) {
 }
 
 export async function patchHtmlFiles() {
-  const topicosDir = join(baseDir, "ajuda", "topicos");
+  const topicosDir = path.join(baseDir, "ajuda", "topicos");
 
   for await (const file of readdirp(topicosDir, {
     type: "files",
     fileFilter: "*.html",
   })) {
     console.log(`-> Ajustando ${file.path}`);
-    const fileName = join(topicosDir, file.path);
+    const fileName = path.join(topicosDir, file.path);
     const data = await fs.readFile(fileName);
 
     await fs.writeFile(fileName, await patchHtmlFile(data));
@@ -80,7 +80,7 @@ export async function patchPortugolFiles() {
     fileFilter: "*.por",
   })) {
     console.log(`-> Ajustando ${file.path}`);
-    const fileName = join(baseDir, file.path);
+    const fileName = path.join(baseDir, file.path);
     let data = iconv.decode(await fs.readFile(fileName), "ISO-8859-1");
 
     const portugolSignaturePos = data.indexOf("/* $$$ Portugol Studio $$$ ");

@@ -61,8 +61,7 @@ export async function configurarRecursos() {
     await fs.unlink(psZip);
 
     console.log("Gerando índice da aba Ajuda...");
-    // @ts-expect-error
-    await import(join(baseDir, "ajuda", "scripts", "topicos.js"));
+    await import(path.join(baseDir, "ajuda", "scripts", "topicos.js"));
     // require(join(baseDir, "ajuda", "scripts", "topicos"));
 
     console.log("Ajustando arquivos HTML...");
