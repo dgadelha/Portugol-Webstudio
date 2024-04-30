@@ -1,14 +1,3 @@
-import {
-  ResultadoCompatibilidade,
-  TabelaCompatibilidadeBitwise,
-  TabelaCompatibilidadeDiferençaIgualdade,
-  TabelaCompatibilidadeDivisãoMultiplicaçãoSubtração,
-  TabelaCompatibilidadeEOu,
-  TabelaCompatibilidadeModulo,
-  TabelaCompatibilidadeSoma,
-} from "./compatibilidade.js";
-import { Escopo } from "./Escopo.js";
-import { TipoPrimitivo } from "./Tipo.js";
 import { Expressão } from "../nodes/Expressão.js";
 import {
   CadeiaExpr,
@@ -50,8 +39,23 @@ import {
   SubtraçãoExpr,
   VazioExpr,
 } from "../nodes/index.js";
+import { Escopo } from "./Escopo.js";
+import { TipoPrimitivo } from "./Tipo.js";
+import {
+  ResultadoCompatibilidade,
+  TabelaCompatibilidadeBitwise,
+  TabelaCompatibilidadeDiferençaIgualdade,
+  TabelaCompatibilidadeDivisãoMultiplicaçãoSubtração,
+  TabelaCompatibilidadeEOu,
+  TabelaCompatibilidadeModulo,
+  TabelaCompatibilidadeSoma,
+} from "./compatibilidade.js";
 
-export function resolverResultadoExpressão(expressão: Expressão, escopo: Escopo): TipoPrimitivo {
+export function resolverResultadoExpressão(expressão: Expressão | undefined, escopo: Escopo): TipoPrimitivo {
+  if (!expressão) {
+    return TipoPrimitivo.VAZIO;
+  }
+
   switch (expressão.constructor) {
     case CadeiaExpr: {
       return TipoPrimitivo.CADEIA;

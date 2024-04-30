@@ -15,6 +15,7 @@ import {
   ParaCmd,
   Parâmetro,
   ReferênciaVarExpr,
+  RetorneCmd,
   SeCmd,
 } from "../nodes/index.js";
 
@@ -34,6 +35,19 @@ export function* checarUsoEscopo(arquivo: Arquivo): Generator<PortugolCodeError>
         const declr = nó as DeclaraçãoCmd | Parâmetro;
 
         escopo.variáveis.set(declr.nome, declr.tipo);
+        break;
+      }
+
+      case Função: {
+        const func = nó as Função;
+
+        escopo.funções.set(func.nome, func.retorno);
+        escopo.push();
+        escopo.função = func.retorno;
+
+        yield* varrerNós(nó.children);
+
+        escopo.pop();
         break;
       }
 
@@ -93,7 +107,6 @@ export function* checarUsoEscopo(arquivo: Arquivo): Generator<PortugolCodeError>
       case EnquantoCmd:
       case EscolhaCmd:
       case FaçaEnquantoCmd:
-      case Função:
       case ParaCmd: {
         escopo.push();
         yield* varrerNós(nó.children);
@@ -113,6 +126,39 @@ export function* checarUsoEscopo(arquivo: Arquivo): Generator<PortugolCodeError>
           escopo.push();
           yield* varrerNós(se.senão.instruções);
           escopo.pop();
+        }
+
+        break;
+      }
+
+      case RetorneCmd: {
+        const ret = nó as RetorneCmd;
+
+        if (ret.expressão) {
+          yield* varrerNó(ret.expressão);
+        }
+
+        if (escopo.função) {
+          try {
+            const tret = resolverResultadoExpressão(ret.expressão, escopo);
+
+            if (
+              TabelaCompatibilidadeAtribuição[escopo.função.primitivo][tret] === ResultadoCompatibilidade.INCOMPATÍVEL
+            ) {
+              yield PortugolCodeError.fromContext(
+                ret.ctx,
+                `Não é possível retornar um valor do tipo '${tret}' em uma função que retorna '${escopo.função.primitivo}'`,
+              );
+            }
+          } catch (error) {
+            const message = error instanceof Error ? error.message : "Não foi possível resolver o tipo da expressão";
+
+            if (message === "TODO") {
+              break;
+            }
+
+            yield PortugolCodeError.fromContext(ret.ctx, message);
+          }
         }
 
         break;

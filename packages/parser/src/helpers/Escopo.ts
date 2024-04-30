@@ -3,6 +3,7 @@ import { Tipo, TipoPrimitivo } from "./Tipo.js";
 interface IEscopo {
   variáveis: Map<string, Tipo>;
   funções: Map<string, Tipo>;
+  função?: Tipo;
 }
 
 export class Escopo {
@@ -22,7 +23,11 @@ export class Escopo {
   }
 
   push() {
-    this.pilha.push({ variáveis: new Map(), funções: new Map() });
+    this.pilha.push({
+      variáveis: new Map(),
+      funções: new Map(),
+      função: this.atual.função,
+    });
   }
 
   pop() {
@@ -49,6 +54,14 @@ export class Escopo {
     return this.atual.funções;
   }
 
+  get função(): Tipo | undefined {
+    return this.atual.função;
+  }
+
+  set função(tipo: Tipo) {
+    this.atual.função = tipo;
+  }
+
   hasVariável(nome: string) {
     for (const escopo of this.pilha) {
       if (escopo.variáveis.has(nome)) {
@@ -60,14 +73,32 @@ export class Escopo {
   }
 
   hasFunção(nome: string) {
-    return this.funções.has(nome);
+    for (const escopo of this.pilha) {
+      if (escopo.funções.has(nome)) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   getVariável(nome: string) {
+    for (const escopo of this.pilha) {
+      if (escopo.variáveis.has(nome)) {
+        return escopo.variáveis.get(nome);
+      }
+    }
+
     return this.variáveis.get(nome);
   }
 
   getFunção(nome: string) {
+    for (const escopo of this.pilha) {
+      if (escopo.funções.has(nome)) {
+        return escopo.funções.get(nome);
+      }
+    }
+
     return this.funções.get(nome);
   }
 }
