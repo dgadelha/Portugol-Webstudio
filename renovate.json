@@ -1,11 +1,17 @@
 {
   "$schema": "https://json.schemastore.org/renovate",
-  "extends": ["config:base", ":preserveSemverRanges", "group:allNonMajor"],
+  "extends": [
+    "config:js-app",
+    ":preserveSemverRanges",
+    ":disableDependencyDashboard",
+    ":maintainLockFilesWeekly",
+    ":rebaseStalePrs"
+  ],
   "ignoreDeps": ["typescript"],
+  "ignorePresets": [":dependencyDashboard"],
   "packageRules": [
     {
-      "groupName": "angular dependencies",
-      "groupSlug": "angular-related",
+      "groupName": "Angular",
       "matchPackagePatterns": [
         "^@angular-devkit/",
         "^@angular-eslint/",
