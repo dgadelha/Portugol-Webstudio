@@ -2,36 +2,33 @@
 
 <nav>
   <button mat-ripple (click)="newTab.emit()">
-    <img
-      src="https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/ide/src/main/resources/br/univali/ps/ui/icones/Dark/grande/newfile.png"
-      alt="Ícone de novo arquivo"
-    />
-
+    <svg-icon src="assets/mdi/file-plus-outline.svg" svgClass="text-secondary" svgAriaLabel="Ícone de novo arquivo" />
     <span>Novo Arquivo</span>
   </button>
 
   <button mat-ripple (click)="fileInput.click()">
-    <img
-      src="https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/ide/src/main/resources/br/univali/ps/ui/icones/Dark/grande/openfile.png"
-      alt="Ícone de abrir arquivo"
+    <svg-icon
+      src="assets/mdi/folder-open-outline.svg"
+      svgClass="text-primary"
+      svgAriaLabel="Ícone de pasta para ação de abrir arquivo"
     />
 
     <span>Abrir Arquivo</span>
-
     <input #fileInput type="file" hidden multiple accept=".por,text/plain" (change)="openFile($event)" />
   </button>
 
   <button mat-ripple (click)="openExamplesDialog()">
-    <img src="assets/icon-book-open-page-variant-outline.svg" alt="Ícone de livro para ação de abrir exemplo" />
+    <svg-icon
+      src="assets/mdi/book-open-page-variant-outline.svg"
+      svgClass="text-primary"
+      svgAriaLabel="Ícone de livro para ação de abrir exemplo"
+    />
+
     <span>Abrir Exemplo</span>
   </button>
 
   <button mat-ripple (click)="help.emit()">
-    <img
-      src="https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/ide/src/main/resources/br/univali/ps/ui/icones/Dark/grande/help.png"
-      alt="Ícone de ajuda"
-    />
-
+    <svg-icon src="assets/mdi/help.svg" svgClass="text-quaternary" alt="Ícone de ajuda" />
     <span>Ajuda</span>
   </button>
 
@@ -42,8 +39,45 @@
     mat-ripple
     (click)="gaService.event('suggest_features', 'Aba Inicial', 'Enviar sugestões')"
   >
-    <img src="assets/icon-lightbulb-on-outline.svg" alt="Ícone de lâmpada para ação de enviar sugestões" />
+    <svg-icon
+      src="assets/mdi/lightbulb-on-outline.svg"
+      svgClass="text-secondary"
+      svgAriaLabel="Ícone de lâmpada para ação de enviar sugestões"
+    />
+
     <span>Sugestões</span>
+  </a>
+
+  <a
+    href="https://github.com/dgadelha/Portugol-Webstudio/discussions/categories/d%C3%BAvidas-perguntas"
+    target="_blank"
+    rel="external noreferrer noopener nofollow"
+    mat-ripple
+    (click)="gaService.event('ask_questions', 'Aba Inicial', 'Enviar dúvidas')"
+  >
+    <svg-icon
+      src="assets/mdi/comment-question-outline.svg"
+      svgClass="text-quaternary"
+      svgAriaLabel="Ícone de balão de diálogo para ação de enviar dúvidas"
+    />
+
+    <span>Dúvidas e Perguntas</span>
+  </a>
+
+  <a
+    href="https://github.com/dgadelha/Portugol-Webstudio/issues/new?template=bug.yml"
+    target="_blank"
+    rel="external noreferrer noopener nofollow"
+    mat-ripple
+    (click)="gaService.event('ask_questions', 'Aba Inicial', 'Enviar dúvidas')"
+  >
+    <svg-icon
+      src="assets/mdi/bug-outline.svg"
+      svgClass="text-tertiary"
+      svgAriaLabel="Ícone de inseto para ação de reportar um problema"
+    />
+
+    <span>Reportar um problema</span>
   </a>
 
   <a
@@ -53,29 +87,16 @@
     mat-ripple
     (click)="gaService.event('view_source_code', 'Aba Inicial', 'Ver código-fonte')"
   >
-    <img src="assets/icon-github.svg" alt="Ícone do GitHub" />
+    <svg-icon src="assets/icon-github.svg" svgAriaLabel="Ícone do GitHub" />
     <span>Código-fonte</span>
   </a>
 </nav>
 
 <section class="info">
-  <p>
-    <strong>Nova versão:</strong> Podem existir problemas, caso encontre algum ou tenha sugestões/comentários,
-    <a
-      href="https://github.com/dgadelha/Portugol-Webstudio/issues/new/choose"
-      target="_blank"
-      rel="external noopener"
-    >
-      nos envie por aqui, estamos sempre acompanhando</a
-    >.
-  </p>
-
-  <hr />
-
-  <h4>📰&nbsp;&nbsp;Novidades</h4>
+  <h4><svg-icon src="assets/mdi/newspaper.svg" svgAriaLabel="Ícone de jornal para notícias" />Novidades</h4>
+  <p><strong>30/04/2024:</strong> Melhorias de acessibilidade e ajustes na tela inicial e ícones</p>
   <p><strong>10/03/2024:</strong> Otimização de desempenho na análise semântica</p>
   <p><strong>09/03/2024:</strong> Novo domínio: <strong>portugol.dev</strong> e experimento com propagandas</p>
-  <p><strong>08/03/2024:</strong> Melhorias de performance na interface da plataforma</p>
 </section>
 
 <ins

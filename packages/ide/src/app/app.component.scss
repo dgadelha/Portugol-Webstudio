@@ -48,6 +48,8 @@
     justify-content: flex-start;
     min-width: 0;
     font-family: $font;
+    -webkit-user-select: none;
+    -moz-user-select: none;
     user-select: none;
 
     .mat-mdc-icon-button .mat-mdc-button-persistent-ripple {
@@ -97,7 +99,9 @@
       }
 
       &.mat-mdc-tab-disabled {
-        .mdc-tab__content, .mat-mdc-tab-ripple, .mdc-tab__ripple::before {
+        .mdc-tab__content,
+        .mat-mdc-tab-ripple,
+        .mdc-tab__ripple::before {
           pointer-events: all;
         }
       }
@@ -111,15 +115,8 @@
         $size: 30px;
         width: $size;
         height: $size;
-        line-height: $size;
-
-        .mat-icon {
-          $isize: $size - 10px;
-          width: $isize;
-          height: $isize;
-          font-size: $isize;
-          line-height: $isize;
-        }
+        line-height: 0;
+        --mdc-icon-button-icon-size: 20px;
       }
     }
 
@@ -148,7 +145,8 @@
       justify-content: center;
       width: 1rem;
       margin-right: 0.5rem;
-      fill: $foreground-300;
+      color: $foreground-300;
+      fill: currentColor;
     }
 
     .tab-text {
@@ -170,4 +168,8 @@
       overflow: hidden;
     }
   }
+}
+
+.cap-my-height {
+  height: 1.15rem;
 }

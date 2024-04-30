@@ -9,7 +9,7 @@
     [disabled]="executor.running || transpiling"
     title="Iniciar execução"
   >
-    <svg-icon src="assets/icon-start.svg"></svg-icon>
+    <svg-icon src="assets/icon-start.svg" svgAriaLabel="Ícone de iniciar execução" />
   </button>
 
   <button
@@ -20,17 +20,30 @@
     [disabled]="!executor.running && !transpiling"
     title="Parar execução"
   >
-    <svg-icon src="assets/icon-stop.svg"></svg-icon>
+    <svg-icon
+      src="assets/mdi/square-rounded-outline.svg"
+      svgClass="text-tertiary"
+      svgAriaLabel="Ícone de parar execução"
+    />
   </button>
 
   <div class="sidebar-divider"></div>
 
   <button mat-ripple type="button" class="sidebar-button" (click)="saveFile()" title="Salvar arquivo">
-    <svg-icon src="assets/icon-file-save.svg"></svg-icon>
+    <svg-icon
+      src="assets/mdi/content-save-outline.svg"
+      svgClass="text-quaternary"
+      svgAriaLabel="Ícone de disquete para ação de salvar arquivo"
+    />
   </button>
 
   <button mat-ripple type="button" class="sidebar-button" (click)="fileInput.click()" title="Abrir arquivo">
-    <svg-icon src="assets/icon-file-open.svg"></svg-icon>
+    <svg-icon
+      src="assets/mdi/folder-open-outline.svg"
+      svgClass="text-primary"
+      svgAriaLabel="Ícone de pasta para ação de abrir arquivo"
+    />
+
     <input #fileInput type="file" hidden accept=".por,text/plain" (change)="openFile($event)" />
   </button>
 
@@ -42,13 +55,17 @@
     (click)="shareFile()"
     title="Compartilhar código"
   >
-    <svg-icon src="assets/icon-share.svg"></svg-icon>
+    <svg-icon
+      src="assets/mdi/share-variant-outline.svg"
+      svgClass="text-secondary"
+      svgAriaLabel="Ícone de compartilhar código"
+    />
   </button>
 
   <div class="sidebar-divider"></div>
 
   <button mat-ripple type="button" class="sidebar-button" (click)="openHelp()" title="Abrir seção de Ajuda">
-    <svg-icon src="assets/icon-help-circle-outline.svg"></svg-icon>
+    <svg-icon src="assets/mdi/help-circle-outline.svg" svgClass="text-quaternary" svgAriaLabel="Ícone de ajuda" />
   </button>
 </div>
 

@@ -1,8 +1,8 @@
 import { NestedTreeControl } from "@angular/cdk/tree";
 import { HttpClient } from "@angular/common/http";
-import { AfterViewInit, OnDestroy, OnInit, Component, EventEmitter, NgZone, Output } from "@angular/core";
+import { AfterViewInit, Component, EventEmitter, NgZone, OnDestroy, OnInit, Output } from "@angular/core";
 import { MatTreeNestedDataSource } from "@angular/material/tree";
-import { SafeResourceUrl, DomSanitizer } from "@angular/platform-browser";
+import { DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
 import { GoogleAnalyticsService } from "ngx-google-analytics";
 import { Subscription } from "rxjs";
 

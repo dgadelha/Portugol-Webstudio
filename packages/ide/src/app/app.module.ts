@@ -1,6 +1,6 @@
 import { HttpClientModule } from "@angular/common/http";
 import { APP_INITIALIZER, ErrorHandler, NgModule } from "@angular/core";
-import { provideFirebaseApp, initializeApp } from "@angular/fire/app";
+import { initializeApp, provideFirebaseApp } from "@angular/fire/app";
 import { getStorage, provideStorage } from "@angular/fire/storage";
 import { FormsModule } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
@@ -21,13 +21,13 @@ import { AngularSvgIconModule } from "angular-svg-icon";
 import { KeyboardShortcutsModule } from "ng-keyboard-shortcuts";
 import { NgxGoogleAnalyticsModule } from "ngx-google-analytics";
 
+import { environment } from "../environments/environment";
 import { AppComponent } from "./app.component";
 import { DialogOpenExampleComponent } from "./dialog-open-example/dialog-open-example.component";
 import { MonacoService } from "./monaco.service";
 import { TabEditorComponent } from "./tab-editor/tab-editor.component";
 import { TabHelpComponent } from "./tab-help/tab-help.component";
 import { TabStartComponent } from "./tab-start/tab-start.component";
-import { environment } from "../environments/environment";
 
 @NgModule({
   declarations: [AppComponent, TabEditorComponent, TabStartComponent, TabHelpComponent, DialogOpenExampleComponent],

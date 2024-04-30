@@ -1,15 +1,15 @@
 import {
-  ElementRef,
-  OnDestroy,
-  OnInit,
   Component,
+  ElementRef,
   EventEmitter,
   Input,
+  OnDestroy,
+  OnInit,
   Output,
   TemplateRef,
   ViewChild,
 } from "@angular/core";
-import { Storage, uploadString, ref } from "@angular/fire/storage";
+import { Storage, ref, uploadString } from "@angular/fire/storage";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { PortugolCodeError } from "@portugol-webstudio/antlr";
 import { PortugolExecutor, PortugolWebWorkersRunner } from "@portugol-webstudio/runner";

@@ -67,8 +67,11 @@ $PortugolWebstudio-theme: mat.define-dark-theme(
 // that you are using.
 @include mat.all-component-themes($PortugolWebstudio-theme);
 @import "variables";
+@import "@fontsource/lato/400.css";
+@import "@fontsource/lato/700.css";
 
-.mat-mdc-tooltip, .mdc-tooltip__surface {
+.mat-mdc-tooltip,
+.mdc-tooltip__surface {
   --mdc-plain-tooltip-supporting-text-line-height: normal;
   --mdc-plain-tooltip-supporting-text-size: 0.75rem;
   --mdc-plain-tooltip-supporting-text-weight: 400;
@@ -127,4 +130,8 @@ s {
 
 .d-flex {
   display: flex;
+}
+
+svg-icon > svg {
+  fill: currentColor;
 }

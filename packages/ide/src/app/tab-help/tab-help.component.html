@@ -1,7 +1,7 @@
 <as-split [direction]="isBelowMd ? 'vertical' : 'horizontal'" unit="pixel">
   <as-split-area [size]="350">
     <header>
-      <svg-icon src="assets/icon-help-circle-outline.svg"></svg-icon>
+      <svg-icon src="assets/mdi/help-circle-outline.svg" svgClass="text-quaternary" svgAriaLabel="Ícone de ajuda" />
       <span>Ajuda</span>
     </header>
 
@@ -10,7 +10,7 @@
         <mat-tree-node *matTreeNodeDef="let node">
           <li mat-ripple (click)="loadItem(node)" [class.active]="current?.id === node.id">
             <button mat-icon-button disabled title="Ícone de pasta">
-              <mat-icon></mat-icon>
+              <svg-icon />
             </button>
             <span>{{ node.text }}</span>
           </li>
@@ -18,10 +18,23 @@
 
         <mat-nested-tree-node *matTreeNodeDef="let node; when: hasChildren">
           <li (click)="loadItem(node)" [class.active]="current?.id === node.id">
-            <button mat-icon-button matTreeNodeToggle>
-              <mat-icon class="mat-icon-rtl-mirror">
-                {{ treeControl.isExpanded(node) ? "expand_more" : "chevron_right" }}
-              </mat-icon>
+            <button
+              mat-icon-button
+              matTreeNodeToggle
+              [ngSwitch]="treeControl.isExpanded(node)"
+              aria-label="Expandir/retrair conteúdo da pasta"
+            >
+              <svg-icon
+                *ngSwitchCase="true"
+                src="assets/mdi/chevron-down.svg"
+                svgAriaLabel="Ícone de seta para baixo indicando o conteúdo expandido"
+              />
+
+              <svg-icon
+                *ngSwitchCase="false"
+                src="assets/mdi/chevron-right.svg"
+                svgAriaLabel="Ícone de seta para direita indicando o conteúdo recolhido"
+              />
             </button>
 
             <span>{{ node.text }}</span>

@@ -1,17 +1,17 @@
 @import "variables";
 
 header {
-  display: block;
+  display: flex;
+  align-items: center;
   background-color: #121e24;
   margin: 7.5px;
   padding: 12.5px 15px;
-  font-size: 14px;
+  font-size: 1rem;
+  gap: 0.5rem;
 
-  svg {
+  svg-icon {
     width: 1.3rem;
     height: 1.3rem;
-    vertical-align: -0.3125em;
-    margin-right: 0.4rem;
   }
 }
 
@@ -31,6 +31,8 @@ ul {
   padding-left: 1rem;
   padding-right: 1rem;
   box-sizing: border-box;
+  -webkit-user-select: none;
+  -moz-user-select: none;
   user-select: none;
   background-color: $background-200;
 
