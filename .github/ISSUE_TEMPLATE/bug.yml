@@ -1,6 +1,5 @@
 name: 🐞 Bug / Problema na IDE
 description: Reportar problemas encontrados na interface ou na execução de código
-title: "[Bug]: "
 labels: ["bug"]
 body:
   - type: markdown
@@ -8,7 +7,7 @@ body:
       value: |
         Agradecemos por dedicar um tempo para reportar um problema na IDE. Para nos ajudar a entender e corrigir o problema, por favor, preencha o formulário abaixo com o máximo de detalhes possível.
 
-        Não se esqueça de ajustar o título acima para descrever o problema de forma resumida.
+        Não se esqueça de incluir o título acima para descrever o problema de forma resumida.
 
         ---
   - type: textarea
