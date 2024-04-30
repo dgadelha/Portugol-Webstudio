@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: ❓ Dúvidas / Perguntas
+    url: https://github.com/dgadelha/Portugol-Webstudio/discussions/new?category=perguntas-respostas
+    about: Faça perguntas sobre o uso da IDE, a linguagem Portugol ou qualquer outro assunto relacionado.
+  - name: 💡 Ideias e sugestões
+    url: https://github.com/dgadelha/Portugol-Webstudio/discussions/new?category=ideias-e-sugest%C3%B5es
+    about: Compartilhe suas ideias e sugestões para melhorar a IDE.
+  - name: 💬 Comunidade
+    url: https://github.com/dgadelha/Portugol-Webstudio/discussions
+    about: Participe de discussões com outros usuários da IDE.
