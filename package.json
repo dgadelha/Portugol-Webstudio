@@ -20,7 +20,7 @@
     "url": "https://github.com/dgadelha/Portugol-Webstudio/issues"
   },
   "homepage": "https://github.com/dgadelha/Portugol-Webstudio#readme",
-  "packageManager": "npm@10.6.0",
+  "packageManager": "^npm@10.7.0",
   "scripts": {
     "lint": "sherif && npm run eslint:check",
     "eslint:fix": "eslint --fix 'packages/**/*.{t,j}s'",
@@ -36,19 +36,22 @@
   },
   "devDependencies": {
     "@angular-eslint/eslint-plugin": "^17.3.0",
-    "@typescript-eslint/eslint-plugin": "^7.5.0",
+    "@typescript-eslint/eslint-plugin": "^7.8.0",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-config-xo": "^0.44.0",
     "eslint-plugin-prettier": "^5.1.3",
     "eslint-plugin-unicorn": "^52.0.0",
     "lerna": "^8.1.2",
-    "sherif": "^0.8.1"
+    "sherif": "^0.8.4"
   },
   "workspaces": [
     "packages/*"
   ],
   "overrides": {
+    "lerna": {
+      "tar": "^6.2.1"
+    },
     "ngx-build-plus": {
       "@angular-devkit/build-angular": {
         "browser-sync": {

@@ -138,12 +138,6 @@
             "buildTarget": "ide:build"
           }
         },
-        "deploy": {
-          "builder": "angular-cli-ghpages:deploy",
-          "options": {
-            "baseHref": "/"
-          }
-        },
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {

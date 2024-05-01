@@ -36,10 +36,10 @@
   },
   "dependencies": {
     "@portugol-webstudio/antlr": "*",
-    "@sentry/core": "^7.109.0",
+    "@sentry/core": "^7.112.2",
     "antlr4ng": "^3.0.4"
   },
   "devDependencies": {
-    "typescript": "~5.4.4"
+    "typescript": "~5.4.5"
   }
 }
