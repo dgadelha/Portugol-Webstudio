@@ -1,7 +1,7 @@
 import { PortugolJsRuntime } from "@portugol-webstudio/runtime";
-import { Subscription, Subject } from "rxjs";
+import { Subject, Subscription } from "rxjs";
 
-import { PortugolEvent, IPortugolRunner } from "./IPortugolRunner.js";
+import { IPortugolRunner, PortugolEvent } from "./IPortugolRunner.js";
 
 export class PortugolWebWorkersRunner extends IPortugolRunner {
   private worker: Worker;
@@ -159,6 +159,10 @@ export class PortugolWebWorkersRunner extends IPortugolRunner {
 
         case "finish": {
           this.destroy();
+          break;
+        }
+
+        case "started": {
           break;
         }
 
