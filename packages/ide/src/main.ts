@@ -11,8 +11,6 @@ Sentry.init({
   tracesSampleRate: 0.1,
   replaysOnErrorSampleRate: 0.1,
   integrations: [
-    Sentry.dedupeIntegration(),
-    Sentry.captureConsoleIntegration(),
     Sentry.replayIntegration({
       maskAllInputs: false,
       maskAllText: false,
