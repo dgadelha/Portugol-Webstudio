@@ -2,7 +2,7 @@ import { PortugolCodeError, PortugolErrorListener, PortugolLexer, PortugolParser
 import { PortugolErrorChecker } from "@portugol-webstudio/parser";
 import { PortugolJs } from "@portugol-webstudio/runtime";
 import { CharStream, CommonTokenStream } from "antlr4ng";
-import { Subscription, Subject } from "rxjs";
+import { Subject, Subscription } from "rxjs";
 
 import { IPortugolRunner, PortugolEvent } from "./runners/IPortugolRunner.js";
 
@@ -225,7 +225,6 @@ export class PortugolExecutor {
 
       this.reset(false);
       this.events.next({ type: "parseError", errors: parseErrors });
-      this.events.error(error);
     }
   }
 
