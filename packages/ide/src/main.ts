@@ -15,6 +15,8 @@ Sentry.init({
       maskAllInputs: false,
       maskAllText: false,
     }),
+    Sentry.extraErrorDataIntegration(),
+    Sentry.sessionTimingIntegration(),
     Sentry.browserTracingIntegration(),
   ],
 });
