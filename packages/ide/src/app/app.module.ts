@@ -1,5 +1,5 @@
 import { HttpClientModule } from "@angular/common/http";
-import { APP_INITIALIZER, ErrorHandler, NgModule } from "@angular/core";
+import { APP_INITIALIZER, ErrorHandler, NgModule, isDevMode } from "@angular/core";
 import { initializeApp, provideFirebaseApp } from "@angular/fire/app";
 import { getStorage, provideStorage } from "@angular/fire/storage";
 import { FormsModule } from "@angular/forms";
@@ -21,6 +21,7 @@ import { AngularSvgIconModule } from "angular-svg-icon";
 import { KeyboardShortcutsModule } from "ng-keyboard-shortcuts";
 import { NgxGoogleAnalyticsModule } from "ngx-google-analytics";
 
+import { ServiceWorkerModule } from "@angular/service-worker";
 import { environment } from "../environments/environment";
 import { AppComponent } from "./app.component";
 import { DialogOpenExampleComponent } from "./dialog-open-example/dialog-open-example.component";
@@ -52,6 +53,12 @@ import { TabStartComponent } from "./tab-start/tab-start.component";
     MatIconModule,
     MatTooltipModule,
     MatTreeModule,
+    ServiceWorkerModule.register("ngsw-worker.js", {
+      enabled: !isDevMode(),
+      // Register the ServiceWorker as soon as the application is stable
+      // or after 30 seconds (whichever comes first).
+      registrationStrategy: "registerWhenStable:30000",
+    }),
   ],
   providers: [
     MonacoService,

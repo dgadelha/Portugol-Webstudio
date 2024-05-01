@@ -82,7 +82,9 @@
             "stylePreprocessorOptions": {
               "includePaths": ["packages/ide/src/"]
             },
-            "scripts": []
+            "scripts": [],
+            "serviceWorker": true,
+            "ngswConfigPath": "packages/ide/ngsw-config.json"
           },
           "configurations": {
             "production": {

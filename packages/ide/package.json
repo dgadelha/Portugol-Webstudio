@@ -40,6 +40,7 @@
     "@angular/platform-browser": "^17.3.6",
     "@angular/platform-browser-dynamic": "^17.3.6",
     "@angular/router": "^17.3.6",
+    "@angular/service-worker": "^17.3.6",
     "@fontsource/lato": "^5.0.21",
     "@materia-ui/ngx-monaco-editor": "^6.0.0",
     "@mdi/svg": "^7.4.47",
