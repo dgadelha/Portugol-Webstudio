@@ -75,6 +75,11 @@
                 "input": "./node_modules/@mdi/svg/svg/",
                 "output": "./assets/mdi/"
               },
+              {
+                "glob": "manifest.webmanifest",
+                "input": "packages/ide/src/",
+                "output": "/"
+              },
               "packages/ide/src/favicon.ico",
               "packages/ide/src/assets"
             ],
