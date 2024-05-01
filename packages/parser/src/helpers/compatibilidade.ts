@@ -146,7 +146,7 @@ export const TabelaCompatibilidadeRetornoFunção: Record<
     [TipoPrimitivo.INTEIRO]: ResultadoCompatibilidade.INCOMPATÍVEL,
     [TipoPrimitivo.LÓGICO]: ResultadoCompatibilidade.INCOMPATÍVEL,
     [TipoPrimitivo.REAL]: ResultadoCompatibilidade.INCOMPATÍVEL,
-    [TipoPrimitivo.VAZIO]: ResultadoCompatibilidade.INCOMPATÍVEL,
+    [TipoPrimitivo.VAZIO]: ResultadoCompatibilidade.COMPATÍVEL,
   },
 };
 

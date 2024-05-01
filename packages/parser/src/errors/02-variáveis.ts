@@ -1,6 +1,10 @@
 import { PortugolCodeError } from "@portugol-webstudio/antlr";
 
-import { ResultadoCompatibilidade, TabelaCompatibilidadeAtribuição } from "../helpers/compatibilidade.js";
+import {
+  ResultadoCompatibilidade,
+  TabelaCompatibilidadeAtribuição,
+  TabelaCompatibilidadeRetornoFunção,
+} from "../helpers/compatibilidade.js";
 import { Escopo } from "../helpers/Escopo.js";
 import { resolverResultadoExpressão } from "../helpers/expressões.js";
 import {
@@ -143,7 +147,8 @@ export function* checarUsoEscopo(arquivo: Arquivo): Generator<PortugolCodeError>
             const tret = resolverResultadoExpressão(ret.expressão, escopo);
 
             if (
-              TabelaCompatibilidadeAtribuição[escopo.função.primitivo][tret] === ResultadoCompatibilidade.INCOMPATÍVEL
+              TabelaCompatibilidadeRetornoFunção[escopo.função.primitivo][tret] ===
+              ResultadoCompatibilidade.INCOMPATÍVEL
             ) {
               yield PortugolCodeError.fromContext(
                 ret.ctx,
