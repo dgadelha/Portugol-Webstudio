@@ -65,10 +65,7 @@ import { TabStartComponent } from "./tab-start/tab-start.component";
     {
       provide: ErrorHandler,
       useValue: Sentry.createErrorHandler({
-        showDialog: true,
-        dialogOptions: {
-          lang: "pt-br",
-        },
+        showDialog: false,
       }),
     },
     {
