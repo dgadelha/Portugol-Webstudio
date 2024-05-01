@@ -10,7 +10,15 @@ Sentry.init({
   debug: false,
   tracesSampleRate: 0.1,
   replaysOnErrorSampleRate: 0.1,
-  integrations: [new Sentry.Replay(), new Sentry.BrowserTracing()],
+  integrations: [
+    Sentry.dedupeIntegration(),
+    Sentry.captureConsoleIntegration(),
+    Sentry.replayIntegration({
+      maskAllInputs: false,
+      maskAllText: false,
+    }),
+    Sentry.browserTracingIntegration(),
+  ],
 });
 
 if (environment.production) {
