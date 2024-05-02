@@ -13,7 +13,22 @@
       "name": "assets",
       "installMode": "prefetch",
       "resources": {
-        "files": ["/assets/**", "/*.(svg|cur|jpg|jpeg|png|apng|webp|avif|gif|otf|ttf|woff|woff2)"]
+        "files": [
+          "/assets/*.*",
+          "/assets/logo/**",
+          "/assets/mdi/**",
+          "/assets/portugol-worker/**",
+          "/assets/recursos/**",
+          "/*.(svg|cur|jpg|jpeg|png|apng|webp|avif|gif|otf|ttf|woff|woff2)"
+        ]
+      }
+    },
+    {
+      "name": "monaco-editor",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "resources": {
+        "files": ["/assets/monaco-editor/**"]
       }
     }
   ]

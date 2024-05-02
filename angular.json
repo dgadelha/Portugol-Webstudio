@@ -66,11 +66,6 @@
                 "output": "assets/portugol-worker/"
               },
               {
-                "glob": "**/*",
-                "input": "packages/ide/src/public/",
-                "output": "/"
-              },
-              {
                 "glob": "*.svg",
                 "input": "./node_modules/@mdi/svg/svg/",
                 "output": "./assets/mdi/"
