@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import { SwUpdate } from "@angular/service-worker";
 import { CreateHotToastRef, HotToastService } from "@ngxpert/hot-toast";
+import { interval } from "rxjs";
 import { NewVersionAvailableComponent } from "./new-version-available/new-version-available.component";
 
 @Injectable({ providedIn: "root" })
@@ -43,5 +44,9 @@ export class PwaService {
     });
 
     this.swUpdate.checkForUpdate().catch(() => {});
+
+    interval(/* 30 min */ 30 * 60 * 1000).subscribe(() => {
+      this.swUpdate.checkForUpdate().catch(() => {});
+    });
   }
 }
