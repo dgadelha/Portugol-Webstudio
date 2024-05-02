@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from "@angular/core";
+import { AfterViewInit, Component, EventEmitter, Output } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { DomSanitizer } from "@angular/platform-browser";
 import { GoogleAnalyticsService } from "ngx-google-analytics";
@@ -11,7 +11,7 @@ import { DialogOpenExampleComponent } from "../dialog-open-example/dialog-open-e
   templateUrl: "./tab-start.component.html",
   styleUrls: ["./tab-start.component.scss"],
 })
-export class TabStartComponent {
+export class TabStartComponent implements AfterViewInit {
   @Output() newTab = new EventEmitter();
   @Output() help = new EventEmitter();
 
@@ -41,6 +41,14 @@ export class TabStartComponent {
     } else {
       this.logo = this.sanitizer.bypassSecurityTrustResourceUrl("assets/logo/default.svg");
     }
+  }
+
+  ngAfterViewInit() {
+    setTimeout(() => {
+      try {
+        ((window as any).adsbygoogle = (window as any).adsbygoogle || []).push({});
+      } catch {}
+    }, 1000);
   }
 
   openFile(event: Event) {

@@ -1,4 +1,5 @@
 import {
+  AfterViewInit,
   Component,
   ElementRef,
   EventEmitter,
@@ -28,7 +29,7 @@ import { WorkerService } from "../worker.service";
   templateUrl: "./tab-editor.component.html",
   styleUrls: ["./tab-editor.component.scss"],
 })
-export class TabEditorComponent implements OnInit, OnDestroy {
+export class TabEditorComponent implements OnInit, AfterViewInit, OnDestroy {
   private _code$?: Subscription;
   private _stdOut$?: Subscription;
   private _events$?: Subscription;
@@ -142,6 +143,14 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     });
 
     console.log(`Runtime has ${PortugolJsRuntime.split("\n").length} lines`);
+  }
+
+  ngAfterViewInit() {
+    setTimeout(() => {
+      try {
+        ((window as any).adsbygoogle = (window as any).adsbygoogle || []).push({});
+      } catch {}
+    }, 1000);
   }
 
   ngOnDestroy() {
