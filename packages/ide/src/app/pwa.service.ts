@@ -41,5 +41,7 @@ export class PwaService {
         }
       }
     });
+
+    this.swUpdate.checkForUpdate().catch(() => {});
   }
 }
