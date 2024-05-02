@@ -16,7 +16,6 @@
         "files": [
           "/assets/*.*",
           "/assets/logo/**",
-          "/assets/mdi/**",
           "/assets/portugol-worker/**",
           "/assets/recursos/**",
           "/*.(svg|cur|jpg|jpeg|png|apng|webp|avif|gif|otf|ttf|woff|woff2)"
@@ -24,11 +23,11 @@
       }
     },
     {
-      "name": "monaco-editor",
+      "name": "third-party",
       "installMode": "lazy",
       "updateMode": "prefetch",
       "resources": {
-        "files": ["/assets/monaco-editor/**"]
+        "files": ["/assets/monaco-editor/**", "/assets/mdi/**"]
       }
     }
   ]
