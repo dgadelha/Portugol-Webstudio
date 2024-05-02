@@ -24,7 +24,7 @@ export async function configurarRecursos() {
 
     const url = "https://github.com/UNIVALI-LITE/Portugol-Studio/archive/master.zip";
     const remoteEtag = await getETag(url);
-    const localEtag = path.join(baseDir, ".etag");
+    const localEtag = path.join(baseDir, "etag");
 
     console.log("Remote ETag:", remoteEtag);
 
