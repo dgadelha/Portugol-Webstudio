@@ -7,7 +7,7 @@ export class WorkerService {
   busy = false;
 
   init() {
-    this.worker = new Worker("assets/portugol-worker/worker.js?t=" + Date.now());
+    this.worker = new Worker("assets/portugol-worker/worker.js");
   }
 
   async checkCode(code: string): Promise<{
