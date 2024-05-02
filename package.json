@@ -50,7 +50,7 @@
   ],
   "overrides": {
     "lerna": {
-      "tar": "^6.2.1"
+      "tar": "^7.0.0"
     },
     "ngx-build-plus": {
       "@angular-devkit/build-angular": {
