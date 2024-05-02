@@ -44,6 +44,8 @@
     "@fontsource/lato": "^5.0.21",
     "@materia-ui/ngx-monaco-editor": "^6.0.0",
     "@mdi/svg": "^7.4.47",
+    "@ngneat/overview": "^6.0.0",
+    "@ngxpert/hot-toast": "^2.0.0",
     "@portugol-webstudio/antlr": "*",
     "@portugol-webstudio/parser": "*",
     "@portugol-webstudio/resources": "*",

@@ -15,6 +15,7 @@ import { MatTreeModule } from "@angular/material/tree";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { MonacoEditorModule } from "@materia-ui/ngx-monaco-editor";
+import { provideHotToastConfig } from "@ngxpert/hot-toast";
 import * as Sentry from "@sentry/angular-ivy";
 import { AngularSplitModule } from "angular-split";
 import { AngularSvgIconModule } from "angular-svg-icon";
@@ -26,6 +27,7 @@ import { environment } from "../environments/environment";
 import { AppComponent } from "./app.component";
 import { DialogOpenExampleComponent } from "./dialog-open-example/dialog-open-example.component";
 import { MonacoService } from "./monaco.service";
+import { PwaService } from "./pwa.service";
 import { TabEditorComponent } from "./tab-editor/tab-editor.component";
 import { TabHelpComponent } from "./tab-help/tab-help.component";
 import { TabStartComponent } from "./tab-start/tab-start.component";
@@ -61,7 +63,11 @@ import { TabStartComponent } from "./tab-start/tab-start.component";
     }),
   ],
   providers: [
+    provideHotToastConfig({
+      position: "bottom-right",
+    }),
     MonacoService,
+    PwaService,
     {
       provide: ErrorHandler,
       useValue: Sentry.createErrorHandler({
@@ -72,7 +78,7 @@ import { TabStartComponent } from "./tab-start/tab-start.component";
       provide: APP_INITIALIZER,
       useFactory: () => () => {},
       multi: true,
-      deps: [MonacoService],
+      deps: [MonacoService, PwaService],
     },
   ],
   bootstrap: [AppComponent],
