@@ -11,9 +11,11 @@ const ignoredExamples = [
 ];
 
 export async function generateExamplesJson(baseDir: string, dir: string) {
-  console.log(`Obtendo exemplos de ${baseDir}/${dir}`);
+  const indexDir = path.join(baseDir, dir);
 
-  const indexProperties = path.join(baseDir, dir, "index.properties");
+  console.log(`Obtendo exemplos de ${indexDir}`);
+
+  const indexProperties = path.join(indexDir, "index.properties");
   const parsedProperties = ini.decode(await fs.readFile(indexProperties, "utf8"));
   const keys = Object.keys(parsedProperties);
   const items: Array<Record<string, string>> = [];

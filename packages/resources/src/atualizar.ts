@@ -1,5 +1,6 @@
 import { existsSync, promises as fs } from "node:fs";
 import path from "node:path";
+import url from "node:url";
 
 import AdmZip from "adm-zip";
 import * as rimraf from "rimraf";
@@ -22,8 +23,8 @@ export async function configurarRecursos() {
       await fs.unlink(psZip);
     }
 
-    const url = "https://github.com/UNIVALI-LITE/Portugol-Studio/archive/master.zip";
-    const remoteEtag = await getETag(url);
+    const fileUrl = "https://github.com/UNIVALI-LITE/Portugol-Studio/archive/master.zip";
+    const remoteEtag = await getETag(fileUrl);
     const localEtag = path.join(baseDir, "etag");
 
     console.log("Remote ETag:", remoteEtag);
@@ -44,7 +45,7 @@ export async function configurarRecursos() {
       rimraf.sync(baseDir);
     }
 
-    await download(url, psZip);
+    await download(fileUrl, psZip);
 
     console.log("Download concluído, extraindo os recursos de ajuda...");
 
@@ -61,8 +62,7 @@ export async function configurarRecursos() {
     await fs.unlink(psZip);
 
     console.log("Gerando índice da aba Ajuda...");
-    await import(path.join(baseDir, "ajuda", "scripts", "topicos.js"));
-    // require(join(baseDir, "ajuda", "scripts", "topicos"));
+    await import(url.pathToFileURL(path.join(baseDir, "ajuda", "scripts", "topicos.js")).toString());
 
     console.log("Ajustando arquivos HTML...");
     await patchHtmlFiles();
