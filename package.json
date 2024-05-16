@@ -37,7 +37,7 @@
   "devDependencies": {
     "@angular-eslint/eslint-plugin": "^17.3.0",
     "@typescript-eslint/eslint-plugin": "^7.8.0",
-    "eslint": "^8.57.0",
+    "eslint": "^9.0.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-config-xo": "^0.44.0",
     "eslint-plugin-prettier": "^5.1.3",
