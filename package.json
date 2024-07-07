@@ -43,7 +43,7 @@
     "eslint-plugin-prettier": "^5.1.3",
     "eslint-plugin-unicorn": "^52.0.0",
     "lerna": "^8.1.2",
-    "sherif": "^0.8.4"
+    "sherif": "^0.10.0"
   },
   "workspaces": [
     "packages/*"
