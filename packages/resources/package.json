@@ -32,16 +32,16 @@
     "build": "node --no-warnings --loader ts-node/esm src/atualizar.ts"
   },
   "devDependencies": {
-    "@swc/core": "^1.4.17",
+    "@swc/core": "^1.7.0",
     "@types/adm-zip": "^0.5.5",
-    "@types/ini": "^4.1.0",
-    "adm-zip": "^0.5.12",
-    "axios": "^1.6.8",
+    "@types/ini": "^4.1.1",
+    "adm-zip": "^0.5.14",
+    "axios": "^1.7.2",
     "iconv-lite": "^0.6.3",
-    "ini": "^4.1.2",
+    "ini": "^4.1.3",
     "readdirp": "^3.6.0",
-    "rimraf": "^5.0.5",
+    "rimraf": "^6.0.1",
     "slugify": "^1.6.6",
-    "typescript": "~5.4.5"
+    "typescript": "~5.5.4"
   }
 }

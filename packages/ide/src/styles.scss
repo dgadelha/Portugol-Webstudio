@@ -45,15 +45,15 @@ $md-webstudio: (
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
-$PortugolWebstudio-primary: mat.define-palette($md-webstudio);
-$PortugolWebstudio-accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
+$PortugolWebstudio-primary: mat.m2-define-palette($md-webstudio);
+$PortugolWebstudio-accent: mat.m2-define-palette(mat.$m2-pink-palette, A200, A100, A400);
 
 // The warn palette is optional (defaults to red).
-$PortugolWebstudio-warn: mat.define-palette(mat.$red-palette);
+$PortugolWebstudio-warn: mat.m2-define-palette(mat.$m2-red-palette);
 
 // Create the theme object. A theme consists of configurations for individual
 // theming systems such as "color" or "typography".
-$PortugolWebstudio-theme: mat.define-dark-theme(
+$PortugolWebstudio-theme: mat.m2-define-dark-theme(
   (
     color: (
       primary: $PortugolWebstudio-primary,
