@@ -1,4 +1,4 @@
-name: Build and Deploy
+name: Build and Deploy (Production)
 on:
   push:
     branches:
@@ -16,8 +16,7 @@ jobs:
           node-version: 20
 
       - name: Install dependencies 🔧
-        run: |
-          npm ci --include=dev
+        run: npm ci --include=dev
 
       - name: Build code 🚚
         run: npm run build
@@ -34,4 +33,4 @@ jobs:
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BRANCH: gh-pages
-          FOLDER: packages/ide/dist
+          FOLDER: packages/ide/dist/browser
