@@ -1,0 +1,79 @@
+name: Build and Deploy (Beta)
+on:
+  push:
+    branches:
+      - beta
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 📦
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies 🔧
+        run: npm ci --include=dev
+
+      - name: Build code 🚚
+        run: npm run build
+
+      - name: Release front-end 🎢
+        run: |
+          sed -i -e 's/%COMMIT_SHA%/'"${GITHUB_SHA::7}-BETA"'/g' packages/ide/src/app/tab-start/tab-start.component.html
+          export DATE_NOW_FORMATTED=$(date +'%d/%m/%Y %I:%M:%S %p %Z')
+          sed -i -e 's*%DATE%*'"${DATE_NOW_FORMATTED}"'*g' packages/ide/src/app/tab-start/tab-start.component.html
+          npm run release
+
+      - name: Setup Firebase Hosting 🔥
+        env:
+          BETA_FIREBASE_PROJECT_ID: ${{ secrets.BETA_FIREBASE_PROJECT_ID }}
+          BETA_FIREBASE_HOSTING_SITE: ${{ vars.BETA_FIREBASE_HOSTING_SITE }}
+        run: |
+          jq -n --arg default "$BETA_FIREBASE_PROJECT_ID" '{ "projects": { "default": $default } }' > .firebaserc
+          cat <<EOF | tee firebase.json
+          {
+            "hosting": {
+              "site": "$BETA_FIREBASE_HOSTING_SITE",
+              "public": "packages/ide/dist/browser",
+              "ignore": ["firebase.json", "**/.*", "**/*.map", "**/*.map.*", "**/node_modules/**"],
+              "headers": [
+                {
+                  "source": "/**",
+                  "headers": [
+                    {
+                      "key": "Cache-Control",
+                      "value": "max-age=900, stale-while-revalidate=180"
+                    }
+                  ]
+                },
+                {
+                  "source":
+                    "**/*.@(jpg|jpeg|gif|png|svg|webp|css|eot|otf|ttf|ttc|woff|woff2|font.css)",
+                  "headers": [
+                    {
+                      "key": "Cache-Control",
+                      "value": "max-age=604800"
+                    }
+                  ]
+                }
+              ],
+              "rewrites": [
+                {
+                  "source": "**",
+                  "destination": "/index.html"
+                }
+              ]
+            }
+          }
+          EOF
+
+      - name: Deploy 🚀
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          firebaseServiceAccount: ${{ secrets.BETA_FIREBASE_SERVICE_ACCOUNT }}
+          projectId: ${{ vars.BETA_FIREBASE_PROJECT_ID }}
+          channelId: live
