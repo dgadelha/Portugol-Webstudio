@@ -50,6 +50,7 @@
         "camelcase": "off",
         "capitalized-comments": "off",
         "func-names": ["error", "always"],
+        "lines-between-class-members": "off",
         "new-cap": "off",
         "no-alert": "off",
         "no-await-in-loop": "off",

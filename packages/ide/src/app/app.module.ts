@@ -1,4 +1,4 @@
-import { HttpClientModule } from "@angular/common/http";
+import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import { APP_INITIALIZER, ErrorHandler, NgModule, isDevMode } from "@angular/core";
 import { initializeApp, provideFirebaseApp } from "@angular/fire/app";
 import { getStorage, provideStorage } from "@angular/fire/storage";
@@ -16,7 +16,7 @@ import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { MonacoEditorModule } from "@materia-ui/ngx-monaco-editor";
 import { provideHotToastConfig } from "@ngxpert/hot-toast";
-import * as Sentry from "@sentry/angular-ivy";
+import * as Sentry from "@sentry/angular";
 import { AngularSplitModule } from "angular-split";
 import { AngularSvgIconModule } from "angular-svg-icon";
 import { KeyboardShortcutsModule } from "ng-keyboard-shortcuts";
@@ -39,13 +39,10 @@ import { TabStartComponent } from "./tab-start/tab-start.component";
     BrowserAnimationsModule,
     FormsModule,
     AngularSplitModule,
-    HttpClientModule,
     MonacoEditorModule,
     KeyboardShortcutsModule.forRoot(),
     NgxGoogleAnalyticsModule.forRoot("G-ZKM28VG4G5"),
     AngularSvgIconModule.forRoot(),
-    provideFirebaseApp(() => initializeApp(environment.firebase)),
-    provideStorage(() => getStorage()),
     MatSnackBarModule,
     MatRippleModule,
     MatProgressSpinnerModule,
@@ -63,6 +60,9 @@ import { TabStartComponent } from "./tab-start/tab-start.component";
     }),
   ],
   providers: [
+    provideFirebaseApp(() => initializeApp(environment.firebase)),
+    provideStorage(() => getStorage()),
+    provideHttpClient(withInterceptorsFromDi()),
     provideHotToastConfig({
       position: "bottom-right",
     }),

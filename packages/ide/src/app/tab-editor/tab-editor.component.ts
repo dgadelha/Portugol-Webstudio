@@ -11,10 +11,9 @@ import {
 } from "@angular/core";
 import { Storage, ref, uploadString } from "@angular/fire/storage";
 import { MatSnackBar } from "@angular/material/snack-bar";
-import { PortugolCodeError } from "@portugol-webstudio/antlr";
+import type { PortugolCodeError } from "@portugol-webstudio/antlr";
 import { PortugolExecutor, PortugolWebWorkersRunner } from "@portugol-webstudio/runner";
-import { PortugolJsRuntime } from "@portugol-webstudio/runtime";
-import { captureException, setExtra } from "@sentry/angular-ivy";
+import { captureException, setExtra } from "@sentry/angular";
 import { saveAs } from "file-saver";
 import { ShortcutInput } from "ng-keyboard-shortcuts";
 import { GoogleAnalyticsService } from "ngx-google-analytics";
@@ -140,8 +139,6 @@ export class TabEditorComponent implements OnInit, OnDestroy {
         captureException(error, { extra: { code: this.code } });
       },
     });
-
-    console.log(`Runtime has ${PortugolJsRuntime.split("\n").length} lines`);
   }
 
   ngOnDestroy() {

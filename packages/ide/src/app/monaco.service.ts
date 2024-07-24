@@ -207,7 +207,7 @@ export class MonacoService {
               comment: [
                 [/[^*/]+/, "comment"],
                 [/\/\*/, "comment", "@push"], // nested comment
-                ["\\*/", "comment", "@pop"],
+                [String.raw`\*/`, "comment", "@pop"],
                 [/[*/]/, "comment"],
               ],
 
