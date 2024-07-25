@@ -1,19 +1,19 @@
 import { DeclaracaoContext, ListaDeclaracoesContext } from "@portugol-webstudio/antlr";
 
+import { invariant } from "../helpers/nodes.js";
+import { Tipo, parseTipoPrimitivo } from "../helpers/Tipo.js";
 import { Comando } from "./Comando.js";
 import { DeclaraçãoMatrizExpr } from "./DeclaraçãoMatrizExpr.js";
 import { DeclaraçãoVariávelExpr } from "./DeclaraçãoVariávelExpr.js";
 import { DeclaraçãoVetorExpr } from "./DeclaraçãoVetorExpr.js";
 import { Expressão } from "./Expressão.js";
 import { Node } from "./Node.js";
-import { invariant } from "../helpers/nodes.js";
-import { Tipo, parseTipoPrimitivo } from "../helpers/Tipo.js";
 
 export class DeclaraçãoCmd extends Comando<DeclaracaoContext> {
-  nome: string;
-  tipo: Tipo;
+  nome!: string;
+  tipo!: Tipo;
   expressão?: Expressão;
-  constante: boolean;
+  constante!: boolean;
 
   constructor(public ctx: DeclaracaoContext) {
     super(ctx);

@@ -1,14 +1,14 @@
 import { ReferenciaArrayContext } from "@portugol-webstudio/antlr";
 
+import { invariant } from "../helpers/nodes.js";
 import { Expressão } from "./Expressão.js";
 import { Node } from "./Node.js";
 import { ReferênciaVarExpr } from "./ReferênciaVarExpr.js";
 import { ÍndiceArrayExpr } from "./ÍndiceArrayExpr.js";
-import { invariant } from "../helpers/nodes.js";
 
 export class ReferênciaArrayExpr extends Expressão<ReferenciaArrayContext> {
   variável = new ReferênciaVarExpr(this.ctx);
-  índice: ÍndiceArrayExpr;
+  índice!: ÍndiceArrayExpr;
 
   addChild(child: Node) {
     if (child instanceof ÍndiceArrayExpr) {

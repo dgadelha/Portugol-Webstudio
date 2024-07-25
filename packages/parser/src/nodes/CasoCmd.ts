@@ -1,13 +1,13 @@
 import { CasoContext } from "@portugol-webstudio/antlr";
 
+import { invariant } from "../helpers/nodes.js";
 import { CasoContrárioExpr } from "./CasoContrárioExpr.js";
 import { Comando } from "./Comando.js";
 import { Expressão } from "./Expressão.js";
 import { Node } from "./Node.js";
-import { invariant } from "../helpers/nodes.js";
 
 export class CasoCmd extends Comando<CasoContext> {
-  condição: Expressão;
+  condição!: Expressão;
   instruções: Array<Expressão | Comando> = [];
 
   constructor(public ctx: CasoContext) {
