@@ -64,13 +64,13 @@ export default /* javascript */ `{
     self.runtime.expectType("maior_numero", "numeroA", numeroA, "inteiro", "real");
     self.runtime.expectType("maior_numero", "numeroB", numeroB, "inteiro", "real");
 
-    return new PortugolVar(self.runtime.assumeMathType(numero), Math.max(numeroA.value, numeroB.value));
+    return new PortugolVar(self.runtime.assumeMathType(numeroA, numeroB), Math.max(numeroA.value, numeroB.value));
   },
 
   menor_numero(numeroA, numeroB) {
     self.runtime.expectType("menor_numero", "numeroA", numeroA, "inteiro", "real");
     self.runtime.expectType("menor_numero", "numeroB", numeroB, "inteiro", "real");
 
-    return new PortugolVar(self.runtime.assumeMathType(numero), Math.min(numeroA.value, numeroB.value));
+    return new PortugolVar(self.runtime.assumeMathType(numeroA, numeroB), Math.min(numeroA.value, numeroB.value));
   },
 }`;
