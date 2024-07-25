@@ -1,12 +1,12 @@
 import { FacaEnquantoContext } from "@portugol-webstudio/antlr";
 
+import { invariant } from "../helpers/nodes.js";
 import { Comando } from "./Comando.js";
 import { Expressão } from "./Expressão.js";
 import { Node } from "./Node.js";
-import { invariant } from "../helpers/nodes.js";
 
 export class FaçaEnquantoCmd extends Comando<FacaEnquantoContext> {
-  condição: Expressão;
+  condição!: Expressão;
   instruções: Array<Expressão | Comando> = [];
 
   addChild(child: Node) {

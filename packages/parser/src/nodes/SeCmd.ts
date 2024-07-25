@@ -1,13 +1,13 @@
 import { SeContext } from "@portugol-webstudio/antlr";
 
+import { invariant } from "../helpers/nodes.js";
 import { Comando } from "./Comando.js";
 import { Expressão } from "./Expressão.js";
 import { Node } from "./Node.js";
 import { SenãoCmd } from "./SenãoCmd.js";
-import { invariant } from "../helpers/nodes.js";
 
 export class SeCmd extends Comando<SeContext> {
-  condição: Expressão;
+  condição!: Expressão;
   instruções: Array<Expressão | Comando> = [];
   senão?: SenãoCmd;
 

@@ -1,11 +1,11 @@
 import { IndiceArrayContext } from "@portugol-webstudio/antlr";
 
+import { invariant } from "../helpers/nodes.js";
 import { Expressão } from "./Expressão.js";
 import { Node } from "./Node.js";
-import { invariant } from "../helpers/nodes.js";
 
 export class ÍndiceArrayExpr extends Expressão<IndiceArrayContext> {
-  índice: Expressão;
+  índice!: Expressão;
 
   addChild(child: Node) {
     if (child instanceof Expressão) {

@@ -7,8 +7,8 @@ import { ÍndiceArrayExpr } from "./ÍndiceArrayExpr.js";
 
 export class ReferênciaMatrizExpr extends Expressão<ReferenciaMatrizContext> {
   variável = new ReferênciaVarExpr(this.ctx);
-  linha: ÍndiceArrayExpr;
-  coluna: ÍndiceArrayExpr;
+  linha!: ÍndiceArrayExpr;
+  coluna!: ÍndiceArrayExpr;
 
   addChild(child: Node) {
     if (child instanceof ÍndiceArrayExpr && !this.linha) {

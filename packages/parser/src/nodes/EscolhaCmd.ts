@@ -1,13 +1,13 @@
 import { EscolhaContext } from "@portugol-webstudio/antlr";
 
+import { invariant } from "../helpers/nodes.js";
 import { CasoCmd } from "./CasoCmd.js";
 import { Comando } from "./Comando.js";
 import { Expressão } from "./Expressão.js";
 import { Node } from "./Node.js";
-import { invariant } from "../helpers/nodes.js";
 
 export class EscolhaCmd extends Comando<EscolhaContext> {
-  condição: Expressão;
+  condição!: Expressão;
   casos: CasoCmd[] = [];
 
   addChild(child: Node) {

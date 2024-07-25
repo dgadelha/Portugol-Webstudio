@@ -1,11 +1,11 @@
 import { ExpressaoEntreParentesesContext } from "@portugol-webstudio/antlr";
 
+import { invariant } from "../helpers/nodes.js";
 import { Expressão } from "./Expressão.js";
 import { Node } from "./Node.js";
-import { invariant } from "../helpers/nodes.js";
 
 export class ExpressãoEntreParênteses extends Expressão<ExpressaoEntreParentesesContext> {
-  expressão: Expressão;
+  expressão!: Expressão;
 
   addChild(child: Node) {
     if (child instanceof Expressão) {

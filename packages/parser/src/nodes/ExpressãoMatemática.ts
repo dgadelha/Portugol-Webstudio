@@ -4,8 +4,8 @@ import { Expressão } from "./Expressão.js";
 import { Node } from "./Node.js";
 
 export class ExpressãoMatemática<T extends ParseTree = ParseTree> extends Expressão<T> {
-  esquerda: Expressão;
-  direita: Expressão;
+  esquerda!: Expressão;
+  direita!: Expressão;
 
   addChild(child: Node) {
     if (child instanceof Expressão) {

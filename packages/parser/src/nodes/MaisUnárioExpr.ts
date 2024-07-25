@@ -1,5 +1,6 @@
 import { MaisUnarioContext } from "@portugol-webstudio/antlr";
 
+import { invariant } from "../helpers/nodes.js";
 import { Expressão } from "./Expressão.js";
 import { InteiroExpr } from "./InteiroExpr.js";
 import { Node } from "./Node.js";
@@ -7,10 +8,9 @@ import { RealExpr } from "./RealExpr.js";
 import { ReferênciaArrayExpr } from "./ReferênciaArrayExpr.js";
 import { ReferênciaMatrizExpr } from "./ReferênciaMatrizExpr.js";
 import { ReferênciaVarExpr } from "./ReferênciaVarExpr.js";
-import { invariant } from "../helpers/nodes.js";
 
 export class MaisUnárioExpr extends Expressão<MaisUnarioContext> {
-  valor: InteiroExpr | RealExpr | ReferênciaVarExpr | ReferênciaArrayExpr | ReferênciaMatrizExpr;
+  valor!: InteiroExpr | RealExpr | ReferênciaVarExpr | ReferênciaArrayExpr | ReferênciaMatrizExpr;
 
   addChild(child: Node) {
     if (

@@ -1,16 +1,16 @@
 import { ParseTree } from "antlr4ng";
 
+import { invariant } from "../helpers/nodes.js";
 import { Comando } from "./Comando.js";
 import { Expressão } from "./Expressão.js";
 import { Node } from "./Node.js";
 import { ReferênciaArrayExpr } from "./ReferênciaArrayExpr.js";
 import { ReferênciaMatrizExpr } from "./ReferênciaMatrizExpr.js";
 import { ReferênciaVarExpr } from "./ReferênciaVarExpr.js";
-import { invariant } from "../helpers/nodes.js";
 
 export class AtribuiçãoCmd<T extends ParseTree = ParseTree> extends Comando<T> {
-  variável: ReferênciaVarExpr | ReferênciaArrayExpr | ReferênciaMatrizExpr;
-  expressão: Expressão;
+  variável!: ReferênciaVarExpr | ReferênciaArrayExpr | ReferênciaMatrizExpr;
+  expressão!: Expressão;
 
   addChild(child: Node) {
     super.addChild(child);

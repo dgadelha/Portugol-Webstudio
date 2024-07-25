@@ -35,13 +35,13 @@
     "release": "lerna run release"
   },
   "devDependencies": {
-    "@angular-eslint/eslint-plugin": "^17.3.0",
+    "@angular-eslint/eslint-plugin": "^18.1.0",
     "@typescript-eslint/eslint-plugin": "^7.17.0",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-config-xo": "^0.45.0",
     "eslint-plugin-prettier": "^5.2.1",
-    "eslint-plugin-unicorn": "^54.0.0",
+    "eslint-plugin-unicorn": "^55.0.0",
     "lerna": "^8.1.7",
     "sherif": "^0.10.0"
   },
