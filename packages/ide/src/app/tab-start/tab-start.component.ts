@@ -9,7 +9,7 @@ import { DialogOpenExampleComponent } from "../dialog-open-example/dialog-open-e
 @Component({
   selector: "app-tab-start",
   templateUrl: "./tab-start.component.html",
-  styleUrls: ["./tab-start.component.scss"],
+  styleUrl: "./tab-start.component.scss",
 })
 export class TabStartComponent {
   @Output() newTab = new EventEmitter();

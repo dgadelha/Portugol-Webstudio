@@ -14,7 +14,13 @@
         <ul id="root">
           <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
             <mat-tree-node *matTreeNodeDef="let node">
-              <li mat-ripple (click)="loadItem(node)" [class.active]="current?.id === node.id">
+              <li
+                mat-ripple
+                (click)="loadItem(node)"
+                (keydown.enter)="loadItem(node)"
+                [class.active]="current?.id === node.id"
+                tabindex="0"
+              >
                 <button mat-icon-button disabled title="Expandir/retrair">
                   <svg-icon />
                 </button>

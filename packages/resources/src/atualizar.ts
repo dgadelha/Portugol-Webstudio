@@ -87,4 +87,6 @@ export async function configurarRecursos() {
   }
 }
 
-configurarRecursos().catch(console.error);
+configurarRecursos().catch((error: unknown) => {
+  console.error(error);
+});

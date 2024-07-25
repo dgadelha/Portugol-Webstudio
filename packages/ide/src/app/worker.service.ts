@@ -65,7 +65,7 @@ export class WorkerService {
     });
   }
 
-  async abortTranspilation() {
+  abortTranspilation() {
     if (this.worker && this.busy) {
       this.worker.terminate();
       this.worker = undefined;

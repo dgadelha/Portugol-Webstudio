@@ -88,7 +88,9 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     {
       key: "ctrl + o",
       preventDefault: true,
-      command: () => this.fileInput.nativeElement.click(),
+      command: () => {
+        this.fileInput.nativeElement.click();
+      },
     },
     {
       key: "ctrl + enter",
@@ -297,7 +299,9 @@ export class TabEditorComponent implements OnInit, OnDestroy {
       id: "openFile",
       keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyO],
       label: "Abrir arquivo",
-      run: () => this.fileInput.nativeElement.click(),
+      run: () => {
+        this.fileInput.nativeElement.click();
+      },
     });
 
     editor.addAction({
@@ -344,7 +348,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     const shareCode = (Math.random() + 1).toString(36).slice(2, 9);
     const result = await uploadString(ref(this.storage, shareCode), this.code, undefined, {
       contentType: "text/plain",
-    }).catch(error => {
+    }).catch((error: unknown) => {
       console.error(error);
       return null;
     });

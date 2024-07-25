@@ -15,7 +15,7 @@ interface Tab {
 @Component({
   selector: "app-root",
   templateUrl: "./app.component.html",
-  styleUrls: ["./app.component.scss"],
+  styleUrl: "./app.component.scss",
 })
 export class AppComponent implements OnInit {
   selected = new FormControl(0);
@@ -26,12 +26,16 @@ export class AppComponent implements OnInit {
     {
       key: "ctrl + q",
       preventDefault: true,
-      command: () => this.closeTab(this.tabs[this.selected.value ?? 0]),
+      command: () => {
+        this.closeTab(this.tabs[this.selected.value ?? 0]);
+      },
     },
     {
       key: "ctrl + n",
       preventDefault: true,
-      command: () => this.addTab(),
+      command: () => {
+        this.addTab();
+      },
     },
   ];
 

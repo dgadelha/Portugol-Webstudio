@@ -68,15 +68,15 @@ export class DialogOpenExampleComponent implements OnInit, OnDestroy, AfterViewI
       });
   }
 
-  ngOnDestroy() {
-    this._responsive$?.unsubscribe();
-    this._data$?.unsubscribe();
-  }
-
   ngAfterViewInit() {
     this._responsive$ = this.responsive.isBelowMd().subscribe(isBelowMd => {
       this.isBelowMd = isBelowMd.matches;
     });
+  }
+
+  ngOnDestroy() {
+    this._responsive$?.unsubscribe();
+    this._data$?.unsubscribe();
   }
 
   hasChildren(_: number, item: ExampleItem) {
