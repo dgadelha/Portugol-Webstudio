@@ -23,8 +23,8 @@
   "packageManager": "^npm@10.7.0",
   "scripts": {
     "lint": "sherif && npm run eslint:check",
-    "eslint:fix": "eslint --fix 'packages/**/*.{t,j}s'",
-    "eslint:check": "eslint 'packages/**/*.{t,j}s'",
+    "eslint:fix": "eslint --fix 'packages/**/*.{ts,js,html}'",
+    "eslint:check": "eslint 'packages/**/*.{ts,js,html}'",
     "start": "lerna run start --scope=@portugol-webstudio/ide",
     "build": "lerna run build",
     "build:w": "lerna run --parallel build:w",
@@ -35,20 +35,23 @@
     "release": "lerna run release"
   },
   "devDependencies": {
-    "@angular-eslint/eslint-plugin": "^18.1.0",
-    "@typescript-eslint/eslint-plugin": "^7.17.0",
-    "eslint": "^8.57.0",
+    "@eslint/js": "^9.7.0",
+    "angular-eslint": "^18.1.0",
+    "eslint": "^9.7.0",
     "eslint-config-prettier": "^9.1.0",
-    "eslint-config-xo": "^0.45.0",
     "eslint-plugin-prettier": "^5.2.1",
     "eslint-plugin-unicorn": "^55.0.0",
     "lerna": "^8.1.7",
-    "sherif": "^0.10.0"
+    "sherif": "^0.10.0",
+    "typescript": "~5.5.4",
+    "typescript-eslint": "^7.17.0"
   },
   "workspaces": [
     "packages/*"
   ],
   "overrides": {
+    "eslint": "$eslint",
+    "typescript-eslint": "$typescript-eslint",
     "lerna": {
       "tar": "^6.2.1"
     },

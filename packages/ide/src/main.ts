@@ -30,7 +30,9 @@ platformBrowserDynamic()
   .then(() => {
     /** @see https://stackoverflow.com/a/51059335 */
     if ("serviceWorker" in navigator && environment.production) {
-      navigator.serviceWorker.register("/ngsw-worker.js");
+      void navigator.serviceWorker.register("/ngsw-worker.js");
     }
   })
-  .catch(error => console.error(error));
+  .catch((error: unknown) => {
+    console.error(error);
+  });

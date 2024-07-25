@@ -22,7 +22,7 @@ interface TreeItem {
 @Component({
   selector: "app-tab-help",
   templateUrl: "./tab-help.component.html",
-  styleUrls: ["./tab-help.component.scss"],
+  styleUrl: "./tab-help.component.scss",
 })
 export class TabHelpComponent implements OnInit, OnDestroy, AfterViewInit {
   treeControl: NestedTreeControl<TreeItem>;
