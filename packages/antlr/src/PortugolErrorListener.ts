@@ -1,15 +1,15 @@
 import {
   ANTLRErrorListener,
-  RecognitionException,
-  Recognizer,
-  ParserRuleContext,
-  Token,
   ATNConfigSet,
   ATNSimulator,
-  ParseTree,
   BitSet,
   DFA,
   Parser,
+  ParserRuleContext,
+  ParseTree,
+  RecognitionException,
+  Recognizer,
+  Token,
 } from "antlr4ng";
 
 export class PortugolCodeError extends Error {
@@ -35,7 +35,9 @@ export class PortugolCodeError extends Error {
       possibleContext.hasOwnProperty("start") &&
       possibleContext.hasOwnProperty("stop") &&
       typeof (possibleContext as unknown as { start: unknown }).start === "object" &&
-      typeof (possibleContext as unknown as { stop: unknown }).stop === "object"
+      typeof (possibleContext as unknown as { stop: unknown }).stop === "object" &&
+      (possibleContext as unknown as { start: unknown }).start !== null &&
+      (possibleContext as unknown as { stop: unknown }).stop !== null
     ) {
       const { start, stop } = possibleContext as unknown as { start: Token; stop: Token };
       const { line: startLine, column: startCol } = start;
