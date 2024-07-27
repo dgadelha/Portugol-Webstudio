@@ -41,7 +41,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "allowedCommonJsDependencies": ["antlr4ng", "text-encoding"],
+            "allowedCommonJsDependencies": ["antlr4ng", "file-saver", "text-encoding"],
             "outputPath": "packages/ide/dist",
             "index": "packages/ide/src/index.html",
             "browser": "packages/ide/src/main.ts",
@@ -82,7 +82,12 @@
               "includePaths": ["packages/ide/src/"]
             },
             "scripts": [],
-            "serviceWorker": "packages/ide/ngsw-config.json"
+            "serviceWorker": "packages/ide/ngsw-config.json",
+            "sourceMap": {
+              "scripts": true,
+              "styles": true,
+              "vendor": true
+            }
           },
           "configurations": {
             "production": {
