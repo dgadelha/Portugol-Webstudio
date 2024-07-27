@@ -4,6 +4,12 @@ import { PortugolJs } from "@portugol-webstudio/runtime";
 import { CharStream, CommonTokenStream } from "antlr4ng";
 
 function mapError(error) {
+  if (typeof error !== "object" || error === null) {
+    return {
+      message: String(error),
+    };
+  }
+
   return {
     message: error.message,
     startLine: error.startLine,
@@ -17,18 +23,27 @@ function mapError(error) {
  * @param {string} code
  */
 function checkCode(code) {
-  const inputStream = CharStream.fromString(code);
-  const lexer = new PortugolLexer(inputStream);
-  const tokenStream = new CommonTokenStream(lexer);
-  const parser = new PortugolParser(tokenStream);
-  const errorListener = new PortugolErrorListener();
+  let errors = [];
+  let parseErrors = [];
 
-  parser.removeErrorListeners();
-  parser.addErrorListener(errorListener);
+  try {
+    const inputStream = CharStream.fromString(code);
+    const lexer = new PortugolLexer(inputStream);
+    const tokenStream = new CommonTokenStream(lexer);
+    const parser = new PortugolParser(tokenStream);
+    const errorListener = new PortugolErrorListener();
 
-  const tree = parser.arquivo();
-  const errors = PortugolErrorChecker.checkTree(tree);
-  const parseErrors = errorListener.getErrors();
+    parser.removeErrorListeners();
+    parser.addErrorListener(errorListener);
+
+    parseErrors = errorListener.getErrors();
+
+    const tree = parser.arquivo();
+    errors = PortugolErrorChecker.checkTree(tree);
+    parseErrors = errorListener.getErrors();
+  } catch (error) {
+    parseErrors.push(error);
+  }
 
   return {
     errors: errors.map(error => mapError(error)),
@@ -40,36 +55,59 @@ function checkCode(code) {
  * @param {string} code
  */
 function transpileCode(code) {
-  const parseStart = performance.now();
-  const inputStream = CharStream.fromString(code);
-  const lexer = new PortugolLexer(inputStream);
-  const tokenStream = new CommonTokenStream(lexer);
-  const parser = new PortugolParser(tokenStream);
-  const errorListener = new PortugolErrorListener();
+  /**
+   * @type {string | null}
+   */
+  let js = "";
+  let errors = [];
+  let parseErrors = [];
+  let parseTime = 0;
+  let checkTime = 0;
+  let transpileTime = 0;
 
-  errorListener.reset();
+  try {
+    const parseStart = performance.now();
+    const inputStream = CharStream.fromString(code);
+    const lexer = new PortugolLexer(inputStream);
+    const tokenStream = new CommonTokenStream(lexer);
+    const parser = new PortugolParser(tokenStream);
+    const errorListener = new PortugolErrorListener();
 
-  parser.removeErrorListeners();
-  parser.addErrorListener(errorListener);
+    errorListener.reset();
 
-  const tree = parser.arquivo();
-  const parseEnd = performance.now();
-  const checkStart = performance.now();
-  const errors = PortugolErrorChecker.checkTree(tree);
-  const checkEnd = performance.now();
-  const parseErrors = errorListener.getErrors();
-  const transpileStart = performance.now();
-  const js = new PortugolJs().visit(tree);
-  const transpileEnd = performance.now();
+    parser.removeErrorListeners();
+    parser.addErrorListener(errorListener);
+
+    const tree = parser.arquivo();
+    const parseEnd = performance.now();
+
+    parseTime = parseEnd - parseStart;
+    parseErrors = errorListener.getErrors();
+
+    const checkStart = performance.now();
+    errors = PortugolErrorChecker.checkTree(tree);
+    const checkEnd = performance.now();
+
+    checkTime = checkEnd - checkStart;
+
+    parseErrors = errorListener.getErrors();
+    const transpileStart = performance.now();
+    js = new PortugolJs().visit(tree);
+    const transpileEnd = performance.now();
+
+    transpileTime = transpileEnd - transpileStart;
+  } catch (error) {
+    parseErrors.push(error);
+  }
 
   return {
     js,
     errors: errors.map(error => mapError(error)),
     parseErrors: parseErrors.map(error => mapError(error)),
     times: {
-      parse: parseEnd - parseStart,
-      check: checkEnd - checkStart,
-      transpile: transpileEnd - transpileStart,
+      parse: parseTime,
+      check: checkTime,
+      transpile: transpileTime,
     },
   };
 }

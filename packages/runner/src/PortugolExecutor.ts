@@ -98,9 +98,7 @@ export class PortugolExecutor {
     });
   }
 
-  #printTimes(times: { parse: number; check: number; transpile: number; execution?: number }) {
-    console.debug(times);
-  }
+  #printTimes(_times: { parse: number; check: number; transpile: number; execution?: number }) {}
 
   runTranspiled({
     code,
