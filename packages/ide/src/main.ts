@@ -28,9 +28,13 @@ if (environment.production) {
 platformBrowserDynamic()
   .bootstrapModule(AppModule)
   .then(() => {
-    /** @see https://stackoverflow.com/a/51059335 */
-    if ("serviceWorker" in navigator && environment.production) {
-      void navigator.serviceWorker.register("/ngsw-worker.js");
+    try {
+      /** @see https://stackoverflow.com/a/51059335 */
+      if ("serviceWorker" in navigator && environment.production) {
+        void navigator.serviceWorker.register("/ngsw-worker.js");
+      }
+    } catch (error: unknown) {
+      console.error("Service worker registration failed:", error);
     }
   })
   .catch((error: unknown) => {
