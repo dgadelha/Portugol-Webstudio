@@ -44,14 +44,7 @@ export function* checarUsoEscopo(arquivo: Arquivo): Generator<PortugolCodeError>
 
       case Função: {
         const func = nó as Função;
-
         escopo.funções.set(func.nome, func.retorno);
-        escopo.push();
-        escopo.função = func.retorno;
-
-        yield* varrerNós(nó.children);
-
-        escopo.pop();
         break;
       }
 
@@ -177,4 +170,13 @@ export function* checarUsoEscopo(arquivo: Arquivo): Generator<PortugolCodeError>
   }
 
   yield* varrerNó(arquivo);
+
+  for (const func of arquivo.funções) {
+    escopo.push();
+    escopo.função = func.retorno;
+
+    yield* varrerNós(func.children);
+
+    escopo.pop();
+  }
 }
