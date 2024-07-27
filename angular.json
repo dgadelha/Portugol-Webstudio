@@ -27,6 +27,9 @@
         "@schematics/angular:pipe": {
           "skipTests": true
         },
+        "@schematics/angular:resolver": {
+          "skipTests": true
+        },
         "@schematics/angular:service": {
           "skipTests": true
         },
@@ -45,7 +48,7 @@
             "outputPath": "packages/ide/dist",
             "index": "packages/ide/src/index.html",
             "browser": "packages/ide/src/main.ts",
-            "polyfills": ["packages/ide/src/polyfills.ts"],
+            "polyfills": ["zone.js"],
             "tsConfig": "packages/ide/tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
@@ -94,13 +97,13 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kb",
-                  "maximumError": "3mb"
+                  "maximumWarning": "500kB",
+                  "maximumError": "5MB"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "2kb",
-                  "maximumError": "10kb"
+                  "maximumWarning": "2kB",
+                  "maximumError": "10kB"
                 }
               ],
               "fileReplacements": [
@@ -114,8 +117,7 @@
             "development": {
               "optimization": false,
               "extractLicenses": false,
-              "sourceMap": true,
-              "namedChunks": true
+              "sourceMap": true
             }
           },
           "defaultConfiguration": "production"
@@ -133,30 +135,12 @@
           "defaultConfiguration": "development"
         },
         "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n",
-          "options": {
-            "buildTarget": "ide:build"
-          }
-        },
-        "lint": {
-          "builder": "@angular-eslint/builder:lint",
-          "options": {
-            "lintFilePatterns": ["packages/ide/**/*.ts", "packages/ide/**/*.html"]
-          }
+          "builder": "@angular-devkit/build-angular:extract-i18n"
         }
       }
     }
   },
   "cli": {
-    "analytics": false,
-    "schematicCollections": ["@angular-eslint/schematics"]
-  },
-  "schematics": {
-    "@angular-eslint/schematics:application": {
-      "setParserOptionsProject": true
-    },
-    "@angular-eslint/schematics:library": {
-      "setParserOptionsProject": true
-    }
+    "analytics": false
   }
 }

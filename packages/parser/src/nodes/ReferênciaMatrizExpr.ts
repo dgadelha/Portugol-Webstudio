@@ -1,4 +1,4 @@
-import { ReferenciaMatrizContext } from "packages/antlr/lib/PortugolParser.js";
+import { ReferenciaMatrizContext } from "@portugol-webstudio/antlr";
 
 import { Expressão } from "./Expressão.js";
 import { Node } from "./Node.js";
