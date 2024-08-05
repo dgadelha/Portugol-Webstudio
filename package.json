@@ -44,7 +44,7 @@
     "lerna": "^8.1.7",
     "sherif": "^0.10.0",
     "typescript": "~5.5.4",
-    "typescript-eslint": "^7.17.0"
+    "typescript-eslint": "^8.0.0"
   },
   "workspaces": [
     "packages/*"
