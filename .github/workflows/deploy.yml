@@ -26,6 +26,7 @@ jobs:
           sed -i -e 's/%COMMIT_SHA%/'"${GITHUB_SHA::7}"'/g' packages/ide/src/app/tab-start/tab-start.component.html
           export DATE_NOW_FORMATTED=$(date +'%d/%m/%Y %I:%M:%S %p %Z')
           sed -i -e 's*%DATE%*'"${DATE_NOW_FORMATTED}"'*g' packages/ide/src/app/tab-start/tab-start.component.html
+          sed -i -e 's/%SENTRY_RELEASE%/'"${GITHUB_SHA}"'/g' packages/ide/src/main.ts
           npm run release
 
       - name: Deploy 🚀
