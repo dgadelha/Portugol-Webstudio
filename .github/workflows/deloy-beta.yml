@@ -28,6 +28,7 @@ jobs:
           sed -i -e 's*%DATE%*'"${DATE_NOW_FORMATTED}"'*g' packages/ide/src/app/tab-start/tab-start.component.html
           sed -i -e 's/%SENTRY_RELEASE%/'"${GITHUB_SHA}"'/g' packages/ide/src/main.ts
           npm run release
+          ./packages/ide/cleanup-icons.sh
 
       - name: Setup Firebase Hosting 🔥
         env:
