@@ -35,23 +35,21 @@
     "release": "lerna run release"
   },
   "devDependencies": {
-    "@eslint/js": "^9.7.0",
-    "angular-eslint": "^18.1.0",
-    "eslint": "^9.7.0",
+    "@eslint/js": "^9.8.0",
+    "angular-eslint": "^18.2.0",
+    "eslint": "^9.8.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
     "eslint-plugin-unicorn": "^55.0.0",
-    "lerna": "^8.1.7",
+    "lerna": "^8.1.8",
     "sherif": "^0.10.0",
     "typescript": "~5.5.4",
-    "typescript-eslint": "^7.17.0"
+    "typescript-eslint": "^8.0.1"
   },
   "workspaces": [
     "packages/*"
   ],
   "overrides": {
-    "eslint": "$eslint",
-    "typescript-eslint": "$typescript-eslint",
     "lerna": {
       "tar": "^6.2.1"
     },

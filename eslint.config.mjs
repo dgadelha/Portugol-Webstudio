@@ -17,12 +17,19 @@ export default tseslint.config(
   {
     files: ["**/*.ts"],
     extends: [...tseslint.configs.strictTypeChecked],
+    languageOptions: {
+      parserOptions: {
+        project: true,
+        tsconfigDirName: import.meta.dirname,
+      },
+    },
     rules: {
       "@typescript-eslint/ban-ts-comment": "off",
       "@typescript-eslint/consistent-type-imports": "off",
       "@typescript-eslint/naming-convention": "off",
       "@typescript-eslint/no-empty-function": "off",
       "@typescript-eslint/no-empty-interface": "off",
+      "@typescript-eslint/no-empty-object-type": "off",
       "@typescript-eslint/no-explicit-any": "off",
       "@typescript-eslint/no-extraneous-class": "off",
       "@typescript-eslint/no-non-null-assertion": "off",
@@ -44,14 +51,6 @@ export default tseslint.config(
       "@typescript-eslint/prefer-for-of": "off",
       "@typescript-eslint/prefer-nullish-coalescing": "off",
       "@typescript-eslint/restrict-template-expressions": "off",
-    },
-  },
-  {
-    languageOptions: {
-      parserOptions: {
-        project: true,
-        tsconfigDirName: import.meta.dirname,
-      },
     },
   },
   {

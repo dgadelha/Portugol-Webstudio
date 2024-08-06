@@ -11,7 +11,7 @@ export enum TipoPrimitivo {
   CARACTER = "caracter",
 }
 
-export type Tipo = { primitivo: TipoPrimitivo } & ( // eslint-disable-next-line @typescript-eslint/ban-types
+export type Tipo = { primitivo: TipoPrimitivo } & (
   | {}
   | ({ dimensão: "vetor" | "matriz"; primitivo: TipoPrimitivo } & (
       | { dimensão: "vetor"; tamanho?: InteiroExpr | ReferênciaVarExpr }
