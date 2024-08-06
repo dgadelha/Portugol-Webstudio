@@ -31,11 +31,11 @@ jobs:
           ./packages/ide/cleanup-icons.sh
 
       - name: Deploy 🚀
-        uses: JamesIves/github-pages-deploy-action@releases/v3
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BRANCH: gh-pages
-          FOLDER: packages/ide/dist/browser
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: gh-pages
+          folder: packages/ide/dist/browser
 
       - name: Create Sentry release 📦
         uses: getsentry/action-release@v1
