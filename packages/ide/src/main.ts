@@ -21,6 +21,7 @@ Sentry.init({
     Sentry.sessionTimingIntegration(),
     Sentry.browserTracingIntegration(),
   ],
+  ignoreErrors: [/failed to fetch/i, /networkerror/i, /http failure response/i, /monaco-editor/i],
 });
 
 if (environment.production) {
