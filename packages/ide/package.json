@@ -55,7 +55,7 @@
     "assert": "^2.1.0",
     "file-saver": "^2.0.5",
     "firebase": "^10.12.5",
-    "monaco-editor": "^0.50.0",
+    "monaco-editor": "^0.51.0",
     "ng-keyboard-shortcuts": "^13.0.8",
     "ngx-google-analytics": "^14.0.1",
     "rxfire": "^6.0.5",
