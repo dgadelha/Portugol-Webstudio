@@ -63,7 +63,7 @@
     "text-encoding": "^0.7.0",
     "tslib": "^2.6.3",
     "util": "^0.12.5",
-    "zone.js": "~0.14.10"
+    "zone.js": "~0.15.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^18.1.3",
