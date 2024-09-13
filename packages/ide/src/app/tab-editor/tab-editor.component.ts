@@ -213,17 +213,16 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     reader.readAsText(file, "ISO-8859-1");
   }
 
-  saveFile() {
-    this.gaService.event("editor_save_file", "Editor", "Botão de Salvar arquivo");
-
+  private prepareFile(as: "text" | "binary") {
     const textEncoder = new TextEncoder("ISO-8859-1", {
       NONSTANDARD_allowLegacyEncoding: true,
     });
 
     const contentEncoded = textEncoder.encode(this.code);
+    const contentType = as === "binary" ? "application/octet-stream" : "text/plain";
 
     const blob = new Blob([contentEncoded], {
-      type: "application/octet-stream; charset=ISO-8859-1",
+      type: `${contentType}; charset=ISO-8859-1`,
     });
 
     let fileName = this.title || "Sem título";
@@ -232,7 +231,20 @@ export class TabEditorComponent implements OnInit, OnDestroy {
       fileName += ".por";
     }
 
+    return { blob, fileName };
+  }
+
+  saveFile() {
+    const { blob, fileName } = this.prepareFile("binary");
+
     saveAs(blob, fileName, { autoBom: false });
+  }
+
+  saveFileManual(as: "text" | "binary") {
+    const { blob, fileName } = this.prepareFile(as);
+    const file = new File([blob], fileName, { type: blob.type });
+
+    window.open(URL.createObjectURL(file), "_blank");
   }
 
   onStdOutEditorInit(editor: monaco.editor.IStandaloneCodeEditor) {

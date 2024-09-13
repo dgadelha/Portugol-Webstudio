@@ -29,13 +29,100 @@
 
   <div class="sidebar-divider"></div>
 
-  <button mat-ripple type="button" class="sidebar-button" (click)="saveFile()" title="Salvar arquivo">
+  <button
+    mat-ripple
+    type="button"
+    class="sidebar-button"
+    (click)="saveFile()"
+    title="Salvar arquivo"
+    gaEvent="editor_save_file"
+    gaCategory="editor"
+    gaLabel="Botão de Salvar arquivo"
+  >
     <svg-icon
       src="assets/mdi/content-save-outline.svg"
       svgClass="text-quaternary"
       svgAriaLabel="Ícone de disquete para ação de salvar arquivo"
     />
   </button>
+
+  <button
+    mat-ripple
+    type="button"
+    class="sidebar-button"
+    title="Salvar como…"
+    [matMenuTriggerFor]="saveMenu"
+    gaEvent="editor_save_as"
+    gaCategory="Editor"
+    gaLabel="Botão de Salvar como"
+  >
+    <svg-icon
+      src="assets/mdi/content-save-settings-outline.svg"
+      svgClass="text-quaternary"
+      svgAriaLabel="Ícone de disquete com três pontos abaixo para ação avançada de salvar arquivo"
+    />
+  </button>
+
+  <mat-menu #saveMenu="matMenu">
+    <button mat-menu-item disabled>Salvar como</button>
+
+    <button
+      mat-menu-item
+      type="button"
+      (click)="saveFile()"
+      aria-label="Download"
+      gaEvent="editor_save_as_download"
+      gaCategory="Editor"
+      gaLabel="Botão de Salvar como - Ação Download"
+    >
+      <mat-icon>
+        <svg-icon
+          src="assets/mdi/download.svg"
+          svgAriaLabel="Ícone de seta para baixo para ação de download do arquivo"
+        ></svg-icon>
+      </mat-icon>
+
+      Download
+    </button>
+
+    <button
+      mat-menu-item
+      type="button"
+      (click)="saveFileManual('text')"
+      aria-label="Abrir nova aba como texto"
+      gaEvent="editor_save_as_text"
+      gaCategory="Editor"
+      gaLabel="Botão de Salvar como - Ação Nova aba como texto"
+    >
+      <mat-icon>
+        <svg-icon
+          src="assets/mdi/file-document-outline.svg"
+          svgAriaLabel="Ícone de documento para ação de abrir nova aba como texto"
+        ></svg-icon>
+      </mat-icon>
+
+      Abrir nova aba como texto
+    </button>
+
+    <button
+      mat-menu-item
+      type="button"
+      (click)="saveFileManual('binary')"
+      aria-label="Abrir nova aba como binário"
+      gaEvent="editor_save_as_binary"
+      gaCategory="Editor"
+      gaLabel="Botão de Salvar como - Ação Nova aba como binário"
+    >
+      <mat-icon>
+        <svg-icon
+          src="assets/mdi/file-download-outline.svg"
+          svgAriaLabel="Ícone de arquivo com seta para baixo para ação de abrir nova aba como binário"
+        ></svg-icon>
+      </mat-icon>
+
+      Abrir nova aba como binário
+    </button>
+  </mat-menu>
 
   <button mat-ripple type="button" class="sidebar-button" (click)="fileInput.click()" title="Abrir arquivo">
     <svg-icon
