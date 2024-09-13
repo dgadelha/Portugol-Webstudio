@@ -1,0 +1,15 @@
+<h2 mat-dialog-title>Fechar aba</h2>
+
+<mat-dialog-content>
+  <p>
+    Tem certeza que deseja fechar a aba <em>{{ data.title }}</em
+    >?
+  </p>
+
+  <p class="danger-alert">O código não salvo será perdido.</p>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button type="button" mat-button [mat-dialog-close]="false">Não, manter aberto</button>
+  <button type="button" mat-button cdkFocusInitial color="primary" [mat-dialog-close]="true">Sim, fechar</button>
+</mat-dialog-actions>

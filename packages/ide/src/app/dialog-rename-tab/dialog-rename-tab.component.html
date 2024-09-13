@@ -1,0 +1,23 @@
+<h2 mat-dialog-title>Renomear aba</h2>
+
+<form (ngSubmit)="onSubmit()">
+  <mat-dialog-content>
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>Título da aba</mat-label>
+      <input
+        matInput
+        name="title"
+        placeholder="Olá Mundo"
+        required
+        cdkFocusInitial
+        [(ngModel)]="title"
+        onfocus="this.select()"
+      />
+    </mat-form-field>
+  </mat-dialog-content>
+
+  <mat-dialog-actions>
+    <button type="button" mat-button mat-dialog-close>Cancelar</button>
+    <button type="submit" mat-button color="primary">Renomear</button>
+  </mat-dialog-actions>
+</form>

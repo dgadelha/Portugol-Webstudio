@@ -1,9 +1,13 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { Storage, getBlob, ref } from "@angular/fire/storage";
 import { FormControl } from "@angular/forms";
+import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { ShortcutInput } from "ng-keyboard-shortcuts";
 import { GoogleAnalyticsService } from "ngx-google-analytics";
+import { Subscription } from "rxjs";
+import { DialogConfirmCloseTabComponent } from "./dialog-confirm-close-tab/dialog-confirm-close-tab.component";
+import { DialogRenameTabComponent } from "./dialog-rename-tab/dialog-rename-tab.component";
 
 interface Tab {
   id: number;
@@ -17,7 +21,11 @@ interface Tab {
   templateUrl: "./app.component.html",
   styleUrl: "./app.component.scss",
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
+  renameDialogRef?: MatDialogRef<DialogRenameTabComponent>;
+  renameDialogSubscription?: Subscription;
+  closeDialogRef?: MatDialogRef<DialogConfirmCloseTabComponent>;
+  closeDialogSubscription?: Subscription;
   selected = new FormControl(0);
   tabs: Tab[] = [];
   tabIndex = 1;
@@ -43,6 +51,7 @@ export class AppComponent implements OnInit {
     private gaService: GoogleAnalyticsService,
     private storage: Storage,
     private snack: MatSnackBar,
+    private dialog: MatDialog,
   ) {}
 
   ngOnInit() {
@@ -68,6 +77,11 @@ export class AppComponent implements OnInit {
     })();
   }
 
+  ngOnDestroy() {
+    this.renameDialogSubscription?.unsubscribe();
+    this.closeDialogSubscription?.unsubscribe();
+  }
+
   addTab(title?: string, contents?: string) {
     this.tabs.push({
       id: this.tabIndex++,
@@ -81,30 +95,47 @@ export class AppComponent implements OnInit {
   }
 
   closeTab(tab: Tab) {
+    const confirmClose = () => {
+      this.tabs.splice(this.tabs.indexOf(tab), 1);
+      this.selected.setValue(0);
+      this.gaService.event("close_tab", "Interface", "Fechar aba", this.tabs.length);
+    };
+
     if (tab.type === "editor") {
-      const confirm = window.confirm("Tem certeza que deseja fechar a aba? O código não salvo será perdido.");
+      this.closeDialogRef = this.dialog.open(DialogConfirmCloseTabComponent, {
+        data: { title: tab.title },
+      });
 
-      if (!confirm) {
-        return;
-      }
+      this.closeDialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          confirmClose();
+        }
+
+        this.closeDialogSubscription?.unsubscribe();
+      });
+    } else {
+      confirmClose();
     }
-
-    this.tabs.splice(this.tabs.indexOf(tab), 1);
-    this.selected.setValue(0);
-    this.gaService.event("close_tab", "Interface", "Fechar aba", this.tabs.length);
   }
 
   changeTabTitle(tab: Tab) {
-    if (this.selected.value !== tab.id || tab.type !== "editor") {
+    if (tab.type !== "editor") {
       return;
     }
 
     this.gaService.event("edit_tab_title", "Interface", "Editar título de aba");
-    const title = prompt("Digite o novo título", tab.title);
 
-    if (title) {
-      tab.title = title;
-    }
+    this.renameDialogRef = this.dialog.open(DialogRenameTabComponent, {
+      data: { title: tab.title },
+    });
+
+    this.renameDialogSubscription = this.renameDialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        tab.title = result;
+      }
+
+      this.renameDialogSubscription?.unsubscribe();
+    });
   }
 
   upsertHelpTab() {
