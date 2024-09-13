@@ -64,7 +64,7 @@ export async function patchHtmlFiles() {
 
   for await (const file of readdirp(topicosDir, {
     type: "files",
-    fileFilter: "*.html",
+    fileFilter: path => path.basename.endsWith(".html"),
   })) {
     console.log(`-> Ajustando ${file.path}`);
     const fileName = path.join(topicosDir, file.path);
@@ -77,7 +77,7 @@ export async function patchHtmlFiles() {
 export async function patchPortugolFiles() {
   for await (const file of readdirp(baseDir, {
     type: "files",
-    fileFilter: "*.por",
+    fileFilter: path => path.basename.endsWith(".por"),
   })) {
     console.log(`-> Ajustando ${file.path}`);
     const fileName = path.join(baseDir, file.path);
