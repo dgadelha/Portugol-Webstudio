@@ -244,7 +244,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
         return;
       }
 
-      if (e.code === "Enter" || e.browserEvent.keyCode === 13 || e.browserEvent.key === "Enter") {
+      if (e.code === "Enter" || e.browserEvent.key === "Enter") {
         this.executor.stdIn.next("\r");
       } else if (e.code === "Backspace") {
         this.executor.stdIn.next("\b");

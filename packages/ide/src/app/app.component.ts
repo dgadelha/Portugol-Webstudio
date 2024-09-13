@@ -45,25 +45,27 @@ export class AppComponent implements OnInit {
     private snack: MatSnackBar,
   ) {}
 
-  async ngOnInit() {
-    try {
-      if (window.location.hash.startsWith("#share=")) {
-        this.snack.open("Carregando código compartilhado…", undefined, { duration: -1 });
+  ngOnInit() {
+    void (async () => {
+      try {
+        if (window.location.hash.startsWith("#share=")) {
+          this.snack.open("Carregando código compartilhado…", undefined, { duration: -1 });
 
-        const hash = window.location.hash.slice(7);
-        const data = await getBlob(ref(this.storage, hash));
-        const contents = await data.text();
+          const hash = window.location.hash.slice(7);
+          const data = await getBlob(ref(this.storage, hash));
+          const contents = await data.text();
 
-        this.addTab(`Código compartilhado (#${hash})`, contents);
+          this.addTab(`Código compartilhado (#${hash})`, contents);
+          this.snack.dismiss();
+          this.gaService.event("load_shared_code_success", "Interface", "Código compartilhado carregado");
+        }
+      } catch (error) {
+        console.error(error);
         this.snack.dismiss();
-        this.gaService.event("load_shared_code_success", "Interface", "Código compartilhado carregado");
+        this.snack.open("Erro ao carregar código compartilhado", "FECHAR", { duration: 10_000 });
+        this.gaService.event("load_shared_code_error", "Interface", "Erro ao carregar código compartilhado");
       }
-    } catch (error) {
-      console.error(error);
-      this.snack.dismiss();
-      this.snack.open("Erro ao carregar código compartilhado", "FECHAR", { duration: 10_000 });
-      this.gaService.event("load_shared_code_error", "Interface", "Erro ao carregar código compartilhado");
-    }
+    })();
   }
 
   addTab(title?: string, contents?: string) {

@@ -54,6 +54,7 @@ export class DialogOpenExampleComponent implements OnInit, OnDestroy, AfterViewI
     private http: HttpClient,
     private responsive: ResponsiveService,
   ) {
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     this.treeControl = new NestedTreeControl<ExampleItem>(node => node.children);
     this.dataSource = new MatTreeNestedDataSource();
   }

@@ -41,6 +41,7 @@ export class TabHelpComponent implements OnInit, OnDestroy, AfterViewInit {
     private gaService: GoogleAnalyticsService,
     private responsive: ResponsiveService,
   ) {
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     this.treeControl = new NestedTreeControl<TreeItem>(node => node.children);
     this.dataSource = new MatTreeNestedDataSource();
   }
@@ -57,16 +58,16 @@ export class TabHelpComponent implements OnInit, OnDestroy, AfterViewInit {
       },
     };
 
-    this.http.get<TreeItem[]>("assets/recursos/ajuda/scripts/topicos.json").subscribe(
-      ajuda => {
+    this.http.get<TreeItem[]>("assets/recursos/ajuda/scripts/topicos.json").subscribe({
+      next: ajuda => {
         this.dataSource.data = ajuda;
         this.treeControl.expand(ajuda[0]);
         this.loadItem(ajuda[0]);
       },
-      () => {
+      error: () => {
         // TODO: tratar erro
       },
-    );
+    });
   }
 
   ngOnDestroy() {
