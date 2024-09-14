@@ -1,5 +1,6 @@
 {
   "$schema": "../../node_modules/@angular/service-worker/config/schema.json",
+  "navigationRequestStrategy": "freshness",
   "index": "/index.html",
   "assetGroups": [
     {
