@@ -88,6 +88,25 @@
     <button
       mat-menu-item
       type="button"
+      (click)="saveFile(true)"
+      aria-label="Download para Portugol Studio"
+      gaEvent="editor_save_as_download_portugol_studio"
+      gaCategory="Editor"
+      gaLabel="Botão de Salvar como - Ação Download para Portugol Studio"
+    >
+      <mat-icon>
+        <svg-icon
+          src="assets/lightbulb-sq.svg"
+          svgAriaLabel="Ícone de seta para baixo para ação de download do arquivo"
+        ></svg-icon>
+      </mat-icon>
+
+      Download para abrir no Portugol Studio
+    </button>
+
+    <button
+      mat-menu-item
+      type="button"
       (click)="saveFileManual('text')"
       aria-label="Abrir nova aba como texto"
       gaEvent="editor_save_as_text"

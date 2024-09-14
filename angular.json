@@ -44,7 +44,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "allowedCommonJsDependencies": ["antlr4ng", "file-saver", "text-encoding"],
+            "allowedCommonJsDependencies": ["antlr4ng", "file-saver", "iconv-lite", "jschardet"],
             "outputPath": "packages/ide/dist",
             "index": "packages/ide/src/index.html",
             "browser": "packages/ide/src/main.ts",

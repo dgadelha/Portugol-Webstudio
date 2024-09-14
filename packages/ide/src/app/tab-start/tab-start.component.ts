@@ -5,6 +5,7 @@ import { GoogleAnalyticsService } from "ngx-google-analytics";
 import { Subscription } from "rxjs";
 
 import { DialogOpenExampleComponent } from "../dialog-open-example/dialog-open-example.component";
+import { FileService } from "../file.service";
 
 @Component({
   selector: "app-tab-start",
@@ -24,6 +25,7 @@ export class TabStartComponent {
     public gaService: GoogleAnalyticsService,
     private sanitizer: DomSanitizer,
     private dialog: MatDialog,
+    private fileService: FileService,
   ) {
     const currentMonth = new Date().getMonth() + 1;
     const currentDay = new Date().getDate();
@@ -43,7 +45,7 @@ export class TabStartComponent {
     }
   }
 
-  openFile(event: Event) {
+  async openFile(event: Event) {
     this.gaService.event("home_open_file", "Aba Inicial", "Abrir arquivo através da aba Inicial");
 
     const { files } = event.target as HTMLInputElement;
@@ -53,19 +55,13 @@ export class TabStartComponent {
     }
 
     for (let i = 0; i < files.length; i++) {
-      const reader = new FileReader();
       const file = files[i];
+      const contents = await this.fileService.getContents(file);
 
-      reader.addEventListener("load", e => {
-        const contents = e.target?.result;
-
-        this.newTab.emit({
-          name: file.name,
-          contents,
-        });
+      this.newTab.emit({
+        name: file.name,
+        contents,
       });
-
-      reader.readAsText(file, "ISO-8859-1");
     }
   }
 

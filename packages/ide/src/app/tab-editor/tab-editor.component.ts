@@ -15,11 +15,11 @@ import type { PortugolCodeError } from "@portugol-webstudio/antlr";
 import { PortugolExecutor, PortugolWebWorkersRunner } from "@portugol-webstudio/runner";
 import { captureException, setExtra } from "@sentry/angular";
 import { saveAs } from "file-saver";
+import { encode } from "iconv-lite";
 import { ShortcutInput } from "ng-keyboard-shortcuts";
 import { GoogleAnalyticsService } from "ngx-google-analytics";
 import { Subscription, debounceTime, fromEventPattern, mergeMap } from "rxjs";
-import { TextEncoder } from "text-encoding";
-
+import { FileService } from "../file.service";
 import { WorkerService } from "../worker.service";
 
 @Component({
@@ -83,7 +83,9 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     {
       key: "ctrl + s",
       preventDefault: true,
-      command: this.saveFile.bind(this),
+      command: () => {
+        this.saveFile();
+      },
     },
     {
       key: "ctrl + o",
@@ -107,6 +109,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     private storage: Storage,
     private snack: MatSnackBar,
     private worker: WorkerService,
+    private fileService: FileService,
   ) {}
 
   ngOnInit() {
@@ -191,7 +194,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     this.stdOutEditorCursorEnd();
   }
 
-  openFile(event: Event) {
+  async openFile(event: Event) {
     this.gaService.event("editor_open_file", "Editor", "Botão de Abrir arquivo");
     const { files } = event.target as HTMLInputElement;
 
@@ -199,31 +202,26 @@ export class TabEditorComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const reader = new FileReader();
     const file = files[0];
+    const contents = await this.fileService.getContents(file);
 
-    reader.addEventListener("load", e => {
-      const contents = e.target?.result;
-
-      this.title = file.name;
-      this.titleChange.emit(file.name);
-      this.code = contents?.toString();
-    });
-
-    reader.readAsText(file, "ISO-8859-1");
+    this.title = file.name;
+    this.titleChange.emit(file.name);
+    this.code = contents?.toString();
   }
 
-  private prepareFile(as: "text" | "binary") {
-    const textEncoder = new TextEncoder("ISO-8859-1", {
-      NONSTANDARD_allowLegacyEncoding: true,
-    });
+  private prepareFile(as: "text" | "binary", compat = false) {
+    const blob = (() => {
+      if (compat) {
+        return new Blob([encode(this.code ?? "", "ISO-8859-1")], {
+          type: `${as === "binary" ? "application/octet-stream" : "text/plain"}; charset=ISO-8859-1`,
+        });
+      }
 
-    const contentEncoded = textEncoder.encode(this.code);
-    const contentType = as === "binary" ? "application/octet-stream" : "text/plain";
-
-    const blob = new Blob([contentEncoded], {
-      type: `${contentType}; charset=ISO-8859-1`,
-    });
+      return new Blob([this.code ?? ""], {
+        type: as === "binary" ? "application/octet-stream" : "text/plain",
+      });
+    })();
 
     let fileName = this.title || "Sem título";
 
@@ -234,8 +232,8 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     return { blob, fileName };
   }
 
-  saveFile() {
-    const { blob, fileName } = this.prepareFile("binary");
+  saveFile(compat = false) {
+    const { blob, fileName } = this.prepareFile("binary", compat);
 
     saveAs(blob, fileName, { autoBom: false });
   }
@@ -304,7 +302,9 @@ export class TabEditorComponent implements OnInit, OnDestroy {
       id: "saveFile",
       keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS],
       label: "Salvar arquivo",
-      run: this.saveFile.bind(this),
+      run: () => {
+        this.saveFile();
+      },
     });
 
     editor.addAction({
