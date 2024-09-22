@@ -41,7 +41,6 @@ jobs:
             "hosting": {
               "site": "$BETA_FIREBASE_HOSTING_SITE",
               "public": "packages/ide/dist/browser",
-              "ignore": ["firebase.json", "**/.*", "**/*.map", "**/*.map.*", "**/node_modules/**"],
               "headers": [
                 {
                   "source": "/**",
