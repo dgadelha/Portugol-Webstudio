@@ -5,7 +5,7 @@ pushd "$(dirname ${BASH_SOURCE:0})" || exit 1
 trap popd EXIT
 shopt -s globstar nullglob
 
-BASE_DIR="dist/browser/assets/mdi"
+BASE_DIR="node_modules/@mdi/svg/svg/"
 
 if [ ! -d "$BASE_DIR" ]; then
   echo "Error: $BASE_DIR does not exist"

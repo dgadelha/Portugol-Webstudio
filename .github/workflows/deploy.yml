@@ -27,8 +27,8 @@ jobs:
           export DATE_NOW_FORMATTED=$(date +'%d/%m/%Y %I:%M:%S %p %Z')
           sed -i -e 's*%DATE%*'"${DATE_NOW_FORMATTED}"'*g' packages/ide/src/app/tab-start/tab-start.component.html
           sed -i -e 's/%SENTRY_RELEASE%/'"${GITHUB_SHA}"'/g' packages/ide/src/main.ts
-          npm run release
           ./packages/ide/cleanup-icons.sh
+          npm run release
 
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4
