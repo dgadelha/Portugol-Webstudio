@@ -7,6 +7,7 @@ import { NewVersionAvailableComponent } from "./new-version-available/new-versio
 @Injectable({ providedIn: "root" })
 export class PwaService {
   loadingToast?: CreateHotToastRef<unknown>;
+  versionReadyToast?: CreateHotToastRef<unknown>;
 
   constructor(
     private swUpdate: SwUpdate,
@@ -19,9 +20,11 @@ export class PwaService {
     this.swUpdate.versionUpdates.subscribe(event => {
       console.log("PWA:", event);
 
+      this.loadingToast?.close();
+      this.versionReadyToast?.close();
+
       switch (event.type) {
         case "VERSION_DETECTED": {
-          this.loadingToast?.close();
           this.loadingToast = this.toast.loading("Baixando atualizações…", {
             autoClose: true,
             duration: 5000,
@@ -31,8 +34,7 @@ export class PwaService {
         }
 
         case "VERSION_READY": {
-          this.loadingToast?.close();
-          this.toast.success(NewVersionAvailableComponent, {
+          this.versionReadyToast = this.toast.success(NewVersionAvailableComponent, {
             autoClose: false,
             dismissible: true,
           });
