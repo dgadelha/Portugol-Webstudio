@@ -20,11 +20,11 @@ export class PwaService {
     this.swUpdate.versionUpdates.subscribe(event => {
       console.log("PWA:", event);
 
-      this.loadingToast?.close();
-      this.versionReadyToast?.close();
-
       switch (event.type) {
         case "VERSION_DETECTED": {
+          this.loadingToast?.close();
+          this.versionReadyToast?.close();
+
           this.loadingToast = this.toast.loading("Baixando atualizações…", {
             autoClose: true,
             duration: 5000,
@@ -34,6 +34,9 @@ export class PwaService {
         }
 
         case "VERSION_READY": {
+          this.loadingToast?.close();
+          this.versionReadyToast?.close();
+
           this.versionReadyToast = this.toast.success(NewVersionAvailableComponent, {
             autoClose: false,
             dismissible: true,
