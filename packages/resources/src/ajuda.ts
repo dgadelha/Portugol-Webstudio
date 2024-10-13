@@ -19,7 +19,7 @@ interface TreeItem {
 }
 
 // @ts-expect-error
-global.Tree = {
+globalThis.Tree = {
   create(data: { data: PortugolAjudaItem[] }) {
     const items: TreeItem[] = [];
 

@@ -99,6 +99,7 @@ export default tseslint.config(
       "unicorn/no-null": "off",
       "unicorn/no-object-as-default-parameter": "off",
       "unicorn/prefer-export-from": "off",
+      "unicorn/prefer-global-this": "off",
       "unicorn/prefer-spread": "off",
       "unicorn/prefer-ternary": "off",
       "unicorn/prefer-top-level-await": "off",

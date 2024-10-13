@@ -85,7 +85,7 @@ export async function patchPortugolFiles() {
 
     const portugolSignaturePos = data.indexOf("/* $$$ Portugol Studio $$$ ");
 
-    if (portugolSignaturePos > -1) {
+    if (portugolSignaturePos !== -1) {
       data = data.slice(0, Math.max(0, portugolSignaturePos));
     }
 

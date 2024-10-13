@@ -26,6 +26,7 @@ export interface ExampleItem {
 export class DialogOpenExampleComponent implements OnInit, OnDestroy, AfterViewInit {
   @Output() exampleOpened = new EventEmitter<{ title: string; code: string }>();
 
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   treeControl: NestedTreeControl<ExampleItem>;
   dataSource: MatTreeNestedDataSource<ExampleItem>;
   current: ExampleItem | null = null;

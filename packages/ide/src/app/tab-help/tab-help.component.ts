@@ -25,6 +25,7 @@ interface TreeItem {
   styleUrl: "./tab-help.component.scss",
 })
 export class TabHelpComponent implements OnInit, OnDestroy, AfterViewInit {
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   treeControl: NestedTreeControl<TreeItem>;
   dataSource: MatTreeNestedDataSource<TreeItem>;
   current?: TreeItem;
