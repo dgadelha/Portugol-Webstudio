@@ -36,7 +36,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.13.0",
-    "angular-eslint": "^18.3.1",
+    "angular-eslint": "^18.4.0",
     "eslint": "^9.13.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
@@ -44,23 +44,9 @@
     "lerna": "^8.1.8",
     "sherif": "^1.0.1",
     "typescript": "~5.5.4",
-    "typescript-eslint": "^8.10.0"
+    "typescript-eslint": "^8.11.0"
   },
   "workspaces": [
     "packages/*"
-  ],
-  "overrides": {
-    "lerna": {
-      "tar": "^6.2.1"
-    },
-    "ngx-build-plus": {
-      "@angular-devkit/build-angular": {
-        "browser-sync": {
-          "localtunnel": {
-            "axios": "^1.6.0"
-          }
-        }
-      }
-    }
-  }
+  ]
 }
