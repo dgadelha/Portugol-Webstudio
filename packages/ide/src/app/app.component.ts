@@ -1,5 +1,4 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
-import { Storage, getBlob, ref } from "@angular/fire/storage";
+import { Component, inject, OnDestroy, OnInit } from "@angular/core";
 import { FormControl } from "@angular/forms";
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { MatSnackBar } from "@angular/material/snack-bar";
@@ -8,6 +7,7 @@ import { GoogleAnalyticsService } from "ngx-google-analytics";
 import { Subscription } from "rxjs";
 import { DialogConfirmCloseTabComponent } from "./dialog-confirm-close-tab/dialog-confirm-close-tab.component";
 import { DialogRenameTabComponent } from "./dialog-rename-tab/dialog-rename-tab.component";
+import { ShareService } from "./share.service";
 
 interface Tab {
   id: number;
@@ -22,6 +22,11 @@ interface Tab {
   styleUrl: "./app.component.scss",
 })
 export class AppComponent implements OnInit, OnDestroy {
+  private gaService = inject(GoogleAnalyticsService);
+  private snack = inject(MatSnackBar);
+  private dialog = inject(MatDialog);
+  private shareService = inject(ShareService);
+
   renameDialogRef?: MatDialogRef<DialogRenameTabComponent>;
   renameDialogSubscription?: Subscription;
   closeDialogRef?: MatDialogRef<DialogConfirmCloseTabComponent>;
@@ -47,32 +52,23 @@ export class AppComponent implements OnInit, OnDestroy {
     },
   ];
 
-  constructor(
-    private gaService: GoogleAnalyticsService,
-    private storage: Storage,
-    private snack: MatSnackBar,
-    private dialog: MatDialog,
-  ) {}
-
   ngOnInit() {
     void (async () => {
-      try {
-        if (window.location.hash.startsWith("#share=")) {
-          this.snack.open("Carregando código compartilhado…", undefined, { duration: -1 });
+      if (window.location.hash.startsWith("#share=")) {
+        this.snack.open("Carregando código compartilhado…", undefined, { duration: -1 });
 
-          const hash = window.location.hash.slice(7);
-          const data = await getBlob(ref(this.storage, hash));
-          const contents = await data.text();
+        const hash = window.location.hash.slice(7);
+        const data = await this.shareService.load(hash);
 
-          this.addTab(`Código compartilhado (#${hash})`, contents);
+        if (data) {
+          this.addTab(`Código compartilhado (#${hash})`, data);
           this.snack.dismiss();
           this.gaService.event("load_shared_code_success", "Interface", "Código compartilhado carregado");
+        } else {
+          this.snack.dismiss();
+          this.snack.open("Erro ao carregar código compartilhado", "FECHAR", { duration: 10_000 });
+          this.gaService.event("load_shared_code_error", "Interface", "Erro ao carregar código compartilhado");
         }
-      } catch (error) {
-        console.error(error);
-        this.snack.dismiss();
-        this.snack.open("Erro ao carregar código compartilhado", "FECHAR", { duration: 10_000 });
-        this.gaService.event("load_shared_code_error", "Interface", "Erro ao carregar código compartilhado");
       }
     })();
   }

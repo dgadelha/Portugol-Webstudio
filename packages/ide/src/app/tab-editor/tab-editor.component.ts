@@ -8,8 +8,8 @@ import {
   Output,
   TemplateRef,
   ViewChild,
+  inject,
 } from "@angular/core";
-import { Storage, ref, uploadString } from "@angular/fire/storage";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import type { PortugolCodeError } from "@portugol-webstudio/antlr";
 import { PortugolExecutor, PortugolWebWorkersRunner } from "@portugol-webstudio/runner";
@@ -20,6 +20,7 @@ import { ShortcutInput } from "ng-keyboard-shortcuts";
 import { GoogleAnalyticsService } from "ngx-google-analytics";
 import { Subscription, debounceTime, fromEventPattern, mergeMap } from "rxjs";
 import { FileService } from "../file.service";
+import { ShareService } from "../share.service";
 import { WorkerService } from "../worker.service";
 
 @Component({
@@ -31,6 +32,12 @@ export class TabEditorComponent implements OnInit, OnDestroy {
   private _code$?: Subscription;
   private _stdOut$?: Subscription;
   private _events$?: Subscription;
+
+  private gaService = inject(GoogleAnalyticsService);
+  private snack = inject(MatSnackBar);
+  private worker = inject(WorkerService);
+  private fileService = inject(FileService);
+  private shareService = inject(ShareService);
 
   @Input()
   title?: string;
@@ -103,14 +110,6 @@ export class TabEditorComponent implements OnInit, OnDestroy {
 
   @ViewChild("shareSnackTemplate", { read: TemplateRef })
   shareSnackTemplate!: TemplateRef<{ data: { url: string } }>;
-
-  constructor(
-    private gaService: GoogleAnalyticsService,
-    private storage: Storage,
-    private snack: MatSnackBar,
-    private worker: WorkerService,
-    private fileService: FileService,
-  ) {}
 
   ngOnInit() {
     this.code ||= `programa {\n  funcao inicio() {\n    \n  }\n}\n`;
@@ -357,18 +356,12 @@ export class TabEditorComponent implements OnInit, OnDestroy {
 
     this.sharing = true;
 
-    const shareCode = (Math.random() + 1).toString(36).slice(2, 9);
-    const result = await uploadString(ref(this.storage, shareCode), this.code, undefined, {
-      contentType: "text/plain",
-    }).catch((error: unknown) => {
-      console.error(error);
-      return null;
-    });
+    const shareUrl = await this.shareService.share(this.code);
 
-    if (result) {
+    if (shareUrl) {
       this.snack.openFromTemplate(this.shareSnackTemplate, {
         data: {
-          url: `https://portugol.dev/#share=${shareCode}`,
+          url: shareUrl,
         },
       });
 
