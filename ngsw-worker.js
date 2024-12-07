@@ -18,10 +18,16 @@
     return a;
   };
   var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
+  var __publicField = (obj, key, value) => {
+    __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+    return value;
+  };
 
-  // bazel-out/k8-fastbuild-ST-2e5f3376adb5/bin/packages/service-worker/worker/src/named-cache-storage.mjs
+  // bazel-out/darwin_arm64-fastbuild-ST-2e5f3376adb5/bin/packages/service-worker/worker/src/named-cache-storage.mjs
   var NamedCacheStorage = class {
     constructor(original, cacheNamePrefix) {
+      __publicField(this, "original");
+      __publicField(this, "cacheNamePrefix");
       this.original = original;
       this.cacheNamePrefix = cacheNamePrefix;
     }
@@ -46,9 +52,12 @@
     }
   };
 
-  // bazel-out/k8-fastbuild-ST-2e5f3376adb5/bin/packages/service-worker/worker/src/adapter.mjs
+  // bazel-out/darwin_arm64-fastbuild-ST-2e5f3376adb5/bin/packages/service-worker/worker/src/adapter.mjs
   var Adapter = class {
     constructor(scopeUrl, caches) {
+      __publicField(this, "scopeUrl");
+      __publicField(this, "caches");
+      __publicField(this, "origin");
       this.scopeUrl = scopeUrl;
       const parsedScopeUrl = this.parseUrl(this.scopeUrl);
       this.origin = parsedScopeUrl.origin;
@@ -84,20 +93,23 @@
     }
   };
 
-  // bazel-out/k8-fastbuild-ST-2e5f3376adb5/bin/packages/service-worker/worker/src/database.mjs
+  // bazel-out/darwin_arm64-fastbuild-ST-2e5f3376adb5/bin/packages/service-worker/worker/src/database.mjs
   var NotFound = class {
     constructor(table, key) {
+      __publicField(this, "table");
+      __publicField(this, "key");
       this.table = table;
       this.key = key;
     }
   };
 
-  // bazel-out/k8-fastbuild-ST-2e5f3376adb5/bin/packages/service-worker/worker/src/db-cache.mjs
+  // bazel-out/darwin_arm64-fastbuild-ST-2e5f3376adb5/bin/packages/service-worker/worker/src/db-cache.mjs
   var CacheDatabase = class {
     constructor(adapter2) {
+      __publicField(this, "adapter");
+      __publicField(this, "cacheNamePrefix", "db");
+      __publicField(this, "tables", /* @__PURE__ */ new Map());
       this.adapter = adapter2;
-      this.cacheNamePrefix = "db";
-      this.tables = /* @__PURE__ */ new Map();
     }
     "delete"(name) {
       if (this.tables.has(name)) {
@@ -122,6 +134,11 @@
   };
   var CacheTable = class {
     constructor(name, cache, adapter2, cacheQueryOptions) {
+      __publicField(this, "name");
+      __publicField(this, "cache");
+      __publicField(this, "adapter");
+      __publicField(this, "cacheQueryOptions");
+      __publicField(this, "cacheName");
       this.name = name;
       this.cache = cache;
       this.adapter = adapter2;
@@ -150,7 +167,7 @@
     }
   };
 
-  // bazel-out/k8-fastbuild-ST-2e5f3376adb5/bin/packages/service-worker/worker/src/api.mjs
+  // bazel-out/darwin_arm64-fastbuild-ST-2e5f3376adb5/bin/packages/service-worker/worker/src/api.mjs
   var UpdateCacheStatus;
   (function(UpdateCacheStatus2) {
     UpdateCacheStatus2[UpdateCacheStatus2["NOT_CACHED"] = 0] = "NOT_CACHED";
@@ -158,11 +175,11 @@
     UpdateCacheStatus2[UpdateCacheStatus2["CACHED"] = 2] = "CACHED";
   })(UpdateCacheStatus || (UpdateCacheStatus = {}));
 
-  // bazel-out/k8-fastbuild-ST-2e5f3376adb5/bin/packages/service-worker/worker/src/error.mjs
+  // bazel-out/darwin_arm64-fastbuild-ST-2e5f3376adb5/bin/packages/service-worker/worker/src/error.mjs
   var SwCriticalError = class extends Error {
     constructor() {
       super(...arguments);
-      this.isCritical = true;
+      __publicField(this, "isCritical", true);
     }
   };
   function errorToString(error) {
@@ -176,11 +193,11 @@ ${error.stack}`;
   var SwUnrecoverableStateError = class extends SwCriticalError {
     constructor() {
       super(...arguments);
-      this.isUnrecoverableState = true;
+      __publicField(this, "isUnrecoverableState", true);
     }
   };
 
-  // bazel-out/k8-fastbuild-ST-2e5f3376adb5/bin/packages/service-worker/worker/src/sha1.mjs
+  // bazel-out/darwin_arm64-fastbuild-ST-2e5f3376adb5/bin/packages/service-worker/worker/src/sha1.mjs
   function sha1(str) {
     const utf8 = str;
     const words32 = stringToWords32(utf8, Endian.Big);
@@ -295,18 +312,27 @@ ${error.stack}`;
     return hex.toLowerCase();
   }
 
-  // bazel-out/k8-fastbuild-ST-2e5f3376adb5/bin/packages/service-worker/worker/src/assets.mjs
+  // bazel-out/darwin_arm64-fastbuild-ST-2e5f3376adb5/bin/packages/service-worker/worker/src/assets.mjs
   var AssetGroup = class {
     constructor(scope2, adapter2, idle, config, hashes, db, cacheNamePrefix) {
+      __publicField(this, "scope");
+      __publicField(this, "adapter");
+      __publicField(this, "idle");
+      __publicField(this, "config");
+      __publicField(this, "hashes");
+      __publicField(this, "db");
+      __publicField(this, "inFlightRequests", /* @__PURE__ */ new Map());
+      __publicField(this, "urls", []);
+      __publicField(this, "patterns", []);
+      __publicField(this, "cache");
+      __publicField(this, "name");
+      __publicField(this, "metadata");
       this.scope = scope2;
       this.adapter = adapter2;
       this.idle = idle;
       this.config = config;
       this.hashes = hashes;
       this.db = db;
-      this.inFlightRequests = /* @__PURE__ */ new Map();
-      this.urls = [];
-      this.patterns = [];
       this.name = config.name;
       this.urls = config.urls.map((url) => adapter2.normalizeUrl(url));
       this.patterns = config.patterns.map((pattern) => new RegExp(pattern));
@@ -583,9 +609,10 @@ ${error.stack}`;
     }
   };
 
-  // bazel-out/k8-fastbuild-ST-2e5f3376adb5/bin/packages/service-worker/worker/src/data.mjs
+  // bazel-out/darwin_arm64-fastbuild-ST-2e5f3376adb5/bin/packages/service-worker/worker/src/data.mjs
   var LruList = class {
     constructor(state) {
+      __publicField(this, "state");
       if (state === void 0) {
         state = {
           head: null,
@@ -663,12 +690,21 @@ ${error.stack}`;
   };
   var DataGroup = class {
     constructor(scope2, adapter2, config, db, debugHandler, cacheNamePrefix) {
+      __publicField(this, "scope");
+      __publicField(this, "adapter");
+      __publicField(this, "config");
+      __publicField(this, "db");
+      __publicField(this, "debugHandler");
+      __publicField(this, "patterns");
+      __publicField(this, "cache");
+      __publicField(this, "_lru", null);
+      __publicField(this, "lruTable");
+      __publicField(this, "ageTable");
       this.scope = scope2;
       this.adapter = adapter2;
       this.config = config;
       this.db = db;
       this.debugHandler = debugHandler;
-      this._lru = null;
       this.patterns = config.patterns.map((pattern) => new RegExp(pattern));
       this.cache = adapter2.caches.open(`${cacheNamePrefix}:${config.name}:cache`);
       this.lruTable = this.db.open(`${cacheNamePrefix}:${config.name}:lru`, config.cacheQueryOptions);
@@ -877,25 +913,27 @@ ${error.stack}`;
     }
   };
 
-  // bazel-out/k8-fastbuild-ST-2e5f3376adb5/bin/packages/service-worker/worker/src/app-version.mjs
-  var BACKWARDS_COMPATIBILITY_NAVIGATION_URLS = [
-    { positive: true, regex: "^/.*$" },
-    { positive: false, regex: "^/.*\\.[^/]*$" },
-    { positive: false, regex: "^/.*__" }
-  ];
+  // bazel-out/darwin_arm64-fastbuild-ST-2e5f3376adb5/bin/packages/service-worker/worker/src/app-version.mjs
   var AppVersion = class {
-    get okay() {
-      return this._okay;
-    }
     constructor(scope2, adapter2, database, idle, debugHandler, manifest, manifestHash) {
+      __publicField(this, "scope");
+      __publicField(this, "adapter");
+      __publicField(this, "database");
+      __publicField(this, "debugHandler");
+      __publicField(this, "manifest");
+      __publicField(this, "manifestHash");
+      __publicField(this, "hashTable", /* @__PURE__ */ new Map());
+      __publicField(this, "assetGroups");
+      __publicField(this, "dataGroups");
+      __publicField(this, "navigationUrls");
+      __publicField(this, "indexUrl");
+      __publicField(this, "_okay", true);
       this.scope = scope2;
       this.adapter = adapter2;
       this.database = database;
       this.debugHandler = debugHandler;
       this.manifest = manifest;
       this.manifestHash = manifestHash;
-      this.hashTable = /* @__PURE__ */ new Map();
-      this._okay = true;
       this.indexUrl = this.adapter.normalizeUrl(this.manifest.index);
       Object.keys(manifest.hashTable).forEach((url) => {
         this.hashTable.set(adapter2.normalizeUrl(url), manifest.hashTable[url]);
@@ -910,13 +948,15 @@ ${error.stack}`;
         }
       });
       this.dataGroups = (manifest.dataGroups || []).map((config) => new DataGroup(scope2, adapter2, config, database, debugHandler, `${config.version}:data`));
-      manifest.navigationUrls = manifest.navigationUrls || BACKWARDS_COMPATIBILITY_NAVIGATION_URLS;
       const includeUrls = manifest.navigationUrls.filter((spec) => spec.positive);
       const excludeUrls = manifest.navigationUrls.filter((spec) => !spec.positive);
       this.navigationUrls = {
         include: includeUrls.map((spec) => new RegExp(spec.regex)),
         exclude: excludeUrls.map((spec) => new RegExp(spec.regex))
       };
+    }
+    get okay() {
+      return this._okay;
     }
     async initializeFully(updateFrom) {
       try {
@@ -1028,15 +1068,17 @@ ${error.stack}`;
     }
   };
 
-  // bazel-out/k8-fastbuild-ST-2e5f3376adb5/bin/packages/service-worker/worker/src/debug.mjs
-  var SW_VERSION = "18.2.9";
+  // bazel-out/darwin_arm64-fastbuild-ST-2e5f3376adb5/bin/packages/service-worker/worker/src/debug.mjs
+  var SW_VERSION = "19.0.3";
   var DEBUG_LOG_BUFFER_SIZE = 100;
   var DebugHandler = class {
     constructor(driver, adapter2) {
+      __publicField(this, "driver");
+      __publicField(this, "adapter");
+      __publicField(this, "debugLogA", []);
+      __publicField(this, "debugLogB", []);
       this.driver = driver;
       this.adapter = adapter2;
-      this.debugLogA = [];
-      this.debugLogB = [];
     }
     async handleFetch(req) {
       const [state, versions, idle] = await Promise.all([
@@ -1102,20 +1144,24 @@ ${msgIdle}`, { headers: this.adapter.newHeaders({ "Content-Type": "text/plain" }
     }
   };
 
-  // bazel-out/k8-fastbuild-ST-2e5f3376adb5/bin/packages/service-worker/worker/src/idle.mjs
+  // bazel-out/darwin_arm64-fastbuild-ST-2e5f3376adb5/bin/packages/service-worker/worker/src/idle.mjs
   var IdleScheduler = class {
     constructor(adapter2, delay, maxDelay, debug) {
+      __publicField(this, "adapter");
+      __publicField(this, "delay");
+      __publicField(this, "maxDelay");
+      __publicField(this, "debug");
+      __publicField(this, "queue", []);
+      __publicField(this, "scheduled", null);
+      __publicField(this, "empty", Promise.resolve());
+      __publicField(this, "emptyResolve", null);
+      __publicField(this, "lastTrigger", null);
+      __publicField(this, "lastRun", null);
+      __publicField(this, "oldestScheduledAt", null);
       this.adapter = adapter2;
       this.delay = delay;
       this.maxDelay = maxDelay;
       this.debug = debug;
-      this.queue = [];
-      this.scheduled = null;
-      this.empty = Promise.resolve();
-      this.emptyResolve = null;
-      this.lastTrigger = null;
-      this.lastRun = null;
-      this.oldestScheduledAt = null;
     }
     async trigger() {
       var _a;
@@ -1180,12 +1226,12 @@ ${msgIdle}`, { headers: this.adapter.newHeaders({ "Content-Type": "text/plain" }
     }
   };
 
-  // bazel-out/k8-fastbuild-ST-2e5f3376adb5/bin/packages/service-worker/worker/src/manifest.mjs
+  // bazel-out/darwin_arm64-fastbuild-ST-2e5f3376adb5/bin/packages/service-worker/worker/src/manifest.mjs
   function hashManifest(manifest) {
     return sha1(JSON.stringify(manifest));
   }
 
-  // bazel-out/k8-fastbuild-ST-2e5f3376adb5/bin/packages/service-worker/worker/src/msg.mjs
+  // bazel-out/darwin_arm64-fastbuild-ST-2e5f3376adb5/bin/packages/service-worker/worker/src/msg.mjs
   function isMsgCheckForUpdates(msg) {
     return msg.action === "CHECK_FOR_UPDATES";
   }
@@ -1193,7 +1239,7 @@ ${msgIdle}`, { headers: this.adapter.newHeaders({ "Content-Type": "text/plain" }
     return msg.action === "ACTIVATE_UPDATE";
   }
 
-  // bazel-out/k8-fastbuild-ST-2e5f3376adb5/bin/packages/service-worker/worker/src/driver.mjs
+  // bazel-out/darwin_arm64-fastbuild-ST-2e5f3376adb5/bin/packages/service-worker/worker/src/driver.mjs
   var IDLE_DELAY = 5e3;
   var MAX_IDLE_DELAY = 3e4;
   var SUPPORTED_CONFIG_VERSION = 1;
@@ -1222,18 +1268,25 @@ ${msgIdle}`, { headers: this.adapter.newHeaders({ "Content-Type": "text/plain" }
   })(DriverReadyState || (DriverReadyState = {}));
   var Driver = class {
     constructor(scope2, adapter2, db) {
+      __publicField(this, "scope");
+      __publicField(this, "adapter");
+      __publicField(this, "db");
+      __publicField(this, "state", DriverReadyState.NORMAL);
+      __publicField(this, "stateMessage", "(nominal)");
+      __publicField(this, "initialized", null);
+      __publicField(this, "clientVersionMap", /* @__PURE__ */ new Map());
+      __publicField(this, "versions", /* @__PURE__ */ new Map());
+      __publicField(this, "latestHash", null);
+      __publicField(this, "lastUpdateCheck", null);
+      __publicField(this, "scheduledNavUpdateCheck", false);
+      __publicField(this, "loggedInvalidOnlyIfCachedRequest", false);
+      __publicField(this, "ngswStatePath");
+      __publicField(this, "idle");
+      __publicField(this, "debugger");
+      __publicField(this, "controlTable");
       this.scope = scope2;
       this.adapter = adapter2;
       this.db = db;
-      this.state = DriverReadyState.NORMAL;
-      this.stateMessage = "(nominal)";
-      this.initialized = null;
-      this.clientVersionMap = /* @__PURE__ */ new Map();
-      this.versions = /* @__PURE__ */ new Map();
-      this.latestHash = null;
-      this.lastUpdateCheck = null;
-      this.scheduledNavUpdateCheck = false;
-      this.loggedInvalidOnlyIfCachedRequest = false;
       this.controlTable = this.db.open("control");
       this.ngswStatePath = this.adapter.parseUrl("ngsw/state", this.scope.registration.scope).path;
       this.scope.addEventListener("install", (event) => {
@@ -1242,13 +1295,6 @@ ${msgIdle}`, { headers: this.adapter.newHeaders({ "Content-Type": "text/plain" }
       this.scope.addEventListener("activate", (event) => {
         event.waitUntil((async () => {
           await this.scope.clients.claim();
-          this.idle.schedule("activate: cleanup-old-sw-caches", async () => {
-            try {
-              await this.cleanupOldSwCaches();
-            } catch (err) {
-              this.debugger.log(err, "cleanupOldSwCaches @ activate: cleanup-old-sw-caches");
-            }
-          });
         })());
         if (this.scope.registration.active !== null) {
           this.scope.registration.active.postMessage({ action: "INITIALIZE" });
@@ -1442,9 +1488,10 @@ ${msgIdle}`, { headers: this.adapter.newHeaders({ "Content-Type": "text/plain" }
         });
       }
       const appVersion = await this.assignVersion(event);
+      const isVersionWithinMaxAge = (appVersion == null ? void 0 : appVersion.manifest.applicationMaxAge) === void 0 || this.adapter.time - appVersion.manifest.timestamp < appVersion.manifest.applicationMaxAge;
       let res = null;
       try {
-        if (appVersion !== null) {
+        if (appVersion !== null && isVersionWithinMaxAge) {
           try {
             res = await appVersion.handleFetch(event.request, event);
           } catch (err) {
@@ -1694,12 +1741,6 @@ ${msgIdle}`, { headers: this.adapter.newHeaders({ "Content-Type": "text/plain" }
         this.debugger.log(err, "cleanupCaches");
       }
     }
-    async cleanupOldSwCaches() {
-      const caches = this.adapter.caches.original;
-      const cacheNames = await caches.keys();
-      const oldSwCacheNames = cacheNames.filter((name) => /^ngsw:(?!\/)/.test(name));
-      await Promise.all(oldSwCacheNames.map((name) => caches.delete(name)));
-    }
     lookupResourceWithHash(url, hash) {
       return Array.from(this.versions.values()).reduce(async (prev, version) => {
         if (await prev !== null) {
@@ -1849,7 +1890,7 @@ ${msgIdle}`, { headers: this.adapter.newHeaders({ "Content-Type": "text/plain" }
     }
   };
 
-  // bazel-out/k8-fastbuild-ST-2e5f3376adb5/bin/packages/service-worker/worker/main.mjs
+  // bazel-out/darwin_arm64-fastbuild-ST-2e5f3376adb5/bin/packages/service-worker/worker/main.mjs
   var scope = self;
   var adapter = new Adapter(scope.registration.scope, self.caches);
   new Driver(scope, adapter, new CacheDatabase(adapter));

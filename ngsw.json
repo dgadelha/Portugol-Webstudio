@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1729984981032,
+  "timestamp": 1733598870250,
   "index": "/index.html",
   "assetGroups": [
     {
@@ -13,10 +13,10 @@
       "urls": [
         "/favicon.ico",
         "/index.html",
-        "/main-IHCFHHPK.js",
+        "/main-WV3KBZ2Z.js",
         "/manifest.webmanifest",
         "/polyfills-Q763KACN.js",
-        "/styles-W3MCWC5D.css"
+        "/styles-NVLSXWIW.css"
       ],
       "patterns": []
     },
@@ -3742,8 +3742,8 @@
     "/assets/monaco-editor/min/vs/nls.messages.zh-tw.js": "ac0bcbf00b835266d691d3d9eb95d83de06dc4f1",
     "/assets/monaco-editor/monaco.d.ts": "0d7ba4d1f6545b88fca1dbf44fd583585d9da395",
     "/assets/monaco-editor/package.json": "df39add8204baf2a93b26e3d3535881b959388e7",
-    "/assets/portugol-worker/worker.js": "74c5b93eff13dd5a835c37346885a969a263c4a0",
-    "/assets/portugol-worker/worker.js.map": "6cd2e4f9382c41c4bafc1874b81417516fc97b2b",
+    "/assets/portugol-worker/worker.js": "c7b289d849a56c7e6bc31babb15bd6dad7daf882",
+    "/assets/portugol-worker/worker.js.map": "cd58078794caf4b42ad7fe7cc0d778ef4786a7c8",
     "/assets/recursos/ajuda/estilos/SyntaxHighlighter.css": "4162675b3b4d2354973021572bfd4685deb6712d",
     "/assets/recursos/ajuda/estilos/ajuda.css": "9e6ad574f9fa6c48d6f856756016eac3c1a5686b",
     "/assets/recursos/ajuda/estilos/index.css": "df28a87aa49702297859fb7900c44f8250da8786",
@@ -4422,11 +4422,11 @@
     "/assets/recursos/exercicios/exercicio60.pex": "6082892362c640c5b7c9e63b12d6594dab32128d",
     "/assets/recursos/exercicios/schema.xsd": "cd13152ea836b1eed121a6972a619f595ac5d46c",
     "/favicon.ico": "a3dadb5b6906874517b9a2bc021bb3f154290edd",
-    "/index.html": "4d036960d1b86950eabb80c65053d6fd9a76fd31",
-    "/main-IHCFHHPK.js": "e570c4c7f1c993085c38d32f72594090d1cd3fd4",
+    "/index.html": "d6198abea5d88415492ccc8e18caf820f04a5447",
+    "/main-WV3KBZ2Z.js": "c35ddad523cf02c3cead213f17b5bca6288db75a",
     "/manifest.webmanifest": "ea9afcc9f466e61c4f2a5fb56f9ad31683c1de7f",
     "/polyfills-Q763KACN.js": "e2a9f135443e4bc6115449a6098604d881bf5931",
-    "/styles-W3MCWC5D.css": "0c37b46ea2b7f6670eecc5a15f55ed35a736dd95"
+    "/styles-NVLSXWIW.css": "bd77511ca221c60ba4b2ee759c05748ac0cf6fb1"
   },
   "navigationUrls": [
     {
