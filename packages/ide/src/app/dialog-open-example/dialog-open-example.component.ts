@@ -18,7 +18,9 @@ export interface ExampleItem {
   children?: ExampleItem[];
 }
 
+// eslint-disable-next-line @angular-eslint/prefer-standalone
 @Component({
+  standalone: false,
   selector: "app-dialog-open-example",
   templateUrl: "./dialog-open-example.component.html",
   styleUrls: ["./dialog-open-example.component.scss"],

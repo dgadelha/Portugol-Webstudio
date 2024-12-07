@@ -36,11 +36,11 @@
     "@portugol-webstudio/antlr": "*",
     "@portugol-webstudio/parser": "*",
     "@portugol-webstudio/runtime": "*",
-    "antlr4ng": "^3.0.7"
+    "antlr4ng": "^3.0.10"
   },
   "devDependencies": {
     "antlr4ng-cli": "^2.0.0",
-    "webpack": "^5.95.0",
+    "webpack": "^5.97.1",
     "webpack-cli": "^5.1.4"
   }
 }

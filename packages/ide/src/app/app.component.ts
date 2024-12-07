@@ -16,7 +16,9 @@ interface Tab {
   type: "editor" | "help";
 }
 
+// eslint-disable-next-line @angular-eslint/prefer-standalone
 @Component({
+  standalone: false,
   selector: "app-root",
   templateUrl: "./app.component.html",
   styleUrl: "./app.component.scss",

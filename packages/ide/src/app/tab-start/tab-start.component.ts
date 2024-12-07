@@ -7,7 +7,9 @@ import { Subscription } from "rxjs";
 import { DialogOpenExampleComponent } from "../dialog-open-example/dialog-open-example.component";
 import { FileService } from "../file.service";
 
+// eslint-disable-next-line @angular-eslint/prefer-standalone
 @Component({
+  standalone: false,
   selector: "app-tab-start",
   templateUrl: "./tab-start.component.html",
   styleUrl: "./tab-start.component.scss",

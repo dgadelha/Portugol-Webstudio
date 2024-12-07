@@ -23,7 +23,9 @@ import { FileService } from "../file.service";
 import { ShareService } from "../share.service";
 import { WorkerService } from "../worker.service";
 
+// eslint-disable-next-line @angular-eslint/prefer-standalone
 @Component({
+  standalone: false,
   selector: "app-tab-editor",
   templateUrl: "./tab-editor.component.html",
   styleUrls: ["./tab-editor.component.scss"],

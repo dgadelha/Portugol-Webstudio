@@ -58,7 +58,7 @@ export class Escopo {
     return this.atual.função;
   }
 
-  set função(tipo: Tipo) {
+  set função(tipo: Tipo | undefined) {
     this.atual.função = tipo;
   }
 

@@ -1,5 +1,5 @@
-@import "variables";
-@import "utils";
+@use "variables";
+@use "utils";
 
 :host {
   display: flex;
@@ -25,14 +25,14 @@
 
   .mat-mdc-tab {
     --mdc-secondary-navigation-tab-container-height: 40px;
-    --mat-tab-header-active-label-text-color: $tab-active-color;
-    --mat-tab-header-active-focus-label-text-color: $tab-active-color;
-    --mat-tab-header-active-hover-label-text-color: $tab-active-color;
-    --mat-tab-header-active-hover-indicator-color: $tab-active-color;
+    --mat-tab-header-active-label-text-color: variables.$tab-active-color;
+    --mat-tab-header-active-focus-label-text-color: variables.$tab-active-color;
+    --mat-tab-header-active-hover-label-text-color: variables.$tab-active-color;
+    --mat-tab-header-active-hover-indicator-color: variables.$tab-active-color;
 
     position: relative;
-    background-color: $tab-bg;
-    color: $tab-color;
+    background-color: variables.$tab-bg;
+    color: variables.$tab-color;
     font-weight: 700;
     font-size: 14px;
     display: flex;
@@ -47,7 +47,7 @@
     opacity: 1;
     justify-content: flex-start;
     min-width: 0;
-    font-family: $font;
+    font-family: variables.$font;
     -webkit-user-select: none;
     -moz-user-select: none;
     user-select: none;
@@ -82,7 +82,7 @@
       }
     }
 
-    &:not(#mat-tab-label-0-0) {
+    &:not(#mat-tab-group-0-label-0) {
       padding-right: 0;
 
       &:not(.mdc-tab--active) {
@@ -122,8 +122,8 @@
 
     &.mdc-tab--active,
     &:focus:not(.mat-mdc-tab-disabled) {
-      background-color: $tab-active-bg !important;
-      color: $tab-active-color !important;
+      background-color: variables.$tab-active-bg !important;
+      color: variables.$tab-active-color !important;
 
       &::after {
         content: "";
@@ -133,7 +133,7 @@
         right: 0;
         width: 100%;
         height: 1px;
-        background-color: $primary;
+        background-color: variables.$primary;
       }
     }
 
@@ -145,7 +145,7 @@
       justify-content: center;
       width: 1rem;
       margin-right: 0.5rem;
-      color: $foreground-300;
+      color: variables.$foreground-300;
       fill: currentColor;
     }
 
@@ -162,8 +162,8 @@
     flex-grow: 1;
 
     mat-tab-body {
-      background-color: $background-200;
-      color: $foreground-200;
+      background-color: variables.$background-200;
+      color: variables.$foreground-200;
       flex-grow: 1;
       overflow: hidden;
     }

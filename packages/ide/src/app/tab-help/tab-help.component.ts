@@ -19,7 +19,9 @@ interface TreeItem {
   children?: TreeItem[];
 }
 
+// eslint-disable-next-line @angular-eslint/prefer-standalone
 @Component({
+  standalone: false,
   selector: "app-tab-help",
   templateUrl: "./tab-help.component.html",
   styleUrl: "./tab-help.component.scss",

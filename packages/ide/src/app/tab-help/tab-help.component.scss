@@ -1,4 +1,4 @@
-@import "variables";
+@use "variables";
 
 header {
   display: flex;
@@ -34,18 +34,18 @@ ul {
   -webkit-user-select: none;
   -moz-user-select: none;
   user-select: none;
-  background-color: $background-200;
+  background-color: variables.$background-200;
 
   li {
     list-style: none;
     overflow: hidden;
     width: 100%;
-    background-color: $background-200;
+    background-color: variables.$background-200;
     cursor: pointer;
     display: flex;
 
     &.active {
-      background-color: $background-100;
+      background-color: variables.$background-100;
     }
 
     span {

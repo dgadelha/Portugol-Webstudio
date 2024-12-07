@@ -3,6 +3,9 @@
 @use "@angular/material" as mat;
 @use "@ngxpert/hot-toast/src/styles/styles.scss";
 // Plus imports for other components in your app.
+//@use "@fontsource/lato/400.css";
+//@use "@fontsource/lato/700.css";
+@use "variables";
 
 // Include the common styles for Angular Material. We include this here so that you only
 // have to load a single css file for Angular Material in your app.
@@ -67,9 +70,6 @@ $PortugolWebstudio-theme: mat.m2-define-dark-theme(
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
 @include mat.all-component-themes($PortugolWebstudio-theme);
-@import "variables";
-@import "@fontsource/lato/400.css";
-@import "@fontsource/lato/700.css";
 
 .mat-mdc-tooltip,
 .mdc-tooltip__surface {
@@ -89,28 +89,28 @@ app-root {
   height: 100%;
   overflow: hidden;
   margin: 0;
-  font-family: $font;
+  font-family: variables.$font;
 }
 
 body {
-  background-color: $body-bg;
-  color: $body-color;
+  background-color: variables.$body-bg;
+  color: variables.$body-color;
 }
 
 .text-primary {
-  color: $primary !important;
+  color: variables.$primary !important;
 }
 
 .text-secondary {
-  color: $secondary !important;
+  color: variables.$secondary !important;
 }
 
 .text-tertiary {
-  color: $tertiary !important;
+  color: variables.$tertiary !important;
 }
 
 .text-quaternary {
-  color: $quaternary !important;
+  color: variables.$quaternary !important;
 }
 
 .as-split-gutter {

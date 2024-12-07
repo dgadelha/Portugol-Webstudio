@@ -85,7 +85,7 @@
               "packages/ide/src/favicon.ico",
               "packages/ide/src/assets"
             ],
-            "styles": ["packages/ide/src/styles.scss"],
+            "styles": ["packages/ide/src/styles.scss", "@fontsource/lato/400.css", "@fontsource/lato/700.css"],
             "stylePreprocessorOptions": {
               "includePaths": ["packages/ide/src/"]
             },

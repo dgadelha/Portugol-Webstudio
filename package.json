@@ -32,19 +32,20 @@
     "build:runner": "lerna run build --scope=@portugol-webstudio/runner",
     "build:runtime": "lerna run build --scope=@portugol-webstudio/runtime",
     "test:parser": "lerna run test --scope=@portugol-webstudio/parser",
-    "release": "lerna run release"
+    "release": "lerna run release",
+    "postinstall": "patch-package"
   },
   "devDependencies": {
-    "@eslint/js": "^9.13.0",
-    "angular-eslint": "^18.4.0",
-    "eslint": "^9.13.0",
+    "@eslint/js": "^9.16.0",
+    "angular-eslint": "^19.0.1",
+    "eslint": "^9.16.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
-    "eslint-plugin-unicorn": "^56.0.0",
-    "lerna": "^8.1.8",
-    "sherif": "^1.0.1",
-    "typescript": "~5.5.4",
-    "typescript-eslint": "^8.11.0"
+    "eslint-plugin-unicorn": "^56.0.1",
+    "lerna": "^8.1.9",
+    "sherif": "^1.0.2",
+    "typescript": "~5.6.3",
+    "typescript-eslint": "^8.17.0"
   },
   "workspaces": [
     "packages/*"
