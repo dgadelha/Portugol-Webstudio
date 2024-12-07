@@ -43,6 +43,7 @@
     "eslint-plugin-prettier": "^5.2.1",
     "eslint-plugin-unicorn": "^56.0.1",
     "lerna": "^8.1.9",
+    "patch-package": "^8.0.0",
     "sherif": "^1.0.2",
     "typescript": "~5.6.3",
     "typescript-eslint": "^8.17.0"
