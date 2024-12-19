@@ -67,7 +67,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
   stdOutEditor?: monaco.editor.IStandaloneCodeEditor;
 
   stdOutEditorOptions: monaco.editor.IStandaloneEditorConstructionOptions = {
-    theme: "portugol",
+    theme: "portugol-dark",
     lineNumbers: "off",
     readOnly: true,
     minimap: { enabled: false },
