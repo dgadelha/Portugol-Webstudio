@@ -9,7 +9,7 @@
     [disabled]="executor.running || transpiling"
     title="Iniciar execução"
   >
-    <svg-icon src="assets/icon-start.svg" svgAriaLabel="Ícone de iniciar execução" />
+    <svg-icon src="assets/icon-start.svg" svgClass="text-secondary" svgAriaLabel="Ícone de iniciar execução" />
   </button>
 
   <button
@@ -20,11 +20,7 @@
     [disabled]="!executor.running && !transpiling"
     title="Parar execução"
   >
-    <svg-icon
-      src="assets/mdi/square-rounded-outline.svg"
-      svgClass="text-tertiary"
-      svgAriaLabel="Ícone de parar execução"
-    />
+    <svg-icon src="assets/mdi/square-rounded-outline.svg" svgClass="text-red" svgAriaLabel="Ícone de parar execução" />
   </button>
 
   <div class="sidebar-divider"></div>
@@ -41,7 +37,7 @@
   >
     <svg-icon
       src="assets/mdi/content-save-outline.svg"
-      svgClass="text-quaternary"
+      svgClass="text-blue"
       svgAriaLabel="Ícone de disquete para ação de salvar arquivo"
     />
   </button>
@@ -58,7 +54,7 @@
   >
     <svg-icon
       src="assets/mdi/content-save-settings-outline.svg"
-      svgClass="text-quaternary"
+      svgClass="text-blue"
       svgAriaLabel="Ícone de disquete com três pontos abaixo para ação avançada de salvar arquivo"
     />
   </button>
@@ -171,7 +167,7 @@
   <div class="sidebar-divider"></div>
 
   <button mat-ripple type="button" class="sidebar-button" (click)="openHelp()" title="Abrir seção de Ajuda">
-    <svg-icon src="assets/mdi/help-circle-outline.svg" svgClass="text-quaternary" svgAriaLabel="Ícone de ajuda" />
+    <svg-icon src="assets/mdi/help-circle-outline.svg" svgClass="text-blue" svgAriaLabel="Ícone de ajuda" />
   </button>
 </div>
 

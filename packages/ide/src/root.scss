@@ -1,0 +1,95 @@
+@use "theme-dark";
+@use "theme-light";
+@use "utils";
+
+@use "sass:map";
+
+$prefix: "pws";
+
+$theme-modes: (
+  "light": theme-light.$theme,
+  "dark": theme-dark.$theme
+);
+
+@each $key, $theme in $theme-modes {
+  [data-theme="#{$key}"] {
+    @each $key, $value in map-get($theme, "$theme-colors") {
+      --#{$prefix}-color-#{$key}: #{$value};
+      --#{$prefix}-color-#{$key}-rgb: #{utils.to-rgb($value)};
+    }
+
+    @each $key, $value in map-get($theme, "$theme-text-colors") {
+      --#{$prefix}-text-#{$key}: #{$value};
+      --#{$prefix}-text-#{$key}-rgb: #{utils.to-rgb($value)};
+    }
+
+    @each $key, $value in map-get($theme, "$theme-background-colors") {
+      --#{$prefix}-bg-#{$key}: #{$value};
+      --#{$prefix}-bg-#{$key}-rgb: #{utils.to-rgb($value)};
+    }
+
+    ///////////
+    // Fonte //
+    ///////////
+
+    --#{$prefix}-font: #{theme-dark.$font-family};
+
+    ////////////
+    // Página //
+    ////////////
+
+    --#{$prefix}-body-bg: #{map-get($theme, "$body-bg")};
+    --#{$prefix}-body-bg-rgb: #{utils.to-rgb(map-get($theme, "$body-bg"))};
+    --#{$prefix}-body-color: #{map-get($theme, "$body-color")};
+    --#{$prefix}-body-color-rgb: #{utils.to-rgb(map-get($theme, "$body-color"))};
+    --#{$prefix}-body-color-inverted: #{invert(map-get($theme, "$body-color"))};
+    --#{$prefix}-body-color-inverted-rgb: #{utils.to-rgb(invert(map-get($theme, "$body-color")))};
+
+    --#{$prefix}-text-muted: var(--#{$prefix}-text-300);
+    --#{$prefix}-text-muted-rgb: var(--#{$prefix}-text-300-rgb);
+
+    --#{$prefix}-border-color: #{map-get($theme, "$border-color")};
+
+    ////////////////////
+    // Componente Aba //
+    ////////////////////
+
+    --#{$prefix}-tab-bg: var(--#{$prefix}-bg-300);
+    --#{$prefix}-tab-bg-rgb: var(--#{$prefix}-bg-300-rgb);
+
+    --#{$prefix}-tab-bg-hover: var(--#{$prefix}-bg-100);
+    --#{$prefix}-tab-bg-hover-rgb: var(--#{$prefix}-bg-100-rgb);
+
+    --#{$prefix}-tab-bg-active: var(--#{$prefix}-bg-200);
+    --#{$prefix}-tab-bg-active-rgb: var(--#{$prefix}-bg-200-rgb);
+
+    --#{$prefix}-tab-color: var(--#{$prefix}-text-300);
+    --#{$prefix}-tab-color-rgb: var(--#{$prefix}-text-300-rgb);
+
+    --#{$prefix}-tab-color-hover: var(--#{$prefix}-text-100);
+    --#{$prefix}-tab-color-hover-rgb: var(--#{$prefix}-text-100-rgb);
+
+    --#{$prefix}-tab-color-active: var(--#{$prefix}-text-200);
+    --#{$prefix}-tab-color-active-rgb: var(--#{$prefix}-text-200-rgb);
+
+    --#{$prefix}-tab-body-bg: var(--#{$prefix}-bg-200);
+    --#{$prefix}-tab-body-bg-rgb: var(--#{$prefix}-bg-200-rgb);
+
+    --#{$prefix}-tab-body-color: var(--#{$prefix}-text-200);
+    --#{$prefix}-tab-body-color-rgb: var(--#{$prefix}-text-200-rgb);
+
+    /////////////
+    // Classes //
+    /////////////
+
+    @each $key, $value in map-get($theme, "$theme-colors") {
+      .text-#{$key} {
+        color: var(--#{$prefix}-color-#{$key}) !important;
+      }
+
+      .bg-#{$key} {
+        background-color: var(--#{$prefix}-color-#{$key}) !important;
+      }
+    }
+  }
+}

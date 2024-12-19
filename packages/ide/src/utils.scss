@@ -5,3 +5,7 @@
 @function shade($color, $percentage) {
   @return mix(black, $color, $percentage);
 }
+
+@function to-rgb($value) {
+  @return red($value), green($value), blue($value);
+}

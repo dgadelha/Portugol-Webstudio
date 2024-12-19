@@ -5,71 +5,12 @@
 // Plus imports for other components in your app.
 //@use "@fontsource/lato/400.css";
 //@use "@fontsource/lato/700.css";
-@use "variables";
+@use "root";
 
 // Include the common styles for Angular Material. We include this here so that you only
 // have to load a single css file for Angular Material in your app.
 // Be sure that you only ever include this mixin once!
 @include mat.core();
-
-$md-webstudio: (
-  50: #fff8e0,
-  100: #ffedb3,
-  200: #ffe180,
-  300: #ffd44d,
-  400: #ffcb26,
-  500: #ffc200,
-  600: #ffbc00,
-  700: #ffb400,
-  800: #ffac00,
-  900: #ff9f00,
-  A100: #ffffff,
-  A200: #fffaf2,
-  A400: #ffe4bf,
-  A700: #ffd9a6,
-  contrast: (
-    50: #000000,
-    100: #000000,
-    200: #000000,
-    300: #000000,
-    400: #000000,
-    500: #000000,
-    600: #000000,
-    700: #000000,
-    800: #000000,
-    900: #000000,
-    A100: #000000,
-    A200: #000000,
-    A400: #000000,
-    A700: #000000,
-  ),
-);
-
-// Define the palettes for your theme using the Material Design palettes available in palette.scss
-// (imported above). For each palette, you can optionally specify a default, lighter, and darker
-// hue. Available color palettes: https://material.io/design/color/
-$PortugolWebstudio-primary: mat.m2-define-palette($md-webstudio);
-$PortugolWebstudio-accent: mat.m2-define-palette(mat.$m2-pink-palette, A200, A100, A400);
-
-// The warn palette is optional (defaults to red).
-$PortugolWebstudio-warn: mat.m2-define-palette(mat.$m2-red-palette);
-
-// Create the theme object. A theme consists of configurations for individual
-// theming systems such as "color" or "typography".
-$PortugolWebstudio-theme: mat.m2-define-dark-theme(
-  (
-    color: (
-      primary: $PortugolWebstudio-primary,
-      accent: $PortugolWebstudio-accent,
-      warn: $PortugolWebstudio-warn,
-    ),
-  )
-);
-
-// Include theme styles for core and each component used in your app.
-// Alternatively, you can import and @include the theme mixins for each component
-// that you are using.
-@include mat.all-component-themes($PortugolWebstudio-theme);
 
 .mat-mdc-tooltip,
 .mdc-tooltip__surface {
@@ -89,32 +30,16 @@ app-root {
   height: 100%;
   overflow: hidden;
   margin: 0;
-  font-family: variables.$font;
+  font-family: var(--#{root.$prefix}-font);
 }
 
 body {
-  background-color: variables.$body-bg;
-  color: variables.$body-color;
-}
-
-.text-primary {
-  color: variables.$primary !important;
-}
-
-.text-secondary {
-  color: variables.$secondary !important;
-}
-
-.text-tertiary {
-  color: variables.$tertiary !important;
-}
-
-.text-quaternary {
-  color: variables.$quaternary !important;
+  background-color: var(--#{root.$prefix}-body-bg);
+  color: var(--#{root.$prefix}-body-color);
 }
 
 .as-split-gutter {
-  background-color: #414141 !important;
+  background-color: var(--#{root.$prefix}-bg-200) !important;
 }
 
 s {
@@ -139,4 +64,20 @@ svg-icon > svg {
 
 .w-100 {
   width: 100%;
+}
+
+.logo-title[fill] {
+  fill: var(--#{root.$prefix}-body-color);
+}
+
+.logo-subtitle[fill] {
+  fill: var(--#{root.$prefix}-text-muted);
+}
+
+.logo-subtitle[stroke] {
+  stroke: var(--#{root.$prefix}-text-muted);
+}
+
+.logo-icon[fill] {
+  fill: var(--#{root.$prefix}-color-primary);
 }

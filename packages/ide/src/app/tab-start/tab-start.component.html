@@ -1,4 +1,4 @@
-<img [src]="logo" width="100%" class="logo" alt="Logomarca do Portugol Webstudio" />
+<svg-icon [src]="logo" svgClass="logo w-100" svgAriaLabel="Logomarca do Portugol Webstudio" />
 
 <nav>
   <button mat-ripple (click)="newTab.emit()">
@@ -28,7 +28,7 @@
   </button>
 
   <button mat-ripple (click)="help.emit()">
-    <svg-icon src="assets/mdi/help.svg" svgClass="text-quaternary" alt="Ícone de ajuda" />
+    <svg-icon src="assets/mdi/help.svg" svgClass="text-blue" alt="Ícone de ajuda" />
     <span>Ajuda</span>
   </button>
 
@@ -57,7 +57,7 @@
   >
     <svg-icon
       src="assets/mdi/comment-question-outline.svg"
-      svgClass="text-quaternary"
+      svgClass="text-blue"
       svgAriaLabel="Ícone de balão de diálogo para ação de enviar dúvidas"
     />
 
@@ -73,7 +73,7 @@
   >
     <svg-icon
       src="assets/mdi/bug-outline.svg"
-      svgClass="text-tertiary"
+      svgClass="text-red"
       svgAriaLabel="Ícone de inseto para ação de reportar um problema"
     />
 

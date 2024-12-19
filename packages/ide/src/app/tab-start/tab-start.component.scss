@@ -1,4 +1,4 @@
-@use "variables";
+@use "root";
 
 :host {
   position: relative;
@@ -47,11 +47,11 @@ nav {
     align-items: center;
     justify-content: center;
     padding: 1rem;
-    background-color: variables.$background-100;
+    background-color: var(--#{root.$prefix}-body-bg);
     appearance: none;
     border: none;
     border-radius: 0.25rem;
-    color: variables.$foreground-100;
+    color: var(--#{root.$prefix}-body-color);
     font-weight: bold;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -64,8 +64,8 @@ nav {
     text-align: center;
 
     &:hover {
-      background-color: tint(variables.$background-100, 15);
-      color: tint(variables.$foreground-100, 15);
+      background-color: var(--#{root.$prefix}-tab-bg-hover);
+      color: var(--#{root.$prefix}-tab-color-hover);
     }
 
     > svg-icon,
