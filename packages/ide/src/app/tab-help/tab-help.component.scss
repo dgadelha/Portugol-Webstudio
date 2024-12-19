@@ -1,9 +1,9 @@
-@use "variables";
+@use "root";
 
 header {
   display: flex;
   align-items: center;
-  background-color: #121e24;
+  background-color: var(--#{root.$prefix}-bg-100);
   margin: 7.5px;
   padding: 12.5px 15px;
   font-size: 1rem;
@@ -34,18 +34,18 @@ ul {
   -webkit-user-select: none;
   -moz-user-select: none;
   user-select: none;
-  background-color: variables.$background-200;
+  background-color: var(--#{root.$prefix}-bg-200);
 
   li {
     list-style: none;
     overflow: hidden;
     width: 100%;
-    background-color: variables.$background-200;
+    background-color: var(--#{root.$prefix}-bg-200);
     cursor: pointer;
     display: flex;
 
     &.active {
-      background-color: variables.$background-100;
+      background-color: var(--#{root.$prefix}-bg-100);
     }
 
     span {
