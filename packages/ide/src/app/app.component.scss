@@ -25,14 +25,14 @@
 
   .mat-mdc-tab {
     --mdc-secondary-navigation-tab-container-height: 40px;
-    --mat-tab-header-active-label-text-color: var(--#{root.$prefix}-tab-color-active);
-    --mat-tab-header-active-focus-label-text-color: var(--#{root.$prefix}-tab-color-active);
-    --mat-tab-header-active-hover-label-text-color: var(--#{root.$prefix}-tab-color-active);
-    --mat-tab-header-active-hover-indicator-color: var(--#{root.$prefix}-tab-color-active);
+    --mat-tab-header-active-label-text-color: var(--pws-tab-color-active);
+    --mat-tab-header-active-focus-label-text-color: var(--pws-tab-color-active);
+    --mat-tab-header-active-hover-label-text-color: var(--pws-tab-color-active);
+    --mat-tab-header-active-hover-indicator-color: var(--pws-tab-color-active);
 
     position: relative;
-    background-color: var(--#{root.$prefix}-tab-bg);
-    color: var(--#{root.$prefix}-tab-color);
+    background-color: var(--pws-tab-bg);
+    color: var(--pws-tab-color);
     font-weight: 700;
     font-size: 14px;
     display: flex;
@@ -47,7 +47,7 @@
     opacity: 1;
     justify-content: flex-start;
     min-width: 0;
-    font-family: var(--#{root.$prefix}-font);
+    font-family: var(--pws-font);
     -webkit-user-select: none;
     -moz-user-select: none;
     user-select: none;
@@ -75,7 +75,7 @@
 
     &:last-child {
       padding: 0 !important;
-      color: var(--#{root.$prefix}-tab-color-active);
+      color: var(--pws-tab-color-active);
 
       button {
         border-radius: 0;
@@ -122,8 +122,8 @@
 
     &.mdc-tab--active,
     &:focus:not(.mat-mdc-tab-disabled) {
-      background-color: var(--#{root.$prefix}-tab-bg-active) !important;
-      color: var(--#{root.$prefix}-tab-color-active) !important;
+      background-color: var(--pws-tab-bg-active) !important;
+      color: var(--pws-tab-color-active) !important;
 
       &::after {
         content: "";
@@ -133,7 +133,7 @@
         right: 0;
         width: 100%;
         height: 1px;
-        background-color: var(--#{root.$prefix}-color-primary);
+        background-color: var(--pws-color-primary);
       }
     }
 
@@ -145,7 +145,7 @@
       justify-content: center;
       width: 1rem;
       margin-right: 0.5rem;
-      color: var(--#{root.$prefix}-tab-color);
+      color: var(--pws-tab-color);
       fill: currentColor;
     }
 
@@ -162,8 +162,8 @@
     flex-grow: 1;
 
     mat-tab-body {
-      background-color: var(--#{root.$prefix}-tab-body-bg);
-      color: var(--#{root.$prefix}-tab-body-color);
+      background-color: var(--pws-tab-body-bg);
+      color: var(--pws-tab-body-color);
       flex-grow: 1;
       overflow: hidden;
     }

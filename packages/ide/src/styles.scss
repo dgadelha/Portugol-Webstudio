@@ -30,16 +30,16 @@ app-root {
   height: 100%;
   overflow: hidden;
   margin: 0;
-  font-family: var(--#{root.$prefix}-font);
+  font-family: var(--pws-font);
 }
 
 body {
-  background-color: var(--#{root.$prefix}-body-bg);
-  color: var(--#{root.$prefix}-body-color);
+  background-color: var(--pws-body-bg);
+  color: var(--pws-body-color);
 }
 
 .as-split-gutter {
-  background-color: var(--#{root.$prefix}-bg-200) !important;
+  background-color: var(--pws-bg-200) !important;
 }
 
 s {
@@ -67,17 +67,17 @@ svg-icon > svg {
 }
 
 .logo-title[fill] {
-  fill: var(--#{root.$prefix}-body-color);
+  fill: var(--pws-body-color);
 }
 
 .logo-subtitle[fill] {
-  fill: var(--#{root.$prefix}-text-muted);
+  fill: var(--pws-text-muted);
 }
 
 .logo-subtitle[stroke] {
-  stroke: var(--#{root.$prefix}-text-muted);
+  stroke: var(--pws-text-muted);
 }
 
 .logo-icon[fill] {
-  fill: var(--#{root.$prefix}-color-primary);
+  fill: var(--pws-color-primary);
 }

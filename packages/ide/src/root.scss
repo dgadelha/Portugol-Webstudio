@@ -2,9 +2,8 @@
 @use "theme-light";
 @use "utils";
 
+@use "sass:color";
 @use "sass:map";
-
-$prefix: "pws";
 
 $theme-modes: (
   "light": theme-light.$theme,
@@ -13,82 +12,82 @@ $theme-modes: (
 
 @each $key, $theme in $theme-modes {
   [data-theme="#{$key}"] {
-    @each $key, $value in map-get($theme, "$theme-colors") {
-      --#{$prefix}-color-#{$key}: #{$value};
-      --#{$prefix}-color-#{$key}-rgb: #{utils.to-rgb($value)};
+    @each $key, $value in map.get($theme, "$theme-colors") {
+      --pws-color-#{$key}: #{$value};
+      --pws-color-#{$key}-rgb: #{utils.to-rgb($value)};
     }
 
-    @each $key, $value in map-get($theme, "$theme-text-colors") {
-      --#{$prefix}-text-#{$key}: #{$value};
-      --#{$prefix}-text-#{$key}-rgb: #{utils.to-rgb($value)};
+    @each $key, $value in map.get($theme, "$theme-text-colors") {
+      --pws-text-#{$key}: #{$value};
+      --pws-text-#{$key}-rgb: #{utils.to-rgb($value)};
     }
 
-    @each $key, $value in map-get($theme, "$theme-background-colors") {
-      --#{$prefix}-bg-#{$key}: #{$value};
-      --#{$prefix}-bg-#{$key}-rgb: #{utils.to-rgb($value)};
+    @each $key, $value in map.get($theme, "$theme-background-colors") {
+      --pws-bg-#{$key}: #{$value};
+      --pws-bg-#{$key}-rgb: #{utils.to-rgb($value)};
     }
 
     ///////////
     // Fonte //
     ///////////
 
-    --#{$prefix}-font: #{theme-dark.$font-family};
+    --pws-font: #{theme-dark.$font-family};
 
     ////////////
     // Página //
     ////////////
 
-    --#{$prefix}-body-bg: #{map-get($theme, "$body-bg")};
-    --#{$prefix}-body-bg-rgb: #{utils.to-rgb(map-get($theme, "$body-bg"))};
-    --#{$prefix}-body-color: #{map-get($theme, "$body-color")};
-    --#{$prefix}-body-color-rgb: #{utils.to-rgb(map-get($theme, "$body-color"))};
-    --#{$prefix}-body-color-inverted: #{invert(map-get($theme, "$body-color"))};
-    --#{$prefix}-body-color-inverted-rgb: #{utils.to-rgb(invert(map-get($theme, "$body-color")))};
+    --pws-body-bg: #{map.get($theme, "$body-bg")};
+    --pws-body-bg-rgb: #{utils.to-rgb(map.get($theme, "$body-bg"))};
+    --pws-body-color: #{map.get($theme, "$body-color")};
+    --pws-body-color-rgb: #{utils.to-rgb(map.get($theme, "$body-color"))};
+    --pws-body-color-inverted: #{color.invert(map.get($theme, "$body-color"))};
+    --pws-body-color-inverted-rgb: #{utils.to-rgb(color.invert(map.get($theme, "$body-color")))};
 
-    --#{$prefix}-text-muted: var(--#{$prefix}-text-300);
-    --#{$prefix}-text-muted-rgb: var(--#{$prefix}-text-300-rgb);
+    --pws-text-muted: var(--pws-text-300);
+    --pws-text-muted-rgb: var(--pws-text-300-rgb);
 
-    --#{$prefix}-border-color: #{map-get($theme, "$border-color")};
+    --pws-border-color: #{map.get($theme, "$border-color")};
 
     ////////////////////
     // Componente Aba //
     ////////////////////
 
-    --#{$prefix}-tab-bg: var(--#{$prefix}-bg-300);
-    --#{$prefix}-tab-bg-rgb: var(--#{$prefix}-bg-300-rgb);
+    --pws-tab-bg: var(--pws-bg-300);
+    --pws-tab-bg-rgb: var(--pws-bg-300-rgb);
 
-    --#{$prefix}-tab-bg-hover: var(--#{$prefix}-bg-100);
-    --#{$prefix}-tab-bg-hover-rgb: var(--#{$prefix}-bg-100-rgb);
+    --pws-tab-bg-hover: var(--pws-bg-100);
+    --pws-tab-bg-hover-rgb: var(--pws-bg-100-rgb);
 
-    --#{$prefix}-tab-bg-active: var(--#{$prefix}-bg-200);
-    --#{$prefix}-tab-bg-active-rgb: var(--#{$prefix}-bg-200-rgb);
+    --pws-tab-bg-active: var(--pws-bg-200);
+    --pws-tab-bg-active-rgb: var(--pws-bg-200-rgb);
 
-    --#{$prefix}-tab-color: var(--#{$prefix}-text-300);
-    --#{$prefix}-tab-color-rgb: var(--#{$prefix}-text-300-rgb);
+    --pws-tab-color: var(--pws-text-300);
+    --pws-tab-color-rgb: var(--pws-text-300-rgb);
 
-    --#{$prefix}-tab-color-hover: var(--#{$prefix}-text-100);
-    --#{$prefix}-tab-color-hover-rgb: var(--#{$prefix}-text-100-rgb);
+    --pws-tab-color-hover: var(--pws-text-100);
+    --pws-tab-color-hover-rgb: var(--pws-text-100-rgb);
 
-    --#{$prefix}-tab-color-active: var(--#{$prefix}-text-200);
-    --#{$prefix}-tab-color-active-rgb: var(--#{$prefix}-text-200-rgb);
+    --pws-tab-color-active: var(--pws-text-200);
+    --pws-tab-color-active-rgb: var(--pws-text-200-rgb);
 
-    --#{$prefix}-tab-body-bg: var(--#{$prefix}-bg-200);
-    --#{$prefix}-tab-body-bg-rgb: var(--#{$prefix}-bg-200-rgb);
+    --pws-tab-body-bg: var(--pws-bg-200);
+    --pws-tab-body-bg-rgb: var(--pws-bg-200-rgb);
 
-    --#{$prefix}-tab-body-color: var(--#{$prefix}-text-200);
-    --#{$prefix}-tab-body-color-rgb: var(--#{$prefix}-text-200-rgb);
+    --pws-tab-body-color: var(--pws-text-200);
+    --pws-tab-body-color-rgb: var(--pws-text-200-rgb);
 
     /////////////
     // Classes //
     /////////////
 
-    @each $key, $value in map-get($theme, "$theme-colors") {
+    @each $key, $value in map.get($theme, "$theme-colors") {
       .text-#{$key} {
-        color: var(--#{$prefix}-color-#{$key}) !important;
+        color: var(--pws-color-#{$key}) !important;
       }
 
       .bg-#{$key} {
-        background-color: var(--#{$prefix}-color-#{$key}) !important;
+        background-color: var(--pws-color-#{$key}) !important;
       }
     }
   }

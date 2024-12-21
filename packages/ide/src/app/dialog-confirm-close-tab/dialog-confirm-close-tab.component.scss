@@ -1,5 +1,3 @@
-@use "root";
-
 :host {
   --mat-dialog-actions-alignment: end;
   display: block;
@@ -13,5 +11,5 @@ em {
 }
 
 .danger-alert {
-  color: var(--#{root.$prefix}-color-red);
+  color: var(--pws-color-red);
 }

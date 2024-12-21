@@ -1,5 +1,3 @@
-@use "root";
-
 :host {
   position: relative;
   display: flex;
@@ -47,11 +45,11 @@ nav {
     align-items: center;
     justify-content: center;
     padding: 1rem;
-    background-color: var(--#{root.$prefix}-body-bg);
+    background-color: var(--pws-body-bg);
     appearance: none;
     border: none;
     border-radius: 0.25rem;
-    color: var(--#{root.$prefix}-body-color);
+    color: var(--pws-body-color);
     font-weight: bold;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -64,8 +62,8 @@ nav {
     text-align: center;
 
     &:hover {
-      background-color: var(--#{root.$prefix}-tab-bg-hover);
-      color: var(--#{root.$prefix}-tab-color-hover);
+      background-color: var(--pws-tab-bg-hover);
+      color: var(--pws-tab-color-hover);
     }
 
     > svg-icon,
