@@ -1,0 +1,54 @@
+<mat-dialog-content>
+  <button class="close-btn" mat-dialog-close mat-icon-button aria-label="Fechar diálogo">
+    <svg-icon src="assets/mdi/close.svg" svgAriaLabel="Ícone de fechar diálogo" />
+  </button>
+
+  <svg-icon src="assets/logo/default.svg" class="logo" alt="Logo do Portugol Studio" />
+
+  <!-- <div class="app-info">
+    <span class="app-name">Portugol Webstudio</span>
+    <span class="app-version">Versão %COMMIT_SHA%</span>
+  </div> -->
+
+  <div class="app-about">
+    O Portugol Webstudio é um ambiente de desenvolvimento integrado (IDE) online para a linguagem de programação
+    Portugol (UNIVALI). Foi criado para facilitar o aprendizado de programação de computadores, permitindo que
+    estudantes e professores possam escrever, compilar e executar programas de computador diretamente no navegador.
+  </div>
+
+  <div class="made-with-love">
+    Feito com <svg-icon src="assets/mdi/heart.svg" svgClass="text-red" svgAriaLabel="Ícone de coração" />
+    no
+    <svg-icon src="assets/flag-br.svg" svgAriaLabel="Ícone da bandeira do Brasil" />
+  </div>
+
+  <svg-icon src="https://img.shields.io/github/stars/dgadelha/Portugol-Webstudio?label=Stars" />
+
+  <div class="links">
+    <a
+      href="https://github.com/dgadelha/Portugol-Webstudio"
+      target="_blank"
+      rel="external noopener"
+      mat-stroked-button
+      gaEvent="about_source_code"
+      gaCategory="about_dialog"
+      gaLabel="Código-fonte (diálogo Sobre)"
+    >
+      <mat-icon><svg-icon src="assets/icon-github.svg" /></mat-icon>
+      Código-fonte
+    </a>
+
+    <a
+      href="https://github.com/dgadelha/Portugol-Webstudio/issues/new?template=bug.yml"
+      target="_blank"
+      rel="external noopener"
+      mat-stroked-button
+      gaEvent="about_report_bug"
+      gaCategory="about_dialog"
+      gaLabel="Reportar um problema (diálogo Sobre)"
+    >
+      <mat-icon><svg-icon src="assets/mdi/bug-outline.svg" /></mat-icon>
+      Reportar um problema
+    </a>
+  </div>
+</mat-dialog-content>

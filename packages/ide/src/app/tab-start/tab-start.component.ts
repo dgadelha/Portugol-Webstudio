@@ -3,6 +3,7 @@ import { MatDialog } from "@angular/material/dialog";
 import { GoogleAnalyticsService } from "ngx-google-analytics";
 import { Subscription } from "rxjs";
 
+import { DialogAboutComponent } from "../dialog-about/dialog-about.component";
 import { DialogOpenExampleComponent } from "../dialog-open-example/dialog-open-example.component";
 import { DialogSettingsComponent } from "../dialog-settings/dialog-settings.component";
 import { FileService } from "../file.service";
@@ -94,5 +95,10 @@ export class TabStartComponent {
   openSettingsDialog() {
     this.gaService.event("open_settings_dialog", "Aba Inicial", "Abrir diálogo de configurações");
     this.dialog.open(DialogSettingsComponent);
+  }
+
+  openAboutDialog() {
+    this.gaService.event("open_about_dialog", "Aba Inicial", "Abrir diálogo Sobre");
+    this.dialog.open(DialogAboutComponent);
   }
 }

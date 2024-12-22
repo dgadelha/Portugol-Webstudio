@@ -64,33 +64,6 @@
     <span>Dúvidas e Perguntas</span>
   </a>
 
-  <a
-    href="https://github.com/dgadelha/Portugol-Webstudio/issues/new?template=bug.yml"
-    target="_blank"
-    rel="external noreferrer noopener nofollow"
-    mat-ripple
-    (click)="gaService.event('ask_questions', 'Aba Inicial', 'Enviar dúvidas')"
-  >
-    <svg-icon
-      src="assets/mdi/bug-outline.svg"
-      svgClass="text-red"
-      svgAriaLabel="Ícone de inseto para ação de reportar um problema"
-    />
-
-    <span>Reportar um problema</span>
-  </a>
-
-  <a
-    href="https://github.com/dgadelha/Portugol-Webstudio"
-    target="_blank"
-    rel="external noreferrer noopener nofollow"
-    mat-ripple
-    (click)="gaService.event('view_source_code', 'Aba Inicial', 'Ver código-fonte')"
-  >
-    <svg-icon src="assets/icon-github.svg" svgAriaLabel="Ícone do GitHub" />
-    <span>Código-fonte</span>
-  </a>
-
   <button mat-ripple (click)="openSettingsDialog()" class="with-badge-new">
     <svg-icon
       src="assets/mdi/cog-outline.svg"
@@ -99,6 +72,16 @@
     />
 
     <span>Configurações</span>
+  </button>
+
+  <button mat-ripple (click)="openAboutDialog()" class="with-badge-new">
+    <svg-icon
+      src="assets/mdi/information-outline.svg"
+      svgClass="text-blue"
+      svgAriaLabel="Ícone de informação para ação de abrir sobre"
+    />
+
+    <span>Sobre</span>
   </button>
 </nav>
 
