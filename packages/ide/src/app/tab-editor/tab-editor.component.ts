@@ -149,7 +149,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
       },
     });
 
-    this._theme$ = this.themeService.theme.subscribe(theme => {
+    this._theme$ = this.themeService.theme$.subscribe(theme => {
       this.codeEditorOptions = { ...this.codeEditorOptions, theme: `portugol-${theme}` };
       this.stdOutEditorOptions = { ...this.stdOutEditorOptions, theme: `portugol-${theme}` };
       this.generatedCodeEditorOptions = { ...this.generatedCodeEditorOptions, theme: `portugol-${theme}` };

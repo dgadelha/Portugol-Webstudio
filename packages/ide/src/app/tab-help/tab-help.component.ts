@@ -72,7 +72,7 @@ export class TabHelpComponent implements OnInit, OnDestroy, AfterViewInit {
       },
     });
 
-    this._theme$ = this.themeService.theme.subscribe(theme => {
+    this._theme$ = this.themeService.theme$.subscribe(theme => {
       this.isLightTheme = theme === "light";
     });
   }

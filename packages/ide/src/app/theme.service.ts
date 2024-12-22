@@ -14,7 +14,7 @@ export class ThemeService {
   ref = inject(ApplicationRef);
   document = inject(DOCUMENT);
 
-  theme = this.localStorageSvc.observe("theme").pipe(
+  theme$ = this.localStorageSvc.observe("theme").pipe(
     startWith(this.localStorageSvc.retrieve("theme") || "auto"),
     switchMap<string, Observable<Theme>>(pref => {
       if (pref === "light" || pref === "dark") {
@@ -26,7 +26,7 @@ export class ThemeService {
   );
 
   constructor() {
-    this.theme.subscribe(theme => {
+    this.theme$.subscribe(theme => {
       this.document.body.dataset.theme = theme;
       this.ref.tick();
     });
