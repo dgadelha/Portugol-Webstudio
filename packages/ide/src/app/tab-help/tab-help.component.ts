@@ -1,12 +1,13 @@
 import { NestedTreeControl } from "@angular/cdk/tree";
 import { HttpClient } from "@angular/common/http";
-import { AfterViewInit, Component, EventEmitter, NgZone, OnDestroy, OnInit, Output } from "@angular/core";
+import { AfterViewInit, Component, EventEmitter, inject, NgZone, OnDestroy, OnInit, Output } from "@angular/core";
 import { MatTreeNestedDataSource } from "@angular/material/tree";
 import { DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
 import { GoogleAnalyticsService } from "ngx-google-analytics";
 import { Subscription } from "rxjs";
 
 import { ResponsiveService } from "../responsive.service";
+import { ThemeService } from "../theme.service";
 
 type PortugolWindow = Window & {
   portugol: { abrirExemplo(contents: string, name: string): void };
@@ -27,27 +28,26 @@ interface TreeItem {
   styleUrl: "./tab-help.component.scss",
 })
 export class TabHelpComponent implements OnInit, OnDestroy, AfterViewInit {
+  private http = inject(HttpClient);
+  private sanitizer = inject(DomSanitizer);
+  private ngZone = inject(NgZone);
+  private gaService = inject(GoogleAnalyticsService);
+  private responsive = inject(ResponsiveService);
+  private themeService = inject(ThemeService);
+
+  _responsive$?: Subscription;
+  _theme$?: Subscription;
+
   // eslint-disable-next-line @typescript-eslint/no-deprecated
-  treeControl: NestedTreeControl<TreeItem>;
-  dataSource: MatTreeNestedDataSource<TreeItem>;
+  treeControl = new NestedTreeControl<TreeItem>(node => node.children);
+  dataSource = new MatTreeNestedDataSource<TreeItem>();
   current?: TreeItem;
   currentUrl?: SafeResourceUrl;
-  responsive$?: Subscription;
+
   isBelowMd = false;
+  isLightTheme = false;
 
   @Output() newTab = new EventEmitter();
-
-  constructor(
-    private http: HttpClient,
-    private sanitizer: DomSanitizer,
-    private ngZone: NgZone,
-    private gaService: GoogleAnalyticsService,
-    private responsive: ResponsiveService,
-  ) {
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    this.treeControl = new NestedTreeControl<TreeItem>(node => node.children);
-    this.dataSource = new MatTreeNestedDataSource();
-  }
 
   ngOnInit() {
     (window as unknown as PortugolWindow).portugol = {
@@ -71,14 +71,18 @@ export class TabHelpComponent implements OnInit, OnDestroy, AfterViewInit {
         // TODO: tratar erro
       },
     });
+
+    this._theme$ = this.themeService.theme.subscribe(theme => {
+      this.isLightTheme = theme === "light";
+    });
   }
 
   ngOnDestroy() {
-    this.responsive$?.unsubscribe();
+    this._responsive$?.unsubscribe();
   }
 
   ngAfterViewInit() {
-    this.responsive$ = this.responsive.isBelowMd().subscribe(isBelowMd => {
+    this._responsive$ = this.responsive.isBelowMd().subscribe(isBelowMd => {
       this.isBelowMd = isBelowMd.matches;
     });
   }

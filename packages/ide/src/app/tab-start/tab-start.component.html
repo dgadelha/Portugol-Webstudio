@@ -90,6 +90,16 @@
     <svg-icon src="assets/icon-github.svg" svgAriaLabel="Ícone do GitHub" />
     <span>Código-fonte</span>
   </a>
+
+  <button mat-ripple (click)="openSettingsDialog()" class="with-badge-new">
+    <svg-icon
+      src="assets/mdi/cog-outline.svg"
+      svgClass="text-primary"
+      svgAriaLabel="Ícone de engrenagem para ação de abrir configurações"
+    />
+
+    <span>Configurações</span>
+  </button>
 </nav>
 
 <section class="info">

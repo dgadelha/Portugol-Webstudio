@@ -1,0 +1,27 @@
+<header mat-dialog-title>
+  <span>Configurações</span>
+  <s></s>
+  <button tabindex="-1" type="button" mat-dialog-close mat-icon-button aria-label="Fechar diálogo">
+    <svg-icon src="assets/mdi/close.svg" svgAriaLabel="Ícone de fechar diálogo" />
+  </button>
+</header>
+
+<mat-dialog-content>
+  <div class="preference-list">
+    <div class="preference">
+      <mat-label id="setting-theme-label">Aparência</mat-label>
+
+      <mat-radio-group
+        aria-labelledby="setting-theme-label"
+        name="theme"
+        [(ngModel)]="theme"
+        class="radio-group"
+        color="primary"
+      >
+        <mat-radio-button value="auto">Automático (sistema)</mat-radio-button>
+        <mat-radio-button value="light">Claro</mat-radio-button>
+        <mat-radio-button value="dark">Escuro</mat-radio-button>
+      </mat-radio-group>
+    </div>
+  </div>
+</mat-dialog-content>

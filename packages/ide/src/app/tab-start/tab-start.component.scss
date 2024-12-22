@@ -146,12 +146,6 @@ section.info {
   background-color: #2559b3;
 }
 
-hr {
-  margin: 1rem 0;
-  border: none;
-  border-top: 1px solid rgba(255, 255, 255, 0.25);
-}
-
 footer {
   position: absolute;
   bottom: 10px;
@@ -162,12 +156,28 @@ footer {
 
   summary {
     font-size: 0.75rem;
-    color: #fff;
+    color: var(--pws-body-color);
 
     span {
       font-family: monospace;
-      color: #c2c2c3;
+      color: var(--pws-text-muted);
       text-transform: uppercase;
     }
+  }
+}
+
+.with-badge-new {
+  position: relative;
+
+  ::after {
+    content: "NOVIDADE";
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color:var(--pws-color-primary);
+    color: var(--pws-body-bg);
+    font-size: 0.65rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0 0 0 0.25rem;
   }
 }

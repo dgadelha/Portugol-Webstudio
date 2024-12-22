@@ -45,7 +45,7 @@ async function patchHtmlFile(data: Buffer) {
     )
     .replace(
       "</head>",
-      `<link href='${baseHtmlPath}/assets/fonts/pt-sans/400.css' rel='stylesheet'><link href='/assets/fonts/pt-sans/700.css' rel='stylesheet'><style type='text/css'>.dp-highlighter{pointer-events:initial !important}html,body{margin:0;padding:0;font-family:'PT Sans',sans-serif;font-size:15px}body{padding-bottom:25px}p{line-height:18pt}h1,h2{padding-left:15px;font-family:'PT Sans',sans-serif}h1{font-size:18pt}ul>li{margin-top:10px}ul>li:first-child{margin-top:0}</style></head>`,
+      `<link href='${baseHtmlPath}/assets/fonts/pt-sans/400.css' rel='stylesheet'><link href='/assets/fonts/pt-sans/700.css' rel='stylesheet'><style type='text/css'>.dp-highlighter{pointer-events:initial !important}html,body{margin:0;padding:0;font-family:'PT Sans',sans-serif;font-size:15px}body{padding-bottom:25px}p{line-height:18pt}h1,h2{padding-left:15px;font-family:'PT Sans',sans-serif}h1{font-size:18pt;position:sticky;top:0}ul>li{margin-top:10px}ul>li:first-child{margin-top:0}</style></head>`,
     )
     .replaceAll(/(?:\.\.\/)+scripts\/exemplos\.js/gu, `${baseHtmlPath}/assets/exemplos.js`)
     .replaceAll(/(?:\.\.\/)+scripts\//gu, `${baseHtmlPath}/assets/recursos/ajuda/scripts/`)

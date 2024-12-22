@@ -4,6 +4,7 @@ import { GoogleAnalyticsService } from "ngx-google-analytics";
 import { Subscription } from "rxjs";
 
 import { DialogOpenExampleComponent } from "../dialog-open-example/dialog-open-example.component";
+import { DialogSettingsComponent } from "../dialog-settings/dialog-settings.component";
 import { FileService } from "../file.service";
 
 // eslint-disable-next-line @angular-eslint/prefer-standalone
@@ -88,5 +89,10 @@ export class TabStartComponent {
       this._dialogRef$?.unsubscribe();
       this._dialogExample$?.unsubscribe();
     });
+  }
+
+  openSettingsDialog() {
+    this.gaService.event("open_settings_dialog", "Aba Inicial", "Abrir diálogo de configurações");
+    this.dialog.open(DialogSettingsComponent);
   }
 }

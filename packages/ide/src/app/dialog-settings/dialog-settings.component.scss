@@ -1,0 +1,35 @@
+header {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid var(--pws-border-color);
+}
+
+.radio-group {
+  display: flex;
+  flex-direction: column;
+  margin-top: 1rem;
+
+  .mat-radio-button {
+    margin-bottom: 0.5rem;
+  }
+}
+
+mat-dialog-content {
+  margin-top: 1rem;
+}
+
+.preference-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+
+  .preference {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    padding: 1rem;
+    background-color: var(--pws-bg-200);
+    border-radius: 0.25rem;
+  }
+}
