@@ -46,7 +46,7 @@ ul {
     display: flex;
 
     &.active {
-      background-color: rgba(var(--pws-body-color-inverted-rgb), 0.2);
+      background-color: rgba(0, 0, 0, 0.1);
     }
 
     span {
