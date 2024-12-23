@@ -87,9 +87,41 @@
   right: 7.5px;
 }
 
-.share-snack small {
-  font-size: 9pt;
-  margin: 0;
-  display: block;
-  text-align: center;
+.share-snack {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+
+  .share-snack-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .share-snack-link {
+    display: flex;
+    gap: 0.25rem;
+
+    a,
+    a:visited,
+    a:active {
+      color: var(--pws-color-red);
+      text-decoration: underline;
+    }
+  }
+
+  small {
+    font-size: 0.75rem;
+    margin: 0;
+    display: block;
+    text-align: center;
+
+    svg-icon {
+      display: inline-block;
+      vertical-align: bottom;
+      margin-right: 2px;
+      width: 1rem;
+      height: 1rem;
+    }
+  }
 }
