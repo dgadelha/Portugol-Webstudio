@@ -247,8 +247,8 @@ export class MonacoService {
             base: "vs",
             inherit: true,
             rules: [
-              { token: "functions", foreground: "F5D7A9" },
-              { token: "string.escape", foreground: "D2BB85" },
+              { token: "functions", foreground: "AD7F00" },
+              { token: "string.escape", foreground: "DC009E" },
               { token: "string.escape.invalid", foreground: "DF5953" },
             ],
             colors: {},
