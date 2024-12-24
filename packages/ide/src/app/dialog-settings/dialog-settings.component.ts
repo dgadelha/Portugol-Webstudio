@@ -4,6 +4,7 @@ import { MatButtonModule } from "@angular/material/button";
 import { MatDialogClose, MatDialogContent, MatDialogTitle } from "@angular/material/dialog";
 import { MatInputModule } from "@angular/material/input";
 import { MatRadioModule } from "@angular/material/radio";
+import { MatSliderModule } from "@angular/material/slider";
 import { AngularSvgIconModule } from "angular-svg-icon";
 import { LocalStorage } from "ngx-webstorage";
 
@@ -16,6 +17,7 @@ import { LocalStorage } from "ngx-webstorage";
     MatDialogContent,
     MatDialogTitle,
     MatRadioModule,
+    MatSliderModule,
     MatInputModule,
     AngularSvgIconModule,
   ],
@@ -26,4 +28,7 @@ import { LocalStorage } from "ngx-webstorage";
 export class DialogSettingsComponent {
   @LocalStorage("theme", "auto")
   theme!: "light" | "dark" | "auto";
+
+  @LocalStorage("fontSize", 14)
+  fontSize!: number;
 }

@@ -19,6 +19,23 @@ mat-dialog-content {
   margin-top: 1rem;
 }
 
+.preferences,
+.preference-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.preference-section-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  background-color: var(--pws-bg-100);
+  border-bottom: 1px solid var(--pws-border-color);
+}
+
 .preference-list {
   display: grid;
   grid-template-columns: 1fr;

@@ -7,21 +7,54 @@
 </header>
 
 <mat-dialog-content>
-  <div class="preference-list">
-    <div class="preference">
-      <mat-label id="setting-theme-label">Aparência</mat-label>
+  <div class="preferences">
+    <div class="preference-section">
+      <div class="preference-section-header">
+        <span>Interface</span>
+      </div>
 
-      <mat-radio-group
-        aria-labelledby="setting-theme-label"
-        name="theme"
-        [(ngModel)]="theme"
-        class="radio-group"
-        color="primary"
-      >
-        <mat-radio-button value="auto">Automático (sistema)</mat-radio-button>
-        <mat-radio-button value="light">Claro</mat-radio-button>
-        <mat-radio-button value="dark">Escuro</mat-radio-button>
-      </mat-radio-group>
+      <div class="preference-list">
+        <div class="preference">
+          <mat-label id="setting-interface-appearance-label">Aparência</mat-label>
+
+          <mat-radio-group
+            aria-labelledby="setting-interface-appearance-label"
+            name="theme"
+            [(ngModel)]="theme"
+            class="radio-group"
+            color="primary"
+          >
+            <mat-radio-button value="auto">Automático (sistema)</mat-radio-button>
+            <mat-radio-button value="light">Claro</mat-radio-button>
+            <mat-radio-button value="dark">Escuro</mat-radio-button>
+          </mat-radio-group>
+        </div>
+      </div>
+    </div>
+
+    <div class="preference-section">
+      <div class="preference-section-header">
+        <span>Editor</span>
+      </div>
+
+      <div class="preference-list">
+        <div class="preference">
+          <mat-label id="setting-editor-label">Tamanho da fonte</mat-label>
+
+          <mat-slider
+            aria-labelledby="setting-editor-label"
+            min="8"
+            max="30"
+            step="1"
+            showTickMarks
+            discrete
+            [(ngModel)]="fontSize"
+            color="primary"
+          >
+            <input aria-labelledby="setting-editor-label" matSliderThumb />
+          </mat-slider>
+        </div>
+      </div>
     </div>
   </div>
 </mat-dialog-content>
