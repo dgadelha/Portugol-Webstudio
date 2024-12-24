@@ -61,6 +61,7 @@
     "monaco-editor": "^0.52.0",
     "ng-keyboard-shortcuts": "^13.0.8",
     "ngx-google-analytics": "^14.0.1",
+    "ngx-webstorage": "^19.0.1",
     "rxjs": "~7.8.1",
     "tslib": "^2.8.1",
     "util": "^0.12.5",

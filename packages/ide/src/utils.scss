@@ -1,7 +1,14 @@
+@use "sass:color";
+
 @function tint($color, $percentage) {
-  @return mix(white, $color, $percentage);
+  @return color.mix(white, $color, $percentage * 1%);
 }
 
 @function shade($color, $percentage) {
-  @return mix(black, $color, $percentage);
+  @return color.mix(black, $color, $percentage * 1%);
+}
+
+@function to-rgb($value) {
+  @return color.channel($value, "red", $space: rgb), color.channel($value, "green", $space: rgb),
+    color.channel($value, "blue", $space: rgb);
 }

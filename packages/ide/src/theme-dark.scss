@@ -1,0 +1,133 @@
+@use "utils";
+
+///////////
+// Fonte //
+///////////
+
+$font-family: "Lato", sans-serif !default;
+
+//////////////////////
+// Cores Principais //
+//////////////////////
+
+$primary: #ffc200 !default;
+$secondary: #00f0c0 !default;
+$blue: #45beff !default;
+$red: #f1433c !default;
+
+$theme-colors: (
+  "primary": $primary,
+  "secondary": $secondary,
+  "blue": $blue,
+  "red": $red
+) !default;
+
+/////////////////////
+// Cores de Textos //
+/////////////////////
+
+$foreground-100: #fff !default;
+$foreground-200: #cdcdcd !default;
+$foreground-300: #A8A7A7 !default;
+
+$theme-text-colors: (
+  "100": $foreground-100,
+  "200": $foreground-200,
+  "300": $foreground-300
+) !default;
+
+$body-color: #fff !default;
+
+////////////////////
+// Cores de Fundo //
+////////////////////
+
+$background-100: #121e24 !default;
+$background-200: #263238 !default;
+$background-300: #445056 !default;
+
+$theme-background-colors: (
+  "100": $background-100,
+  "200": $background-200,
+  "300": $background-300
+) !default;
+
+$body-bg: $background-100 !default;
+
+//////////////////////
+// Cores das Bordas //
+//////////////////////
+
+$border-color: rgba($body-color, 0.15) !default;
+
+/////////////////////
+// Material Design //
+/////////////////////
+
+@use "@angular/material" as mat;
+
+$PortugolWebstudio-palette: (
+  50: utils.tint($primary, 0.95),
+  100: utils.tint($primary, 0.85),
+  200: utils.tint($primary, 0.7),
+  300: utils.tint($primary, 0.55),
+  400: utils.tint($primary, 0.35),
+  500: $primary,
+  600: utils.shade($primary, 0.05),
+  700: utils.shade($primary, 0.1),
+  800: utils.shade($primary, 0.15),
+  900: utils.shade($primary, 0.2),
+  A100: utils.tint($primary, 1),
+  A200: utils.tint($primary, 0.95),
+  A400: utils.tint($primary, 0.5),
+  A700: utils.tint($primary, 0.4),
+  contrast: (
+    50: #000000,
+    100: #000000,
+    200: #000000,
+    300: #000000,
+    400: #000000,
+    500: #000000,
+    600: #000000,
+    700: #000000,
+    800: #000000,
+    900: #000000,
+    A100: #000000,
+    A200: #000000,
+    A400: #000000,
+    A700: #000000,
+  ),
+);
+
+// Define the palettes for your theme using the Material Design palettes available in palette.scss
+// (imported above). For each palette, you can optionally specify a default, lighter, and darker
+// hue. Available color palettes: https://material.io/design/color/
+$PortugolWebstudio-primary: mat.m2-define-palette($PortugolWebstudio-palette);
+$PortugolWebstudio-accent: mat.m2-define-palette(mat.$m2-pink-palette, A200, A100, A400);
+
+// The warn palette is optional (defaults to red).
+$PortugolWebstudio-warn: mat.m2-define-palette(mat.$m2-red-palette);
+
+// Create the theme object. A theme consists of configurations for individual
+// theming systems such as "color" or "typography".
+$PortugolWebstudio-theme: mat.m2-define-dark-theme(
+  (
+    color: (
+      primary: $PortugolWebstudio-primary,
+      accent: $PortugolWebstudio-accent,
+      warn: $PortugolWebstudio-warn,
+    ),
+  )
+);
+
+@include mat.all-component-themes($PortugolWebstudio-theme);
+
+$theme: (
+  "$theme-colors": $theme-colors,
+  "$theme-text-colors": $theme-text-colors,
+  "$theme-background-colors": $theme-background-colors,
+  "$font-family": $font-family,
+  "$body-bg": $body-bg,
+  "$body-color": $body-color,
+  "$border-color": $border-color
+);

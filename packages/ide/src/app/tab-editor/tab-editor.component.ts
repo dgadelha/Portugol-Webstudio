@@ -21,6 +21,7 @@ import { GoogleAnalyticsService } from "ngx-google-analytics";
 import { Subscription, debounceTime, fromEventPattern, mergeMap } from "rxjs";
 import { FileService } from "../file.service";
 import { ShareService } from "../share.service";
+import { ThemeService } from "../theme.service";
 import { WorkerService } from "../worker.service";
 
 // eslint-disable-next-line @angular-eslint/prefer-standalone
@@ -34,12 +35,14 @@ export class TabEditorComponent implements OnInit, OnDestroy {
   private _code$?: Subscription;
   private _stdOut$?: Subscription;
   private _events$?: Subscription;
+  private _theme$?: Subscription;
 
   private gaService = inject(GoogleAnalyticsService);
   private snack = inject(MatSnackBar);
   private worker = inject(WorkerService);
   private fileService = inject(FileService);
   private shareService = inject(ShareService);
+  private themeService = inject(ThemeService);
 
   @Input()
   title?: string;
@@ -59,7 +62,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
   codeEditor?: monaco.editor.IStandaloneCodeEditor;
 
   codeEditorOptions: monaco.editor.IStandaloneEditorConstructionOptions = {
-    theme: "portugol",
+    theme: "portugol-dark",
     language: "portugol",
     tabSize: 2,
   };
@@ -67,7 +70,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
   stdOutEditor?: monaco.editor.IStandaloneCodeEditor;
 
   stdOutEditorOptions: monaco.editor.IStandaloneEditorConstructionOptions = {
-    theme: "portugol",
+    theme: "portugol-dark",
     lineNumbers: "off",
     readOnly: true,
     minimap: { enabled: false },
@@ -145,12 +148,19 @@ export class TabEditorComponent implements OnInit, OnDestroy {
         captureException(error, { extra: { code: this.code } });
       },
     });
+
+    this._theme$ = this.themeService.theme$.subscribe(theme => {
+      this.codeEditorOptions = { ...this.codeEditorOptions, theme: `portugol-${theme}` };
+      this.stdOutEditorOptions = { ...this.stdOutEditorOptions, theme: `portugol-${theme}` };
+      this.generatedCodeEditorOptions = { ...this.generatedCodeEditorOptions, theme: `portugol-${theme}` };
+    });
   }
 
   ngOnDestroy() {
     this._code$?.unsubscribe();
     this._events$?.unsubscribe();
     this._stdOut$?.unsubscribe();
+    this._theme$?.unsubscribe();
     this.executor.stop();
   }
 

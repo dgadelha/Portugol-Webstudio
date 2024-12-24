@@ -1,0 +1,59 @@
+mat-dialog-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  max-height: unset;
+  max-width: min(85vw, 780px);
+}
+
+.close-btn {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+}
+
+.logo {
+  display: block;
+  width: min(80%, 350px);
+  padding: 0.5rem;
+}
+
+.app-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  .app-name {
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+
+  .app-version {
+    font-size: 1rem;
+  }
+}
+
+.made-with-love {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+
+  svg-icon,
+  svg {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+}
+
+.links {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+
+  @media (max-width: 576px) {
+    flex-direction: column;
+  }
+}

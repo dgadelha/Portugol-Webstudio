@@ -1,10 +1,11 @@
 import { NestedTreeControl } from "@angular/cdk/tree";
 import { HttpClient } from "@angular/common/http";
-import { AfterViewInit, Component, EventEmitter, OnDestroy, OnInit, Output } from "@angular/core";
+import { AfterViewInit, Component, EventEmitter, inject, OnDestroy, OnInit, Output } from "@angular/core";
 import { MatTreeNestedDataSource } from "@angular/material/tree";
-import { Subscription, retry } from "rxjs";
+import { retry, Subscription } from "rxjs";
 
 import { ResponsiveService } from "../responsive.service";
+import { ThemeService } from "../theme.service";
 
 export interface ExampleItem {
   id: string;
@@ -26,17 +27,22 @@ export interface ExampleItem {
   styleUrls: ["./dialog-open-example.component.scss"],
 })
 export class DialogOpenExampleComponent implements OnInit, OnDestroy, AfterViewInit {
-  @Output() exampleOpened = new EventEmitter<{ title: string; code: string }>();
-
-  // eslint-disable-next-line @typescript-eslint/no-deprecated
-  treeControl: NestedTreeControl<ExampleItem>;
-  dataSource: MatTreeNestedDataSource<ExampleItem>;
-  current: ExampleItem | null = null;
-  loading = true;
-
   private _loadSubscription$?: Subscription;
   private _responsive$?: Subscription;
   private _data$?: Subscription;
+  private _theme$?: Subscription;
+
+  private http = inject(HttpClient);
+  private responsive = inject(ResponsiveService);
+  private themeService = inject(ThemeService);
+
+  @Output() exampleOpened = new EventEmitter<{ title: string; code: string }>();
+
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  treeControl = new NestedTreeControl<ExampleItem>(node => node.children);
+  dataSource = new MatTreeNestedDataSource<ExampleItem>();
+  current: ExampleItem | null = null;
+  loading = true;
 
   isBelowMd = false;
 
@@ -46,21 +52,12 @@ export class DialogOpenExampleComponent implements OnInit, OnDestroy, AfterViewI
   editor?: monaco.editor.IStandaloneCodeEditor;
 
   editorOptions: monaco.editor.IStandaloneEditorConstructionOptions = {
-    theme: "portugol",
+    theme: "portugol-dark",
     lineNumbers: "off",
     readOnly: true,
     minimap: { enabled: false },
     language: "portugol",
   };
-
-  constructor(
-    private http: HttpClient,
-    private responsive: ResponsiveService,
-  ) {
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    this.treeControl = new NestedTreeControl<ExampleItem>(node => node.children);
-    this.dataSource = new MatTreeNestedDataSource();
-  }
 
   ngOnInit() {
     this._data$ = this.http
@@ -70,6 +67,10 @@ export class DialogOpenExampleComponent implements OnInit, OnDestroy, AfterViewI
         this.loading = false;
         this.dataSource.data = data;
       });
+
+    this._theme$ = this.themeService.theme$.subscribe(theme => {
+      this.editorOptions = { ...this.editorOptions, theme: `portugol-${theme}` };
+    });
   }
 
   ngAfterViewInit() {
@@ -81,6 +82,8 @@ export class DialogOpenExampleComponent implements OnInit, OnDestroy, AfterViewI
   ngOnDestroy() {
     this._responsive$?.unsubscribe();
     this._data$?.unsubscribe();
+    this._theme$?.unsubscribe();
+    this._loadSubscription$?.unsubscribe();
   }
 
   hasChildren(_: number, item: ExampleItem) {

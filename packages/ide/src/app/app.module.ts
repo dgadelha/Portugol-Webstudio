@@ -1,5 +1,5 @@
 import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
-import { APP_INITIALIZER, ErrorHandler, NgModule, isDevMode } from "@angular/core";
+import { ErrorHandler, NgModule, inject, isDevMode, provideAppInitializer } from "@angular/core";
 import { initializeApp, provideFirebaseApp } from "@angular/fire/app";
 import { getStorage, provideStorage } from "@angular/fire/storage";
 import { FormsModule } from "@angular/forms";
@@ -15,6 +15,7 @@ import { MatTooltipModule } from "@angular/material/tooltip";
 import { MatTreeModule } from "@angular/material/tree";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { ServiceWorkerModule } from "@angular/service-worker";
 import { MonacoEditorModule } from "@materia-ui/ngx-monaco-editor";
 import { provideHotToastConfig } from "@ngxpert/hot-toast";
 import * as Sentry from "@sentry/angular";
@@ -22,8 +23,8 @@ import { AngularSplitModule } from "angular-split";
 import { AngularSvgIconModule } from "angular-svg-icon";
 import { KeyboardShortcutsModule } from "ng-keyboard-shortcuts";
 import { NgxGoogleAnalyticsModule } from "ngx-google-analytics";
+import { provideNgxWebstorage, withLocalStorage, withNgxWebstorageConfig } from "ngx-webstorage";
 
-import { ServiceWorkerModule } from "@angular/service-worker";
 import { environment } from "../environments/environment";
 import { AppComponent } from "./app.component";
 import { DialogOpenExampleComponent } from "./dialog-open-example/dialog-open-example.component";
@@ -32,6 +33,7 @@ import { PwaService } from "./pwa.service";
 import { TabEditorComponent } from "./tab-editor/tab-editor.component";
 import { TabHelpComponent } from "./tab-help/tab-help.component";
 import { TabStartComponent } from "./tab-start/tab-start.component";
+import { ThemeService } from "./theme.service";
 
 @NgModule({
   declarations: [AppComponent, TabEditorComponent, TabStartComponent, TabHelpComponent, DialogOpenExampleComponent],
@@ -68,6 +70,12 @@ import { TabStartComponent } from "./tab-start/tab-start.component";
     provideHotToastConfig({
       position: "bottom-right",
     }),
+    provideNgxWebstorage(withNgxWebstorageConfig({ prefix: "pws", separator: ":" }), withLocalStorage()),
+    provideAppInitializer(() => {
+      inject(MonacoService);
+      inject(ThemeService);
+      inject(PwaService);
+    }),
     MonacoService,
     PwaService,
     {
@@ -75,12 +83,6 @@ import { TabStartComponent } from "./tab-start/tab-start.component";
       useValue: Sentry.createErrorHandler({
         showDialog: false,
       }),
-    },
-    {
-      provide: APP_INITIALIZER,
-      useFactory: () => () => {},
-      multi: true,
-      deps: [MonacoService, PwaService],
     },
   ],
   bootstrap: [AppComponent],

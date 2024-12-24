@@ -1,5 +1,4 @@
 :host {
-  --mat-dialog-actions-alignment: end;
   display: block;
   min-width: min(80vw, 300px);
   max-width: 420px;
@@ -11,5 +10,5 @@ em {
 }
 
 .danger-alert {
-  color: #f1433c;
+  color: var(--pws-color-red);
 }

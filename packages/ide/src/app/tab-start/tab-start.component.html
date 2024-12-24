@@ -1,4 +1,4 @@
-<img [src]="logo" width="100%" class="logo" alt="Logomarca do Portugol Webstudio" />
+<svg-icon [src]="logo" svgClass="logo w-100" svgAriaLabel="Logomarca do Portugol Webstudio" />
 
 <nav>
   <button mat-ripple (click)="newTab.emit()">
@@ -28,7 +28,7 @@
   </button>
 
   <button mat-ripple (click)="help.emit()">
-    <svg-icon src="assets/mdi/help.svg" svgClass="text-quaternary" alt="Ícone de ajuda" />
+    <svg-icon src="assets/mdi/help.svg" svgClass="text-blue" alt="Ícone de ajuda" />
     <span>Ajuda</span>
   </button>
 
@@ -57,43 +57,40 @@
   >
     <svg-icon
       src="assets/mdi/comment-question-outline.svg"
-      svgClass="text-quaternary"
+      svgClass="text-blue"
       svgAriaLabel="Ícone de balão de diálogo para ação de enviar dúvidas"
     />
 
     <span>Dúvidas e Perguntas</span>
   </a>
 
-  <a
-    href="https://github.com/dgadelha/Portugol-Webstudio/issues/new?template=bug.yml"
-    target="_blank"
-    rel="external noreferrer noopener nofollow"
-    mat-ripple
-    (click)="gaService.event('ask_questions', 'Aba Inicial', 'Enviar dúvidas')"
-  >
+  <button mat-ripple (click)="openSettingsDialog()" class="with-badge-new">
     <svg-icon
-      src="assets/mdi/bug-outline.svg"
-      svgClass="text-tertiary"
-      svgAriaLabel="Ícone de inseto para ação de reportar um problema"
+      src="assets/mdi/cog-outline.svg"
+      svgClass="text-primary"
+      svgAriaLabel="Ícone de engrenagem para ação de abrir configurações"
     />
 
-    <span>Reportar um problema</span>
-  </a>
+    <span>Configurações</span>
+  </button>
 
-  <a
-    href="https://github.com/dgadelha/Portugol-Webstudio"
-    target="_blank"
-    rel="external noreferrer noopener nofollow"
-    mat-ripple
-    (click)="gaService.event('view_source_code', 'Aba Inicial', 'Ver código-fonte')"
-  >
-    <svg-icon src="assets/icon-github.svg" svgAriaLabel="Ícone do GitHub" />
-    <span>Código-fonte</span>
-  </a>
+  <button mat-ripple (click)="openAboutDialog()" class="with-badge-new">
+    <svg-icon
+      src="assets/mdi/information-outline.svg"
+      svgClass="text-blue"
+      svgAriaLabel="Ícone de informação para ação de abrir sobre"
+    />
+
+    <span>Sobre</span>
+  </button>
 </nav>
 
 <section class="info">
   <h4><svg-icon src="assets/mdi/newspaper.svg" svgAriaLabel="Ícone de jornal para notícias" />Novidades</h4>
+  <p>
+    <strong>24/12/2024:</strong> Adicionado o tema claro e a tela de configurações para escolher o tema da IDE, mais
+    configurações vindo em breve.
+  </p>
   <p>
     <strong>23/09/2024:</strong> Ajuste na fonte da seção Ajuda para estar disponível offline, mantendo uma boa
     experiência sem depender de conexão com a internet.
@@ -101,10 +98,6 @@
   <p>
     <strong>22/09/2024:</strong> Novo modo de salvar arquivos sem manter compatibilidade com o Portugol Studio.
     Alteração do comportamento de atualizações do PWA.
-  </p>
-  <p>
-    <strong>13/09/2024:</strong> Melhorias no controle de abas: diálogos próprios para confirmação de renomear e fechar
-    abas. Ação <strong>Salvar como</strong> com opções avançadas para salvar o código.
   </p>
 </section>
 

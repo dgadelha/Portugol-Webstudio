@@ -1,5 +1,3 @@
-@use "variables";
-
 :host {
   position: relative;
   display: flex;
@@ -46,12 +44,12 @@ nav {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 1rem;
-    background-color: variables.$background-100;
+    padding: 1.3rem;
+    background-color: var(--pws-body-bg);
     appearance: none;
     border: none;
     border-radius: 0.25rem;
-    color: variables.$foreground-100;
+    color: var(--pws-body-color);
     font-weight: bold;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -64,13 +62,13 @@ nav {
     text-align: center;
 
     &:hover {
-      background-color: tint(variables.$background-100, 15);
-      color: tint(variables.$foreground-100, 15);
+      background-color: var(--pws-tab-bg-hover);
+      color: var(--pws-tab-color-hover);
     }
 
     > svg-icon,
     > img {
-      margin-bottom: 1rem;
+      margin-bottom: 0.85rem;
       width: 2.5rem;
       height: 2.5rem;
     }
@@ -148,12 +146,6 @@ section.info {
   background-color: #2559b3;
 }
 
-hr {
-  margin: 1rem 0;
-  border: none;
-  border-top: 1px solid rgba(255, 255, 255, 0.25);
-}
-
 footer {
   position: absolute;
   bottom: 10px;
@@ -164,12 +156,28 @@ footer {
 
   summary {
     font-size: 0.75rem;
-    color: #fff;
+    color: var(--pws-body-color);
 
     span {
       font-family: monospace;
-      color: #c2c2c3;
+      color: var(--pws-text-muted);
       text-transform: uppercase;
     }
+  }
+}
+
+.with-badge-new {
+  position: relative;
+
+  ::after {
+    content: "NOVIDADE";
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color:var(--pws-color-primary);
+    color: var(--pws-body-bg);
+    font-size: 0.65rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0 0 0 0.25rem;
   }
 }

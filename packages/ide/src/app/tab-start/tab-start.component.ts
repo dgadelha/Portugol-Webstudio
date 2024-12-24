@@ -1,10 +1,11 @@
 import { Component, EventEmitter, Output } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
-import { DomSanitizer } from "@angular/platform-browser";
 import { GoogleAnalyticsService } from "ngx-google-analytics";
 import { Subscription } from "rxjs";
 
+import { DialogAboutComponent } from "../dialog-about/dialog-about.component";
 import { DialogOpenExampleComponent } from "../dialog-open-example/dialog-open-example.component";
+import { DialogSettingsComponent } from "../dialog-settings/dialog-settings.component";
 import { FileService } from "../file.service";
 
 // eslint-disable-next-line @angular-eslint/prefer-standalone
@@ -21,11 +22,10 @@ export class TabStartComponent {
   private _dialogExample$?: Subscription;
   private _dialogRef$?: Subscription;
 
-  public logo;
+  public logo: string;
 
   constructor(
     public gaService: GoogleAnalyticsService,
-    private sanitizer: DomSanitizer,
     private dialog: MatDialog,
     private fileService: FileService,
   ) {
@@ -33,17 +33,17 @@ export class TabStartComponent {
     const currentDay = new Date().getDate();
 
     if ((currentMonth === 2 && currentDay >= 10) || (currentMonth === 3 && currentDay <= 5)) {
-      this.logo = this.sanitizer.bypassSecurityTrustResourceUrl("assets/logo/carnaval.svg");
+      this.logo = "assets/logo/carnaval.svg";
     } else if ((currentMonth === 3 && currentDay >= 20) || (currentMonth === 4 && currentDay <= 25)) {
-      this.logo = this.sanitizer.bypassSecurityTrustResourceUrl("assets/logo/pascoa.svg");
+      this.logo = "assets/logo/pascoa.svg";
     } else if ((currentMonth === 10 && currentDay >= 20) || (currentMonth === 11 && currentDay <= 5)) {
-      this.logo = this.sanitizer.bypassSecurityTrustResourceUrl("assets/logo/halloween.svg");
+      this.logo = "assets/logo/halloween.svg";
     } else if (currentMonth === 12 && currentDay >= 15 && currentDay <= 29) {
-      this.logo = this.sanitizer.bypassSecurityTrustResourceUrl("assets/logo/natal.svg");
+      this.logo = "assets/logo/natal.svg";
     } else if ((currentMonth === 12 && currentDay >= 30) || (currentMonth === 1 && currentDay <= 5)) {
-      this.logo = this.sanitizer.bypassSecurityTrustResourceUrl("assets/logo/ano-novo.svg");
+      this.logo = "assets/logo/ano-novo.svg";
     } else {
-      this.logo = this.sanitizer.bypassSecurityTrustResourceUrl("assets/logo/default.svg");
+      this.logo = "assets/logo/default.svg";
     }
   }
 
@@ -90,5 +90,15 @@ export class TabStartComponent {
       this._dialogRef$?.unsubscribe();
       this._dialogExample$?.unsubscribe();
     });
+  }
+
+  openSettingsDialog() {
+    this.gaService.event("open_settings_dialog", "Aba Inicial", "Abrir diálogo de configurações");
+    this.dialog.open(DialogSettingsComponent);
+  }
+
+  openAboutDialog() {
+    this.gaService.event("open_about_dialog", "Aba Inicial", "Abrir diálogo Sobre");
+    this.dialog.open(DialogAboutComponent);
   }
 }

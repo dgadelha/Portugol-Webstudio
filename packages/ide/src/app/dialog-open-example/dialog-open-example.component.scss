@@ -1,11 +1,9 @@
-@use "variables";
-
 :host {
   display: flex;
   flex-direction: column;
   --mdc-dialog-supporting-text-size: 14px;
   --mdc-dialog-supporting-text-line-height: 21px;
-  --mdc-dialog-supporting-text-color: #fff;
+  --mdc-dialog-supporting-text-color: var(--pws-body-color);
   height: 100%;
 }
 
@@ -13,7 +11,7 @@ header {
   display: flex;
   align-items: center;
   padding: 8px 16px;
-  border-bottom: 1px solid rgba(229, 229, 229, 0.4);
+  border-bottom: 1px solid var(--pws-border-color);
 }
 
 mat-spinner {
@@ -48,7 +46,7 @@ ul {
     display: flex;
 
     &.active {
-      background-color: rgba(0, 0, 0, 0.2);
+      background-color: rgba(0, 0, 0, 0.1);
     }
 
     span {

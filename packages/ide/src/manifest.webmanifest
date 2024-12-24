@@ -7,7 +7,7 @@
   "scope": "./",
   "orientation": "portrait",
   "start_url": "./?utm_source=web_app_manifest",
-  "description": "Portugol Webstudio é um ambiente de desenvolvimento integrado (IDE) para a linguagem Portugol (UNIVALI).",
+  "description": "Portugol Webstudio é um ambiente de desenvolvimento integrado (IDE) online para a linguagem Portugol (UNIVALI).",
   "icons": [
     {
       "src": "assets/lightbulb-sq.svg",

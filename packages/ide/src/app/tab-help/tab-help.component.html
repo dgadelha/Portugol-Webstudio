@@ -1,7 +1,7 @@
 <as-split [direction]="isBelowMd ? 'vertical' : 'horizontal'" unit="pixel">
   <as-split-area [size]="350">
     <header>
-      <svg-icon src="assets/mdi/help-circle-outline.svg" svgClass="text-quaternary" svgAriaLabel="Ícone de ajuda" />
+      <svg-icon src="assets/mdi/help-circle-outline.svg" svgClass="text-blue" svgAriaLabel="Ícone de ajuda" />
       <span>Ajuda</span>
     </header>
 
@@ -60,6 +60,15 @@
   </as-split-area>
 
   <as-split-area>
-    <iframe *ngIf="current" [src]="currentUrl"></iframe>
+    <div class="help-content">
+      @if (isLightTheme) {
+        <div class="light-theme-alert">
+          <svg-icon src="assets/mdi/emoticon-sad-outline.svg" svgAriaLabel="Ícone de rosto triste" />
+          Sentimos muito! O conteúdo da seção Ajuda ainda não está disponível no tema claro.
+        </div>
+      }
+
+      <iframe *ngIf="current" [src]="currentUrl"></iframe>
+    </div>
   </as-split-area>
 </as-split>
