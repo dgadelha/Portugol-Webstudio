@@ -5,7 +5,6 @@ import { Subscription } from "rxjs";
 
 import { DialogAboutComponent } from "../dialog-about/dialog-about.component";
 import { DialogOpenExampleComponent } from "../dialog-open-example/dialog-open-example.component";
-import { DialogSettingsComponent } from "../dialog-settings/dialog-settings.component";
 import { FileService } from "../file.service";
 
 // eslint-disable-next-line @angular-eslint/prefer-standalone
@@ -18,6 +17,7 @@ import { FileService } from "../file.service";
 export class TabStartComponent {
   @Output() newTab = new EventEmitter();
   @Output() help = new EventEmitter();
+  @Output() settings = new EventEmitter();
 
   private _dialogExample$?: Subscription;
   private _dialogRef$?: Subscription;
@@ -93,8 +93,8 @@ export class TabStartComponent {
   }
 
   openSettingsDialog() {
-    this.gaService.event("open_settings_dialog", "Aba Inicial", "Abrir diálogo de configurações");
-    this.dialog.open(DialogSettingsComponent);
+    this.gaService.event("open_settings_dialog", "Aba Inicial", "Abrir diálogo de Configurações");
+    this.settings.emit();
   }
 
   openAboutDialog() {
