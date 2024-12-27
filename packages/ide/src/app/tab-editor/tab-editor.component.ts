@@ -52,6 +52,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
 
   @Output() titleChange = new EventEmitter<string>();
   @Output() help = new EventEmitter();
+  @Output() settings = new EventEmitter();
 
   @ViewChild("fileInput")
   fileInput!: ElementRef<HTMLInputElement>;
@@ -359,6 +360,11 @@ export class TabEditorComponent implements OnInit, OnDestroy {
   openHelp() {
     this.gaService.event("editor_help_tab_open", "Editor", "Nova aba de ajuda através do Editor");
     this.help.emit();
+  }
+
+  openSettings() {
+    this.gaService.event("editor_settings_open", "Editor", "Abrir diálogo de configurações");
+    this.settings.emit();
   }
 
   async shareFile() {

@@ -20,7 +20,11 @@
       <span class="tab-text">Portugol Webstudio</span>
     </ng-template>
 
-    <app-tab-start (newTab)="addTab($event?.name, $event?.contents)" (help)="upsertHelpTab()"></app-tab-start>
+    <app-tab-start
+      (newTab)="addTab($event?.name, $event?.contents)"
+      (help)="upsertHelpTab()"
+      (settings)="openSettingsModal()"
+    ></app-tab-start>
   </mat-tab>
 
   <mat-tab *ngFor="let tab of tabs">
@@ -68,6 +72,7 @@
         [(title)]="tab.title"
         [code]="tab.contents"
         (help)="upsertHelpTab()"
+        (settings)="openSettingsModal()"
       ></app-tab-editor>
 
       <app-tab-help *ngSwitchCase="'help'" (newTab)="addTab($event?.name, $event?.contents)"></app-tab-help>
