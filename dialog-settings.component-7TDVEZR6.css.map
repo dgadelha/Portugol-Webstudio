@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["packages/ide/src/app/dialog-settings/dialog-settings.component.scss"],
+  "sourcesContent": ["header {\n  display: flex;\n  align-items: center;\n  padding: 0.5rem 1rem;\n  border-bottom: 1px solid var(--pws-border-color);\n}\n\n.radio-group {\n  display: flex;\n  flex-direction: column;\n  margin-top: 1rem;\n\n  .mat-radio-button {\n    margin-bottom: 0.5rem;\n  }\n}\n\nmat-dialog-content {\n  margin-top: 1rem;\n}\n\n.preference-list {\n  display: grid;\n  grid-template-columns: 1fr;\n  gap: 1rem;\n\n  .preference {\n    display: flex;\n    flex-direction: column;\n    align-items: start;\n    padding: 1rem;\n    background-color: var(--pws-bg-200);\n    border-radius: 0.25rem;\n  }\n}\n"],
+  "mappings": "AAAA,OACE,QAAA,KACA,YAAA,OAFF,QAGE,MAAA,KACA,cAAA,IAAA,MAAA,IAAA,oBAGF,CAAA,YACE,QAAA,KACA,eAAA,OACA,WAAA,KAEA,CALF,YAKE,CAAA,iBACE,cAAA,MAIJ,mBACE,WAAA,KAGF,CAAA,gBACE,QAAA,KACA,sBAAA,IACA,IAAA,KAEA,CALF,gBAKE,CAAA,WACE,QAAA,KACA,eAAA,OACA,YAAA,MA7BJ,QA8BI,KACA,iBAAA,IAAA,cA/BJ,cAgCI",
+  "names": []
+}

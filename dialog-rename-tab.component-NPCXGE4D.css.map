@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["packages/ide/src/app/dialog-rename-tab/dialog-rename-tab.component.scss"],
+  "sourcesContent": [":host {\n  --mat-dialog-with-actions-content-padding: 20px 24px 0 24px;\n\n  display: block;\n  min-width: min(80vw, 300px);\n}\n"],
+  "mappings": "AAAA,MACE,2CAAA,KAAA,KAAA,EAAA,KAEA,QAAA,MACA,UAAA,IAAA,IAAA,CAAA",
+  "names": []
+}

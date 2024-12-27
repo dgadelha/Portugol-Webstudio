@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["packages/ide/src/app/dialog-confirm-close-tab/dialog-confirm-close-tab.component.scss"],
+  "sourcesContent": [":host {\n  display: block;\n  min-width: min(80vw, 300px);\n  max-width: 420px;\n}\n\nem {\n  word-break: break-all;\n  text-overflow: ellipsis;\n}\n\n.danger-alert {\n  color: var(--pws-color-red);\n}\n"],
+  "mappings": "AAAA,MACE,QAAA,MACA,UAAA,IAAA,IAAA,CAAA,OACA,UAAA,MAGF,GACE,WAAA,UACA,cAAA,SAGF,CAAA,aACE,MAAA,IAAA",
+  "names": []
+}
