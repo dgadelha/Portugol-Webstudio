@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1735258646319,
+  "timestamp": 1735856468912,
   "index": "/index.html",
   "assetGroups": [
     {
@@ -13,7 +13,7 @@
       "urls": [
         "/favicon.ico",
         "/index.html",
-        "/main-EINSMK7I.js",
+        "/main-NXRID2S5.js",
         "/manifest.webmanifest",
         "/polyfills-Q763KACN.js",
         "/styles-7TEZWG2Y.css"
@@ -2250,7 +2250,7 @@
     "/assets/logo.svg": "b08ff393bfc959110b1ad1fda04477acb07eaae5",
     "/assets/logo/ano-novo.svg": "795520eef8f3cc5c802478248d219a8b3145f3f5",
     "/assets/logo/carnaval.svg": "a37c80b78a736ca373274cf9be4418e19ac9d54f",
-    "/assets/logo/default.svg": "220422a4070620eb3e8e7e07150bfa4d203ce534",
+    "/assets/logo/default.svg": "d50c81d6e9362ff1c98399fb8520f1b726d3963a",
     "/assets/logo/halloween.svg": "8841aad4f6ca4fb5f1daf88528a0cedfb850bc5a",
     "/assets/logo/natal.svg": "69f36e10780f0d3e19ae9a57b2911ba646ba31f0",
     "/assets/logo/pascoa.svg": "4740ae0cc73e0139444b02521012b5c6fa2893b8",
@@ -4438,8 +4438,8 @@
     "/assets/recursos/exercicios/exercicio60.pex": "6082892362c640c5b7c9e63b12d6594dab32128d",
     "/assets/recursos/exercicios/schema.xsd": "cd13152ea836b1eed121a6972a619f595ac5d46c",
     "/favicon.ico": "a3dadb5b6906874517b9a2bc021bb3f154290edd",
-    "/index.html": "23f6a75cae906bede564fbac2c80392acb5e0910",
-    "/main-EINSMK7I.js": "9d5b7a0efa7b9b3071b44bbf34dcb39a4dd56122",
+    "/index.html": "c444559b520fea381324534077d389fcfc095f61",
+    "/main-NXRID2S5.js": "4ab93d96b51e30f793382dbaf9c9f4eec0c04503",
     "/manifest.webmanifest": "bbfd674042155ddb102be018a75422fd949cb37f",
     "/polyfills-Q763KACN.js": "e2a9f135443e4bc6115449a6098604d881bf5931",
     "/styles-7TEZWG2Y.css": "52325870cadfa9b84fe5161ad18ad9509b88a956"
