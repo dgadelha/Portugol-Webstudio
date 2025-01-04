@@ -24,14 +24,7 @@ import { SettingsService } from "../settings.service";
 import { ShareService } from "../share.service";
 import { ThemeService } from "../theme.service";
 import { WorkerService } from "../worker.service";
-
-interface IExtendedWindowApi extends Window {
-  showSaveFilePicker?: (options: {
-    types: Array<{ description: string; accept: Record<string, string[]> }>;
-    excludeAcceptAllOption?: boolean;
-    suggestedName?: string;
-  }) => Promise<FileSystemFileHandle>;
-}
+import { IExtendedWindowApi } from "../../types";
 
 // eslint-disable-next-line @angular-eslint/prefer-standalone
 @Component({
