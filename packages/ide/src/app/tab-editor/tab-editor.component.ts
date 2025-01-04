@@ -25,6 +25,14 @@ import { ShareService } from "../share.service";
 import { ThemeService } from "../theme.service";
 import { WorkerService } from "../worker.service";
 
+interface IExtendedWindowApi extends Window {
+  showSaveFilePicker?: (options: {
+    types: Array<{ description: string; accept: Record<string, string[]> }>;
+    excludeAcceptAllOption?: boolean;
+    suggestedName?: string;
+  }) => Promise<FileSystemFileHandle>;
+}
+
 // eslint-disable-next-line @angular-eslint/prefer-standalone
 @Component({
   standalone: false,
@@ -90,6 +98,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
   };
 
   sharing = false;
+  hasSaveFilePickerSupport = false;
 
   shortcuts: ShortcutInput[] = [
     {
@@ -182,6 +191,8 @@ export class TabEditorComponent implements OnInit, OnDestroy {
         wordWrap: wordWrap ? "on" : "off",
       };
     });
+
+    this.hasSaveFilePickerSupport = "showSaveFilePicker" in window;
   }
 
   ngOnDestroy() {
@@ -283,6 +294,42 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     const file = new File([blob], fileName, { type: blob.type });
 
     window.open(URL.createObjectURL(file), "_blank");
+  }
+
+  async saveFileWithPicker() {
+    const extendedWindowApi = window as IExtendedWindowApi;
+    if (!extendedWindowApi.showSaveFilePicker) return;
+
+    const { blob, fileName } = this.prepareFile("binary");
+
+    try {
+      const fileHandle = await extendedWindowApi.showSaveFilePicker({
+        types: [
+          {
+            description: "Arquivo Portugol",
+            accept: {
+              "application/octet-stream": [".por"],
+            },
+          },
+        ],
+        excludeAcceptAllOption: true,
+        suggestedName: fileName,
+      });
+
+      const writable = await fileHandle.createWritable();
+      await writable.write(blob);
+      await writable.close();
+
+      this.snack.open("Arquivo salvo com sucesso!", "OK", {
+        duration: 3000,
+      });
+    } catch (error) {
+      console.error(error);
+
+      this.snack.open("Ocorreu um erro ao salvar o arquivo!", "OK", {
+        duration: 3000,
+      });
+    }
   }
 
   onStdOutEditorInit(editor: monaco.editor.IStandaloneCodeEditor) {

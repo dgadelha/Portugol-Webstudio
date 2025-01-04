@@ -62,6 +62,27 @@
   <mat-menu #saveMenu="matMenu">
     <button mat-menu-item disabled>Salvar como</button>
 
+    @if (hasSaveFilePickerSupport) {
+      <button
+        mat-menu-item
+        type="button"
+        (click)="saveFileWithPicker()"
+        aria-label="Escolher um arquivo"
+        gaEvent="editor_save_as_file_picker"
+        gaCategory="Editor"
+        gaLabel="Botão de Salvar como - Ação Escolher um arquivo"
+      >
+        <mat-icon>
+          <svg-icon
+            src="assets/mdi/content-save-move.svg"
+            svgAriaLabel="Ícone de disquete com seta para baixo para ação de escolher um arquivo"
+          ></svg-icon>
+        </mat-icon>
+
+        Escolher um arquivo
+      </button>
+    }
+
     <button
       mat-menu-item
       type="button"
