@@ -7,8 +7,8 @@ import { GoogleAnalyticsService } from "ngx-google-analytics";
 import { Subscription } from "rxjs";
 import { DialogConfirmCloseTabComponent } from "./dialog-confirm-close-tab/dialog-confirm-close-tab.component";
 import { DialogRenameTabComponent } from "./dialog-rename-tab/dialog-rename-tab.component";
-import { ShareService } from "./share.service";
 import { DialogSettingsComponent } from "./dialog-settings/dialog-settings.component";
+import { ShareService } from "./share.service";
 
 interface Tab {
   id: number;
@@ -17,8 +17,8 @@ interface Tab {
   type: "editor" | "help";
 }
 
-// eslint-disable-next-line @angular-eslint/prefer-standalone
 @Component({
+  // eslint-disable-next-line @angular-eslint/prefer-standalone
   standalone: false,
   selector: "app-root",
   templateUrl: "./app.component.html",

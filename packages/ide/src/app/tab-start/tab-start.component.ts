@@ -7,8 +7,8 @@ import { DialogAboutComponent } from "../dialog-about/dialog-about.component";
 import { DialogOpenExampleComponent } from "../dialog-open-example/dialog-open-example.component";
 import { FileService } from "../file.service";
 
-// eslint-disable-next-line @angular-eslint/prefer-standalone
 @Component({
+  // eslint-disable-next-line @angular-eslint/prefer-standalone
   standalone: false,
   selector: "app-tab-start",
   templateUrl: "./tab-start.component.html",

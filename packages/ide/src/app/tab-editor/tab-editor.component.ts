@@ -19,15 +19,15 @@ import { encode } from "iconv-lite";
 import { ShortcutInput } from "ng-keyboard-shortcuts";
 import { GoogleAnalyticsService } from "ngx-google-analytics";
 import { Subscription, combineLatest, debounceTime, fromEventPattern, mergeMap } from "rxjs";
+import { IExtendedWindowApi } from "../../types";
 import { FileService } from "../file.service";
 import { SettingsService } from "../settings.service";
 import { ShareService } from "../share.service";
 import { ThemeService } from "../theme.service";
 import { WorkerService } from "../worker.service";
-import { IExtendedWindowApi } from "../../types";
 
-// eslint-disable-next-line @angular-eslint/prefer-standalone
 @Component({
+  // eslint-disable-next-line @angular-eslint/prefer-standalone
   standalone: false,
   selector: "app-tab-editor",
   templateUrl: "./tab-editor.component.html",

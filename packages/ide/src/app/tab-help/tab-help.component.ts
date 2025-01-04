@@ -20,8 +20,8 @@ interface TreeItem {
   children?: TreeItem[];
 }
 
-// eslint-disable-next-line @angular-eslint/prefer-standalone
 @Component({
+  // eslint-disable-next-line @angular-eslint/prefer-standalone
   standalone: false,
   selector: "app-tab-help",
   templateUrl: "./tab-help.component.html",
