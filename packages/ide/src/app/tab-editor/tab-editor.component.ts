@@ -98,7 +98,8 @@ export class TabEditorComponent implements OnInit, OnDestroy {
   };
 
   sharing = false;
-  hasSaveFilePickerSupport = false;
+
+  hasSaveFilePickerSupport = "showSaveFilePicker" in window;
 
   shortcuts: ShortcutInput[] = [
     {
@@ -191,8 +192,6 @@ export class TabEditorComponent implements OnInit, OnDestroy {
         wordWrap: wordWrap ? "on" : "off",
       };
     });
-
-    this.hasSaveFilePickerSupport = "showSaveFilePicker" in window;
   }
 
   ngOnDestroy() {
