@@ -68,7 +68,7 @@ Após isto, você poderá acessar a IDE em: [http://localhost:4200](http://local
 ## Licença
 
     Portugol Webstudio - IDE online para o Portugol
-    Copyright (C) 2024  Douglas Gadêlha, Danilo Gadêlha e contribuidores
+    Copyright (C) 2025  Douglas Gadêlha, Danilo Gadêlha e contribuidores
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by

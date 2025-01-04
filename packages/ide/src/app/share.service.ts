@@ -22,11 +22,7 @@ export class ShareService {
 
   async load(shareId: string): Promise<string | null> {
     try {
-      const oldVersionRef = ref(this.storage, shareId);
-      const newVersionRef = ref(this.storage, `share/${shareId}.por`);
-
-      // TODO: Remover oldVersionRef após 11/11/2024
-      const data = await getBlob(newVersionRef).catch(() => getBlob(oldVersionRef));
+      const data = await getBlob(ref(this.storage, `share/${shareId}.por`));
       const contents = await data.text();
 
       return contents;
