@@ -33,7 +33,7 @@ mat-dialog-content {
   padding: 0.5rem 1rem;
   border-radius: 0.25rem;
   background-color: var(--pws-bg-100);
-  border-bottom: 1px solid var(--pws-border-color);
+  border: 1px solid var(--pws-border-color);
 }
 
 .preference-list {
@@ -41,12 +41,40 @@ mat-dialog-content {
   grid-template-columns: 1fr;
   gap: 1rem;
 
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
   .preference {
     display: flex;
     flex-direction: column;
     align-items: start;
     padding: 1rem;
     background-color: var(--pws-bg-200);
+    border: 0.5px solid var(--pws-border-color);
     border-radius: 0.25rem;
   }
+}
+
+.preference-slider {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+
+  mat-slider {
+    flex-grow: 1;
+  }
+}
+
+.slider-value-fix-width {
+  width: 2ch;
+}
+
+.preference-switch {
+  padding-top: 0.75rem;
+}
+
+::ng-deep .preference-switch .mat-mdc-slide-toggle .mat-internal-form-field {
+  gap: 0.5rem;
 }

@@ -99,6 +99,8 @@ export class TabStartComponent {
 
   openAboutDialog() {
     this.gaService.event("open_about_dialog", "Aba Inicial", "Abrir diálogo Sobre");
-    this.dialog.open(DialogAboutComponent);
+    this.dialog.open(DialogAboutComponent, {
+      maxHeight: "85vh",
+    });
   }
 }

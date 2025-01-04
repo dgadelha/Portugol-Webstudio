@@ -18,8 +18,9 @@ import { saveAs } from "file-saver";
 import { encode } from "iconv-lite";
 import { ShortcutInput } from "ng-keyboard-shortcuts";
 import { GoogleAnalyticsService } from "ngx-google-analytics";
-import { Subscription, debounceTime, fromEventPattern, mergeMap } from "rxjs";
+import { Subscription, combineLatest, debounceTime, fromEventPattern, mergeMap } from "rxjs";
 import { FileService } from "../file.service";
+import { SettingsService } from "../settings.service";
 import { ShareService } from "../share.service";
 import { ThemeService } from "../theme.service";
 import { WorkerService } from "../worker.service";
@@ -36,6 +37,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
   private _stdOut$?: Subscription;
   private _events$?: Subscription;
   private _theme$?: Subscription;
+  private _settings$?: Subscription;
 
   private gaService = inject(GoogleAnalyticsService);
   private snack = inject(MatSnackBar);
@@ -43,6 +45,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
   private fileService = inject(FileService);
   private shareService = inject(ShareService);
   private themeService = inject(ThemeService);
+  private settingsService = inject(SettingsService);
 
   @Input()
   title?: string;
@@ -65,6 +68,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
   codeEditorOptions: monaco.editor.IStandaloneEditorConstructionOptions = {
     theme: "portugol-dark",
     language: "portugol",
+    tabCompletion: "on",
     tabSize: 2,
   };
 
@@ -155,6 +159,15 @@ export class TabEditorComponent implements OnInit, OnDestroy {
       this.stdOutEditorOptions = { ...this.stdOutEditorOptions, theme: `portugol-${theme}` };
       this.generatedCodeEditorOptions = { ...this.generatedCodeEditorOptions, theme: `portugol-${theme}` };
     });
+
+    this._settings$ = combineLatest([
+      this.settingsService.editorFontSize,
+      this.settingsService.editorWordWrap,
+    ]).subscribe(([fontSize, wordWrap]) => {
+      this.codeEditorOptions = { ...this.codeEditorOptions, fontSize, wordWrap };
+      this.stdOutEditorOptions = { ...this.stdOutEditorOptions, fontSize, wordWrap };
+      this.generatedCodeEditorOptions = { ...this.generatedCodeEditorOptions, fontSize, wordWrap };
+    });
   }
 
   ngOnDestroy() {
@@ -162,6 +175,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     this._events$?.unsubscribe();
     this._stdOut$?.unsubscribe();
     this._theme$?.unsubscribe();
+    this._settings$?.unsubscribe();
     this.executor.stop();
   }
 

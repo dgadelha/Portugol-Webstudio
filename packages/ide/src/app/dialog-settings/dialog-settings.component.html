@@ -39,22 +39,42 @@
 
       <div class="preference-list">
         <div class="preference">
-          <mat-label id="setting-editor-label">Tamanho da fonte</mat-label>
+          <mat-label id="setting-editor-font-size-label">Tamanho da fonte</mat-label>
 
-          <mat-slider
-            aria-labelledby="setting-editor-label"
-            min="8"
-            max="30"
-            step="1"
-            showTickMarks
-            discrete
-            [(ngModel)]="fontSize"
-            color="primary"
-          >
-            <input aria-labelledby="setting-editor-label" matSliderThumb />
-          </mat-slider>
+          <div class="preference-slider">
+            <mat-slider
+              aria-labelledby="setting-editor-font-size-label"
+              min="6"
+              max="48"
+              step="1"
+              showTickMarks
+              color="primary"
+            >
+              <input aria-labelledby="setting-editor-font-size-label" matSliderThumb [(ngModel)]="editorFontSize" />
+            </mat-slider>
+
+            <span class="slider-value slider-value-fix-width">{{ editorFontSize }}</span>
+          </div>
+        </div>
+
+        <div class="preference">
+          <mat-label id="setting-editor-word-wrap-label">Quebra de linha</mat-label>
+
+          <div class="preference-switch">
+            <mat-slide-toggle
+              aria-labelledby="setting-editor-word-wrap-label"
+              [(ngModel)]="editorWordWrap"
+              color="primary"
+            >
+              {{ editorWordWrap ? "Ativado" : "Desativado" }}
+            </mat-slide-toggle>
+          </div>
         </div>
       </div>
+    </div>
+
+    <div class="preference-footer">
+      <button type="button" mat-stroked-button (click)="resetDefaults()">Restaurar padrões</button>
     </div>
   </div>
 </mat-dialog-content>

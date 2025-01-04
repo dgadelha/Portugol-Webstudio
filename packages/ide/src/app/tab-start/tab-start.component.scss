@@ -22,20 +22,17 @@ nav {
   align-items: center;
   justify-content: center;
 
-  @media (max-width: 576px) {
+  @media (max-width: 480px) {
     grid-template-columns: 1fr;
   }
 
   @media (min-width: 768px) {
     grid-template-columns: repeat(3, 1fr);
+    max-width: 50vw;
   }
 
   @media (min-width: 992px) {
     grid-template-columns: repeat(4, 1fr);
-  }
-
-  @media (min-width: 768px) {
-    max-width: 50vw;
   }
 
   button,

@@ -1,12 +1,13 @@
-import { Component } from "@angular/core";
+import { Component, inject } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
 import { MatDialogClose, MatDialogContent, MatDialogTitle } from "@angular/material/dialog";
 import { MatInputModule } from "@angular/material/input";
 import { MatRadioModule } from "@angular/material/radio";
+import { MatSlideToggleModule } from "@angular/material/slide-toggle";
 import { MatSliderModule } from "@angular/material/slider";
 import { AngularSvgIconModule } from "angular-svg-icon";
-import { LocalStorage } from "ngx-webstorage";
+import { LocalStorage, LocalStorageService } from "ngx-webstorage";
 
 @Component({
   selector: "app-dialog-settings",
@@ -18,6 +19,7 @@ import { LocalStorage } from "ngx-webstorage";
     MatDialogTitle,
     MatRadioModule,
     MatSliderModule,
+    MatSlideToggleModule,
     MatInputModule,
     AngularSvgIconModule,
   ],
@@ -26,9 +28,18 @@ import { LocalStorage } from "ngx-webstorage";
   standalone: true,
 })
 export class DialogSettingsComponent {
+  private localStorageService = inject(LocalStorageService);
+
   @LocalStorage("theme", "auto")
   theme!: "light" | "dark" | "auto";
 
-  @LocalStorage("fontSize", 14)
-  fontSize!: number;
+  @LocalStorage("editorFontSize", 12)
+  editorFontSize!: number;
+
+  @LocalStorage("editorWordWrap", false)
+  editorWordWrap!: boolean;
+
+  resetDefaults() {
+    this.localStorageService.clear();
+  }
 }
