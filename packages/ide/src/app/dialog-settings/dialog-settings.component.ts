@@ -8,6 +8,7 @@ import { MatSlideToggleModule } from "@angular/material/slide-toggle";
 import { MatSliderModule } from "@angular/material/slider";
 import { AngularSvgIconModule } from "angular-svg-icon";
 import { LocalStorage, LocalStorageService } from "ngx-webstorage";
+import { defaultFontSize } from "../../settings";
 
 @Component({
   selector: "app-dialog-settings",
@@ -33,7 +34,7 @@ export class DialogSettingsComponent {
   @LocalStorage("theme", "auto")
   theme!: "light" | "dark" | "auto";
 
-  @LocalStorage("editorFontSize", 12)
+  @LocalStorage("editorFontSize", defaultFontSize)
   editorFontSize!: number;
 
   @LocalStorage("editorWordWrap", false)

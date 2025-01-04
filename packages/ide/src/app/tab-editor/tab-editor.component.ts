@@ -164,9 +164,23 @@ export class TabEditorComponent implements OnInit, OnDestroy {
       this.settingsService.editorFontSize,
       this.settingsService.editorWordWrap,
     ]).subscribe(([fontSize, wordWrap]) => {
-      this.codeEditorOptions = { ...this.codeEditorOptions, fontSize, wordWrap };
-      this.stdOutEditorOptions = { ...this.stdOutEditorOptions, fontSize, wordWrap };
-      this.generatedCodeEditorOptions = { ...this.generatedCodeEditorOptions, fontSize, wordWrap };
+      this.codeEditorOptions = {
+        ...this.codeEditorOptions,
+        fontSize,
+        wordWrap: wordWrap ? "on" : "off",
+      };
+
+      this.stdOutEditorOptions = {
+        ...this.stdOutEditorOptions,
+        fontSize,
+        wordWrap: wordWrap ? "on" : "off",
+      };
+
+      this.generatedCodeEditorOptions = {
+        ...this.generatedCodeEditorOptions,
+        fontSize,
+        wordWrap: wordWrap ? "on" : "off",
+      };
     });
   }
 
