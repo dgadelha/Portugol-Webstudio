@@ -169,6 +169,21 @@
   <button mat-ripple type="button" class="sidebar-button" (click)="openHelp()" title="Abrir seção de Ajuda">
     <svg-icon src="assets/mdi/help-circle-outline.svg" svgClass="text-blue" svgAriaLabel="Ícone de ajuda" />
   </button>
+
+  <s></s>
+
+  <button
+    mat-ripple
+    type="button"
+    class="sidebar-button"
+    (click)="openSettings()"
+    title="Configurações"
+    gaEvent="editor_open_settings"
+    gaCategory="Editor"
+    gaLabel="Botão de Configurações"
+  >
+    <svg-icon src="assets/mdi/cog-outline.svg" svgClass="text-primary" svgAriaLabel="Ícone de engrenagem" />
+  </button>
 </div>
 
 <div class="editor-inner">

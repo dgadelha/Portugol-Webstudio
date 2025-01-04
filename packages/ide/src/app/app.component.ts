@@ -8,6 +8,7 @@ import { Subscription } from "rxjs";
 import { DialogConfirmCloseTabComponent } from "./dialog-confirm-close-tab/dialog-confirm-close-tab.component";
 import { DialogRenameTabComponent } from "./dialog-rename-tab/dialog-rename-tab.component";
 import { ShareService } from "./share.service";
+import { DialogSettingsComponent } from "./dialog-settings/dialog-settings.component";
 
 interface Tab {
   id: number;
@@ -152,5 +153,10 @@ export class AppComponent implements OnInit, OnDestroy {
       this.gaService.event("help_tab_select", "Interface", "Selecionar aba de ajuda já aberta");
       this.selected.setValue(tabPos + 1);
     }
+  }
+
+  openSettingsModal() {
+    this.gaService.event("open_settings_modal", "Interface", "Abrir modal de configurações");
+    this.dialog.open(DialogSettingsComponent);
   }
 }
