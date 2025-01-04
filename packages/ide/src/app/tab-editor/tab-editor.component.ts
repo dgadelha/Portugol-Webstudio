@@ -298,7 +298,10 @@ export class TabEditorComponent implements OnInit, OnDestroy {
 
   async saveFileWithPicker() {
     const extendedWindowApi = window as IExtendedWindowApi;
-    if (!extendedWindowApi.showSaveFilePicker) return;
+
+    if (!extendedWindowApi.showSaveFilePicker) {
+      return;
+    }
 
     const { blob, fileName } = this.prepareFile("binary");
 
@@ -324,6 +327,10 @@ export class TabEditorComponent implements OnInit, OnDestroy {
         duration: 3000,
       });
     } catch (error) {
+      if (error instanceof Error && error.name === "AbortError") {
+        return;
+      }
+
       console.error(error);
 
       this.snack.open("Ocorreu um erro ao salvar o arquivo!", "OK", {
