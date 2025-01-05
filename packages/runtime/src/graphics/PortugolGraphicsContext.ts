@@ -301,12 +301,8 @@ export class PortugolGraphicsContext extends EventTarget {
    */
   render() {
     this.window?.requestAnimationFrame(() => {
-      if (this._drawCalls.length > 0) {
-        for (const drawCall of this._drawCalls) {
-          drawCall();
-        }
-
-        this._drawCalls = [];
+      while (this._drawCalls.length > 0) {
+        this._drawCalls.shift()?.();
       }
 
       this.onRendered();
