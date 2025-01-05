@@ -12,7 +12,7 @@ export class WorkerService {
 
   async checkCode(code: string): Promise<{
     errors: PortugolCodeError[];
-    parseErrors: Error[];
+    parseErrors: PortugolCodeError[];
   }> {
     if (!this.worker) {
       this.init();

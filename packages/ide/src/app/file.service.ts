@@ -21,6 +21,6 @@ export class FileService {
       confidence,
     });
 
-    return decode(array as any, encoding);
+    return decode(array as any, encoding || "utf8");
   }
 }

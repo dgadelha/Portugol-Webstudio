@@ -87,7 +87,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
 
   generatedCodeEditorOptions: monaco.editor.IStandaloneEditorConstructionOptions = {
     ...this.stdOutEditorOptions,
-    language: "javascript",
+    language: "swift",
   };
 
   sharing = false;
@@ -423,7 +423,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
       )
       .subscribe({
         next: result => {
-          this.setEditorErrors(result.errors);
+          this.setEditorErrors(result.errors.concat(result.parseErrors));
         },
         error(err) {
           console.error(err);

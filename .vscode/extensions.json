@@ -1,0 +1,11 @@
+{
+  "recommendations": [
+    "angular.ng-template",
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "jock.svg",
+    "wayou.vscode-todo-highlight",
+    "webhint.vscode-webhint",
+    "zjcompt.es6-string-javascript"
+  ]
+}

@@ -1,7 +1,6 @@
-import { PortugolCodeError, PortugolErrorListener, PortugolLexer, PortugolParser } from "@portugol-webstudio/antlr";
+import { PortugolCodeError, PortugolErrorListener } from "@portugol-webstudio/antlr";
 import { PortugolErrorChecker } from "@portugol-webstudio/parser";
 import { PortugolJs } from "@portugol-webstudio/runtime";
-import { CharStream, CommonTokenStream } from "antlr4ng";
 import { Subject, Subscription } from "rxjs";
 
 import { IPortugolRunner, PortugolEvent } from "./runners/IPortugolRunner.js";
@@ -51,37 +50,24 @@ export class PortugolExecutor {
 
   run(code: string) {
     let errors: PortugolCodeError[] = [];
+    let parseErrors: PortugolCodeError[] = [];
     let js = "";
-    let parseStart = 0;
-    let parseEnd = 0;
     let checkStart = 0;
     let checkEnd = 0;
     let transpileStart = 0;
     let transpileEnd = 0;
 
     try {
-      parseStart = performance.now();
-
-      const inputStream = CharStream.fromString(code);
-      const lexer = new PortugolLexer(inputStream);
-      const tokenStream = new CommonTokenStream(lexer);
-      const parser = new PortugolParser(tokenStream);
-
-      this.errorListener.reset();
-
-      parser.removeErrorListeners();
-      parser.addErrorListener(this.errorListener);
-
-      const tree = parser.arquivo();
-
-      parseEnd = performance.now();
-
       checkStart = performance.now();
-      errors = PortugolErrorChecker.checkTree(tree);
+      const checkResult = PortugolErrorChecker.checkCode(code);
+
+      errors = checkResult.errors;
+      parseErrors = checkResult.parseErrors;
+
       checkEnd = performance.now();
 
       transpileStart = performance.now();
-      js = new PortugolJs().visit(tree)!;
+      js = new PortugolJs().visit(checkResult.tree)!;
       transpileEnd = performance.now();
     } catch {}
 
@@ -89,16 +75,15 @@ export class PortugolExecutor {
       code,
       js,
       errors,
-      parseErrors: this.errorListener.getErrors(),
+      parseErrors,
       times: {
-        parse: parseEnd - parseStart,
         check: checkEnd - checkStart,
         transpile: transpileEnd - transpileStart,
       },
     });
   }
 
-  #printTimes(_times: { parse: number; check: number; transpile: number; execution?: number }) {}
+  #printTimes(_times: { check: number; transpile: number; execution?: number }) {}
 
   runTranspiled({
     code,
@@ -111,7 +96,7 @@ export class PortugolExecutor {
     js: string;
     errors: PortugolCodeError[];
     parseErrors: PortugolCodeError[];
-    times: { parse: number; check: number; transpile: number };
+    times: { check: number; transpile: number };
   }) {
     try {
       this.reset();
@@ -147,8 +132,7 @@ export class PortugolExecutor {
           .join("");
 
         this.stdOut +=
-          "\n⚠️ Durante essa fase experimental, o código ainda será executado mesmo com erros, porém se não corrigi-los, a execução abaixo pode exibir mensagens de erro em inglês ou sem explicação.\n";
-        this.stdOut += `   Caso acredite que o erro não faça sentido, por favor, abra uma issue em https://github.com/dgadelha/Portugol-Webstudio/issues/new/choose e anexe o código que você está tentando executar.\n\n`;
+          "\n⚠️ Estamos aprimorando a detecção de erros. Seu código será executado mesmo com erros, mas se não forem corrigidos, a execução pode exibir mensagens de erro em inglês ou sem explicação.\n";
 
         argueAboutAlgolIfNeeded();
 
