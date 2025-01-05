@@ -7,7 +7,10 @@ export type PortugolEvent =
   | { type: "stdIn" }
   | { type: "error"; error: Error }
   | { type: "parseError"; errors: PortugolCodeError[] }
-  | { type: "finish"; time: number };
+  | { type: "finish"; time: number }
+  | { type: "graphics"; func: string; args: unknown[] };
+
+export type PortugolMessage = { type: string; content?: string };
 
 export abstract class IPortugolRunner {
   constructor(public byteCode: string) {}
@@ -23,4 +26,6 @@ export abstract class IPortugolRunner {
 
   abstract run(): Observable<PortugolEvent>;
   abstract destroy(): void;
+
+  abstract postMessage(message: PortugolMessage): void;
 }

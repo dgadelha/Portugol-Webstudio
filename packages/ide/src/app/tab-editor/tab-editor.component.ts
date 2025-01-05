@@ -12,6 +12,7 @@ import {
 } from "@angular/core";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import type { PortugolCodeError } from "@portugol-webstudio/antlr";
+import { GraphicsContext } from "@portugol-webstudio/graphics";
 import { PortugolExecutor, PortugolWebWorkersRunner } from "@portugol-webstudio/runner";
 import { captureException, setExtra } from "@sentry/angular";
 import { saveAs } from "file-saver";
@@ -63,6 +64,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
 
   transpiling = false;
   executor = new PortugolExecutor(PortugolWebWorkersRunner);
+  graphicsContext = new GraphicsContext(this.executor);
 
   codeEditor?: monaco.editor.IStandaloneCodeEditor;
 
@@ -141,6 +143,13 @@ export class TabEditorComponent implements OnInit, OnDestroy {
 
           case "parseError": {
             this.setEditorErrors(event.errors);
+            break;
+          }
+
+          case "graphics": {
+            // @ts-ignore
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+            this.graphicsContext[event.func](...event.args);
             break;
           }
 
@@ -228,6 +237,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
   stopCode() {
     this.gaService.event("editor_stop_execution", "Editor", "Botão de Parar Execução");
     this.executor.stop();
+    this.graphicsContext.destroy();
 
     if (this.transpiling) {
       this.worker.abortTranspilation();

@@ -3,7 +3,7 @@ import { PortugolErrorChecker } from "@portugol-webstudio/parser";
 import { PortugolJs } from "@portugol-webstudio/runtime";
 import { Subject, Subscription } from "rxjs";
 
-import { IPortugolRunner, PortugolEvent } from "./runners/IPortugolRunner.js";
+import { IPortugolRunner, PortugolEvent, PortugolMessage } from "./runners/IPortugolRunner.js";
 
 export class PortugolExecutor {
   private _runner?: IPortugolRunner;
@@ -228,5 +228,9 @@ export class PortugolExecutor {
     this._running$?.unsubscribe();
 
     this._runner?.destroy();
+  }
+
+  postMessage(message: PortugolMessage): void {
+    this._runner?.postMessage(message);
   }
 }

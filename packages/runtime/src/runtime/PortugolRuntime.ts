@@ -405,6 +405,26 @@ class PortugolRuntime {
       }
     }
   }
+
+  async waitForResponse(type) {
+    const controller = new AbortController();
+    const signal = controller.signal;
+
+    const result = await new Promise((resolve) => {
+      const listener = (message) => {
+        if (message.data.type === type) {
+          controller.abort();
+          resolve(message.data.content);
+        }
+
+        self.removeEventListener("message", listener);
+      };
+
+      self.addEventListener("message", listener, { signal });
+    });
+
+    return result;
+  }
 }
 //endregion
 `;

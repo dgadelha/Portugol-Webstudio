@@ -1,7 +1,7 @@
 import { PortugolJsRuntime } from "@portugol-webstudio/runtime";
 import { Subject, Subscription } from "rxjs";
 
-import { IPortugolRunner, PortugolEvent } from "./IPortugolRunner.js";
+import { IPortugolRunner, PortugolEvent, PortugolMessage } from "./IPortugolRunner.js";
 
 export class PortugolWebWorkersRunner extends IPortugolRunner {
   private worker: Worker;
@@ -166,6 +166,16 @@ export class PortugolWebWorkersRunner extends IPortugolRunner {
           break;
         }
 
+        case "graphics": {
+          this._run.next({
+            type: "graphics",
+            func: message.data.func,
+            args: message.data.args,
+          });
+
+          break;
+        }
+
         default: {
           throw new Error(`Unknown message type: ${message.data.type}`);
         }
@@ -221,5 +231,9 @@ export class PortugolWebWorkersRunner extends IPortugolRunner {
 
     this._stdIn$?.unsubscribe();
     this.stdIn.complete();
+  }
+
+  postMessage(message: PortugolMessage): void {
+    this.worker.postMessage(message);
   }
 }
