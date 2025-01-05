@@ -12,8 +12,8 @@ import {
 } from "@angular/core";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import type { PortugolCodeError } from "@portugol-webstudio/antlr";
-import { GraphicsContext } from "@portugol-webstudio/graphics";
 import { PortugolExecutor, PortugolWebWorkersRunner } from "@portugol-webstudio/runner";
+import { PortugolGraphicsContext } from "@portugol-webstudio/runtime";
 import { captureException, setExtra } from "@sentry/angular";
 import { saveAs } from "file-saver";
 import { encode } from "iconv-lite";
@@ -64,7 +64,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
 
   transpiling = false;
   executor = new PortugolExecutor(PortugolWebWorkersRunner);
-  graphicsContext = new GraphicsContext(this.executor);
+  graphicsContext = new PortugolGraphicsContext();
 
   codeEditor?: monaco.editor.IStandaloneCodeEditor;
 
@@ -193,6 +193,16 @@ export class TabEditorComponent implements OnInit, OnDestroy {
         fontSize,
         wordWrap: wordWrap ? "on" : "off",
       };
+    });
+
+    this.graphicsContext.addEventListener("close", event => {
+      if (event instanceof CustomEvent && event.detail.userClose && this.executor.running) {
+        this.executor.stop();
+      }
+    });
+
+    this.graphicsContext.addEventListener("rendered", () => {
+      this.executor.postMessage({ type: "graphics-rendered" });
     });
   }
 

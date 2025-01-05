@@ -49,7 +49,6 @@
     "@portugol-webstudio/resources": "*",
     "@portugol-webstudio/runner": "*",
     "@portugol-webstudio/runtime": "*",
-    "@portugol-webstudio/graphics": "*",
     "@sentry/angular": "^8.47.0",
     "angular-split": "^18.0.0",
     "angular-svg-icon": "^19.1.0",

@@ -1,13 +1,10 @@
-import { PortugolExecutor } from "@portugol-webstudio/runner";
+import { PortugolGraphicsDrawCall } from "./PortugolGraphicsDrawCall";
 
-type DrawCallFunction = () => void;
-
-export class GraphicsContext {
+export class PortugolGraphicsContext extends EventTarget {
   window: Window | null = null;
   canvas: HTMLCanvasElement | null = null;
   canvasContext: CanvasRenderingContext2D | null = null;
 
-  private _executor: PortugolExecutor;
   private _title = "";
 
   private _width = 800;
@@ -16,11 +13,7 @@ export class GraphicsContext {
   private _workingColor = 0;
   private _workingOpacity = 255;
 
-  private _drawCalls: DrawCallFunction[] = [];
-
-  constructor(executor: PortugolExecutor) {
-    this._executor = executor;
-  }
+  private _drawCalls: PortugolGraphicsDrawCall[] = [];
 
   /**
    * Inicializa o contexto gráfico.
@@ -37,8 +30,7 @@ export class GraphicsContext {
     this.window.document.body.style.overflow = "hidden";
 
     this.window.addEventListener("beforeunload", () => {
-      this.destroy();
-      this._executor?.stop();
+      this.destroy(true);
     });
 
     this.canvas = this.window.document.createElement("canvas");
@@ -47,6 +39,15 @@ export class GraphicsContext {
     this.window.document.body.append(this.canvas);
 
     this.canvasContext = this.canvas.getContext("2d");
+
+    this.onInit();
+  }
+
+  /**
+   * Função chamada quando o contexto gráfico é inicializado.
+   */
+  private onInit() {
+    this.dispatchEvent(new Event("init"));
   }
 
   /**
@@ -59,12 +60,21 @@ export class GraphicsContext {
   /**
    * Fecha a janela.
    */
-  closeWindow() {
+  closeWindow(userClose = false) {
     try {
       if (this.window) {
         this.window.close();
       }
     } catch {}
+
+    this.onWindowClose(userClose);
+  }
+
+  /**
+   * Função chamada quando a janela é fechada.
+   */
+  private onWindowClose(userClose = false) {
+    this.dispatchEvent(new CustomEvent("close", { detail: { userClose } }));
   }
 
   /**
@@ -86,8 +96,8 @@ export class GraphicsContext {
   /**
    * Destroi o contexto gráfico.
    */
-  destroy() {
-    this.closeWindow();
+  destroy(userClose = false) {
+    this.closeWindow(userClose);
     this.canvas = null;
     this.canvasContext = null;
     this.window = null;
@@ -270,7 +280,7 @@ export class GraphicsContext {
    * Função interna para adicionar um desenho na lista de chamadas.
    * @param drawFunc Função de desenho.
    */
-  private drawCall(drawFunc: DrawCallFunction) {
+  private drawCall(drawFunc: PortugolGraphicsDrawCall) {
     this._drawCalls.push(drawFunc);
   }
 
@@ -298,9 +308,15 @@ export class GraphicsContext {
         this._drawCalls = [];
       }
 
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      this._executor.postMessage({ type: "graphics-rendered" });
+      this.onRendered();
     });
+  }
+
+  /**
+   * Função chamada quando a tela é renderizada.
+   */
+  private onRendered() {
+    this.dispatchEvent(new Event("rendered"));
   }
 
   /**
