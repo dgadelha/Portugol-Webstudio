@@ -289,8 +289,9 @@ export class PortugolGraphicsContext extends EventTarget {
    */
   private applyWorkParams() {
     if (this.canvasContext) {
-      this.canvasContext.strokeStyle = this.getWorkingColorAsHex();
-      this.canvasContext.fillStyle = this.getWorkingColorAsHex();
+      const hexColor = this.getWorkingColorAsHex();
+      this.canvasContext.strokeStyle = hexColor;
+      this.canvasContext.fillStyle = hexColor;
       this.canvasContext.globalAlpha = this.getWorkingOpacityAsRange1();
     }
   }
