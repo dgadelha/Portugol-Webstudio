@@ -30,12 +30,62 @@ jobs:
           ./packages/ide/cleanup-icons.sh
           npm run release
 
+      - name: Setup Firebase Hosting 🔥
+        env:
+          FIREBASE_PROJECT_ID: ${{ vars.FIREBASE_PROJECT_ID }}
+          FIREBASE_HOSTING_SITE: ${{ vars.FIREBASE_HOSTING_SITE }}
+        run: |
+          jq -n --arg default "$FIREBASE_PROJECT_ID" '{ "projects": { "default": $default } }' > .firebaserc
+          cat <<EOF | tee firebase.json
+          {
+            "hosting": {
+              "site": "$FIREBASE_HOSTING_SITE",
+              "public": "packages/ide/dist/browser",
+              "headers": [
+                {
+                  "source": "/**",
+                  "headers": [
+                    {
+                      "key": "Cache-Control",
+                      "value": "max-age=900, stale-while-revalidate=180"
+                    }
+                  ]
+                },
+                {
+                  "source": "**/*.@(jpg|jpeg|gif|png|svg|webp|js|css|eot|otf|ttf|ttc|woff|woff2|font.css)",
+                  "headers": [
+                    {
+                      "key": "Cache-Control",
+                      "value": "max-age=604800"
+                    }
+                  ]
+                },
+                {
+                  "source": "**/portugol-worker.js",
+                  "headers": [
+                    {
+                      "key": "Cache-Control",
+                      "value": "max-age=900, stale-while-revalidate=180"
+                    }
+                  ]
+                }
+              ],
+              "rewrites": [
+                {
+                  "source": "**",
+                  "destination": "/index.html"
+                }
+              ]
+            }
+          }
+          EOF
+
       - name: Deploy 🚀
-        uses: JamesIves/github-pages-deploy-action@v4
+        uses: FirebaseExtended/action-hosting-deploy@v0
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          branch: gh-pages
-          folder: packages/ide/dist/browser
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          projectId: ${{ vars.FIREBASE_PROJECT_ID }}
+          channelId: live
 
       - name: Create Sentry release 📦
         uses: getsentry/action-release@v1
