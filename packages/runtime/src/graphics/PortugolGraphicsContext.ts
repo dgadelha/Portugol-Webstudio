@@ -1,4 +1,4 @@
-import { PortugolGraphicsDrawCall } from "./PortugolGraphicsDrawCall";
+type PortugolGraphicsDrawCall = () => void;
 
 export class PortugolGraphicsContext extends EventTarget {
   window: Window | null = null;
