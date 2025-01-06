@@ -18,53 +18,109 @@ export default /* javascript */ `{
   GRADIENTE_SUPERIOR_DIREITO: new PortugolVar("inteiro", 6, false, true),
   GRADIENTE_SUPERIOR_ESQUERDO: new PortugolVar("inteiro", 7, false, true),
 
-  iniciar_modo_grafico(manter_visivel) {
+  async iniciar_modo_grafico(manter_visivel) {
     self.runtime.expectType("iniciar_modo_grafico", "manter_visivel", manter_visivel, "logico");
-    self.postMessage({ type: "graphics", func: "init", args: [manter_visivel.value] });
+
+    const canvas = await self.runtime.postMessageAndWaitForResponse({
+      type: "graphics.create",
+    });
+
+    if (!self.graphics) {
+      self.graphics = new PortugolGraphicsContext();
+    }
+
+    self.graphics.init(canvas);
   },
 
-  encerrar_modo_grafico() {
-    self.postMessage({ type: "graphics", func: "destroy", args: [] });
+  async encerrar_modo_grafico() {
+    self.runtime.assertGraphicsContext();
+
+    await self.runtime.postMessageAndWaitForResponse({
+      type: "graphics.destroy",
+    });
   },
 
-  fechar_janela() {
-    self.postMessage({ type: "graphics", func: "closeWindow", args: [] });
+  async fechar_janela() {
+    self.runtime.assertGraphicsContext();
+
+    await self.runtime.postMessageAndWaitForResponse({
+      type: "graphics.closeWindow",
+    });
   },
 
-  exibir_borda_janela() {
-    self.postMessage({ type: "graphics", func: "showWindow", args: [] });
+  async exibir_borda_janela() {
+    self.runtime.assertGraphicsContext();
+
+    await self.runtime.postMessageAndWaitForResponse({
+      type: "graphics.showWindow",
+    });
   },
 
-  minimizar_janela() {
-    self.postMessage({ type: "graphics", func: "minimizeWindow", args: [] });
+  async minimizar_janela() {
+    self.runtime.assertGraphicsContext();
+
+    await self.runtime.postMessageAndWaitForResponse({
+      type: "graphics.minimizeWindow",
+    });
   },
 
-  restaurar_janela() {
-    self.postMessage({ type: "graphics", func: "restoreWindow", args: [] });
+  async restaurar_janela() {
+    self.runtime.assertGraphicsContext();
+
+    await self.runtime.waitForResponse({
+      type: "graphics.restoreWindow",
+    });
   },
 
-  definir_dimensoes_janela(largura, altura) {
+  async definir_dimensoes_janela(largura, altura) {
     self.runtime.expectType("definir_dimensoes_janela", "largura", largura, "inteiro");
     self.runtime.expectType("definir_dimensoes_janela", "altura", altura, "inteiro");
-    self.postMessage({ type: "graphics", func: "resize", args: [largura.value, altura.value] });
+
+    self.runtime.assertGraphicsContext();
+
+    self.graphics.resize(largura.value, altura.value);
+
+    await self.runtime.postMessageAndWaitForResponse({
+      type: "graphics.setWindowSize",
+      data: {
+        width: largura.value,
+        height: altura.value,
+      },
+    });
   },
 
-  definir_titulo_janela(titulo) {
+  async definir_titulo_janela(titulo) {
     self.runtime.expectType("definir_titulo_janela", "titulo", titulo, "cadeia");
-    self.postMessage({ type: "graphics", func: "setWindowTitle", args: [titulo.value] });
+
+    self.runtime.assertGraphicsContext();
+
+    await self.runtime.postMessageAndWaitForResponse({
+      type: "graphics.setWindowTitle",
+      data: {
+        title: titulo.value,
+      },
+    });
   },
 
   entrar_modo_tela_cheia() {
-    self.postMessage({ type: "graphics", func: "enterFullscreen", args: [] });
+    self.runtime.assertGraphicsContext();
+
+    self.runtime.postMessageAndWaitForResponse({
+      type: "graphics.enterFullscreen",
+    });
   },
 
   sair_modo_tela_cheia() {
-    self.postMessage({ type: "graphics", func: "exitFullscreen", args: [] });
+    self.runtime.assertGraphicsContext();
+
+    self.runtime.postMessageAndWaitForResponse({
+      type: "graphics.exitFullscreen",
+    });
   },
 
   async renderizar() {
-    self.postMessage({ type: "graphics", func: "render", args: [] });
-    await self.runtime.waitForResponse("graphics-rendered");
+    self.runtime.assertGraphicsContext();
+    await self.graphics.render();
   },
 
   criar_cor(r, g, b) {
@@ -81,11 +137,13 @@ export default /* javascript */ `{
 
   definir_cor(cor) {
     self.runtime.expectType("definir_cor", "cor", cor, "inteiro");
-    self.postMessage({ type: "graphics", func: "setWorkingColor", args: [cor.value] });
+    self.runtime.assertGraphicsContext();
+    self.graphics.setWorkingColor(cor.value);
   },
 
   limpar() {
-    self.postMessage({ type: "graphics", func: "clearRender", args: [] });
+    self.runtime.assertGraphicsContext();
+    self.graphics.clearRender();
   },
 
   desenhar_retangulo(x, y, largura, altura, arrendodar_cantos, preencher) {
@@ -96,6 +154,8 @@ export default /* javascript */ `{
     self.runtime.expectType("desenhar_retangulo", "arrendodar_cantos", arrendodar_cantos, "logico");
     self.runtime.expectType("desenhar_retangulo", "preencher", preencher, "logico");
 
-    self.postMessage({ type: "graphics", func: "drawRect", args: [x.value, y.value, largura.value, altura.value, arrendodar_cantos.value, preencher.value] });
+    self.runtime.assertGraphicsContext();
+
+    self.graphics.drawRect(x.value, y.value, largura.value, altura.value, arrendodar_cantos.value, preencher.value);
   },
 }`;

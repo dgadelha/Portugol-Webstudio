@@ -166,11 +166,10 @@ export class PortugolWebWorkersRunner extends IPortugolRunner {
           break;
         }
 
-        case "graphics": {
+        case "message": {
           this._run.next({
-            type: "graphics",
-            func: message.data.func,
-            args: message.data.args,
+            type: "message",
+            message: message.data.message,
           });
 
           break;
@@ -234,6 +233,31 @@ export class PortugolWebWorkersRunner extends IPortugolRunner {
   }
 
   postMessage(message: PortugolMessage): void {
-    this.worker.postMessage(message);
+    if (!("id" in message)) {
+      message.id = Math.random().toString(36).slice(2, 11);
+    }
+
+    this.worker.postMessage({
+      type: "message",
+      message,
+    });
+  }
+
+  replyMessage(message: PortugolMessage, result: unknown, transferable?: Transferable[]) {
+    if (!("id" in message)) {
+      throw new Error("Não é possível responder uma mensagem sem identificador!");
+    }
+
+    const replyMessage = {
+      type: "message-reply",
+      id: message.id,
+      result,
+    };
+
+    if (transferable) {
+      this.worker.postMessage(replyMessage, transferable);
+    } else {
+      this.worker.postMessage(replyMessage);
+    }
   }
 }

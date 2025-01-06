@@ -10,17 +10,19 @@ import {
   ViewChild,
   inject,
 } from "@angular/core";
+import { MatDialog } from "@angular/material/dialog";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import type { PortugolCodeError } from "@portugol-webstudio/antlr";
-import { PortugolExecutor, PortugolWebWorkersRunner } from "@portugol-webstudio/runner";
-import { PortugolGraphicsContext } from "@portugol-webstudio/runtime";
+import { PortugolExecutor, PortugolMessage, PortugolWebWorkersRunner } from "@portugol-webstudio/runner";
 import { captureException, setExtra } from "@sentry/angular";
 import { saveAs } from "file-saver";
 import { encode } from "iconv-lite";
 import { ShortcutInput } from "ng-keyboard-shortcuts";
 import { GoogleAnalyticsService } from "ngx-google-analytics";
 import { Subscription, combineLatest, debounceTime, fromEventPattern, mergeMap } from "rxjs";
+import { GraphicsRenderer, IGraphicsRendererComponent } from "../../renderer";
 import { IExtendedWindowApi } from "../../types";
+import { DialogRendererComponent } from "../dialog-renderer/dialog-renderer.component";
 import { FileService } from "../file.service";
 import { SettingsService } from "../settings.service";
 import { ShareService } from "../share.service";
@@ -48,6 +50,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
   private shareService = inject(ShareService);
   private themeService = inject(ThemeService);
   private settingsService = inject(SettingsService);
+  private dialog = inject(MatDialog);
 
   @Input()
   title?: string;
@@ -64,7 +67,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
 
   transpiling = false;
   executor = new PortugolExecutor(PortugolWebWorkersRunner);
-  graphicsContext = new PortugolGraphicsContext();
+  graphicsRenderer = new GraphicsRenderer(this.executor);
 
   codeEditor?: monaco.editor.IStandaloneCodeEditor;
 
@@ -146,10 +149,8 @@ export class TabEditorComponent implements OnInit, OnDestroy {
             break;
           }
 
-          case "graphics": {
-            // @ts-ignore
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-            this.graphicsContext[event.func](...event.args);
+          case "message": {
+            this.handlePortugolMessage(event.message).then().catch(console.error);
             break;
           }
 
@@ -195,14 +196,12 @@ export class TabEditorComponent implements OnInit, OnDestroy {
       };
     });
 
-    this.graphicsContext.addEventListener("close", event => {
-      if (event instanceof CustomEvent && event.detail.userClose && this.executor.running) {
-        this.executor.stop();
-      }
-    });
+    this.graphicsRenderer.addEventListener("create", event => {
+      const component = this.openRendererModal();
 
-    this.graphicsContext.addEventListener("rendered", () => {
-      this.executor.postMessage({ type: "graphics-rendered" });
+      if (component) {
+        event.component = component;
+      }
     });
   }
 
@@ -247,7 +246,6 @@ export class TabEditorComponent implements OnInit, OnDestroy {
   stopCode() {
     this.gaService.event("editor_stop_execution", "Editor", "Botão de Parar Execução");
     this.executor.stop();
-    this.graphicsContext.destroy();
 
     if (this.transpiling) {
       this.worker.abortTranspilation();
@@ -255,6 +253,23 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     }
 
     this.stdOutEditorCursorEnd();
+  }
+
+  async handlePortugolMessage(message: PortugolMessage) {
+    if (message.type.startsWith("graphics.")) {
+      await this.graphicsRenderer.handleRendererMessage(message);
+    }
+  }
+
+  openRendererModal(): IGraphicsRendererComponent | null {
+    this.gaService.event("editor_open_renderer", "Editor", "Abrir modal de renderização");
+    const modal = this.dialog.open(DialogRendererComponent);
+
+    modal.afterClosed().subscribe(() => {
+      this.stopCode();
+    });
+
+    return modal.componentInstance;
   }
 
   async openFile(event: Event) {

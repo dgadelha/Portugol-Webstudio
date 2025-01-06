@@ -8,9 +8,13 @@ export type PortugolEvent =
   | { type: "error"; error: Error }
   | { type: "parseError"; errors: PortugolCodeError[] }
   | { type: "finish"; time: number }
-  | { type: "graphics"; func: string; args: unknown[] };
+  | { type: "message"; message: PortugolMessage };
 
-export type PortugolMessage = { type: string; content?: string };
+export type PortugolMessage = {
+  id?: string;
+  type: string;
+  data?: unknown;
+};
 
 export abstract class IPortugolRunner {
   constructor(public byteCode: string) {}
@@ -28,4 +32,5 @@ export abstract class IPortugolRunner {
   abstract destroy(): void;
 
   abstract postMessage(message: PortugolMessage): void;
+  abstract replyMessage(message: PortugolMessage, result: unknown, transferable?: Transferable[]): void;
 }

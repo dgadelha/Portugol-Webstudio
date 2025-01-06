@@ -186,6 +186,12 @@ export class PortugolExecutor {
               break;
             }
 
+            /*case "message": {
+              this.stdOut += `\nℹ️ ${JSON.stringify(event.message)}\n`;
+              this.stdOut$.next(this.stdOut);
+              break;
+            }*/
+
             default: {
               break;
             }
@@ -232,5 +238,9 @@ export class PortugolExecutor {
 
   postMessage(message: PortugolMessage): void {
     this._runner?.postMessage(message);
+  }
+
+  replyMessage(message: PortugolMessage, result: unknown, transferable?: Transferable[]) {
+    this._runner?.replyMessage(message, result, transferable);
   }
 }

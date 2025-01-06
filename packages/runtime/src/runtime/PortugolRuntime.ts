@@ -413,21 +413,41 @@ class PortugolRuntime {
     }
   }
 
-  async waitForResponse(type) {
+  assertGraphicsContext() {
+    if (!self.graphics) {
+      throw new Error("O modo gráfico não foi inicializado");
+    }
+  }
+
+  postMessage(message) {
+    message.id = Math.random().toString(36).substr(2, 9);
+
+    self.postMessage({
+      type: "message",
+      message,
+    });
+  }
+
+  postMessageAndWaitForResponse(message) {
+    this.postMessage(message);
+    return this.waitForMessageResponse(message);
+  }
+
+  async waitForMessageResponse(message) {
     const controller = new AbortController();
     const signal = controller.signal;
 
     const result = await new Promise((resolve) => {
-      const listener = (message) => {
-        if (message.data.type === type) {
+      self.addEventListener("message", (receivedMessage) => {
+        if (
+          receivedMessage.data &&
+          receivedMessage.data.type === "message-reply" &&
+          receivedMessage.data.id === message.id
+        ) {
           controller.abort();
-          resolve(message.data.content);
+          resolve(receivedMessage.data.result);
         }
-
-        self.removeEventListener("message", listener);
-      };
-
-      self.addEventListener("message", listener, { signal });
+      }, { signal });
     });
 
     return result;
