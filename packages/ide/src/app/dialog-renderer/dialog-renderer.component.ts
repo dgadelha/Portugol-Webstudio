@@ -1,10 +1,12 @@
 import { Component, ElementRef, Input, ViewChild } from "@angular/core";
-import { MatDialogContent, MatDialogTitle } from "@angular/material/dialog";
+import { MatButtonModule } from "@angular/material/button";
+import { MatDialogClose, MatDialogContent, MatDialogTitle } from "@angular/material/dialog";
+import { AngularSvgIconModule } from "angular-svg-icon";
 import { IGraphicsRendererComponent } from "../../renderer";
 
 @Component({
   selector: "app-dialog-renderer",
-  imports: [MatDialogContent, MatDialogTitle],
+  imports: [MatButtonModule, MatDialogClose, MatDialogContent, MatDialogTitle, AngularSvgIconModule],
   templateUrl: "./dialog-renderer.component.html",
   styleUrl: "./dialog-renderer.component.scss",
   standalone: true,
