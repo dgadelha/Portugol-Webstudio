@@ -189,7 +189,7 @@ export default /* javascript */ `{
   },
 
   definir_opacidade(opacidade) {
-    self.runtime.expectType("definir_opacidade", "opacidade", opacidade, "inteiro");
+    self.runtime.expectType("definir_opacidade", "opacidade", opacidade, "inteiro", "real");
     self.runtime.assertGraphicsContext();
     self.graphics.setWorkingOpacity(opacidade.getValue());
   },
@@ -205,9 +205,21 @@ export default /* javascript */ `{
   },
 
   definir_tamanho_texto(tamanho) {
-    self.runtime.expectType("definir_tamanho_texto", "tamanho", tamanho, "real");
+    self.runtime.expectType("definir_tamanho_texto", "tamanho", tamanho, "inteiro", "real");
     self.runtime.assertGraphicsContext();
     self.graphics.setWorkingTextSize(tamanho.getValue());
+  },
+
+  definir_fonte_texto(fonte) {
+    self.runtime.expectType("definir_fonte_texto", "fonte", fonte, "cadeia");
+    self.runtime.assertGraphicsContext();
+    self.graphics.setWorkingFont(fonte.getValue());
+  },
+
+  definir_rotacao(rotacao) {
+    self.runtime.expectType("definir_rotacao", "rotacao", rotacao, "inteiro", "real");
+    self.runtime.assertGraphicsContext();
+    self.graphics.setWorkingRotation(rotacao.getValue());
   },
 
   limpar() {
