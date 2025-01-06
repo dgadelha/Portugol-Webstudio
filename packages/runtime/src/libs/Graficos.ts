@@ -144,6 +144,22 @@ export default /* javascript */ `{
     return new PortugolVar("inteiro", result.height, false, true);
   },
 
+  largura_texto(texto) {
+    self.runtime.expectType("largura_texto", "texto", texto, "cadeia");
+    self.runtime.assertGraphicsContext();
+
+    const size = self.graphics.calculateTextSize(texto.getValue());
+    return new PortugolVar("inteiro", size.width, false, true);
+  },
+
+  altura_texto(texto) {
+    self.runtime.expectType("altura_texto", "texto", texto, "cadeia");
+    self.runtime.assertGraphicsContext();
+
+    const size = self.graphics.calculateTextSize(texto.getValue());
+    return new PortugolVar("inteiro", size.height, false, true);
+  },
+
   async renderizar() {
     self.runtime.assertGraphicsContext();
     await self.graphics.render();

@@ -359,10 +359,19 @@ class PortugolGraphicsContext {
     });
   }
 
+  calculateTextSize(text) {
+    if (this.canvasContext) {
+      this.applyWorkParams(true);
+      return this.canvasContext.measureText(text);
+    }
+
+    return { width: 0, height: 0 };
+  }
+
   drawText(x, y, text) {
     this.drawCall(() => {
       if (this.canvasContext) {
-        const { width, height } = this.canvasContext.measureText(text);
+        const { width, height } = this.calculateTextSize(text);
 
         const bounds = {
           x,
