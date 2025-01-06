@@ -310,4 +310,146 @@ export default /* javascript */ `{
 
     self.graphics.drawText(x.getValue(), y.getValue(), texto.getValue());
   },
+
+  altura_imagem(endereco) {
+    self.runtime.expectType("altura_imagem", "endereco", endereco, "inteiro");
+    self.runtime.unimplementedMethod("altura_imagem", "Graficos");
+    return new PortugolVar("inteiro", 0, false, true);
+  },
+
+  largura_imagem(endereco) {
+    self.runtime.expectType("largura_imagem", "endereco", endereco, "inteiro");
+    self.runtime.unimplementedMethod("largura_imagem", "Graficos");
+    return new PortugolVar("inteiro", 0, false, true);
+  },
+
+  carregar_fonte(caminho_fonte) {
+    self.runtime.expectType("carregar_fonte", "caminho_fonte", caminho_fonte, "cadeia");
+    self.runtime.unimplementedMethod("carregar_fonte", "Graficos");
+  },
+
+  carregar_imagem(caminho) {
+    self.runtime.expectType("carregar_imagem", "caminho", caminho, "cadeia");
+    self.runtime.unimplementedMethod("carregar_imagem", "Graficos");
+    return new PortugolVar("inteiro", 0, false, true);
+  },
+
+  liberar_imagem(endereco) {
+    self.runtime.expectType("liberar_imagem", "endereco", endereco, "inteiro");
+    self.runtime.unimplementedMethod("liberar_imagem", "Graficos");
+  },
+
+  definir_icone_janela(endereco) {
+    self.runtime.expectType("definir_icone_janela", "endereco", endereco, "inteiro");
+    self.runtime.unimplementedMethod("definir_icone_janela", "Graficos");
+  },
+
+  definir_quadro_gif(endereco, quadro) {
+    self.runtime.expectType("definir_quadro_gif", "endereco", endereco, "inteiro");
+    self.runtime.expectType("definir_quadro_gif", "quadro", quadro, "inteiro");
+    self.runtime.unimplementedMethod("definir_quadro_gif", "Graficos");
+  },
+
+  desenhar_imagem(x, y, endereco) {
+    self.runtime.expectType("desenhar_imagem", "x", x, "inteiro");
+    self.runtime.expectType("desenhar_imagem", "y", y, "inteiro");
+    self.runtime.expectType("desenhar_imagem", "endereco", endereco, "inteiro");
+    self.runtime.unimplementedMethod("desenhar_imagem", "Graficos");
+  },
+
+  desenhar_porcao_imagem(x, y, xi, yi, largura, altura, endereco) {
+    self.runtime.expectType("desenhar_porcao_imagem", "x", x, "inteiro");
+    self.runtime.expectType("desenhar_porcao_imagem", "y", y, "inteiro");
+    self.runtime.expectType("desenhar_porcao_imagem", "xi", xi, "inteiro");
+    self.runtime.expectType("desenhar_porcao_imagem", "yi", yi, "inteiro");
+    self.runtime.expectType("desenhar_porcao_imagem", "largura", largura, "inteiro");
+    self.runtime.expectType("desenhar_porcao_imagem", "altura", altura, "inteiro");
+    self.runtime.expectType("desenhar_porcao_imagem", "endereco", endereco, "inteiro");
+    self.runtime.unimplementedMethod("desenhar_porcao_imagem", "Graficos");
+  },
+
+  desenhar_quadro_atual_gif(x, y, endereco) {
+    self.runtime.expectType("desenhar_quadro_atual_gif", "x", x, "inteiro");
+    self.runtime.expectType("desenhar_quadro_atual_gif", "y", y, "inteiro");
+    self.runtime.expectType("desenhar_quadro_atual_gif", "endereco", endereco, "inteiro");
+    self.runtime.unimplementedMethod("desenhar_quadro_atual_gif", "Graficos");
+  },
+
+  obter_cor_pixel(endereco, x, y) {
+    self.runtime.expectType("obter_cor_pixel", "endereco", endereco, "inteiro");
+    self.runtime.expectType("obter_cor_pixel", "x", x, "inteiro");
+    self.runtime.expectType("obter_cor_pixel", "y", y, "inteiro");
+    self.runtime.unimplementedMethod("obter_cor_pixel", "Graficos");
+    return new PortugolVar("inteiro", -16777216, false, true);
+  },
+
+  obter_intervalo_gif(endereco) {
+    self.runtime.expectType("obter_intervalo_gif", "endereco", endereco, "inteiro");
+    self.runtime.unimplementedMethod("obter_intervalo_gif", "Graficos");
+    return new PortugolVar("inteiro", 0, false, true);
+  },
+
+  obter_numero_quadro_atual_gif(endereco) {
+    self.runtime.expectType("obter_numero_quadro_atual_gif", "endereco", endereco, "inteiro");
+    self.runtime.unimplementedMethod("obter_numero_quadro_atual_gif", "Graficos");
+    return new PortugolVar("inteiro", 0, false, true);
+  },
+
+  obter_numero_quadros_gif(endereco) {
+    self.runtime.expectType("obter_numero_quadros_gif", "endereco", endereco, "inteiro");
+    self.runtime.unimplementedMethod("obter_numero_quadros_gif", "Graficos");
+    return new PortugolVar("inteiro", 0, false, true);
+  },
+
+  obter_quadro_gif(endereco, quadro) {
+    self.runtime.expectType("obter_quadro_gif", "endereco", endereco, "inteiro");
+    self.runtime.expectType("obter_quadro_gif", "quadro", quadro, "inteiro");
+    self.runtime.unimplementedMethod("obter_quadro_gif", "Graficos");
+    return new PortugolVar("inteiro", 0, false, true);
+  },
+
+  proximo_frame_gif(endereco) {
+    self.runtime.expectType("proximo_frame_gif", "endereco", endereco, "inteiro");
+    self.runtime.unimplementedMethod("proximo_frame_gif", "Graficos");
+  },
+
+  redimensionar_imagem(endereco, largura, altura, manter_qualidade) {
+    self.runtime.expectType("redimensionar_imagem", "endereco", endereco, "inteiro");
+    self.runtime.expectType("redimensionar_imagem", "largura", largura, "inteiro");
+    self.runtime.expectType("redimensionar_imagem", "altura", altura, "inteiro");
+    self.runtime.expectType("redimensionar_imagem", "manter_qualidade", manter_qualidade, "logico");
+    self.runtime.unimplementedMethod("redimensionar_imagem", "Graficos");
+    return new PortugolVar("inteiro", 0, false, true);
+  },
+
+  renderizar_imagem(largura, altura) {
+    self.runtime.expectType("renderizar_imagem", "largura", largura, "inteiro");
+    self.runtime.expectType("renderizar_imagem", "altura", altura, "inteiro");
+    self.runtime.unimplementedMethod("renderizar_imagem", "Graficos");
+    return new PortugolVar("inteiro", 0, false, true);
+  },
+
+  transformar_imagem(endereco, espelhamento_horizontal, espelhamento_vertical, rotacao, cor_transparente) {
+    self.runtime.expectType("transformar_imagem", "endereco", endereco, "inteiro");
+    self.runtime.expectType("transformar_imagem", "espelhamento_horizontal", espelhamento_horizontal, "logico");
+    self.runtime.expectType("transformar_imagem", "espelhamento_vertical", espelhamento_vertical, "logico");
+    self.runtime.expectType("transformar_imagem", "rotacao", rotacao, "inteiro", "real");
+    self.runtime.expectType("transformar_imagem", "cor_transparente", cor_transparente, "inteiro");
+    self.runtime.unimplementedMethod("transformar_imagem", "Graficos");
+    return new PortugolVar("inteiro", 0, false, true);
+  },
+
+  transformar_porcao_imagem(endereco, x, y, largura, altura, espelhamento_horizontal, espelhamento_vertical, rotacao, cor_transparente) {
+    self.runtime.expectType("transformar_porcao_imagem", "endereco", endereco, "inteiro");
+    self.runtime.expectType("transformar_porcao_imagem", "x", x, "inteiro");
+    self.runtime.expectType("transformar_porcao_imagem", "y", y, "inteiro");
+    self.runtime.expectType("transformar_porcao_imagem", "largura", largura, "inteiro");
+    self.runtime.expectType("transformar_porcao_imagem", "altura", altura, "inteiro");
+    self.runtime.expectType("transformar_porcao_imagem", "espelhamento_horizontal", espelhamento_horizontal, "logico");
+    self.runtime.expectType("transformar_porcao_imagem", "espelhamento_vertical", espelhamento_vertical, "logico");
+    self.runtime.expectType("transformar_porcao_imagem", "rotacao", rotacao, "inteiro", "real");
+    self.runtime.expectType("transformar_porcao_imagem", "cor_transparente", cor_transparente, "inteiro");
+    self.runtime.unimplementedMethod("transformar_porcao_imagem", "Graficos");
+    return new PortugolVar("inteiro", 0, false, true);
+  },
 }`;
