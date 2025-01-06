@@ -10,7 +10,7 @@ import {
   ViewChild,
   inject,
 } from "@angular/core";
-import { MatDialog } from "@angular/material/dialog";
+import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import type { PortugolCodeError } from "@portugol-webstudio/antlr";
 import { PortugolExecutor, PortugolMessage, PortugolWebWorkersRunner } from "@portugol-webstudio/runner";
@@ -67,7 +67,9 @@ export class TabEditorComponent implements OnInit, OnDestroy {
 
   transpiling = false;
   executor = new PortugolExecutor(PortugolWebWorkersRunner);
+
   graphicsRenderer = new GraphicsRenderer(this.executor);
+  graphicsRendererModal: MatDialogRef<DialogRendererComponent> | null = null;
 
   codeEditor?: monaco.editor.IStandaloneCodeEditor;
 
@@ -139,6 +141,17 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     this._events$ = this.executor.events.subscribe({
       next: event => {
         switch (event.type) {
+          case "finish": {
+            const rendererModal = this.graphicsRendererModal;
+
+            if (rendererModal) {
+              this.graphicsRendererModal = null;
+              rendererModal.close();
+            }
+
+            break;
+          }
+
           case "error": {
             this.gaService.event("execution_error", "Execução", "Erro em execução de código");
             break;
@@ -263,13 +276,16 @@ export class TabEditorComponent implements OnInit, OnDestroy {
 
   openRendererModal(): IGraphicsRendererComponent | null {
     this.gaService.event("editor_open_renderer", "Editor", "Abrir modal de renderização");
-    const modal = this.dialog.open(DialogRendererComponent);
+    this.graphicsRendererModal = this.dialog.open(DialogRendererComponent);
 
-    modal.afterClosed().subscribe(() => {
-      this.stopCode();
+    this.graphicsRendererModal.afterClosed().subscribe(() => {
+      if (this.graphicsRendererModal !== null) {
+        this.graphicsRendererModal = null;
+        this.stopCode();
+      }
     });
 
-    return modal.componentInstance;
+    return this.graphicsRendererModal.componentInstance;
   }
 
   async openFile(event: Event) {
