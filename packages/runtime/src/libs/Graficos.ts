@@ -78,13 +78,13 @@ export default /* javascript */ `{
 
     self.runtime.assertGraphicsContext();
 
-    self.graphics.resize(largura.value, altura.value);
+    self.graphics.resize(largura.getValue(), altura.getValue());
 
     await self.runtime.postMessageAndWaitForResponse({
       type: "graphics.setWindowSize",
       data: {
-        width: largura.value,
-        height: altura.value,
+        width: largura.getValue(),
+        height: altura.getValue(),
       },
     });
   },
@@ -97,7 +97,7 @@ export default /* javascript */ `{
     await self.runtime.postMessageAndWaitForResponse({
       type: "graphics.setWindowTitle",
       data: {
-        title: titulo.value,
+        title: titulo.getValue(),
       },
     });
   },
@@ -132,13 +132,35 @@ export default /* javascript */ `{
       throw new Error("Erro ao criar a cor, os valor dos tons deve estar entre 0 e 255");
     }
 
-    return new PortugolVar("inteiro", (r.value << 16) + (g.value << 8) + b.value, false, true);
+    return new PortugolVar("inteiro", (r.getValue() << 16) + (g.getValue() << 8) + b.getValue(), false, true);
   },
 
   definir_cor(cor) {
     self.runtime.expectType("definir_cor", "cor", cor, "inteiro");
     self.runtime.assertGraphicsContext();
-    self.graphics.setWorkingColor(cor.value);
+    self.graphics.setWorkingColor(cor.getValue());
+  },
+
+  definir_opacidade(opacidade) {
+    self.runtime.expectType("definir_opacidade", "opacidade", opacidade, "inteiro");
+    self.runtime.assertGraphicsContext();
+    self.graphics.setWorkingOpacity(opacidade.getValue());
+  },
+
+  definir_estilo_texto(italico, negrito, sublinhado) {
+    self.runtime.expectType("definir_estilo_texto", "italico", italico, "logico");
+    self.runtime.expectType("definir_estilo_texto", "negrito", negrito, "logico");
+    self.runtime.expectType("definir_estilo_texto", "sublinhado", sublinhado, "logico");
+
+    self.runtime.assertGraphicsContext();
+
+    self.graphics.setWorkingTextStyle(italico.getValue(), negrito.getValue(), sublinhado.getValue());
+  },
+
+  definir_tamanho_texto(tamanho) {
+    self.runtime.expectType("definir_tamanho_texto", "tamanho", tamanho, "real");
+    self.runtime.assertGraphicsContext();
+    self.graphics.setWorkingTextSize(tamanho.getValue());
   },
 
   limpar() {
@@ -156,6 +178,46 @@ export default /* javascript */ `{
 
     self.runtime.assertGraphicsContext();
 
-    self.graphics.drawRect(x.value, y.value, largura.value, altura.value, arrendodar_cantos.value, preencher.value);
+    self.graphics.drawRect(x.getValue(), y.getValue(), largura.getValue(), altura.getValue(), arrendodar_cantos.getValue(), preencher.getValue());
+  },
+
+  desenhar_elipse(x, y, largura, altura, preencher) {
+    self.runtime.expectType("desenhar_elipse", "x", x, "inteiro");
+    self.runtime.expectType("desenhar_elipse", "y", y, "inteiro");
+    self.runtime.expectType("desenhar_elipse", "largura", largura, "inteiro");
+    self.runtime.expectType("desenhar_elipse", "altura", altura, "inteiro");
+    self.runtime.expectType("desenhar_elipse", "preencher", preencher, "logico");
+
+    self.runtime.assertGraphicsContext();
+
+    self.graphics.drawEllipse(x.getValue(), y.getValue(), largura.getValue(), altura.getValue(), preencher.getValue());
+  },
+
+  desenhar_ponto(x, y) {
+    self.runtime.expectType("desenhar_ponto", "x", x, "inteiro");
+    self.runtime.expectType("desenhar_ponto", "y", y, "inteiro");
+
+    self.runtime.assertGraphicsContext();
+
+    self.graphics.drawPoint(x.getValue(), y.getValue());
+  },
+
+  desenhar_poligono(pontos, preencher) {
+    self.runtime.expectType("desenhar_poligono", "pontos", pontos, "matriz");
+    self.runtime.expectType("desenhar_poligono", "preencher", preencher, "logico");
+
+    self.runtime.assertGraphicsContext();
+
+    self.graphics.drawPolygon(pontos.getValue(), preencher.getValue());
+  },
+
+  desenhar_texto(x, y, texto) {
+    self.runtime.expectType("desenhar_texto", "x", x, "inteiro");
+    self.runtime.expectType("desenhar_texto", "y", y, "inteiro");
+    self.runtime.expectType("desenhar_texto", "texto", texto, "cadeia");
+
+    self.runtime.assertGraphicsContext();
+
+    self.graphics.drawText(x.getValue(), y.getValue(), texto.getValue());
   },
 }`;

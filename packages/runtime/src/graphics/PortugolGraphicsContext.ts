@@ -6,6 +6,13 @@ class PortugolGraphicsContext {
   workingColor = 0;
   workingOpacity = 255;
 
+  workingTextSize = 14;
+  workingTextStyle = {
+    bold: false,
+    italic: false,
+    underline: false,
+  };
+
   drawCalls = [];
 
   init(canvas) {
@@ -74,6 +81,28 @@ class PortugolGraphicsContext {
     });
   }
 
+  setWorkingTextStyle(italic, bold, underline) {
+    this.drawCall(() => {
+      this.workingTextStyle.italic = italic;
+      this.workingTextStyle.bold = bold;
+      this.workingTextStyle.underline = underline;
+    });
+  }
+
+  getWorkingTextStyle() {
+    return this.workingTextStyle;
+  }
+
+  setWorkingTextSize(size) {
+    this.drawCall(() => {
+      this.workingTextSize = size;
+    });
+  }
+
+  getWorkingTextSize() {
+    return this.workingTextSize;
+  }
+
   drawCall(drawFunc) {
     this.drawCalls.push(drawFunc);
   }
@@ -84,6 +113,10 @@ class PortugolGraphicsContext {
       this.canvasContext.strokeStyle = hexColor;
       this.canvasContext.fillStyle = hexColor;
       this.canvasContext.globalAlpha = this.getWorkingOpacityAsRange1();
+      this.canvasContext.font =
+        (this.workingTextStyle.italic ? "italic " : "") +
+        (this.workingTextStyle.bold ? "bold " : "") +
+        this.workingTextSize + "px serif";
     }
   }
 
@@ -115,7 +148,7 @@ class PortugolGraphicsContext {
         this.applyWorkParams();
 
         if (rounded) {
-          this.canvasContext.roundRect(x, y, width, height, 10);
+          this.canvasContext.roundRect(x, y, width, height, 5);
 
           if (fill) {
             this.canvasContext.fill();
@@ -128,6 +161,74 @@ class PortugolGraphicsContext {
           } else {
             this.canvasContext.strokeRect(x, y, width, height);
           }
+        }
+      }
+    });
+  }
+
+  drawEllipse(x, y, width, height, fill) {
+    this.drawCall(() => {
+      if (this.canvasContext) {
+        this.applyWorkParams();
+        this.canvasContext.beginPath();
+        this.canvasContext.ellipse(x + (width / 2), y + (height / 2), width / 2, height / 2, 0, 0, 2 * Math.PI);
+        this.canvasContext.closePath();
+
+        if (fill) {
+          this.canvasContext.fill();
+        } else {
+          this.canvasContext.stroke();
+        }
+      }
+    });
+  }
+
+  drawPoint(x, y) {
+    this.drawCall(() => {
+      if (this.canvasContext) {
+        this.applyWorkParams();
+        this.canvasContext.fillRect(x, y, 1, 1);
+      }
+    });
+  }
+
+  drawPolygon(points, fill) {
+    this.drawCall(() => {
+      if (this.canvasContext) {
+        this.applyWorkParams();
+
+        if (points.length > 0) {
+          this.canvasContext.beginPath();
+
+          points.forEach((point, index) => {
+            if (index === 0) {
+              this.canvasContext.moveTo(point[0], point[1]);
+            } else {
+              this.canvasContext.lineTo(point[0], point[1]);
+            }
+          });
+
+          this.canvasContext.closePath();
+
+          if (fill) {
+            this.canvasContext.fill();
+          } else {
+            this.canvasContext.stroke();
+          }
+        }
+      }
+    });
+  }
+
+  drawText(x, y, text) {
+    this.drawCall(() => {
+      if (this.canvasContext) {
+        this.applyWorkParams();
+        this.canvasContext.fillText(text, x, y);
+
+        if (this.workingTextStyle.underline) {
+          const { width } = this.canvasContext.measureText(text);
+          this.canvasContext.fillRect(x, y, width, 1);
         }
       }
     });

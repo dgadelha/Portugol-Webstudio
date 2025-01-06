@@ -22,6 +22,22 @@ class PortugolVar {
     }
   }
 
+  getValue() {
+    if (Array.isArray(this.value)) {
+      const handleValue = (value) => {
+        if (value instanceof PortugolVar) {
+          return value.value;
+        }
+
+        return value;
+      };
+
+      return this.value.map(handleValue);
+    }
+
+    return this.value;
+  }
+
   toString() {
     switch (this.type) {
       case "caracter":
