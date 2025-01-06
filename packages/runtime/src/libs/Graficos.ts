@@ -78,18 +78,21 @@ export default /* javascript */ `{
   },
 
   async definir_dimensoes_janela(largura, altura) {
-    self.runtime.expectType("definir_dimensoes_janela", "largura", largura, "inteiro");
-    self.runtime.expectType("definir_dimensoes_janela", "altura", altura, "inteiro");
+    self.runtime.expectType("definir_dimensoes_janela", "largura", largura, "inteiro", "real");
+    self.runtime.expectType("definir_dimensoes_janela", "altura", altura, "inteiro", "real");
 
     self.runtime.assertGraphicsContext();
 
-    self.graphics.resize(largura.getValue(), altura.getValue());
+    const width = Math.round(largura.getValue());
+    const height = Math.round(altura.getValue());
+
+    self.graphics.resize(width, height);
 
     await self.runtime.postMessageAndWaitForResponse({
       type: "graphics.setWindowSize",
       data: {
-        width: largura.getValue(),
-        height: altura.getValue(),
+        width,
+        height,
       },
     });
   },
@@ -189,34 +192,41 @@ export default /* javascript */ `{
   },
 
   definir_cor(cor) {
-    self.runtime.expectType("definir_cor", "cor", cor, "inteiro");
+    self.runtime.expectType("definir_cor", "cor", cor, "inteiro", "real");
     self.runtime.assertGraphicsContext();
-    self.graphics.setWorkingColor(cor.getValue());
+
+    self.graphics.setWorkingColor(
+      Math.round(cor.getValue())
+    );
   },
 
   obter_RGB(cor, canal) {
-    self.runtime.expectType("obter_RGB", "cor", cor, "inteiro");
+    self.runtime.expectType("obter_RGB", "cor", cor, "inteiro", "real");
     self.runtime.expectType("obter_RGB", "canal", canal, "inteiro");
 
-    const color = cor.getValue();
+    const color = Math.round(cor.getValue());
     const channel = canal.getValue();
 
     switch (channel) {
-      case 0: return new PortugolVar("inteiro", (cor >> 16) & 0xFF, false, true);
-      case 1: return new PortugolVar("inteiro", (cor >> 8) & 0xFF, false, true);
-      case 2: return new PortugolVar("inteiro", cor & 0xFF, false, true);
+      case 0: return new PortugolVar("inteiro", (color >> 16) & 0xFF, false, true);
+      case 1: return new PortugolVar("inteiro", (color >> 8) & 0xFF, false, true);
+      case 2: return new PortugolVar("inteiro", color & 0xFF, false, true);
       default: throw new Error("O canal informado (" + channel + ") é inválido, o canal deve ser um dos seguintes valores: 0 (R); 1 (G); 2 (B)");
     }
   },
 
   definir_gradiente(tipo, cor1, cor2) {
     self.runtime.expectType("definir_gradiente", "tipo", tipo, "inteiro");
-    self.runtime.expectType("definir_gradiente", "cor1", cor1, "inteiro");
-    self.runtime.expectType("definir_gradiente", "cor2", cor2, "inteiro");
+    self.runtime.expectType("definir_gradiente", "cor1", cor1, "inteiro", "real");
+    self.runtime.expectType("definir_gradiente", "cor2", cor2, "inteiro", "real");
 
     self.runtime.assertGraphicsContext();
 
-    self.graphics.setWorkingGradient(tipo.getValue(), cor1.getValue(), cor2.getValue());
+    self.graphics.setWorkingGradient(
+      tipo.getValue(),
+      Math.round(cor1.getValue()),
+      Math.round(cor2.getValue())
+    );
   },
 
   definir_opacidade(opacidade) {
@@ -232,7 +242,11 @@ export default /* javascript */ `{
 
     self.runtime.assertGraphicsContext();
 
-    self.graphics.setWorkingTextStyle(italico.getValue(), negrito.getValue(), sublinhado.getValue());
+    self.graphics.setWorkingTextStyle(
+      italico.getValue(),
+      negrito.getValue(),
+      sublinhado.getValue()
+    );
   },
 
   definir_tamanho_texto(tamanho) {
@@ -259,10 +273,10 @@ export default /* javascript */ `{
   },
 
   desenhar_retangulo(x, y, largura, altura, arrendodar_cantos, preencher) {
-    self.runtime.expectType("desenhar_retangulo", "x", x, "inteiro");
-    self.runtime.expectType("desenhar_retangulo", "y", y, "inteiro");
-    self.runtime.expectType("desenhar_retangulo", "largura", largura, "inteiro");
-    self.runtime.expectType("desenhar_retangulo", "altura", altura, "inteiro");
+    self.runtime.expectType("desenhar_retangulo", "x", x, "inteiro", "real");
+    self.runtime.expectType("desenhar_retangulo", "y", y, "inteiro", "real");
+    self.runtime.expectType("desenhar_retangulo", "largura", largura, "inteiro", "real");
+    self.runtime.expectType("desenhar_retangulo", "altura", altura, "inteiro", "real");
     self.runtime.expectType("desenhar_retangulo", "arrendodar_cantos", arrendodar_cantos, "logico");
     self.runtime.expectType("desenhar_retangulo", "preencher", preencher, "logico");
 
@@ -272,10 +286,10 @@ export default /* javascript */ `{
   },
 
   desenhar_elipse(x, y, largura, altura, preencher) {
-    self.runtime.expectType("desenhar_elipse", "x", x, "inteiro");
-    self.runtime.expectType("desenhar_elipse", "y", y, "inteiro");
-    self.runtime.expectType("desenhar_elipse", "largura", largura, "inteiro");
-    self.runtime.expectType("desenhar_elipse", "altura", altura, "inteiro");
+    self.runtime.expectType("desenhar_elipse", "x", x, "inteiro", "real");
+    self.runtime.expectType("desenhar_elipse", "y", y, "inteiro", "real");
+    self.runtime.expectType("desenhar_elipse", "largura", largura, "inteiro", "real");
+    self.runtime.expectType("desenhar_elipse", "altura", altura, "inteiro", "real");
     self.runtime.expectType("desenhar_elipse", "preencher", preencher, "logico");
 
     self.runtime.assertGraphicsContext();
@@ -284,8 +298,8 @@ export default /* javascript */ `{
   },
 
   desenhar_ponto(x, y) {
-    self.runtime.expectType("desenhar_ponto", "x", x, "inteiro");
-    self.runtime.expectType("desenhar_ponto", "y", y, "inteiro");
+    self.runtime.expectType("desenhar_ponto", "x", x, "inteiro", "real");
+    self.runtime.expectType("desenhar_ponto", "y", y, "inteiro", "real");
 
     self.runtime.assertGraphicsContext();
 
@@ -302,8 +316,8 @@ export default /* javascript */ `{
   },
 
   desenhar_texto(x, y, texto) {
-    self.runtime.expectType("desenhar_texto", "x", x, "inteiro");
-    self.runtime.expectType("desenhar_texto", "y", y, "inteiro");
+    self.runtime.expectType("desenhar_texto", "x", x, "inteiro", "real");
+    self.runtime.expectType("desenhar_texto", "y", y, "inteiro", "real");
     self.runtime.expectType("desenhar_texto", "texto", texto, "cadeia");
 
     self.runtime.assertGraphicsContext();
@@ -351,34 +365,34 @@ export default /* javascript */ `{
   },
 
   desenhar_imagem(x, y, endereco) {
-    self.runtime.expectType("desenhar_imagem", "x", x, "inteiro");
-    self.runtime.expectType("desenhar_imagem", "y", y, "inteiro");
+    self.runtime.expectType("desenhar_imagem", "x", x, "inteiro", "real");
+    self.runtime.expectType("desenhar_imagem", "y", y, "inteiro", "real");
     self.runtime.expectType("desenhar_imagem", "endereco", endereco, "inteiro");
     self.runtime.unimplementedMethod("desenhar_imagem", "Graficos");
   },
 
   desenhar_porcao_imagem(x, y, xi, yi, largura, altura, endereco) {
-    self.runtime.expectType("desenhar_porcao_imagem", "x", x, "inteiro");
-    self.runtime.expectType("desenhar_porcao_imagem", "y", y, "inteiro");
-    self.runtime.expectType("desenhar_porcao_imagem", "xi", xi, "inteiro");
-    self.runtime.expectType("desenhar_porcao_imagem", "yi", yi, "inteiro");
-    self.runtime.expectType("desenhar_porcao_imagem", "largura", largura, "inteiro");
-    self.runtime.expectType("desenhar_porcao_imagem", "altura", altura, "inteiro");
+    self.runtime.expectType("desenhar_porcao_imagem", "x", x, "inteiro", "real");
+    self.runtime.expectType("desenhar_porcao_imagem", "y", y, "inteiro", "real");
+    self.runtime.expectType("desenhar_porcao_imagem", "xi", xi, "inteiro", "real");
+    self.runtime.expectType("desenhar_porcao_imagem", "yi", yi, "inteiro", "real");
+    self.runtime.expectType("desenhar_porcao_imagem", "largura", largura, "inteiro", "real");
+    self.runtime.expectType("desenhar_porcao_imagem", "altura", altura, "inteiro", "real");
     self.runtime.expectType("desenhar_porcao_imagem", "endereco", endereco, "inteiro");
     self.runtime.unimplementedMethod("desenhar_porcao_imagem", "Graficos");
   },
 
   desenhar_quadro_atual_gif(x, y, endereco) {
-    self.runtime.expectType("desenhar_quadro_atual_gif", "x", x, "inteiro");
-    self.runtime.expectType("desenhar_quadro_atual_gif", "y", y, "inteiro");
+    self.runtime.expectType("desenhar_quadro_atual_gif", "x", x, "inteiro", "real");
+    self.runtime.expectType("desenhar_quadro_atual_gif", "y", y, "inteiro", "real");
     self.runtime.expectType("desenhar_quadro_atual_gif", "endereco", endereco, "inteiro");
     self.runtime.unimplementedMethod("desenhar_quadro_atual_gif", "Graficos");
   },
 
   obter_cor_pixel(endereco, x, y) {
     self.runtime.expectType("obter_cor_pixel", "endereco", endereco, "inteiro");
-    self.runtime.expectType("obter_cor_pixel", "x", x, "inteiro");
-    self.runtime.expectType("obter_cor_pixel", "y", y, "inteiro");
+    self.runtime.expectType("obter_cor_pixel", "x", x, "inteiro", "real");
+    self.runtime.expectType("obter_cor_pixel", "y", y, "inteiro", "real");
     self.runtime.unimplementedMethod("obter_cor_pixel", "Graficos");
     return new PortugolVar("inteiro", -16777216, false, true);
   },
@@ -415,16 +429,16 @@ export default /* javascript */ `{
 
   redimensionar_imagem(endereco, largura, altura, manter_qualidade) {
     self.runtime.expectType("redimensionar_imagem", "endereco", endereco, "inteiro");
-    self.runtime.expectType("redimensionar_imagem", "largura", largura, "inteiro");
-    self.runtime.expectType("redimensionar_imagem", "altura", altura, "inteiro");
+    self.runtime.expectType("redimensionar_imagem", "largura", largura, "inteiro", "real");
+    self.runtime.expectType("redimensionar_imagem", "altura", altura, "inteiro", "real");
     self.runtime.expectType("redimensionar_imagem", "manter_qualidade", manter_qualidade, "logico");
     self.runtime.unimplementedMethod("redimensionar_imagem", "Graficos");
     return new PortugolVar("inteiro", 0, false, true);
   },
 
   renderizar_imagem(largura, altura) {
-    self.runtime.expectType("renderizar_imagem", "largura", largura, "inteiro");
-    self.runtime.expectType("renderizar_imagem", "altura", altura, "inteiro");
+    self.runtime.expectType("renderizar_imagem", "largura", largura, "inteiro", "real");
+    self.runtime.expectType("renderizar_imagem", "altura", altura, "inteiro", "real");
     self.runtime.unimplementedMethod("renderizar_imagem", "Graficos");
     return new PortugolVar("inteiro", 0, false, true);
   },
@@ -441,10 +455,10 @@ export default /* javascript */ `{
 
   transformar_porcao_imagem(endereco, x, y, largura, altura, espelhamento_horizontal, espelhamento_vertical, rotacao, cor_transparente) {
     self.runtime.expectType("transformar_porcao_imagem", "endereco", endereco, "inteiro");
-    self.runtime.expectType("transformar_porcao_imagem", "x", x, "inteiro");
-    self.runtime.expectType("transformar_porcao_imagem", "y", y, "inteiro");
-    self.runtime.expectType("transformar_porcao_imagem", "largura", largura, "inteiro");
-    self.runtime.expectType("transformar_porcao_imagem", "altura", altura, "inteiro");
+    self.runtime.expectType("transformar_porcao_imagem", "x", x, "inteiro", "real");
+    self.runtime.expectType("transformar_porcao_imagem", "y", y, "inteiro", "real");
+    self.runtime.expectType("transformar_porcao_imagem", "largura", largura, "inteiro", "real");
+    self.runtime.expectType("transformar_porcao_imagem", "altura", altura, "inteiro", "real");
     self.runtime.expectType("transformar_porcao_imagem", "espelhamento_horizontal", espelhamento_horizontal, "logico");
     self.runtime.expectType("transformar_porcao_imagem", "espelhamento_vertical", espelhamento_vertical, "logico");
     self.runtime.expectType("transformar_porcao_imagem", "rotacao", rotacao, "inteiro", "real");
