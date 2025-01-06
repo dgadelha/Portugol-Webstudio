@@ -168,7 +168,12 @@ export class PortugolExecutor {
         next: event => {
           switch (event.type) {
             case "finish": {
-              this.stdOut += `\nPrograma finalizado. Tempo de execução: ${event.time} milissegundos\n`;
+              if (event.stopped) {
+                this.stdOut += `\nO programa foi interrompido! Tempo de execução: ${event.time} milissegundos\n`;
+              } else {
+                this.stdOut += `\nPrograma finalizado. Tempo de execução: ${event.time} milissegundos\n`;
+              }
+
               this.#printTimes({ ...times, execution: event.time });
               this.stdOut$.next(this.stdOut);
               break;
@@ -185,12 +190,6 @@ export class PortugolExecutor {
               this.stdOut$.next(this.stdOut);
               break;
             }
-
-            /*case "message": {
-              this.stdOut += `\nℹ️ ${JSON.stringify(event.message)}\n`;
-              this.stdOut$.next(this.stdOut);
-              break;
-            }*/
 
             default: {
               break;
@@ -217,7 +216,7 @@ export class PortugolExecutor {
   }
 
   stop() {
-    this.reset();
+    this.reset(false);
   }
 
   private reset(clearStdOut = true) {
@@ -233,7 +232,7 @@ export class PortugolExecutor {
     this.running = false;
     this._running$?.unsubscribe();
 
-    this._runner?.destroy();
+    this._runner?.destroy(true);
   }
 
   postMessage(message: PortugolMessage) {

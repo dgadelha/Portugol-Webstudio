@@ -213,12 +213,13 @@ export class PortugolWebWorkersRunner extends IPortugolRunner {
     return this._run;
   }
 
-  destroy() {
+  destroy(stopped = false) {
     this.worker.terminate();
 
     this._run.next({
       type: "finish",
       time: Date.now() - (this.startedAt?.getTime() ?? 0),
+      stopped,
     });
 
     this._run.complete();
