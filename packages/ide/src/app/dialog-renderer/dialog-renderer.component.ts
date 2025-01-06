@@ -31,15 +31,15 @@ export class DialogRendererComponent implements IGraphicsRendererComponent {
     });
   }
 
-  setTitle(title: string): void {
+  setTitle(title: string) {
     this.title = title;
   }
 
-  setSize(_width: number, _height: number): void {
+  setSize(_width: number, _height: number) {
     // Não precisa fazer nada
   }
 
-  close(): void {
+  close() {
     this.dialogRef.close();
   }
 }

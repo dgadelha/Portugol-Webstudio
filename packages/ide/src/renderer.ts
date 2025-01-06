@@ -41,10 +41,7 @@ export class GraphicsRenderer extends EventTarget {
       }
 
       case "graphics.destroy": {
-        if (this.component) {
-          this.component.close();
-        }
-
+        this.component?.close();
         this.destroy();
         this.executor.replyMessage(message, null);
         break;
@@ -74,10 +71,7 @@ export class GraphicsRenderer extends EventTarget {
       }
 
       case "graphics.closeWindow": {
-        if (this.component) {
-          this.component.close();
-        }
-
+        this.component?.close();
         this.executor.replyMessage(message, null);
         break;
       }

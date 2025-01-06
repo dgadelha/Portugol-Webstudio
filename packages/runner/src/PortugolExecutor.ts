@@ -236,7 +236,7 @@ export class PortugolExecutor {
     this._runner?.destroy();
   }
 
-  postMessage(message: PortugolMessage): void {
+  postMessage(message: PortugolMessage) {
     this._runner?.postMessage(message);
   }
 

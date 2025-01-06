@@ -4,7 +4,7 @@ export const portugolRuntime = /* javascript */ `
 class PortugolRuntime {
   globalScope = {};
   currentFunction = null;
-  logEnabled = false;
+  debug = false;
 
   constructor(initScope) {
     this.initScope = initScope;
@@ -17,8 +17,8 @@ class PortugolRuntime {
     this.libs = ${portugolLibs};
   }
 
-  log(...args) {
-    if (this.logEnabled) {
+  DEBUG(...args) {
+    if (this.debug) {
       console.log(...args);
     }
   }
@@ -89,7 +89,7 @@ class PortugolRuntime {
 
     while (args.length) {
       const arg = args.pop();
-      this.log("assign", { initial, arg });
+      this.DEBUG("assign", { initial, arg });
 
       if (typeof arg === "undefined") {
         throw new Error("Não é possível atribuir uma variável não declarada a uma variável declarada");
@@ -114,7 +114,7 @@ class PortugolRuntime {
       initial = arg;
     }
 
-    this.log("assign.final", { initial });
+    this.DEBUG("assign.final", { initial });
 
     return initial;
   }
@@ -173,23 +173,23 @@ class PortugolRuntime {
   }
 
   concat(args) {
-    this.log("concat.preinit", { args });
+    this.DEBUG("concat.preinit", { args });
 
     let result = args.shift().clone();
 
     while (args.length) {
       let arg = args.shift().clone();
-      this.log("concat.ongoing", { arg, result });
+      this.DEBUG("concat.ongoing", { arg, result });
 
       result.value += arg.stringValue();
     }
 
-    this.log("concat.finish", { result });
+    this.DEBUG("concat.finish", { result });
     return new PortugolVar("cadeia", result.value);
   }
 
   mathOperation(op, args) {
-    this.log("mathOperation.preinit", { op, args });
+    this.DEBUG("mathOperation.preinit", { op, args });
 
     let result = args.shift().clone();
 
@@ -197,11 +197,11 @@ class PortugolRuntime {
       return self.runtime.concat([result, ...args]);
     }
 
-    this.log("mathOperation.init", { op, args, result });
+    this.DEBUG("mathOperation.init", { op, args, result });
 
     while (args.length) {
       let arg = args.shift().clone();
-      this.log("mathOperation.ongoing", { arg, result });
+      this.DEBUG("mathOperation.ongoing", { arg, result });
 
       if (!["real", "inteiro"].includes(arg.type)) {
         const mathOpDesc = {
@@ -243,16 +243,16 @@ class PortugolRuntime {
       }
     }
 
-    this.log("mathOperation.finish", { result });
+    this.DEBUG("mathOperation.finish", { result });
     return result;
   }
 
   comparativeOperation(op, args) {
-    this.log("comparativeOp.preinit", { op, args });
+    this.DEBUG("comparativeOp.preinit", { op, args });
     let result = args.shift().value;
 
     while (args.length) {
-      this.log("comparativeOp.ongoing", { op, args, result });
+      this.DEBUG("comparativeOp.ongoing", { op, args, result });
       let arg = args.shift().value;
 
       switch (op) {
@@ -293,20 +293,20 @@ class PortugolRuntime {
       }
     }
 
-    this.log("comparativeOp.finish", { result });
+    this.DEBUG("comparativeOp.finish", { result });
     return new PortugolVar("logico", result);
   }
 
   bitwiseOperation(op, args) {
-    this.log("bitwiseOperation.preinit", { op, args });
+    this.DEBUG("bitwiseOperation.preinit", { op, args });
 
     let result = args.shift().clone();
 
-    this.log("bitwiseOperation.init", { op, args, result });
+    this.DEBUG("bitwiseOperation.init", { op, args, result });
 
     while (args.length) {
       let arg = args.shift().clone();
-      this.log("bitwiseOperation.ongoing", { arg, result });
+      this.DEBUG("bitwiseOperation.ongoing", { arg, result });
 
       if (arg.type !== "inteiro" || result.type !== "inteiro") {
         const bitwiseOpDesc = {
@@ -348,12 +348,12 @@ class PortugolRuntime {
       }
     }
 
-    this.log("bitwiseOperation.finish", { result });
+    this.DEBUG("bitwiseOperation.finish", { result });
     return result;
   }
 
   applyModifier(mod, item) {
-    this.log("applyModifier.init", { mod, item });
+    this.DEBUG("applyModifier.init", { mod, item });
     const result = item.clone();
 
     switch (mod) {
@@ -377,7 +377,7 @@ class PortugolRuntime {
         throw new Error("Modificador inválido: " + mod);
     }
 
-    this.log("applyModifier.finish", { result });
+    this.DEBUG("applyModifier.finish", { result });
     return result;
   }
 
@@ -451,6 +451,10 @@ class PortugolRuntime {
     });
 
     return result;
+  }
+
+  unimplementedMethod(methodName, library) {
+    throw new Error("O método '" + methodName + "'" + (library ? " da biblioteca '" + library + "'" : "") + " ainda não foi implementado e não pode ser chamado.");
   }
 }
 //endregion

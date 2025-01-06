@@ -163,7 +163,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
           }
 
           case "message": {
-            this.handlePortugolMessage(event.message).then().catch(console.error);
+            this.handlePortugolMessage(event.message).catch(console.error);
             break;
           }
 

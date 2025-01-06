@@ -232,8 +232,8 @@ export class PortugolWebWorkersRunner extends IPortugolRunner {
     this.stdIn.complete();
   }
 
-  postMessage(message: PortugolMessage): void {
-    if (!("id" in message)) {
+  postMessage(message: PortugolMessage) {
+    if (!Object.hasOwn(message, "id")) {
       message.id = Math.random().toString(36).slice(2, 11);
     }
 
@@ -244,7 +244,7 @@ export class PortugolWebWorkersRunner extends IPortugolRunner {
   }
 
   replyMessage(message: PortugolMessage, result: unknown, transferable?: Transferable[]) {
-    if (!("id" in message)) {
+    if (!Object.hasOwn(message, "id")) {
       throw new Error("Não é possível responder uma mensagem sem identificador!");
     }
 
