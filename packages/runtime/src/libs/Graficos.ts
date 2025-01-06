@@ -325,6 +325,17 @@ export default /* javascript */ `{
     self.graphics.drawText(x.getValue(), y.getValue(), texto.getValue());
   },
 
+  desenhar_linha(x1, y1, x2, y2) {
+    self.runtime.expectType("desenhar_linha", "x1", x1, "inteiro", "real");
+    self.runtime.expectType("desenhar_linha", "y1", y1, "inteiro", "real");
+    self.runtime.expectType("desenhar_linha", "x2", x2, "inteiro", "real");
+    self.runtime.expectType("desenhar_linha", "y2", y2, "inteiro", "real");
+
+    self.runtime.assertGraphicsContext();
+
+    self.graphics.drawLine(x1.getValue(), y1.getValue(), x2.getValue(), y2.getValue());
+  },
+
   altura_imagem(endereco) {
     self.runtime.expectType("altura_imagem", "endereco", endereco, "inteiro");
     self.runtime.unimplementedMethod("altura_imagem", "Graficos");
