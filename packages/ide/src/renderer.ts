@@ -1,6 +1,7 @@
 import { PortugolExecutor, PortugolMessage } from "@portugol-webstudio/runner";
 
 export interface IGraphicsRendererComponent {
+  close(): void;
   getCanvas(): Promise<OffscreenCanvas>;
   setTitle(title: string): void;
   setSize(width: number, height: number): void;
@@ -23,17 +24,19 @@ export class GraphicsRenderer extends EventTarget {
   async handleRendererMessage(message: PortugolMessage) {
     switch (message.type) {
       case "graphics.create": {
-        const event = new CreateGraphicsRendererComponentEvent("create");
-        this.dispatchEvent(event);
+        await this.createRenderer();
 
-        if (event.component) {
-          this.component = event.component;
-          this.canvas = await event.component.getCanvas();
+        if (this.canvas) {
           this.executor.replyMessage(message, this.canvas, [this.canvas]);
         } else {
           this.executor.replyMessage(message, null);
         }
 
+        break;
+      }
+
+      case "graphics.destroy": {
+        this.executor.replyMessage(message, null);
         break;
       }
 
@@ -60,6 +63,40 @@ export class GraphicsRenderer extends EventTarget {
         break;
       }
 
+      case "graphics.closeWindow": {
+        if (this.component) {
+          this.component.close();
+        }
+
+        this.executor.replyMessage(message, null);
+        break;
+      }
+
+      case "graphics.showWindow": {
+        this.executor.replyMessage(message, null);
+        break;
+      }
+
+      case "graphics.minimizeWindow": {
+        this.executor.replyMessage(message, null);
+        break;
+      }
+
+      case "graphics.restoreWindow": {
+        this.executor.replyMessage(message, null);
+        break;
+      }
+
+      case "graphics.enterFullscreen": {
+        this.executor.replyMessage(message, null);
+        break;
+      }
+
+      case "graphics.exitFullscreen": {
+        this.executor.replyMessage(message, null);
+        break;
+      }
+
       case "graphics.getScreenInfo": {
         this.executor.replyMessage(message, {
           width: window.screen.width,
@@ -69,6 +106,16 @@ export class GraphicsRenderer extends EventTarget {
 
         break;
       }
+    }
+  }
+
+  async createRenderer() {
+    const event = new CreateGraphicsRendererComponentEvent("create");
+    this.dispatchEvent(event);
+
+    if (event.component) {
+      this.component = event.component;
+      this.canvas = await event.component.getCanvas();
     }
   }
 

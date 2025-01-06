@@ -1,6 +1,6 @@
 import { Component, ElementRef, Input, ViewChild } from "@angular/core";
 import { MatButtonModule } from "@angular/material/button";
-import { MatDialogClose, MatDialogContent, MatDialogTitle } from "@angular/material/dialog";
+import { MatDialogClose, MatDialogContent, MatDialogRef, MatDialogTitle } from "@angular/material/dialog";
 import { AngularSvgIconModule } from "angular-svg-icon";
 import { IGraphicsRendererComponent } from "../../renderer";
 
@@ -17,6 +17,8 @@ export class DialogRendererComponent implements IGraphicsRendererComponent {
 
   @ViewChild("canvas")
   canvas?: ElementRef<HTMLCanvasElement>;
+
+  constructor(public dialogRef: MatDialogRef<DialogRendererComponent>) {}
 
   getCanvas(): Promise<OffscreenCanvas> {
     return new Promise(resolve => {
@@ -35,5 +37,9 @@ export class DialogRendererComponent implements IGraphicsRendererComponent {
 
   setSize(_width: number, _height: number): void {
     // Não precisa fazer nada
+  }
+
+  close(): void {
+    this.dialogRef.close();
   }
 }
