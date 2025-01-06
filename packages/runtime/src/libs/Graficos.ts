@@ -39,6 +39,10 @@ export default /* javascript */ `{
     await self.runtime.postMessageAndWaitForResponse({
       type: "graphics.destroy",
     });
+
+    if (self.graphics) {
+      self.graphics = null;
+    }
   },
 
   async fechar_janela() {

@@ -279,6 +279,8 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     this.graphicsRendererModal = this.dialog.open(DialogRendererComponent);
 
     this.graphicsRendererModal.afterClosed().subscribe(() => {
+      this.graphicsRenderer.destroy();
+
       if (this.graphicsRendererModal !== null) {
         this.graphicsRendererModal = null;
         this.stopCode();

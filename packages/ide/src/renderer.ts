@@ -13,12 +13,17 @@ export class CreateGraphicsRendererComponentEvent extends Event {
 
 export class GraphicsRenderer extends EventTarget {
   private executor: PortugolExecutor;
-  private component?: IGraphicsRendererComponent;
+  private component?: IGraphicsRendererComponent | null;
   private canvas?: OffscreenCanvas | null;
 
   constructor(executor: PortugolExecutor) {
     super();
     this.executor = executor;
+  }
+
+  destroy() {
+    this.component = null;
+    this.canvas = null;
   }
 
   async handleRendererMessage(message: PortugolMessage) {
@@ -36,6 +41,11 @@ export class GraphicsRenderer extends EventTarget {
       }
 
       case "graphics.destroy": {
+        if (this.component) {
+          this.component.close();
+        }
+
+        this.destroy();
         this.executor.replyMessage(message, null);
         break;
       }
