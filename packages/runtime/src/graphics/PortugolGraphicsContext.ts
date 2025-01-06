@@ -266,7 +266,8 @@ class PortugolGraphicsContext {
 
           case 5: { // GRADIENTE_INFERIOR_ESQUERDO
             gradient = this.canvasContext.createLinearGradient(
-              targetBounds.x, targetBounds.y,
+              targetBounds.x,
+              targetBounds.y,
               targetBounds.x + targetBounds.width,
               targetBounds.y + targetBounds.height
             );
@@ -312,7 +313,7 @@ class PortugolGraphicsContext {
 
             gradient.addColorStop(0, colorBHex);
             gradient.addColorStop(1, colorAHex);
-            break
+            break;
           }
         }
 
@@ -355,7 +356,7 @@ class PortugolGraphicsContext {
         y: -(objectBounds.height / 2),
         width: objectBounds.width,
         height: objectBounds.height,
-      }
+      };
     }
 
     return objectBounds;
@@ -398,7 +399,9 @@ class PortugolGraphicsContext {
         const { x: rx, y: ry, width: rwidth, height: rheight } = this.applyTransformationToBounds(bounds);
 
         if (rounded) {
+          this.canvasContext.beginPath();
           this.canvasContext.roundRect(rx, ry, rwidth, rheight, 5);
+          this.canvasContext.closePath();
 
           if (fill) {
             this.canvasContext.fill();
