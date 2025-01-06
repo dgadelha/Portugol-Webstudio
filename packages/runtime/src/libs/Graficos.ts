@@ -118,6 +118,32 @@ export default /* javascript */ `{
     });
   },
 
+  largura_janela() {
+    self.runtime.assertGraphicsContext();
+    return new PortugolVar("inteiro", self.graphics.getWidth(), false, true);
+  },
+
+  altura_janela() {
+    self.runtime.assertGraphicsContext();
+    return new PortugolVar("inteiro", self.graphics.getHeight(), false, true);
+  },
+
+  async largura_tela() {
+    const result = await self.runtime.postMessageAndWaitForResponse({
+      type: "graphics.getScreenInfo",
+    });
+
+    return new PortugolVar("inteiro", result.width, false, true);
+  },
+
+  async altura_tela() {
+    const result = await self.runtime.postMessageAndWaitForResponse({
+      type: "graphics.getScreenInfo",
+    });
+
+    return new PortugolVar("inteiro", result.height, false, true);
+  },
+
   async renderizar() {
     self.runtime.assertGraphicsContext();
     await self.graphics.render();
@@ -132,13 +158,34 @@ export default /* javascript */ `{
       throw new Error("Erro ao criar a cor, os valor dos tons deve estar entre 0 e 255");
     }
 
-    return new PortugolVar("inteiro", (r.getValue() << 16) + (g.getValue() << 8) + b.getValue(), false, true);
+    const alpha = 255;
+    const value = ((alpha & 0xFF) << 24) |
+      ((r.getValue() & 0xFF) << 16) |
+      ((g.getValue() & 0xFF) << 8) |
+      ((b.getValue() & 0xFF) << 0);
+
+    return new PortugolVar("inteiro", value, false, true);
   },
 
   definir_cor(cor) {
     self.runtime.expectType("definir_cor", "cor", cor, "inteiro");
     self.runtime.assertGraphicsContext();
     self.graphics.setWorkingColor(cor.getValue());
+  },
+
+  obter_RGB(cor, canal) {
+    self.runtime.expectType("obter_RGB", "cor", cor, "inteiro");
+    self.runtime.expectType("obter_RGB", "canal", canal, "inteiro");
+
+    const color = cor.getValue();
+    const channel = canal.getValue();
+
+    switch (channel) {
+      case 0: return new PortugolVar("inteiro", (cor >> 16) & 0xFF, false, true);
+      case 1: return new PortugolVar("inteiro", (cor >> 8) & 0xFF, false, true);
+      case 2: return new PortugolVar("inteiro", cor & 0xFF, false, true);
+      default: throw new Error("O canal informado (" + channel + ") é inválido, o canal deve ser um dos seguintes valores: 0 (R); 1 (G); 2 (B)");
+    }
   },
 
   definir_opacidade(opacidade) {

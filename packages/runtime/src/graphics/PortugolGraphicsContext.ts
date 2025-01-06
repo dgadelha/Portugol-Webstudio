@@ -24,6 +24,22 @@ class PortugolGraphicsContext {
     this.canvasContext = canvas.getContext("2d");
   }
 
+  getWidth() {
+    if (this.canvas) {
+      return this.canvas.width;
+    }
+
+    return this.width;
+  }
+
+  getHeight() {
+    if (this.canvas) {
+      return this.canvas.height;
+    }
+
+    return this.height;
+  }
+
   resize(width, height) {
     this.width = width;
     this.height = height;
@@ -44,12 +60,20 @@ class PortugolGraphicsContext {
     });
   }
 
-  setWorkingColorFromRgb(r, g, b) {
-    this.workingColor = (r << 16) + (g << 8) + b;
+  setWorkingColorFromRGBA(r, g, b, a) {
+    this.drawCall(() => {
+      const alpha = (a === undefined || a === null) ? 255 : a;
+      const value = ((alpha & 0xFF) << 24) |
+        ((r & 0xFF) << 16) |
+        ((g & 0xFF) << 8) |
+        ((b & 0xFF) << 0);
+      this.workingColor = value;
+    });
   }
 
-  getWorkingColorAsRgb() {
+  getWorkingColorAsRGBA() {
     return {
+      a: (this.workingColor >> 24) & 0xff,
       r: (this.workingColor >> 16) & 0xff,
       g: (this.workingColor >> 8) & 0xff,
       b: this.workingColor & 0xff,
@@ -62,7 +86,7 @@ class PortugolGraphicsContext {
       return hex.length == 1 ? "0" + hex : hex;
     };
 
-    const { r, g, b } = this.getWorkingColorAsRgb();
+    const { r, g, b } = this.getWorkingColorAsRGBA();
 
     return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
   }

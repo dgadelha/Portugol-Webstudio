@@ -59,6 +59,16 @@ export class GraphicsRenderer extends EventTarget {
         this.executor.replyMessage(message, null);
         break;
       }
+
+      case "graphics.getScreenInfo": {
+        this.executor.replyMessage(message, {
+          width: window.screen.width,
+          height: window.screen.height,
+          pixelDepth: window.screen.pixelDepth,
+        });
+
+        break;
+      }
     }
   }
 
