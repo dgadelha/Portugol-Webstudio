@@ -3,9 +3,15 @@ class PortugolGraphicsContext {
   width = 800;
   height = 600;
 
+  workingFillMode = 0; // 0 = color, 1 = gradient
   workingColor = 0;
   workingOpacity = 255;
   workingRotation = 0;
+  workingGradient = {
+    type: 0,
+    colorA: 0,
+    colorB: 0,
+  };
 
   workingTextFont = "serif";
   workingTextSize = 14;
@@ -59,6 +65,7 @@ class PortugolGraphicsContext {
   setWorkingColor(color) {
     this.drawCall(() => {
       this.workingColor = color;
+      this.workingFillMode = 0;
     });
   }
 
@@ -73,24 +80,41 @@ class PortugolGraphicsContext {
     });
   }
 
-  getWorkingColorAsRGBA() {
+  colorToRGBA(color) {
     return {
-      a: (this.workingColor >> 24) & 0xff,
-      r: (this.workingColor >> 16) & 0xff,
-      g: (this.workingColor >> 8) & 0xff,
-      b: this.workingColor & 0xff,
+      a: (color >> 24) & 0xFF,
+      r: (color >> 16) & 0xFF,
+      g: (color >> 8) & 0xFF,
+      b: (color >> 0) & 0xFF,
     };
   }
 
-  getWorkingColorAsHex() {
+  getWorkingColorAsRGBA() {
+    return this.colorToRGBA(this.workingColor);
+  }
+
+  colorToHex(color) {
     const componentToHex = (c) => {
       const hex = c.toString(16);
       return hex.length == 1 ? "0" + hex : hex;
     };
 
-    const { r, g, b } = this.getWorkingColorAsRGBA();
+    const { r, g, b } = this.colorToRGBA(color);
 
     return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+  }
+
+  getWorkingColorAsHex() {
+    return this.colorToHex(this.workingColor);
+  }
+
+  setWorkingGradient(type, colorA, colorB) {
+    this.drawCall(() => {
+      this.workingGradient.type = type;
+      this.workingGradient.colorA = colorA;
+      this.workingGradient.colorB = colorB;
+      this.workingFillMode = 1;
+    });
   }
 
   getWorkingOpacity() {
@@ -159,10 +183,147 @@ class PortugolGraphicsContext {
 
   applyWorkParams(ignoreRotation, objectBounds) {
     if (this.canvasContext) {
-      const hexColor = this.getWorkingColorAsHex();
+      const targetBounds = objectBounds ? {
+        ...objectBounds,
+      } : {
+        x: 0,
+        y: 0,
+        width: this.canvas.width,
+        height: this.canvas.height
+      };
 
-      this.canvasContext.strokeStyle = hexColor;
-      this.canvasContext.fillStyle = hexColor;
+      if (this.workingFillMode === 1) {
+        const colorAHex = this.colorToHex(this.workingGradient.colorA);
+        const colorBHex = this.colorToHex(this.workingGradient.colorB);
+
+        let gradient = null;
+
+        switch (this.workingGradient.type) {
+          case 0: { // GRADIENTE_DIREITA
+            gradient = this.canvasContext.createLinearGradient(
+              targetBounds.x + targetBounds.width,
+              targetBounds.y,
+              targetBounds.x,
+              targetBounds.y
+            );
+
+            gradient.addColorStop(0, colorBHex);
+            gradient.addColorStop(1, colorAHex);
+            break;
+          }
+
+          case 1: { // GRADIENTE_ESQUERDA
+            gradient = this.canvasContext.createLinearGradient(
+              targetBounds.x + targetBounds.width,
+              targetBounds.y,
+              targetBounds.x,
+              targetBounds.y
+            );
+
+            gradient.addColorStop(0, colorAHex);
+            gradient.addColorStop(1, colorBHex);
+            break;
+          }
+
+          case 2: { // GRADIENTE_ACIMA
+            gradient = this.canvasContext.createLinearGradient(
+              targetBounds.x,
+              targetBounds.y + targetBounds.height,
+              targetBounds.x,
+              targetBounds.y
+            );
+
+            gradient.addColorStop(0, colorAHex);
+            gradient.addColorStop(1, colorBHex);
+            break;
+          }
+
+          case 3: { // GRADIENTE_ABAIXO
+            gradient = this.canvasContext.createLinearGradient(
+              targetBounds.x,
+              targetBounds.y + targetBounds.height,
+              targetBounds.x,
+              targetBounds.y
+            );
+
+            gradient.addColorStop(0, colorBHex);
+            gradient.addColorStop(1, colorAHex);
+            break;
+          }
+
+          case 4: { // GRADIENTE_INFERIOR_DIREITO
+            gradient = this.canvasContext.createLinearGradient(
+              targetBounds.x,
+              targetBounds.y,
+              targetBounds.x + targetBounds.width,
+              targetBounds.y + targetBounds.height
+            );
+
+            gradient.addColorStop(0, colorAHex);
+            gradient.addColorStop(1, colorBHex);
+            break;
+          }
+
+          case 5: { // GRADIENTE_INFERIOR_ESQUERDO
+            gradient = this.canvasContext.createLinearGradient(
+              targetBounds.x, targetBounds.y,
+              targetBounds.x + targetBounds.width,
+              targetBounds.y + targetBounds.height
+            );
+
+            gradient.addColorStop(0, colorBHex);
+            gradient.addColorStop(1, colorAHex);
+            break;
+          }
+
+          case 6: { // GRADIENTE_SUPERIOR_DIREITO
+            gradient = this.canvasContext.createLinearGradient(
+              targetBounds.x,
+              targetBounds.y + targetBounds.height,
+              targetBounds.x + targetBounds.width,
+              targetBounds.y
+            );
+
+            gradient.addColorStop(0, colorAHex);
+            gradient.addColorStop(1, colorBHex);
+            break;
+          }
+
+          case 7: { // GRADIENTE_SUPERIOR_ESQUERDO
+            gradient = this.canvasContext.createLinearGradient(
+              targetBounds.x,
+              targetBounds.y + targetBounds.height,
+              targetBounds.x + targetBounds.width,
+              targetBounds.y
+            );
+
+            gradient.addColorStop(0, colorBHex);
+            gradient.addColorStop(1, colorAHex);
+            break;
+          }
+
+          default: {
+            gradient = this.canvasContext.createLinearGradient(
+              targetBounds.x + targetBounds.width,
+              targetBounds.y,
+              targetBounds.x,
+              targetBounds.y
+            );
+
+            gradient.addColorStop(0, colorBHex);
+            gradient.addColorStop(1, colorAHex);
+            break
+          }
+        }
+
+        this.canvasContext.strokeStyle = gradient;
+        this.canvasContext.fillStyle = gradient;
+      } else {
+        const hexColor = this.getWorkingColorAsHex();
+        this.canvasContext.strokeStyle = hexColor;
+        this.canvasContext.fillStyle = hexColor;
+      }
+
       this.canvasContext.globalAlpha = this.getWorkingOpacityAsRange1();
 
       this.canvasContext.font =

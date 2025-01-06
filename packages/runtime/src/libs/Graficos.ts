@@ -8,6 +8,7 @@ export default /* javascript */ `{
   COR_BRANCO: new PortugolVar("inteiro", -1, false, true),
   COR_PRETO: new PortugolVar("inteiro", -16777216, false, true),
   COR_VERMELHO: new PortugolVar("inteiro", -65536, false, true),
+  COR_VERDE: new PortugolVar("inteiro", -16711936, false, true),
 
   GRADIENTE_DIREITA: new PortugolVar("inteiro", 0, false, true),
   GRADIENTE_ESQUERDA: new PortugolVar("inteiro", 1, false, true),
@@ -202,6 +203,16 @@ export default /* javascript */ `{
       case 2: return new PortugolVar("inteiro", cor & 0xFF, false, true);
       default: throw new Error("O canal informado (" + channel + ") é inválido, o canal deve ser um dos seguintes valores: 0 (R); 1 (G); 2 (B)");
     }
+  },
+
+  definir_gradiente(tipo, cor1, cor2) {
+    self.runtime.expectType("definir_gradiente", "tipo", tipo, "inteiro");
+    self.runtime.expectType("definir_gradiente", "cor1", cor1, "inteiro");
+    self.runtime.expectType("definir_gradiente", "cor2", cor2, "inteiro");
+
+    self.runtime.assertGraphicsContext();
+
+    self.graphics.setWorkingGradient(tipo.getValue(), cor1.getValue(), cor2.getValue());
   },
 
   definir_opacidade(opacidade) {
