@@ -1,7 +1,7 @@
 import { PortugolJsRuntime } from "@portugol-webstudio/runtime";
 import { Subject, Subscription } from "rxjs";
 
-import { IPortugolRunner, PortugolEvent } from "./IPortugolRunner.js";
+import { IPortugolRunner, PortugolEvent, PortugolMessage } from "./IPortugolRunner.js";
 
 export class PortugolWebWorkersRunner extends IPortugolRunner {
   private worker: Worker;
@@ -166,6 +166,15 @@ export class PortugolWebWorkersRunner extends IPortugolRunner {
           break;
         }
 
+        case "message": {
+          this._run.next({
+            type: "message",
+            message: message.data.message,
+          });
+
+          break;
+        }
+
         default: {
           throw new Error(`Unknown message type: ${message.data.type}`);
         }
@@ -204,12 +213,13 @@ export class PortugolWebWorkersRunner extends IPortugolRunner {
     return this._run;
   }
 
-  destroy() {
+  destroy(stopped = false) {
     this.worker.terminate();
 
     this._run.next({
       type: "finish",
       time: Date.now() - (this.startedAt?.getTime() ?? 0),
+      stopped,
     });
 
     this._run.complete();
@@ -221,5 +231,34 @@ export class PortugolWebWorkersRunner extends IPortugolRunner {
 
     this._stdIn$?.unsubscribe();
     this.stdIn.complete();
+  }
+
+  postMessage(message: PortugolMessage) {
+    if (!Object.hasOwn(message, "id")) {
+      message.id = Math.random().toString(36).slice(2, 11);
+    }
+
+    this.worker.postMessage({
+      type: "message",
+      message,
+    });
+  }
+
+  replyMessage(message: PortugolMessage, result: unknown, transferable?: Transferable[]) {
+    if (!Object.hasOwn(message, "id")) {
+      throw new Error("Não é possível responder uma mensagem sem identificador!");
+    }
+
+    const replyMessage = {
+      type: "message-reply",
+      id: message.id,
+      result,
+    };
+
+    if (transferable) {
+      this.worker.postMessage(replyMessage, transferable);
+    } else {
+      this.worker.postMessage(replyMessage);
+    }
   }
 }

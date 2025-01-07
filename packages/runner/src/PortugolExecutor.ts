@@ -3,7 +3,7 @@ import { PortugolErrorChecker } from "@portugol-webstudio/parser";
 import { PortugolJs } from "@portugol-webstudio/runtime";
 import { Subject, Subscription } from "rxjs";
 
-import { IPortugolRunner, PortugolEvent } from "./runners/IPortugolRunner.js";
+import { IPortugolRunner, PortugolEvent, PortugolMessage } from "./runners/IPortugolRunner.js";
 
 export class PortugolExecutor {
   private _runner?: IPortugolRunner;
@@ -168,7 +168,12 @@ export class PortugolExecutor {
         next: event => {
           switch (event.type) {
             case "finish": {
-              this.stdOut += `\nPrograma finalizado. Tempo de execução: ${event.time} milissegundos\n`;
+              if (event.stopped) {
+                this.stdOut += `\nO programa foi interrompido! Tempo de execução: ${event.time} milissegundos\n`;
+              } else {
+                this.stdOut += `\nPrograma finalizado. Tempo de execução: ${event.time} milissegundos\n`;
+              }
+
               this.#printTimes({ ...times, execution: event.time });
               this.stdOut$.next(this.stdOut);
               break;
@@ -211,7 +216,7 @@ export class PortugolExecutor {
   }
 
   stop() {
-    this.reset();
+    this.reset(false);
   }
 
   private reset(clearStdOut = true) {
@@ -227,6 +232,14 @@ export class PortugolExecutor {
     this.running = false;
     this._running$?.unsubscribe();
 
-    this._runner?.destroy();
+    this._runner?.destroy(true);
+  }
+
+  postMessage(message: PortugolMessage) {
+    this._runner?.postMessage(message);
+  }
+
+  replyMessage(message: PortugolMessage, result: unknown, transferable?: Transferable[]) {
+    this._runner?.replyMessage(message, result, transferable);
   }
 }

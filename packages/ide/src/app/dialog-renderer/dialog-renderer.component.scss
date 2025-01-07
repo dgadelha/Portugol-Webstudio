@@ -1,0 +1,14 @@
+header {
+  display: flex;
+  align-items: center;
+  padding: 0.25rem 1rem;
+  cursor: grab;
+
+  &.cdk-drag-dragging {
+    cursor: grabbing;
+  }
+}
+
+.renderer-content {
+  padding: 0 !important;
+}
