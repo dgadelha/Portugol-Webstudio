@@ -589,6 +589,7 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
 
     for (let i = 0; i < exprs.length; i++) {
       sb.append(super.visit(exprs[i])?.trimEnd(), `.value`);
+
       if (i < exprs.length - 1) {
         sb.append(` ${op} `, `\n`);
       }
