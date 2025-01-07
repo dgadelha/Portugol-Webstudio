@@ -247,56 +247,6 @@ class PortugolRuntime {
     return result;
   }
 
-  comparativeOperation(op, args) {
-    this.DEBUG("comparativeOp.preinit", { op, args });
-    let result = args.shift().value;
-
-    while (args.length) {
-      this.DEBUG("comparativeOp.ongoing", { op, args, result });
-      let arg = args.shift().value;
-
-      switch (op) {
-        case "==":
-          result = result == arg;
-          break;
-
-        case "!=":
-          result = result != arg;
-          break;
-
-        case ">":
-          result = result > arg;
-          break;
-
-        case ">=":
-          result = result >= arg;
-          break;
-
-        case "<":
-          result = result < arg;
-          break;
-
-        case "<=":
-          result = result <= arg;
-          break;
-
-        case "&&":
-          result = result && arg;
-          break;
-
-        case "||":
-          result = result || arg;
-          break;
-
-        default:
-          throw new Error("Operação comparativa inválida: " + op);
-      }
-    }
-
-    this.DEBUG("comparativeOp.finish", { result });
-    return new PortugolVar("logico", result);
-  }
-
   bitwiseOperation(op, args) {
     this.DEBUG("bitwiseOperation.preinit", { op, args });
 
