@@ -276,7 +276,10 @@ export class TabEditorComponent implements OnInit, OnDestroy {
 
   openRendererModal(): IGraphicsRendererComponent | null {
     this.gaService.event("editor_open_renderer", "Editor", "Abrir modal de renderização");
-    this.graphicsRendererModal = this.dialog.open(DialogRendererComponent);
+    this.graphicsRendererModal = this.dialog.open(DialogRendererComponent, {
+      hasBackdrop: false,
+      panelClass: "portugol-renderer-dialog",
+    });
 
     this.graphicsRendererModal.afterClosed().subscribe(() => {
       this.graphicsRenderer.destroy();
