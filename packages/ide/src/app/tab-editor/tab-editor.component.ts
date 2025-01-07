@@ -219,12 +219,13 @@ export class TabEditorComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.executor.stop();
+    this.worker.abortTranspilation();
     this._code$?.unsubscribe();
     this._events$?.unsubscribe();
     this._stdOut$?.unsubscribe();
     this._theme$?.unsubscribe();
     this._settings$?.unsubscribe();
-    this.executor.stop();
   }
 
   async runCode() {
