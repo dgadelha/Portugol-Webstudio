@@ -32,9 +32,9 @@ export class TabStartComponent {
     const currentMonth = new Date().getMonth() + 1;
     const currentDay = new Date().getDate();
 
-    if ((currentMonth === 2 && currentDay >= 10) || (currentMonth === 3 && currentDay <= 5)) {
+    if ((currentMonth === 2 && currentDay >= 5) || (currentMonth === 3 && currentDay <= 15)) {
       this.logo = "assets/logo/carnaval.svg";
-    } else if ((currentMonth === 3 && currentDay >= 20) || (currentMonth === 4 && currentDay <= 25)) {
+    } else if ((currentMonth === 3 && currentDay >= 20) || (currentMonth === 4 && currentDay <= 30)) {
       this.logo = "assets/logo/pascoa.svg";
     } else if ((currentMonth === 10 && currentDay >= 20) || (currentMonth === 11 && currentDay <= 5)) {
       this.logo = "assets/logo/halloween.svg";
