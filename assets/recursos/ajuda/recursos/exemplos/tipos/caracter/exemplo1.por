@@ -1,0 +1,1 @@
+caracter nome_da_variavel

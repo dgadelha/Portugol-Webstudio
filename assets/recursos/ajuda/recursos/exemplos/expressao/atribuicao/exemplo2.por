@@ -1,0 +1,10 @@
+variavel1 += variavel2	// Equivalente a: variavel1 = variavel1 + variavel2;
+variavel1 -= variavel2	// Equivalente a: variavel1 = variavel1 - variavel2;
+variavel1 *= variavel2	// Equivalente a: variavel1 = variavel1 * variavel2;
+variavel1 /= variavel2	// Equivalente a: variavel1 = variavel1 / variavel2;
+variavel1 %= variavel2	// Equivalente a: variavel1 = variavel1 % variavel2;
+variavel1 & variavel2	// Equivalente a: variavel1 = variavel1 & variavel2;
+variavel1 ^= variavel2	// Equivalente a: variavel1 = variavel1 ^ variavel2;
+variavel1 |= variavel2	// Equivalente a: variavel1 = variavel1 | variavel2;
+variavel1++				// Equivalente a: variavel1 = variavel1 + 1;
+variavel1--				// Equivalente a: variavel1 = variavel1 - 1;

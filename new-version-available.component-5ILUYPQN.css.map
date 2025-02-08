@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["packages/ide/src/app/new-version-available/new-version-available.component.scss"],
+  "sourcesContent": [".buttons {\n  display: flex;\n  align-items: center;\n  gap: 1rem;\n}\n"],
+  "mappings": "AAAA,CAAA,QACE,QAAA,KACA,YAAA,OACA,IAAA",
+  "names": []
+}
