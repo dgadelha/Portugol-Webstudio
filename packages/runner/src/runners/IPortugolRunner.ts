@@ -7,7 +7,14 @@ export type PortugolEvent =
   | { type: "stdIn" }
   | { type: "error"; error: Error }
   | { type: "parseError"; errors: PortugolCodeError[] }
-  | { type: "finish"; time: number };
+  | { type: "finish"; stopped: boolean; time: number }
+  | { type: "message"; message: PortugolMessage };
+
+export type PortugolMessage = {
+  id?: string;
+  type: string;
+  data?: unknown;
+};
 
 export abstract class IPortugolRunner {
   constructor(public byteCode: string) {}
@@ -22,5 +29,8 @@ export abstract class IPortugolRunner {
   abstract running$: Observable<boolean>;
 
   abstract run(): Observable<PortugolEvent>;
-  abstract destroy(): void;
+  abstract destroy(stopped?: boolean): void;
+
+  abstract postMessage(message: PortugolMessage): void;
+  abstract replyMessage(message: PortugolMessage, result: unknown, transferable?: Transferable[]): void;
 }

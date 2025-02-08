@@ -81,3 +81,7 @@ svg-icon > svg {
 .logo-icon[fill] {
   fill: var(--pws-color-primary);
 }
+
+.portugol-renderer-dialog .mat-mdc-dialog-content {
+  max-height: unset;
+}

@@ -13,7 +13,7 @@ jobs:
       - name: Setup Node.js 📦
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
 
       - name: Install dependencies 🔧
         run: npm ci --include=dev
@@ -32,7 +32,7 @@ jobs:
 
       - name: Setup Firebase Hosting 🔥
         env:
-          BETA_FIREBASE_PROJECT_ID: ${{ secrets.BETA_FIREBASE_PROJECT_ID }}
+          BETA_FIREBASE_PROJECT_ID: ${{ vars.BETA_FIREBASE_PROJECT_ID }}
           BETA_FIREBASE_HOSTING_SITE: ${{ vars.BETA_FIREBASE_HOSTING_SITE }}
         run: |
           jq -n --arg default "$BETA_FIREBASE_PROJECT_ID" '{ "projects": { "default": $default } }' > .firebaserc

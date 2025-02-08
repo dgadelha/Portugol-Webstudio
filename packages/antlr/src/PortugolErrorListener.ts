@@ -100,7 +100,7 @@ export class PortugolErrorListener implements ANTLRErrorListener {
     _charPositionInLine: number,
     _msg: string,
     e: RecognitionException | null,
-  ): void {
+  ) {
     this.errors.push(
       PortugolCodeError.fromContext(e?.ctx || offendingSymbol || (null as any), "Código incompleto ou inválido"),
     );

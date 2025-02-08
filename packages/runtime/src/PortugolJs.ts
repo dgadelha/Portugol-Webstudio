@@ -1,6 +1,11 @@
 import {
+  AdicaoContext,
   ArquivoContext,
   AtribuicaoCompostaContext,
+  AtribuicaoCompostaDivisaoContext,
+  AtribuicaoCompostaMultiplicacaoContext,
+  AtribuicaoCompostaSomaContext,
+  AtribuicaoCompostaSubtracaoContext,
   AtribuicaoContext,
   CaracterContext,
   CasoContext,
@@ -15,6 +20,7 @@ import {
   DeclaracaoVariavelContext,
   DecrementoUnarioPosfixadoContext,
   DecrementoUnarioPrefixadoContext,
+  DivisaoContext,
   EnquantoContext,
   EscolhaContext,
   EscopoBibliotecaContext,
@@ -26,6 +32,7 @@ import {
   IncrementoUnarioPosfixadoContext,
   IncrementoUnarioPrefixadoContext,
   IndiceArrayContext,
+  InicializacaoArrayContext,
   InicializacaoMatrizContext,
   InicializacaoParaContext,
   LinhaMatrizContext,
@@ -35,35 +42,12 @@ import {
   ListaParametrosContext,
   MaisUnarioContext,
   MenosUnarioContext,
+  ModuloContext,
+  MultiplicacaoContext,
   NegacaoBitwiseContext,
   NegacaoContext,
   NumeroInteiroContext,
   NumeroRealContext,
-  ParaContext,
-  ParametroArrayContext,
-  ParametroContext,
-  ParametroFuncaoContext,
-  ParametroMatrizContext,
-  PareContext,
-  ReferenciaArrayContext,
-  ReferenciaMatrizContext,
-  ReferenciaParaVariavelContext,
-  RetorneContext,
-  SeContext,
-  SenaoContext,
-  StringContext,
-  TamanhoArrayContext,
-  ValorLogicoContext,
-  PortugolVisitor,
-  AdicaoContext,
-  AtribuicaoCompostaDivisaoContext,
-  AtribuicaoCompostaMultiplicacaoContext,
-  AtribuicaoCompostaSomaContext,
-  AtribuicaoCompostaSubtracaoContext,
-  DivisaoContext,
-  InicializacaoArrayContext,
-  ModuloContext,
-  MultiplicacaoContext,
   OperacaoAndBitwiseContext,
   OperacaoDiferencaContext,
   OperacaoELogicoContext,
@@ -77,10 +61,26 @@ import {
   OperacaoShiftLeftContext,
   OperacaoShiftRightContext,
   OperacaoXorContext,
+  ParaContext,
+  ParametroArrayContext,
+  ParametroContext,
+  ParametroFuncaoContext,
+  ParametroMatrizContext,
+  PareContext,
+  PortugolVisitor,
+  ReferenciaArrayContext,
+  ReferenciaMatrizContext,
+  ReferenciaParaVariavelContext,
+  RetorneContext,
+  SeContext,
+  SenaoContext,
+  StringContext,
   SubtracaoContext,
+  TamanhoArrayContext,
+  ValorLogicoContext,
 } from "@portugol-webstudio/antlr";
 import { captureException } from "@sentry/core";
-import { ParserRuleContext, AbstractParseTreeVisitor } from "antlr4ng";
+import { AbstractParseTreeVisitor, ParserRuleContext } from "antlr4ng";
 
 import { StringBuilder } from "./utils/StringBuilder.js";
 
@@ -581,20 +581,23 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
                             ? "^"
                             : "?";
 
-    sb.append(this.PAD(), `runtime.comparativeOperation("${op}", [`, `\n`);
+    sb.append(this.PAD(), `new PortugolVar("logico", (`, `\n`);
 
     this.pad++;
 
     const exprs = ctx.expressao();
 
-    for (const expr of exprs) {
-      sb.append(super.visit(expr)?.trimEnd());
-      sb.append(",", `\n`);
+    for (let i = 0; i < exprs.length; i++) {
+      sb.append(super.visit(exprs[i])?.trimEnd(), `.value`);
+
+      if (i < exprs.length - 1) {
+        sb.append(` ${op} `, `\n`);
+      }
     }
 
     this.pad--;
 
-    sb.append(this.PAD(), `])`, `\n`);
+    sb.append(`\n`, this.PAD(), `))`, `\n`);
 
     return sb.toString();
   }
