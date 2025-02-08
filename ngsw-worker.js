@@ -23,7 +23,7 @@
     return value;
   };
 
-  // bazel-out/k8-fastbuild-ST-2e5f3376adb5/bin/packages/service-worker/worker/src/named-cache-storage.mjs
+  // bazel-out/darwin_arm64-fastbuild-ST-2e5f3376adb5/bin/packages/service-worker/worker/src/named-cache-storage.mjs
   var NamedCacheStorage = class {
     constructor(original, cacheNamePrefix) {
       __publicField(this, "original");
@@ -52,7 +52,7 @@
     }
   };
 
-  // bazel-out/k8-fastbuild-ST-2e5f3376adb5/bin/packages/service-worker/worker/src/adapter.mjs
+  // bazel-out/darwin_arm64-fastbuild-ST-2e5f3376adb5/bin/packages/service-worker/worker/src/adapter.mjs
   var Adapter = class {
     constructor(scopeUrl, caches) {
       __publicField(this, "scopeUrl");
@@ -93,7 +93,7 @@
     }
   };
 
-  // bazel-out/k8-fastbuild-ST-2e5f3376adb5/bin/packages/service-worker/worker/src/database.mjs
+  // bazel-out/darwin_arm64-fastbuild-ST-2e5f3376adb5/bin/packages/service-worker/worker/src/database.mjs
   var NotFound = class {
     constructor(table, key) {
       __publicField(this, "table");
@@ -103,7 +103,7 @@
     }
   };
 
-  // bazel-out/k8-fastbuild-ST-2e5f3376adb5/bin/packages/service-worker/worker/src/db-cache.mjs
+  // bazel-out/darwin_arm64-fastbuild-ST-2e5f3376adb5/bin/packages/service-worker/worker/src/db-cache.mjs
   var CacheDatabase = class {
     constructor(adapter2) {
       __publicField(this, "adapter");
@@ -167,7 +167,7 @@
     }
   };
 
-  // bazel-out/k8-fastbuild-ST-2e5f3376adb5/bin/packages/service-worker/worker/src/api.mjs
+  // bazel-out/darwin_arm64-fastbuild-ST-2e5f3376adb5/bin/packages/service-worker/worker/src/api.mjs
   var UpdateCacheStatus;
   (function(UpdateCacheStatus2) {
     UpdateCacheStatus2[UpdateCacheStatus2["NOT_CACHED"] = 0] = "NOT_CACHED";
@@ -175,7 +175,7 @@
     UpdateCacheStatus2[UpdateCacheStatus2["CACHED"] = 2] = "CACHED";
   })(UpdateCacheStatus || (UpdateCacheStatus = {}));
 
-  // bazel-out/k8-fastbuild-ST-2e5f3376adb5/bin/packages/service-worker/worker/src/error.mjs
+  // bazel-out/darwin_arm64-fastbuild-ST-2e5f3376adb5/bin/packages/service-worker/worker/src/error.mjs
   var SwCriticalError = class extends Error {
     constructor() {
       super(...arguments);
@@ -197,7 +197,7 @@ ${error.stack}`;
     }
   };
 
-  // bazel-out/k8-fastbuild-ST-2e5f3376adb5/bin/packages/service-worker/worker/src/sha1.mjs
+  // bazel-out/darwin_arm64-fastbuild-ST-2e5f3376adb5/bin/packages/service-worker/worker/src/sha1.mjs
   function sha1(str) {
     const utf8 = str;
     const words32 = stringToWords32(utf8, Endian.Big);
@@ -312,7 +312,7 @@ ${error.stack}`;
     return hex.toLowerCase();
   }
 
-  // bazel-out/k8-fastbuild-ST-2e5f3376adb5/bin/packages/service-worker/worker/src/assets.mjs
+  // bazel-out/darwin_arm64-fastbuild-ST-2e5f3376adb5/bin/packages/service-worker/worker/src/assets.mjs
   var AssetGroup = class {
     constructor(scope2, adapter2, idle, config, hashes, db, cacheNamePrefix) {
       __publicField(this, "scope");
@@ -609,7 +609,7 @@ ${error.stack}`;
     }
   };
 
-  // bazel-out/k8-fastbuild-ST-2e5f3376adb5/bin/packages/service-worker/worker/src/data.mjs
+  // bazel-out/darwin_arm64-fastbuild-ST-2e5f3376adb5/bin/packages/service-worker/worker/src/data.mjs
   var LruList = class {
     constructor(state) {
       __publicField(this, "state");
@@ -913,7 +913,7 @@ ${error.stack}`;
     }
   };
 
-  // bazel-out/k8-fastbuild-ST-2e5f3376adb5/bin/packages/service-worker/worker/src/app-version.mjs
+  // bazel-out/darwin_arm64-fastbuild-ST-2e5f3376adb5/bin/packages/service-worker/worker/src/app-version.mjs
   var AppVersion = class {
     constructor(scope2, adapter2, database, idle, debugHandler, manifest, manifestHash) {
       __publicField(this, "scope");
@@ -1068,8 +1068,8 @@ ${error.stack}`;
     }
   };
 
-  // bazel-out/k8-fastbuild-ST-2e5f3376adb5/bin/packages/service-worker/worker/src/debug.mjs
-  var SW_VERSION = "19.0.5";
+  // bazel-out/darwin_arm64-fastbuild-ST-2e5f3376adb5/bin/packages/service-worker/worker/src/debug.mjs
+  var SW_VERSION = "19.1.5";
   var DEBUG_LOG_BUFFER_SIZE = 100;
   var DebugHandler = class {
     constructor(driver, adapter2) {
@@ -1144,7 +1144,7 @@ ${msgIdle}`, { headers: this.adapter.newHeaders({ "Content-Type": "text/plain" }
     }
   };
 
-  // bazel-out/k8-fastbuild-ST-2e5f3376adb5/bin/packages/service-worker/worker/src/idle.mjs
+  // bazel-out/darwin_arm64-fastbuild-ST-2e5f3376adb5/bin/packages/service-worker/worker/src/idle.mjs
   var IdleScheduler = class {
     constructor(adapter2, delay, maxDelay, debug) {
       __publicField(this, "adapter");
@@ -1226,12 +1226,12 @@ ${msgIdle}`, { headers: this.adapter.newHeaders({ "Content-Type": "text/plain" }
     }
   };
 
-  // bazel-out/k8-fastbuild-ST-2e5f3376adb5/bin/packages/service-worker/worker/src/manifest.mjs
+  // bazel-out/darwin_arm64-fastbuild-ST-2e5f3376adb5/bin/packages/service-worker/worker/src/manifest.mjs
   function hashManifest(manifest) {
     return sha1(JSON.stringify(manifest));
   }
 
-  // bazel-out/k8-fastbuild-ST-2e5f3376adb5/bin/packages/service-worker/worker/src/msg.mjs
+  // bazel-out/darwin_arm64-fastbuild-ST-2e5f3376adb5/bin/packages/service-worker/worker/src/msg.mjs
   function isMsgCheckForUpdates(msg) {
     return msg.action === "CHECK_FOR_UPDATES";
   }
@@ -1239,7 +1239,7 @@ ${msgIdle}`, { headers: this.adapter.newHeaders({ "Content-Type": "text/plain" }
     return msg.action === "ACTIVATE_UPDATE";
   }
 
-  // bazel-out/k8-fastbuild-ST-2e5f3376adb5/bin/packages/service-worker/worker/src/driver.mjs
+  // bazel-out/darwin_arm64-fastbuild-ST-2e5f3376adb5/bin/packages/service-worker/worker/src/driver.mjs
   var IDLE_DELAY = 5e3;
   var MAX_IDLE_DELAY = 3e4;
   var SUPPORTED_CONFIG_VERSION = 1;
@@ -1890,7 +1890,7 @@ ${msgIdle}`, { headers: this.adapter.newHeaders({ "Content-Type": "text/plain" }
     }
   };
 
-  // bazel-out/k8-fastbuild-ST-2e5f3376adb5/bin/packages/service-worker/worker/main.mjs
+  // bazel-out/darwin_arm64-fastbuild-ST-2e5f3376adb5/bin/packages/service-worker/worker/main.mjs
   var scope = self;
   var adapter = new Adapter(scope.registration.scope, self.caches);
   new Driver(scope, adapter, new CacheDatabase(adapter));
