@@ -61,7 +61,7 @@ jobs:
                   ]
                 },
                 {
-                  "source": "**/portugol-worker/worker.js",
+                  "source": "**/portugol-worker.js",
                   "headers": [
                     {
                       "key": "Cache-Control",
