@@ -1,23 +1,23 @@
 export default /* javascript */ `{
-  CANAL_R: new PortugolVar("inteiro", 0, false, true),
-  CANAL_G: new PortugolVar("inteiro", 1, false, true),
-  CANAL_B: new PortugolVar("inteiro", 2, false, true),
+  CANAL_R: new PortugolVar("inteiro", 0, true),
+  CANAL_G: new PortugolVar("inteiro", 1, true),
+  CANAL_B: new PortugolVar("inteiro", 2, true),
 
-  COR_AMARELO: new PortugolVar("inteiro", -256, false, true),
-  COR_AZUL: new PortugolVar("inteiro", -16776961, false, true),
-  COR_BRANCO: new PortugolVar("inteiro", -1, false, true),
-  COR_PRETO: new PortugolVar("inteiro", -16777216, false, true),
-  COR_VERMELHO: new PortugolVar("inteiro", -65536, false, true),
-  COR_VERDE: new PortugolVar("inteiro", -16711936, false, true),
+  COR_AMARELO: new PortugolVar("inteiro", -256, true),
+  COR_AZUL: new PortugolVar("inteiro", -16776961, true),
+  COR_BRANCO: new PortugolVar("inteiro", -1, true),
+  COR_PRETO: new PortugolVar("inteiro", -16777216, true),
+  COR_VERMELHO: new PortugolVar("inteiro", -65536, true),
+  COR_VERDE: new PortugolVar("inteiro", -16711936, true),
 
-  GRADIENTE_DIREITA: new PortugolVar("inteiro", 0, false, true),
-  GRADIENTE_ESQUERDA: new PortugolVar("inteiro", 1, false, true),
-  GRADIENTE_ACIMA: new PortugolVar("inteiro", 2, false, true),
-  GRADIENTE_ABAIXO: new PortugolVar("inteiro", 3, false, true),
-  GRADIENTE_INFERIOR_DIREITO: new PortugolVar("inteiro", 4, false, true),
-  GRADIENTE_INFERIOR_ESQUERDO: new PortugolVar("inteiro", 5, false, true),
-  GRADIENTE_SUPERIOR_DIREITO: new PortugolVar("inteiro", 6, false, true),
-  GRADIENTE_SUPERIOR_ESQUERDO: new PortugolVar("inteiro", 7, false, true),
+  GRADIENTE_DIREITA: new PortugolVar("inteiro", 0, true),
+  GRADIENTE_ESQUERDA: new PortugolVar("inteiro", 1, true),
+  GRADIENTE_ACIMA: new PortugolVar("inteiro", 2, true),
+  GRADIENTE_ABAIXO: new PortugolVar("inteiro", 3, true),
+  GRADIENTE_INFERIOR_DIREITO: new PortugolVar("inteiro", 4, true),
+  GRADIENTE_INFERIOR_ESQUERDO: new PortugolVar("inteiro", 5, true),
+  GRADIENTE_SUPERIOR_DIREITO: new PortugolVar("inteiro", 6, true),
+  GRADIENTE_SUPERIOR_ESQUERDO: new PortugolVar("inteiro", 7, true),
 
   async iniciar_modo_grafico(manter_visivel) {
     self.runtime.expectType("iniciar_modo_grafico", "manter_visivel", manter_visivel, "logico");
@@ -128,12 +128,12 @@ export default /* javascript */ `{
 
   largura_janela() {
     self.runtime.assertGraphicsContext();
-    return new PortugolVar("inteiro", self.graphics.getWidth(), false, true);
+    return new PortugolVar("inteiro", self.graphics.getWidth(), true);
   },
 
   altura_janela() {
     self.runtime.assertGraphicsContext();
-    return new PortugolVar("inteiro", self.graphics.getHeight(), false, true);
+    return new PortugolVar("inteiro", self.graphics.getHeight(), true);
   },
 
   async largura_tela() {
@@ -141,7 +141,7 @@ export default /* javascript */ `{
       type: "graphics.getScreenInfo",
     });
 
-    return new PortugolVar("inteiro", result.width, false, true);
+    return new PortugolVar("inteiro", result.width, true);
   },
 
   async altura_tela() {
@@ -149,7 +149,7 @@ export default /* javascript */ `{
       type: "graphics.getScreenInfo",
     });
 
-    return new PortugolVar("inteiro", result.height, false, true);
+    return new PortugolVar("inteiro", result.height, true);
   },
 
   largura_texto(texto) {
@@ -157,7 +157,7 @@ export default /* javascript */ `{
     self.runtime.assertGraphicsContext();
 
     const size = self.graphics.calculateTextSize(texto.getValue());
-    return new PortugolVar("inteiro", size.width, false, true);
+    return new PortugolVar("inteiro", size.width, true);
   },
 
   altura_texto(texto) {
@@ -165,7 +165,7 @@ export default /* javascript */ `{
     self.runtime.assertGraphicsContext();
 
     const size = self.graphics.calculateTextSize(texto.getValue());
-    return new PortugolVar("inteiro", size.height, false, true);
+    return new PortugolVar("inteiro", size.height, true);
   },
 
   async renderizar() {
@@ -188,7 +188,7 @@ export default /* javascript */ `{
       ((g.getValue() & 0xFF) << 8) |
       ((b.getValue() & 0xFF) << 0);
 
-    return new PortugolVar("inteiro", value, false, true);
+    return new PortugolVar("inteiro", value, true);
   },
 
   definir_cor(cor) {
@@ -208,9 +208,9 @@ export default /* javascript */ `{
     const channel = canal.getValue();
 
     switch (channel) {
-      case 0: return new PortugolVar("inteiro", (color >> 16) & 0xFF, false, true);
-      case 1: return new PortugolVar("inteiro", (color >> 8) & 0xFF, false, true);
-      case 2: return new PortugolVar("inteiro", color & 0xFF, false, true);
+      case 0: return new PortugolVar("inteiro", (color >> 16) & 0xFF, true);
+      case 1: return new PortugolVar("inteiro", (color >> 8) & 0xFF, true);
+      case 2: return new PortugolVar("inteiro", color & 0xFF, true);
       default: throw new Error("O canal informado (" + channel + ") é inválido, o canal deve ser um dos seguintes valores: 0 (R); 1 (G); 2 (B)");
     }
   },
@@ -339,13 +339,13 @@ export default /* javascript */ `{
   altura_imagem(endereco) {
     self.runtime.expectType("altura_imagem", "endereco", endereco, "inteiro");
     self.runtime.unimplementedMethod("altura_imagem", "Graficos");
-    return new PortugolVar("inteiro", 0, false, true);
+    return new PortugolVar("inteiro", 0, true);
   },
 
   largura_imagem(endereco) {
     self.runtime.expectType("largura_imagem", "endereco", endereco, "inteiro");
     self.runtime.unimplementedMethod("largura_imagem", "Graficos");
-    return new PortugolVar("inteiro", 0, false, true);
+    return new PortugolVar("inteiro", 0, true);
   },
 
   carregar_fonte(caminho_fonte) {
@@ -356,7 +356,7 @@ export default /* javascript */ `{
   carregar_imagem(caminho) {
     self.runtime.expectType("carregar_imagem", "caminho", caminho, "cadeia");
     self.runtime.unimplementedMethod("carregar_imagem", "Graficos");
-    return new PortugolVar("inteiro", 0, false, true);
+    return new PortugolVar("inteiro", 0, true);
   },
 
   liberar_imagem(endereco) {
@@ -405,32 +405,32 @@ export default /* javascript */ `{
     self.runtime.expectType("obter_cor_pixel", "x", x, "inteiro", "real");
     self.runtime.expectType("obter_cor_pixel", "y", y, "inteiro", "real");
     self.runtime.unimplementedMethod("obter_cor_pixel", "Graficos");
-    return new PortugolVar("inteiro", -16777216, false, true);
+    return new PortugolVar("inteiro", -16777216, true);
   },
 
   obter_intervalo_gif(endereco) {
     self.runtime.expectType("obter_intervalo_gif", "endereco", endereco, "inteiro");
     self.runtime.unimplementedMethod("obter_intervalo_gif", "Graficos");
-    return new PortugolVar("inteiro", 0, false, true);
+    return new PortugolVar("inteiro", 0, true);
   },
 
   obter_numero_quadro_atual_gif(endereco) {
     self.runtime.expectType("obter_numero_quadro_atual_gif", "endereco", endereco, "inteiro");
     self.runtime.unimplementedMethod("obter_numero_quadro_atual_gif", "Graficos");
-    return new PortugolVar("inteiro", 0, false, true);
+    return new PortugolVar("inteiro", 0, true);
   },
 
   obter_numero_quadros_gif(endereco) {
     self.runtime.expectType("obter_numero_quadros_gif", "endereco", endereco, "inteiro");
     self.runtime.unimplementedMethod("obter_numero_quadros_gif", "Graficos");
-    return new PortugolVar("inteiro", 0, false, true);
+    return new PortugolVar("inteiro", 0, true);
   },
 
   obter_quadro_gif(endereco, quadro) {
     self.runtime.expectType("obter_quadro_gif", "endereco", endereco, "inteiro");
     self.runtime.expectType("obter_quadro_gif", "quadro", quadro, "inteiro");
     self.runtime.unimplementedMethod("obter_quadro_gif", "Graficos");
-    return new PortugolVar("inteiro", 0, false, true);
+    return new PortugolVar("inteiro", 0, true);
   },
 
   proximo_frame_gif(endereco) {
@@ -444,14 +444,14 @@ export default /* javascript */ `{
     self.runtime.expectType("redimensionar_imagem", "altura", altura, "inteiro", "real");
     self.runtime.expectType("redimensionar_imagem", "manter_qualidade", manter_qualidade, "logico");
     self.runtime.unimplementedMethod("redimensionar_imagem", "Graficos");
-    return new PortugolVar("inteiro", 0, false, true);
+    return new PortugolVar("inteiro", 0, true);
   },
 
   renderizar_imagem(largura, altura) {
     self.runtime.expectType("renderizar_imagem", "largura", largura, "inteiro", "real");
     self.runtime.expectType("renderizar_imagem", "altura", altura, "inteiro", "real");
     self.runtime.unimplementedMethod("renderizar_imagem", "Graficos");
-    return new PortugolVar("inteiro", 0, false, true);
+    return new PortugolVar("inteiro", 0, true);
   },
 
   transformar_imagem(endereco, espelhamento_horizontal, espelhamento_vertical, rotacao, cor_transparente) {
@@ -461,7 +461,7 @@ export default /* javascript */ `{
     self.runtime.expectType("transformar_imagem", "rotacao", rotacao, "inteiro", "real");
     self.runtime.expectType("transformar_imagem", "cor_transparente", cor_transparente, "inteiro");
     self.runtime.unimplementedMethod("transformar_imagem", "Graficos");
-    return new PortugolVar("inteiro", 0, false, true);
+    return new PortugolVar("inteiro", 0, true);
   },
 
   transformar_porcao_imagem(endereco, x, y, largura, altura, espelhamento_horizontal, espelhamento_vertical, rotacao, cor_transparente) {
@@ -475,6 +475,6 @@ export default /* javascript */ `{
     self.runtime.expectType("transformar_porcao_imagem", "rotacao", rotacao, "inteiro", "real");
     self.runtime.expectType("transformar_porcao_imagem", "cor_transparente", cor_transparente, "inteiro");
     self.runtime.unimplementedMethod("transformar_porcao_imagem", "Graficos");
-    return new PortugolVar("inteiro", 0, false, true);
+    return new PortugolVar("inteiro", 0, true);
   },
 }`;

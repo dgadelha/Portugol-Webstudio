@@ -1,6 +1,6 @@
 export default /* javascript */ `{
-  PI: new PortugolVar("real", Math.PI, false, true),
-  E: new PortugolVar("real", Math.E, false, true),
+  PI: new PortugolVar("real", Math.PI, true),
+  E: new PortugolVar("real", Math.E, true),
 
   potencia(base, expoente) {
     self.runtime.expectType("potencia", "base", base, "inteiro", "real");

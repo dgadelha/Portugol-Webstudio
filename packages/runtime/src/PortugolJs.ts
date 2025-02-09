@@ -1234,32 +1234,12 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
 
     for (let i = 0; i < params.length; i++) {
       const param = params[i];
-      let type: string;
 
-      if (param.parametroArray()) {
-        type = "vetor";
-      } else if (param.parametroMatriz()) {
-        type = "matriz";
+      if (param.E_COMERCIAL()) {
+        sb.append(this.PAD(), `scope.variables["${param.ID().getText()}"] = args[${i}];`, `\n`);
       } else {
-        type = param.TIPO().getText();
+        sb.append(this.PAD(), `scope.variables["${param.ID().getText()}"] = args[${i}].clone();`, `\n`);
       }
-
-      sb.append(this.PAD(), `scope.variables["${param.ID().getText()}"] = new PortugolVar(`, `\n`);
-
-      this.pad++;
-      sb.append(this.PAD(), `"${type}"`, `,\n`);
-      sb.append(this.PAD(), `args[${i}]`);
-
-      if (!param.E_COMERCIAL()) {
-        sb.append(`.value`);
-      }
-
-      sb.append(`,\n`);
-      sb.append(this.PAD(), `${Boolean(param.E_COMERCIAL())}`, `,\n`);
-
-      this.pad--;
-
-      sb.append(this.PAD(), `);`, `\n`);
     }
 
     return sb.toString();

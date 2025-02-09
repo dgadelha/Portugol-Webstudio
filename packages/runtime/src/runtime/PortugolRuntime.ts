@@ -105,12 +105,7 @@ class PortugolRuntime {
 
       const value = this.coerceToType(initial.type, arg.value, arg.type);
 
-      if (initial.isReference) {
-        initial.value.value = value;
-      } else {
-        initial.value = value;
-      }
-
+      initial.value = value;
       initial = arg;
     }
 

@@ -1,15 +1,26 @@
 export const portugolVar = /* javascript */ `
 class PortugolVar {
-  constructor(type, value, isReference = false, isConstant = false) {
+  constructor(type, value, isConstant = false) {
     // this.name = name;
     this.type = type;
     this.value = value;
-    this.isReference = isReference;
     this.isConstant = isConstant;
   }
 
   clone() {
-    return new PortugolVar(this.type, this.value, this.isReference, this.isConstant);
+    let value = this.value;
+
+    if (Array.isArray(value)) {
+      value = value.map((v) => {
+        if (v instanceof PortugolVar) {
+          return v.clone();
+        }
+
+        return v;
+      });
+    }
+
+    return new PortugolVar(this.type, value, this.isConstant);
   }
 
   stringValue() {
