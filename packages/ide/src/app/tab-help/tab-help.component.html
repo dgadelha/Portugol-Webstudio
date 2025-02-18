@@ -61,14 +61,24 @@
 
   <as-split-area>
     <div class="help-content">
-      @if (isLightTheme) {
-        <div class="light-theme-alert">
-          <svg-icon src="assets/mdi/emoticon-sad-outline.svg" svgAriaLabel="Ícone de rosto triste" />
-          Sentimos muito! O conteúdo da seção Ajuda ainda não está disponível no tema claro.
-        </div>
-      }
+      @if (current) {
+        @switch (current.kind) {
+          @case ("markdown") {
+            <markdown [data]="current.source" />
+          }
 
-      <iframe *ngIf="current" [src]="currentUrl"></iframe>
+          @default {
+            @if (isLightTheme) {
+              <div class="light-theme-alert">
+                <svg-icon src="assets/mdi/emoticon-sad-outline.svg" svgAriaLabel="Ícone de rosto triste" />
+                Sentimos muito! O conteúdo da seção Ajuda ainda não está disponível no tema claro.
+              </div>
+            }
+
+            <iframe *ngIf="current" [src]="currentUrl"></iframe>
+          }
+        }
+      }
     </div>
   </as-split-area>
 </as-split>

@@ -8,17 +8,12 @@ import { Subscription } from "rxjs";
 
 import { ResponsiveService } from "../responsive.service";
 import { ThemeService } from "../theme.service";
+import { libsTree } from "./bibliotecas";
+import { TreeItem } from "./types";
 
 type PortugolWindow = Window & {
   portugol: { abrirExemplo(contents: string, name: string): void };
 };
-
-interface TreeItem {
-  id: string;
-  text: string;
-  href: string;
-  children?: TreeItem[];
-}
 
 @Component({
   // eslint-disable-next-line @angular-eslint/prefer-standalone
@@ -63,9 +58,12 @@ export class TabHelpComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.http.get<TreeItem[]>("assets/recursos/ajuda/scripts/topicos.json").subscribe({
       next: ajuda => {
-        this.dataSource.data = ajuda;
-        this.treeControl.expand(ajuda[0]);
-        this.loadItem(ajuda[0]);
+        const ajudaWithLibs = ajuda.concat(libsTree);
+
+        this.dataSource.data = ajudaWithLibs;
+        this.treeControl.expand(ajudaWithLibs[0]);
+        this.treeControl.expand(ajudaWithLibs[1]);
+        this.loadItem(ajudaWithLibs[0]);
       },
       error: () => {
         // TODO: tratar erro
@@ -94,6 +92,9 @@ export class TabHelpComponent implements OnInit, OnDestroy, AfterViewInit {
   loadItem(item: TreeItem) {
     this.gaService.event("help_navigation", "Ajuda", item.href);
     this.current = item;
-    this.currentUrl = this.sanitizer.bypassSecurityTrustResourceUrl(`assets/recursos/ajuda/${item.href}`);
+
+    if (item.kind !== "markdown") {
+      this.currentUrl = this.sanitizer.bypassSecurityTrustResourceUrl(`assets/recursos/ajuda/${item.href}`);
+    }
   }
 }

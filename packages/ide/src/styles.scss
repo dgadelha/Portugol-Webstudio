@@ -85,3 +85,101 @@ svg-icon > svg {
 .portugol-renderer-dialog .mat-mdc-dialog-content {
   max-height: unset;
 }
+
+markdown {
+  padding: 0 1rem;
+
+  h1 {
+    margin: 1rem 0;
+    font-size: 15pt;
+    padding: 1rem;
+    background-color: var(--pws-bg-100);
+    border-left: 0.25rem solid var(--pws-color-secondary);
+  }
+
+  a, a:visited {
+    color: var(--pws-color-secondary);
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  ul {
+    padding-left: 2rem;
+
+    li {
+      margin-bottom: 1rem;
+      list-style-type: disc;
+    }
+  }
+
+  code {
+    display: inline-block;
+    padding: 4px 6px;
+    font-family: monospace;
+    background-color: var(--pws-bg-100);
+    border-radius: 0.25rem;
+  }
+
+  .code {
+    display: block;
+    padding: 1rem;
+    overflow: auto;
+    font-family: monospace;
+    background-color: var(--pws-bg-100);
+
+    .code-keyword {
+      color: #569cd6;
+    }
+
+    .code-const-name {
+      color: #3dc9b0;
+    }
+
+    .code-func-name {
+      color: #f5d7a9;
+    }
+
+    .code-keyword-brackets {
+      color: #da70d6;
+    }
+
+    .code-param-name {
+      color: #d4d4d4;
+    }
+
+    .code-value {
+      color: #b5cea8;
+    }
+  }
+}
+
+[data-theme="light"] {
+  markdown .code {
+    .code-keyword {
+      color: #0000ff;
+    }
+
+    .code-const-name {
+      color: #008080;
+    }
+
+    .code-func-name {
+      color: #ad7f00;
+    }
+
+    .code-keyword-brackets {
+      color: #319331;
+    }
+
+    .code-param-name {
+      color: #000;
+    }
+
+    .code-value {
+      color: #098658;
+    }
+  }
+}
