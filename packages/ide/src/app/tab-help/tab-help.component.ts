@@ -48,10 +48,7 @@ export class TabHelpComponent implements OnInit, OnDestroy, AfterViewInit {
     (window as unknown as PortugolWindow).portugol = {
       abrirExemplo: (contents: string, name: string) => {
         this.ngZone.run(() => {
-          this.newTab.emit({
-            name,
-            contents,
-          });
+          this.newTab.emit({ name, contents });
         });
       },
     };
@@ -90,7 +87,8 @@ export class TabHelpComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   loadItem(item: TreeItem) {
-    this.gaService.event("help_navigation", "Ajuda", item.href);
+    this.gaService.event("help_navigation", "Ajuda", item.href || item.source);
+    this.gaService.pageView(item.href || item.id, item.text, item.href || item.id);
     this.current = item;
 
     if (item.kind !== "markdown") {
