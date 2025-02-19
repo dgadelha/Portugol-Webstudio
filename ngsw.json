@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1739902359741,
+  "timestamp": 1739923442845,
   "index": "/index.html",
   "assetGroups": [
     {
@@ -13,7 +13,7 @@
       "urls": [
         "/favicon.ico",
         "/index.html",
-        "/main-EKZH3X5R.js",
+        "/main-BIFG3WKE.js",
         "/manifest.webmanifest",
         "/polyfills-Q763KACN.js",
         "/styles-D3XFTKLP.css"
@@ -3760,8 +3760,8 @@
     "/assets/monaco-editor/min/vs/nls.messages.zh-tw.js": "43b79324bbe8b757b3b7a41b142a1b4771ca867e",
     "/assets/monaco-editor/monaco.d.ts": "0d7ba4d1f6545b88fca1dbf44fd583585d9da395",
     "/assets/monaco-editor/package.json": "16b37d5c80a03862bfff6dbbdf3922d1cac3a8ca",
-    "/assets/portugol-worker/worker.js": "c3744167a560cb37d3614e807f8838d25feb430e",
-    "/assets/portugol-worker/worker.js.map": "07fd0b9154b5fb8343543ac67970634722fc5d48",
+    "/assets/portugol-worker/worker.js": "dcb7408d05877e23f820d39c97e701a1e59a22af",
+    "/assets/portugol-worker/worker.js.map": "144e6c2525d02662b0ab2f1bf65c97dbe6014ae1",
     "/assets/recursos/ajuda/estilos/SyntaxHighlighter.css": "4162675b3b4d2354973021572bfd4685deb6712d",
     "/assets/recursos/ajuda/estilos/ajuda.css": "9e6ad574f9fa6c48d6f856756016eac3c1a5686b",
     "/assets/recursos/ajuda/estilos/index.css": "df28a87aa49702297859fb7900c44f8250da8786",
@@ -4440,8 +4440,8 @@
     "/assets/recursos/exercicios/exercicio60.pex": "6082892362c640c5b7c9e63b12d6594dab32128d",
     "/assets/recursos/exercicios/schema.xsd": "cd13152ea836b1eed121a6972a619f595ac5d46c",
     "/favicon.ico": "a3dadb5b6906874517b9a2bc021bb3f154290edd",
-    "/index.html": "ed92c3506dee4680a06c5b0a49a009c560a04f0a",
-    "/main-EKZH3X5R.js": "ceffb638bae7b6a5e0a6ac2ca3966304eeea1adc",
+    "/index.html": "7fe1da936062a9e7fe1fb38267bee7860ba8fc26",
+    "/main-BIFG3WKE.js": "4fef4693be03387bf51a1bad976a12c676867cc5",
     "/manifest.webmanifest": "bbfd674042155ddb102be018a75422fd949cb37f",
     "/polyfills-Q763KACN.js": "e2a9f135443e4bc6115449a6098604d881bf5931",
     "/styles-D3XFTKLP.css": "d345294c7f77a400034a666c28bf1d5151e5875a"
