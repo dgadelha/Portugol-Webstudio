@@ -20,9 +20,9 @@
           <mat-radio-group
             aria-labelledby="setting-interface-appearance-label"
             name="theme"
-            [(ngModel)]="theme"
             class="radio-group"
             color="primary"
+            [(ngModel)]="theme"
           >
             <mat-radio-button value="auto">Automático (sistema)</mat-radio-button>
             <mat-radio-button value="light">Claro</mat-radio-button>
@@ -63,8 +63,8 @@
           <div class="preference-switch">
             <mat-slide-toggle
               aria-labelledby="setting-editor-word-wrap-label"
-              [(ngModel)]="editorWordWrap"
               color="primary"
+              [(ngModel)]="editorWordWrap"
             >
               {{ editorWordWrap ? "Ativado" : "Desativado" }}
             </mat-slide-toggle>

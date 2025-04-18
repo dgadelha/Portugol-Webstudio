@@ -1,6 +1,6 @@
 import { NestedTreeControl } from "@angular/cdk/tree";
 import { HttpClient } from "@angular/common/http";
-import { AfterViewInit, Component, EventEmitter, inject, NgZone, OnDestroy, OnInit, Output } from "@angular/core";
+import { AfterViewInit, Component, inject, NgZone, OnDestroy, OnInit, output } from "@angular/core";
 import { MatTreeNestedDataSource } from "@angular/material/tree";
 import { DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
 import { GoogleAnalyticsService } from "ngx-google-analytics";
@@ -42,7 +42,7 @@ export class TabHelpComponent implements OnInit, OnDestroy, AfterViewInit {
   isBelowMd = false;
   isLightTheme = false;
 
-  @Output() newTab = new EventEmitter();
+  readonly newTab = output<{ name: string; contents: string }>();
 
   ngOnInit() {
     (window as unknown as PortugolWindow).portugol = {
@@ -72,14 +72,14 @@ export class TabHelpComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  ngOnDestroy() {
-    this._responsive$?.unsubscribe();
-  }
-
   ngAfterViewInit() {
     this._responsive$ = this.responsive.isBelowMd().subscribe(isBelowMd => {
       this.isBelowMd = isBelowMd.matches;
     });
+  }
+
+  ngOnDestroy() {
+    this._responsive$?.unsubscribe();
   }
 
   hasChildren(_: number, item: TreeItem) {

@@ -1,6 +1,6 @@
 import { NestedTreeControl } from "@angular/cdk/tree";
 import { HttpClient } from "@angular/common/http";
-import { AfterViewInit, Component, EventEmitter, inject, OnDestroy, OnInit, Output } from "@angular/core";
+import { AfterViewInit, Component, inject, OnDestroy, OnInit, output } from "@angular/core";
 import { MatTreeNestedDataSource } from "@angular/material/tree";
 import { retry, Subscription } from "rxjs";
 
@@ -24,7 +24,7 @@ export interface ExampleItem {
   standalone: false,
   selector: "app-dialog-open-example",
   templateUrl: "./dialog-open-example.component.html",
-  styleUrls: ["./dialog-open-example.component.scss"],
+  styleUrl: "./dialog-open-example.component.scss",
 })
 export class DialogOpenExampleComponent implements OnInit, OnDestroy, AfterViewInit {
   private _loadSubscription$?: Subscription;
@@ -36,7 +36,7 @@ export class DialogOpenExampleComponent implements OnInit, OnDestroy, AfterViewI
   private responsive = inject(ResponsiveService);
   private themeService = inject(ThemeService);
 
-  @Output() exampleOpened = new EventEmitter<{ title: string; code: string }>();
+  readonly exampleOpened = output<{ title: string; code: string }>();
 
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   treeControl = new NestedTreeControl<ExampleItem>(node => node.children);

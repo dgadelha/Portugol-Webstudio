@@ -1,15 +1,15 @@
-<ng-keyboard-shortcuts [shortcuts]="shortcuts"></ng-keyboard-shortcuts>
+<ng-keyboard-shortcuts [shortcuts]="shortcuts" />
 
 <div id="preload">
-  <ngx-monaco-editor></ngx-monaco-editor>
+  <ngx-monaco-editor />
 </div>
 
 <mat-tab-group
-  [selectedIndex]="selected.value"
-  (selectedIndexChange)="selected.setValue($event)"
   animationDuration="0"
   mat-stretch-tabs="false"
   mat-align-tabs="start"
+  [selectedIndex]="selected.value"
+  (selectedIndexChange)="selected.setValue($event)"
 >
   <mat-tab>
     <ng-template mat-tab-label>
@@ -24,60 +24,70 @@
       (newTab)="addTab($event?.name, $event?.contents)"
       (help)="upsertHelpTab()"
       (settings)="openSettingsModal()"
-    ></app-tab-start>
+    />
   </mat-tab>
 
-  <mat-tab *ngFor="let tab of tabs">
-    <ng-template mat-tab-label>
-      <span>
-        <span class="tab-icon" [ngSwitch]="tab.type">
-          <svg-icon *ngSwitchCase="'editor'" src="assets/mdi/file.svg" svgAriaLabel="Ícone de arquivo" />
-          <svg-icon
-            *ngSwitchCase="'help'"
-            src="assets/mdi/help-circle-outline.svg"
-            svgClass="text-blue"
-            svgAriaLabel="Ícone de ajuda"
-          />
+  @for (tab of tabs; track tab.id) {
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <span>
+          <span class="tab-icon">
+            @switch (tab.type) {
+              @case ("editor") {
+                <svg-icon src="assets/mdi/file-document-outline.svg" svgAriaLabel="Ícone de arquivo" />
+              }
+
+              @case ("help") {
+                <svg-icon src="assets/mdi/help-circle-outline.svg" svgClass="text-blue" svgAriaLabel="Ícone de ajuda" />
+              }
+            }
+          </span>
+
+          <span class="tab-text">{{ tab.title }}</span>
         </span>
 
-        <span class="tab-text">{{ tab.title }}</span>
-      </span>
+        <span class="tab-actions">
+          @if (tab.type === "editor") {
+            <button
+              mat-icon-button
+              aria-label="Renomear aba"
+              matTooltip="Renomear aba"
+              type="button"
+              (click)="changeTabTitle(tab)"
+            >
+              <svg-icon src="assets/mdi/rename-outline.svg" svgAriaLabel="Ícone de renomear aba" />
+            </button>
+          }
 
-      <span class="tab-actions">
-        <button
-          mat-icon-button
-          aria-label="Renomear aba"
-          matTooltip="Renomear aba"
-          (click)="changeTabTitle(tab)"
-          *ngIf="tab.type === 'editor'"
-        >
-          <svg-icon src="assets/mdi/rename-outline.svg" svgAriaLabel="Ícone de renomear aba" />
-        </button>
+          <button
+            mat-icon-button
+            aria-label="Fechar aba"
+            matTooltip="Fechar aba"
+            type="button"
+            [class.single-button]="tab.type === 'editor'"
+            (click)="closeTab(tab)"
+          >
+            <svg-icon src="assets/mdi/close.svg" svgAriaLabel="Ícone de fechar aba" />
+          </button>
+        </span>
+      </ng-template>
 
-        <button
-          mat-icon-button
-          aria-label="Fechar aba"
-          matTooltip="Fechar aba"
-          (click)="closeTab(tab)"
-          [style]="tab.type === 'editor' ? { marginLeft: 0 } : {}"
-        >
-          <svg-icon src="assets/mdi/close.svg" svgAriaLabel="Ícone de fechar aba" />
-        </button>
-      </span>
-    </ng-template>
+      @switch (tab.type) {
+        @case ("editor") {
+          <app-tab-editor
+            [code]="tab.contents"
+            [(title)]="tab.title"
+            (help)="upsertHelpTab()"
+            (settings)="openSettingsModal()"
+          />
+        }
 
-    <ng-container [ngSwitch]="tab.type">
-      <app-tab-editor
-        *ngSwitchCase="'editor'"
-        [(title)]="tab.title"
-        [code]="tab.contents"
-        (help)="upsertHelpTab()"
-        (settings)="openSettingsModal()"
-      ></app-tab-editor>
-
-      <app-tab-help *ngSwitchCase="'help'" (newTab)="addTab($event?.name, $event?.contents)"></app-tab-help>
-    </ng-container>
-  </mat-tab>
+        @case ("help") {
+          <app-tab-help (newTab)="addTab($event?.name, $event?.contents)" />
+        }
+      }
+    </mat-tab>
+  }
 
   <mat-tab disabled>
     <ng-template mat-tab-label class="tab-add">
@@ -86,6 +96,7 @@
         mat-icon-button
         aria-label="Nova aba de editor de código"
         matTooltip="Nova aba de editor de código"
+        type="button"
         (click)="addTab()"
       >
         <svg-icon src="assets/mdi/plus.svg" svgAriaLabel="Ícone de adicionar aba" />

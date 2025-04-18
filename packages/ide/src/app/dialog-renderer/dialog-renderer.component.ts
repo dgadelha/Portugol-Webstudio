@@ -1,5 +1,5 @@
 import { DragDropModule } from "@angular/cdk/drag-drop";
-import { Component, ElementRef, Input, ViewChild } from "@angular/core";
+import { Component, Input, viewChild } from "@angular/core";
 import { MatButtonModule } from "@angular/material/button";
 import { MatDialogClose, MatDialogContent, MatDialogRef, MatDialogTitle } from "@angular/material/dialog";
 import { AngularSvgIconModule } from "angular-svg-icon";
@@ -16,17 +16,18 @@ export class DialogRendererComponent implements IGraphicsRendererComponent {
   @Input()
   title = "";
 
-  @ViewChild("canvas")
-  canvas?: ElementRef<HTMLCanvasElement>;
+  readonly canvas = viewChild<HTMLCanvasElement>("canvas");
 
   constructor(public dialogRef: MatDialogRef<DialogRendererComponent>) {}
 
   getCanvas(): Promise<OffscreenCanvas> {
     return new Promise(resolve => {
       const interval = setInterval(() => {
-        if (this.canvas?.nativeElement) {
+        const canvas = this.canvas();
+
+        if (canvas && canvas.transferControlToOffscreen) {
           clearInterval(interval);
-          resolve(this.canvas.nativeElement.transferControlToOffscreen());
+          resolve(canvas.transferControlToOffscreen());
         }
       }, 100);
     });

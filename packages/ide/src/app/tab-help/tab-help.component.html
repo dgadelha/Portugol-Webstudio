@@ -1,4 +1,4 @@
-<as-split [direction]="isBelowMd ? 'vertical' : 'horizontal'" unit="pixel">
+<as-split unit="pixel" [direction]="isBelowMd ? 'vertical' : 'horizontal'">
   <as-split-area [size]="350">
     <header>
       <svg-icon src="assets/mdi/help-circle-outline.svg" svgClass="text-blue" svgAriaLabel="Ícone de ajuda" />
@@ -10,12 +10,12 @@
         <mat-tree-node *matTreeNodeDef="let node">
           <li
             mat-ripple
+            tabindex="0"
+            [class.active]="current?.id === node.id"
             (click)="loadItem(node)"
             (keydown.enter)="loadItem(node)"
-            [class.active]="current?.id === node.id"
-            tabindex="0"
           >
-            <button mat-icon-button disabled title="Ícone de pasta">
+            <button mat-icon-button disabled title="Ícone de pasta" type="button">
               <svg-icon />
             </button>
             <span>{{ node.text }}</span>
@@ -24,35 +24,30 @@
 
         <mat-nested-tree-node *matTreeNodeDef="let node; when: hasChildren">
           <li
+            tabindex="0"
+            [class.active]="current?.id === node.id"
             (click)="loadItem(node)"
             (keydown.enter)="loadItem(node)"
-            [class.active]="current?.id === node.id"
-            tabindex="0"
           >
-            <button
-              mat-icon-button
-              matTreeNodeToggle
-              [ngSwitch]="treeControl.isExpanded(node)"
-              aria-label="Expandir/retrair conteúdo da pasta"
-            >
-              <svg-icon
-                *ngSwitchCase="true"
-                src="assets/mdi/chevron-down.svg"
-                svgAriaLabel="Ícone de seta para baixo indicando o conteúdo expandido"
-              />
-
-              <svg-icon
-                *ngSwitchCase="false"
-                src="assets/mdi/chevron-right.svg"
-                svgAriaLabel="Ícone de seta para direita indicando o conteúdo recolhido"
-              />
+            <button mat-icon-button matTreeNodeToggle aria-label="Expandir/retrair conteúdo da pasta" type="button">
+              @if (treeControl.isExpanded(node)) {
+                <svg-icon
+                  src="assets/mdi/chevron-down.svg"
+                  svgAriaLabel="Ícone de seta para baixo indicando o conteúdo expandido"
+                />
+              } @else {
+                <svg-icon
+                  src="assets/mdi/chevron-right.svg"
+                  svgAriaLabel="Ícone de seta para direita indicando o conteúdo recolhido"
+                />
+              }
             </button>
 
             <span>{{ node.text }}</span>
           </li>
 
           <ul [class.hidden]="!treeControl.isExpanded(node)">
-            <ng-container matTreeNodeOutlet></ng-container>
+            <ng-container matTreeNodeOutlet />
           </ul>
         </mat-nested-tree-node>
       </mat-tree>
@@ -75,7 +70,9 @@
               </div>
             }
 
-            <iframe *ngIf="current" [src]="currentUrl"></iframe>
+            @if (current) {
+              <iframe title="Conteúdo da Seção Ajuda" [src]="currentUrl"></iframe>
+            }
           }
         }
       }

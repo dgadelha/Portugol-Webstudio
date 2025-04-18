@@ -21,21 +21,6 @@ mat-dialog-content {
   padding: 0.5rem;
 }
 
-.app-info {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-
-  .app-name {
-    font-size: 1.5rem;
-    font-weight: bold;
-  }
-
-  .app-version {
-    font-size: 1rem;
-  }
-}
-
 .made-with-love {
   display: flex;
   gap: 0.5rem;

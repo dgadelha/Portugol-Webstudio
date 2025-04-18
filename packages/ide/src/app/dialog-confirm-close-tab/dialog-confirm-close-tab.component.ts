@@ -15,7 +15,7 @@ interface DialogData {
 @Component({
   selector: "app-dialog-confirm-close-tab",
   templateUrl: "./dialog-confirm-close-tab.component.html",
-  styleUrls: ["./dialog-confirm-close-tab.component.scss"],
+  styleUrl: "./dialog-confirm-close-tab.component.scss",
   standalone: true,
   imports: [MatButtonModule, MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose],
 })

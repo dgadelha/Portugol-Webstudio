@@ -36,8 +36,8 @@
   },
   "dependencies": {
     "@portugol-webstudio/antlr": "*",
-    "@sentry/core": "^9.1.0",
-    "antlr4ng": "^3.0.14"
+    "@sentry/core": "^9.13.0",
+    "antlr4ng": "^3.0.16"
   },
   "devDependencies": {
     "typescript": "~5.7.3"

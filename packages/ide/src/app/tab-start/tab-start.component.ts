@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from "@angular/core";
+import { Component, output, OutputRefSubscription } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { GoogleAnalyticsService } from "ngx-google-analytics";
 import { Subscription } from "rxjs";
@@ -15,11 +15,11 @@ import { FileService } from "../file.service";
   styleUrl: "./tab-start.component.scss",
 })
 export class TabStartComponent {
-  @Output() newTab = new EventEmitter();
-  @Output() help = new EventEmitter();
-  @Output() settings = new EventEmitter();
+  readonly newTab = output<{ name: string; contents: string }>();
+  readonly help = output();
+  readonly settings = output();
 
-  private _dialogExample$?: Subscription;
+  private _dialogExample$?: OutputRefSubscription;
   private _dialogRef$?: Subscription;
 
   public logo: string;

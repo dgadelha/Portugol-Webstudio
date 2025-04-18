@@ -4,14 +4,15 @@
   <mat-dialog-content>
     <mat-form-field appearance="outline" class="w-100">
       <mat-label>Título da aba</mat-label>
+
       <input
         matInput
         name="title"
         placeholder="Olá Mundo"
         required
         cdkFocusInitial
-        [(ngModel)]="title"
         onfocus="this.select()"
+        [(ngModel)]="title"
       />
     </mat-form-field>
   </mat-dialog-content>

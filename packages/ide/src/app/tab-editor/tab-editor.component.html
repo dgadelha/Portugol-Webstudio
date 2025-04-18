@@ -1,13 +1,13 @@
-<ng-keyboard-shortcuts [shortcuts]="shortcuts"></ng-keyboard-shortcuts>
+<ng-keyboard-shortcuts [shortcuts]="shortcuts" />
 
 <div class="sidebar">
   <button
     mat-ripple
     type="button"
     class="sidebar-button"
-    (click)="runCode()"
-    [disabled]="executor.running || transpiling"
     title="Iniciar execução"
+    [disabled]="executor.running || transpiling"
+    (click)="runCode()"
   >
     <svg-icon src="assets/icon-start.svg" svgClass="text-secondary" svgAriaLabel="Ícone de iniciar execução" />
   </button>
@@ -16,9 +16,9 @@
     mat-ripple
     type="button"
     class="sidebar-button"
-    (click)="stopCode()"
-    [disabled]="!executor.running && !transpiling"
     title="Parar execução"
+    [disabled]="!executor.running && !transpiling"
+    (click)="stopCode()"
   >
     <svg-icon src="assets/mdi/square-rounded-outline.svg" svgClass="text-red" svgAriaLabel="Ícone de parar execução" />
   </button>
@@ -29,11 +29,11 @@
     mat-ripple
     type="button"
     class="sidebar-button"
-    (click)="saveFile()"
     title="Salvar arquivo"
     gaEvent="editor_save_file"
     gaCategory="editor"
     gaLabel="Botão de Salvar arquivo"
+    (click)="saveFile()"
   >
     <svg-icon
       src="assets/mdi/content-save-outline.svg"
@@ -47,10 +47,10 @@
     type="button"
     class="sidebar-button"
     title="Salvar como…"
-    [matMenuTriggerFor]="saveMenu"
     gaEvent="editor_save_as"
     gaCategory="Editor"
     gaLabel="Botão de Salvar como"
+    [matMenuTriggerFor]="saveMenu"
   >
     <svg-icon
       src="assets/mdi/content-save-settings-outline.svg"
@@ -60,23 +60,23 @@
   </button>
 
   <mat-menu #saveMenu="matMenu">
-    <button mat-menu-item disabled>Salvar como</button>
+    <button mat-menu-item disabled type="button">Salvar como</button>
 
     @if (hasSaveFilePickerSupport) {
       <button
         mat-menu-item
         type="button"
-        (click)="saveFileWithPicker()"
         aria-label="Escolher um arquivo"
         gaEvent="editor_save_as_file_picker"
         gaCategory="Editor"
         gaLabel="Botão de Salvar como - Ação Escolher um arquivo"
+        (click)="saveFileWithPicker()"
       >
         <mat-icon>
           <svg-icon
             src="assets/mdi/content-save-move.svg"
             svgAriaLabel="Ícone de disquete com seta para a direita para ação de escolher um arquivo"
-          ></svg-icon>
+          />
         </mat-icon>
 
         Escolher um arquivo
@@ -86,17 +86,17 @@
     <button
       mat-menu-item
       type="button"
-      (click)="saveFile()"
       aria-label="Download"
       gaEvent="editor_save_as_download"
       gaCategory="Editor"
       gaLabel="Botão de Salvar como - Ação Download"
+      (click)="saveFile()"
     >
       <mat-icon>
         <svg-icon
           src="assets/mdi/download.svg"
           svgAriaLabel="Ícone de seta para baixo para ação de download do arquivo"
-        ></svg-icon>
+        />
       </mat-icon>
 
       Download
@@ -105,17 +105,17 @@
     <button
       mat-menu-item
       type="button"
-      (click)="saveFile(true)"
       aria-label="Download para Portugol Studio"
       gaEvent="editor_save_as_download_portugol_studio"
       gaCategory="Editor"
       gaLabel="Botão de Salvar como - Ação Download para Portugol Studio"
+      (click)="saveFile(true)"
     >
       <mat-icon>
         <svg-icon
           src="assets/lightbulb-sq.svg"
           svgAriaLabel="Ícone de seta para baixo para ação de download do arquivo"
-        ></svg-icon>
+        />
       </mat-icon>
 
       Download para abrir no Portugol Studio
@@ -124,17 +124,17 @@
     <button
       mat-menu-item
       type="button"
-      (click)="saveFileManual('text')"
       aria-label="Abrir nova aba como texto"
       gaEvent="editor_save_as_text"
       gaCategory="Editor"
       gaLabel="Botão de Salvar como - Ação Nova aba como texto"
+      (click)="saveFileManual('text')"
     >
       <mat-icon>
         <svg-icon
           src="assets/mdi/file-document-outline.svg"
           svgAriaLabel="Ícone de documento para ação de abrir nova aba como texto"
-        ></svg-icon>
+        />
       </mat-icon>
 
       Abrir nova aba como texto
@@ -143,24 +143,24 @@
     <button
       mat-menu-item
       type="button"
-      (click)="saveFileManual('binary')"
       aria-label="Abrir nova aba como binário"
       gaEvent="editor_save_as_binary"
       gaCategory="Editor"
       gaLabel="Botão de Salvar como - Ação Nova aba como binário"
+      (click)="saveFileManual('binary')"
     >
       <mat-icon>
         <svg-icon
           src="assets/mdi/file-download-outline.svg"
           svgAriaLabel="Ícone de arquivo com seta para baixo para ação de abrir nova aba como binário"
-        ></svg-icon>
+        />
       </mat-icon>
 
       Abrir nova aba como binário
     </button>
   </mat-menu>
 
-  <button mat-ripple type="button" class="sidebar-button" (click)="fileInput.click()" title="Abrir arquivo">
+  <button mat-ripple type="button" class="sidebar-button" title="Abrir arquivo" (click)="fileInput.click()">
     <svg-icon
       src="assets/mdi/folder-open-outline.svg"
       svgClass="text-primary"
@@ -171,12 +171,12 @@
   </button>
 
   <button
-    [disabled]="sharing"
     mat-ripple
     type="button"
     class="sidebar-button"
-    (click)="shareFile()"
     title="Compartilhar código"
+    [disabled]="sharing"
+    (click)="shareFile()"
   >
     <svg-icon
       src="assets/mdi/share-variant-outline.svg"
@@ -187,7 +187,7 @@
 
   <div class="sidebar-divider"></div>
 
-  <button mat-ripple type="button" class="sidebar-button" (click)="openHelp()" title="Abrir seção de Ajuda">
+  <button mat-ripple type="button" class="sidebar-button" title="Abrir seção de Ajuda" (click)="openHelp()">
     <svg-icon src="assets/mdi/help-circle-outline.svg" svgClass="text-blue" svgAriaLabel="Ícone de ajuda" />
   </button>
 
@@ -197,11 +197,11 @@
     mat-ripple
     type="button"
     class="sidebar-button"
-    (click)="openSettings()"
     title="Configurações"
     gaEvent="editor_open_settings"
     gaCategory="Editor"
     gaLabel="Botão de Configurações"
+    (click)="openSettings()"
   >
     <svg-icon src="assets/mdi/cog-outline.svg" svgClass="text-primary" svgAriaLabel="Ícone de engrenagem" />
   </button>
@@ -212,15 +212,11 @@
     <as-split-area [size]="80">
       <as-split direction="horizontal">
         <as-split-area [size]="100">
-          <ngx-monaco-editor
-            [options]="codeEditorOptions"
-            [(ngModel)]="code"
-            (init)="onEditorInit($event)"
-          ></ngx-monaco-editor>
+          <ngx-monaco-editor [options]="codeEditorOptions" [(ngModel)]="code" (init)="onEditorInit($event)" />
         </as-split-area>
 
         <as-split-area [size]="0">
-          <ngx-monaco-editor [options]="generatedCodeEditorOptions" [(ngModel)]="executor.byteCode"></ngx-monaco-editor>
+          <ngx-monaco-editor [options]="generatedCodeEditorOptions" [(ngModel)]="executor.byteCode" />
         </as-split-area>
       </as-split>
     </as-split-area>
@@ -231,7 +227,7 @@
         [options]="stdOutEditorOptions"
         [(ngModel)]="executor.stdOut"
         (init)="onStdOutEditorInit($event)"
-      ></ngx-monaco-editor>
+      />
     </as-split-area>
   </as-split>
 </div>

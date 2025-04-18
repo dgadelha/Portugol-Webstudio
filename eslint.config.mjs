@@ -6,13 +6,15 @@ import tseslint from "typescript-eslint";
 
 export default tseslint.config(
   eslint.configs.recommended,
-  ...angular.configs.tsRecommended,
-  // @ts-ignore
-  unicorn.configs["flat/all"],
+  ...angular.configs.tsAll,
+  unicorn.configs.all,
   prettier,
   {
     files: ["**/*.html"],
-    extends: [...angular.configs.templateRecommended, ...angular.configs.templateAccessibility],
+    extends: [...angular.configs.templateAll, ...angular.configs.templateAccessibility],
+    rules: {
+      "@angular-eslint/template/i18n": "off",
+    },
   },
   {
     files: ["**/*.ts"],
@@ -69,6 +71,9 @@ export default tseslint.config(
   },
   {
     rules: {
+      "@angular-eslint/prefer-on-push-component-change-detection": "off",
+      "@angular-eslint/prefer-signals": "warn",
+      "@angular-eslint/template/no-call-expression": "off",
       "camelcase": "off",
       "capitalized-comments": "off",
       "func-names": ["error", "always"],

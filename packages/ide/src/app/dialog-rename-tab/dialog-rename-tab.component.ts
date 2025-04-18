@@ -19,7 +19,7 @@ interface DialogData {
 @Component({
   selector: "app-dialog-rename-tab",
   templateUrl: "./dialog-rename-tab.component.html",
-  styleUrls: ["./dialog-rename-tab.component.scss"],
+  styleUrl: "./dialog-rename-tab.component.scss",
   standalone: true,
   imports: [
     FormsModule,

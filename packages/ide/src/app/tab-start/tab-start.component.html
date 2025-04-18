@@ -1,12 +1,12 @@
-<svg-icon [src]="logo" svgClass="logo w-100" svgAriaLabel="Logomarca do Portugol Webstudio" />
+<svg-icon svgClass="logo w-100" svgAriaLabel="Logomarca do Portugol Webstudio" [src]="logo" />
 
 <nav>
-  <button mat-ripple (click)="newTab.emit()">
+  <button mat-ripple type="button" (click)="newTab.emit()">
     <svg-icon src="assets/mdi/file-plus-outline.svg" svgClass="text-secondary" svgAriaLabel="Ícone de novo arquivo" />
     <span>Novo Arquivo</span>
   </button>
 
-  <button mat-ripple (click)="fileInput.click()">
+  <button mat-ripple type="button" (click)="fileInput.click()">
     <svg-icon
       src="assets/mdi/folder-open-outline.svg"
       svgClass="text-primary"
@@ -17,7 +17,7 @@
     <input #fileInput type="file" hidden multiple accept=".por,text/plain" (change)="openFile($event)" />
   </button>
 
-  <button mat-ripple (click)="openExamplesDialog()">
+  <button mat-ripple type="button" (click)="openExamplesDialog()">
     <svg-icon
       src="assets/mdi/book-open-page-variant-outline.svg"
       svgClass="text-primary"
@@ -27,7 +27,7 @@
     <span>Abrir Exemplo</span>
   </button>
 
-  <button mat-ripple (click)="help.emit()">
+  <button mat-ripple type="button" (click)="help.emit()">
     <svg-icon src="assets/mdi/help.svg" svgClass="text-blue" alt="Ícone de ajuda" />
     <span>Ajuda</span>
   </button>
@@ -64,7 +64,7 @@
     <span>Dúvidas e Perguntas</span>
   </a>
 
-  <button mat-ripple (click)="openSettingsDialog()" class="with-badge-new">
+  <button mat-ripple class="with-badge-new" type="button" (click)="openSettingsDialog()">
     <svg-icon
       src="assets/mdi/cog-outline.svg"
       svgClass="text-primary"
@@ -74,7 +74,7 @@
     <span>Configurações</span>
   </button>
 
-  <button mat-ripple (click)="openAboutDialog()" class="with-badge-new">
+  <button mat-ripple class="with-badge-new" type="button" (click)="openAboutDialog()">
     <svg-icon
       src="assets/mdi/information-outline.svg"
       svgClass="text-blue"

@@ -16,7 +16,7 @@ export async function download(url: string, dest: string) {
     const res = await axios.get<Stream>(url, { responseType: "stream" });
 
     if (res.status === 200) {
-      await new Promise((resolve, reject) => {
+      await new Promise<void>((resolve, reject) => {
         res.data.pipe(file).once("error", reject).once("close", resolve);
       });
     } else {

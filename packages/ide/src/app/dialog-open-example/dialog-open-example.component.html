@@ -1,14 +1,15 @@
 <header mat-dialog-title>
   <span>Abrir Exemplo…</span>
   <s></s>
-  <button tabindex="-1" mat-dialog-close mat-icon-button aria-label="Fechar diálogo">
+  <button tabindex="-1" mat-dialog-close mat-icon-button aria-label="Fechar diálogo" type="button">
     <svg-icon src="assets/mdi/close.svg" svgAriaLabel="Ícone de fechar diálogo" />
   </button>
 </header>
 
-<main mat-dialog-content [ngSwitch]="loading">
-  <mat-spinner *ngSwitchCase="true" [diameter]="50"></mat-spinner>
-  <div *ngSwitchCase="false">
+<main mat-dialog-content>
+  @if (loading) {
+    <mat-spinner *ngSwitchCase="true" [diameter]="50" />
+  } @else {
     <as-split [direction]="isBelowMd ? 'vertical' : 'horizontal'">
       <as-split-area [size]="40">
         <ul id="root">
@@ -16,12 +17,12 @@
             <mat-tree-node *matTreeNodeDef="let node">
               <li
                 mat-ripple
+                tabindex="0"
+                [class.active]="current?.id === node.id"
                 (click)="loadItem(node)"
                 (keydown.enter)="loadItem(node)"
-                [class.active]="current?.id === node.id"
-                tabindex="0"
               >
-                <button mat-icon-button disabled title="Expandir/retrair">
+                <button mat-icon-button disabled title="Expandir/retrair" type="button">
                   <svg-icon />
                 </button>
                 <span>{{ node.name }}</span>
@@ -34,51 +35,49 @@
                   tabindex="-1"
                   mat-icon-button
                   matTreeNodeToggle
-                  [ngSwitch]="treeControl.isExpanded(node)"
                   aria-label="Expandir/retrair conteúdo da pasta"
+                  type="button"
                 >
-                  <svg-icon
-                    *ngSwitchCase="true"
-                    src="assets/mdi/chevron-down.svg"
-                    svgAriaLabel="Ícone de seta para baixo indicando o conteúdo expandido"
-                  />
-
-                  <svg-icon
-                    *ngSwitchCase="false"
-                    src="assets/mdi/chevron-right.svg"
-                    svgAriaLabel="Ícone de seta para direita indicando o conteúdo recolhido"
-                  />
+                  @if (treeControl.isExpanded(node)) {
+                    <svg-icon
+                      src="assets/mdi/chevron-down.svg"
+                      svgAriaLabel="Ícone de seta para baixo indicando o conteúdo expandido"
+                    />
+                  } @else {
+                    <svg-icon
+                      src="assets/mdi/chevron-right.svg"
+                      svgAriaLabel="Ícone de seta para direita indicando o conteúdo recolhido"
+                    />
+                  }
                 </button>
 
                 <span>{{ node.name }}</span>
               </li>
 
               <ul [class.hidden]="!treeControl.isExpanded(node)">
-                <ng-container matTreeNodeOutlet></ng-container>
+                <ng-container matTreeNodeOutlet />
               </ul>
             </mat-nested-tree-node>
           </mat-tree>
         </ul>
       </as-split-area>
 
-      <as-split-area class="d-flex" [size]="60" [ngSwitch]="current">
-        <div id="empty" *ngSwitchCase="null">
-          <p>Selecione um exemplo ao lado.</p>
-        </div>
+      <as-split-area class="d-flex" [size]="60">
+        @if (current) {
+          <div id="content">
+            <h3>{{ current?.name }}</h3>
+            <p>{{ current?.description }}</p>
 
-        <div id="content" *ngSwitchDefault>
-          <h3>{{ current?.name }}</h3>
-          <p>{{ current?.description }}</p>
+            <ngx-monaco-editor [options]="editorOptions" [(ngModel)]="exampleCode" (init)="editor = $event" />
 
-          <ngx-monaco-editor
-            [options]="editorOptions"
-            [(ngModel)]="exampleCode"
-            (init)="editor = $event"
-          ></ngx-monaco-editor>
-
-          <button mat-raised-button color="primary" (click)="openExample(current!)">Abrir</button>
-        </div>
+            <button mat-raised-button color="primary" type="button" (click)="openExample(current!)">Abrir</button>
+          </div>
+        } @else {
+          <div id="empty">
+            <p>Selecione um exemplo ao lado.</p>
+          </div>
+        }
       </as-split-area>
     </as-split>
-  </div>
+  }
 </main>

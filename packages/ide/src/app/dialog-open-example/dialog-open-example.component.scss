@@ -61,8 +61,7 @@ main {
   max-height: 100%;
 }
 
-main,
-main > div {
+main {
   flex-grow: 1;
 }
 
