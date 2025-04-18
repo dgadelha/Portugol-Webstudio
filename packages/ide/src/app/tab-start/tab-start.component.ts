@@ -15,7 +15,7 @@ import { FileService } from "../file.service";
   styleUrl: "./tab-start.component.scss",
 })
 export class TabStartComponent {
-  readonly newTab = output<{ name: string; contents: string }>();
+  readonly newTab = output<{ name: string; contents: string } | undefined>();
   readonly help = output();
   readonly settings = output();
 
