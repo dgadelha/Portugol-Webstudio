@@ -70,7 +70,7 @@
       display: inline-flex;
     }
 
-    &:last-child {
+    &.tab-action {
       padding: 0 !important;
       color: var(--pws-tab-color-active);
 
@@ -79,7 +79,7 @@
       }
     }
 
-    &:not(#mat-tab-group-0-label-0) {
+    &.tab-action, &.tab-item {
       padding-right: 0;
 
       &:not(.mdc-tab--active) {
@@ -90,7 +90,7 @@
         }
       }
 
-      .add-button {
+      .action-button {
         --mdc-icon-button-state-layer-size: 40px;
         padding: 8px 0;
       }
@@ -103,7 +103,7 @@
         }
       }
 
-      button:not(.add-button) {
+      button:not(.action-button) {
         border-radius: 0;
         display: inline-block;
         margin-left: 10px;

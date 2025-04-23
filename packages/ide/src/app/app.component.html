@@ -11,7 +11,7 @@
   [selectedIndex]="selected.value"
   (selectedIndexChange)="selected.setValue($event)"
 >
-  <mat-tab>
+  <mat-tab labelClass="tab-home">
     <ng-template mat-tab-label>
       <span class="tab-icon">
         <svg-icon src="assets/lightbulb.svg" svgClass="text-primary cap-my-height" svgAriaLabel="Ícone do Portugol" />
@@ -28,7 +28,7 @@
   </mat-tab>
 
   @for (tab of tabs; track tab.id) {
-    <mat-tab>
+    <mat-tab [labelClass]="'tab-item tab-' + tab.type">
       <ng-template mat-tab-label>
         <span>
           <span class="tab-icon">
@@ -89,10 +89,10 @@
     </mat-tab>
   }
 
-  <mat-tab disabled>
-    <ng-template mat-tab-label class="tab-add">
+  <mat-tab labelClass="tab-item tab-action tab-action-add" disabled>
+    <ng-template mat-tab-label>
       <button
-        class="add-button"
+        class="action-button add-button"
         mat-icon-button
         aria-label="Nova aba de editor de código"
         matTooltip="Nova aba de editor de código"
