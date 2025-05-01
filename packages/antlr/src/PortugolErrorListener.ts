@@ -4,6 +4,7 @@ import {
   ATNSimulator,
   BitSet,
   DFA,
+  isToken,
   Parser,
   ParserRuleContext,
   ParseTree,
@@ -24,7 +25,7 @@ export class PortugolCodeError extends Error {
     super(message);
   }
 
-  static fromContext(ctx: ParseTree, message: string) {
+  static fromContext(ctx: any, message: string) {
     let possibleContext = ctx;
 
     if (
@@ -40,20 +41,20 @@ export class PortugolCodeError extends Error {
     }
 
     if (!possibleContext) {
-      return new PortugolCodeError(message, ctx, 1, 0, 9999, 0);
+      return new PortugolCodeError(message, ctx, 1, -1, -1, -1);
     }
 
     if (
       Object.hasOwn(possibleContext, "start") &&
-      Object.hasOwn(possibleContext, "stop") &&
-      typeof (possibleContext as unknown as { start: unknown }).start === "object" &&
-      (possibleContext as unknown as { start: unknown }).start !== null
+      isToken(possibleContext.start)
     ) {
-      const { start, stop } = possibleContext as unknown as { start: Token; stop?: Token };
-      const { line: startLine, column: startCol } = start;
+      const { line: startLine, column: startCol } = possibleContext.start;
 
-      if (typeof stop === "object" && stop !== null) {
-        let { line: endLine, column: endCol } = stop;
+      if (
+        Object.hasOwn(possibleContext, "stop") &&
+        isToken(possibleContext.stop)
+      ) {
+        let { line: endLine, column: endCol } = possibleContext.stop;
 
         if (startLine === endLine && startCol === endCol) {
           endCol += ctx.getText().length - 1;
@@ -86,7 +87,7 @@ export class PortugolCodeError extends Error {
       return new PortugolCodeError(message, ctx, 1, 1, 1, 2 + ctx.getText().length);
     }
 
-    return new PortugolCodeError(message, ctx, 1, 0, 9999, 0);
+    return new PortugolCodeError(message, ctx, 1, -1, -1, -1);
   }
 }
 
@@ -98,12 +99,10 @@ export class PortugolErrorListener implements ANTLRErrorListener {
     offendingSymbol: S | null,
     _line: number,
     _charPositionInLine: number,
-    _msg: string,
+    msg: string,
     e: RecognitionException | null,
   ) {
-    this.errors.push(
-      PortugolCodeError.fromContext(e?.ctx || offendingSymbol || (null as any), "Código incompleto ou inválido"),
-    );
+    this.errors.push(PortugolCodeError.fromContext(e?.ctx || offendingSymbol || (null as any), msg));
   }
 
   getErrors() {

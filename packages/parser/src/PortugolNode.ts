@@ -1,7 +1,8 @@
 import { ArquivoContext, PortugolVisitor } from "@portugol-webstudio/antlr";
-import { ParseTree, AbstractParseTreeVisitor } from "antlr4ng";
+import { AbstractParseTreeVisitor, ParseTree } from "antlr4ng";
 
-import { Node, Arquivo, ContextNodeObj, UnhandledNode, Bypass } from "./nodes/index.js";
+import { ParseError } from "./helpers/ParseError.js";
+import { Arquivo, Bypass, ContextNodeObj, Node, UnhandledNode } from "./nodes/index.js";
 
 export interface Empty {}
 
@@ -46,7 +47,10 @@ export class PortugolNode extends AbstractParseTreeVisitor<Empty> implements Por
 
   visit(ctx: ParseTree) {
     if (ctx.constructor.name !== "ArquivoContext") {
-      throw new Error("O algoritmo Portugol deve-se iniciar com um contexto de arquivo (palavra-chave 'programa')");
+      throw new ParseError(
+        "O algoritmo Portugol deve-se iniciar com um contexto de arquivo (palavra-chave 'programa')",
+        ctx,
+      );
     }
 
     const arquivo = new Arquivo(ctx as ArquivoContext);

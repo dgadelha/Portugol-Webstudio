@@ -40,6 +40,7 @@ import {
   VazioExpr,
 } from "../nodes/index.js";
 import { Escopo } from "./Escopo.js";
+import { ParseError } from "./ParseError.js";
 import { TipoPrimitivo } from "./Tipo.js";
 import {
   ResultadoCompatibilidade,
@@ -94,8 +95,9 @@ export function resolverResultadoExpressão(expressão: Expressão | undefined, 
       }
 
       if (result === ResultadoCompatibilidade.INCOMPATÍVEL) {
-        throw new Error(
+        throw new ParseError(
           `Não é possível realizar uma operação de divisão, multiplicação ou subtração entre expressões dos tipos '${divesq}' e '${divdir}'`,
+          expressão?.ctx,
         );
       }
 
@@ -115,8 +117,9 @@ export function resolverResultadoExpressão(expressão: Expressão | undefined, 
       }
 
       if (resultSoma === ResultadoCompatibilidade.INCOMPATÍVEL) {
-        throw new Error(
+        throw new ParseError(
           `Não é possível realizar uma operação de soma entre expressões dos tipos '${somaesq}' e '${somadir}'`,
+          expressão?.ctx,
         );
       }
 
@@ -137,8 +140,9 @@ export function resolverResultadoExpressão(expressão: Expressão | undefined, 
       const moddir = resolverResultadoExpressão(mod.direita, escopo);
 
       if (TabelaCompatibilidadeModulo[modesq][moddir] === ResultadoCompatibilidade.INCOMPATÍVEL) {
-        throw new Error(
+        throw new ParseError(
           `Não é possível realizar uma operação de módulo entre expressões dos tipos '${modesq}' e '${moddir}'`,
+          expressão?.ctx,
         );
       }
 
@@ -165,7 +169,7 @@ export function resolverResultadoExpressão(expressão: Expressão | undefined, 
       const svar = escopo.getVariável(ref.nome);
 
       if (!svar) {
-        throw new Error(`Variável não declarada: ${ref.nome}`);
+        throw new ParseError(`Variável não declarada: ${ref.nome}`, expressão?.ctx);
       }
 
       return svar.primitivo;
@@ -177,7 +181,7 @@ export function resolverResultadoExpressão(expressão: Expressão | undefined, 
       const vararr = escopo.getVariável(refarr.variável.nome);
 
       if (!vararr) {
-        throw new Error(`Variável não declarada: ${refarr.variável.nome}`);
+        throw new ParseError(`Variável não declarada: ${refarr.variável.nome}`, expressão?.ctx);
       }
 
       return vararr.primitivo;
@@ -191,8 +195,9 @@ export function resolverResultadoExpressão(expressão: Expressão | undefined, 
       const result = TabelaCompatibilidadeDiferençaIgualdade[eqesq][eqdir];
 
       if (result === ResultadoCompatibilidade.INCOMPATÍVEL) {
-        throw new Error(
+        throw new ParseError(
           `Não é possível realizar uma operação de igualdade ou diferença entre expressões dos tipos '${eqesq}' e '${eqdir}'`,
+          expressão?.ctx,
         );
       }
 
@@ -210,8 +215,9 @@ export function resolverResultadoExpressão(expressão: Expressão | undefined, 
       const logdir = resolverResultadoExpressão(log.direita, escopo);
 
       if (TabelaCompatibilidadeEOu[logesq][logdir] === ResultadoCompatibilidade.INCOMPATÍVEL) {
-        throw new Error(
+        throw new ParseError(
           `Não é possível realizar uma operação de 'e' ou 'ou' entre expressões dos tipos '${logesq}' e '${logdir}'`,
+          expressão?.ctx,
         );
       }
 
@@ -235,8 +241,9 @@ export function resolverResultadoExpressão(expressão: Expressão | undefined, 
       const bitdir = resolverResultadoExpressão(bit.direita, escopo);
 
       if (TabelaCompatibilidadeBitwise[bitesq][bitdir] === ResultadoCompatibilidade.INCOMPATÍVEL) {
-        throw new Error(
+        throw new ParseError(
           `Não é possível realizar uma operação bitwise entre expressões dos tipos '${bitesq}' e '${bitdir}'`,
+          expressão?.ctx,
         );
       }
 
@@ -267,11 +274,11 @@ export function resolverResultadoExpressão(expressão: Expressão | undefined, 
       const fun = escopo.getFunção(chamada.nome);
 
       if (chamada.escopoBiblioteca) {
-        throw new Error("TODO"); // TODO
+        throw new ParseError("TODO", expressão?.ctx); // TODO
       }
 
       if (!fun) {
-        throw new Error(`Função não declarada: ${chamada.nome}`);
+        throw new ParseError(`Função não declarada: ${chamada.nome}`, expressão?.ctx);
       }
 
       return fun.primitivo;

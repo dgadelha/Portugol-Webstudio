@@ -523,10 +523,16 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     const model = this.codeEditor?.getModel();
 
     if (model) {
+      const filteredErrors = errors.filter(
+        error => error.startLine >= 0 && error.startCol >= 0 && error.endLine >= 0 && error.endCol >= 0,
+      );
+
+      console.log(filteredErrors);
+
       monaco.editor.setModelMarkers(
         model,
         "owner",
-        errors.map(error => {
+        filteredErrors.map(error => {
           return {
             startLineNumber: error.startLine,
             startColumn: error.startCol + 1,

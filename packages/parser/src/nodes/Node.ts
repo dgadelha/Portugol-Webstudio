@@ -15,10 +15,6 @@ export abstract class Node<T extends ParseTree = ParseTree> {
       throw new ParseError(`Expressão inválida: ${child.ctx.getText()}`, child.ctx);
     }
 
-    console.error(
-      new Error(`Encontrado '${childName}' como filho de '${parentName}', não esperado: '${child.ctx.getText()}'`),
-    );
-
     throw new ParseError(
       `Encontrado '${childName}' como filho de '${parentName}', não esperado: '${child.ctx.getText()}'`,
       child.ctx,

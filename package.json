@@ -34,6 +34,7 @@
     "build:parser": "lerna run build --scope=@portugol-webstudio/parser",
     "build:runner": "lerna run build --scope=@portugol-webstudio/runner",
     "build:runtime": "lerna run build --scope=@portugol-webstudio/runtime",
+    "build:monaco": "lerna run build --scope=@portugol-webstudio/monaco",
     "test:parser": "lerna run test --scope=@portugol-webstudio/parser",
     "release": "lerna run release",
     "postinstall": "patch-package"

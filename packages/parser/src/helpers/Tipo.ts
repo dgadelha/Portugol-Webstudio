@@ -1,6 +1,7 @@
 import { TerminalNode } from "antlr4ng";
 
 import { InteiroExpr, ReferênciaVarExpr } from "../nodes/index.js";
+import { ParseError } from "./ParseError.js";
 
 export enum TipoPrimitivo {
   INTEIRO = "inteiro",
@@ -37,7 +38,7 @@ export function parseTipoPrimitivo(tipo: TerminalNode | null): TipoPrimitivo {
     }
 
     default: {
-      throw new Error(`Tipo desconhecido: ${text}`);
+      throw new ParseError(`Tipo desconhecido: ${text}`, tipo);
     }
   }
 }
