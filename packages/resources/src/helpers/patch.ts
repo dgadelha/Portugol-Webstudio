@@ -35,8 +35,6 @@ async function getAjudaCss() {
 }
 
 async function patchHtmlFile(data: Buffer) {
-  console.log(`   [Base HTML Path]: ${baseHtmlPath}`);
-
   return data
     .toString("utf8")
     .replace(

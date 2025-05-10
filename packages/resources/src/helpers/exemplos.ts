@@ -13,7 +13,7 @@ const ignoredExamples = [
 export async function generateExamplesJson(baseDir: string, dir: string) {
   const indexDir = path.join(baseDir, dir);
 
-  console.log(`Obtendo exemplos de ${indexDir}`);
+  console.log(`-> Obtendo exemplos de ${indexDir}`);
 
   const indexProperties = path.join(indexDir, "index.properties");
   const parsedProperties = ini.decode(await fs.readFile(indexProperties, "utf8"));

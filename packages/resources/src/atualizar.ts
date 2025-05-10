@@ -5,7 +5,7 @@ import url from "node:url";
 import AdmZip from "adm-zip";
 import * as rimraf from "rimraf";
 
-import { baseDir } from "./config.js";
+import { baseDir, baseHtmlPath } from "./config.js";
 import { generateExamplesJson } from "./helpers/exemplos.js";
 import { download, getETag } from "./helpers/internet.js";
 import { patchHtmlFiles, patchPortugolFiles } from "./helpers/patch.js";
@@ -47,30 +47,30 @@ export async function configurarRecursos() {
 
     await download(fileUrl, psZip);
 
-    console.log("Download concluído, extraindo os recursos de ajuda...");
+    console.log("Download concluído, extraindo os recursos de ajuda…");
 
     const zip = new AdmZip(psZip);
 
-    console.log(`Extraindo [Portugol-Studio.zip]/${assetsPath} para ${tempDir}...`);
+    console.log(`Extraindo [Portugol-Studio.zip]/${assetsPath} para ${tempDir}…`);
     zip.extractEntryTo(assetsPath, tempDir, true, true);
 
-    console.log(`Refazendo estrutura do diretório...`);
+    console.log(`Refazendo estrutura do diretório…`);
     await fs.rename(tempDir + assetsPath, baseDir);
 
-    console.log("Removendo arquivos temporários...");
+    console.log("Removendo arquivos temporários…");
     rimraf.sync(tempDir);
     await fs.unlink(psZip);
 
-    console.log("Gerando índice da aba Ajuda...");
+    console.log("Gerando índice da aba Ajuda…");
     await import(url.pathToFileURL(path.join(baseDir, "ajuda", "scripts", "topicos.js")).toString());
 
-    console.log("Ajustando arquivos HTML...");
+    console.log(`Ajustando arquivos HTML… (Base Path: "${baseHtmlPath}")`);
     await patchHtmlFiles();
 
-    console.log("Ajustando arquivos POR...");
+    console.log("Ajustando arquivos POR…");
     await patchPortugolFiles();
 
-    console.log("Gerando índice da seção Exemplos...");
+    console.log("Gerando índice da seção Exemplos…");
     await fs.writeFile(
       path.join(baseDir, "exemplos", "index.json"),
       JSON.stringify(await generateExamplesJson(path.join(baseDir, "exemplos"), "")),
