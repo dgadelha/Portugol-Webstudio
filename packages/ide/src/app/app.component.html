@@ -28,7 +28,7 @@
   </mat-tab>
 
   @for (tab of tabs; track tab.id) {
-    <mat-tab [labelClass]="'tab-item tab-' + tab.type">
+    <mat-tab [labelClass]="`tab-item tab-${tab.type}`">
       <ng-template mat-tab-label>
         <span>
           <span class="tab-icon">
