@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit, TemplateRef, inject, output, viewChild } from "@angular/core";
+import { Component, ElementRef, Input, OnDestroy, OnInit, TemplateRef, inject, output, viewChild } from "@angular/core";
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import type { PortugolCodeError } from "@portugol-webstudio/antlr";
@@ -52,7 +52,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
   readonly settings = output();
 
   readonly shareSnackTemplate = viewChild.required<TemplateRef<{ data: { url: string } }>>("shareSnackTemplate");
-  readonly fileInput = viewChild.required<HTMLInputElement>("fileInput");
+  readonly fileInput = viewChild.required<ElementRef<HTMLInputElement>>("fileInput");
 
   transpiling = false;
   executor = new PortugolExecutor(PortugolWebWorkersRunner);
@@ -107,7 +107,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
       key: "ctrl + o",
       preventDefault: true,
       command: () => {
-        this.fileInput().click();
+        this.fileInput().nativeElement.click();
       },
     },
     {
@@ -441,7 +441,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
       keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyO],
       label: "Abrir arquivo",
       run: () => {
-        this.fileInput().click();
+        this.fileInput().nativeElement.click();
       },
     });
 
