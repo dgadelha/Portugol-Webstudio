@@ -8,7 +8,7 @@
 
 <main mat-dialog-content>
   @if (loading) {
-    <mat-spinner *ngSwitchCase="true" [diameter]="50" />
+    <mat-spinner [diameter]="50" />
   } @else {
     <as-split [direction]="isBelowMd ? 'vertical' : 'horizontal'">
       <as-split-area [size]="40">
