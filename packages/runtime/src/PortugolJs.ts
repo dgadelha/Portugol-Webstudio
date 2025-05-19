@@ -919,6 +919,39 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
         if (mtrx.OP_ATRIBUICAO() && init) {
           sb.append(this.PAD(), `${scopeStr}.variables["${mtrx.ID().getText()}"] = new PortugolVar(`);
           sb.append(`"matriz", `, this.visit(init)?.trim(), `)`, `\n`);
+
+          const rows_length = Number.parseInt(mtrx.linhaMatriz()?.getText() ?? "0");
+          const cols_length = Number.parseInt(mtrx.colunaMatriz()?.getText() ?? "0");
+
+          if (rows_length > 0 && cols_length > 0) {
+            const str = init.getText();
+            const matrizStr = str.match(/{{(.+)}}/)?.[1];
+            const linhas = matrizStr?.split("},{");
+            const tamanho_matriz = linhas?.map(linha => linha.split(",").length);
+            const matriz_rows_length = tamanho_matriz?.length ?? 0;
+
+            const todas_colunas_iguais = tamanho_matriz?.every(coluna => coluna <= cols_length);
+
+            if (rows_length < matriz_rows_length || !todas_colunas_iguais) {
+              const message = `Você está atribuindo um conjunto de valores maior que o tamanho da matriz (${mtrx.ID().getText()})`;
+
+              captureException("visitListaDeclaracoes", {
+                extra: { text: message },
+              });
+              PortugolJs.thrown.visitListaDeclaracoes = true;
+
+              sb.append(`throw new Error("${message}")`);
+            }
+          } else {
+            const message = `Você precisa informar o tamanho das linhas e colunas da matriz (${mtrx.ID().getText()})`;
+
+            captureException("visitListaDeclaracoes", {
+              extra: { text: message },
+            });
+            PortugolJs.thrown.visitListaDeclaracoes = true;
+
+            sb.append(`throw new Error("${message}")`);
+          }
         } else {
           sb.append(this.PAD(), `${scopeStr}.variables["${mtrx.ID().getText()}"] = new PortugolVar(`);
           sb.append(`"matriz", `);
@@ -988,6 +1021,33 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
         if (arr.OP_ATRIBUICAO() && init) {
           sb.append(this.PAD(), `${scopeStr}.variables["${arr.ID().getText()}"] = `);
           sb.append(this.visit(init)?.trim(), `\n`);
+
+          const array_length = Number.parseInt(arr.tamanhoArray()?.getText() ?? "0");
+
+          if (array_length > 0) {
+            const match = arr.getText().match(/{([^}]*)}/);
+            const items_array = match ? match[1].split(",") : [];
+
+            if (array_length < items_array.length) {
+              const message = `Você está atribuindo um conjunto de valores maior que o tamanho do vetor (${arr.ID().getText()})`;
+
+              captureException("visitListaDeclaracoes", {
+                extra: { text: message },
+              });
+              PortugolJs.thrown.visitListaDeclaracoes = true;
+
+              sb.append(`throw new Error("${message}")`);
+            }
+          } else {
+            const message = `Você precisa informar o tamanho do vetor (${arr.ID().getText()}) e que ele seja maior que 0`;
+
+            captureException("visitListaDeclaracoes", {
+              extra: { text: message },
+            });
+            PortugolJs.thrown.visitListaDeclaracoes = true;
+
+            sb.append(`throw new Error("${message}")`);
+          }
         } else {
           sb.append(this.PAD(), `${scopeStr}.variables["${arr.ID().getText()}"] = new PortugolVar(`);
           sb.append(`"vetor", `);
