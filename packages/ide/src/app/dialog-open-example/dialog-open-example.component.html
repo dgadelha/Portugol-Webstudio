@@ -2,7 +2,7 @@
   <span>Abrir Exemplo…</span>
   <s></s>
   <button tabindex="-1" mat-dialog-close mat-icon-button aria-label="Fechar diálogo" type="button">
-    <svg-icon src="assets/mdi/close.svg" svgAriaLabel="Ícone de fechar diálogo" />
+    <svg-icon src="assets/mdi/close.svg" aria-hidden="true" focusable="false" />
   </button>
 </header>
 
@@ -35,19 +35,14 @@
                   tabindex="-1"
                   mat-icon-button
                   matTreeNodeToggle
-                  aria-label="Expandir/retrair conteúdo da pasta"
                   type="button"
+                  [attr.aria-expanded]="treeControl.isExpanded(node)"
+                  [attr.aria-label]="`${treeControl.isExpanded(node) ? 'Recolher' : 'Expandir'} conteúdo da pasta`"
                 >
                   @if (treeControl.isExpanded(node)) {
-                    <svg-icon
-                      src="assets/mdi/chevron-down.svg"
-                      svgAriaLabel="Ícone de seta para baixo indicando o conteúdo expandido"
-                    />
+                    <svg-icon src="assets/mdi/chevron-down.svg" aria-hidden="true" focusable="false" />
                   } @else {
-                    <svg-icon
-                      src="assets/mdi/chevron-right.svg"
-                      svgAriaLabel="Ícone de seta para direita indicando o conteúdo recolhido"
-                    />
+                    <svg-icon src="assets/mdi/chevron-right.svg" aria-hidden="true" focusable="false" />
                   }
                 </button>
 

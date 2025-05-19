@@ -14,7 +14,12 @@
   <mat-tab labelClass="tab-home">
     <ng-template mat-tab-label>
       <span class="tab-icon">
-        <svg-icon src="assets/lightbulb.svg" svgClass="text-primary cap-my-height" svgAriaLabel="Ícone do Portugol" />
+        <svg-icon
+          src="assets/lightbulb.svg"
+          svgClass="text-primary cap-my-height"
+          aria-hidden="true"
+          focusable="false"
+        />
       </span>
 
       <span class="tab-text">Portugol Webstudio</span>
@@ -34,11 +39,16 @@
           <span class="tab-icon">
             @switch (tab.type) {
               @case ("editor") {
-                <svg-icon src="assets/mdi/file-document-outline.svg" svgAriaLabel="Ícone de arquivo" />
+                <svg-icon src="assets/mdi/file-document-outline.svg" svgAriaLabel="Ícone de documento" />
               }
 
               @case ("help") {
-                <svg-icon src="assets/mdi/help-circle-outline.svg" svgClass="text-blue" svgAriaLabel="Ícone de ajuda" />
+                <svg-icon
+                  src="assets/mdi/help-circle-outline.svg"
+                  svgClass="text-blue"
+                  aria-hidden="true"
+                  focusable="false"
+                />
               }
             }
           </span>
@@ -55,7 +65,7 @@
               type="button"
               (click)="changeTabTitle(tab)"
             >
-              <svg-icon src="assets/mdi/rename-outline.svg" svgAriaLabel="Ícone de renomear aba" />
+              <svg-icon src="assets/mdi/rename-outline.svg" aria-hidden="true" focusable="false" />
             </button>
           }
 
@@ -67,7 +77,7 @@
             [class.single-button]="tab.type === 'editor'"
             (click)="closeTab(tab)"
           >
-            <svg-icon src="assets/mdi/close.svg" svgAriaLabel="Ícone de fechar aba" />
+            <svg-icon src="assets/mdi/close.svg" aria-hidden="true" focusable="false" />
           </button>
         </span>
       </ng-template>
@@ -99,7 +109,7 @@
         type="button"
         (click)="addTab()"
       >
-        <svg-icon src="assets/mdi/plus.svg" svgAriaLabel="Ícone de adicionar aba" />
+        <svg-icon src="assets/mdi/plus.svg" aria-hidden="true" focusable="false" />
       </button>
     </ng-template>
   </mat-tab>

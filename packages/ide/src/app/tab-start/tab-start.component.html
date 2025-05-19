@@ -1,35 +1,31 @@
 <svg-icon svgClass="logo w-100" svgAriaLabel="Logomarca do Portugol Webstudio" [src]="logo" />
 
 <nav>
-  <button mat-ripple type="button" (click)="newTab.emit(undefined)">
-    <svg-icon src="assets/mdi/file-plus-outline.svg" svgClass="text-secondary" svgAriaLabel="Ícone de novo arquivo" />
-    <span>Novo Arquivo</span>
+  <button mat-ripple type="button" aria-labelledby="button-new-file-label" (click)="newTab.emit(undefined)">
+    <svg-icon src="assets/mdi/file-plus-outline.svg" svgClass="text-secondary" aria-hidden="true" focusable="false" />
+    <span id="button-new-file-label">Novo Arquivo</span>
   </button>
 
-  <button mat-ripple type="button" (click)="fileInput.click()">
-    <svg-icon
-      src="assets/mdi/folder-open-outline.svg"
-      svgClass="text-primary"
-      svgAriaLabel="Ícone de pasta para ação de abrir arquivo"
-    />
-
-    <span>Abrir Arquivo</span>
+  <button mat-ripple type="button" aria-labelledby="button-open-file-label" (click)="fileInput.click()">
+    <svg-icon src="assets/mdi/folder-open-outline.svg" svgClass="text-primary" aria-hidden="true" focusable="false" />
+    <span id="button-open-file-label">Abrir Arquivo</span>
     <input #fileInput type="file" hidden multiple accept=".por,text/plain" (change)="openFile($event)" />
   </button>
 
-  <button mat-ripple type="button" (click)="openExamplesDialog()">
+  <button mat-ripple type="button" aria-labelledby="button-open-example-label" (click)="openExamplesDialog()">
     <svg-icon
       src="assets/mdi/book-open-page-variant-outline.svg"
       svgClass="text-primary"
-      svgAriaLabel="Ícone de livro para ação de abrir exemplo"
+      aria-hidden="true"
+      focusable="false"
     />
 
-    <span>Abrir Exemplo</span>
+    <span id="button-open-example-label">Abrir Exemplo</span>
   </button>
 
-  <button mat-ripple type="button" (click)="help.emit()">
-    <svg-icon src="assets/mdi/help.svg" svgClass="text-blue" alt="Ícone de ajuda" />
-    <span>Ajuda</span>
+  <button mat-ripple type="button" aria-labelledby="button-help-label" (click)="help.emit()">
+    <svg-icon src="assets/mdi/help.svg" svgClass="text-blue" />
+    <span id="button-help-label">Ajuda</span>
   </button>
 
   <a
@@ -37,15 +33,17 @@
     target="_blank"
     rel="external noreferrer noopener nofollow"
     mat-ripple
+    aria-labelledby="button-suggestions-label"
     (click)="gaService.event('suggest_features', 'Aba Inicial', 'Enviar sugestões')"
   >
     <svg-icon
       src="assets/mdi/lightbulb-on-outline.svg"
       svgClass="text-secondary"
-      svgAriaLabel="Ícone de lâmpada para ação de enviar sugestões"
+      aria-hidden="true"
+      focusable="false"
     />
 
-    <span>Sugestões</span>
+    <span id="button-suggestions-label">Sugestões</span>
   </a>
 
   <a
@@ -53,40 +51,39 @@
     target="_blank"
     rel="external noreferrer noopener nofollow"
     mat-ripple
+    aria-labelledby="button-ask-questions-label"
     (click)="gaService.event('ask_questions', 'Aba Inicial', 'Enviar dúvidas')"
   >
-    <svg-icon
-      src="assets/mdi/comment-question-outline.svg"
-      svgClass="text-blue"
-      svgAriaLabel="Ícone de balão de diálogo para ação de enviar dúvidas"
-    />
-
-    <span>Dúvidas e Perguntas</span>
+    <svg-icon src="assets/mdi/comment-question-outline.svg" svgClass="text-blue" aria-hidden="true" focusable="false" />
+    <span id="button-ask-questions-label">Dúvidas e Perguntas</span>
   </a>
 
-  <button mat-ripple class="with-badge-new" type="button" (click)="openSettingsDialog()">
-    <svg-icon
-      src="assets/mdi/cog-outline.svg"
-      svgClass="text-primary"
-      svgAriaLabel="Ícone de engrenagem para ação de abrir configurações"
-    />
-
-    <span>Configurações</span>
+  <button
+    mat-ripple
+    class="with-badge-new"
+    type="button"
+    aria-labelledby="button-settings-label"
+    (click)="openSettingsDialog()"
+  >
+    <svg-icon src="assets/mdi/cog-outline.svg" svgClass="text-primary" aria-hidden="true" focusable="false" />
+    <span id="button-settings-label">Configurações</span>
   </button>
 
-  <button mat-ripple class="with-badge-new" type="button" (click)="openAboutDialog()">
-    <svg-icon
-      src="assets/mdi/information-outline.svg"
-      svgClass="text-blue"
-      svgAriaLabel="Ícone de informação para ação de abrir sobre"
-    />
+  <button
+    mat-ripple
+    class="with-badge-new"
+    type="button"
+    aria-labelledby="button-about-label"
+    (click)="openAboutDialog()"
+  >
+    <svg-icon src="assets/mdi/information-outline.svg" svgClass="text-blue" aria-hidden="true" focusable="false" />
 
-    <span>Sobre</span>
+    <span id="button-about-label">Sobre</span>
   </button>
 </nav>
 
 <section class="info">
-  <h4><svg-icon src="assets/mdi/newspaper.svg" svgAriaLabel="Ícone de jornal para notícias" />Novidades</h4>
+  <h4><svg-icon src="assets/mdi/newspaper.svg" aria-hidden="true" focusable="false" />Novidades</h4>
   <p><strong>18/02/2025:</strong> Documentação de Bibliotecas na seção Ajuda</p>
   <p><strong>09/02/2025:</strong> Refatoração/correção de variáveis por referência.</p>
   <p>

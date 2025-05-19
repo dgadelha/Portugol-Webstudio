@@ -1,7 +1,7 @@
 <as-split unit="pixel" [direction]="isBelowMd ? 'vertical' : 'horizontal'">
   <as-split-area [size]="350">
     <header>
-      <svg-icon src="assets/mdi/help-circle-outline.svg" svgClass="text-blue" svgAriaLabel="Ícone de ajuda" />
+      <svg-icon src="assets/mdi/help-circle-outline.svg" svgClass="text-blue" aria-hidden="true" focusable="false" />
       <span>Ajuda</span>
     </header>
 
@@ -29,17 +29,17 @@
             (click)="loadItem(node)"
             (keydown.enter)="loadItem(node)"
           >
-            <button mat-icon-button matTreeNodeToggle aria-label="Expandir/retrair conteúdo da pasta" type="button">
+            <button
+              mat-icon-button
+              matTreeNodeToggle
+              type="button"
+              [attr.aria-expanded]="treeControl.isExpanded(node)"
+              [attr.aria-label]="`${treeControl.isExpanded(node) ? 'Recolher' : 'Expandir'} conteúdo da pasta`"
+            >
               @if (treeControl.isExpanded(node)) {
-                <svg-icon
-                  src="assets/mdi/chevron-down.svg"
-                  svgAriaLabel="Ícone de seta para baixo indicando o conteúdo expandido"
-                />
+                <svg-icon src="assets/mdi/chevron-down.svg" aria-hidden="true" focusable="false" />
               } @else {
-                <svg-icon
-                  src="assets/mdi/chevron-right.svg"
-                  svgAriaLabel="Ícone de seta para direita indicando o conteúdo recolhido"
-                />
+                <svg-icon src="assets/mdi/chevron-right.svg" aria-hidden="true" focusable="false" />
               }
             </button>
 

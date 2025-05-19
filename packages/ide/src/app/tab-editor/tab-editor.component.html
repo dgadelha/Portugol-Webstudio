@@ -9,7 +9,7 @@
     [disabled]="executor.running || transpiling"
     (click)="runCode()"
   >
-    <svg-icon src="assets/icon-start.svg" svgClass="text-secondary" svgAriaLabel="Ícone de iniciar execução" />
+    <svg-icon src="assets/icon-start.svg" svgClass="text-secondary" aria-hidden="true" focusable="false" />
   </button>
 
   <button
@@ -20,7 +20,7 @@
     [disabled]="!executor.running && !transpiling"
     (click)="stopCode()"
   >
-    <svg-icon src="assets/mdi/square-rounded-outline.svg" svgClass="text-red" svgAriaLabel="Ícone de parar execução" />
+    <svg-icon src="assets/mdi/square-rounded-outline.svg" svgClass="text-red" aria-hidden="true" focusable="false" />
   </button>
 
   <div class="sidebar-divider"></div>
@@ -35,11 +35,7 @@
     gaLabel="Botão de Salvar arquivo"
     (click)="saveFile()"
   >
-    <svg-icon
-      src="assets/mdi/content-save-outline.svg"
-      svgClass="text-blue"
-      svgAriaLabel="Ícone de disquete para ação de salvar arquivo"
-    />
+    <svg-icon src="assets/mdi/content-save-outline.svg" svgClass="text-blue" aria-hidden="true" focusable="false" />
   </button>
 
   <button
@@ -55,7 +51,8 @@
     <svg-icon
       src="assets/mdi/content-save-settings-outline.svg"
       svgClass="text-blue"
-      svgAriaLabel="Ícone de disquete com três pontos abaixo para ação avançada de salvar arquivo"
+      aria-hidden="true"
+      focusable="false"
     />
   </button>
 
@@ -73,10 +70,7 @@
         (click)="saveFileWithPicker()"
       >
         <mat-icon>
-          <svg-icon
-            src="assets/mdi/content-save-move.svg"
-            svgAriaLabel="Ícone de disquete com seta para a direita para ação de escolher um arquivo"
-          />
+          <svg-icon src="assets/mdi/content-save-move.svg" aria-hidden="true" focusable="false" />
         </mat-icon>
 
         Escolher um arquivo
@@ -93,10 +87,7 @@
       (click)="saveFile()"
     >
       <mat-icon>
-        <svg-icon
-          src="assets/mdi/download.svg"
-          svgAriaLabel="Ícone de seta para baixo para ação de download do arquivo"
-        />
+        <svg-icon src="assets/mdi/download.svg" aria-hidden="true" focusable="false" />
       </mat-icon>
 
       Download
@@ -112,10 +103,7 @@
       (click)="saveFile(true)"
     >
       <mat-icon>
-        <svg-icon
-          src="assets/lightbulb-sq.svg"
-          svgAriaLabel="Ícone de seta para baixo para ação de download do arquivo"
-        />
+        <svg-icon src="assets/lightbulb-sq.svg" aria-hidden="true" focusable="false" />
       </mat-icon>
 
       Download para abrir no Portugol Studio
@@ -131,10 +119,7 @@
       (click)="saveFileManual('text')"
     >
       <mat-icon>
-        <svg-icon
-          src="assets/mdi/file-document-outline.svg"
-          svgAriaLabel="Ícone de documento para ação de abrir nova aba como texto"
-        />
+        <svg-icon src="assets/mdi/file-document-outline.svg" aria-hidden="true" focusable="false" />
       </mat-icon>
 
       Abrir nova aba como texto
@@ -150,10 +135,7 @@
       (click)="saveFileManual('binary')"
     >
       <mat-icon>
-        <svg-icon
-          src="assets/mdi/file-download-outline.svg"
-          svgAriaLabel="Ícone de arquivo com seta para baixo para ação de abrir nova aba como binário"
-        />
+        <svg-icon src="assets/mdi/file-download-outline.svg" aria-hidden="true" focusable="false" />
       </mat-icon>
 
       Abrir nova aba como binário
@@ -161,12 +143,7 @@
   </mat-menu>
 
   <button mat-ripple type="button" class="sidebar-button" title="Abrir arquivo" (click)="fileInput.click()">
-    <svg-icon
-      src="assets/mdi/folder-open-outline.svg"
-      svgClass="text-primary"
-      svgAriaLabel="Ícone de pasta para ação de abrir arquivo"
-    />
-
+    <svg-icon src="assets/mdi/folder-open-outline.svg" svgClass="text-primary" aria-hidden="true" focusable="false" />
     <input #fileInput type="file" hidden accept=".por,text/plain" (change)="openFile($event)" />
   </button>
 
@@ -181,14 +158,15 @@
     <svg-icon
       src="assets/mdi/share-variant-outline.svg"
       svgClass="text-secondary"
-      svgAriaLabel="Ícone de compartilhar código"
+      aria-hidden="true"
+      focusable="false"
     />
   </button>
 
   <div class="sidebar-divider"></div>
 
   <button mat-ripple type="button" class="sidebar-button" title="Abrir seção de Ajuda" (click)="openHelp()">
-    <svg-icon src="assets/mdi/help-circle-outline.svg" svgClass="text-blue" svgAriaLabel="Ícone de ajuda" />
+    <svg-icon src="assets/mdi/help-circle-outline.svg" svgClass="text-blue" aria-hidden="true" focusable="false" />
   </button>
 
   <s></s>
@@ -203,7 +181,7 @@
     gaLabel="Botão de Configurações"
     (click)="openSettings()"
   >
-    <svg-icon src="assets/mdi/cog-outline.svg" svgClass="text-primary" svgAriaLabel="Ícone de engrenagem" />
+    <svg-icon src="assets/mdi/cog-outline.svg" svgClass="text-primary" aria-hidden="true" focusable="false" />
   </button>
 </div>
 
@@ -243,7 +221,7 @@
       </span>
 
       <small>
-        <svg-icon src="assets/mdi/clock-alert.svg" svgClass="text-red" svgAriaLabel="Ícone de relógio" />
+        <svg-icon src="assets/mdi/clock-alert.svg" svgClass="text-red" aria-hidden="true" focusable="false" />
         Este link expira em 15 dias.
       </small>
     </span>
