@@ -1,5 +1,5 @@
 import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
-import { ErrorHandler, NgModule, inject, isDevMode, provideAppInitializer } from "@angular/core";
+import { ErrorHandler, inject, isDevMode, NgModule, provideAppInitializer } from "@angular/core";
 import { initializeApp, provideFirebaseApp } from "@angular/fire/app";
 import { getStorage, provideStorage } from "@angular/fire/storage";
 import { FormsModule } from "@angular/forms";
@@ -24,9 +24,10 @@ import { AngularSvgIconModule } from "angular-svg-icon";
 import { KeyboardShortcutsModule } from "ng-keyboard-shortcuts";
 import { NgxGoogleAnalyticsModule } from "ngx-google-analytics";
 import { MarkdownModule } from "ngx-markdown";
-import { provideNgxWebstorage, withLocalStorage, withNgxWebstorageConfig } from "ngx-webstorage";
+import { provideNgxWebstorage, withNgxWebstorageConfig } from "ngx-webstorage";
 
 import { environment } from "../environments/environment";
+import { withNgxLocalStorageFallback } from "../helpers/local-storage";
 import { AppComponent } from "./app.component";
 import { DialogOpenExampleComponent } from "./dialog-open-example/dialog-open-example.component";
 import { MonacoService } from "./monaco.service";
@@ -72,7 +73,7 @@ import { ThemeService } from "./theme.service";
     provideHotToastConfig({
       position: "bottom-right",
     }),
-    provideNgxWebstorage(withNgxWebstorageConfig({ prefix: "pws", separator: ":" }), withLocalStorage()),
+    provideNgxWebstorage(withNgxWebstorageConfig({ prefix: "pws", separator: ":" }), withNgxLocalStorageFallback()),
     provideAppInitializer(() => {
       inject(MonacoService);
       inject(ThemeService);
