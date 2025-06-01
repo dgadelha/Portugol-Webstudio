@@ -43,7 +43,7 @@
     "@fontsource/pt-sans": "^5.2.5",
     "@materia-ui/ngx-monaco-editor": "^6.0.0",
     "@mdi/svg": "^7.4.47",
-    "@ngxpert/hot-toast": "^4.1.2",
+    "@ngxpert/hot-toast": "^5.0.0",
     "@portugol-recursos/bibliotecas": "^0.0.0-dev.6",
     "@portugol-webstudio/antlr": "*",
     "@portugol-webstudio/parser": "*",
