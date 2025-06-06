@@ -40,7 +40,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.26.0",
-    "angular-eslint": "^19.4.0",
+    "angular-eslint": "^20.0.0",
     "eslint": "^9.26.0",
     "eslint-config-prettier": "^10.1.5",
     "eslint-plugin-prettier": "^5.4.0",
