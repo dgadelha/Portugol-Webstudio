@@ -63,7 +63,7 @@
     "ngx-google-analytics": "^14.0.1",
     "ngx-markdown": "^20.0.0",
     "ngx-webstorage": "^19.0.1",
-    "rxjs": "7.8.1",
+    "rxjs": "7.8.2",
     "tslib": "^2.8.1",
     "util": "^0.12.5",
     "zone.js": "~0.15.1"
