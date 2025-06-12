@@ -1,9 +1,9 @@
 :host {
   display: flex;
   flex-direction: column;
-  --mdc-dialog-supporting-text-size: 14px;
-  --mdc-dialog-supporting-text-line-height: 21px;
-  --mdc-dialog-supporting-text-color: var(--pws-body-color);
+  --mat-dialog-supporting-text-size: 14px;
+  --mat-dialog-supporting-text-line-height: 21px;
+  --mat-dialog-supporting-text-color: var(--pws-body-color);
   height: 100%;
 }
 

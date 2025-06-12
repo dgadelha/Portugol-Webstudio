@@ -19,9 +19,9 @@ import { ThemeService } from "../theme.service";
 import { WorkerService } from "../worker.service";
 
 @Component({
+  selector: "app-tab-editor",
   // eslint-disable-next-line @angular-eslint/prefer-standalone
   standalone: false,
-  selector: "app-tab-editor",
   templateUrl: "./tab-editor.component.html",
   styleUrl: "./tab-editor.component.scss",
 })

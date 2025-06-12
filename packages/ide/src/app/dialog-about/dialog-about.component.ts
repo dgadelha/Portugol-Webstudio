@@ -15,8 +15,8 @@ import { NgxGoogleAnalyticsModule } from "ngx-google-analytics";
     MatIconModule,
     NgxGoogleAnalyticsModule,
   ],
+  standalone: true,
   templateUrl: "./dialog-about.component.html",
   styleUrl: "./dialog-about.component.scss",
-  standalone: true,
 })
 export class DialogAboutComponent {}

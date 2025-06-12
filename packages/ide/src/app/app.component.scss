@@ -21,11 +21,10 @@
   overflow: hidden;
 
   .mat-mdc-tab {
-    --mdc-secondary-navigation-tab-container-height: 40px;
-    --mat-tab-header-active-label-text-color: var(--pws-tab-color-active);
-    --mat-tab-header-active-focus-label-text-color: var(--pws-tab-color-active);
-    --mat-tab-header-active-hover-label-text-color: var(--pws-tab-color-active);
-    --mat-tab-header-active-hover-indicator-color: var(--pws-tab-color-active);
+    --mat-tab-active-label-text-color: var(--pws-tab-color-active);
+    --mat-tab-active-focus-label-text-color: var(--pws-tab-color-active);
+    --mat-tab-active-hover-label-text-color: var(--pws-tab-color-active);
+    --mat-tab-active-hover-indicator-color: var(--pws-tab-color-active);
 
     position: relative;
     background-color: var(--pws-tab-bg);
@@ -91,7 +90,7 @@
       }
 
       .action-button {
-        --mdc-icon-button-state-layer-size: 40px;
+        --mat-icon-button-state-layer-size: 40px;
         padding: 8px 0;
       }
 
@@ -113,7 +112,7 @@
         width: $size;
         height: $size;
         line-height: 0;
-        --mdc-icon-button-icon-size: 20px;
+        --mat-icon-button-icon-size: 20px;
       }
     }
 

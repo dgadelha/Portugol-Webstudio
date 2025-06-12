@@ -14,7 +14,6 @@
     {
       "groupName": "Angular",
       "matchPackagePatterns": [
-        "^@angular-devkit/",
         "^@angular-eslint/",
         "^@angular/",
         "^@materia-ui/",

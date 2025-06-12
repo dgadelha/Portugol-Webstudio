@@ -1,5 +1,5 @@
 import { BreakpointObserver, BreakpointState } from "@angular/cdk/layout";
-import { Injectable } from "@angular/core";
+import { inject, Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 
 /**
@@ -7,7 +7,7 @@ import { Observable } from "rxjs";
  */
 @Injectable({ providedIn: "root" })
 export class ResponsiveService {
-  constructor(private observer: BreakpointObserver) {}
+  private observer = inject(BreakpointObserver);
 
   isBelowSm(): Observable<BreakpointState> {
     return this.observer.observe(["(max-width: 575px)"]);

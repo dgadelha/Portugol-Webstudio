@@ -18,9 +18,6 @@ interface DialogData {
 
 @Component({
   selector: "app-dialog-rename-tab",
-  templateUrl: "./dialog-rename-tab.component.html",
-  styleUrl: "./dialog-rename-tab.component.scss",
-  standalone: true,
   imports: [
     FormsModule,
     MatButtonModule,
@@ -31,6 +28,9 @@ interface DialogData {
     MatFormFieldModule,
     MatInputModule,
   ],
+  standalone: true,
+  templateUrl: "./dialog-rename-tab.component.html",
+  styleUrl: "./dialog-rename-tab.component.scss",
 })
 export class DialogRenameTabComponent {
   readonly dialogRef = inject(MatDialogRef<DialogRenameTabComponent>);

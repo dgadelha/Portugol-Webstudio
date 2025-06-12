@@ -38,7 +38,6 @@ import { TabStartComponent } from "./tab-start/tab-start.component";
 import { ThemeService } from "./theme.service";
 
 @NgModule({
-  declarations: [AppComponent, TabEditorComponent, TabStartComponent, TabHelpComponent, DialogOpenExampleComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
@@ -66,6 +65,7 @@ import { ThemeService } from "./theme.service";
       registrationStrategy: "registerWhenStable:30000",
     }),
   ],
+  declarations: [AppComponent, TabEditorComponent, TabStartComponent, TabHelpComponent, DialogOpenExampleComponent],
   providers: [
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideStorage(() => getStorage()),

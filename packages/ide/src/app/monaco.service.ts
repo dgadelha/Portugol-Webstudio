@@ -1,10 +1,12 @@
-import { Injectable } from "@angular/core";
+import { inject, Injectable } from "@angular/core";
 import { MonacoEditorLoaderService } from "@materia-ui/ngx-monaco-editor";
 import { filter, take } from "rxjs/operators";
 
 @Injectable({ providedIn: "root" })
 export class MonacoService {
-  constructor(private monacoLoaderService: MonacoEditorLoaderService) {
+  private monacoLoaderService = inject(MonacoEditorLoaderService);
+
+  constructor() {
     this.monacoLoaderService.isMonacoLoaded$
       .pipe(
         filter(isLoaded => isLoaded),

@@ -18,9 +18,9 @@ interface Tab {
 }
 
 @Component({
+  selector: "app-root",
   // eslint-disable-next-line @angular-eslint/prefer-standalone
   standalone: false,
-  selector: "app-root",
   templateUrl: "./app.component.html",
   styleUrl: "./app.component.scss",
 })

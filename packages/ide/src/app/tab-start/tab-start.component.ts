@@ -1,4 +1,4 @@
-import { Component, output, OutputRefSubscription } from "@angular/core";
+import { Component, inject, output, OutputRefSubscription } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { GoogleAnalyticsService } from "ngx-google-analytics";
 import { Subscription } from "rxjs";
@@ -8,9 +8,9 @@ import { DialogOpenExampleComponent } from "../dialog-open-example/dialog-open-e
 import { FileService } from "../file.service";
 
 @Component({
+  selector: "app-tab-start",
   // eslint-disable-next-line @angular-eslint/prefer-standalone
   standalone: false,
-  selector: "app-tab-start",
   templateUrl: "./tab-start.component.html",
   styleUrl: "./tab-start.component.scss",
 })
@@ -24,11 +24,11 @@ export class TabStartComponent {
 
   public logo: string;
 
-  constructor(
-    public gaService: GoogleAnalyticsService,
-    private dialog: MatDialog,
-    private fileService: FileService,
-  ) {
+  public gaService = inject(GoogleAnalyticsService);
+  private dialog = inject(MatDialog);
+  private fileService = inject(FileService);
+
+  constructor() {
     const currentMonth = new Date().getMonth() + 1;
     const currentDay = new Date().getDate();
 

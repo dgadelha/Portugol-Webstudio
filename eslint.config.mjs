@@ -6,7 +6,6 @@ import tseslint from "typescript-eslint";
 
 export default tseslint.config(
   eslint.configs.recommended,
-  ...angular.configs.tsAll,
   unicorn.configs.all,
   prettier,
   {
@@ -14,11 +13,14 @@ export default tseslint.config(
     extends: [...angular.configs.templateAll, ...angular.configs.templateAccessibility],
     rules: {
       "@angular-eslint/template/i18n": "off",
+      "@angular-eslint/template/cyclomatic-complexity": "warn",
+      "@angular-eslint/template/no-call-expression": "off",
     },
   },
   {
     files: ["**/*.ts"],
-    extends: [...tseslint.configs.strictTypeChecked],
+    extends: [...tseslint.configs.strictTypeChecked, ...angular.configs.tsAll],
+    processor: angular.processInlineTemplates,
     languageOptions: {
       parserOptions: {
         project: true,
@@ -26,6 +28,8 @@ export default tseslint.config(
       },
     },
     rules: {
+      "@angular-eslint/prefer-on-push-component-change-detection": "off",
+      "@angular-eslint/prefer-signals": "warn",
       "@typescript-eslint/ban-ts-comment": "off",
       "@typescript-eslint/consistent-type-imports": "off",
       "@typescript-eslint/naming-convention": "off",
@@ -71,9 +75,6 @@ export default tseslint.config(
   },
   {
     rules: {
-      "@angular-eslint/prefer-on-push-component-change-detection": "off",
-      "@angular-eslint/prefer-signals": "warn",
-      "@angular-eslint/template/no-call-expression": "off",
       "camelcase": "off",
       "capitalized-comments": "off",
       "func-names": ["error", "always"],

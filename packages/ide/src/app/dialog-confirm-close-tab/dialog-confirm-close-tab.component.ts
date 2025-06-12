@@ -14,10 +14,10 @@ interface DialogData {
 
 @Component({
   selector: "app-dialog-confirm-close-tab",
+  imports: [MatButtonModule, MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose],
+  standalone: true,
   templateUrl: "./dialog-confirm-close-tab.component.html",
   styleUrl: "./dialog-confirm-close-tab.component.scss",
-  standalone: true,
-  imports: [MatButtonModule, MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose],
 })
 export class DialogConfirmCloseTabComponent {
   readonly data = inject<DialogData>(MAT_DIALOG_DATA);

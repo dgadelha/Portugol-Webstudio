@@ -39,16 +39,23 @@
     "postinstall": "patch-package"
   },
   "devDependencies": {
-    "@eslint/js": "^9.26.0",
-    "angular-eslint": "^19.4.0",
-    "eslint": "^9.26.0",
+    "@eslint/js": "^9.28.0",
+    "angular-eslint": "^20.0.0",
+    "eslint": "^9.28.0",
     "eslint-config-prettier": "^10.1.5",
-    "eslint-plugin-prettier": "^5.4.0",
+    "eslint-plugin-prettier": "^5.4.1",
     "eslint-plugin-unicorn": "^59.0.1",
     "lerna": "^8.2.2",
     "patch-package": "^8.0.0",
     "sherif": "^1.5.0",
-    "typescript": "~5.7.3",
-    "typescript-eslint": "^8.32.0"
+    "typescript": "~5.8.3",
+    "typescript-eslint": "^8.34.0"
+  },
+  "overrides": {
+    "ngx-webstorage": {
+      "@angular/core": ">=20",
+      "@angular/common": ">=20",
+      "rxjs": "7.8.1"
+    }
   }
 }

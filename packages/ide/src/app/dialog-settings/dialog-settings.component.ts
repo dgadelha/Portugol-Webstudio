@@ -24,9 +24,9 @@ import { defaultFontSize } from "../../settings";
     MatInputModule,
     AngularSvgIconModule,
   ],
+  standalone: true,
   templateUrl: "./dialog-settings.component.html",
   styleUrl: "./dialog-settings.component.scss",
-  standalone: true,
 })
 export class DialogSettingsComponent {
   private localStorageService = inject(LocalStorageService);
