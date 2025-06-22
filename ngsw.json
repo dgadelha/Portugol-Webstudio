@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1749480839196,
+  "timestamp": 1750602025933,
   "index": "/index.html",
   "assetGroups": [
     {
@@ -13,10 +13,10 @@
       "urls": [
         "/favicon.ico",
         "/index.html",
-        "/main-U4FRHURH.js",
+        "/main-AXDXU54E.js",
         "/manifest.webmanifest",
-        "/polyfills-Q763KACN.js",
-        "/styles-IVVQL6D2.css"
+        "/polyfills-6YOLJV4E.js",
+        "/styles-BTDRF2MC.css"
       ],
       "patterns": []
     },
@@ -3758,8 +3758,8 @@
     "/assets/monaco-editor/min/vs/nls.messages.zh-tw.js": "43b79324bbe8b757b3b7a41b142a1b4771ca867e",
     "/assets/monaco-editor/monaco.d.ts": "0d7ba4d1f6545b88fca1dbf44fd583585d9da395",
     "/assets/monaco-editor/package.json": "16b37d5c80a03862bfff6dbbdf3922d1cac3a8ca",
-    "/assets/portugol-worker/worker.js": "507e22a1d8ae069edf064314eddf2015a4d06144",
-    "/assets/portugol-worker/worker.js.map": "c25fe5044ea7919c4f01550ac1e35c2f278c7e2d",
+    "/assets/portugol-worker/worker.js": "59ae4f5ceb2154cf00afec31eec1ac2e710b41f0",
+    "/assets/portugol-worker/worker.js.map": "f77f22283811f83c3954849baaa0aa550d7d4632",
     "/assets/recursos/ajuda/estilos/SyntaxHighlighter.css": "4162675b3b4d2354973021572bfd4685deb6712d",
     "/assets/recursos/ajuda/estilos/ajuda.css": "9e6ad574f9fa6c48d6f856756016eac3c1a5686b",
     "/assets/recursos/ajuda/estilos/index.css": "df28a87aa49702297859fb7900c44f8250da8786",
@@ -4438,11 +4438,11 @@
     "/assets/recursos/exercicios/exercicio60.pex": "6082892362c640c5b7c9e63b12d6594dab32128d",
     "/assets/recursos/exercicios/schema.xsd": "cd13152ea836b1eed121a6972a619f595ac5d46c",
     "/favicon.ico": "a3dadb5b6906874517b9a2bc021bb3f154290edd",
-    "/index.html": "60f36c225e99dff521c799c5dc91f423d939c370",
-    "/main-U4FRHURH.js": "e59304acb8f9487c9ac80f2b0b9aa425ea554762",
+    "/index.html": "6d73ef5b303ac682ea9c503c0862887f537f84f1",
+    "/main-AXDXU54E.js": "784d5d952fea48731554070f16b7ea580ff54536",
     "/manifest.webmanifest": "bbfd674042155ddb102be018a75422fd949cb37f",
-    "/polyfills-Q763KACN.js": "e2a9f135443e4bc6115449a6098604d881bf5931",
-    "/styles-IVVQL6D2.css": "8017e32b1095f3109daae89b1603245c5a5c59b7"
+    "/polyfills-6YOLJV4E.js": "63f5e9cc4c92645c2a2d18198eccc545555fc50f",
+    "/styles-BTDRF2MC.css": "e75464dd7eaeb1f5bbbaa8f89b92c20dd01d31fb"
   },
   "navigationUrls": [
     {
