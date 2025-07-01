@@ -32,7 +32,7 @@
     "build": "node --no-warnings --loader ts-node/esm src/atualizar.ts"
   },
   "devDependencies": {
-    "@swc/core": "^1.12.5",
+    "@swc/core": "^1.12.9",
     "@types/adm-zip": "^0.5.7",
     "@types/ini": "^4.1.1",
     "adm-zip": "^0.5.16",
