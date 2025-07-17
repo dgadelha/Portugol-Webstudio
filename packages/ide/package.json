@@ -55,7 +55,7 @@
     "antlr4ng": "^3.0.16",
     "assert": "^2.1.0",
     "file-saver": "^2.0.5",
-    "firebase": "^11.10.0",
+    "firebase": "^12.0.0",
     "iconv-lite": "^0.6.3",
     "jschardet": "^3.1.4",
     "monaco-editor": "^0.52.2",
