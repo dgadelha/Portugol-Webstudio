@@ -1,4 +1,6 @@
 name: Build and Deploy (Production)
+permissions:
+  contents: write
 on:
   push:
     branches:
