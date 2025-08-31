@@ -2,7 +2,7 @@
   "$schema": "https://json.schemastore.org/renovate",
   "extends": [
     "config:base",
-    ":group:all",
+    "group:all",
     ":disableDependencyDashboard",
     ":maintainLockFilesWeekly",
     ":rebaseStalePrs"
