@@ -1,4 +1,6 @@
 name: Build and Lint
+permissions:
+  contents: read
 on: pull_request
 jobs:
   lint:
@@ -13,8 +15,7 @@ jobs:
           node-version: 22
 
       - name: Install dependencies 🔧
-        run: |
-          npm ci --include=dev
+        run: npm ci --include=dev
 
       - name: Build code 🚚
         run: |
