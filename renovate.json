@@ -2,30 +2,11 @@
   "$schema": "https://json.schemastore.org/renovate",
   "extends": [
     "config:base",
-    ":preserveSemverRanges",
+    ":group:all",
     ":disableDependencyDashboard",
     ":maintainLockFilesWeekly",
     ":rebaseStalePrs"
   ],
   "baseBranches": ["beta"],
-  "ignoreDeps": ["typescript"],
-  "ignorePresets": [":dependencyDashboard"],
-  "packageRules": [
-    {
-      "groupName": "Angular",
-      "matchPackagePatterns": [
-        "^@angular-eslint/",
-        "^@angular/",
-        "^@materia-ui/",
-        "^angular-",
-        "^angular-cli-",
-        "^ng-",
-        "^ngx-",
-        "firebase",
-        "rxfire",
-        "rxjs",
-        "zone.js"
-      ]
-    }
-  ]
+  "ignorePresets": [":dependencyDashboard"]
 }
