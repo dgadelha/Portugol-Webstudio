@@ -39,16 +39,19 @@
     "postinstall": "patch-package"
   },
   "devDependencies": {
-    "@eslint/js": "^9.32.0",
-    "angular-eslint": "^20.1.1",
-    "eslint": "^9.32.0",
+    "@eslint/js": "^9.34.0",
+    "angular-eslint": "^20.2.0",
+    "eslint": "^9.34.0",
     "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-prettier": "^5.5.3",
+    "eslint-plugin-prettier": "^5.5.4",
     "eslint-plugin-unicorn": "^60.0.0",
-    "lerna": "^8.2.3",
+    "lerna": "^8.2.4",
     "patch-package": "^8.0.0",
     "sherif": "^1.6.1",
-    "typescript": "~5.8.3",
-    "typescript-eslint": "^8.38.0"
+    "typescript": "~5.9.2",
+    "typescript-eslint": "^8.41.0"
+  },
+  "overrides": {
+    "tmp": "^0.2.4"
   }
 }

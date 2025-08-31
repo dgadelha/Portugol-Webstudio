@@ -293,13 +293,13 @@ export class TabEditorComponent implements OnInit, OnDestroy {
 
     this.title = file.name;
     this.titleChange.emit(file.name);
-    this.code = contents?.toString();
+    this.code = contents;
   }
 
   private prepareFile(as: "text" | "binary", compat = false) {
     const blob = (() => {
       if (compat) {
-        return new Blob([encode(this.code ?? "", "ISO-8859-1")], {
+        return new Blob([Uint8Array.from(encode(this.code ?? "", "ISO-8859-1"))], {
           type: `${as === "binary" ? "application/octet-stream" : "text/plain"}; charset=ISO-8859-1`,
         });
       }

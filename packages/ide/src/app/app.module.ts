@@ -14,7 +14,6 @@ import { MatTabsModule } from "@angular/material/tabs";
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { MatTreeModule } from "@angular/material/tree";
 import { BrowserModule } from "@angular/platform-browser";
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { ServiceWorkerModule } from "@angular/service-worker";
 import { MonacoEditorModule } from "@materia-ui/ngx-monaco-editor";
 import { provideHotToastConfig } from "@ngxpert/hot-toast";
@@ -40,7 +39,6 @@ import { ThemeService } from "./theme.service";
 @NgModule({
   imports: [
     BrowserModule,
-    BrowserAnimationsModule,
     FormsModule,
     AngularSplitModule,
     MonacoEditorModule,

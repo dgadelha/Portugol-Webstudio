@@ -1,0 +1,26 @@
+diff --git a/node_modules/iconv-lite/lib/index.js b/node_modules/iconv-lite/lib/index.js
+index be3e9f9..1c39aff 100644
+--- a/node_modules/iconv-lite/lib/index.js
++++ b/node_modules/iconv-lite/lib/index.js
+@@ -161,21 +161,6 @@ iconv.enableStreamingAPI = function enableStreamingAPI (streamModule) {
+   iconv.supportsStreams = true
+ }
+ 
+-// Enable Streaming API automatically if 'stream' module is available and non-empty (the majority of environments).
+-var streamModule
+-try {
+-  streamModule = require("stream")
+-} catch (e) {}
+-
+-if (streamModule && streamModule.Transform) {
+-  iconv.enableStreamingAPI(streamModule)
+-} else {
+-  // In rare cases where 'stream' module is not available by default, throw a helpful exception.
+-  iconv.encodeStream = iconv.decodeStream = function () {
+-    throw new Error("iconv-lite Streaming API is not enabled. Use iconv.enableStreamingAPI(require('stream')); to enable it.")
+-  }
+-}
+-
+ // Some environments, such as browsers, may not load JavaScript files as UTF-8
+ // eslint-disable-next-line no-constant-condition
+ if ("Ā" !== "\u0100") {
