@@ -1,4 +1,6 @@
 name: Build and Deploy (Beta)
+permissions:
+  contents: read
 on:
   push:
     branches:
