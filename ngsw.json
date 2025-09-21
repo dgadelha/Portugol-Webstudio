@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1758480373944,
+  "timestamp": 1758482594162,
   "index": "/index.html",
   "assetGroups": [
     {
@@ -13,7 +13,7 @@
       "urls": [
         "/favicon.ico",
         "/index.html",
-        "/main-D2CZDJ2U.js",
+        "/main-RTHKATBL.js",
         "/manifest.webmanifest",
         "/polyfills-JUTM3XWE.js",
         "/styles-S3DURN62.css"
@@ -3758,8 +3758,8 @@
     "/assets/monaco-editor/min/vs/nls.messages.zh-tw.js": "43b79324bbe8b757b3b7a41b142a1b4771ca867e",
     "/assets/monaco-editor/monaco.d.ts": "0d7ba4d1f6545b88fca1dbf44fd583585d9da395",
     "/assets/monaco-editor/package.json": "16b37d5c80a03862bfff6dbbdf3922d1cac3a8ca",
-    "/assets/portugol-worker/worker.js": "c170d075b62e5867ee31f8d1c608b0d2329260b1",
-    "/assets/portugol-worker/worker.js.map": "9bc06cf3a2cfdcb2362ccc845e68a5f8df1dbb8e",
+    "/assets/portugol-worker/worker.js": "d249503ed1e13b31019d0adf18f3fbfad7e93c1d",
+    "/assets/portugol-worker/worker.js.map": "def715ae3bcf8aa5c5c1e4ee6d1e5b5602c25849",
     "/assets/recursos/ajuda/estilos/SyntaxHighlighter.css": "4162675b3b4d2354973021572bfd4685deb6712d",
     "/assets/recursos/ajuda/estilos/ajuda.css": "9e6ad574f9fa6c48d6f856756016eac3c1a5686b",
     "/assets/recursos/ajuda/estilos/index.css": "df28a87aa49702297859fb7900c44f8250da8786",
@@ -4438,8 +4438,8 @@
     "/assets/recursos/exercicios/exercicio60.pex": "6082892362c640c5b7c9e63b12d6594dab32128d",
     "/assets/recursos/exercicios/schema.xsd": "cd13152ea836b1eed121a6972a619f595ac5d46c",
     "/favicon.ico": "a3dadb5b6906874517b9a2bc021bb3f154290edd",
-    "/index.html": "72cb21b1cd4b1ddb13188d9d9ab141ff5f017dc9",
-    "/main-D2CZDJ2U.js": "d0487fda7ff518d18ca86dbc086af28f51b4279d",
+    "/index.html": "44a43c8a8960b3db1f90ad3f66786a5875bc7921",
+    "/main-RTHKATBL.js": "32651c5fd811d71c07f03e80bd32f9f6afb3ee31",
     "/manifest.webmanifest": "bbfd674042155ddb102be018a75422fd949cb37f",
     "/polyfills-JUTM3XWE.js": "0f6422efb2ab40d839d1957e4130a29a0e38626f",
     "/styles-S3DURN62.css": "9243fca82ec7d355313d85bff1b6a6693950840b"
