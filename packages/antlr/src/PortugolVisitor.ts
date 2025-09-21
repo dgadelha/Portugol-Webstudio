@@ -1,4 +1,3 @@
-// Generated from src/Portugol.g4 by ANTLR 4.13.1
 
 import { AbstractParseTreeVisitor } from "antlr4ng";
 
@@ -42,41 +41,41 @@ import { CasoContext } from "./PortugolParser.js";
 import { PareContext } from "./PortugolParser.js";
 import { IndiceArrayContext } from "./PortugolParser.js";
 import { ChamadaFuncaoContext } from "./PortugolParser.js";
-import { StringContext } from "./PortugolParser.js";
-import { NegacaoBitwiseContext } from "./PortugolParser.js";
 import { ReferenciaArrayContext } from "./PortugolParser.js";
-import { NumeroRealContext } from "./PortugolParser.js";
-import { MaisUnarioContext } from "./PortugolParser.js";
-import { OperacaoDiferencaContext } from "./PortugolParser.js";
-import { MenosUnarioContext } from "./PortugolParser.js";
-import { AdicaoContext } from "./PortugolParser.js";
-import { OperacaoXorContext } from "./PortugolParser.js";
-import { OperacaoMaiorIgualContext } from "./PortugolParser.js";
-import { DecrementoUnarioPrefixadoContext } from "./PortugolParser.js";
-import { IncrementoUnarioPosfixadoContext } from "./PortugolParser.js";
-import { MultiplicacaoContext } from "./PortugolParser.js";
-import { OperacaoOuLogicoContext } from "./PortugolParser.js";
-import { OperacaoIgualdadeContext } from "./PortugolParser.js";
-import { OperacaoShiftRightContext } from "./PortugolParser.js";
-import { DivisaoContext } from "./PortugolParser.js";
-import { ExpressaoEntreParentesesContext } from "./PortugolParser.js";
-import { OperacaoMenorIgualContext } from "./PortugolParser.js";
 import { ReferenciaMatrizContext } from "./PortugolParser.js";
-import { OperacaoMaiorContext } from "./PortugolParser.js";
-import { NumeroInteiroContext } from "./PortugolParser.js";
-import { CaracterContext } from "./PortugolParser.js";
-import { ReferenciaParaVariavelContext } from "./PortugolParser.js";
-import { ValorLogicoContext } from "./PortugolParser.js";
-import { OperacaoMenorContext } from "./PortugolParser.js";
-import { OperacaoShiftLeftContext } from "./PortugolParser.js";
-import { IncrementoUnarioPrefixadoContext } from "./PortugolParser.js";
-import { OperacaoELogicoContext } from "./PortugolParser.js";
-import { DecrementoUnarioPosfixadoContext } from "./PortugolParser.js";
-import { OperacaoOrBitwiseContext } from "./PortugolParser.js";
-import { ModuloContext } from "./PortugolParser.js";
-import { SubtracaoContext } from "./PortugolParser.js";
+import { MenosUnarioContext } from "./PortugolParser.js";
+import { MaisUnarioContext } from "./PortugolParser.js";
 import { NegacaoContext } from "./PortugolParser.js";
+import { NegacaoBitwiseContext } from "./PortugolParser.js";
+import { IncrementoUnarioPosfixadoContext } from "./PortugolParser.js";
+import { DecrementoUnarioPosfixadoContext } from "./PortugolParser.js";
+import { IncrementoUnarioPrefixadoContext } from "./PortugolParser.js";
+import { DecrementoUnarioPrefixadoContext } from "./PortugolParser.js";
+import { ReferenciaParaVariavelContext } from "./PortugolParser.js";
+import { NumeroInteiroContext } from "./PortugolParser.js";
+import { NumeroRealContext } from "./PortugolParser.js";
+import { ValorLogicoContext } from "./PortugolParser.js";
+import { CaracterContext } from "./PortugolParser.js";
+import { StringContext } from "./PortugolParser.js";
+import { ExpressaoEntreParentesesContext } from "./PortugolParser.js";
+import { MultiplicacaoContext } from "./PortugolParser.js";
+import { DivisaoContext } from "./PortugolParser.js";
+import { ModuloContext } from "./PortugolParser.js";
+import { AdicaoContext } from "./PortugolParser.js";
+import { SubtracaoContext } from "./PortugolParser.js";
+import { OperacaoIgualdadeContext } from "./PortugolParser.js";
+import { OperacaoDiferencaContext } from "./PortugolParser.js";
+import { OperacaoMaiorContext } from "./PortugolParser.js";
+import { OperacaoMenorContext } from "./PortugolParser.js";
+import { OperacaoMenorIgualContext } from "./PortugolParser.js";
+import { OperacaoMaiorIgualContext } from "./PortugolParser.js";
+import { OperacaoELogicoContext } from "./PortugolParser.js";
+import { OperacaoOuLogicoContext } from "./PortugolParser.js";
+import { OperacaoXorContext } from "./PortugolParser.js";
+import { OperacaoShiftLeftContext } from "./PortugolParser.js";
+import { OperacaoShiftRightContext } from "./PortugolParser.js";
 import { OperacaoAndBitwiseContext } from "./PortugolParser.js";
+import { OperacaoOrBitwiseContext } from "./PortugolParser.js";
 import { ListaExpressoesContext } from "./PortugolParser.js";
 import { EscopoBibliotecaContext } from "./PortugolParser.js";
 
@@ -329,138 +328,12 @@ export class PortugolVisitor<Result> extends AbstractParseTreeVisitor<Result> {
      */
     visitChamadaFuncao?: (ctx: ChamadaFuncaoContext) => Result;
     /**
-     * Visit a parse tree produced by the `string`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     * @return the visitor result
-     */
-    visitString?: (ctx: StringContext) => Result;
-    /**
-     * Visit a parse tree produced by the `negacaoBitwise`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     * @return the visitor result
-     */
-    visitNegacaoBitwise?: (ctx: NegacaoBitwiseContext) => Result;
-    /**
      * Visit a parse tree produced by the `referenciaArray`
      * labeled alternative in `PortugolParser.expressao`.
      * @param ctx the parse tree
      * @return the visitor result
      */
     visitReferenciaArray?: (ctx: ReferenciaArrayContext) => Result;
-    /**
-     * Visit a parse tree produced by the `numeroReal`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     * @return the visitor result
-     */
-    visitNumeroReal?: (ctx: NumeroRealContext) => Result;
-    /**
-     * Visit a parse tree produced by the `maisUnario`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     * @return the visitor result
-     */
-    visitMaisUnario?: (ctx: MaisUnarioContext) => Result;
-    /**
-     * Visit a parse tree produced by the `operacaoDiferenca`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     * @return the visitor result
-     */
-    visitOperacaoDiferenca?: (ctx: OperacaoDiferencaContext) => Result;
-    /**
-     * Visit a parse tree produced by the `menosUnario`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     * @return the visitor result
-     */
-    visitMenosUnario?: (ctx: MenosUnarioContext) => Result;
-    /**
-     * Visit a parse tree produced by the `adicao`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     * @return the visitor result
-     */
-    visitAdicao?: (ctx: AdicaoContext) => Result;
-    /**
-     * Visit a parse tree produced by the `operacaoXor`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     * @return the visitor result
-     */
-    visitOperacaoXor?: (ctx: OperacaoXorContext) => Result;
-    /**
-     * Visit a parse tree produced by the `operacaoMaiorIgual`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     * @return the visitor result
-     */
-    visitOperacaoMaiorIgual?: (ctx: OperacaoMaiorIgualContext) => Result;
-    /**
-     * Visit a parse tree produced by the `decrementoUnarioPrefixado`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     * @return the visitor result
-     */
-    visitDecrementoUnarioPrefixado?: (ctx: DecrementoUnarioPrefixadoContext) => Result;
-    /**
-     * Visit a parse tree produced by the `incrementoUnarioPosfixado`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     * @return the visitor result
-     */
-    visitIncrementoUnarioPosfixado?: (ctx: IncrementoUnarioPosfixadoContext) => Result;
-    /**
-     * Visit a parse tree produced by the `multiplicacao`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     * @return the visitor result
-     */
-    visitMultiplicacao?: (ctx: MultiplicacaoContext) => Result;
-    /**
-     * Visit a parse tree produced by the `operacaoOuLogico`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     * @return the visitor result
-     */
-    visitOperacaoOuLogico?: (ctx: OperacaoOuLogicoContext) => Result;
-    /**
-     * Visit a parse tree produced by the `operacaoIgualdade`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     * @return the visitor result
-     */
-    visitOperacaoIgualdade?: (ctx: OperacaoIgualdadeContext) => Result;
-    /**
-     * Visit a parse tree produced by the `operacaoShiftRight`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     * @return the visitor result
-     */
-    visitOperacaoShiftRight?: (ctx: OperacaoShiftRightContext) => Result;
-    /**
-     * Visit a parse tree produced by the `divisao`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     * @return the visitor result
-     */
-    visitDivisao?: (ctx: DivisaoContext) => Result;
-    /**
-     * Visit a parse tree produced by the `expressaoEntreParenteses`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     * @return the visitor result
-     */
-    visitExpressaoEntreParenteses?: (ctx: ExpressaoEntreParentesesContext) => Result;
-    /**
-     * Visit a parse tree produced by the `operacaoMenorIgual`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     * @return the visitor result
-     */
-    visitOperacaoMenorIgual?: (ctx: OperacaoMenorIgualContext) => Result;
     /**
      * Visit a parse tree produced by the `referenciaMatriz`
      * labeled alternative in `PortugolParser.expressao`.
@@ -469,96 +342,19 @@ export class PortugolVisitor<Result> extends AbstractParseTreeVisitor<Result> {
      */
     visitReferenciaMatriz?: (ctx: ReferenciaMatrizContext) => Result;
     /**
-     * Visit a parse tree produced by the `operacaoMaior`
+     * Visit a parse tree produced by the `menosUnario`
      * labeled alternative in `PortugolParser.expressao`.
      * @param ctx the parse tree
      * @return the visitor result
      */
-    visitOperacaoMaior?: (ctx: OperacaoMaiorContext) => Result;
+    visitMenosUnario?: (ctx: MenosUnarioContext) => Result;
     /**
-     * Visit a parse tree produced by the `numeroInteiro`
+     * Visit a parse tree produced by the `maisUnario`
      * labeled alternative in `PortugolParser.expressao`.
      * @param ctx the parse tree
      * @return the visitor result
      */
-    visitNumeroInteiro?: (ctx: NumeroInteiroContext) => Result;
-    /**
-     * Visit a parse tree produced by the `caracter`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     * @return the visitor result
-     */
-    visitCaracter?: (ctx: CaracterContext) => Result;
-    /**
-     * Visit a parse tree produced by the `referenciaParaVariavel`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     * @return the visitor result
-     */
-    visitReferenciaParaVariavel?: (ctx: ReferenciaParaVariavelContext) => Result;
-    /**
-     * Visit a parse tree produced by the `valorLogico`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     * @return the visitor result
-     */
-    visitValorLogico?: (ctx: ValorLogicoContext) => Result;
-    /**
-     * Visit a parse tree produced by the `operacaoMenor`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     * @return the visitor result
-     */
-    visitOperacaoMenor?: (ctx: OperacaoMenorContext) => Result;
-    /**
-     * Visit a parse tree produced by the `operacaoShiftLeft`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     * @return the visitor result
-     */
-    visitOperacaoShiftLeft?: (ctx: OperacaoShiftLeftContext) => Result;
-    /**
-     * Visit a parse tree produced by the `incrementoUnarioPrefixado`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     * @return the visitor result
-     */
-    visitIncrementoUnarioPrefixado?: (ctx: IncrementoUnarioPrefixadoContext) => Result;
-    /**
-     * Visit a parse tree produced by the `operacaoELogico`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     * @return the visitor result
-     */
-    visitOperacaoELogico?: (ctx: OperacaoELogicoContext) => Result;
-    /**
-     * Visit a parse tree produced by the `decrementoUnarioPosfixado`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     * @return the visitor result
-     */
-    visitDecrementoUnarioPosfixado?: (ctx: DecrementoUnarioPosfixadoContext) => Result;
-    /**
-     * Visit a parse tree produced by the `operacaoOrBitwise`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     * @return the visitor result
-     */
-    visitOperacaoOrBitwise?: (ctx: OperacaoOrBitwiseContext) => Result;
-    /**
-     * Visit a parse tree produced by the `modulo`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     * @return the visitor result
-     */
-    visitModulo?: (ctx: ModuloContext) => Result;
-    /**
-     * Visit a parse tree produced by the `subtracao`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     * @return the visitor result
-     */
-    visitSubtracao?: (ctx: SubtracaoContext) => Result;
+    visitMaisUnario?: (ctx: MaisUnarioContext) => Result;
     /**
      * Visit a parse tree produced by the `negacao`
      * labeled alternative in `PortugolParser.expressao`.
@@ -567,12 +363,215 @@ export class PortugolVisitor<Result> extends AbstractParseTreeVisitor<Result> {
      */
     visitNegacao?: (ctx: NegacaoContext) => Result;
     /**
+     * Visit a parse tree produced by the `negacaoBitwise`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     * @return the visitor result
+     */
+    visitNegacaoBitwise?: (ctx: NegacaoBitwiseContext) => Result;
+    /**
+     * Visit a parse tree produced by the `incrementoUnarioPosfixado`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     * @return the visitor result
+     */
+    visitIncrementoUnarioPosfixado?: (ctx: IncrementoUnarioPosfixadoContext) => Result;
+    /**
+     * Visit a parse tree produced by the `decrementoUnarioPosfixado`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     * @return the visitor result
+     */
+    visitDecrementoUnarioPosfixado?: (ctx: DecrementoUnarioPosfixadoContext) => Result;
+    /**
+     * Visit a parse tree produced by the `incrementoUnarioPrefixado`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     * @return the visitor result
+     */
+    visitIncrementoUnarioPrefixado?: (ctx: IncrementoUnarioPrefixadoContext) => Result;
+    /**
+     * Visit a parse tree produced by the `decrementoUnarioPrefixado`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     * @return the visitor result
+     */
+    visitDecrementoUnarioPrefixado?: (ctx: DecrementoUnarioPrefixadoContext) => Result;
+    /**
+     * Visit a parse tree produced by the `referenciaParaVariavel`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     * @return the visitor result
+     */
+    visitReferenciaParaVariavel?: (ctx: ReferenciaParaVariavelContext) => Result;
+    /**
+     * Visit a parse tree produced by the `numeroInteiro`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     * @return the visitor result
+     */
+    visitNumeroInteiro?: (ctx: NumeroInteiroContext) => Result;
+    /**
+     * Visit a parse tree produced by the `numeroReal`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     * @return the visitor result
+     */
+    visitNumeroReal?: (ctx: NumeroRealContext) => Result;
+    /**
+     * Visit a parse tree produced by the `valorLogico`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     * @return the visitor result
+     */
+    visitValorLogico?: (ctx: ValorLogicoContext) => Result;
+    /**
+     * Visit a parse tree produced by the `caracter`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     * @return the visitor result
+     */
+    visitCaracter?: (ctx: CaracterContext) => Result;
+    /**
+     * Visit a parse tree produced by the `string`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     * @return the visitor result
+     */
+    visitString?: (ctx: StringContext) => Result;
+    /**
+     * Visit a parse tree produced by the `expressaoEntreParenteses`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     * @return the visitor result
+     */
+    visitExpressaoEntreParenteses?: (ctx: ExpressaoEntreParentesesContext) => Result;
+    /**
+     * Visit a parse tree produced by the `multiplicacao`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     * @return the visitor result
+     */
+    visitMultiplicacao?: (ctx: MultiplicacaoContext) => Result;
+    /**
+     * Visit a parse tree produced by the `divisao`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     * @return the visitor result
+     */
+    visitDivisao?: (ctx: DivisaoContext) => Result;
+    /**
+     * Visit a parse tree produced by the `modulo`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     * @return the visitor result
+     */
+    visitModulo?: (ctx: ModuloContext) => Result;
+    /**
+     * Visit a parse tree produced by the `adicao`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     * @return the visitor result
+     */
+    visitAdicao?: (ctx: AdicaoContext) => Result;
+    /**
+     * Visit a parse tree produced by the `subtracao`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     * @return the visitor result
+     */
+    visitSubtracao?: (ctx: SubtracaoContext) => Result;
+    /**
+     * Visit a parse tree produced by the `operacaoIgualdade`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     * @return the visitor result
+     */
+    visitOperacaoIgualdade?: (ctx: OperacaoIgualdadeContext) => Result;
+    /**
+     * Visit a parse tree produced by the `operacaoDiferenca`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     * @return the visitor result
+     */
+    visitOperacaoDiferenca?: (ctx: OperacaoDiferencaContext) => Result;
+    /**
+     * Visit a parse tree produced by the `operacaoMaior`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     * @return the visitor result
+     */
+    visitOperacaoMaior?: (ctx: OperacaoMaiorContext) => Result;
+    /**
+     * Visit a parse tree produced by the `operacaoMenor`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     * @return the visitor result
+     */
+    visitOperacaoMenor?: (ctx: OperacaoMenorContext) => Result;
+    /**
+     * Visit a parse tree produced by the `operacaoMenorIgual`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     * @return the visitor result
+     */
+    visitOperacaoMenorIgual?: (ctx: OperacaoMenorIgualContext) => Result;
+    /**
+     * Visit a parse tree produced by the `operacaoMaiorIgual`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     * @return the visitor result
+     */
+    visitOperacaoMaiorIgual?: (ctx: OperacaoMaiorIgualContext) => Result;
+    /**
+     * Visit a parse tree produced by the `operacaoELogico`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     * @return the visitor result
+     */
+    visitOperacaoELogico?: (ctx: OperacaoELogicoContext) => Result;
+    /**
+     * Visit a parse tree produced by the `operacaoOuLogico`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     * @return the visitor result
+     */
+    visitOperacaoOuLogico?: (ctx: OperacaoOuLogicoContext) => Result;
+    /**
+     * Visit a parse tree produced by the `operacaoXor`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     * @return the visitor result
+     */
+    visitOperacaoXor?: (ctx: OperacaoXorContext) => Result;
+    /**
+     * Visit a parse tree produced by the `operacaoShiftLeft`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     * @return the visitor result
+     */
+    visitOperacaoShiftLeft?: (ctx: OperacaoShiftLeftContext) => Result;
+    /**
+     * Visit a parse tree produced by the `operacaoShiftRight`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     * @return the visitor result
+     */
+    visitOperacaoShiftRight?: (ctx: OperacaoShiftRightContext) => Result;
+    /**
      * Visit a parse tree produced by the `operacaoAndBitwise`
      * labeled alternative in `PortugolParser.expressao`.
      * @param ctx the parse tree
      * @return the visitor result
      */
     visitOperacaoAndBitwise?: (ctx: OperacaoAndBitwiseContext) => Result;
+    /**
+     * Visit a parse tree produced by the `operacaoOrBitwise`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     * @return the visitor result
+     */
+    visitOperacaoOrBitwise?: (ctx: OperacaoOrBitwiseContext) => Result;
     /**
      * Visit a parse tree produced by `PortugolParser.listaExpressoes`.
      * @param ctx the parse tree

@@ -39,7 +39,7 @@
     "antlr4ng": "^3.0.16"
   },
   "devDependencies": {
-    "antlr4ng-cli": "^2.0.0",
+    "antlr-ng": "^1.0.10",
     "babel-loader": "^10.0.0",
     "webpack": "^5.101.3",
     "webpack-cli": "^6.0.1"

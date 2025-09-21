@@ -1,4 +1,3 @@
-// Generated from src/Portugol.g4 by ANTLR 4.13.1
 
 import { ErrorNode, ParseTreeListener, ParserRuleContext, TerminalNode } from "antlr4ng";
 
@@ -42,41 +41,41 @@ import { CasoContext } from "./PortugolParser.js";
 import { PareContext } from "./PortugolParser.js";
 import { IndiceArrayContext } from "./PortugolParser.js";
 import { ChamadaFuncaoContext } from "./PortugolParser.js";
-import { StringContext } from "./PortugolParser.js";
-import { NegacaoBitwiseContext } from "./PortugolParser.js";
 import { ReferenciaArrayContext } from "./PortugolParser.js";
-import { NumeroRealContext } from "./PortugolParser.js";
-import { MaisUnarioContext } from "./PortugolParser.js";
-import { OperacaoDiferencaContext } from "./PortugolParser.js";
-import { MenosUnarioContext } from "./PortugolParser.js";
-import { AdicaoContext } from "./PortugolParser.js";
-import { OperacaoXorContext } from "./PortugolParser.js";
-import { OperacaoMaiorIgualContext } from "./PortugolParser.js";
-import { DecrementoUnarioPrefixadoContext } from "./PortugolParser.js";
-import { IncrementoUnarioPosfixadoContext } from "./PortugolParser.js";
-import { MultiplicacaoContext } from "./PortugolParser.js";
-import { OperacaoOuLogicoContext } from "./PortugolParser.js";
-import { OperacaoIgualdadeContext } from "./PortugolParser.js";
-import { OperacaoShiftRightContext } from "./PortugolParser.js";
-import { DivisaoContext } from "./PortugolParser.js";
-import { ExpressaoEntreParentesesContext } from "./PortugolParser.js";
-import { OperacaoMenorIgualContext } from "./PortugolParser.js";
 import { ReferenciaMatrizContext } from "./PortugolParser.js";
-import { OperacaoMaiorContext } from "./PortugolParser.js";
-import { NumeroInteiroContext } from "./PortugolParser.js";
-import { CaracterContext } from "./PortugolParser.js";
-import { ReferenciaParaVariavelContext } from "./PortugolParser.js";
-import { ValorLogicoContext } from "./PortugolParser.js";
-import { OperacaoMenorContext } from "./PortugolParser.js";
-import { OperacaoShiftLeftContext } from "./PortugolParser.js";
-import { IncrementoUnarioPrefixadoContext } from "./PortugolParser.js";
-import { OperacaoELogicoContext } from "./PortugolParser.js";
-import { DecrementoUnarioPosfixadoContext } from "./PortugolParser.js";
-import { OperacaoOrBitwiseContext } from "./PortugolParser.js";
-import { ModuloContext } from "./PortugolParser.js";
-import { SubtracaoContext } from "./PortugolParser.js";
+import { MenosUnarioContext } from "./PortugolParser.js";
+import { MaisUnarioContext } from "./PortugolParser.js";
 import { NegacaoContext } from "./PortugolParser.js";
+import { NegacaoBitwiseContext } from "./PortugolParser.js";
+import { IncrementoUnarioPosfixadoContext } from "./PortugolParser.js";
+import { DecrementoUnarioPosfixadoContext } from "./PortugolParser.js";
+import { IncrementoUnarioPrefixadoContext } from "./PortugolParser.js";
+import { DecrementoUnarioPrefixadoContext } from "./PortugolParser.js";
+import { ReferenciaParaVariavelContext } from "./PortugolParser.js";
+import { NumeroInteiroContext } from "./PortugolParser.js";
+import { NumeroRealContext } from "./PortugolParser.js";
+import { ValorLogicoContext } from "./PortugolParser.js";
+import { CaracterContext } from "./PortugolParser.js";
+import { StringContext } from "./PortugolParser.js";
+import { ExpressaoEntreParentesesContext } from "./PortugolParser.js";
+import { MultiplicacaoContext } from "./PortugolParser.js";
+import { DivisaoContext } from "./PortugolParser.js";
+import { ModuloContext } from "./PortugolParser.js";
+import { AdicaoContext } from "./PortugolParser.js";
+import { SubtracaoContext } from "./PortugolParser.js";
+import { OperacaoIgualdadeContext } from "./PortugolParser.js";
+import { OperacaoDiferencaContext } from "./PortugolParser.js";
+import { OperacaoMaiorContext } from "./PortugolParser.js";
+import { OperacaoMenorContext } from "./PortugolParser.js";
+import { OperacaoMenorIgualContext } from "./PortugolParser.js";
+import { OperacaoMaiorIgualContext } from "./PortugolParser.js";
+import { OperacaoELogicoContext } from "./PortugolParser.js";
+import { OperacaoOuLogicoContext } from "./PortugolParser.js";
+import { OperacaoXorContext } from "./PortugolParser.js";
+import { OperacaoShiftLeftContext } from "./PortugolParser.js";
+import { OperacaoShiftRightContext } from "./PortugolParser.js";
 import { OperacaoAndBitwiseContext } from "./PortugolParser.js";
+import { OperacaoOrBitwiseContext } from "./PortugolParser.js";
 import { ListaExpressoesContext } from "./PortugolParser.js";
 import { EscopoBibliotecaContext } from "./PortugolParser.js";
 
@@ -487,30 +486,6 @@ export class PortugolListener implements ParseTreeListener {
      */
     exitChamadaFuncao?: (ctx: ChamadaFuncaoContext) => void;
     /**
-     * Enter a parse tree produced by the `string`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     */
-    enterString?: (ctx: StringContext) => void;
-    /**
-     * Exit a parse tree produced by the `string`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     */
-    exitString?: (ctx: StringContext) => void;
-    /**
-     * Enter a parse tree produced by the `negacaoBitwise`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     */
-    enterNegacaoBitwise?: (ctx: NegacaoBitwiseContext) => void;
-    /**
-     * Exit a parse tree produced by the `negacaoBitwise`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     */
-    exitNegacaoBitwise?: (ctx: NegacaoBitwiseContext) => void;
-    /**
      * Enter a parse tree produced by the `referenciaArray`
      * labeled alternative in `PortugolParser.expressao`.
      * @param ctx the parse tree
@@ -522,198 +497,6 @@ export class PortugolListener implements ParseTreeListener {
      * @param ctx the parse tree
      */
     exitReferenciaArray?: (ctx: ReferenciaArrayContext) => void;
-    /**
-     * Enter a parse tree produced by the `numeroReal`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     */
-    enterNumeroReal?: (ctx: NumeroRealContext) => void;
-    /**
-     * Exit a parse tree produced by the `numeroReal`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     */
-    exitNumeroReal?: (ctx: NumeroRealContext) => void;
-    /**
-     * Enter a parse tree produced by the `maisUnario`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     */
-    enterMaisUnario?: (ctx: MaisUnarioContext) => void;
-    /**
-     * Exit a parse tree produced by the `maisUnario`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     */
-    exitMaisUnario?: (ctx: MaisUnarioContext) => void;
-    /**
-     * Enter a parse tree produced by the `operacaoDiferenca`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     */
-    enterOperacaoDiferenca?: (ctx: OperacaoDiferencaContext) => void;
-    /**
-     * Exit a parse tree produced by the `operacaoDiferenca`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     */
-    exitOperacaoDiferenca?: (ctx: OperacaoDiferencaContext) => void;
-    /**
-     * Enter a parse tree produced by the `menosUnario`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     */
-    enterMenosUnario?: (ctx: MenosUnarioContext) => void;
-    /**
-     * Exit a parse tree produced by the `menosUnario`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     */
-    exitMenosUnario?: (ctx: MenosUnarioContext) => void;
-    /**
-     * Enter a parse tree produced by the `adicao`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     */
-    enterAdicao?: (ctx: AdicaoContext) => void;
-    /**
-     * Exit a parse tree produced by the `adicao`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     */
-    exitAdicao?: (ctx: AdicaoContext) => void;
-    /**
-     * Enter a parse tree produced by the `operacaoXor`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     */
-    enterOperacaoXor?: (ctx: OperacaoXorContext) => void;
-    /**
-     * Exit a parse tree produced by the `operacaoXor`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     */
-    exitOperacaoXor?: (ctx: OperacaoXorContext) => void;
-    /**
-     * Enter a parse tree produced by the `operacaoMaiorIgual`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     */
-    enterOperacaoMaiorIgual?: (ctx: OperacaoMaiorIgualContext) => void;
-    /**
-     * Exit a parse tree produced by the `operacaoMaiorIgual`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     */
-    exitOperacaoMaiorIgual?: (ctx: OperacaoMaiorIgualContext) => void;
-    /**
-     * Enter a parse tree produced by the `decrementoUnarioPrefixado`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     */
-    enterDecrementoUnarioPrefixado?: (ctx: DecrementoUnarioPrefixadoContext) => void;
-    /**
-     * Exit a parse tree produced by the `decrementoUnarioPrefixado`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     */
-    exitDecrementoUnarioPrefixado?: (ctx: DecrementoUnarioPrefixadoContext) => void;
-    /**
-     * Enter a parse tree produced by the `incrementoUnarioPosfixado`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     */
-    enterIncrementoUnarioPosfixado?: (ctx: IncrementoUnarioPosfixadoContext) => void;
-    /**
-     * Exit a parse tree produced by the `incrementoUnarioPosfixado`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     */
-    exitIncrementoUnarioPosfixado?: (ctx: IncrementoUnarioPosfixadoContext) => void;
-    /**
-     * Enter a parse tree produced by the `multiplicacao`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     */
-    enterMultiplicacao?: (ctx: MultiplicacaoContext) => void;
-    /**
-     * Exit a parse tree produced by the `multiplicacao`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     */
-    exitMultiplicacao?: (ctx: MultiplicacaoContext) => void;
-    /**
-     * Enter a parse tree produced by the `operacaoOuLogico`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     */
-    enterOperacaoOuLogico?: (ctx: OperacaoOuLogicoContext) => void;
-    /**
-     * Exit a parse tree produced by the `operacaoOuLogico`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     */
-    exitOperacaoOuLogico?: (ctx: OperacaoOuLogicoContext) => void;
-    /**
-     * Enter a parse tree produced by the `operacaoIgualdade`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     */
-    enterOperacaoIgualdade?: (ctx: OperacaoIgualdadeContext) => void;
-    /**
-     * Exit a parse tree produced by the `operacaoIgualdade`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     */
-    exitOperacaoIgualdade?: (ctx: OperacaoIgualdadeContext) => void;
-    /**
-     * Enter a parse tree produced by the `operacaoShiftRight`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     */
-    enterOperacaoShiftRight?: (ctx: OperacaoShiftRightContext) => void;
-    /**
-     * Exit a parse tree produced by the `operacaoShiftRight`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     */
-    exitOperacaoShiftRight?: (ctx: OperacaoShiftRightContext) => void;
-    /**
-     * Enter a parse tree produced by the `divisao`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     */
-    enterDivisao?: (ctx: DivisaoContext) => void;
-    /**
-     * Exit a parse tree produced by the `divisao`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     */
-    exitDivisao?: (ctx: DivisaoContext) => void;
-    /**
-     * Enter a parse tree produced by the `expressaoEntreParenteses`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     */
-    enterExpressaoEntreParenteses?: (ctx: ExpressaoEntreParentesesContext) => void;
-    /**
-     * Exit a parse tree produced by the `expressaoEntreParenteses`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     */
-    exitExpressaoEntreParenteses?: (ctx: ExpressaoEntreParentesesContext) => void;
-    /**
-     * Enter a parse tree produced by the `operacaoMenorIgual`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     */
-    enterOperacaoMenorIgual?: (ctx: OperacaoMenorIgualContext) => void;
-    /**
-     * Exit a parse tree produced by the `operacaoMenorIgual`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     */
-    exitOperacaoMenorIgual?: (ctx: OperacaoMenorIgualContext) => void;
     /**
      * Enter a parse tree produced by the `referenciaMatriz`
      * labeled alternative in `PortugolParser.expressao`.
@@ -727,161 +510,29 @@ export class PortugolListener implements ParseTreeListener {
      */
     exitReferenciaMatriz?: (ctx: ReferenciaMatrizContext) => void;
     /**
-     * Enter a parse tree produced by the `operacaoMaior`
+     * Enter a parse tree produced by the `menosUnario`
      * labeled alternative in `PortugolParser.expressao`.
      * @param ctx the parse tree
      */
-    enterOperacaoMaior?: (ctx: OperacaoMaiorContext) => void;
+    enterMenosUnario?: (ctx: MenosUnarioContext) => void;
     /**
-     * Exit a parse tree produced by the `operacaoMaior`
+     * Exit a parse tree produced by the `menosUnario`
      * labeled alternative in `PortugolParser.expressao`.
      * @param ctx the parse tree
      */
-    exitOperacaoMaior?: (ctx: OperacaoMaiorContext) => void;
+    exitMenosUnario?: (ctx: MenosUnarioContext) => void;
     /**
-     * Enter a parse tree produced by the `numeroInteiro`
+     * Enter a parse tree produced by the `maisUnario`
      * labeled alternative in `PortugolParser.expressao`.
      * @param ctx the parse tree
      */
-    enterNumeroInteiro?: (ctx: NumeroInteiroContext) => void;
+    enterMaisUnario?: (ctx: MaisUnarioContext) => void;
     /**
-     * Exit a parse tree produced by the `numeroInteiro`
+     * Exit a parse tree produced by the `maisUnario`
      * labeled alternative in `PortugolParser.expressao`.
      * @param ctx the parse tree
      */
-    exitNumeroInteiro?: (ctx: NumeroInteiroContext) => void;
-    /**
-     * Enter a parse tree produced by the `caracter`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     */
-    enterCaracter?: (ctx: CaracterContext) => void;
-    /**
-     * Exit a parse tree produced by the `caracter`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     */
-    exitCaracter?: (ctx: CaracterContext) => void;
-    /**
-     * Enter a parse tree produced by the `referenciaParaVariavel`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     */
-    enterReferenciaParaVariavel?: (ctx: ReferenciaParaVariavelContext) => void;
-    /**
-     * Exit a parse tree produced by the `referenciaParaVariavel`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     */
-    exitReferenciaParaVariavel?: (ctx: ReferenciaParaVariavelContext) => void;
-    /**
-     * Enter a parse tree produced by the `valorLogico`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     */
-    enterValorLogico?: (ctx: ValorLogicoContext) => void;
-    /**
-     * Exit a parse tree produced by the `valorLogico`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     */
-    exitValorLogico?: (ctx: ValorLogicoContext) => void;
-    /**
-     * Enter a parse tree produced by the `operacaoMenor`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     */
-    enterOperacaoMenor?: (ctx: OperacaoMenorContext) => void;
-    /**
-     * Exit a parse tree produced by the `operacaoMenor`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     */
-    exitOperacaoMenor?: (ctx: OperacaoMenorContext) => void;
-    /**
-     * Enter a parse tree produced by the `operacaoShiftLeft`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     */
-    enterOperacaoShiftLeft?: (ctx: OperacaoShiftLeftContext) => void;
-    /**
-     * Exit a parse tree produced by the `operacaoShiftLeft`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     */
-    exitOperacaoShiftLeft?: (ctx: OperacaoShiftLeftContext) => void;
-    /**
-     * Enter a parse tree produced by the `incrementoUnarioPrefixado`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     */
-    enterIncrementoUnarioPrefixado?: (ctx: IncrementoUnarioPrefixadoContext) => void;
-    /**
-     * Exit a parse tree produced by the `incrementoUnarioPrefixado`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     */
-    exitIncrementoUnarioPrefixado?: (ctx: IncrementoUnarioPrefixadoContext) => void;
-    /**
-     * Enter a parse tree produced by the `operacaoELogico`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     */
-    enterOperacaoELogico?: (ctx: OperacaoELogicoContext) => void;
-    /**
-     * Exit a parse tree produced by the `operacaoELogico`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     */
-    exitOperacaoELogico?: (ctx: OperacaoELogicoContext) => void;
-    /**
-     * Enter a parse tree produced by the `decrementoUnarioPosfixado`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     */
-    enterDecrementoUnarioPosfixado?: (ctx: DecrementoUnarioPosfixadoContext) => void;
-    /**
-     * Exit a parse tree produced by the `decrementoUnarioPosfixado`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     */
-    exitDecrementoUnarioPosfixado?: (ctx: DecrementoUnarioPosfixadoContext) => void;
-    /**
-     * Enter a parse tree produced by the `operacaoOrBitwise`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     */
-    enterOperacaoOrBitwise?: (ctx: OperacaoOrBitwiseContext) => void;
-    /**
-     * Exit a parse tree produced by the `operacaoOrBitwise`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     */
-    exitOperacaoOrBitwise?: (ctx: OperacaoOrBitwiseContext) => void;
-    /**
-     * Enter a parse tree produced by the `modulo`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     */
-    enterModulo?: (ctx: ModuloContext) => void;
-    /**
-     * Exit a parse tree produced by the `modulo`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     */
-    exitModulo?: (ctx: ModuloContext) => void;
-    /**
-     * Enter a parse tree produced by the `subtracao`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     */
-    enterSubtracao?: (ctx: SubtracaoContext) => void;
-    /**
-     * Exit a parse tree produced by the `subtracao`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     */
-    exitSubtracao?: (ctx: SubtracaoContext) => void;
+    exitMaisUnario?: (ctx: MaisUnarioContext) => void;
     /**
      * Enter a parse tree produced by the `negacao`
      * labeled alternative in `PortugolParser.expressao`.
@@ -895,6 +546,342 @@ export class PortugolListener implements ParseTreeListener {
      */
     exitNegacao?: (ctx: NegacaoContext) => void;
     /**
+     * Enter a parse tree produced by the `negacaoBitwise`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     */
+    enterNegacaoBitwise?: (ctx: NegacaoBitwiseContext) => void;
+    /**
+     * Exit a parse tree produced by the `negacaoBitwise`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     */
+    exitNegacaoBitwise?: (ctx: NegacaoBitwiseContext) => void;
+    /**
+     * Enter a parse tree produced by the `incrementoUnarioPosfixado`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     */
+    enterIncrementoUnarioPosfixado?: (ctx: IncrementoUnarioPosfixadoContext) => void;
+    /**
+     * Exit a parse tree produced by the `incrementoUnarioPosfixado`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     */
+    exitIncrementoUnarioPosfixado?: (ctx: IncrementoUnarioPosfixadoContext) => void;
+    /**
+     * Enter a parse tree produced by the `decrementoUnarioPosfixado`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     */
+    enterDecrementoUnarioPosfixado?: (ctx: DecrementoUnarioPosfixadoContext) => void;
+    /**
+     * Exit a parse tree produced by the `decrementoUnarioPosfixado`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     */
+    exitDecrementoUnarioPosfixado?: (ctx: DecrementoUnarioPosfixadoContext) => void;
+    /**
+     * Enter a parse tree produced by the `incrementoUnarioPrefixado`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     */
+    enterIncrementoUnarioPrefixado?: (ctx: IncrementoUnarioPrefixadoContext) => void;
+    /**
+     * Exit a parse tree produced by the `incrementoUnarioPrefixado`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     */
+    exitIncrementoUnarioPrefixado?: (ctx: IncrementoUnarioPrefixadoContext) => void;
+    /**
+     * Enter a parse tree produced by the `decrementoUnarioPrefixado`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     */
+    enterDecrementoUnarioPrefixado?: (ctx: DecrementoUnarioPrefixadoContext) => void;
+    /**
+     * Exit a parse tree produced by the `decrementoUnarioPrefixado`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     */
+    exitDecrementoUnarioPrefixado?: (ctx: DecrementoUnarioPrefixadoContext) => void;
+    /**
+     * Enter a parse tree produced by the `referenciaParaVariavel`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     */
+    enterReferenciaParaVariavel?: (ctx: ReferenciaParaVariavelContext) => void;
+    /**
+     * Exit a parse tree produced by the `referenciaParaVariavel`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     */
+    exitReferenciaParaVariavel?: (ctx: ReferenciaParaVariavelContext) => void;
+    /**
+     * Enter a parse tree produced by the `numeroInteiro`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     */
+    enterNumeroInteiro?: (ctx: NumeroInteiroContext) => void;
+    /**
+     * Exit a parse tree produced by the `numeroInteiro`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     */
+    exitNumeroInteiro?: (ctx: NumeroInteiroContext) => void;
+    /**
+     * Enter a parse tree produced by the `numeroReal`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     */
+    enterNumeroReal?: (ctx: NumeroRealContext) => void;
+    /**
+     * Exit a parse tree produced by the `numeroReal`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     */
+    exitNumeroReal?: (ctx: NumeroRealContext) => void;
+    /**
+     * Enter a parse tree produced by the `valorLogico`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     */
+    enterValorLogico?: (ctx: ValorLogicoContext) => void;
+    /**
+     * Exit a parse tree produced by the `valorLogico`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     */
+    exitValorLogico?: (ctx: ValorLogicoContext) => void;
+    /**
+     * Enter a parse tree produced by the `caracter`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     */
+    enterCaracter?: (ctx: CaracterContext) => void;
+    /**
+     * Exit a parse tree produced by the `caracter`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     */
+    exitCaracter?: (ctx: CaracterContext) => void;
+    /**
+     * Enter a parse tree produced by the `string`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     */
+    enterString?: (ctx: StringContext) => void;
+    /**
+     * Exit a parse tree produced by the `string`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     */
+    exitString?: (ctx: StringContext) => void;
+    /**
+     * Enter a parse tree produced by the `expressaoEntreParenteses`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     */
+    enterExpressaoEntreParenteses?: (ctx: ExpressaoEntreParentesesContext) => void;
+    /**
+     * Exit a parse tree produced by the `expressaoEntreParenteses`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     */
+    exitExpressaoEntreParenteses?: (ctx: ExpressaoEntreParentesesContext) => void;
+    /**
+     * Enter a parse tree produced by the `multiplicacao`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     */
+    enterMultiplicacao?: (ctx: MultiplicacaoContext) => void;
+    /**
+     * Exit a parse tree produced by the `multiplicacao`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     */
+    exitMultiplicacao?: (ctx: MultiplicacaoContext) => void;
+    /**
+     * Enter a parse tree produced by the `divisao`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     */
+    enterDivisao?: (ctx: DivisaoContext) => void;
+    /**
+     * Exit a parse tree produced by the `divisao`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     */
+    exitDivisao?: (ctx: DivisaoContext) => void;
+    /**
+     * Enter a parse tree produced by the `modulo`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     */
+    enterModulo?: (ctx: ModuloContext) => void;
+    /**
+     * Exit a parse tree produced by the `modulo`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     */
+    exitModulo?: (ctx: ModuloContext) => void;
+    /**
+     * Enter a parse tree produced by the `adicao`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     */
+    enterAdicao?: (ctx: AdicaoContext) => void;
+    /**
+     * Exit a parse tree produced by the `adicao`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     */
+    exitAdicao?: (ctx: AdicaoContext) => void;
+    /**
+     * Enter a parse tree produced by the `subtracao`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     */
+    enterSubtracao?: (ctx: SubtracaoContext) => void;
+    /**
+     * Exit a parse tree produced by the `subtracao`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     */
+    exitSubtracao?: (ctx: SubtracaoContext) => void;
+    /**
+     * Enter a parse tree produced by the `operacaoIgualdade`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     */
+    enterOperacaoIgualdade?: (ctx: OperacaoIgualdadeContext) => void;
+    /**
+     * Exit a parse tree produced by the `operacaoIgualdade`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     */
+    exitOperacaoIgualdade?: (ctx: OperacaoIgualdadeContext) => void;
+    /**
+     * Enter a parse tree produced by the `operacaoDiferenca`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     */
+    enterOperacaoDiferenca?: (ctx: OperacaoDiferencaContext) => void;
+    /**
+     * Exit a parse tree produced by the `operacaoDiferenca`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     */
+    exitOperacaoDiferenca?: (ctx: OperacaoDiferencaContext) => void;
+    /**
+     * Enter a parse tree produced by the `operacaoMaior`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     */
+    enterOperacaoMaior?: (ctx: OperacaoMaiorContext) => void;
+    /**
+     * Exit a parse tree produced by the `operacaoMaior`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     */
+    exitOperacaoMaior?: (ctx: OperacaoMaiorContext) => void;
+    /**
+     * Enter a parse tree produced by the `operacaoMenor`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     */
+    enterOperacaoMenor?: (ctx: OperacaoMenorContext) => void;
+    /**
+     * Exit a parse tree produced by the `operacaoMenor`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     */
+    exitOperacaoMenor?: (ctx: OperacaoMenorContext) => void;
+    /**
+     * Enter a parse tree produced by the `operacaoMenorIgual`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     */
+    enterOperacaoMenorIgual?: (ctx: OperacaoMenorIgualContext) => void;
+    /**
+     * Exit a parse tree produced by the `operacaoMenorIgual`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     */
+    exitOperacaoMenorIgual?: (ctx: OperacaoMenorIgualContext) => void;
+    /**
+     * Enter a parse tree produced by the `operacaoMaiorIgual`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     */
+    enterOperacaoMaiorIgual?: (ctx: OperacaoMaiorIgualContext) => void;
+    /**
+     * Exit a parse tree produced by the `operacaoMaiorIgual`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     */
+    exitOperacaoMaiorIgual?: (ctx: OperacaoMaiorIgualContext) => void;
+    /**
+     * Enter a parse tree produced by the `operacaoELogico`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     */
+    enterOperacaoELogico?: (ctx: OperacaoELogicoContext) => void;
+    /**
+     * Exit a parse tree produced by the `operacaoELogico`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     */
+    exitOperacaoELogico?: (ctx: OperacaoELogicoContext) => void;
+    /**
+     * Enter a parse tree produced by the `operacaoOuLogico`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     */
+    enterOperacaoOuLogico?: (ctx: OperacaoOuLogicoContext) => void;
+    /**
+     * Exit a parse tree produced by the `operacaoOuLogico`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     */
+    exitOperacaoOuLogico?: (ctx: OperacaoOuLogicoContext) => void;
+    /**
+     * Enter a parse tree produced by the `operacaoXor`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     */
+    enterOperacaoXor?: (ctx: OperacaoXorContext) => void;
+    /**
+     * Exit a parse tree produced by the `operacaoXor`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     */
+    exitOperacaoXor?: (ctx: OperacaoXorContext) => void;
+    /**
+     * Enter a parse tree produced by the `operacaoShiftLeft`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     */
+    enterOperacaoShiftLeft?: (ctx: OperacaoShiftLeftContext) => void;
+    /**
+     * Exit a parse tree produced by the `operacaoShiftLeft`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     */
+    exitOperacaoShiftLeft?: (ctx: OperacaoShiftLeftContext) => void;
+    /**
+     * Enter a parse tree produced by the `operacaoShiftRight`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     */
+    enterOperacaoShiftRight?: (ctx: OperacaoShiftRightContext) => void;
+    /**
+     * Exit a parse tree produced by the `operacaoShiftRight`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     */
+    exitOperacaoShiftRight?: (ctx: OperacaoShiftRightContext) => void;
+    /**
      * Enter a parse tree produced by the `operacaoAndBitwise`
      * labeled alternative in `PortugolParser.expressao`.
      * @param ctx the parse tree
@@ -906,6 +893,18 @@ export class PortugolListener implements ParseTreeListener {
      * @param ctx the parse tree
      */
     exitOperacaoAndBitwise?: (ctx: OperacaoAndBitwiseContext) => void;
+    /**
+     * Enter a parse tree produced by the `operacaoOrBitwise`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     */
+    enterOperacaoOrBitwise?: (ctx: OperacaoOrBitwiseContext) => void;
+    /**
+     * Exit a parse tree produced by the `operacaoOrBitwise`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     */
+    exitOperacaoOrBitwise?: (ctx: OperacaoOrBitwiseContext) => void;
     /**
      * Enter a parse tree produced by `PortugolParser.listaExpressoes`.
      * @param ctx the parse tree

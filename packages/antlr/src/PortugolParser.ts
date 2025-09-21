@@ -1,4 +1,3 @@
-// Generated from src/Portugol.g4 by ANTLR 4.13.1
 
 import * as antlr from "antlr4ng";
 import { Token } from "antlr4ng";
@@ -4413,61 +4412,6 @@ export class ChamadaFuncaoContext extends ExpressaoContext {
         }
     }
 }
-export class StringContext extends ExpressaoContext {
-    public constructor(ctx: ExpressaoContext) {
-        super(ctx.parent, ctx.invokingState);
-        super.copyFrom(ctx);
-    }
-    public STRING(): antlr.TerminalNode {
-        return this.getToken(PortugolParser.STRING, 0)!;
-    }
-    public override enterRule(listener: PortugolListener): void {
-        if(listener.enterString) {
-             listener.enterString(this);
-        }
-    }
-    public override exitRule(listener: PortugolListener): void {
-        if(listener.exitString) {
-             listener.exitString(this);
-        }
-    }
-    public override accept<Result>(visitor: PortugolVisitor<Result>): Result | null {
-        if (visitor.visitString) {
-            return visitor.visitString(this);
-        } else {
-            return visitor.visitChildren(this);
-        }
-    }
-}
-export class NegacaoBitwiseContext extends ExpressaoContext {
-    public constructor(ctx: ExpressaoContext) {
-        super(ctx.parent, ctx.invokingState);
-        super.copyFrom(ctx);
-    }
-    public OP_NOT_BITWISE(): antlr.TerminalNode {
-        return this.getToken(PortugolParser.OP_NOT_BITWISE, 0)!;
-    }
-    public expressao(): ExpressaoContext {
-        return this.getRuleContext(0, ExpressaoContext)!;
-    }
-    public override enterRule(listener: PortugolListener): void {
-        if(listener.enterNegacaoBitwise) {
-             listener.enterNegacaoBitwise(this);
-        }
-    }
-    public override exitRule(listener: PortugolListener): void {
-        if(listener.exitNegacaoBitwise) {
-             listener.exitNegacaoBitwise(this);
-        }
-    }
-    public override accept<Result>(visitor: PortugolVisitor<Result>): Result | null {
-        if (visitor.visitNegacaoBitwise) {
-            return visitor.visitNegacaoBitwise(this);
-        } else {
-            return visitor.visitChildren(this);
-        }
-    }
-}
 export class ReferenciaArrayContext extends ExpressaoContext {
     public constructor(ctx: ExpressaoContext) {
         super(ctx.parent, ctx.invokingState);
@@ -4495,548 +4439,6 @@ export class ReferenciaArrayContext extends ExpressaoContext {
     public override accept<Result>(visitor: PortugolVisitor<Result>): Result | null {
         if (visitor.visitReferenciaArray) {
             return visitor.visitReferenciaArray(this);
-        } else {
-            return visitor.visitChildren(this);
-        }
-    }
-}
-export class NumeroRealContext extends ExpressaoContext {
-    public constructor(ctx: ExpressaoContext) {
-        super(ctx.parent, ctx.invokingState);
-        super.copyFrom(ctx);
-    }
-    public REAL(): antlr.TerminalNode {
-        return this.getToken(PortugolParser.REAL, 0)!;
-    }
-    public override enterRule(listener: PortugolListener): void {
-        if(listener.enterNumeroReal) {
-             listener.enterNumeroReal(this);
-        }
-    }
-    public override exitRule(listener: PortugolListener): void {
-        if(listener.exitNumeroReal) {
-             listener.exitNumeroReal(this);
-        }
-    }
-    public override accept<Result>(visitor: PortugolVisitor<Result>): Result | null {
-        if (visitor.visitNumeroReal) {
-            return visitor.visitNumeroReal(this);
-        } else {
-            return visitor.visitChildren(this);
-        }
-    }
-}
-export class MaisUnarioContext extends ExpressaoContext {
-    public constructor(ctx: ExpressaoContext) {
-        super(ctx.parent, ctx.invokingState);
-        super.copyFrom(ctx);
-    }
-    public OP_ADICAO(): antlr.TerminalNode {
-        return this.getToken(PortugolParser.OP_ADICAO, 0)!;
-    }
-    public expressao(): ExpressaoContext {
-        return this.getRuleContext(0, ExpressaoContext)!;
-    }
-    public override enterRule(listener: PortugolListener): void {
-        if(listener.enterMaisUnario) {
-             listener.enterMaisUnario(this);
-        }
-    }
-    public override exitRule(listener: PortugolListener): void {
-        if(listener.exitMaisUnario) {
-             listener.exitMaisUnario(this);
-        }
-    }
-    public override accept<Result>(visitor: PortugolVisitor<Result>): Result | null {
-        if (visitor.visitMaisUnario) {
-            return visitor.visitMaisUnario(this);
-        } else {
-            return visitor.visitChildren(this);
-        }
-    }
-}
-export class OperacaoDiferencaContext extends ExpressaoContext {
-    public constructor(ctx: ExpressaoContext) {
-        super(ctx.parent, ctx.invokingState);
-        super.copyFrom(ctx);
-    }
-    public expressao(): ExpressaoContext[];
-    public expressao(i: number): ExpressaoContext | null;
-    public expressao(i?: number): ExpressaoContext[] | ExpressaoContext | null {
-        if (i === undefined) {
-            return this.getRuleContexts(ExpressaoContext);
-        }
-
-        return this.getRuleContext(i, ExpressaoContext);
-    }
-    public OP_DIFERENCA(): antlr.TerminalNode {
-        return this.getToken(PortugolParser.OP_DIFERENCA, 0)!;
-    }
-    public override enterRule(listener: PortugolListener): void {
-        if(listener.enterOperacaoDiferenca) {
-             listener.enterOperacaoDiferenca(this);
-        }
-    }
-    public override exitRule(listener: PortugolListener): void {
-        if(listener.exitOperacaoDiferenca) {
-             listener.exitOperacaoDiferenca(this);
-        }
-    }
-    public override accept<Result>(visitor: PortugolVisitor<Result>): Result | null {
-        if (visitor.visitOperacaoDiferenca) {
-            return visitor.visitOperacaoDiferenca(this);
-        } else {
-            return visitor.visitChildren(this);
-        }
-    }
-}
-export class MenosUnarioContext extends ExpressaoContext {
-    public constructor(ctx: ExpressaoContext) {
-        super(ctx.parent, ctx.invokingState);
-        super.copyFrom(ctx);
-    }
-    public OP_SUBTRACAO(): antlr.TerminalNode {
-        return this.getToken(PortugolParser.OP_SUBTRACAO, 0)!;
-    }
-    public expressao(): ExpressaoContext {
-        return this.getRuleContext(0, ExpressaoContext)!;
-    }
-    public override enterRule(listener: PortugolListener): void {
-        if(listener.enterMenosUnario) {
-             listener.enterMenosUnario(this);
-        }
-    }
-    public override exitRule(listener: PortugolListener): void {
-        if(listener.exitMenosUnario) {
-             listener.exitMenosUnario(this);
-        }
-    }
-    public override accept<Result>(visitor: PortugolVisitor<Result>): Result | null {
-        if (visitor.visitMenosUnario) {
-            return visitor.visitMenosUnario(this);
-        } else {
-            return visitor.visitChildren(this);
-        }
-    }
-}
-export class AdicaoContext extends ExpressaoContext {
-    public constructor(ctx: ExpressaoContext) {
-        super(ctx.parent, ctx.invokingState);
-        super.copyFrom(ctx);
-    }
-    public expressao(): ExpressaoContext[];
-    public expressao(i: number): ExpressaoContext | null;
-    public expressao(i?: number): ExpressaoContext[] | ExpressaoContext | null {
-        if (i === undefined) {
-            return this.getRuleContexts(ExpressaoContext);
-        }
-
-        return this.getRuleContext(i, ExpressaoContext);
-    }
-    public OP_ADICAO(): antlr.TerminalNode {
-        return this.getToken(PortugolParser.OP_ADICAO, 0)!;
-    }
-    public override enterRule(listener: PortugolListener): void {
-        if(listener.enterAdicao) {
-             listener.enterAdicao(this);
-        }
-    }
-    public override exitRule(listener: PortugolListener): void {
-        if(listener.exitAdicao) {
-             listener.exitAdicao(this);
-        }
-    }
-    public override accept<Result>(visitor: PortugolVisitor<Result>): Result | null {
-        if (visitor.visitAdicao) {
-            return visitor.visitAdicao(this);
-        } else {
-            return visitor.visitChildren(this);
-        }
-    }
-}
-export class OperacaoXorContext extends ExpressaoContext {
-    public constructor(ctx: ExpressaoContext) {
-        super(ctx.parent, ctx.invokingState);
-        super.copyFrom(ctx);
-    }
-    public expressao(): ExpressaoContext[];
-    public expressao(i: number): ExpressaoContext | null;
-    public expressao(i?: number): ExpressaoContext[] | ExpressaoContext | null {
-        if (i === undefined) {
-            return this.getRuleContexts(ExpressaoContext);
-        }
-
-        return this.getRuleContext(i, ExpressaoContext);
-    }
-    public OP_XOR(): antlr.TerminalNode {
-        return this.getToken(PortugolParser.OP_XOR, 0)!;
-    }
-    public override enterRule(listener: PortugolListener): void {
-        if(listener.enterOperacaoXor) {
-             listener.enterOperacaoXor(this);
-        }
-    }
-    public override exitRule(listener: PortugolListener): void {
-        if(listener.exitOperacaoXor) {
-             listener.exitOperacaoXor(this);
-        }
-    }
-    public override accept<Result>(visitor: PortugolVisitor<Result>): Result | null {
-        if (visitor.visitOperacaoXor) {
-            return visitor.visitOperacaoXor(this);
-        } else {
-            return visitor.visitChildren(this);
-        }
-    }
-}
-export class OperacaoMaiorIgualContext extends ExpressaoContext {
-    public constructor(ctx: ExpressaoContext) {
-        super(ctx.parent, ctx.invokingState);
-        super.copyFrom(ctx);
-    }
-    public expressao(): ExpressaoContext[];
-    public expressao(i: number): ExpressaoContext | null;
-    public expressao(i?: number): ExpressaoContext[] | ExpressaoContext | null {
-        if (i === undefined) {
-            return this.getRuleContexts(ExpressaoContext);
-        }
-
-        return this.getRuleContext(i, ExpressaoContext);
-    }
-    public OP_MAIOR_IGUAL(): antlr.TerminalNode {
-        return this.getToken(PortugolParser.OP_MAIOR_IGUAL, 0)!;
-    }
-    public override enterRule(listener: PortugolListener): void {
-        if(listener.enterOperacaoMaiorIgual) {
-             listener.enterOperacaoMaiorIgual(this);
-        }
-    }
-    public override exitRule(listener: PortugolListener): void {
-        if(listener.exitOperacaoMaiorIgual) {
-             listener.exitOperacaoMaiorIgual(this);
-        }
-    }
-    public override accept<Result>(visitor: PortugolVisitor<Result>): Result | null {
-        if (visitor.visitOperacaoMaiorIgual) {
-            return visitor.visitOperacaoMaiorIgual(this);
-        } else {
-            return visitor.visitChildren(this);
-        }
-    }
-}
-export class DecrementoUnarioPrefixadoContext extends ExpressaoContext {
-    public constructor(ctx: ExpressaoContext) {
-        super(ctx.parent, ctx.invokingState);
-        super.copyFrom(ctx);
-    }
-    public OP_DECREMENTO_UNARIO(): antlr.TerminalNode {
-        return this.getToken(PortugolParser.OP_DECREMENTO_UNARIO, 0)!;
-    }
-    public ID(): antlr.TerminalNode {
-        return this.getToken(PortugolParser.ID, 0)!;
-    }
-    public indiceArray(): IndiceArrayContext[];
-    public indiceArray(i: number): IndiceArrayContext | null;
-    public indiceArray(i?: number): IndiceArrayContext[] | IndiceArrayContext | null {
-        if (i === undefined) {
-            return this.getRuleContexts(IndiceArrayContext);
-        }
-
-        return this.getRuleContext(i, IndiceArrayContext);
-    }
-    public override enterRule(listener: PortugolListener): void {
-        if(listener.enterDecrementoUnarioPrefixado) {
-             listener.enterDecrementoUnarioPrefixado(this);
-        }
-    }
-    public override exitRule(listener: PortugolListener): void {
-        if(listener.exitDecrementoUnarioPrefixado) {
-             listener.exitDecrementoUnarioPrefixado(this);
-        }
-    }
-    public override accept<Result>(visitor: PortugolVisitor<Result>): Result | null {
-        if (visitor.visitDecrementoUnarioPrefixado) {
-            return visitor.visitDecrementoUnarioPrefixado(this);
-        } else {
-            return visitor.visitChildren(this);
-        }
-    }
-}
-export class IncrementoUnarioPosfixadoContext extends ExpressaoContext {
-    public constructor(ctx: ExpressaoContext) {
-        super(ctx.parent, ctx.invokingState);
-        super.copyFrom(ctx);
-    }
-    public ID(): antlr.TerminalNode {
-        return this.getToken(PortugolParser.ID, 0)!;
-    }
-    public OP_INCREMENTO_UNARIO(): antlr.TerminalNode {
-        return this.getToken(PortugolParser.OP_INCREMENTO_UNARIO, 0)!;
-    }
-    public indiceArray(): IndiceArrayContext[];
-    public indiceArray(i: number): IndiceArrayContext | null;
-    public indiceArray(i?: number): IndiceArrayContext[] | IndiceArrayContext | null {
-        if (i === undefined) {
-            return this.getRuleContexts(IndiceArrayContext);
-        }
-
-        return this.getRuleContext(i, IndiceArrayContext);
-    }
-    public override enterRule(listener: PortugolListener): void {
-        if(listener.enterIncrementoUnarioPosfixado) {
-             listener.enterIncrementoUnarioPosfixado(this);
-        }
-    }
-    public override exitRule(listener: PortugolListener): void {
-        if(listener.exitIncrementoUnarioPosfixado) {
-             listener.exitIncrementoUnarioPosfixado(this);
-        }
-    }
-    public override accept<Result>(visitor: PortugolVisitor<Result>): Result | null {
-        if (visitor.visitIncrementoUnarioPosfixado) {
-            return visitor.visitIncrementoUnarioPosfixado(this);
-        } else {
-            return visitor.visitChildren(this);
-        }
-    }
-}
-export class MultiplicacaoContext extends ExpressaoContext {
-    public constructor(ctx: ExpressaoContext) {
-        super(ctx.parent, ctx.invokingState);
-        super.copyFrom(ctx);
-    }
-    public expressao(): ExpressaoContext[];
-    public expressao(i: number): ExpressaoContext | null;
-    public expressao(i?: number): ExpressaoContext[] | ExpressaoContext | null {
-        if (i === undefined) {
-            return this.getRuleContexts(ExpressaoContext);
-        }
-
-        return this.getRuleContext(i, ExpressaoContext);
-    }
-    public OP_MULTIPLICACAO(): antlr.TerminalNode {
-        return this.getToken(PortugolParser.OP_MULTIPLICACAO, 0)!;
-    }
-    public override enterRule(listener: PortugolListener): void {
-        if(listener.enterMultiplicacao) {
-             listener.enterMultiplicacao(this);
-        }
-    }
-    public override exitRule(listener: PortugolListener): void {
-        if(listener.exitMultiplicacao) {
-             listener.exitMultiplicacao(this);
-        }
-    }
-    public override accept<Result>(visitor: PortugolVisitor<Result>): Result | null {
-        if (visitor.visitMultiplicacao) {
-            return visitor.visitMultiplicacao(this);
-        } else {
-            return visitor.visitChildren(this);
-        }
-    }
-}
-export class OperacaoOuLogicoContext extends ExpressaoContext {
-    public constructor(ctx: ExpressaoContext) {
-        super(ctx.parent, ctx.invokingState);
-        super.copyFrom(ctx);
-    }
-    public expressao(): ExpressaoContext[];
-    public expressao(i: number): ExpressaoContext | null;
-    public expressao(i?: number): ExpressaoContext[] | ExpressaoContext | null {
-        if (i === undefined) {
-            return this.getRuleContexts(ExpressaoContext);
-        }
-
-        return this.getRuleContext(i, ExpressaoContext);
-    }
-    public OP_OU_LOGICO(): antlr.TerminalNode {
-        return this.getToken(PortugolParser.OP_OU_LOGICO, 0)!;
-    }
-    public override enterRule(listener: PortugolListener): void {
-        if(listener.enterOperacaoOuLogico) {
-             listener.enterOperacaoOuLogico(this);
-        }
-    }
-    public override exitRule(listener: PortugolListener): void {
-        if(listener.exitOperacaoOuLogico) {
-             listener.exitOperacaoOuLogico(this);
-        }
-    }
-    public override accept<Result>(visitor: PortugolVisitor<Result>): Result | null {
-        if (visitor.visitOperacaoOuLogico) {
-            return visitor.visitOperacaoOuLogico(this);
-        } else {
-            return visitor.visitChildren(this);
-        }
-    }
-}
-export class OperacaoIgualdadeContext extends ExpressaoContext {
-    public constructor(ctx: ExpressaoContext) {
-        super(ctx.parent, ctx.invokingState);
-        super.copyFrom(ctx);
-    }
-    public expressao(): ExpressaoContext[];
-    public expressao(i: number): ExpressaoContext | null;
-    public expressao(i?: number): ExpressaoContext[] | ExpressaoContext | null {
-        if (i === undefined) {
-            return this.getRuleContexts(ExpressaoContext);
-        }
-
-        return this.getRuleContext(i, ExpressaoContext);
-    }
-    public OP_IGUALDADE(): antlr.TerminalNode {
-        return this.getToken(PortugolParser.OP_IGUALDADE, 0)!;
-    }
-    public override enterRule(listener: PortugolListener): void {
-        if(listener.enterOperacaoIgualdade) {
-             listener.enterOperacaoIgualdade(this);
-        }
-    }
-    public override exitRule(listener: PortugolListener): void {
-        if(listener.exitOperacaoIgualdade) {
-             listener.exitOperacaoIgualdade(this);
-        }
-    }
-    public override accept<Result>(visitor: PortugolVisitor<Result>): Result | null {
-        if (visitor.visitOperacaoIgualdade) {
-            return visitor.visitOperacaoIgualdade(this);
-        } else {
-            return visitor.visitChildren(this);
-        }
-    }
-}
-export class OperacaoShiftRightContext extends ExpressaoContext {
-    public constructor(ctx: ExpressaoContext) {
-        super(ctx.parent, ctx.invokingState);
-        super.copyFrom(ctx);
-    }
-    public expressao(): ExpressaoContext[];
-    public expressao(i: number): ExpressaoContext | null;
-    public expressao(i?: number): ExpressaoContext[] | ExpressaoContext | null {
-        if (i === undefined) {
-            return this.getRuleContexts(ExpressaoContext);
-        }
-
-        return this.getRuleContext(i, ExpressaoContext);
-    }
-    public OP_SHIFT_RIGHT(): antlr.TerminalNode {
-        return this.getToken(PortugolParser.OP_SHIFT_RIGHT, 0)!;
-    }
-    public override enterRule(listener: PortugolListener): void {
-        if(listener.enterOperacaoShiftRight) {
-             listener.enterOperacaoShiftRight(this);
-        }
-    }
-    public override exitRule(listener: PortugolListener): void {
-        if(listener.exitOperacaoShiftRight) {
-             listener.exitOperacaoShiftRight(this);
-        }
-    }
-    public override accept<Result>(visitor: PortugolVisitor<Result>): Result | null {
-        if (visitor.visitOperacaoShiftRight) {
-            return visitor.visitOperacaoShiftRight(this);
-        } else {
-            return visitor.visitChildren(this);
-        }
-    }
-}
-export class DivisaoContext extends ExpressaoContext {
-    public constructor(ctx: ExpressaoContext) {
-        super(ctx.parent, ctx.invokingState);
-        super.copyFrom(ctx);
-    }
-    public expressao(): ExpressaoContext[];
-    public expressao(i: number): ExpressaoContext | null;
-    public expressao(i?: number): ExpressaoContext[] | ExpressaoContext | null {
-        if (i === undefined) {
-            return this.getRuleContexts(ExpressaoContext);
-        }
-
-        return this.getRuleContext(i, ExpressaoContext);
-    }
-    public OP_DIVISAO(): antlr.TerminalNode {
-        return this.getToken(PortugolParser.OP_DIVISAO, 0)!;
-    }
-    public override enterRule(listener: PortugolListener): void {
-        if(listener.enterDivisao) {
-             listener.enterDivisao(this);
-        }
-    }
-    public override exitRule(listener: PortugolListener): void {
-        if(listener.exitDivisao) {
-             listener.exitDivisao(this);
-        }
-    }
-    public override accept<Result>(visitor: PortugolVisitor<Result>): Result | null {
-        if (visitor.visitDivisao) {
-            return visitor.visitDivisao(this);
-        } else {
-            return visitor.visitChildren(this);
-        }
-    }
-}
-export class ExpressaoEntreParentesesContext extends ExpressaoContext {
-    public constructor(ctx: ExpressaoContext) {
-        super(ctx.parent, ctx.invokingState);
-        super.copyFrom(ctx);
-    }
-    public ABRE_PARENTESES(): antlr.TerminalNode {
-        return this.getToken(PortugolParser.ABRE_PARENTESES, 0)!;
-    }
-    public expressao(): ExpressaoContext {
-        return this.getRuleContext(0, ExpressaoContext)!;
-    }
-    public FECHA_PARENTESES(): antlr.TerminalNode {
-        return this.getToken(PortugolParser.FECHA_PARENTESES, 0)!;
-    }
-    public override enterRule(listener: PortugolListener): void {
-        if(listener.enterExpressaoEntreParenteses) {
-             listener.enterExpressaoEntreParenteses(this);
-        }
-    }
-    public override exitRule(listener: PortugolListener): void {
-        if(listener.exitExpressaoEntreParenteses) {
-             listener.exitExpressaoEntreParenteses(this);
-        }
-    }
-    public override accept<Result>(visitor: PortugolVisitor<Result>): Result | null {
-        if (visitor.visitExpressaoEntreParenteses) {
-            return visitor.visitExpressaoEntreParenteses(this);
-        } else {
-            return visitor.visitChildren(this);
-        }
-    }
-}
-export class OperacaoMenorIgualContext extends ExpressaoContext {
-    public constructor(ctx: ExpressaoContext) {
-        super(ctx.parent, ctx.invokingState);
-        super.copyFrom(ctx);
-    }
-    public expressao(): ExpressaoContext[];
-    public expressao(i: number): ExpressaoContext | null;
-    public expressao(i?: number): ExpressaoContext[] | ExpressaoContext | null {
-        if (i === undefined) {
-            return this.getRuleContexts(ExpressaoContext);
-        }
-
-        return this.getRuleContext(i, ExpressaoContext);
-    }
-    public OP_MENOR_IGUAL(): antlr.TerminalNode {
-        return this.getToken(PortugolParser.OP_MENOR_IGUAL, 0)!;
-    }
-    public override enterRule(listener: PortugolListener): void {
-        if(listener.enterOperacaoMenorIgual) {
-             listener.enterOperacaoMenorIgual(this);
-        }
-    }
-    public override exitRule(listener: PortugolListener): void {
-        if(listener.exitOperacaoMenorIgual) {
-             listener.exitOperacaoMenorIgual(this);
-        }
-    }
-    public override accept<Result>(visitor: PortugolVisitor<Result>): Result | null {
-        if (visitor.visitOperacaoMenorIgual) {
-            return visitor.visitOperacaoMenorIgual(this);
         } else {
             return visitor.visitChildren(this);
         }
@@ -5080,231 +4482,132 @@ export class ReferenciaMatrizContext extends ExpressaoContext {
         }
     }
 }
-export class OperacaoMaiorContext extends ExpressaoContext {
+export class MenosUnarioContext extends ExpressaoContext {
     public constructor(ctx: ExpressaoContext) {
         super(ctx.parent, ctx.invokingState);
         super.copyFrom(ctx);
     }
-    public expressao(): ExpressaoContext[];
-    public expressao(i: number): ExpressaoContext | null;
-    public expressao(i?: number): ExpressaoContext[] | ExpressaoContext | null {
-        if (i === undefined) {
-            return this.getRuleContexts(ExpressaoContext);
-        }
-
-        return this.getRuleContext(i, ExpressaoContext);
+    public OP_SUBTRACAO(): antlr.TerminalNode {
+        return this.getToken(PortugolParser.OP_SUBTRACAO, 0)!;
     }
-    public OP_MAIOR(): antlr.TerminalNode {
-        return this.getToken(PortugolParser.OP_MAIOR, 0)!;
+    public expressao(): ExpressaoContext {
+        return this.getRuleContext(0, ExpressaoContext)!;
     }
     public override enterRule(listener: PortugolListener): void {
-        if(listener.enterOperacaoMaior) {
-             listener.enterOperacaoMaior(this);
+        if(listener.enterMenosUnario) {
+             listener.enterMenosUnario(this);
         }
     }
     public override exitRule(listener: PortugolListener): void {
-        if(listener.exitOperacaoMaior) {
-             listener.exitOperacaoMaior(this);
+        if(listener.exitMenosUnario) {
+             listener.exitMenosUnario(this);
         }
     }
     public override accept<Result>(visitor: PortugolVisitor<Result>): Result | null {
-        if (visitor.visitOperacaoMaior) {
-            return visitor.visitOperacaoMaior(this);
+        if (visitor.visitMenosUnario) {
+            return visitor.visitMenosUnario(this);
         } else {
             return visitor.visitChildren(this);
         }
     }
 }
-export class NumeroInteiroContext extends ExpressaoContext {
+export class MaisUnarioContext extends ExpressaoContext {
     public constructor(ctx: ExpressaoContext) {
         super(ctx.parent, ctx.invokingState);
         super.copyFrom(ctx);
     }
-    public INT(): antlr.TerminalNode | null {
-        return this.getToken(PortugolParser.INT, 0);
+    public OP_ADICAO(): antlr.TerminalNode {
+        return this.getToken(PortugolParser.OP_ADICAO, 0)!;
     }
-    public HEXADECIMAL(): antlr.TerminalNode | null {
-        return this.getToken(PortugolParser.HEXADECIMAL, 0);
+    public expressao(): ExpressaoContext {
+        return this.getRuleContext(0, ExpressaoContext)!;
     }
     public override enterRule(listener: PortugolListener): void {
-        if(listener.enterNumeroInteiro) {
-             listener.enterNumeroInteiro(this);
+        if(listener.enterMaisUnario) {
+             listener.enterMaisUnario(this);
         }
     }
     public override exitRule(listener: PortugolListener): void {
-        if(listener.exitNumeroInteiro) {
-             listener.exitNumeroInteiro(this);
+        if(listener.exitMaisUnario) {
+             listener.exitMaisUnario(this);
         }
     }
     public override accept<Result>(visitor: PortugolVisitor<Result>): Result | null {
-        if (visitor.visitNumeroInteiro) {
-            return visitor.visitNumeroInteiro(this);
+        if (visitor.visitMaisUnario) {
+            return visitor.visitMaisUnario(this);
         } else {
             return visitor.visitChildren(this);
         }
     }
 }
-export class CaracterContext extends ExpressaoContext {
+export class NegacaoContext extends ExpressaoContext {
     public constructor(ctx: ExpressaoContext) {
         super(ctx.parent, ctx.invokingState);
         super.copyFrom(ctx);
     }
-    public CARACTER(): antlr.TerminalNode {
-        return this.getToken(PortugolParser.CARACTER, 0)!;
+    public OP_NAO(): antlr.TerminalNode {
+        return this.getToken(PortugolParser.OP_NAO, 0)!;
+    }
+    public expressao(): ExpressaoContext {
+        return this.getRuleContext(0, ExpressaoContext)!;
     }
     public override enterRule(listener: PortugolListener): void {
-        if(listener.enterCaracter) {
-             listener.enterCaracter(this);
+        if(listener.enterNegacao) {
+             listener.enterNegacao(this);
         }
     }
     public override exitRule(listener: PortugolListener): void {
-        if(listener.exitCaracter) {
-             listener.exitCaracter(this);
+        if(listener.exitNegacao) {
+             listener.exitNegacao(this);
         }
     }
     public override accept<Result>(visitor: PortugolVisitor<Result>): Result | null {
-        if (visitor.visitCaracter) {
-            return visitor.visitCaracter(this);
+        if (visitor.visitNegacao) {
+            return visitor.visitNegacao(this);
         } else {
             return visitor.visitChildren(this);
         }
     }
 }
-export class ReferenciaParaVariavelContext extends ExpressaoContext {
+export class NegacaoBitwiseContext extends ExpressaoContext {
+    public constructor(ctx: ExpressaoContext) {
+        super(ctx.parent, ctx.invokingState);
+        super.copyFrom(ctx);
+    }
+    public OP_NOT_BITWISE(): antlr.TerminalNode {
+        return this.getToken(PortugolParser.OP_NOT_BITWISE, 0)!;
+    }
+    public expressao(): ExpressaoContext {
+        return this.getRuleContext(0, ExpressaoContext)!;
+    }
+    public override enterRule(listener: PortugolListener): void {
+        if(listener.enterNegacaoBitwise) {
+             listener.enterNegacaoBitwise(this);
+        }
+    }
+    public override exitRule(listener: PortugolListener): void {
+        if(listener.exitNegacaoBitwise) {
+             listener.exitNegacaoBitwise(this);
+        }
+    }
+    public override accept<Result>(visitor: PortugolVisitor<Result>): Result | null {
+        if (visitor.visitNegacaoBitwise) {
+            return visitor.visitNegacaoBitwise(this);
+        } else {
+            return visitor.visitChildren(this);
+        }
+    }
+}
+export class IncrementoUnarioPosfixadoContext extends ExpressaoContext {
     public constructor(ctx: ExpressaoContext) {
         super(ctx.parent, ctx.invokingState);
         super.copyFrom(ctx);
     }
     public ID(): antlr.TerminalNode {
         return this.getToken(PortugolParser.ID, 0)!;
-    }
-    public escopoBiblioteca(): EscopoBibliotecaContext | null {
-        return this.getRuleContext(0, EscopoBibliotecaContext);
-    }
-    public override enterRule(listener: PortugolListener): void {
-        if(listener.enterReferenciaParaVariavel) {
-             listener.enterReferenciaParaVariavel(this);
-        }
-    }
-    public override exitRule(listener: PortugolListener): void {
-        if(listener.exitReferenciaParaVariavel) {
-             listener.exitReferenciaParaVariavel(this);
-        }
-    }
-    public override accept<Result>(visitor: PortugolVisitor<Result>): Result | null {
-        if (visitor.visitReferenciaParaVariavel) {
-            return visitor.visitReferenciaParaVariavel(this);
-        } else {
-            return visitor.visitChildren(this);
-        }
-    }
-}
-export class ValorLogicoContext extends ExpressaoContext {
-    public constructor(ctx: ExpressaoContext) {
-        super(ctx.parent, ctx.invokingState);
-        super.copyFrom(ctx);
-    }
-    public LOGICO(): antlr.TerminalNode {
-        return this.getToken(PortugolParser.LOGICO, 0)!;
-    }
-    public override enterRule(listener: PortugolListener): void {
-        if(listener.enterValorLogico) {
-             listener.enterValorLogico(this);
-        }
-    }
-    public override exitRule(listener: PortugolListener): void {
-        if(listener.exitValorLogico) {
-             listener.exitValorLogico(this);
-        }
-    }
-    public override accept<Result>(visitor: PortugolVisitor<Result>): Result | null {
-        if (visitor.visitValorLogico) {
-            return visitor.visitValorLogico(this);
-        } else {
-            return visitor.visitChildren(this);
-        }
-    }
-}
-export class OperacaoMenorContext extends ExpressaoContext {
-    public constructor(ctx: ExpressaoContext) {
-        super(ctx.parent, ctx.invokingState);
-        super.copyFrom(ctx);
-    }
-    public expressao(): ExpressaoContext[];
-    public expressao(i: number): ExpressaoContext | null;
-    public expressao(i?: number): ExpressaoContext[] | ExpressaoContext | null {
-        if (i === undefined) {
-            return this.getRuleContexts(ExpressaoContext);
-        }
-
-        return this.getRuleContext(i, ExpressaoContext);
-    }
-    public OP_MENOR(): antlr.TerminalNode {
-        return this.getToken(PortugolParser.OP_MENOR, 0)!;
-    }
-    public override enterRule(listener: PortugolListener): void {
-        if(listener.enterOperacaoMenor) {
-             listener.enterOperacaoMenor(this);
-        }
-    }
-    public override exitRule(listener: PortugolListener): void {
-        if(listener.exitOperacaoMenor) {
-             listener.exitOperacaoMenor(this);
-        }
-    }
-    public override accept<Result>(visitor: PortugolVisitor<Result>): Result | null {
-        if (visitor.visitOperacaoMenor) {
-            return visitor.visitOperacaoMenor(this);
-        } else {
-            return visitor.visitChildren(this);
-        }
-    }
-}
-export class OperacaoShiftLeftContext extends ExpressaoContext {
-    public constructor(ctx: ExpressaoContext) {
-        super(ctx.parent, ctx.invokingState);
-        super.copyFrom(ctx);
-    }
-    public expressao(): ExpressaoContext[];
-    public expressao(i: number): ExpressaoContext | null;
-    public expressao(i?: number): ExpressaoContext[] | ExpressaoContext | null {
-        if (i === undefined) {
-            return this.getRuleContexts(ExpressaoContext);
-        }
-
-        return this.getRuleContext(i, ExpressaoContext);
-    }
-    public OP_SHIFT_LEFT(): antlr.TerminalNode {
-        return this.getToken(PortugolParser.OP_SHIFT_LEFT, 0)!;
-    }
-    public override enterRule(listener: PortugolListener): void {
-        if(listener.enterOperacaoShiftLeft) {
-             listener.enterOperacaoShiftLeft(this);
-        }
-    }
-    public override exitRule(listener: PortugolListener): void {
-        if(listener.exitOperacaoShiftLeft) {
-             listener.exitOperacaoShiftLeft(this);
-        }
-    }
-    public override accept<Result>(visitor: PortugolVisitor<Result>): Result | null {
-        if (visitor.visitOperacaoShiftLeft) {
-            return visitor.visitOperacaoShiftLeft(this);
-        } else {
-            return visitor.visitChildren(this);
-        }
-    }
-}
-export class IncrementoUnarioPrefixadoContext extends ExpressaoContext {
-    public constructor(ctx: ExpressaoContext) {
-        super(ctx.parent, ctx.invokingState);
-        super.copyFrom(ctx);
     }
     public OP_INCREMENTO_UNARIO(): antlr.TerminalNode {
         return this.getToken(PortugolParser.OP_INCREMENTO_UNARIO, 0)!;
-    }
-    public ID(): antlr.TerminalNode {
-        return this.getToken(PortugolParser.ID, 0)!;
     }
     public indiceArray(): IndiceArrayContext[];
     public indiceArray(i: number): IndiceArrayContext | null;
@@ -5316,53 +4619,18 @@ export class IncrementoUnarioPrefixadoContext extends ExpressaoContext {
         return this.getRuleContext(i, IndiceArrayContext);
     }
     public override enterRule(listener: PortugolListener): void {
-        if(listener.enterIncrementoUnarioPrefixado) {
-             listener.enterIncrementoUnarioPrefixado(this);
+        if(listener.enterIncrementoUnarioPosfixado) {
+             listener.enterIncrementoUnarioPosfixado(this);
         }
     }
     public override exitRule(listener: PortugolListener): void {
-        if(listener.exitIncrementoUnarioPrefixado) {
-             listener.exitIncrementoUnarioPrefixado(this);
+        if(listener.exitIncrementoUnarioPosfixado) {
+             listener.exitIncrementoUnarioPosfixado(this);
         }
     }
     public override accept<Result>(visitor: PortugolVisitor<Result>): Result | null {
-        if (visitor.visitIncrementoUnarioPrefixado) {
-            return visitor.visitIncrementoUnarioPrefixado(this);
-        } else {
-            return visitor.visitChildren(this);
-        }
-    }
-}
-export class OperacaoELogicoContext extends ExpressaoContext {
-    public constructor(ctx: ExpressaoContext) {
-        super(ctx.parent, ctx.invokingState);
-        super.copyFrom(ctx);
-    }
-    public expressao(): ExpressaoContext[];
-    public expressao(i: number): ExpressaoContext | null;
-    public expressao(i?: number): ExpressaoContext[] | ExpressaoContext | null {
-        if (i === undefined) {
-            return this.getRuleContexts(ExpressaoContext);
-        }
-
-        return this.getRuleContext(i, ExpressaoContext);
-    }
-    public OP_E_LOGICO(): antlr.TerminalNode {
-        return this.getToken(PortugolParser.OP_E_LOGICO, 0)!;
-    }
-    public override enterRule(listener: PortugolListener): void {
-        if(listener.enterOperacaoELogico) {
-             listener.enterOperacaoELogico(this);
-        }
-    }
-    public override exitRule(listener: PortugolListener): void {
-        if(listener.exitOperacaoELogico) {
-             listener.exitOperacaoELogico(this);
-        }
-    }
-    public override accept<Result>(visitor: PortugolVisitor<Result>): Result | null {
-        if (visitor.visitOperacaoELogico) {
-            return visitor.visitOperacaoELogico(this);
+        if (visitor.visitIncrementoUnarioPosfixado) {
+            return visitor.visitIncrementoUnarioPosfixado(this);
         } else {
             return visitor.visitChildren(this);
         }
@@ -5406,7 +4674,277 @@ export class DecrementoUnarioPosfixadoContext extends ExpressaoContext {
         }
     }
 }
-export class OperacaoOrBitwiseContext extends ExpressaoContext {
+export class IncrementoUnarioPrefixadoContext extends ExpressaoContext {
+    public constructor(ctx: ExpressaoContext) {
+        super(ctx.parent, ctx.invokingState);
+        super.copyFrom(ctx);
+    }
+    public OP_INCREMENTO_UNARIO(): antlr.TerminalNode {
+        return this.getToken(PortugolParser.OP_INCREMENTO_UNARIO, 0)!;
+    }
+    public ID(): antlr.TerminalNode {
+        return this.getToken(PortugolParser.ID, 0)!;
+    }
+    public indiceArray(): IndiceArrayContext[];
+    public indiceArray(i: number): IndiceArrayContext | null;
+    public indiceArray(i?: number): IndiceArrayContext[] | IndiceArrayContext | null {
+        if (i === undefined) {
+            return this.getRuleContexts(IndiceArrayContext);
+        }
+
+        return this.getRuleContext(i, IndiceArrayContext);
+    }
+    public override enterRule(listener: PortugolListener): void {
+        if(listener.enterIncrementoUnarioPrefixado) {
+             listener.enterIncrementoUnarioPrefixado(this);
+        }
+    }
+    public override exitRule(listener: PortugolListener): void {
+        if(listener.exitIncrementoUnarioPrefixado) {
+             listener.exitIncrementoUnarioPrefixado(this);
+        }
+    }
+    public override accept<Result>(visitor: PortugolVisitor<Result>): Result | null {
+        if (visitor.visitIncrementoUnarioPrefixado) {
+            return visitor.visitIncrementoUnarioPrefixado(this);
+        } else {
+            return visitor.visitChildren(this);
+        }
+    }
+}
+export class DecrementoUnarioPrefixadoContext extends ExpressaoContext {
+    public constructor(ctx: ExpressaoContext) {
+        super(ctx.parent, ctx.invokingState);
+        super.copyFrom(ctx);
+    }
+    public OP_DECREMENTO_UNARIO(): antlr.TerminalNode {
+        return this.getToken(PortugolParser.OP_DECREMENTO_UNARIO, 0)!;
+    }
+    public ID(): antlr.TerminalNode {
+        return this.getToken(PortugolParser.ID, 0)!;
+    }
+    public indiceArray(): IndiceArrayContext[];
+    public indiceArray(i: number): IndiceArrayContext | null;
+    public indiceArray(i?: number): IndiceArrayContext[] | IndiceArrayContext | null {
+        if (i === undefined) {
+            return this.getRuleContexts(IndiceArrayContext);
+        }
+
+        return this.getRuleContext(i, IndiceArrayContext);
+    }
+    public override enterRule(listener: PortugolListener): void {
+        if(listener.enterDecrementoUnarioPrefixado) {
+             listener.enterDecrementoUnarioPrefixado(this);
+        }
+    }
+    public override exitRule(listener: PortugolListener): void {
+        if(listener.exitDecrementoUnarioPrefixado) {
+             listener.exitDecrementoUnarioPrefixado(this);
+        }
+    }
+    public override accept<Result>(visitor: PortugolVisitor<Result>): Result | null {
+        if (visitor.visitDecrementoUnarioPrefixado) {
+            return visitor.visitDecrementoUnarioPrefixado(this);
+        } else {
+            return visitor.visitChildren(this);
+        }
+    }
+}
+export class ReferenciaParaVariavelContext extends ExpressaoContext {
+    public constructor(ctx: ExpressaoContext) {
+        super(ctx.parent, ctx.invokingState);
+        super.copyFrom(ctx);
+    }
+    public ID(): antlr.TerminalNode {
+        return this.getToken(PortugolParser.ID, 0)!;
+    }
+    public escopoBiblioteca(): EscopoBibliotecaContext | null {
+        return this.getRuleContext(0, EscopoBibliotecaContext);
+    }
+    public override enterRule(listener: PortugolListener): void {
+        if(listener.enterReferenciaParaVariavel) {
+             listener.enterReferenciaParaVariavel(this);
+        }
+    }
+    public override exitRule(listener: PortugolListener): void {
+        if(listener.exitReferenciaParaVariavel) {
+             listener.exitReferenciaParaVariavel(this);
+        }
+    }
+    public override accept<Result>(visitor: PortugolVisitor<Result>): Result | null {
+        if (visitor.visitReferenciaParaVariavel) {
+            return visitor.visitReferenciaParaVariavel(this);
+        } else {
+            return visitor.visitChildren(this);
+        }
+    }
+}
+export class NumeroInteiroContext extends ExpressaoContext {
+    public constructor(ctx: ExpressaoContext) {
+        super(ctx.parent, ctx.invokingState);
+        super.copyFrom(ctx);
+    }
+    public INT(): antlr.TerminalNode | null {
+        return this.getToken(PortugolParser.INT, 0);
+    }
+    public HEXADECIMAL(): antlr.TerminalNode | null {
+        return this.getToken(PortugolParser.HEXADECIMAL, 0);
+    }
+    public override enterRule(listener: PortugolListener): void {
+        if(listener.enterNumeroInteiro) {
+             listener.enterNumeroInteiro(this);
+        }
+    }
+    public override exitRule(listener: PortugolListener): void {
+        if(listener.exitNumeroInteiro) {
+             listener.exitNumeroInteiro(this);
+        }
+    }
+    public override accept<Result>(visitor: PortugolVisitor<Result>): Result | null {
+        if (visitor.visitNumeroInteiro) {
+            return visitor.visitNumeroInteiro(this);
+        } else {
+            return visitor.visitChildren(this);
+        }
+    }
+}
+export class NumeroRealContext extends ExpressaoContext {
+    public constructor(ctx: ExpressaoContext) {
+        super(ctx.parent, ctx.invokingState);
+        super.copyFrom(ctx);
+    }
+    public REAL(): antlr.TerminalNode {
+        return this.getToken(PortugolParser.REAL, 0)!;
+    }
+    public override enterRule(listener: PortugolListener): void {
+        if(listener.enterNumeroReal) {
+             listener.enterNumeroReal(this);
+        }
+    }
+    public override exitRule(listener: PortugolListener): void {
+        if(listener.exitNumeroReal) {
+             listener.exitNumeroReal(this);
+        }
+    }
+    public override accept<Result>(visitor: PortugolVisitor<Result>): Result | null {
+        if (visitor.visitNumeroReal) {
+            return visitor.visitNumeroReal(this);
+        } else {
+            return visitor.visitChildren(this);
+        }
+    }
+}
+export class ValorLogicoContext extends ExpressaoContext {
+    public constructor(ctx: ExpressaoContext) {
+        super(ctx.parent, ctx.invokingState);
+        super.copyFrom(ctx);
+    }
+    public LOGICO(): antlr.TerminalNode {
+        return this.getToken(PortugolParser.LOGICO, 0)!;
+    }
+    public override enterRule(listener: PortugolListener): void {
+        if(listener.enterValorLogico) {
+             listener.enterValorLogico(this);
+        }
+    }
+    public override exitRule(listener: PortugolListener): void {
+        if(listener.exitValorLogico) {
+             listener.exitValorLogico(this);
+        }
+    }
+    public override accept<Result>(visitor: PortugolVisitor<Result>): Result | null {
+        if (visitor.visitValorLogico) {
+            return visitor.visitValorLogico(this);
+        } else {
+            return visitor.visitChildren(this);
+        }
+    }
+}
+export class CaracterContext extends ExpressaoContext {
+    public constructor(ctx: ExpressaoContext) {
+        super(ctx.parent, ctx.invokingState);
+        super.copyFrom(ctx);
+    }
+    public CARACTER(): antlr.TerminalNode {
+        return this.getToken(PortugolParser.CARACTER, 0)!;
+    }
+    public override enterRule(listener: PortugolListener): void {
+        if(listener.enterCaracter) {
+             listener.enterCaracter(this);
+        }
+    }
+    public override exitRule(listener: PortugolListener): void {
+        if(listener.exitCaracter) {
+             listener.exitCaracter(this);
+        }
+    }
+    public override accept<Result>(visitor: PortugolVisitor<Result>): Result | null {
+        if (visitor.visitCaracter) {
+            return visitor.visitCaracter(this);
+        } else {
+            return visitor.visitChildren(this);
+        }
+    }
+}
+export class StringContext extends ExpressaoContext {
+    public constructor(ctx: ExpressaoContext) {
+        super(ctx.parent, ctx.invokingState);
+        super.copyFrom(ctx);
+    }
+    public STRING(): antlr.TerminalNode {
+        return this.getToken(PortugolParser.STRING, 0)!;
+    }
+    public override enterRule(listener: PortugolListener): void {
+        if(listener.enterString) {
+             listener.enterString(this);
+        }
+    }
+    public override exitRule(listener: PortugolListener): void {
+        if(listener.exitString) {
+             listener.exitString(this);
+        }
+    }
+    public override accept<Result>(visitor: PortugolVisitor<Result>): Result | null {
+        if (visitor.visitString) {
+            return visitor.visitString(this);
+        } else {
+            return visitor.visitChildren(this);
+        }
+    }
+}
+export class ExpressaoEntreParentesesContext extends ExpressaoContext {
+    public constructor(ctx: ExpressaoContext) {
+        super(ctx.parent, ctx.invokingState);
+        super.copyFrom(ctx);
+    }
+    public ABRE_PARENTESES(): antlr.TerminalNode {
+        return this.getToken(PortugolParser.ABRE_PARENTESES, 0)!;
+    }
+    public expressao(): ExpressaoContext {
+        return this.getRuleContext(0, ExpressaoContext)!;
+    }
+    public FECHA_PARENTESES(): antlr.TerminalNode {
+        return this.getToken(PortugolParser.FECHA_PARENTESES, 0)!;
+    }
+    public override enterRule(listener: PortugolListener): void {
+        if(listener.enterExpressaoEntreParenteses) {
+             listener.enterExpressaoEntreParenteses(this);
+        }
+    }
+    public override exitRule(listener: PortugolListener): void {
+        if(listener.exitExpressaoEntreParenteses) {
+             listener.exitExpressaoEntreParenteses(this);
+        }
+    }
+    public override accept<Result>(visitor: PortugolVisitor<Result>): Result | null {
+        if (visitor.visitExpressaoEntreParenteses) {
+            return visitor.visitExpressaoEntreParenteses(this);
+        } else {
+            return visitor.visitChildren(this);
+        }
+    }
+}
+export class MultiplicacaoContext extends ExpressaoContext {
     public constructor(ctx: ExpressaoContext) {
         super(ctx.parent, ctx.invokingState);
         super.copyFrom(ctx);
@@ -5420,22 +4958,57 @@ export class OperacaoOrBitwiseContext extends ExpressaoContext {
 
         return this.getRuleContext(i, ExpressaoContext);
     }
-    public OP_OU_BITWISE(): antlr.TerminalNode {
-        return this.getToken(PortugolParser.OP_OU_BITWISE, 0)!;
+    public OP_MULTIPLICACAO(): antlr.TerminalNode {
+        return this.getToken(PortugolParser.OP_MULTIPLICACAO, 0)!;
     }
     public override enterRule(listener: PortugolListener): void {
-        if(listener.enterOperacaoOrBitwise) {
-             listener.enterOperacaoOrBitwise(this);
+        if(listener.enterMultiplicacao) {
+             listener.enterMultiplicacao(this);
         }
     }
     public override exitRule(listener: PortugolListener): void {
-        if(listener.exitOperacaoOrBitwise) {
-             listener.exitOperacaoOrBitwise(this);
+        if(listener.exitMultiplicacao) {
+             listener.exitMultiplicacao(this);
         }
     }
     public override accept<Result>(visitor: PortugolVisitor<Result>): Result | null {
-        if (visitor.visitOperacaoOrBitwise) {
-            return visitor.visitOperacaoOrBitwise(this);
+        if (visitor.visitMultiplicacao) {
+            return visitor.visitMultiplicacao(this);
+        } else {
+            return visitor.visitChildren(this);
+        }
+    }
+}
+export class DivisaoContext extends ExpressaoContext {
+    public constructor(ctx: ExpressaoContext) {
+        super(ctx.parent, ctx.invokingState);
+        super.copyFrom(ctx);
+    }
+    public expressao(): ExpressaoContext[];
+    public expressao(i: number): ExpressaoContext | null;
+    public expressao(i?: number): ExpressaoContext[] | ExpressaoContext | null {
+        if (i === undefined) {
+            return this.getRuleContexts(ExpressaoContext);
+        }
+
+        return this.getRuleContext(i, ExpressaoContext);
+    }
+    public OP_DIVISAO(): antlr.TerminalNode {
+        return this.getToken(PortugolParser.OP_DIVISAO, 0)!;
+    }
+    public override enterRule(listener: PortugolListener): void {
+        if(listener.enterDivisao) {
+             listener.enterDivisao(this);
+        }
+    }
+    public override exitRule(listener: PortugolListener): void {
+        if(listener.exitDivisao) {
+             listener.exitDivisao(this);
+        }
+    }
+    public override accept<Result>(visitor: PortugolVisitor<Result>): Result | null {
+        if (visitor.visitDivisao) {
+            return visitor.visitDivisao(this);
         } else {
             return visitor.visitChildren(this);
         }
@@ -5476,6 +5049,41 @@ export class ModuloContext extends ExpressaoContext {
         }
     }
 }
+export class AdicaoContext extends ExpressaoContext {
+    public constructor(ctx: ExpressaoContext) {
+        super(ctx.parent, ctx.invokingState);
+        super.copyFrom(ctx);
+    }
+    public expressao(): ExpressaoContext[];
+    public expressao(i: number): ExpressaoContext | null;
+    public expressao(i?: number): ExpressaoContext[] | ExpressaoContext | null {
+        if (i === undefined) {
+            return this.getRuleContexts(ExpressaoContext);
+        }
+
+        return this.getRuleContext(i, ExpressaoContext);
+    }
+    public OP_ADICAO(): antlr.TerminalNode {
+        return this.getToken(PortugolParser.OP_ADICAO, 0)!;
+    }
+    public override enterRule(listener: PortugolListener): void {
+        if(listener.enterAdicao) {
+             listener.enterAdicao(this);
+        }
+    }
+    public override exitRule(listener: PortugolListener): void {
+        if(listener.exitAdicao) {
+             listener.exitAdicao(this);
+        }
+    }
+    public override accept<Result>(visitor: PortugolVisitor<Result>): Result | null {
+        if (visitor.visitAdicao) {
+            return visitor.visitAdicao(this);
+        } else {
+            return visitor.visitChildren(this);
+        }
+    }
+}
 export class SubtracaoContext extends ExpressaoContext {
     public constructor(ctx: ExpressaoContext) {
         super(ctx.parent, ctx.invokingState);
@@ -5511,30 +5119,386 @@ export class SubtracaoContext extends ExpressaoContext {
         }
     }
 }
-export class NegacaoContext extends ExpressaoContext {
+export class OperacaoIgualdadeContext extends ExpressaoContext {
     public constructor(ctx: ExpressaoContext) {
         super(ctx.parent, ctx.invokingState);
         super.copyFrom(ctx);
     }
-    public OP_NAO(): antlr.TerminalNode {
-        return this.getToken(PortugolParser.OP_NAO, 0)!;
+    public expressao(): ExpressaoContext[];
+    public expressao(i: number): ExpressaoContext | null;
+    public expressao(i?: number): ExpressaoContext[] | ExpressaoContext | null {
+        if (i === undefined) {
+            return this.getRuleContexts(ExpressaoContext);
+        }
+
+        return this.getRuleContext(i, ExpressaoContext);
     }
-    public expressao(): ExpressaoContext {
-        return this.getRuleContext(0, ExpressaoContext)!;
+    public OP_IGUALDADE(): antlr.TerminalNode {
+        return this.getToken(PortugolParser.OP_IGUALDADE, 0)!;
     }
     public override enterRule(listener: PortugolListener): void {
-        if(listener.enterNegacao) {
-             listener.enterNegacao(this);
+        if(listener.enterOperacaoIgualdade) {
+             listener.enterOperacaoIgualdade(this);
         }
     }
     public override exitRule(listener: PortugolListener): void {
-        if(listener.exitNegacao) {
-             listener.exitNegacao(this);
+        if(listener.exitOperacaoIgualdade) {
+             listener.exitOperacaoIgualdade(this);
         }
     }
     public override accept<Result>(visitor: PortugolVisitor<Result>): Result | null {
-        if (visitor.visitNegacao) {
-            return visitor.visitNegacao(this);
+        if (visitor.visitOperacaoIgualdade) {
+            return visitor.visitOperacaoIgualdade(this);
+        } else {
+            return visitor.visitChildren(this);
+        }
+    }
+}
+export class OperacaoDiferencaContext extends ExpressaoContext {
+    public constructor(ctx: ExpressaoContext) {
+        super(ctx.parent, ctx.invokingState);
+        super.copyFrom(ctx);
+    }
+    public expressao(): ExpressaoContext[];
+    public expressao(i: number): ExpressaoContext | null;
+    public expressao(i?: number): ExpressaoContext[] | ExpressaoContext | null {
+        if (i === undefined) {
+            return this.getRuleContexts(ExpressaoContext);
+        }
+
+        return this.getRuleContext(i, ExpressaoContext);
+    }
+    public OP_DIFERENCA(): antlr.TerminalNode {
+        return this.getToken(PortugolParser.OP_DIFERENCA, 0)!;
+    }
+    public override enterRule(listener: PortugolListener): void {
+        if(listener.enterOperacaoDiferenca) {
+             listener.enterOperacaoDiferenca(this);
+        }
+    }
+    public override exitRule(listener: PortugolListener): void {
+        if(listener.exitOperacaoDiferenca) {
+             listener.exitOperacaoDiferenca(this);
+        }
+    }
+    public override accept<Result>(visitor: PortugolVisitor<Result>): Result | null {
+        if (visitor.visitOperacaoDiferenca) {
+            return visitor.visitOperacaoDiferenca(this);
+        } else {
+            return visitor.visitChildren(this);
+        }
+    }
+}
+export class OperacaoMaiorContext extends ExpressaoContext {
+    public constructor(ctx: ExpressaoContext) {
+        super(ctx.parent, ctx.invokingState);
+        super.copyFrom(ctx);
+    }
+    public expressao(): ExpressaoContext[];
+    public expressao(i: number): ExpressaoContext | null;
+    public expressao(i?: number): ExpressaoContext[] | ExpressaoContext | null {
+        if (i === undefined) {
+            return this.getRuleContexts(ExpressaoContext);
+        }
+
+        return this.getRuleContext(i, ExpressaoContext);
+    }
+    public OP_MAIOR(): antlr.TerminalNode {
+        return this.getToken(PortugolParser.OP_MAIOR, 0)!;
+    }
+    public override enterRule(listener: PortugolListener): void {
+        if(listener.enterOperacaoMaior) {
+             listener.enterOperacaoMaior(this);
+        }
+    }
+    public override exitRule(listener: PortugolListener): void {
+        if(listener.exitOperacaoMaior) {
+             listener.exitOperacaoMaior(this);
+        }
+    }
+    public override accept<Result>(visitor: PortugolVisitor<Result>): Result | null {
+        if (visitor.visitOperacaoMaior) {
+            return visitor.visitOperacaoMaior(this);
+        } else {
+            return visitor.visitChildren(this);
+        }
+    }
+}
+export class OperacaoMenorContext extends ExpressaoContext {
+    public constructor(ctx: ExpressaoContext) {
+        super(ctx.parent, ctx.invokingState);
+        super.copyFrom(ctx);
+    }
+    public expressao(): ExpressaoContext[];
+    public expressao(i: number): ExpressaoContext | null;
+    public expressao(i?: number): ExpressaoContext[] | ExpressaoContext | null {
+        if (i === undefined) {
+            return this.getRuleContexts(ExpressaoContext);
+        }
+
+        return this.getRuleContext(i, ExpressaoContext);
+    }
+    public OP_MENOR(): antlr.TerminalNode {
+        return this.getToken(PortugolParser.OP_MENOR, 0)!;
+    }
+    public override enterRule(listener: PortugolListener): void {
+        if(listener.enterOperacaoMenor) {
+             listener.enterOperacaoMenor(this);
+        }
+    }
+    public override exitRule(listener: PortugolListener): void {
+        if(listener.exitOperacaoMenor) {
+             listener.exitOperacaoMenor(this);
+        }
+    }
+    public override accept<Result>(visitor: PortugolVisitor<Result>): Result | null {
+        if (visitor.visitOperacaoMenor) {
+            return visitor.visitOperacaoMenor(this);
+        } else {
+            return visitor.visitChildren(this);
+        }
+    }
+}
+export class OperacaoMenorIgualContext extends ExpressaoContext {
+    public constructor(ctx: ExpressaoContext) {
+        super(ctx.parent, ctx.invokingState);
+        super.copyFrom(ctx);
+    }
+    public expressao(): ExpressaoContext[];
+    public expressao(i: number): ExpressaoContext | null;
+    public expressao(i?: number): ExpressaoContext[] | ExpressaoContext | null {
+        if (i === undefined) {
+            return this.getRuleContexts(ExpressaoContext);
+        }
+
+        return this.getRuleContext(i, ExpressaoContext);
+    }
+    public OP_MENOR_IGUAL(): antlr.TerminalNode {
+        return this.getToken(PortugolParser.OP_MENOR_IGUAL, 0)!;
+    }
+    public override enterRule(listener: PortugolListener): void {
+        if(listener.enterOperacaoMenorIgual) {
+             listener.enterOperacaoMenorIgual(this);
+        }
+    }
+    public override exitRule(listener: PortugolListener): void {
+        if(listener.exitOperacaoMenorIgual) {
+             listener.exitOperacaoMenorIgual(this);
+        }
+    }
+    public override accept<Result>(visitor: PortugolVisitor<Result>): Result | null {
+        if (visitor.visitOperacaoMenorIgual) {
+            return visitor.visitOperacaoMenorIgual(this);
+        } else {
+            return visitor.visitChildren(this);
+        }
+    }
+}
+export class OperacaoMaiorIgualContext extends ExpressaoContext {
+    public constructor(ctx: ExpressaoContext) {
+        super(ctx.parent, ctx.invokingState);
+        super.copyFrom(ctx);
+    }
+    public expressao(): ExpressaoContext[];
+    public expressao(i: number): ExpressaoContext | null;
+    public expressao(i?: number): ExpressaoContext[] | ExpressaoContext | null {
+        if (i === undefined) {
+            return this.getRuleContexts(ExpressaoContext);
+        }
+
+        return this.getRuleContext(i, ExpressaoContext);
+    }
+    public OP_MAIOR_IGUAL(): antlr.TerminalNode {
+        return this.getToken(PortugolParser.OP_MAIOR_IGUAL, 0)!;
+    }
+    public override enterRule(listener: PortugolListener): void {
+        if(listener.enterOperacaoMaiorIgual) {
+             listener.enterOperacaoMaiorIgual(this);
+        }
+    }
+    public override exitRule(listener: PortugolListener): void {
+        if(listener.exitOperacaoMaiorIgual) {
+             listener.exitOperacaoMaiorIgual(this);
+        }
+    }
+    public override accept<Result>(visitor: PortugolVisitor<Result>): Result | null {
+        if (visitor.visitOperacaoMaiorIgual) {
+            return visitor.visitOperacaoMaiorIgual(this);
+        } else {
+            return visitor.visitChildren(this);
+        }
+    }
+}
+export class OperacaoELogicoContext extends ExpressaoContext {
+    public constructor(ctx: ExpressaoContext) {
+        super(ctx.parent, ctx.invokingState);
+        super.copyFrom(ctx);
+    }
+    public expressao(): ExpressaoContext[];
+    public expressao(i: number): ExpressaoContext | null;
+    public expressao(i?: number): ExpressaoContext[] | ExpressaoContext | null {
+        if (i === undefined) {
+            return this.getRuleContexts(ExpressaoContext);
+        }
+
+        return this.getRuleContext(i, ExpressaoContext);
+    }
+    public OP_E_LOGICO(): antlr.TerminalNode {
+        return this.getToken(PortugolParser.OP_E_LOGICO, 0)!;
+    }
+    public override enterRule(listener: PortugolListener): void {
+        if(listener.enterOperacaoELogico) {
+             listener.enterOperacaoELogico(this);
+        }
+    }
+    public override exitRule(listener: PortugolListener): void {
+        if(listener.exitOperacaoELogico) {
+             listener.exitOperacaoELogico(this);
+        }
+    }
+    public override accept<Result>(visitor: PortugolVisitor<Result>): Result | null {
+        if (visitor.visitOperacaoELogico) {
+            return visitor.visitOperacaoELogico(this);
+        } else {
+            return visitor.visitChildren(this);
+        }
+    }
+}
+export class OperacaoOuLogicoContext extends ExpressaoContext {
+    public constructor(ctx: ExpressaoContext) {
+        super(ctx.parent, ctx.invokingState);
+        super.copyFrom(ctx);
+    }
+    public expressao(): ExpressaoContext[];
+    public expressao(i: number): ExpressaoContext | null;
+    public expressao(i?: number): ExpressaoContext[] | ExpressaoContext | null {
+        if (i === undefined) {
+            return this.getRuleContexts(ExpressaoContext);
+        }
+
+        return this.getRuleContext(i, ExpressaoContext);
+    }
+    public OP_OU_LOGICO(): antlr.TerminalNode {
+        return this.getToken(PortugolParser.OP_OU_LOGICO, 0)!;
+    }
+    public override enterRule(listener: PortugolListener): void {
+        if(listener.enterOperacaoOuLogico) {
+             listener.enterOperacaoOuLogico(this);
+        }
+    }
+    public override exitRule(listener: PortugolListener): void {
+        if(listener.exitOperacaoOuLogico) {
+             listener.exitOperacaoOuLogico(this);
+        }
+    }
+    public override accept<Result>(visitor: PortugolVisitor<Result>): Result | null {
+        if (visitor.visitOperacaoOuLogico) {
+            return visitor.visitOperacaoOuLogico(this);
+        } else {
+            return visitor.visitChildren(this);
+        }
+    }
+}
+export class OperacaoXorContext extends ExpressaoContext {
+    public constructor(ctx: ExpressaoContext) {
+        super(ctx.parent, ctx.invokingState);
+        super.copyFrom(ctx);
+    }
+    public expressao(): ExpressaoContext[];
+    public expressao(i: number): ExpressaoContext | null;
+    public expressao(i?: number): ExpressaoContext[] | ExpressaoContext | null {
+        if (i === undefined) {
+            return this.getRuleContexts(ExpressaoContext);
+        }
+
+        return this.getRuleContext(i, ExpressaoContext);
+    }
+    public OP_XOR(): antlr.TerminalNode {
+        return this.getToken(PortugolParser.OP_XOR, 0)!;
+    }
+    public override enterRule(listener: PortugolListener): void {
+        if(listener.enterOperacaoXor) {
+             listener.enterOperacaoXor(this);
+        }
+    }
+    public override exitRule(listener: PortugolListener): void {
+        if(listener.exitOperacaoXor) {
+             listener.exitOperacaoXor(this);
+        }
+    }
+    public override accept<Result>(visitor: PortugolVisitor<Result>): Result | null {
+        if (visitor.visitOperacaoXor) {
+            return visitor.visitOperacaoXor(this);
+        } else {
+            return visitor.visitChildren(this);
+        }
+    }
+}
+export class OperacaoShiftLeftContext extends ExpressaoContext {
+    public constructor(ctx: ExpressaoContext) {
+        super(ctx.parent, ctx.invokingState);
+        super.copyFrom(ctx);
+    }
+    public expressao(): ExpressaoContext[];
+    public expressao(i: number): ExpressaoContext | null;
+    public expressao(i?: number): ExpressaoContext[] | ExpressaoContext | null {
+        if (i === undefined) {
+            return this.getRuleContexts(ExpressaoContext);
+        }
+
+        return this.getRuleContext(i, ExpressaoContext);
+    }
+    public OP_SHIFT_LEFT(): antlr.TerminalNode {
+        return this.getToken(PortugolParser.OP_SHIFT_LEFT, 0)!;
+    }
+    public override enterRule(listener: PortugolListener): void {
+        if(listener.enterOperacaoShiftLeft) {
+             listener.enterOperacaoShiftLeft(this);
+        }
+    }
+    public override exitRule(listener: PortugolListener): void {
+        if(listener.exitOperacaoShiftLeft) {
+             listener.exitOperacaoShiftLeft(this);
+        }
+    }
+    public override accept<Result>(visitor: PortugolVisitor<Result>): Result | null {
+        if (visitor.visitOperacaoShiftLeft) {
+            return visitor.visitOperacaoShiftLeft(this);
+        } else {
+            return visitor.visitChildren(this);
+        }
+    }
+}
+export class OperacaoShiftRightContext extends ExpressaoContext {
+    public constructor(ctx: ExpressaoContext) {
+        super(ctx.parent, ctx.invokingState);
+        super.copyFrom(ctx);
+    }
+    public expressao(): ExpressaoContext[];
+    public expressao(i: number): ExpressaoContext | null;
+    public expressao(i?: number): ExpressaoContext[] | ExpressaoContext | null {
+        if (i === undefined) {
+            return this.getRuleContexts(ExpressaoContext);
+        }
+
+        return this.getRuleContext(i, ExpressaoContext);
+    }
+    public OP_SHIFT_RIGHT(): antlr.TerminalNode {
+        return this.getToken(PortugolParser.OP_SHIFT_RIGHT, 0)!;
+    }
+    public override enterRule(listener: PortugolListener): void {
+        if(listener.enterOperacaoShiftRight) {
+             listener.enterOperacaoShiftRight(this);
+        }
+    }
+    public override exitRule(listener: PortugolListener): void {
+        if(listener.exitOperacaoShiftRight) {
+             listener.exitOperacaoShiftRight(this);
+        }
+    }
+    public override accept<Result>(visitor: PortugolVisitor<Result>): Result | null {
+        if (visitor.visitOperacaoShiftRight) {
+            return visitor.visitOperacaoShiftRight(this);
         } else {
             return visitor.visitChildren(this);
         }
@@ -5570,6 +5534,41 @@ export class OperacaoAndBitwiseContext extends ExpressaoContext {
     public override accept<Result>(visitor: PortugolVisitor<Result>): Result | null {
         if (visitor.visitOperacaoAndBitwise) {
             return visitor.visitOperacaoAndBitwise(this);
+        } else {
+            return visitor.visitChildren(this);
+        }
+    }
+}
+export class OperacaoOrBitwiseContext extends ExpressaoContext {
+    public constructor(ctx: ExpressaoContext) {
+        super(ctx.parent, ctx.invokingState);
+        super.copyFrom(ctx);
+    }
+    public expressao(): ExpressaoContext[];
+    public expressao(i: number): ExpressaoContext | null;
+    public expressao(i?: number): ExpressaoContext[] | ExpressaoContext | null {
+        if (i === undefined) {
+            return this.getRuleContexts(ExpressaoContext);
+        }
+
+        return this.getRuleContext(i, ExpressaoContext);
+    }
+    public OP_OU_BITWISE(): antlr.TerminalNode {
+        return this.getToken(PortugolParser.OP_OU_BITWISE, 0)!;
+    }
+    public override enterRule(listener: PortugolListener): void {
+        if(listener.enterOperacaoOrBitwise) {
+             listener.enterOperacaoOrBitwise(this);
+        }
+    }
+    public override exitRule(listener: PortugolListener): void {
+        if(listener.exitOperacaoOrBitwise) {
+             listener.exitOperacaoOrBitwise(this);
+        }
+    }
+    public override accept<Result>(visitor: PortugolVisitor<Result>): Result | null {
+        if (visitor.visitOperacaoOrBitwise) {
+            return visitor.visitOperacaoOrBitwise(this);
         } else {
             return visitor.visitChildren(this);
         }

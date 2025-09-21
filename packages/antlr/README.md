@@ -1,6 +1,6 @@
 # `@portugol-webstudio/antlr`
 
-Este pacote contém os recursos gerados pelo [antlr4ng](https://github.com/mike-lischke/antlr4ng) para a [gramática do Portugol](https://github.com/UNIVALI-LITE/Portugol-Studio/blob/master/core/src/main/antlr/Portugol.g4).
+Este pacote contém os recursos gerados pelo [antlr-ng](https://github.com/antlr-ng/antlr-ng) para a [gramática do Portugol](https://github.com/UNIVALI-LITE/Portugol-Studio/blob/master/core/src/main/antlr/Portugol.g4).
 
 ## Atualizando a gramática
 
@@ -8,7 +8,7 @@ Para atualizar a gramática, basta executar o comando abaixo:
 
 ```sh
 npm run antlr-update
-npm run antlr4ng
+npm run antlr-ng
 ```
 
 Os arquivos gerados serão salvos na pasta `src`, dentre eles:
