@@ -58,7 +58,7 @@
     "firebase": "^12.3.0",
     "iconv-lite": "^0.7.0",
     "jschardet": "^3.1.4",
-    "monaco-editor": "^0.52.2",
+    "monaco-editor": "^0.53.0",
     "ng-keyboard-shortcuts": "^13.0.8",
     "ngx-google-analytics": "^14.0.1",
     "ngx-markdown": "^20.1.0",
