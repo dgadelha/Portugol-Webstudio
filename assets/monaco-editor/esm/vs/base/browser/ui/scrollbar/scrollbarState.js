@@ -159,3 +159,4 @@ export class ScrollbarState {
         return Math.round(desiredSliderPosition / this._computedSliderRatio);
     }
 }
+//# sourceMappingURL=scrollbarState.js.map

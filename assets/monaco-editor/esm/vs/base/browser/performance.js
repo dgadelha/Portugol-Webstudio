@@ -218,3 +218,4 @@ export var inputLatency;
         cumulative.max = 0;
     }
 })(inputLatency || (inputLatency = {}));
+//# sourceMappingURL=performance.js.map

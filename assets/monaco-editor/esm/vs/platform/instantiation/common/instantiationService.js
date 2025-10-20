@@ -79,6 +79,13 @@ export class InstantiationService {
                         throw new Error(`[invokeFunction] unknown service '${id}'`);
                     }
                     return result;
+                },
+                getIfExists: (id) => {
+                    if (_done) {
+                        throw illegalState('service accessor is only valid during the invocation of its target method');
+                    }
+                    const result = this._getOrCreateServiceInstance(id, _trace);
+                    return result;
                 }
             };
             return fn(accessor, ...args);
@@ -390,3 +397,4 @@ export class Trace {
     }
 }
 //#endregion
+//# sourceMappingURL=instantiationService.js.map

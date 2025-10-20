@@ -2,28 +2,29 @@ import { Emitter } from '../../../base/common/event.js';
 import { Disposable, toDisposable } from '../../../base/common/lifecycle.js';
 import { createDecorator } from '../../instantiation/common/instantiation.js';
 import * as platform from '../../registry/common/platform.js';
-import { ColorScheme } from './theme.js';
+import { ColorScheme, ThemeTypeSelector } from './theme.js';
 export const IThemeService = createDecorator('themeService');
 export function themeColorFromId(id) {
     return { id };
 }
 export function getThemeTypeSelector(type) {
     switch (type) {
-        case ColorScheme.DARK: return 'vs-dark';
-        case ColorScheme.HIGH_CONTRAST_DARK: return 'hc-black';
-        case ColorScheme.HIGH_CONTRAST_LIGHT: return 'hc-light';
-        default: return 'vs';
+        case ColorScheme.DARK: return ThemeTypeSelector.VS_DARK;
+        case ColorScheme.HIGH_CONTRAST_DARK: return ThemeTypeSelector.HC_BLACK;
+        case ColorScheme.HIGH_CONTRAST_LIGHT: return ThemeTypeSelector.HC_LIGHT;
+        default: return ThemeTypeSelector.VS;
     }
 }
 // static theming participant
 export const Extensions = {
     ThemingContribution: 'base.contributions.theming'
 };
-class ThemingRegistry {
+class ThemingRegistry extends Disposable {
     constructor() {
+        super();
         this.themingParticipants = [];
         this.themingParticipants = [];
-        this.onThemingParticipantAddedEmitter = new Emitter();
+        this.onThemingParticipantAddedEmitter = this._register(new Emitter());
     }
     onColorThemeChange(participant) {
         this.themingParticipants.push(participant);
@@ -61,3 +62,4 @@ export class Themable extends Disposable {
         // Subclasses to override
     }
 }
+//# sourceMappingURL=themeService.js.map

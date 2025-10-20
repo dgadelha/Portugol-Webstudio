@@ -24,3 +24,4 @@ class TabFocusImpl {
  * Defaults to false.
  */
 export const TabFocus = new TabFocusImpl();
+//# sourceMappingURL=tabFocus.js.map

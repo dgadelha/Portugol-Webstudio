@@ -49,3 +49,4 @@ export class ReplaceAllCommand {
         return helper.getTrackedSelection(this._trackedEditorSelectionId);
     }
 }
+//# sourceMappingURL=replaceAllCommand.js.map

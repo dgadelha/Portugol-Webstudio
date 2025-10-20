@@ -6,12 +6,17 @@ import './overlayWidgets.css';
 import { createFastDomNode } from '../../../../base/browser/fastDomNode.js';
 import { PartFingerprints, ViewPart } from '../../view/viewPart.js';
 import * as dom from '../../../../base/browser/dom.js';
+/*
+ * This view part for rendering the overlay widgets, which are
+ * floating widgets positioned based on the editor's viewport,
+ * such as the find widget.
+ */
 export class ViewOverlayWidgets extends ViewPart {
     constructor(context, viewDomNode) {
         super(context);
         this._viewDomNode = viewDomNode;
         const options = this._context.configuration.options;
-        const layoutInfo = options.get(146 /* EditorOption.layoutInfo */);
+        const layoutInfo = options.get(165 /* EditorOption.layoutInfo */);
         this._widgets = {};
         this._verticalScrollbarWidth = layoutInfo.verticalScrollbarWidth;
         this._minimapWidth = layoutInfo.minimap.minimapWidth;
@@ -36,7 +41,7 @@ export class ViewOverlayWidgets extends ViewPart {
     // ---- begin view event handlers
     onConfigurationChanged(e) {
         const options = this._context.configuration.options;
-        const layoutInfo = options.get(146 /* EditorOption.layoutInfo */);
+        const layoutInfo = options.get(165 /* EditorOption.layoutInfo */);
         this._verticalScrollbarWidth = layoutInfo.verticalScrollbarWidth;
         this._minimapWidth = layoutInfo.minimap.minimapWidth;
         this._horizontalScrollbarHeight = layoutInfo.horizontalScrollbarHeight;
@@ -45,6 +50,11 @@ export class ViewOverlayWidgets extends ViewPart {
         return true;
     }
     // ---- end view event handlers
+    _widgetCanOverflow(widget) {
+        const options = this._context.configuration.options;
+        const allowOverflow = options.get(4 /* EditorOption.allowOverflow */);
+        return (widget.allowEditorOverflow || false) && allowOverflow;
+    }
     addWidget(widget) {
         const domNode = createFastDomNode(widget.getDomNode());
         this._widgets[widget.getId()] = {
@@ -55,7 +65,7 @@ export class ViewOverlayWidgets extends ViewPart {
         // This is sync because a widget wants to be in the dom
         domNode.setPosition('absolute');
         domNode.setAttribute('widgetId', widget.getId());
-        if (widget.allowEditorOverflow) {
+        if (this._widgetCanOverflow(widget)) {
             this.overflowingOverlayWidgetsDomNode.appendChild(domNode);
         }
         else {
@@ -137,8 +147,8 @@ export class ViewOverlayWidgets extends ViewPart {
         }
         else {
             const { top, left } = widgetData.preference;
-            const fixedOverflowWidgets = this._context.configuration.options.get(42 /* EditorOption.fixedOverflowWidgets */);
-            if (fixedOverflowWidgets && widgetData.widget.allowEditorOverflow) {
+            const fixedOverflowWidgets = this._context.configuration.options.get(51 /* EditorOption.fixedOverflowWidgets */);
+            if (fixedOverflowWidgets && this._widgetCanOverflow(widgetData.widget)) {
                 // top, left are computed relative to the editor and we need them relative to the page
                 const editorBoundingBox = this._viewDomNodeRect;
                 domNode.setTop(top + editorBoundingBox.top);
@@ -166,3 +176,4 @@ export class ViewOverlayWidgets extends ViewPart {
         }
     }
 }
+//# sourceMappingURL=overlayWidgets.js.map

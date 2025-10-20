@@ -28,10 +28,7 @@ import { FileKind } from '../../../../platform/files/common/files.js';
 import { registerIcon } from '../../../../platform/theme/common/iconRegistry.js';
 import { IThemeService } from '../../../../platform/theme/common/themeService.js';
 import { canExpandCompletionItem } from './suggestWidgetDetails.js';
-export function getAriaId(index) {
-    return `suggest-aria-id:${index}`;
-}
-const suggestMoreInfoIcon = registerIcon('suggest-more-info', Codicon.chevronRight, nls.localize('suggestMoreInfoIcon', 'Icon for more information in the suggest widget.'));
+const suggestMoreInfoIcon = registerIcon('suggest-more-info', Codicon.chevronRight, nls.localize(1477, 'Icon for more information in the suggest widget.'));
 const _completionItemColor = new class ColorExtractor {
     static { this._regexRelaxed = /(#([\da-fA-F]{3}){1,2}|(rgb|hsl)a\(\s*(\d{1,3}%?\s*,\s*){3}(1|0?\.\d+)\)|(rgb|hsl)\(\s*\d{1,3}%?(\s*,\s*\d{1,3}%?){2}\s*\))/; }
     static { this._regexStrict = new RegExp(`^${ColorExtractor._regexRelaxed.source}$`, 'i'); }
@@ -87,14 +84,15 @@ let ItemRenderer = class ItemRenderer {
         const qualifierLabel = append(left, $('span.qualifier-label'));
         const detailsLabel = append(right, $('span.details-label'));
         const readMore = append(right, $('span.readMore' + ThemeIcon.asCSSSelector(suggestMoreInfoIcon)));
-        readMore.title = nls.localize('readMore', "Read More");
+        readMore.title = nls.localize(1478, "Read More");
         const configureFont = () => {
             const options = this._editor.getOptions();
-            const fontInfo = options.get(50 /* EditorOption.fontInfo */);
+            const fontInfo = options.get(59 /* EditorOption.fontInfo */);
             const fontFamily = fontInfo.getMassagedFontFamily();
             const fontFeatureSettings = fontInfo.fontFeatureSettings;
-            const fontSize = options.get(120 /* EditorOption.suggestFontSize */) || fontInfo.fontSize;
-            const lineHeight = options.get(121 /* EditorOption.suggestLineHeight */) || fontInfo.lineHeight;
+            const fontVariationSettings = fontInfo.fontVariationSettings;
+            const fontSize = options.get(135 /* EditorOption.suggestFontSize */) || fontInfo.fontSize;
+            const lineHeight = options.get(136 /* EditorOption.suggestLineHeight */) || fontInfo.lineHeight;
             const fontWeight = fontInfo.fontWeight;
             const letterSpacing = fontInfo.letterSpacing;
             const fontSizePx = `${fontSize}px`;
@@ -105,6 +103,7 @@ let ItemRenderer = class ItemRenderer {
             root.style.letterSpacing = letterSpacingPx;
             main.style.fontFamily = fontFamily;
             main.style.fontFeatureSettings = fontFeatureSettings;
+            main.style.fontVariationSettings = fontVariationSettings;
             main.style.lineHeight = lineHeightPx;
             icon.style.height = lineHeightPx;
             icon.style.width = lineHeightPx;
@@ -116,7 +115,6 @@ let ItemRenderer = class ItemRenderer {
     renderElement(element, index, data) {
         data.configureFont();
         const { completion } = element;
-        data.root.id = getAriaId(index);
         data.colorspan.style.backgroundColor = '';
         const labelOptions = {
             labelEscapeNewLines: true,
@@ -167,7 +165,7 @@ let ItemRenderer = class ItemRenderer {
             data.detailsLabel.textContent = stripNewLines(completion.label.description || '');
             data.root.classList.remove('string-label');
         }
-        if (this._editor.getOption(119 /* EditorOption.suggest */).showInlineDetails) {
+        if (this._editor.getOption(134 /* EditorOption.suggest */).showInlineDetails) {
             show(data.detailsLabel);
         }
         else {
@@ -206,3 +204,4 @@ export { ItemRenderer };
 function stripNewLines(str) {
     return str.replace(/\r\n|\r|\n/g, '');
 }
+//# sourceMappingURL=suggestWidgetRenderer.js.map

@@ -12,6 +12,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 import './bannerController.css';
+import { localize } from '../../../../nls.js';
 import { $, append, clearNode } from '../../../../base/browser/dom.js';
 import { ActionBar } from '../../../../base/browser/ui/actionbar/actionbar.js';
 import { Action } from '../../../../base/common/actions.js';
@@ -105,7 +106,7 @@ let Banner = class Banner extends Disposable {
         // Action
         const actionBarContainer = append(this.element, $('div.action-container'));
         this.actionBar = this._register(new ActionBar(actionBarContainer));
-        this.actionBar.push(this._register(new Action('banner.close', 'Close Banner', ThemeIcon.asClassName(widgetClose), true, () => {
+        this.actionBar.push(this._register(new Action('banner.close', localize(1518, "Close Banner"), ThemeIcon.asClassName(widgetClose), true, () => {
             if (typeof item.onClose === 'function') {
                 item.onClose();
             }
@@ -116,3 +117,4 @@ let Banner = class Banner extends Disposable {
 Banner = __decorate([
     __param(0, IInstantiationService)
 ], Banner);
+//# sourceMappingURL=bannerController.js.map

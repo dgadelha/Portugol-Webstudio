@@ -107,3 +107,4 @@ export function score(selector, candidateUri, candidateLanguage, candidateIsSync
         return 0;
     }
 }
+//# sourceMappingURL=languageSelector.js.map

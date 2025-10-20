@@ -9,8 +9,7 @@ class ForceRetokenizeAction extends EditorAction {
     constructor() {
         super({
             id: 'editor.action.forceRetokenize',
-            label: nls.localize('forceRetokenize', "Developer: Force Retokenize"),
-            alias: 'Developer: Force Retokenize',
+            label: nls.localize2(1517, "Developer: Force Retokenize"),
             precondition: undefined
         });
     }
@@ -27,3 +26,4 @@ class ForceRetokenizeAction extends EditorAction {
     }
 }
 registerEditorAction(ForceRetokenizeAction);
+//# sourceMappingURL=tokenization.js.map

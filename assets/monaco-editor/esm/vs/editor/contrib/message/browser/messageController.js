@@ -28,7 +28,7 @@ import * as dom from '../../../../base/browser/dom.js';
 let MessageController = class MessageController {
     static { MessageController_1 = this; }
     static { this.ID = 'editor.contrib.messageController'; }
-    static { this.MESSAGE_VISIBLE = new RawContextKey('messageVisible', false, nls.localize('messageVisible', 'Whether the editor is currently showing an inline message')); }
+    static { this.MESSAGE_VISIBLE = new RawContextKey('messageVisible', false, nls.localize(1277, 'Whether the editor is currently showing an inline message')); }
     static get(editor) {
         return editor.getContribution(MessageController_1.ID);
     }
@@ -41,7 +41,6 @@ let MessageController = class MessageController {
         this._visible = MessageController_1.MESSAGE_VISIBLE.bindTo(contextKeyService);
     }
     dispose() {
-        this._message?.dispose();
         this._messageListeners.dispose();
         this._messageWidget.dispose();
         this._visible.reset();
@@ -51,16 +50,18 @@ let MessageController = class MessageController {
         this._visible.set(true);
         this._messageWidget.clear();
         this._messageListeners.clear();
-        this._message = isMarkdownString(message) ? renderMarkdown(message, {
-            actionHandler: {
-                callback: (url) => {
+        if (isMarkdownString(message)) {
+            const renderedMessage = this._messageListeners.add(renderMarkdown(message, {
+                actionHandler: (url, mdStr) => {
                     this.closeMessage();
-                    openLinkFromMarkdown(this._openerService, url, isMarkdownString(message) ? message.isTrusted : undefined);
+                    openLinkFromMarkdown(this._openerService, url, mdStr.isTrusted);
                 },
-                disposables: this._messageListeners
-            },
-        }) : undefined;
-        this._messageWidget.value = new MessageWidget(this._editor, position, typeof message === 'string' ? message : this._message.element);
+            }));
+            this._messageWidget.value = new MessageWidget(this._editor, position, renderedMessage.element);
+        }
+        else {
+            this._messageWidget.value = new MessageWidget(this._editor, position, message);
+        }
         // close on blur (debounced to allow to tab into the message), cursor, model change, dispose
         this._messageListeners.add(Event.debounce(this._editor.onDidBlurEditorText, (last, event) => event, 0)(() => {
             if (this._mouseOverMessage) {
@@ -181,3 +182,4 @@ class MessageWidget {
     }
 }
 registerEditorContribution(MessageController.ID, MessageController, 4 /* EditorContributionInstantiation.Lazy */);
+//# sourceMappingURL=messageController.js.map

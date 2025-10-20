@@ -13,11 +13,11 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 import { timeout } from '../../../base/common/async.js';
 import { Disposable } from '../../../base/common/lifecycle.js';
-import { logOnceWebWorkerWarning } from '../../../base/common/worker/simpleWorker.js';
-import { createWebWorker } from '../../../base/browser/defaultWorkerFactory.js';
+import { logOnceWebWorkerWarning } from '../../../base/common/worker/webWorker.js';
+import { createWebWorker } from '../../../base/browser/webWorkerFactory.js';
 import { Range } from '../../common/core/range.js';
 import { ILanguageConfigurationService } from '../../common/languages/languageConfigurationRegistry.js';
-import { EditorSimpleWorker } from '../../common/services/editorSimpleWorker.js';
+import { EditorWorker } from '../../common/services/editorWebWorker.js';
 import { IModelService } from '../../common/services/model.js';
 import { ITextResourceConfigurationService } from '../../common/services/textResourceConfiguration.js';
 import { isNonEmptyArray } from '../../../base/common/arrays.js';
@@ -27,7 +27,7 @@ import { canceled } from '../../../base/common/errors.js';
 import { ILanguageFeaturesService } from '../../common/services/languageFeatures.js';
 import { MovedText } from '../../common/diff/linesDiffComputer.js';
 import { DetailedLineRangeMapping, RangeMapping, LineRangeMapping } from '../../common/diff/rangeMapping.js';
-import { LineRange } from '../../common/core/lineRange.js';
+import { LineRange } from '../../common/core/ranges/lineRange.js';
 import { mainWindow } from '../../../base/browser/window.js';
 import { WindowIntervalTimer } from '../../../base/browser/dom.js';
 import { WorkerTextModelSyncClient } from '../../common/services/textModelSync/textModelSync.impl.js';
@@ -64,7 +64,7 @@ let EditorWorkerService = class EditorWorkerService extends Disposable {
                 return links && { links };
             }
         }));
-        this._register(languageFeaturesService.completionProvider.register('*', new WordBasedCompletionItemProvider(this._workerManager, configurationService, this._modelService, this._languageConfigurationService)));
+        this._register(languageFeaturesService.completionProvider.register('*', new WordBasedCompletionItemProvider(this._workerManager, configurationService, this._modelService, this._languageConfigurationService, this._logService)));
     }
     dispose() {
         super.dispose();
@@ -158,8 +158,9 @@ EditorWorkerService = __decorate([
 ], EditorWorkerService);
 export { EditorWorkerService };
 class WordBasedCompletionItemProvider {
-    constructor(workerManager, configurationService, modelService, languageConfigurationService) {
+    constructor(workerManager, configurationService, modelService, languageConfigurationService, logService) {
         this.languageConfigurationService = languageConfigurationService;
+        this.logService = logService;
         this._debugDisplayName = 'wordbasedCompletions';
         this._workerManager = workerManager;
         this._configurationService = configurationService;
@@ -198,6 +199,8 @@ class WordBasedCompletionItemProvider {
         const word = model.getWordAtPosition(position);
         const replace = !word ? Range.fromPositions(position) : new Range(position.lineNumber, word.startColumn, position.lineNumber, word.endColumn);
         const insert = replace.setEndPosition(position.lineNumber, position.column);
+        // Trace logging about the word and replace/insert ranges
+        this.logService.trace('[WordBasedCompletionItemProvider]', `word: "${word?.word || ''}", wordDef: "${wordDefRegExp}", replace: [${replace.toString()}], insert: [${insert.toString()}]`);
         const client = await this._workerManager.withWorker();
         const data = await client.textualSuggest(models, word?.word, wordDefRegExp);
         if (!data) {
@@ -285,9 +288,9 @@ class SynchronousWorkerClient {
     }
 }
 let EditorWorkerClient = class EditorWorkerClient extends Disposable {
-    constructor(_workerDescriptor, keepIdleModels, modelService) {
+    constructor(_workerDescriptorOrWorker, keepIdleModels, modelService) {
         super();
-        this._workerDescriptor = _workerDescriptor;
+        this._workerDescriptorOrWorker = _workerDescriptorOrWorker;
         this._disposed = false;
         this._modelService = modelService;
         this._keepIdleModels = keepIdleModels;
@@ -301,7 +304,7 @@ let EditorWorkerClient = class EditorWorkerClient extends Disposable {
     _getOrCreateWorker() {
         if (!this._worker) {
             try {
-                this._worker = this._register(createWebWorker(this._workerDescriptor));
+                this._worker = this._register(createWebWorker(this._workerDescriptorOrWorker));
                 EditorWorkerHost.setChannel(this._worker, this._createEditorWorkerHost());
             }
             catch (err) {
@@ -324,7 +327,7 @@ let EditorWorkerClient = class EditorWorkerClient extends Disposable {
         }
     }
     _createFallbackLocalWorker() {
-        return new SynchronousWorkerClient(new EditorSimpleWorker(this._createEditorWorkerHost(), null));
+        return new SynchronousWorkerClient(new EditorWorker(null));
     }
     _createEditorWorkerHost() {
         return {
@@ -360,3 +363,4 @@ EditorWorkerClient = __decorate([
     __param(2, IModelService)
 ], EditorWorkerClient);
 export { EditorWorkerClient };
+//# sourceMappingURL=editorWorkerService.js.map

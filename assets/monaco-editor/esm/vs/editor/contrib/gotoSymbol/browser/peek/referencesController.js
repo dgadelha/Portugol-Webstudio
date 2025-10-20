@@ -19,7 +19,8 @@ import { DisposableStore } from '../../../../../base/common/lifecycle.js';
 import { ICodeEditorService } from '../../../../browser/services/codeEditorService.js';
 import { Position } from '../../../../common/core/position.js';
 import { Range } from '../../../../common/core/range.js';
-import { getOuterEditor, PeekContext } from '../../../peekView/browser/peekView.js';
+import { PeekContext } from '../../../peekView/browser/peekView.js';
+import { getOuterEditor } from '../../../../browser/widget/codeEditor/embeddedCodeEditorWidget.js';
 import * as nls from '../../../../../nls.js';
 import { CommandsRegistry } from '../../../../../platform/commands/common/commands.js';
 import { IConfigurationService } from '../../../../../platform/configuration/common/configuration.js';
@@ -33,7 +34,7 @@ import { OneReference } from '../referencesModel.js';
 import { LayoutData, ReferenceWidget } from './referencesWidget.js';
 import { EditorContextKeys } from '../../../../common/editorContextKeys.js';
 import { InputFocusedContext } from '../../../../../platform/contextkey/common/contextkeys.js';
-export const ctxReferenceSearchVisible = new RawContextKey('referenceSearchVisible', false, nls.localize('referenceSearchVisible', "Whether reference peek is visible, like 'Peek References' or 'Peek Definition'"));
+export const ctxReferenceSearchVisible = new RawContextKey('referenceSearchVisible', false, nls.localize(1073, "Whether reference peek is visible, like 'Peek References' or 'Peek Definition'"));
 let ReferencesController = class ReferencesController {
     static { ReferencesController_1 = this; }
     static { this.ID = 'editor.contrib.referencesController'; }
@@ -83,7 +84,7 @@ let ReferencesController = class ReferencesController {
         const storageKey = 'peekViewLayout';
         const data = LayoutData.fromJSON(this._storageService.get(storageKey, 0 /* StorageScope.PROFILE */, '{}'));
         this._widget = this._instantiationService.createInstance(ReferenceWidget, this._editor, this._defaultTreeKeyboardSupport, data);
-        this._widget.setTitle(nls.localize('labelLoading', "Loading..."));
+        this._widget.setTitle(nls.localize(1074, "Loading..."));
         this._widget.show(range);
         this._disposables.add(this._widget.onDidClose(() => {
             modelPromise.cancel();
@@ -139,7 +140,7 @@ let ReferencesController = class ReferencesController {
                 if (this._widget && this._model && this._editor.hasModel()) { // might have been closed
                     // set title
                     if (!this._model.isEmpty) {
-                        this._widget.setMetaTitle(nls.localize('metaTitle.N', "{0} ({1})", this._model.title, this._model.references.length));
+                        this._widget.setMetaTitle(nls.localize(1075, "{0} ({1})", this._model.title, this._model.references.length));
                     }
                     else {
                         this._widget.setMetaTitle('');
@@ -150,7 +151,7 @@ let ReferencesController = class ReferencesController {
                     const selection = this._model.nearestReference(uri, pos);
                     if (selection) {
                         return this._widget.setSelection(selection).then(() => {
-                            if (this._widget && this._editor.getOption(87 /* EditorOption.peekWidgetDefaultFocus */) === 'editor') {
+                            if (this._widget && this._editor.getOption(99 /* EditorOption.peekWidgetDefaultFocus */) === 'editor') {
                                 this._widget.focusOnPreviewEditor();
                             }
                         });
@@ -377,3 +378,4 @@ CommandsRegistry.registerCommand('openReference', (accessor) => {
         withController(accessor, controller => controller.openReference(focus[0], false, true));
     }
 });
+//# sourceMappingURL=referencesController.js.map

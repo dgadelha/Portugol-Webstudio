@@ -56,3 +56,4 @@ export class GlyphMarginLanesModel {
         return count;
     }
 }
+//# sourceMappingURL=glyphLanesModel.js.map

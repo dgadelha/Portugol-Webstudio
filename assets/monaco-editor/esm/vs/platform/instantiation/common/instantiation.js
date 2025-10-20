@@ -40,3 +40,4 @@ export function createDecorator(serviceId) {
     _util.serviceIds.set(serviceId, id);
     return id;
 }
+//# sourceMappingURL=instantiation.js.map

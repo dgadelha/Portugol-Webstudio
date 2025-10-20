@@ -17,5 +17,14 @@ class RegistryImpl {
     as(id) {
         return this.data.get(id) || null;
     }
+    dispose() {
+        this.data.forEach((value) => {
+            if (Types.isFunction(value.dispose)) {
+                value.dispose();
+            }
+        });
+        this.data.clear();
+    }
 }
 export const Registry = new RegistryImpl();
+//# sourceMappingURL=platform.js.map

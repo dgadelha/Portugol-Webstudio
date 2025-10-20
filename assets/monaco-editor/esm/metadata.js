@@ -37,10 +37,7 @@ exports.features = [
   },
   {
     "label": "colorPicker",
-    "entry": [
-      "vs/editor/contrib/colorPicker/browser/colorContributions",
-      "vs/editor/contrib/colorPicker/browser/standaloneColorPickerActions"
-    ]
+    "entry": "vs/editor/contrib/colorPicker/browser/colorPickerContribution"
   },
   {
     "label": "comment",
@@ -82,6 +79,10 @@ exports.features = [
     "entry": "vs/editor/contrib/find/browser/findController"
   },
   {
+    "label": "floatingMenu",
+    "entry": "vs/editor/contrib/floatingMenu/browser/floatingMenu.contribution"
+  },
+  {
     "label": "folding",
     "entry": "vs/editor/contrib/folding/browser/folding"
   },
@@ -109,6 +110,10 @@ exports.features = [
     ]
   },
   {
+    "label": "gpu",
+    "entry": "vs/editor/contrib/gpu/browser/gpuActions"
+  },
+  {
     "label": "hover",
     "entry": "vs/editor/contrib/hover/browser/hoverContribution"
   },
@@ -133,16 +138,12 @@ exports.features = [
     "entry": "vs/editor/contrib/inlineCompletions/browser/inlineCompletions.contribution"
   },
   {
-    "label": "inlineEdit",
-    "entry": "vs/editor/contrib/inlineEdit/browser/inlineEdit.contribution"
-  },
-  {
-    "label": "inlineEdits",
-    "entry": "vs/editor/contrib/inlineEdits/browser/inlineEdits.contribution"
-  },
-  {
     "label": "inlineProgress",
     "entry": "vs/editor/contrib/inlineProgress/browser/inlineProgress"
+  },
+  {
+    "label": "insertFinalNewLine",
+    "entry": "vs/editor/contrib/insertFinalNewLine/browser/insertFinalNewLine"
   },
   {
     "label": "inspectTokens",
@@ -167,6 +168,10 @@ exports.features = [
   {
     "label": "longLinesHelper",
     "entry": "vs/editor/contrib/longLinesHelper/browser/longLinesHelper"
+  },
+  {
+    "label": "middleScroll",
+    "entry": "vs/editor/contrib/middleScroll/browser/middleScroll.contribution"
   },
   {
     "label": "multicursor",

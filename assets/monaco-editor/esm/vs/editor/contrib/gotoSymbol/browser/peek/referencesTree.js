@@ -106,7 +106,7 @@ let FileReferencesTemplate = class FileReferencesTemplate extends Disposable {
         const parent = document.createElement('div');
         parent.classList.add('reference-file');
         this.file = this._register(new IconLabel(parent, { supportHighlights: true }));
-        this.badge = new CountBadge(dom.append(parent, dom.$('.count')), {}, defaultCountBadgeStyles);
+        this.badge = this._register(new CountBadge(dom.append(parent, dom.$('.count')), {}, defaultCountBadgeStyles));
         container.appendChild(parent);
     }
     set(element, matches) {
@@ -115,10 +115,10 @@ let FileReferencesTemplate = class FileReferencesTemplate extends Disposable {
         const len = element.children.length;
         this.badge.setCount(len);
         if (len > 1) {
-            this.badge.setTitleFormat(localize('referencesCount', "{0} references", len));
+            this.badge.setTitleFormat(localize(1076, "{0} references", len));
         }
         else {
-            this.badge.setTitleFormat(localize('referenceCount', "{0} reference", len));
+            this.badge.setTitleFormat(localize(1077, "{0} reference", len));
         }
     }
 };
@@ -192,9 +192,10 @@ export class OneReferenceRenderer {
 //#endregion
 export class AccessibilityProvider {
     getWidgetAriaLabel() {
-        return localize('treeAriaLabel', "References");
+        return localize(1078, "References");
     }
     getAriaLabel(element) {
         return element.ariaMessage;
     }
 }
+//# sourceMappingURL=referencesTree.js.map

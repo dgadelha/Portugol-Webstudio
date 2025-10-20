@@ -25,6 +25,7 @@ import { ILabelService } from '../../../../platform/label/common/label.js';
 import { IWorkspaceContextService } from '../../../../platform/workspace/common/workspace.js';
 import { Choice, Placeholder, SnippetParser, Text, TextmateSnippet } from './snippetParser.js';
 import { ClipboardBasedVariableResolver, CommentBasedVariableResolver, CompositeSnippetVariableResolver, ModelBasedVariableResolver, RandomBasedVariableResolver, SelectionBasedVariableResolver, TimeBasedVariableResolver, WorkspaceBasedVariableResolver } from './snippetVariables.js';
+import { EditSources } from '../../../common/textModelEditSource.js';
 export class OneSnippet {
     static { this._decor = {
         active: ModelDecorationOptions.register({ description: 'snippet-placeholder-1', stickiness: 0 /* TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges */, className: 'snippet-placeholder' }),
@@ -370,7 +371,7 @@ let SnippetSession = SnippetSession_1 = class SnippetSession {
         const modelBasedVariableResolver = editor.invokeWithinContext(accessor => new ModelBasedVariableResolver(accessor.get(ILabelService), model));
         const readClipboardText = () => clipboardText;
         // know what text the overwrite[Before|After] extensions
-        // of the primary curser have selected because only when
+        // of the primary cursor have selected because only when
         // secondary selections extend to the same text we can grow them
         const firstBeforeText = model.getValueInRange(SnippetSession_1.adjustSelection(model, editor.getSelection(), overwriteBefore, 0));
         const firstAfterText = model.getValueInRange(SnippetSession_1.adjustSelection(model, editor.getSelection(), 0, overwriteAfter));
@@ -408,7 +409,7 @@ let SnippetSession = SnippetSession_1 = class SnippetSession {
             const snippetLineLeadingWhitespace = SnippetSession_1.adjustWhitespace(model, start, adjustWhitespace || (idx > 0 && firstLineFirstNonWhitespace !== model.getLineFirstNonWhitespaceColumn(selection.positionLineNumber)), snippet);
             snippet.resolveVariables(new CompositeSnippetVariableResolver([
                 modelBasedVariableResolver,
-                new ClipboardBasedVariableResolver(readClipboardText, idx, indexedSelections.length, editor.getOption(79 /* EditorOption.multiCursorPaste */) === 'spread'),
+                new ClipboardBasedVariableResolver(readClipboardText, idx, indexedSelections.length, editor.getOption(88 /* EditorOption.multiCursorPaste */) === 'spread'),
                 new SelectionBasedVariableResolver(model, selection, idx, overtypingCapturer),
                 new CommentBasedVariableResolver(model, selection, languageConfigurationService),
                 new TimeBasedVariableResolver,
@@ -416,7 +417,7 @@ let SnippetSession = SnippetSession_1 = class SnippetSession {
                 new RandomBasedVariableResolver,
             ]));
             // store snippets with the index of their originating selection.
-            // that ensures the primiary cursor stays primary despite not being
+            // that ensures the primary cursor stays primary despite not being
             // the one with lowest start position
             edits[idx] = EditOperation.replace(snippetSelection, snippet.toString());
             edits[idx].identifier = { major: idx, minor: 0 }; // mark the edit so only our undo edits will be used to generate end cursors
@@ -436,7 +437,7 @@ let SnippetSession = SnippetSession_1 = class SnippetSession {
         // snippet variables resolver
         const resolver = new CompositeSnippetVariableResolver([
             editor.invokeWithinContext(accessor => new ModelBasedVariableResolver(accessor.get(ILabelService), model)),
-            new ClipboardBasedVariableResolver(() => clipboardText, 0, editor.getSelections().length, editor.getOption(79 /* EditorOption.multiCursorPaste */) === 'spread'),
+            new ClipboardBasedVariableResolver(() => clipboardText, 0, editor.getSelections().length, editor.getOption(88 /* EditorOption.multiCursorPaste */) === 'spread'),
             new SelectionBasedVariableResolver(model, editor.getSelection(), 0, overtypingCapturer),
             new CommentBasedVariableResolver(model, editor.getSelection(), languageConfigurationService),
             new TimeBasedVariableResolver,
@@ -447,7 +448,7 @@ let SnippetSession = SnippetSession_1 = class SnippetSession {
         snippetEdits = snippetEdits.sort((a, b) => Range.compareRangesUsingStarts(a.range, b.range));
         let offset = 0;
         for (let i = 0; i < snippetEdits.length; i++) {
-            const { range, template } = snippetEdits[i];
+            const { range, template, keepWhitespace } = snippetEdits[i];
             // gaps between snippet edits are appended as text nodes. this
             // ensures placeholder-offsets are later correct
             if (i > 0) {
@@ -458,7 +459,7 @@ let SnippetSession = SnippetSession_1 = class SnippetSession {
                 offset += textNode.value.length;
             }
             const newNodes = parser.parseFragment(template, snippet);
-            SnippetSession_1.adjustWhitespace(model, range.getStartPosition(), true, snippet, new Set(newNodes));
+            SnippetSession_1.adjustWhitespace(model, range.getStartPosition(), keepWhitespace !== undefined ? !keepWhitespace : adjustWhitespace, snippet, new Set(newNodes));
             snippet.resolveVariables(resolver);
             const snippetText = snippet.toString();
             const snippetFragmentText = snippetText.slice(offset);
@@ -490,7 +491,7 @@ let SnippetSession = SnippetSession_1 = class SnippetSession {
     _logInfo() {
         return `template="${this._template}", merged_templates="${this._templateMerges.join(' -> ')}"`;
     }
-    insert() {
+    insert(editReason) {
         if (!this._editor.hasModel()) {
             return;
         }
@@ -499,7 +500,7 @@ let SnippetSession = SnippetSession_1 = class SnippetSession {
             ? SnippetSession_1.createEditsAndSnippetsFromSelections(this._editor, this._template, this._options.overwriteBefore, this._options.overwriteAfter, false, this._options.adjustWhitespace, this._options.clipboardText, this._options.overtypingCapturer, this._languageConfigurationService)
             : SnippetSession_1.createEditsAndSnippetsFromEdits(this._editor, this._template, false, this._options.adjustWhitespace, this._options.clipboardText, this._options.overtypingCapturer, this._languageConfigurationService);
         this._snippets = snippets;
-        this._editor.executeEdits('snippet', edits, _undoEdits => {
+        this._editor.executeEdits(editReason ?? EditSources.snippet(), edits, _undoEdits => {
             // Sometimes, the text buffer will remove automatic whitespace when doing any edits,
             // so we need to look only at the undo edits relevant for us.
             // Our edits have an identifier set so that's how we can distinguish them
@@ -648,3 +649,4 @@ SnippetSession = SnippetSession_1 = __decorate([
     __param(3, ILanguageConfigurationService)
 ], SnippetSession);
 export { SnippetSession };
+//# sourceMappingURL=snippetSession.js.map

@@ -11,3 +11,4 @@ export function isLocalizedString(thing) {
 export function isICommandActionToggleInfo(thing) {
     return thing ? thing.condition !== undefined : false;
 }
+//# sourceMappingURL=action.js.map

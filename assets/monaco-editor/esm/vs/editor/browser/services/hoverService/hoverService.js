@@ -19,31 +19,144 @@ import { IContextMenuService } from '../../../../platform/contextview/browser/co
 import { IInstantiationService } from '../../../../platform/instantiation/common/instantiation.js';
 import { HoverWidget } from './hoverWidget.js';
 import { Disposable, DisposableStore, toDisposable } from '../../../../base/common/lifecycle.js';
-import { addDisposableListener, EventType, getActiveElement, isAncestorOfActiveElement, isAncestor, getWindow, isHTMLElement } from '../../../../base/browser/dom.js';
+import { addDisposableListener, EventType, getActiveElement, isAncestorOfActiveElement, isAncestor, getWindow, isHTMLElement, isEditableElement } from '../../../../base/browser/dom.js';
 import { IKeybindingService } from '../../../../platform/keybinding/common/keybinding.js';
 import { StandardKeyboardEvent } from '../../../../base/browser/keyboardEvent.js';
 import { IAccessibilityService } from '../../../../platform/accessibility/common/accessibility.js';
 import { ILayoutService } from '../../../../platform/layout/browser/layoutService.js';
 import { mainWindow } from '../../../../base/browser/window.js';
 import { ContextViewHandler } from '../../../../platform/contextview/browser/contextViewService.js';
+import { isManagedHoverTooltipMarkdownString } from '../../../../base/browser/ui/hover/hover.js';
 import { ManagedHoverWidget } from './updatableHoverWidget.js';
-import { TimeoutTimer } from '../../../../base/common/async.js';
+import { timeout, TimeoutTimer } from '../../../../base/common/async.js';
+import { IConfigurationService } from '../../../../platform/configuration/common/configuration.js';
+import { isNumber, isString } from '../../../../base/common/types.js';
+import { KeyChord } from '../../../../base/common/keyCodes.js';
+import { KeybindingsRegistry } from '../../../../platform/keybinding/common/keybindingsRegistry.js';
+import { EditorContextKeys } from '../../../common/editorContextKeys.js';
+import { stripIcons } from '../../../../base/common/iconLabels.js';
 let HoverService = class HoverService extends Disposable {
-    constructor(_instantiationService, contextMenuService, _keybindingService, _layoutService, _accessibilityService) {
+    constructor(_instantiationService, _configurationService, contextMenuService, _keybindingService, _layoutService, _accessibilityService) {
         super();
         this._instantiationService = _instantiationService;
+        this._configurationService = _configurationService;
         this._keybindingService = _keybindingService;
         this._layoutService = _layoutService;
         this._accessibilityService = _accessibilityService;
+        this._currentDelayedHoverWasShown = false;
+        this._delayedHovers = new Map();
         this._managedHovers = new Map();
-        contextMenuService.onDidShowContextMenu(() => this.hideHover());
+        this._register(contextMenuService.onDidShowContextMenu(() => this.hideHover()));
         this._contextViewHandler = this._register(new ContextViewHandler(this._layoutService));
+        this._register(KeybindingsRegistry.registerCommandAndKeybindingRule({
+            id: 'workbench.action.showHover',
+            weight: 200 /* KeybindingWeight.WorkbenchContrib */ - 1,
+            when: EditorContextKeys.editorTextFocus.negate(),
+            primary: KeyChord(2048 /* KeyMod.CtrlCmd */ | 41 /* KeyCode.KeyK */, 2048 /* KeyMod.CtrlCmd */ | 39 /* KeyCode.KeyI */),
+            handler: () => { this._showAndFocusHoverForActiveElement(); },
+        }));
     }
-    showHover(options, focus, skipLastFocusedUpdate) {
-        if (getHoverOptionsIdentity(this._currentHoverOptions) === getHoverOptionsIdentity(options)) {
+    showInstantHover(options, focus, skipLastFocusedUpdate, dontShow) {
+        const hover = this._createHover(options, skipLastFocusedUpdate);
+        if (!hover) {
             return undefined;
         }
-        if (this._currentHover && this._currentHoverOptions?.persistence?.sticky) {
+        this._showHover(hover, options, focus);
+        return hover;
+    }
+    showDelayedHover(options, lifecycleOptions) {
+        // Set `id` to default if it's undefined
+        if (options.id === undefined) {
+            options.id = getHoverIdFromContent(options.content);
+        }
+        if (!this._currentDelayedHover || this._currentDelayedHoverWasShown) {
+            // Current hover is locked, reject
+            if (this._currentHover?.isLocked) {
+                return undefined;
+            }
+            // Identity is the same, return current hover
+            if (getHoverOptionsIdentity(this._currentHoverOptions) === getHoverOptionsIdentity(options)) {
+                return this._currentHover;
+            }
+            // Check group identity, if it's the same skip the delay and show the hover immediately
+            if (this._currentHover && !this._currentHover.isDisposed && this._currentDelayedHoverGroupId !== undefined && this._currentDelayedHoverGroupId === lifecycleOptions?.groupId) {
+                return this.showInstantHover({
+                    ...options,
+                    appearance: {
+                        ...options.appearance,
+                        skipFadeInAnimation: true
+                    }
+                });
+            }
+        }
+        else if (this._currentDelayedHover && getHoverOptionsIdentity(this._currentHoverOptions) === getHoverOptionsIdentity(options)) {
+            // If the hover is the same but timeout is not finished yet, return the current hover
+            return this._currentDelayedHover;
+        }
+        const hover = this._createHover(options, undefined);
+        if (!hover) {
+            this._currentDelayedHover = undefined;
+            this._currentDelayedHoverWasShown = false;
+            this._currentDelayedHoverGroupId = undefined;
+            return undefined;
+        }
+        this._currentDelayedHover = hover;
+        this._currentDelayedHoverWasShown = false;
+        this._currentDelayedHoverGroupId = lifecycleOptions?.groupId;
+        timeout(this._configurationService.getValue('workbench.hover.delay')).then(() => {
+            if (hover && !hover.isDisposed) {
+                this._currentDelayedHoverWasShown = true;
+                this._showHover(hover, options);
+            }
+        });
+        return hover;
+    }
+    setupDelayedHover(target, options, lifecycleOptions) {
+        const resolveHoverOptions = () => ({
+            ...typeof options === 'function' ? options() : options,
+            target
+        });
+        return this._setupDelayedHover(target, resolveHoverOptions, lifecycleOptions);
+    }
+    setupDelayedHoverAtMouse(target, options, lifecycleOptions) {
+        const resolveHoverOptions = (e) => ({
+            ...typeof options === 'function' ? options() : options,
+            target: {
+                targetElements: [target],
+                x: e !== undefined ? e.x + 10 : undefined,
+            }
+        });
+        return this._setupDelayedHover(target, resolveHoverOptions, lifecycleOptions);
+    }
+    _setupDelayedHover(target, resolveHoverOptions, lifecycleOptions) {
+        const store = new DisposableStore();
+        store.add(addDisposableListener(target, EventType.MOUSE_OVER, e => {
+            this.showDelayedHover(resolveHoverOptions(e), {
+                groupId: lifecycleOptions?.groupId
+            });
+        }));
+        if (lifecycleOptions?.setupKeyboardEvents) {
+            store.add(addDisposableListener(target, EventType.KEY_DOWN, e => {
+                const evt = new StandardKeyboardEvent(e);
+                if (evt.equals(10 /* KeyCode.Space */) || evt.equals(3 /* KeyCode.Enter */)) {
+                    this.showInstantHover(resolveHoverOptions(), true);
+                }
+            }));
+        }
+        this._delayedHovers.set(target, { show: (focus) => { this.showInstantHover(resolveHoverOptions(), focus); } });
+        store.add(toDisposable(() => this._delayedHovers.delete(target)));
+        return store;
+    }
+    _createHover(options, skipLastFocusedUpdate) {
+        this._currentDelayedHover = undefined;
+        if (this._currentHover?.isLocked) {
+            return undefined;
+        }
+        // Set `id` to default if it's undefined
+        if (options.id === undefined) {
+            options.id = getHoverIdFromContent(options.content);
+        }
+        if (getHoverOptionsIdentity(this._currentHoverOptions) === getHoverOptionsIdentity(options)) {
             return undefined;
         }
         this._currentHoverOptions = options;
@@ -66,6 +179,13 @@ let HoverService = class HoverService extends Disposable {
         if (options.persistence?.sticky) {
             hover.isLocked = true;
         }
+        // Adjust target position when a mouse event is provided as the hover position
+        if (options.position?.hoverPosition && !isNumber(options.position.hoverPosition)) {
+            options.target = {
+                targetElements: isHTMLElement(options.target) ? [options.target] : options.target.targetElements,
+                x: options.position.hoverPosition.x + 10
+            };
+        }
         hover.onDispose(() => {
             const hoverWasFocused = this._currentHover?.domNode && isAncestorOfActiveElement(this._currentHover.domNode);
             if (hoverWasFocused) {
@@ -74,8 +194,8 @@ let HoverService = class HoverService extends Disposable {
             }
             // Only clear the current options if it's the current hover, the current options help
             // reduce flickering when the same hover is shown multiple times
-            if (this._currentHoverOptions === options) {
-                this._currentHoverOptions = undefined;
+            if (getHoverOptionsIdentity(this._currentHoverOptions) === getHoverOptionsIdentity(options)) {
+                this.doHideHover();
             }
             hoverDisposables.dispose();
         }, undefined, hoverDisposables);
@@ -84,7 +204,6 @@ let HoverService = class HoverService extends Disposable {
             const targetElement = isHTMLElement(options.target) ? options.target : options.target.targetElements[0];
             options.container = this._layoutService.getContainer(getWindow(targetElement));
         }
-        this._contextViewHandler.showContextView(new HoverContextViewDelegate(hover, focus), options.container);
         hover.onRequestLayout(() => this._contextViewHandler.layout(), undefined, hoverDisposables);
         if (options.persistence?.sticky) {
             hoverDisposables.add(addDisposableListener(getWindow(options.container).document, EventType.MOUSE_DOWN, e => {
@@ -120,8 +239,11 @@ let HoverService = class HoverService extends Disposable {
         this._currentHover = hover;
         return hover;
     }
-    hideHover() {
-        if (this._currentHover?.isLocked || !this._currentHoverOptions) {
+    _showHover(hover, options, focus) {
+        this._contextViewHandler.showContextView(new HoverContextViewDelegate(hover, focus), options.container);
+    }
+    hideHover(force) {
+        if ((!force && this._currentHover?.isLocked) || !this._currentHoverOptions) {
             return;
         }
         this.doHideHover();
@@ -141,7 +263,19 @@ let HoverService = class HoverService extends Disposable {
         if (!this._lastHoverOptions) {
             return;
         }
-        this.showHover(this._lastHoverOptions, true, true);
+        this.showInstantHover(this._lastHoverOptions, true, true);
+    }
+    _showAndFocusHoverForActiveElement() {
+        // TODO: if hover is visible, focus it to avoid flickering
+        let activeElement = getActiveElement();
+        while (activeElement) {
+            const hover = this._delayedHovers.get(activeElement) ?? this._managedHovers.get(activeElement);
+            if (hover) {
+                hover.show(true);
+                return;
+            }
+            activeElement = activeElement.parentElement;
+        }
     }
     _keyDown(e, hover, hideOnKeyDown) {
         if (e.key === 'Alt') {
@@ -171,6 +305,9 @@ let HoverService = class HoverService extends Disposable {
     // TODO: Investigate performance of this function. There seems to be a lot of content created
     //       and thrown away on start up
     setupManagedHover(hoverDelegate, targetElement, content, options) {
+        if (hoverDelegate.showNativeHover) {
+            return setupNativeHover(targetElement, content);
+        }
         targetElement.setAttribute('custom-hover', 'true');
         if (targetElement.title !== '') {
             console.warn('HTML element already has a title attribute, which will conflict with the custom hover. Please remove the title attribute.');
@@ -202,23 +339,24 @@ let HoverService = class HoverService extends Disposable {
                 }
             }, delay);
         };
+        const store = new DisposableStore();
         let isMouseDown = false;
-        const mouseDownEmitter = addDisposableListener(targetElement, EventType.MOUSE_DOWN, () => {
+        store.add(addDisposableListener(targetElement, EventType.MOUSE_DOWN, () => {
             isMouseDown = true;
             hideHover(true, true);
-        }, true);
-        const mouseUpEmitter = addDisposableListener(targetElement, EventType.MOUSE_UP, () => {
+        }, true));
+        store.add(addDisposableListener(targetElement, EventType.MOUSE_UP, () => {
             isMouseDown = false;
-        }, true);
-        const mouseLeaveEmitter = addDisposableListener(targetElement, EventType.MOUSE_LEAVE, (e) => {
+        }, true));
+        store.add(addDisposableListener(targetElement, EventType.MOUSE_LEAVE, (e) => {
             isMouseDown = false;
             hideHover(false, e.fromElement === targetElement);
-        }, true);
-        const onMouseOver = (e) => {
+        }, true));
+        store.add(addDisposableListener(targetElement, EventType.MOUSE_OVER, (e) => {
             if (hoverPreparation) {
                 return;
             }
-            const toDispose = new DisposableStore();
+            const mouseOverStore = new DisposableStore();
             const target = {
                 targetElements: [targetElement],
                 dispose: () => { }
@@ -231,15 +369,14 @@ let HoverService = class HoverService extends Disposable {
                         hideHover(true, true);
                     }
                 };
-                toDispose.add(addDisposableListener(targetElement, EventType.MOUSE_MOVE, onMouseMove, true));
+                mouseOverStore.add(addDisposableListener(targetElement, EventType.MOUSE_MOVE, onMouseMove, true));
             }
-            hoverPreparation = toDispose;
+            hoverPreparation = mouseOverStore;
             if ((isHTMLElement(e.target)) && getHoverTargetElement(e.target, targetElement) !== targetElement) {
                 return; // Do not show hover when the mouse is over another hover target
             }
-            toDispose.add(triggerShowHover(hoverDelegate.delay, false, target));
-        };
-        const mouseOverDomEmitter = addDisposableListener(targetElement, EventType.MOUSE_OVER, onMouseOver, true);
+            mouseOverStore.add(triggerShowHover(typeof hoverDelegate.delay === 'function' ? hoverDelegate.delay(content) : hoverDelegate.delay, false, target));
+        }, true));
         const onFocus = () => {
             if (isMouseDown || hoverPreparation) {
                 return;
@@ -251,14 +388,12 @@ let HoverService = class HoverService extends Disposable {
             const toDispose = new DisposableStore();
             const onBlur = () => hideHover(true, true);
             toDispose.add(addDisposableListener(targetElement, EventType.BLUR, onBlur, true));
-            toDispose.add(triggerShowHover(hoverDelegate.delay, false, target));
+            toDispose.add(triggerShowHover(typeof hoverDelegate.delay === 'function' ? hoverDelegate.delay(content) : hoverDelegate.delay, false, target));
             hoverPreparation = toDispose;
         };
         // Do not show hover when focusing an input or textarea
-        let focusDomEmitter;
-        const tagName = targetElement.tagName.toLowerCase();
-        if (tagName !== 'input' && tagName !== 'textarea') {
-            focusDomEmitter = addDisposableListener(targetElement, EventType.FOCUS, onFocus, true);
+        if (!isEditableElement(targetElement)) {
+            store.add(addDisposableListener(targetElement, EventType.FOCUS, onFocus, true));
         }
         const hover = {
             show: focus => {
@@ -274,11 +409,7 @@ let HoverService = class HoverService extends Disposable {
             },
             dispose: () => {
                 this._managedHovers.delete(targetElement);
-                mouseOverDomEmitter.dispose();
-                mouseLeaveEmitter.dispose();
-                mouseDownEmitter.dispose();
-                mouseUpEmitter.dispose();
-                focusDomEmitter?.dispose();
+                store.dispose();
                 hideHover(true, true);
             }
         };
@@ -298,10 +429,11 @@ let HoverService = class HoverService extends Disposable {
 };
 HoverService = __decorate([
     __param(0, IInstantiationService),
-    __param(1, IContextMenuService),
-    __param(2, IKeybindingService),
-    __param(3, ILayoutService),
-    __param(4, IAccessibilityService)
+    __param(1, IConfigurationService),
+    __param(2, IContextMenuService),
+    __param(3, IKeybindingService),
+    __param(4, ILayoutService),
+    __param(5, IAccessibilityService)
 ], HoverService);
 export { HoverService };
 function getHoverOptionsIdentity(options) {
@@ -309,6 +441,43 @@ function getHoverOptionsIdentity(options) {
         return undefined;
     }
     return options?.id ?? options;
+}
+function getHoverIdFromContent(content) {
+    if (isHTMLElement(content)) {
+        return undefined;
+    }
+    if (typeof content === 'string') {
+        return content.toString();
+    }
+    return content.value;
+}
+function getStringContent(contentOrFactory) {
+    const content = typeof contentOrFactory === 'function' ? contentOrFactory() : contentOrFactory;
+    if (isString(content)) {
+        // Icons don't render in the native hover so we strip them out
+        return stripIcons(content);
+    }
+    if (isManagedHoverTooltipMarkdownString(content)) {
+        return content.markdownNotSupportedFallback;
+    }
+    return undefined;
+}
+function setupNativeHover(targetElement, content) {
+    function updateTitle(title) {
+        if (title) {
+            targetElement.setAttribute('title', title);
+        }
+        else {
+            targetElement.removeAttribute('title');
+        }
+    }
+    updateTitle(getStringContent(content));
+    return {
+        update: (content) => updateTitle(getStringContent(content)),
+        show: () => { },
+        hide: () => { },
+        dispose: () => updateTitle(undefined),
+    };
 }
 class HoverContextViewDelegate {
     get anchorPosition() {
@@ -352,3 +521,4 @@ registerThemingParticipant((theme, collector) => {
         collector.addRule(`.monaco-workbench .workbench-hover hr { border-top: 1px solid ${hoverBorder.transparent(0.5)}; }`);
     }
 });
+//# sourceMappingURL=hoverService.js.map

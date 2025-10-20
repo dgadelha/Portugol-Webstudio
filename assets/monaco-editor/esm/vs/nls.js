@@ -6,7 +6,7 @@
 import { getNLSLanguage, getNLSMessages } from './nls.messages.js';
 // eslint-disable-next-line local/code-import-patterns
 export { getNLSLanguage, getNLSMessages } from './nls.messages.js';
-const isPseudo = getNLSLanguage() === 'pseudo' || (typeof document !== 'undefined' && document.location && document.location.hash.indexOf('pseudo=true') >= 0);
+const isPseudo = getNLSLanguage() === 'pseudo' || (typeof document !== 'undefined' && document.location && typeof document.location.hash === 'string' && document.location.hash.indexOf('pseudo=true') >= 0);
 function _format(message, args) {
     let result;
     if (args.length === 0) {
@@ -73,3 +73,4 @@ export function localize2(data /* | number when built */, originalMessage, ...ar
         original: originalMessage === message ? value : _format(originalMessage, args)
     };
 }
+//# sourceMappingURL=nls.js.map

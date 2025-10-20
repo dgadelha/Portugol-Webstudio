@@ -254,3 +254,4 @@ export var DataUri;
     }
     DataUri.parseMetaData = parseMetaData;
 })(DataUri || (DataUri = {}));
+//# sourceMappingURL=resources.js.map

@@ -101,13 +101,13 @@ class EditorScrollable extends Disposable {
     }
 }
 export class ViewLayout extends Disposable {
-    constructor(configuration, lineCount, scheduleAtNextAnimationFrame) {
+    constructor(configuration, lineCount, customLineHeightData, scheduleAtNextAnimationFrame) {
         super();
         this._configuration = configuration;
         const options = this._configuration.options;
-        const layoutInfo = options.get(146 /* EditorOption.layoutInfo */);
-        const padding = options.get(84 /* EditorOption.padding */);
-        this._linesLayout = new LinesLayout(lineCount, options.get(67 /* EditorOption.lineHeight */), padding.top, padding.bottom);
+        const layoutInfo = options.get(165 /* EditorOption.layoutInfo */);
+        const padding = options.get(96 /* EditorOption.padding */);
+        this._linesLayout = new LinesLayout(lineCount, options.get(75 /* EditorOption.lineHeight */), padding.top, padding.bottom, customLineHeightData);
         this._maxLineWidth = 0;
         this._overlayWidgetsMinWidth = 0;
         this._scrollable = this._register(new EditorScrollable(0, scheduleAtNextAnimationFrame));
@@ -127,20 +127,20 @@ export class ViewLayout extends Disposable {
         this._updateHeight();
     }
     _configureSmoothScrollDuration() {
-        this._scrollable.setSmoothScrollDuration(this._configuration.options.get(115 /* EditorOption.smoothScrolling */) ? SMOOTH_SCROLLING_TIME : 0);
+        this._scrollable.setSmoothScrollDuration(this._configuration.options.get(130 /* EditorOption.smoothScrolling */) ? SMOOTH_SCROLLING_TIME : 0);
     }
     // ---- begin view event handlers
     onConfigurationChanged(e) {
         const options = this._configuration.options;
-        if (e.hasChanged(67 /* EditorOption.lineHeight */)) {
-            this._linesLayout.setLineHeight(options.get(67 /* EditorOption.lineHeight */));
+        if (e.hasChanged(75 /* EditorOption.lineHeight */)) {
+            this._linesLayout.setDefaultLineHeight(options.get(75 /* EditorOption.lineHeight */));
         }
-        if (e.hasChanged(84 /* EditorOption.padding */)) {
-            const padding = options.get(84 /* EditorOption.padding */);
+        if (e.hasChanged(96 /* EditorOption.padding */)) {
+            const padding = options.get(96 /* EditorOption.padding */);
             this._linesLayout.setPadding(padding.top, padding.bottom);
         }
-        if (e.hasChanged(146 /* EditorOption.layoutInfo */)) {
-            const layoutInfo = options.get(146 /* EditorOption.layoutInfo */);
+        if (e.hasChanged(165 /* EditorOption.layoutInfo */)) {
+            const layoutInfo = options.get(165 /* EditorOption.layoutInfo */);
             const width = layoutInfo.contentWidth;
             const height = layoutInfo.height;
             const scrollDimensions = this._scrollable.getScrollDimensions();
@@ -150,12 +150,12 @@ export class ViewLayout extends Disposable {
         else {
             this._updateHeight();
         }
-        if (e.hasChanged(115 /* EditorOption.smoothScrolling */)) {
+        if (e.hasChanged(130 /* EditorOption.smoothScrolling */)) {
             this._configureSmoothScrollDuration();
         }
     }
-    onFlushed(lineCount) {
-        this._linesLayout.onFlushed(lineCount);
+    onFlushed(lineCount, customLineHeightData) {
+        this._linesLayout.onFlushed(lineCount, customLineHeightData);
     }
     onLinesDeleted(fromLineNumber, toLineNumber) {
         this._linesLayout.onLinesDeleted(fromLineNumber, toLineNumber);
@@ -166,7 +166,7 @@ export class ViewLayout extends Disposable {
     // ---- end view event handlers
     _getHorizontalScrollbarHeight(width, scrollWidth) {
         const options = this._configuration.options;
-        const scrollbar = options.get(104 /* EditorOption.scrollbar */);
+        const scrollbar = options.get(117 /* EditorOption.scrollbar */);
         if (scrollbar.horizontal === 2 /* ScrollbarVisibility.Hidden */) {
             // horizontal scrollbar not visible
             return 0;
@@ -180,10 +180,10 @@ export class ViewLayout extends Disposable {
     _getContentHeight(width, height, contentWidth) {
         const options = this._configuration.options;
         let result = this._linesLayout.getLinesTotalHeight();
-        if (options.get(106 /* EditorOption.scrollBeyondLastLine */)) {
-            result += Math.max(0, height - options.get(67 /* EditorOption.lineHeight */) - options.get(84 /* EditorOption.padding */).bottom);
+        if (options.get(119 /* EditorOption.scrollBeyondLastLine */)) {
+            result += Math.max(0, height - options.get(75 /* EditorOption.lineHeight */) - options.get(96 /* EditorOption.padding */).bottom);
         }
-        else if (!options.get(104 /* EditorOption.scrollbar */).ignoreHorizontalScrollbarInContentHeight) {
+        else if (!options.get(117 /* EditorOption.scrollbar */).ignoreHorizontalScrollbarInContentHeight) {
             result += this._getHorizontalScrollbarHeight(width, contentWidth);
         }
         return result;
@@ -209,11 +209,11 @@ export class ViewLayout extends Disposable {
     _computeContentWidth() {
         const options = this._configuration.options;
         const maxLineWidth = this._maxLineWidth;
-        const wrappingInfo = options.get(147 /* EditorOption.wrappingInfo */);
-        const fontInfo = options.get(50 /* EditorOption.fontInfo */);
-        const layoutInfo = options.get(146 /* EditorOption.layoutInfo */);
+        const wrappingInfo = options.get(166 /* EditorOption.wrappingInfo */);
+        const fontInfo = options.get(59 /* EditorOption.fontInfo */);
+        const layoutInfo = options.get(165 /* EditorOption.layoutInfo */);
         if (wrappingInfo.isViewportWrapping) {
-            const minimap = options.get(73 /* EditorOption.minimap */);
+            const minimap = options.get(81 /* EditorOption.minimap */);
             if (maxLineWidth > layoutInfo.contentWidth + fontInfo.typicalHalfwidthCharacterWidth) {
                 // This is a case where viewport wrapping is on, but the line extends above the viewport
                 if (minimap.enabled && minimap.side === 'right') {
@@ -224,7 +224,7 @@ export class ViewLayout extends Disposable {
             return maxLineWidth;
         }
         else {
-            const extraHorizontalSpace = options.get(105 /* EditorOption.scrollBeyondLastColumn */) * fontInfo.typicalHalfwidthCharacterWidth;
+            const extraHorizontalSpace = options.get(118 /* EditorOption.scrollBeyondLastColumn */) * fontInfo.typicalHalfwidthCharacterWidth;
             const whitespaceMinWidth = this._linesLayout.getWhitespaceMinWidth();
             return Math.max(maxLineWidth + extraHorizontalSpace + layoutInfo.verticalScrollbarWidth, whitespaceMinWidth, this._overlayWidgetsMinWidth);
         }
@@ -263,11 +263,21 @@ export class ViewLayout extends Disposable {
         }
         return hadAChange;
     }
+    changeSpecialLineHeights(callback) {
+        const hadAChange = this._linesLayout.changeLineHeights(callback);
+        if (hadAChange) {
+            this.onHeightMaybeChanged();
+        }
+        return hadAChange;
+    }
     getVerticalOffsetForLineNumber(lineNumber, includeViewZones = false) {
         return this._linesLayout.getVerticalOffsetForLineNumber(lineNumber, includeViewZones);
     }
     getVerticalOffsetAfterLineNumber(lineNumber, includeViewZones = false) {
         return this._linesLayout.getVerticalOffsetAfterLineNumber(lineNumber, includeViewZones);
+    }
+    getLineHeightForLineNumber(lineNumber) {
+        return this._linesLayout.getLineHeightForLineNumber(lineNumber);
     }
     isAfterLines(verticalOffset) {
         return this._linesLayout.isAfterLines(verticalOffset);
@@ -353,3 +363,4 @@ export class ViewLayout extends Disposable {
         });
     }
 }
+//# sourceMappingURL=viewLayout.js.map

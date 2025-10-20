@@ -140,3 +140,4 @@ export class AtomicTabMoveOperations {
         return -1;
     }
 }
+//# sourceMappingURL=cursorAtomicMoveOperations.js.map

@@ -13,3 +13,4 @@ export function registerSingleton(id, ctorOrDescriptor, supportsDelayedInstantia
 export function getSingletonServiceDescriptors() {
     return _registry;
 }
+//# sourceMappingURL=extensions.js.map

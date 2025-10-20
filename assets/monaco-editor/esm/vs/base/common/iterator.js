@@ -2,10 +2,11 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+import { isIterable } from './types.js';
 export var Iterable;
 (function (Iterable) {
     function is(thing) {
-        return thing && typeof thing === 'object' && typeof thing[Symbol.iterator] === 'function';
+        return !!thing && typeof thing === 'object' && typeof thing[Symbol.iterator] === 'function';
     }
     Iterable.is = is;
     const _empty = Object.freeze([]);
@@ -54,6 +55,16 @@ export var Iterable;
         return false;
     }
     Iterable.some = some;
+    function every(iterable, predicate) {
+        let i = 0;
+        for (const element of iterable) {
+            if (!predicate(element, i++)) {
+                return false;
+            }
+        }
+        return true;
+    }
+    Iterable.every = every;
     function find(iterable, predicate) {
         for (const element of iterable) {
             if (predicate(element)) {
@@ -86,8 +97,13 @@ export var Iterable;
     }
     Iterable.flatMap = flatMap;
     function* concat(...iterables) {
-        for (const iterable of iterables) {
-            yield* iterable;
+        for (const item of iterables) {
+            if (isIterable(item)) {
+                yield* item;
+            }
+            else {
+                yield item;
+            }
         }
     }
     Iterable.concat = concat;
@@ -99,10 +115,21 @@ export var Iterable;
         return value;
     }
     Iterable.reduce = reduce;
+    function length(iterable) {
+        let count = 0;
+        for (const _ of iterable) {
+            count++;
+        }
+        return count;
+    }
+    Iterable.length = length;
     /**
      * Returns an iterable slice of the array, with the same semantics as `array.slice()`.
      */
     function* slice(arr, from, to = arr.length) {
+        if (from < -arr.length) {
+            from = 0;
+        }
         if (from < 0) {
             from += arr.length;
         }
@@ -142,7 +169,16 @@ export var Iterable;
         for await (const item of iterable) {
             result.push(item);
         }
-        return Promise.resolve(result);
+        return result;
     }
     Iterable.asyncToArray = asyncToArray;
+    async function asyncToArrayFlat(iterable) {
+        let result = [];
+        for await (const item of iterable) {
+            result = result.concat(item);
+        }
+        return result;
+    }
+    Iterable.asyncToArrayFlat = asyncToArrayFlat;
 })(Iterable || (Iterable = {}));
+//# sourceMappingURL=iterator.js.map

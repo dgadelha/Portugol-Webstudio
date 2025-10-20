@@ -120,3 +120,4 @@ export class StandardKeyboardEvent {
         return new KeyCodeChord(this.ctrlKey, this.shiftKey, this.altKey, this.metaKey, key);
     }
 }
+//# sourceMappingURL=keyboardEvent.js.map

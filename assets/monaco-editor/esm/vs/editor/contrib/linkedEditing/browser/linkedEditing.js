@@ -70,7 +70,7 @@ let LinkedEditingContribution = class LinkedEditingContribution extends Disposab
         this._currentRequestModelVersion = null;
         this._register(this._editor.onDidChangeModel(() => this.reinitialize(true)));
         this._register(this._editor.onDidChangeConfiguration(e => {
-            if (e.hasChanged(70 /* EditorOption.linkedEditing */) || e.hasChanged(94 /* EditorOption.renameOnType */)) {
+            if (e.hasChanged(78 /* EditorOption.linkedEditing */) || e.hasChanged(106 /* EditorOption.renameOnType */)) {
                 this.reinitialize(false);
             }
         }));
@@ -80,7 +80,7 @@ let LinkedEditingContribution = class LinkedEditingContribution extends Disposab
     }
     reinitialize(forceRefresh) {
         const model = this._editor.getModel();
-        const isEnabled = model !== null && (this._editor.getOption(70 /* EditorOption.linkedEditing */) || this._editor.getOption(94 /* EditorOption.renameOnType */)) && this._providers.has(model);
+        const isEnabled = model !== null && (this._editor.getOption(78 /* EditorOption.linkedEditing */) || this._editor.getOption(106 /* EditorOption.renameOnType */)) && this._providers.has(model);
         if (isEnabled === this._enabled && !forceRefresh) {
             return;
         }
@@ -227,8 +227,15 @@ let LinkedEditingContribution = class LinkedEditingContribution extends Disposab
                 }
             }
         }
-        // Clear existing decorations while we compute new ones
-        this.clearRanges();
+        if (!this._currentRequestPosition?.equals(position)) {
+            // Get the current range of the first decoration (reference range)
+            const currentRange = this._currentDecorations.getRange(0);
+            // If there is no current range or the current range does not contain the new position, clear the ranges
+            if (!currentRange?.containsPosition(position)) {
+                // Clear existing decorations while we compute new ones
+                this.clearRanges();
+            }
+        }
         this._currentRequestPosition = position;
         this._currentRequestModelVersion = modelVersionId;
         const currentRequestCts = this._currentRequestCts = new CancellationTokenSource();
@@ -292,8 +299,7 @@ export class LinkedEditingAction extends EditorAction {
     constructor() {
         super({
             id: 'editor.action.linkedEditing',
-            label: nls.localize('linkedEditing.label', "Start Linked Editing"),
-            alias: 'Start Linked Editing',
+            label: nls.localize2(1266, "Start Linked Editing"),
             precondition: ContextKeyExpr.and(EditorContextKeys.writable, EditorContextKeys.hasRenameProvider),
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
@@ -354,10 +360,11 @@ function getLinkedEditingRanges(providers, model, position, token) {
         }
     }), result => !!result && arrays.isNonEmptyArray(result?.ranges));
 }
-export const editorLinkedEditingBackground = registerColor('editor.linkedEditingBackground', { dark: Color.fromHex('#f00').transparent(0.3), light: Color.fromHex('#f00').transparent(0.3), hcDark: Color.fromHex('#f00').transparent(0.3), hcLight: Color.white }, nls.localize('editorLinkedEditingBackground', 'Background color when the editor auto renames on type.'));
+export const editorLinkedEditingBackground = registerColor('editor.linkedEditingBackground', { dark: Color.fromHex('#f00').transparent(0.3), light: Color.fromHex('#f00').transparent(0.3), hcDark: Color.fromHex('#f00').transparent(0.3), hcLight: Color.white }, nls.localize(1265, 'Background color when the editor auto renames on type.'));
 registerModelAndPositionCommand('_executeLinkedEditingProvider', (_accessor, model, position) => {
     const { linkedEditingRangeProvider } = _accessor.get(ILanguageFeaturesService);
     return getLinkedEditingRanges(linkedEditingRangeProvider, model, position, CancellationToken.None);
 });
 registerEditorContribution(LinkedEditingContribution.ID, LinkedEditingContribution, 1 /* EditorContributionInstantiation.AfterFirstRender */);
 registerEditorAction(LinkedEditingAction);
+//# sourceMappingURL=linkedEditing.js.map

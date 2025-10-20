@@ -10,4 +10,5 @@ import { registerColor } from '../../../../platform/theme/common/colorUtils.js';
 import { PlaceholderTextContribution } from './placeholderTextContribution.js';
 import { wrapInReloadableClass1 } from '../../../../platform/observable/common/wrapInReloadableClass.js';
 registerEditorContribution(PlaceholderTextContribution.ID, wrapInReloadableClass1(() => PlaceholderTextContribution), 0 /* EditorContributionInstantiation.Eager */);
-registerColor('editor.placeholder.foreground', ghostTextForeground, localize('placeholderForeground', 'Foreground color of the placeholder text in the editor.'));
+registerColor('editor.placeholder.foreground', ghostTextForeground, localize(1324, 'Foreground color of the placeholder text in the editor.'));
+//# sourceMappingURL=placeholderText.contribution.js.map

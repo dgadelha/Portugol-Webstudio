@@ -62,7 +62,7 @@ let LinkDetector = class LinkDetector extends Disposable {
             this.cleanUpActiveLinkDecoration();
         }));
         this._register(editor.onDidChangeConfiguration((e) => {
-            if (!e.hasChanged(71 /* EditorOption.links */)) {
+            if (!e.hasChanged(79 /* EditorOption.links */)) {
                 return;
             }
             // Remove any links (for the getting disabled case)
@@ -95,7 +95,7 @@ let LinkDetector = class LinkDetector extends Disposable {
         this.computeLinks.schedule(0);
     }
     async computeLinksNow() {
-        if (!this.editor.hasModel() || !this.editor.getOption(71 /* EditorOption.links */)) {
+        if (!this.editor.hasModel() || !this.editor.getOption(79 /* EditorOption.links */)) {
             return;
         }
         const model = this.editor.getModel();
@@ -127,7 +127,7 @@ let LinkDetector = class LinkDetector extends Disposable {
         }
     }
     updateDecorations(links) {
-        const useMetaKey = (this.editor.getOption(78 /* EditorOption.multiCursorModifier */) === 'altKey');
+        const useMetaKey = (this.editor.getOption(86 /* EditorOption.multiCursorModifier */) === 'altKey');
         const oldDecorations = [];
         const keys = Object.keys(this.currentOccurrences);
         for (const decorationId of keys) {
@@ -152,7 +152,7 @@ let LinkDetector = class LinkDetector extends Disposable {
         });
     }
     _onEditorMouseMove(mouseEvent, withKey) {
-        const useMetaKey = (this.editor.getOption(78 /* EditorOption.multiCursorModifier */) === 'altKey');
+        const useMetaKey = (this.editor.getOption(86 /* EditorOption.multiCursorModifier */) === 'altKey');
         if (this.isEnabled(mouseEvent, withKey)) {
             this.cleanUpActiveLinkDecoration(); // always remove previous link decoration as their can only be one
             const occurrence = this.getLinkOccurrence(mouseEvent.target.position);
@@ -168,7 +168,7 @@ let LinkDetector = class LinkDetector extends Disposable {
         }
     }
     cleanUpActiveLinkDecoration() {
-        const useMetaKey = (this.editor.getOption(78 /* EditorOption.multiCursorModifier */) === 'altKey');
+        const useMetaKey = (this.editor.getOption(86 /* EditorOption.multiCursorModifier */) === 'altKey');
         if (this.activeLinkDecorationId) {
             const occurrence = this.currentOccurrences[this.activeLinkDecorationId];
             if (occurrence) {
@@ -220,10 +220,10 @@ let LinkDetector = class LinkDetector extends Disposable {
             const messageOrError = err instanceof Error ? err.message : err;
             // different error cases
             if (messageOrError === 'invalid') {
-                this.notificationService.warn(nls.localize('invalid.url', 'Failed to open this link because it is not well-formed: {0}', link.url.toString()));
+                this.notificationService.warn(nls.localize(1267, 'Failed to open this link because it is not well-formed: {0}', link.url.toString()));
             }
             else if (messageOrError === 'missing') {
-                this.notificationService.warn(nls.localize('missing.url', 'Failed to open this link because its target is missing.'));
+                this.notificationService.warn(nls.localize(1268, 'Failed to open this link because its target is missing.'));
             }
             else {
                 onUnexpectedError(err);
@@ -250,7 +250,7 @@ let LinkDetector = class LinkDetector extends Disposable {
     }
     isEnabled(mouseEvent, withKey) {
         return Boolean((mouseEvent.target.type === 6 /* MouseTargetType.CONTENT_TEXT */)
-            && (mouseEvent.hasTriggerModifier || (withKey && withKey.keyCodeIsTriggerKey)));
+            && ((mouseEvent.hasTriggerModifier || (withKey && withKey.keyCodeIsTriggerKey)) || mouseEvent.isMiddleClick && mouseEvent.mouseMiddleClickAction === 'openLink'));
     }
     stop() {
         this.computeLinks.cancel();
@@ -317,15 +317,15 @@ function getHoverMessage(link, useMetaKey) {
     const label = link.tooltip
         ? link.tooltip
         : executeCmd
-            ? nls.localize('links.navigate.executeCmd', 'Execute command')
-            : nls.localize('links.navigate.follow', 'Follow link');
+            ? nls.localize(1269, 'Execute command')
+            : nls.localize(1270, 'Follow link');
     const kb = useMetaKey
         ? platform.isMacintosh
-            ? nls.localize('links.navigate.kb.meta.mac', "cmd + click")
-            : nls.localize('links.navigate.kb.meta', "ctrl + click")
+            ? nls.localize(1271, "cmd + click")
+            : nls.localize(1272, "ctrl + click")
         : platform.isMacintosh
-            ? nls.localize('links.navigate.kb.alt.mac', "option + click")
-            : nls.localize('links.navigate.kb.alt', "alt + click");
+            ? nls.localize(1273, "option + click")
+            : nls.localize(1274, "alt + click");
     if (link.url) {
         let nativeLabel = '';
         if (/^command:/i.test(link.url.toString())) {
@@ -333,7 +333,7 @@ function getHoverMessage(link, useMetaKey) {
             const match = link.url.toString().match(/^command:([^?#]+)/);
             if (match) {
                 const commandId = match[1];
-                nativeLabel = nls.localize('tooltip.explanation', "Execute command {0}", commandId);
+                nativeLabel = nls.localize(1275, "Execute command {0}", commandId);
             }
         }
         const hoverMessage = new MarkdownString('', true)
@@ -349,8 +349,7 @@ class OpenLinkAction extends EditorAction {
     constructor() {
         super({
             id: 'editor.action.openLink',
-            label: nls.localize('label', "Open Link"),
-            alias: 'Open Link',
+            label: nls.localize2(1276, "Open Link"),
             precondition: undefined
         });
     }
@@ -373,3 +372,4 @@ class OpenLinkAction extends EditorAction {
 }
 registerEditorContribution(LinkDetector.ID, LinkDetector, 1 /* EditorContributionInstantiation.AfterFirstRender */);
 registerEditorAction(OpenLinkAction);
+//# sourceMappingURL=links.js.map

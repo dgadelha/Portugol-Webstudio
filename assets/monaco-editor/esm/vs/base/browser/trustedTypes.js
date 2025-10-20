@@ -22,3 +22,4 @@ export function createTrustedTypesPolicy(policyName, policyOptions) {
         return undefined;
     }
 }
+//# sourceMappingURL=trustedTypes.js.map

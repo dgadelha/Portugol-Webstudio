@@ -19,11 +19,17 @@ import { Mimes } from '../../../../base/common/mime.js';
 import { Schemas } from '../../../../base/common/network.js';
 import { relativePath } from '../../../../base/common/resources.js';
 import { URI } from '../../../../base/common/uri.js';
-import { DocumentPasteTriggerKind } from '../../../common/languages.js';
-import { ILanguageFeaturesService } from '../../../common/services/languageFeatures.js';
 import { localize } from '../../../../nls.js';
 import { IWorkspaceContextService } from '../../../../platform/workspace/common/workspace.js';
+import { DocumentPasteTriggerKind } from '../../../common/languages.js';
+import { ILanguageFeaturesService } from '../../../common/services/languageFeatures.js';
 class SimplePasteAndDropProvider {
+    constructor(kind) {
+        this.copyMimeTypes = [];
+        this.kind = kind;
+        this.providedDropEditKinds = [this.kind];
+        this.providedPasteEditKinds = [this.kind];
+    }
     async provideDocumentPasteEdits(_model, _ranges, dataTransfer, context, token) {
         const edit = await this.getEdit(dataTransfer, token);
         if (!edit) {
@@ -46,14 +52,13 @@ class SimplePasteAndDropProvider {
     }
 }
 export class DefaultTextPasteOrDropEditProvider extends SimplePasteAndDropProvider {
+    static { this.id = 'text'; }
     constructor() {
-        super(...arguments);
-        this.kind = DefaultTextPasteOrDropEditProvider.kind;
+        super(HierarchicalKind.Empty.append('text', 'plain'));
+        this.id = DefaultTextPasteOrDropEditProvider.id;
         this.dropMimeTypes = [Mimes.text];
         this.pasteMimeTypes = [Mimes.text];
     }
-    static { this.id = 'text'; }
-    static { this.kind = new HierarchicalKind('text.plain'); }
     async getEdit(dataTransfer, _token) {
         const textEntry = dataTransfer.get(Mimes.text);
         if (!textEntry) {
@@ -67,7 +72,7 @@ export class DefaultTextPasteOrDropEditProvider extends SimplePasteAndDropProvid
         const insertText = await textEntry.asString();
         return {
             handledMimeType: Mimes.text,
-            title: localize('text.label', "Insert Plain Text"),
+            title: localize(921, "Insert Plain Text"),
             insertText,
             kind: this.kind,
         };
@@ -75,8 +80,7 @@ export class DefaultTextPasteOrDropEditProvider extends SimplePasteAndDropProvid
 }
 class PathProvider extends SimplePasteAndDropProvider {
     constructor() {
-        super(...arguments);
-        this.kind = new HierarchicalKind('uri.absolute');
+        super(HierarchicalKind.Empty.append('uri', 'path', 'absolute'));
         this.dropMimeTypes = [Mimes.uriList];
         this.pasteMimeTypes = [Mimes.uriList];
     }
@@ -101,14 +105,14 @@ class PathProvider extends SimplePasteAndDropProvider {
         if (uriCount > 0) {
             // Dropping at least one generic uri (such as https) so use most generic label
             label = entries.length > 1
-                ? localize('defaultDropProvider.uriList.uris', "Insert Uris")
-                : localize('defaultDropProvider.uriList.uri', "Insert Uri");
+                ? localize(922, "Insert Uris")
+                : localize(923, "Insert Uri");
         }
         else {
             // All the paths are file paths
             label = entries.length > 1
-                ? localize('defaultDropProvider.uriList.paths', "Insert Paths")
-                : localize('defaultDropProvider.uriList.path', "Insert Path");
+                ? localize(924, "Insert Paths")
+                : localize(925, "Insert Path");
         }
         return {
             handledMimeType: Mimes.uriList,
@@ -120,9 +124,8 @@ class PathProvider extends SimplePasteAndDropProvider {
 }
 let RelativePathProvider = class RelativePathProvider extends SimplePasteAndDropProvider {
     constructor(_workspaceContextService) {
-        super();
+        super(HierarchicalKind.Empty.append('uri', 'path', 'relative'));
         this._workspaceContextService = _workspaceContextService;
-        this.kind = new HierarchicalKind('uri.relative');
         this.dropMimeTypes = [Mimes.uriList];
         this.pasteMimeTypes = [Mimes.uriList];
     }
@@ -142,8 +145,8 @@ let RelativePathProvider = class RelativePathProvider extends SimplePasteAndDrop
             handledMimeType: Mimes.uriList,
             insertText: relativeUris.join(' '),
             title: entries.length > 1
-                ? localize('defaultDropProvider.uriList.relativePaths', "Insert Relative Paths")
-                : localize('defaultDropProvider.uriList.relativePath', "Insert Relative Path"),
+                ? localize(926, "Insert Relative Paths")
+                : localize(927, "Insert Relative Path"),
             kind: this.kind,
         };
     }
@@ -154,6 +157,8 @@ RelativePathProvider = __decorate([
 class PasteHtmlProvider {
     constructor() {
         this.kind = new HierarchicalKind('html');
+        this.providedPasteEditKinds = [this.kind];
+        this.copyMimeTypes = [];
         this.pasteMimeTypes = ['text/html'];
         this._yieldTo = [{ mimeType: Mimes.text }];
     }
@@ -171,7 +176,7 @@ class PasteHtmlProvider {
             edits: [{
                     insertText: htmlText,
                     yieldTo: this._yieldTo,
-                    title: localize('pasteHtmlLabel', 'Insert HTML'),
+                    title: localize(928, 'Insert HTML'),
                     kind: this.kind,
                 }],
         };
@@ -194,12 +199,13 @@ async function extractUriList(dataTransfer) {
     }
     return entries;
 }
+const genericLanguageSelector = { scheme: '*', hasAccessToAllModels: true };
 let DefaultDropProvidersFeature = class DefaultDropProvidersFeature extends Disposable {
     constructor(languageFeaturesService, workspaceContextService) {
         super();
-        this._register(languageFeaturesService.documentDropEditProvider.register('*', new DefaultTextPasteOrDropEditProvider()));
-        this._register(languageFeaturesService.documentDropEditProvider.register('*', new PathProvider()));
-        this._register(languageFeaturesService.documentDropEditProvider.register('*', new RelativePathProvider(workspaceContextService)));
+        this._register(languageFeaturesService.documentDropEditProvider.register(genericLanguageSelector, new DefaultTextPasteOrDropEditProvider()));
+        this._register(languageFeaturesService.documentDropEditProvider.register(genericLanguageSelector, new PathProvider()));
+        this._register(languageFeaturesService.documentDropEditProvider.register(genericLanguageSelector, new RelativePathProvider(workspaceContextService)));
     }
 };
 DefaultDropProvidersFeature = __decorate([
@@ -210,10 +216,10 @@ export { DefaultDropProvidersFeature };
 let DefaultPasteProvidersFeature = class DefaultPasteProvidersFeature extends Disposable {
     constructor(languageFeaturesService, workspaceContextService) {
         super();
-        this._register(languageFeaturesService.documentPasteEditProvider.register('*', new DefaultTextPasteOrDropEditProvider()));
-        this._register(languageFeaturesService.documentPasteEditProvider.register('*', new PathProvider()));
-        this._register(languageFeaturesService.documentPasteEditProvider.register('*', new RelativePathProvider(workspaceContextService)));
-        this._register(languageFeaturesService.documentPasteEditProvider.register('*', new PasteHtmlProvider()));
+        this._register(languageFeaturesService.documentPasteEditProvider.register(genericLanguageSelector, new DefaultTextPasteOrDropEditProvider()));
+        this._register(languageFeaturesService.documentPasteEditProvider.register(genericLanguageSelector, new PathProvider()));
+        this._register(languageFeaturesService.documentPasteEditProvider.register(genericLanguageSelector, new RelativePathProvider(workspaceContextService)));
+        this._register(languageFeaturesService.documentPasteEditProvider.register(genericLanguageSelector, new PasteHtmlProvider()));
     }
 };
 DefaultPasteProvidersFeature = __decorate([
@@ -221,3 +227,4 @@ DefaultPasteProvidersFeature = __decorate([
     __param(1, IWorkspaceContextService)
 ], DefaultPasteProvidersFeature);
 export { DefaultPasteProvidersFeature };
+//# sourceMappingURL=defaultProviders.js.map

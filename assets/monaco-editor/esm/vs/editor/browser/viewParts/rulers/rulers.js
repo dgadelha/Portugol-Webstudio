@@ -5,6 +5,10 @@
 import './rulers.css';
 import { createFastDomNode } from '../../../../base/browser/fastDomNode.js';
 import { ViewPart } from '../../view/viewPart.js';
+/**
+ * Rulers are vertical lines that appear at certain columns in the editor. There can be >= 0 rulers
+ * at a time.
+ */
 export class Rulers extends ViewPart {
     constructor(context) {
         super(context);
@@ -14,8 +18,8 @@ export class Rulers extends ViewPart {
         this.domNode.setClassName('view-rulers');
         this._renderedRulers = [];
         const options = this._context.configuration.options;
-        this._rulers = options.get(103 /* EditorOption.rulers */);
-        this._typicalHalfwidthCharacterWidth = options.get(50 /* EditorOption.fontInfo */).typicalHalfwidthCharacterWidth;
+        this._rulers = options.get(116 /* EditorOption.rulers */);
+        this._typicalHalfwidthCharacterWidth = options.get(59 /* EditorOption.fontInfo */).typicalHalfwidthCharacterWidth;
     }
     dispose() {
         super.dispose();
@@ -23,8 +27,8 @@ export class Rulers extends ViewPart {
     // --- begin event handlers
     onConfigurationChanged(e) {
         const options = this._context.configuration.options;
-        this._rulers = options.get(103 /* EditorOption.rulers */);
-        this._typicalHalfwidthCharacterWidth = options.get(50 /* EditorOption.fontInfo */).typicalHalfwidthCharacterWidth;
+        this._rulers = options.get(116 /* EditorOption.rulers */);
+        this._typicalHalfwidthCharacterWidth = options.get(59 /* EditorOption.fontInfo */).typicalHalfwidthCharacterWidth;
         return true;
     }
     onScrollChanged(e) {
@@ -73,3 +77,4 @@ export class Rulers extends ViewPart {
         }
     }
 }
+//# sourceMappingURL=rulers.js.map

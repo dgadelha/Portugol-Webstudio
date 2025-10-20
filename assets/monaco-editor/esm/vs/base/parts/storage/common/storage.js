@@ -37,6 +37,7 @@ export class Storage extends Disposable {
         this.flushDelayer = this._register(new ThrottledDelayer(Storage.DEFAULT_FLUSH_DELAY));
         this.pendingDeletes = new Set();
         this.pendingInserts = new Map();
+        this.pendingClose = undefined;
         this.whenFlushedCallbacks = [];
         this.registerListeners();
     }
@@ -163,11 +164,25 @@ export class Storage extends Disposable {
             }
         });
     }
+    async flush(delay) {
+        if (this.state === StorageState.Closed || // Return early if we are already closed
+            this.pendingClose // return early if nothing to do
+        ) {
+            return;
+        }
+        return this.doFlush(delay);
+    }
     async doFlush(delay) {
         if (this.options.hint === StorageHint.STORAGE_IN_MEMORY) {
             return this.flushPending(); // return early if in-memory
         }
         return this.flushDelayer.trigger(() => this.flushPending(), delay);
+    }
+    async whenFlushed() {
+        if (!this.hasPending) {
+            return; // return early if nothing to do
+        }
+        return new Promise(resolve => this.whenFlushedCallbacks.push(resolve));
     }
 }
 export class InMemoryStorageDatabase {
@@ -180,3 +195,4 @@ export class InMemoryStorageDatabase {
         request.delete?.forEach(key => this.items.delete(key));
     }
 }
+//# sourceMappingURL=storage.js.map

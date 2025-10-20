@@ -140,3 +140,4 @@ export class Selection extends Range {
         return new Selection(endLineNumber, endColumn, startLineNumber, startColumn);
     }
 }
+//# sourceMappingURL=selection.js.map

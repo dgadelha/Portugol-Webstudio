@@ -9,8 +9,8 @@ import { mainWindow } from '../../../base/browser/window.js';
 import { Disposable } from '../../../base/common/lifecycle.js';
 import * as platform from '../../../base/common/platform.js';
 import { MouseHandler } from './mouseHandler.js';
-import { TextAreaSyntethicEvents } from './textAreaInput.js';
 import { EditorMouseEvent, EditorPointerEventFactory } from '../editorDom.js';
+import { TextAreaSyntethicEvents } from './editContext/textArea/textAreaEditContextInput.js';
 /**
  * Currently only tested on iOS 13/ iPadOS.
  */
@@ -127,3 +127,4 @@ export class PointerHandler extends Disposable {
         return this.handler.getTargetAtClientPoint(clientX, clientY);
     }
 }
+//# sourceMappingURL=pointerHandler.js.map

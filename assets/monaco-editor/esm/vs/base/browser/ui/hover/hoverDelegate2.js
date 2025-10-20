@@ -2,11 +2,20 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+import { Disposable } from '../../../common/lifecycle.js';
 let baseHoverDelegate = {
-    showHover: () => undefined,
+    showInstantHover: () => undefined,
+    showDelayedHover: () => undefined,
+    setupDelayedHover: () => Disposable.None,
+    setupDelayedHoverAtMouse: () => Disposable.None,
     hideHover: () => undefined,
     showAndFocusLastHover: () => undefined,
-    setupManagedHover: () => null,
+    setupManagedHover: () => ({
+        dispose: () => undefined,
+        show: () => undefined,
+        hide: () => undefined,
+        update: () => undefined,
+    }),
     showManagedHover: () => undefined
 };
 /**
@@ -25,3 +34,4 @@ export function setBaseLayerHoverDelegate(hoverDelegate) {
 export function getBaseLayerHoverDelegate() {
     return baseHoverDelegate;
 }
+//# sourceMappingURL=hoverDelegate2.js.map

@@ -64,3 +64,4 @@ class StaticTokenizerSource {
         return this.lines[lineNumber - 1].getLineContent().length;
     }
 }
+//# sourceMappingURL=fixBrackets.js.map

@@ -31,7 +31,7 @@ export class Position {
      * @param deltaColumn column delta
      */
     delta(deltaLineNumber = 0, deltaColumn = 0) {
-        return this.with(this.lineNumber + deltaLineNumber, this.column + deltaColumn);
+        return this.with(Math.max(1, this.lineNumber + deltaLineNumber), Math.max(1, this.column + deltaColumn));
     }
     /**
      * Test if this position equals other position
@@ -138,3 +138,4 @@ export class Position {
         };
     }
 }
+//# sourceMappingURL=position.js.map

@@ -4,8 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 import { Sash } from '../../../../../base/browser/ui/sash/sash.js';
 import { Disposable } from '../../../../../base/common/lifecycle.js';
-import { autorun, observableValue } from '../../../../../base/common/observable.js';
-import { derivedWithSetter } from '../../../../../base/common/observableInternal/derived.js';
+import { autorun, derivedWithSetter, observableValue } from '../../../../../base/common/observable.js';
 export class SashLayout {
     resetSash() {
         this._sashRatio.set(undefined, undefined);
@@ -79,3 +78,4 @@ export class DiffEditorSash extends Disposable {
         }));
     }
 }
+//# sourceMappingURL=diffEditorSash.js.map

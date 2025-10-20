@@ -23,3 +23,4 @@ export function applyFontInfo(domNode, fontInfo) {
         domNode.style.letterSpacing = fontInfo.letterSpacing + 'px';
     }
 }
+//# sourceMappingURL=domFontInfo.js.map

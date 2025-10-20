@@ -2,7 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { OffsetRange } from '../../../core/offsetRange.js';
+import { OffsetRange } from '../../../core/ranges/offsetRange.js';
 import { SequenceDiff, InfiniteTimeout, DiffAlgorithmResult } from './diffAlgorithm.js';
 import { Array2D } from '../utils.js';
 /**
@@ -96,3 +96,4 @@ export class DynamicProgrammingDiffing {
         return new DiffAlgorithmResult(result, false);
     }
 }
+//# sourceMappingURL=dynamicProgrammingDiffing.js.map

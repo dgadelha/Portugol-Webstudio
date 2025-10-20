@@ -93,3 +93,4 @@ export function trimTrailingWhitespace(model, cursors, trimInRegexesAndStrings) 
     }
     return r;
 }
+//# sourceMappingURL=trimTrailingWhitespaceCommand.js.map

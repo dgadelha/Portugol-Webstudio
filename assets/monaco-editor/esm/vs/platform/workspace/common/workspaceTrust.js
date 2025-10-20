@@ -4,3 +4,4 @@
  *--------------------------------------------------------------------------------------------*/
 import { createDecorator } from '../../instantiation/common/instantiation.js';
 export const IWorkspaceTrustManagementService = createDecorator('workspaceTrustManagementService');
+//# sourceMappingURL=workspaceTrust.js.map

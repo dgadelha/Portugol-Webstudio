@@ -100,8 +100,7 @@ export class CursorUndo extends EditorAction {
     constructor() {
         super({
             id: 'cursorUndo',
-            label: nls.localize('cursor.undo', "Cursor Undo"),
-            alias: 'Cursor Undo',
+            label: nls.localize2(906, "Cursor Undo"),
             precondition: undefined,
             kbOpts: {
                 kbExpr: EditorContextKeys.textInputFocus,
@@ -118,8 +117,7 @@ export class CursorRedo extends EditorAction {
     constructor() {
         super({
             id: 'cursorRedo',
-            label: nls.localize('cursor.redo', "Cursor Redo"),
-            alias: 'Cursor Redo',
+            label: nls.localize2(907, "Cursor Redo"),
             precondition: undefined
         });
     }
@@ -130,3 +128,4 @@ export class CursorRedo extends EditorAction {
 registerEditorContribution(CursorUndoRedoController.ID, CursorUndoRedoController, 0 /* EditorContributionInstantiation.Eager */); // eager because it needs to listen to record cursor state ASAP
 registerEditorAction(CursorUndo);
 registerEditorAction(CursorRedo);
+//# sourceMappingURL=cursorUndo.js.map

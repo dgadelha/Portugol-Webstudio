@@ -30,3 +30,4 @@ export const BrowserFeatures = {
     touch: 'ontouchstart' in mainWindow || navigator.maxTouchPoints > 0,
     pointerEvents: mainWindow.PointerEvent && ('ontouchstart' in mainWindow || navigator.maxTouchPoints > 0)
 };
+//# sourceMappingURL=canIUse.js.map

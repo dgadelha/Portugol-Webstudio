@@ -178,6 +178,9 @@ export async function formatDocumentRangesWithProvider(accessor, provider, edito
                 allEdits.push(...minimalEdits);
             }
         }
+        if (cts.token.isCancellationRequested) {
+            return true;
+        }
     }
     finally {
         cts.dispose();
@@ -356,3 +359,4 @@ CommandsRegistry.registerCommand('_executeFormatOnTypeProvider', async function 
         reference.dispose();
     }
 });
+//# sourceMappingURL=format.js.map

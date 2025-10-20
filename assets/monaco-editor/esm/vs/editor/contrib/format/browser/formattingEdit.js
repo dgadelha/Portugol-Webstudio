@@ -52,3 +52,4 @@ export class FormattingEdit {
         scrollState.restoreRelativeVerticalPositionOfCursor(editor);
     }
 }
+//# sourceMappingURL=formattingEdit.js.map

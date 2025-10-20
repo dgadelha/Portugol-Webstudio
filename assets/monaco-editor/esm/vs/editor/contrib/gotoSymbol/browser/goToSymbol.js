@@ -123,3 +123,4 @@ registerModelAndPositionCommand('_executeImplementationProvider_recursive', (acc
     const promise = getImplementationsAtPosition(languageFeaturesService.implementationProvider, model, position, true, CancellationToken.None);
     return _sortedAndDeduped(() => promise);
 });
+//# sourceMappingURL=goToSymbol.js.map

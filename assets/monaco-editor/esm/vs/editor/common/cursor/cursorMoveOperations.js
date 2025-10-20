@@ -285,3 +285,4 @@ export class MoveOperations {
         return cursor.move(inSelectionMode, lastLineNumber, lastColumn, 0);
     }
 }
+//# sourceMappingURL=cursorMoveOperations.js.map

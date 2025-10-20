@@ -53,13 +53,13 @@ class InlineProgressWidget extends Disposable {
         this.domNode.append(iconElement);
         iconElement.classList.add(...ThemeIcon.asClassNameArray(Codicon.loading), 'codicon-modifier-spin');
         const updateSize = () => {
-            const lineHeight = this.editor.getOption(67 /* EditorOption.lineHeight */);
+            const lineHeight = this.editor.getOption(75 /* EditorOption.lineHeight */);
             this.domNode.style.height = `${lineHeight}px`;
             this.domNode.style.width = `${Math.ceil(0.8 * lineHeight)}px`;
         };
         updateSize();
         this._register(this.editor.onDidChangeConfiguration(c => {
-            if (c.hasChanged(52 /* EditorOption.fontSize */) || c.hasChanged(67 /* EditorOption.lineHeight */)) {
+            if (c.hasChanged(61 /* EditorOption.fontSize */) || c.hasChanged(75 /* EditorOption.lineHeight */)) {
                 updateSize();
             }
         }));
@@ -135,3 +135,4 @@ InlineProgressManager = __decorate([
     __param(2, IInstantiationService)
 ], InlineProgressManager);
 export { InlineProgressManager };
+//# sourceMappingURL=inlineProgress.js.map

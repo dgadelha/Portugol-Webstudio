@@ -2,9 +2,9 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { env } from './process.js';
 export function isHotReloadEnabled() {
-    return env && !!env['VSCODE_DEV'];
+    // return env && !!env['VSCODE_DEV_DEBUG'];
+    return false; // TODO@hediet investigate how to get hot reload
 }
 export function registerHotReloadHandler(handler) {
     if (!isHotReloadEnabled()) {
@@ -79,3 +79,4 @@ if (isHotReloadEnabled()) {
         };
     });
 }
+//# sourceMappingURL=hotReload.js.map

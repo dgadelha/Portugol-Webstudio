@@ -15,12 +15,7 @@ export class DeleteOperations {
         let shouldPushStackElementBefore = (prevEditOperationType !== 3 /* EditOperationType.DeletingRight */);
         for (let i = 0, len = selections.length; i < len; i++) {
             const selection = selections[i];
-            let deleteSelection = selection;
-            if (deleteSelection.isEmpty()) {
-                const position = selection.getPosition();
-                const rightOfPosition = MoveOperations.right(config, model, position);
-                deleteSelection = new Range(rightOfPosition.lineNumber, rightOfPosition.column, position.lineNumber, position.column);
-            }
+            const deleteSelection = this.getDeleteRightRange(selection, model, config);
             if (deleteSelection.isEmpty()) {
                 // Probably at end of file => ignore
                 commands[i] = null;
@@ -32,6 +27,24 @@ export class DeleteOperations {
             commands[i] = new ReplaceCommand(deleteSelection, '');
         }
         return [shouldPushStackElementBefore, commands];
+    }
+    static getDeleteRightRange(selection, model, config) {
+        if (!selection.isEmpty()) {
+            return selection;
+        }
+        const position = selection.getPosition();
+        const rightOfPosition = MoveOperations.right(config, model, position);
+        if (config.trimWhitespaceOnDelete && rightOfPosition.lineNumber !== position.lineNumber) {
+            // Smart line join (deleting leading whitespace) is on
+            // (and) Delete is happening at the end of a line
+            const currentLineHasContent = (model.getLineFirstNonWhitespaceColumn(position.lineNumber) > 0);
+            const firstNonWhitespaceColumn = model.getLineFirstNonWhitespaceColumn(rightOfPosition.lineNumber);
+            if (currentLineHasContent && firstNonWhitespaceColumn > 0) {
+                // The next line has content
+                return new Range(rightOfPosition.lineNumber, firstNonWhitespaceColumn, position.lineNumber, position.column);
+            }
+        }
+        return new Range(rightOfPosition.lineNumber, rightOfPosition.column, position.lineNumber, position.column);
     }
     static isAutoClosingPairDelete(autoClosingDelete, autoClosingBrackets, autoClosingQuotes, autoClosingPairsOpen, model, selections, autoClosedCharacters) {
         if (autoClosingBrackets === 'never' && autoClosingQuotes === 'never') {
@@ -108,7 +121,7 @@ export class DeleteOperations {
         const commands = [];
         let shouldPushStackElementBefore = (prevEditOperationType !== 2 /* EditOperationType.DeletingLeft */);
         for (let i = 0, len = selections.length; i < len; i++) {
-            const deleteRange = DeleteOperations.getDeleteRange(selections[i], model, config);
+            const deleteRange = DeleteOperations.getDeleteLeftRange(selections[i], model, config);
             // Ignore empty delete ranges, as they have no effect
             // They happen if the cursor is at the beginning of the file.
             if (deleteRange.isEmpty()) {
@@ -122,7 +135,7 @@ export class DeleteOperations {
         }
         return [shouldPushStackElementBefore, commands];
     }
-    static getDeleteRange(selection, model, config) {
+    static getDeleteLeftRange(selection, model, config) {
         if (!selection.isEmpty()) {
             return selection;
         }
@@ -213,3 +226,4 @@ export class DeleteOperations {
         });
     }
 }
+//# sourceMappingURL=cursorDeleteOperations.js.map

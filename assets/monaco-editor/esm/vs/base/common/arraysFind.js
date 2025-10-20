@@ -2,8 +2,8 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-export function findLast(array, predicate) {
-    const idx = findLastIdx(array, predicate);
+export function findLast(array, predicate, fromIndex = array.length - 1) {
+    const idx = findLastIdx(array, predicate, fromIndex);
     if (idx === -1) {
         return undefined;
     }
@@ -173,3 +173,4 @@ export function mapFindFirst(items, mapFn) {
     }
     return undefined;
 }
+//# sourceMappingURL=arraysFind.js.map

@@ -23,11 +23,13 @@ import { Emitter } from '../../../base/common/event.js';
 import { minimapInfo, minimapWarning, minimapError } from '../../../platform/theme/common/colorRegistry.js';
 import { BidirectionalMap, ResourceMap } from '../../../base/common/map.js';
 import { diffSets } from '../../../base/common/collections.js';
+import { Iterable } from '../../../base/common/iterator.js';
 let MarkerDecorationsService = class MarkerDecorationsService extends Disposable {
     constructor(modelService, _markerService) {
         super();
         this._markerService = _markerService;
         this._onDidChangeMarker = this._register(new Emitter());
+        this._suppressedRanges = new ResourceMap();
         this._markerDecorations = new ResourceMap();
         modelService.getModels().forEach(model => this._onModelAdded(model));
         this._register(modelService.onModelAdded(this._onModelAdded, this));
@@ -71,7 +73,14 @@ let MarkerDecorationsService = class MarkerDecorationsService extends Disposable
     }
     _updateDecorations(markerDecorations) {
         // Limit to the first 500 errors/warnings
-        const markers = this._markerService.read({ resource: markerDecorations.model.uri, take: 500 });
+        let markers = this._markerService.read({ resource: markerDecorations.model.uri, take: 500 });
+        // filter markers from suppressed ranges
+        const suppressedRanges = this._suppressedRanges.get(markerDecorations.model.uri);
+        if (suppressedRanges) {
+            markers = markers.filter(marker => {
+                return !Iterable.some(suppressedRanges, candidate => Range.areIntersectingOrTouching(candidate, marker));
+            });
+        }
         if (markerDecorations.update(markers)) {
             this._onDidChangeMarker.fire(markerDecorations.model);
         }
@@ -225,3 +234,4 @@ class MarkerDecorations extends Disposable {
         return false;
     }
 }
+//# sourceMappingURL=markerDecorationsService.js.map

@@ -17,3 +17,4 @@ export class ViewContext {
         this.viewModel.removeViewEventHandler(eventHandler);
     }
 }
+//# sourceMappingURL=viewContext.js.map

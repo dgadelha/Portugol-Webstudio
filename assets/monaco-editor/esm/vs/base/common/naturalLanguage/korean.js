@@ -317,3 +317,4 @@ const compatibilityJamo = new Uint16Array([
     // ㆍ
     // ㆎ
 ]);
+//# sourceMappingURL=korean.js.map

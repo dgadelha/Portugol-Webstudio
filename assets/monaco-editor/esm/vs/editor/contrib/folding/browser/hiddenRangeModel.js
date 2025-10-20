@@ -5,7 +5,7 @@
 import { findFirstIdxMonotonousOrArrLen } from '../../../../base/common/arraysFind.js';
 import { Emitter } from '../../../../base/common/event.js';
 import { Range } from '../../../common/core/range.js';
-import { countEOL } from '../../../common/core/eolCounter.js';
+import { countEOL } from '../../../common/core/misc/eolCounter.js';
 export class HiddenRangeModel {
     get onDidChange() { return this._updateEventEmitter.event; }
     get hiddenRanges() { return this._hiddenRanges; }
@@ -121,3 +121,4 @@ function findRange(ranges, line) {
     }
     return null;
 }
+//# sourceMappingURL=hiddenRangeModel.js.map

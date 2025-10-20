@@ -2,13 +2,14 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+import { safeIntl } from './date.js';
 import { Lazy } from './lazy.js';
 // When comparing large numbers of strings it's better for performance to create an
 // Intl.Collator object and use the function provided by its compare property
 // than it is to use String.prototype.localeCompare()
 // A collator with numeric sorting enabled, and no sensitivity to case, accents or diacritics.
 const intlFileNameCollatorBaseNumeric = new Lazy(() => {
-    const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
+    const collator = safeIntl.Collator(undefined, { numeric: true, sensitivity: 'base' }).value;
     return {
         collator,
         collatorIsNumeric: collator.resolvedOptions().numeric
@@ -16,14 +17,14 @@ const intlFileNameCollatorBaseNumeric = new Lazy(() => {
 });
 // A collator with numeric sorting enabled.
 const intlFileNameCollatorNumeric = new Lazy(() => {
-    const collator = new Intl.Collator(undefined, { numeric: true });
+    const collator = safeIntl.Collator(undefined, { numeric: true }).value;
     return {
         collator
     };
 });
 // A collator with numeric sorting enabled, and sensitivity to accents and diacritics but not case.
 const intlFileNameCollatorNumericCaseInsensitive = new Lazy(() => {
-    const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'accent' });
+    const collator = safeIntl.Collator(undefined, { numeric: true, sensitivity: 'accent' }).value;
     return {
         collator
     };
@@ -81,3 +82,4 @@ export function compareByPrefix(one, other, lookFor) {
     }
     return 0;
 }
+//# sourceMappingURL=comparers.js.map

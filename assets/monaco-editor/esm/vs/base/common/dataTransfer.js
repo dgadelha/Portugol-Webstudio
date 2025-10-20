@@ -5,16 +5,18 @@
 import { distinct } from './arrays.js';
 import { Iterable } from './iterator.js';
 import { generateUuid } from './uuid.js';
-export function createStringDataTransferItem(stringOrPromise) {
+export function createStringDataTransferItem(stringOrPromise, id) {
     return {
+        id,
         asString: async () => stringOrPromise,
         asFile: () => undefined,
         value: typeof stringOrPromise === 'string' ? stringOrPromise : undefined,
     };
 }
-export function createFileDataTransferItem(fileName, uri, data) {
+export function createFileDataTransferItem(fileName, uri, data, id) {
     const file = { id: generateUuid(), name: fileName, uri, data };
     return {
+        id,
         asString: async () => '',
         asFile: () => file,
         value: undefined,
@@ -126,3 +128,4 @@ export const UriList = Object.freeze({
         return UriList.split(str).filter(value => !value.startsWith('#'));
     }
 });
+//# sourceMappingURL=dataTransfer.js.map

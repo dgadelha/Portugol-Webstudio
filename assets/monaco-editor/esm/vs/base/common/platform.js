@@ -38,7 +38,7 @@ if (typeof nodeProcess === 'object') {
     _isLinux = (nodeProcess.platform === 'linux');
     _isLinuxSnap = _isLinux && !!nodeProcess.env['SNAP'] && !!nodeProcess.env['SNAP_REVISION'];
     _isElectron = isElectronProcess;
-    _isCI = !!nodeProcess.env['CI'] || !!nodeProcess.env['BUILD_ARTIFACTSTAGINGDIRECTORY'];
+    _isCI = !!nodeProcess.env['CI'] || !!nodeProcess.env['BUILD_ARTIFACTSTAGINGDIRECTORY'] || !!nodeProcess.env['GITHUB_WORKSPACE'];
     _locale = LANGUAGE_DEFAULT;
     _language = LANGUAGE_DEFAULT;
     const rawNlsConfig = nodeProcess.env['VSCODE_NLS_CONFIG'];
@@ -86,11 +86,13 @@ export const isWindows = _isWindows;
 export const isMacintosh = _isMacintosh;
 export const isLinux = _isLinux;
 export const isNative = _isNative;
+export const isElectron = _isElectron;
 export const isWeb = _isWeb;
 export const isWebWorker = (_isWeb && typeof $globalThis.importScripts === 'function');
 export const webWorkerOrigin = isWebWorker ? $globalThis.origin : undefined;
 export const isIOS = _isIOS;
 export const isMobile = _isMobile;
+export const platform = _platform;
 export const userAgent = _userAgent;
 /**
  * The language used for the user interface. The format of
@@ -151,3 +153,4 @@ export const isFirefox = !!(userAgent && userAgent.indexOf('Firefox') >= 0);
 export const isSafari = !!(!isChrome && (userAgent && userAgent.indexOf('Safari') >= 0));
 export const isEdge = !!(userAgent && userAgent.indexOf('Edg/') >= 0);
 export const isAndroid = !!(userAgent && userAgent.indexOf('Android') >= 0);
+//# sourceMappingURL=platform.js.map

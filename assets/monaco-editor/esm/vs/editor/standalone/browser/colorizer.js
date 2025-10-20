@@ -51,7 +51,7 @@ export class Colorizer {
     static colorizeLine(line, mightContainNonBasicASCII, mightContainRTL, tokens, tabSize = 4) {
         const isBasicASCII = ViewLineRenderingData.isBasicASCII(line, mightContainNonBasicASCII);
         const containsRTL = ViewLineRenderingData.containsRTL(line, isBasicASCII, mightContainRTL);
-        const renderResult = renderViewLine(new RenderLineInput(false, true, line, false, isBasicASCII, containsRTL, 0, tokens, [], tabSize, 0, 0, 0, 0, -1, 'none', false, false, null));
+        const renderResult = renderViewLine(new RenderLineInput(false, true, line, false, isBasicASCII, containsRTL, 0, tokens, [], tabSize, 0, 0, 0, 0, -1, 'none', false, false, null, null, 0));
         return renderResult.html;
     }
     static colorizeModelLine(model, lineNumber, tabSize = 4) {
@@ -92,7 +92,7 @@ function _fakeColorize(lines, tabSize, languageIdCodec) {
         const lineTokens = new LineTokens(tokens, line, languageIdCodec);
         const isBasicASCII = ViewLineRenderingData.isBasicASCII(line, /* check for basic ASCII */ true);
         const containsRTL = ViewLineRenderingData.containsRTL(line, isBasicASCII, /* check for RTL */ true);
-        const renderResult = renderViewLine(new RenderLineInput(false, true, line, false, isBasicASCII, containsRTL, 0, lineTokens, [], tabSize, 0, 0, 0, 0, -1, 'none', false, false, null));
+        const renderResult = renderViewLine(new RenderLineInput(false, true, line, false, isBasicASCII, containsRTL, 0, lineTokens, [], tabSize, 0, 0, 0, 0, -1, 'none', false, false, null, null, 0));
         html = html.concat(renderResult.html);
         html.push('<br/>');
     }
@@ -108,10 +108,11 @@ function _actualColorize(lines, tabSize, tokenizationSupport, languageIdCodec) {
         const lineTokens = new LineTokens(tokenizeResult.tokens, line, languageIdCodec);
         const isBasicASCII = ViewLineRenderingData.isBasicASCII(line, /* check for basic ASCII */ true);
         const containsRTL = ViewLineRenderingData.containsRTL(line, isBasicASCII, /* check for RTL */ true);
-        const renderResult = renderViewLine(new RenderLineInput(false, true, line, false, isBasicASCII, containsRTL, 0, lineTokens.inflate(), [], tabSize, 0, 0, 0, 0, -1, 'none', false, false, null));
+        const renderResult = renderViewLine(new RenderLineInput(false, true, line, false, isBasicASCII, containsRTL, 0, lineTokens.inflate(), [], tabSize, 0, 0, 0, 0, -1, 'none', false, false, null, null, 0));
         html = html.concat(renderResult.html);
         html.push('<br/>');
         state = tokenizeResult.endState;
     }
     return html.join('');
 }
+//# sourceMappingURL=colorizer.js.map

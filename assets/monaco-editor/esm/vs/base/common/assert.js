@@ -26,11 +26,28 @@ export function assertNever(value, message = 'Unreachable') {
     throw new Error(message);
 }
 /**
+ * Asserts that a condition is `truthy`.
+ *
+ * @throws provided {@linkcode messageOrError} if the {@linkcode condition} is `falsy`.
+ *
+ * @param condition The condition to assert.
+ * @param messageOrError An error message or error object to throw if condition is `falsy`.
+ */
+export function assert(condition, messageOrError = 'unexpected state') {
+    if (!condition) {
+        // if error instance is provided, use it, otherwise create a new one
+        const errorToThrow = typeof messageOrError === 'string'
+            ? new BugIndicatingError(`Assertion Failed: ${messageOrError}`)
+            : messageOrError;
+        throw errorToThrow;
+    }
+}
+/**
  * Like assert, but doesn't throw.
  */
-export function softAssert(condition) {
+export function softAssert(condition, message = 'Soft Assertion Failed') {
     if (!condition) {
-        onUnexpectedError(new BugIndicatingError('Soft Assertion Failed'));
+        onUnexpectedError(new BugIndicatingError(message));
     }
 }
 /**
@@ -57,3 +74,4 @@ export function checkAdjacentItems(items, predicate) {
     }
     return true;
 }
+//# sourceMappingURL=assert.js.map

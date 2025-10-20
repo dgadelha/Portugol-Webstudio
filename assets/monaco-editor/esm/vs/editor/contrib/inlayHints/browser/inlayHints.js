@@ -6,8 +6,7 @@ import { CancellationError, onUnexpectedExternalError } from '../../../../base/c
 import { DisposableStore } from '../../../../base/common/lifecycle.js';
 import { Position } from '../../../common/core/position.js';
 import { Range } from '../../../common/core/range.js';
-import { Schemas } from '../../../../base/common/network.js';
-import { URI } from '../../../../base/common/uri.js';
+import { createCommandUri } from '../../../../base/common/htmlContent.js';
 export class InlayHintAnchor {
     constructor(range, direction) {
         this.range = range;
@@ -141,9 +140,6 @@ export class InlayHintsFragments {
     }
 }
 export function asCommandLink(command) {
-    return URI.from({
-        scheme: Schemas.command,
-        path: command.id,
-        query: command.arguments && encodeURIComponent(JSON.stringify(command.arguments))
-    }).toString();
+    return createCommandUri(command.id, ...(command.arguments ?? [])).toString();
 }
+//# sourceMappingURL=inlayHints.js.map

@@ -8,13 +8,15 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-import { asCssValueWithDefault, createStyleSheet, EventHelper, getActiveElement, getWindow, isHTMLElement, isMouseEvent } from '../../dom.js';
+import { EventHelper, getActiveElement, getWindow, isEditableElement, isHTMLElement, isMouseEvent } from '../../dom.js';
+import { createStyleSheet } from '../../domStylesheets.js';
+import { asCssValueWithDefault } from '../../cssValue.js';
 import { DomEmitter } from '../../event.js';
 import { StandardKeyboardEvent } from '../../keyboardEvent.js';
 import { Gesture } from '../../touch.js';
 import { alert } from '../aria/aria.js';
 import { CombinedSpliceable } from './splice.js';
-import { binarySearch, firstOrDefault, range } from '../../../common/arrays.js';
+import { binarySearch, range } from '../../../common/arrays.js';
 import { timeout } from '../../../common/async.js';
 import { Color } from '../../../common/color.js';
 import { memoize } from '../../../common/decorators.js';
@@ -84,6 +86,7 @@ class TraitRenderer {
     }
 }
 class Trait {
+    get onChange() { return this._onChange.event; }
     get name() { return this._trait; }
     get renderer() {
         return new TraitRenderer(this);
@@ -93,7 +96,6 @@ class Trait {
         this.indexes = [];
         this.sortedIndexes = [];
         this._onChange = new Emitter();
-        this.onChange = this._onChange.event;
     }
     splice(start, deleteCount, elements) {
         const diff = elements.length - deleteCount;
@@ -193,9 +195,6 @@ class TraitSpliceable {
         this.trait.splice(start, deleteCount, elementsWithTrait);
     }
 }
-export function isInputElement(e) {
-    return e.tagName === 'INPUT' || e.tagName === 'TEXTAREA';
-}
 function isListElementDescendantOfClass(e, className) {
     if (e.classList.contains(className)) {
         return true;
@@ -238,7 +237,7 @@ export function isButton(e) {
 }
 class KeyboardController {
     get onKeyDown() {
-        return Event.chain(this.disposables.add(new DomEmitter(this.view.domNode, 'keydown')).event, $ => $.filter(e => !isInputElement(e.target))
+        return Event.chain(this.disposables.add(new DomEmitter(this.view.domNode, 'keydown')).event, $ => $.filter(e => !isEditableElement(e.target))
             .map(e => new StandardKeyboardEvent(e)));
     }
     constructor(list, view, options) {
@@ -389,7 +388,7 @@ class TypeNavigationController {
             return;
         }
         let typing = false;
-        const onChar = Event.chain(this.enabledDisposables.add(new DomEmitter(this.view.domNode, 'keydown')).event, $ => $.filter(e => !isInputElement(e.target))
+        const onChar = Event.chain(this.enabledDisposables.add(new DomEmitter(this.view.domNode, 'keydown')).event, $ => $.filter(e => !isEditableElement(e.target))
             .filter(() => this.mode === TypeNavigationMode.Automatic || this.triggered)
             .map(event => new StandardKeyboardEvent(event))
             .filter(e => typing || this.keyboardNavigationEventFilter(e))
@@ -484,7 +483,7 @@ class DOMFocusController {
         this.view = view;
         this.disposables = new DisposableStore();
         const onKeyDown = Event.chain(this.disposables.add(new DomEmitter(view.domNode, 'keydown')).event, $ => $
-            .filter(e => !isInputElement(e.target))
+            .filter(e => !isEditableElement(e.target))
             .map(e => new StandardKeyboardEvent(e)));
         const onTab = Event.chain(onKeyDown, $ => $.filter(e => e.keyCode === 2 /* KeyCode.Tab */ && !e.ctrlKey && !e.metaKey && !e.shiftKey && !e.altKey));
         onTab(this.onTab, this, this.disposables);
@@ -531,11 +530,11 @@ const DefaultMultipleSelectionController = {
     isSelectionRangeChangeEvent
 };
 export class MouseController {
+    get onPointer() { return this._onPointer.event; }
     constructor(list) {
         this.list = list;
         this.disposables = new DisposableStore();
-        this._onPointer = new Emitter();
-        this.onPointer = this._onPointer.event;
+        this._onPointer = this.disposables.add(new Emitter());
         if (list.options.multipleSelectionSupport !== false) {
             this.multipleSelectionController = this.list.options.multipleSelectionController || DefaultMultipleSelectionController;
         }
@@ -581,7 +580,7 @@ export class MouseController {
         }
     }
     onContextMenu(e) {
-        if (isInputElement(e.browserEvent.target) || isMonacoEditor(e.browserEvent.target)) {
+        if (isEditableElement(e.browserEvent.target) || isMonacoEditor(e.browserEvent.target)) {
             return;
         }
         const focus = typeof e.index === 'undefined' ? [] : [e.index];
@@ -591,7 +590,7 @@ export class MouseController {
         if (!this.mouseSupport) {
             return;
         }
-        if (isInputElement(e.browserEvent.target) || isMonacoEditor(e.browserEvent.target)) {
+        if (isEditableElement(e.browserEvent.target) || isMonacoEditor(e.browserEvent.target)) {
             return;
         }
         if (e.browserEvent.isHandledByList) {
@@ -616,7 +615,7 @@ export class MouseController {
         this._onPointer.fire(e);
     }
     onDoubleClick(e) {
-        if (isInputElement(e.browserEvent.target) || isMonacoEditor(e.browserEvent.target)) {
+        if (isEditableElement(e.browserEvent.target) || isMonacoEditor(e.browserEvent.target)) {
             return;
         }
         if (this.isSelectionChangeEvent(e)) {
@@ -697,13 +696,13 @@ export class DefaultStyleController {
         }
         if (styles.listFocusAndSelectionBackground) {
             content.push(`
-				.monaco-drag-image,
+				.monaco-drag-image${suffix},
 				.monaco-list${suffix}:focus .monaco-list-row.selected.focused { background-color: ${styles.listFocusAndSelectionBackground}; }
 			`);
         }
         if (styles.listFocusAndSelectionForeground) {
             content.push(`
-				.monaco-drag-image,
+				.monaco-drag-image${suffix},
 				.monaco-list${suffix}:focus .monaco-list-row.selected.focused { color: ${styles.listFocusAndSelectionForeground}; }
 			`);
         }
@@ -740,8 +739,8 @@ export class DefaultStyleController {
         }
         if (styles.listFocusOutline) { // default: set
             content.push(`
-				.monaco-drag-image,
-				.monaco-list${suffix}:focus .monaco-list-row.focused { outline: 1px solid ${styles.listFocusOutline}; outline-offset: -1px; }
+				.monaco-drag-image${suffix},
+				.monaco-list${suffix}:focus .monaco-list-row.focused,
 				.monaco-workbench.context-menu-visible .monaco-list${suffix}.last-focused .monaco-list-row.focused { outline: 1px solid ${styles.listFocusOutline}; outline-offset: -1px; }
 			`);
         }
@@ -936,16 +935,16 @@ class PipelineRenderer {
     renderTemplate(container) {
         return this.renderers.map(r => r.renderTemplate(container));
     }
-    renderElement(element, index, templateData, height) {
+    renderElement(element, index, templateData, renderDetails) {
         let i = 0;
         for (const renderer of this.renderers) {
-            renderer.renderElement(element, index, templateData[i++], height);
+            renderer.renderElement(element, index, templateData[i++], renderDetails);
         }
     }
-    disposeElement(element, index, templateData, height) {
+    disposeElement(element, index, templateData, renderDetails) {
         let i = 0;
         for (const renderer of this.renderers) {
-            renderer.disposeElement?.(element, index, templateData[i], height);
+            renderer.disposeElement?.(element, index, templateData[i], renderDetails);
             i += 1;
         }
     }
@@ -986,7 +985,7 @@ class AccessibiltyRenderer {
             element.removeAttribute('aria-label');
         }
     }
-    disposeElement(element, index, templateData, height) {
+    disposeElement(element, index, templateData) {
         templateData.disposables.clear();
     }
     disposeTemplate(templateData) {
@@ -1153,7 +1152,11 @@ export class List {
         this.onDidChangeFocus(this._onFocusChange, this, this.disposables);
         this.onDidChangeSelection(this._onSelectionChange, this, this.disposables);
         if (this.accessibilityProvider) {
-            this.ariaLabel = this.accessibilityProvider.getWidgetAriaLabel();
+            const ariaLabel = this.accessibilityProvider.getWidgetAriaLabel();
+            const observable = (ariaLabel && typeof ariaLabel !== 'string') ? ariaLabel : constObservable(ariaLabel);
+            this.disposables.add(autorun(reader => {
+                this.ariaLabel = reader.readObservable(observable);
+            }));
         }
         if (this._options.multipleSelectionSupport !== false) {
             this.view.domNode.setAttribute('aria-multiselectable', 'true');
@@ -1269,7 +1272,7 @@ export class List {
         this.anchor.set([index]);
     }
     getAnchor() {
-        return firstOrDefault(this.anchor.get(), undefined);
+        return this.anchor.get().at(0);
     }
     getAnchorElement() {
         const anchor = this.getAnchor();
@@ -1526,3 +1529,4 @@ __decorate([
 __decorate([
     memoize
 ], List.prototype, "onDidBlur", null);
+//# sourceMappingURL=listWidget.js.map

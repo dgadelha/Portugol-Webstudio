@@ -60,3 +60,4 @@ Registry.as(Extensions.Quickaccess).registerQuickAccessProvider({
     prefix: StandaloneGotoLineQuickAccessProvider.PREFIX,
     helpEntries: [{ description: GoToLineNLS.gotoLineActionLabel, commandId: GotoLineAction.ID }]
 });
+//# sourceMappingURL=standaloneGotoLineQuickAccess.js.map

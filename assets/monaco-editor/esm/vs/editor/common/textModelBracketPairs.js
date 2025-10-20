@@ -41,3 +41,4 @@ export class BracketPairWithMinIndentationInfo extends BracketPairInfo {
         this.minVisibleColumnIndentation = minVisibleColumnIndentation;
     }
 }
+//# sourceMappingURL=textModelBracketPairs.js.map

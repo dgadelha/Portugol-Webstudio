@@ -64,7 +64,7 @@ export async function showGoToContextMenu(accessor, editor, anchor, part) {
         }));
     }
     // show context menu
-    const useShadowDOM = editor.getOption(128 /* EditorOption.useShadowDOM */);
+    const useShadowDOM = editor.getOption(144 /* EditorOption.useShadowDOM */);
     contextMenuService.showContextMenu({
         domForShadowRoot: useShadowDOM ? editor.getDomNode() ?? undefined : undefined,
         getAnchor: () => {
@@ -85,9 +85,10 @@ export async function goToDefinitionWithLocation(accessor, event, editor, locati
         const openToSide = event.hasSideBySideModifier;
         const contextKeyService = accessor.get(IContextKeyService);
         const isInPeek = PeekContext.inPeekEditor.getValue(contextKeyService);
-        const canPeek = !openToSide && editor.getOption(89 /* EditorOption.definitionLinkOpensInPeek */) && !isInPeek;
+        const canPeek = !openToSide && editor.getOption(101 /* EditorOption.definitionLinkOpensInPeek */) && !isInPeek;
         const action = new DefinitionAction({ openToSide, openInPeek: canPeek, muteMessage: true }, { title: { value: '', original: '' }, id: '', precondition: undefined });
         return action.run(accessor, new SymbolNavigationAnchor(ref.object.textEditorModel, Range.getStartPosition(location.range)), Range.lift(location.range));
     });
     ref.dispose();
 }
+//# sourceMappingURL=inlayHintsLocations.js.map

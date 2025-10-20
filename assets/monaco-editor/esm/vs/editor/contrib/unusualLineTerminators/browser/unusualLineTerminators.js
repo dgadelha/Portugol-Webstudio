@@ -32,10 +32,10 @@ let UnusualLineTerminatorsDetector = class UnusualLineTerminatorsDetector extend
         this._dialogService = _dialogService;
         this._codeEditorService = _codeEditorService;
         this._isPresentingDialog = false;
-        this._config = this._editor.getOption(127 /* EditorOption.unusualLineTerminators */);
+        this._config = this._editor.getOption(143 /* EditorOption.unusualLineTerminators */);
         this._register(this._editor.onDidChangeConfiguration((e) => {
-            if (e.hasChanged(127 /* EditorOption.unusualLineTerminators */)) {
-                this._config = this._editor.getOption(127 /* EditorOption.unusualLineTerminators */);
+            if (e.hasChanged(143 /* EditorOption.unusualLineTerminators */)) {
+                this._config = this._editor.getOption(143 /* EditorOption.unusualLineTerminators */);
                 this._checkForUnusualLineTerminators();
             }
         }));
@@ -67,7 +67,7 @@ let UnusualLineTerminatorsDetector = class UnusualLineTerminatorsDetector extend
             // this model should be ignored
             return;
         }
-        if (this._editor.getOption(92 /* EditorOption.readOnly */)) {
+        if (this._editor.getOption(104 /* EditorOption.readOnly */)) {
             // read only editor => sorry!
             return;
         }
@@ -85,11 +85,11 @@ let UnusualLineTerminatorsDetector = class UnusualLineTerminatorsDetector extend
         try {
             this._isPresentingDialog = true;
             result = await this._dialogService.confirm({
-                title: nls.localize('unusualLineTerminators.title', "Unusual Line Terminators"),
-                message: nls.localize('unusualLineTerminators.message', "Detected unusual line terminators"),
-                detail: nls.localize('unusualLineTerminators.detail', "The file '{0}' contains one or more unusual line terminator characters, like Line Separator (LS) or Paragraph Separator (PS).\n\nIt is recommended to remove them from the file. This can be configured via `editor.unusualLineTerminators`.", basename(model.uri)),
-                primaryButton: nls.localize({ key: 'unusualLineTerminators.fix', comment: ['&& denotes a mnemonic'] }, "&&Remove Unusual Line Terminators"),
-                cancelButton: nls.localize('unusualLineTerminators.ignore', "Ignore")
+                title: nls.localize(1543, "Unusual Line Terminators"),
+                message: nls.localize(1544, "Detected unusual line terminators"),
+                detail: nls.localize(1545, "The file '{0}' contains one or more unusual line terminator characters, like Line Separator (LS) or Paragraph Separator (PS).\n\nIt is recommended to remove them from the file. This can be configured via `editor.unusualLineTerminators`.", basename(model.uri)),
+                primaryButton: nls.localize(1546, "&&Remove Unusual Line Terminators"),
+                cancelButton: nls.localize(1547, "Ignore")
             });
         }
         finally {
@@ -109,3 +109,4 @@ UnusualLineTerminatorsDetector = __decorate([
 ], UnusualLineTerminatorsDetector);
 export { UnusualLineTerminatorsDetector };
 registerEditorContribution(UnusualLineTerminatorsDetector.ID, UnusualLineTerminatorsDetector, 1 /* EditorContributionInstantiation.AfterFirstRender */);
+//# sourceMappingURL=unusualLineTerminators.js.map

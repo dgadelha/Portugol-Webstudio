@@ -237,3 +237,4 @@ class InspectTokensWidget extends Disposable {
 }
 registerEditorContribution(InspectTokensController.ID, InspectTokensController, 4 /* EditorContributionInstantiation.Lazy */);
 registerEditorAction(InspectTokens);
+//# sourceMappingURL=inspectTokens.js.map

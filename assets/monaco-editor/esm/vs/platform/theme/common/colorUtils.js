@@ -9,6 +9,7 @@ import { Emitter } from '../../../base/common/event.js';
 import { Extensions as JSONExtensions } from '../../jsonschemas/common/jsonContributionRegistry.js';
 import * as platform from '../../registry/common/platform.js';
 import * as nls from '../../../nls.js';
+import { Disposable } from '../../../base/common/lifecycle.js';
 /**
  * Returns the css variable name for the given color identifier. Dots (`.`) are replaced with hyphens (`-`) and
  * everything is prefixed with `--vscode-`.
@@ -32,9 +33,10 @@ export const Extensions = {
     ColorContribution: 'base.contributions.colors'
 };
 export const DEFAULT_COLOR_CONFIG_VALUE = 'default';
-class ColorRegistry {
+class ColorRegistry extends Disposable {
     constructor() {
-        this._onDidChangeSchema = new Emitter();
+        super();
+        this._onDidChangeSchema = this._register(new Emitter());
         this.onDidChangeSchema = this._onDidChangeSchema.event;
         this.colorSchema = { type: 'object', properties: {} };
         this.colorReferenceSchema = { type: 'string', enum: [], enumDescriptions: [] };
@@ -49,13 +51,13 @@ class ColorRegistry {
         }
         if (needsTransparency) {
             propertySchema.pattern = '^#(?:(?<rgba>[0-9a-fA-f]{3}[0-9a-eA-E])|(?:[0-9a-fA-F]{6}(?:(?![fF]{2})(?:[0-9a-fA-F]{2}))))?$';
-            propertySchema.patternErrorMessage = nls.localize('transparecyRequired', 'This color must be transparent or it will obscure content');
+            propertySchema.patternErrorMessage = nls.localize(2004, 'This color must be transparent or it will obscure content');
         }
         this.colorSchema.properties[id] = {
             description,
             oneOf: [
                 propertySchema,
-                { type: 'string', const: DEFAULT_COLOR_CONFIG_VALUE, description: nls.localize('useDefault', 'Use the default color.') }
+                { type: 'string', const: DEFAULT_COLOR_CONFIG_VALUE, description: nls.localize(2005, 'Use the default color.') }
             ]
         };
         this.colorReferenceSchema.enum.push(id);
@@ -103,6 +105,11 @@ export function executeTransform(transform, theme) {
             return resolveColorValue(transform.value, theme)?.lighten(transform.factor);
         case 2 /* ColorTransformType.Transparent */:
             return resolveColorValue(transform.value, theme)?.transparent(transform.factor);
+        case 7 /* ColorTransformType.Mix */: {
+            const primaryColor = resolveColorValue(transform.color, theme) || Color.transparent;
+            const otherColor = resolveColorValue(transform.with, theme) || Color.transparent;
+            return primaryColor.mix(otherColor, transform.ratio);
+        }
         case 3 /* ColorTransformType.Opaque */: {
             const backgroundColor = resolveColorValue(transform.background, theme);
             if (!backgroundColor) {
@@ -187,3 +194,4 @@ colorRegistry.onDidChangeSchema(() => {
     }
 });
 // setTimeout(_ => console.log(colorRegistry.toString()), 5000);
+//# sourceMappingURL=colorUtils.js.map

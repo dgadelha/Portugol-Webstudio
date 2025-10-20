@@ -33,6 +33,8 @@ import { ILabelService } from '../../../../../platform/label/common/label.js';
 import { WorkbenchAsyncDataTree } from '../../../../../platform/list/browser/listService.js';
 import { IThemeService } from '../../../../../platform/theme/common/themeService.js';
 import { FileReferences, OneReference } from '../referencesModel.js';
+import { DataTransfers } from '../../../../../base/browser/dnd.js';
+import { withSelection } from '../../../../../platform/opener/common/opener.js';
 class DecorationsManager {
     static { this.DecorationOptions = ModelDecorationOptions.register({
         description: 'reference-decoration',
@@ -162,6 +164,47 @@ export class LayoutData {
 }
 class ReferencesTree extends WorkbenchAsyncDataTree {
 }
+let ReferencesDragAndDrop = class ReferencesDragAndDrop {
+    constructor(labelService) {
+        this.labelService = labelService;
+        this.disposables = new DisposableStore();
+    }
+    getDragURI(element) {
+        if (element instanceof FileReferences) {
+            return element.uri.toString();
+        }
+        else if (element instanceof OneReference) {
+            return withSelection(element.uri, element.range).toString();
+        }
+        return null;
+    }
+    getDragLabel(elements) {
+        if (elements.length === 0) {
+            return undefined;
+        }
+        const labels = elements.map(e => this.labelService.getUriBasenameLabel(e.uri));
+        return labels.join(', ');
+    }
+    onDragStart(data, originalEvent) {
+        if (!originalEvent.dataTransfer) {
+            return;
+        }
+        const elements = data.elements;
+        const resources = elements.map(e => this.getDragURI(e)).filter(Boolean);
+        if (resources.length) {
+            // Apply resources as resource-list
+            originalEvent.dataTransfer.setData(DataTransfers.RESOURCES, JSON.stringify(resources));
+            // Also add as plain text for outside consumers
+            originalEvent.dataTransfer.setData(DataTransfers.TEXT, resources.join('\n'));
+        }
+    }
+    onDragOver() { return false; }
+    drop() { }
+    dispose() { this.disposables.dispose(); }
+};
+ReferencesDragAndDrop = __decorate([
+    __param(0, ILabelService)
+], ReferencesDragAndDrop);
 /**
  * ZoneWidget that is shown inside the editor
  */
@@ -258,7 +301,7 @@ let ReferenceWidget = class ReferenceWidget extends peekView.PeekViewWidget {
         };
         this._preview = this._instantiationService.createInstance(EmbeddedCodeEditorWidget, this._previewContainer, options, {}, this.editor);
         dom.hide(this._previewContainer);
-        this._previewNotAvailableMessage = this._instantiationService.createInstance(TextModel, nls.localize('missingPreviewMessage', "no preview available"), PLAINTEXT_LANGUAGE_ID, TextModel.DEFAULT_CREATION_OPTIONS, null);
+        this._previewNotAvailableMessage = this._instantiationService.createInstance(TextModel, nls.localize(1079, "no preview available"), PLAINTEXT_LANGUAGE_ID, TextModel.DEFAULT_CREATION_OPTIONS, null);
         // tree
         this._treeContainer = dom.append(containerElement, dom.$('div.ref-tree.inline'));
         const treeOptions = {
@@ -270,7 +313,8 @@ let ReferenceWidget = class ReferenceWidget extends peekView.PeekViewWidget {
             selectionNavigation: true,
             overrideStyles: {
                 listBackground: peekView.peekViewResultsBackground
-            }
+            },
+            dnd: this._instantiationService.createInstance(ReferencesDragAndDrop)
         };
         if (this._defaultTreeKeyboardSupport) {
             // the tree will consume `Escape` and prevent the widget from closing
@@ -371,7 +415,7 @@ let ReferenceWidget = class ReferenceWidget extends peekView.PeekViewWidget {
         }
         if (this._model.isEmpty) {
             this.setTitle('');
-            this._messageContainer.innerText = nls.localize('noResults', "No results");
+            this._messageContainer.innerText = nls.localize(1080, "No results");
             dom.show(this._messageContainer);
             return Promise.resolve(undefined);
         }
@@ -432,7 +476,7 @@ let ReferenceWidget = class ReferenceWidget extends peekView.PeekViewWidget {
             this.setTitle(basenameOrAuthority(reference.uri), this._uriLabel.getUriLabel(dirname(reference.uri)));
         }
         else {
-            this.setTitle(nls.localize('peekView.alternateTitle', "References"));
+            this.setTitle(nls.localize(1081, "References"));
         }
         const promise = this._textModelResolverService.createModelReference(reference.uri);
         if (this._tree.getInput() === reference.parent) {
@@ -477,3 +521,4 @@ ReferenceWidget = __decorate([
     __param(8, IKeybindingService)
 ], ReferenceWidget);
 export { ReferenceWidget };
+//# sourceMappingURL=referencesWidget.js.map

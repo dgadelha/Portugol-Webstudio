@@ -62,20 +62,18 @@ export function isWorkspaceIdentifier(obj) {
     return typeof workspaceIdentifier?.id === 'string' && URI.isUri(workspaceIdentifier.configPath);
 }
 export class Workspace {
-    constructor(_id, folders, _transient, _configuration, _ignorePathCasing) {
-        this._id = _id;
-        this._transient = _transient;
-        this._configuration = _configuration;
-        this._ignorePathCasing = _ignorePathCasing;
-        this._foldersMap = TernarySearchTree.forUris(this._ignorePathCasing, () => true);
-        this.folders = folders;
-    }
-    get folders() {
-        return this._folders;
-    }
+    get folders() { return this._folders; }
     set folders(folders) {
         this._folders = folders;
         this.updateFoldersMap();
+    }
+    constructor(_id, folders, _transient, _configuration, ignorePathCasing) {
+        this._id = _id;
+        this._transient = _transient;
+        this._configuration = _configuration;
+        this.ignorePathCasing = ignorePathCasing;
+        this.foldersMap = TernarySearchTree.forUris(this.ignorePathCasing, () => true);
+        this.folders = folders;
     }
     get id() {
         return this._id;
@@ -93,12 +91,12 @@ export class Workspace {
         if (!resource) {
             return null;
         }
-        return this._foldersMap.findSubstr(resource) || null;
+        return this.foldersMap.findSubstr(resource) || null;
     }
     updateFoldersMap() {
-        this._foldersMap = TernarySearchTree.forUris(this._ignorePathCasing, () => true);
+        this.foldersMap = TernarySearchTree.forUris(this.ignorePathCasing, () => true);
         for (const folder of this.folders) {
-            this._foldersMap.set(folder.uri, folder);
+            this.foldersMap.set(folder.uri, folder);
         }
     }
     toJSON() {
@@ -125,8 +123,9 @@ export class WorkspaceFolder {
     }
 }
 export const WORKSPACE_EXTENSION = 'code-workspace';
-export const WORKSPACE_FILTER = [{ name: localize('codeWorkspace', "Code Workspace"), extensions: [WORKSPACE_EXTENSION] }];
+export const WORKSPACE_FILTER = [{ name: localize(2032, "Code Workspace"), extensions: [WORKSPACE_EXTENSION] }];
 export const STANDALONE_EDITOR_WORKSPACE_ID = '4064f6ec-cb38-4ad0-af64-ee6467e63c82';
 export function isStandaloneEditorWorkspace(workspace) {
     return workspace.id === STANDALONE_EDITOR_WORKSPACE_ID;
 }
+//# sourceMappingURL=workspace.js.map

@@ -130,7 +130,7 @@ let OverviewRulerFeature = class OverviewRulerFeature extends Disposable {
                     });
                     const scrollTop = this._editors.modifiedScrollTop.read(reader);
                     const scrollHeight = this._editors.modifiedScrollHeight.read(reader);
-                    const scrollBarOptions = this._editors.modified.getOption(104 /* EditorOption.scrollbar */);
+                    const scrollBarOptions = this._editors.modified.getOption(117 /* EditorOption.scrollbar */);
                     const state = new ScrollbarState(scrollBarOptions.verticalHasArrows ? scrollBarOptions.arrowSize : 0, scrollBarOptions.verticalScrollbarSize, 0, layoutInfo.height, scrollHeight, scrollTop);
                     viewportDomElement.setTop(state.getSliderPosition());
                     viewportDomElement.setHeight(state.getSliderSize());
@@ -150,3 +150,4 @@ OverviewRulerFeature = OverviewRulerFeature_1 = __decorate([
     __param(6, IThemeService)
 ], OverviewRulerFeature);
 export { OverviewRulerFeature };
+//# sourceMappingURL=overviewRulerFeature.js.map

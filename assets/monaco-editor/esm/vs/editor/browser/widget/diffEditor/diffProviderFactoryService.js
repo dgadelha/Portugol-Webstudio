@@ -16,7 +16,7 @@ import { registerSingleton } from '../../../../platform/instantiation/common/ext
 import { IInstantiationService, createDecorator } from '../../../../platform/instantiation/common/instantiation.js';
 import { Emitter } from '../../../../base/common/event.js';
 import { StopWatch } from '../../../../base/common/stopwatch.js';
-import { LineRange } from '../../../common/core/lineRange.js';
+import { LineRange } from '../../../common/core/ranges/lineRange.js';
 import { DetailedLineRangeMapping, RangeMapping } from '../../../common/diff/rangeMapping.js';
 import { IEditorWorkerService } from '../../../common/services/editorWorker.js';
 import { ITelemetryService } from '../../../../platform/telemetry/common/telemetry.js';
@@ -139,3 +139,4 @@ WorkerBasedDocumentDiffProvider = WorkerBasedDocumentDiffProvider_1 = __decorate
     __param(2, ITelemetryService)
 ], WorkerBasedDocumentDiffProvider);
 export { WorkerBasedDocumentDiffProvider };
+//# sourceMappingURL=diffProviderFactoryService.js.map

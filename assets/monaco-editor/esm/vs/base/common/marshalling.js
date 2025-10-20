@@ -53,3 +53,4 @@ export function revive(obj, depth = 0) {
     }
     return obj;
 }
+//# sourceMappingURL=marshalling.js.map

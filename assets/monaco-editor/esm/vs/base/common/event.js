@@ -1,12 +1,12 @@
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
 import { onUnexpectedError } from './errors.js';
 import { createSingleCallFunction } from './functional.js';
 import { combinedDisposable, Disposable, DisposableStore, toDisposable } from './lifecycle.js';
 import { LinkedList } from './linkedList.js';
 import { StopWatch } from './stopwatch.js';
-// -----------------------------------------------------------------------------------------------------------------------
-// Uncomment the next line to print warnings whenever a listener is GC'ed without having been disposed. This is a LEAK.
-// -----------------------------------------------------------------------------------------------------------------------
-const _enableListenerGCedWarning = false;
 // -----------------------------------------------------------------------------------------------------------------------
 // Uncomment the next line to print warnings whenever an emitter with listeners is disposed. That is a sign of code smell.
 // -----------------------------------------------------------------------------------------------------------------------
@@ -209,12 +209,14 @@ export var Event;
                         numDebouncedCalls = 0;
                     };
                     if (typeof delay === 'number') {
-                        clearTimeout(handle);
+                        if (handle) {
+                            clearTimeout(handle);
+                        }
                         handle = setTimeout(doFire, delay);
                     }
                     else {
                         if (handle === undefined) {
-                            handle = 0;
+                            handle = null;
                             queueMicrotask(doFire);
                         }
                     }
@@ -482,26 +484,17 @@ export var Event;
     /**
      * Creates a promise out of an event, using the {@link Event.once} helper.
      */
-    function toPromise(event) {
-        return new Promise(resolve => once(event)(resolve));
+    function toPromise(event, disposables) {
+        let cancelRef;
+        const promise = new Promise((resolve, reject) => {
+            const listener = once(event)(resolve, null, disposables);
+            // not resolved, matching the behavior of a normal disposal
+            cancelRef = () => listener.dispose();
+        });
+        promise.cancel = cancelRef;
+        return promise;
     }
     Event.toPromise = toPromise;
-    /**
-     * Creates an event out of a promise that fires once when the promise is
-     * resolved with the result of the promise or `undefined`.
-     */
-    function fromPromise(promise) {
-        const result = new Emitter();
-        promise.then(res => {
-            result.fire(res);
-        }, () => {
-            result.fire(undefined);
-        }).finally(() => {
-            result.dispose();
-        });
-        return result.event;
-    }
-    Event.fromPromise = fromPromise;
     /**
      * A convenience function for forwarding an event to another emitter which
      * improves readability.
@@ -754,23 +747,6 @@ const forEachListener = (listeners, fn) => {
         }
     }
 };
-let _listenerFinalizers;
-if (_enableListenerGCedWarning) {
-    const leaks = [];
-    setInterval(() => {
-        if (leaks.length === 0) {
-            return;
-        }
-        console.warn('[LEAKING LISTENERS] GC\'ed these listeners that were NOT yet disposed:');
-        console.warn(leaks.join('\n'));
-        leaks.length = 0;
-    }, 3000);
-    _listenerFinalizers = new FinalizationRegistry(heldValue => {
-        if (typeof heldValue === 'string') {
-            leaks.push(heldValue);
-        }
-    });
-}
 /**
  * The Emitter can be used to expose an Event to the public
  * to fire it from the insides.
@@ -876,9 +852,9 @@ export class Emitter {
             else {
                 this._listeners.push(contained);
             }
+            this._options?.onDidAddListener?.(this);
             this._size++;
             const result = toDisposable(() => {
-                _listenerFinalizers?.unregister(result);
                 removeMonitor?.();
                 this._removeListener(contained);
             });
@@ -887,11 +863,6 @@ export class Emitter {
             }
             else if (Array.isArray(disposables)) {
                 disposables.push(result);
-            }
-            if (_listenerFinalizers) {
-                const stack = new Error().stack.split('\n').slice(2, 3).join('\n').trim();
-                const match = /(file:|vscode-file:\/\/vscode-app)?(\/[^:]*:\d+:\d+)/.exec(stack);
-                _listenerFinalizers.register(result, match?.[2] ?? stack, result);
             }
             return result;
         };
@@ -926,7 +897,7 @@ export class Emitter {
                 if (listeners[i]) {
                     listeners[n++] = listeners[i];
                 }
-                else if (adjustDeliveryQueue) {
+                else if (adjustDeliveryQueue && n < this._deliveryQueue.end) {
                     this._deliveryQueue.end--;
                     if (n < this._deliveryQueue.i) {
                         this._deliveryQueue.i--;
@@ -1278,3 +1249,4 @@ export class Relay {
         this.emitter.dispose();
     }
 }
+//# sourceMappingURL=event.js.map

@@ -12,7 +12,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 import * as dom from '../../../../base/browser/dom.js';
-import { Disposable } from '../../../../base/common/lifecycle.js';
+import { Disposable, MutableDisposable } from '../../../../base/common/lifecycle.js';
 import { TokenizationRegistry } from '../../../common/languages.js';
 import { HoverOperation } from './hoverOperation.js';
 import { HoverParticipantRegistry, HoverRangeAnchor } from './hoverTypes.js';
@@ -20,23 +20,25 @@ import { IInstantiationService } from '../../../../platform/instantiation/common
 import { IKeybindingService } from '../../../../platform/keybinding/common/keybinding.js';
 import { ContentHoverWidget } from './contentHoverWidget.js';
 import { ContentHoverComputer } from './contentHoverComputer.js';
-import { HoverResult } from './contentHoverTypes.js';
+import { ContentHoverResult } from './contentHoverTypes.js';
 import { Emitter } from '../../../../base/common/event.js';
 import { RenderedContentHover } from './contentHoverRendered.js';
 import { isMousePositionWithinElement } from './hoverUtils.js';
+import { IHoverService } from '../../../../platform/hover/browser/hover.js';
 let ContentHoverWidgetWrapper = class ContentHoverWidgetWrapper extends Disposable {
-    constructor(_editor, _instantiationService, _keybindingService) {
+    constructor(_editor, _instantiationService, _keybindingService, _hoverService) {
         super();
         this._editor = _editor;
         this._instantiationService = _instantiationService;
         this._keybindingService = _keybindingService;
+        this._hoverService = _hoverService;
         this._currentResult = null;
+        this._renderedContentHover = this._register(new MutableDisposable());
         this._onContentsChanged = this._register(new Emitter());
         this.onContentsChanged = this._onContentsChanged.event;
         this._contentHoverWidget = this._register(this._instantiationService.createInstance(ContentHoverWidget, this._editor));
         this._participants = this._initializeHoverParticipants();
-        this._computer = new ContentHoverComputer(this._editor, this._participants);
-        this._hoverOperation = this._register(new HoverOperation(this._editor, this._computer));
+        this._hoverOperation = this._register(new HoverOperation(this._editor, new ContentHoverComputer(this._editor, this._participants)));
         this._registerListeners();
     }
     _initializeHoverParticipants() {
@@ -49,16 +51,18 @@ let ContentHoverWidgetWrapper = class ContentHoverWidgetWrapper extends Disposab
         this._register(this._contentHoverWidget.onDidResize(() => {
             this._participants.forEach(participant => participant.handleResize?.());
         }));
+        this._register(this._contentHoverWidget.onDidScroll((e) => {
+            this._participants.forEach(participant => participant.handleScroll?.(e));
+        }));
+        this._register(this._contentHoverWidget.onContentsChanged(() => {
+            this._participants.forEach(participant => participant.handleContentsChanged?.());
+        }));
         return participants;
     }
     _registerListeners() {
         this._register(this._hoverOperation.onResult((result) => {
-            if (!this._computer.anchor) {
-                // invalid state, ignore result
-                return;
-            }
-            const messages = (result.hasLoadingMessage ? this._addLoadingMessage(result.value) : result.value);
-            this._withResult(new HoverResult(this._computer.anchor, messages, result.isComplete));
+            const messages = (result.hasLoadingMessage ? this._addLoadingMessage(result) : result.value);
+            this._withResult(new ContentHoverResult(messages, result.isComplete, result.options));
         }));
         const contentHoverWidgetNode = this._contentHoverWidget.getDomNode();
         this._register(dom.addStandardDisposableListener(contentHoverWidgetNode, 'keydown', (e) => {
@@ -74,6 +78,9 @@ let ContentHoverWidgetWrapper = class ContentHoverWidgetWrapper extends Disposab
                 this._setCurrentResult(this._currentResult); // render again
             }
         }));
+        this._register(this._contentHoverWidget.onContentsChanged(() => {
+            this._onContentsChanged.fire();
+        }));
     }
     /**
      * Returns true if the hover shows now or will show.
@@ -87,7 +94,7 @@ let ContentHoverWidgetWrapper = class ContentHoverWidgetWrapper extends Disposab
             }
             return false;
         }
-        const isHoverSticky = this._editor.getOption(60 /* EditorOption.hover */).sticky;
+        const isHoverSticky = this._editor.getOption(69 /* EditorOption.hover */).sticky;
         const isMouseGettingCloser = mouseEvent && this._contentHoverWidget.isMouseGettingCloser(mouseEvent.event.posx, mouseEvent.event.posy);
         const isHoverStickyAndIsMouseGettingCloser = isHoverSticky && isMouseGettingCloser;
         // The mouse is getting closer to the hover, so we will keep the hover untouched
@@ -104,12 +111,12 @@ let ContentHoverWidgetWrapper = class ContentHoverWidgetWrapper extends Disposab
             return false;
         }
         // If mouse if not getting closer and anchor is defined, and the new anchor is the same as the previous anchor
-        const currentAnchorEqualsPreviousAnchor = this._currentResult.anchor.equals(anchor);
+        const currentAnchorEqualsPreviousAnchor = this._currentResult && this._currentResult.options.anchor.equals(anchor);
         if (currentAnchorEqualsPreviousAnchor) {
             return true;
         }
         // If mouse if not getting closer and anchor is defined, and the new anchor is not compatible with the previous anchor
-        const currentAnchorCompatibleWithPreviousAnchor = anchor.canAdoptVisibleHover(this._currentResult.anchor, this._contentHoverWidget.position);
+        const currentAnchorCompatibleWithPreviousAnchor = this._currentResult && anchor.canAdoptVisibleHover(this._currentResult.options.anchor, this._contentHoverWidget.position);
         if (!currentAnchorCompatibleWithPreviousAnchor) {
             this._setCurrentResult(null);
             this._startHoverOperationIfNecessary(anchor, mode, source, focus, false);
@@ -117,21 +124,25 @@ let ContentHoverWidgetWrapper = class ContentHoverWidgetWrapper extends Disposab
         }
         // We aren't getting any closer to the hover, so we will filter existing results
         // and keep those which also apply to the new anchor.
-        this._setCurrentResult(this._currentResult.filter(anchor));
+        if (this._currentResult) {
+            this._setCurrentResult(this._currentResult.filter(anchor));
+        }
         this._startHoverOperationIfNecessary(anchor, mode, source, focus, false);
         return true;
     }
-    _startHoverOperationIfNecessary(anchor, mode, source, focus, insistOnKeepingHoverVisible) {
-        const currentAnchorEqualToPreviousHover = this._computer.anchor && this._computer.anchor.equals(anchor);
+    _startHoverOperationIfNecessary(anchor, mode, source, shouldFocus, insistOnKeepingHoverVisible) {
+        const currentAnchorEqualToPreviousHover = this._hoverOperation.options && this._hoverOperation.options.anchor.equals(anchor);
         if (currentAnchorEqualToPreviousHover) {
             return;
         }
         this._hoverOperation.cancel();
-        this._computer.anchor = anchor;
-        this._computer.shouldFocus = focus;
-        this._computer.source = source;
-        this._computer.insistOnKeepingHoverVisible = insistOnKeepingHoverVisible;
-        this._hoverOperation.start(mode);
+        const contentHoverComputerOptions = {
+            anchor,
+            source,
+            shouldFocus,
+            insistOnKeepingHoverVisible
+        };
+        this._hoverOperation.start(mode, contentHoverComputerOptions);
     }
     _setCurrentResult(hoverResult) {
         let currentHoverResult = hoverResult;
@@ -151,21 +162,18 @@ let ContentHoverWidgetWrapper = class ContentHoverWidgetWrapper extends Disposab
             this._hideHover();
         }
     }
-    _addLoadingMessage(result) {
-        if (!this._computer.anchor) {
-            return result;
-        }
+    _addLoadingMessage(hoverResult) {
         for (const participant of this._participants) {
             if (!participant.createLoadingMessage) {
                 continue;
             }
-            const loadingMessage = participant.createLoadingMessage(this._computer.anchor);
+            const loadingMessage = participant.createLoadingMessage(hoverResult.options.anchor);
             if (!loadingMessage) {
                 continue;
             }
-            return result.slice(0).concat([loadingMessage]);
+            return hoverResult.value.slice(0).concat([loadingMessage]);
         }
-        return result;
+        return hoverResult.value;
     }
     _withResult(hoverResult) {
         const previousHoverIsVisibleWithCompleteResult = this._contentHoverWidget.position && this._currentResult && this._currentResult.isComplete;
@@ -179,7 +187,7 @@ let ContentHoverWidgetWrapper = class ContentHoverWidgetWrapper extends Disposab
             return;
         }
         const currentHoverResultIsEmpty = hoverResult.hoverParts.length === 0;
-        const insistOnKeepingPreviousHoverVisible = this._computer.insistOnKeepingHoverVisible;
+        const insistOnKeepingPreviousHoverVisible = hoverResult.options.insistOnKeepingHoverVisible;
         const shouldKeepPreviousHoverVisible = currentHoverResultIsEmpty && insistOnKeepingPreviousHoverVisible;
         if (shouldKeepPreviousHoverVisible) {
             // The hover would now hide normally, so we'll keep the previous messages
@@ -189,29 +197,30 @@ let ContentHoverWidgetWrapper = class ContentHoverWidgetWrapper extends Disposab
     }
     _showHover(hoverResult) {
         const context = this._getHoverContext();
-        this._renderedContentHover = new RenderedContentHover(this._editor, hoverResult, this._participants, this._computer, context, this._keybindingService);
-        if (this._renderedContentHover.domNodeHasChildren) {
-            this._contentHoverWidget.show(this._renderedContentHover);
+        this._renderedContentHover.value = new RenderedContentHover(this._editor, hoverResult, this._participants, context, this._keybindingService, this._hoverService);
+        if (this._renderedContentHover.value.domNodeHasChildren) {
+            this._contentHoverWidget.show(this._renderedContentHover.value);
         }
         else {
-            this._renderedContentHover.dispose();
+            this._renderedContentHover.clear();
         }
     }
     _hideHover() {
         this._contentHoverWidget.hide();
+        this._participants.forEach(participant => participant.handleHide?.());
     }
     _getHoverContext() {
         const hide = () => {
             this.hide();
         };
         const onContentsChanged = () => {
-            this._onContentsChanged.fire();
-            this._contentHoverWidget.onContentsChanged();
+            this._contentHoverWidget.handleContentsChanged();
         };
         const setMinimumDimensions = (dimensions) => {
             this._contentHoverWidget.setMinimumDimensions(dimensions);
         };
-        return { hide, onContentsChanged, setMinimumDimensions };
+        const focus = () => this.focus();
+        return { hide, onContentsChanged, setMinimumDimensions, focus };
     }
     showsOrWillShow(mouseEvent) {
         const isContentWidgetResizing = this._contentHoverWidget.isResizing;
@@ -245,7 +254,7 @@ let ContentHoverWidgetWrapper = class ContentHoverWidgetWrapper extends Disposab
                 break;
             }
             case 7 /* MouseTargetType.CONTENT_EMPTY */: {
-                const epsilon = this._editor.getOption(50 /* EditorOption.fontInfo */).typicalHalfwidthCharacterWidth / 2;
+                const epsilon = this._editor.getOption(59 /* EditorOption.fontInfo */).typicalHalfwidthCharacterWidth / 2;
                 // Let hover kick in even when the mouse is technically in the empty area after a line, given the distance is small enough
                 const mouseIsWithinLinesAndCloseToHover = !target.detail.isAfterLines
                     && typeof target.detail.horizontalDistanceToText === 'number'
@@ -271,16 +280,24 @@ let ContentHoverWidgetWrapper = class ContentHoverWidgetWrapper extends Disposab
         this._startShowingOrUpdateHover(new HoverRangeAnchor(0, range, undefined, undefined), mode, source, focus, null);
     }
     async updateHoverVerbosityLevel(action, index, focus) {
-        this._renderedContentHover?.updateHoverVerbosityLevel(action, index, focus);
+        this._renderedContentHover.value?.updateHoverVerbosityLevel(action, index, focus);
     }
     focusedHoverPartIndex() {
-        return this._renderedContentHover?.focusedHoverPartIndex ?? -1;
+        return this._renderedContentHover.value?.focusedHoverPartIndex ?? -1;
     }
     containsNode(node) {
         return (node ? this._contentHoverWidget.getDomNode().contains(node) : false);
     }
     focus() {
+        const hoverPartsCount = this._renderedContentHover.value?.hoverPartsCount;
+        if (hoverPartsCount === 1) {
+            this.focusHoverPartWithIndex(0);
+            return;
+        }
         this._contentHoverWidget.focus();
+    }
+    focusHoverPartWithIndex(index) {
+        this._renderedContentHover.value?.focusHoverPartWithIndex(index);
     }
     scrollUp() {
         this._contentHoverWidget.scrollUp();
@@ -307,7 +324,6 @@ let ContentHoverWidgetWrapper = class ContentHoverWidgetWrapper extends Disposab
         this._contentHoverWidget.goToBottom();
     }
     hide() {
-        this._computer.anchor = null;
         this._hoverOperation.cancel();
         this._setCurrentResult(null);
     }
@@ -315,7 +331,7 @@ let ContentHoverWidgetWrapper = class ContentHoverWidgetWrapper extends Disposab
         return this._contentHoverWidget.getDomNode();
     }
     get isColorPickerVisible() {
-        return this._renderedContentHover?.isColorPickerVisible() ?? false;
+        return this._renderedContentHover.value?.isColorPickerVisible() ?? false;
     }
     get isVisibleFromKeyboard() {
         return this._contentHoverWidget.isVisibleFromKeyboard;
@@ -335,6 +351,8 @@ let ContentHoverWidgetWrapper = class ContentHoverWidgetWrapper extends Disposab
 };
 ContentHoverWidgetWrapper = __decorate([
     __param(1, IInstantiationService),
-    __param(2, IKeybindingService)
+    __param(2, IKeybindingService),
+    __param(3, IHoverService)
 ], ContentHoverWidgetWrapper);
 export { ContentHoverWidgetWrapper };
+//# sourceMappingURL=contentHoverWidgetWrapper.js.map

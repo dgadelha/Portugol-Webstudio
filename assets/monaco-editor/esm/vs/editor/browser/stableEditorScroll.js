@@ -48,3 +48,4 @@ export class StableEditorScrollState {
         editor.setScrollTop(editor.getScrollTop() + offset, 1 /* ScrollType.Immediate */);
     }
 }
+//# sourceMappingURL=stableEditorScroll.js.map

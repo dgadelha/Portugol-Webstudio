@@ -150,7 +150,7 @@ let GotoDefinitionAtPositionEditorContribution = class GotoDefinitionAtPositionE
                     combinedRange = Range.plusRange(combinedRange, originSelectionRange);
                 }
             }
-            this.addDecoration(combinedRange, new MarkdownString().appendText(nls.localize('multipleResults', "Click to show {0} definitions.", results.length)));
+            this.addDecoration(combinedRange, new MarkdownString().appendText(nls.localize(1072, "Click to show {0} definitions.", results.length)));
         }
         else {
             // Single result
@@ -158,7 +158,7 @@ let GotoDefinitionAtPositionEditorContribution = class GotoDefinitionAtPositionE
             if (!result.uri) {
                 return;
             }
-            this.textModelResolverService.createModelReference(result.uri).then(ref => {
+            return this.textModelResolverService.createModelReference(result.uri).then(ref => {
                 if (!ref.object || !ref.object.textEditorModel) {
                     ref.dispose();
                     return;
@@ -183,6 +183,7 @@ let GotoDefinitionAtPositionEditorContribution = class GotoDefinitionAtPositionE
         if (numberOfLinesInRange >= GotoDefinitionAtPositionEditorContribution_1.MAX_SOURCE_PREVIEW_LINES) {
             rangeToUse = this.getPreviewRangeBasedOnIndentation(textEditorModel, startLineNumber);
         }
+        rangeToUse = textEditorModel.validateRange(rangeToUse);
         const previewValue = this.stripIndentationFromPreviewRange(textEditorModel, startLineNumber, rangeToUse);
         return previewValue;
     }
@@ -241,7 +242,7 @@ let GotoDefinitionAtPositionEditorContribution = class GotoDefinitionAtPositionE
     gotoDefinition(position, openToSide) {
         this.editor.setPosition(position);
         return this.editor.invokeWithinContext((accessor) => {
-            const canPeek = !openToSide && this.editor.getOption(89 /* EditorOption.definitionLinkOpensInPeek */) && !this.isInPeekEditor(accessor);
+            const canPeek = !openToSide && this.editor.getOption(101 /* EditorOption.definitionLinkOpensInPeek */) && !this.isInPeekEditor(accessor);
             const action = new DefinitionAction({ openToSide, openInPeek: canPeek, muteMessage: true }, { title: { value: '', original: '' }, id: '', precondition: undefined });
             return action.run(accessor);
         });
@@ -262,3 +263,4 @@ GotoDefinitionAtPositionEditorContribution = GotoDefinitionAtPositionEditorContr
 ], GotoDefinitionAtPositionEditorContribution);
 export { GotoDefinitionAtPositionEditorContribution };
 registerEditorContribution(GotoDefinitionAtPositionEditorContribution.ID, GotoDefinitionAtPositionEditorContribution, 2 /* EditorContributionInstantiation.BeforeFirstInteraction */);
+//# sourceMappingURL=goToDefinitionAtPosition.js.map

@@ -201,3 +201,4 @@ class FontMeasurementsCache {
     }
 }
 export const FontMeasurements = new FontMeasurementsImpl();
+//# sourceMappingURL=fontMeasurements.js.map

@@ -18,7 +18,7 @@ import { autorun, autorunWithStore, derived, observableSignal, observableSignalF
 import { IDiffProviderFactoryService } from './diffProviderFactoryService.js';
 import { filterWithPrevious } from './utils.js';
 import { readHotReloadableExport } from '../../../../base/common/hotReloadHelpers.js';
-import { LineRange, LineRangeSet } from '../../../common/core/lineRange.js';
+import { LineRange, LineRangeSet } from '../../../common/core/ranges/lineRange.js';
 import { DefaultLinesDiffComputer } from '../../../common/diff/defaultLinesDiffComputer/defaultLinesDiffComputer.js';
 import { DetailedLineRangeMapping, LineRangeMapping, RangeMapping } from '../../../common/diff/rangeMapping.js';
 import { TextEditInfo } from '../../../common/model/bracketPairsTextModelPart/bracketPairsTree/beforeEditPositionMapper.js';
@@ -48,7 +48,7 @@ let DiffEditorViewModel = class DiffEditorViewModel extends Disposable {
             else {
                 // Reset state
                 transaction(tx => {
-                    for (const r of this._unchangedRegions.get()?.regions || []) {
+                    for (const r of this._unchangedRegions.read(undefined)?.regions || []) {
                         r.collapseAll(tx);
                     }
                 });
@@ -93,7 +93,7 @@ let DiffEditorViewModel = class DiffEditorViewModel extends Disposable {
                 if (touching.length > 1) {
                     didChange = true;
                     const sumLineCount = touching.reduce((sum, r) => sum + r.lineCount, 0);
-                    const r = new UnchangedRegion(touching[0].originalLineNumber, touching[0].modifiedLineNumber, sumLineCount, touching[0].visibleLineCountTop.get(), touching[touching.length - 1].visibleLineCountBottom.get());
+                    const r = new UnchangedRegion(touching[0].originalLineNumber, touching[0].modifiedLineNumber, sumLineCount, touching[0].visibleLineCountTop.read(undefined), touching[touching.length - 1].visibleLineCountBottom.read(undefined));
                     newRanges.push(r);
                 }
                 else {
@@ -236,7 +236,7 @@ let DiffEditorViewModel = class DiffEditorViewModel extends Disposable {
                 const state = DiffState.fromDiffResult(result);
                 this._diff.set(state, tx);
                 this._isDiffUpToDate.set(true, tx);
-                const currentSyncedMovedText = this.movedTextToCompare.get();
+                const currentSyncedMovedText = this.movedTextToCompare.read(undefined);
                 this.movedTextToCompare.set(currentSyncedMovedText ? this._lastDiff.moves.find(m => m.lineRangeMapping.modified.intersect(currentSyncedMovedText.lineRangeMapping.modified)) : undefined, tx);
             });
         }));
@@ -614,3 +614,4 @@ function applyModifiedEditsToLineRangeMappings(changes: readonly LineRangeMappin
     return newChanges;
 }
 */
+//# sourceMappingURL=diffEditorViewModel.js.map

@@ -705,3 +705,4 @@ export class WordPartOperations extends WordOperations {
 function enforceDefined(arr) {
     return arr.filter(el => Boolean(el));
 }
+//# sourceMappingURL=cursorWordOperations.js.map

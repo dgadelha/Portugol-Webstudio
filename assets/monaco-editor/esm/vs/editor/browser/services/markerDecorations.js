@@ -26,3 +26,4 @@ MarkerDecorationsContribution = __decorate([
 ], MarkerDecorationsContribution);
 export { MarkerDecorationsContribution };
 registerEditorContribution(MarkerDecorationsContribution.ID, MarkerDecorationsContribution, 0 /* EditorContributionInstantiation.Eager */); // eager because it instantiates IMarkerDecorationsService which is responsible for rendering squiggles
+//# sourceMappingURL=markerDecorations.js.map

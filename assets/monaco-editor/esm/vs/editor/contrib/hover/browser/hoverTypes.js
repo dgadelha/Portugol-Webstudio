@@ -38,13 +38,15 @@ export class HoverForeignElementAnchor {
  * Default implementation of IRenderedHoverParts.
  */
 export class RenderedHoverParts {
-    constructor(renderedHoverParts) {
+    constructor(renderedHoverParts, disposables) {
         this.renderedHoverParts = renderedHoverParts;
+        this.disposables = disposables;
     }
     dispose() {
         for (const part of this.renderedHoverParts) {
             part.dispose();
         }
+        this.disposables?.dispose();
     }
 }
 export const HoverParticipantRegistry = (new class HoverParticipantRegistry {
@@ -58,3 +60,4 @@ export const HoverParticipantRegistry = (new class HoverParticipantRegistry {
         return this._participants;
     }
 }());
+//# sourceMappingURL=hoverTypes.js.map

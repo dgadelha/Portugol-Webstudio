@@ -19,3 +19,4 @@ export class EditorTheme {
         return this._theme.getColor(color);
     }
 }
+//# sourceMappingURL=editorTheme.js.map

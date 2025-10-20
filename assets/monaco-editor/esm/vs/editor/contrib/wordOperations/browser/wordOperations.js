@@ -27,7 +27,7 @@ export class MoveWordCommand extends EditorCommand {
         if (!editor.hasModel()) {
             return;
         }
-        const wordSeparators = getMapForWordSeparators(editor.getOption(132 /* EditorOption.wordSeparators */), editor.getOption(131 /* EditorOption.wordSegmenterLocales */));
+        const wordSeparators = getMapForWordSeparators(editor.getOption(148 /* EditorOption.wordSeparators */), editor.getOption(147 /* EditorOption.wordSegmenterLocales */));
         const model = editor.getModel();
         const selections = editor.getSelections();
         const hasMulticursor = selections.length > 1;
@@ -268,15 +268,15 @@ export class DeleteWordCommand extends EditorCommand {
         this._wordNavigationType = opts.wordNavigationType;
     }
     runEditorCommand(accessor, editor, args) {
-        const languageConfigurationService = accessor.get(ILanguageConfigurationService);
-        if (!editor.hasModel()) {
+        const languageConfigurationService = accessor?.get(ILanguageConfigurationService);
+        if (!editor.hasModel() || !languageConfigurationService) {
             return;
         }
-        const wordSeparators = getMapForWordSeparators(editor.getOption(132 /* EditorOption.wordSeparators */), editor.getOption(131 /* EditorOption.wordSegmenterLocales */));
+        const wordSeparators = getMapForWordSeparators(editor.getOption(148 /* EditorOption.wordSeparators */), editor.getOption(147 /* EditorOption.wordSegmenterLocales */));
         const model = editor.getModel();
         const selections = editor.getSelections();
-        const autoClosingBrackets = editor.getOption(6 /* EditorOption.autoClosingBrackets */);
-        const autoClosingQuotes = editor.getOption(11 /* EditorOption.autoClosingQuotes */);
+        const autoClosingBrackets = editor.getOption(10 /* EditorOption.autoClosingBrackets */);
+        const autoClosingQuotes = editor.getOption(15 /* EditorOption.autoClosingQuotes */);
         const autoClosingPairs = languageConfigurationService.getLanguageConfiguration(model.getLanguageId()).getAutoClosingPairs();
         const viewModel = editor._getViewModel();
         const commands = selections.map((sel) => {
@@ -285,7 +285,7 @@ export class DeleteWordCommand extends EditorCommand {
                 model,
                 selection: sel,
                 whitespaceHeuristics: this._whitespaceHeuristics,
-                autoClosingDelete: editor.getOption(9 /* EditorOption.autoClosingDelete */),
+                autoClosingDelete: editor.getOption(13 /* EditorOption.autoClosingDelete */),
                 autoClosingBrackets,
                 autoClosingQuotes,
                 autoClosingPairs,
@@ -395,15 +395,14 @@ export class DeleteInsideWord extends EditorAction {
         super({
             id: 'deleteInsideWord',
             precondition: EditorContextKeys.writable,
-            label: nls.localize('deleteInsideWord', "Delete Word"),
-            alias: 'Delete Word'
+            label: nls.localize2(1560, "Delete Word"),
         });
     }
     run(accessor, editor, args) {
         if (!editor.hasModel()) {
             return;
         }
-        const wordSeparators = getMapForWordSeparators(editor.getOption(132 /* EditorOption.wordSeparators */), editor.getOption(131 /* EditorOption.wordSegmenterLocales */));
+        const wordSeparators = getMapForWordSeparators(editor.getOption(148 /* EditorOption.wordSeparators */), editor.getOption(147 /* EditorOption.wordSegmenterLocales */));
         const model = editor.getModel();
         const selections = editor.getSelections();
         const commands = selections.map((sel) => {
@@ -438,3 +437,4 @@ registerEditorCommand(new DeleteWordStartRight());
 registerEditorCommand(new DeleteWordEndRight());
 registerEditorCommand(new DeleteWordRight());
 registerEditorAction(DeleteInsideWord);
+//# sourceMappingURL=wordOperations.js.map

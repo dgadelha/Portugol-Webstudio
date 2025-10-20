@@ -7,3 +7,4 @@ import { createDecorator } from '../../../platform/instantiation/common/instanti
 import { TreeViewsDnDService } from './treeViewsDnd.js';
 export const ITreeViewsDnDService = createDecorator('treeViewsDndService');
 registerSingleton(ITreeViewsDnDService, TreeViewsDnDService, 1 /* InstantiationType.Delayed */);
+//# sourceMappingURL=treeViewsDndService.js.map

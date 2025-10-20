@@ -237,3 +237,4 @@ ShiftCommand = ShiftCommand_1 = __decorate([
     __param(2, ILanguageConfigurationService)
 ], ShiftCommand);
 export { ShiftCommand };
+//# sourceMappingURL=shiftCommand.js.map

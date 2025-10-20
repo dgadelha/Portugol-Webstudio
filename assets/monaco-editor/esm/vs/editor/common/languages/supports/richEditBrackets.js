@@ -351,3 +351,4 @@ export class BracketsUtils {
         return this.findNextBracketInText(bracketRegex, lineNumber, substr, startOffset);
     }
 }
+//# sourceMappingURL=richEditBrackets.js.map

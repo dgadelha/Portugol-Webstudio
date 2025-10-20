@@ -122,3 +122,4 @@ export class LinkedList {
         }
     }
 }
+//# sourceMappingURL=linkedList.js.map

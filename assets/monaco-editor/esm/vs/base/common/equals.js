@@ -80,3 +80,4 @@ export function structuralEquals(a, b) {
     return false;
 }
 const objIds = new WeakMap();
+//# sourceMappingURL=equals.js.map

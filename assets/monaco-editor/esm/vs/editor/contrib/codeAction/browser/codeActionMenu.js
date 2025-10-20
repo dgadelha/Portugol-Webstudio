@@ -8,15 +8,15 @@ import { CodeActionKind } from '../common/types.js';
 import '../../symbolIcons/browser/symbolIcons.js'; // The codicon symbol colors are defined here and must be loaded to get colors
 import { localize } from '../../../../nls.js';
 import { HierarchicalKind } from '../../../../base/common/hierarchicalKind.js';
-const uncategorizedCodeActionGroup = Object.freeze({ kind: HierarchicalKind.Empty, title: localize('codeAction.widget.id.more', 'More Actions...') });
+const uncategorizedCodeActionGroup = Object.freeze({ kind: HierarchicalKind.Empty, title: localize(862, 'More Actions...') });
 const codeActionGroups = Object.freeze([
-    { kind: CodeActionKind.QuickFix, title: localize('codeAction.widget.id.quickfix', 'Quick Fix') },
-    { kind: CodeActionKind.RefactorExtract, title: localize('codeAction.widget.id.extract', 'Extract'), icon: Codicon.wrench },
-    { kind: CodeActionKind.RefactorInline, title: localize('codeAction.widget.id.inline', 'Inline'), icon: Codicon.wrench },
-    { kind: CodeActionKind.RefactorRewrite, title: localize('codeAction.widget.id.convert', 'Rewrite'), icon: Codicon.wrench },
-    { kind: CodeActionKind.RefactorMove, title: localize('codeAction.widget.id.move', 'Move'), icon: Codicon.wrench },
-    { kind: CodeActionKind.SurroundWith, title: localize('codeAction.widget.id.surround', 'Surround With'), icon: Codicon.surroundWith },
-    { kind: CodeActionKind.Source, title: localize('codeAction.widget.id.source', 'Source Action'), icon: Codicon.symbolFile },
+    { kind: CodeActionKind.QuickFix, title: localize(863, 'Quick Fix') },
+    { kind: CodeActionKind.RefactorExtract, title: localize(864, 'Extract'), icon: Codicon.wrench },
+    { kind: CodeActionKind.RefactorInline, title: localize(865, 'Inline'), icon: Codicon.wrench },
+    { kind: CodeActionKind.RefactorRewrite, title: localize(866, 'Rewrite'), icon: Codicon.wrench },
+    { kind: CodeActionKind.RefactorMove, title: localize(867, 'Move'), icon: Codicon.wrench },
+    { kind: CodeActionKind.SurroundWith, title: localize(868, 'Surround With'), icon: Codicon.surroundWith },
+    { kind: CodeActionKind.Source, title: localize(869, 'Source Action'), icon: Codicon.symbolFile },
     uncategorizedCodeActionGroup,
 ]);
 export function toMenuItems(inputCodeActions, showHeaders, keybindingResolver) {
@@ -62,3 +62,4 @@ export function toMenuItems(inputCodeActions, showHeaders, keybindingResolver) {
     }
     return allMenuItems;
 }
+//# sourceMappingURL=codeActionMenu.js.map

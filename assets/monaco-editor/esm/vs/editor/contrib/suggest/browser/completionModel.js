@@ -201,10 +201,10 @@ export class CompletionModel {
     }
     static _compareCompletionItemsSnippetsDown(a, b) {
         if (a.completion.kind !== b.completion.kind) {
-            if (a.completion.kind === 27 /* CompletionItemKind.Snippet */) {
+            if (a.completion.kind === 28 /* CompletionItemKind.Snippet */) {
                 return 1;
             }
-            else if (b.completion.kind === 27 /* CompletionItemKind.Snippet */) {
+            else if (b.completion.kind === 28 /* CompletionItemKind.Snippet */) {
                 return -1;
             }
         }
@@ -212,13 +212,14 @@ export class CompletionModel {
     }
     static _compareCompletionItemsSnippetsUp(a, b) {
         if (a.completion.kind !== b.completion.kind) {
-            if (a.completion.kind === 27 /* CompletionItemKind.Snippet */) {
+            if (a.completion.kind === 28 /* CompletionItemKind.Snippet */) {
                 return -1;
             }
-            else if (b.completion.kind === 27 /* CompletionItemKind.Snippet */) {
+            else if (b.completion.kind === 28 /* CompletionItemKind.Snippet */) {
                 return 1;
             }
         }
         return CompletionModel._compareCompletionItems(a, b);
     }
 }
+//# sourceMappingURL=completionModel.js.map

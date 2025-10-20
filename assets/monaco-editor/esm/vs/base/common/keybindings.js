@@ -121,3 +121,4 @@ export class ResolvedChord {
  */
 export class ResolvedKeybinding {
 }
+//# sourceMappingURL=keybindings.js.map

@@ -12,7 +12,7 @@ export class SurroundSelectionCommand {
     }
     getEditOperations(model, builder) {
         builder.addTrackedEditOperation(new Range(this._range.startLineNumber, this._range.startColumn, this._range.startLineNumber, this._range.startColumn), this._charBeforeSelection);
-        builder.addTrackedEditOperation(new Range(this._range.endLineNumber, this._range.endColumn, this._range.endLineNumber, this._range.endColumn), this._charAfterSelection);
+        builder.addTrackedEditOperation(new Range(this._range.endLineNumber, this._range.endColumn, this._range.endLineNumber, this._range.endColumn), this._charAfterSelection || null); // addTrackedEditOperation() ignores us if the text == ''. Causing a chain of errors in computeCursorState()
     }
     computeCursorState(model, helper) {
         const inverseEditOperations = helper.getInverseEditOperations();
@@ -39,3 +39,4 @@ export class CompositionSurroundSelectionCommand {
         return new Selection(opRange.endLineNumber, opRange.startColumn, opRange.endLineNumber, opRange.endColumn - this._charAfter.length);
     }
 }
+//# sourceMappingURL=surroundSelectionCommand.js.map

@@ -13,6 +13,7 @@ export class StandardMouseEvent {
         this.middleButton = e.button === 1;
         this.rightButton = e.button === 2;
         this.buttons = e.buttons;
+        this.defaultPrevented = e.defaultPrevented;
         this.target = e.target;
         this.detail = e.detail || 1;
         if (e.type === 'dblclick') {
@@ -144,3 +145,4 @@ export class StandardWheelEvent {
         this.browserEvent?.stopPropagation();
     }
 }
+//# sourceMappingURL=mouseEvent.js.map

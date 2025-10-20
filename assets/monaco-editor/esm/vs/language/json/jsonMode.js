@@ -1,6 +1,6 @@
 /*!-----------------------------------------------------------------------------
  * Copyright (c) Microsoft Corporation. All rights reserved.
- * Version: 0.52.2(404545bded1df6ffa41ea0af4e8ddb219018c6c1)
+ * Version: 0.54.0(7c2310116c57517348bbd868a21139f32454be22)
  * Released under the MIT license
  * https://github.com/microsoft/monaco-editor/blob/main/LICENSE.txt
  *-----------------------------------------------------------------------------*/
@@ -23,6 +23,69 @@ var __reExport = (target, mod, secondTarget) => (__copyProps(target, mod, "defau
 var monaco_editor_core_exports = {};
 __reExport(monaco_editor_core_exports, monaco_editor_core_star);
 import * as monaco_editor_core_star from "../../editor/editor.api.js";
+
+// src/common/workers.ts
+function createTrustedTypesPolicy(policyName, policyOptions) {
+  const monacoEnvironment = globalThis.MonacoEnvironment;
+  if (monacoEnvironment?.createTrustedTypesPolicy) {
+    try {
+      return monacoEnvironment.createTrustedTypesPolicy(policyName, policyOptions);
+    } catch (err) {
+      console.error(err);
+      return void 0;
+    }
+  }
+  try {
+    return globalThis.trustedTypes?.createPolicy(policyName, policyOptions);
+  } catch (err) {
+    console.error(err);
+    return void 0;
+  }
+}
+var ttPolicy;
+if (typeof self === "object" && self.constructor && self.constructor.name === "DedicatedWorkerGlobalScope" && globalThis.workerttPolicy !== void 0) {
+  ttPolicy = globalThis.workerttPolicy;
+} else {
+  ttPolicy = createTrustedTypesPolicy("defaultWorkerFactory", {
+    createScriptURL: (value) => value
+  });
+}
+function getWorker(descriptor) {
+  const label = descriptor.label;
+  const monacoEnvironment = globalThis.MonacoEnvironment;
+  if (monacoEnvironment) {
+    if (typeof monacoEnvironment.getWorker === "function") {
+      return monacoEnvironment.getWorker("workerMain.js", label);
+    }
+    if (typeof monacoEnvironment.getWorkerUrl === "function") {
+      const workerUrl = monacoEnvironment.getWorkerUrl("workerMain.js", label);
+      return new Worker(
+        ttPolicy ? ttPolicy.createScriptURL(workerUrl) : workerUrl,
+        { name: label, type: "module" }
+      );
+    }
+  }
+  throw new Error(
+    `You must define a function MonacoEnvironment.getWorkerUrl or MonacoEnvironment.getWorker`
+  );
+}
+function createWebWorker(opts) {
+  const worker2 = Promise.resolve(
+    getWorker({
+      label: opts.label ?? "monaco-editor-worker",
+      moduleId: opts.moduleId
+    })
+  ).then((w) => {
+    w.postMessage("ignore");
+    w.postMessage(opts.createData);
+    return w;
+  });
+  return monaco_editor_core_exports.editor.createWebWorker({
+    worker: worker2,
+    host: opts.host,
+    keepIdleModels: opts.keepIdleModels
+  });
+}
 
 // src/language/json/workerManager.ts
 var STOP_WHEN_IDLE_FOR = 2 * 60 * 1e3;
@@ -59,7 +122,7 @@ var WorkerManager = class {
   _getClient() {
     this._lastUsedTime = Date.now();
     if (!this._client) {
-      this._worker = monaco_editor_core_exports.editor.createWebWorker({
+      this._worker = createWebWorker({
         // module that exports the create() method and returns a `JSONWorker` instance
         moduleId: "vs/language/json/jsonWorker",
         label: this._defaults.languageId,
@@ -2088,6 +2151,7 @@ function createScanner(text, ignoreTrivia = false) {
       return token = 14;
     }
     switch (code) {
+      // tokens: []{}:,
       case 123:
         pos++;
         return token = 1;
@@ -2106,10 +2170,12 @@ function createScanner(text, ignoreTrivia = false) {
       case 44:
         pos++;
         return token = 5;
+      // strings
       case 34:
         pos++;
         value = scanString();
         return token = 10;
+      // comments
       case 47:
         const start = pos - 1;
         if (text.charCodeAt(pos + 1) === 47) {
@@ -2153,12 +2219,16 @@ function createScanner(text, ignoreTrivia = false) {
         value += String.fromCharCode(code);
         pos++;
         return token = 16;
+      // numbers
       case 45:
         value += String.fromCharCode(code);
         pos++;
         if (pos === len || !isDigit(text.charCodeAt(pos))) {
           return token = 16;
         }
+      // found a minus, followed by a number so
+      // we fall through to proceed with scanning
+      // numbers
       case 48:
       case 49:
       case 50:
@@ -2171,6 +2241,7 @@ function createScanner(text, ignoreTrivia = false) {
       case 57:
         value += scanNumber();
         return token = 11;
+      // literals and unknown symbols
       default:
         while (pos < len && isUnknownContentCharacter(code)) {
           pos++;
@@ -2602,7 +2673,7 @@ function tokenize(comments, line, state, offsetDelta = 0) {
 
 // src/language/json/jsonMode.ts
 var worker;
-function getWorker() {
+function getWorker2() {
   return new Promise((resolve, reject) => {
     if (!worker) {
       return reject("JSON not registered!");
@@ -2763,7 +2834,7 @@ export {
   WorkerManager,
   fromPosition,
   fromRange,
-  getWorker,
+  getWorker2 as getWorker,
   setupMode,
   toRange,
   toTextEdit

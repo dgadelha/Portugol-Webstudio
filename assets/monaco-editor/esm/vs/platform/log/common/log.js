@@ -1,8 +1,14 @@
 import { Emitter } from '../../../base/common/event.js';
+import { hash } from '../../../base/common/hash.js';
 import { Disposable } from '../../../base/common/lifecycle.js';
+import { ResourceMap } from '../../../base/common/map.js';
+import { joinPath } from '../../../base/common/resources.js';
+import { isString } from '../../../base/common/types.js';
+import { URI } from '../../../base/common/uri.js';
 import { RawContextKey } from '../../contextkey/common/contextkey.js';
 import { createDecorator } from '../../instantiation/common/instantiation.js';
 export const ILogService = createDecorator('logService');
+export const ILoggerService = createDecorator('loggerService');
 export var LogLevel;
 (function (LogLevel) {
     LogLevel[LogLevel["Off"] = 0] = "Off";
@@ -13,13 +19,16 @@ export var LogLevel;
     LogLevel[LogLevel["Error"] = 5] = "Error";
 })(LogLevel || (LogLevel = {}));
 export const DEFAULT_LOG_LEVEL = LogLevel.Info;
+export function canLog(loggerLevel, messageLevel) {
+    return loggerLevel !== LogLevel.Off && loggerLevel <= messageLevel;
+}
 export class AbstractLogger extends Disposable {
     constructor() {
         super(...arguments);
         this.level = DEFAULT_LOG_LEVEL;
         this._onDidChangeLogLevel = this._register(new Emitter());
-        this.onDidChangeLogLevel = this._onDidChangeLogLevel.event;
     }
+    get onDidChangeLogLevel() { return this._onDidChangeLogLevel.event; }
     setLevel(level) {
         if (this.level !== level) {
             this.level = level;
@@ -30,7 +39,13 @@ export class AbstractLogger extends Disposable {
         return this.level;
     }
     checkLogLevel(level) {
-        return this.level !== LogLevel.Off && this.level <= level;
+        return canLog(this.level, level);
+    }
+    canLog(level) {
+        if (this._store.isDisposed) {
+            return false;
+        }
+        return this.checkLogLevel(level);
     }
 }
 export class ConsoleLogger extends AbstractLogger {
@@ -40,7 +55,7 @@ export class ConsoleLogger extends AbstractLogger {
         this.setLevel(logLevel);
     }
     trace(message, ...args) {
-        if (this.checkLogLevel(LogLevel.Trace)) {
+        if (this.canLog(LogLevel.Trace)) {
             if (this.useColors) {
                 console.log('%cTRACE', 'color: #888', message, ...args);
             }
@@ -50,7 +65,7 @@ export class ConsoleLogger extends AbstractLogger {
         }
     }
     debug(message, ...args) {
-        if (this.checkLogLevel(LogLevel.Debug)) {
+        if (this.canLog(LogLevel.Debug)) {
             if (this.useColors) {
                 console.log('%cDEBUG', 'background: #eee; color: #888', message, ...args);
             }
@@ -60,7 +75,7 @@ export class ConsoleLogger extends AbstractLogger {
         }
     }
     info(message, ...args) {
-        if (this.checkLogLevel(LogLevel.Info)) {
+        if (this.canLog(LogLevel.Info)) {
             if (this.useColors) {
                 console.log('%c INFO', 'color: #33f', message, ...args);
             }
@@ -70,9 +85,9 @@ export class ConsoleLogger extends AbstractLogger {
         }
     }
     warn(message, ...args) {
-        if (this.checkLogLevel(LogLevel.Warning)) {
+        if (this.canLog(LogLevel.Warning)) {
             if (this.useColors) {
-                console.log('%c WARN', 'color: #993', message, ...args);
+                console.warn('%c WARN', 'color: #993', message, ...args);
             }
             else {
                 console.log(message, ...args);
@@ -80,9 +95,9 @@ export class ConsoleLogger extends AbstractLogger {
         }
     }
     error(message, ...args) {
-        if (this.checkLogLevel(LogLevel.Error)) {
+        if (this.canLog(LogLevel.Error)) {
             if (this.useColors) {
-                console.log('%c  ERR', 'color: #f33', message, ...args);
+                console.error('%c  ERR', 'color: #f33', message, ...args);
             }
             else {
                 console.error(message, ...args);
@@ -136,6 +151,109 @@ export class MultiplexLogger extends AbstractLogger {
         super.dispose();
     }
 }
+export class AbstractLoggerService extends Disposable {
+    constructor(logLevel, logsHome, loggerResources) {
+        super();
+        this.logLevel = logLevel;
+        this.logsHome = logsHome;
+        this._loggers = new ResourceMap();
+        this._onDidChangeLoggers = this._register(new Emitter);
+        this._onDidChangeVisibility = this._register(new Emitter);
+        if (loggerResources) {
+            for (const loggerResource of loggerResources) {
+                this._loggers.set(loggerResource.resource, { logger: undefined, info: loggerResource });
+            }
+        }
+    }
+    getLoggerEntry(resourceOrId) {
+        if (isString(resourceOrId)) {
+            return [...this._loggers.values()].find(logger => logger.info.id === resourceOrId);
+        }
+        return this._loggers.get(resourceOrId);
+    }
+    createLogger(idOrResource, options) {
+        const resource = this.toResource(idOrResource);
+        const id = isString(idOrResource) ? idOrResource : (options?.id ?? hash(resource.toString()).toString(16));
+        let logger = this._loggers.get(resource)?.logger;
+        const logLevel = options?.logLevel === 'always' ? LogLevel.Trace : options?.logLevel;
+        if (!logger) {
+            logger = this.doCreateLogger(resource, logLevel ?? this.getLogLevel(resource) ?? this.logLevel, { ...options, id });
+        }
+        const loggerEntry = {
+            logger,
+            info: {
+                resource,
+                id,
+                logLevel,
+                name: options?.name,
+                hidden: options?.hidden,
+                group: options?.group,
+                extensionId: options?.extensionId,
+                when: options?.when
+            }
+        };
+        this.registerLogger(loggerEntry.info);
+        // TODO: @sandy081 Remove this once registerLogger can take ILogger
+        this._loggers.set(resource, loggerEntry);
+        return logger;
+    }
+    toResource(idOrResource) {
+        return isString(idOrResource) ? joinPath(this.logsHome, `${idOrResource}.log`) : idOrResource;
+    }
+    setVisibility(resourceOrId, visibility) {
+        const logger = this.getLoggerEntry(resourceOrId);
+        if (logger && visibility !== !logger.info.hidden) {
+            logger.info.hidden = !visibility;
+            this._loggers.set(logger.info.resource, logger);
+            this._onDidChangeVisibility.fire([logger.info.resource, visibility]);
+        }
+    }
+    getLogLevel(resource) {
+        let logLevel;
+        if (resource) {
+            logLevel = this._loggers.get(resource)?.info.logLevel;
+        }
+        return logLevel ?? this.logLevel;
+    }
+    registerLogger(resource) {
+        const existing = this._loggers.get(resource.resource);
+        if (existing) {
+            if (existing.info.hidden !== resource.hidden) {
+                this.setVisibility(resource.resource, !resource.hidden);
+            }
+        }
+        else {
+            this._loggers.set(resource.resource, { info: resource, logger: undefined });
+            this._onDidChangeLoggers.fire({ added: [resource], removed: [] });
+        }
+    }
+    dispose() {
+        this._loggers.forEach(logger => logger.logger?.dispose());
+        this._loggers.clear();
+        super.dispose();
+    }
+}
+export class NullLogger {
+    constructor() {
+        this.onDidChangeLogLevel = new Emitter().event;
+    }
+    setLevel(level) { }
+    getLevel() { return LogLevel.Info; }
+    trace(message, ...args) { }
+    debug(message, ...args) { }
+    info(message, ...args) { }
+    warn(message, ...args) { }
+    error(message, ...args) { }
+    dispose() { }
+}
+export class NullLoggerService extends AbstractLoggerService {
+    constructor() {
+        super(LogLevel.Off, URI.parse('log:///log'));
+    }
+    doCreateLogger(resource, logLevel, options) {
+        return new NullLogger();
+    }
+}
 export function LogLevelToString(logLevel) {
     switch (logLevel) {
         case LogLevel.Trace: return 'trace';
@@ -148,3 +266,4 @@ export function LogLevelToString(logLevel) {
 }
 // Contexts
 export const CONTEXT_LOG_LEVEL = new RawContextKey('logLevel', LogLevelToString(LogLevel.Info));
+//# sourceMappingURL=log.js.map

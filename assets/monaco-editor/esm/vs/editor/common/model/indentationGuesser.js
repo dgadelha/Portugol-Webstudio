@@ -174,3 +174,4 @@ export function guessIndentation(source, defaultTabSize, defaultInsertSpaces) {
         tabSize: tabSize
     };
 }
+//# sourceMappingURL=indentationGuesser.js.map

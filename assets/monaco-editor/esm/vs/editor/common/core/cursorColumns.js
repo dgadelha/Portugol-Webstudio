@@ -90,7 +90,7 @@ export class CursorColumns {
      * @see {@link CursorColumns}
      */
     static nextIndentTabStop(visibleColumn, indentSize) {
-        return visibleColumn + indentSize - visibleColumn % indentSize;
+        return CursorColumns.nextRenderTabStop(visibleColumn, indentSize);
     }
     /**
      * ATTENTION: This works with 0-based columns (as opposed to the regular 1-based columns)
@@ -104,6 +104,7 @@ export class CursorColumns {
      * @see {@link CursorColumns}
      */
     static prevIndentTabStop(column, indentSize) {
-        return Math.max(0, column - 1 - (column - 1) % indentSize);
+        return CursorColumns.prevRenderTabStop(column, indentSize);
     }
 }
+//# sourceMappingURL=cursorColumns.js.map

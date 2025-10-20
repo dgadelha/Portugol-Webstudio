@@ -11,3 +11,4 @@ Registry.as(Extensions.Quickaccess).registerQuickAccessProvider({
     prefix: '',
     helpEntries: [{ description: QuickHelpNLS.helpQuickAccessActionLabel }]
 });
+//# sourceMappingURL=standaloneHelpQuickAccess.js.map

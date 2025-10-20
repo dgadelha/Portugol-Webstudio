@@ -106,38 +106,42 @@ let MarkerController = class MarkerController {
         }
     }
     showAtMarker(marker) {
-        if (this._editor.hasModel()) {
-            const model = this._getOrCreateModel(this._editor.getModel().uri);
-            model.resetIndex();
-            model.move(true, this._editor.getModel(), new Position(marker.startLineNumber, marker.startColumn));
-            if (model.selected) {
-                this._widget.showAtMarker(model.selected.marker, model.selected.index, model.selected.total);
-            }
+        if (!this._editor.hasModel()) {
+            return;
+        }
+        const textModel = this._editor.getModel();
+        const model = this._getOrCreateModel(textModel.uri);
+        model.resetIndex();
+        model.move(true, textModel, new Position(marker.startLineNumber, marker.startColumn));
+        if (model.selected) {
+            this._widget.showAtMarker(model.selected.marker, model.selected.index, model.selected.total);
         }
     }
-    async nagivate(next, multiFile) {
-        if (this._editor.hasModel()) {
-            const model = this._getOrCreateModel(multiFile ? undefined : this._editor.getModel().uri);
-            model.move(next, this._editor.getModel(), this._editor.getPosition());
-            if (!model.selected) {
-                return;
+    async navigate(next, multiFile) {
+        if (!this._editor.hasModel()) {
+            return;
+        }
+        const textModel = this._editor.getModel();
+        const model = this._getOrCreateModel(multiFile ? undefined : textModel.uri);
+        model.move(next, textModel, this._editor.getPosition());
+        if (!model.selected) {
+            return;
+        }
+        if (model.selected.marker.resource.toString() !== textModel.uri.toString()) {
+            // show in different editor
+            this._cleanUp();
+            const otherEditor = await this._editorService.openCodeEditor({
+                resource: model.selected.marker.resource,
+                options: { pinned: false, revealIfOpened: true, selectionRevealType: 2 /* TextEditorSelectionRevealType.NearTop */, selection: model.selected.marker }
+            }, this._editor);
+            if (otherEditor) {
+                MarkerController_1.get(otherEditor)?.close();
+                MarkerController_1.get(otherEditor)?.navigate(next, multiFile);
             }
-            if (model.selected.marker.resource.toString() !== this._editor.getModel().uri.toString()) {
-                // show in different editor
-                this._cleanUp();
-                const otherEditor = await this._editorService.openCodeEditor({
-                    resource: model.selected.marker.resource,
-                    options: { pinned: false, revealIfOpened: true, selectionRevealType: 2 /* TextEditorSelectionRevealType.NearTop */, selection: model.selected.marker }
-                }, this._editor);
-                if (otherEditor) {
-                    MarkerController_1.get(otherEditor)?.close();
-                    MarkerController_1.get(otherEditor)?.nagivate(next, multiFile);
-                }
-            }
-            else {
-                // show in this editor
-                this._widget.showAtMarker(model.selected.marker, model.selected.index, model.selected.total);
-            }
+        }
+        else {
+            // show in this editor
+            this._widget.showAtMarker(model.selected.marker, model.selected.index, model.selected.total);
         }
     }
 };
@@ -156,18 +160,17 @@ class MarkerNavigationAction extends EditorAction {
     }
     async run(_accessor, editor) {
         if (editor.hasModel()) {
-            MarkerController.get(editor)?.nagivate(this._next, this._multiFile);
+            await MarkerController.get(editor)?.navigate(this._next, this._multiFile);
         }
     }
 }
 export class NextMarkerAction extends MarkerNavigationAction {
     static { this.ID = 'editor.action.marker.next'; }
-    static { this.LABEL = nls.localize('markerAction.next.label', "Go to Next Problem (Error, Warning, Info)"); }
+    static { this.LABEL = nls.localize2(1015, "Go to Next Problem (Error, Warning, Info)"); }
     constructor() {
         super(true, false, {
             id: NextMarkerAction.ID,
             label: NextMarkerAction.LABEL,
-            alias: 'Go to Next Problem (Error, Warning, Info)',
             precondition: undefined,
             kbOpts: {
                 kbExpr: EditorContextKeys.focus,
@@ -176,8 +179,8 @@ export class NextMarkerAction extends MarkerNavigationAction {
             },
             menuOpts: {
                 menuId: MarkerNavigationWidget.TitleMenu,
-                title: NextMarkerAction.LABEL,
-                icon: registerIcon('marker-navigation-next', Codicon.arrowDown, nls.localize('nextMarkerIcon', 'Icon for goto next marker.')),
+                title: NextMarkerAction.LABEL.value,
+                icon: registerIcon('marker-navigation-next', Codicon.arrowDown, nls.localize(1011, 'Icon for goto next marker.')),
                 group: 'navigation',
                 order: 1
             }
@@ -186,12 +189,11 @@ export class NextMarkerAction extends MarkerNavigationAction {
 }
 class PrevMarkerAction extends MarkerNavigationAction {
     static { this.ID = 'editor.action.marker.prev'; }
-    static { this.LABEL = nls.localize('markerAction.previous.label', "Go to Previous Problem (Error, Warning, Info)"); }
+    static { this.LABEL = nls.localize2(1016, "Go to Previous Problem (Error, Warning, Info)"); }
     constructor() {
         super(false, false, {
             id: PrevMarkerAction.ID,
             label: PrevMarkerAction.LABEL,
-            alias: 'Go to Previous Problem (Error, Warning, Info)',
             precondition: undefined,
             kbOpts: {
                 kbExpr: EditorContextKeys.focus,
@@ -200,8 +202,8 @@ class PrevMarkerAction extends MarkerNavigationAction {
             },
             menuOpts: {
                 menuId: MarkerNavigationWidget.TitleMenu,
-                title: PrevMarkerAction.LABEL,
-                icon: registerIcon('marker-navigation-previous', Codicon.arrowUp, nls.localize('previousMarkerIcon', 'Icon for goto previous marker.')),
+                title: PrevMarkerAction.LABEL.value,
+                icon: registerIcon('marker-navigation-previous', Codicon.arrowUp, nls.localize(1012, 'Icon for goto previous marker.')),
                 group: 'navigation',
                 order: 2
             }
@@ -212,8 +214,7 @@ class NextMarkerInFilesAction extends MarkerNavigationAction {
     constructor() {
         super(true, true, {
             id: 'editor.action.marker.nextInFiles',
-            label: nls.localize('markerAction.nextInFiles.label', "Go to Next Problem in Files (Error, Warning, Info)"),
-            alias: 'Go to Next Problem in Files (Error, Warning, Info)',
+            label: nls.localize2(1017, "Go to Next Problem in Files (Error, Warning, Info)"),
             precondition: undefined,
             kbOpts: {
                 kbExpr: EditorContextKeys.focus,
@@ -222,7 +223,7 @@ class NextMarkerInFilesAction extends MarkerNavigationAction {
             },
             menuOpts: {
                 menuId: MenuId.MenubarGoMenu,
-                title: nls.localize({ key: 'miGotoNextProblem', comment: ['&& denotes a mnemonic'] }, "Next &&Problem"),
+                title: nls.localize(1013, "Next &&Problem"),
                 group: '6_problem_nav',
                 order: 1
             }
@@ -233,8 +234,7 @@ class PrevMarkerInFilesAction extends MarkerNavigationAction {
     constructor() {
         super(false, true, {
             id: 'editor.action.marker.prevInFiles',
-            label: nls.localize('markerAction.previousInFiles.label', "Go to Previous Problem in Files (Error, Warning, Info)"),
-            alias: 'Go to Previous Problem in Files (Error, Warning, Info)',
+            label: nls.localize2(1018, "Go to Previous Problem in Files (Error, Warning, Info)"),
             precondition: undefined,
             kbOpts: {
                 kbExpr: EditorContextKeys.focus,
@@ -243,7 +243,7 @@ class PrevMarkerInFilesAction extends MarkerNavigationAction {
             },
             menuOpts: {
                 menuId: MenuId.MenubarGoMenu,
-                title: nls.localize({ key: 'miGotoPreviousProblem', comment: ['&& denotes a mnemonic'] }, "Previous &&Problem"),
+                title: nls.localize(1014, "Previous &&Problem"),
                 group: '6_problem_nav',
                 order: 2
             }
@@ -268,3 +268,4 @@ registerEditorCommand(new MarkerCommand({
         secondary: [1024 /* KeyMod.Shift */ | 9 /* KeyCode.Escape */]
     }
 }));
+//# sourceMappingURL=gotoError.js.map

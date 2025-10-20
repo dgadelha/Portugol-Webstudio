@@ -26,12 +26,13 @@ import { SuggestModel } from './suggestModel.js';
 import { WordDistance } from './wordDistance.js';
 import { IClipboardService } from '../../../../platform/clipboard/common/clipboardService.js';
 class SuggestInlineCompletion {
-    constructor(range, insertText, filterText, additionalTextEdits, command, completion) {
+    constructor(range, insertText, filterText, additionalTextEdits, command, action, completion) {
         this.range = range;
         this.insertText = insertText;
         this.filterText = filterText;
         this.additionalTextEdits = additionalTextEdits;
         this.command = command;
+        this.action = action;
         this.completion = completion;
     }
 }
@@ -70,7 +71,7 @@ let InlineCompletionResults = class InlineCompletionResults extends RefCountedDi
             const insertText = item.completion.insertTextRules && (item.completion.insertTextRules & 4 /* CompletionItemInsertTextRule.InsertAsSnippet */)
                 ? { snippet: item.completion.insertText }
                 : item.completion.insertText;
-            result.push(new SuggestInlineCompletion(range, insertText, item.filterTextLow ?? item.labelLow, item.completion.additionalTextEdits, item.completion.command, item));
+            result.push(new SuggestInlineCompletion(range, insertText, item.filterTextLow ?? item.labelLow, item.completion.additionalTextEdits, item.completion.command, item.completion.action, item));
             // resolve the first N suggestions eagerly
             if (resolveCount-- >= 0) {
                 item.resolve(CancellationToken.None);
@@ -105,7 +106,7 @@ let SuggestInlineCompletions = class SuggestInlineCompletions extends Disposable
         if (!editor) {
             return;
         }
-        const config = editor.getOption(90 /* EditorOption.quickSuggestions */);
+        const config = editor.getOption(102 /* EditorOption.quickSuggestions */);
         if (QuickSuggestionsOptions.isAllOff(config)) {
             // quick suggest is off (for this model/language)
             return;
@@ -154,7 +155,7 @@ let SuggestInlineCompletions = class SuggestInlineCompletions extends Disposable
             if (completions.needsClipboard) {
                 clipboardText = await this._clipboardService.readText();
             }
-            const completionModel = new CompletionModel(completions.items, position.column, new LineContext(leadingLineContents, 0), WordDistance.None, editor.getOption(119 /* EditorOption.suggest */), editor.getOption(113 /* EditorOption.snippetSuggestions */), { boostFullMatch: false, firstMatchCanBeWeak: false }, clipboardText);
+            const completionModel = new CompletionModel(completions.items, position.column, new LineContext(leadingLineContents, 0), WordDistance.None, editor.getOption(134 /* EditorOption.suggest */), editor.getOption(128 /* EditorOption.snippetSuggestions */), { boostFullMatch: false, firstMatchCanBeWeak: false }, clipboardText);
             result = new InlineCompletionResults(model, position.lineNumber, wordInfo, completionModel, completions, this._suggestMemoryService);
         }
         this._lastResult = result;
@@ -163,7 +164,7 @@ let SuggestInlineCompletions = class SuggestInlineCompletions extends Disposable
     handleItemDidShow(_completions, item) {
         item.completion.resolve(CancellationToken.None);
     }
-    freeInlineCompletions(result) {
+    disposeInlineCompletions(result) {
         result.release();
     }
     _getTriggerCharacterInfo(model, position) {
@@ -188,3 +189,4 @@ SuggestInlineCompletions = __decorate([
 ], SuggestInlineCompletions);
 export { SuggestInlineCompletions };
 registerEditorFeature(SuggestInlineCompletions);
+//# sourceMappingURL=suggestInlineCompletions.js.map

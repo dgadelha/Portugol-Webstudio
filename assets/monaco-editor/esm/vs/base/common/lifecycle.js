@@ -1,4 +1,3 @@
-import { createSingleCallFunction } from './functional.js';
 import { Iterable } from './iterator.js';
 // #region Disposable Tracking
 /**
@@ -112,19 +111,31 @@ export function combinedDisposable(...disposables) {
     setParentOfDisposables(disposables, parent);
     return parent;
 }
+class FunctionDisposable {
+    constructor(fn) {
+        this._isDisposed = false;
+        this._fn = fn;
+        trackDisposable(this);
+    }
+    dispose() {
+        if (this._isDisposed) {
+            return;
+        }
+        if (!this._fn) {
+            throw new Error(`Unbound disposable context: Need to use an arrow function to preserve the value of this`);
+        }
+        this._isDisposed = true;
+        markAsDisposed(this);
+        this._fn();
+    }
+}
 /**
  * Turn a function that implements dispose into an {@link IDisposable}.
  *
  * @param fn Clean up function, guaranteed to be called only **once**.
  */
 export function toDisposable(fn) {
-    const self = trackDisposable({
-        dispose: createSingleCallFunction(() => {
-            markAsDisposed(self);
-            fn();
-        })
-    });
-    return self;
+    return new FunctionDisposable(fn);
 }
 /**
  * Manages a collection of disposable values.
@@ -177,7 +188,7 @@ export class DisposableStore {
      * Add a new {@link IDisposable disposable} to the collection.
      */
     add(o) {
-        if (!o) {
+        if (!o || o === Disposable.None) {
             return o;
         }
         if (o === this) {
@@ -195,16 +206,18 @@ export class DisposableStore {
         return o;
     }
     /**
-     * Deletes the value from the store, but does not dispose it.
+     * Deletes a disposable from store and disposes of it. This will not throw or warn and proceed to dispose the
+     * disposable even when the disposable is not part in the store.
      */
-    deleteAndLeak(o) {
+    delete(o) {
         if (!o) {
             return;
         }
-        if (this._toDispose.has(o)) {
-            this._toDispose.delete(o);
-            setParentOfDisposable(o, null);
+        if (o === this) {
+            throw new Error('Cannot dispose a disposable on itself!');
         }
+        this._toDispose.delete(o);
+        o.dispose();
     }
 }
 /**
@@ -341,6 +354,7 @@ export class DisposableMap {
             this._store.get(key)?.dispose();
         }
         this._store.set(key, value);
+        setParentOfDisposable(value, this);
     }
     /**
      * Delete the value stored for `key` from this map and also dispose of it.
@@ -349,7 +363,11 @@ export class DisposableMap {
         this._store.get(key)?.dispose();
         this._store.delete(key);
     }
+    values() {
+        return this._store.values();
+    }
     [Symbol.iterator]() {
         return this._store[Symbol.iterator]();
     }
 }
+//# sourceMappingURL=lifecycle.js.map

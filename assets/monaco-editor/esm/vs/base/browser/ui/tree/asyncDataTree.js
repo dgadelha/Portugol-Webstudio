@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 import { ElementsDragAndDropData } from '../list/listView.js';
-import { ComposedTreeDelegate } from './abstractTree.js';
+import { ComposedTreeDelegate, TreeFindMode as TreeFindMode, FindFilter, FindController } from './abstractTree.js';
 import { getVisibleState, isFilterResult } from './indexTreeModel.js';
 import { CompressibleObjectTree, ObjectTree } from './objectTree.js';
 import { ObjectTreeElementCollapseState, TreeError, WeakMapper } from './tree.js';
@@ -13,8 +13,10 @@ import { ThemeIcon } from '../../../common/themables.js';
 import { isCancellationError, onUnexpectedError } from '../../../common/errors.js';
 import { Emitter, Event } from '../../../common/event.js';
 import { Iterable } from '../../../common/iterator.js';
-import { DisposableStore, dispose } from '../../../common/lifecycle.js';
+import { DisposableStore, dispose, toDisposable } from '../../../common/lifecycle.js';
 import { isIterable } from '../../../common/types.js';
+import { FuzzyScore } from '../../../common/filters.js';
+import { splice } from '../../../common/arrays.js';
 function createAsyncDataTreeNode(props) {
     return {
         ...props,
@@ -65,8 +67,8 @@ class AsyncDataTreeRenderer {
         const templateData = this.renderer.renderTemplate(container);
         return { templateData };
     }
-    renderElement(node, index, templateData, height) {
-        this.renderer.renderElement(this.nodeMapper.map(node), index, templateData.templateData, height);
+    renderElement(node, index, templateData, details) {
+        this.renderer.renderElement(this.nodeMapper.map(node), index, templateData.templateData, details);
     }
     renderTwistie(element, twistieElement) {
         if (element.slow) {
@@ -78,8 +80,8 @@ class AsyncDataTreeRenderer {
             return false;
         }
     }
-    disposeElement(node, index, templateData, height) {
-        this.renderer.disposeElement?.(this.nodeMapper.map(node), index, templateData.templateData, height);
+    disposeElement(node, index, templateData, details) {
+        this.renderer.disposeElement?.(this.nodeMapper.map(node), index, templateData.templateData, details);
     }
     disposeTemplate(templateData) {
         this.renderer.disposeTemplate(templateData.templateData);
@@ -140,6 +142,64 @@ class AsyncDataTreeNodeListDragAndDrop {
     }
     dispose() {
         this.dnd.dispose();
+    }
+}
+class AsyncFindFilter extends FindFilter {
+    constructor(findProvider, // remove public
+    keyboardNavigationLabelProvider, filter) {
+        super(keyboardNavigationLabelProvider, filter);
+        this.findProvider = findProvider;
+        this.isFindSessionActive = false;
+    }
+    filter(element, parentVisibility) {
+        const filterResult = super.filter(element, parentVisibility);
+        if (!this.isFindSessionActive || this.findMode === TreeFindMode.Highlight || !this.findProvider.isVisible) {
+            return filterResult;
+        }
+        const visibility = isFilterResult(filterResult) ? filterResult.visibility : filterResult;
+        if (getVisibleState(visibility) === 0 /* TreeVisibility.Hidden */) {
+            return 0 /* TreeVisibility.Hidden */;
+        }
+        return this.findProvider.isVisible(element) ? filterResult : 0 /* TreeVisibility.Hidden */;
+    }
+}
+// TODO Fix types
+class AsyncFindController extends FindController {
+    constructor(tree, findProvider, filter, contextViewProvider, options) {
+        super(tree, filter, contextViewProvider, options);
+        this.findProvider = findProvider;
+        this.filter = filter;
+        this.activeSession = false;
+        this.asyncWorkInProgress = false;
+        // Always make sure to end the session before disposing
+        this.disposables.add(toDisposable(async () => {
+            if (this.activeSession) {
+                await this.findProvider.endSession?.();
+            }
+        }));
+    }
+    render() {
+        if (this.asyncWorkInProgress || !this.activeFindMetadata) {
+            return;
+        }
+        const showNotFound = this.activeFindMetadata.matchCount === 0 && this.pattern.length > 0;
+        this.renderMessage(showNotFound);
+        if (this.pattern.length) {
+            this.alertResults(this.activeFindMetadata.matchCount);
+        }
+    }
+    shouldAllowFocus(node) {
+        return this.shouldFocusWhenNavigating(node);
+    }
+    shouldFocusWhenNavigating(node) {
+        if (!this.activeSession || !this.activeFindMetadata) {
+            return true;
+        }
+        const element = node.element?.element;
+        if (element && this.activeFindMetadata.isMatch(element)) {
+            return true;
+        }
+        return !FuzzyScore.isDefault(node.filterData);
     }
 }
 function asObjectTreeOptions(options) {
@@ -230,7 +290,6 @@ export class AsyncDataTree {
      */
     get onDidChangeModel() { return this.tree.onDidChangeModel; }
     get onDidChangeCollapseState() { return this.tree.onDidChangeCollapseState; }
-    get onDidChangeFindOpenState() { return this.tree.onDidChangeFindOpenState; }
     get onDidChangeStickyScrollFocused() { return this.tree.onDidChangeStickyScrollFocused; }
     get onDidDispose() { return this.tree.onDidDispose; }
     constructor(user, container, delegate, renderers, dataSource, options = {}) {
@@ -247,9 +306,13 @@ export class AsyncDataTree {
         this.autoExpandSingleChildren = typeof options.autoExpandSingleChildren === 'undefined' ? false : options.autoExpandSingleChildren;
         this.sorter = options.sorter;
         this.getDefaultCollapseState = e => options.collapseByDefault ? (options.collapseByDefault(e) ? ObjectTreeElementCollapseState.PreserveOrCollapsed : ObjectTreeElementCollapseState.PreserveOrExpanded) : undefined;
-        this.tree = this.createTree(user, container, delegate, renderers, options);
-        this.onDidChangeFindMode = this.tree.onDidChangeFindMode;
-        this.onDidChangeFindMatchType = this.tree.onDidChangeFindMatchType;
+        let asyncFindEnabled = false;
+        let findFilter;
+        if (options.findProvider && (options.findWidgetEnabled ?? true) && options.keyboardNavigationLabelProvider && options.contextViewProvider) {
+            asyncFindEnabled = true;
+            findFilter = new AsyncFindFilter(options.findProvider, options.keyboardNavigationLabelProvider, options.filter);
+        }
+        this.tree = this.createTree(user, container, delegate, renderers, { ...options, findWidgetEnabled: !asyncFindEnabled, filter: findFilter ?? options.filter });
         this.root = createAsyncDataTreeNode({
             element: undefined,
             parent: null,
@@ -264,6 +327,24 @@ export class AsyncDataTree {
         }
         this.nodes.set(null, this.root);
         this.tree.onDidChangeCollapseState(this._onDidChangeCollapseState, this, this.disposables);
+        if (asyncFindEnabled) {
+            const findOptions = {
+                styles: options.findWidgetStyles,
+                showNotFoundMessage: options.showNotFoundMessage,
+                defaultFindMatchType: options.defaultFindMatchType,
+                defaultFindMode: options.defaultFindMode,
+            };
+            this.findController = this.disposables.add(new AsyncFindController(this.tree, options.findProvider, findFilter, this.tree.options.contextViewProvider, findOptions));
+            this.focusNavigationFilter = node => this.findController.shouldFocusWhenNavigating(node);
+            this.onDidChangeFindOpenState = this.findController.onDidChangeOpenState;
+            this.onDidChangeFindMode = this.findController.onDidChangeMode;
+            this.onDidChangeFindMatchType = this.findController.onDidChangeMatchType;
+        }
+        else {
+            this.onDidChangeFindOpenState = this.tree.onDidChangeFindOpenState;
+            this.onDidChangeFindMode = this.tree.onDidChangeFindMode;
+            this.onDidChangeFindMatchType = this.tree.onDidChangeFindMatchType;
+        }
     }
     createTree(user, container, delegate, renderers, options) {
         const objectTreeDelegate = new ComposedTreeDelegate(delegate);
@@ -271,8 +352,16 @@ export class AsyncDataTree {
         const objectTreeOptions = asObjectTreeOptions(options) || {};
         return new ObjectTree(user, container, objectTreeDelegate, objectTreeRenderers, objectTreeOptions);
     }
-    updateOptions(options = {}) {
-        this.tree.updateOptions(options);
+    updateOptions(optionsUpdate = {}) {
+        if (this.findController) {
+            if (optionsUpdate.defaultFindMode !== undefined) {
+                this.findController.mode = optionsUpdate.defaultFindMode;
+            }
+            if (optionsUpdate.defaultFindMatchType !== undefined) {
+                this.findController.matchType = optionsUpdate.defaultFindMatchType;
+            }
+        }
+        this.tree.updateOptions(optionsUpdate);
     }
     // Widget
     getHTMLElement() {
@@ -304,8 +393,7 @@ export class AsyncDataTree {
         return this.root.element;
     }
     async setInput(input, viewState) {
-        this.refreshPromises.forEach(promise => promise.cancel());
-        this.refreshPromises.clear();
+        this.cancelAllRefreshPromises();
         this.root.element = input;
         const viewStateContext = viewState && { viewState, focus: [], selection: [] };
         await this._updateChildren(input, true, false, viewStateContext);
@@ -315,6 +403,14 @@ export class AsyncDataTree {
         }
         if (viewState && typeof viewState.scrollTop === 'number') {
             this.scrollTop = viewState.scrollTop;
+        }
+    }
+    cancelAllRefreshPromises(includeSubTrees = false) {
+        this.refreshPromises.forEach(promise => promise.cancel());
+        this.refreshPromises.clear();
+        if (includeSubTrees) {
+            this.subTreeRefreshPromises.forEach(promise => promise.cancel());
+            this.subTreeRefreshPromises.clear();
         }
     }
     async _updateChildren(element = this.root.element, recursive = true, rerender = false, viewStateContext, options) {
@@ -369,7 +465,7 @@ export class AsyncDataTree {
             return false;
         }
         if (node.refreshPromise) {
-            await this.root.refreshPromise;
+            await node.refreshPromise;
             await Event.toPromise(this._onDidRender.event);
         }
         if (node !== this.root && !node.refreshPromise && !this.tree.isCollapsed(node)) {
@@ -377,7 +473,7 @@ export class AsyncDataTree {
         }
         const result = this.tree.expand(node === this.root ? null : node, recursive);
         if (node.refreshPromise) {
-            await this.root.refreshPromise;
+            await node.refreshPromise;
             await Event.toPromise(this._onDidRender.event);
         }
         return result;
@@ -415,11 +511,15 @@ export class AsyncDataTree {
     getDataNode(element) {
         const node = this.nodes.get((element === this.root.element ? null : element));
         if (!node) {
-            throw new TreeError(this.user, `Data tree node not found: ${element}`);
+            const nodeIdentity = this.identityProvider?.getId(element).toString();
+            throw new TreeError(this.user, `Data tree node not found${nodeIdentity ? `: ${nodeIdentity}` : ''}`);
         }
         return node;
     }
     async refreshAndRenderNode(node, recursive, viewStateContext, options) {
+        if (this.disposables.isDisposed) {
+            return; // tree disposed during refresh, again (#228211)
+        }
         await this.refreshNode(node, recursive, viewStateContext);
         if (this.disposables.isDisposed) {
             return; // tree disposed during refresh (#199264)
@@ -448,21 +548,18 @@ export class AsyncDataTree {
         return this.doRefreshSubTree(node, recursive, viewStateContext);
     }
     async doRefreshSubTree(node, recursive, viewStateContext) {
-        let done;
-        node.refreshPromise = new Promise(c => done = c);
-        this.subTreeRefreshPromises.set(node, node.refreshPromise);
-        node.refreshPromise.finally(() => {
-            node.refreshPromise = undefined;
-            this.subTreeRefreshPromises.delete(node);
-        });
-        try {
+        const cancelablePromise = createCancelablePromise(async () => {
             const childrenToRefresh = await this.doRefreshNode(node, recursive, viewStateContext);
             node.stale = false;
             await Promises.settled(childrenToRefresh.map(child => this.doRefreshSubTree(child, recursive, viewStateContext)));
-        }
-        finally {
-            done();
-        }
+        });
+        node.refreshPromise = cancelablePromise;
+        this.subTreeRefreshPromises.set(node, cancelablePromise);
+        cancelablePromise.finally(() => {
+            node.refreshPromise = undefined;
+            this.subTreeRefreshPromises.delete(node);
+        });
+        return cancelablePromise;
     }
     async doRefreshNode(node, recursive, viewStateContext) {
         node.hasChildren = !!this.dataSource.hasChildren(node.element);
@@ -602,7 +699,7 @@ export class AsyncDataTree {
         for (const child of children) {
             this.nodes.set(child.element, child);
         }
-        node.children.splice(0, node.children.length, ...children);
+        splice(node.children, 0, node.children.length, children);
         // TODO@joao this doesn't take filter into account
         if (node !== this.root && this.autoExpandSingleChildren && children.length === 1 && childrenToRefresh.length === 0) {
             children[0].forceExpanded = true;
@@ -696,11 +793,11 @@ class CompressibleAsyncDataTreeRenderer {
         const templateData = this.renderer.renderTemplate(container);
         return { templateData };
     }
-    renderElement(node, index, templateData, height) {
-        this.renderer.renderElement(this.nodeMapper.map(node), index, templateData.templateData, height);
+    renderElement(node, index, templateData, details) {
+        this.renderer.renderElement(this.nodeMapper.map(node), index, templateData.templateData, details);
     }
-    renderCompressedElements(node, index, templateData, height) {
-        this.renderer.renderCompressedElements(this.compressibleNodeMapperProvider().map(node), index, templateData.templateData, height);
+    renderCompressedElements(node, index, templateData, details) {
+        this.renderer.renderCompressedElements(this.compressibleNodeMapperProvider().map(node), index, templateData.templateData, details);
     }
     renderTwistie(element, twistieElement) {
         if (element.slow) {
@@ -712,11 +809,11 @@ class CompressibleAsyncDataTreeRenderer {
             return false;
         }
     }
-    disposeElement(node, index, templateData, height) {
-        this.renderer.disposeElement?.(this.nodeMapper.map(node), index, templateData.templateData, height);
+    disposeElement(node, index, templateData, details) {
+        this.renderer.disposeElement?.(this.nodeMapper.map(node), index, templateData.templateData, details);
     }
-    disposeCompressedElements(node, index, templateData, height) {
-        this.renderer.disposeCompressedElements?.(this.compressibleNodeMapperProvider().map(node), index, templateData.templateData, height);
+    disposeCompressedElements(node, index, templateData, details) {
+        this.renderer.disposeCompressedElements?.(this.compressibleNodeMapperProvider().map(node), index, templateData.templateData, details);
     }
     disposeTemplate(templateData) {
         this.renderer.disposeTemplate(templateData.templateData);
@@ -756,9 +853,6 @@ export class CompressibleAsyncDataTree extends AsyncDataTree {
             incompressible: this.compressionDelegate.isIncompressible(node.element),
             ...super.asTreeElement(node, viewStateContext)
         };
-    }
-    updateOptions(options = {}) {
-        this.tree.updateOptions(options);
     }
     render(node, viewStateContext, options) {
         if (!this.identityProvider) {
@@ -843,3 +937,4 @@ function getVisibility(filterResult) {
         return getVisibleState(filterResult);
     }
 }
+//# sourceMappingURL=asyncDataTree.js.map

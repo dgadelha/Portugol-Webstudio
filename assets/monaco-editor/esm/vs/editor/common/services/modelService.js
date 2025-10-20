@@ -16,7 +16,7 @@ import { Emitter } from '../../../base/common/event.js';
 import { Disposable, DisposableStore } from '../../../base/common/lifecycle.js';
 import * as platform from '../../../base/common/platform.js';
 import { TextModel } from '../model/textModel.js';
-import { EDITOR_MODEL_DEFAULTS } from '../core/textModelDefaults.js';
+import { EDITOR_MODEL_DEFAULTS } from '../core/misc/textModelDefaults.js';
 import { PLAINTEXT_LANGUAGE_ID } from '../languages/modesRegistry.js';
 import { ITextResourcePropertiesService } from './textResourceConfiguration.js';
 import { IConfigurationService } from '../../../platform/configuration/common/configuration.js';
@@ -416,3 +416,4 @@ export class DefaultModelSHA1Computer {
         return shaComputer.digest();
     }
 }
+//# sourceMappingURL=modelService.js.map

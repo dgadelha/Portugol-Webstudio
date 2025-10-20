@@ -2,6 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+import { assert } from './assert.js';
 /**
  * @returns whether the provided parameter is a JavaScript String or not.
  */
@@ -74,13 +75,41 @@ export function assertType(condition, type) {
 }
 /**
  * Asserts that the argument passed in is neither undefined nor null.
+ *
+ * @see {@link assertDefined} for a similar utility that leverages TS assertion functions to narrow down the type of `arg` to be non-nullable.
  */
-export function assertIsDefined(arg) {
-    if (isUndefinedOrNull(arg)) {
-        throw new Error('Assertion Failed: argument is undefined or null');
-    }
+export function assertReturnsDefined(arg) {
+    assert(arg !== null && arg !== undefined, 'Argument is `undefined` or `null`.');
     return arg;
 }
+/**
+ * Checks if the provided value is one of the vales in the provided list.
+ *
+ * ## Examples
+ *
+ * ```typescript
+ * // note! item type is a `subset of string`
+ * type TItem = ':' | '.' | '/';
+ *
+ * // note! item is type of `string` here
+ * const item: string = ':';
+ * // list of the items to check against
+ * const list: TItem[] = [':', '.'];
+ *
+ * // ok
+ * assert(
+ *   isOneOf(item, list),
+ *   'Must succeed.',
+ * );
+ *
+ * // `item` is of `TItem` type now
+ * ```
+ */
+export const isOneOf = (value, validValues) => {
+    // note! it is OK to type cast here, because we rely on the includes
+    //       utility to check if the value is present in the provided list
+    return validValues.includes(value);
+};
 /**
  * @returns whether the provided parameter is a JavaScript Function or not.
  */
@@ -117,3 +146,13 @@ export function validateConstraint(arg, constraint) {
         throw new Error(`argument does not match one of these constraints: arg instanceof constraint, arg.constructor === constraint, nor constraint(arg) === true`);
     }
 }
+/**
+ * Helper type assertion that safely upcasts a type to a supertype.
+ *
+ * This can be used to make sure the argument correctly conforms to the subtype while still being able to pass it
+ * to contexts that expects the supertype.
+ */
+export function upcast(x) {
+    return x;
+}
+//# sourceMappingURL=types.js.map

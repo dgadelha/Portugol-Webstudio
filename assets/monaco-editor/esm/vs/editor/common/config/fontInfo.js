@@ -9,23 +9,23 @@ import { EditorZoom } from './editorZoom.js';
  * Determined from empirical observations.
  * @internal
  */
-const GOLDEN_LINE_HEIGHT_RATIO = platform.isMacintosh ? 1.5 : 1.35;
+export const GOLDEN_LINE_HEIGHT_RATIO = platform.isMacintosh ? 1.5 : 1.35;
 /**
  * @internal
  */
-const MINIMUM_LINE_HEIGHT = 8;
+export const MINIMUM_LINE_HEIGHT = 8;
 export class BareFontInfo {
     /**
      * @internal
      */
     static createFromValidatedSettings(options, pixelRatio, ignoreEditorZoom) {
-        const fontFamily = options.get(49 /* EditorOption.fontFamily */);
-        const fontWeight = options.get(53 /* EditorOption.fontWeight */);
-        const fontSize = options.get(52 /* EditorOption.fontSize */);
-        const fontFeatureSettings = options.get(51 /* EditorOption.fontLigatures */);
-        const fontVariationSettings = options.get(54 /* EditorOption.fontVariations */);
-        const lineHeight = options.get(67 /* EditorOption.lineHeight */);
-        const letterSpacing = options.get(64 /* EditorOption.letterSpacing */);
+        const fontFamily = options.get(58 /* EditorOption.fontFamily */);
+        const fontWeight = options.get(62 /* EditorOption.fontWeight */);
+        const fontSize = options.get(61 /* EditorOption.fontSize */);
+        const fontFeatureSettings = options.get(60 /* EditorOption.fontLigatures */);
+        const fontVariationSettings = options.get(63 /* EditorOption.fontVariations */);
+        const lineHeight = options.get(75 /* EditorOption.lineHeight */);
+        const letterSpacing = options.get(72 /* EditorOption.letterSpacing */);
         return BareFontInfo._create(fontFamily, fontWeight, fontSize, fontFeatureSettings, fontVariationSettings, lineHeight, letterSpacing, pixelRatio, ignoreEditorZoom);
     }
     /**
@@ -151,3 +151,4 @@ export class FontInfo extends BareFontInfo {
             && this.maxDigitWidth === other.maxDigitWidth);
     }
 }
+//# sourceMappingURL=fontInfo.js.map

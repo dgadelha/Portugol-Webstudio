@@ -9,10 +9,10 @@ import { booleanComparator, compareBy, numberComparator, tieBreakComparators } f
 import { findMaxIdx } from '../../../../../base/common/arraysFind.js';
 import { Codicon } from '../../../../../base/common/codicons.js';
 import { Disposable, toDisposable } from '../../../../../base/common/lifecycle.js';
-import { autorun, autorunHandleChanges, autorunWithStore, constObservable, derived, derivedWithStore, observableFromEvent, observableSignalFromEvent, observableValue, recomputeInitiallyAndOnChange } from '../../../../../base/common/observable.js';
+import { autorun, autorunHandleChanges, autorunWithStore, constObservable, derived, observableFromEvent, observableSignalFromEvent, observableValue, recomputeInitiallyAndOnChange } from '../../../../../base/common/observable.js';
 import { ThemeIcon } from '../../../../../base/common/themables.js';
 import { PlaceholderViewZone, ViewZoneOverlayWidget, applyStyle, applyViewZones } from '../utils.js';
-import { OffsetRange, OffsetRangeSet } from '../../../../common/core/offsetRange.js';
+import { OffsetRange, OffsetRangeSet } from '../../../../common/core/ranges/offsetRange.js';
 import { localize } from '../../../../../nls.js';
 export class MovedBlocksLinesFeature extends Disposable {
     static { this.movedCodeBlockPadding = 4; }
@@ -29,7 +29,7 @@ export class MovedBlocksLinesFeature extends Disposable {
         this.width = observableValue(this, 0);
         this._modifiedViewZonesChangedSignal = observableSignalFromEvent('modified.onDidChangeViewZones', this._editors.modified.onDidChangeViewZones);
         this._originalViewZonesChangedSignal = observableSignalFromEvent('original.onDidChangeViewZones', this._editors.original.onDidChangeViewZones);
-        this._state = derivedWithStore(this, (reader, store) => {
+        this._state = derived(this, (reader) => {
             /** @description state */
             this._element.replaceChildren();
             const model = this._diffModel.read(reader);
@@ -92,7 +92,7 @@ export class MovedBlocksLinesFeature extends Disposable {
                 g.appendChild(path);
                 const arrowRight = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
                 arrowRight.classList.add('arrow');
-                store.add(autorun(reader => {
+                reader.store.add(autorun(reader => {
                     path.classList.toggle('currentMove', line.move === model.activeMovedText.read(reader));
                     arrowRight.classList.toggle('currentMove', line.move === model.activeMovedText.read(reader));
                 }));
@@ -152,15 +152,17 @@ export class MovedBlocksLinesFeature extends Disposable {
         const modifiedHasFocus = observableSignalFromEvent('modified.onDidFocusEditorWidget', e => this._editors.modified.onDidFocusEditorWidget(() => setTimeout(() => e(undefined), 0)));
         let lastChangedEditor = 'modified';
         this._register(autorunHandleChanges({
-            createEmptyChangeSummary: () => undefined,
-            handleChange: (ctx, summary) => {
-                if (ctx.didChange(originalHasFocus)) {
-                    lastChangedEditor = 'original';
+            changeTracker: {
+                createChangeSummary: () => undefined,
+                handleChange: (ctx, summary) => {
+                    if (ctx.didChange(originalHasFocus)) {
+                        lastChangedEditor = 'original';
+                    }
+                    if (ctx.didChange(modifiedHasFocus)) {
+                        lastChangedEditor = 'modified';
+                    }
+                    return true;
                 }
-                if (ctx.didChange(modifiedHasFocus)) {
-                    lastChangedEditor = 'modified';
-                }
-                return true;
             }
         }, reader => {
             /** @description MovedBlocksLines.setActiveMovedTextFromCursor */
@@ -184,7 +186,7 @@ export class MovedBlocksLinesFeature extends Disposable {
                     movedText = diff.movedTexts.find(m => m.lineRangeMapping.modified.contains(modifiedPos.lineNumber));
                 }
             }
-            if (movedText !== m.movedTextToCompare.get()) {
+            if (movedText !== m.movedTextToCompare.read(undefined)) {
                 m.movedTextToCompare.set(undefined, undefined);
             }
             m.setActiveMovedText(movedText);
@@ -242,10 +244,10 @@ class MovedBlockOverlayWidget extends ViewZoneOverlayWidget {
         }));
         let text;
         if (_move.changes.length > 0) {
-            text = this._kind === 'original' ? localize('codeMovedToWithChanges', 'Code moved with changes to line {0}-{1}', this._move.lineRangeMapping.modified.startLineNumber, this._move.lineRangeMapping.modified.endLineNumberExclusive - 1) : localize('codeMovedFromWithChanges', 'Code moved with changes from line {0}-{1}', this._move.lineRangeMapping.original.startLineNumber, this._move.lineRangeMapping.original.endLineNumberExclusive - 1);
+            text = this._kind === 'original' ? localize(128, 'Code moved with changes to line {0}-{1}', this._move.lineRangeMapping.modified.startLineNumber, this._move.lineRangeMapping.modified.endLineNumberExclusive - 1) : localize(129, 'Code moved with changes from line {0}-{1}', this._move.lineRangeMapping.original.startLineNumber, this._move.lineRangeMapping.original.endLineNumberExclusive - 1);
         }
         else {
-            text = this._kind === 'original' ? localize('codeMovedTo', 'Code moved to line {0}-{1}', this._move.lineRangeMapping.modified.startLineNumber, this._move.lineRangeMapping.modified.endLineNumberExclusive - 1) : localize('codeMovedFrom', 'Code moved from line {0}-{1}', this._move.lineRangeMapping.original.startLineNumber, this._move.lineRangeMapping.original.endLineNumberExclusive - 1);
+            text = this._kind === 'original' ? localize(130, 'Code moved to line {0}-{1}', this._move.lineRangeMapping.modified.startLineNumber, this._move.lineRangeMapping.modified.endLineNumberExclusive - 1) : localize(131, 'Code moved from line {0}-{1}', this._move.lineRangeMapping.original.startLineNumber, this._move.lineRangeMapping.original.endLineNumberExclusive - 1);
         }
         const actionBar = this._register(new ActionBar(this._nodes.actionBar, {
             highlightToggledItems: true,
@@ -263,3 +265,4 @@ class MovedBlockOverlayWidget extends ViewZoneOverlayWidget {
         actionBar.push(actionCompare, { icon: false, label: true });
     }
 }
+//# sourceMappingURL=movedBlocksLinesFeature.js.map

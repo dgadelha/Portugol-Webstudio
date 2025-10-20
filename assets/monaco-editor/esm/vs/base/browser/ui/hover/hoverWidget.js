@@ -10,10 +10,11 @@ import './hoverWidget.css';
 import { localize } from '../../../../nls.js';
 const $ = dom.$;
 export class HoverWidget extends Disposable {
-    constructor() {
+    constructor(fadeIn) {
         super();
         this.containerDomNode = document.createElement('div');
         this.containerDomNode.className = 'monaco-hover';
+        this.containerDomNode.classList.toggle('fade-in', !!fadeIn);
         this.containerDomNode.tabIndex = 0;
         this.containerDomNode.setAttribute('role', 'tooltip');
         this.contentsDomNode = document.createElement('div');
@@ -40,10 +41,12 @@ export class HoverAction extends Disposable {
         this.action = dom.append(this.actionContainer, $('a.action'));
         this.action.setAttribute('role', 'button');
         if (actionOptions.iconClass) {
-            dom.append(this.action, $(`span.icon.${actionOptions.iconClass}`));
+            const iconElement = dom.append(this.action, $(`span.icon`));
+            iconElement.classList.add(...actionOptions.iconClass.split(' '));
         }
+        this.actionRenderedLabel = keybindingLabel ? `${actionOptions.label} (${keybindingLabel})` : actionOptions.label;
         const label = dom.append(this.action, $('span'));
-        label.textContent = keybindingLabel ? `${actionOptions.label} (${keybindingLabel})` : actionOptions.label;
+        label.textContent = this.actionRenderedLabel;
         this._store.add(new ClickAction(this.actionContainer, actionOptions.run));
         this._store.add(new KeyDownAction(this.actionContainer, actionOptions.run, [3 /* KeyCode.Enter */, 10 /* KeyCode.Space */]));
         this.setEnabled(true);
@@ -60,7 +63,7 @@ export class HoverAction extends Disposable {
     }
 }
 export function getHoverAccessibleViewHint(shouldHaveHint, keybinding) {
-    return shouldHaveHint && keybinding ? localize('acessibleViewHint', "Inspect this in the accessible view with {0}.", keybinding) : shouldHaveHint ? localize('acessibleViewHintNoKbOpen', "Inspect this in the accessible view via the command Open Accessible View which is currently not triggerable via keybinding.") : '';
+    return shouldHaveHint && keybinding ? localize(7, "Inspect this in the accessible view with {0}.", keybinding) : shouldHaveHint ? localize(8, "Inspect this in the accessible view via the command Open Accessible View which is currently not triggerable via keybinding.") : '';
 }
 export class ClickAction extends Disposable {
     constructor(container, run) {
@@ -85,3 +88,4 @@ export class KeyDownAction extends Disposable {
         }));
     }
 }
+//# sourceMappingURL=hoverWidget.js.map

@@ -46,7 +46,7 @@ export class DragAndDropController extends Disposable {
         this._modifierPressed = false;
     }
     onEditorKeyDown(e) {
-        if (!this._editor.getOption(35 /* EditorOption.dragAndDrop */) || this._editor.getOption(22 /* EditorOption.columnSelection */)) {
+        if (!this._editor.getOption(42 /* EditorOption.dragAndDrop */) || this._editor.getOption(28 /* EditorOption.columnSelection */)) {
             return;
         }
         if (hasTriggerModifier(e)) {
@@ -59,7 +59,7 @@ export class DragAndDropController extends Disposable {
         }
     }
     onEditorKeyUp(e) {
-        if (!this._editor.getOption(35 /* EditorOption.dragAndDrop */) || this._editor.getOption(22 /* EditorOption.columnSelection */)) {
+        if (!this._editor.getOption(42 /* EditorOption.dragAndDrop */) || this._editor.getOption(28 /* EditorOption.columnSelection */)) {
             return;
         }
         if (hasTriggerModifier(e)) {
@@ -193,3 +193,4 @@ export class DragAndDropController extends Disposable {
     }
 }
 registerEditorContribution(DragAndDropController.ID, DragAndDropController, 2 /* EditorContributionInstantiation.BeforeFirstInteraction */);
+//# sourceMappingURL=dnd.js.map

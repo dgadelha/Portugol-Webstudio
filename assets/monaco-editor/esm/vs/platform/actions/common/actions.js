@@ -13,10 +13,10 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 var MenuItemAction_1;
 import { SubmenuAction } from '../../../base/common/actions.js';
-import { ThemeIcon } from '../../../base/common/themables.js';
 import { MicrotaskEmitter } from '../../../base/common/event.js';
-import { DisposableStore, dispose, toDisposable } from '../../../base/common/lifecycle.js';
+import { DisposableStore, dispose, markAsSingleton, toDisposable } from '../../../base/common/lifecycle.js';
 import { LinkedList } from '../../../base/common/linkedList.js';
+import { ThemeIcon } from '../../../base/common/themables.js';
 import { CommandsRegistry, ICommandService } from '../../commands/common/commands.js';
 import { ContextKeyExpr, IContextKeyService } from '../../contextkey/common/contextkey.js';
 import { createDecorator } from '../../instantiation/common/instantiation.js';
@@ -39,6 +39,7 @@ export class MenuId {
     static { this.DebugWatchContext = new MenuId('DebugWatchContext'); }
     static { this.DebugToolBar = new MenuId('DebugToolBar'); }
     static { this.DebugToolBarStop = new MenuId('DebugToolBarStop'); }
+    static { this.DebugDisassemblyContext = new MenuId('DebugDisassemblyContext'); }
     static { this.DebugCallStackToolbar = new MenuId('DebugCallStackToolbar'); }
     static { this.DebugCreateConfiguration = new MenuId('DebugCreateConfiguration'); }
     static { this.EditorContext = new MenuId('EditorContext'); }
@@ -49,6 +50,7 @@ export class MenuId {
     static { this.EditorContextPeek = new MenuId('EditorContextPeek'); }
     static { this.EditorContextShare = new MenuId('EditorContextShare'); }
     static { this.EditorTitle = new MenuId('EditorTitle'); }
+    static { this.CompactWindowEditorTitle = new MenuId('CompactWindowEditorTitle'); }
     static { this.EditorTitleRun = new MenuId('EditorTitleRun'); }
     static { this.EditorTitleContext = new MenuId('EditorTitleContext'); }
     static { this.EditorTitleContextShare = new MenuId('EditorTitleContextShare'); }
@@ -58,9 +60,11 @@ export class MenuId {
     static { this.EditorTabsBarShowTabsSubmenu = new MenuId('EditorTabsBarShowTabsSubmenu'); }
     static { this.EditorTabsBarShowTabsZenModeSubmenu = new MenuId('EditorTabsBarShowTabsZenModeSubmenu'); }
     static { this.EditorActionsPositionSubmenu = new MenuId('EditorActionsPositionSubmenu'); }
+    static { this.EditorSplitMoveSubmenu = new MenuId('EditorSplitMoveSubmenu'); }
     static { this.ExplorerContext = new MenuId('ExplorerContext'); }
     static { this.ExplorerContextShare = new MenuId('ExplorerContextShare'); }
     static { this.ExtensionContext = new MenuId('ExtensionContext'); }
+    static { this.ExtensionEditorContextMenu = new MenuId('ExtensionEditorContextMenu'); }
     static { this.GlobalActivity = new MenuId('GlobalActivity'); }
     static { this.CommandCenter = new MenuId('CommandCenter'); }
     static { this.CommandCenterCenter = new MenuId('CommandCenterCenter'); }
@@ -86,24 +90,13 @@ export class MenuId {
     static { this.MenubarSwitchEditorMenu = new MenuId('MenubarSwitchEditorMenu'); }
     static { this.MenubarSwitchGroupMenu = new MenuId('MenubarSwitchGroupMenu'); }
     static { this.MenubarTerminalMenu = new MenuId('MenubarTerminalMenu'); }
+    static { this.MenubarTerminalSuggestStatusMenu = new MenuId('MenubarTerminalSuggestStatusMenu'); }
     static { this.MenubarViewMenu = new MenuId('MenubarViewMenu'); }
     static { this.MenubarHomeMenu = new MenuId('MenubarHomeMenu'); }
     static { this.OpenEditorsContext = new MenuId('OpenEditorsContext'); }
     static { this.OpenEditorsContextShare = new MenuId('OpenEditorsContextShare'); }
     static { this.ProblemsPanelContext = new MenuId('ProblemsPanelContext'); }
     static { this.SCMInputBox = new MenuId('SCMInputBox'); }
-    static { this.SCMChangesSeparator = new MenuId('SCMChangesSeparator'); }
-    static { this.SCMChangesContext = new MenuId('SCMChangesContext'); }
-    static { this.SCMIncomingChanges = new MenuId('SCMIncomingChanges'); }
-    static { this.SCMIncomingChangesContext = new MenuId('SCMIncomingChangesContext'); }
-    static { this.SCMIncomingChangesSetting = new MenuId('SCMIncomingChangesSetting'); }
-    static { this.SCMOutgoingChanges = new MenuId('SCMOutgoingChanges'); }
-    static { this.SCMOutgoingChangesContext = new MenuId('SCMOutgoingChangesContext'); }
-    static { this.SCMOutgoingChangesSetting = new MenuId('SCMOutgoingChangesSetting'); }
-    static { this.SCMIncomingChangesAllChangesContext = new MenuId('SCMIncomingChangesAllChangesContext'); }
-    static { this.SCMIncomingChangesHistoryItemContext = new MenuId('SCMIncomingChangesHistoryItemContext'); }
-    static { this.SCMOutgoingChangesAllChangesContext = new MenuId('SCMOutgoingChangesAllChangesContext'); }
-    static { this.SCMOutgoingChangesHistoryItemContext = new MenuId('SCMOutgoingChangesHistoryItemContext'); }
     static { this.SCMChangeContext = new MenuId('SCMChangeContext'); }
     static { this.SCMResourceContext = new MenuId('SCMResourceContext'); }
     static { this.SCMResourceContextShare = new MenuId('SCMResourceContextShare'); }
@@ -113,6 +106,11 @@ export class MenuId {
     static { this.SCMSourceControlInline = new MenuId('SCMSourceControlInline'); }
     static { this.SCMSourceControlTitle = new MenuId('SCMSourceControlTitle'); }
     static { this.SCMHistoryTitle = new MenuId('SCMHistoryTitle'); }
+    static { this.SCMHistoryItemContext = new MenuId('SCMHistoryItemContext'); }
+    static { this.SCMHistoryItemChangeContext = new MenuId('SCMHistoryItemChangeContext'); }
+    static { this.SCMHistoryItemHover = new MenuId('SCMHistoryItemHover'); }
+    static { this.SCMHistoryItemRefContext = new MenuId('SCMHistoryItemRefContext'); }
+    static { this.SCMQuickDiffDecorations = new MenuId('SCMQuickDiffDecorations'); }
     static { this.SCMTitle = new MenuId('SCMTitle'); }
     static { this.SearchContext = new MenuId('SearchContext'); }
     static { this.SearchActionMenu = new MenuId('SearchActionContext'); }
@@ -127,7 +125,9 @@ export class MenuId {
     static { this.TestPeekElement = new MenuId('TestPeekElement'); }
     static { this.TestPeekTitle = new MenuId('TestPeekTitle'); }
     static { this.TestCallStack = new MenuId('TestCallStack'); }
+    static { this.TestCoverageFilterItem = new MenuId('TestCoverageFilterItem'); }
     static { this.TouchBarContext = new MenuId('TouchBarContext'); }
+    static { this.TitleBar = new MenuId('TitleBar'); }
     static { this.TitleBarContext = new MenuId('TitleBarContext'); }
     static { this.TitleBarTitleContext = new MenuId('TitleBarTitleContext'); }
     static { this.TunnelContext = new MenuId('TunnelContext'); }
@@ -160,6 +160,7 @@ export class MenuId {
     static { this.ReplInputExecute = new MenuId('ReplInputExecute'); }
     static { this.IssueReporter = new MenuId('IssueReporter'); }
     static { this.NotebookToolbar = new MenuId('NotebookToolbar'); }
+    static { this.NotebookToolbarContext = new MenuId('NotebookToolbarContext'); }
     static { this.NotebookStickyScrollContext = new MenuId('NotebookStickyScrollContext'); }
     static { this.NotebookCellTitle = new MenuId('NotebookCellTitle'); }
     static { this.NotebookCellDelete = new MenuId('NotebookCellDelete'); }
@@ -170,6 +171,7 @@ export class MenuId {
     static { this.NotebookCellExecuteGoTo = new MenuId('NotebookCellExecuteGoTo'); }
     static { this.NotebookCellExecutePrimary = new MenuId('NotebookCellExecutePrimary'); }
     static { this.NotebookDiffCellInputTitle = new MenuId('NotebookDiffCellInputTitle'); }
+    static { this.NotebookDiffDocumentMetadata = new MenuId('NotebookDiffDocumentMetadata'); }
     static { this.NotebookDiffCellMetadataTitle = new MenuId('NotebookDiffCellMetadataTitle'); }
     static { this.NotebookDiffCellOutputsTitle = new MenuId('NotebookDiffCellOutputsTitle'); }
     static { this.NotebookOutputToolbar = new MenuId('NotebookOutputToolbar'); }
@@ -187,7 +189,6 @@ export class MenuId {
     static { this.SidebarTitle = new MenuId('SidebarTitle'); }
     static { this.PanelTitle = new MenuId('PanelTitle'); }
     static { this.AuxiliaryBarTitle = new MenuId('AuxiliaryBarTitle'); }
-    static { this.AuxiliaryBarHeader = new MenuId('AuxiliaryBarHeader'); }
     static { this.TerminalInstanceContext = new MenuId('TerminalInstanceContext'); }
     static { this.TerminalEditorInstanceContext = new MenuId('TerminalEditorInstanceContext'); }
     static { this.TerminalNewDropdownContext = new MenuId('TerminalNewDropdownContext'); }
@@ -197,7 +198,6 @@ export class MenuId {
     static { this.WebviewContext = new MenuId('WebviewContext'); }
     static { this.InlineCompletionsActions = new MenuId('InlineCompletionsActions'); }
     static { this.InlineEditsActions = new MenuId('InlineEditsActions'); }
-    static { this.InlineEditActions = new MenuId('InlineEditActions'); }
     static { this.NewFile = new MenuId('NewFile'); }
     static { this.MergeInput1Toolbar = new MenuId('MergeToolbar1Toolbar'); }
     static { this.MergeInput2Toolbar = new MenuId('MergeToolbar2Toolbar'); }
@@ -209,9 +209,35 @@ export class MenuId {
     static { this.ChatCodeBlock = new MenuId('ChatCodeblock'); }
     static { this.ChatCompareBlock = new MenuId('ChatCompareBlock'); }
     static { this.ChatMessageTitle = new MenuId('ChatMessageTitle'); }
+    static { this.ChatHistory = new MenuId('ChatHistory'); }
+    static { this.ChatWelcomeHistoryContext = new MenuId('ChatWelcomeHistoryContext'); }
+    static { this.ChatMessageFooter = new MenuId('ChatMessageFooter'); }
     static { this.ChatExecute = new MenuId('ChatExecute'); }
     static { this.ChatExecuteSecondary = new MenuId('ChatExecuteSecondary'); }
+    static { this.ChatInput = new MenuId('ChatInput'); }
     static { this.ChatInputSide = new MenuId('ChatInputSide'); }
+    static { this.ChatModePicker = new MenuId('ChatModePicker'); }
+    static { this.ChatEditingWidgetToolbar = new MenuId('ChatEditingWidgetToolbar'); }
+    static { this.ChatEditingEditorContent = new MenuId('ChatEditingEditorContent'); }
+    static { this.ChatEditingEditorHunk = new MenuId('ChatEditingEditorHunk'); }
+    static { this.ChatEditingDeletedNotebookCell = new MenuId('ChatEditingDeletedNotebookCell'); }
+    static { this.ChatInputAttachmentToolbar = new MenuId('ChatInputAttachmentToolbar'); }
+    static { this.ChatEditingWidgetModifiedFilesToolbar = new MenuId('ChatEditingWidgetModifiedFilesToolbar'); }
+    static { this.ChatInputResourceAttachmentContext = new MenuId('ChatInputResourceAttachmentContext'); }
+    static { this.ChatInputSymbolAttachmentContext = new MenuId('ChatInputSymbolAttachmentContext'); }
+    static { this.ChatInlineResourceAnchorContext = new MenuId('ChatInlineResourceAnchorContext'); }
+    static { this.ChatInlineSymbolAnchorContext = new MenuId('ChatInlineSymbolAnchorContext'); }
+    static { this.ChatMessageCheckpoint = new MenuId('ChatMessageCheckpoint'); }
+    static { this.ChatMessageRestoreCheckpoint = new MenuId('ChatMessageRestoreCheckpoint'); }
+    static { this.ChatEditingCodeBlockContext = new MenuId('ChatEditingCodeBlockContext'); }
+    static { this.ChatTitleBarMenu = new MenuId('ChatTitleBarMenu'); }
+    static { this.ChatAttachmentsContext = new MenuId('ChatAttachmentsContext'); }
+    static { this.ChatToolOutputResourceToolbar = new MenuId('ChatToolOutputResourceToolbar'); }
+    static { this.ChatTextEditorMenu = new MenuId('ChatTextEditorMenu'); }
+    static { this.ChatToolOutputResourceContext = new MenuId('ChatToolOutputResourceContext'); }
+    static { this.ChatMultiDiffContext = new MenuId('ChatMultiDiffContext'); }
+    static { this.ChatSessionsMenu = new MenuId('ChatSessionsMenu'); }
+    static { this.ChatConfirmationMenu = new MenuId('ChatConfirmationMenu'); }
     static { this.AccessibleView = new MenuId('AccessibleView'); }
     static { this.MultiDiffEditorFileToolbar = new MenuId('MultiDiffEditorFileToolbar'); }
     static { this.DiffEditorHunkToolbar = new MenuId('DiffEditorHunkToolbar'); }
@@ -266,11 +292,11 @@ export const MenuRegistry = new class {
     addCommand(command) {
         this._commands.set(command.id, command);
         this._onDidChangeMenu.fire(MenuRegistryChangeEvent.for(MenuId.CommandPalette));
-        return toDisposable(() => {
+        return markAsSingleton(toDisposable(() => {
             if (this._commands.delete(command.id)) {
                 this._onDidChangeMenu.fire(MenuRegistryChangeEvent.for(MenuId.CommandPalette));
             }
-        });
+        }));
     }
     getCommand(id) {
         return this._commands.get(id);
@@ -288,10 +314,10 @@ export const MenuRegistry = new class {
         }
         const rm = list.push(item);
         this._onDidChangeMenu.fire(MenuRegistryChangeEvent.for(id));
-        return toDisposable(() => {
+        return markAsSingleton(toDisposable(() => {
             rm();
             this._onDidChangeMenu.fire(MenuRegistryChangeEvent.for(id));
-        });
+        }));
     }
     appendMenuItems(items) {
         const result = new DisposableStore();
@@ -410,7 +436,7 @@ export function registerAction2(ctor) {
     disposables.push(CommandsRegistry.registerCommand({
         id: command.id,
         handler: (accessor, ...args) => action.run(accessor, ...args),
-        metadata: command.metadata,
+        metadata: command.metadata ?? { description: action.desc.title }
     }));
     // menu
     if (Array.isArray(menu)) {
@@ -449,3 +475,4 @@ export function registerAction2(ctor) {
     };
 }
 //#endregion
+//# sourceMappingURL=actions.js.map

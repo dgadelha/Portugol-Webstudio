@@ -400,3 +400,4 @@ export class BracketPairGuidesClassNames {
         return `bracket-indent-guide lvl-${level % 30}`;
     }
 }
+//# sourceMappingURL=guidesTextModelPart.js.map

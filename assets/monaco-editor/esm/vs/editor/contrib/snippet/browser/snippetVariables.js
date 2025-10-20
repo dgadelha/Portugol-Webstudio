@@ -238,10 +238,10 @@ export class TimeBasedVariableResolver {
     constructor() {
         this._date = new Date();
     }
-    static { this.dayNames = [nls.localize('Sunday', "Sunday"), nls.localize('Monday', "Monday"), nls.localize('Tuesday', "Tuesday"), nls.localize('Wednesday', "Wednesday"), nls.localize('Thursday', "Thursday"), nls.localize('Friday', "Friday"), nls.localize('Saturday', "Saturday")]; }
-    static { this.dayNamesShort = [nls.localize('SundayShort', "Sun"), nls.localize('MondayShort', "Mon"), nls.localize('TuesdayShort', "Tue"), nls.localize('WednesdayShort', "Wed"), nls.localize('ThursdayShort', "Thu"), nls.localize('FridayShort', "Fri"), nls.localize('SaturdayShort', "Sat")]; }
-    static { this.monthNames = [nls.localize('January', "January"), nls.localize('February', "February"), nls.localize('March', "March"), nls.localize('April', "April"), nls.localize('May', "May"), nls.localize('June', "June"), nls.localize('July', "July"), nls.localize('August', "August"), nls.localize('September', "September"), nls.localize('October', "October"), nls.localize('November', "November"), nls.localize('December', "December")]; }
-    static { this.monthNamesShort = [nls.localize('JanuaryShort', "Jan"), nls.localize('FebruaryShort', "Feb"), nls.localize('MarchShort', "Mar"), nls.localize('AprilShort', "Apr"), nls.localize('MayShort', "May"), nls.localize('JuneShort', "Jun"), nls.localize('JulyShort', "Jul"), nls.localize('AugustShort', "Aug"), nls.localize('SeptemberShort', "Sep"), nls.localize('OctoberShort', "Oct"), nls.localize('NovemberShort', "Nov"), nls.localize('DecemberShort', "Dec")]; }
+    static { this.dayNames = [nls.localize(1391, "Sunday"), nls.localize(1392, "Monday"), nls.localize(1393, "Tuesday"), nls.localize(1394, "Wednesday"), nls.localize(1395, "Thursday"), nls.localize(1396, "Friday"), nls.localize(1397, "Saturday")]; }
+    static { this.dayNamesShort = [nls.localize(1398, "Sun"), nls.localize(1399, "Mon"), nls.localize(1400, "Tue"), nls.localize(1401, "Wed"), nls.localize(1402, "Thu"), nls.localize(1403, "Fri"), nls.localize(1404, "Sat")]; }
+    static { this.monthNames = [nls.localize(1405, "January"), nls.localize(1406, "February"), nls.localize(1407, "March"), nls.localize(1408, "April"), nls.localize(1409, "May"), nls.localize(1410, "June"), nls.localize(1411, "July"), nls.localize(1412, "August"), nls.localize(1413, "September"), nls.localize(1414, "October"), nls.localize(1415, "November"), nls.localize(1416, "December")]; }
+    static { this.monthNamesShort = [nls.localize(1417, "Jan"), nls.localize(1418, "Feb"), nls.localize(1419, "Mar"), nls.localize(1420, "Apr"), nls.localize(1421, "May"), nls.localize(1422, "Jun"), nls.localize(1423, "Jul"), nls.localize(1424, "Aug"), nls.localize(1425, "Sep"), nls.localize(1426, "Oct"), nls.localize(1427, "Nov"), nls.localize(1428, "Dec")]; }
     resolve(variable) {
         const { name } = variable;
         if (name === 'CURRENT_YEAR') {
@@ -350,3 +350,4 @@ export class RandomBasedVariableResolver {
         return undefined;
     }
 }
+//# sourceMappingURL=snippetVariables.js.map

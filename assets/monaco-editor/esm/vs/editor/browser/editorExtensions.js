@@ -196,7 +196,7 @@ export class EditorAction extends EditorCommand {
                 item.menuId = MenuId.EditorContext;
             }
             if (!item.title) {
-                item.title = opts.label;
+                item.title = typeof opts.label === 'string' ? opts.label : opts.label.value;
             }
             item.when = ContextKeyExpr.and(opts.precondition, item.when);
             return item;
@@ -212,8 +212,14 @@ export class EditorAction extends EditorCommand {
     }
     constructor(opts) {
         super(EditorAction.convertOptions(opts));
-        this.label = opts.label;
-        this.alias = opts.alias;
+        if (typeof opts.label === 'string') {
+            this.label = opts.label;
+            this.alias = opts.alias ?? opts.label;
+        }
+        else {
+            this.label = opts.label.value;
+            this.alias = opts.alias ?? opts.label.original;
+        }
     }
     runEditorCommand(accessor, editor, args) {
         this.reportTelemetry(accessor, editor);
@@ -406,12 +412,17 @@ export const UndoCommand = registerCommand(new MultiCommand({
     menuOpts: [{
             menuId: MenuId.MenubarEditMenu,
             group: '1_do',
-            title: nls.localize({ key: 'miUndo', comment: ['&& denotes a mnemonic'] }, "&&Undo"),
+            title: nls.localize(64, "&&Undo"),
             order: 1
         }, {
             menuId: MenuId.CommandPalette,
             group: '',
-            title: nls.localize('undo', "Undo"),
+            title: nls.localize(65, "Undo"),
+            order: 1
+        }, {
+            menuId: MenuId.SimpleEditorContext,
+            group: '1_do',
+            title: nls.localize(66, "Undo"),
             order: 1
         }]
 }));
@@ -428,13 +439,18 @@ export const RedoCommand = registerCommand(new MultiCommand({
     menuOpts: [{
             menuId: MenuId.MenubarEditMenu,
             group: '1_do',
-            title: nls.localize({ key: 'miRedo', comment: ['&& denotes a mnemonic'] }, "&&Redo"),
+            title: nls.localize(67, "&&Redo"),
             order: 2
         }, {
             menuId: MenuId.CommandPalette,
             group: '',
-            title: nls.localize('redo', "Redo"),
+            title: nls.localize(68, "Redo"),
             order: 1
+        }, {
+            menuId: MenuId.SimpleEditorContext,
+            group: '1_do',
+            title: nls.localize(69, "Redo"),
+            order: 2
         }]
 }));
 registerCommand(new ProxyCommand(RedoCommand, { id: 'default:redo', precondition: undefined }));
@@ -449,12 +465,18 @@ export const SelectAllCommand = registerCommand(new MultiCommand({
     menuOpts: [{
             menuId: MenuId.MenubarSelectionMenu,
             group: '1_basic',
-            title: nls.localize({ key: 'miSelectAll', comment: ['&& denotes a mnemonic'] }, "&&Select All"),
+            title: nls.localize(70, "&&Select All"),
             order: 1
         }, {
             menuId: MenuId.CommandPalette,
             group: '',
-            title: nls.localize('selectAll', "Select All"),
+            title: nls.localize(71, "Select All"),
+            order: 1
+        }, {
+            menuId: MenuId.SimpleEditorContext,
+            group: '9_select',
+            title: nls.localize(72, "Select All"),
             order: 1
         }]
 }));
+//# sourceMappingURL=editorExtensions.js.map

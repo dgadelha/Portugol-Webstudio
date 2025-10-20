@@ -58,3 +58,4 @@ export class LineRangeFragment {
         return 1 - (sumDifferences / (this.totalCount + other.totalCount));
     }
 }
+//# sourceMappingURL=utils.js.map

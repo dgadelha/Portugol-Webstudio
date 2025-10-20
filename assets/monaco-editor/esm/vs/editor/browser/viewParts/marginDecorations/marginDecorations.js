@@ -79,3 +79,4 @@ export class MarginViewLineDecorationsOverlay extends DedupOverlay {
         return this._renderResult[lineNumber - startLineNumber];
     }
 }
+//# sourceMappingURL=marginDecorations.js.map

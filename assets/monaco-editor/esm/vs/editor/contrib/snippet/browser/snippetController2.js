@@ -24,6 +24,7 @@ import { localize } from '../../../../nls.js';
 import { ContextKeyExpr, IContextKeyService, RawContextKey } from '../../../../platform/contextkey/common/contextkey.js';
 import { ILogService } from '../../../../platform/log/common/log.js';
 import { SnippetSession } from './snippetSession.js';
+import { observableValue } from '../../../../base/common/observable.js';
 const _defaultOptions = {
     overwriteBefore: 0,
     overwriteAfter: 0,
@@ -39,14 +40,15 @@ let SnippetController2 = class SnippetController2 {
     static get(editor) {
         return editor.getContribution(SnippetController2_1.ID);
     }
-    static { this.InSnippetMode = new RawContextKey('inSnippetMode', false, localize('inSnippetMode', "Whether the editor in current in snippet mode")); }
-    static { this.HasNextTabstop = new RawContextKey('hasNextTabstop', false, localize('hasNextTabstop', "Whether there is a next tab stop when in snippet mode")); }
-    static { this.HasPrevTabstop = new RawContextKey('hasPrevTabstop', false, localize('hasPrevTabstop', "Whether there is a previous tab stop when in snippet mode")); }
+    static { this.InSnippetMode = new RawContextKey('inSnippetMode', false, localize(1387, "Whether the editor in current in snippet mode")); }
+    static { this.HasNextTabstop = new RawContextKey('hasNextTabstop', false, localize(1388, "Whether there is a next tab stop when in snippet mode")); }
+    static { this.HasPrevTabstop = new RawContextKey('hasPrevTabstop', false, localize(1389, "Whether there is a previous tab stop when in snippet mode")); }
     constructor(_editor, _logService, _languageFeaturesService, contextKeyService, _languageConfigurationService) {
         this._editor = _editor;
         this._logService = _logService;
         this._languageFeaturesService = _languageFeaturesService;
         this._languageConfigurationService = _languageConfigurationService;
+        this._inSnippetObservable = observableValue(this, false);
         this._snippetListener = new DisposableStore();
         this._modelVersionId = -1;
         this._inSnippet = SnippetController2_1.InSnippetMode.bindTo(contextKeyService);
@@ -55,6 +57,7 @@ let SnippetController2 = class SnippetController2 {
     }
     dispose() {
         this._inSnippet.reset();
+        this._inSnippetObservable.set(false, undefined);
         this._hasPrevTabstop.reset();
         this._hasNextTabstop.reset();
         this._session?.dispose();
@@ -92,7 +95,7 @@ let SnippetController2 = class SnippetController2 {
         if (!this._session) {
             this._modelVersionId = this._editor.getModel().getAlternativeVersionId();
             this._session = new SnippetSession(this._editor, template, opts, this._languageConfigurationService);
-            this._session.insert();
+            this._session.insert(opts.reason);
         }
         else {
             assertType(typeof template === 'string');
@@ -125,7 +128,7 @@ let SnippetController2 = class SnippetController2 {
                             sortText: 'a'.repeat(i + 1),
                             range: activeChoice.range,
                             filterText: isAnyOfOptions ? `${word}_${option.value}` : undefined,
-                            command: { id: 'jumpToNextSnippetPlaceholder', title: localize('next', 'Go to next placeholder...') }
+                            command: { id: 'jumpToNextSnippetPlaceholder', title: localize(1390, 'Go to next placeholder...') }
                         });
                     }
                     return { suggestions };
@@ -177,6 +180,7 @@ let SnippetController2 = class SnippetController2 {
             return this.cancel();
         }
         this._inSnippet.set(true);
+        this._inSnippetObservable.set(true, undefined);
         this._hasPrevTabstop.set(!this._session.isAtFirstPlaceholder);
         this._hasNextTabstop.set(!this._session.isAtLastPlaceholder);
         this._handleChoice();
@@ -208,6 +212,7 @@ let SnippetController2 = class SnippetController2 {
     }
     cancel(resetSelection = false) {
         this._inSnippet.reset();
+        this._inSnippetObservable.set(false, undefined);
         this._hasPrevTabstop.reset();
         this._hasNextTabstop.reset();
         this._snippetListener.clear();
@@ -232,6 +237,9 @@ let SnippetController2 = class SnippetController2 {
     }
     isInSnippet() {
         return Boolean(this._inSnippet.get());
+    }
+    get isInSnippetObservable() {
+        return this._inSnippetObservable;
     }
 };
 SnippetController2 = SnippetController2_1 = __decorate([
@@ -284,3 +292,4 @@ registerEditorCommand(new CommandCtor({
     // 	primary: KeyCode.Enter,
     // }
 }));
+//# sourceMappingURL=snippetController2.js.map

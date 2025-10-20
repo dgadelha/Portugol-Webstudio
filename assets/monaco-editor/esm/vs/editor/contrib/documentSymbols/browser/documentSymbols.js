@@ -21,3 +21,4 @@ CommandsRegistry.registerCommand('_executeDocumentSymbolProvider', async functio
         reference.dispose();
     }
 });
+//# sourceMappingURL=documentSymbols.js.map

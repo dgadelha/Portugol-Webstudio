@@ -13,23 +13,22 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 import { EventType, addDisposableListener, h } from '../../../../../base/browser/dom.js';
 import { Disposable } from '../../../../../base/common/lifecycle.js';
-import { autorun, autorunWithStore, derived, observableFromEvent, observableValue } from '../../../../../base/common/observable.js';
-import { derivedDisposable, derivedWithSetter } from '../../../../../base/common/observableInternal/derived.js';
-import { DiffEditorSash } from '../components/diffEditorSash.js';
-import { appendRemoveOnDispose, applyStyle, prependRemoveOnDispose } from '../utils.js';
-import { EditorGutter } from '../utils/editorGutter.js';
-import { ActionRunnerWithContext } from '../../multiDiffEditor/utils.js';
-import { LineRange, LineRangeSet } from '../../../../common/core/lineRange.js';
-import { OffsetRange } from '../../../../common/core/offsetRange.js';
-import { Range } from '../../../../common/core/range.js';
-import { TextEdit } from '../../../../common/core/textEdit.js';
-import { DetailedLineRangeMapping } from '../../../../common/diff/rangeMapping.js';
-import { TextModelText } from '../../../../common/model/textModelText.js';
+import { autorun, autorunWithStore, derived, derivedDisposable, derivedWithSetter, observableFromEvent, observableValue } from '../../../../../base/common/observable.js';
 import { MenuWorkbenchToolBar } from '../../../../../platform/actions/browser/toolbar.js';
 import { IMenuService, MenuId } from '../../../../../platform/actions/common/actions.js';
 import { IContextKeyService } from '../../../../../platform/contextkey/common/contextkey.js';
 import { WorkbenchHoverDelegate } from '../../../../../platform/hover/browser/hover.js';
 import { IInstantiationService } from '../../../../../platform/instantiation/common/instantiation.js';
+import { LineRange, LineRangeSet } from '../../../../common/core/ranges/lineRange.js';
+import { OffsetRange } from '../../../../common/core/ranges/offsetRange.js';
+import { Range } from '../../../../common/core/range.js';
+import { TextEdit } from '../../../../common/core/edits/textEdit.js';
+import { DetailedLineRangeMapping } from '../../../../common/diff/rangeMapping.js';
+import { TextModelText } from '../../../../common/model/textModelText.js';
+import { ActionRunnerWithContext } from '../../multiDiffEditor/utils.js';
+import { DiffEditorSash } from '../components/diffEditorSash.js';
+import { appendRemoveOnDispose, applyStyle, prependRemoveOnDispose } from '../utils.js';
+import { EditorGutter } from '../utils/editorGutter.js';
 const emptyArr = [];
 const width = 35;
 let DiffEditorGutter = class DiffEditorGutter extends Disposable {
@@ -93,32 +92,33 @@ let DiffEditorGutter = class DiffEditorGutter extends Disposable {
             const showSash = this._showSash.read(reader);
             return !showSash ? undefined : new DiffEditorSash(diffEditorRoot, this._sashLayout.dimensions, this._options.enableSplitViewResizing, this._boundarySashes, derivedWithSetter(this, reader => this._sashLayout.sashLeft.read(reader) - width, (v, tx) => this._sashLayout.sashLeft.set(v + width, tx)), () => this._sashLayout.resetSash());
         }).recomputeInitiallyAndOnChange(this._store);
+        const gutterItems = derived(this, reader => {
+            const model = this._diffModel.read(reader);
+            if (!model) {
+                return [];
+            }
+            const diffs = model.diff.read(reader);
+            if (!diffs) {
+                return [];
+            }
+            const selection = this._selectedDiffs.read(reader);
+            if (selection.length > 0) {
+                const m = DetailedLineRangeMapping.fromRangeMappings(selection.flatMap(s => s.rangeMappings));
+                return [
+                    new DiffGutterItem(m, true, MenuId.DiffEditorSelectionToolbar, undefined, model.model.original.uri, model.model.modified.uri)
+                ];
+            }
+            const currentDiff = this._currentDiff.read(reader);
+            return diffs.mappings.map(m => new DiffGutterItem(m.lineRangeMapping.withInnerChangesFromLineRanges(), m.lineRangeMapping === currentDiff?.lineRangeMapping, MenuId.DiffEditorHunkToolbar, undefined, model.model.original.uri, model.model.modified.uri));
+        });
         this._register(new EditorGutter(this._editors.modified, this.elements.root, {
-            getIntersectingGutterItems: (range, reader) => {
-                const model = this._diffModel.read(reader);
-                if (!model) {
-                    return [];
-                }
-                const diffs = model.diff.read(reader);
-                if (!diffs) {
-                    return [];
-                }
-                const selection = this._selectedDiffs.read(reader);
-                if (selection.length > 0) {
-                    const m = DetailedLineRangeMapping.fromRangeMappings(selection.flatMap(s => s.rangeMappings));
-                    return [
-                        new DiffGutterItem(m, true, MenuId.DiffEditorSelectionToolbar, undefined, model.model.original.uri, model.model.modified.uri)
-                    ];
-                }
-                const currentDiff = this._currentDiff.read(reader);
-                return diffs.mappings.map(m => new DiffGutterItem(m.lineRangeMapping.withInnerChangesFromLineRanges(), m.lineRangeMapping === currentDiff?.lineRangeMapping, MenuId.DiffEditorHunkToolbar, undefined, model.model.original.uri, model.model.modified.uri));
-            },
+            getIntersectingGutterItems: (range, reader) => gutterItems.read(reader),
             createView: (item, target) => {
                 return this._instantiationService.createInstance(DiffToolBar, item, target, this);
             },
         }));
         this._register(addDisposableListener(this.elements.gutter, EventType.MOUSE_WHEEL, (e) => {
-            if (this._editors.modified.getOption(104 /* EditorOption.scrollbar */).handleMouseWheel) {
+            if (this._editors.modified.getOption(117 /* EditorOption.scrollbar */).handleMouseWheel) {
                 this._editors.modified.delegateScrollFromMouseWheelEvent(e);
             }
         }, { passive: false }));
@@ -166,7 +166,7 @@ let DiffToolBar = class DiffToolBar extends Disposable {
         this._isSmall = observableValue(this, false);
         this._lastItemRange = undefined;
         this._lastViewRange = undefined;
-        const hoverDelegate = this._register(instantiationService.createInstance(WorkbenchHoverDelegate, 'element', true, { position: { hoverPosition: 1 /* HoverPosition.RIGHT */ } }));
+        const hoverDelegate = this._register(instantiationService.createInstance(WorkbenchHoverDelegate, 'element', { instantHover: true }, { position: { hoverPosition: 1 /* HoverPosition.RIGHT */ } }));
         this._register(appendRemoveOnDispose(target, this._elements.root));
         this._register(autorun(reader => {
             /** @description update showAlways */
@@ -187,8 +187,8 @@ let DiffToolBar = class DiffToolBar extends Disposable {
                 },
                 overflowBehavior: { maxItems: this._isSmall.read(reader) ? 1 : 3 },
                 hiddenItemStrategy: 0 /* HiddenItemStrategy.Ignore */,
-                actionRunner: new ActionRunnerWithContext(() => {
-                    const item = this._item.get();
+                actionRunner: store.add(new ActionRunnerWithContext(() => {
+                    const item = this._item.read(undefined);
                     const mapping = item.mapping;
                     return {
                         mapping,
@@ -196,7 +196,7 @@ let DiffToolBar = class DiffToolBar extends Disposable {
                         originalUri: item.originalUri,
                         modifiedUri: item.modifiedUri,
                     };
-                }),
+                })),
                 menuOptions: {
                     shouldForwardArgs: true,
                 },
@@ -230,3 +230,4 @@ let DiffToolBar = class DiffToolBar extends Disposable {
 DiffToolBar = __decorate([
     __param(3, IInstantiationService)
 ], DiffToolBar);
+//# sourceMappingURL=gutterFeature.js.map

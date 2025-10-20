@@ -234,3 +234,4 @@ export class LanguagesRegistry extends Disposable {
         return getLanguageIds(resource, firstLine);
     }
 }
+//# sourceMappingURL=languagesRegistry.js.map

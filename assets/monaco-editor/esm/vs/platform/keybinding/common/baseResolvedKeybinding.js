@@ -51,3 +51,4 @@ export class BaseResolvedKeybinding extends ResolvedKeybinding {
         return this._chords.map((keybinding) => this._getSingleModifierChordDispatch(keybinding));
     }
 }
+//# sourceMappingURL=baseResolvedKeybinding.js.map

@@ -7,7 +7,7 @@ import { LineRangeMapping } from '../rangeMapping.js';
 import { pushMany, compareBy, numberComparator, reverseOrder } from '../../../../base/common/arrays.js';
 import { MonotonousArray, findLastMonotonous } from '../../../../base/common/arraysFind.js';
 import { SetMap } from '../../../../base/common/map.js';
-import { LineRange, LineRangeSet } from '../../core/lineRange.js';
+import { LineRange, LineRangeSet } from '../../core/ranges/lineRange.js';
 import { LinesSliceCharSequence } from './linesSliceCharSequence.js';
 import { LineRangeFragment, isSpace } from './utils.js';
 import { MyersDiffAlgorithm } from './algorithms/myersDiffAlgorithm.js';
@@ -244,3 +244,4 @@ function removeMovesInSameDiff(changes, moves) {
     });
     return moves;
 }
+//# sourceMappingURL=computeMovedLines.js.map

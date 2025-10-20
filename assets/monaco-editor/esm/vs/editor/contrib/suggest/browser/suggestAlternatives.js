@@ -91,3 +91,4 @@ SuggestAlternatives = SuggestAlternatives_1 = __decorate([
     __param(1, IContextKeyService)
 ], SuggestAlternatives);
 export { SuggestAlternatives };
+//# sourceMappingURL=suggestAlternatives.js.map

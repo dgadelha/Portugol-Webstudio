@@ -1,13 +1,22 @@
 /*!-----------------------------------------------------------------------------
  * Copyright (c) Microsoft Corporation. All rights reserved.
- * Version: 0.52.2(404545bded1df6ffa41ea0af4e8ddb219018c6c1)
+ * Version: 0.54.0(7c2310116c57517348bbd868a21139f32454be22)
  * Released under the MIT license
  * https://github.com/microsoft/monaco-editor/blob/main/LICENSE.txt
  *-----------------------------------------------------------------------------*/
 
 
-// src/language/css/css.worker.ts
-import * as worker from "../../editor/editor.worker.js";
+// src/common/initialize.ts
+import * as worker from "../../editor/editor.worker.start.js";
+var initialized = false;
+function initialize(callback) {
+  initialized = true;
+  self.onmessage = (m) => {
+    worker.start((ctx) => {
+      return callback(ctx, m.data);
+    });
+  };
+}
 
 // node_modules/vscode-css-languageservice/lib/esm/parser/cssScanner.js
 var TokenType;
@@ -3150,9 +3159,9 @@ var FullTextDocument = class {
   }
   getText(range) {
     if (range) {
-      let start = this.offsetAt(range.start);
+      let start2 = this.offsetAt(range.start);
       let end = this.offsetAt(range.end);
-      return this._content.substring(start, end);
+      return this._content.substring(start2, end);
     }
     return this._content;
   }
@@ -3286,9 +3295,9 @@ var FullTextDocument2 = class _FullTextDocument {
   }
   getText(range) {
     if (range) {
-      const start = this.offsetAt(range.start);
+      const start2 = this.offsetAt(range.start);
       const end = this.offsetAt(range.end);
-      return this._content.substring(start, end);
+      return this._content.substring(start2, end);
     }
     return this._content;
   }
@@ -3461,10 +3470,10 @@ function computeLineOffsets(text, isAtLineStart, textOffset = 0) {
   return result;
 }
 function getWellformedRange(range) {
-  const start = range.start;
+  const start2 = range.start;
   const end = range.end;
-  if (start.line > end.line || start.line === end.line && start.character > end.character) {
-    return { start: end, end: start };
+  if (start2.line > end.line || start2.line === end.line && start2.character > end.character) {
+    return { start: end, end: start2 };
   }
   return range;
 }
@@ -4956,65 +4965,64 @@ var Parser = class {
     let curlyDepth = 0;
     let parensDepth = 0;
     let bracketsDepth = 0;
-    done:
-      while (true) {
-        switch (this.token.type) {
-          case TokenType.SemiColon:
-            if (isTopLevel()) {
-              break done;
-            }
-            break;
-          case TokenType.Exclamation:
-            if (isTopLevel()) {
-              break done;
-            }
-            break;
-          case TokenType.CurlyL:
-            curlyDepth++;
-            break;
-          case TokenType.CurlyR:
-            curlyDepth--;
-            if (curlyDepth < 0) {
-              if (onStopToken() && parensDepth === 0 && bracketsDepth === 0) {
-                break done;
-              }
-              return this.finish(node, ParseError.LeftCurlyExpected);
-            }
-            break;
-          case TokenType.ParenthesisL:
-            parensDepth++;
-            break;
-          case TokenType.ParenthesisR:
-            parensDepth--;
-            if (parensDepth < 0) {
-              if (onStopToken() && bracketsDepth === 0 && curlyDepth === 0) {
-                break done;
-              }
-              return this.finish(node, ParseError.LeftParenthesisExpected);
-            }
-            break;
-          case TokenType.BracketL:
-            bracketsDepth++;
-            break;
-          case TokenType.BracketR:
-            bracketsDepth--;
-            if (bracketsDepth < 0) {
-              return this.finish(node, ParseError.LeftSquareBracketExpected);
-            }
-            break;
-          case TokenType.BadString:
+    done: while (true) {
+      switch (this.token.type) {
+        case TokenType.SemiColon:
+          if (isTopLevel()) {
             break done;
-          case TokenType.EOF:
-            let error = ParseError.RightCurlyExpected;
-            if (bracketsDepth > 0) {
-              error = ParseError.RightSquareBracketExpected;
-            } else if (parensDepth > 0) {
-              error = ParseError.RightParenthesisExpected;
+          }
+          break;
+        case TokenType.Exclamation:
+          if (isTopLevel()) {
+            break done;
+          }
+          break;
+        case TokenType.CurlyL:
+          curlyDepth++;
+          break;
+        case TokenType.CurlyR:
+          curlyDepth--;
+          if (curlyDepth < 0) {
+            if (onStopToken() && parensDepth === 0 && bracketsDepth === 0) {
+              break done;
             }
-            return this.finish(node, error);
-        }
-        this.consumeToken();
+            return this.finish(node, ParseError.LeftCurlyExpected);
+          }
+          break;
+        case TokenType.ParenthesisL:
+          parensDepth++;
+          break;
+        case TokenType.ParenthesisR:
+          parensDepth--;
+          if (parensDepth < 0) {
+            if (onStopToken() && bracketsDepth === 0 && curlyDepth === 0) {
+              break done;
+            }
+            return this.finish(node, ParseError.LeftParenthesisExpected);
+          }
+          break;
+        case TokenType.BracketL:
+          bracketsDepth++;
+          break;
+        case TokenType.BracketR:
+          bracketsDepth--;
+          if (bracketsDepth < 0) {
+            return this.finish(node, ParseError.LeftSquareBracketExpected);
+          }
+          break;
+        case TokenType.BadString:
+          break done;
+        case TokenType.EOF:
+          let error = ParseError.RightCurlyExpected;
+          if (bracketsDepth > 0) {
+            error = ParseError.RightSquareBracketExpected;
+          } else if (parensDepth > 0) {
+            error = ParseError.RightParenthesisExpected;
+          }
+          return this.finish(node, error);
       }
+      this.consumeToken();
+    }
     return this.finish(node);
   }
   _tryToParseDeclaration(stopTokens) {
@@ -5625,67 +5633,66 @@ var Parser = class {
     let curlyDepth = 0;
     let parensDepth = 0;
     let bracketsDepth = 0;
-    done:
-      while (true) {
-        switch (this.token.type) {
-          case TokenType.SemiColon:
-            if (isTopLevel()) {
-              break done;
-            }
-            break;
-          case TokenType.EOF:
-            if (curlyDepth > 0) {
-              return this.finish(node, ParseError.RightCurlyExpected);
-            } else if (bracketsDepth > 0) {
+    done: while (true) {
+      switch (this.token.type) {
+        case TokenType.SemiColon:
+          if (isTopLevel()) {
+            break done;
+          }
+          break;
+        case TokenType.EOF:
+          if (curlyDepth > 0) {
+            return this.finish(node, ParseError.RightCurlyExpected);
+          } else if (bracketsDepth > 0) {
+            return this.finish(node, ParseError.RightSquareBracketExpected);
+          } else if (parensDepth > 0) {
+            return this.finish(node, ParseError.RightParenthesisExpected);
+          } else {
+            return this.finish(node);
+          }
+        case TokenType.CurlyL:
+          curlyLCount++;
+          curlyDepth++;
+          break;
+        case TokenType.CurlyR:
+          curlyDepth--;
+          if (curlyLCount > 0 && curlyDepth === 0) {
+            this.consumeToken();
+            if (bracketsDepth > 0) {
               return this.finish(node, ParseError.RightSquareBracketExpected);
             } else if (parensDepth > 0) {
               return this.finish(node, ParseError.RightParenthesisExpected);
-            } else {
-              return this.finish(node);
             }
-          case TokenType.CurlyL:
-            curlyLCount++;
-            curlyDepth++;
-            break;
-          case TokenType.CurlyR:
-            curlyDepth--;
-            if (curlyLCount > 0 && curlyDepth === 0) {
-              this.consumeToken();
-              if (bracketsDepth > 0) {
-                return this.finish(node, ParseError.RightSquareBracketExpected);
-              } else if (parensDepth > 0) {
-                return this.finish(node, ParseError.RightParenthesisExpected);
-              }
+            break done;
+          }
+          if (curlyDepth < 0) {
+            if (parensDepth === 0 && bracketsDepth === 0) {
               break done;
             }
-            if (curlyDepth < 0) {
-              if (parensDepth === 0 && bracketsDepth === 0) {
-                break done;
-              }
-              return this.finish(node, ParseError.LeftCurlyExpected);
-            }
-            break;
-          case TokenType.ParenthesisL:
-            parensDepth++;
-            break;
-          case TokenType.ParenthesisR:
-            parensDepth--;
-            if (parensDepth < 0) {
-              return this.finish(node, ParseError.LeftParenthesisExpected);
-            }
-            break;
-          case TokenType.BracketL:
-            bracketsDepth++;
-            break;
-          case TokenType.BracketR:
-            bracketsDepth--;
-            if (bracketsDepth < 0) {
-              return this.finish(node, ParseError.LeftSquareBracketExpected);
-            }
-            break;
-        }
-        this.consumeToken();
+            return this.finish(node, ParseError.LeftCurlyExpected);
+          }
+          break;
+        case TokenType.ParenthesisL:
+          parensDepth++;
+          break;
+        case TokenType.ParenthesisR:
+          parensDepth--;
+          if (parensDepth < 0) {
+            return this.finish(node, ParseError.LeftParenthesisExpected);
+          }
+          break;
+        case TokenType.BracketL:
+          bracketsDepth++;
+          break;
+        case TokenType.BracketR:
+          bracketsDepth--;
+          if (bracketsDepth < 0) {
+            return this.finish(node, ParseError.LeftSquareBracketExpected);
+          }
+          break;
       }
+      this.consumeToken();
+    }
     return node;
   }
   _parseUnknownAtRuleName() {
@@ -6439,21 +6446,17 @@ var LIB;
   "use strict";
   var t2 = { 470: (t3) => {
     function e2(t4) {
-      if ("string" != typeof t4)
-        throw new TypeError("Path must be a string. Received " + JSON.stringify(t4));
+      if ("string" != typeof t4) throw new TypeError("Path must be a string. Received " + JSON.stringify(t4));
     }
     function r2(t4, e3) {
       for (var r3, n3 = "", i = 0, o = -1, s = 0, h = 0; h <= t4.length; ++h) {
-        if (h < t4.length)
-          r3 = t4.charCodeAt(h);
+        if (h < t4.length) r3 = t4.charCodeAt(h);
         else {
-          if (47 === r3)
-            break;
+          if (47 === r3) break;
           r3 = 47;
         }
         if (47 === r3) {
-          if (o === h - 1 || 1 === s)
-            ;
+          if (o === h - 1 || 1 === s) ;
           else if (o !== h - 1 && 2 === s) {
             if (n3.length < 2 || 2 !== i || 46 !== n3.charCodeAt(n3.length - 1) || 46 !== n3.charCodeAt(n3.length - 2)) {
               if (n3.length > 2) {
@@ -6468,11 +6471,9 @@ var LIB;
               }
             }
             e3 && (n3.length > 0 ? n3 += "/.." : n3 = "..", i = 2);
-          } else
-            n3.length > 0 ? n3 += "/" + t4.slice(o + 1, h) : n3 = t4.slice(o + 1, h), i = h - o - 1;
+          } else n3.length > 0 ? n3 += "/" + t4.slice(o + 1, h) : n3 = t4.slice(o + 1, h), i = h - o - 1;
           o = h, s = 0;
-        } else
-          46 === r3 && -1 !== s ? ++s : s = -1;
+        } else 46 === r3 && -1 !== s ? ++s : s = -1;
       }
       return n3;
     }
@@ -6483,71 +6484,55 @@ var LIB;
       }
       return n3 = r2(n3, !i), i ? n3.length > 0 ? "/" + n3 : "/" : n3.length > 0 ? n3 : ".";
     }, normalize: function(t4) {
-      if (e2(t4), 0 === t4.length)
-        return ".";
+      if (e2(t4), 0 === t4.length) return ".";
       var n3 = 47 === t4.charCodeAt(0), i = 47 === t4.charCodeAt(t4.length - 1);
       return 0 !== (t4 = r2(t4, !n3)).length || n3 || (t4 = "."), t4.length > 0 && i && (t4 += "/"), n3 ? "/" + t4 : t4;
     }, isAbsolute: function(t4) {
       return e2(t4), t4.length > 0 && 47 === t4.charCodeAt(0);
     }, join: function() {
-      if (0 === arguments.length)
-        return ".";
+      if (0 === arguments.length) return ".";
       for (var t4, r3 = 0; r3 < arguments.length; ++r3) {
         var i = arguments[r3];
         e2(i), i.length > 0 && (void 0 === t4 ? t4 = i : t4 += "/" + i);
       }
       return void 0 === t4 ? "." : n2.normalize(t4);
     }, relative: function(t4, r3) {
-      if (e2(t4), e2(r3), t4 === r3)
-        return "";
-      if ((t4 = n2.resolve(t4)) === (r3 = n2.resolve(r3)))
-        return "";
-      for (var i = 1; i < t4.length && 47 === t4.charCodeAt(i); ++i)
-        ;
-      for (var o = t4.length, s = o - i, h = 1; h < r3.length && 47 === r3.charCodeAt(h); ++h)
-        ;
+      if (e2(t4), e2(r3), t4 === r3) return "";
+      if ((t4 = n2.resolve(t4)) === (r3 = n2.resolve(r3))) return "";
+      for (var i = 1; i < t4.length && 47 === t4.charCodeAt(i); ++i) ;
+      for (var o = t4.length, s = o - i, h = 1; h < r3.length && 47 === r3.charCodeAt(h); ++h) ;
       for (var a2 = r3.length - h, c = s < a2 ? s : a2, f2 = -1, u = 0; u <= c; ++u) {
         if (u === c) {
           if (a2 > c) {
-            if (47 === r3.charCodeAt(h + u))
-              return r3.slice(h + u + 1);
-            if (0 === u)
-              return r3.slice(h + u);
-          } else
-            s > c && (47 === t4.charCodeAt(i + u) ? f2 = u : 0 === u && (f2 = 0));
+            if (47 === r3.charCodeAt(h + u)) return r3.slice(h + u + 1);
+            if (0 === u) return r3.slice(h + u);
+          } else s > c && (47 === t4.charCodeAt(i + u) ? f2 = u : 0 === u && (f2 = 0));
           break;
         }
         var l = t4.charCodeAt(i + u);
-        if (l !== r3.charCodeAt(h + u))
-          break;
+        if (l !== r3.charCodeAt(h + u)) break;
         47 === l && (f2 = u);
       }
       var g = "";
-      for (u = i + f2 + 1; u <= o; ++u)
-        u !== o && 47 !== t4.charCodeAt(u) || (0 === g.length ? g += ".." : g += "/..");
+      for (u = i + f2 + 1; u <= o; ++u) u !== o && 47 !== t4.charCodeAt(u) || (0 === g.length ? g += ".." : g += "/..");
       return g.length > 0 ? g + r3.slice(h + f2) : (h += f2, 47 === r3.charCodeAt(h) && ++h, r3.slice(h));
     }, _makeLong: function(t4) {
       return t4;
     }, dirname: function(t4) {
-      if (e2(t4), 0 === t4.length)
-        return ".";
-      for (var r3 = t4.charCodeAt(0), n3 = 47 === r3, i = -1, o = true, s = t4.length - 1; s >= 1; --s)
-        if (47 === (r3 = t4.charCodeAt(s))) {
-          if (!o) {
-            i = s;
-            break;
-          }
-        } else
-          o = false;
+      if (e2(t4), 0 === t4.length) return ".";
+      for (var r3 = t4.charCodeAt(0), n3 = 47 === r3, i = -1, o = true, s = t4.length - 1; s >= 1; --s) if (47 === (r3 = t4.charCodeAt(s))) {
+        if (!o) {
+          i = s;
+          break;
+        }
+      } else o = false;
       return -1 === i ? n3 ? "/" : "." : n3 && 1 === i ? "//" : t4.slice(0, i);
     }, basename: function(t4, r3) {
-      if (void 0 !== r3 && "string" != typeof r3)
-        throw new TypeError('"ext" argument must be a string');
+      if (void 0 !== r3 && "string" != typeof r3) throw new TypeError('"ext" argument must be a string');
       e2(t4);
       var n3, i = 0, o = -1, s = true;
       if (void 0 !== r3 && r3.length > 0 && r3.length <= t4.length) {
-        if (r3.length === t4.length && r3 === t4)
-          return "";
+        if (r3.length === t4.length && r3 === t4) return "";
         var h = r3.length - 1, a2 = -1;
         for (n3 = t4.length - 1; n3 >= 0; --n3) {
           var c = t4.charCodeAt(n3);
@@ -6556,26 +6541,22 @@ var LIB;
               i = n3 + 1;
               break;
             }
-          } else
-            -1 === a2 && (s = false, a2 = n3 + 1), h >= 0 && (c === r3.charCodeAt(h) ? -1 == --h && (o = n3) : (h = -1, o = a2));
+          } else -1 === a2 && (s = false, a2 = n3 + 1), h >= 0 && (c === r3.charCodeAt(h) ? -1 == --h && (o = n3) : (h = -1, o = a2));
         }
         return i === o ? o = a2 : -1 === o && (o = t4.length), t4.slice(i, o);
       }
-      for (n3 = t4.length - 1; n3 >= 0; --n3)
-        if (47 === t4.charCodeAt(n3)) {
-          if (!s) {
-            i = n3 + 1;
-            break;
-          }
-        } else
-          -1 === o && (s = false, o = n3 + 1);
+      for (n3 = t4.length - 1; n3 >= 0; --n3) if (47 === t4.charCodeAt(n3)) {
+        if (!s) {
+          i = n3 + 1;
+          break;
+        }
+      } else -1 === o && (s = false, o = n3 + 1);
       return -1 === o ? "" : t4.slice(i, o);
     }, extname: function(t4) {
       e2(t4);
       for (var r3 = -1, n3 = 0, i = -1, o = true, s = 0, h = t4.length - 1; h >= 0; --h) {
         var a2 = t4.charCodeAt(h);
-        if (47 !== a2)
-          -1 === i && (o = false, i = h + 1), 46 === a2 ? -1 === r3 ? r3 = h : 1 !== s && (s = 1) : -1 !== r3 && (s = -1);
+        if (47 !== a2) -1 === i && (o = false, i = h + 1), 46 === a2 ? -1 === r3 ? r3 = h : 1 !== s && (s = 1) : -1 !== r3 && (s = -1);
         else if (!o) {
           n3 = h + 1;
           break;
@@ -6583,64 +6564,53 @@ var LIB;
       }
       return -1 === r3 || -1 === i || 0 === s || 1 === s && r3 === i - 1 && r3 === n3 + 1 ? "" : t4.slice(r3, i);
     }, format: function(t4) {
-      if (null === t4 || "object" != typeof t4)
-        throw new TypeError('The "pathObject" argument must be of type Object. Received type ' + typeof t4);
-      return function(t5, e3) {
+      if (null === t4 || "object" != typeof t4) throw new TypeError('The "pathObject" argument must be of type Object. Received type ' + typeof t4);
+      return (function(t5, e3) {
         var r3 = e3.dir || e3.root, n3 = e3.base || (e3.name || "") + (e3.ext || "");
         return r3 ? r3 === e3.root ? r3 + n3 : r3 + "/" + n3 : n3;
-      }(0, t4);
+      })(0, t4);
     }, parse: function(t4) {
       e2(t4);
       var r3 = { root: "", dir: "", base: "", ext: "", name: "" };
-      if (0 === t4.length)
-        return r3;
+      if (0 === t4.length) return r3;
       var n3, i = t4.charCodeAt(0), o = 47 === i;
       o ? (r3.root = "/", n3 = 1) : n3 = 0;
-      for (var s = -1, h = 0, a2 = -1, c = true, f2 = t4.length - 1, u = 0; f2 >= n3; --f2)
-        if (47 !== (i = t4.charCodeAt(f2)))
-          -1 === a2 && (c = false, a2 = f2 + 1), 46 === i ? -1 === s ? s = f2 : 1 !== u && (u = 1) : -1 !== s && (u = -1);
-        else if (!c) {
-          h = f2 + 1;
-          break;
-        }
+      for (var s = -1, h = 0, a2 = -1, c = true, f2 = t4.length - 1, u = 0; f2 >= n3; --f2) if (47 !== (i = t4.charCodeAt(f2))) -1 === a2 && (c = false, a2 = f2 + 1), 46 === i ? -1 === s ? s = f2 : 1 !== u && (u = 1) : -1 !== s && (u = -1);
+      else if (!c) {
+        h = f2 + 1;
+        break;
+      }
       return -1 === s || -1 === a2 || 0 === u || 1 === u && s === a2 - 1 && s === h + 1 ? -1 !== a2 && (r3.base = r3.name = 0 === h && o ? t4.slice(1, a2) : t4.slice(h, a2)) : (0 === h && o ? (r3.name = t4.slice(1, s), r3.base = t4.slice(1, a2)) : (r3.name = t4.slice(h, s), r3.base = t4.slice(h, a2)), r3.ext = t4.slice(s, a2)), h > 0 ? r3.dir = t4.slice(0, h - 1) : o && (r3.dir = "/"), r3;
     }, sep: "/", delimiter: ":", win32: null, posix: null };
     n2.posix = n2, t3.exports = n2;
   } }, e = {};
   function r(n2) {
     var i = e[n2];
-    if (void 0 !== i)
-      return i.exports;
+    if (void 0 !== i) return i.exports;
     var o = e[n2] = { exports: {} };
     return t2[n2](o, o.exports, r), o.exports;
   }
   r.d = (t3, e2) => {
-    for (var n2 in e2)
-      r.o(e2, n2) && !r.o(t3, n2) && Object.defineProperty(t3, n2, { enumerable: true, get: e2[n2] });
+    for (var n2 in e2) r.o(e2, n2) && !r.o(t3, n2) && Object.defineProperty(t3, n2, { enumerable: true, get: e2[n2] });
   }, r.o = (t3, e2) => Object.prototype.hasOwnProperty.call(t3, e2), r.r = (t3) => {
     "undefined" != typeof Symbol && Symbol.toStringTag && Object.defineProperty(t3, Symbol.toStringTag, { value: "Module" }), Object.defineProperty(t3, "__esModule", { value: true });
   };
   var n = {};
   (() => {
     let t3;
-    if (r.r(n), r.d(n, { URI: () => f2, Utils: () => P }), "object" == typeof process)
-      t3 = "win32" === process.platform;
+    if (r.r(n), r.d(n, { URI: () => f2, Utils: () => P }), "object" == typeof process) t3 = "win32" === process.platform;
     else if ("object" == typeof navigator) {
       let e3 = navigator.userAgent;
       t3 = e3.indexOf("Windows") >= 0;
     }
     const e2 = /^\w[\w\d+.-]*$/, i = /^\//, o = /^\/\//;
     function s(t4, r2) {
-      if (!t4.scheme && r2)
-        throw new Error(`[UriError]: Scheme is missing: {scheme: "", authority: "${t4.authority}", path: "${t4.path}", query: "${t4.query}", fragment: "${t4.fragment}"}`);
-      if (t4.scheme && !e2.test(t4.scheme))
-        throw new Error("[UriError]: Scheme contains illegal characters.");
+      if (!t4.scheme && r2) throw new Error(`[UriError]: Scheme is missing: {scheme: "", authority: "${t4.authority}", path: "${t4.path}", query: "${t4.query}", fragment: "${t4.fragment}"}`);
+      if (t4.scheme && !e2.test(t4.scheme)) throw new Error("[UriError]: Scheme contains illegal characters.");
       if (t4.path) {
         if (t4.authority) {
-          if (!i.test(t4.path))
-            throw new Error('[UriError]: If a URI contains an authority component, then the path component must either be empty or begin with a slash ("/") character');
-        } else if (o.test(t4.path))
-          throw new Error('[UriError]: If a URI does not contain an authority component, then the path cannot begin with two slash characters ("//")');
+          if (!i.test(t4.path)) throw new Error('[UriError]: If a URI contains an authority component, then the path component must either be empty or begin with a slash ("/") character');
+        } else if (o.test(t4.path)) throw new Error('[UriError]: If a URI does not contain an authority component, then the path cannot begin with two slash characters ("//")');
       }
     }
     const h = "", a2 = "/", c = /^(([^:/?#]+?):)?(\/\/([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?/;
@@ -6654,9 +6624,9 @@ var LIB;
       query;
       fragment;
       constructor(t4, e3, r2, n2, i2, o2 = false) {
-        "object" == typeof t4 ? (this.scheme = t4.scheme || h, this.authority = t4.authority || h, this.path = t4.path || h, this.query = t4.query || h, this.fragment = t4.fragment || h) : (this.scheme = /* @__PURE__ */ function(t5, e4) {
+        "object" == typeof t4 ? (this.scheme = t4.scheme || h, this.authority = t4.authority || h, this.path = t4.path || h, this.query = t4.query || h, this.fragment = t4.fragment || h) : (this.scheme = /* @__PURE__ */ (function(t5, e4) {
           return t5 || e4 ? t5 : "file";
-        }(t4, o2), this.authority = e3 || h, this.path = function(t5, e4) {
+        })(t4, o2), this.authority = e3 || h, this.path = (function(t5, e4) {
           switch (t5) {
             case "https":
             case "http":
@@ -6664,14 +6634,13 @@ var LIB;
               e4 ? e4[0] !== a2 && (e4 = a2 + e4) : e4 = a2;
           }
           return e4;
-        }(this.scheme, r2 || h), this.query = n2 || h, this.fragment = i2 || h, s(this, o2));
+        })(this.scheme, r2 || h), this.query = n2 || h, this.fragment = i2 || h, s(this, o2));
       }
       get fsPath() {
         return m(this, false);
       }
       with(t4) {
-        if (!t4)
-          return this;
+        if (!t4) return this;
         let { scheme: e3, authority: r2, path: n2, query: i2, fragment: o2 } = t4;
         return void 0 === e3 ? e3 = this.scheme : null === e3 && (e3 = h), void 0 === r2 ? r2 = this.authority : null === r2 && (r2 = h), void 0 === n2 ? n2 = this.path : null === n2 && (n2 = h), void 0 === i2 ? i2 = this.query : null === i2 && (i2 = h), void 0 === o2 ? o2 = this.fragment : null === o2 && (o2 = h), e3 === this.scheme && r2 === this.authority && n2 === this.path && i2 === this.query && o2 === this.fragment ? this : new l(e3, r2, n2, i2, o2);
       }
@@ -6699,8 +6668,7 @@ var LIB;
       }
       static revive(t4) {
         if (t4) {
-          if (t4 instanceof f2)
-            return t4;
+          if (t4 instanceof f2) return t4;
           {
             const e3 = new l(t4);
             return e3._formatted = t4.external, e3._fsPath = t4._sep === u ? t4.fsPath : null, e3;
@@ -6729,8 +6697,7 @@ var LIB;
       let n2, i2 = -1;
       for (let o2 = 0; o2 < t4.length; o2++) {
         const s2 = t4.charCodeAt(o2);
-        if (s2 >= 97 && s2 <= 122 || s2 >= 65 && s2 <= 90 || s2 >= 48 && s2 <= 57 || 45 === s2 || 46 === s2 || 95 === s2 || 126 === s2 || e3 && 47 === s2 || r2 && 91 === s2 || r2 && 93 === s2 || r2 && 58 === s2)
-          -1 !== i2 && (n2 += encodeURIComponent(t4.substring(i2, o2)), i2 = -1), void 0 !== n2 && (n2 += t4.charAt(o2));
+        if (s2 >= 97 && s2 <= 122 || s2 >= 65 && s2 <= 90 || s2 >= 48 && s2 <= 57 || 45 === s2 || 46 === s2 || 95 === s2 || 126 === s2 || e3 && 47 === s2 || r2 && 91 === s2 || r2 && 93 === s2 || r2 && 58 === s2) -1 !== i2 && (n2 += encodeURIComponent(t4.substring(i2, o2)), i2 = -1), void 0 !== n2 && (n2 += t4.charAt(o2));
         else {
           void 0 === n2 && (n2 = t4.substr(0, o2));
           const e4 = g[s2];
@@ -6783,12 +6750,12 @@ var LIB;
     }
     const b = /(%[0-9A-Za-z][0-9A-Za-z])+/g;
     function C(t4) {
-      return t4.match(b) ? t4.replace(b, (t5) => v(t5)) : t4;
+      return t4.match(b) ? t4.replace(b, ((t5) => v(t5))) : t4;
     }
     var A2 = r(470);
     const w = A2.posix || A2, x = "/";
     var P;
-    !function(t4) {
+    !(function(t4) {
       t4.joinPath = function(t5, ...e3) {
         return t5.with({ path: w.join(t5.path, ...e3) });
       }, t4.resolvePath = function(t5, ...e3) {
@@ -6797,8 +6764,7 @@ var LIB;
         let i2 = w.resolve(r2, ...e3);
         return n2 && i2[0] === x && !t5.authority && (i2 = i2.substring(1)), t5.with({ path: i2 });
       }, t4.dirname = function(t5) {
-        if (0 === t5.path.length || t5.path === x)
-          return t5;
+        if (0 === t5.path.length || t5.path === x) return t5;
         let e3 = w.dirname(t5.path);
         return 1 === e3.length && 46 === e3.charCodeAt(0) && (e3 = ""), t5.with({ path: e3 });
       }, t4.basename = function(t5) {
@@ -6806,7 +6772,7 @@ var LIB;
       }, t4.extname = function(t5) {
         return w.extname(t5.path);
       };
-    }(P || (P = {}));
+    })(P || (P = {}));
   })(), LIB = n;
 })();
 var { URI: URI2, Utils } = LIB;
@@ -6950,9 +6916,9 @@ function shiftPosition(pos, offset) {
   return Position.create(pos.line, pos.character + offset);
 }
 function shiftRange(range, startOffset, endOffset) {
-  const start = shiftPosition(range.start, startOffset);
+  const start2 = shiftPosition(range.start, startOffset);
   const end = shiftPosition(range.end, endOffset);
-  return Range.create(start, end);
+  return Range.create(start2, end);
 }
 
 // node_modules/vscode-css-languageservice/lib/esm/services/cssCompletion.js
@@ -7398,9 +7364,9 @@ var CSSCompletion = class {
   getCompletionRange(existingNode) {
     if (existingNode && existingNode.offset <= this.offset && this.offset <= existingNode.end) {
       const end = existingNode.end !== -1 ? this.textDocument.positionAt(existingNode.end) : this.position;
-      const start = this.textDocument.positionAt(existingNode.offset);
-      if (start.line === end.line) {
-        return Range.create(start, end);
+      const start2 = this.textDocument.positionAt(existingNode.offset);
+      if (start2.line === end.line) {
+        return Range.create(start2, end);
       }
     }
     return this.defaultReplaceRange;
@@ -8172,6 +8138,7 @@ function toElement(node, parentElement) {
         if (child.matches("@at-root")) {
           return result;
         }
+      // fall through
       case NodeType.ElementNameSelector:
         const text = child.getText();
         result.addAttr("name", text === "*" ? "element" : unescape(text));
@@ -8292,97 +8259,96 @@ var SelectorPrinting = class {
     };
     const calculateScore = (node2) => {
       const specificity2 = new Specificity();
-      elementLoop:
-        for (const element of node2.getChildren()) {
-          switch (element.type) {
-            case NodeType.IdentifierSelector:
-              specificity2.id++;
+      elementLoop: for (const element of node2.getChildren()) {
+        switch (element.type) {
+          case NodeType.IdentifierSelector:
+            specificity2.id++;
+            break;
+          case NodeType.ClassSelector:
+          case NodeType.AttributeSelector:
+            specificity2.attr++;
+            break;
+          case NodeType.ElementNameSelector:
+            if (element.matches("*")) {
               break;
-            case NodeType.ClassSelector:
-            case NodeType.AttributeSelector:
-              specificity2.attr++;
-              break;
-            case NodeType.ElementNameSelector:
-              if (element.matches("*")) {
-                break;
+            }
+            specificity2.tag++;
+            break;
+          case NodeType.PseudoSelector:
+            const text = element.getText();
+            const childElements = element.getChildren();
+            if (this.isPseudoElementIdentifier(text)) {
+              if (text.match(/^::slotted/i) && childElements.length > 0) {
+                specificity2.tag++;
+                let mostSpecificListItem = calculateMostSpecificListItem(childElements);
+                specificity2.id += mostSpecificListItem.id;
+                specificity2.attr += mostSpecificListItem.attr;
+                specificity2.tag += mostSpecificListItem.tag;
+                continue elementLoop;
               }
               specificity2.tag++;
-              break;
-            case NodeType.PseudoSelector:
-              const text = element.getText();
-              const childElements = element.getChildren();
-              if (this.isPseudoElementIdentifier(text)) {
-                if (text.match(/^::slotted/i) && childElements.length > 0) {
-                  specificity2.tag++;
-                  let mostSpecificListItem = calculateMostSpecificListItem(childElements);
-                  specificity2.id += mostSpecificListItem.id;
-                  specificity2.attr += mostSpecificListItem.attr;
-                  specificity2.tag += mostSpecificListItem.tag;
-                  continue elementLoop;
-                }
-                specificity2.tag++;
-                continue elementLoop;
-              }
-              if (text.match(/^:where/i)) {
-                continue elementLoop;
-              }
-              if (text.match(/^:(?:not|has|is)/i) && childElements.length > 0) {
-                let mostSpecificListItem = calculateMostSpecificListItem(childElements);
-                specificity2.id += mostSpecificListItem.id;
-                specificity2.attr += mostSpecificListItem.attr;
-                specificity2.tag += mostSpecificListItem.tag;
-                continue elementLoop;
-              }
-              if (text.match(/^:(?:host|host-context)/i) && childElements.length > 0) {
-                specificity2.attr++;
-                let mostSpecificListItem = calculateMostSpecificListItem(childElements);
-                specificity2.id += mostSpecificListItem.id;
-                specificity2.attr += mostSpecificListItem.attr;
-                specificity2.tag += mostSpecificListItem.tag;
-                continue elementLoop;
-              }
-              if (text.match(/^:(?:nth-child|nth-last-child)/i) && childElements.length > 0) {
-                specificity2.attr++;
-                if (childElements.length === 3 && childElements[1].type === 23) {
-                  let mostSpecificListItem = calculateMostSpecificListItem(childElements[2].getChildren());
-                  specificity2.id += mostSpecificListItem.id;
-                  specificity2.attr += mostSpecificListItem.attr;
-                  specificity2.tag += mostSpecificListItem.tag;
-                  continue elementLoop;
-                }
-                const parser = new Parser();
-                const pseudoSelectorText = childElements[1].getText();
-                parser.scanner.setSource(pseudoSelectorText);
-                const firstToken = parser.scanner.scan();
-                const secondToken = parser.scanner.scan();
-                if (firstToken.text === "n" || firstToken.text === "-n" && secondToken.text === "of") {
-                  const complexSelectorListNodes = [];
-                  const complexSelectorText = pseudoSelectorText.slice(secondToken.offset + 2);
-                  const complexSelectorArray = complexSelectorText.split(",");
-                  for (const selector of complexSelectorArray) {
-                    const node3 = parser.internalParse(selector, parser._parseSelector);
-                    if (node3) {
-                      complexSelectorListNodes.push(node3);
-                    }
-                  }
-                  let mostSpecificListItem = calculateMostSpecificListItem(complexSelectorListNodes);
-                  specificity2.id += mostSpecificListItem.id;
-                  specificity2.attr += mostSpecificListItem.attr;
-                  specificity2.tag += mostSpecificListItem.tag;
-                  continue elementLoop;
-                }
-                continue elementLoop;
-              }
-              specificity2.attr++;
               continue elementLoop;
-          }
-          if (element.getChildren().length > 0) {
-            const itemSpecificity = calculateScore(element);
-            specificity2.id += itemSpecificity.id;
-            specificity2.attr += itemSpecificity.attr;
-            specificity2.tag += itemSpecificity.tag;
-          }
+            }
+            if (text.match(/^:where/i)) {
+              continue elementLoop;
+            }
+            if (text.match(/^:(?:not|has|is)/i) && childElements.length > 0) {
+              let mostSpecificListItem = calculateMostSpecificListItem(childElements);
+              specificity2.id += mostSpecificListItem.id;
+              specificity2.attr += mostSpecificListItem.attr;
+              specificity2.tag += mostSpecificListItem.tag;
+              continue elementLoop;
+            }
+            if (text.match(/^:(?:host|host-context)/i) && childElements.length > 0) {
+              specificity2.attr++;
+              let mostSpecificListItem = calculateMostSpecificListItem(childElements);
+              specificity2.id += mostSpecificListItem.id;
+              specificity2.attr += mostSpecificListItem.attr;
+              specificity2.tag += mostSpecificListItem.tag;
+              continue elementLoop;
+            }
+            if (text.match(/^:(?:nth-child|nth-last-child)/i) && childElements.length > 0) {
+              specificity2.attr++;
+              if (childElements.length === 3 && childElements[1].type === 23) {
+                let mostSpecificListItem = calculateMostSpecificListItem(childElements[2].getChildren());
+                specificity2.id += mostSpecificListItem.id;
+                specificity2.attr += mostSpecificListItem.attr;
+                specificity2.tag += mostSpecificListItem.tag;
+                continue elementLoop;
+              }
+              const parser = new Parser();
+              const pseudoSelectorText = childElements[1].getText();
+              parser.scanner.setSource(pseudoSelectorText);
+              const firstToken = parser.scanner.scan();
+              const secondToken = parser.scanner.scan();
+              if (firstToken.text === "n" || firstToken.text === "-n" && secondToken.text === "of") {
+                const complexSelectorListNodes = [];
+                const complexSelectorText = pseudoSelectorText.slice(secondToken.offset + 2);
+                const complexSelectorArray = complexSelectorText.split(",");
+                for (const selector of complexSelectorArray) {
+                  const node3 = parser.internalParse(selector, parser._parseSelector);
+                  if (node3) {
+                    complexSelectorListNodes.push(node3);
+                  }
+                }
+                let mostSpecificListItem = calculateMostSpecificListItem(complexSelectorListNodes);
+                specificity2.id += mostSpecificListItem.id;
+                specificity2.attr += mostSpecificListItem.attr;
+                specificity2.tag += mostSpecificListItem.tag;
+                continue elementLoop;
+              }
+              continue elementLoop;
+            }
+            specificity2.attr++;
+            continue elementLoop;
         }
+        if (element.getChildren().length > 0) {
+          const itemSpecificity = calculateScore(element);
+          specificity2.id += itemSpecificity.id;
+          specificity2.attr += itemSpecificity.attr;
+          specificity2.tag += itemSpecificity.tag;
+        }
+      }
       return specificity2;
     };
     const specificity = calculateScore(node);
@@ -12174,6 +12140,10 @@ function computeFoldingRanges(document) {
         }
         break;
       }
+      /**
+       * In CSS, there is no single line comment prefixed with //
+       * All comments are marked as `Comment`
+       */
       case TokenType.Comment: {
         const commentRegionMarkerToDelimiter = (marker) => {
           if (marker === "#region") {
@@ -12271,7 +12241,7 @@ var legacy_beautify_css;
     ,
     /* 2 */
     /***/
-    function(module) {
+    (function(module) {
       function OutputLine(parent) {
         this.__parent = parent;
         this.__character_count = 0;
@@ -12588,13 +12558,13 @@ var legacy_beautify_css;
         }
       };
       module.exports.Output = Output;
-    },
+    }),
     ,
     ,
     ,
     /* 6 */
     /***/
-    function(module) {
+    (function(module) {
       function Options(options, merge_child_field) {
         this.raw_options = _mergeOpts(options, merge_child_field);
         this.disabled = this._get_boolean("disabled");
@@ -12714,11 +12684,11 @@ var legacy_beautify_css;
       module.exports.Options = Options;
       module.exports.normalizeOpts = _normalizeOpts;
       module.exports.mergeOpts = _mergeOpts;
-    },
+    }),
     ,
     /* 8 */
     /***/
-    function(module) {
+    (function(module) {
       var regexp_has_sticky = RegExp.prototype.hasOwnProperty("sticky");
       function InputScanner(input_string) {
         this.__input = input_string || "";
@@ -12837,24 +12807,24 @@ var legacy_beautify_css;
         return RegExp(literal_string.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&"));
       };
       InputScanner.prototype.peekUntilAfter = function(pattern) {
-        var start = this.__position;
+        var start2 = this.__position;
         var val = this.readUntilAfter(pattern);
-        this.__position = start;
+        this.__position = start2;
         return val;
       };
       InputScanner.prototype.lookBack = function(testVal) {
-        var start = this.__position - 1;
-        return start >= testVal.length && this.__input.substring(start - testVal.length, start).toLowerCase() === testVal;
+        var start2 = this.__position - 1;
+        return start2 >= testVal.length && this.__input.substring(start2 - testVal.length, start2).toLowerCase() === testVal;
       };
       module.exports.InputScanner = InputScanner;
-    },
+    }),
     ,
     ,
     ,
     ,
     /* 13 */
     /***/
-    function(module) {
+    (function(module) {
       function Directives(start_block_pattern, end_block_pattern) {
         start_block_pattern = typeof start_block_pattern === "string" ? start_block_pattern : start_block_pattern.source;
         end_block_pattern = typeof end_block_pattern === "string" ? end_block_pattern : end_block_pattern.source;
@@ -12879,11 +12849,11 @@ var legacy_beautify_css;
         return input.readUntilAfter(this.__directives_end_ignore_pattern);
       };
       module.exports.Directives = Directives;
-    },
+    }),
     ,
     /* 15 */
     /***/
-    function(module, __unused_webpack_exports, __webpack_require__2) {
+    (function(module, __unused_webpack_exports, __webpack_require__2) {
       var Beautifier = __webpack_require__2(16).Beautifier, Options = __webpack_require__2(17).Options;
       function css_beautify2(source_text, options) {
         var beautifier = new Beautifier(source_text, options);
@@ -12893,10 +12863,10 @@ var legacy_beautify_css;
       module.exports.defaultOptions = function() {
         return new Options();
       };
-    },
+    }),
     /* 16 */
     /***/
-    function(module, __unused_webpack_exports, __webpack_require__2) {
+    (function(module, __unused_webpack_exports, __webpack_require__2) {
       var Options = __webpack_require__2(17).Options;
       var Output = __webpack_require__2(2).Output;
       var InputScanner = __webpack_require__2(8).InputScanner;
@@ -13297,10 +13267,10 @@ var legacy_beautify_css;
         return sweetCode;
       };
       module.exports.Beautifier = Beautifier;
-    },
+    }),
     /* 17 */
     /***/
-    function(module, __unused_webpack_exports, __webpack_require__2) {
+    (function(module, __unused_webpack_exports, __webpack_require__2) {
       var BaseOptions = __webpack_require__2(6).Options;
       function Options(options) {
         BaseOptions.call(this, options, "css");
@@ -13320,7 +13290,7 @@ var legacy_beautify_css;
       }
       Options.prototype = new BaseOptions();
       module.exports.Options = Options;
-    }
+    })
     /******/
   ];
   var __webpack_module_cache__ = {};
@@ -40025,7 +39995,7 @@ var CSSWorker = class {
 
 // src/language/css/css.worker.ts
 self.onmessage = () => {
-  worker.initialize((ctx, createData) => {
+  initialize((ctx, createData) => {
     return new CSSWorker(ctx, createData);
   });
 };

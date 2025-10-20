@@ -22,7 +22,7 @@ import { Emitter } from '../../../base/common/event.js';
 import { Iterable } from '../../../base/common/iterator.js';
 import { DisposableStore } from '../../../base/common/lifecycle.js';
 import { localize } from '../../../nls.js';
-import { createAndFillInActionBarActions } from './menuEntryActionViewItem.js';
+import { createActionViewItem, getActionBarActions } from './menuEntryActionViewItem.js';
 import { IMenuService, MenuItemAction, SubmenuItemAction } from '../common/actions.js';
 import { createConfigureKeybindingAction } from '../common/menuService.js';
 import { ICommandService } from '../../commands/common/commands.js';
@@ -30,6 +30,8 @@ import { IContextKeyService } from '../../contextkey/common/contextkey.js';
 import { IContextMenuService } from '../../contextview/browser/contextView.js';
 import { IKeybindingService } from '../../keybinding/common/keybinding.js';
 import { ITelemetryService } from '../../telemetry/common/telemetry.js';
+import { IActionViewItemService } from './actionViewItemService.js';
+import { IInstantiationService } from '../../instantiation/common/instantiation.js';
 /**
  * The `WorkbenchToolBar` does
  * - support hiding of menu items
@@ -171,7 +173,7 @@ let WorkbenchToolBar = class WorkbenchToolBar extends ToolBar {
                     else {
                         primaryActions.push(toAction({
                             id: 'label',
-                            label: localize('hide', "Hide"),
+                            label: localize(1634, "Hide"),
                             enabled: false,
                             run() { }
                         }));
@@ -186,7 +188,7 @@ let WorkbenchToolBar = class WorkbenchToolBar extends ToolBar {
                     actions.push(new Separator());
                     actions.push(toAction({
                         id: 'resetThisMenu',
-                        label: localize('resetThisMenu', "Reset Menu"),
+                        label: localize(1635, "Reset Menu"),
                         run: () => this._menuService.resetHiddenStates(menuIds)
                     }));
                 }
@@ -221,22 +223,39 @@ export { WorkbenchToolBar };
  * *Note* that Manual updates via `setActions` are NOT supported.
  */
 let MenuWorkbenchToolBar = class MenuWorkbenchToolBar extends WorkbenchToolBar {
-    constructor(container, menuId, options, menuService, contextKeyService, contextMenuService, keybindingService, commandService, telemetryService) {
-        super(container, { resetMenu: menuId, ...options }, menuService, contextKeyService, contextMenuService, keybindingService, commandService, telemetryService);
+    get onDidChangeMenuItems() { return this._onDidChangeMenuItems.event; }
+    constructor(container, menuId, options, menuService, contextKeyService, contextMenuService, keybindingService, commandService, telemetryService, actionViewService, instantiationService) {
+        super(container, {
+            resetMenu: menuId,
+            ...options,
+            actionViewItemProvider: (action, opts) => {
+                let provider = actionViewService.lookUp(menuId, action instanceof SubmenuItemAction ? action.item.submenu.id : action.id);
+                if (!provider) {
+                    provider = options?.actionViewItemProvider;
+                }
+                const viewItem = provider?.(action, opts, instantiationService, getWindow(container).vscodeWindowId);
+                if (viewItem) {
+                    return viewItem;
+                }
+                return createActionViewItem(instantiationService, action, opts);
+            }
+        }, menuService, contextKeyService, contextMenuService, keybindingService, commandService, telemetryService);
         this._onDidChangeMenuItems = this._store.add(new Emitter());
-        this.onDidChangeMenuItems = this._onDidChangeMenuItems.event;
         // update logic
-        const menu = this._store.add(menuService.createMenu(menuId, contextKeyService, { emitEventsForSubmenuChanges: true }));
+        const menu = this._store.add(menuService.createMenu(menuId, contextKeyService, { emitEventsForSubmenuChanges: true, eventDebounceDelay: options?.eventDebounceDelay }));
         const updateToolbar = () => {
-            const primary = [];
-            const secondary = [];
-            createAndFillInActionBarActions(menu, options?.menuOptions, { primary, secondary }, options?.toolbarOptions?.primaryGroup, options?.toolbarOptions?.shouldInlineSubmenu, options?.toolbarOptions?.useSeparatorsInPrimaryActions);
+            const { primary, secondary } = getActionBarActions(menu.getActions(options?.menuOptions), options?.toolbarOptions?.primaryGroup, options?.toolbarOptions?.shouldInlineSubmenu, options?.toolbarOptions?.useSeparatorsInPrimaryActions);
             container.classList.toggle('has-no-actions', primary.length === 0 && secondary.length === 0);
             super.setActions(primary, secondary);
         };
         this._store.add(menu.onDidChange(() => {
             updateToolbar();
             this._onDidChangeMenuItems.fire(this);
+        }));
+        this._store.add(actionViewService.onDidChange(e => {
+            if (e === menuId) {
+                updateToolbar();
+            }
         }));
         updateToolbar();
     }
@@ -253,6 +272,9 @@ MenuWorkbenchToolBar = __decorate([
     __param(5, IContextMenuService),
     __param(6, IKeybindingService),
     __param(7, ICommandService),
-    __param(8, ITelemetryService)
+    __param(8, ITelemetryService),
+    __param(9, IActionViewItemService),
+    __param(10, IInstantiationService)
 ], MenuWorkbenchToolBar);
 export { MenuWorkbenchToolBar };
+//# sourceMappingURL=toolbar.js.map

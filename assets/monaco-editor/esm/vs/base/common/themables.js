@@ -6,7 +6,7 @@ import { Codicon } from './codicons.js';
 export var ThemeColor;
 (function (ThemeColor) {
     function isThemeColor(obj) {
-        return obj && typeof obj === 'object' && typeof obj.id === 'string';
+        return !!obj && typeof obj === 'object' && typeof obj.id === 'string';
     }
     ThemeColor.isThemeColor = isThemeColor;
 })(ThemeColor || (ThemeColor = {}));
@@ -39,7 +39,7 @@ export var ThemeIcon;
     }
     ThemeIcon.asCSSSelector = asCSSSelector;
     function isThemeIcon(obj) {
-        return obj && typeof obj === 'object' && typeof obj.id === 'string' && (typeof obj.color === 'undefined' || ThemeColor.isThemeColor(obj.color));
+        return !!obj && typeof obj === 'object' && typeof obj.id === 'string' && (typeof obj.color === 'undefined' || ThemeColor.isThemeColor(obj.color));
     }
     ThemeIcon.isThemeIcon = isThemeIcon;
     const _regexFromString = new RegExp(`^\\$\\((${ThemeIcon.iconNameExpression}(?:${ThemeIcon.iconModifierExpression})?)\\)$`);
@@ -81,3 +81,4 @@ export var ThemeIcon;
     }
     ThemeIcon.isEqual = isEqual;
 })(ThemeIcon || (ThemeIcon = {}));
+//# sourceMappingURL=themables.js.map

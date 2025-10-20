@@ -297,3 +297,4 @@ export class OutputPosition {
         return new Position(baseLineNumber + this.outputLineIndex, this.outputOffset + 1);
     }
 }
+//# sourceMappingURL=modelLineProjectionData.js.map

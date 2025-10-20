@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 import { createTrustedTypesPolicy } from '../../../base/browser/trustedTypes.js';
 import * as strings from '../../../base/common/strings.js';
-import { assertIsDefined } from '../../../base/common/types.js';
+import { assertReturnsDefined } from '../../../base/common/types.js';
 import { applyFontInfo } from '../config/domFontInfo.js';
 import { StringBuilder } from '../../common/core/stringBuilder.js';
 import { ModelLineProjectionData } from '../../common/modelLineProjectionData.js';
@@ -17,7 +17,7 @@ export class DOMLineBreaksComputerFactory {
     constructor(targetWindow) {
         this.targetWindow = targetWindow;
     }
-    createLineBreaksComputer(fontInfo, tabSize, wrappingColumn, wrappingIndent, wordBreak) {
+    createLineBreaksComputer(fontInfo, tabSize, wrappingColumn, wrappingIndent, wordBreak, wrapOnEscapedLineFeeds) {
         const requests = [];
         const injectedTexts = [];
         return {
@@ -26,7 +26,7 @@ export class DOMLineBreaksComputerFactory {
                 injectedTexts.push(injectedText);
             },
             finalize: () => {
-                return createLineBreaks(assertIsDefined(this.targetWindow.deref()), requests, fontInfo, tabSize, wrappingColumn, wrappingIndent, wordBreak, injectedTexts);
+                return createLineBreaks(assertReturnsDefined(this.targetWindow.deref()), requests, fontInfo, tabSize, wrappingColumn, wrappingIndent, wordBreak, injectedTexts);
             }
         };
     }
@@ -296,3 +296,4 @@ function readClientRect(range, spans, startOffset, endOffset) {
     range.setEnd(spans[(endOffset / 16384 /* Constants.SPAN_MODULO_LIMIT */) | 0].firstChild, endOffset % 16384 /* Constants.SPAN_MODULO_LIMIT */);
     return range.getClientRects();
 }
+//# sourceMappingURL=domLineBreaksComputer.js.map

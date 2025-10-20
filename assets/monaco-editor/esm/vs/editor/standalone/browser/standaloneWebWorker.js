@@ -2,9 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { getAllMethodNames } from '../../../base/common/objects.js';
 import { EditorWorkerClient } from '../../browser/services/editorWorkerService.js';
-import { standaloneEditorWorkerDescriptor } from './standaloneServices.js';
 /**
  * Create a new web worker that has model syncing capabilities built in.
  * Specify an AMD module to load that will `create` an object that will be proxied.
@@ -14,16 +12,24 @@ export function createWebWorker(modelService, opts) {
 }
 class MonacoWebWorkerImpl extends EditorWorkerClient {
     constructor(modelService, opts) {
-        const workerDescriptor = {
-            amdModuleId: standaloneEditorWorkerDescriptor.amdModuleId,
-            esmModuleLocation: standaloneEditorWorkerDescriptor.esmModuleLocation,
-            label: opts.label,
-        };
-        super(workerDescriptor, opts.keepIdleModels || false, modelService);
-        this._foreignModuleId = opts.moduleId;
-        this._foreignModuleCreateData = opts.createData || null;
+        super(opts.worker, opts.keepIdleModels || false, modelService);
         this._foreignModuleHost = opts.host || null;
-        this._foreignProxy = null;
+        this._foreignProxy = this._getProxy().then(proxy => {
+            return new Proxy({}, {
+                get(target, prop, receiver) {
+                    if (prop === 'then') {
+                        // Don't forward the call when the proxy is returned in an async function and the runtime tries to .then it.
+                        return undefined;
+                    }
+                    if (typeof prop !== 'string') {
+                        throw new Error(`Not supported`);
+                    }
+                    return (...args) => {
+                        return proxy.$fmr(prop, args);
+                    };
+                }
+            });
+        });
     }
     // foreign host request
     fhr(method, args) {
@@ -37,35 +43,11 @@ class MonacoWebWorkerImpl extends EditorWorkerClient {
             return Promise.reject(e);
         }
     }
-    _getForeignProxy() {
-        if (!this._foreignProxy) {
-            this._foreignProxy = this._getProxy().then((proxy) => {
-                const foreignHostMethods = this._foreignModuleHost ? getAllMethodNames(this._foreignModuleHost) : [];
-                return proxy.$loadForeignModule(this._foreignModuleId, this._foreignModuleCreateData, foreignHostMethods).then((foreignMethods) => {
-                    this._foreignModuleCreateData = null;
-                    const proxyMethodRequest = (method, args) => {
-                        return proxy.$fmr(method, args);
-                    };
-                    const createProxyMethod = (method, proxyMethodRequest) => {
-                        return function () {
-                            const args = Array.prototype.slice.call(arguments, 0);
-                            return proxyMethodRequest(method, args);
-                        };
-                    };
-                    const foreignProxy = {};
-                    for (const foreignMethod of foreignMethods) {
-                        foreignProxy[foreignMethod] = createProxyMethod(foreignMethod, proxyMethodRequest);
-                    }
-                    return foreignProxy;
-                });
-            });
-        }
-        return this._foreignProxy;
-    }
     getProxy() {
-        return this._getForeignProxy();
+        return this._foreignProxy;
     }
     withSyncedResources(resources) {
         return this.workerWithSyncedResources(resources).then(_ => this.getProxy());
     }
 }
+//# sourceMappingURL=standaloneWebWorker.js.map

@@ -450,3 +450,4 @@ export class Searcher {
         return null;
     }
 }
+//# sourceMappingURL=textModelSearch.js.map

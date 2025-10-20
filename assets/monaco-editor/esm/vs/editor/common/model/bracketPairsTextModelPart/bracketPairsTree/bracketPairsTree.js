@@ -340,3 +340,4 @@ function collectBracketPairs(node, nodeOffsetStart, nodeOffsetEnd, startOffset, 
     }
     return shouldContinue;
 }
+//# sourceMappingURL=bracketPairsTree.js.map

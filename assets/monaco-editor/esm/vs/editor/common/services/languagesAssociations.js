@@ -188,3 +188,4 @@ function getAssociationByFirstline(firstLine) {
     }
     return undefined;
 }
+//# sourceMappingURL=languagesAssociations.js.map

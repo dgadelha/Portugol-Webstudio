@@ -92,3 +92,4 @@ StandaloneCodeEditorService = __decorate([
 ], StandaloneCodeEditorService);
 export { StandaloneCodeEditorService };
 registerSingleton(ICodeEditorService, StandaloneCodeEditorService, 0 /* InstantiationType.Eager */);
+//# sourceMappingURL=standaloneCodeEditorService.js.map

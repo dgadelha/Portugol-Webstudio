@@ -72,7 +72,7 @@ function canShowQuickSuggest(editor, contextKeyService, configurationService) {
     if (suppressSuggestions !== undefined) {
         return !suppressSuggestions;
     }
-    return !editor.getOption(62 /* EditorOption.inlineSuggest */).suppressSuggestions;
+    return !editor.getOption(71 /* EditorOption.inlineSuggest */).suppressSuggestions;
 }
 function canShowSuggestOnTriggerCharacters(editor, contextKeyService, configurationService) {
     if (!Boolean(contextKeyService.getContextKeyValue('inlineSuggestionVisible'))) {
@@ -83,7 +83,7 @@ function canShowSuggestOnTriggerCharacters(editor, contextKeyService, configurat
     if (suppressSuggestions !== undefined) {
         return !suppressSuggestions;
     }
-    return !editor.getOption(62 /* EditorOption.inlineSuggest */).suppressSuggestions;
+    return !editor.getOption(71 /* EditorOption.inlineSuggest */).suppressSuggestions;
 }
 let SuggestModel = SuggestModel_1 = class SuggestModel {
     constructor(_editor, _editorWorkerService, _clipboardService, _telemetryService, _logService, _contextKeyService, _configurationService, _languageFeaturesService, _envService) {
@@ -107,7 +107,6 @@ let SuggestModel = SuggestModel_1 = class SuggestModel {
         this.onDidCancel = this._onDidCancel.event;
         this.onDidTrigger = this._onDidTrigger.event;
         this.onDidSuggest = this._onDidSuggest.event;
-        this._telemetryGate = 0;
         this._currentSelection = this._editor.getSelection() || new Selection(1, 1, 1, 1);
         // wire up various listeners
         this._toDispose.add(this._editor.onDidChangeModel(() => {
@@ -158,9 +157,9 @@ let SuggestModel = SuggestModel_1 = class SuggestModel {
     }
     _updateTriggerCharacters() {
         this._triggerCharacterListener.clear();
-        if (this._editor.getOption(92 /* EditorOption.readOnly */)
+        if (this._editor.getOption(104 /* EditorOption.readOnly */)
             || !this._editor.hasModel()
-            || !this._editor.getOption(122 /* EditorOption.suggestOnTriggerCharacters */)) {
+            || !this._editor.getOption(137 /* EditorOption.suggestOnTriggerCharacters */)) {
             return;
         }
         const supportsByTriggerCharacter = new Map();
@@ -298,11 +297,11 @@ let SuggestModel = SuggestModel_1 = class SuggestModel {
         }
     }
     _doTriggerQuickSuggest() {
-        if (QuickSuggestionsOptions.isAllOff(this._editor.getOption(90 /* EditorOption.quickSuggestions */))) {
+        if (QuickSuggestionsOptions.isAllOff(this._editor.getOption(102 /* EditorOption.quickSuggestions */))) {
             // not enabled
             return;
         }
-        if (this._editor.getOption(119 /* EditorOption.suggest */).snippetsPreventQuickSuggestions && SnippetController2.get(this._editor)?.isInSnippet()) {
+        if (this._editor.getOption(134 /* EditorOption.suggest */).snippetsPreventQuickSuggestions && SnippetController2.get(this._editor)?.isInSnippet()) {
             // no quick suggestion when in snippet mode
             return;
         }
@@ -320,7 +319,7 @@ let SuggestModel = SuggestModel_1 = class SuggestModel {
             const model = this._editor.getModel();
             const pos = this._editor.getPosition();
             // validate enabled now
-            const config = this._editor.getOption(90 /* EditorOption.quickSuggestions */);
+            const config = this._editor.getOption(102 /* EditorOption.quickSuggestions */);
             if (QuickSuggestionsOptions.isAllOff(config)) {
                 return;
             }
@@ -342,7 +341,7 @@ let SuggestModel = SuggestModel_1 = class SuggestModel {
             }
             // we made it till here -> trigger now
             this.trigger({ auto: true });
-        }, this._editor.getOption(91 /* EditorOption.quickSuggestionsDelay */));
+        }, this._editor.getOption(103 /* EditorOption.quickSuggestionsDelay */));
     }
     _refilterCompletionItems() {
         assertType(this._editor.hasModel());
@@ -374,7 +373,7 @@ let SuggestModel = SuggestModel_1 = class SuggestModel {
         }
         this._requestToken = new CancellationTokenSource();
         // kind filter and snippet sort rules
-        const snippetSuggestions = this._editor.getOption(113 /* EditorOption.snippetSuggestions */);
+        const snippetSuggestions = this._editor.getOption(128 /* EditorOption.snippetSuggestions */);
         let snippetSortOrder = 1 /* SnippetSortOrder.Inline */;
         switch (snippetSuggestions) {
             case 'top':
@@ -395,6 +394,7 @@ let SuggestModel = SuggestModel_1 = class SuggestModel {
         Promise.all([completions, wordDistance]).then(async ([completions, wordDistance]) => {
             this._requestToken?.dispose();
             if (!this._editor.hasModel()) {
+                completions.disposable.dispose();
                 return;
             }
             let clipboardText = options?.clipboardText;
@@ -402,6 +402,7 @@ let SuggestModel = SuggestModel_1 = class SuggestModel {
                 clipboardText = await this._clipboardService.readText();
             }
             if (this._triggerState === undefined) {
+                completions.disposable.dispose();
                 return;
             }
             const model = this._editor.getModel();
@@ -413,12 +414,12 @@ let SuggestModel = SuggestModel_1 = class SuggestModel {
             const ctx = new LineContext(model, this._editor.getPosition(), options);
             const fuzzySearchOptions = {
                 ...FuzzyScoreOptions.default,
-                firstMatchCanBeWeak: !this._editor.getOption(119 /* EditorOption.suggest */).matchOnWordStartOnly
+                firstMatchCanBeWeak: !this._editor.getOption(134 /* EditorOption.suggest */).matchOnWordStartOnly
             };
             this._completionModel = new CompletionModel(completions.items, this._context.column, {
                 leadingLineContent: ctx.leadingLineContent,
                 characterCountDelta: ctx.column - this._context.column
-            }, wordDistance, this._editor.getOption(119 /* EditorOption.suggest */), this._editor.getOption(113 /* EditorOption.snippetSuggestions */), fuzzySearchOptions, clipboardText);
+            }, wordDistance, this._editor.getOption(134 /* EditorOption.suggest */), this._editor.getOption(128 /* EditorOption.snippetSuggestions */), fuzzySearchOptions, clipboardText);
             // store containers so that they can be disposed later
             this._completionDisposables.add(completions.disposable);
             this._onNewContext(ctx);
@@ -434,8 +435,12 @@ let SuggestModel = SuggestModel_1 = class SuggestModel {
             }
         }).catch(onUnexpectedError);
     }
+    /**
+     * Report durations telemetry with a 1% sampling rate.
+     * The telemetry is reported only if a random number between 0 and 100 is less than or equal to 1.
+     */
     _reportDurationsTelemetry(durations) {
-        if (this._telemetryGate++ % 230 !== 0) {
+        if (Math.random() > 0.0001) { // 0.01%
             return;
         }
         setTimeout(() => {
@@ -447,12 +452,12 @@ let SuggestModel = SuggestModel_1 = class SuggestModel {
         // kind filter and snippet sort rules
         const result = new Set();
         // snippet setting
-        const snippetSuggestions = editor.getOption(113 /* EditorOption.snippetSuggestions */);
+        const snippetSuggestions = editor.getOption(128 /* EditorOption.snippetSuggestions */);
         if (snippetSuggestions === 'none') {
-            result.add(27 /* CompletionItemKind.Snippet */);
+            result.add(28 /* CompletionItemKind.Snippet */);
         }
         // type setting
-        const suggestOptions = editor.getOption(119 /* EditorOption.suggest */);
+        const suggestOptions = editor.getOption(134 /* EditorOption.suggest */);
         if (!suggestOptions.showMethods) {
             result.add(0 /* CompletionItemKind.Method */);
         }
@@ -529,7 +534,7 @@ let SuggestModel = SuggestModel_1 = class SuggestModel {
             result.add(24 /* CompletionItemKind.TypeParameter */);
         }
         if (!suggestOptions.showSnippets) {
-            result.add(27 /* CompletionItemKind.Snippet */);
+            result.add(28 /* CompletionItemKind.Snippet */);
         }
         if (!suggestOptions.showUsers) {
             result.add(25 /* CompletionItemKind.User */);
@@ -662,3 +667,4 @@ SuggestModel = SuggestModel_1 = __decorate([
     __param(8, IEnvironmentService)
 ], SuggestModel);
 export { SuggestModel };
+//# sourceMappingURL=suggestModel.js.map

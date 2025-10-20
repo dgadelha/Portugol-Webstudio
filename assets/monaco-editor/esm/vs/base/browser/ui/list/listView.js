@@ -9,11 +9,11 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 import { DataTransfers } from '../../dnd.js';
-import { $, addDisposableListener, animate, getContentHeight, getContentWidth, getTopLeftOffset, getWindow, isAncestor, isHTMLElement, isSVGElement, scheduleAtNextAnimationFrame } from '../../dom.js';
+import { addDisposableListener, animate, getActiveElement, getContentHeight, getContentWidth, getDocument, getTopLeftOffset, getWindow, isAncestor, isHTMLElement, isSVGElement, scheduleAtNextAnimationFrame } from '../../dom.js';
 import { DomEmitter } from '../../event.js';
 import { EventType as TouchEventType, Gesture } from '../../touch.js';
 import { SmoothScrollableElement } from '../scrollbar/scrollableElement.js';
-import { distinct, equals } from '../../../common/arrays.js';
+import { distinct, equals, splice } from '../../../common/arrays.js';
 import { Delayer, disposableTimeout } from '../../../common/async.js';
 import { memoize } from '../../../common/decorators.js';
 import { Emitter, Event } from '../../../common/event.js';
@@ -24,6 +24,7 @@ import { RangeMap, shift } from './rangeMap.js';
 import { RowCache } from './rowCache.js';
 import { BugIndicatingError } from '../../../common/errors.js';
 import { clamp } from '../../../common/numbers.js';
+import { applyDragImage } from '../dnd/dnd.js';
 const StaticDND = {
     CurrentDragAndDropData: undefined
 };
@@ -176,6 +177,7 @@ export class ListView {
         this.canDrop = false;
         this.currentDragFeedbackDisposable = Disposable.None;
         this.onDragLeaveTimeout = Disposable.None;
+        this.currentSelectionDisposable = Disposable.None;
         this.disposables = new DisposableStore();
         this._onDidChangeContentHeight = new Emitter();
         this._onDidChangeContentWidth = new Emitter();
@@ -229,18 +231,53 @@ export class ListView {
         container.appendChild(this.domNode);
         this.scrollableElement.onScroll(this.onScroll, this, this.disposables);
         this.disposables.add(addDisposableListener(this.rowsContainer, TouchEventType.Change, e => this.onTouchChange(e)));
-        // Prevent the monaco-scrollable-element from scrolling
-        // https://github.com/microsoft/vscode/issues/44181
-        this.disposables.add(addDisposableListener(this.scrollableElement.getDomNode(), 'scroll', e => e.target.scrollTop = 0));
+        this.disposables.add(addDisposableListener(this.scrollableElement.getDomNode(), 'scroll', e => {
+            // Make sure the active element is scrolled into view
+            const element = e.target;
+            const scrollValue = element.scrollTop;
+            element.scrollTop = 0;
+            if (options.scrollToActiveElement) {
+                this.setScrollTop(this.scrollTop + scrollValue);
+            }
+        }));
         this.disposables.add(addDisposableListener(this.domNode, 'dragover', e => this.onDragOver(this.toDragEvent(e))));
         this.disposables.add(addDisposableListener(this.domNode, 'drop', e => this.onDrop(this.toDragEvent(e))));
         this.disposables.add(addDisposableListener(this.domNode, 'dragleave', e => this.onDragLeave(this.toDragEvent(e))));
         this.disposables.add(addDisposableListener(this.domNode, 'dragend', e => this.onDragEnd(e)));
+        if (options.userSelection) {
+            if (options.dnd) {
+                throw new Error('DND and user selection cannot be used simultaneously');
+            }
+            this.disposables.add(addDisposableListener(this.domNode, 'mousedown', e => this.onPotentialSelectionStart(e)));
+        }
         this.setRowLineHeight = options.setRowLineHeight ?? DefaultOptions.setRowLineHeight;
         this.setRowHeight = options.setRowHeight ?? DefaultOptions.setRowHeight;
         this.supportDynamicHeights = options.supportDynamicHeights ?? DefaultOptions.supportDynamicHeights;
         this.dnd = options.dnd ?? this.disposables.add(DefaultOptions.dnd);
         this.layout(options.initialSize?.height, options.initialSize?.width);
+        if (options.scrollToActiveElement) {
+            this._setupFocusObserver(container);
+        }
+    }
+    _setupFocusObserver(container) {
+        this.disposables.add(addDisposableListener(container, 'focus', () => {
+            const element = getActiveElement();
+            if (this.activeElement !== element && element !== null) {
+                this.activeElement = element;
+                this._scrollToActiveElement(this.activeElement, container);
+            }
+        }, true));
+    }
+    _scrollToActiveElement(element, container) {
+        // The scroll event on the list only fires when scrolling down.
+        // If the active element is above the viewport, we need to scroll up.
+        const containerRect = container.getBoundingClientRect();
+        const elementRect = element.getBoundingClientRect();
+        const topOffset = elementRect.top - containerRect.top;
+        if (topOffset < 0) {
+            // Scroll up
+            this.setScrollTop(this.scrollTop + topOffset);
+        }
     }
     updateOptions(options) {
         if (options.paddingBottom !== undefined) {
@@ -313,7 +350,7 @@ export class ListView {
                 }
                 const renderer = this.renderers.get(item.templateId);
                 if (renderer && renderer.disposeElement) {
-                    renderer.disposeElement(item.element, i, item.row.templateData, item.size);
+                    renderer.disposeElement(item.element, i, item.row.templateData, { height: item.size });
                 }
                 rows.unshift(item.row);
             }
@@ -348,7 +385,7 @@ export class ListView {
         }
         else {
             this.rangeMap.splice(start, deleteCount, inserted);
-            deleted = this.items.splice(start, deleteCount, ...inserted);
+            deleted = splice(this.items, start, deleteCount, inserted);
         }
         const delta = elements.length - deleteCount;
         const renderRange = this.getRenderRange(this.lastRenderTop, this.lastRenderHeight);
@@ -434,7 +471,7 @@ export class ListView {
         return scrollDimensions.height;
     }
     get firstVisibleIndex() {
-        const range = this.getRenderRange(this.lastRenderTop, this.lastRenderHeight);
+        const range = this.getVisibleRange(this.lastRenderTop, this.lastRenderHeight);
         return range.start;
     }
     element(index) {
@@ -482,7 +519,7 @@ export class ListView {
         }
     }
     // Render
-    render(previousRenderRange, renderTop, renderHeight, renderLeft, scrollWidth, updateItemsInDOM = false) {
+    render(previousRenderRange, renderTop, renderHeight, renderLeft, scrollWidth, updateItemsInDOM = false, onScroll = false) {
         const renderRange = this.getRenderRange(renderTop, renderHeight);
         const rangesToInsert = Range.relativeComplement(renderRange, previousRenderRange).reverse();
         const rangesToRemove = Range.relativeComplement(previousRenderRange, renderRange);
@@ -495,7 +532,7 @@ export class ListView {
         this.cache.transact(() => {
             for (const range of rangesToRemove) {
                 for (let i = range.start; i < range.end; i++) {
-                    this.removeItemFromDOM(i);
+                    this.removeItemFromDOM(i, onScroll);
                 }
             }
             for (const range of rangesToInsert) {
@@ -551,7 +588,7 @@ export class ListView {
         if (!renderer) {
             throw new Error(`No renderer found for template id ${item.templateId}`);
         }
-        renderer?.renderElement(item.element, index, item.row.templateData, item.size);
+        renderer?.renderElement(item.element, index, item.row.templateData, { height: item.size });
         const uri = this.dnd.getDragURI(item.element);
         item.dragStartDisposable.dispose();
         item.row.domNode.draggable = !!uri;
@@ -594,14 +631,14 @@ export class ListView {
         item.row.domNode.setAttribute('id', this.getElementDomId(index));
         item.row.domNode.classList.toggle('drop-target', item.dropTarget);
     }
-    removeItemFromDOM(index) {
+    removeItemFromDOM(index, onScroll) {
         const item = this.items[index];
         item.dragStartDisposable.dispose();
         item.checkedDisposable.dispose();
         if (item.row) {
             const renderer = this.renderers.get(item.templateId);
             if (renderer && renderer.disposeElement) {
-                renderer.disposeElement(item.element, index, item.row.templateData, item.size);
+                renderer.disposeElement(item.element, index, item.row.templateData, { height: item.size, onScroll });
             }
             this.cache.release(item.row);
             item.row = null;
@@ -669,7 +706,7 @@ export class ListView {
     onScroll(e) {
         try {
             const previousRenderRange = this.getRenderRange(this.lastRenderTop, this.lastRenderHeight);
-            this.render(previousRenderRange, e.scrollTop, e.height, e.scrollLeft, e.scrollWidth);
+            this.render(previousRenderRange, e.scrollTop, e.height, e.scrollLeft, e.scrollWidth, undefined, true);
             if (this.supportDynamicHeights) {
                 this._rerender(e.scrollTop, e.height, e.inSmoothScrolling);
             }
@@ -692,31 +729,81 @@ export class ListView {
         const elements = this.dnd.getDragElements(element);
         event.dataTransfer.effectAllowed = 'copyMove';
         event.dataTransfer.setData(DataTransfers.TEXT, uri);
-        if (event.dataTransfer.setDragImage) {
-            let label;
-            if (this.dnd.getDragLabel) {
-                label = this.dnd.getDragLabel(elements, event);
-            }
-            if (typeof label === 'undefined') {
-                label = String(elements.length);
-            }
-            const dragImage = $('.monaco-drag-image');
-            dragImage.textContent = label;
-            const getDragImageContainer = (e) => {
-                while (e && !e.classList.contains('monaco-workbench')) {
-                    e = e.parentElement;
-                }
-                return e || this.domNode.ownerDocument;
-            };
-            const container = getDragImageContainer(this.domNode);
-            container.appendChild(dragImage);
-            event.dataTransfer.setDragImage(dragImage, -10, -10);
-            setTimeout(() => dragImage.remove(), 0);
+        let label;
+        if (this.dnd.getDragLabel) {
+            label = this.dnd.getDragLabel(elements, event);
         }
+        if (typeof label === 'undefined') {
+            label = String(elements.length);
+        }
+        applyDragImage(event, this.domNode, label, [this.domId /* add domId to get list specific styling */]);
         this.domNode.classList.add('dragging');
         this.currentDragData = new ElementsDragAndDropData(elements);
         StaticDND.CurrentDragAndDropData = new ExternalElementsDragAndDropData(elements);
         this.dnd.onDragStart?.(this.currentDragData, event);
+    }
+    onPotentialSelectionStart(e) {
+        this.currentSelectionDisposable.dispose();
+        const doc = getDocument(this.domNode);
+        // Set up both the 'movement store' for watching the mouse, and the
+        // 'selection store' which lasts as long as there's a selection, even
+        // after the usr has stopped modifying it.
+        const selectionStore = this.currentSelectionDisposable = new DisposableStore();
+        const movementStore = selectionStore.add(new DisposableStore());
+        // The selection events we get from the DOM are fairly limited and we lack a 'selection end' event.
+        // Selection events also don't tell us where the input doing the selection is. So, make a poor
+        // assumption that a user is using the mouse, and base our events on that.
+        movementStore.add(addDisposableListener(this.domNode, 'selectstart', () => {
+            movementStore.add(addDisposableListener(doc, 'mousemove', e => {
+                if (doc.getSelection()?.isCollapsed === false) {
+                    this.setupDragAndDropScrollTopAnimation(e);
+                }
+            }));
+            // The selection is cleared either on mouseup if there's no selection, or on next mousedown
+            // when `this.currentSelectionDisposable` is reset.
+            selectionStore.add(toDisposable(() => {
+                const previousRenderRange = this.getRenderRange(this.lastRenderTop, this.lastRenderHeight);
+                this.currentSelectionBounds = undefined;
+                this.render(previousRenderRange, this.lastRenderTop, this.lastRenderHeight, undefined, undefined);
+            }));
+            selectionStore.add(addDisposableListener(doc, 'selectionchange', () => {
+                const selection = doc.getSelection();
+                // if the selection changed _after_ mouseup, it's from clearing the list or similar, so teardown
+                if (!selection || selection.isCollapsed) {
+                    if (movementStore.isDisposed) {
+                        selectionStore.dispose();
+                    }
+                    return;
+                }
+                let start = this.getIndexOfListElement(selection.anchorNode);
+                let end = this.getIndexOfListElement(selection.focusNode);
+                if (start !== undefined && end !== undefined) {
+                    if (end < start) {
+                        [start, end] = [end, start];
+                    }
+                    this.currentSelectionBounds = { start, end };
+                }
+            }));
+        }));
+        movementStore.add(addDisposableListener(doc, 'mouseup', () => {
+            movementStore.dispose();
+            this.teardownDragAndDropScrollTopAnimation();
+            if (doc.getSelection()?.isCollapsed !== false) {
+                selectionStore.dispose();
+            }
+        }));
+    }
+    getIndexOfListElement(element) {
+        if (!element || !this.domNode.contains(element)) {
+            return undefined;
+        }
+        while (element && element !== this.domNode) {
+            if (element.dataset?.index) {
+                return Number(element.dataset.index);
+            }
+            element = element.parentElement;
+        }
+        return undefined;
     }
     onDragOver(event) {
         event.browserEvent.preventDefault(); // needed so that the drop event fires (https://stackoverflow.com/questions/21339924/drop-event-not-firing-in-chrome)
@@ -905,11 +992,20 @@ export class ListView {
         }
         return undefined;
     }
-    getRenderRange(renderTop, renderHeight) {
+    getVisibleRange(renderTop, renderHeight) {
         return {
             start: this.rangeMap.indexAt(renderTop),
             end: this.rangeMap.indexAfter(renderTop + renderHeight - 1)
         };
+    }
+    getRenderRange(renderTop, renderHeight) {
+        const range = this.getVisibleRange(renderTop, renderHeight);
+        if (this.currentSelectionBounds) {
+            const max = this.rangeMap.count;
+            range.start = Math.min(range.start, this.currentSelectionBounds.start, max);
+            range.end = Math.min(Math.max(range.end, this.currentSelectionBounds.end + 1), max);
+        }
+        return range;
     }
     /**
      * Given a stable rendered state, checks every rendered element whether it needs
@@ -1013,9 +1109,9 @@ export class ListView {
         if (!renderer) {
             throw new BugIndicatingError('Missing renderer for templateId: ' + item.templateId);
         }
-        renderer.renderElement(item.element, index, row.templateData, undefined);
+        renderer.renderElement(item.element, index, row.templateData);
         item.size = row.domNode.offsetHeight;
-        renderer.disposeElement?.(item.element, index, row.templateData, undefined);
+        renderer.disposeElement?.(item.element, index, row.templateData);
         this.virtualDelegate.setDynamicHeight?.(item.element, item.size);
         item.lastDynamicHeightWidth = this.renderWidth;
         row.domNode.remove();
@@ -1071,3 +1167,4 @@ __decorate([
 __decorate([
     memoize
 ], ListView.prototype, "onTap", null);
+//# sourceMappingURL=listView.js.map

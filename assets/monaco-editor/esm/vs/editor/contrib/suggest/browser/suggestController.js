@@ -28,6 +28,7 @@ import { EditOperation } from '../../../common/core/editOperation.js';
 import { Position } from '../../../common/core/position.js';
 import { Range } from '../../../common/core/range.js';
 import { EditorContextKeys } from '../../../common/editorContextKeys.js';
+import { ProviderId } from '../../../common/languages.js';
 import { SnippetController2 } from '../../snippet/browser/snippetController2.js';
 import { SnippetParser } from '../../snippet/browser/snippetParser.js';
 import { ISuggestMemoryService } from './suggestMemory.js';
@@ -48,6 +49,7 @@ import { basename, extname } from '../../../../base/common/resources.js';
 import { hash } from '../../../../base/common/hash.js';
 import { WindowIdleValue, getWindow } from '../../../../base/browser/dom.js';
 import { ModelDecorationOptions } from '../../../common/model/textModel.js';
+import { EditSources } from '../../../common/textModelEditSource.js';
 // sticky suggest widget which doesn't disappear on focus out and such
 const _sticky = false;
 class LineSuffix {
@@ -104,6 +106,7 @@ let SuggestController = class SuggestController {
     static get(editor) {
         return editor.getContribution(SuggestController_1.ID);
     }
+    get onWillInsertSuggestItem() { return this._onWillInsertSuggestItem.event; }
     constructor(editor, _memoryService, _commandService, _contextKeyService, _instantiationService, _logService, _telemetryService) {
         this._memoryService = _memoryService;
         this._commandService = _commandService;
@@ -115,7 +118,7 @@ let SuggestController = class SuggestController {
         this._toDispose = new DisposableStore();
         this._selectors = new PriorityRegistry(s => s.priority);
         this._onWillInsertSuggestItem = new Emitter();
-        this.onWillInsertSuggestItem = this._onWillInsertSuggestItem.event;
+        this._wantsForceRenderingAbove = false;
         this.editor = editor;
         this.model = _instantiationService.createInstance(SuggestModel, this.editor);
         // default selector
@@ -125,8 +128,8 @@ let SuggestController = class SuggestController {
         });
         // context key: update insert/replace mode
         const ctxInsertMode = SuggestContext.InsertMode.bindTo(_contextKeyService);
-        ctxInsertMode.set(editor.getOption(119 /* EditorOption.suggest */).insertMode);
-        this._toDispose.add(this.model.onDidTrigger(() => ctxInsertMode.set(editor.getOption(119 /* EditorOption.suggest */).insertMode)));
+        ctxInsertMode.set(editor.getOption(134 /* EditorOption.suggest */).insertMode);
+        this._toDispose.add(this.model.onDidTrigger(() => ctxInsertMode.set(editor.getOption(134 /* EditorOption.suggest */).insertMode)));
         this.widget = this._toDispose.add(new WindowIdleValue(getWindow(editor.getDomNode()), () => {
             const widget = this._instantiationService.createInstance(SuggestWidget, this.editor);
             this._toDispose.add(widget);
@@ -179,6 +182,9 @@ let SuggestController = class SuggestController {
                     this.editor.focus();
                 }
             }));
+            if (this._wantsForceRenderingAbove) {
+                widget.forceRenderingAbove();
+            }
             return widget;
         }));
         // Wire up text overtyping capture
@@ -216,7 +222,7 @@ let SuggestController = class SuggestController {
             let noFocus = false;
             if (e.triggerOptions.auto) {
                 // don't "focus" item when configured to do
-                const options = this.editor.getOption(119 /* EditorOption.suggest */);
+                const options = this.editor.getOption(134 /* EditorOption.suggest */);
                 if (options.selectionMode === 'never' || options.selectionMode === 'always') {
                     // simple: always or never
                     noFocus = options.selectionMode === 'never';
@@ -377,7 +383,8 @@ let SuggestController = class SuggestController {
             undoStopAfter: false,
             adjustWhitespace: !(item.completion.insertTextRules & 1 /* CompletionItemInsertTextRule.KeepWhitespace */),
             clipboardText: event.model.clipboardText,
-            overtypingCapturer: this._overtypingCapturer.value
+            overtypingCapturer: this._overtypingCapturer.value,
+            reason: EditSources.suggest({ providerId: ProviderId.fromExtensionId(item.extensionId?.value) }),
         });
         if (!(flags & 2 /* InsertFlags.NoAfterUndoStop */)) {
             this.editor.pushUndoStop();
@@ -427,8 +434,7 @@ let SuggestController = class SuggestController {
         });
     }
     _reportSuggestionAcceptedTelemetry(item, model, itemResolved, commandExectionDuration, additionalEditsAppliedAsync, index, completionItems) {
-        if (Math.floor(Math.random() * 100) === 0) {
-            // throttle telemetry event because accepting completions happens a lot
+        if (Math.random() > 0.0001) { // 0.01%
             return;
         }
         const labelMap = new Map();
@@ -461,7 +467,7 @@ let SuggestController = class SuggestController {
     }
     getOverwriteInfo(item, toggleMode) {
         assertType(this.editor.hasModel());
-        let replace = this.editor.getOption(119 /* EditorOption.suggest */).insertMode === 'replace';
+        let replace = this.editor.getOption(134 /* EditorOption.suggest */).insertMode === 'replace';
         if (toggleMode) {
             replace = !replace;
         }
@@ -476,7 +482,7 @@ let SuggestController = class SuggestController {
     }
     _alertCompletionItem(item) {
         if (isNonEmptyArray(item.completion.additionalTextEdits)) {
-            const msg = nls.localize('aria.alert.snippet', "Accepting '{0}' made {1} additional edits", item.textLabel, item.completion.additionalTextEdits.length);
+            const msg = nls.localize(1448, "Accepting '{0}' made {1} additional edits", item.textLabel, item.completion.additionalTextEdits.length);
             alert(msg);
         }
     }
@@ -605,14 +611,21 @@ let SuggestController = class SuggestController {
         this.widget.value.resetPersistedSize();
     }
     forceRenderingAbove() {
-        this.widget.value.forceRenderingAbove();
+        if (this.widget.isInitialized) {
+            this.widget.value.forceRenderingAbove();
+        }
+        else {
+            // Defer this until the widget is created
+            this._wantsForceRenderingAbove = true;
+        }
     }
     stopForceRenderingAbove() {
-        if (!this.widget.isInitialized) {
-            // This method has no effect if the widget is not initialized yet.
-            return;
+        if (this.widget.isInitialized) {
+            this.widget.value.stopForceRenderingAbove();
         }
-        this.widget.value.stopForceRenderingAbove();
+        else {
+            this._wantsForceRenderingAbove = false;
+        }
     }
     registerSelector(selector) {
         return this._selectors.register(selector);
@@ -656,8 +669,7 @@ export class TriggerSuggestAction extends EditorAction {
     constructor() {
         super({
             id: TriggerSuggestAction.id,
-            label: nls.localize('suggest.trigger.label', "Trigger Suggest"),
-            alias: 'Trigger Suggest',
+            label: nls.localize2(1456, "Trigger Suggest"),
             precondition: ContextKeyExpr.and(EditorContextKeys.writable, EditorContextKeys.hasCompletionItemProvider, SuggestContext.Visible.toNegated()),
             kbOpts: {
                 kbExpr: EditorContextKeys.textInputFocus,
@@ -705,19 +717,19 @@ registerEditorCommand(new SuggestCommand({
         }],
     menuOpts: [{
             menuId: suggestWidgetStatusbarMenu,
-            title: nls.localize('accept.insert', "Insert"),
+            title: nls.localize(1449, "Insert"),
             group: 'left',
             order: 1,
             when: SuggestContext.HasInsertAndReplaceRange.toNegated()
         }, {
             menuId: suggestWidgetStatusbarMenu,
-            title: nls.localize('accept.insert', "Insert"),
+            title: nls.localize(1450, "Insert"),
             group: 'left',
             order: 1,
             when: ContextKeyExpr.and(SuggestContext.HasInsertAndReplaceRange, SuggestContext.InsertMode.isEqualTo('insert'))
         }, {
             menuId: suggestWidgetStatusbarMenu,
-            title: nls.localize('accept.replace', "Replace"),
+            title: nls.localize(1451, "Replace"),
             group: 'left',
             order: 1,
             when: ContextKeyExpr.and(SuggestContext.HasInsertAndReplaceRange, SuggestContext.InsertMode.isEqualTo('replace'))
@@ -740,13 +752,13 @@ registerEditorCommand(new SuggestCommand({
             group: 'left',
             order: 2,
             when: ContextKeyExpr.and(SuggestContext.HasInsertAndReplaceRange, SuggestContext.InsertMode.isEqualTo('insert')),
-            title: nls.localize('accept.replace', "Replace")
+            title: nls.localize(1452, "Replace")
         }, {
             menuId: suggestWidgetStatusbarMenu,
             group: 'left',
             order: 2,
             when: ContextKeyExpr.and(SuggestContext.HasInsertAndReplaceRange, SuggestContext.InsertMode.isEqualTo('replace')),
-            title: nls.localize('accept.insert', "Insert")
+            title: nls.localize(1453, "Insert")
         }]
 }));
 // continue to support the old command
@@ -854,13 +866,13 @@ registerEditorCommand(new SuggestCommand({
             group: 'right',
             order: 1,
             when: ContextKeyExpr.and(SuggestContext.DetailsVisible, SuggestContext.CanResolve),
-            title: nls.localize('detail.more', "Show Less")
+            title: nls.localize(1454, "Show Less")
         }, {
             menuId: suggestWidgetStatusbarMenu,
             group: 'right',
             order: 1,
             when: ContextKeyExpr.and(SuggestContext.DetailsVisible.toNegated(), SuggestContext.CanResolve),
-            title: nls.localize('detail.less', "Show More")
+            title: nls.localize(1455, "Show More")
         }]
 }));
 registerEditorCommand(new SuggestCommand({
@@ -919,8 +931,7 @@ registerEditorAction(class extends EditorAction {
     constructor() {
         super({
             id: 'editor.action.resetSuggestSize',
-            label: nls.localize('suggest.reset.label', "Reset Suggest Widget Size"),
-            alias: 'Reset Suggest Widget Size',
+            label: nls.localize2(1457, "Reset Suggest Widget Size"),
             precondition: undefined
         });
     }
@@ -928,3 +939,4 @@ registerEditorAction(class extends EditorAction {
         SuggestController.get(editor)?.resetWidgetSize();
     }
 });
+//# sourceMappingURL=suggestController.js.map

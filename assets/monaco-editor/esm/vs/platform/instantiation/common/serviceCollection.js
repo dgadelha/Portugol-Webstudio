@@ -18,3 +18,4 @@ export class ServiceCollection {
         return this._entries.get(id);
     }
 }
+//# sourceMappingURL=serviceCollection.js.map

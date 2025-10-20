@@ -18,7 +18,7 @@ import { KeybindingsRegistry } from '../../keybinding/common/keybindingsRegistry
 import { localize } from '../../../nls.js';
 import { DisposableStore, toDisposable } from '../../../base/common/lifecycle.js';
 import { isActiveElement } from '../../../base/browser/dom.js';
-export const historyNavigationVisible = new RawContextKey('suggestWidgetVisible', false, localize('suggestWidgetVisible', "Whether suggestion are visible"));
+export const historyNavigationVisible = new RawContextKey('suggestWidgetVisible', false, localize(1683, "Whether suggestion are visible"));
 const HistoryNavigationWidgetFocusContext = 'historyNavigationWidgetFocus';
 const HistoryNavigationForwardsEnablementContext = 'historyNavigationForwardsEnabled';
 const HistoryNavigationBackwardsEnablementContext = 'historyNavigationBackwardsEnabled';
@@ -103,3 +103,4 @@ KeybindingsRegistry.registerCommandAndKeybindingRule({
         lastFocusedWidget?.showNextValue();
     }
 });
+//# sourceMappingURL=contextScopedHistoryWidget.js.map

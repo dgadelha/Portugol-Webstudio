@@ -103,3 +103,5 @@ export class QuickPickItemScorerAccessor {
 export const quickPickItemScorerAccessor = new QuickPickItemScorerAccessor();
 //#endregion
 export const IQuickInputService = createDecorator('quickInputService');
+//#endregion
+//# sourceMappingURL=quickInput.js.map

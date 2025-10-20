@@ -28,3 +28,4 @@ export function createSingleCallFunction(fn, fnDidRunCallback) {
         return result;
     };
 }
+//# sourceMappingURL=functional.js.map

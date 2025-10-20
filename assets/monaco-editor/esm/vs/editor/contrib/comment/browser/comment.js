@@ -24,7 +24,7 @@ class CommentLineAction extends EditorAction {
         const model = editor.getModel();
         const commands = [];
         const modelOptions = model.getOptions();
-        const commentsOptions = editor.getOption(23 /* EditorOption.comments */);
+        const commentsOptions = editor.getOption(29 /* EditorOption.comments */);
         const selections = editor.getSelections().map((selection, index) => ({ selection, index, ignoreFirstLine: false }));
         selections.sort((a, b) => Range.compareRangesUsingStarts(a.selection, b.selection));
         // Remove selections that would result in copying the same line
@@ -56,8 +56,7 @@ class ToggleCommentLineAction extends CommentLineAction {
     constructor() {
         super(0 /* Type.Toggle */, {
             id: 'editor.action.commentLine',
-            label: nls.localize('comment.line', "Toggle Line Comment"),
-            alias: 'Toggle Line Comment',
+            label: nls.localize2(892, "Toggle Line Comment"),
             precondition: EditorContextKeys.writable,
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
@@ -67,7 +66,7 @@ class ToggleCommentLineAction extends CommentLineAction {
             menuOpts: {
                 menuId: MenuId.MenubarEditMenu,
                 group: '5_insert',
-                title: nls.localize({ key: 'miToggleLineComment', comment: ['&& denotes a mnemonic'] }, "&&Toggle Line Comment"),
+                title: nls.localize(890, "&&Toggle Line Comment"),
                 order: 1
             }
         });
@@ -77,8 +76,7 @@ class AddLineCommentAction extends CommentLineAction {
     constructor() {
         super(1 /* Type.ForceAdd */, {
             id: 'editor.action.addCommentLine',
-            label: nls.localize('comment.line.add', "Add Line Comment"),
-            alias: 'Add Line Comment',
+            label: nls.localize2(893, "Add Line Comment"),
             precondition: EditorContextKeys.writable,
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
@@ -92,8 +90,7 @@ class RemoveLineCommentAction extends CommentLineAction {
     constructor() {
         super(2 /* Type.ForceRemove */, {
             id: 'editor.action.removeCommentLine',
-            label: nls.localize('comment.line.remove', "Remove Line Comment"),
-            alias: 'Remove Line Comment',
+            label: nls.localize2(894, "Remove Line Comment"),
             precondition: EditorContextKeys.writable,
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
@@ -107,8 +104,7 @@ class BlockCommentAction extends EditorAction {
     constructor() {
         super({
             id: 'editor.action.blockComment',
-            label: nls.localize('comment.block', "Toggle Block Comment"),
-            alias: 'Toggle Block Comment',
+            label: nls.localize2(895, "Toggle Block Comment"),
             precondition: EditorContextKeys.writable,
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
@@ -119,7 +115,7 @@ class BlockCommentAction extends EditorAction {
             menuOpts: {
                 menuId: MenuId.MenubarEditMenu,
                 group: '5_insert',
-                title: nls.localize({ key: 'miToggleBlockComment', comment: ['&& denotes a mnemonic'] }, "Toggle &&Block Comment"),
+                title: nls.localize(891, "Toggle &&Block Comment"),
                 order: 2
             }
         });
@@ -129,7 +125,7 @@ class BlockCommentAction extends EditorAction {
         if (!editor.hasModel()) {
             return;
         }
-        const commentsOptions = editor.getOption(23 /* EditorOption.comments */);
+        const commentsOptions = editor.getOption(29 /* EditorOption.comments */);
         const commands = [];
         const selections = editor.getSelections();
         for (const selection of selections) {
@@ -144,3 +140,4 @@ registerEditorAction(ToggleCommentLineAction);
 registerEditorAction(AddLineCommentAction);
 registerEditorAction(RemoveLineCommentAction);
 registerEditorAction(BlockCommentAction);
+//# sourceMappingURL=comment.js.map

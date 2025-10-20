@@ -101,13 +101,13 @@ export class GlyphMarginWidgets extends ViewPart {
         this._widgets = {};
         this._context = context;
         const options = this._context.configuration.options;
-        const layoutInfo = options.get(146 /* EditorOption.layoutInfo */);
+        const layoutInfo = options.get(165 /* EditorOption.layoutInfo */);
         this.domNode = createFastDomNode(document.createElement('div'));
         this.domNode.setClassName('glyph-margin-widgets');
         this.domNode.setPosition('absolute');
         this.domNode.setTop(0);
-        this._lineHeight = options.get(67 /* EditorOption.lineHeight */);
-        this._glyphMargin = options.get(57 /* EditorOption.glyphMargin */);
+        this._lineHeight = options.get(75 /* EditorOption.lineHeight */);
+        this._glyphMargin = options.get(66 /* EditorOption.glyphMargin */);
         this._glyphMarginLeft = layoutInfo.glyphMarginLeft;
         this._glyphMarginWidth = layoutInfo.glyphMarginWidth;
         this._glyphMarginDecorationLaneCount = layoutInfo.glyphMarginDecorationLaneCount;
@@ -126,9 +126,9 @@ export class GlyphMarginWidgets extends ViewPart {
     // --- begin event handlers
     onConfigurationChanged(e) {
         const options = this._context.configuration.options;
-        const layoutInfo = options.get(146 /* EditorOption.layoutInfo */);
-        this._lineHeight = options.get(67 /* EditorOption.lineHeight */);
-        this._glyphMargin = options.get(57 /* EditorOption.glyphMargin */);
+        const layoutInfo = options.get(165 /* EditorOption.layoutInfo */);
+        this._lineHeight = options.get(75 /* EditorOption.lineHeight */);
+        this._glyphMargin = options.get(66 /* EditorOption.glyphMargin */);
         this._glyphMarginLeft = layoutInfo.glyphMarginLeft;
         this._glyphMarginWidth = layoutInfo.glyphMarginWidth;
         this._glyphMarginDecorationLaneCount = layoutInfo.glyphMarginDecorationLaneCount;
@@ -337,7 +337,8 @@ export class GlyphMarginWidgets extends ViewPart {
         // Render decorations, reusing previous dom nodes as possible
         for (let i = 0; i < this._decorationGlyphsToRender.length; i++) {
             const dec = this._decorationGlyphsToRender[i];
-            const top = ctx.viewportData.relativeVerticalOffset[dec.lineNumber - ctx.viewportData.startLineNumber];
+            const decLineNumber = dec.lineNumber;
+            const top = ctx.viewportData.relativeVerticalOffset[decLineNumber - ctx.viewportData.startLineNumber];
             const left = this._glyphMarginLeft + dec.laneIndex * this._lineHeight;
             let domNode;
             if (i < this._managedDomNodes.length) {
@@ -348,12 +349,13 @@ export class GlyphMarginWidgets extends ViewPart {
                 this._managedDomNodes.push(domNode);
                 this.domNode.appendChild(domNode);
             }
+            const lineHeight = this._context.viewLayout.getLineHeightForLineNumber(decLineNumber);
             domNode.setClassName(`cgmr codicon ` + dec.combinedClassName);
             domNode.setPosition(`absolute`);
             domNode.setTop(top);
             domNode.setLeft(left);
             domNode.setWidth(width);
-            domNode.setHeight(this._lineHeight);
+            domNode.setHeight(lineHeight);
         }
         // remove extra dom nodes
         while (this._managedDomNodes.length > this._decorationGlyphsToRender.length) {
@@ -396,3 +398,4 @@ class DecorationBasedGlyph {
         this.combinedClassName = combinedClassName;
     }
 }
+//# sourceMappingURL=glyphMargin.js.map

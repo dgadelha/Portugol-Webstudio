@@ -89,7 +89,7 @@ function getClassifier() {
     if (_classifier === null) {
         _classifier = new CharacterClassifier(0 /* CharacterClass.None */);
         // allow-any-unicode-next-line
-        const FORCE_TERMINATION_CHARACTERS = ' \t<>\'\"、。｡､，．：；‘〈「『〔（［｛｢｣｝］）〕』」〉’｀～…';
+        const FORCE_TERMINATION_CHARACTERS = ' \t<>\'\"、。｡､，．：；‘〈「『〔（［｛｢｣｝］）〕』」〉’｀～…|';
         for (let i = 0; i < FORCE_TERMINATION_CHARACTERS.length; i++) {
             _classifier.set(FORCE_TERMINATION_CHARACTERS.charCodeAt(i), 1 /* CharacterClass.ForceTermination */);
         }
@@ -197,10 +197,6 @@ export class LinkComputer {
                             // `*` terminates a link if the link began with `*`
                             chClass = (linkBeginChCode === 42 /* CharCode.Asterisk */) ? 1 /* CharacterClass.ForceTermination */ : 0 /* CharacterClass.None */;
                             break;
-                        case 124 /* CharCode.Pipe */:
-                            // `|` terminates a link if the link began with `|`
-                            chClass = (linkBeginChCode === 124 /* CharCode.Pipe */) ? 1 /* CharacterClass.ForceTermination */ : 0 /* CharacterClass.None */;
-                            break;
                         case 32 /* CharCode.Space */:
                             // ` ` allow space in between [ and ]
                             chClass = (inSquareBrackets ? 0 /* CharacterClass.None */ : 1 /* CharacterClass.ForceTermination */);
@@ -268,3 +264,4 @@ export function computeLinks(model) {
     }
     return LinkComputer.computeLinks(model);
 }
+//# sourceMappingURL=linkComputer.js.map

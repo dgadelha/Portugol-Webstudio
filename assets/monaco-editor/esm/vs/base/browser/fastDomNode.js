@@ -32,6 +32,9 @@ export class FastDomNode {
         this._contain = 'none';
         this._boxShadow = '';
     }
+    focus() {
+        this.domNode.focus();
+    }
     setMaxWidth(_maxWidth) {
         const maxWidth = numberAsPixels(_maxWidth);
         if (this._maxWidth === maxWidth) {
@@ -248,3 +251,4 @@ function numberAsPixels(value) {
 export function createFastDomNode(domNode) {
     return new FastDomNode(domNode);
 }
+//# sourceMappingURL=fastDomNode.js.map

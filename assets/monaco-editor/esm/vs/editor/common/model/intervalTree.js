@@ -26,6 +26,12 @@ function getNodeIsInGlyphMargin(node) {
 function setNodeIsInGlyphMargin(node, value) {
     node.metadata = ((node.metadata & 191 /* Constants.IsMarginMaskInverse */) | ((value ? 1 : 0) << 6 /* Constants.IsMarginOffset */));
 }
+function getNodeAffectsFont(node) {
+    return ((node.metadata & 128 /* Constants.AffectsFontMask */) >>> 7 /* Constants.AffectsFontOffset */) === 1;
+}
+function setNodeAffectsFont(node, value) {
+    node.metadata = ((node.metadata & 127 /* Constants.AffectsFontMaskInverse */) | ((value ? 1 : 0) << 7 /* Constants.AffectsFontOffset */));
+}
 function getNodeStickiness(node) {
     return ((node.metadata & 24 /* Constants.StickinessMask */) >>> 3 /* Constants.StickinessOffset */);
 }
@@ -57,6 +63,7 @@ export class IntervalNode {
         setNodeIsInGlyphMargin(this, false);
         _setNodeStickiness(this, 1 /* TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges */);
         setCollapseOnReplaceEdit(this, false);
+        setNodeAffectsFont(this, false);
         this.cachedVersionId = 0;
         this.cachedAbsoluteStart = start;
         this.cachedAbsoluteEnd = end;
@@ -81,6 +88,7 @@ export class IntervalNode {
         setNodeIsInGlyphMargin(this, this.options.glyphMarginClassName !== null);
         _setNodeStickiness(this, this.options.stickiness);
         setCollapseOnReplaceEdit(this, this.options.collapseOnReplaceEdit);
+        setNodeAffectsFont(this, this.options.affectsFont ?? false);
     }
     setCachedOffsets(absoluteStart, absoluteEnd, cachedVersionId) {
         if (this.cachedVersionId !== cachedVersionId) {
@@ -106,17 +114,17 @@ export class IntervalTree {
         this.root = SENTINEL;
         this.requestNormalizeDelta = false;
     }
-    intervalSearch(start, end, filterOwnerId, filterOutValidation, cachedVersionId, onlyMarginDecorations) {
+    intervalSearch(start, end, filterOwnerId, filterOutValidation, filterFontDecorations, cachedVersionId, onlyMarginDecorations) {
         if (this.root === SENTINEL) {
             return [];
         }
-        return intervalSearch(this, start, end, filterOwnerId, filterOutValidation, cachedVersionId, onlyMarginDecorations);
+        return intervalSearch(this, start, end, filterOwnerId, filterOutValidation, filterFontDecorations, cachedVersionId, onlyMarginDecorations);
     }
-    search(filterOwnerId, filterOutValidation, cachedVersionId, onlyMarginDecorations) {
+    search(filterOwnerId, filterOutValidation, filterFontDecorations, cachedVersionId, onlyMarginDecorations) {
         if (this.root === SENTINEL) {
             return [];
         }
-        return search(this, filterOwnerId, filterOutValidation, cachedVersionId, onlyMarginDecorations);
+        return search(this, filterOwnerId, filterOutValidation, filterFontDecorations, cachedVersionId, onlyMarginDecorations);
     }
     /**
      * Will not set `cachedAbsoluteStart` nor `cachedAbsoluteEnd` on the returned nodes!
@@ -485,7 +493,7 @@ function collectNodesPostOrder(T) {
     setNodeIsVisited(T.root, false);
     return result;
 }
-function search(T, filterOwnerId, filterOutValidation, cachedVersionId, onlyMarginDecorations) {
+function search(T, filterOwnerId, filterOutValidation, filterFontDecorations, cachedVersionId, onlyMarginDecorations) {
     let node = T.root;
     let delta = 0;
     let nodeStart = 0;
@@ -519,6 +527,9 @@ function search(T, filterOwnerId, filterOutValidation, cachedVersionId, onlyMarg
         if (filterOutValidation && getNodeIsForValidation(node)) {
             include = false;
         }
+        if (filterFontDecorations && getNodeAffectsFont(node)) {
+            include = false;
+        }
         if (onlyMarginDecorations && !getNodeIsInGlyphMargin(node)) {
             include = false;
         }
@@ -536,7 +547,7 @@ function search(T, filterOwnerId, filterOutValidation, cachedVersionId, onlyMarg
     setNodeIsVisited(T.root, false);
     return result;
 }
-function intervalSearch(T, intervalStart, intervalEnd, filterOwnerId, filterOutValidation, cachedVersionId, onlyMarginDecorations) {
+function intervalSearch(T, intervalStart, intervalEnd, filterOwnerId, filterOutValidation, filterFontDecorations, cachedVersionId, onlyMarginDecorations) {
     // https://en.wikipedia.org/wiki/Interval_tree#Augmented_tree
     // Now, it is known that two intervals A and B overlap only when both
     // A.low <= B.high and A.high >= B.low. When searching the trees for
@@ -593,6 +604,9 @@ function intervalSearch(T, intervalStart, intervalEnd, filterOwnerId, filterOutV
                 include = false;
             }
             if (filterOutValidation && getNodeIsForValidation(node)) {
+                include = false;
+            }
+            if (filterFontDecorations && getNodeAffectsFont(node)) {
                 include = false;
             }
             if (onlyMarginDecorations && !getNodeIsInGlyphMargin(node)) {
@@ -984,3 +998,4 @@ export function intervalCompare(aStart, aEnd, bStart, bEnd) {
     return aStart - bStart;
 }
 //#endregion
+//# sourceMappingURL=intervalTree.js.map

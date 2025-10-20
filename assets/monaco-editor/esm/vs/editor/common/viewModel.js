@@ -4,7 +4,6 @@
  *--------------------------------------------------------------------------------------------*/
 import * as arrays from '../../base/common/arrays.js';
 import * as strings from '../../base/common/strings.js';
-import { Range } from './core/range.js';
 export class Viewport {
     constructor(top, left, width, height) {
         this._viewportBrand = undefined;
@@ -33,7 +32,7 @@ export class ViewLineData {
     }
 }
 export class ViewLineRenderingData {
-    constructor(minColumn, maxColumn, content, continuesWithWrappedLine, mightContainRTL, mightContainNonBasicASCII, tokens, inlineDecorations, tabSize, startVisibleColumn) {
+    constructor(minColumn, maxColumn, content, continuesWithWrappedLine, mightContainRTL, mightContainNonBasicASCII, tokens, inlineDecorations, tabSize, startVisibleColumn, textDirection, hasVariableFonts) {
         this.minColumn = minColumn;
         this.maxColumn = maxColumn;
         this.content = content;
@@ -44,6 +43,8 @@ export class ViewLineRenderingData {
         this.inlineDecorations = inlineDecorations;
         this.tabSize = tabSize;
         this.startVisibleColumn = startVisibleColumn;
+        this.textDirection = textDirection;
+        this.hasVariableFonts = hasVariableFonts;
     }
     static isBasicASCII(lineContent, mightContainNonBasicASCII) {
         if (mightContainNonBasicASCII) {
@@ -56,24 +57,6 @@ export class ViewLineRenderingData {
             return strings.containsRTL(lineContent);
         }
         return false;
-    }
-}
-export class InlineDecoration {
-    constructor(range, inlineClassName, type) {
-        this.range = range;
-        this.inlineClassName = inlineClassName;
-        this.type = type;
-    }
-}
-export class SingleLineInlineDecoration {
-    constructor(startOffset, endOffset, inlineClassName, inlineClassNameAffectsLetterSpacing) {
-        this.startOffset = startOffset;
-        this.endOffset = endOffset;
-        this.inlineClassName = inlineClassName;
-        this.inlineClassNameAffectsLetterSpacing = inlineClassNameAffectsLetterSpacing;
-    }
-    toInlineDecoration(lineNumber) {
-        return new InlineDecoration(new Range(lineNumber, this.startOffset + 1, lineNumber, this.endOffset + 1), this.inlineClassName, this.inlineClassNameAffectsLetterSpacing ? 3 /* InlineDecorationType.RegularAffectingLetterSpacing */ : 0 /* InlineDecorationType.Regular */);
     }
 }
 export class ViewModelDecoration {
@@ -117,3 +100,4 @@ export class OverviewRulerDecorationsGroup {
         return arrays.equals(a, b, OverviewRulerDecorationsGroup.equals);
     }
 }
+//# sourceMappingURL=viewModel.js.map

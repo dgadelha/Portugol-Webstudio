@@ -189,3 +189,4 @@ export class CursorCollection {
         }
     }
 }
+//# sourceMappingURL=cursorCollection.js.map

@@ -15,17 +15,16 @@ import { addDisposableListener, addStandardDisposableListener, reset } from '../
 import { createTrustedTypesPolicy } from '../../../../../base/browser/trustedTypes.js';
 import { ActionBar } from '../../../../../base/browser/ui/actionbar/actionbar.js';
 import { DomScrollableElement } from '../../../../../base/browser/ui/scrollbar/scrollableElement.js';
-import { Action } from '../../../../../base/common/actions.js';
 import { forEachAdjacent, groupAdjacentBy } from '../../../../../base/common/arrays.js';
 import { Codicon } from '../../../../../base/common/codicons.js';
 import { Disposable, toDisposable } from '../../../../../base/common/lifecycle.js';
-import { autorun, autorunWithStore, derived, derivedWithStore, observableValue, subtransaction, transaction } from '../../../../../base/common/observable.js';
+import { autorun, autorunWithStore, derived, observableValue, subtransaction, transaction } from '../../../../../base/common/observable.js';
 import { ThemeIcon } from '../../../../../base/common/themables.js';
 import { applyFontInfo } from '../../../config/domFontInfo.js';
 import { applyStyle } from '../utils.js';
 import { EditorFontLigatures } from '../../../../common/config/editorOptions.js';
-import { LineRange } from '../../../../common/core/lineRange.js';
-import { OffsetRange } from '../../../../common/core/offsetRange.js';
+import { LineRange } from '../../../../common/core/ranges/lineRange.js';
+import { OffsetRange } from '../../../../common/core/ranges/offsetRange.js';
 import { Position } from '../../../../common/core/position.js';
 import { Range } from '../../../../common/core/range.js';
 import { LineRangeMapping } from '../../../../common/diff/rangeMapping.js';
@@ -38,9 +37,10 @@ import { AccessibilitySignal, IAccessibilitySignalService } from '../../../../..
 import { IInstantiationService } from '../../../../../platform/instantiation/common/instantiation.js';
 import { registerIcon } from '../../../../../platform/theme/common/iconRegistry.js';
 import './accessibleDiffViewer.css';
-const accessibleDiffViewerInsertIcon = registerIcon('diff-review-insert', Codicon.add, localize('accessibleDiffViewerInsertIcon', 'Icon for \'Insert\' in accessible diff viewer.'));
-const accessibleDiffViewerRemoveIcon = registerIcon('diff-review-remove', Codicon.remove, localize('accessibleDiffViewerRemoveIcon', 'Icon for \'Remove\' in accessible diff viewer.'));
-const accessibleDiffViewerCloseIcon = registerIcon('diff-review-close', Codicon.close, localize('accessibleDiffViewerCloseIcon', 'Icon for \'Close\' in accessible diff viewer.'));
+import { toAction } from '../../../../../base/common/actions.js';
+const accessibleDiffViewerInsertIcon = registerIcon('diff-review-insert', Codicon.add, localize(94, 'Icon for \'Insert\' in accessible diff viewer.'));
+const accessibleDiffViewerRemoveIcon = registerIcon('diff-review-remove', Codicon.remove, localize(95, 'Icon for \'Remove\' in accessible diff viewer.'));
+const accessibleDiffViewerCloseIcon = registerIcon('diff-review-close', Codicon.close, localize(96, 'Icon for \'Close\' in accessible diff viewer.'));
 let AccessibleDiffViewer = class AccessibleDiffViewer extends Disposable {
     static { this._ttPolicy = createTrustedTypesPolicy('diffReview', { createHTML: value => value }); }
     constructor(_parentNode, _visible, _setVisible, _canClose, _width, _height, _diffs, _models, _instantiationService) {
@@ -54,14 +54,14 @@ let AccessibleDiffViewer = class AccessibleDiffViewer extends Disposable {
         this._diffs = _diffs;
         this._models = _models;
         this._instantiationService = _instantiationService;
-        this._state = derivedWithStore(this, (reader, store) => {
+        this._state = derived(this, (reader) => {
             const visible = this._visible.read(reader);
             this._parentNode.style.visibility = visible ? 'visible' : 'hidden';
             if (!visible) {
                 return null;
             }
-            const model = store.add(this._instantiationService.createInstance(ViewModel, this._diffs, this._models, this._setVisible, this._canClose));
-            const view = store.add(this._instantiationService.createInstance(View, this._parentNode, model, this._width, this._height, this._models));
+            const model = reader.store.add(this._instantiationService.createInstance(ViewModel, this._diffs, this._models, this._setVisible, this._canClose));
+            const view = reader.store.add(this._instantiationService.createInstance(View, this._parentNode, model, this._width, this._height, this._models));
             return { model, view, };
         }).recomputeInitiallyAndOnChange(this._store);
     }
@@ -296,7 +296,13 @@ let View = class View extends Disposable {
             /** @description update actions */
             this._actionBar.clear();
             if (this._model.canClose.read(reader)) {
-                this._actionBar.push(new Action('diffreview.close', localize('label.close', "Close"), 'close-diff-review ' + ThemeIcon.asClassName(accessibleDiffViewerCloseIcon), true, async () => _model.close()), { label: false, icon: true });
+                this._actionBar.push(toAction({
+                    id: 'diffreview.close',
+                    label: localize(97, "Close"),
+                    class: 'close-diff-review ' + ThemeIcon.asClassName(accessibleDiffViewerCloseIcon),
+                    enabled: true,
+                    run: async () => _model.close()
+                }), { label: false, icon: true });
             }
         }));
         this._content = document.createElement('div');
@@ -351,8 +357,8 @@ let View = class View extends Disposable {
         const container = document.createElement('div');
         container.className = 'diff-review-table';
         container.setAttribute('role', 'list');
-        container.setAttribute('aria-label', localize('ariaLabel', 'Accessible Diff Viewer. Use arrow up and down to navigate.'));
-        applyFontInfo(container, modifiedOptions.get(50 /* EditorOption.fontInfo */));
+        container.setAttribute('aria-label', localize(98, 'Accessible Diff Viewer. Use arrow up and down to navigate.'));
+        applyFontInfo(container, modifiedOptions.get(59 /* EditorOption.fontInfo */));
         reset(this._content, container);
         const originalModel = this._models.getOriginalModel();
         const modifiedModel = this._models.getModifiedModel();
@@ -361,7 +367,7 @@ let View = class View extends Disposable {
         }
         const originalModelOpts = originalModel.getOptions();
         const modifiedModelOpts = modifiedModel.getOptions();
-        const lineHeight = modifiedOptions.get(67 /* EditorOption.lineHeight */);
+        const lineHeight = modifiedOptions.get(75 /* EditorOption.lineHeight */);
         const group = this._model.currentGroup.get();
         for (const viewItem of group?.lines || []) {
             if (!group) {
@@ -375,22 +381,22 @@ let View = class View extends Disposable {
                 const r = group.range;
                 const diffIndex = this._model.currentGroupIndex.get();
                 const diffsLength = this._model.groups.get().length;
-                const getAriaLines = (lines) => lines === 0 ? localize('no_lines_changed', "no lines changed")
-                    : lines === 1 ? localize('one_line_changed', "1 line changed")
-                        : localize('more_lines_changed', "{0} lines changed", lines);
+                const getAriaLines = (lines) => lines === 0 ? localize(99, "no lines changed")
+                    : lines === 1 ? localize(100, "1 line changed")
+                        : localize(101, "{0} lines changed", lines);
                 const originalChangedLinesCntAria = getAriaLines(r.original.length);
                 const modifiedChangedLinesCntAria = getAriaLines(r.modified.length);
-                header.setAttribute('aria-label', localize({
-                    key: 'header',
-                    comment: [
-                        'This is the ARIA label for a git diff header.',
-                        'A git diff header looks like this: @@ -154,12 +159,39 @@.',
-                        'That encodes that at original line 154 (which is now line 159), 12 lines were removed/changed with 39 lines.',
-                        'Variables 0 and 1 refer to the diff index out of total number of diffs.',
-                        'Variables 2 and 4 will be numbers (a line number).',
-                        'Variables 3 and 5 will be "no lines changed", "1 line changed" or "X lines changed", localized separately.'
-                    ]
-                }, "Difference {0} of {1}: original line {2}, {3}, modified line {4}, {5}", (diffIndex + 1), diffsLength, r.original.startLineNumber, originalChangedLinesCntAria, r.modified.startLineNumber, modifiedChangedLinesCntAria));
+                header.setAttribute('aria-label', localize(102, "Difference {0} of {1}: original line {2}, {3}, modified line {4}, {5}", (diffIndex + 1), diffsLength, r.original.startLineNumber, originalChangedLinesCntAria, r.modified.startLineNumber, modifiedChangedLinesCntAria));
+
+
+
+
+
+
+
+
+
+
                 const cell = document.createElement('div');
                 cell.className = 'diff-review-cell diff-review-summary';
                 // e.g.: `1/10: @@ -504,7 +517,7 @@`
@@ -418,9 +424,9 @@ let View = class View extends Disposable {
         this._scrollbar.scanDomNode();
     }
     _createRow(item, lineHeight, width, originalOptions, originalModel, originalModelOpts, modifiedOptions, modifiedModel, modifiedModelOpts) {
-        const originalLayoutInfo = originalOptions.get(146 /* EditorOption.layoutInfo */);
+        const originalLayoutInfo = originalOptions.get(165 /* EditorOption.layoutInfo */);
         const originalLineNumbersWidth = originalLayoutInfo.glyphMarginWidth + originalLayoutInfo.lineNumbersWidth;
-        const modifiedLayoutInfo = modifiedOptions.get(146 /* EditorOption.layoutInfo */);
+        const modifiedLayoutInfo = modifiedOptions.get(165 /* EditorOption.layoutInfo */);
         const modifiedLineNumbersWidth = 10 + modifiedLayoutInfo.glyphMarginWidth + modifiedLayoutInfo.lineNumbersWidth;
         let rowClassName = 'diff-review-row';
         let lineNumbersExtraClassName = '';
@@ -500,23 +506,23 @@ let View = class View extends Disposable {
             lineContent = originalModel.getLineContent(item.originalLineNumber);
         }
         if (lineContent.length === 0) {
-            lineContent = localize('blankLine', "blank");
+            lineContent = localize(103, "blank");
         }
         let ariaLabel = '';
         switch (item.type) {
             case LineType.Unchanged:
                 if (item.originalLineNumber === item.modifiedLineNumber) {
-                    ariaLabel = localize({ key: 'unchangedLine', comment: ['The placeholders are contents of the line and should not be translated.'] }, "{0} unchanged line {1}", lineContent, item.originalLineNumber);
+                    ariaLabel = localize(104, "{0} unchanged line {1}", lineContent, item.originalLineNumber);
                 }
                 else {
-                    ariaLabel = localize('equalLine', "{0} original line {1} modified line {2}", lineContent, item.originalLineNumber, item.modifiedLineNumber);
+                    ariaLabel = localize(105, "{0} original line {1} modified line {2}", lineContent, item.originalLineNumber, item.modifiedLineNumber);
                 }
                 break;
             case LineType.Added:
-                ariaLabel = localize('insertLine', "+ {0} modified line {1}", lineContent, item.modifiedLineNumber);
+                ariaLabel = localize(106, "+ {0} modified line {1}", lineContent, item.modifiedLineNumber);
                 break;
             case LineType.Deleted:
-                ariaLabel = localize('deleteLine', "- {0} original line {1}", lineContent, item.originalLineNumber);
+                ariaLabel = localize(107, "- {0} original line {1}", lineContent, item.originalLineNumber);
                 break;
         }
         row.setAttribute('aria-label', ariaLabel);
@@ -524,11 +530,12 @@ let View = class View extends Disposable {
     }
     _getLineHtml(model, options, tabSize, lineNumber, languageIdCodec) {
         const lineContent = model.getLineContent(lineNumber);
-        const fontInfo = options.get(50 /* EditorOption.fontInfo */);
+        const fontInfo = options.get(59 /* EditorOption.fontInfo */);
+        const verticalScrollbarSize = options.get(117 /* EditorOption.scrollbar */).verticalScrollbarSize;
         const lineTokens = LineTokens.createEmpty(lineContent, languageIdCodec);
         const isBasicASCII = ViewLineRenderingData.isBasicASCII(lineContent, model.mightContainNonBasicASCII());
         const containsRTL = ViewLineRenderingData.containsRTL(lineContent, isBasicASCII, model.mightContainRTL());
-        const r = renderViewLine2(new RenderLineInput((fontInfo.isMonospace && !options.get(33 /* EditorOption.disableMonospaceOptimizations */)), fontInfo.canUseHalfwidthRightwardsArrow, lineContent, false, isBasicASCII, containsRTL, 0, lineTokens, [], tabSize, 0, fontInfo.spaceWidth, fontInfo.middotWidth, fontInfo.wsmiddotWidth, options.get(118 /* EditorOption.stopRenderingLineAfter */), options.get(100 /* EditorOption.renderWhitespace */), options.get(95 /* EditorOption.renderControlCharacters */), options.get(51 /* EditorOption.fontLigatures */) !== EditorFontLigatures.OFF, null));
+        const r = renderViewLine2(new RenderLineInput((fontInfo.isMonospace && !options.get(40 /* EditorOption.disableMonospaceOptimizations */)), fontInfo.canUseHalfwidthRightwardsArrow, lineContent, false, isBasicASCII, containsRTL, 0, lineTokens, [], tabSize, 0, fontInfo.spaceWidth, fontInfo.middotWidth, fontInfo.wsmiddotWidth, options.get(133 /* EditorOption.stopRenderingLineAfter */), options.get(113 /* EditorOption.renderWhitespace */), options.get(108 /* EditorOption.renderControlCharacters */), options.get(60 /* EditorOption.fontLigatures */) !== EditorFontLigatures.OFF, null, null, verticalScrollbarSize));
         return r.html;
     }
 };
@@ -573,3 +580,4 @@ export class AccessibleDiffViewerModelFromEditors {
         return this.editors.modified.getPosition() ?? undefined;
     }
 }
+//# sourceMappingURL=accessibleDiffViewer.js.map

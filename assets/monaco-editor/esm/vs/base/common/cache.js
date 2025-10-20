@@ -57,3 +57,4 @@ export class CachedFunction {
         return value;
     }
 }
+//# sourceMappingURL=cache.js.map

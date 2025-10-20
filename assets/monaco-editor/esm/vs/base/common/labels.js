@@ -1,3 +1,7 @@
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
 import { hasDriveLetter } from './extpath.js';
 import { isWindows } from './platform.js';
 export function normalizeDriveLetter(path, isWindowsOS = isWindows) {
@@ -7,3 +11,4 @@ export function normalizeDriveLetter(path, isWindowsOS = isWindows) {
     return path;
 }
 let normalizedUserHomeCached = Object.create(null);
+//# sourceMappingURL=labels.js.map

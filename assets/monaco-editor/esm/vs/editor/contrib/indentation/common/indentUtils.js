@@ -29,3 +29,4 @@ export function generateIndent(spacesCnt, tabSize, insertSpaces) {
     }
     return result;
 }
+//# sourceMappingURL=indentUtils.js.map

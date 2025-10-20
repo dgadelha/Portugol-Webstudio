@@ -712,3 +712,4 @@ function stripBracketSearchCanceled(result) {
     }
     return result;
 }
+//# sourceMappingURL=bracketPairsImpl.js.map

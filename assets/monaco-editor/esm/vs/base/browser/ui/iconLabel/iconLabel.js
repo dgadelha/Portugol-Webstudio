@@ -4,14 +4,13 @@
  *--------------------------------------------------------------------------------------------*/
 import './iconlabel.css';
 import * as dom from '../../dom.js';
+import * as css from '../../cssValue.js';
 import { HighlightedLabel } from '../highlightedlabel/highlightedLabel.js';
 import { Disposable } from '../../../common/lifecycle.js';
 import { equals } from '../../../common/objects.js';
 import { Range } from '../../../common/range.js';
 import { getDefaultHoverDelegate } from '../hover/hoverDelegateFactory.js';
 import { getBaseLayerHoverDelegate } from '../hover/hoverDelegate2.js';
-import { isString } from '../../../common/types.js';
-import { stripIcons } from '../../../common/iconLabels.js';
 class FastLabelNode {
     constructor(_element) {
         this._element = _element;
@@ -100,7 +99,10 @@ export class IconLabel extends Disposable {
             else {
                 iconNode = existingIconNode;
             }
-            iconNode.style.backgroundImage = dom.asCSSUrl(options?.iconPath);
+            iconNode.style.backgroundImage = css.asCSSUrl(options?.iconPath);
+            iconNode.style.backgroundRepeat = 'no-repeat';
+            iconNode.style.backgroundPosition = 'center';
+            iconNode.style.backgroundSize = 'contain';
         }
         else if (existingIconNode) {
             existingIconNode.remove();
@@ -138,26 +140,16 @@ export class IconLabel extends Disposable {
             htmlElement.removeAttribute('title');
             return;
         }
-        if (this.hoverDelegate.showNativeHover) {
-            function setupNativeHover(htmlElement, tooltip) {
-                if (isString(tooltip)) {
-                    // Icons don't render in the native hover so we strip them out
-                    htmlElement.title = stripIcons(tooltip);
-                }
-                else if (tooltip?.markdownNotSupportedFallback) {
-                    htmlElement.title = tooltip.markdownNotSupportedFallback;
-                }
-                else {
-                    htmlElement.removeAttribute('title');
-                }
+        let hoverTarget = htmlElement;
+        if (this.creationOptions?.hoverTargetOverride) {
+            if (!dom.isAncestor(htmlElement, this.creationOptions.hoverTargetOverride)) {
+                throw new Error('hoverTargetOverrride must be an ancestor of the htmlElement');
             }
-            setupNativeHover(htmlElement, tooltip);
+            hoverTarget = this.creationOptions.hoverTargetOverride;
         }
-        else {
-            const hoverDisposable = getBaseLayerHoverDelegate().setupManagedHover(this.hoverDelegate, htmlElement, tooltip);
-            if (hoverDisposable) {
-                this.customHovers.set(htmlElement, hoverDisposable);
-            }
+        const hoverDisposable = getBaseLayerHoverDelegate().setupManagedHover(this.hoverDelegate, hoverTarget, tooltip);
+        if (hoverDisposable) {
+            this.customHovers.set(htmlElement, hoverDisposable);
         }
     }
     dispose() {
@@ -201,14 +193,14 @@ class Label {
         this.options = options;
         if (typeof label === 'string') {
             if (!this.singleLabel) {
-                this.container.innerText = '';
+                this.container.textContent = '';
                 this.container.classList.remove('multiple');
                 this.singleLabel = dom.append(this.container, dom.$('a.label-name', { id: options?.domId }));
             }
             this.singleLabel.textContent = label;
         }
         else {
-            this.container.innerText = '';
+            this.container.textContent = '';
             this.container.classList.add('multiple');
             this.singleLabel = undefined;
             for (let i = 0; i < label.length; i++) {
@@ -253,14 +245,14 @@ class LabelWithHighlights extends Disposable {
         this.options = options;
         if (typeof label === 'string') {
             if (!this.singleLabel) {
-                this.container.innerText = '';
+                this.container.textContent = '';
                 this.container.classList.remove('multiple');
                 this.singleLabel = this._register(new HighlightedLabel(dom.append(this.container, dom.$('a.label-name', { id: options?.domId })), { supportIcons: this.supportIcons }));
             }
             this.singleLabel.set(label, options?.matches, undefined, options?.labelEscapeNewLines);
         }
         else {
-            this.container.innerText = '';
+            this.container.textContent = '';
             this.container.classList.add('multiple');
             this.singleLabel = undefined;
             const separator = options?.separator || '/';
@@ -279,3 +271,4 @@ class LabelWithHighlights extends Disposable {
         }
     }
 }
+//# sourceMappingURL=iconLabel.js.map

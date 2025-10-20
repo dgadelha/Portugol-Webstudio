@@ -9,14 +9,22 @@ import { InputFocusedContext } from '../../contextkey/common/contextkeys.js';
 import { KeybindingsRegistry } from '../../keybinding/common/keybindingsRegistry.js';
 import { endOfQuickInputBoxContext, inQuickInputContext, quickInputTypeContextKeyValue } from './quickInput.js';
 import { IQuickInputService, QuickPickFocus } from '../common/quickInput.js';
-const defaultCommandAndKeybindingRule = {
-    weight: 200 /* KeybindingWeight.WorkbenchContrib */,
-    when: ContextKeyExpr.and(ContextKeyExpr.equals(quickInputTypeContextKeyValue, "quickPick" /* QuickInputType.QuickPick */), inQuickInputContext),
-    metadata: { description: localize('quickPick', "Used while in the context of the quick pick. If you change one keybinding for this command, you should change all of the other keybindings (modifier variants) of this command as well.") }
-};
+function registerQuickInputCommandAndKeybindingRule(rule, options = {}) {
+    KeybindingsRegistry.registerCommandAndKeybindingRule({
+        weight: 200 /* KeybindingWeight.WorkbenchContrib */,
+        when: inQuickInputContext,
+        metadata: { description: localize(1741, "Used while in the context of any kind of quick input. If you change one keybinding for this command, you should change all of the other keybindings (modifier variants) of this command as well.") },
+        ...rule,
+        secondary: getSecondary(rule.primary, rule.secondary ?? [], options)
+    });
+}
 function registerQuickPickCommandAndKeybindingRule(rule, options = {}) {
     KeybindingsRegistry.registerCommandAndKeybindingRule({
-        ...defaultCommandAndKeybindingRule,
+        weight: 200 /* KeybindingWeight.WorkbenchContrib */,
+        when: ContextKeyExpr.and(ContextKeyExpr.or(
+        // Only things that use Tree widgets
+        ContextKeyExpr.equals(quickInputTypeContextKeyValue, "quickPick" /* QuickInputType.QuickPick */), ContextKeyExpr.equals(quickInputTypeContextKeyValue, "quickTree" /* QuickInputType.QuickTree */)), inQuickInputContext),
+        metadata: { description: localize(1742, "Used while in the context of the quick pick. If you change one keybinding for this command, you should change all of the other keybindings (modifier variants) of this command as well.") },
         ...rule,
         secondary: getSecondary(rule.primary, rule.secondary ?? [], options)
     });
@@ -71,8 +79,8 @@ registerQuickPickCommandAndKeybindingRule({ id: 'quickInput.previous', primary: 
 // In this case, we want that modifier key+up/down to navigate to the next/previous item, not the next/previous separator.
 // To handle this, we have a separate command for navigating to the next/previous separator when we are not in quick access mode.
 // If, however, we are in quick access mode, and you hold down an additional modifier key, we will navigate to the next/previous separator.
-const nextSeparatorFallbackDesc = localize('quickInput.nextSeparatorWithQuickAccessFallback', "If we're in quick access mode, this will navigate to the next item. If we are not in quick access mode, this will navigate to the next separator.");
-const prevSeparatorFallbackDesc = localize('quickInput.previousSeparatorWithQuickAccessFallback', "If we're in quick access mode, this will navigate to the previous item. If we are not in quick access mode, this will navigate to the previous separator.");
+const nextSeparatorFallbackDesc = localize(1743, "If we're in quick access mode, this will navigate to the next item. If we are not in quick access mode, this will navigate to the next separator.");
+const prevSeparatorFallbackDesc = localize(1744, "If we're in quick access mode, this will navigate to the previous item. If we are not in quick access mode, this will navigate to the previous separator.");
 if (isMacintosh) {
     registerQuickPickCommandAndKeybindingRule({
         id: 'quickInput.nextSeparatorWithQuickAccessFallback',
@@ -129,10 +137,25 @@ else {
 }
 //#endregion
 //#region Accept
+KeybindingsRegistry.registerCommandAndKeybindingRule({
+    id: 'quickInput.accept',
+    primary: 3 /* KeyCode.Enter */,
+    weight: 200 /* KeybindingWeight.WorkbenchContrib */,
+    when: ContextKeyExpr.and(
+    // All other kinds of Quick things handle Accept, except Widget. In other words, Accepting is a detail on the things
+    // that extend IQuickInput
+    ContextKeyExpr.notEquals(quickInputTypeContextKeyValue, "quickWidget" /* QuickInputType.QuickWidget */), inQuickInputContext),
+    metadata: { description: localize(1745, "Used while in the context of some quick input. If you change one keybinding for this command, you should change all of the other keybindings (modifier variants) of this command as well.") },
+    handler: (accessor) => {
+        const currentQuickPick = accessor.get(IQuickInputService).currentQuickInput;
+        currentQuickPick?.accept();
+    },
+    secondary: getSecondary(3 /* KeyCode.Enter */, [], { withAltMod: true, withCtrlMod: true, withCmdMod: true })
+});
 registerQuickPickCommandAndKeybindingRule({
     id: 'quickInput.acceptInBackground',
     // If we are in the quick pick but the input box is not focused or our cursor is at the end of the input box
-    when: ContextKeyExpr.and(defaultCommandAndKeybindingRule.when, ContextKeyExpr.or(InputFocusedContext.negate(), endOfQuickInputBoxContext)),
+    when: ContextKeyExpr.and(inQuickInputContext, ContextKeyExpr.equals(quickInputTypeContextKeyValue, "quickPick" /* QuickInputType.QuickPick */), ContextKeyExpr.or(InputFocusedContext.negate(), endOfQuickInputBoxContext)),
     primary: 17 /* KeyCode.RightArrow */,
     // Need a little extra weight to ensure this keybinding is preferred over the default cmd+alt+right arrow keybinding
     // https://github.com/microsoft/vscode/blob/1451e4fbbbf074a4355cc537c35b547b80ce1c52/src/vs/workbench/browser/parts/editor/editorActions.ts#L1178-L1195
@@ -142,3 +165,25 @@ registerQuickPickCommandAndKeybindingRule({
         currentQuickPick?.accept(true);
     },
 }, { withAltMod: true, withCtrlMod: true, withCmdMod: true });
+//#endregion
+//#region Hide
+registerQuickInputCommandAndKeybindingRule({
+    id: 'quickInput.hide',
+    primary: 9 /* KeyCode.Escape */,
+    handler: (accessor) => {
+        const currentQuickPick = accessor.get(IQuickInputService).currentQuickInput;
+        currentQuickPick?.hide();
+    }
+}, { withAltMod: true, withCtrlMod: true, withCmdMod: true });
+//#endregion
+//#region Toggle Hover
+registerQuickPickCommandAndKeybindingRule({
+    id: 'quickInput.toggleHover',
+    primary: ctrlKeyMod | 10 /* KeyCode.Space */,
+    handler: accessor => {
+        const quickInputService = accessor.get(IQuickInputService);
+        quickInputService.toggleHover();
+    }
+});
+//#endregion
+//# sourceMappingURL=quickInputActions.js.map

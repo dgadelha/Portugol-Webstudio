@@ -122,3 +122,4 @@ function getNextChildIdx(node, curIdx = -1) {
 function lastOrUndefined(arr) {
     return arr.length > 0 ? arr[arr.length - 1] : undefined;
 }
+//# sourceMappingURL=nodeReader.js.map

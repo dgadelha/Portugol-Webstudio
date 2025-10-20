@@ -123,3 +123,4 @@ export function _tokenizeToString(text, languageIdCodec, tokenizationSupport) {
     result += `</div>`;
     return result;
 }
+//# sourceMappingURL=textToHtmlTokenizer.js.map

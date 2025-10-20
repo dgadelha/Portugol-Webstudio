@@ -49,6 +49,10 @@ let BrowserClipboardService = class BrowserClipboardService extends Disposable {
             disposables.add(addDisposableListener(window.document, 'copy', () => this.clearResourcesState()));
         }, { window: mainWindow, disposables: this._store }));
     }
+    triggerPaste() {
+        this.logService.trace('BrowserClipboardService#triggerPaste');
+        return undefined;
+    }
     // In Safari, it has the following note:
     //
     // "The request to write to the clipboard must be triggered during a user gesture.
@@ -87,11 +91,13 @@ let BrowserClipboardService = class BrowserClipboardService extends Disposable {
         }, { container: this.layoutService.mainContainer, disposables: this._store }));
     }
     async writeText(text, type) {
+        this.logService.trace('BrowserClipboardService#writeText called with type:', type, ' text.length:', text.length);
         // Clear resources given we are writing text
         this.clearResourcesState();
         // With type: only in-memory is supported
         if (type) {
             this.mapTextToType.set(type, text);
+            this.logService.trace('BrowserClipboardService#writeText');
             return;
         }
         if (this.webKitPendingClipboardWritePromise) {
@@ -104,6 +110,7 @@ let BrowserClipboardService = class BrowserClipboardService extends Disposable {
         // as we have seen DOMExceptions in certain browsers
         // due to security policies.
         try {
+            this.logService.trace('before navigator.clipboard.writeText');
             return await getActiveWindow().navigator.clipboard.writeText(text);
         }
         catch (error) {
@@ -113,6 +120,7 @@ let BrowserClipboardService = class BrowserClipboardService extends Disposable {
         this.fallbackWriteText(text);
     }
     fallbackWriteText(text) {
+        this.logService.trace('BrowserClipboardService#fallbackWriteText');
         const activeDocument = getActiveDocument();
         const activeElement = activeDocument.activeElement;
         const textArea = activeDocument.body.appendChild($('textarea', { 'aria-hidden': true }));
@@ -129,15 +137,20 @@ let BrowserClipboardService = class BrowserClipboardService extends Disposable {
         textArea.remove();
     }
     async readText(type) {
+        this.logService.trace('BrowserClipboardService#readText called with type:', type);
         // With type: only in-memory is supported
         if (type) {
-            return this.mapTextToType.get(type) || '';
+            const readText = this.mapTextToType.get(type) || '';
+            this.logService.trace('BrowserClipboardService#readText text.length:', readText.length);
+            return readText;
         }
         // Guard access to navigator.clipboard with try/catch
         // as we have seen DOMExceptions in certain browsers
         // due to security policies.
         try {
-            return await getActiveWindow().navigator.clipboard.readText();
+            const readText = await getActiveWindow().navigator.clipboard.readText();
+            this.logService.trace('BrowserClipboardService#readText text.length:', readText.length);
+            return readText;
         }
         catch (error) {
             console.error(error);
@@ -198,3 +211,4 @@ BrowserClipboardService = BrowserClipboardService_1 = __decorate([
     __param(1, ILogService)
 ], BrowserClipboardService);
 export { BrowserClipboardService };
+//# sourceMappingURL=clipboardService.js.map

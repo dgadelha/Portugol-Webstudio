@@ -499,6 +499,26 @@ export class PieceTreeBase {
         }
         return this.getOffsetAt(lineNumber + 1, 1) - this.getOffsetAt(lineNumber, 1) - this._EOLLength;
     }
+    getNearestChunk(offset) {
+        const nodePos = this.nodeAt(offset);
+        if (nodePos.remainder === nodePos.node.piece.length) {
+            // the offset is at the head of next node.
+            const matchingNode = nodePos.node.next();
+            if (!matchingNode || matchingNode === SENTINEL) {
+                return '';
+            }
+            const buffer = this._buffers[matchingNode.piece.bufferIndex];
+            const startOffset = this.offsetInBuffer(matchingNode.piece.bufferIndex, matchingNode.piece.start);
+            return buffer.buffer.substring(startOffset, startOffset + matchingNode.piece.length);
+        }
+        else {
+            const buffer = this._buffers[nodePos.node.piece.bufferIndex];
+            const startOffset = this.offsetInBuffer(nodePos.node.piece.bufferIndex, nodePos.node.piece.start);
+            const targetOffset = startOffset + nodePos.remainder;
+            const targetEnd = startOffset + nodePos.node.piece.length;
+            return buffer.buffer.substring(targetOffset, targetEnd);
+        }
+    }
     findMatchesInNode(node, searcher, startLineNumber, startColumn, startCursor, endCursor, searchData, captureMatches, limitResultCount, resultLen, result) {
         const buffer = this._buffers[node.piece.bufferIndex];
         const startOffsetInBuffer = this.offsetInBuffer(node.piece.bufferIndex, node.piece.start);
@@ -1450,3 +1470,4 @@ export class PieceTreeBase {
         return z;
     }
 }
+//# sourceMappingURL=pieceTreeBase.js.map

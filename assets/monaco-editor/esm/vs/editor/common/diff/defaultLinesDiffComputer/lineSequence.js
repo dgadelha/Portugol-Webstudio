@@ -32,3 +32,4 @@ function getIndentation(str) {
     }
     return i;
 }
+//# sourceMappingURL=lineSequence.js.map

@@ -11,3 +11,4 @@ export class EditorWorkerHost {
         workerClient.setChannel(EditorWorkerHost.CHANNEL_NAME, obj);
     }
 }
+//# sourceMappingURL=editorWorkerHost.js.map

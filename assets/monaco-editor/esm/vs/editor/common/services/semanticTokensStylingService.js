@@ -43,3 +43,4 @@ SemanticTokensStylingService = __decorate([
 ], SemanticTokensStylingService);
 export { SemanticTokensStylingService };
 registerSingleton(ISemanticTokensStylingService, SemanticTokensStylingService, 1 /* InstantiationType.Delayed */);
+//# sourceMappingURL=semanticTokensStylingService.js.map

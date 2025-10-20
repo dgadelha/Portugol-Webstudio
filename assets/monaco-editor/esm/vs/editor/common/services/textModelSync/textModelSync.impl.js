@@ -302,3 +302,4 @@ export class MirrorModel extends BaseMirrorModel {
         }
     }
 }
+//# sourceMappingURL=textModelSync.impl.js.map

@@ -157,24 +157,21 @@ export class BaseActionViewItem extends Disposable {
     getTooltip() {
         return this.action.tooltip;
     }
+    getHoverContents() {
+        return this.getTooltip();
+    }
     updateTooltip() {
         if (!this.element) {
             return;
         }
-        const title = this.getTooltip() ?? '';
+        const title = this.getHoverContents() ?? '';
         this.updateAriaLabel();
-        if (this.options.hoverDelegate?.showNativeHover) {
-            /* While custom hover is not inside custom hover */
-            this.element.title = title;
+        if (!this.customHover && title !== '') {
+            const hoverDelegate = this.options.hoverDelegate ?? getDefaultHoverDelegate('element');
+            this.customHover = this._store.add(getBaseLayerHoverDelegate().setupManagedHover(hoverDelegate, this.element, title));
         }
-        else {
-            if (!this.customHover && title !== '') {
-                const hoverDelegate = this.options.hoverDelegate ?? getDefaultHoverDelegate('element');
-                this.customHover = this._store.add(getBaseLayerHoverDelegate().setupManagedHover(hoverDelegate, this.element, title));
-            }
-            else if (this.customHover) {
-                this.customHover.update(title);
-            }
+        else if (this.customHover) {
+            this.customHover.update(title);
         }
     }
     updateAriaLabel() {
@@ -200,10 +197,13 @@ export class BaseActionViewItem extends Disposable {
 }
 export class ActionViewItem extends BaseActionViewItem {
     constructor(context, action, options) {
+        options = {
+            ...options,
+            icon: options.icon !== undefined ? options.icon : false,
+            label: options.label !== undefined ? options.label : true,
+        };
         super(context, action, options);
         this.options = options;
-        this.options.icon = options.icon !== undefined ? options.icon : false;
-        this.options.label = options.label !== undefined ? options.label : true;
         this.cssClass = '';
     }
     render(container) {
@@ -214,7 +214,7 @@ export class ActionViewItem extends BaseActionViewItem {
         label.setAttribute('role', this.getDefaultAriaRole());
         this.label = label;
         this.element.appendChild(label);
-        if (this.options.label && this.options.keybinding) {
+        if (this.options.label && this.options.keybinding && !this.options.keybindingNotRenderedWithLabel) {
             const kbLabel = document.createElement('span');
             kbLabel.classList.add('keybinding');
             kbLabel.textContent = this.options.keybinding;
@@ -270,10 +270,10 @@ export class ActionViewItem extends BaseActionViewItem {
         if (this.action.tooltip) {
             title = this.action.tooltip;
         }
-        else if (!this.options.label && this.action.label && this.options.icon) {
+        else if (this.action.label) {
             title = this.action.label;
             if (this.options.keybinding) {
-                title = nls.localize({ key: 'titleLabel', comment: ['action title', 'action keybinding'] }, "{0} ({1})", title, this.options.keybinding);
+                title = nls.localize(0, "{0} ({1})", title, this.options.keybinding);
             }
         }
         return title ?? undefined;
@@ -371,3 +371,4 @@ export class SelectActionViewItem extends BaseActionViewItem {
         this.selectBox.render(container);
     }
 }
+//# sourceMappingURL=actionViewItems.js.map

@@ -7,14 +7,14 @@ import { BrowserFeatures } from './canIUse.js';
 import { StandardKeyboardEvent } from './keyboardEvent.js';
 import { StandardMouseEvent } from './mouseEvent.js';
 import { AbstractIdleValue, IntervalTimer, _runWhenIdle } from '../common/async.js';
-import { onUnexpectedError } from '../common/errors.js';
+import { BugIndicatingError, onUnexpectedError } from '../common/errors.js';
 import * as event from '../common/event.js';
-import * as dompurify from './dompurify/dompurify.js';
 import { Disposable, DisposableStore, toDisposable } from '../common/lifecycle.js';
-import { FileAccess, RemoteAuthorities } from '../common/network.js';
+import { RemoteAuthorities } from '../common/network.js';
 import * as platform from '../common/platform.js';
 import { hash } from '../common/hash.js';
 import { ensureCodeWindow, mainWindow } from './window.js';
+import { derived, derivedOpts, observableValue } from '../common/observable.js';
 //# region Multi-Window Support Utilities
 export const { registerWindow, getWindow, getDocument, getWindows, getWindowsCount, getWindowId, getWindowById, hasWindow, onDidRegisterWindow, onWillUnregisterWindow, onDidUnregisterWindow } = (function () {
     const windows = new Map();
@@ -140,6 +140,9 @@ export const addStandardDisposableGenericMouseUpListener = function addStandardD
 };
 export function addDisposableGenericMouseDownListener(node, handler, useCapture) {
     return addDisposableListener(node, platform.isIOS && BrowserFeatures.pointerEvents ? EventType.POINTER_DOWN : EventType.MOUSE_DOWN, handler, useCapture);
+}
+export function addDisposableGenericMouseMoveListener(node, handler, useCapture) {
+    return addDisposableListener(node, platform.isIOS && BrowserFeatures.pointerEvents ? EventType.POINTER_MOVE : EventType.MOUSE_MOVE, handler, useCapture);
 }
 export function addDisposableGenericMouseUpListener(node, handler, useCapture) {
     return addDisposableListener(node, platform.isIOS && BrowserFeatures.pointerEvents ? EventType.POINTER_UP : EventType.MOUSE_UP, handler, useCapture);
@@ -292,7 +295,7 @@ class AnimationFrameQueueItem {
 export function getComputedStyle(el) {
     return getWindow(el).getComputedStyle(el, null);
 }
-export function getClientArea(element, fallback) {
+export function getClientArea(element, defaultValue, fallbackElement) {
     const elWindow = getWindow(element);
     const elDocument = elWindow.document;
     // Try with DOM clientWidth / clientHeight
@@ -315,8 +318,11 @@ export function getClientArea(element, fallback) {
     if (elDocument.documentElement && elDocument.documentElement.clientWidth && elDocument.documentElement.clientHeight) {
         return new Dimension(elDocument.documentElement.clientWidth, elDocument.documentElement.clientHeight);
     }
-    if (fallback) {
-        return getClientArea(fallback);
+    if (fallbackElement) {
+        return getClientArea(fallbackElement, defaultValue);
+    }
+    if (defaultValue) {
+        return defaultValue;
     }
     throw new Error('Unable to figure out browser width and height');
 }
@@ -326,46 +332,46 @@ class SizeUtils {
     static convertToPixels(element, value) {
         return parseFloat(value) || 0;
     }
-    static getDimension(element, cssPropertyName, jsPropertyName) {
+    static getDimension(element, cssPropertyName) {
         const computedStyle = getComputedStyle(element);
         const value = computedStyle ? computedStyle.getPropertyValue(cssPropertyName) : '0';
         return SizeUtils.convertToPixels(element, value);
     }
     static getBorderLeftWidth(element) {
-        return SizeUtils.getDimension(element, 'border-left-width', 'borderLeftWidth');
+        return SizeUtils.getDimension(element, 'border-left-width');
     }
     static getBorderRightWidth(element) {
-        return SizeUtils.getDimension(element, 'border-right-width', 'borderRightWidth');
+        return SizeUtils.getDimension(element, 'border-right-width');
     }
     static getBorderTopWidth(element) {
-        return SizeUtils.getDimension(element, 'border-top-width', 'borderTopWidth');
+        return SizeUtils.getDimension(element, 'border-top-width');
     }
     static getBorderBottomWidth(element) {
-        return SizeUtils.getDimension(element, 'border-bottom-width', 'borderBottomWidth');
+        return SizeUtils.getDimension(element, 'border-bottom-width');
     }
     static getPaddingLeft(element) {
-        return SizeUtils.getDimension(element, 'padding-left', 'paddingLeft');
+        return SizeUtils.getDimension(element, 'padding-left');
     }
     static getPaddingRight(element) {
-        return SizeUtils.getDimension(element, 'padding-right', 'paddingRight');
+        return SizeUtils.getDimension(element, 'padding-right');
     }
     static getPaddingTop(element) {
-        return SizeUtils.getDimension(element, 'padding-top', 'paddingTop');
+        return SizeUtils.getDimension(element, 'padding-top');
     }
     static getPaddingBottom(element) {
-        return SizeUtils.getDimension(element, 'padding-bottom', 'paddingBottom');
+        return SizeUtils.getDimension(element, 'padding-bottom');
     }
     static getMarginLeft(element) {
-        return SizeUtils.getDimension(element, 'margin-left', 'marginLeft');
+        return SizeUtils.getDimension(element, 'margin-left');
     }
     static getMarginTop(element) {
-        return SizeUtils.getDimension(element, 'margin-top', 'marginTop');
+        return SizeUtils.getDimension(element, 'margin-top');
     }
     static getMarginRight(element) {
-        return SizeUtils.getDimension(element, 'margin-right', 'marginRight');
+        return SizeUtils.getDimension(element, 'margin-right');
     }
     static getMarginBottom(element) {
-        return SizeUtils.getDimension(element, 'margin-bottom', 'marginBottom');
+        return SizeUtils.getDimension(element, 'margin-bottom');
     }
 }
 export class Dimension {
@@ -582,76 +588,6 @@ export function getActiveWindow() {
     const document = getActiveDocument();
     return (document.defaultView?.window ?? mainWindow);
 }
-const globalStylesheets = new Map();
-/**
- * A version of createStyleSheet which has a unified API to initialize/set the style content.
- */
-export function createStyleSheet2() {
-    return new WrappedStyleElement();
-}
-class WrappedStyleElement {
-    constructor() {
-        this._currentCssStyle = '';
-        this._styleSheet = undefined;
-    }
-    setStyle(cssStyle) {
-        if (cssStyle === this._currentCssStyle) {
-            return;
-        }
-        this._currentCssStyle = cssStyle;
-        if (!this._styleSheet) {
-            this._styleSheet = createStyleSheet(mainWindow.document.head, (s) => s.innerText = cssStyle);
-        }
-        else {
-            this._styleSheet.innerText = cssStyle;
-        }
-    }
-    dispose() {
-        if (this._styleSheet) {
-            this._styleSheet.remove();
-            this._styleSheet = undefined;
-        }
-    }
-}
-export function createStyleSheet(container = mainWindow.document.head, beforeAppend, disposableStore) {
-    const style = document.createElement('style');
-    style.type = 'text/css';
-    style.media = 'screen';
-    beforeAppend?.(style);
-    container.appendChild(style);
-    if (disposableStore) {
-        disposableStore.add(toDisposable(() => style.remove()));
-    }
-    // With <head> as container, the stylesheet becomes global and is tracked
-    // to support auxiliary windows to clone the stylesheet.
-    if (container === mainWindow.document.head) {
-        const globalStylesheetClones = new Set();
-        globalStylesheets.set(style, globalStylesheetClones);
-        for (const { window: targetWindow, disposables } of getWindows()) {
-            if (targetWindow === mainWindow) {
-                continue; // main window is already tracked
-            }
-            const cloneDisposable = disposables.add(cloneGlobalStyleSheet(style, globalStylesheetClones, targetWindow));
-            disposableStore?.add(cloneDisposable);
-        }
-    }
-    return style;
-}
-function cloneGlobalStyleSheet(globalStylesheet, globalStylesheetClones, targetWindow) {
-    const disposables = new DisposableStore();
-    const clone = globalStylesheet.cloneNode(true);
-    targetWindow.document.head.appendChild(clone);
-    disposables.add(toDisposable(() => clone.remove()));
-    for (const rule of getDynamicStyleSheetRules(globalStylesheet)) {
-        clone.sheet?.insertRule(rule.cssText, clone.sheet?.cssRules.length);
-    }
-    disposables.add(sharedMutationObserver.observe(globalStylesheet, disposables, { childList: true })(() => {
-        clone.textContent = globalStylesheet.textContent;
-    }));
-    globalStylesheetClones.add(clone);
-    disposables.add(toDisposable(() => globalStylesheetClones.delete(clone)));
-    return disposables;
-}
 export const sharedMutationObserver = new class {
     constructor() {
         this.mutationObservers = new Map();
@@ -692,57 +628,6 @@ export const sharedMutationObserver = new class {
         return mutationObserverPerOptions.onDidMutate;
     }
 };
-let _sharedStyleSheet = null;
-function getSharedStyleSheet() {
-    if (!_sharedStyleSheet) {
-        _sharedStyleSheet = createStyleSheet();
-    }
-    return _sharedStyleSheet;
-}
-function getDynamicStyleSheetRules(style) {
-    if (style?.sheet?.rules) {
-        // Chrome, IE
-        return style.sheet.rules;
-    }
-    if (style?.sheet?.cssRules) {
-        // FF
-        return style.sheet.cssRules;
-    }
-    return [];
-}
-export function createCSSRule(selector, cssText, style = getSharedStyleSheet()) {
-    if (!style || !cssText) {
-        return;
-    }
-    style.sheet?.insertRule(`${selector} {${cssText}}`, 0);
-    // Apply rule also to all cloned global stylesheets
-    for (const clonedGlobalStylesheet of globalStylesheets.get(style) ?? []) {
-        createCSSRule(selector, cssText, clonedGlobalStylesheet);
-    }
-}
-export function removeCSSRulesContainingSelector(ruleName, style = getSharedStyleSheet()) {
-    if (!style) {
-        return;
-    }
-    const rules = getDynamicStyleSheetRules(style);
-    const toDelete = [];
-    for (let i = 0; i < rules.length; i++) {
-        const rule = rules[i];
-        if (isCSSStyleRule(rule) && rule.selectorText.indexOf(ruleName) !== -1) {
-            toDelete.push(i);
-        }
-    }
-    for (let i = toDelete.length - 1; i >= 0; i--) {
-        style.sheet?.deleteRule(toDelete[i]);
-    }
-    // Remove rules also from all cloned global stylesheets
-    for (const clonedGlobalStylesheet of globalStylesheets.get(style) ?? []) {
-        removeCSSRulesContainingSelector(ruleName, clonedGlobalStylesheet);
-    }
-}
-function isCSSStyleRule(rule) {
-    return typeof rule.selectorText === 'string';
-}
 export function isHTMLElement(e) {
     // eslint-disable-next-line no-restricted-syntax
     return e instanceof HTMLElement || e instanceof getWindow(e).HTMLElement;
@@ -854,6 +739,8 @@ export function restoreParentsScrollTop(node, state) {
     }
 }
 class FocusTracker extends Disposable {
+    get onDidFocus() { return this._onDidFocus.event; }
+    get onDidBlur() { return this._onDidBlur.event; }
     static hasFocusWithin(element) {
         if (isHTMLElement(element)) {
             const shadowRoot = getShadowRoot(element);
@@ -868,9 +755,7 @@ class FocusTracker extends Disposable {
     constructor(element) {
         super();
         this._onDidFocus = this._register(new event.Emitter());
-        this.onDidFocus = this._onDidFocus.event;
         this._onDidBlur = this._register(new event.Emitter());
-        this.onDidBlur = this._onDidBlur.event;
         let hasFocus = FocusTracker.hasFocusWithin(element);
         let loosingFocus = false;
         const onFocus = () => {
@@ -938,7 +823,7 @@ export function prepend(parent, child) {
  * Removes all children from `parent` and appends `children`
  */
 export function reset(parent, ...children) {
-    parent.innerText = '';
+    parent.textContent = '';
     append(parent, ...children);
 }
 const SELECTOR_REGEX = /([\w\-]+)?(#([\w\-]+))?((\.([\w\-]+))*)/;
@@ -1054,143 +939,6 @@ export function animate(targetWindow, fn) {
     return toDisposable(() => stepDisposable.dispose());
 }
 RemoteAuthorities.setPreferredWebSchema(/^https:/.test(mainWindow.location.href) ? 'https' : 'http');
-/**
- * returns url('...')
- */
-export function asCSSUrl(uri) {
-    if (!uri) {
-        return `url('')`;
-    }
-    return `url('${FileAccess.uriToBrowserUri(uri).toString(true).replace(/'/g, '%27')}')`;
-}
-export function asCSSPropertyValue(value) {
-    return `'${value.replace(/'/g, '%27')}'`;
-}
-export function asCssValueWithDefault(cssPropertyValue, dflt) {
-    if (cssPropertyValue !== undefined) {
-        const variableMatch = cssPropertyValue.match(/^\s*var\((.+)\)$/);
-        if (variableMatch) {
-            const varArguments = variableMatch[1].split(',', 2);
-            if (varArguments.length === 2) {
-                dflt = asCssValueWithDefault(varArguments[1].trim(), dflt);
-            }
-            return `var(${varArguments[0]}, ${dflt})`;
-        }
-        return cssPropertyValue;
-    }
-    return dflt;
-}
-// -- sanitize and trusted html
-/**
- * Hooks dompurify using `afterSanitizeAttributes` to check that all `href` and `src`
- * attributes are valid.
- */
-export function hookDomPurifyHrefAndSrcSanitizer(allowedProtocols, allowDataImages = false) {
-    // https://github.com/cure53/DOMPurify/blob/main/demos/hooks-scheme-allowlist.html
-    // build an anchor to map URLs to
-    const anchor = document.createElement('a');
-    dompurify.addHook('afterSanitizeAttributes', (node) => {
-        // check all href/src attributes for validity
-        for (const attr of ['href', 'src']) {
-            if (node.hasAttribute(attr)) {
-                const attrValue = node.getAttribute(attr);
-                if (attr === 'href' && attrValue.startsWith('#')) {
-                    // Allow fragment links
-                    continue;
-                }
-                anchor.href = attrValue;
-                if (!allowedProtocols.includes(anchor.protocol.replace(/:$/, ''))) {
-                    if (allowDataImages && attr === 'src' && anchor.href.startsWith('data:')) {
-                        continue;
-                    }
-                    node.removeAttribute(attr);
-                }
-            }
-        }
-    });
-    return toDisposable(() => {
-        dompurify.removeHook('afterSanitizeAttributes');
-    });
-}
-/**
- * List of safe, non-input html tags.
- */
-export const basicMarkupHtmlTags = Object.freeze([
-    'a',
-    'abbr',
-    'b',
-    'bdo',
-    'blockquote',
-    'br',
-    'caption',
-    'cite',
-    'code',
-    'col',
-    'colgroup',
-    'dd',
-    'del',
-    'details',
-    'dfn',
-    'div',
-    'dl',
-    'dt',
-    'em',
-    'figcaption',
-    'figure',
-    'h1',
-    'h2',
-    'h3',
-    'h4',
-    'h5',
-    'h6',
-    'hr',
-    'i',
-    'img',
-    'input',
-    'ins',
-    'kbd',
-    'label',
-    'li',
-    'mark',
-    'ol',
-    'p',
-    'pre',
-    'q',
-    'rp',
-    'rt',
-    'ruby',
-    'samp',
-    'small',
-    'small',
-    'source',
-    'span',
-    'strike',
-    'strong',
-    'sub',
-    'summary',
-    'sup',
-    'table',
-    'tbody',
-    'td',
-    'tfoot',
-    'th',
-    'thead',
-    'time',
-    'tr',
-    'tt',
-    'u',
-    'ul',
-    'var',
-    'video',
-    'wbr',
-]);
-const defaultDomPurifyConfig = Object.freeze({
-    ALLOWED_TAGS: ['a', 'button', 'blockquote', 'code', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'hr', 'input', 'label', 'li', 'p', 'pre', 'select', 'small', 'span', 'strong', 'textarea', 'ul', 'ol'],
-    ALLOWED_ATTR: ['href', 'data-href', 'data-command', 'target', 'title', 'name', 'src', 'alt', 'class', 'id', 'role', 'tabindex', 'style', 'data-code', 'width', 'height', 'align', 'x-dispatch', 'required', 'checked', 'placeholder', 'type', 'start'],
-    RETURN_DOM: false,
-    RETURN_DOM_FRAGMENT: false,
-    RETURN_TRUSTED_TYPE: true
-});
 export class ModifierKeyEmitter extends event.Emitter {
     constructor() {
         super();
@@ -1445,81 +1193,285 @@ export function h(tag, ...args) {
     result['root'] = el;
     return result;
 }
-export function svgElem(tag, ...args) {
-    let attributes;
-    let children;
-    if (Array.isArray(args[0])) {
-        attributes = {};
-        children = args[0];
-    }
-    else {
-        attributes = args[0] || {};
-        children = args[1];
-    }
-    const match = H_REGEX.exec(tag);
-    if (!match || !match.groups) {
-        throw new Error('Bad use of h');
-    }
-    const tagName = match.groups['tag'] || 'div';
-    const el = document.createElementNS('http://www.w3.org/2000/svg', tagName);
-    if (match.groups['id']) {
-        el.id = match.groups['id'];
-    }
-    const classNames = [];
-    if (match.groups['class']) {
-        for (const className of match.groups['class'].split('.')) {
-            if (className !== '') {
-                classNames.push(className);
-            }
-        }
-    }
-    if (attributes.className !== undefined) {
-        for (const className of attributes.className.split('.')) {
-            if (className !== '') {
-                classNames.push(className);
-            }
-        }
-    }
-    if (classNames.length > 0) {
-        el.className = classNames.join(' ');
-    }
-    const result = {};
-    if (match.groups['name']) {
-        result[match.groups['name']] = el;
-    }
-    if (children) {
-        for (const c of children) {
-            if (isHTMLElement(c)) {
-                el.appendChild(c);
-            }
-            else if (typeof c === 'string') {
-                el.append(c);
-            }
-            else if ('root' in c) {
-                Object.assign(result, c);
-                el.appendChild(c.root);
-            }
-        }
-    }
-    for (const [key, value] of Object.entries(attributes)) {
-        if (key === 'className') {
-            continue;
-        }
-        else if (key === 'style') {
-            for (const [cssKey, cssValue] of Object.entries(value)) {
-                el.style.setProperty(camelCaseToHyphenCase(cssKey), typeof cssValue === 'number' ? cssValue + 'px' : '' + cssValue);
-            }
-        }
-        else if (key === 'tabIndex') {
-            el.tabIndex = value;
-        }
-        else {
-            el.setAttribute(camelCaseToHyphenCase(key), value.toString());
-        }
-    }
-    result['root'] = el;
-    return result;
-}
 function camelCaseToHyphenCase(str) {
     return str.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
 }
+export function isEditableElement(element) {
+    return element.tagName.toLowerCase() === 'input' || element.tagName.toLowerCase() === 'textarea' || isHTMLElement(element) && !!element.editContext;
+}
+export var n;
+(function (n) {
+    function nodeNs(elementNs = undefined) {
+        return (tag, attributes, children) => {
+            const className = attributes.class;
+            delete attributes.class;
+            const ref = attributes.ref;
+            delete attributes.ref;
+            const obsRef = attributes.obsRef;
+            delete attributes.obsRef;
+            return new ObserverNodeWithElement(tag, ref, obsRef, elementNs, className, attributes, children);
+        };
+    }
+    function node(tag, elementNs = undefined) {
+        const f = nodeNs(elementNs);
+        return (attributes, children) => {
+            return f(tag, attributes, children);
+        };
+    }
+    n.div = node('div');
+    n.elem = nodeNs(undefined);
+    n.svg = node('svg', 'http://www.w3.org/2000/svg');
+    n.svgElem = nodeNs('http://www.w3.org/2000/svg');
+    function ref() {
+        let value = undefined;
+        const result = function (val) {
+            value = val;
+        };
+        Object.defineProperty(result, 'element', {
+            get() {
+                if (!value) {
+                    throw new BugIndicatingError('Make sure the ref is set before accessing the element. Maybe wrong initialization order?');
+                }
+                return value;
+            }
+        });
+        return result;
+    }
+    n.ref = ref;
+})(n || (n = {}));
+export class ObserverNode {
+    constructor(tag, ref, obsRef, ns, className, attributes, children) {
+        this._deriveds = [];
+        this._element = (ns ? document.createElementNS(ns, tag) : document.createElement(tag));
+        if (ref) {
+            ref(this._element);
+        }
+        if (obsRef) {
+            this._deriveds.push(derived((_reader) => {
+                obsRef(this);
+                _reader.store.add({
+                    dispose: () => {
+                        obsRef(null);
+                    }
+                });
+            }));
+        }
+        if (className) {
+            if (hasObservable(className)) {
+                this._deriveds.push(derived(this, reader => {
+                    /** @description set.class */
+                    setClassName(this._element, getClassName(className, reader));
+                }));
+            }
+            else {
+                setClassName(this._element, getClassName(className, undefined));
+            }
+        }
+        for (const [key, value] of Object.entries(attributes)) {
+            if (key === 'style') {
+                for (const [cssKey, cssValue] of Object.entries(value)) {
+                    const key = camelCaseToHyphenCase(cssKey);
+                    if (isObservable(cssValue)) {
+                        this._deriveds.push(derivedOpts({ owner: this, debugName: () => `set.style.${key}` }, reader => {
+                            this._element.style.setProperty(key, convertCssValue(cssValue.read(reader)));
+                        }));
+                    }
+                    else {
+                        this._element.style.setProperty(key, convertCssValue(cssValue));
+                    }
+                }
+            }
+            else if (key === 'tabIndex') {
+                if (isObservable(value)) {
+                    this._deriveds.push(derived(this, reader => {
+                        /** @description set.tabIndex */
+                        this._element.tabIndex = value.read(reader);
+                    }));
+                }
+                else {
+                    this._element.tabIndex = value;
+                }
+            }
+            else if (key.startsWith('on')) {
+                this._element[key] = value;
+            }
+            else {
+                if (isObservable(value)) {
+                    this._deriveds.push(derivedOpts({ owner: this, debugName: () => `set.${key}` }, reader => {
+                        setOrRemoveAttribute(this._element, key, value.read(reader));
+                    }));
+                }
+                else {
+                    setOrRemoveAttribute(this._element, key, value);
+                }
+            }
+        }
+        if (children) {
+            function getChildren(reader, children) {
+                if (isObservable(children)) {
+                    return getChildren(reader, children.read(reader));
+                }
+                if (Array.isArray(children)) {
+                    return children.flatMap(c => getChildren(reader, c));
+                }
+                if (children instanceof ObserverNode) {
+                    if (reader) {
+                        children.readEffect(reader);
+                    }
+                    return [children._element];
+                }
+                if (children) {
+                    return [children];
+                }
+                return [];
+            }
+            const d = derived(this, reader => {
+                /** @description set.children */
+                this._element.replaceChildren(...getChildren(reader, children));
+            });
+            this._deriveds.push(d);
+            if (!childrenIsObservable(children)) {
+                d.get();
+            }
+        }
+    }
+    readEffect(reader) {
+        for (const d of this._deriveds) {
+            d.read(reader);
+        }
+    }
+    keepUpdated(store) {
+        derived(reader => {
+            /** update */
+            this.readEffect(reader);
+        }).recomputeInitiallyAndOnChange(store);
+        return this;
+    }
+    /**
+     * Creates a live element that will keep the element updated as long as the returned object is not disposed.
+    */
+    toDisposableLiveElement() {
+        const store = new DisposableStore();
+        this.keepUpdated(store);
+        return new LiveElement(this._element, store);
+    }
+}
+function setClassName(domNode, className) {
+    if (isSVGElement(domNode)) {
+        domNode.setAttribute('class', className);
+    }
+    else {
+        domNode.className = className;
+    }
+}
+function resolve(value, reader, cb) {
+    if (isObservable(value)) {
+        cb(value.read(reader));
+        return;
+    }
+    if (Array.isArray(value)) {
+        for (const v of value) {
+            resolve(v, reader, cb);
+        }
+        return;
+    }
+    cb(value);
+}
+function getClassName(className, reader) {
+    let result = '';
+    resolve(className, reader, val => {
+        if (val) {
+            if (result.length === 0) {
+                result = val;
+            }
+            else {
+                result += ' ' + val;
+            }
+        }
+    });
+    return result;
+}
+function hasObservable(value) {
+    if (isObservable(value)) {
+        return true;
+    }
+    if (Array.isArray(value)) {
+        return value.some(v => hasObservable(v));
+    }
+    return false;
+}
+function convertCssValue(value) {
+    if (typeof value === 'number') {
+        return value + 'px';
+    }
+    return value;
+}
+function childrenIsObservable(children) {
+    if (isObservable(children)) {
+        return true;
+    }
+    if (Array.isArray(children)) {
+        return children.some(c => childrenIsObservable(c));
+    }
+    return false;
+}
+export class LiveElement {
+    constructor(element, _disposable) {
+        this.element = element;
+        this._disposable = _disposable;
+    }
+    dispose() {
+        this._disposable.dispose();
+    }
+}
+export class ObserverNodeWithElement extends ObserverNode {
+    constructor() {
+        super(...arguments);
+        this._isHovered = undefined;
+        this._didMouseMoveDuringHover = undefined;
+    }
+    get element() {
+        return this._element;
+    }
+    get isHovered() {
+        if (!this._isHovered) {
+            const hovered = observableValue('hovered', false);
+            this._element.addEventListener('mouseenter', (_e) => hovered.set(true, undefined));
+            this._element.addEventListener('mouseleave', (_e) => hovered.set(false, undefined));
+            this._isHovered = hovered;
+        }
+        return this._isHovered;
+    }
+    get didMouseMoveDuringHover() {
+        if (!this._didMouseMoveDuringHover) {
+            let _hovering = false;
+            const hovered = observableValue('didMouseMoveDuringHover', false);
+            this._element.addEventListener('mouseenter', (_e) => {
+                _hovering = true;
+            });
+            this._element.addEventListener('mousemove', (_e) => {
+                if (_hovering) {
+                    hovered.set(true, undefined);
+                }
+            });
+            this._element.addEventListener('mouseleave', (_e) => {
+                _hovering = false;
+                hovered.set(false, undefined);
+            });
+            this._didMouseMoveDuringHover = hovered;
+        }
+        return this._didMouseMoveDuringHover;
+    }
+}
+function setOrRemoveAttribute(element, key, value) {
+    if (value === null || value === undefined) {
+        element.removeAttribute(camelCaseToHyphenCase(key));
+    }
+    else {
+        element.setAttribute(camelCaseToHyphenCase(key), String(value));
+    }
+}
+function isObservable(obj) {
+    return !!obj && obj.read !== undefined && obj.reportChanges !== undefined;
+}
+//# sourceMappingURL=dom.js.map

@@ -1,7 +1,3 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 /**
  * An event describing that a model has been reset to a new value.
  * @internal
@@ -69,6 +65,28 @@ export class ModelRawLineChanged {
         this.lineNumber = lineNumber;
         this.detail = detail;
         this.injectedText = injectedText;
+    }
+}
+/**
+ * An event describing that a line height has changed in the model.
+ * @internal
+ */
+export class ModelLineHeightChanged {
+    constructor(ownerId, decorationId, lineNumber, lineHeight) {
+        this.ownerId = ownerId;
+        this.decorationId = decorationId;
+        this.lineNumber = lineNumber;
+        this.lineHeight = lineHeight;
+    }
+}
+/**
+ * An event describing that a line height has changed in the model.
+ * @internal
+ */
+export class ModelFontChanged {
+    constructor(ownerId, lineNumber) {
+        this.ownerId = ownerId;
+        this.lineNumber = lineNumber;
     }
 }
 /**
@@ -143,6 +161,24 @@ export class ModelInjectedTextChangedEvent {
     }
 }
 /**
+ * An event describing a change of a line height.
+ * @internal
+ */
+export class ModelLineHeightChangedEvent {
+    constructor(changes) {
+        this.changes = changes;
+    }
+}
+/**
+ * An event describing a change in fonts.
+ * @internal
+ */
+export class ModelFontChangedEvent {
+    constructor(changes) {
+        this.changes = changes;
+    }
+}
+/**
  * @internal
  */
 export class InternalModelContentChangeEvent {
@@ -171,6 +207,9 @@ export class InternalModelContentChangeEvent {
             isUndoing: isUndoing,
             isRedoing: isRedoing,
             isFlush: isFlush,
+            detailedReasons: a.detailedReasons.concat(b.detailedReasons),
+            detailedReasonsChangeLengths: a.detailedReasonsChangeLengths.concat(b.detailedReasonsChangeLengths),
         };
     }
 }
+//# sourceMappingURL=textModelEvents.js.map

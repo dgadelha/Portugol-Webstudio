@@ -86,3 +86,4 @@ export class HorizontalScrollbar extends AbstractScrollbar {
         this._scrollByPage = options.scrollByPage;
     }
 }
+//# sourceMappingURL=horizontalScrollbar.js.map

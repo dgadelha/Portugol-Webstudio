@@ -26,6 +26,9 @@ function toStyledRange(item) {
 function toStyled(item) {
     return new LineVisibleRangesWithStyle(item.lineNumber, item.ranges.map(toStyledRange));
 }
+/**
+ * This view part displays selected text to the user. Every line has its own selection overlay.
+ */
 export class SelectionsOverlay extends DynamicViewOverlay {
     static { this.SELECTION_CLASS_NAME = 'selected-text'; }
     static { this.SELECTION_TOP_LEFT = 'top-left-radius'; }
@@ -39,8 +42,8 @@ export class SelectionsOverlay extends DynamicViewOverlay {
         this._previousFrameVisibleRangesWithStyle = [];
         this._context = context;
         const options = this._context.configuration.options;
-        this._roundedSelection = options.get(102 /* EditorOption.roundedSelection */);
-        this._typicalHalfwidthCharacterWidth = options.get(50 /* EditorOption.fontInfo */).typicalHalfwidthCharacterWidth;
+        this._roundedSelection = options.get(115 /* EditorOption.roundedSelection */);
+        this._typicalHalfwidthCharacterWidth = options.get(59 /* EditorOption.fontInfo */).typicalHalfwidthCharacterWidth;
         this._selections = [];
         this._renderResult = null;
         this._context.addEventHandler(this);
@@ -53,8 +56,8 @@ export class SelectionsOverlay extends DynamicViewOverlay {
     // --- begin event handlers
     onConfigurationChanged(e) {
         const options = this._context.configuration.options;
-        this._roundedSelection = options.get(102 /* EditorOption.roundedSelection */);
-        this._typicalHalfwidthCharacterWidth = options.get(50 /* EditorOption.fontInfo */).typicalHalfwidthCharacterWidth;
+        this._roundedSelection = options.get(115 /* EditorOption.roundedSelection */);
+        this._typicalHalfwidthCharacterWidth = options.get(59 /* EditorOption.fontInfo */).typicalHalfwidthCharacterWidth;
         return true;
     }
     onCursorStateChanged(e) {
@@ -320,3 +323,4 @@ registerThemingParticipant((theme, collector) => {
 function abs(n) {
     return n < 0 ? -n : n;
 }
+//# sourceMappingURL=selections.js.map

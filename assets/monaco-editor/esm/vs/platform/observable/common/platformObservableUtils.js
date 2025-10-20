@@ -2,20 +2,25 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { autorunOpts } from '../../../base/common/observable.js';
-import { observableFromEventOpts } from '../../../base/common/observableInternal/utils.js';
+import { DisposableStore } from '../../../base/common/lifecycle.js';
+import { DebugLocation, derivedOpts, observableFromEventOpts } from '../../../base/common/observable.js';
 /** Creates an observable update when a configuration key updates. */
-export function observableConfigValue(key, defaultValue, configurationService) {
+export function observableConfigValue(key, defaultValue, configurationService, debugLocation = DebugLocation.ofCaller()) {
     return observableFromEventOpts({ debugName: () => `Configuration Key "${key}"`, }, (handleChange) => configurationService.onDidChangeConfiguration(e => {
         if (e.affectsConfiguration(key)) {
             handleChange(e);
         }
-    }), () => configurationService.getValue(key) ?? defaultValue);
+    }), () => configurationService.getValue(key) ?? defaultValue, debugLocation);
 }
 /** Update the configuration key with a value derived from observables. */
-export function bindContextKey(key, service, computeValue) {
+export function bindContextKey(key, service, computeValue, debugLocation = DebugLocation.ofCaller()) {
     const boundKey = key.bindTo(service);
-    return autorunOpts({ debugName: () => `Set Context Key "${key.key}"` }, reader => {
-        boundKey.set(computeValue(reader));
-    });
+    const store = new DisposableStore();
+    derivedOpts({ debugName: () => `Set Context Key "${key.key}"` }, reader => {
+        const value = computeValue(reader);
+        boundKey.set(value);
+        return value;
+    }, debugLocation).recomputeInitiallyAndOnChange(store);
+    return store;
 }
+//# sourceMappingURL=platformObservableUtils.js.map

@@ -14,7 +14,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 import { DeferredPromise } from '../../../base/common/async.js';
 import { CancellationTokenSource } from '../../../base/common/cancellation.js';
 import { Event } from '../../../base/common/event.js';
-import { Disposable, DisposableStore, toDisposable } from '../../../base/common/lifecycle.js';
+import { Disposable, DisposableStore, isDisposable, toDisposable } from '../../../base/common/lifecycle.js';
 import { IInstantiationService } from '../../instantiation/common/instantiation.js';
 import { DefaultQuickAccessFilterValue, Extensions } from '../common/quickAccess.js';
 import { IQuickInputService, ItemActivation } from '../common/quickInput.js';
@@ -28,6 +28,14 @@ let QuickAccessController = class QuickAccessController extends Disposable {
         this.mapProviderToDescriptor = new Map();
         this.lastAcceptedPickerValues = new Map();
         this.visibleQuickAccess = undefined;
+        this._register(toDisposable(() => {
+            for (const provider of this.mapProviderToDescriptor.values()) {
+                if (isDisposable(provider)) {
+                    provider.dispose();
+                }
+            }
+            this.visibleQuickAccess?.picker.dispose();
+        }));
     }
     show(value = '', options) {
         this.doShowOrPick(value, false, options);
@@ -197,3 +205,4 @@ QuickAccessController = __decorate([
     __param(1, IInstantiationService)
 ], QuickAccessController);
 export { QuickAccessController };
+//# sourceMappingURL=quickAccess.js.map

@@ -83,3 +83,4 @@ export function matchesFuzzyIconAware(query, target, enableSeparateSubstringMatc
     }
     return matches;
 }
+//# sourceMappingURL=iconLabels.js.map

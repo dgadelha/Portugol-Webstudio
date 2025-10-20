@@ -11,12 +11,12 @@ export class ViewOverlays extends ViewPart {
         super(context);
         this._dynamicOverlays = [];
         this._isFocused = false;
-        this._visibleLines = new VisibleLinesCollection({
+        this._visibleLines = new VisibleLinesCollection(this._context, {
             createLine: () => new ViewOverlayLine(this._dynamicOverlays)
         });
         this.domNode = this._visibleLines.domNode;
         const options = this._context.configuration.options;
-        const fontInfo = options.get(50 /* EditorOption.fontInfo */);
+        const fontInfo = options.get(59 /* EditorOption.fontInfo */);
         applyFontInfo(this.domNode, fontInfo);
         this.domNode.setClassName('view-overlays');
     }
@@ -50,7 +50,7 @@ export class ViewOverlays extends ViewPart {
     onConfigurationChanged(e) {
         this._visibleLines.onConfigurationChanged(e);
         const options = this._context.configuration.options;
-        const fontInfo = options.get(50 /* EditorOption.fontInfo */);
+        const fontInfo = options.get(59 /* EditorOption.fontInfo */);
         applyFontInfo(this.domNode, fontInfo);
         return true;
     }
@@ -133,6 +133,8 @@ export class ViewOverlayLine {
         sb.appendString(String(deltaTop));
         sb.appendString('px;height:');
         sb.appendString(String(lineHeight));
+        sb.appendString('px;line-height:');
+        sb.appendString(String(lineHeight));
         sb.appendString('px;">');
         sb.appendString(result);
         sb.appendString('</div>');
@@ -142,6 +144,7 @@ export class ViewOverlayLine {
         if (this._domNode) {
             this._domNode.setTop(deltaTop);
             this._domNode.setHeight(lineHeight);
+            this._domNode.setLineHeight(lineHeight);
         }
     }
 }
@@ -149,14 +152,14 @@ export class ContentViewOverlays extends ViewOverlays {
     constructor(context) {
         super(context);
         const options = this._context.configuration.options;
-        const layoutInfo = options.get(146 /* EditorOption.layoutInfo */);
+        const layoutInfo = options.get(165 /* EditorOption.layoutInfo */);
         this._contentWidth = layoutInfo.contentWidth;
         this.domNode.setHeight(0);
     }
     // --- begin event handlers
     onConfigurationChanged(e) {
         const options = this._context.configuration.options;
-        const layoutInfo = options.get(146 /* EditorOption.layoutInfo */);
+        const layoutInfo = options.get(165 /* EditorOption.layoutInfo */);
         this._contentWidth = layoutInfo.contentWidth;
         return super.onConfigurationChanged(e) || true;
     }
@@ -173,16 +176,16 @@ export class MarginViewOverlays extends ViewOverlays {
     constructor(context) {
         super(context);
         const options = this._context.configuration.options;
-        const layoutInfo = options.get(146 /* EditorOption.layoutInfo */);
+        const layoutInfo = options.get(165 /* EditorOption.layoutInfo */);
         this._contentLeft = layoutInfo.contentLeft;
         this.domNode.setClassName('margin-view-overlays');
         this.domNode.setWidth(1);
-        applyFontInfo(this.domNode, options.get(50 /* EditorOption.fontInfo */));
+        applyFontInfo(this.domNode, options.get(59 /* EditorOption.fontInfo */));
     }
     onConfigurationChanged(e) {
         const options = this._context.configuration.options;
-        applyFontInfo(this.domNode, options.get(50 /* EditorOption.fontInfo */));
-        const layoutInfo = options.get(146 /* EditorOption.layoutInfo */);
+        applyFontInfo(this.domNode, options.get(59 /* EditorOption.fontInfo */));
+        const layoutInfo = options.get(165 /* EditorOption.layoutInfo */);
         this._contentLeft = layoutInfo.contentLeft;
         return super.onConfigurationChanged(e) || true;
     }
@@ -196,3 +199,4 @@ export class MarginViewOverlays extends ViewOverlays {
         this.domNode.setWidth(this._contentLeft);
     }
 }
+//# sourceMappingURL=viewOverlays.js.map

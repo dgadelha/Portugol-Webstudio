@@ -7,7 +7,7 @@ import * as strings from '../../../../base/common/strings.js';
 import { Range } from '../../core/range.js';
 import { ApplyEditsResult } from '../../model.js';
 import { PieceTreeBase } from './pieceTreeBase.js';
-import { countEOL } from '../../core/eolCounter.js';
+import { countEOL } from '../../core/misc/eolCounter.js';
 import { TextChange } from '../../core/textChange.js';
 import { Disposable } from '../../../../base/common/lifecycle.js';
 export class PieceTreeTextBuffer extends Disposable {
@@ -105,6 +105,9 @@ export class PieceTreeTextBuffer extends Disposable {
             return result;
         }
         return this.getValueLengthInRange(range, eol);
+    }
+    getNearestChunk(offset) {
+        return this._pieceTree.getNearestChunk(offset);
     }
     getLength() {
         return this._pieceTree.getLength();
@@ -453,3 +456,4 @@ export class PieceTreeTextBuffer extends Disposable {
         return -r;
     }
 }
+//# sourceMappingURL=pieceTreeTextBuffer.js.map

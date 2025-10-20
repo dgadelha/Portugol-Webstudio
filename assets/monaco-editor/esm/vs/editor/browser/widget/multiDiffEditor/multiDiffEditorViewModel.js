@@ -12,13 +12,12 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 import { Disposable, DisposableStore, toDisposable } from '../../../../base/common/lifecycle.js';
-import { derived, observableValue } from '../../../../base/common/observable.js';
-import { constObservable, derivedObservableWithWritableCache, mapObservableArrayCached, observableFromValueWithChangeEvent } from '../../../../base/common/observableInternal/utils.js';
+import { constObservable, derived, derivedObservableWithWritableCache, mapObservableArrayCached, observableFromValueWithChangeEvent, observableValue } from '../../../../base/common/observable.js';
+import { IInstantiationService } from '../../../../platform/instantiation/common/instantiation.js';
+import { IModelService } from '../../../common/services/model.js';
 import { DiffEditorOptions } from '../diffEditor/diffEditorOptions.js';
 import { DiffEditorViewModel } from '../diffEditor/diffEditorViewModel.js';
 import { RefCounted } from '../diffEditor/utils.js';
-import { IModelService } from '../../../common/services/model.js';
-import { IInstantiationService } from '../../../../platform/instantiation/common/instantiation.js';
 export class MultiDiffEditorViewModel extends Disposable {
     get contextKeys() {
         return this.model.contextKeys;
@@ -28,10 +27,17 @@ export class MultiDiffEditorViewModel extends Disposable {
         this.model = model;
         this._instantiationService = _instantiationService;
         this._documents = observableFromValueWithChangeEvent(this.model, this.model.documents);
-        this.items = mapObservableArrayCached(this, this._documents, (d, store) => store.add(this._instantiationService.createInstance(DocumentDiffItemViewModel, d, this)))
-            .recomputeInitiallyAndOnChange(this._store);
+        this._documentsArr = derived(this, reader => {
+            const result = this._documents.read(reader);
+            if (result === 'loading') {
+                return [];
+            }
+            return result;
+        });
+        this.isLoading = derived(this, reader => this._documents.read(reader) === 'loading');
+        this.items = mapObservableArrayCached(this, this._documentsArr, (d, store) => store.add(this._instantiationService.createInstance(DocumentDiffItemViewModel, d, this))).recomputeInitiallyAndOnChange(this._store);
         this.focusedDiffItem = derived(this, reader => this.items.read(reader).find(i => i.isFocused.read(reader)));
-        this.activeDiffItem = derivedObservableWithWritableCache(this, (reader, lastValue) => this.focusedDiffItem.read(reader) ?? lastValue);
+        this.activeDiffItem = derivedObservableWithWritableCache(this, (reader, lastValue) => this.focusedDiffItem.read(reader) ?? (lastValue && this.items.read(reader).indexOf(lastValue) !== -1) ? lastValue : undefined);
     }
 }
 let DocumentDiffItemViewModel = class DocumentDiffItemViewModel extends Disposable {
@@ -93,3 +99,4 @@ DocumentDiffItemViewModel = __decorate([
     __param(3, IModelService)
 ], DocumentDiffItemViewModel);
 export { DocumentDiffItemViewModel };
+//# sourceMappingURL=multiDiffEditorViewModel.js.map

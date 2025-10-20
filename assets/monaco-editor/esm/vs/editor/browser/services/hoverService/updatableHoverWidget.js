@@ -3,6 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 import { isHTMLElement } from '../../../../base/browser/dom.js';
+import { isManagedHoverTooltipMarkdownString } from '../../../../base/browser/ui/hover/hover.js';
 import { CancellationTokenSource } from '../../../../base/common/cancellation.js';
 import { isMarkdownString } from '../../../../base/common/htmlContent.js';
 import { isFunction, isString } from '../../../../base/common/types.js';
@@ -23,24 +24,35 @@ export class ManagedHoverWidget {
             return;
         }
         let resolvedContent;
-        if (content === undefined || isString(content) || isHTMLElement(content)) {
+        if (isString(content) || isHTMLElement(content) || content === undefined) {
             resolvedContent = content;
-        }
-        else if (!isFunction(content.markdown)) {
-            resolvedContent = content.markdown ?? content.markdownNotSupportedFallback;
         }
         else {
             // compute the content, potentially long-running
-            // show 'Loading' if no hover is up yet
-            if (!this._hoverWidget) {
-                this.show(localize('iconLabel.loading', "Loading..."), focus, options);
-            }
-            // compute the content
             this._cancellationTokenSource = new CancellationTokenSource();
             const token = this._cancellationTokenSource.token;
-            resolvedContent = await content.markdown(token);
-            if (resolvedContent === undefined) {
-                resolvedContent = content.markdownNotSupportedFallback;
+            let managedContent;
+            if (isManagedHoverTooltipMarkdownString(content)) {
+                if (isFunction(content.markdown)) {
+                    managedContent = content.markdown(token).then(resolvedContent => resolvedContent ?? content.markdownNotSupportedFallback);
+                }
+                else {
+                    managedContent = content.markdown ?? content.markdownNotSupportedFallback;
+                }
+            }
+            else {
+                managedContent = content.element(token);
+            }
+            // compute the content
+            if (managedContent instanceof Promise) {
+                // show 'Loading' if no hover is up yet
+                if (!this._hoverWidget) {
+                    this.show(localize(75, "Loading..."), focus, options);
+                }
+                resolvedContent = await managedContent;
+            }
+            else {
+                resolvedContent = managedContent;
             }
             if (this.isDisposed || token.isCancellationRequested) {
                 // either the widget has been closed in the meantime
@@ -90,3 +102,4 @@ export class ManagedHoverWidget {
         this._cancellationTokenSource = undefined;
     }
 }
+//# sourceMappingURL=updatableHoverWidget.js.map

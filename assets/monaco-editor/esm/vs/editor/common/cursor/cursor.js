@@ -16,6 +16,7 @@ import { ModelInjectedTextChangedEvent } from '../textModelEvents.js';
 import { ViewCursorStateChangedEvent, ViewRevealRangeRequestEvent } from '../viewEvents.js';
 import { dispose, Disposable } from '../../../base/common/lifecycle.js';
 import { CursorStateChangedEvent } from '../viewModelEventDispatcher.js';
+import { EditSources } from '../textModelEditSource.js';
 export class CursorsController extends Disposable {
     constructor(model, viewModel, coordinatesConverter, cursorConfig) {
         super();
@@ -275,7 +276,7 @@ export class CursorsController extends Disposable {
         const autoClosedEnclosingDecorations = this._model.deltaDecorations([], autoClosedEnclosingDeltaDecorations);
         this._autoClosedActions.push(new AutoClosedAction(this._model, autoClosedCharactersDecorations, autoClosedEnclosingDecorations));
     }
-    _executeEditOperation(opResult) {
+    _executeEditOperation(opResult, editReason) {
         if (!opResult) {
             // Nothing to execute
             return;
@@ -283,7 +284,7 @@ export class CursorsController extends Disposable {
         if (opResult.shouldPushStackElementBefore) {
             this._model.pushStackElement();
         }
-        const result = CommandExecutor.executeCommands(this._model, this._cursors.getSelections(), opResult.commands);
+        const result = CommandExecutor.executeCommands(this._model, this._cursors.getSelections(), opResult.commands, editReason);
         if (result) {
             // The commands were applied correctly
             this._interpretCommandResult(result);
@@ -366,7 +367,7 @@ export class CursorsController extends Disposable {
         }
         return indices;
     }
-    executeEdits(eventsCollector, source, edits, cursorStateComputer) {
+    executeEdits(eventsCollector, source, edits, cursorStateComputer, reason) {
         let autoClosingIndices = null;
         if (source === 'snippet') {
             autoClosingIndices = this._findAutoClosingPairs(edits);
@@ -395,7 +396,7 @@ export class CursorsController extends Disposable {
                 this._isHandling = true;
             }
             return selections;
-        });
+        }, undefined, reason);
         if (selections) {
             this._isHandling = false;
             this.setSelections(eventsCollector, source, selections, 0 /* CursorChangeReason.NotSet */);
@@ -433,16 +434,18 @@ export class CursorsController extends Disposable {
         this._compositionState = new CompositionState(this._model, this.getSelections());
     }
     endComposition(eventsCollector, source) {
+        const reason = EditSources.cursor({ kind: 'compositionEnd', detailedSource: source });
         const compositionOutcome = this._compositionState ? this._compositionState.deduceOutcome(this._model, this.getSelections()) : null;
         this._compositionState = null;
         this._executeEdit(() => {
             if (source === 'keyboard') {
                 // composition finishes, let's check if we need to auto complete if necessary.
-                this._executeEditOperation(TypeOperations.compositionEndWithInterceptors(this._prevEditOperationType, this.context.cursorConfig, this._model, compositionOutcome, this.getSelections(), this.getAutoClosedCharacters()));
+                this._executeEditOperation(TypeOperations.compositionEndWithInterceptors(this._prevEditOperationType, this.context.cursorConfig, this._model, compositionOutcome, this.getSelections(), this.getAutoClosedCharacters()), reason);
             }
         }, eventsCollector, source);
     }
     type(eventsCollector, text, source) {
+        const reason = EditSources.cursor({ kind: 'type', detailedSource: source });
         this._executeEdit(() => {
             if (source === 'keyboard') {
                 // If this event is coming straight from the keyboard, look for electric characters and enter
@@ -452,16 +455,17 @@ export class CursorsController extends Disposable {
                     const charLength = strings.nextCharLength(text, offset);
                     const chr = text.substr(offset, charLength);
                     // Here we must interpret each typed character individually
-                    this._executeEditOperation(TypeOperations.typeWithInterceptors(!!this._compositionState, this._prevEditOperationType, this.context.cursorConfig, this._model, this.getSelections(), this.getAutoClosedCharacters(), chr));
+                    this._executeEditOperation(TypeOperations.typeWithInterceptors(!!this._compositionState, this._prevEditOperationType, this.context.cursorConfig, this._model, this.getSelections(), this.getAutoClosedCharacters(), chr), reason);
                     offset += charLength;
                 }
             }
             else {
-                this._executeEditOperation(TypeOperations.typeWithoutInterceptors(this._prevEditOperationType, this.context.cursorConfig, this._model, this.getSelections(), text));
+                this._executeEditOperation(TypeOperations.typeWithoutInterceptors(this._prevEditOperationType, this.context.cursorConfig, this._model, this.getSelections(), text), reason);
             }
         }, eventsCollector, source);
     }
     compositionType(eventsCollector, text, replacePrevCharCnt, replaceNextCharCnt, positionDelta, source) {
+        const reason = EditSources.cursor({ kind: 'compositionType', detailedSource: source });
         if (text.length === 0 && replacePrevCharCnt === 0 && replaceNextCharCnt === 0) {
             // this edit is a no-op
             if (positionDelta !== 0) {
@@ -475,34 +479,38 @@ export class CursorsController extends Disposable {
             return;
         }
         this._executeEdit(() => {
-            this._executeEditOperation(TypeOperations.compositionType(this._prevEditOperationType, this.context.cursorConfig, this._model, this.getSelections(), text, replacePrevCharCnt, replaceNextCharCnt, positionDelta));
+            this._executeEditOperation(TypeOperations.compositionType(this._prevEditOperationType, this.context.cursorConfig, this._model, this.getSelections(), text, replacePrevCharCnt, replaceNextCharCnt, positionDelta), reason);
         }, eventsCollector, source);
     }
     paste(eventsCollector, text, pasteOnNewLine, multicursorText, source) {
+        const reason = EditSources.cursor({ kind: 'paste', detailedSource: source });
         this._executeEdit(() => {
-            this._executeEditOperation(TypeOperations.paste(this.context.cursorConfig, this._model, this.getSelections(), text, pasteOnNewLine, multicursorText || []));
+            this._executeEditOperation(TypeOperations.paste(this.context.cursorConfig, this._model, this.getSelections(), text, pasteOnNewLine, multicursorText || []), reason);
         }, eventsCollector, source, 4 /* CursorChangeReason.Paste */);
     }
     cut(eventsCollector, source) {
+        const reason = EditSources.cursor({ kind: 'cut', detailedSource: source });
         this._executeEdit(() => {
-            this._executeEditOperation(DeleteOperations.cut(this.context.cursorConfig, this._model, this.getSelections()));
+            this._executeEditOperation(DeleteOperations.cut(this.context.cursorConfig, this._model, this.getSelections()), reason);
         }, eventsCollector, source);
     }
     executeCommand(eventsCollector, command, source) {
+        const reason = EditSources.cursor({ kind: 'executeCommand', detailedSource: source });
         this._executeEdit(() => {
             this._cursors.killSecondaryCursors();
             this._executeEditOperation(new EditOperationResult(0 /* EditOperationType.Other */, [command], {
                 shouldPushStackElementBefore: false,
                 shouldPushStackElementAfter: false
-            }));
+            }), reason);
         }, eventsCollector, source);
     }
     executeCommands(eventsCollector, commands, source) {
+        const reason = EditSources.cursor({ kind: 'executeCommands', detailedSource: source });
         this._executeEdit(() => {
             this._executeEditOperation(new EditOperationResult(0 /* EditOperationType.Other */, commands, {
                 shouldPushStackElementBefore: false,
                 shouldPushStackElementAfter: false
-            }));
+            }), reason);
         }, eventsCollector, source);
     }
 }
@@ -588,20 +596,20 @@ class AutoClosedAction {
     }
 }
 export class CommandExecutor {
-    static executeCommands(model, selectionsBefore, commands) {
+    static executeCommands(model, selectionsBefore, commands, editReason = EditSources.unknown({ name: 'executeCommands' })) {
         const ctx = {
             model: model,
             selectionsBefore: selectionsBefore,
             trackedRanges: [],
             trackedRangesDirection: []
         };
-        const result = this._innerExecuteCommands(ctx, commands);
+        const result = this._innerExecuteCommands(ctx, commands, editReason);
         for (let i = 0, len = ctx.trackedRanges.length; i < len; i++) {
             ctx.model._setTrackedRange(ctx.trackedRanges[i], null, 0 /* TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges */);
         }
         return result;
     }
-    static _innerExecuteCommands(ctx, commands) {
+    static _innerExecuteCommands(ctx, commands, editReason) {
         if (this._arrayIsEmpty(commands)) {
             return null;
         }
@@ -666,7 +674,7 @@ export class CommandExecutor {
                 }
             }
             return cursorSelections;
-        });
+        }, undefined, editReason);
         if (!selectionsAfter) {
             selectionsAfter = ctx.selectionsBefore;
         }
@@ -832,10 +840,11 @@ export class CommandExecutor {
     }
 }
 class CompositionLineState {
-    constructor(text, startSelection, endSelection) {
+    constructor(text, lineNumber, startSelectionOffset, endSelectionOffset) {
         this.text = text;
-        this.startSelection = startSelection;
-        this.endSelection = endSelection;
+        this.lineNumber = lineNumber;
+        this.startSelectionOffset = startSelectionOffset;
+        this.endSelectionOffset = endSelectionOffset;
     }
 }
 class CompositionState {
@@ -845,7 +854,8 @@ class CompositionState {
             if (selection.startLineNumber !== selection.endLineNumber) {
                 return null;
             }
-            result.push(new CompositionLineState(textModel.getLineContent(selection.startLineNumber), selection.startColumn - 1, selection.endColumn - 1));
+            const lineNumber = selection.startLineNumber;
+            result.push(new CompositionLineState(textModel.getLineContent(lineNumber), lineNumber, selection.startColumn - 1, selection.endColumn - 1));
         }
         return result;
     }
@@ -874,10 +884,14 @@ class CompositionState {
         return result;
     }
     static _deduceOutcome(original, current) {
-        const commonPrefix = Math.min(original.startSelection, current.startSelection, strings.commonPrefixLength(original.text, current.text));
-        const commonSuffix = Math.min(original.text.length - original.endSelection, current.text.length - current.endSelection, strings.commonSuffixLength(original.text, current.text));
+        const commonPrefix = Math.min(original.startSelectionOffset, current.startSelectionOffset, strings.commonPrefixLength(original.text, current.text));
+        const commonSuffix = Math.min(original.text.length - original.endSelectionOffset, current.text.length - current.endSelectionOffset, strings.commonSuffixLength(original.text, current.text));
         const deletedText = original.text.substring(commonPrefix, original.text.length - commonSuffix);
-        const insertedText = current.text.substring(commonPrefix, current.text.length - commonSuffix);
-        return new CompositionOutcome(deletedText, original.startSelection - commonPrefix, original.endSelection - commonPrefix, insertedText, current.startSelection - commonPrefix, current.endSelection - commonPrefix);
+        const insertedTextStartOffset = commonPrefix;
+        const insertedTextEndOffset = current.text.length - commonSuffix;
+        const insertedText = current.text.substring(insertedTextStartOffset, insertedTextEndOffset);
+        const insertedTextRange = new Range(current.lineNumber, insertedTextStartOffset + 1, current.lineNumber, insertedTextEndOffset + 1);
+        return new CompositionOutcome(deletedText, original.startSelectionOffset - commonPrefix, original.endSelectionOffset - commonPrefix, insertedText, current.startSelectionOffset - commonPrefix, current.endSelectionOffset - commonPrefix, insertedTextRange);
     }
 }
+//# sourceMappingURL=cursor.js.map

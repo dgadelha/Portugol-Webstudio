@@ -18,13 +18,21 @@ export var MarkerSeverity;
     }
     MarkerSeverity.compare = compare;
     const _displayStrings = Object.create(null);
-    _displayStrings[MarkerSeverity.Error] = localize('sev.error', "Error");
-    _displayStrings[MarkerSeverity.Warning] = localize('sev.warning', "Warning");
-    _displayStrings[MarkerSeverity.Info] = localize('sev.info', "Info");
+    _displayStrings[MarkerSeverity.Error] = localize(1715, "Error");
+    _displayStrings[MarkerSeverity.Warning] = localize(1716, "Warning");
+    _displayStrings[MarkerSeverity.Info] = localize(1717, "Info");
     function toString(a) {
         return _displayStrings[a] || '';
     }
     MarkerSeverity.toString = toString;
+    const _displayStringsPlural = Object.create(null);
+    _displayStringsPlural[MarkerSeverity.Error] = localize(1718, "Errors");
+    _displayStringsPlural[MarkerSeverity.Warning] = localize(1719, "Warnings");
+    _displayStringsPlural[MarkerSeverity.Info] = localize(1720, "Infos");
+    function toStringPlural(a) {
+        return _displayStringsPlural[a] || '';
+    }
+    MarkerSeverity.toStringPlural = toStringPlural;
     function fromSeverity(severity) {
         switch (severity) {
             case Severity.Error: return MarkerSeverity.Error;
@@ -114,3 +122,4 @@ export var IMarkerData;
     IMarkerData.makeKeyOptionalMessage = makeKeyOptionalMessage;
 })(IMarkerData || (IMarkerData = {}));
 export const IMarkerService = createDecorator('markerService');
+//# sourceMappingURL=markers.js.map

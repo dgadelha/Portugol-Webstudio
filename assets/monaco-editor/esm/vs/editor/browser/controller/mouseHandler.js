@@ -7,12 +7,13 @@ import { StandardWheelEvent } from '../../../base/browser/mouseEvent.js';
 import { Disposable } from '../../../base/common/lifecycle.js';
 import * as platform from '../../../base/common/platform.js';
 import { HitTestContext, MouseTarget, MouseTargetFactory } from './mouseTarget.js';
-import { ClientCoordinates, EditorMouseEvent, EditorMouseEventFactory, GlobalEditorPointerMoveMonitor, createEditorPagePosition, createCoordinatesRelativeToEditor, PageCoordinates } from '../editorDom.js';
+import { ClientCoordinates, EditorMouseEvent, EditorMouseEventFactory, GlobalEditorPointerMoveMonitor, createEditorPagePosition, createCoordinatesRelativeToEditor } from '../editorDom.js';
 import { EditorZoom } from '../../common/config/editorZoom.js';
 import { Position } from '../../common/core/position.js';
 import { Selection } from '../../common/core/selection.js';
 import { ViewEventHandler } from '../../common/viewEventHandler.js';
 import { MouseWheelClassifier } from '../../../base/browser/ui/scrollbar/scrollableElement.js';
+import { TopBottomDragScrolling, LeftRightDragScrolling } from './dragScrolling.js';
 export class MouseHandler extends ViewEventHandler {
     constructor(context, viewController, viewHelper) {
         super();
@@ -23,7 +24,7 @@ export class MouseHandler extends ViewEventHandler {
         this.mouseTargetFactory = new MouseTargetFactory(this._context, viewHelper);
         this._mouseDownOperation = this._register(new MouseDownOperation(this._context, this.viewController, this.viewHelper, this.mouseTargetFactory, (e, testEventTarget) => this._createMouseTarget(e, testEventTarget), (e) => this._getMouseColumn(e)));
         this.lastMouseLeaveTime = -1;
-        this._height = this._context.configuration.options.get(146 /* EditorOption.layoutInfo */).height;
+        this._height = this._context.configuration.options.get(165 /* EditorOption.layoutInfo */).height;
         const mouseEvents = new EditorMouseEventFactory(this.viewHelper.viewDomNode);
         this._register(mouseEvents.onContextMenu(this.viewHelper.viewDomNode, (e) => this._onContextMenu(e, true)));
         this._register(mouseEvents.onMouseMove(this.viewHelper.viewDomNode, (e) => {
@@ -73,7 +74,7 @@ export class MouseHandler extends ViewEventHandler {
         let gestureAccumulatedDelta = 0;
         const onMouseWheel = (browserEvent) => {
             this.viewController.emitMouseWheel(browserEvent);
-            if (!this._context.configuration.options.get(76 /* EditorOption.mouseWheelZoom */)) {
+            if (!this._context.configuration.options.get(84 /* EditorOption.mouseWheelZoom */)) {
                 return;
             }
             const e = new StandardWheelEvent(browserEvent);
@@ -125,9 +126,9 @@ export class MouseHandler extends ViewEventHandler {
     }
     // --- begin event handlers
     onConfigurationChanged(e) {
-        if (e.hasChanged(146 /* EditorOption.layoutInfo */)) {
+        if (e.hasChanged(165 /* EditorOption.layoutInfo */)) {
             // layout change
-            const height = this._context.configuration.options.get(146 /* EditorOption.layoutInfo */).height;
+            const height = this._context.configuration.options.get(165 /* EditorOption.layoutInfo */).height;
             if (this._height !== height) {
                 this._height = height;
                 this._mouseDownOperation.onHeightChanged();
@@ -213,7 +214,7 @@ export class MouseHandler extends ViewEventHandler {
         const targetIsContent = (t.type === 6 /* MouseTargetType.CONTENT_TEXT */ || t.type === 7 /* MouseTargetType.CONTENT_EMPTY */);
         const targetIsGutter = (t.type === 2 /* MouseTargetType.GUTTER_GLYPH_MARGIN */ || t.type === 3 /* MouseTargetType.GUTTER_LINE_NUMBERS */ || t.type === 4 /* MouseTargetType.GUTTER_LINE_DECORATIONS */);
         const targetIsLineNumbers = (t.type === 3 /* MouseTargetType.GUTTER_LINE_NUMBERS */);
-        const selectOnLineNumbers = this._context.configuration.options.get(110 /* EditorOption.selectOnLineNumbers */);
+        const selectOnLineNumbers = this._context.configuration.options.get(125 /* EditorOption.selectOnLineNumbers */);
         const targetIsViewZone = (t.type === 8 /* MouseTargetType.CONTENT_VIEW_ZONE */ || t.type === 5 /* MouseTargetType.GUTTER_VIEW_ZONE */);
         const targetIsWidget = (t.type === 9 /* MouseTargetType.CONTENT_WIDGET */);
         let shouldHandle = e.leftButton || e.middleButton;
@@ -261,6 +262,7 @@ class MouseDownOperation extends Disposable {
         this._getMouseColumn = getMouseColumn;
         this._mouseMoveMonitor = this._register(new GlobalEditorPointerMoveMonitor(this._viewHelper.viewDomNode));
         this._topBottomDragScrolling = this._register(new TopBottomDragScrolling(this._context, this._viewHelper, this._mouseTargetFactory, (position, inSelectionMode, revealType) => this._dispatchMouse(position, inSelectionMode, revealType)));
+        this._leftRightDragScrolling = this._register(new LeftRightDragScrolling(this._context, this._viewHelper, this._mouseTargetFactory, (position, inSelectionMode, revealType) => this._dispatchMouse(position, inSelectionMode, revealType)));
         this._mouseState = new MouseDownState();
         this._currentSelection = new Selection(1, 1, 1, 1);
         this._isActive = false;
@@ -287,11 +289,19 @@ class MouseDownOperation extends Disposable {
             });
         }
         else {
-            if (position.type === 13 /* MouseTargetType.OUTSIDE_EDITOR */ && (position.outsidePosition === 'above' || position.outsidePosition === 'below')) {
-                this._topBottomDragScrolling.start(position, e);
+            if (position.type === 13 /* MouseTargetType.OUTSIDE_EDITOR */) {
+                if (position.outsidePosition === 'above' || position.outsidePosition === 'below') {
+                    this._topBottomDragScrolling.start(position, e);
+                    this._leftRightDragScrolling.stop();
+                }
+                else {
+                    this._leftRightDragScrolling.start(position, e);
+                    this._topBottomDragScrolling.stop();
+                }
             }
             else {
                 this._topBottomDragScrolling.stop();
+                this._leftRightDragScrolling.stop();
                 this._dispatchMouse(position, true, 1 /* NavigationCommandRevealType.Minimal */);
             }
         }
@@ -310,9 +320,9 @@ class MouseDownOperation extends Disposable {
         // Overwrite the detail of the MouseEvent, as it will be sent out in an event and contributions might rely on it.
         e.detail = this._mouseState.count;
         const options = this._context.configuration.options;
-        if (!options.get(92 /* EditorOption.readOnly */)
-            && options.get(35 /* EditorOption.dragAndDrop */)
-            && !options.get(22 /* EditorOption.columnSelection */)
+        if (!options.get(104 /* EditorOption.readOnly */)
+            && options.get(42 /* EditorOption.dragAndDrop */)
+            && !options.get(28 /* EditorOption.columnSelection */)
             && !this._mouseState.altKey // we don't support multiple mouse
             && e.detail < 2 // only single click on a selection can work
             && !this._isActive // the mouse is not down yet
@@ -348,6 +358,7 @@ class MouseDownOperation extends Disposable {
     _stop() {
         this._isActive = false;
         this._topBottomDragScrolling.stop();
+        this._leftRightDragScrolling.stop();
     }
     onHeightChanged() {
         this._mouseMoveMonitor.stopMonitoring();
@@ -390,12 +401,18 @@ class MouseDownOperation extends Disposable {
             return MouseTarget.createOutsideEditor(mouseColumn, new Position(belowLineNumber, model.getLineMaxColumn(belowLineNumber)), 'below', outsideDistance);
         }
         const possibleLineNumber = viewLayout.getLineNumberAtVerticalOffset(viewLayout.getCurrentScrollTop() + e.relativePos.y);
-        if (e.posx < editorContent.x) {
-            const outsideDistance = editorContent.x - e.posx;
+        const layoutInfo = this._context.configuration.options.get(165 /* EditorOption.layoutInfo */);
+        const xLeftBoundary = layoutInfo.contentLeft;
+        if (e.relativePos.x <= xLeftBoundary) {
+            const outsideDistance = xLeftBoundary - e.relativePos.x;
             return MouseTarget.createOutsideEditor(mouseColumn, new Position(possibleLineNumber, 1), 'left', outsideDistance);
         }
-        if (e.posx > editorContent.x + editorContent.width) {
-            const outsideDistance = e.posx - editorContent.x - editorContent.width;
+        const contentRight = (layoutInfo.minimap.minimapLeft === 0
+            ? layoutInfo.width - layoutInfo.verticalScrollbarWidth // Happens when minimap is hidden
+            : layoutInfo.minimap.minimapLeft);
+        const xRightBoundary = contentRight;
+        if (e.relativePos.x >= xRightBoundary) {
+            const outsideDistance = e.relativePos.x - xRightBoundary;
             return MouseTarget.createOutsideEditor(mouseColumn, new Position(possibleLineNumber, model.getLineMaxColumn(possibleLineNumber)), 'right', outsideDistance);
         }
         return null;
@@ -452,109 +469,6 @@ class MouseDownOperation extends Disposable {
             middleButton: this._mouseState.middleButton,
             onInjectedText: position.type === 6 /* MouseTargetType.CONTENT_TEXT */ && position.detail.injectedText !== null
         });
-    }
-}
-class TopBottomDragScrolling extends Disposable {
-    constructor(_context, _viewHelper, _mouseTargetFactory, _dispatchMouse) {
-        super();
-        this._context = _context;
-        this._viewHelper = _viewHelper;
-        this._mouseTargetFactory = _mouseTargetFactory;
-        this._dispatchMouse = _dispatchMouse;
-        this._operation = null;
-    }
-    dispose() {
-        super.dispose();
-        this.stop();
-    }
-    start(position, mouseEvent) {
-        if (this._operation) {
-            this._operation.setPosition(position, mouseEvent);
-        }
-        else {
-            this._operation = new TopBottomDragScrollingOperation(this._context, this._viewHelper, this._mouseTargetFactory, this._dispatchMouse, position, mouseEvent);
-        }
-    }
-    stop() {
-        if (this._operation) {
-            this._operation.dispose();
-            this._operation = null;
-        }
-    }
-}
-class TopBottomDragScrollingOperation extends Disposable {
-    constructor(_context, _viewHelper, _mouseTargetFactory, _dispatchMouse, position, mouseEvent) {
-        super();
-        this._context = _context;
-        this._viewHelper = _viewHelper;
-        this._mouseTargetFactory = _mouseTargetFactory;
-        this._dispatchMouse = _dispatchMouse;
-        this._position = position;
-        this._mouseEvent = mouseEvent;
-        this._lastTime = Date.now();
-        this._animationFrameDisposable = dom.scheduleAtNextAnimationFrame(dom.getWindow(mouseEvent.browserEvent), () => this._execute());
-    }
-    dispose() {
-        this._animationFrameDisposable.dispose();
-        super.dispose();
-    }
-    setPosition(position, mouseEvent) {
-        this._position = position;
-        this._mouseEvent = mouseEvent;
-    }
-    /**
-     * update internal state and return elapsed ms since last time
-     */
-    _tick() {
-        const now = Date.now();
-        const elapsed = now - this._lastTime;
-        this._lastTime = now;
-        return elapsed;
-    }
-    /**
-     * get the number of lines per second to auto-scroll
-     */
-    _getScrollSpeed() {
-        const lineHeight = this._context.configuration.options.get(67 /* EditorOption.lineHeight */);
-        const viewportInLines = this._context.configuration.options.get(146 /* EditorOption.layoutInfo */).height / lineHeight;
-        const outsideDistanceInLines = this._position.outsideDistance / lineHeight;
-        if (outsideDistanceInLines <= 1.5) {
-            return Math.max(30, viewportInLines * (1 + outsideDistanceInLines));
-        }
-        if (outsideDistanceInLines <= 3) {
-            return Math.max(60, viewportInLines * (2 + outsideDistanceInLines));
-        }
-        return Math.max(200, viewportInLines * (7 + outsideDistanceInLines));
-    }
-    _execute() {
-        const lineHeight = this._context.configuration.options.get(67 /* EditorOption.lineHeight */);
-        const scrollSpeedInLines = this._getScrollSpeed();
-        const elapsed = this._tick();
-        const scrollInPixels = scrollSpeedInLines * (elapsed / 1000) * lineHeight;
-        const scrollValue = (this._position.outsidePosition === 'above' ? -scrollInPixels : scrollInPixels);
-        this._context.viewModel.viewLayout.deltaScrollNow(0, scrollValue);
-        this._viewHelper.renderNow();
-        const viewportData = this._context.viewLayout.getLinesViewportData();
-        const edgeLineNumber = (this._position.outsidePosition === 'above' ? viewportData.startLineNumber : viewportData.endLineNumber);
-        // First, try to find a position that matches the horizontal position of the mouse
-        let mouseTarget;
-        {
-            const editorPos = createEditorPagePosition(this._viewHelper.viewDomNode);
-            const horizontalScrollbarHeight = this._context.configuration.options.get(146 /* EditorOption.layoutInfo */).horizontalScrollbarHeight;
-            const pos = new PageCoordinates(this._mouseEvent.pos.x, editorPos.y + editorPos.height - horizontalScrollbarHeight - 0.1);
-            const relativePos = createCoordinatesRelativeToEditor(this._viewHelper.viewDomNode, editorPos, pos);
-            mouseTarget = this._mouseTargetFactory.createMouseTarget(this._viewHelper.getLastRenderData(), editorPos, pos, relativePos, null);
-        }
-        if (!mouseTarget.position || mouseTarget.position.lineNumber !== edgeLineNumber) {
-            if (this._position.outsidePosition === 'above') {
-                mouseTarget = MouseTarget.createOutsideEditor(this._position.mouseColumn, new Position(edgeLineNumber, 1), 'above', this._position.outsideDistance);
-            }
-            else {
-                mouseTarget = MouseTarget.createOutsideEditor(this._position.mouseColumn, new Position(edgeLineNumber, this._context.viewModel.getLineMaxColumn(edgeLineNumber)), 'below', this._position.outsideDistance);
-            }
-        }
-        this._dispatchMouse(mouseTarget, true, 2 /* NavigationCommandRevealType.None */);
-        this._animationFrameDisposable = dom.scheduleAtNextAnimationFrame(dom.getWindow(mouseTarget.element), () => this._execute());
     }
 }
 class MouseDownState {
@@ -619,3 +533,4 @@ class MouseDownState {
         this._lastMouseDownCount = Math.min(setMouseDownCount, this._lastMouseDownPositionEqualCount);
     }
 }
+//# sourceMappingURL=mouseHandler.js.map

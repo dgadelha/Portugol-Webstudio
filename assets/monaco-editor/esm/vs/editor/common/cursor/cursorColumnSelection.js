@@ -88,3 +88,4 @@ export class ColumnSelection {
         return this.columnSelect(config, model, prevColumnSelectData.fromViewLineNumber, prevColumnSelectData.fromViewVisualColumn, toViewLineNumber, prevColumnSelectData.toViewVisualColumn);
     }
 }
+//# sourceMappingURL=cursorColumnSelection.js.map

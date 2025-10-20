@@ -25,18 +25,18 @@ let SectionHeaderDetector = class SectionHeaderDetector extends Disposable {
         this.languageConfigurationService = languageConfigurationService;
         this.editorWorkerService = editorWorkerService;
         this.decorations = this.editor.createDecorationsCollection();
-        this.options = this.createOptions(editor.getOption(73 /* EditorOption.minimap */));
+        this.options = this.createOptions(editor.getOption(81 /* EditorOption.minimap */));
         this.computePromise = null;
         this.currentOccurrences = {};
         this._register(editor.onDidChangeModel((e) => {
             this.currentOccurrences = {};
-            this.options = this.createOptions(editor.getOption(73 /* EditorOption.minimap */));
+            this.options = this.createOptions(editor.getOption(81 /* EditorOption.minimap */));
             this.stop();
             this.computeSectionHeaders.schedule(0);
         }));
         this._register(editor.onDidChangeModelLanguage((e) => {
             this.currentOccurrences = {};
-            this.options = this.createOptions(editor.getOption(73 /* EditorOption.minimap */));
+            this.options = this.createOptions(editor.getOption(81 /* EditorOption.minimap */));
             this.stop();
             this.computeSectionHeaders.schedule(0);
         }));
@@ -44,16 +44,16 @@ let SectionHeaderDetector = class SectionHeaderDetector extends Disposable {
             const editorLanguageId = this.editor.getModel()?.getLanguageId();
             if (editorLanguageId && e.affects(editorLanguageId)) {
                 this.currentOccurrences = {};
-                this.options = this.createOptions(editor.getOption(73 /* EditorOption.minimap */));
+                this.options = this.createOptions(editor.getOption(81 /* EditorOption.minimap */));
                 this.stop();
                 this.computeSectionHeaders.schedule(0);
             }
         }));
         this._register(editor.onDidChangeConfiguration(e => {
-            if (this.options && !e.hasChanged(73 /* EditorOption.minimap */)) {
+            if (this.options && !e.hasChanged(81 /* EditorOption.minimap */)) {
                 return;
             }
-            this.options = this.createOptions(editor.getOption(73 /* EditorOption.minimap */));
+            this.options = this.createOptions(editor.getOption(81 /* EditorOption.minimap */));
             // Remove any links (for the getting disabled case)
             this.updateDecorations([]);
             // Stop any computation (for the getting disabled case)
@@ -89,6 +89,7 @@ let SectionHeaderDetector = class SectionHeaderDetector extends Disposable {
         }
         return {
             foldingRules,
+            markSectionHeaderRegex: minimap.markSectionHeaderRegex,
             findMarkSectionHeaders: minimap.showMarkSectionHeaders,
             findRegionSectionHeaders: minimap.showRegionSectionHeaders,
         };
@@ -174,3 +175,4 @@ function decoration(sectionHeader) {
     };
 }
 registerEditorContribution(SectionHeaderDetector.ID, SectionHeaderDetector, 1 /* EditorContributionInstantiation.AfterFirstRender */);
+//# sourceMappingURL=sectionHeaders.js.map

@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 import { findLastIdxMonotonous, findLastMonotonous, findFirstMonotonous } from '../../../../base/common/arraysFind.js';
-import { OffsetRange } from '../../core/offsetRange.js';
+import { OffsetRange } from '../../core/ranges/offsetRange.js';
 import { Position } from '../../core/position.js';
 import { Range } from '../../core/range.js';
 import { isSpace } from './utils.js';
@@ -117,6 +117,26 @@ export class LinesSliceCharSequence {
         }
         return new OffsetRange(start, end);
     }
+    /** fooBar has the two sub-words foo and bar */
+    findSubWordContaining(offset) {
+        if (offset < 0 || offset >= this.elements.length) {
+            return undefined;
+        }
+        if (!isWordChar(this.elements[offset])) {
+            return undefined;
+        }
+        // find start
+        let start = offset;
+        while (start > 0 && isWordChar(this.elements[start - 1]) && !isUpperCase(this.elements[start])) {
+            start--;
+        }
+        // find end
+        let end = offset;
+        while (end < this.elements.length && isWordChar(this.elements[end]) && !isUpperCase(this.elements[end])) {
+            end++;
+        }
+        return new OffsetRange(start, end);
+    }
     countLinesIn(range) {
         return this.translateOffset(range.endExclusive).lineNumber - this.translateOffset(range.start).lineNumber;
     }
@@ -133,6 +153,9 @@ function isWordChar(charCode) {
     return charCode >= 97 /* CharCode.a */ && charCode <= 122 /* CharCode.z */
         || charCode >= 65 /* CharCode.A */ && charCode <= 90 /* CharCode.Z */
         || charCode >= 48 /* CharCode.Digit0 */ && charCode <= 57 /* CharCode.Digit9 */;
+}
+function isUpperCase(charCode) {
+    return charCode >= 65 /* CharCode.A */ && charCode <= 90 /* CharCode.Z */;
 }
 const score = {
     [0 /* CharBoundaryCategory.WordLower */]: 0,
@@ -177,3 +200,4 @@ function getCategory(charCode) {
         return 4 /* CharBoundaryCategory.Other */;
     }
 }
+//# sourceMappingURL=linesSliceCharSequence.js.map

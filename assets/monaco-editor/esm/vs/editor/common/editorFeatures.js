@@ -13,3 +13,4 @@ export function registerEditorFeature(ctor) {
 export function getEditorFeatures() {
     return editorFeatures.slice(0);
 }
+//# sourceMappingURL=editorFeatures.js.map

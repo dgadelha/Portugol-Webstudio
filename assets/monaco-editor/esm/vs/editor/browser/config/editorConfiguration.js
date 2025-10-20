@@ -27,6 +27,7 @@ import { BareFontInfo } from '../../common/config/fontInfo.js';
 import { IAccessibilityService } from '../../../platform/accessibility/common/accessibility.js';
 import { getWindow, getWindowById } from '../../../base/browser/dom.js';
 import { PixelRatio } from '../../../base/browser/pixelRatio.js';
+import { InputMode } from '../../common/inputMode.js';
 let EditorConfiguration = class EditorConfiguration extends Disposable {
     constructor(isSimpleWidget, contextMenuId, options, container, _accessibilityService) {
         super();
@@ -48,7 +49,7 @@ let EditorConfiguration = class EditorConfiguration extends Disposable {
         this._rawOptions = deepCloneAndMigrateOptions(options);
         this._validatedOptions = EditorOptionsUtil.validateOptions(this._rawOptions);
         this.options = this._computeOptions();
-        if (this.options.get(13 /* EditorOption.automaticLayout */)) {
+        if (this.options.get(19 /* EditorOption.automaticLayout */)) {
             this._containerObserver.startObserving();
         }
         this._register(EditorZoom.onDidChangeZoomLevel(() => this._recomputeOptions()));
@@ -57,6 +58,7 @@ let EditorConfiguration = class EditorConfiguration extends Disposable {
         this._register(FontMeasurements.onDidChange(() => this._recomputeOptions()));
         this._register(PixelRatio.getInstance(getWindow(container)).onDidChange(() => this._recomputeOptions()));
         this._register(this._accessibilityService.onDidChangeScreenReaderOptimized(() => this._recomputeOptions()));
+        this._register(InputMode.onDidChangeInputMode(() => this._recomputeOptions()));
     }
     _recomputeOptions() {
         const newOptions = this._computeOptions();
@@ -84,9 +86,11 @@ let EditorConfiguration = class EditorConfiguration extends Disposable {
             lineNumbersDigitCount: this._lineNumbersDigitCount,
             emptySelectionClipboard: partialEnv.emptySelectionClipboard,
             pixelRatio: partialEnv.pixelRatio,
-            tabFocusMode: TabFocus.getTabFocusMode(),
+            tabFocusMode: this._validatedOptions.get(164 /* EditorOption.tabFocusMode */) || TabFocus.getTabFocusMode(),
+            inputMode: InputMode.getInputMode(),
             accessibilitySupport: partialEnv.accessibilitySupport,
-            glyphMarginDecorationLaneCount: this._glyphMarginDecorationLaneCount
+            glyphMarginDecorationLaneCount: this._glyphMarginDecorationLaneCount,
+            editContextSupported: partialEnv.editContextSupported
         };
         return EditorOptionsUtil.computeOptions(this._validatedOptions, env);
     }
@@ -97,6 +101,7 @@ let EditorConfiguration = class EditorConfiguration extends Disposable {
             outerHeight: this._containerObserver.getHeight(),
             emptySelectionClipboard: browser.isWebKit || browser.isFirefox,
             pixelRatio: PixelRatio.getInstance(getWindowById(this._targetWindowId, true).window).value,
+            editContextSupported: typeof globalThis.EditContext === 'function',
             accessibilitySupport: (this._accessibilityService.isScreenReaderOptimized()
                 ? 2 /* AccessibilitySupport.Enabled */
                 : this._accessibilityService.getAccessibilitySupport())
@@ -171,14 +176,14 @@ function digitCount(n) {
 }
 function getExtraEditorClassName() {
     let extra = '';
-    if (!browser.isSafari && !browser.isWebkitWebView) {
-        // Use user-select: none in all browsers except Safari and native macOS WebView
-        extra += 'no-user-select ';
-    }
-    if (browser.isSafari) {
+    if (browser.isSafari || browser.isWebkitWebView) {
         // See https://github.com/microsoft/vscode/issues/108822
         extra += 'no-minimap-shadow ';
         extra += 'enable-user-select ';
+    }
+    else {
+        // Use user-select: none in all browsers except Safari and native macOS WebView
+        extra += 'no-user-select ';
     }
     if (platform.isMacintosh) {
         extra += 'mac ';
@@ -282,3 +287,4 @@ function deepCloneAndMigrateOptions(_options) {
     migrateOptions(options);
     return options;
 }
+//# sourceMappingURL=editorConfiguration.js.map

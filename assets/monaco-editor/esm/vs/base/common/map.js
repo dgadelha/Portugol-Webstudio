@@ -2,7 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-var _a, _b;
+var _a, _b, _c;
 class ResourceMapEntry {
     constructor(uri, value) {
         this.uri = uri;
@@ -80,9 +80,52 @@ export class ResourceMap {
         }
     }
 }
+export class ResourceSet {
+    constructor(entriesOrKey, toKey) {
+        this[_b] = 'ResourceSet';
+        if (!entriesOrKey || typeof entriesOrKey === 'function') {
+            this._map = new ResourceMap(entriesOrKey);
+        }
+        else {
+            this._map = new ResourceMap(toKey);
+            entriesOrKey.forEach(this.add, this);
+        }
+    }
+    get size() {
+        return this._map.size;
+    }
+    add(value) {
+        this._map.set(value, value);
+        return this;
+    }
+    clear() {
+        this._map.clear();
+    }
+    delete(value) {
+        return this._map.delete(value);
+    }
+    forEach(callbackfn, thisArg) {
+        this._map.forEach((_value, key) => callbackfn.call(thisArg, key, key, this));
+    }
+    has(value) {
+        return this._map.has(value);
+    }
+    entries() {
+        return this._map.entries();
+    }
+    keys() {
+        return this._map.keys();
+    }
+    values() {
+        return this._map.keys();
+    }
+    [(_b = Symbol.toStringTag, Symbol.iterator)]() {
+        return this.keys();
+    }
+}
 export class LinkedMap {
     constructor() {
-        this[_b] = 'LinkedMap';
+        this[_c] = 'LinkedMap';
         this._map = new Map();
         this._head = undefined;
         this._tail = undefined;
@@ -264,7 +307,7 @@ export class LinkedMap {
         };
         return iterator;
     }
-    [(_b = Symbol.toStringTag, Symbol.iterator)]() {
+    [(_c = Symbol.toStringTag, Symbol.iterator)]() {
         return this.entries();
     }
     trimOld(newSize) {
@@ -563,11 +606,64 @@ export class SetMap {
         }
         values.forEach(fn);
     }
-    get(key) {
-        const values = this.map.get(key);
-        if (!values) {
-            return new Set();
+}
+/**
+ * A map that is addressable with an arbitrary number of keys. This is useful in high performance
+ * scenarios where creating a composite key whenever the data is accessed is too expensive. For
+ * example for a very hot function, constructing a string like `first-second-third` for every call
+ * will cause a significant hit to performance.
+ */
+export class NKeyMap {
+    constructor() {
+        this._data = new Map();
+    }
+    /**
+     * Sets a value on the map. Note that unlike a standard `Map`, the first argument is the value.
+     * This is because the spread operator is used for the keys and must be last..
+     * @param value The value to set.
+     * @param keys The keys for the value.
+     */
+    set(value, ...keys) {
+        let currentMap = this._data;
+        for (let i = 0; i < keys.length - 1; i++) {
+            if (!currentMap.has(keys[i])) {
+                currentMap.set(keys[i], new Map());
+            }
+            currentMap = currentMap.get(keys[i]);
         }
-        return values;
+        currentMap.set(keys[keys.length - 1], value);
+    }
+    get(...keys) {
+        let currentMap = this._data;
+        for (let i = 0; i < keys.length - 1; i++) {
+            if (!currentMap.has(keys[i])) {
+                return undefined;
+            }
+            currentMap = currentMap.get(keys[i]);
+        }
+        return currentMap.get(keys[keys.length - 1]);
+    }
+    clear() {
+        this._data.clear();
+    }
+    /**
+     * Get a textual representation of the map for debugging purposes.
+     */
+    toString() {
+        const printMap = (map, depth) => {
+            let result = '';
+            for (const [key, value] of map) {
+                result += `${'  '.repeat(depth)}${key}: `;
+                if (value instanceof Map) {
+                    result += '\n' + printMap(value, depth + 1);
+                }
+                else {
+                    result += `${value}\n`;
+                }
+            }
+            return result;
+        };
+        return printMap(this._data, 0);
     }
 }
+//# sourceMappingURL=map.js.map

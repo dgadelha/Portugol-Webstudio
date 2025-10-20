@@ -15,9 +15,9 @@ export class AbstractLineHighlightOverlay extends DynamicViewOverlay {
         super();
         this._context = context;
         const options = this._context.configuration.options;
-        const layoutInfo = options.get(146 /* EditorOption.layoutInfo */);
-        this._renderLineHighlight = options.get(97 /* EditorOption.renderLineHighlight */);
-        this._renderLineHighlightOnlyWhenFocus = options.get(98 /* EditorOption.renderLineHighlightOnlyWhenFocus */);
+        const layoutInfo = options.get(165 /* EditorOption.layoutInfo */);
+        this._renderLineHighlight = options.get(110 /* EditorOption.renderLineHighlight */);
+        this._renderLineHighlightOnlyWhenFocus = options.get(111 /* EditorOption.renderLineHighlightOnlyWhenFocus */);
         this._wordWrap = layoutInfo.isViewportWrapping;
         this._contentLeft = layoutInfo.contentLeft;
         this._contentWidth = layoutInfo.contentWidth;
@@ -57,9 +57,9 @@ export class AbstractLineHighlightOverlay extends DynamicViewOverlay {
     }
     onConfigurationChanged(e) {
         const options = this._context.configuration.options;
-        const layoutInfo = options.get(146 /* EditorOption.layoutInfo */);
-        this._renderLineHighlight = options.get(97 /* EditorOption.renderLineHighlight */);
-        this._renderLineHighlightOnlyWhenFocus = options.get(98 /* EditorOption.renderLineHighlightOnlyWhenFocus */);
+        const layoutInfo = options.get(165 /* EditorOption.layoutInfo */);
+        this._renderLineHighlight = options.get(110 /* EditorOption.renderLineHighlight */);
+        this._renderLineHighlightOnlyWhenFocus = options.get(111 /* EditorOption.renderLineHighlightOnlyWhenFocus */);
         this._wordWrap = layoutInfo.isViewportWrapping;
         this._contentLeft = layoutInfo.contentLeft;
         this._contentWidth = layoutInfo.contentWidth;
@@ -152,6 +152,9 @@ export class AbstractLineHighlightOverlay extends DynamicViewOverlay {
             && (!this._renderLineHighlightOnlyWhenFocus || this._focused));
     }
 }
+/**
+ * Emphasizes the current line by drawing a border around it.
+ */
 export class CurrentLineHighlightOverlay extends AbstractLineHighlightOverlay {
     _renderOne(ctx, exact) {
         const className = 'current-line' + (this._shouldRenderInMargin() ? ' current-line-both' : '') + (exact ? ' current-line-exact' : '');
@@ -164,6 +167,9 @@ export class CurrentLineHighlightOverlay extends AbstractLineHighlightOverlay {
         return this._shouldRenderInMargin();
     }
 }
+/**
+ * Emphasizes the current line margin/gutter by drawing a border around it.
+ */
 export class CurrentLineMarginHighlightOverlay extends AbstractLineHighlightOverlay {
     _renderOne(ctx, exact) {
         const className = 'current-line' + (this._shouldRenderInMargin() ? ' current-line-margin' : '') + (this._shouldRenderOther() ? ' current-line-margin-both' : '') + (this._shouldRenderInMargin() && exact ? ' current-line-exact-margin' : '');
@@ -194,3 +200,4 @@ registerThemingParticipant((theme, collector) => {
         }
     }
 });
+//# sourceMappingURL=currentLineHighlight.js.map

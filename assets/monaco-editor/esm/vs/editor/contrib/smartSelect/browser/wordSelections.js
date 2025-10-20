@@ -77,3 +77,4 @@ export class WordSelectionRangeProvider {
         }
     }
 }
+//# sourceMappingURL=wordSelections.js.map

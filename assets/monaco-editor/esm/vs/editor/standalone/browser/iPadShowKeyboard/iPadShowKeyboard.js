@@ -19,7 +19,7 @@ export class IPadShowKeyboard extends Disposable {
         }
     }
     update() {
-        const shouldHaveWidget = (!this.editor.getOption(92 /* EditorOption.readOnly */));
+        const shouldHaveWidget = (!this.editor.getOption(104 /* EditorOption.readOnly */));
         if (!this.widget && shouldHaveWidget) {
             this.widget = new ShowKeyboardWidget(this.editor);
         }
@@ -69,3 +69,4 @@ class ShowKeyboardWidget extends Disposable {
     }
 }
 registerEditorContribution(IPadShowKeyboard.ID, IPadShowKeyboard, 3 /* EditorContributionInstantiation.Eventually */);
+//# sourceMappingURL=iPadShowKeyboard.js.map

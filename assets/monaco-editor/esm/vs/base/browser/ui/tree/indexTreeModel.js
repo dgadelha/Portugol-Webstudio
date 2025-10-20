@@ -3,14 +3,14 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 import { TreeError } from './tree.js';
-import { splice, tail2 } from '../../../common/arrays.js';
+import { splice, tail } from '../../../common/arrays.js';
 import { Delayer } from '../../../common/async.js';
 import { MicrotaskDelay } from '../../../common/symbols.js';
 import { LcsDiff } from '../../../common/diff/diff.js';
 import { Emitter, EventBufferer } from '../../../common/event.js';
 import { Iterable } from '../../../common/iterator.js';
 export function isFilterResult(obj) {
-    return typeof obj === 'object' && 'visibility' in obj && 'data' in obj;
+    return !!obj && obj.visibility !== undefined;
 }
 export function getVisibleState(visibility) {
     switch (visibility) {
@@ -23,17 +23,18 @@ function isCollapsibleStateUpdate(update) {
     return typeof update.collapsible === 'boolean';
 }
 export class IndexTreeModel {
-    constructor(user, list, rootElement, options = {}) {
+    constructor(user, rootElement, options = {}) {
         this.user = user;
-        this.list = list;
         this.rootRef = [];
         this.eventBufferer = new EventBufferer();
+        this._onDidSpliceModel = new Emitter();
+        this.onDidSpliceModel = this._onDidSpliceModel.event;
+        this._onDidSpliceRenderedNodes = new Emitter();
+        this.onDidSpliceRenderedNodes = this._onDidSpliceRenderedNodes.event;
         this._onDidChangeCollapseState = new Emitter();
         this.onDidChangeCollapseState = this.eventBufferer.wrapEvent(this._onDidChangeCollapseState.event);
         this._onDidChangeRenderNodeCount = new Emitter();
         this.onDidChangeRenderNodeCount = this.eventBufferer.wrapEvent(this._onDidChangeRenderNodeCount.event);
-        this._onDidSplice = new Emitter();
-        this.onDidSplice = this._onDidSplice.event;
         this.refilterDelayer = new Delayer(MicrotaskDelay);
         this.collapseByDefault = typeof options.collapseByDefault === 'undefined' ? false : options.collapseByDefault;
         this.allowNonCollapsibleParents = options.allowNonCollapsibleParents ?? false;
@@ -158,11 +159,6 @@ export class IndexTreeModel {
         }
         // update parent's visible children count
         parentNode.visibleChildrenCount += insertedVisibleChildrenCount - deletedVisibleChildrenCount;
-        if (revealed && visible) {
-            const visibleDeleteCount = deletedNodes.reduce((r, node) => r + (node.visible ? node.renderNodeCount : 0), 0);
-            this._updateAncestorsRenderNodeCount(parentNode, renderNodeCount - visibleDeleteCount);
-            this.list.splice(listIndex, visibleDeleteCount, treeListElementsToInsert);
-        }
         if (deletedNodes.length > 0 && onDidDeleteNode) {
             const visit = (node) => {
                 onDidDeleteNode(node);
@@ -170,7 +166,12 @@ export class IndexTreeModel {
             };
             deletedNodes.forEach(visit);
         }
-        this._onDidSplice.fire({ insertedNodes: nodesToInsert, deletedNodes });
+        if (revealed && visible) {
+            const visibleDeleteCount = deletedNodes.reduce((r, node) => r + (node.visible ? node.renderNodeCount : 0), 0);
+            this._updateAncestorsRenderNodeCount(parentNode, renderNodeCount - visibleDeleteCount);
+            this._onDidSpliceRenderedNodes.fire({ start: listIndex, deleteCount: visibleDeleteCount, elements: treeListElementsToInsert });
+        }
+        this._onDidSpliceModel.fire({ insertedNodes: nodesToInsert, deletedNodes });
         let node = parentNode;
         while (node) {
             if (node.visibility === 2 /* TreeVisibility.Recurse */) {
@@ -187,7 +188,7 @@ export class IndexTreeModel {
         }
         const { node, listIndex, revealed } = this.getTreeNodeWithListIndex(location);
         if (node.visible && revealed) {
-            this.list.splice(listIndex, 1, [node]);
+            this._onDidSpliceRenderedNodes.fire({ start: listIndex, deleteCount: 1, elements: [node] });
         }
     }
     has(location) {
@@ -253,7 +254,7 @@ export class IndexTreeModel {
         const previousRenderNodeCount = node.renderNodeCount;
         const toInsert = this.updateNodeAfterCollapseChange(node);
         const deleteCount = previousRenderNodeCount - (listIndex === -1 ? 0 : 1);
-        this.list.splice(listIndex + 1, deleteCount, toInsert.slice(1));
+        this._onDidSpliceRenderedNodes.fire({ start: listIndex + 1, deleteCount: deleteCount, elements: toInsert.slice(1) });
         return result;
     }
     _setNodeCollapseState(node, update, deep) {
@@ -299,7 +300,7 @@ export class IndexTreeModel {
     refilter() {
         const previousRenderNodeCount = this.root.renderNodeCount;
         const toInsert = this.updateNodeAfterFilterChange(this.root);
-        this.list.splice(0, previousRenderNodeCount, toInsert);
+        this._onDidSpliceRenderedNodes.fire({ start: 0, deleteCount: previousRenderNodeCount, elements: toInsert });
         this.refilterDelayer.cancel();
     }
     createTreeNode(treeElement, parent, parentVisibility, revealed, treeListElements, onDidCreateNode) {
@@ -521,7 +522,7 @@ export class IndexTreeModel {
             return [];
         }
         else {
-            return tail2(location)[0];
+            return tail(location)[0];
         }
     }
     getFirstElementChild(location) {
@@ -532,3 +533,4 @@ export class IndexTreeModel {
         return node.children[0].element;
     }
 }
+//# sourceMappingURL=indexTreeModel.js.map

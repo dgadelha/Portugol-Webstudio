@@ -69,3 +69,4 @@ export class ColorPickerModel {
         this._onColorFlushed.fire(this._color);
     }
 }
+//# sourceMappingURL=colorPickerModel.js.map

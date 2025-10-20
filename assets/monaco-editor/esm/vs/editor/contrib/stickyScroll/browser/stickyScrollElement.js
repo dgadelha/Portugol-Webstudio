@@ -35,3 +35,4 @@ export class StickyModel {
         this.outlineProviderId = outlineProviderId;
     }
 }
+//# sourceMappingURL=stickyScrollElement.js.map

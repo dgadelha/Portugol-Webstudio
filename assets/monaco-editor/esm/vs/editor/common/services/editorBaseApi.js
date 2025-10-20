@@ -38,3 +38,4 @@ export function createMonacoBaseAPI() {
         Token: Token
     };
 }
+//# sourceMappingURL=editorBaseApi.js.map

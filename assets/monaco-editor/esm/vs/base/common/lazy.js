@@ -2,10 +2,16 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+var LazyValueState;
+(function (LazyValueState) {
+    LazyValueState[LazyValueState["Uninitialized"] = 0] = "Uninitialized";
+    LazyValueState[LazyValueState["Running"] = 1] = "Running";
+    LazyValueState[LazyValueState["Completed"] = 2] = "Completed";
+})(LazyValueState || (LazyValueState = {}));
 export class Lazy {
     constructor(executor) {
         this.executor = executor;
-        this._didRun = false;
+        this._state = LazyValueState.Uninitialized;
     }
     /**
      * Get the wrapped value.
@@ -14,7 +20,8 @@ export class Lazy {
      * resolved once. `getValue` will re-throw exceptions that are hit while resolving the value
      */
     get value() {
-        if (!this._didRun) {
+        if (this._state === LazyValueState.Uninitialized) {
+            this._state = LazyValueState.Running;
             try {
                 this._value = this.executor();
             }
@@ -22,8 +29,11 @@ export class Lazy {
                 this._error = err;
             }
             finally {
-                this._didRun = true;
+                this._state = LazyValueState.Completed;
             }
+        }
+        else if (this._state === LazyValueState.Running) {
+            throw new Error('Cannot read the value of a lazy that is being initialized');
         }
         if (this._error) {
             throw this._error;
@@ -35,3 +45,4 @@ export class Lazy {
      */
     get rawValue() { return this._value; }
 }
+//# sourceMappingURL=lazy.js.map

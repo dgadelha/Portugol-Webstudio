@@ -21,3 +21,4 @@ export const getCharIndex = (chCode, fontScale) => {
     }
     return chCode;
 };
+//# sourceMappingURL=minimapCharSheet.js.map

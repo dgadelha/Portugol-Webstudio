@@ -15,9 +15,9 @@ import * as dom from '../../base/browser/dom.js';
 import { createFastDomNode } from '../../base/browser/fastDomNode.js';
 import { inputLatency } from '../../base/browser/performance.js';
 import { BugIndicatingError, onUnexpectedError } from '../../base/common/errors.js';
+import { Disposable } from '../../base/common/lifecycle.js';
 import { PointerHandlerLastRenderData } from './controller/mouseTarget.js';
 import { PointerHandler } from './controller/pointerHandler.js';
-import { TextAreaHandler } from './controller/textAreaHandler.js';
 import { RenderingContext } from './view/renderingContext.js';
 import { ViewController } from './view/viewController.js';
 import { ContentViewOverlays, MarginViewOverlays } from './view/viewOverlays.js';
@@ -31,7 +31,7 @@ import { EditorScrollbar } from './viewParts/editorScrollbar/editorScrollbar.js'
 import { GlyphMarginWidgets } from './viewParts/glyphMargin/glyphMargin.js';
 import { IndentGuidesOverlay } from './viewParts/indentGuides/indentGuides.js';
 import { LineNumbersOverlay } from './viewParts/lineNumbers/lineNumbers.js';
-import { ViewLines } from './viewParts/lines/viewLines.js';
+import { ViewLines } from './viewParts/viewLines/viewLines.js';
 import { LinesDecorationsOverlay } from './viewParts/linesDecorations/linesDecorations.js';
 import { Margin } from './viewParts/margin/margin.js';
 import { MarginViewLineDecorationsOverlay } from './viewParts/marginDecorations/marginDecorations.js';
@@ -54,23 +54,40 @@ import { ViewportData } from '../common/viewLayout/viewLinesViewportData.js';
 import { ViewContext } from '../common/viewModel/viewContext.js';
 import { IInstantiationService } from '../../platform/instantiation/common/instantiation.js';
 import { getThemeTypeSelector } from '../../platform/theme/common/themeService.js';
+import { ViewGpuContext } from './gpu/viewGpuContext.js';
+import { ViewLinesGpu } from './viewParts/viewLinesGpu/viewLinesGpu.js';
+import { TextAreaEditContext } from './controller/editContext/textArea/textAreaEditContext.js';
+import { NativeEditContext } from './controller/editContext/native/nativeEditContext.js';
+import { RulersGpu } from './viewParts/rulersGpu/rulersGpu.js';
+import { GpuMarkOverlay } from './viewParts/gpuMark/gpuMark.js';
+import { Emitter } from '../../base/common/event.js';
 let View = class View extends ViewEventHandler {
-    constructor(commandDelegate, configuration, colorTheme, model, userInputEvents, overflowWidgetsDomNode, _instantiationService) {
+    constructor(editorContainer, ownerID, commandDelegate, configuration, colorTheme, model, userInputEvents, overflowWidgetsDomNode, _instantiationService) {
         super();
         this._instantiationService = _instantiationService;
         // Actual mutable state
         this._shouldRecomputeGlyphMarginLanes = false;
+        this._ownerID = ownerID;
+        this._widgetFocusTracker = this._register(new CodeEditorWidgetFocusTracker(editorContainer, overflowWidgetsDomNode));
+        this._register(this._widgetFocusTracker.onChange(() => {
+            this._context.viewModel.setHasWidgetFocus(this._widgetFocusTracker.hasFocus());
+        }));
         this._selections = [new Selection(1, 1, 1, 1)];
         this._renderAnimationFrame = null;
-        const viewController = new ViewController(configuration, model, userInputEvents, commandDelegate);
+        this._overflowGuardContainer = createFastDomNode(document.createElement('div'));
+        PartFingerprints.write(this._overflowGuardContainer, 3 /* PartFingerprint.OverflowGuard */);
+        this._overflowGuardContainer.setClassName('overflow-guard');
+        this._viewController = new ViewController(configuration, model, userInputEvents, commandDelegate);
         // The view context is passed on to most classes (basically to reduce param. counts in ctors)
         this._context = new ViewContext(configuration, colorTheme, model);
         // Ensure the view is the first event handler in order to update the layout
         this._context.addEventHandler(this);
         this._viewParts = [];
         // Keyboard handler
-        this._textAreaHandler = this._instantiationService.createInstance(TextAreaHandler, this._context, viewController, this._createTextAreaHandlerHelper());
-        this._viewParts.push(this._textAreaHandler);
+        this._editContextEnabled = this._context.configuration.options.get(170 /* EditorOption.effectiveEditContext */);
+        this._accessibilitySupport = this._context.configuration.options.get(2 /* EditorOption.accessibilitySupport */);
+        this._editContext = this._instantiateEditContext();
+        this._viewParts.push(this._editContext);
         // These two dom nodes must be constructed up front, since references are needed in the layout provider (scrolling & co.)
         this._linesContent = createFastDomNode(document.createElement('div'));
         this._linesContent.setClassName('lines-content' + ' monaco-editor-background');
@@ -79,13 +96,16 @@ let View = class View extends ViewEventHandler {
         this.domNode.setClassName(this._getEditorClassName());
         // Set role 'code' for better screen reader support https://github.com/microsoft/vscode/issues/93438
         this.domNode.setAttribute('role', 'code');
-        this._overflowGuardContainer = createFastDomNode(document.createElement('div'));
-        PartFingerprints.write(this._overflowGuardContainer, 3 /* PartFingerprint.OverflowGuard */);
-        this._overflowGuardContainer.setClassName('overflow-guard');
+        if (this._context.configuration.options.get(46 /* EditorOption.experimentalGpuAcceleration */) === 'on') {
+            this._viewGpuContext = this._instantiationService.createInstance(ViewGpuContext, this._context);
+        }
         this._scrollbar = new EditorScrollbar(this._context, this._linesContent, this.domNode, this._overflowGuardContainer);
         this._viewParts.push(this._scrollbar);
         // View Lines
-        this._viewLines = new ViewLines(this._context, this._linesContent);
+        this._viewLines = new ViewLines(this._context, this._viewGpuContext, this._linesContent);
+        if (this._viewGpuContext) {
+            this._viewLinesGpu = this._instantiationService.createInstance(ViewLinesGpu, this._context, this._viewGpuContext);
+        }
         // View Zones
         this._viewZones = new ViewZones(this._context);
         this._viewParts.push(this._viewZones);
@@ -107,6 +127,9 @@ let View = class View extends ViewEventHandler {
         marginViewOverlays.addDynamicOverlay(new MarginViewLineDecorationsOverlay(this._context));
         marginViewOverlays.addDynamicOverlay(new LinesDecorationsOverlay(this._context));
         marginViewOverlays.addDynamicOverlay(new LineNumbersOverlay(this._context));
+        if (this._viewGpuContext) {
+            marginViewOverlays.addDynamicOverlay(new GpuMarkOverlay(this._context, this._viewGpuContext));
+        }
         // Glyph margin widgets
         this._glyphMarginWidgets = new GlyphMarginWidgets(this._context);
         this._viewParts.push(this._glyphMarginWidgets);
@@ -123,7 +146,9 @@ let View = class View extends ViewEventHandler {
         // Overlay widgets
         this._overlayWidgets = new ViewOverlayWidgets(this._context, this.domNode);
         this._viewParts.push(this._overlayWidgets);
-        const rulers = new Rulers(this._context);
+        const rulers = this._viewGpuContext
+            ? new RulersGpu(this._context, this._viewGpuContext)
+            : new Rulers(this._context);
         this._viewParts.push(rulers);
         const blockOutline = new BlockDecorations(this._context);
         this._viewParts.push(blockOutline);
@@ -135,16 +160,19 @@ let View = class View extends ViewEventHandler {
             overviewRulerData.parent.insertBefore(decorationsOverviewRuler.getDomNode(), overviewRulerData.insertBefore);
         }
         this._linesContent.appendChild(contentViewOverlays.getDomNode());
-        this._linesContent.appendChild(rulers.domNode);
+        if ('domNode' in rulers) {
+            this._linesContent.appendChild(rulers.domNode);
+        }
         this._linesContent.appendChild(this._viewZones.domNode);
         this._linesContent.appendChild(this._viewLines.getDomNode());
         this._linesContent.appendChild(this._contentWidgets.domNode);
         this._linesContent.appendChild(this._viewCursors.getDomNode());
         this._overflowGuardContainer.appendChild(margin.getDomNode());
         this._overflowGuardContainer.appendChild(this._scrollbar.getDomNode());
+        if (this._viewGpuContext) {
+            this._overflowGuardContainer.appendChild(this._viewGpuContext.canvas);
+        }
         this._overflowGuardContainer.appendChild(scrollDecoration.getDomNode());
-        this._overflowGuardContainer.appendChild(this._textAreaHandler.textArea);
-        this._overflowGuardContainer.appendChild(this._textAreaHandler.textAreaCover);
         this._overflowGuardContainer.appendChild(this._overlayWidgets.getDomNode());
         this._overflowGuardContainer.appendChild(minimap.getDomNode());
         this._overflowGuardContainer.appendChild(blockOutline.domNode);
@@ -159,7 +187,35 @@ let View = class View extends ViewEventHandler {
         }
         this._applyLayout();
         // Pointer handler
-        this._pointerHandler = this._register(new PointerHandler(this._context, viewController, this._createPointerHandlerHelper()));
+        this._pointerHandler = this._register(new PointerHandler(this._context, this._viewController, this._createPointerHandlerHelper()));
+    }
+    _instantiateEditContext() {
+        const usingExperimentalEditContext = this._context.configuration.options.get(170 /* EditorOption.effectiveEditContext */);
+        if (usingExperimentalEditContext) {
+            return this._instantiationService.createInstance(NativeEditContext, this._ownerID, this._context, this._overflowGuardContainer, this._viewController, this._createTextAreaHandlerHelper());
+        }
+        else {
+            return this._instantiationService.createInstance(TextAreaEditContext, this._context, this._overflowGuardContainer, this._viewController, this._createTextAreaHandlerHelper());
+        }
+    }
+    _updateEditContext() {
+        const editContextEnabled = this._context.configuration.options.get(170 /* EditorOption.effectiveEditContext */);
+        const accessibilitySupport = this._context.configuration.options.get(2 /* EditorOption.accessibilitySupport */);
+        if (this._editContextEnabled === editContextEnabled && this._accessibilitySupport === accessibilitySupport) {
+            return;
+        }
+        this._editContextEnabled = editContextEnabled;
+        this._accessibilitySupport = accessibilitySupport;
+        const isEditContextFocused = this._editContext.isFocused();
+        const indexOfEditContext = this._viewParts.indexOf(this._editContext);
+        this._editContext.dispose();
+        this._editContext = this._instantiateEditContext();
+        if (isEditContextFocused) {
+            this._editContext.focus();
+        }
+        if (indexOfEditContext !== -1) {
+            this._viewParts.splice(indexOfEditContext, 1, this._editContext);
+        }
     }
     _computeGlyphMarginLanes() {
         const model = this._context.viewModel.model;
@@ -191,15 +247,16 @@ let View = class View extends ViewEventHandler {
             viewDomNode: this.domNode.domNode,
             linesContentDomNode: this._linesContent.domNode,
             viewLinesDomNode: this._viewLines.getDomNode().domNode,
+            viewLinesGpu: this._viewLinesGpu,
             focusTextArea: () => {
                 this.focus();
             },
             dispatchTextAreaEvent: (event) => {
-                this._textAreaHandler.textArea.domNode.dispatchEvent(event);
+                this._editContext.domNode.domNode.dispatchEvent(event);
             },
             getLastRenderData: () => {
                 const lastViewCursorsRenderData = this._viewCursors.getLastRenderData() || [];
-                const lastTextareaPosition = this._textAreaHandler.getLastRenderData();
+                const lastTextareaPosition = this._editContext.getLastRenderData();
                 return new PointerHandlerLastRenderData(lastViewCursorsRenderData, lastTextareaPosition);
             },
             renderNow: () => {
@@ -217,10 +274,17 @@ let View = class View extends ViewEventHandler {
             },
             visibleRangeForPosition: (lineNumber, column) => {
                 this._flushAccumulatedAndRenderNow();
-                return this._viewLines.visibleRangeForPosition(new Position(lineNumber, column));
+                const position = new Position(lineNumber, column);
+                return this._viewLines.visibleRangeForPosition(position) ?? this._viewLinesGpu?.visibleRangeForPosition(position) ?? null;
             },
             getLineWidth: (lineNumber) => {
                 this._flushAccumulatedAndRenderNow();
+                if (this._viewLinesGpu) {
+                    const result = this._viewLinesGpu.getLineWidth(lineNumber);
+                    if (result !== undefined) {
+                        return result;
+                    }
+                }
                 return this._viewLines.getLineWidth(lineNumber);
             }
         };
@@ -230,12 +294,16 @@ let View = class View extends ViewEventHandler {
             visibleRangeForPosition: (position) => {
                 this._flushAccumulatedAndRenderNow();
                 return this._viewLines.visibleRangeForPosition(position);
+            },
+            linesVisibleRangesForRange: (range, includeNewLines) => {
+                this._flushAccumulatedAndRenderNow();
+                return this._viewLines.linesVisibleRangesForRange(range, includeNewLines);
             }
         };
     }
     _applyLayout() {
         const options = this._context.configuration.options;
-        const layoutInfo = options.get(146 /* EditorOption.layoutInfo */);
+        const layoutInfo = options.get(165 /* EditorOption.layoutInfo */);
         this.domNode.setWidth(layoutInfo.width);
         this.domNode.setHeight(layoutInfo.height);
         this._overflowGuardContainer.setWidth(layoutInfo.width);
@@ -245,8 +313,8 @@ let View = class View extends ViewEventHandler {
         this._linesContent.setHeight(16777216);
     }
     _getEditorClassName() {
-        const focused = this._textAreaHandler.isFocused() ? ' focused' : '';
-        return this._context.configuration.options.get(143 /* EditorOption.editorClassName */) + ' ' + getThemeTypeSelector(this._context.theme.type) + focused;
+        const focused = this._editContext.isFocused() ? ' focused' : '';
+        return this._context.configuration.options.get(162 /* EditorOption.editorClassName */) + ' ' + getThemeTypeSelector(this._context.theme.type) + focused;
     }
     // --- begin event handlers
     handleEvents(events) {
@@ -255,6 +323,7 @@ let View = class View extends ViewEventHandler {
     }
     onConfigurationChanged(e) {
         this.domNode.setClassName(this._getEditorClassName());
+        this._updateEditContext();
         this._applyLayout();
         return false;
     }
@@ -284,8 +353,11 @@ let View = class View extends ViewEventHandler {
             this._renderAnimationFrame = null;
         }
         this._contentWidgets.overflowingContentWidgetsDomNode.domNode.remove();
+        this._overlayWidgets.overflowingOverlayWidgetsDomNode.domNode.remove();
         this._context.removeEventHandler(this);
+        this._viewGpuContext?.dispose();
         this._viewLines.dispose();
+        this._viewLinesGpu?.dispose();
         // Destroy view parts
         for (const viewPart of this._viewParts) {
             viewPart.dispose();
@@ -297,6 +369,10 @@ let View = class View extends ViewEventHandler {
             throw new BugIndicatingError();
         }
         if (this._renderAnimationFrame === null) {
+            // TODO: workaround fix for https://github.com/microsoft/vscode/issues/229825
+            if (this._editContext instanceof NativeEditContext) {
+                this._editContext.setEditContextOnDomNode();
+            }
             const rendering = this._createCoordinatedRendering();
             this._renderAnimationFrame = EditorRenderingCoordinator.INSTANCE.scheduleCoordinatedRendering({
                 window: dom.getWindow(this.domNode?.domNode),
@@ -384,7 +460,11 @@ let View = class View extends ViewEventHandler {
                     // Rendering of viewLines might cause scroll events to occur, so collect view parts to render again
                     viewPartsToRender = this._getViewPartsToRender();
                 }
-                return [viewPartsToRender, new RenderingContext(this._context.viewLayout, viewportData, this._viewLines)];
+                if (this._viewLinesGpu?.shouldRender()) {
+                    this._viewLinesGpu.renderText(viewportData);
+                    this._viewLinesGpu.onDidRender();
+                }
+                return [viewPartsToRender, new RenderingContext(this._context.viewLayout, viewportData, this._viewLines, this._viewLinesGpu)];
             },
             prepareRender: (viewPartsToRender, ctx) => {
                 for (const viewPart of viewPartsToRender) {
@@ -456,16 +536,19 @@ let View = class View extends ViewEventHandler {
         }
     }
     writeScreenReaderContent(reason) {
-        this._textAreaHandler.writeScreenReaderContent(reason);
+        this._editContext.writeScreenReaderContent(reason);
     }
     focus() {
-        this._textAreaHandler.focusTextArea();
+        this._editContext.focus();
     }
     isFocused() {
-        return this._textAreaHandler.isFocused();
+        return this._editContext.isFocused();
+    }
+    isWidgetFocused() {
+        return this._widgetFocusTracker.hasFocus();
     }
     setAriaOptions(options) {
-        this._textAreaHandler.setAriaOptions(options);
+        this._editContext.setAriaOptions(options);
     }
     addContentWidget(widgetData) {
         this._contentWidgets.addWidget(widgetData.widget);
@@ -515,7 +598,7 @@ let View = class View extends ViewEventHandler {
     }
 };
 View = __decorate([
-    __param(6, IInstantiationService)
+    __param(8, IInstantiationService)
 ], View);
 export { View };
 function safeInvokeNoArg(func) {
@@ -593,3 +676,44 @@ class EditorRenderingCoordinator {
         }
     }
 }
+class CodeEditorWidgetFocusTracker extends Disposable {
+    constructor(domElement, overflowWidgetsDomNode) {
+        super();
+        this._onChange = this._register(new Emitter());
+        this.onChange = this._onChange.event;
+        this._hadFocus = undefined;
+        this._hasDomElementFocus = false;
+        this._domFocusTracker = this._register(dom.trackFocus(domElement));
+        this._overflowWidgetsDomNodeHasFocus = false;
+        this._register(this._domFocusTracker.onDidFocus(() => {
+            this._hasDomElementFocus = true;
+            this._update();
+        }));
+        this._register(this._domFocusTracker.onDidBlur(() => {
+            this._hasDomElementFocus = false;
+            this._update();
+        }));
+        if (overflowWidgetsDomNode) {
+            this._overflowWidgetsDomNode = this._register(dom.trackFocus(overflowWidgetsDomNode));
+            this._register(this._overflowWidgetsDomNode.onDidFocus(() => {
+                this._overflowWidgetsDomNodeHasFocus = true;
+                this._update();
+            }));
+            this._register(this._overflowWidgetsDomNode.onDidBlur(() => {
+                this._overflowWidgetsDomNodeHasFocus = false;
+                this._update();
+            }));
+        }
+    }
+    _update() {
+        const focused = this._hasDomElementFocus || this._overflowWidgetsDomNodeHasFocus;
+        if (this._hadFocus !== focused) {
+            this._hadFocus = focused;
+            this._onChange.fire(undefined);
+        }
+    }
+    hasFocus() {
+        return this._hadFocus ?? false;
+    }
+}
+//# sourceMappingURL=view.js.map

@@ -72,3 +72,4 @@ Registry.as(Extensions.Quickaccess).registerQuickAccessProvider({
         { description: QuickOutlineNLS.quickOutlineByCategoryActionLabel, prefix: AbstractGotoSymbolQuickAccessProvider.PREFIX_BY_CATEGORY }
     ]
 });
+//# sourceMappingURL=standaloneGotoSymbolQuickAccess.js.map

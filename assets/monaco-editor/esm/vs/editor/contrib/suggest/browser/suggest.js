@@ -21,14 +21,14 @@ import { ILanguageFeaturesService } from '../../../common/services/languageFeatu
 import { historyNavigationVisible } from '../../../../platform/history/browser/contextScopedHistoryWidget.js';
 export const Context = {
     Visible: historyNavigationVisible,
-    HasFocusedSuggestion: new RawContextKey('suggestWidgetHasFocusedSuggestion', false, localize('suggestWidgetHasSelection', "Whether any suggestion is focused")),
-    DetailsVisible: new RawContextKey('suggestWidgetDetailsVisible', false, localize('suggestWidgetDetailsVisible', "Whether suggestion details are visible")),
-    MultipleSuggestions: new RawContextKey('suggestWidgetMultipleSuggestions', false, localize('suggestWidgetMultipleSuggestions', "Whether there are multiple suggestions to pick from")),
-    MakesTextEdit: new RawContextKey('suggestionMakesTextEdit', true, localize('suggestionMakesTextEdit', "Whether inserting the current suggestion yields in a change or has everything already been typed")),
-    AcceptSuggestionsOnEnter: new RawContextKey('acceptSuggestionOnEnter', true, localize('acceptSuggestionOnEnter', "Whether suggestions are inserted when pressing Enter")),
-    HasInsertAndReplaceRange: new RawContextKey('suggestionHasInsertAndReplaceRange', false, localize('suggestionHasInsertAndReplaceRange', "Whether the current suggestion has insert and replace behaviour")),
-    InsertMode: new RawContextKey('suggestionInsertMode', undefined, { type: 'string', description: localize('suggestionInsertMode', "Whether the default behaviour is to insert or replace") }),
-    CanResolve: new RawContextKey('suggestionCanResolve', false, localize('suggestionCanResolve', "Whether the current suggestion supports to resolve further details")),
+    HasFocusedSuggestion: new RawContextKey('suggestWidgetHasFocusedSuggestion', false, localize(1440, "Whether any suggestion is focused")),
+    DetailsVisible: new RawContextKey('suggestWidgetDetailsVisible', false, localize(1441, "Whether suggestion details are visible")),
+    MultipleSuggestions: new RawContextKey('suggestWidgetMultipleSuggestions', false, localize(1442, "Whether there are multiple suggestions to pick from")),
+    MakesTextEdit: new RawContextKey('suggestionMakesTextEdit', true, localize(1443, "Whether inserting the current suggestion yields in a change or has everything already been typed")),
+    AcceptSuggestionsOnEnter: new RawContextKey('acceptSuggestionOnEnter', true, localize(1444, "Whether suggestions are inserted when pressing Enter")),
+    HasInsertAndReplaceRange: new RawContextKey('suggestionHasInsertAndReplaceRange', false, localize(1445, "Whether the current suggestion has insert and replace behaviour")),
+    InsertMode: new RawContextKey('suggestionInsertMode', undefined, { type: 'string', description: localize(1446, "Whether the default behaviour is to insert or replace") }),
+    CanResolve: new RawContextKey('suggestionCanResolve', false, localize(1447, "Whether the current suggestion supports to resolve further details")),
 };
 export const suggestWidgetStatusbarMenu = new MenuId('suggestWidgetStatusBar');
 export class CompletionItem {
@@ -177,7 +177,7 @@ export async function provideSuggestionItems(registry, model, position, options 
     // ask for snippets in parallel to asking "real" providers. Only do something if configured to
     // do so - no snippet filter, no special-providers-only request
     const snippetCompletions = (async () => {
-        if (!_snippetSuggestSupport || options.kindFilter.has(27 /* languages.CompletionItemKind.Snippet */)) {
+        if (!_snippetSuggestSupport || options.kindFilter.has(28 /* languages.CompletionItemKind.Snippet */)) {
             return;
         }
         // we have items from a previous session that we can reuse
@@ -253,10 +253,10 @@ function defaultComparator(a, b) {
 }
 function snippetUpComparator(a, b) {
     if (a.completion.kind !== b.completion.kind) {
-        if (a.completion.kind === 27 /* languages.CompletionItemKind.Snippet */) {
+        if (a.completion.kind === 28 /* languages.CompletionItemKind.Snippet */) {
             return -1;
         }
-        else if (b.completion.kind === 27 /* languages.CompletionItemKind.Snippet */) {
+        else if (b.completion.kind === 28 /* languages.CompletionItemKind.Snippet */) {
             return 1;
         }
     }
@@ -264,10 +264,10 @@ function snippetUpComparator(a, b) {
 }
 function snippetDownComparator(a, b) {
     if (a.completion.kind !== b.completion.kind) {
-        if (a.completion.kind === 27 /* languages.CompletionItemKind.Snippet */) {
+        if (a.completion.kind === 28 /* languages.CompletionItemKind.Snippet */) {
             return 1;
         }
-        else if (b.completion.kind === 27 /* languages.CompletionItemKind.Snippet */) {
+        else if (b.completion.kind === 28 /* languages.CompletionItemKind.Snippet */) {
             return -1;
         }
     }
@@ -333,3 +333,4 @@ export class QuickSuggestionsOptions {
         }
     }
 }
+//# sourceMappingURL=suggest.js.map

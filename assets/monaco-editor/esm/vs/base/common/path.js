@@ -3,9 +3,11 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 // NOTE: VSCode's copy of nodejs path library to be usable in common (non-node) namespace
-// Copied from: https://github.com/nodejs/node/commits/v20.9.0/lib/path.js
+// Copied from: https://github.com/nodejs/node/commits/v22.15.0/lib/path.js
 // Excluding: the change that adds primordials
 // (https://github.com/nodejs/node/commit/187a862d221dec42fa9a5c4214e7034d9092792f and others)
+// Excluding: the change that adds glob matching
+// (https://github.com/nodejs/node/commit/57b8b8e18e5e2007114c63b71bf0baedc01936a6)
 /**
  * Copyright Joyent, Inc. and other Node contributors.
  *
@@ -377,6 +379,23 @@ export const win32 = {
         if (tail.length > 0 && isPathSeparator(path.charCodeAt(len - 1))) {
             tail += '\\';
         }
+        if (!isAbsolute && device === undefined && path.includes(':')) {
+            // If the original path was not absolute and if we have not been able to
+            // resolve it relative to a particular device, we need to ensure that the
+            // `tail` has not become something that Windows might interpret as an
+            // absolute path. See CVE-2024-36139.
+            if (tail.length >= 2 &&
+                isWindowsDeviceRoot(tail.charCodeAt(0)) &&
+                tail.charCodeAt(1) === CHAR_COLON) {
+                return `.\\${tail}`;
+            }
+            let index = path.indexOf(':');
+            do {
+                if (index === len - 1 || isPathSeparator(path.charCodeAt(index + 1))) {
+                    return `.\\${tail}`;
+                }
+            } while ((index = path.indexOf(':', index + 1)) !== -1);
+        }
         if (device === undefined) {
             return isAbsolute ? `\\${tail}` : tail;
         }
@@ -480,6 +499,38 @@ export const win32 = {
         to = toOrig.toLowerCase();
         if (from === to) {
             return '';
+        }
+        if (fromOrig.length !== from.length || toOrig.length !== to.length) {
+            const fromSplit = fromOrig.split('\\');
+            const toSplit = toOrig.split('\\');
+            if (fromSplit[fromSplit.length - 1] === '') {
+                fromSplit.pop();
+            }
+            if (toSplit[toSplit.length - 1] === '') {
+                toSplit.pop();
+            }
+            const fromLen = fromSplit.length;
+            const toLen = toSplit.length;
+            const length = fromLen < toLen ? fromLen : toLen;
+            let i;
+            for (i = 0; i < length; i++) {
+                if (fromSplit[i].toLowerCase() !== toSplit[i].toLowerCase()) {
+                    break;
+                }
+            }
+            if (i === 0) {
+                return toOrig;
+            }
+            else if (i === length) {
+                if (toLen > length) {
+                    return toSplit.slice(i).join('\\');
+                }
+                if (fromLen > length) {
+                    return '..\\'.repeat(fromLen - 1 - i) + '..';
+                }
+                return '';
+            }
+            return '..\\'.repeat(fromLen - i) + toSplit.slice(i).join('\\');
         }
         // Trim any leading backslashes
         let fromStart = 0;
@@ -600,7 +651,7 @@ export const win32 = {
             // Matched device root, convert the path to a long UNC path
             return `\\\\?\\${resolvedPath}`;
         }
-        return path;
+        return resolvedPath;
     },
     dirname(path) {
         validateString(path, 'path');
@@ -1003,8 +1054,8 @@ export const posix = {
     resolve(...pathSegments) {
         let resolvedPath = '';
         let resolvedAbsolute = false;
-        for (let i = pathSegments.length - 1; i >= -1 && !resolvedAbsolute; i--) {
-            const path = i >= 0 ? pathSegments[i] : posixCwd();
+        for (let i = pathSegments.length - 1; i >= 0 && !resolvedAbsolute; i--) {
+            const path = pathSegments[i];
             validateString(path, `paths[${i}]`);
             // Skip empty entries
             if (path.length === 0) {
@@ -1012,6 +1063,12 @@ export const posix = {
             }
             resolvedPath = `${path}/${resolvedPath}`;
             resolvedAbsolute = path.charCodeAt(0) === CHAR_FORWARD_SLASH;
+        }
+        if (!resolvedAbsolute) {
+            const cwd = posixCwd();
+            resolvedPath = `${cwd}/${resolvedPath}`;
+            resolvedAbsolute =
+                cwd.charCodeAt(0) === CHAR_FORWARD_SLASH;
         }
         // At this point the path should be resolved to a full absolute path, but
         // handle relative paths to be safe (might happen when process.cwd() fails)
@@ -1050,23 +1107,18 @@ export const posix = {
         if (paths.length === 0) {
             return '.';
         }
-        let joined;
+        const path = [];
         for (let i = 0; i < paths.length; ++i) {
             const arg = paths[i];
             validateString(arg, 'path');
             if (arg.length > 0) {
-                if (joined === undefined) {
-                    joined = arg;
-                }
-                else {
-                    joined += `/${arg}`;
-                }
+                path.push(arg);
             }
         }
-        if (joined === undefined) {
+        if (path.length === 0) {
             return '.';
         }
-        return posix.normalize(joined);
+        return posix.normalize(path.join('/'));
     },
     relative(from, to) {
         validateString(from, 'from');
@@ -1170,7 +1222,7 @@ export const posix = {
     },
     basename(path, suffix) {
         if (suffix !== undefined) {
-            validateString(suffix, 'ext');
+            validateString(suffix, 'suffix');
         }
         validateString(path, 'path');
         let start = 0;
@@ -1257,8 +1309,8 @@ export const posix = {
         // after any path separator we find
         let preDotState = 0;
         for (let i = path.length - 1; i >= 0; --i) {
-            const code = path.charCodeAt(i);
-            if (code === CHAR_FORWARD_SLASH) {
+            const char = path[i];
+            if (char === '/') {
                 // If we reached a path separator that was not part of a set of path
                 // separators at the end of the string, stop now
                 if (!matchedSlash) {
@@ -1273,7 +1325,7 @@ export const posix = {
                 matchedSlash = false;
                 end = i + 1;
             }
-            if (code === CHAR_DOT) {
+            if (char === '.') {
                 // If this is our first dot, mark it as the start of our extension
                 if (startDot === -1) {
                     startDot = i;
@@ -1390,10 +1442,10 @@ export const posix = {
 posix.win32 = win32.win32 = win32;
 posix.posix = win32.posix = posix;
 export const normalize = (platformIsWin32 ? win32.normalize : posix.normalize);
-export const join = (platformIsWin32 ? win32.join : posix.join);
 export const resolve = (platformIsWin32 ? win32.resolve : posix.resolve);
 export const relative = (platformIsWin32 ? win32.relative : posix.relative);
 export const dirname = (platformIsWin32 ? win32.dirname : posix.dirname);
 export const basename = (platformIsWin32 ? win32.basename : posix.basename);
 export const extname = (platformIsWin32 ? win32.extname : posix.extname);
 export const sep = (platformIsWin32 ? win32.sep : posix.sep);
+//# sourceMappingURL=path.js.map

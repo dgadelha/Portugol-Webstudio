@@ -18,3 +18,4 @@ export class DomEmitter {
         this.emitter.dispose();
     }
 }
+//# sourceMappingURL=event.js.map

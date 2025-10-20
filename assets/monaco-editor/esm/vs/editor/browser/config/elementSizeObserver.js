@@ -102,3 +102,4 @@ export class ElementSizeObserver extends Disposable {
         }
     }
 }
+//# sourceMappingURL=elementSizeObserver.js.map

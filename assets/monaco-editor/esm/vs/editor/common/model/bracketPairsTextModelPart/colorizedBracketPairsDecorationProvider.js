@@ -92,3 +92,4 @@ registerThemingParticipant((theme, collector) => {
         collector.addRule(`.monaco-editor .${colorProvider.getInlineClassNameOfLevel(level)} { color: ${color}; }`);
     }
 });
+//# sourceMappingURL=colorizedBracketPairsDecorationProvider.js.map

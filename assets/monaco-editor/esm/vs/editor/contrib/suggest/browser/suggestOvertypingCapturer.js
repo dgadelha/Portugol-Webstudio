@@ -57,3 +57,4 @@ export class OvertypingCapturer {
         this._disposables.dispose();
     }
 }
+//# sourceMappingURL=suggestOvertypingCapturer.js.map

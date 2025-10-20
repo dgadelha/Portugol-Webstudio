@@ -22,6 +22,14 @@ export var GlyphMarginLane;
     GlyphMarginLane[GlyphMarginLane["Center"] = 2] = "Center";
     GlyphMarginLane[GlyphMarginLane["Right"] = 3] = "Right";
 })(GlyphMarginLane || (GlyphMarginLane = {}));
+/**
+ * Text Direction for a decoration.
+ */
+export var TextDirection;
+(function (TextDirection) {
+    TextDirection[TextDirection["LTR"] = 0] = "LTR";
+    TextDirection[TextDirection["RTL"] = 1] = "RTL";
+})(TextDirection || (TextDirection = {}));
 export var InjectedTextCursorStops;
 (function (InjectedTextCursorStops) {
     InjectedTextCursorStops[InjectedTextCursorStops["Both"] = 0] = "Both";
@@ -131,3 +139,4 @@ export class ApplyEditsResult {
 export function shouldSynchronizeModel(model) {
     return (!model.isTooLargeForSyncing() && !model.isForSimpleWidget);
 }
+//# sourceMappingURL=model.js.map

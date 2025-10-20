@@ -75,3 +75,4 @@ export class TokenMetadata {
         };
     }
 }
+//# sourceMappingURL=encodedTokenAttributes.js.map

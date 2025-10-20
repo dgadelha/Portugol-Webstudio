@@ -83,3 +83,4 @@ class PixelRatioMonitorFacade {
  * and any measurements need to be discarded for example when a window is moved from a monitor to another.
  */
 export const PixelRatio = new PixelRatioMonitorFacade();
+//# sourceMappingURL=pixelRatio.js.map

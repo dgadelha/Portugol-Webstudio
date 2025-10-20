@@ -385,3 +385,4 @@ function createVirtualModelWithModifiedTokensAtLine(model, modifiedLineNumber, m
     };
     return virtualModel;
 }
+//# sourceMappingURL=autoIndent.js.map

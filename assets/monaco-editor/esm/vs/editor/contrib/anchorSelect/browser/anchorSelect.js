@@ -19,7 +19,7 @@ import './anchorSelect.css';
 import { EditorAction, registerEditorAction, registerEditorContribution } from '../../../browser/editorExtensions.js';
 import { Selection } from '../../../common/core/selection.js';
 import { EditorContextKeys } from '../../../common/editorContextKeys.js';
-import { localize } from '../../../../nls.js';
+import { localize, localize2 } from '../../../../nls.js';
 import { IContextKeyService, RawContextKey } from '../../../../platform/contextkey/common/contextkey.js';
 export const SelectionAnchorSet = new RawContextKey('selectionAnchorSet', false);
 let SelectionAnchorController = class SelectionAnchorController {
@@ -43,12 +43,12 @@ let SelectionAnchorController = class SelectionAnchorController {
                 this.decorationId = accessor.addDecoration(Selection.fromPositions(position, position), {
                     description: 'selection-anchor',
                     stickiness: 1 /* TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges */,
-                    hoverMessage: new MarkdownString().appendText(localize('selectionAnchor', "Selection Anchor")),
+                    hoverMessage: new MarkdownString().appendText(localize(794, "Selection Anchor")),
                     className: 'selection-anchor'
                 });
             });
             this.selectionAnchorSetContextKey.set(!!this.decorationId);
-            alert(localize('anchorSet', "Anchor set at {0}:{1}", position.lineNumber, position.column));
+            alert(localize(795, "Anchor set at {0}:{1}", position.lineNumber, position.column));
         }
     }
     goToSelectionAnchor() {
@@ -91,8 +91,7 @@ class SetSelectionAnchor extends EditorAction {
     constructor() {
         super({
             id: 'editor.action.setSelectionAnchor',
-            label: localize('setSelectionAnchor', "Set Selection Anchor"),
-            alias: 'Set Selection Anchor',
+            label: localize2(796, "Set Selection Anchor"),
             precondition: undefined,
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
@@ -109,8 +108,7 @@ class GoToSelectionAnchor extends EditorAction {
     constructor() {
         super({
             id: 'editor.action.goToSelectionAnchor',
-            label: localize('goToSelectionAnchor', "Go to Selection Anchor"),
-            alias: 'Go to Selection Anchor',
+            label: localize2(797, "Go to Selection Anchor"),
             precondition: SelectionAnchorSet,
         });
     }
@@ -122,8 +120,7 @@ class SelectFromAnchorToCursor extends EditorAction {
     constructor() {
         super({
             id: 'editor.action.selectFromAnchorToCursor',
-            label: localize('selectFromAnchorToCursor', "Select from Anchor to Cursor"),
-            alias: 'Select from Anchor to Cursor',
+            label: localize2(798, "Select from Anchor to Cursor"),
             precondition: SelectionAnchorSet,
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
@@ -140,8 +137,7 @@ class CancelSelectionAnchor extends EditorAction {
     constructor() {
         super({
             id: 'editor.action.cancelSelectionAnchor',
-            label: localize('cancelSelectionAnchor', "Cancel Selection Anchor"),
-            alias: 'Cancel Selection Anchor',
+            label: localize2(799, "Cancel Selection Anchor"),
             precondition: SelectionAnchorSet,
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
@@ -159,3 +155,4 @@ registerEditorAction(SetSelectionAnchor);
 registerEditorAction(GoToSelectionAnchor);
 registerEditorAction(SelectFromAnchorToCursor);
 registerEditorAction(CancelSelectionAnchor);
+//# sourceMappingURL=anchorSelect.js.map

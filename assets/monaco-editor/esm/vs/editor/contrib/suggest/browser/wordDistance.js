@@ -10,7 +10,7 @@ export class WordDistance {
         distance() { return 0; }
     }; }
     static async create(service, editor) {
-        if (!editor.getOption(119 /* EditorOption.suggest */).localityBonus) {
+        if (!editor.getOption(134 /* EditorOption.suggest */).localityBonus) {
             return WordDistance.None;
         }
         if (!editor.hasModel()) {
@@ -59,3 +59,4 @@ export class WordDistance {
         };
     }
 }
+//# sourceMappingURL=wordDistance.js.map

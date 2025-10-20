@@ -7,59 +7,64 @@ import { Range } from './core/range.js';
 import { Selection } from './core/selection.js';
 import { createScopedLineTokens } from './languages/supports.js';
 import { CursorColumns } from './core/cursorColumns.js';
-import { normalizeIndentation } from './core/indentation.js';
+import { normalizeIndentation } from './core/misc/indentation.js';
+import { InputMode } from './inputMode.js';
 const autoCloseAlways = () => true;
 const autoCloseNever = () => false;
 const autoCloseBeforeWhitespace = (chr) => (chr === ' ' || chr === '\t');
 export class CursorConfiguration {
     static shouldRecreate(e) {
-        return (e.hasChanged(146 /* EditorOption.layoutInfo */)
-            || e.hasChanged(132 /* EditorOption.wordSeparators */)
-            || e.hasChanged(37 /* EditorOption.emptySelectionClipboard */)
-            || e.hasChanged(77 /* EditorOption.multiCursorMergeOverlapping */)
-            || e.hasChanged(79 /* EditorOption.multiCursorPaste */)
-            || e.hasChanged(80 /* EditorOption.multiCursorLimit */)
-            || e.hasChanged(6 /* EditorOption.autoClosingBrackets */)
-            || e.hasChanged(7 /* EditorOption.autoClosingComments */)
-            || e.hasChanged(11 /* EditorOption.autoClosingQuotes */)
-            || e.hasChanged(9 /* EditorOption.autoClosingDelete */)
-            || e.hasChanged(10 /* EditorOption.autoClosingOvertype */)
-            || e.hasChanged(14 /* EditorOption.autoSurround */)
-            || e.hasChanged(129 /* EditorOption.useTabStops */)
-            || e.hasChanged(50 /* EditorOption.fontInfo */)
-            || e.hasChanged(92 /* EditorOption.readOnly */)
-            || e.hasChanged(131 /* EditorOption.wordSegmenterLocales */));
+        return (e.hasChanged(165 /* EditorOption.layoutInfo */)
+            || e.hasChanged(148 /* EditorOption.wordSeparators */)
+            || e.hasChanged(45 /* EditorOption.emptySelectionClipboard */)
+            || e.hasChanged(85 /* EditorOption.multiCursorMergeOverlapping */)
+            || e.hasChanged(88 /* EditorOption.multiCursorPaste */)
+            || e.hasChanged(89 /* EditorOption.multiCursorLimit */)
+            || e.hasChanged(10 /* EditorOption.autoClosingBrackets */)
+            || e.hasChanged(11 /* EditorOption.autoClosingComments */)
+            || e.hasChanged(15 /* EditorOption.autoClosingQuotes */)
+            || e.hasChanged(13 /* EditorOption.autoClosingDelete */)
+            || e.hasChanged(14 /* EditorOption.autoClosingOvertype */)
+            || e.hasChanged(20 /* EditorOption.autoSurround */)
+            || e.hasChanged(145 /* EditorOption.useTabStops */)
+            || e.hasChanged(141 /* EditorOption.trimWhitespaceOnDelete */)
+            || e.hasChanged(59 /* EditorOption.fontInfo */)
+            || e.hasChanged(104 /* EditorOption.readOnly */)
+            || e.hasChanged(147 /* EditorOption.wordSegmenterLocales */)
+            || e.hasChanged(93 /* EditorOption.overtypeOnPaste */));
     }
     constructor(languageId, modelOptions, configuration, languageConfigurationService) {
         this.languageConfigurationService = languageConfigurationService;
         this._cursorMoveConfigurationBrand = undefined;
         this._languageId = languageId;
         const options = configuration.options;
-        const layoutInfo = options.get(146 /* EditorOption.layoutInfo */);
-        const fontInfo = options.get(50 /* EditorOption.fontInfo */);
-        this.readOnly = options.get(92 /* EditorOption.readOnly */);
+        const layoutInfo = options.get(165 /* EditorOption.layoutInfo */);
+        const fontInfo = options.get(59 /* EditorOption.fontInfo */);
+        this.readOnly = options.get(104 /* EditorOption.readOnly */);
         this.tabSize = modelOptions.tabSize;
         this.indentSize = modelOptions.indentSize;
         this.insertSpaces = modelOptions.insertSpaces;
-        this.stickyTabStops = options.get(117 /* EditorOption.stickyTabStops */);
+        this.stickyTabStops = options.get(132 /* EditorOption.stickyTabStops */);
         this.lineHeight = fontInfo.lineHeight;
         this.typicalHalfwidthCharacterWidth = fontInfo.typicalHalfwidthCharacterWidth;
         this.pageSize = Math.max(1, Math.floor(layoutInfo.height / this.lineHeight) - 2);
-        this.useTabStops = options.get(129 /* EditorOption.useTabStops */);
-        this.wordSeparators = options.get(132 /* EditorOption.wordSeparators */);
-        this.emptySelectionClipboard = options.get(37 /* EditorOption.emptySelectionClipboard */);
-        this.copyWithSyntaxHighlighting = options.get(25 /* EditorOption.copyWithSyntaxHighlighting */);
-        this.multiCursorMergeOverlapping = options.get(77 /* EditorOption.multiCursorMergeOverlapping */);
-        this.multiCursorPaste = options.get(79 /* EditorOption.multiCursorPaste */);
-        this.multiCursorLimit = options.get(80 /* EditorOption.multiCursorLimit */);
-        this.autoClosingBrackets = options.get(6 /* EditorOption.autoClosingBrackets */);
-        this.autoClosingComments = options.get(7 /* EditorOption.autoClosingComments */);
-        this.autoClosingQuotes = options.get(11 /* EditorOption.autoClosingQuotes */);
-        this.autoClosingDelete = options.get(9 /* EditorOption.autoClosingDelete */);
-        this.autoClosingOvertype = options.get(10 /* EditorOption.autoClosingOvertype */);
-        this.autoSurround = options.get(14 /* EditorOption.autoSurround */);
-        this.autoIndent = options.get(12 /* EditorOption.autoIndent */);
-        this.wordSegmenterLocales = options.get(131 /* EditorOption.wordSegmenterLocales */);
+        this.useTabStops = options.get(145 /* EditorOption.useTabStops */);
+        this.trimWhitespaceOnDelete = options.get(141 /* EditorOption.trimWhitespaceOnDelete */);
+        this.wordSeparators = options.get(148 /* EditorOption.wordSeparators */);
+        this.emptySelectionClipboard = options.get(45 /* EditorOption.emptySelectionClipboard */);
+        this.copyWithSyntaxHighlighting = options.get(31 /* EditorOption.copyWithSyntaxHighlighting */);
+        this.multiCursorMergeOverlapping = options.get(85 /* EditorOption.multiCursorMergeOverlapping */);
+        this.multiCursorPaste = options.get(88 /* EditorOption.multiCursorPaste */);
+        this.multiCursorLimit = options.get(89 /* EditorOption.multiCursorLimit */);
+        this.autoClosingBrackets = options.get(10 /* EditorOption.autoClosingBrackets */);
+        this.autoClosingComments = options.get(11 /* EditorOption.autoClosingComments */);
+        this.autoClosingQuotes = options.get(15 /* EditorOption.autoClosingQuotes */);
+        this.autoClosingDelete = options.get(13 /* EditorOption.autoClosingDelete */);
+        this.autoClosingOvertype = options.get(14 /* EditorOption.autoClosingOvertype */);
+        this.autoSurround = options.get(20 /* EditorOption.autoSurround */);
+        this.autoIndent = options.get(16 /* EditorOption.autoIndent */);
+        this.wordSegmenterLocales = options.get(147 /* EditorOption.wordSegmenterLocales */);
+        this.overtypeOnPaste = options.get(93 /* EditorOption.overtypeOnPaste */);
         this.surroundingPairs = {};
         this._electricChars = null;
         this.shouldAutoCloseBefore = {
@@ -88,6 +93,9 @@ export class CursorConfiguration {
             }
         }
         return this._electricChars;
+    }
+    get inputMode() {
+        return InputMode.getInputMode();
     }
     /**
      * Should return opening bracket type to match indentation with
@@ -237,3 +245,4 @@ export class EditOperationResult {
 export function isQuote(ch) {
     return (ch === '\'' || ch === '"' || ch === '`');
 }
+//# sourceMappingURL=cursorCommon.js.map

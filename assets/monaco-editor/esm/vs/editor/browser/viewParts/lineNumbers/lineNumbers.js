@@ -9,6 +9,9 @@ import { Position } from '../../../common/core/position.js';
 import { Range } from '../../../common/core/range.js';
 import { registerThemingParticipant } from '../../../../platform/theme/common/themeService.js';
 import { editorDimmedLineNumber, editorLineNumbers } from '../../../common/core/editorColorRegistry.js';
+/**
+ * Renders line numbers to the left of the main view lines content.
+ */
 export class LineNumbersOverlay extends DynamicViewOverlay {
     static { this.CLASS_NAME = 'line-numbers'; }
     constructor(context) {
@@ -17,17 +20,17 @@ export class LineNumbersOverlay extends DynamicViewOverlay {
         this._readConfig();
         this._lastCursorModelPosition = new Position(1, 1);
         this._renderResult = null;
-        this._activeLineNumber = 1;
+        this._activeModelLineNumber = 1;
         this._context.addEventHandler(this);
     }
     _readConfig() {
         const options = this._context.configuration.options;
-        this._lineHeight = options.get(67 /* EditorOption.lineHeight */);
-        const lineNumbers = options.get(68 /* EditorOption.lineNumbers */);
+        this._lineHeight = options.get(75 /* EditorOption.lineHeight */);
+        const lineNumbers = options.get(76 /* EditorOption.lineNumbers */);
         this._renderLineNumbers = lineNumbers.renderType;
         this._renderCustomLineNumbers = lineNumbers.renderFn;
-        this._renderFinalNewline = options.get(96 /* EditorOption.renderFinalNewline */);
-        const layoutInfo = options.get(146 /* EditorOption.layoutInfo */);
+        this._renderFinalNewline = options.get(109 /* EditorOption.renderFinalNewline */);
+        const layoutInfo = options.get(165 /* EditorOption.layoutInfo */);
         this._lineNumbersLeft = layoutInfo.lineNumbersLeft;
         this._lineNumbersWidth = layoutInfo.lineNumbersWidth;
     }
@@ -45,8 +48,8 @@ export class LineNumbersOverlay extends DynamicViewOverlay {
         const primaryViewPosition = e.selections[0].getPosition();
         this._lastCursorModelPosition = this._context.viewModel.coordinatesConverter.convertViewPositionToModelPosition(primaryViewPosition);
         let shouldRender = false;
-        if (this._activeLineNumber !== primaryViewPosition.lineNumber) {
-            this._activeLineNumber = primaryViewPosition.lineNumber;
+        if (this._activeModelLineNumber !== this._lastCursorModelPosition.lineNumber) {
+            this._activeModelLineNumber = this._lastCursorModelPosition.lineNumber;
             shouldRender = true;
         }
         if (this._renderLineNumbers === 2 /* RenderLineNumbersType.Relative */ || this._renderLineNumbers === 3 /* RenderLineNumbersType.Interval */) {
@@ -122,6 +125,7 @@ export class LineNumbersOverlay extends DynamicViewOverlay {
         const output = [];
         for (let lineNumber = visibleStartLineNumber; lineNumber <= visibleEndLineNumber; lineNumber++) {
             const lineIndex = lineNumber - visibleStartLineNumber;
+            const modelLineNumber = this._context.viewModel.coordinatesConverter.convertViewPositionToModelPosition(new Position(lineNumber, 1)).lineNumber;
             let renderLineNumber = this._getLineRenderLineNumber(lineNumber);
             let extraClassNames = '';
             // skip decorations whose end positions we've already passed
@@ -147,7 +151,7 @@ export class LineNumbersOverlay extends DynamicViewOverlay {
                     extraClassNames += ' dimmed-line-number';
                 }
             }
-            if (lineNumber === this._activeLineNumber) {
+            if (modelLineNumber === this._activeModelLineNumber) {
                 extraClassNames += ' active-line-number';
             }
             output[lineIndex] = (`<div class="${LineNumbersOverlay.CLASS_NAME}${lineHeightClassName}${extraClassNames}" style="left:${this._lineNumbersLeft}px;width:${this._lineNumbersWidth}px;">${renderLineNumber}</div>`);
@@ -175,3 +179,4 @@ registerThemingParticipant((theme, collector) => {
         collector.addRule(`.monaco-editor .line-numbers.dimmed-line-number { color: ${editorLineNumbersColor.transparent(0.4)}; }`);
     }
 });
+//# sourceMappingURL=lineNumbers.js.map

@@ -527,3 +527,4 @@ export function getNextFoldLine(lineNumber, foldingModel) {
     }
     return null;
 }
+//# sourceMappingURL=foldingModel.js.map

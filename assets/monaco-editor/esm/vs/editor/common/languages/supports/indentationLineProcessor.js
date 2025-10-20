@@ -188,3 +188,4 @@ export function isLanguageDifferentFromLineStart(model, position) {
     const languageIsDifferentFromLineStart = !doesScopeStartAtOffsetZero && !isScopedLanguageEqualToFirstLanguageOnLine;
     return languageIsDifferentFromLineStart;
 }
+//# sourceMappingURL=indentationLineProcessor.js.map

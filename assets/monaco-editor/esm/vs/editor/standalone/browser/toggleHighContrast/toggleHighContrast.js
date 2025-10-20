@@ -32,3 +32,4 @@ class ToggleHighContrast extends EditorAction {
     }
 }
 registerEditorAction(ToggleHighContrast);
+//# sourceMappingURL=toggleHighContrast.js.map

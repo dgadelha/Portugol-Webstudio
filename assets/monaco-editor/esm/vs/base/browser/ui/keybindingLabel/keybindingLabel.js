@@ -33,9 +33,6 @@ export class KeybindingLabel extends Disposable {
         this.didEverRender = false;
         container.appendChild(this.domNode);
     }
-    get element() {
-        return this.domNode;
-    }
     set(keybinding, matches) {
         if (this.didEverRender && this.keybinding === keybinding && KeybindingLabel.areSame(this.matches, matches)) {
             return;
@@ -94,7 +91,7 @@ export class KeybindingLabel extends Disposable {
         }
     }
     renderUnbound(parent) {
-        dom.append(parent, this.createKeyElement(localize('unbound', "Unbound")));
+        dom.append(parent, this.createKeyElement(localize(15, "Unbound")));
     }
     createKeyElement(label, extraClass = '') {
         const keyElement = $('span.monaco-keybinding-key' + extraClass, undefined, label);
@@ -120,3 +117,4 @@ export class KeybindingLabel extends Disposable {
         return !!a && !!b && equals(a.firstPart, b.firstPart) && equals(a.chordPart, b.chordPart);
     }
 }
+//# sourceMappingURL=keybindingLabel.js.map

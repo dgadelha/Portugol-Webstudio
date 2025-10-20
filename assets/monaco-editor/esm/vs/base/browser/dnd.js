@@ -24,3 +24,4 @@ export const DataTransfers = {
      */
     INTERNAL_URI_LIST: 'application/vnd.code.uri-list',
 };
+//# sourceMappingURL=dnd.js.map

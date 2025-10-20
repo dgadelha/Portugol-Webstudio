@@ -78,3 +78,4 @@ Registry.as(Extensions.Quickaccess).registerQuickAccessProvider({
     prefix: StandaloneCommandsQuickAccessProvider.PREFIX,
     helpEntries: [{ description: QuickCommandNLS.quickCommandHelp, commandId: GotoLineAction.ID }]
 });
+//# sourceMappingURL=standaloneCommandsQuickAccess.js.map

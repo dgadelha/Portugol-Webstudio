@@ -2,7 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { AsyncIterableObject } from '../../../../base/common/async.js';
+import { AsyncIterableProducer } from '../../../../base/common/async.js';
 import { CancellationToken } from '../../../../base/common/cancellation.js';
 import { onUnexpectedExternalError } from '../../../../base/common/errors.js';
 import { registerModelAndPositionCommand } from '../../../browser/editorExtensions.js';
@@ -29,10 +29,14 @@ async function executeProvider(provider, ordinal, model, position, token) {
 export function getHoverProviderResultsAsAsyncIterable(registry, model, position, token, recursive = false) {
     const providers = registry.ordered(model, recursive);
     const promises = providers.map((provider, index) => executeProvider(provider, index, model, position, token));
-    return AsyncIterableObject.fromPromises(promises).coalesce();
+    return AsyncIterableProducer.fromPromisesResolveOrder(promises).coalesce();
 }
-export function getHoversPromise(registry, model, position, token, recursive = false) {
-    return getHoverProviderResultsAsAsyncIterable(registry, model, position, token, recursive).map(item => item.hover).toPromise();
+export async function getHoversPromise(registry, model, position, token, recursive = false) {
+    const out = [];
+    for await (const item of getHoverProviderResultsAsAsyncIterable(registry, model, position, token, recursive)) {
+        out.push(item.hover);
+    }
+    return out;
 }
 registerModelAndPositionCommand('_executeHoverProvider', (accessor, model, position) => {
     const languageFeaturesService = accessor.get(ILanguageFeaturesService);
@@ -47,3 +51,4 @@ function isValid(result) {
     const hasHtmlContent = typeof result.contents !== 'undefined' && result.contents && result.contents.length > 0;
     return hasRange && hasHtmlContent;
 }
+//# sourceMappingURL=getHover.js.map

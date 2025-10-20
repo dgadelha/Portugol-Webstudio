@@ -350,3 +350,4 @@ export class FoldingRegion {
         return this.startLineNumber <= lineNumber && lineNumber <= this.endLineNumber;
     }
 }
+//# sourceMappingURL=foldingRanges.js.map

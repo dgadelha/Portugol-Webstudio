@@ -1,6 +1,6 @@
 /*!-----------------------------------------------------------------------------
  * Copyright (c) Microsoft Corporation. All rights reserved.
- * Version: 0.52.2(404545bded1df6ffa41ea0af4e8ddb219018c6c1)
+ * Version: 0.54.0(7c2310116c57517348bbd868a21139f32454be22)
  * Released under the MIT license
  * https://github.com/microsoft/monaco-editor/blob/main/LICENSE.txt
  *-----------------------------------------------------------------------------*/
@@ -23,6 +23,69 @@ var __reExport = (target, mod, secondTarget) => (__copyProps(target, mod, "defau
 var monaco_editor_core_exports = {};
 __reExport(monaco_editor_core_exports, monaco_editor_core_star);
 import * as monaco_editor_core_star from "../../editor/editor.api.js";
+
+// src/common/workers.ts
+function createTrustedTypesPolicy(policyName, policyOptions) {
+  const monacoEnvironment = globalThis.MonacoEnvironment;
+  if (monacoEnvironment?.createTrustedTypesPolicy) {
+    try {
+      return monacoEnvironment.createTrustedTypesPolicy(policyName, policyOptions);
+    } catch (err) {
+      console.error(err);
+      return void 0;
+    }
+  }
+  try {
+    return globalThis.trustedTypes?.createPolicy(policyName, policyOptions);
+  } catch (err) {
+    console.error(err);
+    return void 0;
+  }
+}
+var ttPolicy;
+if (typeof self === "object" && self.constructor && self.constructor.name === "DedicatedWorkerGlobalScope" && globalThis.workerttPolicy !== void 0) {
+  ttPolicy = globalThis.workerttPolicy;
+} else {
+  ttPolicy = createTrustedTypesPolicy("defaultWorkerFactory", {
+    createScriptURL: (value) => value
+  });
+}
+function getWorker(descriptor) {
+  const label = descriptor.label;
+  const monacoEnvironment = globalThis.MonacoEnvironment;
+  if (monacoEnvironment) {
+    if (typeof monacoEnvironment.getWorker === "function") {
+      return monacoEnvironment.getWorker("workerMain.js", label);
+    }
+    if (typeof monacoEnvironment.getWorkerUrl === "function") {
+      const workerUrl = monacoEnvironment.getWorkerUrl("workerMain.js", label);
+      return new Worker(
+        ttPolicy ? ttPolicy.createScriptURL(workerUrl) : workerUrl,
+        { name: label, type: "module" }
+      );
+    }
+  }
+  throw new Error(
+    `You must define a function MonacoEnvironment.getWorkerUrl or MonacoEnvironment.getWorker`
+  );
+}
+function createWebWorker(opts) {
+  const worker = Promise.resolve(
+    getWorker({
+      label: opts.label ?? "monaco-editor-worker",
+      moduleId: opts.moduleId
+    })
+  ).then((w) => {
+    w.postMessage("ignore");
+    w.postMessage(opts.createData);
+    return w;
+  });
+  return monaco_editor_core_exports.editor.createWebWorker({
+    worker,
+    host: opts.host,
+    keepIdleModels: opts.keepIdleModels
+  });
+}
 
 // src/language/typescript/workerManager.ts
 var WorkerManager = class {
@@ -63,7 +126,7 @@ var WorkerManager = class {
   _getClient() {
     if (!this._client) {
       this._client = (async () => {
-        this._worker = monaco_editor_core_exports.editor.createWebWorker({
+        this._worker = createWebWorker({
           // module that exports the create() method and returns a `TypeScriptWorker` instance
           moduleId: "vs/language/typescript/tsWorker",
           label: this._modeId,
@@ -604,8 +667,7 @@ function tagToString(tag) {
   if (tag.name === "param" && tag.text) {
     const [paramName, ...rest] = tag.text;
     tagLabel += `\`${paramName.text}\``;
-    if (rest.length > 0)
-      tagLabel += ` \u2014 ${rest.map((r) => r.text).join(" ")}`;
+    if (rest.length > 0) tagLabel += ` \u2014 ${rest.map((r) => r.text).join(" ")}`;
   } else if (Array.isArray(tag.text)) {
     tagLabel += ` \u2014 ${tag.text.map((r) => r.text).join(" ")}`;
   } else if (tag.text) {

@@ -52,3 +52,4 @@ let BaseClass1 = class BaseClass1 extends BaseClass {
 BaseClass1 = __decorate([
     __param(1, IInstantiationService)
 ], BaseClass1);
+//# sourceMappingURL=wrapInReloadableClass.js.map

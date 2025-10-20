@@ -34,12 +34,12 @@ class MatchCandidate {
     }
 }
 export class LanguageFeatureRegistry {
+    get onDidChange() { return this._onDidChange.event; }
     constructor(_notebookInfoResolver) {
         this._notebookInfoResolver = _notebookInfoResolver;
         this._clock = 0;
         this._entries = [];
         this._onDidChange = new Emitter();
-        this.onDidChange = this._onDidChange.event;
     }
     register(selector, provider) {
         let entry = {
@@ -175,3 +175,4 @@ function isBuiltinSelector(selector) {
     }
     return Boolean(selector.isBuiltin);
 }
+//# sourceMappingURL=languageFeatureRegistry.js.map

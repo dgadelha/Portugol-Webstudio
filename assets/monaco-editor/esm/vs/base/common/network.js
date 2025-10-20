@@ -57,7 +57,11 @@ export var Schemas;
     /** Scheme used for LHS of code compare (aka diff) blocks in chat. */
     Schemas.vscodeChatCodeCompareBlock = 'vscode-chat-code-compare-block';
     /** Scheme used for the chat input editor. */
-    Schemas.vscodeChatSesssion = 'vscode-chat-editor';
+    Schemas.vscodeChatEditor = 'vscode-chat-editor';
+    /** Scheme used for the chat input part */
+    Schemas.vscodeChatInput = 'chatSessionInput';
+    /** Scheme for chat session content */
+    Schemas.vscodeChatSession = 'vscode-chat-session';
     /**
      * Scheme used internally for webviews that aren't linked to a resource (i.e. not custom editors)
      */
@@ -99,6 +103,15 @@ export var Schemas;
      * Scheme used for output panel resources
      */
     Schemas.outputChannel = 'output';
+    /**
+     * Scheme used for the accessible view
+     */
+    Schemas.accessibleView = 'accessible-view';
+    /**
+     * Used for snapshots of chat edits
+     */
+    Schemas.chatEditingSnapshotScheme = 'chat-editing-snapshot-text-model';
+    Schemas.chatEditingModel = 'chat-editing-text-model';
 })(Schemas || (Schemas = {}));
 export function matchesScheme(target, scheme) {
     if (URI.isUri(target)) {
@@ -166,21 +179,6 @@ class FileAccessImpl {
      *
      * **Note:** use `dom.ts#asCSSUrl` whenever the URL is to be used in CSS context.
      */
-    asBrowserUri(resourcePath) {
-        // ESM-comment-begin
-        // 		const uri = this.toUri(resourcePath, require);
-        // ESM-comment-end
-        // ESM-uncomment-begin
-        const uri = this.toUri(resourcePath);
-        // ESM-uncomment-end
-        return this.uriToBrowserUri(uri);
-    }
-    /**
-     * Returns a URI to use in contexts where the browser is responsible
-     * for loading (e.g. fetch()) or when used within the DOM.
-     *
-     * **Note:** use `dom.ts#asCSSUrl` whenever the URL is to be used in CSS context.
-     */
     uriToBrowserUri(uri) {
         // Handle remote URIs via `RemoteAuthorities`
         if (uri.scheme === Schemas.vscodeRemote) {
@@ -208,24 +206,14 @@ class FileAccessImpl {
         }
         return uri;
     }
-    toUri(uriOrModule, moduleIdToUrl) {
-        if (URI.isUri(uriOrModule)) {
-            return uriOrModule;
-        }
-        if (globalThis._VSCODE_FILE_ROOT) {
-            const rootUriOrPath = globalThis._VSCODE_FILE_ROOT;
-            // File URL (with scheme)
-            if (/^\w[\w\d+.-]*:\/\//.test(rootUriOrPath)) {
-                return URI.joinPath(URI.parse(rootUriOrPath, true), uriOrModule);
-            }
-            // File Path (no scheme)
-            const modulePath = paths.join(rootUriOrPath, uriOrModule);
-            return URI.file(modulePath);
-        }
-        return URI.parse(moduleIdToUrl.toUrl(uriOrModule));
-    }
 }
 export const FileAccess = new FileAccessImpl();
+export const CacheControlheaders = Object.freeze({
+    'Cache-Control': 'no-cache, no-store'
+});
+export const DocumentPolicyheaders = Object.freeze({
+    'Document-Policy': 'include-js-call-stacks-in-crash-reports'
+});
 export var COI;
 (function (COI) {
     const coiHeaders = new Map([
@@ -275,3 +263,4 @@ export var COI;
     }
     COI.addSearchParam = addSearchParam;
 })(COI || (COI = {}));
+//# sourceMappingURL=network.js.map

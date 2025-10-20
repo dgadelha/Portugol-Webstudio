@@ -119,3 +119,4 @@ function toLengthMapping(textEditInfos) {
     }
     return result;
 }
+//# sourceMappingURL=combineTextEditInfos.js.map

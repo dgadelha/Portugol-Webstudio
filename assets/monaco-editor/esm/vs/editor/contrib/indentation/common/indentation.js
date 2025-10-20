@@ -5,7 +5,7 @@
 import * as strings from '../../../../base/common/strings.js';
 import { ShiftCommand } from '../../../common/commands/shiftCommand.js';
 import { EditOperation } from '../../../common/core/editOperation.js';
-import { normalizeIndentation } from '../../../common/core/indentation.js';
+import { normalizeIndentation } from '../../../common/core/misc/indentation.js';
 import { Selection } from '../../../common/core/selection.js';
 import { ProcessedIndentRulesSupport } from '../../../common/languages/supports/indentationLineProcessor.js';
 export function getReindentEditOperations(model, languageConfigurationService, startLineNumber, endLineNumber) {
@@ -95,3 +95,4 @@ function doesLineStartWithString(model, lineNumber) {
     const lineTokens = model.tokenization.getLineTokens(lineNumber);
     return lineTokens.getStandardTokenType(0) === 2 /* StandardTokenType.String */;
 }
+//# sourceMappingURL=indentation.js.map

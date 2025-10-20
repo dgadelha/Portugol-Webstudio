@@ -25,6 +25,7 @@ import { IContextViewService } from '../../contextview/browser/contextView.js';
 import { IKeybindingService } from '../../keybinding/common/keybinding.js';
 import { defaultListStyles } from '../../theme/browser/defaultStyles.js';
 import { asCssVariable } from '../../theme/common/colorRegistry.js';
+import { ILayoutService } from '../../layout/browser/layoutService.js';
 export const acceptSelectedActionCommand = 'acceptSelectedCodeAction';
 export const previewSelectedActionCommand = 'previewSelectedCodeAction';
 class HeaderRenderer {
@@ -36,7 +37,22 @@ class HeaderRenderer {
         return { container, text };
     }
     renderElement(element, _index, templateData) {
-        templateData.text.textContent = element.group?.title ?? '';
+        templateData.text.textContent = element.group?.title ?? element.label ?? '';
+    }
+    disposeTemplate(_templateData) {
+        // noop
+    }
+}
+class SeparatorRenderer {
+    get templateId() { return "separator" /* ActionListItemKind.Separator */; }
+    renderTemplate(container) {
+        container.classList.add('separator');
+        const text = document.createElement('span');
+        container.append(text);
+        return { container, text };
+    }
+    renderElement(element, _index, templateData) {
+        templateData.text.textContent = element.label ?? '';
     }
     disposeTemplate(_templateData) {
         // noop
@@ -56,8 +72,11 @@ let ActionItemRenderer = class ActionItemRenderer {
         const text = document.createElement('span');
         text.className = 'title';
         container.append(text);
+        const description = document.createElement('span');
+        description.className = 'description';
+        container.append(description);
         const keybinding = new KeybindingLabel(container, OS);
-        return { container, icon, text, keybinding };
+        return { container, icon, text, description, keybinding };
     }
     renderElement(element, _index, data) {
         if (element.group?.icon) {
@@ -73,29 +92,45 @@ let ActionItemRenderer = class ActionItemRenderer {
         if (!element.item || !element.label) {
             return;
         }
+        dom.setVisibility(!element.hideIcon, data.icon);
         data.text.textContent = stripNewlines(element.label);
-        data.keybinding.set(element.keybinding);
-        dom.setVisibility(!!element.keybinding, data.keybinding.element);
+        // if there is a keybinding, prioritize over description for now
+        if (element.keybinding) {
+            data.description.textContent = element.keybinding.getLabel();
+            data.description.style.display = 'inline';
+            data.description.style.letterSpacing = '0.5px';
+        }
+        else if (element.description) {
+            data.description.textContent = stripNewlines(element.description);
+            data.description.style.display = 'inline';
+        }
+        else {
+            data.description.textContent = '';
+            data.description.style.display = 'none';
+        }
         const actionTitle = this._keybindingService.lookupKeybinding(acceptSelectedActionCommand)?.getLabel();
         const previewTitle = this._keybindingService.lookupKeybinding(previewSelectedActionCommand)?.getLabel();
         data.container.classList.toggle('option-disabled', element.disabled);
-        if (element.disabled) {
+        if (element.tooltip) {
+            data.container.title = element.tooltip;
+        }
+        else if (element.disabled) {
             data.container.title = element.label;
         }
         else if (actionTitle && previewTitle) {
             if (this._supportsPreview && element.canPreview) {
-                data.container.title = localize({ key: 'label-preview', comment: ['placeholders are keybindings, e.g "F2 to Apply, Shift+F2 to Preview"'] }, "{0} to Apply, {1} to Preview", actionTitle, previewTitle);
+                data.container.title = localize(1638, "{0} to Apply, {1} to Preview", actionTitle, previewTitle);
             }
             else {
-                data.container.title = localize({ key: 'label', comment: ['placeholder is a keybinding, e.g "F2 to Apply"'] }, "{0} to Apply", actionTitle);
+                data.container.title = localize(1639, "{0} to Apply", actionTitle);
             }
         }
         else {
             data.container.title = '';
         }
     }
-    disposeTemplate(_templateData) {
-        _templateData.keybinding.dispose();
+    disposeTemplate(templateData) {
+        templateData.keybinding.dispose();
     }
 };
 ActionItemRenderer = __decorate([
@@ -108,30 +143,42 @@ class PreviewSelectedEvent extends UIEvent {
     constructor() { super('previewSelectedAction'); }
 }
 function getKeyboardNavigationLabel(item) {
-    // Filter out header vs. action
+    // Filter out header vs. action vs. separator
     if (item.kind === 'action') {
         return item.label;
     }
     return undefined;
 }
 let ActionList = class ActionList extends Disposable {
-    constructor(user, preview, items, _delegate, _contextViewService, _keybindingService) {
+    constructor(user, preview, items, _delegate, accessibilityProvider, _contextViewService, _keybindingService, _layoutService) {
         super();
         this._delegate = _delegate;
         this._contextViewService = _contextViewService;
         this._keybindingService = _keybindingService;
-        this._actionLineHeight = 24;
-        this._headerLineHeight = 26;
+        this._layoutService = _layoutService;
+        this._actionLineHeight = 28;
+        this._headerLineHeight = 28;
+        this._separatorLineHeight = 8;
         this.cts = this._register(new CancellationTokenSource());
         this.domNode = document.createElement('div');
         this.domNode.classList.add('actionList');
         const virtualDelegate = {
-            getHeight: element => element.kind === "header" /* ActionListItemKind.Header */ ? this._headerLineHeight : this._actionLineHeight,
+            getHeight: element => {
+                switch (element.kind) {
+                    case "header" /* ActionListItemKind.Header */:
+                        return this._headerLineHeight;
+                    case "separator" /* ActionListItemKind.Separator */:
+                        return this._separatorLineHeight;
+                    default:
+                        return this._actionLineHeight;
+                }
+            },
             getTemplateId: element => element.kind
         };
         this._list = this._register(new List(user, this.domNode, virtualDelegate, [
             new ActionItemRenderer(preview, this._keybindingService),
             new HeaderRenderer(),
+            new SeparatorRenderer(),
         ], {
             keyboardSupport: false,
             typeNavigationEnabled: true,
@@ -140,16 +187,29 @@ let ActionList = class ActionList extends Disposable {
                 getAriaLabel: element => {
                     if (element.kind === "action" /* ActionListItemKind.Action */) {
                         let label = element.label ? stripNewlines(element?.label) : '';
+                        if (element.description) {
+                            label = label + ', ' + stripNewlines(element.description);
+                        }
                         if (element.disabled) {
-                            label = localize({ key: 'customQuickFixWidget.labels', comment: [`Action widget labels for accessibility.`] }, "{0}, Disabled Reason: {1}", label, element.disabled);
+                            label = localize(1640, "{0}, Disabled Reason: {1}", label, element.disabled);
                         }
                         return label;
                     }
                     return null;
                 },
-                getWidgetAriaLabel: () => localize({ key: 'customQuickFixWidget', comment: [`An action widget option`] }, "Action Widget"),
-                getRole: (e) => e.kind === "action" /* ActionListItemKind.Action */ ? 'option' : 'separator',
+                getWidgetAriaLabel: () => localize(1641, "Action Widget"),
+                getRole: (e) => {
+                    switch (e.kind) {
+                        case "action" /* ActionListItemKind.Action */:
+                            return 'option';
+                        case "separator" /* ActionListItemKind.Separator */:
+                            return 'separator';
+                        default:
+                            return 'separator';
+                    }
+                },
                 getWidgetRole: () => 'listbox',
+                ...accessibilityProvider
             },
         }));
         this._list.style(defaultListStyles);
@@ -174,9 +234,11 @@ let ActionList = class ActionList extends Disposable {
     layout(minWidth) {
         // Updating list height, depending on how many separators and headers there are.
         const numHeaders = this._allMenuItems.filter(item => item.kind === 'header').length;
+        const numSeparators = this._allMenuItems.filter(item => item.kind === 'separator').length;
         const itemsHeight = this._allMenuItems.length * this._actionLineHeight;
         const heightWithHeaders = itemsHeight + numHeaders * this._headerLineHeight - numHeaders * this._actionLineHeight;
-        this._list.layout(heightWithHeaders);
+        const heightWithSeparators = heightWithHeaders + numSeparators * this._separatorLineHeight - numSeparators * this._actionLineHeight;
+        this._list.layout(heightWithSeparators);
         let maxWidth = minWidth;
         if (this._allMenuItems.length >= 50) {
             maxWidth = 380;
@@ -197,7 +259,7 @@ let ActionList = class ActionList extends Disposable {
             maxWidth = Math.max(...itemWidths, minWidth);
         }
         const maxVhPrecentage = 0.7;
-        const height = Math.min(heightWithHeaders, this.domNode.ownerDocument.body.clientHeight * maxVhPrecentage);
+        const height = Math.min(heightWithSeparators, this._layoutService.getContainer(dom.getWindow(this.domNode)).clientHeight * maxVhPrecentage);
         this._list.layout(height, maxWidth);
         this.domNode.style.height = `${height}px`;
         this._list.domFocus();
@@ -263,10 +325,12 @@ let ActionList = class ActionList extends Disposable {
     }
 };
 ActionList = __decorate([
-    __param(4, IContextViewService),
-    __param(5, IKeybindingService)
+    __param(5, IContextViewService),
+    __param(6, IKeybindingService),
+    __param(7, ILayoutService)
 ], ActionList);
 export { ActionList };
 function stripNewlines(str) {
     return str.replace(/\r\n|\r|\n/g, ' ');
 }
+//# sourceMappingURL=actionList.js.map

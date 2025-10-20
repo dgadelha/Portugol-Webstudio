@@ -3,22 +3,15 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 import * as DOM from './dom.js';
-export function renderText(text, options = {}) {
-    const element = createElement(options);
+export function renderText(text, _options, target) {
+    const element = target ?? document.createElement('div');
     element.textContent = text;
     return element;
 }
-export function renderFormattedText(formattedText, options = {}) {
-    const element = createElement(options);
-    _renderFormattedText(element, parseFormattedText(formattedText, !!options.renderCodeSegments), options.actionHandler, options.renderCodeSegments);
-    return element;
-}
-export function createElement(options) {
-    const tagName = options.inline ? 'span' : 'div';
-    const element = document.createElement(tagName);
-    if (options.className) {
-        element.className = options.className;
-    }
+export function renderFormattedText(formattedText, options, target) {
+    const element = target ?? document.createElement('div');
+    element.textContent = '';
+    _renderFormattedText(element, parseFormattedText(formattedText, !!options?.renderCodeSegments), options?.actionHandler, options?.renderCodeSegments);
     return element;
 }
 class StringStream {
@@ -165,3 +158,4 @@ function formatTagType(char, supportCodeSegments) {
             return 0 /* FormatType.Invalid */;
     }
 }
+//# sourceMappingURL=formattedTextRenderer.js.map

@@ -11,8 +11,13 @@ import './findInput.css';
 import * as nls from '../../../../nls.js';
 import { DisposableStore, MutableDisposable } from '../../../common/lifecycle.js';
 import { createInstantHoverDelegate } from '../hover/hoverDelegateFactory.js';
-const NLS_DEFAULT_LABEL = nls.localize('defaultLabel', "input");
+const NLS_DEFAULT_LABEL = nls.localize(1, "input");
 export class FindInput extends Widget {
+    get onDidOptionChange() { return this._onDidOptionChange.event; }
+    get onKeyDown() { return this._onKeyDown.event; }
+    get onMouseDown() { return this._onMouseDown.event; }
+    get onCaseSensitiveKeyDown() { return this._onCaseSensitiveKeyDown.event; }
+    get onRegexKeyDown() { return this._onRegexKeyDown.event; }
     constructor(parent, contextViewProvider, options) {
         super();
         this.fixFocusOnOptionClickEnabled = true;
@@ -20,17 +25,12 @@ export class FindInput extends Widget {
         this.additionalTogglesDisposables = this._register(new MutableDisposable());
         this.additionalToggles = [];
         this._onDidOptionChange = this._register(new Emitter());
-        this.onDidOptionChange = this._onDidOptionChange.event;
         this._onKeyDown = this._register(new Emitter());
-        this.onKeyDown = this._onKeyDown.event;
         this._onMouseDown = this._register(new Emitter());
-        this.onMouseDown = this._onMouseDown.event;
         this._onInput = this._register(new Emitter());
         this._onKeyUp = this._register(new Emitter());
         this._onCaseSensitiveKeyDown = this._register(new Emitter());
-        this.onCaseSensitiveKeyDown = this._onCaseSensitiveKeyDown.event;
         this._onRegexKeyDown = this._register(new Emitter());
-        this.onRegexKeyDown = this._onRegexKeyDown.event;
         this._lastHighlightFindOptions = 0;
         this.placeholder = options.placeholder || '';
         this.validation = options.validation;
@@ -39,7 +39,6 @@ export class FindInput extends Widget {
         const appendCaseSensitiveLabel = options.appendCaseSensitiveLabel || '';
         const appendWholeWordsLabel = options.appendWholeWordsLabel || '';
         const appendRegexLabel = options.appendRegexLabel || '';
-        const history = options.history || [];
         const flexibleHeight = !!options.flexibleHeight;
         const flexibleWidth = !!options.flexibleWidth;
         const flexibleMaxHeight = options.flexibleMaxHeight;
@@ -51,12 +50,12 @@ export class FindInput extends Widget {
             validationOptions: {
                 validation: this.validation
             },
-            history,
             showHistoryHint: options.showHistoryHint,
             flexibleHeight,
             flexibleWidth,
             flexibleMaxHeight,
             inputBoxStyles: options.inputBoxStyles,
+            history: options.history
         }));
         const hoverDelegate = this._register(createInstantHoverDelegate());
         if (this.showCommonFindToggles) {
@@ -291,3 +290,4 @@ export class FindInput extends Widget {
         this.inputBox.hideMessage();
     }
 }
+//# sourceMappingURL=findInput.js.map

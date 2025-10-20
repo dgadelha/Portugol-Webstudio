@@ -88,3 +88,4 @@ export class ScrollbarVisibilityController extends Disposable {
         this._domNode?.setClassName(this._invisibleClassName + (withFadeAway ? ' fade' : ''));
     }
 }
+//# sourceMappingURL=scrollbarVisibilityController.js.map

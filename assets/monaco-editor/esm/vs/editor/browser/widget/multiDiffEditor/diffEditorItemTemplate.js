@@ -15,17 +15,16 @@ import { h } from '../../../../base/browser/dom.js';
 import { Button } from '../../../../base/browser/ui/button/button.js';
 import { Codicon } from '../../../../base/common/codicons.js';
 import { Disposable, DisposableStore } from '../../../../base/common/lifecycle.js';
-import { autorun, derived } from '../../../../base/common/observable.js';
-import { globalTransaction, observableValue } from '../../../../base/common/observableInternal/base.js';
-import { observableCodeEditor } from '../../observableCodeEditor.js';
-import { DiffEditorWidget } from '../diffEditor/diffEditorWidget.js';
+import { autorun, derived, globalTransaction, observableValue } from '../../../../base/common/observable.js';
 import { createActionViewItem } from '../../../../platform/actions/browser/menuEntryActionViewItem.js';
 import { MenuWorkbenchToolBar } from '../../../../platform/actions/browser/toolbar.js';
 import { MenuId } from '../../../../platform/actions/common/actions.js';
-import { IInstantiationService } from '../../../../platform/instantiation/common/instantiation.js';
-import { ActionRunnerWithContext } from './utils.js';
 import { IContextKeyService } from '../../../../platform/contextkey/common/contextkey.js';
+import { IInstantiationService } from '../../../../platform/instantiation/common/instantiation.js';
 import { ServiceCollection } from '../../../../platform/instantiation/common/serviceCollection.js';
+import { observableCodeEditor } from '../../observableCodeEditor.js';
+import { DiffEditorWidget } from '../diffEditor/diffEditorWidget.js';
+import { ActionRunnerWithContext } from './utils.js';
 export class TemplateData {
     constructor(viewModel, deltaScrollVertical) {
         this.viewModel = viewModel;
@@ -266,3 +265,4 @@ DiffEditorItemTemplate = __decorate([
     __param(4, IContextKeyService)
 ], DiffEditorItemTemplate);
 export { DiffEditorItemTemplate };
+//# sourceMappingURL=diffEditorItemTemplate.js.map

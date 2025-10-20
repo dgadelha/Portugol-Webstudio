@@ -2,16 +2,11 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+import { safeIntl } from '../../../../base/common/date.js';
 import { EditOperation } from '../../../common/core/editOperation.js';
 import { Range } from '../../../common/core/range.js';
 export class SortLinesCommand {
-    static { this._COLLATOR = null; }
-    static getCollator() {
-        if (!SortLinesCommand._COLLATOR) {
-            SortLinesCommand._COLLATOR = new Intl.Collator();
-        }
-        return SortLinesCommand._COLLATOR;
-    }
+    static { this._COLLATOR = safeIntl.Collator(); }
     constructor(selection, descending) {
         this.selection = selection;
         this.descending = descending;
@@ -59,7 +54,7 @@ function getSortData(model, selection, descending) {
         linesToSort.push(model.getLineContent(lineNumber));
     }
     let sorted = linesToSort.slice(0);
-    sorted.sort(SortLinesCommand.getCollator().compare);
+    sorted.sort(SortLinesCommand._COLLATOR.value.compare);
     // If descending, reverse the order.
     if (descending === true) {
         sorted = sorted.reverse();
@@ -81,3 +76,4 @@ function sortLines(model, selection, descending) {
     }
     return EditOperation.replace(new Range(data.startLineNumber, 1, data.endLineNumber, model.getLineMaxColumn(data.endLineNumber)), data.after.join('\n'));
 }
+//# sourceMappingURL=sortLinesCommand.js.map

@@ -47,3 +47,4 @@ function buildReplaceStringForSpecificSpecialCharacter(matches, pattern, special
     });
     return replaceString.slice(0, -1);
 }
+//# sourceMappingURL=search.js.map

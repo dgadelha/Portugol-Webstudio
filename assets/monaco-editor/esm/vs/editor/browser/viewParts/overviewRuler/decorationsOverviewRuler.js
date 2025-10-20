@@ -13,13 +13,13 @@ import { equals } from '../../../../base/common/arrays.js';
 class Settings {
     constructor(config, theme) {
         const options = config.options;
-        this.lineHeight = options.get(67 /* EditorOption.lineHeight */);
-        this.pixelRatio = options.get(144 /* EditorOption.pixelRatio */);
-        this.overviewRulerLanes = options.get(83 /* EditorOption.overviewRulerLanes */);
-        this.renderBorder = options.get(82 /* EditorOption.overviewRulerBorder */);
+        this.lineHeight = options.get(75 /* EditorOption.lineHeight */);
+        this.pixelRatio = options.get(163 /* EditorOption.pixelRatio */);
+        this.overviewRulerLanes = options.get(95 /* EditorOption.overviewRulerLanes */);
+        this.renderBorder = options.get(94 /* EditorOption.overviewRulerBorder */);
         const borderColor = theme.getColor(editorOverviewRulerBorder);
         this.borderColor = borderColor ? borderColor.toString() : null;
-        this.hideCursor = options.get(59 /* EditorOption.hideCursorInOverviewRuler */);
+        this.hideCursor = options.get(68 /* EditorOption.hideCursorInOverviewRuler */);
         const cursorColorSingle = theme.getColor(editorCursorForeground);
         this.cursorColorSingle = cursorColorSingle ? cursorColorSingle.transparent(0.7).toString() : null;
         const cursorColorPrimary = theme.getColor(editorMultiCursorPrimaryForeground);
@@ -27,7 +27,7 @@ class Settings {
         const cursorColorSecondary = theme.getColor(editorMultiCursorSecondaryForeground);
         this.cursorColorSecondary = cursorColorSecondary ? cursorColorSecondary.transparent(0.7).toString() : null;
         this.themeType = theme.type;
-        const minimapOpts = options.get(73 /* EditorOption.minimap */);
+        const minimapOpts = options.get(81 /* EditorOption.minimap */);
         const minimapEnabled = minimapOpts.enabled;
         const minimapSide = minimapOpts.side;
         const themeColor = theme.getColor(editorOverviewRulerBackground);
@@ -41,7 +41,7 @@ class Settings {
         else {
             this.backgroundColor = null;
         }
-        const layoutInfo = options.get(146 /* EditorOption.layoutInfo */);
+        const layoutInfo = options.get(165 /* EditorOption.layoutInfo */);
         const position = layoutInfo.overviewRuler;
         this.top = position.top;
         this.right = position.right;
@@ -411,3 +411,4 @@ export class DecorationsOverviewRuler extends ViewPart {
         }
     }
 }
+//# sourceMappingURL=decorationsOverviewRuler.js.map

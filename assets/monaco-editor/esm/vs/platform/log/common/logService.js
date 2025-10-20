@@ -35,3 +35,4 @@ export class LogService extends Disposable {
         this.logger.error(message, ...args);
     }
 }
+//# sourceMappingURL=logService.js.map

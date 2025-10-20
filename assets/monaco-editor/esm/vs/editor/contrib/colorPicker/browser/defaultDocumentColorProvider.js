@@ -14,7 +14,6 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 import { Color, RGBA } from '../../../../base/common/color.js';
 import { Disposable } from '../../../../base/common/lifecycle.js';
 import { ILanguageFeaturesService } from '../../../common/services/languageFeatures.js';
-import { registerEditorFeature } from '../../../common/editorFeatures.js';
 import { IEditorWorkerService } from '../../../common/services/editorWorker.js';
 let DefaultDocumentColorProvider = class DefaultDocumentColorProvider {
     constructor(_editorWorkerService) {
@@ -28,9 +27,9 @@ let DefaultDocumentColorProvider = class DefaultDocumentColorProvider {
         const colorFromInfo = colorInfo.color;
         const alpha = colorFromInfo.alpha;
         const color = new Color(new RGBA(Math.round(255 * colorFromInfo.red), Math.round(255 * colorFromInfo.green), Math.round(255 * colorFromInfo.blue), alpha));
-        const rgb = alpha ? Color.Format.CSS.formatRGB(color) : Color.Format.CSS.formatRGBA(color);
-        const hsl = alpha ? Color.Format.CSS.formatHSL(color) : Color.Format.CSS.formatHSLA(color);
-        const hex = alpha ? Color.Format.CSS.formatHex(color) : Color.Format.CSS.formatHexA(color);
+        const rgb = alpha ? Color.Format.CSS.formatRGBA(color) : Color.Format.CSS.formatRGB(color);
+        const hsl = alpha ? Color.Format.CSS.formatHSLA(color) : Color.Format.CSS.formatHSL(color);
+        const hex = alpha ? Color.Format.CSS.formatHexA(color) : Color.Format.CSS.formatHex(color);
         const colorPresentations = [];
         colorPresentations.push({ label: rgb, textEdit: { range: range, text: rgb } });
         colorPresentations.push({ label: hsl, textEdit: { range: range, text: hsl } });
@@ -52,4 +51,5 @@ DefaultDocumentColorProviderFeature = __decorate([
     __param(0, ILanguageFeaturesService),
     __param(1, IEditorWorkerService)
 ], DefaultDocumentColorProviderFeature);
-registerEditorFeature(DefaultDocumentColorProviderFeature);
+export { DefaultDocumentColorProviderFeature };
+//# sourceMappingURL=defaultDocumentColorProvider.js.map

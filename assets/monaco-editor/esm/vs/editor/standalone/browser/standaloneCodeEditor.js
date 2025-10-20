@@ -74,7 +74,7 @@ let StandaloneCodeEditor = class StandaloneCodeEditor extends CodeEditorWidget {
             this._standaloneKeybindingService = null;
         }
         createAriaDomNode(options.ariaContainerElement);
-        setHoverDelegateFactory((placement, enableInstantHover) => instantiationService.createInstance(WorkbenchHoverDelegate, placement, enableInstantHover, {}));
+        setHoverDelegateFactory((placement, enableInstantHover) => instantiationService.createInstance(WorkbenchHoverDelegate, placement, { instantHover: enableInstantHover }, {}));
         setBaseLayerHoverDelegate(hoverService);
     }
     addCommand(keybinding, handler, context) {
@@ -328,3 +328,4 @@ export function createTextModel(modelService, languageService, value, languageId
 function doCreateModel(modelService, value, languageSelection, uri) {
     return modelService.createModel(value, languageSelection, uri);
 }
+//# sourceMappingURL=standaloneCodeEditor.js.map

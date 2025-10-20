@@ -198,12 +198,12 @@ export class KeybindingResolver {
     getKeybindings() {
         return this._keybindings;
     }
-    lookupPrimaryKeybinding(commandId, context) {
+    lookupPrimaryKeybinding(commandId, context, enforceContextCheck = false) {
         const items = this._lookupMap.get(commandId);
         if (typeof items === 'undefined' || items.length === 0) {
             return null;
         }
-        if (items.length === 1) {
+        if (items.length === 1 && !enforceContextCheck) {
             return items[0];
         }
         for (let i = items.length - 1; i >= 0; i--) {
@@ -211,6 +211,9 @@ export class KeybindingResolver {
             if (context.contextMatchesRules(item.when)) {
                 return item;
             }
+        }
+        if (enforceContextCheck) {
+            return null;
         }
         return items[items.length - 1];
     }
@@ -296,3 +299,4 @@ function printSourceExplanation(kb) {
         ? (kb.isBuiltinExtension ? `built-in extension ${kb.extensionId}` : `user extension ${kb.extensionId}`)
         : (kb.isDefault ? `built-in` : `user`));
 }
+//# sourceMappingURL=keybindingResolver.js.map

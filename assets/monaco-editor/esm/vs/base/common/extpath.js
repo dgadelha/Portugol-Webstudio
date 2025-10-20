@@ -142,3 +142,4 @@ export function hasDriveLetter(path, isWindowsOS = isWindows) {
     }
     return false;
 }
+//# sourceMappingURL=extpath.js.map

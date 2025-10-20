@@ -129,3 +129,4 @@ ViewportSemanticTokensContribution = __decorate([
 ], ViewportSemanticTokensContribution);
 export { ViewportSemanticTokensContribution };
 registerEditorContribution(ViewportSemanticTokensContribution.ID, ViewportSemanticTokensContribution, 1 /* EditorContributionInstantiation.AfterFirstRender */);
+//# sourceMappingURL=viewportSemanticTokens.js.map

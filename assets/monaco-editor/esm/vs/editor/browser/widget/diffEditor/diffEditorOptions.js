@@ -11,12 +11,11 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { derived, observableFromEvent, observableValue } from '../../../../base/common/observable.js';
-import { derivedConstOnceDefined } from '../../../../base/common/observableInternal/utils.js';
-import { allowsTrueInlineDiffRendering } from './components/diffEditorViewZones/diffEditorViewZones.js';
+import { derived, derivedConstOnceDefined, observableFromEvent, observableValue } from '../../../../base/common/observable.js';
+import { IAccessibilityService } from '../../../../platform/accessibility/common/accessibility.js';
 import { diffEditorDefaultOptions } from '../../../common/config/diffEditor.js';
 import { clampedFloat, clampedInt, boolean as validateBooleanOption, stringSet as validateStringSetOption } from '../../../common/config/editorOptions.js';
-import { IAccessibilityService } from '../../../../platform/accessibility/common/accessibility.js';
+import { allowsTrueInlineDiffRendering } from './components/diffEditorViewZones/diffEditorViewZones.js';
 let DiffEditorOptions = class DiffEditorOptions {
     get editorOptions() { return this._options; }
     constructor(options, _accessibilityService) {
@@ -144,3 +143,4 @@ function validateDiffEditorOptions(options, defaults) {
         compactMode: validateBooleanOption(options.compactMode, defaults.compactMode),
     };
 }
+//# sourceMappingURL=diffEditorOptions.js.map

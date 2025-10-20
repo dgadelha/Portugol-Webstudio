@@ -118,3 +118,4 @@ class TokenizationSupportFactoryData extends Disposable {
         }
     }
 }
+//# sourceMappingURL=tokenizationRegistry.js.map

@@ -21,3 +21,4 @@ export class LinePart {
         return (this.metadata & 4 /* LinePartMetadata.PSEUDO_AFTER_MASK */ ? true : false);
     }
 }
+//# sourceMappingURL=linePart.js.map

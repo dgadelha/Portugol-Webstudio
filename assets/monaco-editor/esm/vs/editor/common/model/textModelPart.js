@@ -18,3 +18,4 @@ export class TextModelPart extends Disposable {
         }
     }
 }
+//# sourceMappingURL=textModelPart.js.map

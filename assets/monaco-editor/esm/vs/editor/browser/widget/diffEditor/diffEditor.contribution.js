@@ -16,7 +16,7 @@ registerAction2(ToggleUseInlineViewWhenSpaceIsLimited);
 MenuRegistry.appendMenuItem(MenuId.EditorTitle, {
     command: {
         id: new ToggleUseInlineViewWhenSpaceIsLimited().desc.id,
-        title: localize('useInlineViewWhenSpaceIsLimited', "Use Inline View When Space Is Limited"),
+        title: localize(116, "Use Inline View When Space Is Limited"),
         toggled: ContextKeyExpr.has('config.diffEditor.useInlineViewWhenSpaceIsLimited'),
         precondition: ContextKeyExpr.has('isInDiffEditor'),
     },
@@ -27,7 +27,7 @@ MenuRegistry.appendMenuItem(MenuId.EditorTitle, {
 MenuRegistry.appendMenuItem(MenuId.EditorTitle, {
     command: {
         id: new ToggleShowMovedCodeBlocks().desc.id,
-        title: localize('showMoves', "Show Moved Code Blocks"),
+        title: localize(117, "Show Moved Code Blocks"),
         icon: Codicon.move,
         toggled: ContextKeyEqualsExpr.create('config.diffEditor.experimental.showMoves', true),
         precondition: ContextKeyExpr.has('isInDiffEditor'),
@@ -44,7 +44,7 @@ for (const ctx of [
     MenuRegistry.appendMenuItem(MenuId.DiffEditorHunkToolbar, {
         command: {
             id: new RevertHunkOrSelection().desc.id,
-            title: localize('revertHunk', "Revert Block"),
+            title: localize(118, "Revert Block"),
             icon: ctx.icon,
         },
         when: ContextKeyExpr.and(EditorContextKeys.diffEditorModifiedWritable, ctx.key),
@@ -54,7 +54,7 @@ for (const ctx of [
     MenuRegistry.appendMenuItem(MenuId.DiffEditorSelectionToolbar, {
         command: {
             id: new RevertHunkOrSelection().desc.id,
-            title: localize('revertSelection', "Revert Selection"),
+            title: localize(119, "Revert Selection"),
             icon: ctx.icon,
         },
         when: ContextKeyExpr.and(EditorContextKeys.diffEditorModifiedWritable, ctx.key),
@@ -69,7 +69,7 @@ registerAction2(ShowAllUnchangedRegions);
 MenuRegistry.appendMenuItem(MenuId.EditorTitle, {
     command: {
         id: AccessibleDiffViewerNext.id,
-        title: localize('Open Accessible Diff Viewer', "Open Accessible Diff Viewer"),
+        title: localize(120, "Open Accessible Diff Viewer"),
         precondition: ContextKeyExpr.has('isInDiffEditor'),
     },
     order: 10,
@@ -80,3 +80,4 @@ CommandsRegistry.registerCommandAlias('editor.action.diffReview.next', Accessibl
 registerAction2(AccessibleDiffViewerNext);
 CommandsRegistry.registerCommandAlias('editor.action.diffReview.prev', AccessibleDiffViewerPrev.id);
 registerAction2(AccessibleDiffViewerPrev);
+//# sourceMappingURL=diffEditor.contribution.js.map

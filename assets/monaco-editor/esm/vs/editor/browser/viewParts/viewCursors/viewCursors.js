@@ -12,15 +12,20 @@ import { editorCursorBackground, editorCursorForeground, editorMultiCursorPrimar
 import { registerThemingParticipant } from '../../../../platform/theme/common/themeService.js';
 import { isHighContrast } from '../../../../platform/theme/common/theme.js';
 import { WindowIntervalTimer, getWindow } from '../../../../base/browser/dom.js';
+/**
+ * View cursors is a view part responsible for rendering the primary cursor and
+ * any secondary cursors that are currently active.
+ */
 export class ViewCursors extends ViewPart {
     static { this.BLINK_INTERVAL = 500; }
     constructor(context) {
         super(context);
         const options = this._context.configuration.options;
-        this._readOnly = options.get(92 /* EditorOption.readOnly */);
-        this._cursorBlinking = options.get(26 /* EditorOption.cursorBlinking */);
-        this._cursorStyle = options.get(28 /* EditorOption.cursorStyle */);
-        this._cursorSmoothCaretAnimation = options.get(27 /* EditorOption.cursorSmoothCaretAnimation */);
+        this._readOnly = options.get(104 /* EditorOption.readOnly */);
+        this._cursorBlinking = options.get(32 /* EditorOption.cursorBlinking */);
+        this._cursorStyle = options.get(161 /* EditorOption.effectiveCursorStyle */);
+        this._cursorSmoothCaretAnimation = options.get(33 /* EditorOption.cursorSmoothCaretAnimation */);
+        this._editContextEnabled = options.get(170 /* EditorOption.effectiveEditContext */);
         this._selectionIsEmpty = true;
         this._isComposingInput = false;
         this._isVisible = false;
@@ -59,10 +64,11 @@ export class ViewCursors extends ViewPart {
     }
     onConfigurationChanged(e) {
         const options = this._context.configuration.options;
-        this._readOnly = options.get(92 /* EditorOption.readOnly */);
-        this._cursorBlinking = options.get(26 /* EditorOption.cursorBlinking */);
-        this._cursorStyle = options.get(28 /* EditorOption.cursorStyle */);
-        this._cursorSmoothCaretAnimation = options.get(27 /* EditorOption.cursorSmoothCaretAnimation */);
+        this._readOnly = options.get(104 /* EditorOption.readOnly */);
+        this._cursorBlinking = options.get(32 /* EditorOption.cursorBlinking */);
+        this._cursorStyle = options.get(161 /* EditorOption.effectiveCursorStyle */);
+        this._cursorSmoothCaretAnimation = options.get(33 /* EditorOption.cursorSmoothCaretAnimation */);
+        this._editContextEnabled = options.get(170 /* EditorOption.effectiveEditContext */);
         this._updateBlinking();
         this._updateDomClassName();
         this._primaryCursor.onConfigurationChanged(e);
@@ -160,7 +166,8 @@ export class ViewCursors extends ViewPart {
     // --- end event handlers
     // ---- blinking logic
     _getCursorBlinking() {
-        if (this._isComposingInput) {
+        // TODO: Remove the following if statement when experimental edit context is made default sole implementation
+        if (this._isComposingInput && !this._editContextEnabled) {
             // avoid double cursors
             return 0 /* TextEditorCursorBlinkingStyle.Hidden */;
         }
@@ -327,3 +334,4 @@ registerThemingParticipant((theme, collector) => {
         }
     }
 });
+//# sourceMappingURL=viewCursors.js.map

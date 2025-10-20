@@ -5,8 +5,8 @@
 import { h, reset } from '../../../../../base/browser/dom.js';
 import { Disposable, toDisposable } from '../../../../../base/common/lifecycle.js';
 import { autorun, observableFromEvent, observableSignal, observableSignalFromEvent, observableValue, transaction } from '../../../../../base/common/observable.js';
-import { LineRange } from '../../../../common/core/lineRange.js';
-import { OffsetRange } from '../../../../common/core/offsetRange.js';
+import { LineRange } from '../../../../common/core/ranges/lineRange.js';
+import { OffsetRange } from '../../../../common/core/ranges/offsetRange.js';
 export class EditorGutter extends Disposable {
     constructor(_editor, _domNode, itemProvider) {
         super();
@@ -77,7 +77,9 @@ export class EditorGutter extends Disposable {
                         }
                         const top = gutterItem.range.startLineNumber <= this._editor.getModel().getLineCount()
                             ? this._editor.getTopForLineNumber(gutterItem.range.startLineNumber, true) - scrollTop
-                            : this._editor.getBottomForLineNumber(gutterItem.range.startLineNumber - 1, false) - scrollTop;
+                            : gutterItem.range.startLineNumber > 1
+                                ? this._editor.getBottomForLineNumber(gutterItem.range.startLineNumber - 1, false) - scrollTop
+                                : 0;
                         const bottom = gutterItem.range.endLineNumberExclusive === 1 ?
                             Math.max(top, this._editor.getTopForLineNumber(gutterItem.range.startLineNumber, false) - scrollTop)
                             : Math.max(top, this._editor.getBottomForLineNumber(gutterItem.range.endLineNumberExclusive - 1, true) - scrollTop);
@@ -104,3 +106,4 @@ class ManagedGutterItemView {
         this.domNode = domNode;
     }
 }
+//# sourceMappingURL=editorGutter.js.map

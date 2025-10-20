@@ -140,3 +140,4 @@ registerEditorCommand(new CursorWordPartLeft());
 registerEditorCommand(new CursorWordPartLeftSelect());
 registerEditorCommand(new CursorWordPartRight());
 registerEditorCommand(new CursorWordPartRightSelect());
+//# sourceMappingURL=wordPartOperations.js.map

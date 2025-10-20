@@ -32,8 +32,8 @@ export class ObjectTree extends AbstractTree {
     hasElement(element) {
         return this.model.has(element);
     }
-    createModel(user, view, options) {
-        return new ObjectTreeModel(user, view, options);
+    createModel(user, options) {
+        return new ObjectTreeModel(user, options);
     }
 }
 class CompressibleRenderer {
@@ -53,36 +53,33 @@ class CompressibleRenderer {
         const data = this.renderer.renderTemplate(container);
         return { compressedTreeNode: undefined, data };
     }
-    renderElement(node, index, templateData, height) {
+    renderElement(node, index, templateData, details) {
         let compressedTreeNode = this.stickyScrollDelegate.getCompressedNode(node);
         if (!compressedTreeNode) {
             compressedTreeNode = this.compressedTreeNodeProvider.getCompressedTreeNode(node.element);
         }
         if (compressedTreeNode.element.elements.length === 1) {
             templateData.compressedTreeNode = undefined;
-            this.renderer.renderElement(node, index, templateData.data, height);
+            this.renderer.renderElement(node, index, templateData.data, details);
         }
         else {
             templateData.compressedTreeNode = compressedTreeNode;
-            this.renderer.renderCompressedElements(compressedTreeNode, index, templateData.data, height);
+            this.renderer.renderCompressedElements(compressedTreeNode, index, templateData.data, details);
         }
     }
-    disposeElement(node, index, templateData, height) {
+    disposeElement(node, index, templateData, details) {
         if (templateData.compressedTreeNode) {
-            this.renderer.disposeCompressedElements?.(templateData.compressedTreeNode, index, templateData.data, height);
+            this.renderer.disposeCompressedElements?.(templateData.compressedTreeNode, index, templateData.data, details);
         }
         else {
-            this.renderer.disposeElement?.(node, index, templateData.data, height);
+            this.renderer.disposeElement?.(node, index, templateData.data, details);
         }
     }
     disposeTemplate(templateData) {
         this.renderer.disposeTemplate(templateData.data);
     }
     renderTwistie(element, twistieElement) {
-        if (this.renderer.renderTwistie) {
-            return this.renderer.renderTwistie(element, twistieElement);
-        }
-        return false;
+        return this.renderer.renderTwistie?.(element, twistieElement) ?? false;
     }
 }
 __decorate([
@@ -186,8 +183,8 @@ export class CompressibleObjectTree extends ObjectTree {
     setChildren(element, children = Iterable.empty(), options) {
         this.model.setChildren(element, children, options);
     }
-    createModel(user, view, options) {
-        return new CompressibleObjectTreeModel(user, view, options);
+    createModel(user, options) {
+        return new CompressibleObjectTreeModel(user, options);
     }
     updateOptions(optionsUpdate = {}) {
         super.updateOptions(optionsUpdate);
@@ -199,3 +196,4 @@ export class CompressibleObjectTree extends ObjectTree {
         return this.model.getCompressedTreeNode(element);
     }
 }
+//# sourceMappingURL=objectTree.js.map

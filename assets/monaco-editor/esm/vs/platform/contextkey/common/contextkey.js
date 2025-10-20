@@ -23,14 +23,14 @@ const hasOwnProperty = Object.prototype.hasOwnProperty;
 const defaultConfig = {
     regexParsingWithErrorRecovery: true
 };
-const errorEmptyString = localize('contextkey.parser.error.emptyString', "Empty context key expression");
-const hintEmptyString = localize('contextkey.parser.error.emptyString.hint', "Did you forget to write an expression? You can also put 'false' or 'true' to always evaluate to false or true, respectively.");
-const errorNoInAfterNot = localize('contextkey.parser.error.noInAfterNot', "'in' after 'not'.");
-const errorClosingParenthesis = localize('contextkey.parser.error.closingParenthesis', "closing parenthesis ')'");
-const errorUnexpectedToken = localize('contextkey.parser.error.unexpectedToken', "Unexpected token");
-const hintUnexpectedToken = localize('contextkey.parser.error.unexpectedToken.hint', "Did you forget to put && or || before the token?");
-const errorUnexpectedEOF = localize('contextkey.parser.error.unexpectedEOF', "Unexpected end of expression");
-const hintUnexpectedEOF = localize('contextkey.parser.error.unexpectedEOF.hint', "Did you forget to put a context key?");
+const errorEmptyString = localize(1660, "Empty context key expression");
+const hintEmptyString = localize(1661, "Did you forget to write an expression? You can also put 'false' or 'true' to always evaluate to false or true, respectively.");
+const errorNoInAfterNot = localize(1662, "'in' after 'not'.");
+const errorClosingParenthesis = localize(1663, "closing parenthesis ')'");
+const errorUnexpectedToken = localize(1664, "Unexpected token");
+const hintUnexpectedToken = localize(1665, "Did you forget to put && or || before the token?");
+const errorUnexpectedEOF = localize(1666, "Unexpected end of expression");
+const hintUnexpectedEOF = localize(1667, "Did you forget to put a context key?");
 /**
  * A parser for context key expressions.
  *
@@ -375,7 +375,7 @@ export class Parser {
         throw this._errExpectedButGot(message, this._peek());
     }
     _errExpectedButGot(expected, got, additionalInfo) {
-        const message = localize('contextkey.parser.error.expectedButGot', "Expected: {0}\nReceived: '{1}'.", expected, Scanner.getLexeme(got));
+        const message = localize(1668, "Expected: {0}\nReceived: '{1}'.", expected, Scanner.getLexeme(got));
         const offset = got.offset;
         const lexeme = Scanner.getLexeme(got);
         this._parsingErrors.push({ message, offset, lexeme, additionalInfo });
@@ -1545,3 +1545,4 @@ function getTerminals(node) {
     }
     return [node];
 }
+//# sourceMappingURL=contextkey.js.map

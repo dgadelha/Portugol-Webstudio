@@ -11,13 +11,13 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { Disposable } from '../../../../base/common/lifecycle.js';
-import { derivedWithStore, observableValue, recomputeInitiallyAndOnChange } from '../../../../base/common/observable.js';
 import { readHotReloadableExport } from '../../../../base/common/hotReloadHelpers.js';
-import { MultiDiffEditorWidgetImpl } from './multiDiffEditorWidgetImpl.js';
+import { Disposable } from '../../../../base/common/lifecycle.js';
+import { derived, observableValue, recomputeInitiallyAndOnChange } from '../../../../base/common/observable.js';
 import { IInstantiationService } from '../../../../platform/instantiation/common/instantiation.js';
 import './colors.js';
 import { DiffEditorItemTemplate } from './diffEditorItemTemplate.js';
+import { MultiDiffEditorWidgetImpl } from './multiDiffEditorWidgetImpl.js';
 let MultiDiffEditorWidget = class MultiDiffEditorWidget extends Disposable {
     constructor(_element, _workbenchUIElementFactory, _instantiationService) {
         super();
@@ -26,9 +26,9 @@ let MultiDiffEditorWidget = class MultiDiffEditorWidget extends Disposable {
         this._instantiationService = _instantiationService;
         this._dimension = observableValue(this, undefined);
         this._viewModel = observableValue(this, undefined);
-        this._widgetImpl = derivedWithStore(this, (reader, store) => {
+        this._widgetImpl = derived(this, (reader) => {
             readHotReloadableExport(DiffEditorItemTemplate, reader);
-            return store.add(this._instantiationService.createInstance((readHotReloadableExport(MultiDiffEditorWidgetImpl, reader)), this._element, this._dimension, this._viewModel, this._workbenchUIElementFactory));
+            return reader.store.add(this._instantiationService.createInstance((readHotReloadableExport(MultiDiffEditorWidgetImpl, reader)), this._element, this._dimension, this._viewModel, this._workbenchUIElementFactory));
         });
         this._register(recomputeInitiallyAndOnChange(this._widgetImpl));
     }
@@ -37,3 +37,4 @@ MultiDiffEditorWidget = __decorate([
     __param(2, IInstantiationService)
 ], MultiDiffEditorWidget);
 export { MultiDiffEditorWidget };
+//# sourceMappingURL=multiDiffEditorWidget.js.map

@@ -20,9 +20,14 @@ export class SparseTokensStore {
     isEmpty() {
         return (this._pieces.length === 0);
     }
-    set(pieces, isComplete) {
+    set(pieces, isComplete, textModel = undefined) {
         this._pieces = pieces || [];
         this._isComplete = isComplete;
+        if (textModel) {
+            for (const p of this._pieces) {
+                p.reportIfInvalid(textModel);
+            }
+        }
     }
     setPartial(_range, pieces) {
         // console.log(`setPartial ${_range} ${pieces.map(p => p.toString()).join(', ')}`);
@@ -94,7 +99,7 @@ export class SparseTokensStore {
         return this._isComplete;
     }
     addSparseTokens(lineNumber, aTokens) {
-        if (aTokens.getLineContent().length === 0) {
+        if (aTokens.getTextLength() === 0) {
             // Don't do anything for empty lines
             return aTokens;
         }
@@ -122,8 +127,10 @@ export class SparseTokensStore {
             result[resultLen++] = metadata;
         };
         for (let bIndex = 0; bIndex < bLen; bIndex++) {
-            const bStartCharacter = bTokens.getStartCharacter(bIndex);
-            const bEndCharacter = bTokens.getEndCharacter(bIndex);
+            // bTokens is not validated yet, but aTokens is. We want to make sure that the LineTokens we return
+            // are valid, so we clamp the ranges to ensure that.
+            const bStartCharacter = Math.min(bTokens.getStartCharacter(bIndex), aTokens.getTextLength());
+            const bEndCharacter = Math.min(bTokens.getEndCharacter(bIndex), aTokens.getTextLength());
             const bMetadata = bTokens.getMetadata(bIndex);
             const bMask = (((bMetadata & 1 /* MetadataConsts.SEMANTIC_USE_ITALIC */) ? 2048 /* MetadataConsts.ITALIC_MASK */ : 0)
                 | ((bMetadata & 2 /* MetadataConsts.SEMANTIC_USE_BOLD */) ? 4096 /* MetadataConsts.BOLD_MASK */ : 0)
@@ -192,3 +199,4 @@ export class SparseTokensStore {
         }
     }
 }
+//# sourceMappingURL=sparseTokensStore.js.map

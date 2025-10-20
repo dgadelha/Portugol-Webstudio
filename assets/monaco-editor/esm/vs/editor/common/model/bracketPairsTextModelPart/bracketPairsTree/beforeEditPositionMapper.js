@@ -105,3 +105,4 @@ class TextEditInfoCache {
         this.offsetObj = lengthToObj(startOffset);
     }
 }
+//# sourceMappingURL=beforeEditPositionMapper.js.map

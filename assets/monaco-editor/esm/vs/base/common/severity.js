@@ -47,3 +47,4 @@ var Severity;
     Severity.toString = toString;
 })(Severity || (Severity = {}));
 export default Severity;
+//# sourceMappingURL=severity.js.map

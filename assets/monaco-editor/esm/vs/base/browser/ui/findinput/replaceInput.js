@@ -11,8 +11,8 @@ import { Emitter } from '../../../common/event.js';
 import './findInput.css';
 import * as nls from '../../../../nls.js';
 import { getDefaultHoverDelegate } from '../hover/hoverDelegateFactory.js';
-const NLS_DEFAULT_LABEL = nls.localize('defaultLabel', "input");
-const NLS_PRESERVE_CASE_LABEL = nls.localize('label.preserveCaseToggle', "Preserve Case");
+const NLS_DEFAULT_LABEL = nls.localize(5, "input");
+const NLS_PRESERVE_CASE_LABEL = nls.localize(6, "Preserve Case");
 class PreserveCaseToggle extends Toggle {
     constructor(opts) {
         super({
@@ -28,26 +28,26 @@ class PreserveCaseToggle extends Toggle {
     }
 }
 export class ReplaceInput extends Widget {
+    get onDidOptionChange() { return this._onDidOptionChange.event; }
+    get onKeyDown() { return this._onKeyDown.event; }
+    get onPreserveCaseKeyDown() { return this._onPreserveCaseKeyDown.event; }
     constructor(parent, contextViewProvider, _showOptionButtons, options) {
         super();
         this._showOptionButtons = _showOptionButtons;
         this.fixFocusOnOptionClickEnabled = true;
         this.cachedOptionsWidth = 0;
         this._onDidOptionChange = this._register(new Emitter());
-        this.onDidOptionChange = this._onDidOptionChange.event;
         this._onKeyDown = this._register(new Emitter());
-        this.onKeyDown = this._onKeyDown.event;
         this._onMouseDown = this._register(new Emitter());
         this._onInput = this._register(new Emitter());
         this._onKeyUp = this._register(new Emitter());
         this._onPreserveCaseKeyDown = this._register(new Emitter());
-        this.onPreserveCaseKeyDown = this._onPreserveCaseKeyDown.event;
         this.contextViewProvider = contextViewProvider;
         this.placeholder = options.placeholder || '';
         this.validation = options.validation;
         this.label = options.label || NLS_DEFAULT_LABEL;
         const appendPreserveCaseLabel = options.appendPreserveCaseLabel || '';
-        const history = options.history || [];
+        const history = options.history || new Set([]);
         const flexibleHeight = !!options.flexibleHeight;
         const flexibleWidth = !!options.flexibleWidth;
         const flexibleMaxHeight = options.flexibleMaxHeight;
@@ -171,3 +171,4 @@ export class ReplaceInput extends Widget {
         super.dispose();
     }
 }
+//# sourceMappingURL=replaceInput.js.map

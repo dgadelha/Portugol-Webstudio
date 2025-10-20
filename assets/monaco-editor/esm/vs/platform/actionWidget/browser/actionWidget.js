@@ -23,9 +23,9 @@ import { IContextViewService } from '../../contextview/browser/contextView.js';
 import { registerSingleton } from '../../instantiation/common/extensions.js';
 import { createDecorator, IInstantiationService } from '../../instantiation/common/instantiation.js';
 import { inputActiveOptionBackground, registerColor } from '../../theme/common/colorRegistry.js';
-registerColor('actionBar.toggledBackground', inputActiveOptionBackground, localize('actionBar.toggledBackground', 'Background color for toggled action items in action bar.'));
+registerColor('actionBar.toggledBackground', inputActiveOptionBackground, localize(1642, 'Background color for toggled action items in action bar.'));
 const ActionWidgetContextKeys = {
-    Visible: new RawContextKey('codeActionMenuVisible', false, localize('codeActionMenuVisible', "Whether the action widget list is visible"))
+    Visible: new RawContextKey('codeActionMenuVisible', false, localize(1643, "Whether the action widget list is visible"))
 };
 export const IActionWidgetService = createDecorator('actionWidgetService');
 let ActionWidgetService = class ActionWidgetService extends Disposable {
@@ -39,9 +39,9 @@ let ActionWidgetService = class ActionWidgetService extends Disposable {
         this._instantiationService = _instantiationService;
         this._list = this._register(new MutableDisposable());
     }
-    show(user, supportsPreview, items, delegate, anchor, container, actionBarActions) {
+    show(user, supportsPreview, items, delegate, anchor, container, actionBarActions, accessibilityProvider) {
         const visibleContext = ActionWidgetContextKeys.Visible.bindTo(this._contextKeyService);
-        const list = this._instantiationService.createInstance(ActionList, user, supportsPreview, items, delegate);
+        const list = this._instantiationService.createInstance(ActionList, user, supportsPreview, items, delegate, accessibilityProvider);
         this._contextViewService.showContextView({
             getAnchor: () => anchor,
             render: (container) => {
@@ -131,7 +131,7 @@ registerAction2(class extends Action2 {
     constructor() {
         super({
             id: 'hideCodeActionWidget',
-            title: localize2('hideCodeActionWidget.title', "Hide action widget"),
+            title: localize2(1644, "Hide action widget"),
             precondition: ActionWidgetContextKeys.Visible,
             keybinding: {
                 weight,
@@ -148,7 +148,7 @@ registerAction2(class extends Action2 {
     constructor() {
         super({
             id: 'selectPrevCodeAction',
-            title: localize2('selectPrevCodeAction.title', "Select previous action"),
+            title: localize2(1645, "Select previous action"),
             precondition: ActionWidgetContextKeys.Visible,
             keybinding: {
                 weight,
@@ -169,7 +169,7 @@ registerAction2(class extends Action2 {
     constructor() {
         super({
             id: 'selectNextCodeAction',
-            title: localize2('selectNextCodeAction.title', "Select next action"),
+            title: localize2(1646, "Select next action"),
             precondition: ActionWidgetContextKeys.Visible,
             keybinding: {
                 weight,
@@ -190,7 +190,7 @@ registerAction2(class extends Action2 {
     constructor() {
         super({
             id: acceptSelectedActionCommand,
-            title: localize2('acceptSelected.title', "Accept selected action"),
+            title: localize2(1647, "Accept selected action"),
             precondition: ActionWidgetContextKeys.Visible,
             keybinding: {
                 weight,
@@ -210,7 +210,7 @@ registerAction2(class extends Action2 {
     constructor() {
         super({
             id: previewSelectedActionCommand,
-            title: localize2('previewSelected.title', "Preview selected action"),
+            title: localize2(1648, "Preview selected action"),
             precondition: ActionWidgetContextKeys.Visible,
             keybinding: {
                 weight,
@@ -225,3 +225,4 @@ registerAction2(class extends Action2 {
         }
     }
 });
+//# sourceMappingURL=actionWidget.js.map

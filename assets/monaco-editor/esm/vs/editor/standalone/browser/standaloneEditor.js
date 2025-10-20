@@ -462,6 +462,7 @@ export function createMonacoEditorAPI() {
         InjectedTextCursorStops: standaloneEnums.InjectedTextCursorStops,
         PositionAffinity: standaloneEnums.PositionAffinity,
         ShowLightbulbIconMode: standaloneEnums.ShowLightbulbIconMode,
+        TextDirection: standaloneEnums.TextDirection,
         // classes
         ConfigurationChangedEvent: ConfigurationChangedEvent,
         BareFontInfo: BareFontInfo,
@@ -476,3 +477,4 @@ export function createMonacoEditorAPI() {
         EditorOptions: EditorOptions
     };
 }
+//# sourceMappingURL=standaloneEditor.js.map

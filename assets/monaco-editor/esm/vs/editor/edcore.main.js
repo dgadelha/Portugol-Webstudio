@@ -12,3 +12,4 @@ import './standalone/browser/quickAccess/standaloneCommandsQuickAccess.js';
 import './standalone/browser/referenceSearch/standaloneReferenceSearch.js';
 import './standalone/browser/toggleHighContrast/toggleHighContrast.js';
 export * from './editor.api.js';
+//# sourceMappingURL=editor.main.js.map

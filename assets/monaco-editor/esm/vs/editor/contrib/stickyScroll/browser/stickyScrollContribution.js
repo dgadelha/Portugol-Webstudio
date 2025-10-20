@@ -13,3 +13,4 @@ registerAction2(SelectPreviousStickyScrollLine);
 registerAction2(SelectNextStickyScrollLine);
 registerAction2(GoToStickyScrollLine);
 registerAction2(SelectEditor);
+//# sourceMappingURL=stickyScrollContribution.js.map

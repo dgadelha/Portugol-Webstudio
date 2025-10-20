@@ -200,7 +200,7 @@ let OutlineModelService = class OutlineModelService {
     constructor(_languageFeaturesService, debounces, modelService) {
         this._languageFeaturesService = _languageFeaturesService;
         this._disposables = new DisposableStore();
-        this._cache = new LRUCache(10, 0.7);
+        this._cache = new LRUCache(15, 0.7);
         this._debounceInformation = debounces.for(_languageFeaturesService.documentSymbolProvider, 'DocumentSymbols', { min: 350 });
         // don't cache outline models longer than their text model
         this._disposables.add(modelService.onModelRemoved(textModel => {
@@ -261,3 +261,4 @@ OutlineModelService = __decorate([
 ], OutlineModelService);
 export { OutlineModelService };
 registerSingleton(IOutlineModelService, OutlineModelService, 1 /* InstantiationType.Delayed */);
+//# sourceMappingURL=outlineModel.js.map

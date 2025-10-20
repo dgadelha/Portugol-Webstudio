@@ -74,3 +74,4 @@ TextualMultiDocumentHighlightFeature = __decorate([
     __param(0, ILanguageFeaturesService)
 ], TextualMultiDocumentHighlightFeature);
 export { TextualMultiDocumentHighlightFeature };
+//# sourceMappingURL=textualHighlightProvider.js.map

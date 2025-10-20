@@ -99,3 +99,4 @@ export function readCharWidths(targetWindow, bareFontInfo, requests) {
     const reader = new DomCharWidthReader(bareFontInfo, requests);
     reader.read(targetWindow);
 }
+//# sourceMappingURL=charWidthReader.js.map

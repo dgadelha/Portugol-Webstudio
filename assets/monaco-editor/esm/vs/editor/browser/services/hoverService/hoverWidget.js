@@ -12,7 +12,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 import './hover.css';
-import { DisposableStore } from '../../../../base/common/lifecycle.js';
+import { DisposableStore, MutableDisposable, toDisposable } from '../../../../base/common/lifecycle.js';
 import { Emitter } from '../../../../base/common/event.js';
 import * as dom from '../../../../base/browser/dom.js';
 import { IKeybindingService } from '../../../../platform/keybinding/common/keybinding.js';
@@ -28,6 +28,8 @@ import { localize } from '../../../../nls.js';
 import { isMacintosh } from '../../../../base/common/platform.js';
 import { IAccessibilityService } from '../../../../platform/accessibility/common/accessibility.js';
 import { status } from '../../../../base/browser/ui/aria/aria.js';
+import { TimeoutTimer } from '../../../../base/common/async.js';
+import { isNumber } from '../../../../base/common/types.js';
 const $ = dom.$;
 let HoverWidget = class HoverWidget extends Widget {
     get _targetWindow() {
@@ -71,6 +73,7 @@ let HoverWidget = class HoverWidget extends Widget {
         this._isLocked = false;
         this._enableFocusTraps = false;
         this._addedFocusTrap = false;
+        this._maxHeightRatioRelativeToWindow = 0.5;
         this._onDispose = this._register(new Emitter());
         this._onRequestLayout = this._register(new Emitter());
         this._linkHandler = options.linkHandler || (url => {
@@ -78,13 +81,10 @@ let HoverWidget = class HoverWidget extends Widget {
         });
         this._target = 'targetElements' in options.target ? options.target : new ElementHoverTarget(options.target);
         this._hoverPointer = options.appearance?.showPointer ? $('div.workbench-hover-pointer') : undefined;
-        this._hover = this._register(new BaseHoverWidget());
-        this._hover.containerDomNode.classList.add('workbench-hover', 'fadeIn');
+        this._hover = this._register(new BaseHoverWidget(!options.appearance?.skipFadeInAnimation));
+        this._hover.containerDomNode.classList.add('workbench-hover');
         if (options.appearance?.compact) {
             this._hover.containerDomNode.classList.add('workbench-hover', 'compact');
-        }
-        if (options.appearance?.skipFadeInAnimation) {
-            this._hover.containerDomNode.classList.add('skip-fade-in');
         }
         if (options.additionalClasses) {
             this._hover.containerDomNode.classList.add(...options.additionalClasses);
@@ -95,7 +95,16 @@ let HoverWidget = class HoverWidget extends Widget {
         if (options.trapFocus) {
             this._enableFocusTraps = true;
         }
-        this._hoverPosition = options.position?.hoverPosition ?? 3 /* HoverPosition.ABOVE */;
+        const maxHeightRatio = options.appearance?.maxHeightRatio;
+        if (maxHeightRatio !== undefined && maxHeightRatio > 0 && maxHeightRatio <= 1) {
+            this._maxHeightRatioRelativeToWindow = maxHeightRatio;
+        }
+        // Default to position above when the position is unspecified or a mouse event
+        this._hoverPosition = options.position?.hoverPosition === undefined
+            ? 3 /* HoverPosition.ABOVE */
+            : isNumber(options.position.hoverPosition)
+                ? options.position.hoverPosition
+                : 2 /* HoverPosition.BELOW */;
         // Don't allow mousedown out of the widget, otherwise preventDefault will call and text will
         // not be selected.
         this.onmousedown(this._hover.containerDomNode, e => e.stopPropagation());
@@ -120,11 +129,8 @@ let HoverWidget = class HoverWidget extends Widget {
         else {
             const markdown = options.content;
             const mdRenderer = this._instantiationService.createInstance(MarkdownRenderer, { codeBlockFontFamily: this._configurationService.getValue('editor').fontFamily || EDITOR_FONT_DEFAULTS.fontFamily });
-            const { element } = mdRenderer.render(markdown, {
-                actionHandler: {
-                    callback: (content) => this._linkHandler(content),
-                    disposables: this._messageListeners
-                },
+            const { element, dispose } = mdRenderer.render(markdown, {
+                actionHandler: (content) => this._linkHandler(content),
                 asyncRenderCallback: () => {
                     contentsElement.classList.add('code-hover-contents');
                     this.layout();
@@ -133,6 +139,7 @@ let HoverWidget = class HoverWidget extends Widget {
                 }
             });
             contentsElement.appendChild(element);
+            this._register(toDisposable(dispose));
         }
         rowElement.appendChild(contentsElement);
         this._hover.contentsDomNode.appendChild(rowElement);
@@ -142,7 +149,7 @@ let HoverWidget = class HoverWidget extends Widget {
             options.actions.forEach(action => {
                 const keybinding = this._keybindingService.lookupKeybinding(action.commandId);
                 const keybindingLabel = keybinding ? keybinding.getLabel() : null;
-                HoverAction.render(actionsElement, {
+                this._register(HoverAction.render(actionsElement, {
                     label: action.label,
                     commandId: action.commandId,
                     run: e => {
@@ -150,7 +157,7 @@ let HoverWidget = class HoverWidget extends Widget {
                         this.dispose();
                     },
                     iconClass: action.iconClass
-                }, keybindingLabel);
+                }, keybindingLabel));
             });
             statusBarElement.appendChild(actionsElement);
             this._hover.containerDomNode.appendChild(statusBarElement);
@@ -182,7 +189,7 @@ let HoverWidget = class HoverWidget extends Widget {
         if (options.appearance?.showHoverHint) {
             const statusBarElement = $('div.hover-row.status-bar');
             const infoElement = $('div.info');
-            infoElement.textContent = localize('hoverhint', 'Hold {0} key to mouse over', isMacintosh ? 'Option' : 'Alt');
+            infoElement.textContent = localize(74, 'Hold {0} key to mouse over', isMacintosh ? 'Option' : 'Alt');
             statusBarElement.appendChild(infoElement);
             this._hover.containerDomNode.appendChild(statusBarElement);
         }
@@ -466,7 +473,7 @@ let HoverWidget = class HoverWidget extends Widget {
         }
     }
     adjustHoverMaxHeight(target) {
-        let maxHeight = this._targetWindow.innerHeight / 2;
+        let maxHeight = this._targetWindow.innerHeight * this._maxHeightRatioRelativeToWindow;
         // When force position is enabled, restrict max height
         if (this._forcePosition) {
             const padding = (this._hoverPointer ? 3 /* Constants.PointerSize */ : 0) + 2 /* Constants.HoverBorderWidth */;
@@ -527,9 +534,9 @@ let HoverWidget = class HoverWidget extends Widget {
     dispose() {
         if (!this._isDisposed) {
             this._onDispose.fire();
+            this._target.dispose?.();
             this._hoverContainer.remove();
             this._messageListeners.dispose();
-            this._target.dispose();
             super.dispose();
         }
         this._isDisposed = true;
@@ -546,33 +553,33 @@ export { HoverWidget };
 class CompositeMouseTracker extends Widget {
     get onMouseOut() { return this._onMouseOut.event; }
     get isMouseIn() { return this._isMouseIn; }
-    constructor(_elements) {
+    /**
+     * @param _elements The target elements to track mouse in/out events on.
+     * @param _eventDebounceDelay The delay in ms to debounce the event firing. This is used to
+     * allow a short period for the mouse to move into the hover or a nearby target element. For
+     * example hovering a scroll bar will not hide the hover immediately.
+     */
+    constructor(_elements, _eventDebounceDelay = 200) {
         super();
         this._elements = _elements;
+        this._eventDebounceDelay = _eventDebounceDelay;
         this._isMouseIn = true;
+        this._mouseTimer = this._register(new MutableDisposable());
         this._onMouseOut = this._register(new Emitter());
-        this._elements.forEach(n => this.onmouseover(n, () => this._onTargetMouseOver(n)));
-        this._elements.forEach(n => this.onmouseleave(n, () => this._onTargetMouseLeave(n)));
+        for (const element of this._elements) {
+            this.onmouseover(element, () => this._onTargetMouseOver());
+            this.onmouseleave(element, () => this._onTargetMouseLeave());
+        }
     }
-    _onTargetMouseOver(target) {
+    _onTargetMouseOver() {
         this._isMouseIn = true;
-        this._clearEvaluateMouseStateTimeout(target);
+        this._mouseTimer.clear();
     }
-    _onTargetMouseLeave(target) {
+    _onTargetMouseLeave() {
         this._isMouseIn = false;
-        this._evaluateMouseState(target);
-    }
-    _evaluateMouseState(target) {
-        this._clearEvaluateMouseStateTimeout(target);
         // Evaluate whether the mouse is still outside asynchronously such that other mouse targets
         // have the opportunity to first their mouse in event.
-        this._mouseTimeout = dom.getWindow(target).setTimeout(() => this._fireIfMouseOutside(), 0);
-    }
-    _clearEvaluateMouseStateTimeout(target) {
-        if (this._mouseTimeout) {
-            dom.getWindow(target).clearTimeout(this._mouseTimeout);
-            this._mouseTimeout = undefined;
-        }
+        this._mouseTimer.value = new TimeoutTimer(() => this._fireIfMouseOutside(), this._eventDebounceDelay);
     }
     _fireIfMouseOutside() {
         if (!this._isMouseIn) {
@@ -588,3 +595,4 @@ class ElementHoverTarget {
     dispose() {
     }
 }
+//# sourceMappingURL=hoverWidget.js.map

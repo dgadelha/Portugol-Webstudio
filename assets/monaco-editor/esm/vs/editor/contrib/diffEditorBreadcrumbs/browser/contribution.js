@@ -57,3 +57,4 @@ DiffEditorBreadcrumbsSource = __decorate([
 HideUnchangedRegionsFeature.setBreadcrumbsSourceFactory((textModel, instantiationService) => {
     return instantiationService.createInstance(DiffEditorBreadcrumbsSource, textModel);
 });
+//# sourceMappingURL=contribution.js.map

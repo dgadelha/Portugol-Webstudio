@@ -12,8 +12,7 @@ import './contrib/caretOperations/browser/transpose.js';
 import './contrib/clipboard/browser/clipboard.js';
 import './contrib/codeAction/browser/codeActionContributions.js';
 import './contrib/codelens/browser/codelensController.js';
-import './contrib/colorPicker/browser/colorContributions.js';
-import './contrib/colorPicker/browser/standaloneColorPickerActions.js';
+import './contrib/colorPicker/browser/colorPickerContribution.js';
 import './contrib/comment/browser/comment.js';
 import './contrib/contextmenu/browser/contextmenu.js';
 import './contrib/cursorUndo/browser/cursorUndo.js';
@@ -30,18 +29,19 @@ import './contrib/inlineProgress/browser/inlineProgress.js';
 import './contrib/gotoSymbol/browser/goToCommands.js';
 import './contrib/gotoSymbol/browser/link/goToDefinitionAtPosition.js';
 import './contrib/gotoError/browser/gotoError.js';
+import './contrib/gpu/browser/gpuActions.js';
 import './contrib/hover/browser/hoverContribution.js';
 import './contrib/indentation/browser/indentation.js';
 import './contrib/inlayHints/browser/inlayHintsContribution.js';
 import './contrib/inPlaceReplace/browser/inPlaceReplace.js';
+import './contrib/insertFinalNewLine/browser/insertFinalNewLine.js';
 import './contrib/lineSelection/browser/lineSelection.js';
 import './contrib/linesOperations/browser/linesOperations.js';
 import './contrib/linkedEditing/browser/linkedEditing.js';
 import './contrib/links/browser/links.js';
 import './contrib/longLinesHelper/browser/longLinesHelper.js';
+import './contrib/middleScroll/browser/middleScroll.contribution.js';
 import './contrib/multicursor/browser/multicursor.js';
-import './contrib/inlineEdit/browser/inlineEdit.contribution.js';
-import './contrib/inlineEdits/browser/inlineEdits.contribution.js';
 import './contrib/parameterHints/browser/parameterHints.js';
 import './contrib/placeholderText/browser/placeholderText.contribution.js';
 import './contrib/rename/browser/rename.js';
@@ -62,7 +62,9 @@ import './contrib/wordOperations/browser/wordOperations.js';
 import './contrib/wordPartOperations/browser/wordPartOperations.js';
 import './contrib/readOnlyMessage/browser/contribution.js';
 import './contrib/diffEditorBreadcrumbs/browser/contribution.js';
+import './contrib/floatingMenu/browser/floatingMenu.contribution.js';
 // Load up these strings even in VSCode, even if they are not used
 // in order to get them translated
 import './common/standaloneStrings.js';
 import '../base/browser/ui/codicons/codiconStyles.js'; // The codicons are defined here and must be loaded
+//# sourceMappingURL=editor.all.js.map

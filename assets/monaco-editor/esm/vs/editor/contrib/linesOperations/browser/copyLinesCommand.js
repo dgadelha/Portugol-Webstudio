@@ -68,3 +68,4 @@ export class CopyLinesCommand {
         return result;
     }
 }
+//# sourceMappingURL=copyLinesCommand.js.map

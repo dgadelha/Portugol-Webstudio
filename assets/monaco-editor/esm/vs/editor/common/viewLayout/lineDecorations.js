@@ -203,3 +203,4 @@ export class LineDecorationsNormalizer {
         return result;
     }
 }
+//# sourceMappingURL=lineDecorations.js.map

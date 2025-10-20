@@ -67,8 +67,7 @@ export class TriggerParameterHintsAction extends EditorAction {
     constructor() {
         super({
             id: 'editor.action.triggerParameterHints',
-            label: nls.localize('parameterHints.trigger.label', "Trigger Parameter Hints"),
-            alias: 'Trigger Parameter Hints',
+            label: nls.localize2(1301, "Trigger Parameter Hints"),
             precondition: EditorContextKeys.hasSignatureHelpProvider,
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
@@ -123,3 +122,4 @@ registerEditorCommand(new ParameterHintsCommand({
         mac: { primary: 18 /* KeyCode.DownArrow */, secondary: [512 /* KeyMod.Alt */ | 18 /* KeyCode.DownArrow */, 256 /* KeyMod.WinCtrl */ | 44 /* KeyCode.KeyN */] }
     }
 }));
+//# sourceMappingURL=parameterHints.js.map

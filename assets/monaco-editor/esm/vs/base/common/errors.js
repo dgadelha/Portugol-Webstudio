@@ -33,6 +33,15 @@ export class ErrorHandler {
     }
 }
 export const errorHandler = new ErrorHandler();
+/**
+ * This function should only be called with errors that indicate a bug in the product.
+ * E.g. buggy extensions/invalid user-input/network issues should not be able to trigger this code path.
+ * If they are, this indicates there is also a bug in the product.
+*/
+export function onBugIndicatingError(e) {
+    errorHandler.onUnexpectedError(e);
+    return undefined;
+}
 export function onUnexpectedError(e) {
     // ignore errors from cancelled promises
     if (!isCancellationError(e)) {
@@ -49,20 +58,22 @@ export function onUnexpectedExternalError(e) {
 }
 export function transformErrorForSerialization(error) {
     if (error instanceof Error) {
-        const { name, message } = error;
+        const { name, message, cause } = error;
         const stack = error.stacktrace || error.stack;
         return {
             $isError: true,
             name,
             message,
             stack,
-            noTelemetry: ErrorNoTelemetry.isErrorNoTelemetry(error)
+            noTelemetry: ErrorNoTelemetry.isErrorNoTelemetry(error),
+            cause: cause ? transformErrorForSerialization(cause) : undefined,
+            code: error.code
         };
     }
     // return as is
     return error;
 }
-const canceledName = 'Canceled';
+export const canceledName = 'Canceled';
 /**
  * Checks if the given error is a promise in canceled state
  */
@@ -144,7 +155,7 @@ export class BugIndicatingError extends Error {
         Object.setPrototypeOf(this, BugIndicatingError.prototype);
         // Because we know for sure only buggy code throws this,
         // we definitely want to break here and fix the bug.
-        // eslint-disable-next-line no-debugger
         // debugger;
     }
 }
+//# sourceMappingURL=errors.js.map

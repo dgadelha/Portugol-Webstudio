@@ -78,3 +78,4 @@ export class GlobalPointerMoveMonitor {
         this._hooks.add(dom.addDisposableListener(eventSource, dom.EventType.POINTER_UP, (e) => this.stopMonitoring(true)));
     }
 }
+//# sourceMappingURL=globalPointerMoveMonitor.js.map

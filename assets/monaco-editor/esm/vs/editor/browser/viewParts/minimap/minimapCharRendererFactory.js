@@ -131,3 +131,4 @@ export class MinimapCharRendererFactory {
         return result;
     }
 }
+//# sourceMappingURL=minimapCharRendererFactory.js.map

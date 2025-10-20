@@ -89,7 +89,7 @@ export class URI {
         if (thing instanceof URI) {
             return true;
         }
-        if (!thing) {
+        if (!thing || typeof thing !== 'object') {
             return false;
         }
         return typeof thing.authority === 'string'
@@ -349,6 +349,7 @@ class Uri extends URI {
         }
     }
     toJSON() {
+        // eslint-disable-next-line local/code-no-dangerous-type-assertions
         const res = {
             $mid: 1 /* MarshalledId.Uri */
         };
@@ -600,3 +601,4 @@ function percentDecode(str) {
     }
     return str.replace(_rEncodedAsHex, (match) => decodeURIComponentGraceful(match));
 }
+//# sourceMappingURL=uri.js.map

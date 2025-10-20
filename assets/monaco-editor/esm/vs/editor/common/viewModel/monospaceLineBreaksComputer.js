@@ -8,12 +8,12 @@ import { LineInjectedText } from '../textModelEvents.js';
 import { ModelLineProjectionData } from '../modelLineProjectionData.js';
 export class MonospaceLineBreaksComputerFactory {
     static create(options) {
-        return new MonospaceLineBreaksComputerFactory(options.get(135 /* EditorOption.wordWrapBreakBeforeCharacters */), options.get(134 /* EditorOption.wordWrapBreakAfterCharacters */));
+        return new MonospaceLineBreaksComputerFactory(options.get(151 /* EditorOption.wordWrapBreakBeforeCharacters */), options.get(150 /* EditorOption.wordWrapBreakAfterCharacters */));
     }
     constructor(breakBeforeChars, breakAfterChars) {
         this.classifier = new WrappingCharacterClassifier(breakBeforeChars, breakAfterChars);
     }
-    createLineBreaksComputer(fontInfo, tabSize, wrappingColumn, wrappingIndent, wordBreak) {
+    createLineBreaksComputer(fontInfo, tabSize, wrappingColumn, wrappingIndent, wordBreak, wrapOnEscapedLineFeeds) {
         const requests = [];
         const injectedTexts = [];
         const previousBreakingData = [];
@@ -29,11 +29,11 @@ export class MonospaceLineBreaksComputerFactory {
                 for (let i = 0, len = requests.length; i < len; i++) {
                     const injectedText = injectedTexts[i];
                     const previousLineBreakData = previousBreakingData[i];
-                    if (previousLineBreakData && !previousLineBreakData.injectionOptions && !injectedText) {
+                    if (previousLineBreakData && !previousLineBreakData.injectionOptions && !injectedText && !wrapOnEscapedLineFeeds) {
                         result[i] = createLineBreaksFromPreviousLineBreaks(this.classifier, previousLineBreakData, requests[i], tabSize, wrappingColumn, columnsForFullWidthChar, wrappingIndent, wordBreak);
                     }
                     else {
-                        result[i] = createLineBreaks(this.classifier, requests[i], injectedText, tabSize, wrappingColumn, columnsForFullWidthChar, wrappingIndent, wordBreak);
+                        result[i] = createLineBreaks(this.classifier, requests[i], injectedText, tabSize, wrappingColumn, columnsForFullWidthChar, wrappingIndent, wordBreak, wrapOnEscapedLineFeeds);
                     }
                 }
                 arrPool1.length = 0;
@@ -295,7 +295,7 @@ function createLineBreaksFromPreviousLineBreaks(classifier, previousBreakingData
     previousBreakingData.wrappedTextIndentLength = wrappedTextIndentLength;
     return previousBreakingData;
 }
-function createLineBreaks(classifier, _lineText, injectedTexts, tabSize, firstLineBreakColumn, columnsForFullWidthChar, wrappingIndent, wordBreak) {
+function createLineBreaks(classifier, _lineText, injectedTexts, tabSize, firstLineBreakColumn, columnsForFullWidthChar, wrappingIndent, wordBreak, wrapOnEscapedLineFeeds) {
     const lineText = LineInjectedText.applyInjectedText(_lineText, injectedTexts);
     let injectionOptions;
     let injectionOffsets;
@@ -364,6 +364,10 @@ function createLineBreaks(classifier, _lineText, injectedTexts, tabSize, firstLi
             breakOffsetVisibleColumn = visibleColumn;
         }
         visibleColumn += charWidth;
+        // literal \n shall trigger a softwrap
+        if (wrapOnEscapedLineFeeds && isEscapedLineBreakAtPosition(lineText, i)) {
+            visibleColumn += breakingColumn;
+        }
         // check if adding character at `i` will go over the breaking column
         if (visibleColumn > breakingColumn) {
             // We need to break at least before character at `i`:
@@ -406,6 +410,17 @@ function tabCharacterWidth(visibleColumn, tabSize) {
     return (tabSize - (visibleColumn % tabSize));
 }
 /**
+ * Checks if the current position in the text should trigger a soft wrap due to escaped line feeds.
+ * This handles the wrapOnEscapedLineFeeds feature which allows \n sequences in strings to trigger wrapping.
+ */
+function isEscapedLineBreakAtPosition(lineText, i) {
+    return (i >= 2
+        && (i < 3 || lineText.charAt(i - 3) !== '\\')
+        && lineText.charAt(i - 2) === '\\'
+        && lineText.charAt(i - 1) === 'n'
+        && lineText.includes('"'));
+}
+/**
  * Kinsoku Shori : Don't break after a leading character, like an open bracket
  * Kinsoku Shori : Don't break before a trailing character, like a period
  */
@@ -440,3 +455,4 @@ function computeWrappedTextIndentLength(lineText, tabSize, firstLineBreakColumn,
     }
     return wrappedTextIndentLength;
 }
+//# sourceMappingURL=monospaceLineBreaksComputer.js.map

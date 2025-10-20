@@ -8,6 +8,7 @@ import { MoveOperations } from './cursorMoveOperations.js';
 import { WordOperations } from './cursorWordOperations.js';
 import { Position } from '../core/position.js';
 import { Range } from '../core/range.js';
+import { TextDirection } from '../model.js';
 export class CursorMoveCommands {
     static addCursorDown(viewModel, cursors, useLogicalLine) {
         const result = [];
@@ -359,7 +360,13 @@ export class CursorMoveCommands {
         return Math.max(startLineNumber, range.endLineNumber - count + 1);
     }
     static _moveLeft(viewModel, cursors, inSelectionMode, noOfColumns) {
-        return cursors.map(cursor => CursorState.fromViewState(MoveOperations.moveLeft(viewModel.cursorConfig, viewModel, cursor.viewState, inSelectionMode, noOfColumns)));
+        return cursors.map(cursor => {
+            const direction = viewModel.getTextDirection(cursor.viewState.position.lineNumber);
+            const isRtl = direction === TextDirection.RTL;
+            return CursorState.fromViewState(isRtl
+                ? MoveOperations.moveRight(viewModel.cursorConfig, viewModel, cursor.viewState, inSelectionMode, noOfColumns)
+                : MoveOperations.moveLeft(viewModel.cursorConfig, viewModel, cursor.viewState, inSelectionMode, noOfColumns));
+        });
     }
     static _moveHalfLineLeft(viewModel, cursors, inSelectionMode) {
         const result = [];
@@ -372,7 +379,13 @@ export class CursorMoveCommands {
         return result;
     }
     static _moveRight(viewModel, cursors, inSelectionMode, noOfColumns) {
-        return cursors.map(cursor => CursorState.fromViewState(MoveOperations.moveRight(viewModel.cursorConfig, viewModel, cursor.viewState, inSelectionMode, noOfColumns)));
+        return cursors.map(cursor => {
+            const direction = viewModel.getTextDirection(cursor.viewState.position.lineNumber);
+            const isRtl = direction === TextDirection.RTL;
+            return CursorState.fromViewState(isRtl
+                ? MoveOperations.moveLeft(viewModel.cursorConfig, viewModel, cursor.viewState, inSelectionMode, noOfColumns)
+                : MoveOperations.moveRight(viewModel.cursorConfig, viewModel, cursor.viewState, inSelectionMode, noOfColumns));
+        });
     }
     static _moveHalfLineRight(viewModel, cursors, inSelectionMode) {
         const result = [];
@@ -649,3 +662,4 @@ export var CursorMove;
     }
     CursorMove.parse = parse;
 })(CursorMove || (CursorMove = {}));
+//# sourceMappingURL=cursorMoveCommands.js.map

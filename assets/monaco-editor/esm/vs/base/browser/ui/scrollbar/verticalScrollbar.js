@@ -89,3 +89,4 @@ export class VerticalScrollbar extends AbstractScrollbar {
         this._scrollByPage = options.scrollByPage;
     }
 }
+//# sourceMappingURL=verticalScrollbar.js.map

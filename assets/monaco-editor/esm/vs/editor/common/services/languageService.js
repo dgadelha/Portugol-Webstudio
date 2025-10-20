@@ -5,7 +5,6 @@
 import { Emitter, Event } from '../../../base/common/event.js';
 import { Disposable } from '../../../base/common/lifecycle.js';
 import { LanguagesRegistry } from './languagesRegistry.js';
-import { firstOrDefault } from '../../../base/common/arrays.js';
 import { TokenizationRegistry } from '../languages.js';
 import { PLAINTEXT_LANGUAGE_ID } from '../languages/modesRegistry.js';
 import { observableFromEvent } from '../../../base/common/observable.js';
@@ -41,7 +40,7 @@ export class LanguageService extends Disposable {
     }
     guessLanguageIdByFilepathOrFirstLine(resource, firstLine) {
         const languageIds = this._registry.guessLanguageIdByFilepathOrFirstLine(resource, firstLine);
-        return firstOrDefault(languageIds, null);
+        return languageIds.at(0) ?? null;
     }
     createById(languageId) {
         return new LanguageSelection(this.onDidChange, () => {
@@ -87,3 +86,4 @@ class LanguageSelection {
         return this._value.get();
     }
 }
+//# sourceMappingURL=languageService.js.map

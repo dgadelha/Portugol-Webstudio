@@ -1,8 +1,13 @@
+import { isNative } from '../../../base/common/platform.js';
 import { Registry } from '../../registry/common/platform.js';
 //#region Editor / Resources DND
 export const CodeDataTransfers = {
     EDITORS: 'CodeEditors',
-    FILES: 'CodeFiles'
+    FILES: 'CodeFiles',
+    SYMBOLS: 'application/vnd.code.symbols',
+    MARKERS: 'application/vnd.code.diagnostics',
+    NOTEBOOK_CELL_OUTPUT: 'notebook-cell-output',
+    SCM_HISTORY_ITEM: 'scm-history-item',
 };
 class DragAndDropContributionRegistry {
 }
@@ -33,4 +38,15 @@ export class LocalSelectionTransfer {
         return undefined;
     }
 }
+/**
+ * A helper to get access to Electrons `webUtils.getPathForFile` function
+ * in a safe way without crashing the application when running in the web.
+ */
+export function getPathForFile(file) {
+    if (isNative && typeof globalThis.vscode?.webUtils?.getPathForFile === 'function') {
+        return globalThis.vscode.webUtils.getPathForFile(file);
+    }
+    return undefined;
+}
 //#endregion
+//# sourceMappingURL=dnd.js.map

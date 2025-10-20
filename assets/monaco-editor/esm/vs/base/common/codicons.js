@@ -45,3 +45,4 @@ export const Codicon = {
     ...codiconsLibrary,
     ...codiconsDerived
 };
+//# sourceMappingURL=codicons.js.map

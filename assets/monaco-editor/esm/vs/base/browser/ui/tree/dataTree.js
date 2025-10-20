@@ -11,7 +11,8 @@ export class DataTree extends AbstractTree {
         this.dataSource = dataSource;
         this.identityProvider = options.identityProvider;
     }
-    createModel(user, view, options) {
-        return new ObjectTreeModel(user, view, options);
+    createModel(user, options) {
+        return new ObjectTreeModel(user, options);
     }
 }
+//# sourceMappingURL=dataTree.js.map

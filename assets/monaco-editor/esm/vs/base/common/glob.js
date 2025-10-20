@@ -566,3 +566,4 @@ function aggregateBasenameMatches(parsedPatterns, result) {
     aggregatedPatterns.push(aggregate);
     return aggregatedPatterns;
 }
+//# sourceMappingURL=glob.js.map

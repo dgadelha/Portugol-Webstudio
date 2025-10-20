@@ -133,3 +133,4 @@ LanguageFeatureDebounceService = __decorate([
 ], LanguageFeatureDebounceService);
 export { LanguageFeatureDebounceService };
 registerSingleton(ILanguageFeatureDebounceService, LanguageFeatureDebounceService, 1 /* InstantiationType.Delayed */);
+//# sourceMappingURL=languageFeatureDebounce.js.map

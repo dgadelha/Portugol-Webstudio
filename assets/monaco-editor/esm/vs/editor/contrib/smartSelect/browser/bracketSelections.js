@@ -144,3 +144,4 @@ export class BracketSelectionRangeProvider {
         }
     }
 }
+//# sourceMappingURL=bracketSelections.js.map

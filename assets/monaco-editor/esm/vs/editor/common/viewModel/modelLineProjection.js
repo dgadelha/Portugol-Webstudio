@@ -5,7 +5,8 @@
 import { LineTokens } from '../tokens/lineTokens.js';
 import { Position } from '../core/position.js';
 import { LineInjectedText } from '../textModelEvents.js';
-import { SingleLineInlineDecoration, ViewLineData } from '../viewModel.js';
+import { ViewLineData } from '../viewModel.js';
+import { SingleLineInlineDecoration } from './inlineDecorations.js';
 export function createModelLineProjection(lineBreakData, isVisible) {
     if (lineBreakData === null) {
         // No mapping needed
@@ -135,11 +136,28 @@ class ModelLineProjection {
         }
         let lineWithInjections;
         if (injectionOffsets) {
-            lineWithInjections = model.tokenization.getLineTokens(modelLineNumber).withInserted(injectionOffsets.map((offset, idx) => ({
-                offset,
-                text: injectionOptions[idx].content,
-                tokenMetadata: LineTokens.defaultTokenMetadata
-            })));
+            const tokensToInsert = [];
+            for (let idx = 0; idx < injectionOffsets.length; idx++) {
+                const offset = injectionOffsets[idx];
+                const tokens = injectionOptions[idx].tokens;
+                if (tokens) {
+                    tokens.forEach((range, info) => {
+                        tokensToInsert.push({
+                            offset,
+                            text: range.substring(injectionOptions[idx].content),
+                            tokenMetadata: info.metadata,
+                        });
+                    });
+                }
+                else {
+                    tokensToInsert.push({
+                        offset,
+                        text: injectionOptions[idx].content,
+                        tokenMetadata: LineTokens.defaultTokenMetadata,
+                    });
+                }
+            }
+            lineWithInjections = model.tokenization.getLineTokens(modelLineNumber).withInserted(tokensToInsert);
         }
         else {
             lineWithInjections = model.tokenization.getLineTokens(modelLineNumber);
@@ -327,3 +345,4 @@ function spaces(count) {
 function _makeSpaces(count) {
     return new Array(count + 1).join(' ');
 }
+//# sourceMappingURL=modelLineProjection.js.map

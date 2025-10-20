@@ -111,3 +111,4 @@ export function cancelOnDispose(store) {
     store.add({ dispose() { source.cancel(); } });
     return source.token;
 }
+//# sourceMappingURL=cancellation.js.map

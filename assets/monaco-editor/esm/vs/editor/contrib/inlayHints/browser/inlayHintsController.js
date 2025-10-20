@@ -14,10 +14,10 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 var InlayHintsController_1;
 import { isHTMLElement, ModifierKeyEmitter } from '../../../../base/browser/dom.js';
 import { isNonEmptyArray } from '../../../../base/common/arrays.js';
-import { RunOnceScheduler } from '../../../../base/common/async.js';
+import { disposableTimeout, RunOnceScheduler } from '../../../../base/common/async.js';
 import { CancellationToken, CancellationTokenSource } from '../../../../base/common/cancellation.js';
 import { onUnexpectedError } from '../../../../base/common/errors.js';
-import { DisposableStore, toDisposable } from '../../../../base/common/lifecycle.js';
+import { DisposableStore, MutableDisposable, toDisposable } from '../../../../base/common/lifecycle.js';
 import { LRUCache } from '../../../../base/common/map.js';
 import { assertType } from '../../../../base/common/types.js';
 import { URI } from '../../../../base/common/uri.js';
@@ -87,7 +87,7 @@ let InlayHintsController = class InlayHintsController {
     static { InlayHintsController_1 = this; }
     static { this.ID = 'editor.contrib.InlayHints'; }
     static { this._MAX_DECORATORS = 1500; }
-    static { this._MAX_LABEL_LEN = 43; }
+    static { this._whitespaceData = {}; }
     static get(editor) {
         return editor.getContribution(InlayHintsController_1.ID) ?? undefined;
     }
@@ -101,14 +101,14 @@ let InlayHintsController = class InlayHintsController {
         this._disposables = new DisposableStore();
         this._sessionDisposables = new DisposableStore();
         this._decorationsMetadata = new Map();
-        this._ruleFactory = new DynamicCssRules(this._editor);
         this._activeRenderMode = 0 /* RenderMode.Normal */;
+        this._ruleFactory = this._disposables.add(new DynamicCssRules(this._editor));
         this._debounceInfo = _featureDebounce.for(_languageFeaturesService.inlayHintsProvider, 'InlayHint', { min: 25 });
         this._disposables.add(_languageFeaturesService.inlayHintsProvider.onDidChange(() => this._update()));
         this._disposables.add(_editor.onDidChangeModel(() => this._update()));
         this._disposables.add(_editor.onDidChangeModelLanguage(() => this._update()));
         this._disposables.add(_editor.onDidChangeConfiguration(e => {
-            if (e.hasChanged(142 /* EditorOption.inlayHints */)) {
+            if (e.hasChanged(159 /* EditorOption.inlayHints */)) {
                 this._update();
             }
         }));
@@ -122,7 +122,7 @@ let InlayHintsController = class InlayHintsController {
     _update() {
         this._sessionDisposables.clear();
         this._removeAllDecorations();
-        const options = this._editor.getOption(142 /* EditorOption.inlayHints */);
+        const options = this._editor.getOption(159 /* EditorOption.inlayHints */);
         if (options.enabled === 'off') {
             return;
         }
@@ -221,11 +221,19 @@ let InlayHintsController = class InlayHintsController {
                 scheduler.schedule();
             }
         }));
+        const cursor = this._sessionDisposables.add(new MutableDisposable());
         this._sessionDisposables.add(this._editor.onDidChangeModelContent((e) => {
             cts?.cancel();
-            // update less aggressive when typing
-            const delay = Math.max(scheduler.delay, 1250);
-            scheduler.schedule(delay);
+            // mark current cursor position and time after which the whole can be updated/redrawn
+            const delay = Math.max(scheduler.delay, 800);
+            this._cursorInfo = { position: this._editor.getPosition(), notEarlierThan: Date.now() + delay };
+            cursor.value = disposableTimeout(() => scheduler.schedule(0), delay);
+            scheduler.schedule();
+        }));
+        this._sessionDisposables.add(this._editor.onDidChangeConfiguration(e => {
+            if (e.hasChanged(159 /* EditorOption.inlayHints */)) {
+                scheduler.schedule();
+            }
         }));
         // mouse gestures
         this._sessionDisposables.add(this._installDblClickGesture(() => scheduler.schedule(0)));
@@ -381,6 +389,51 @@ let InlayHintsController = class InlayHintsController {
         return result;
     }
     _updateHintsDecorators(ranges, items) {
+        const itemFixedLengths = new Map();
+        if (this._cursorInfo
+            && this._cursorInfo.notEarlierThan > Date.now()
+            && ranges.some(range => range.containsPosition(this._cursorInfo.position))) {
+            // collect inlay hints that are on the same line and before the cursor. Those "old" hints
+            // define fixed lengths so that the cursor does not jump back and worth while typing.
+            const { position } = this._cursorInfo;
+            this._cursorInfo = undefined;
+            const lengths = new Map();
+            for (const deco of this._editor.getLineDecorations(position.lineNumber) ?? []) {
+                const data = this._decorationsMetadata.get(deco.id);
+                if (deco.range.startColumn > position.column) {
+                    continue;
+                }
+                const opts = data?.decoration.options[data.item.anchor.direction];
+                if (opts && opts.attachedData !== InlayHintsController_1._whitespaceData) {
+                    const len = lengths.get(data.item) ?? 0;
+                    lengths.set(data.item, len + opts.content.length);
+                }
+            }
+            // on the cursor line and before the cursor-column
+            const newItemsWithFixedLength = items.filter(item => item.anchor.range.startLineNumber === position.lineNumber && item.anchor.range.endColumn <= position.column);
+            const fixedLengths = Array.from(lengths.values());
+            // match up fixed lengths with items and distribute the remaining lengths to the last item
+            let lastItem;
+            while (true) {
+                const targetItem = newItemsWithFixedLength.shift();
+                const fixedLength = fixedLengths.shift();
+                if (!fixedLength && !targetItem) {
+                    break; // DONE
+                }
+                if (targetItem) {
+                    itemFixedLengths.set(targetItem, fixedLength ?? 0);
+                    lastItem = targetItem;
+                }
+                else if (lastItem && fixedLength) {
+                    // still lengths but no more item. give it all to the last
+                    let len = itemFixedLengths.get(lastItem);
+                    len += fixedLength;
+                    len += fixedLengths.reduce((p, c) => p + c, 0);
+                    fixedLengths.length = 0;
+                    break; // DONE
+                }
+            }
+        }
         // utils to collect/create injected text decorations
         const newDecorationsData = [];
         const addInjectedText = (item, ref, content, cursorStops, attachedData) => {
@@ -412,18 +465,20 @@ let InlayHintsController = class InlayHintsController {
                 width: `${(fontSize / 3) | 0}px`,
                 display: 'inline-block'
             });
-            addInjectedText(item, marginRule, '\u200a', isLast ? InjectedTextCursorStops.Right : InjectedTextCursorStops.None);
+            addInjectedText(item, marginRule, '\u200a', isLast ? InjectedTextCursorStops.Right : InjectedTextCursorStops.None, InlayHintsController_1._whitespaceData);
         };
         //
         const { fontSize, fontFamily, padding, isUniform } = this._getLayoutInfo();
+        const maxLength = this._editor.getOption(159 /* EditorOption.inlayHints */).maximumLength;
         const fontFamilyVar = '--code-editorInlayHintsFontFamily';
         this._editor.getContainerDomNode().style.setProperty(fontFamilyVar, fontFamily);
         let currentLineInfo = { line: 0, totalLen: 0 };
-        for (const item of items) {
+        for (let i = 0; i < items.length; i++) {
+            const item = items[i];
             if (currentLineInfo.line !== item.anchor.range.startLineNumber) {
                 currentLineInfo = { line: item.anchor.range.startLineNumber, totalLen: 0 };
             }
-            if (currentLineInfo.totalLen > InlayHintsController_1._MAX_LABEL_LEN) {
+            if (maxLength && currentLineInfo.totalLen > maxLength) {
                 continue;
             }
             // whitespace leading the actual label
@@ -434,6 +489,8 @@ let InlayHintsController = class InlayHintsController {
             const parts = typeof item.hint.label === 'string'
                 ? [{ label: item.hint.label }]
                 : item.hint.label;
+            const itemFixedLength = itemFixedLengths.get(item);
+            let itemActualLength = 0;
             for (let i = 0; i < parts.length; i++) {
                 const part = parts[i];
                 const isFirst = i === 0;
@@ -456,8 +513,26 @@ let InlayHintsController = class InlayHintsController {
                         cssProperties.cursor = 'pointer';
                     }
                 }
+                let textlabel = part.label;
+                currentLineInfo.totalLen += textlabel.length;
+                let tooLong = false;
+                const over = maxLength !== 0 ? (currentLineInfo.totalLen - maxLength) : 0;
+                if (over > 0) {
+                    textlabel = textlabel.slice(0, -over) + '…';
+                    tooLong = true;
+                }
+                itemActualLength += textlabel.length;
+                if (itemFixedLength !== undefined) {
+                    const overFixedLength = itemActualLength - itemFixedLength;
+                    if (overFixedLength >= 0) {
+                        // longer than fixed length, trim
+                        itemActualLength -= overFixedLength;
+                        textlabel = textlabel.slice(0, -(1 + overFixedLength)) + '…';
+                        tooLong = true;
+                    }
+                }
                 if (padding) {
-                    if (isFirst && isLast) {
+                    if (isFirst && (isLast || tooLong)) {
                         // only element
                         cssProperties.padding = `1px ${Math.max(1, fontSize / 4) | 0}px`;
                         cssProperties.borderRadius = `${(fontSize / 4) | 0}px`;
@@ -467,7 +542,7 @@ let InlayHintsController = class InlayHintsController {
                         cssProperties.padding = `1px 0 1px ${Math.max(1, fontSize / 4) | 0}px`;
                         cssProperties.borderRadius = `${(fontSize / 4) | 0}px 0 0 ${(fontSize / 4) | 0}px`;
                     }
-                    else if (isLast) {
+                    else if ((isLast || tooLong)) {
                         // last element
                         cssProperties.padding = `1px ${Math.max(1, fontSize / 4) | 0}px 1px 0`;
                         cssProperties.borderRadius = `0 ${(fontSize / 4) | 0}px ${(fontSize / 4) | 0}px 0`;
@@ -476,18 +551,15 @@ let InlayHintsController = class InlayHintsController {
                         cssProperties.padding = `1px 0 1px 0`;
                     }
                 }
-                let textlabel = part.label;
-                currentLineInfo.totalLen += textlabel.length;
-                let tooLong = false;
-                const over = currentLineInfo.totalLen - InlayHintsController_1._MAX_LABEL_LEN;
-                if (over > 0) {
-                    textlabel = textlabel.slice(0, -over) + '…';
-                    tooLong = true;
-                }
                 addInjectedText(item, this._ruleFactory.createClassNameRef(cssProperties), fixSpace(textlabel), isLast && !item.hint.paddingRight ? InjectedTextCursorStops.Right : InjectedTextCursorStops.None, new RenderedInlayHintLabelPart(item, i));
                 if (tooLong) {
                     break;
                 }
+            }
+            if (itemFixedLength !== undefined && itemActualLength < itemFixedLength) {
+                // shorter than fixed length, pad
+                const pad = (itemFixedLength - itemActualLength);
+                addInjectedText(item, this._ruleFactory.createClassNameRef({}), '\u200a'.repeat(pad), InjectedTextCursorStops.None);
             }
             // whitespace trailing the actual label
             if (item.hint.paddingRight) {
@@ -533,10 +605,10 @@ let InlayHintsController = class InlayHintsController {
         }
     }
     _getLayoutInfo() {
-        const options = this._editor.getOption(142 /* EditorOption.inlayHints */);
+        const options = this._editor.getOption(159 /* EditorOption.inlayHints */);
         const padding = options.padding;
-        const editorFontSize = this._editor.getOption(52 /* EditorOption.fontSize */);
-        const editorFontFamily = this._editor.getOption(49 /* EditorOption.fontFamily */);
+        const editorFontSize = this._editor.getOption(61 /* EditorOption.fontSize */);
+        const editorFontFamily = this._editor.getOption(58 /* EditorOption.fontFamily */);
         let fontSize = options.fontSize;
         if (!fontSize || fontSize < 5 || fontSize > editorFontSize) {
             fontSize = editorFontSize;
@@ -585,3 +657,4 @@ CommandsRegistry.registerCommand('_executeInlayHintProvider', async (accessor, .
         ref.dispose();
     }
 });
+//# sourceMappingURL=inlayHintsController.js.map

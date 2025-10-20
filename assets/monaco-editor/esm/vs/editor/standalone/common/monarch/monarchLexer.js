@@ -409,7 +409,7 @@ let MonarchTokenizer = MonarchTokenizer_1 = class MonarchTokenizer extends Dispo
         let popOffset = -1;
         let hasEmbeddedPopRule = false;
         for (const rule of rules) {
-            if (!monarchCommon.isIAction(rule.action) || rule.action.nextEmbedded !== '@pop') {
+            if (!monarchCommon.isIAction(rule.action) || !(rule.action.nextEmbedded === '@pop' || rule.action.hasEmbeddedEndInCases)) {
                 continue;
             }
             hasEmbeddedPopRule = true;
@@ -764,3 +764,4 @@ function findBracket(lexer, matched) {
     }
     return null;
 }
+//# sourceMappingURL=monarchLexer.js.map

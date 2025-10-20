@@ -94,11 +94,17 @@ let StandaloneQuickInputService = class StandaloneQuickInputService {
     pick(picks, options, token = CancellationToken.None) {
         return this.activeService /* TS fail */.pick(picks, options, token);
     }
+    input(options, token) {
+        return this.activeService.input(options, token);
+    }
     createQuickPick(options = { useSeparators: false }) {
         return this.activeService.createQuickPick(options);
     }
     createInputBox() {
         return this.activeService.createInputBox();
+    }
+    toggleHover() {
+        return this.activeService.toggleHover();
     }
 };
 StandaloneQuickInputService = __decorate([
@@ -133,10 +139,11 @@ export class QuickInputEditorWidget {
         return this.domNode;
     }
     getPosition() {
-        return { preference: 2 /* OverlayWidgetPositionPreference.TOP_CENTER */ };
+        return { preference: { top: 0, left: 0 } };
     }
     dispose() {
         this.codeEditor.removeOverlayWidget(this);
     }
 }
 registerEditorContribution(QuickInputEditorContribution.ID, QuickInputEditorContribution, 4 /* EditorContributionInstantiation.Lazy */);
+//# sourceMappingURL=standaloneQuickInputService.js.map

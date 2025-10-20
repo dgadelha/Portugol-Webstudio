@@ -188,9 +188,9 @@ export class ContextView extends Disposable {
         }
         const viewSizeWidth = DOM.getTotalWidth(this.view);
         const viewSizeHeight = DOM.getTotalHeight(this.view);
-        const anchorPosition = this.delegate.anchorPosition || 0 /* AnchorPosition.BELOW */;
-        const anchorAlignment = this.delegate.anchorAlignment || 0 /* AnchorAlignment.LEFT */;
-        const anchorAxisAlignment = this.delegate.anchorAxisAlignment || 0 /* AnchorAxisAlignment.VERTICAL */;
+        const anchorPosition = this.delegate.anchorPosition ?? 0 /* AnchorPosition.BELOW */;
+        const anchorAlignment = this.delegate.anchorAlignment ?? 0 /* AnchorAlignment.LEFT */;
+        const anchorAxisAlignment = this.delegate.anchorAxisAlignment ?? 0 /* AnchorAxisAlignment.VERTICAL */;
         let top;
         let left;
         const activeWindow = DOM.getActiveWindow();
@@ -219,8 +219,11 @@ export class ContextView extends Disposable {
         this.view.classList.add(anchorAlignment === 0 /* AnchorAlignment.LEFT */ ? 'left' : 'right');
         this.view.classList.toggle('fixed', this.useFixedPosition);
         const containerPosition = DOM.getDomNodePagePosition(this.container);
-        this.view.style.top = `${top - (this.useFixedPosition ? DOM.getDomNodePagePosition(this.view).top : containerPosition.top)}px`;
-        this.view.style.left = `${left - (this.useFixedPosition ? DOM.getDomNodePagePosition(this.view).left : containerPosition.left)}px`;
+        // Account for container scroll when positioning the context view
+        const containerScrollTop = this.container.scrollTop || 0;
+        const containerScrollLeft = this.container.scrollLeft || 0;
+        this.view.style.top = `${top - (this.useFixedPosition ? DOM.getDomNodePagePosition(this.view).top : containerPosition.top) + containerScrollTop}px`;
+        this.view.style.left = `${left - (this.useFixedPosition ? DOM.getDomNodePagePosition(this.view).left : containerPosition.left) + containerScrollLeft}px`;
         this.view.style.width = 'initial';
     }
     hide(data) {
@@ -276,7 +279,7 @@ const SHADOW_ROOT_CSS = /* css */ `
 	:host-context(.mac:lang(zh-Hans)) { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", sans-serif; }
 	:host-context(.mac:lang(zh-Hant)) { font-family: -apple-system, BlinkMacSystemFont, "PingFang TC", sans-serif; }
 	:host-context(.mac:lang(ja)) { font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic Pro", sans-serif; }
-	:host-context(.mac:lang(ko)) { font-family: -apple-system, BlinkMacSystemFont, "Nanum Gothic", "Apple SD Gothic Neo", "AppleGothic", sans-serif; }
+	:host-context(.mac:lang(ko)) { font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Nanum Gothic", "AppleGothic", sans-serif; }
 
 	:host-context(.windows) { font-family: "Segoe WPC", "Segoe UI", sans-serif; }
 	:host-context(.windows:lang(zh-Hans)) { font-family: "Segoe WPC", "Segoe UI", "Microsoft YaHei", sans-serif; }
@@ -290,3 +293,4 @@ const SHADOW_ROOT_CSS = /* css */ `
 	:host-context(.linux:lang(ja)) { font-family: system-ui, "Ubuntu", "Droid Sans", "Source Han Sans J", "Source Han Sans JP", "Source Han Sans", sans-serif; }
 	:host-context(.linux:lang(ko)) { font-family: system-ui, "Ubuntu", "Droid Sans", "Source Han Sans K", "Source Han Sans JR", "Source Han Sans", "UnDotum", "FBaekmuk Gulim", sans-serif; }
 `;
+//# sourceMappingURL=contextview.js.map

@@ -56,3 +56,4 @@ export const env = safeProcess.env;
  * environments.
  */
 export const platform = safeProcess.platform;
+//# sourceMappingURL=process.js.map

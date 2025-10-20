@@ -10,3 +10,4 @@ export class CombinedSpliceable {
         this.spliceables.forEach(s => s.splice(start, deleteCount, elements));
     }
 }
+//# sourceMappingURL=splice.js.map

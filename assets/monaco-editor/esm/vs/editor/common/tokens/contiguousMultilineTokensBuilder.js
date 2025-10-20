@@ -18,3 +18,4 @@ export class ContiguousMultilineTokensBuilder {
         return this._tokens;
     }
 }
+//# sourceMappingURL=contiguousMultilineTokensBuilder.js.map

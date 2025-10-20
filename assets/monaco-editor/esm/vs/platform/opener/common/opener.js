@@ -5,6 +5,16 @@
 import { createDecorator } from '../../instantiation/common/instantiation.js';
 export const IOpenerService = createDecorator('openerService');
 /**
+ * Encodes selection into the `URI`.
+ *
+ * IMPORTANT: you MUST use `extractSelection` to separate the selection
+ * again from the original `URI` before passing the `URI` into any
+ * component that is not aware of selections.
+ */
+export function withSelection(uri, selection) {
+    return uri.with({ fragment: `${selection.startLineNumber},${selection.startColumn}${selection.endLineNumber ? `-${selection.endLineNumber}${selection.endColumn ? `,${selection.endColumn}` : ''}` : ''}` });
+}
+/**
  * file:///some/file.js#73
  * file:///some/file.js#L73
  * file:///some/file.js#73,84
@@ -28,3 +38,4 @@ export function extractSelection(uri) {
     }
     return { selection, uri };
 }
+//# sourceMappingURL=opener.js.map

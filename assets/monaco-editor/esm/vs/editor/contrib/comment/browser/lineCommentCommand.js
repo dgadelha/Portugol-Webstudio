@@ -49,8 +49,10 @@ export class LineCommentCommand {
      * Analyze lines and decide which lines are relevant and what the toggle should do.
      * Also, build up several offsets and lengths useful in the generation of editor operations.
      */
-    static _analyzeLines(type, insertSpace, model, lines, startLineNumber, ignoreEmptyLines, ignoreFirstLine, languageConfigurationService) {
+    static _analyzeLines(type, insertSpace, model, lines, startLineNumber, ignoreEmptyLines, ignoreFirstLine, languageConfigurationService, languageId) {
         let onlyWhitespaceLines = true;
+        const config = languageConfigurationService.getLanguageConfiguration(languageId).comments;
+        const lineCommentNoIndent = config?.lineCommentNoIndent ?? false;
         let shouldRemoveComments;
         if (type === 0 /* Type.Toggle */) {
             shouldRemoveComments = true;
@@ -74,13 +76,14 @@ export class LineCommentCommand {
             if (lineContentStartOffset === -1) {
                 // Empty or whitespace only line
                 lineData.ignore = ignoreEmptyLines;
-                lineData.commentStrOffset = lineContent.length;
+                lineData.commentStrOffset = lineCommentNoIndent ? 0 : lineContent.length;
                 continue;
             }
             onlyWhitespaceLines = false;
+            const offset = lineCommentNoIndent ? 0 : lineContentStartOffset;
             lineData.ignore = false;
-            lineData.commentStrOffset = lineContentStartOffset;
-            if (shouldRemoveComments && !BlockCommentCommand._haystackHasNeedleAtOffset(lineContent, lineData.commentStr, lineContentStartOffset)) {
+            lineData.commentStrOffset = offset;
+            if (shouldRemoveComments && !BlockCommentCommand._haystackHasNeedleAtOffset(lineContent, lineData.commentStr, offset)) {
                 if (type === 0 /* Type.Toggle */) {
                     // Every line so far has been a line comment, but this one is not
                     shouldRemoveComments = false;
@@ -119,12 +122,13 @@ export class LineCommentCommand {
      */
     static _gatherPreflightData(type, insertSpace, model, startLineNumber, endLineNumber, ignoreEmptyLines, ignoreFirstLine, languageConfigurationService) {
         const lines = LineCommentCommand._gatherPreflightCommentStrings(model, startLineNumber, endLineNumber, languageConfigurationService);
+        const languageId = model.getLanguageIdAtPosition(startLineNumber, 1);
         if (lines === null) {
             return {
                 supported: false
             };
         }
-        return LineCommentCommand._analyzeLines(type, insertSpace, model, lines, startLineNumber, ignoreEmptyLines, ignoreFirstLine, languageConfigurationService);
+        return LineCommentCommand._analyzeLines(type, insertSpace, model, lines, startLineNumber, ignoreEmptyLines, ignoreFirstLine, languageConfigurationService, languageId);
     }
     /**
      * Given a successful analysis, execute either insert line comments, either remove line comments
@@ -321,3 +325,4 @@ export class LineCommentCommand {
         }
     }
 }
+//# sourceMappingURL=lineCommentCommand.js.map

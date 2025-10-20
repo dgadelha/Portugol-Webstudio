@@ -206,3 +206,4 @@ CommandsRegistry.registerCommand('_provideDocumentRangeSemanticTokens', async (a
         data: result.tokens.data
     });
 });
+//# sourceMappingURL=getSemanticTokens.js.map

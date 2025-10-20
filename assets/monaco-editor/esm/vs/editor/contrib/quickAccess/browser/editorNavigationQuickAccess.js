@@ -147,3 +147,4 @@ export class AbstractEditorNavigationQuickAccessProvider {
         }
     }
 }
+//# sourceMappingURL=editorNavigationQuickAccess.js.map

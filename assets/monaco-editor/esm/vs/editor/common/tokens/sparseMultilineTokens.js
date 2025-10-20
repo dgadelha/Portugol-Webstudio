@@ -4,7 +4,8 @@
  *--------------------------------------------------------------------------------------------*/
 import { Position } from '../core/position.js';
 import { Range } from '../core/range.js';
-import { countEOL } from '../core/eolCounter.js';
+import { countEOL } from '../core/misc/eolCounter.js';
+import { RateLimiter } from './common.js';
 /**
  * Represents sparse tokens over a contiguous range of lines.
  */
@@ -125,6 +126,9 @@ export class SparseMultilineTokens {
             return;
         }
         this._tokens.acceptInsertText(lineIndex, position.column - 1, eolCount, firstLineLength, lastLineLength, firstCharCode);
+    }
+    reportIfInvalid(model) {
+        this._tokens.reportIfInvalid(model, this._startLineNumber);
     }
 }
 class SparseMultilineTokensStorage {
@@ -496,6 +500,27 @@ class SparseMultilineTokensStorage {
             tokens[offset + 2] = tokenEndCharacter;
         }
     }
+    static { this._rateLimiter = new RateLimiter(10 / 60); } // limit to 10 times per minute
+    reportIfInvalid(model, startLineNumber) {
+        for (let i = 0; i < this._tokenCount; i++) {
+            const lineNumber = this._getDeltaLine(i) + startLineNumber;
+            if (lineNumber < 1) {
+                SparseMultilineTokensStorage._rateLimiter.runIfNotLimited(() => {
+                    console.error('Invalid Semantic Tokens Data From Extension: lineNumber < 1');
+                });
+            }
+            else if (lineNumber > model.getLineCount()) {
+                SparseMultilineTokensStorage._rateLimiter.runIfNotLimited(() => {
+                    console.error('Invalid Semantic Tokens Data From Extension: lineNumber > model.getLineCount()');
+                });
+            }
+            else if (this._getEndCharacter(i) > model.getLineLength(lineNumber)) {
+                SparseMultilineTokensStorage._rateLimiter.runIfNotLimited(() => {
+                    console.error('Invalid Semantic Tokens Data From Extension: end character > model.getLineLength(lineNumber)');
+                });
+            }
+        }
+    }
 }
 export class SparseLineTokens {
     constructor(tokens) {
@@ -514,3 +539,4 @@ export class SparseLineTokens {
         return this._tokens[4 * tokenIndex + 3];
     }
 }
+//# sourceMappingURL=sparseMultilineTokens.js.map

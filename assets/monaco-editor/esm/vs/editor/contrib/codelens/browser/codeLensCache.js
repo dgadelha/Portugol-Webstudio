@@ -58,7 +58,7 @@ let CodeLensCache = class CodeLensCache {
             };
         });
         const copyModel = new CodeLensModel();
-        copyModel.add({ lenses: copyItems, dispose: () => { } }, this._fakeProvider);
+        copyModel.add({ lenses: copyItems }, this._fakeProvider);
         const item = new CacheItem(model.getLineCount(), copyModel);
         this._cache.set(model.uri.toString(), item);
     }
@@ -94,7 +94,7 @@ let CodeLensCache = class CodeLensCache {
                     lenses.push({ range: new Range(line, 1, line, 11) });
                 }
                 const model = new CodeLensModel();
-                model.add({ lenses, dispose() { } }, this._fakeProvider);
+                model.add({ lenses }, this._fakeProvider);
                 this._cache.set(key, new CacheItem(element.lineCount, model));
             }
         }
@@ -108,3 +108,4 @@ CodeLensCache = __decorate([
 ], CodeLensCache);
 export { CodeLensCache };
 registerSingleton(ICodeLensCache, CodeLensCache, 1 /* InstantiationType.Delayed */);
+//# sourceMappingURL=codeLensCache.js.map

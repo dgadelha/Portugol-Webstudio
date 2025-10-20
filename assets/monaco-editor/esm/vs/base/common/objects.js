@@ -147,33 +147,4 @@ export function equals(one, other) {
     }
     return true;
 }
-export function getAllPropertyNames(obj) {
-    let res = [];
-    while (Object.prototype !== obj) {
-        res = res.concat(Object.getOwnPropertyNames(obj));
-        obj = Object.getPrototypeOf(obj);
-    }
-    return res;
-}
-export function getAllMethodNames(obj) {
-    const methods = [];
-    for (const prop of getAllPropertyNames(obj)) {
-        if (typeof obj[prop] === 'function') {
-            methods.push(prop);
-        }
-    }
-    return methods;
-}
-export function createProxyObject(methodNames, invoke) {
-    const createProxyMethod = (method) => {
-        return function () {
-            const args = Array.prototype.slice.call(arguments, 0);
-            return invoke(method, args);
-        };
-    };
-    const result = {};
-    for (const methodName of methodNames) {
-        result[methodName] = createProxyMethod(methodName);
-    }
-    return result;
-}
+//# sourceMappingURL=objects.js.map

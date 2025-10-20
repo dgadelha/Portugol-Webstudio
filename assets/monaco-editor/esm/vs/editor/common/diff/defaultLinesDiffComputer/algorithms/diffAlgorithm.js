@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 import { forEachAdjacent } from '../../../../../base/common/arrays.js';
 import { BugIndicatingError } from '../../../../../base/common/errors.js';
-import { OffsetRange } from '../../../core/offsetRange.js';
+import { OffsetRange } from '../../../core/ranges/offsetRange.js';
 export class DiffAlgorithmResult {
     static trivial(seq1, seq2) {
         return new DiffAlgorithmResult([new SequenceDiff(OffsetRange.ofLength(seq1.length), OffsetRange.ofLength(seq2.length))], false);
@@ -130,9 +130,8 @@ export class DateTimeout {
         const valid = Date.now() - this.startTime < this.timeout;
         if (!valid && this.valid) {
             this.valid = false; // timeout reached
-            // eslint-disable-next-line no-debugger
-            debugger; // WARNING: Most likely debugging caused the timeout. Call `this.disable()` to continue without timing out.
         }
         return this.valid;
     }
 }
+//# sourceMappingURL=diffAlgorithm.js.map

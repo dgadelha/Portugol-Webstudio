@@ -8,7 +8,7 @@ import { EventType as GestureEventType, Gesture } from '../../touch.js';
 import { ActionRunner } from '../../../common/actions.js';
 import { Emitter } from '../../../common/event.js';
 import './dropdown.css';
-class BaseDropdown extends ActionRunner {
+export class BaseDropdown extends ActionRunner {
     constructor(container, options) {
         super();
         this._onDidChangeVisibility = this._register(new Emitter());
@@ -27,9 +27,8 @@ class BaseDropdown extends ActionRunner {
         }
         for (const event of [EventType.MOUSE_DOWN, GestureEventType.Tap]) {
             this._register(addDisposableListener(this._label, event, e => {
-                if (isMouseEvent(e) && (e.detail > 1 || e.button !== 0)) {
+                if (isMouseEvent(e) && e.button !== 0) {
                     // prevent right click trigger to allow separate context menu (https://github.com/microsoft/vscode/issues/151064)
-                    // prevent multiple clicks to open multiple context menus (https://github.com/microsoft/vscode/issues/41363)
                     return;
                 }
                 if (this.visible) {
@@ -40,7 +39,7 @@ class BaseDropdown extends ActionRunner {
                 }
             }));
         }
-        this._register(addDisposableListener(this._label, EventType.KEY_UP, e => {
+        this._register(addDisposableListener(this._label, EventType.KEY_DOWN, e => {
             const event = new StandardKeyboardEvent(e);
             if (event.equals(3 /* KeyCode.Enter */) || event.equals(10 /* KeyCode.Space */)) {
                 EventHelper.stop(e, true); // https://github.com/microsoft/vscode/issues/57997
@@ -137,3 +136,4 @@ export class DropdownMenu extends BaseDropdown {
         this.element.classList.remove('active');
     }
 }
+//# sourceMappingURL=dropdown.js.map

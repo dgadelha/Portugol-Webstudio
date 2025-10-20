@@ -1,7 +1,6 @@
 import { createMatches as createFuzzyMatches, fuzzyScore } from './filters.js';
 import { sep } from './path.js';
 import { isWindows } from './platform.js';
-import { stripWildcards } from './strings.js';
 const NO_SCORE2 = [undefined, []];
 export function scoreFuzzy2(target, query, patternStart = 0, wordStart = 0) {
     // Score: multiple inputs
@@ -121,8 +120,12 @@ function normalizeQuery(original) {
     else {
         pathNormalized = original.replace(/\\/g, sep); // Help macOS/Linux users to search for paths when using backslash
     }
-    // we remove quotes here because quotes are used for exact match search
-    const normalized = stripWildcards(pathNormalized).replace(/\s|"/g, '');
+    // remove certain characters that help find better results:
+    // - quotes: are used for exact match search
+    // - wildcards: are used for fuzzy matching
+    // - whitespace: are used to separate queries
+    // - ellipsis: sometimes used to indicate any path segments
+    const normalized = pathNormalized.replace(/[\*\u2026\s"]/g, '');
     return {
         pathNormalized,
         normalized,
@@ -136,3 +139,4 @@ export function pieceToQuery(arg1) {
     return prepareQuery(arg1.original);
 }
 //#endregion
+//# sourceMappingURL=fuzzyScorer.js.map

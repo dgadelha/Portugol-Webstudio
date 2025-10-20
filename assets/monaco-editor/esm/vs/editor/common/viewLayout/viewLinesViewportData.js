@@ -25,3 +25,4 @@ export class ViewportData {
         return this._model.getDecorationsInViewport(this.visibleRange);
     }
 }
+//# sourceMappingURL=viewLinesViewportData.js.map

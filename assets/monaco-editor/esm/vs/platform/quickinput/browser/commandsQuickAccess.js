@@ -37,12 +37,11 @@ let AbstractCommandsQuickAccessProvider = class AbstractCommandsQuickAccessProvi
     static { this.WORD_FILTER = or(matchesPrefix, matchesWords, matchesContiguousSubString); }
     constructor(options, instantiationService, keybindingService, commandService, telemetryService, dialogService) {
         super(AbstractCommandsQuickAccessProvider_1.PREFIX, options);
-        this.instantiationService = instantiationService;
         this.keybindingService = keybindingService;
         this.commandService = commandService;
         this.telemetryService = telemetryService;
         this.dialogService = dialogService;
-        this.commandsHistory = this._register(this.instantiationService.createInstance(CommandsHistory));
+        this.commandsHistory = this._register(instantiationService.createInstance(CommandsHistory));
         this.options = options;
     }
     async _getPicks(filter, _disposables, token, runOptions) {
@@ -155,22 +154,22 @@ let AbstractCommandsQuickAccessProvider = class AbstractCommandsQuickAccessProvi
             const commandPick = filteredCommandPicks[i];
             // Separator: recently used
             if (i === 0 && this.commandsHistory.peek(commandPick.commandId)) {
-                commandPicks.push({ type: 'separator', label: localize('recentlyUsed', "recently used") });
+                commandPicks.push({ type: 'separator', label: localize(1723, "recently used") });
                 addOtherSeparator = true;
             }
             if (addSuggestedSeparator && commandPick.tfIdfScore !== undefined) {
-                commandPicks.push({ type: 'separator', label: localize('suggested', "similar commands") });
+                commandPicks.push({ type: 'separator', label: localize(1724, "similar commands") });
                 addSuggestedSeparator = false;
             }
             // Separator: commonly used
             if (addCommonlyUsedSeparator && commandPick.tfIdfScore === undefined && !this.commandsHistory.peek(commandPick.commandId) && this.options.suggestedCommandIds?.has(commandPick.commandId)) {
-                commandPicks.push({ type: 'separator', label: localize('commonlyUsed', "commonly used") });
+                commandPicks.push({ type: 'separator', label: localize(1725, "commonly used") });
                 addOtherSeparator = true;
                 addCommonlyUsedSeparator = false;
             }
             // Separator: other commands
             if (addOtherSeparator && commandPick.tfIdfScore === undefined && !this.commandsHistory.peek(commandPick.commandId) && !this.options.suggestedCommandIds?.has(commandPick.commandId)) {
-                commandPicks.push({ type: 'separator', label: localize('morecCommands', "other commands") });
+                commandPicks.push({ type: 'separator', label: localize(1726, "other commands") });
                 addOtherSeparator = false;
             }
             // Command
@@ -190,7 +189,7 @@ let AbstractCommandsQuickAccessProvider = class AbstractCommandsQuickAccessProvi
                 // Basically, if we haven't already added a separator, we add one before the additional picks so long
                 // as one hasn't been added to the start of the array.
                 if (addSuggestedSeparator && commandPicks[0]?.type !== 'separator') {
-                    commandPicks.unshift({ type: 'separator', label: localize('suggested', "similar commands") });
+                    commandPicks.unshift({ type: 'separator', label: localize(1727, "similar commands") });
                 }
                 return commandPicks;
             })()
@@ -202,7 +201,7 @@ let AbstractCommandsQuickAccessProvider = class AbstractCommandsQuickAccessProvi
         }
         const keybinding = this.keybindingService.lookupKeybinding(commandPick.commandId);
         const ariaLabel = keybinding ?
-            localize('commandPickAriaLabelWithKeybinding', "{0}, {1}", commandPick.label, keybinding.getAriaLabel()) :
+            localize(1728, "{0}, {1}", commandPick.label, keybinding.getAriaLabel()) :
             commandPick.label;
         return {
             ...commandPick,
@@ -225,7 +224,7 @@ let AbstractCommandsQuickAccessProvider = class AbstractCommandsQuickAccessProvi
                 }
                 catch (error) {
                     if (!isCancellationError(error)) {
-                        this.dialogService.error(localize('canNotRun', "Command '{0}' resulted in an error", commandPick.label), toErrorMessage(error));
+                        this.dialogService.error(localize(1729, "Command '{0}' resulted in an error", commandPick.label), toErrorMessage(error));
                     }
                 }
             }
@@ -352,3 +351,4 @@ CommandsHistory = CommandsHistory_1 = __decorate([
     __param(2, ILogService)
 ], CommandsHistory);
 export { CommandsHistory };
+//# sourceMappingURL=commandsQuickAccess.js.map

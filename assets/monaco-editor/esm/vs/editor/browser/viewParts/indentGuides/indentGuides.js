@@ -11,17 +11,21 @@ import { ArrayQueue } from '../../../../base/common/arrays.js';
 import { isDefined } from '../../../../base/common/types.js';
 import { BracketPairGuidesClassNames } from '../../../common/model/guidesTextModelPart.js';
 import { IndentGuide, HorizontalGuidesState } from '../../../common/textModelGuides.js';
+/**
+ * Indent guides are vertical lines that help identify the indentation level of
+ * the code.
+ */
 export class IndentGuidesOverlay extends DynamicViewOverlay {
     constructor(context) {
         super();
         this._context = context;
         this._primaryPosition = null;
         const options = this._context.configuration.options;
-        const wrappingInfo = options.get(147 /* EditorOption.wrappingInfo */);
-        const fontInfo = options.get(50 /* EditorOption.fontInfo */);
+        const wrappingInfo = options.get(166 /* EditorOption.wrappingInfo */);
+        const fontInfo = options.get(59 /* EditorOption.fontInfo */);
         this._spaceWidth = fontInfo.spaceWidth;
         this._maxIndentLeft = wrappingInfo.wrappingColumn === -1 ? -1 : (wrappingInfo.wrappingColumn * fontInfo.typicalHalfwidthCharacterWidth);
-        this._bracketPairGuideOptions = options.get(16 /* EditorOption.guides */);
+        this._bracketPairGuideOptions = options.get(22 /* EditorOption.guides */);
         this._renderResult = null;
         this._context.addEventHandler(this);
     }
@@ -33,11 +37,11 @@ export class IndentGuidesOverlay extends DynamicViewOverlay {
     // --- begin event handlers
     onConfigurationChanged(e) {
         const options = this._context.configuration.options;
-        const wrappingInfo = options.get(147 /* EditorOption.wrappingInfo */);
-        const fontInfo = options.get(50 /* EditorOption.fontInfo */);
+        const wrappingInfo = options.get(166 /* EditorOption.wrappingInfo */);
+        const fontInfo = options.get(59 /* EditorOption.fontInfo */);
         this._spaceWidth = fontInfo.spaceWidth;
         this._maxIndentLeft = wrappingInfo.wrappingColumn === -1 ? -1 : (wrappingInfo.wrappingColumn * fontInfo.typicalHalfwidthCharacterWidth);
-        this._bracketPairGuideOptions = options.get(16 /* EditorOption.guides */);
+        this._bracketPairGuideOptions = options.get(22 /* EditorOption.guides */);
         return true;
     }
     onCursorStateChanged(e) {
@@ -245,3 +249,4 @@ registerThemingParticipant((theme, collector) => {
         collector.addRule(`.monaco-editor .lines-content .core-guide-indent.indent-active { box-shadow: 1px 0 0 0 var(--indent-color-active) inset; }`);
     }
 });
+//# sourceMappingURL=indentGuides.js.map

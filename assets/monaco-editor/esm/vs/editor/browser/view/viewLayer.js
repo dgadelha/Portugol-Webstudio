@@ -177,7 +177,8 @@ export class RenderedLinesCollection {
     }
 }
 export class VisibleLinesCollection {
-    constructor(_lineFactory) {
+    constructor(_viewContext, _lineFactory) {
+        this._viewContext = _viewContext;
         this._lineFactory = _lineFactory;
         this.domNode = this._createDomNode();
         this._linesCollection = new RenderedLinesCollection(this._lineFactory);
@@ -192,14 +193,25 @@ export class VisibleLinesCollection {
     }
     // ---- begin view event handlers
     onConfigurationChanged(e) {
-        if (e.hasChanged(146 /* EditorOption.layoutInfo */)) {
+        if (e.hasChanged(165 /* EditorOption.layoutInfo */)) {
             return true;
         }
         return false;
     }
-    onFlushed(e) {
+    onFlushed(e, flushDom) {
+        // No need to clear the dom node because a full .innerHTML will occur in
+        // ViewLayerRenderer._render, however the fallback mechanism in the
+        // GPU renderer may cause this to be necessary as the .innerHTML call
+        // may not happen depending on the new state, leaving stale DOM nodes
+        // around.
+        if (flushDom) {
+            const start = this._linesCollection.getStartLineNumber();
+            const end = this._linesCollection.getEndLineNumber();
+            for (let i = start; i <= end; i++) {
+                this._linesCollection.getLine(i).getDomNode()?.remove();
+            }
+        }
         this._linesCollection.flush();
-        // No need to clear the dom node because a full .innerHTML will occur in ViewLayerRenderer._render
         return true;
     }
     onLinesChanged(e) {
@@ -248,7 +260,7 @@ export class VisibleLinesCollection {
     }
     renderLines(viewportData) {
         const inp = this._linesCollection._get();
-        const renderer = new ViewLayerRenderer(this.domNode.domNode, this._lineFactory, viewportData);
+        const renderer = new ViewLayerRenderer(this.domNode.domNode, this._lineFactory, viewportData, this._viewContext);
         const ctx = {
             rendLineNumberStart: inp.rendLineNumberStart,
             lines: inp.lines,
@@ -261,10 +273,11 @@ export class VisibleLinesCollection {
 }
 class ViewLayerRenderer {
     static { this._ttPolicy = createTrustedTypesPolicy('editorViewLayer', { createHTML: value => value }); }
-    constructor(_domNode, _lineFactory, _viewportData) {
+    constructor(_domNode, _lineFactory, _viewportData, _viewContext) {
         this._domNode = _domNode;
         this._lineFactory = _lineFactory;
         this._viewportData = _viewportData;
+        this._viewContext = _viewContext;
     }
     render(inContext, startLineNumber, stopLineNumber, deltaTop) {
         const ctx = {
@@ -330,7 +343,7 @@ class ViewLayerRenderer {
         const lines = ctx.lines;
         for (let i = startIndex; i <= endIndex; i++) {
             const lineNumber = rendLineNumberStart + i;
-            lines[i].layoutLine(lineNumber, deltaTop[lineNumber - deltaLN], this._viewportData.lineHeight);
+            lines[i].layoutLine(lineNumber, deltaTop[lineNumber - deltaLN], this._lineHeightForLineNumber(lineNumber));
         }
     }
     _insertLinesBefore(ctx, fromLineNumber, toLineNumber, deltaTop, deltaLN) {
@@ -418,7 +431,8 @@ class ViewLayerRenderer {
                     // line is not new
                     continue;
                 }
-                const renderResult = line.renderLine(i + rendLineNumberStart, deltaTop[i], this._viewportData.lineHeight, this._viewportData, sb);
+                const renderedLineNumber = i + rendLineNumberStart;
+                const renderResult = line.renderLine(renderedLineNumber, deltaTop[i], this._lineHeightForLineNumber(renderedLineNumber), this._viewportData, sb);
                 if (!renderResult) {
                     // line does not need rendering
                     continue;
@@ -441,7 +455,8 @@ class ViewLayerRenderer {
                     // line was new
                     continue;
                 }
-                const renderResult = line.renderLine(i + rendLineNumberStart, deltaTop[i], this._viewportData.lineHeight, this._viewportData, sb);
+                const renderedLineNumber = i + rendLineNumberStart;
+                const renderResult = line.renderLine(renderedLineNumber, deltaTop[i], this._lineHeightForLineNumber(renderedLineNumber), this._viewportData, sb);
                 if (!renderResult) {
                     // line does not need rendering
                     continue;
@@ -454,4 +469,8 @@ class ViewLayerRenderer {
             }
         }
     }
+    _lineHeightForLineNumber(lineNumber) {
+        return this._viewContext.viewLayout.getLineHeightForLineNumber(lineNumber);
+    }
 }
+//# sourceMappingURL=viewLayer.js.map

@@ -5,6 +5,11 @@
 import * as dom from '../../../../base/browser/dom.js';
 import { createFastDomNode } from '../../../../base/browser/fastDomNode.js';
 import { PartFingerprints, ViewPart } from '../../view/viewPart.js';
+/**
+ * This view part is responsible for rendering the content widgets, which are
+ * used for rendering elements that are associated to an editor position,
+ * such as suggestions or the parameter hints.
+ */
 export class ViewContentWidgets extends ViewPart {
     constructor(context, viewDomNode) {
         super(context);
@@ -126,16 +131,16 @@ class Widget {
         this._context = context;
         this._viewDomNode = viewDomNode;
         this._actual = actual;
+        const options = this._context.configuration.options;
+        const layoutInfo = options.get(165 /* EditorOption.layoutInfo */);
+        const allowOverflow = options.get(4 /* EditorOption.allowOverflow */);
         this.domNode = createFastDomNode(this._actual.getDomNode());
         this.id = this._actual.getId();
-        this.allowEditorOverflow = this._actual.allowEditorOverflow || false;
+        this.allowEditorOverflow = (this._actual.allowEditorOverflow || false) && allowOverflow;
         this.suppressMouseDown = this._actual.suppressMouseDown || false;
-        const options = this._context.configuration.options;
-        const layoutInfo = options.get(146 /* EditorOption.layoutInfo */);
-        this._fixedOverflowWidgets = options.get(42 /* EditorOption.fixedOverflowWidgets */);
+        this._fixedOverflowWidgets = options.get(51 /* EditorOption.fixedOverflowWidgets */);
         this._contentWidth = layoutInfo.contentWidth;
         this._contentLeft = layoutInfo.contentLeft;
-        this._lineHeight = options.get(67 /* EditorOption.lineHeight */);
         this._affinity = null;
         this._preference = [];
         this._cachedDomNodeOffsetWidth = -1;
@@ -151,9 +156,8 @@ class Widget {
     }
     onConfigurationChanged(e) {
         const options = this._context.configuration.options;
-        this._lineHeight = options.get(67 /* EditorOption.lineHeight */);
-        if (e.hasChanged(146 /* EditorOption.layoutInfo */)) {
-            const layoutInfo = options.get(146 /* EditorOption.layoutInfo */);
+        if (e.hasChanged(165 /* EditorOption.layoutInfo */)) {
+            const layoutInfo = options.get(165 /* EditorOption.layoutInfo */);
             this._contentLeft = layoutInfo.contentLeft;
             this._contentWidth = layoutInfo.contentWidth;
             this._maxWidth = this._getMaxWidth();
@@ -281,11 +285,11 @@ class Widget {
      * The content widget should touch if possible the secondary anchor.
      */
     _getAnchorsCoordinates(ctx) {
-        const primary = getCoordinates(this._primaryAnchor.viewPosition, this._affinity, this._lineHeight);
+        const primary = getCoordinates(this._primaryAnchor.viewPosition, this._affinity);
         const secondaryViewPosition = (this._secondaryAnchor.viewPosition?.lineNumber === this._primaryAnchor.viewPosition?.lineNumber ? this._secondaryAnchor.viewPosition : null);
-        const secondary = getCoordinates(secondaryViewPosition, this._affinity, this._lineHeight);
+        const secondary = getCoordinates(secondaryViewPosition, this._affinity);
         return { primary, secondary };
-        function getCoordinates(position, affinity, lineHeight) {
+        function getCoordinates(position, affinity) {
             if (!position) {
                 return null;
             }
@@ -296,6 +300,7 @@ class Widget {
             // Left-align widgets that should appear :before content
             const left = (position.column === 1 && affinity === 3 /* PositionAffinity.LeftOfInjectedText */ ? 0 : horizontalPosition.left);
             const top = ctx.getVerticalOffsetForLineNumber(position.lineNumber) - ctx.scrollTop;
+            const lineHeight = ctx.getLineHeightForLineNumber(position.lineNumber);
             return new AnchorCoordinate(top, left, lineHeight);
         }
     }
@@ -303,7 +308,7 @@ class Widget {
         if (!secondary) {
             return primary;
         }
-        const fontInfo = this._context.configuration.options.get(50 /* EditorOption.fontInfo */);
+        const fontInfo = this._context.configuration.options.get(59 /* EditorOption.fontInfo */);
         let left = secondary.left;
         if (left < primary.left) {
             left = Math.max(left, primary.left - width + fontInfo.typicalFullwidthCharacterWidth);
@@ -431,7 +436,7 @@ class Widget {
                 }
             }
             if (typeof this._actual.afterRender === 'function') {
-                safeInvoke(this._actual.afterRender, this._actual, null);
+                safeInvoke(this._actual.afterRender, this._actual, null, null);
             }
             return;
         }
@@ -450,7 +455,7 @@ class Widget {
             this._isVisible = true;
         }
         if (typeof this._actual.afterRender === 'function') {
-            safeInvoke(this._actual.afterRender, this._actual, this._renderData.position);
+            safeInvoke(this._actual.afterRender, this._actual, this._renderData.position, this._renderData.coordinate);
         }
     }
 }
@@ -484,3 +489,4 @@ function safeInvoke(fn, thisArg, ...args) {
         return null;
     }
 }
+//# sourceMappingURL=contentWidgets.js.map

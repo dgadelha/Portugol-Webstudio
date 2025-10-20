@@ -48,3 +48,4 @@ export function getEnterAction(autoIndent, model, range, languageConfigurationSe
         indentation: indentation
     };
 }
+//# sourceMappingURL=enterAction.js.map

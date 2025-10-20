@@ -122,11 +122,19 @@ let QuickInputService = class QuickInputService extends Themable {
     pick(picks, options, token = CancellationToken.None) {
         return this.controller.pick(picks, options, token);
     }
+    input(options = {}, token = CancellationToken.None) {
+        return this.controller.input(options, token);
+    }
     createQuickPick(options = { useSeparators: false }) {
         return this.controller.createQuickPick(options);
     }
     createInputBox() {
         return this.controller.createInputBox();
+    }
+    toggleHover() {
+        if (this.hasController) {
+            this.controller.toggleHover();
+        }
     }
     updateStyles() {
         if (this.hasController) {
@@ -158,6 +166,7 @@ let QuickInputService = class QuickInputService extends Themable {
                 listInactiveFocusBackground: quickInputListFocusBackground,
                 listFocusOutline: activeContrastBorder,
                 listInactiveFocusOutline: activeContrastBorder,
+                treeStickyScrollBackground: quickInputBackground,
             }),
             pickerGroup: {
                 pickerGroupBorder: asCssVariable(pickerGroupBorder),
@@ -174,3 +183,4 @@ QuickInputService = __decorate([
     __param(4, IConfigurationService)
 ], QuickInputService);
 export { QuickInputService };
+//# sourceMappingURL=quickInputService.js.map

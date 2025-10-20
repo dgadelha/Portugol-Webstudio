@@ -3,6 +3,8 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 import * as dom from '../../../base/browser/dom.js';
+import * as domStylesheetsJs from '../../../base/browser/domStylesheets.js';
+import * as cssJs from '../../../base/browser/cssValue.js';
 import { DomEmitter } from '../../../base/browser/event.js';
 import { Event } from '../../../base/common/event.js';
 import { StandardKeyboardEvent } from '../../../base/browser/keyboardEvent.js';
@@ -25,8 +27,8 @@ function getIconClass(iconPath) {
     }
     else {
         iconClass = iconClassGenerator.nextId();
-        dom.createCSSRule(`.${iconClass}, .hc-light .${iconClass}`, `background-image: ${dom.asCSSUrl(iconPath.light || iconPath.dark)}`);
-        dom.createCSSRule(`.vs-dark .${iconClass}, .hc-black .${iconClass}`, `background-image: ${dom.asCSSUrl(iconPath.dark)}`);
+        domStylesheetsJs.createCSSRule(`.${iconClass}, .hc-light .${iconClass}`, `background-image: ${cssJs.asCSSUrl(iconPath.light || iconPath.dark)}`);
+        domStylesheetsJs.createCSSRule(`.vs-dark .${iconClass}, .hc-black .${iconClass}`, `background-image: ${cssJs.asCSSUrl(iconPath.dark)}`);
         iconPathToClass[key] = iconClass;
     }
     return iconClass;
@@ -56,7 +58,7 @@ export function renderQuickInputDescription(description, container, actionHandle
         else {
             let title = node.title;
             if (!title && node.href.startsWith('command:')) {
-                title = localize('executeCommand', "Click to execute command '{0}'", node.href.substring('command:'.length));
+                title = localize(1754, "Click to execute command '{0}'", node.href.substring('command:'.length));
             }
             else if (!title) {
                 title = node.href;
@@ -82,3 +84,4 @@ export function renderQuickInputDescription(description, container, actionHandle
         }
     }
 }
+//# sourceMappingURL=quickInputUtils.js.map

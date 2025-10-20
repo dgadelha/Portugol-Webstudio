@@ -94,18 +94,12 @@ export class HighlightedLabel extends Disposable {
             }
         }
         dom.reset(this.domNode, ...children);
-        if (this.options?.hoverDelegate?.showNativeHover) {
-            /* While custom hover is not inside custom hover */
-            this.domNode.title = this.title;
+        if (!this.customHover && this.title !== '') {
+            const hoverDelegate = this.options?.hoverDelegate ?? getDefaultHoverDelegate('mouse');
+            this.customHover = this._register(getBaseLayerHoverDelegate().setupManagedHover(hoverDelegate, this.domNode, this.title));
         }
-        else {
-            if (!this.customHover && this.title !== '') {
-                const hoverDelegate = this.options?.hoverDelegate ?? getDefaultHoverDelegate('mouse');
-                this.customHover = this._register(getBaseLayerHoverDelegate().setupManagedHover(hoverDelegate, this.domNode, this.title));
-            }
-            else if (this.customHover) {
-                this.customHover.update(this.title);
-            }
+        else if (this.customHover) {
+            this.customHover.update(this.title);
         }
         this.didEverRender = true;
     }
@@ -131,3 +125,4 @@ export class HighlightedLabel extends Disposable {
         });
     }
 }
+//# sourceMappingURL=highlightedLabel.js.map

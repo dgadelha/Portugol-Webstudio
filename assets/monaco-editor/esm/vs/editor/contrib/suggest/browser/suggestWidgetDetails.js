@@ -47,12 +47,14 @@ let SuggestDetailsWidget = class SuggestDetailsWidget {
         this._disposables.add(this._scrollbar);
         this._header = dom.append(this._body, dom.$('.header'));
         this._close = dom.append(this._header, dom.$('span' + ThemeIcon.asCSSSelector(Codicon.close)));
-        this._close.title = nls.localize('details.close', "Close");
+        this._close.title = nls.localize(1475, "Close");
+        this._close.role = 'button';
+        this._close.tabIndex = -1;
         this._type = dom.append(this._header, dom.$('p.type'));
         this._docs = dom.append(this._body, dom.$('p.docs'));
         this._configureFont();
         this._disposables.add(this._editor.onDidChangeConfiguration(e => {
-            if (e.hasChanged(50 /* EditorOption.fontInfo */)) {
+            if (e.hasChanged(59 /* EditorOption.fontInfo */)) {
                 this._configureFont();
             }
         }));
@@ -63,10 +65,10 @@ let SuggestDetailsWidget = class SuggestDetailsWidget {
     }
     _configureFont() {
         const options = this._editor.getOptions();
-        const fontInfo = options.get(50 /* EditorOption.fontInfo */);
+        const fontInfo = options.get(59 /* EditorOption.fontInfo */);
         const fontFamily = fontInfo.getMassagedFontFamily();
-        const fontSize = options.get(120 /* EditorOption.suggestFontSize */) || fontInfo.fontSize;
-        const lineHeight = options.get(121 /* EditorOption.suggestLineHeight */) || fontInfo.lineHeight;
+        const fontSize = options.get(135 /* EditorOption.suggestFontSize */) || fontInfo.fontSize;
+        const lineHeight = options.get(136 /* EditorOption.suggestLineHeight */) || fontInfo.lineHeight;
         const fontWeight = fontInfo.fontWeight;
         const fontSizePx = `${fontSize}px`;
         const lineHeightPx = `${lineHeight}px`;
@@ -79,7 +81,7 @@ let SuggestDetailsWidget = class SuggestDetailsWidget {
         this._close.style.width = lineHeightPx;
     }
     getLayoutInfo() {
-        const lineHeight = this._editor.getOption(121 /* EditorOption.suggestLineHeight */) || this._editor.getOption(50 /* EditorOption.fontInfo */).lineHeight;
+        const lineHeight = this._editor.getOption(136 /* EditorOption.suggestLineHeight */) || this._editor.getOption(59 /* EditorOption.fontInfo */).lineHeight;
         const borderWidth = this._borderWidth;
         const borderHeight = borderWidth * 2;
         return {
@@ -91,7 +93,7 @@ let SuggestDetailsWidget = class SuggestDetailsWidget {
         };
     }
     renderLoading() {
-        this._type.textContent = nls.localize('loading', "Loading...");
+        this._type.textContent = nls.localize(1476, "Loading...");
         this._docs.textContent = '';
         this.domNode.classList.remove('no-docs', 'no-type');
         this.layout(this.size.width, this.getLayoutInfo().lineHeight * 2);
@@ -139,14 +141,16 @@ let SuggestDetailsWidget = class SuggestDetailsWidget {
         else if (documentation) {
             this._docs.classList.add('markdown-docs');
             dom.clearNode(this._docs);
-            const renderedContents = this._markdownRenderer.render(documentation);
+            const renderedContents = this._markdownRenderer.render(documentation, {
+                asyncRenderCallback: () => {
+                    this.layout(this._size.width, this._type.clientHeight + this._docs.clientHeight);
+                    this._onDidChangeContents.fire(this);
+                }
+            });
             this._docs.appendChild(renderedContents.element);
             this._renderDisposeable.add(renderedContents);
-            this._renderDisposeable.add(this._markdownRenderer.onDidRenderAsync(() => {
-                this.layout(this._size.width, this._type.clientHeight + this._docs.clientHeight);
-                this._onDidChangeContents.fire(this);
-            }));
         }
+        this.domNode.classList.toggle('detail-and-doc', !!detail && !!documentation);
         this.domNode.style.userSelect = 'text';
         this.domNode.tabIndex = -1;
         this._close.onmousedown = e => {
@@ -204,6 +208,9 @@ let SuggestDetailsWidget = class SuggestDetailsWidget {
     }
     get borderWidth() {
         return this._borderWidth;
+    }
+    focus() {
+        this.domNode.focus();
     }
 };
 SuggestDetailsWidget = __decorate([
@@ -385,3 +392,4 @@ export class SuggestDetailsOverlay {
         this._editor.layoutOverlayWidget(this);
     }
 }
+//# sourceMappingURL=suggestWidgetDetails.js.map

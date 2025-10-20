@@ -69,7 +69,7 @@ export class ResizableContentWidget extends Disposable {
         const maxHeight = Math.min(Math.max(maxHeightAbove, maxHeightBelow), widgetHeight);
         const height = Math.min(widgetHeight, maxHeight);
         let renderingAbove;
-        if (this._editor.getOption(60 /* EditorOption.hover */).above) {
+        if (this._editor.getOption(69 /* EditorOption.hover */).above) {
             renderingAbove = height <= maxHeightAbove ? 1 /* ContentWidgetPositionPreference.ABOVE */ : 2 /* ContentWidgetPositionPreference.BELOW */;
         }
         else {
@@ -87,3 +87,4 @@ export class ResizableContentWidget extends Disposable {
         this._resizableNode.layout(dimension.height, dimension.width);
     }
 }
+//# sourceMappingURL=resizableContentWidget.js.map

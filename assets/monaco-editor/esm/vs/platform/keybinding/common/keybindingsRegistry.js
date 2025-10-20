@@ -106,3 +106,4 @@ function sorter(a, b) {
     }
     return a.weight2 - b.weight2;
 }
+//# sourceMappingURL=keybindingsRegistry.js.map

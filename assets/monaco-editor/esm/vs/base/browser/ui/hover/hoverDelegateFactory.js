@@ -29,3 +29,4 @@ export function createInstantHoverDelegate() {
     // Instant hover only makes sense for 'element' placement.
     return hoverDelegateFactory('element', true);
 }
+//# sourceMappingURL=hoverDelegateFactory.js.map

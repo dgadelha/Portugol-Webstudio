@@ -16,12 +16,12 @@ import { createInstantHoverDelegate } from '../hover/hoverDelegateFactory.js';
  * A widget that combines an action bar for primary actions and a dropdown for secondary actions.
  */
 export class ToolBar extends Disposable {
+    get onDidChangeDropdownVisibility() { return this._onDidChangeDropdownVisibility.event; }
     constructor(container, contextMenuProvider, options = { orientation: 0 /* ActionsOrientation.HORIZONTAL */ }) {
         super();
         this.submenuActionViewItems = [];
         this.hasSecondaryActions = false;
         this._onDidChangeDropdownVisibility = this._register(new EventMultiplexer());
-        this.onDidChangeDropdownVisibility = this._onDidChangeDropdownVisibility.event;
         this.disposables = this._register(new DisposableStore());
         options.hoverDelegate = options.hoverDelegate ?? this._register(createInstantHoverDelegate());
         this.options = options;
@@ -85,6 +85,13 @@ export class ToolBar extends Disposable {
     get actionRunner() {
         return this.actionBar.actionRunner;
     }
+    set context(context) {
+        this.actionBar.context = context;
+        this.toggleMenuActionViewItem?.setActionContext(context);
+        for (const actionViewItem of this.submenuActionViewItems) {
+            actionViewItem.setActionContext(context);
+        }
+    }
     getElement() {
         return this.element;
     }
@@ -122,7 +129,7 @@ export class ToolBar extends Disposable {
 export class ToggleMenuAction extends Action {
     static { this.ID = 'toolbar.toggle.more'; }
     constructor(toggleDropdownMenu, title) {
-        title = title || nls.localize('moreActions', "More Actions...");
+        title = title || nls.localize(17, "More Actions...");
         super(ToggleMenuAction.ID, title, undefined, true);
         this._menuActions = [];
         this.toggleDropdownMenu = toggleDropdownMenu;
@@ -137,3 +144,4 @@ export class ToggleMenuAction extends Action {
         this._menuActions = actions;
     }
 }
+//# sourceMappingURL=toolbar.js.map

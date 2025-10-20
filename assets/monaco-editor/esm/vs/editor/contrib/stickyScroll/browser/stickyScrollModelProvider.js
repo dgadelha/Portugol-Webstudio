@@ -11,7 +11,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { Disposable, DisposableStore } from '../../../../base/common/lifecycle.js';
+import { Disposable, DisposableStore, MutableDisposable } from '../../../../base/common/lifecycle.js';
 import { ILanguageFeaturesService } from '../../../common/services/languageFeatures.js';
 import { OutlineElement, OutlineGroup, OutlineModel } from '../../documentSymbols/browser/outlineModel.js';
 import { createCancelablePromise, Delayer } from '../../../../base/common/async.js';
@@ -43,7 +43,7 @@ let StickyModelProvider = class StickyModelProvider extends Disposable {
         this._modelPromise = null;
         this._updateScheduler = this._register(new Delayer(300));
         this._updateOperation = this._register(new DisposableStore());
-        switch (this._editor.getOption(116 /* EditorOption.stickyScroll */).defaultModel) {
+        switch (this._editor.getOption(131 /* EditorOption.stickyScroll */).defaultModel) {
             case ModelProvider.OUTLINE_MODEL:
                 this._modelProviders.push(new StickyModelFromCandidateOutlineProvider(this._editor, _languageFeaturesService));
             // fall through
@@ -260,7 +260,7 @@ StickyModelFromCandidateOutlineProvider = __decorate([
 class StickyModelFromCandidateFoldingProvider extends StickyModelCandidateProvider {
     constructor(editor) {
         super(editor);
-        this._foldingLimitReporter = new RangesLimitReporter(editor);
+        this._foldingLimitReporter = this._register(new RangesLimitReporter(editor));
     }
     createStickyModel(token, model) {
         const foldingElement = this._fromFoldingRegions(model);
@@ -311,18 +311,27 @@ let StickyModelFromCandidateSyntaxFoldingProvider = class StickyModelFromCandida
     constructor(editor, onProviderUpdate, _languageFeaturesService) {
         super(editor);
         this._languageFeaturesService = _languageFeaturesService;
+        this.provider = this._register(new MutableDisposable());
+        this._register(this._languageFeaturesService.foldingRangeProvider.onDidChange(() => {
+            this._updateProvider(editor, onProviderUpdate);
+        }));
+        this._updateProvider(editor, onProviderUpdate);
+    }
+    _updateProvider(editor, onProviderUpdate) {
         const selectedProviders = FoldingController.getFoldingRangeProviders(this._languageFeaturesService, editor.getModel());
-        if (selectedProviders.length > 0) {
-            this.provider = this._register(new SyntaxRangeProvider(editor.getModel(), selectedProviders, onProviderUpdate, this._foldingLimitReporter, undefined));
+        if (selectedProviders.length === 0) {
+            return;
         }
+        this.provider.value = new SyntaxRangeProvider(editor.getModel(), selectedProviders, onProviderUpdate, this._foldingLimitReporter, undefined);
     }
     isProviderValid() {
         return this.provider !== undefined;
     }
     async createModelFromProvider(token) {
-        return this.provider?.compute(token) ?? null;
+        return this.provider.value?.compute(token) ?? null;
     }
 };
 StickyModelFromCandidateSyntaxFoldingProvider = __decorate([
     __param(2, ILanguageFeaturesService)
 ], StickyModelFromCandidateSyntaxFoldingProvider);
+//# sourceMappingURL=stickyScrollModelProvider.js.map

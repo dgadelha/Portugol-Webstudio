@@ -110,3 +110,4 @@ export class TextModelCancellationTokenSource extends CancellationTokenSource {
         super.dispose();
     }
 }
+//# sourceMappingURL=editorState.js.map

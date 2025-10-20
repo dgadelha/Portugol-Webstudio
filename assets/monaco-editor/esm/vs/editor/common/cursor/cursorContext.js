@@ -11,3 +11,4 @@ export class CursorContext {
         this.cursorConfig = cursorConfig;
     }
 }
+//# sourceMappingURL=cursorContext.js.map

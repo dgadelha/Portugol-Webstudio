@@ -21,7 +21,7 @@ import { EditorContextKeys } from '../../../common/editorContextKeys.js';
 import { getCodeLensModel } from './codelens.js';
 import { ICodeLensCache } from './codeLensCache.js';
 import { CodeLensHelper, CodeLensWidget } from './codelensWidget.js';
-import { localize } from '../../../../nls.js';
+import { localize, localize2 } from '../../../../nls.js';
 import { ICommandService } from '../../../../platform/commands/common/commands.js';
 import { INotificationService } from '../../../../platform/notification/common/notification.js';
 import { IQuickInputService } from '../../../../platform/quickinput/common/quickInput.js';
@@ -45,10 +45,10 @@ let CodeLensContribution = class CodeLensContribution {
         this._disposables.add(this._editor.onDidChangeModel(() => this._onModelChange()));
         this._disposables.add(this._editor.onDidChangeModelLanguage(() => this._onModelChange()));
         this._disposables.add(this._editor.onDidChangeConfiguration((e) => {
-            if (e.hasChanged(50 /* EditorOption.fontInfo */) || e.hasChanged(19 /* EditorOption.codeLensFontSize */) || e.hasChanged(18 /* EditorOption.codeLensFontFamily */)) {
+            if (e.hasChanged(59 /* EditorOption.fontInfo */) || e.hasChanged(25 /* EditorOption.codeLensFontSize */) || e.hasChanged(24 /* EditorOption.codeLensFontFamily */)) {
                 this._updateLensStyle();
             }
-            if (e.hasChanged(17 /* EditorOption.codeLens */)) {
+            if (e.hasChanged(23 /* EditorOption.codeLens */)) {
                 this._onModelChange();
             }
         }));
@@ -58,15 +58,16 @@ let CodeLensContribution = class CodeLensContribution {
     }
     dispose() {
         this._localDispose();
+        this._localToDispose.dispose();
         this._disposables.dispose();
         this._oldCodeLensModels.dispose();
         this._currentCodeLensModel?.dispose();
     }
     _getLayoutInfo() {
-        const lineHeightFactor = Math.max(1.3, this._editor.getOption(67 /* EditorOption.lineHeight */) / this._editor.getOption(52 /* EditorOption.fontSize */));
-        let fontSize = this._editor.getOption(19 /* EditorOption.codeLensFontSize */);
+        const lineHeightFactor = Math.max(1.3, this._editor.getOption(75 /* EditorOption.lineHeight */) / this._editor.getOption(61 /* EditorOption.fontSize */));
+        let fontSize = this._editor.getOption(25 /* EditorOption.codeLensFontSize */);
         if (!fontSize || fontSize < 5) {
-            fontSize = (this._editor.getOption(52 /* EditorOption.fontSize */) * .9) | 0;
+            fontSize = (this._editor.getOption(61 /* EditorOption.fontSize */) * .9) | 0;
         }
         return {
             fontSize,
@@ -75,8 +76,8 @@ let CodeLensContribution = class CodeLensContribution {
     }
     _updateLensStyle() {
         const { codeLensHeight, fontSize } = this._getLayoutInfo();
-        const fontFamily = this._editor.getOption(18 /* EditorOption.codeLensFontFamily */);
-        const editorFontInfo = this._editor.getOption(50 /* EditorOption.fontInfo */);
+        const fontFamily = this._editor.getOption(24 /* EditorOption.codeLensFontFamily */);
+        const editorFontInfo = this._editor.getOption(59 /* EditorOption.fontInfo */);
         const { style } = this._editor.getContainerDomNode();
         style.setProperty('--vscode-editorCodeLens-lineHeight', `${codeLensHeight}px`);
         style.setProperty('--vscode-editorCodeLens-fontSize', `${fontSize}px`);
@@ -107,7 +108,7 @@ let CodeLensContribution = class CodeLensContribution {
         if (!model) {
             return;
         }
-        if (!this._editor.getOption(17 /* EditorOption.codeLens */) || model.isTooLargeForTokenization()) {
+        if (!this._editor.getOption(23 /* EditorOption.codeLens */) || model.isTooLargeForTokenization()) {
             return;
         }
         const cachedLenses = this._codeLensCache.get(model);
@@ -336,6 +337,7 @@ let CodeLensContribution = class CodeLensContribution {
             }
         });
         if (toResolve.length === 0) {
+            this._oldCodeLensModels.clear();
             return;
         }
         const t1 = Date.now();
@@ -402,8 +404,7 @@ registerEditorAction(class ShowLensesInCurrentLine extends EditorAction {
         super({
             id: 'codelens.showLensesInCurrentLine',
             precondition: EditorContextKeys.hasCodeLensProvider,
-            label: localize('showLensOnLine', "Show CodeLens Commands For Current Line"),
-            alias: 'Show CodeLens Commands For Current Line',
+            label: localize2(880, "Show CodeLens Commands for Current Line"),
         });
     }
     async run(accessor, editor) {
@@ -438,7 +439,7 @@ registerEditorAction(class ShowLensesInCurrentLine extends EditorAction {
         }
         const item = await quickInputService.pick(items, {
             canPickMany: false,
-            placeHolder: localize('placeHolder', "Select a command")
+            placeHolder: localize(879, "Select a command")
         });
         if (!item) {
             // Nothing picked
@@ -464,3 +465,4 @@ registerEditorAction(class ShowLensesInCurrentLine extends EditorAction {
         }
     }
 });
+//# sourceMappingURL=codelensController.js.map

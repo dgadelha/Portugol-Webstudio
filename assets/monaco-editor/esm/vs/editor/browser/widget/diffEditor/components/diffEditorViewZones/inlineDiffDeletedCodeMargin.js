@@ -36,14 +36,14 @@ export class InlineDiffDeletedCodeMargin extends Disposable {
         this._diffActions = document.createElement('div');
         this._diffActions.className = ThemeIcon.asClassName(Codicon.lightBulb) + ' lightbulb-glyph';
         this._diffActions.style.position = 'absolute';
-        const lineHeight = this._modifiedEditor.getOption(67 /* EditorOption.lineHeight */);
+        const lineHeight = this._modifiedEditor.getOption(75 /* EditorOption.lineHeight */);
         this._diffActions.style.right = '0px';
         this._diffActions.style.visibility = 'hidden';
         this._diffActions.style.height = `${lineHeight}px`;
         this._diffActions.style.lineHeight = `${lineHeight}px`;
         this._marginDomNode.appendChild(this._diffActions);
         let currentLineNumberOffset = 0;
-        const useShadowDOM = _modifiedEditor.getOption(128 /* EditorOption.useShadowDOM */) && !isIOS; // Do not use shadow dom on IOS #122035
+        const useShadowDOM = _modifiedEditor.getOption(144 /* EditorOption.useShadowDOM */) && !isIOS; // Do not use shadow dom on IOS #122035
         const showContextMenu = (x, y) => {
             this._contextMenuService.showContextMenu({
                 domForShadowRoot: useShadowDOM ? _modifiedEditor.getDomNode() ?? undefined : undefined,
@@ -54,18 +54,18 @@ export class InlineDiffDeletedCodeMargin extends Disposable {
                     // default action
                     actions.push(new Action('diff.clipboard.copyDeletedContent', isDeletion
                         ? (_diff.original.length > 1
-                            ? localize('diff.clipboard.copyDeletedLinesContent.label', "Copy deleted lines")
-                            : localize('diff.clipboard.copyDeletedLinesContent.single.label', "Copy deleted line"))
+                            ? localize(109, "Copy deleted lines")
+                            : localize(110, "Copy deleted line"))
                         : (_diff.original.length > 1
-                            ? localize('diff.clipboard.copyChangedLinesContent.label', "Copy changed lines")
-                            : localize('diff.clipboard.copyChangedLinesContent.single.label', "Copy changed line")), undefined, true, async () => {
+                            ? localize(111, "Copy changed lines")
+                            : localize(112, "Copy changed line")), undefined, true, async () => {
                         const originalText = this._originalTextModel.getValueInRange(_diff.original.toExclusiveRange());
                         await this._clipboardService.writeText(originalText);
                     }));
                     if (_diff.original.length > 1) {
                         actions.push(new Action('diff.clipboard.copyDeletedLineContent', isDeletion
-                            ? localize('diff.clipboard.copyDeletedLineContent.label', "Copy deleted line ({0})", _diff.original.startLineNumber + currentLineNumberOffset)
-                            : localize('diff.clipboard.copyChangedLineContent.label', "Copy changed line ({0})", _diff.original.startLineNumber + currentLineNumberOffset), undefined, true, async () => {
+                            ? localize(113, "Copy deleted line ({0})", _diff.original.startLineNumber + currentLineNumberOffset)
+                            : localize(114, "Copy changed line ({0})", _diff.original.startLineNumber + currentLineNumberOffset), undefined, true, async () => {
                             let lineContent = this._originalTextModel.getLineContent(_diff.original.startLineNumber + currentLineNumberOffset);
                             if (lineContent === '') {
                                 // empty line -> new line
@@ -75,9 +75,9 @@ export class InlineDiffDeletedCodeMargin extends Disposable {
                             await this._clipboardService.writeText(lineContent);
                         }));
                     }
-                    const readOnly = _modifiedEditor.getOption(92 /* EditorOption.readOnly */);
+                    const readOnly = _modifiedEditor.getOption(104 /* EditorOption.readOnly */);
                     if (!readOnly) {
-                        actions.push(new Action('diff.inline.revertChange', localize('diff.inline.revertChange.label', "Revert this change"), undefined, true, async () => {
+                        actions.push(new Action('diff.inline.revertChange', localize(115, "Revert this change"), undefined, true, async () => {
                             this._editor.revert(this._diff);
                         }));
                     }
@@ -136,3 +136,4 @@ export class InlineDiffDeletedCodeMargin extends Disposable {
         return lineNumberOffset;
     }
 }
+//# sourceMappingURL=inlineDiffDeletedCodeMargin.js.map

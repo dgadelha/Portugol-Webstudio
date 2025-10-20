@@ -2,7 +2,8 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { $, append, clearNode, createStyleSheet } from '../../dom.js';
+import { $, append, clearNode } from '../../dom.js';
+import { createStyleSheet } from '../../domStylesheets.js';
 import { getBaseLayerHoverDelegate } from '../hover/hoverDelegate2.js';
 import { getDefaultHoverDelegate } from '../hover/hoverDelegateFactory.js';
 import { List, unthemedListStyles } from '../list/listWidget.js';
@@ -42,21 +43,21 @@ class TableListRenderer {
         this.renderedTemplates.add(result);
         return result;
     }
-    renderElement(element, index, templateData, height) {
+    renderElement(element, index, templateData, renderDetails) {
         for (let i = 0; i < this.columns.length; i++) {
             const column = this.columns[i];
             const cell = column.project(element);
             const renderer = this.renderers[i];
-            renderer.renderElement(cell, index, templateData.cellTemplateData[i], height);
+            renderer.renderElement(cell, index, templateData.cellTemplateData[i], renderDetails);
         }
     }
-    disposeElement(element, index, templateData, height) {
+    disposeElement(element, index, templateData, renderDetails) {
         for (let i = 0; i < this.columns.length; i++) {
             const renderer = this.renderers[i];
             if (renderer.disposeElement) {
                 const column = this.columns[i];
                 const cell = column.project(element);
-                renderer.disposeElement(cell, index, templateData.cellTemplateData[i], height);
+                renderer.disposeElement(cell, index, templateData.cellTemplateData[i], renderDetails);
             }
         }
     }
@@ -175,3 +176,4 @@ export class Table {
         this.disposables.dispose();
     }
 }
+//# sourceMappingURL=tableWidget.js.map

@@ -4,8 +4,9 @@
  *--------------------------------------------------------------------------------------------*/
 import { Position } from '../core/position.js';
 import { Range } from '../core/range.js';
-import { InlineDecoration, ViewModelDecoration } from '../viewModel.js';
-import { filterValidationDecorations } from '../config/editorOptions.js';
+import { filterFontDecorations, filterValidationDecorations } from '../config/editorOptions.js';
+import { isModelDecorationVisible, ViewModelDecoration } from './viewModelDecoration.js';
+import { InlineDecoration } from './inlineDecorations.js';
 export class ViewModelDecorations {
     constructor(editorId, model, configuration, linesCollection, coordinatesConverter) {
         this.editorId = editorId;
@@ -71,12 +72,12 @@ export class ViewModelDecorations {
         }
         return this._cachedModelDecorationsResolver;
     }
-    getInlineDecorationsOnLine(lineNumber, onlyMinimapDecorations = false, onlyMarginDecorations = false) {
+    getDecorationsOnLine(lineNumber, onlyMinimapDecorations = false, onlyMarginDecorations = false) {
         const range = new Range(lineNumber, this._linesCollection.getViewLineMinColumn(lineNumber), lineNumber, this._linesCollection.getViewLineMaxColumn(lineNumber));
-        return this._getDecorationsInRange(range, onlyMinimapDecorations, onlyMarginDecorations).inlineDecorations[0];
+        return this._getDecorationsInRange(range, onlyMinimapDecorations, onlyMarginDecorations);
     }
     _getDecorationsInRange(viewRange, onlyMinimapDecorations, onlyMarginDecorations) {
-        const modelDecorations = this._linesCollection.getDecorationsInRange(viewRange, this.editorId, filterValidationDecorations(this.configuration.options), onlyMinimapDecorations, onlyMarginDecorations);
+        const modelDecorations = this._linesCollection.getDecorationsInRange(viewRange, this.editorId, filterValidationDecorations(this.configuration.options), filterFontDecorations(this.configuration.options), onlyMinimapDecorations, onlyMarginDecorations);
         const startLineNumber = viewRange.startLineNumber;
         const endLineNumber = viewRange.endLineNumber;
         const decorationsInViewport = [];
@@ -85,6 +86,7 @@ export class ViewModelDecorations {
         for (let j = startLineNumber; j <= endLineNumber; j++) {
             inlineDecorations[j - startLineNumber] = [];
         }
+        let hasVariableFonts = false;
         for (let i = 0, len = modelDecorations.length; i < len; i++) {
             const modelDecoration = modelDecorations[i];
             const decorationOptions = modelDecoration.options;
@@ -114,52 +116,15 @@ export class ViewModelDecorations {
                     inlineDecorations[viewRange.endLineNumber - startLineNumber].push(inlineDecoration);
                 }
             }
+            if (decorationOptions.affectsFont) {
+                hasVariableFonts = true;
+            }
         }
         return {
             decorations: decorationsInViewport,
-            inlineDecorations: inlineDecorations
+            inlineDecorations: inlineDecorations,
+            hasVariableFonts
         };
     }
 }
-export function isModelDecorationVisible(model, decoration) {
-    if (decoration.options.hideInCommentTokens && isModelDecorationInComment(model, decoration)) {
-        return false;
-    }
-    if (decoration.options.hideInStringTokens && isModelDecorationInString(model, decoration)) {
-        return false;
-    }
-    return true;
-}
-export function isModelDecorationInComment(model, decoration) {
-    return testTokensInRange(model, decoration.range, (tokenType) => tokenType === 1 /* StandardTokenType.Comment */);
-}
-export function isModelDecorationInString(model, decoration) {
-    return testTokensInRange(model, decoration.range, (tokenType) => tokenType === 2 /* StandardTokenType.String */);
-}
-/**
- * Calls the callback for every token that intersects the range.
- * If the callback returns `false`, iteration stops and `false` is returned.
- * Otherwise, `true` is returned.
- */
-function testTokensInRange(model, range, callback) {
-    for (let lineNumber = range.startLineNumber; lineNumber <= range.endLineNumber; lineNumber++) {
-        const lineTokens = model.tokenization.getLineTokens(lineNumber);
-        const isFirstLine = lineNumber === range.startLineNumber;
-        const isEndLine = lineNumber === range.endLineNumber;
-        let tokenIdx = isFirstLine ? lineTokens.findTokenIndexAtOffset(range.startColumn - 1) : 0;
-        while (tokenIdx < lineTokens.getCount()) {
-            if (isEndLine) {
-                const startOffset = lineTokens.getStartOffset(tokenIdx);
-                if (startOffset > range.endColumn - 1) {
-                    break;
-                }
-            }
-            const callbackResult = callback(lineTokens.getStandardTokenType(tokenIdx));
-            if (!callbackResult) {
-                return false;
-            }
-            tokenIdx++;
-        }
-    }
-    return true;
-}
+//# sourceMappingURL=viewModelDecorations.js.map

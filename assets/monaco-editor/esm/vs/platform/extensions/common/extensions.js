@@ -45,3 +45,4 @@ export class ExtensionIdentifierSet {
         return this._set.has(ExtensionIdentifier.toKey(id));
     }
 }
+//# sourceMappingURL=extensions.js.map

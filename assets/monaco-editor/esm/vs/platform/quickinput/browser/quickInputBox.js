@@ -12,19 +12,18 @@ export class QuickInputBox extends Disposable {
     constructor(parent, inputBoxStyles, toggleStyles) {
         super();
         this.parent = parent;
-        this.onKeyDown = (handler) => {
-            return dom.addStandardDisposableListener(this.findInput.inputBox.inputElement, dom.EventType.KEY_DOWN, handler);
-        };
         this.onDidChange = (handler) => {
             return this.findInput.onDidChange(handler);
         };
         this.container = dom.append(this.parent, $('.quick-input-box'));
         this.findInput = this._register(new FindInput(this.container, undefined, { label: '', inputBoxStyles, toggleStyles }));
         const input = this.findInput.inputBox.inputElement;
-        input.role = 'combobox';
+        input.role = 'textbox';
         input.ariaHasPopup = 'menu';
         input.ariaAutoComplete = 'list';
-        input.ariaExpanded = 'true';
+    }
+    get onKeyDown() {
+        return this.findInput.onKeyDown;
     }
     get value() {
         return this.findInput.getValue();
@@ -67,8 +66,20 @@ export class QuickInputBox extends Disposable {
     set toggles(toggles) {
         this.findInput.setAdditionalToggles(toggles);
     }
+    get ariaLabel() {
+        return this.findInput.inputBox.inputElement.getAttribute('aria-label') || '';
+    }
+    set ariaLabel(ariaLabel) {
+        this.findInput.inputBox.inputElement.setAttribute('aria-label', ariaLabel);
+    }
+    hasFocus() {
+        return this.findInput.inputBox.hasFocus();
+    }
     setAttribute(name, value) {
         this.findInput.inputBox.inputElement.setAttribute(name, value);
+    }
+    removeAttribute(name) {
+        this.findInput.inputBox.inputElement.removeAttribute(name);
     }
     showDecoration(decoration) {
         if (decoration === Severity.Ignore) {
@@ -88,3 +99,4 @@ export class QuickInputBox extends Disposable {
         this.findInput.inputBox.layout();
     }
 }
+//# sourceMappingURL=quickInputBox.js.map

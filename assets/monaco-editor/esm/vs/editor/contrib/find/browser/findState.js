@@ -239,3 +239,4 @@ export class FindReplaceState extends Disposable {
         return this._loop || (this.matchesCount >= MATCHES_LIMIT);
     }
 }
+//# sourceMappingURL=findState.js.map

@@ -22,3 +22,4 @@ export class HierarchicalKind {
         return new HierarchicalKind((this.value ? [this.value, ...parts] : parts).join(HierarchicalKind.sep));
     }
 }
+//# sourceMappingURL=hierarchicalKind.js.map

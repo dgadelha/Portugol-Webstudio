@@ -2,20 +2,22 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+import { localize } from '../../../../nls.js';
+import * as arrays from '../../../common/arrays.js';
+import { Emitter, Event } from '../../../common/event.js';
+import { KeyCodeUtils } from '../../../common/keyCodes.js';
+import { Disposable } from '../../../common/lifecycle.js';
+import { isMacintosh } from '../../../common/platform.js';
+import * as cssJs from '../../cssValue.js';
 import * as dom from '../../dom.js';
+import * as domStylesheetsJs from '../../domStylesheets.js';
 import { DomEmitter } from '../../event.js';
 import { StandardKeyboardEvent } from '../../keyboardEvent.js';
 import { renderMarkdown } from '../../markdownRenderer.js';
 import { getBaseLayerHoverDelegate } from '../hover/hoverDelegate2.js';
 import { getDefaultHoverDelegate } from '../hover/hoverDelegateFactory.js';
 import { List } from '../list/listWidget.js';
-import * as arrays from '../../../common/arrays.js';
-import { Emitter, Event } from '../../../common/event.js';
-import { KeyCodeUtils } from '../../../common/keyCodes.js';
-import { Disposable } from '../../../common/lifecycle.js';
-import { isMacintosh } from '../../../common/platform.js';
 import './selectBoxCustom.css';
-import { localize } from '../../../../nls.js';
 const $ = dom.$;
 const SELECT_OPTION_ENTRY_TEMPLATE_ID = 'selectOption.entry.template';
 class SelectListRenderer {
@@ -36,7 +38,7 @@ class SelectListRenderer {
         const isDisabled = element.isDisabled;
         data.text.textContent = text;
         data.detail.textContent = !!detail ? detail : '';
-        data.decoratorRight.innerText = !!decoratorRight ? decoratorRight : '';
+        data.decoratorRight.textContent = !!decoratorRight ? decoratorRight : '';
         // pseudo-select disabled option
         if (isDisabled) {
             data.root.classList.add('option-disabled');
@@ -121,7 +123,7 @@ export class SelectBoxList extends Disposable {
         // Always default to below position
         this._dropDownPosition = 0 /* AnchorPosition.BELOW */;
         // Inline stylesheet for themes
-        this.styleElement = dom.createStyleSheet(this.selectDropDownContainer);
+        this.styleElement = domStylesheetsJs.createStyleSheet(this.selectDropDownContainer);
         // Prevent dragging of dropdown #114329
         this.selectDropDownContainer.setAttribute('draggable', 'true');
         this._register(dom.addDisposableListener(this.selectDropDownContainer, dom.EventType.DRAG_START, (e) => {
@@ -307,7 +309,7 @@ export class SelectBoxList extends Disposable {
     }
     styleList() {
         const background = this.styles.selectBackground ?? '';
-        const listBackground = dom.asCssValueWithDefault(this.styles.selectListBackground, background);
+        const listBackground = cssJs.asCssValueWithDefault(this.styles.selectListBackground, background);
         this.selectDropDownListContainer.style.backgroundColor = listBackground;
         this.selectionDetailsPane.style.backgroundColor = listBackground;
         const optionsBorder = this.styles.focusBorder ?? '';
@@ -324,7 +326,7 @@ export class SelectBoxList extends Disposable {
     }
     // ContextView dropdown methods
     showSelectDropDown() {
-        this.selectionDetailsPane.innerText = '';
+        this.selectionDetailsPane.textContent = '';
         if (!this.contextViewProvider || this._isVisible) {
             return;
         }
@@ -570,7 +572,7 @@ export class SelectBoxList extends Disposable {
                     }
                     return label;
                 },
-                getWidgetAriaLabel: () => localize({ key: 'selectBox', comment: ['Behave like native select dropdown element.'] }, "Select Box"),
+                getWidgetAriaLabel: () => localize(16, "Select Box"),
                 getRole: () => isMacintosh ? '' : 'option',
                 getWidgetRole: () => 'listbox'
             }
@@ -687,7 +689,7 @@ export class SelectBoxList extends Disposable {
         this.updateDetail(e.indexes[0]);
     }
     updateDetail(selectedIndex) {
-        this.selectionDetailsPane.innerText = '';
+        this.selectionDetailsPane.textContent = '';
         const option = this.options[selectedIndex];
         const description = option?.description ?? '';
         const descriptionIsMarkdown = option?.descriptionIsMarkdown ?? false;
@@ -697,7 +699,7 @@ export class SelectBoxList extends Disposable {
                 this.selectionDetailsPane.appendChild(this.renderDescriptionMarkdown(description, actionHandler));
             }
             else {
-                this.selectionDetailsPane.innerText = description;
+                this.selectionDetailsPane.textContent = description;
             }
             this.selectionDetailsPane.style.display = 'block';
         }
@@ -847,3 +849,4 @@ export class SelectBoxList extends Disposable {
         super.dispose();
     }
 }
+//# sourceMappingURL=selectBoxCustom.js.map

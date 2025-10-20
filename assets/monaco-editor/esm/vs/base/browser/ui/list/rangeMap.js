@@ -156,3 +156,4 @@ export class RangeMap {
         return -1;
     }
 }
+//# sourceMappingURL=rangeMap.js.map

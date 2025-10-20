@@ -78,10 +78,7 @@ let Link = class Link extends Disposable {
         this.enabled = true;
     }
     setTooltip(title) {
-        if (this.hoverDelegate.showNativeHover) {
-            this.el.title = title ?? '';
-        }
-        else if (!this.hover && title) {
+        if (!this.hover && title) {
             this.hover = this._register(this._hoverService.setupManagedHover(this.hoverDelegate, this.el, title));
         }
         else if (this.hover) {
@@ -94,3 +91,4 @@ Link = __decorate([
     __param(4, IOpenerService)
 ], Link);
 export { Link };
+//# sourceMappingURL=link.js.map

@@ -17,3 +17,4 @@ export function register(id, fontCharacter) {
 export function getCodiconFontCharacters() {
     return _codiconFontCharacters;
 }
+//# sourceMappingURL=codiconsUtil.js.map

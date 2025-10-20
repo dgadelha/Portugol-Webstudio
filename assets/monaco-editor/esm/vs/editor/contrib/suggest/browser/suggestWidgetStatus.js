@@ -26,7 +26,7 @@ let SuggestWidgetStatus = class SuggestWidgetStatus {
         this._menuDisposables = new DisposableStore();
         this.element = dom.append(container, dom.$('.suggest-status-bar'));
         const actionViewItemProvider = (action => {
-            return action instanceof MenuItemAction ? instantiationService.createInstance(TextOnlyMenuEntryActionViewItem, action, { useComma: true }) : undefined;
+            return action instanceof MenuItemAction ? instantiationService.createInstance(TextOnlyMenuEntryActionViewItem, action, { useComma: false }) : undefined;
         });
         this._leftActions = new ActionBar(this.element, { actionViewItemProvider });
         this._rightActions = new ActionBar(this.element, { actionViewItemProvider });
@@ -70,3 +70,4 @@ SuggestWidgetStatus = __decorate([
     __param(4, IContextKeyService)
 ], SuggestWidgetStatus);
 export { SuggestWidgetStatus };
+//# sourceMappingURL=suggestWidgetStatus.js.map

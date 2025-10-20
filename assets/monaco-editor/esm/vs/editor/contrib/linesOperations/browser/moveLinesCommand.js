@@ -390,3 +390,4 @@ MoveLinesCommand = __decorate([
     __param(3, ILanguageConfigurationService)
 ], MoveLinesCommand);
 export { MoveLinesCommand };
+//# sourceMappingURL=moveLinesCommand.js.map

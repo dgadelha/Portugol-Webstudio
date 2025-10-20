@@ -52,3 +52,4 @@ if (typeof mainWindow.matchMedia === 'function') {
 export function isStandalone() {
     return standalone;
 }
+//# sourceMappingURL=browser.js.map

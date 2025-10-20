@@ -6,10 +6,10 @@ import { Emitter } from './event.js';
 import { Disposable } from './lifecycle.js';
 import * as nls from '../../nls.js';
 export class Action extends Disposable {
+    get onDidChange() { return this._onDidChange.event; }
     constructor(id, label = '', cssClass = '', enabled = true, actionCallback) {
         super();
         this._onDidChange = this._register(new Emitter());
-        this.onDidChange = this._onDidChange.event;
         this._enabled = true;
         this._id = id;
         this._label = label;
@@ -90,10 +90,10 @@ export class ActionRunner extends Disposable {
     constructor() {
         super(...arguments);
         this._onWillRun = this._register(new Emitter());
-        this.onWillRun = this._onWillRun.event;
         this._onDidRun = this._register(new Emitter());
-        this.onDidRun = this._onDidRun.event;
     }
+    get onWillRun() { return this._onWillRun.event; }
+    get onDidRun() { return this._onDidRun.event; }
     async run(action, context) {
         if (!action.enabled) {
             return;
@@ -158,7 +158,7 @@ export class SubmenuAction {
 export class EmptySubmenuAction extends Action {
     static { this.ID = 'vs.actions.empty'; }
     constructor() {
-        super(EmptySubmenuAction.ID, nls.localize('submenu.empty', '(empty)'), undefined, false);
+        super(EmptySubmenuAction.ID, nls.localize(28, '(empty)'), undefined, false);
     }
 }
 export function toAction(props) {
@@ -172,3 +172,4 @@ export function toAction(props) {
         run: async (...args) => props.run(...args),
     };
 }
+//# sourceMappingURL=actions.js.map

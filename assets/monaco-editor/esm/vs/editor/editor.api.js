@@ -33,7 +33,7 @@ export const Token = api.Token;
 export const editor = api.editor;
 export const languages = api.languages;
 const monacoEnvironment = globalThis.MonacoEnvironment;
-if (monacoEnvironment?.globalAPI || (typeof define === 'function' && define.amd)) {
+if (monacoEnvironment?.globalAPI || (typeof globalThis.define === 'function' && (globalThis.define).amd)) {
     globalThis.monaco = api;
 }
 if (typeof globalThis.require !== 'undefined' && typeof globalThis.require.config === 'function') {
@@ -53,3 +53,4 @@ if (typeof globalThis.require !== 'undefined' && typeof globalThis.require.confi
         ]
     });
 }
+//# sourceMappingURL=editor.api.js.map

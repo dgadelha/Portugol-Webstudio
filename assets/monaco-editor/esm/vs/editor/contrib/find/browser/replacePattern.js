@@ -284,3 +284,4 @@ export function parseReplaceString(replaceString) {
     }
     return result.finalize();
 }
+//# sourceMappingURL=replacePattern.js.map

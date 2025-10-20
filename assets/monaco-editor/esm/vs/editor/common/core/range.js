@@ -293,6 +293,9 @@ export class Range {
     delta(lineCount) {
         return new Range(this.startLineNumber + lineCount, this.startColumn, this.endLineNumber + lineCount, this.endColumn);
     }
+    isSingleLine() {
+        return this.startLineNumber === this.endLineNumber;
+    }
     // ---
     static fromPositions(start, end = start) {
         return new Range(start.lineNumber, start.column, end.lineNumber, end.column);
@@ -338,6 +341,21 @@ export class Range {
         }
         // Check if `b` is before `a`
         if (b.endLineNumber < a.startLineNumber || (b.endLineNumber === a.startLineNumber && b.endColumn <= a.startColumn)) {
+            return false;
+        }
+        // These ranges must intersect
+        return true;
+    }
+    /**
+     * Test if the two ranges are intersecting, but not touching at all.
+     */
+    static areOnlyIntersecting(a, b) {
+        // Check if `a` is before `b`
+        if (a.endLineNumber < (b.startLineNumber - 1) || (a.endLineNumber === b.startLineNumber && a.endColumn < (b.startColumn - 1))) {
+            return false;
+        }
+        // Check if `b` is before `a`
+        if (b.endLineNumber < (a.startLineNumber - 1) || (b.endLineNumber === a.startLineNumber && b.endColumn < (a.startColumn - 1))) {
             return false;
         }
         // These ranges must intersect
@@ -398,3 +416,4 @@ export class Range {
         return this;
     }
 }
+//# sourceMappingURL=range.js.map

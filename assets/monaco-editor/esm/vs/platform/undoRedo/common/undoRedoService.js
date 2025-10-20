@@ -70,10 +70,10 @@ class RemovedResources {
         }
         const messages = [];
         if (externalRemoval.length > 0) {
-            messages.push(nls.localize({ key: 'externalRemoval', comment: ['{0} is a list of filenames'] }, "The following files have been closed and modified on disk: {0}.", externalRemoval.join(', ')));
+            messages.push(nls.localize(2012, "The following files have been closed and modified on disk: {0}.", externalRemoval.join(', ')));
         }
         if (noParallelUniverses.length > 0) {
-            messages.push(nls.localize({ key: 'noParallelUniverses', comment: ['{0} is a list of filenames'] }, "The following files have been modified in an incompatible way: {0}.", noParallelUniverses.join(', ')));
+            messages.push(nls.localize(2013, "The following files have been modified in an incompatible way: {0}.", noParallelUniverses.join(', ')));
         }
         return messages.join('\n');
     }
@@ -657,10 +657,10 @@ let UndoRedoService = class UndoRedoService {
     }
     _checkWorkspaceUndo(strResource, element, editStackSnapshot, checkInvalidatedResources) {
         if (element.removedResources) {
-            return this._tryToSplitAndUndo(strResource, element, element.removedResources, nls.localize({ key: 'cannotWorkspaceUndo', comment: ['{0} is a label for an operation. {1} is another message.'] }, "Could not undo '{0}' across all files. {1}", element.label, element.removedResources.createMessage()));
+            return this._tryToSplitAndUndo(strResource, element, element.removedResources, nls.localize(2014, "Could not undo '{0}' across all files. {1}", element.label, element.removedResources.createMessage()));
         }
         if (checkInvalidatedResources && element.invalidatedResources) {
-            return this._tryToSplitAndUndo(strResource, element, element.invalidatedResources, nls.localize({ key: 'cannotWorkspaceUndo', comment: ['{0} is a label for an operation. {1} is another message.'] }, "Could not undo '{0}' across all files. {1}", element.label, element.invalidatedResources.createMessage()));
+            return this._tryToSplitAndUndo(strResource, element, element.invalidatedResources, nls.localize(2015, "Could not undo '{0}' across all files. {1}", element.label, element.invalidatedResources.createMessage()));
         }
         // this must be the last past element in all the impacted resources!
         const cannotUndoDueToResources = [];
@@ -670,7 +670,7 @@ let UndoRedoService = class UndoRedoService {
             }
         }
         if (cannotUndoDueToResources.length > 0) {
-            return this._tryToSplitAndUndo(strResource, element, null, nls.localize({ key: 'cannotWorkspaceUndoDueToChanges', comment: ['{0} is a label for an operation. {1} is a list of filenames.'] }, "Could not undo '{0}' across all files because changes were made to {1}", element.label, cannotUndoDueToResources.join(', ')));
+            return this._tryToSplitAndUndo(strResource, element, null, nls.localize(2016, "Could not undo '{0}' across all files because changes were made to {1}", element.label, cannotUndoDueToResources.join(', ')));
         }
         const cannotLockDueToResources = [];
         for (const editStack of editStackSnapshot.editStacks) {
@@ -679,11 +679,11 @@ let UndoRedoService = class UndoRedoService {
             }
         }
         if (cannotLockDueToResources.length > 0) {
-            return this._tryToSplitAndUndo(strResource, element, null, nls.localize({ key: 'cannotWorkspaceUndoDueToInProgressUndoRedo', comment: ['{0} is a label for an operation. {1} is a list of filenames.'] }, "Could not undo '{0}' across all files because there is already an undo or redo operation running on {1}", element.label, cannotLockDueToResources.join(', ')));
+            return this._tryToSplitAndUndo(strResource, element, null, nls.localize(2017, "Could not undo '{0}' across all files because there is already an undo or redo operation running on {1}", element.label, cannotLockDueToResources.join(', ')));
         }
         // check if new stack elements were added in the meantime...
         if (!editStackSnapshot.isValid()) {
-            return this._tryToSplitAndUndo(strResource, element, null, nls.localize({ key: 'cannotWorkspaceUndoDueToInMeantimeUndoRedo', comment: ['{0} is a label for an operation. {1} is a list of filenames.'] }, "Could not undo '{0}' across all files because an undo or redo operation occurred in the meantime", element.label));
+            return this._tryToSplitAndUndo(strResource, element, null, nls.localize(2018, "Could not undo '{0}' across all files because an undo or redo operation occurred in the meantime", element.label));
         }
         return null;
     }
@@ -730,14 +730,14 @@ let UndoRedoService = class UndoRedoService {
             })(UndoChoice || (UndoChoice = {}));
             const { result } = await this._dialogService.prompt({
                 type: Severity.Info,
-                message: nls.localize('confirmWorkspace', "Would you like to undo '{0}' across all files?", element.label),
+                message: nls.localize(2019, "Would you like to undo '{0}' across all files?", element.label),
                 buttons: [
                     {
-                        label: nls.localize({ key: 'ok', comment: ['{0} denotes a number that is > 1, && denotes a mnemonic'] }, "&&Undo in {0} Files", editStackSnapshot.editStacks.length),
+                        label: nls.localize(2020, "&&Undo in {0} Files", editStackSnapshot.editStacks.length),
                         run: () => UndoChoice.All
                     },
                     {
-                        label: nls.localize({ key: 'nok', comment: ['&& denotes a mnemonic'] }, "Undo this &&File"),
+                        label: nls.localize(2021, "Undo this &&File"),
                         run: () => UndoChoice.This
                     }
                 ],
@@ -788,7 +788,7 @@ let UndoRedoService = class UndoRedoService {
             return;
         }
         if (editStack.locked) {
-            const message = nls.localize({ key: 'cannotResourceUndoDueToInProgressUndoRedo', comment: ['{0} is a label for an operation.'] }, "Could not undo '{0}' because there is already an undo or redo operation running.", element.label);
+            const message = nls.localize(2022, "Could not undo '{0}' because there is already an undo or redo operation running.", element.label);
             this._notificationService.warn(message);
             return;
         }
@@ -875,9 +875,9 @@ let UndoRedoService = class UndoRedoService {
     }
     async _confirmAndContinueUndo(strResource, sourceId, element) {
         const result = await this._dialogService.confirm({
-            message: nls.localize('confirmDifferentSource', "Would you like to undo '{0}'?", element.label),
-            primaryButton: nls.localize({ key: 'confirmDifferentSource.yes', comment: ['&& denotes a mnemonic'] }, "&&Yes"),
-            cancelButton: nls.localize('confirmDifferentSource.no', "No")
+            message: nls.localize(2023, "Would you like to undo '{0}'?", element.label),
+            primaryButton: nls.localize(2024, "&&Yes"),
+            cancelButton: nls.localize(2025, "No")
         });
         if (!result.confirmed) {
             return;
@@ -934,10 +934,10 @@ let UndoRedoService = class UndoRedoService {
     }
     _checkWorkspaceRedo(strResource, element, editStackSnapshot, checkInvalidatedResources) {
         if (element.removedResources) {
-            return this._tryToSplitAndRedo(strResource, element, element.removedResources, nls.localize({ key: 'cannotWorkspaceRedo', comment: ['{0} is a label for an operation. {1} is another message.'] }, "Could not redo '{0}' across all files. {1}", element.label, element.removedResources.createMessage()));
+            return this._tryToSplitAndRedo(strResource, element, element.removedResources, nls.localize(2026, "Could not redo '{0}' across all files. {1}", element.label, element.removedResources.createMessage()));
         }
         if (checkInvalidatedResources && element.invalidatedResources) {
-            return this._tryToSplitAndRedo(strResource, element, element.invalidatedResources, nls.localize({ key: 'cannotWorkspaceRedo', comment: ['{0} is a label for an operation. {1} is another message.'] }, "Could not redo '{0}' across all files. {1}", element.label, element.invalidatedResources.createMessage()));
+            return this._tryToSplitAndRedo(strResource, element, element.invalidatedResources, nls.localize(2027, "Could not redo '{0}' across all files. {1}", element.label, element.invalidatedResources.createMessage()));
         }
         // this must be the last future element in all the impacted resources!
         const cannotRedoDueToResources = [];
@@ -947,7 +947,7 @@ let UndoRedoService = class UndoRedoService {
             }
         }
         if (cannotRedoDueToResources.length > 0) {
-            return this._tryToSplitAndRedo(strResource, element, null, nls.localize({ key: 'cannotWorkspaceRedoDueToChanges', comment: ['{0} is a label for an operation. {1} is a list of filenames.'] }, "Could not redo '{0}' across all files because changes were made to {1}", element.label, cannotRedoDueToResources.join(', ')));
+            return this._tryToSplitAndRedo(strResource, element, null, nls.localize(2028, "Could not redo '{0}' across all files because changes were made to {1}", element.label, cannotRedoDueToResources.join(', ')));
         }
         const cannotLockDueToResources = [];
         for (const editStack of editStackSnapshot.editStacks) {
@@ -956,11 +956,11 @@ let UndoRedoService = class UndoRedoService {
             }
         }
         if (cannotLockDueToResources.length > 0) {
-            return this._tryToSplitAndRedo(strResource, element, null, nls.localize({ key: 'cannotWorkspaceRedoDueToInProgressUndoRedo', comment: ['{0} is a label for an operation. {1} is a list of filenames.'] }, "Could not redo '{0}' across all files because there is already an undo or redo operation running on {1}", element.label, cannotLockDueToResources.join(', ')));
+            return this._tryToSplitAndRedo(strResource, element, null, nls.localize(2029, "Could not redo '{0}' across all files because there is already an undo or redo operation running on {1}", element.label, cannotLockDueToResources.join(', ')));
         }
         // check if new stack elements were added in the meantime...
         if (!editStackSnapshot.isValid()) {
-            return this._tryToSplitAndRedo(strResource, element, null, nls.localize({ key: 'cannotWorkspaceRedoDueToInMeantimeUndoRedo', comment: ['{0} is a label for an operation. {1} is a list of filenames.'] }, "Could not redo '{0}' across all files because an undo or redo operation occurred in the meantime", element.label));
+            return this._tryToSplitAndRedo(strResource, element, null, nls.localize(2030, "Could not redo '{0}' across all files because an undo or redo operation occurred in the meantime", element.label));
         }
         return null;
     }
@@ -999,7 +999,7 @@ let UndoRedoService = class UndoRedoService {
             return;
         }
         if (editStack.locked) {
-            const message = nls.localize({ key: 'cannotResourceRedoDueToInProgressUndoRedo', comment: ['{0} is a label for an operation.'] }, "Could not redo '{0}' because there is already an undo or redo operation running.", element.label);
+            const message = nls.localize(2031, "Could not redo '{0}' because there is already an undo or redo operation running.", element.label);
             this._notificationService.warn(message);
             return;
         }
@@ -1091,3 +1091,4 @@ class WorkspaceVerificationError {
     }
 }
 registerSingleton(IUndoRedoService, UndoRedoService, 1 /* InstantiationType.Delayed */);
+//# sourceMappingURL=undoRedoService.js.map

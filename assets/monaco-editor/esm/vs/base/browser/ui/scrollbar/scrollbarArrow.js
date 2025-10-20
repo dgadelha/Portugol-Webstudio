@@ -73,3 +73,4 @@ export class ScrollbarArrow extends Widget {
         e.preventDefault();
     }
 }
+//# sourceMappingURL=scrollbarArrow.js.map

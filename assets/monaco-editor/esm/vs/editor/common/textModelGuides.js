@@ -36,3 +36,4 @@ export class IndentGuideHorizontalLine {
         this.endColumn = endColumn;
     }
 }
+//# sourceMappingURL=textModelGuides.js.map

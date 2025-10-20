@@ -480,3 +480,4 @@ export class InvalidBracketAstNode extends ImmutableLeafAstNode {
         return Number.MAX_SAFE_INTEGER;
     }
 }
+//# sourceMappingURL=ast.js.map

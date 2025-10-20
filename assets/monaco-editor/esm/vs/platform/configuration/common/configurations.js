@@ -1,4 +1,5 @@
 import { Disposable } from '../../../base/common/lifecycle.js';
+import { deepClone } from '../../../base/common/objects.js';
 import { ConfigurationModel } from './configurationModels.js';
 import { Extensions } from './configurationRegistry.js';
 import { Registry } from '../../registry/common/platform.js';
@@ -9,7 +10,7 @@ export class DefaultConfiguration extends Disposable {
     constructor(logService) {
         super();
         this.logService = logService;
-        this._configurationModel = ConfigurationModel.createEmptyModel(this.logService);
+        this._configurationModel = ConfigurationModel.createEmptyModel(logService);
     }
     reload() {
         this.resetConfigurationModel();
@@ -32,7 +33,7 @@ export class DefaultConfiguration extends Disposable {
                 this._configurationModel.setValue(key, defaultOverrideValue);
             }
             else if (propertySchema) {
-                this._configurationModel.setValue(key, propertySchema.default);
+                this._configurationModel.setValue(key, deepClone(propertySchema.default));
             }
             else {
                 this._configurationModel.removeValue(key);
@@ -40,3 +41,4 @@ export class DefaultConfiguration extends Disposable {
         }
     }
 }
+//# sourceMappingURL=configurations.js.map

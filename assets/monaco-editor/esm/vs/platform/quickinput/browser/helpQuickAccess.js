@@ -62,7 +62,7 @@ let HelpQuickAccessProvider = class HelpQuickAccessProvider {
                 prefix,
                 label,
                 keybinding: helpEntry.commandId ? this.keybindingService.lookupKeybinding(helpEntry.commandId) : undefined,
-                ariaLabel: localize('helpPickAriaLabel', "{0}, {1}", label, helpEntry.description),
+                ariaLabel: localize(1730, "{0}, {1}", label, helpEntry.description),
                 description: helpEntry.description
             };
         });
@@ -73,3 +73,4 @@ HelpQuickAccessProvider = HelpQuickAccessProvider_1 = __decorate([
     __param(1, IKeybindingService)
 ], HelpQuickAccessProvider);
 export { HelpQuickAccessProvider };
+//# sourceMappingURL=helpQuickAccess.js.map

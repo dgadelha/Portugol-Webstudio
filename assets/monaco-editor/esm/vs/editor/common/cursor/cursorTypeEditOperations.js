@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 import { onUnexpectedError } from '../../../base/common/errors.js';
 import * as strings from '../../../base/common/strings.js';
-import { ReplaceCommand, ReplaceCommandWithOffsetCursorState, ReplaceCommandWithoutChangingPosition, ReplaceCommandThatPreservesSelection } from '../commands/replaceCommand.js';
+import { ReplaceCommand, ReplaceCommandWithOffsetCursorState, ReplaceCommandWithoutChangingPosition, ReplaceCommandThatPreservesSelection, ReplaceOvertypeCommand, ReplaceOvertypeCommandOnCompositionEnd } from '../commands/replaceCommand.js';
 import { ShiftCommand } from '../commands/shiftCommand.js';
 import { SurroundSelectionCommand } from '../commands/surroundSelectionCommand.js';
 import { EditOperationResult, isQuote } from '../cursorCommon.js';
@@ -326,6 +326,19 @@ export class AutoClosingOpenCharTypeOperation {
         return !isBeforeStartingBrace && isBeforeClosingBrace;
     }
 }
+export class CompositionEndOvertypeOperation {
+    static getEdits(config, compositions) {
+        const isOvertypeMode = config.inputMode === 'overtype';
+        if (!isOvertypeMode) {
+            return null;
+        }
+        const commands = compositions.map(composition => new ReplaceOvertypeCommandOnCompositionEnd(composition.insertedTextRange));
+        return new EditOperationResult(4 /* EditOperationType.TypingOther */, commands, {
+            shouldPushStackElementBefore: true,
+            shouldPushStackElementAfter: false
+        });
+    }
+}
 export class SurroundSelectionOperation {
     static getEdits(config, model, selections, ch, isDoingComposition) {
         if (!isDoingComposition && this._isSurroundSelectionType(config, model, selections, ch)) {
@@ -447,11 +460,12 @@ export class InterceptorElectricCharOperation {
     }
 }
 export class SimpleCharacterTypeOperation {
-    static getEdits(prevEditOperationType, selections, ch) {
+    static getEdits(config, prevEditOperationType, selections, ch, isDoingComposition) {
         // A simple character type
         const commands = [];
         for (let i = 0, len = selections.length; i < len; i++) {
-            commands[i] = new ReplaceCommand(selections[i], ch);
+            const ChosenReplaceCommand = config.inputMode === 'overtype' && !isDoingComposition ? ReplaceOvertypeCommand : ReplaceCommand;
+            commands[i] = new ChosenReplaceCommand(selections[i], ch);
         }
         const opType = getTypingOperation(ch, prevEditOperationType);
         return new EditOperationResult(opType, commands, {
@@ -631,7 +645,9 @@ export class PasteOperation {
     static _distributedPaste(config, model, selections, text) {
         const commands = [];
         for (let i = 0, len = selections.length; i < len; i++) {
-            commands[i] = new ReplaceCommand(selections[i], text[i]);
+            const shouldOvertypeOnPaste = config.overtypeOnPaste && config.inputMode === 'overtype';
+            const ChosenReplaceCommand = shouldOvertypeOnPaste ? ReplaceOvertypeCommand : ReplaceCommand;
+            commands[i] = new ChosenReplaceCommand(selections[i], text[i]);
         }
         return new EditOperationResult(0 /* EditOperationType.Other */, commands, {
             shouldPushStackElementBefore: true,
@@ -655,7 +671,9 @@ export class PasteOperation {
                 commands[i] = new ReplaceCommandThatPreservesSelection(typeSelection, text, selection, true);
             }
             else {
-                commands[i] = new ReplaceCommand(selection, text);
+                const shouldOvertypeOnPaste = config.overtypeOnPaste && config.inputMode === 'overtype';
+                const ChosenReplaceCommand = shouldOvertypeOnPaste ? ReplaceOvertypeCommand : ReplaceCommand;
+                commands[i] = new ChosenReplaceCommand(selection, text);
             }
         }
         return new EditOperationResult(0 /* EditOperationType.Other */, commands, {
@@ -683,11 +701,6 @@ export class CompositionOperation {
         const startColumn = Math.max(1, pos.column - replacePrevCharCnt);
         const endColumn = Math.min(model.getLineMaxColumn(pos.lineNumber), pos.column + replaceNextCharCnt);
         const range = new Range(pos.lineNumber, startColumn, pos.lineNumber, endColumn);
-        const oldText = model.getValueInRange(range);
-        if (oldText === text && positionDelta === 0) {
-            // => ignore composition that doesn't do anything
-            return null;
-        }
         return new ReplaceCommandWithOffsetCursorState(range, text, 0, positionDelta);
     }
 }
@@ -950,3 +963,4 @@ export function shouldSurroundChar(config, ch) {
         return (config.autoSurround === 'brackets' || config.autoSurround === 'languageDefined');
     }
 }
+//# sourceMappingURL=cursorTypeEditOperations.js.map

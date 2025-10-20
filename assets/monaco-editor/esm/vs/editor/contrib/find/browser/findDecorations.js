@@ -296,3 +296,4 @@ export class FindDecorations {
         isWholeLine: true
     }); }
 }
+//# sourceMappingURL=findDecorations.js.map

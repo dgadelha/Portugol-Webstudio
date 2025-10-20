@@ -202,3 +202,4 @@ function getDefaultMetadata(topLevelLanguageId) {
         // If there is no grammar, we just take a guess and try to match brackets.
         | (1024 /* MetadataConsts.BALANCED_BRACKETS_MASK */)) >>> 0;
 }
+//# sourceMappingURL=contiguousTokensStore.js.map

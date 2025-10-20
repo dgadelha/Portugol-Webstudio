@@ -10,7 +10,7 @@ import { createDecorator } from '../../../../platform/instantiation/common/insta
 import { registerSingleton } from '../../../../platform/instantiation/common/extensions.js';
 import { localize } from '../../../../nls.js';
 const IEditorCancellationTokens = createDecorator('IEditorCancelService');
-const ctxCancellableOperation = new RawContextKey('cancellableOperation', false, localize('cancellableOperation', 'Whether the editor runs a cancellable operation, e.g. like \'Peek References\''));
+const ctxCancellableOperation = new RawContextKey('cancellableOperation', false, localize(934, 'Whether the editor runs a cancellable operation, e.g. like \'Peek References\''));
 registerSingleton(IEditorCancellationTokens, class {
     constructor() {
         this._tokens = new WeakMap();
@@ -76,3 +76,4 @@ registerEditorCommand(new class extends EditorCommand {
         accessor.get(IEditorCancellationTokens).cancel(editor);
     }
 });
+//# sourceMappingURL=keybindingCancellation.js.map

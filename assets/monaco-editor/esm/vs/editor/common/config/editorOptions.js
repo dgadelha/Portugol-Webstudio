@@ -5,7 +5,7 @@
 import * as arrays from '../../../base/common/arrays.js';
 import * as objects from '../../../base/common/objects.js';
 import * as platform from '../../../base/common/platform.js';
-import { EDITOR_MODEL_DEFAULTS } from '../core/textModelDefaults.js';
+import { EDITOR_MODEL_DEFAULTS } from '../core/misc/textModelDefaults.js';
 import { USUAL_WORD_SEPARATORS } from '../core/wordHelper.js';
 import * as nls from '../../../nls.js';
 /**
@@ -207,13 +207,17 @@ class EditorFloatOption extends SimpleEditorOption {
         const r = parseFloat(value);
         return (isNaN(r) ? defaultValue : r);
     }
-    constructor(id, name, defaultValue, validationFn, schema) {
+    constructor(id, name, defaultValue, validationFn, schema, minimum, maximum) {
         if (typeof schema !== 'undefined') {
             schema.type = 'number';
             schema.default = defaultValue;
+            schema.minimum = minimum;
+            schema.maximum = maximum;
         }
         super(id, name, defaultValue, schema);
         this.validationFn = validationFn;
+        this.minimum = minimum;
+        this.maximum = maximum;
     }
     validate(input) {
         return this.validationFn(EditorFloatOption.float(input, this.defaultValue));
@@ -306,13 +310,13 @@ class EditorAccessibilitySupport extends BaseEditorOption {
             type: 'string',
             enum: ['auto', 'on', 'off'],
             enumDescriptions: [
-                nls.localize('accessibilitySupport.auto', "Use platform APIs to detect when a Screen Reader is attached."),
-                nls.localize('accessibilitySupport.on', "Optimize for usage with a Screen Reader."),
-                nls.localize('accessibilitySupport.off', "Assume a screen reader is not attached."),
+                nls.localize(198, "Use platform APIs to detect when a Screen Reader is attached."),
+                nls.localize(199, "Optimize for usage with a Screen Reader."),
+                nls.localize(200, "Assume a screen reader is not attached."),
             ],
             default: 'auto',
             tags: ['accessibility'],
-            description: nls.localize('accessibilitySupport', "Controls if the UI should run in a mode where it is optimized for screen readers.")
+            description: nls.localize(201, "Controls if the UI should run in a mode where it is optimized for screen readers.")
         });
     }
     validate(input) {
@@ -337,16 +341,16 @@ class EditorComments extends BaseEditorOption {
             insertSpace: true,
             ignoreEmptyLines: true,
         };
-        super(23 /* EditorOption.comments */, 'comments', defaults, {
+        super(29 /* EditorOption.comments */, 'comments', defaults, {
             'editor.comments.insertSpace': {
                 type: 'boolean',
                 default: defaults.insertSpace,
-                description: nls.localize('comments.insertSpace', "Controls whether a space character is inserted when commenting.")
+                description: nls.localize(202, "Controls whether a space character is inserted when commenting.")
             },
             'editor.comments.ignoreEmptyLines': {
                 type: 'boolean',
                 default: defaults.ignoreEmptyLines,
-                description: nls.localize('comments.ignoreEmptyLines', 'Controls if empty lines should be ignored with toggle, add or remove actions for line comments.')
+                description: nls.localize(203, 'Controls if empty lines should be ignored with toggle, add or remove actions for line comments.')
             },
         });
     }
@@ -361,7 +365,10 @@ class EditorComments extends BaseEditorOption {
         };
     }
 }
-function _cursorBlinkingStyleFromString(cursorBlinkingStyle) {
+/**
+ * @internal
+ */
+export function cursorBlinkingStyleFromString(cursorBlinkingStyle) {
     switch (cursorBlinkingStyle) {
         case 'blink': return 1 /* TextEditorCursorBlinkingStyle.Blink */;
         case 'smooth': return 2 /* TextEditorCursorBlinkingStyle.Smooth */;
@@ -402,7 +409,10 @@ export var TextEditorCursorStyle;
      */
     TextEditorCursorStyle[TextEditorCursorStyle["UnderlineThin"] = 6] = "UnderlineThin";
 })(TextEditorCursorStyle || (TextEditorCursorStyle = {}));
-function _cursorStyleFromString(cursorStyle) {
+/**
+ * @internal
+ */
+export function cursorStyleFromString(cursorStyle) {
     switch (cursorStyle) {
         case 'line': return TextEditorCursorStyle.Line;
         case 'block': return TextEditorCursorStyle.Block;
@@ -416,26 +426,26 @@ function _cursorStyleFromString(cursorStyle) {
 //#region editorClassName
 class EditorClassName extends ComputedEditorOption {
     constructor() {
-        super(143 /* EditorOption.editorClassName */);
+        super(162 /* EditorOption.editorClassName */);
     }
     compute(env, options, _) {
         const classNames = ['monaco-editor'];
-        if (options.get(39 /* EditorOption.extraEditorClassName */)) {
-            classNames.push(options.get(39 /* EditorOption.extraEditorClassName */));
+        if (options.get(48 /* EditorOption.extraEditorClassName */)) {
+            classNames.push(options.get(48 /* EditorOption.extraEditorClassName */));
         }
         if (env.extraEditorClassName) {
             classNames.push(env.extraEditorClassName);
         }
-        if (options.get(74 /* EditorOption.mouseStyle */) === 'default') {
+        if (options.get(82 /* EditorOption.mouseStyle */) === 'default') {
             classNames.push('mouse-default');
         }
-        else if (options.get(74 /* EditorOption.mouseStyle */) === 'copy') {
+        else if (options.get(82 /* EditorOption.mouseStyle */) === 'copy') {
             classNames.push('mouse-copy');
         }
-        if (options.get(112 /* EditorOption.showUnused */)) {
+        if (options.get(127 /* EditorOption.showUnused */)) {
             classNames.push('showUnused');
         }
-        if (options.get(141 /* EditorOption.showDeprecated */)) {
+        if (options.get(157 /* EditorOption.showDeprecated */)) {
             classNames.push('showDeprecated');
         }
         return classNames.join(' ');
@@ -445,7 +455,7 @@ class EditorClassName extends ComputedEditorOption {
 //#region emptySelectionClipboard
 class EditorEmptySelectionClipboard extends EditorBooleanOption {
     constructor() {
-        super(37 /* EditorOption.emptySelectionClipboard */, 'emptySelectionClipboard', true, { description: nls.localize('emptySelectionClipboard', "Controls whether copying without a selection copies the current line.") });
+        super(45 /* EditorOption.emptySelectionClipboard */, 'emptySelectionClipboard', true, { description: nls.localize(204, "Controls whether copying without a selection copies the current line.") });
     }
     compute(env, options, value) {
         return value && env.emptySelectionClipboard;
@@ -455,55 +465,83 @@ class EditorFind extends BaseEditorOption {
     constructor() {
         const defaults = {
             cursorMoveOnType: true,
+            findOnType: true,
             seedSearchStringFromSelection: 'always',
             autoFindInSelection: 'never',
             globalFindClipboard: false,
             addExtraSpaceOnTop: true,
-            loop: true
+            loop: true,
+            history: 'workspace',
+            replaceHistory: 'workspace',
         };
-        super(41 /* EditorOption.find */, 'find', defaults, {
+        super(50 /* EditorOption.find */, 'find', defaults, {
             'editor.find.cursorMoveOnType': {
                 type: 'boolean',
                 default: defaults.cursorMoveOnType,
-                description: nls.localize('find.cursorMoveOnType', "Controls whether the cursor should jump to find matches while typing.")
+                description: nls.localize(205, "Controls whether the cursor should jump to find matches while typing.")
             },
             'editor.find.seedSearchStringFromSelection': {
                 type: 'string',
                 enum: ['never', 'always', 'selection'],
                 default: defaults.seedSearchStringFromSelection,
                 enumDescriptions: [
-                    nls.localize('editor.find.seedSearchStringFromSelection.never', 'Never seed search string from the editor selection.'),
-                    nls.localize('editor.find.seedSearchStringFromSelection.always', 'Always seed search string from the editor selection, including word at cursor position.'),
-                    nls.localize('editor.find.seedSearchStringFromSelection.selection', 'Only seed search string from the editor selection.')
+                    nls.localize(206, 'Never seed search string from the editor selection.'),
+                    nls.localize(207, 'Always seed search string from the editor selection, including word at cursor position.'),
+                    nls.localize(208, 'Only seed search string from the editor selection.')
                 ],
-                description: nls.localize('find.seedSearchStringFromSelection', "Controls whether the search string in the Find Widget is seeded from the editor selection.")
+                description: nls.localize(209, "Controls whether the search string in the Find Widget is seeded from the editor selection.")
             },
             'editor.find.autoFindInSelection': {
                 type: 'string',
                 enum: ['never', 'always', 'multiline'],
                 default: defaults.autoFindInSelection,
                 enumDescriptions: [
-                    nls.localize('editor.find.autoFindInSelection.never', 'Never turn on Find in Selection automatically (default).'),
-                    nls.localize('editor.find.autoFindInSelection.always', 'Always turn on Find in Selection automatically.'),
-                    nls.localize('editor.find.autoFindInSelection.multiline', 'Turn on Find in Selection automatically when multiple lines of content are selected.')
+                    nls.localize(210, 'Never turn on Find in Selection automatically (default).'),
+                    nls.localize(211, 'Always turn on Find in Selection automatically.'),
+                    nls.localize(212, 'Turn on Find in Selection automatically when multiple lines of content are selected.')
                 ],
-                description: nls.localize('find.autoFindInSelection', "Controls the condition for turning on Find in Selection automatically.")
+                description: nls.localize(213, "Controls the condition for turning on Find in Selection automatically.")
             },
             'editor.find.globalFindClipboard': {
                 type: 'boolean',
                 default: defaults.globalFindClipboard,
-                description: nls.localize('find.globalFindClipboard', "Controls whether the Find Widget should read or modify the shared find clipboard on macOS."),
+                description: nls.localize(214, "Controls whether the Find Widget should read or modify the shared find clipboard on macOS."),
                 included: platform.isMacintosh
             },
             'editor.find.addExtraSpaceOnTop': {
                 type: 'boolean',
                 default: defaults.addExtraSpaceOnTop,
-                description: nls.localize('find.addExtraSpaceOnTop', "Controls whether the Find Widget should add extra lines on top of the editor. When true, you can scroll beyond the first line when the Find Widget is visible.")
+                description: nls.localize(215, "Controls whether the Find Widget should add extra lines on top of the editor. When true, you can scroll beyond the first line when the Find Widget is visible.")
             },
             'editor.find.loop': {
                 type: 'boolean',
                 default: defaults.loop,
-                description: nls.localize('find.loop', "Controls whether the search automatically restarts from the beginning (or the end) when no further matches can be found.")
+                description: nls.localize(216, "Controls whether the search automatically restarts from the beginning (or the end) when no further matches can be found.")
+            },
+            'editor.find.history': {
+                type: 'string',
+                enum: ['never', 'workspace'],
+                default: 'workspace',
+                enumDescriptions: [
+                    nls.localize(217, 'Do not store search history from the find widget.'),
+                    nls.localize(218, 'Store search history across the active workspace'),
+                ],
+                description: nls.localize(219, "Controls how the find widget history should be stored")
+            },
+            'editor.find.replaceHistory': {
+                type: 'string',
+                enum: ['never', 'workspace'],
+                default: 'workspace',
+                enumDescriptions: [
+                    nls.localize(220, 'Do not store history from the replace widget.'),
+                    nls.localize(221, 'Store replace history across the active workspace'),
+                ],
+                description: nls.localize(222, "Controls how the replace widget history should be stored")
+            },
+            'editor.find.findOnType': {
+                type: 'boolean',
+                default: defaults.findOnType,
+                description: nls.localize(223, "Controls whether the Find Widget should search as you type.")
             },
         });
     }
@@ -514,6 +552,7 @@ class EditorFind extends BaseEditorOption {
         const input = _input;
         return {
             cursorMoveOnType: boolean(input.cursorMoveOnType, this.defaultValue.cursorMoveOnType),
+            findOnType: boolean(input.findOnType, this.defaultValue.findOnType),
             seedSearchStringFromSelection: typeof _input.seedSearchStringFromSelection === 'boolean'
                 ? (_input.seedSearchStringFromSelection ? 'always' : 'never')
                 : stringSet(input.seedSearchStringFromSelection, this.defaultValue.seedSearchStringFromSelection, ['never', 'always', 'selection']),
@@ -523,6 +562,8 @@ class EditorFind extends BaseEditorOption {
             globalFindClipboard: boolean(input.globalFindClipboard, this.defaultValue.globalFindClipboard),
             addExtraSpaceOnTop: boolean(input.addExtraSpaceOnTop, this.defaultValue.addExtraSpaceOnTop),
             loop: boolean(input.loop, this.defaultValue.loop),
+            history: stringSet(input.history, this.defaultValue.history, ['never', 'workspace']),
+            replaceHistory: stringSet(input.replaceHistory, this.defaultValue.replaceHistory, ['never', 'workspace']),
         };
     }
 }
@@ -535,18 +576,18 @@ export class EditorFontLigatures extends BaseEditorOption {
     static { this.OFF = '"liga" off, "calt" off'; }
     static { this.ON = '"liga" on, "calt" on'; }
     constructor() {
-        super(51 /* EditorOption.fontLigatures */, 'fontLigatures', EditorFontLigatures.OFF, {
+        super(60 /* EditorOption.fontLigatures */, 'fontLigatures', EditorFontLigatures.OFF, {
             anyOf: [
                 {
                     type: 'boolean',
-                    description: nls.localize('fontLigatures', "Enables/Disables font ligatures ('calt' and 'liga' font features). Change this to a string for fine-grained control of the 'font-feature-settings' CSS property."),
+                    description: nls.localize(224, "Enables/Disables font ligatures ('calt' and 'liga' font features). Change this to a string for fine-grained control of the 'font-feature-settings' CSS property."),
                 },
                 {
                     type: 'string',
-                    description: nls.localize('fontFeatureSettings', "Explicit 'font-feature-settings' CSS property. A boolean can be passed instead if one only needs to turn on/off ligatures.")
+                    description: nls.localize(225, "Explicit 'font-feature-settings' CSS property. A boolean can be passed instead if one only needs to turn on/off ligatures.")
                 }
             ],
-            description: nls.localize('fontLigaturesGeneral', "Configures font ligatures or font features. Can be either a boolean to enable/disable ligatures or a string for the value of the CSS 'font-feature-settings' property."),
+            description: nls.localize(226, "Configures font ligatures or font features. Can be either a boolean to enable/disable ligatures or a string for the value of the CSS 'font-feature-settings' property."),
             default: false
         });
     }
@@ -580,18 +621,18 @@ export class EditorFontVariations extends BaseEditorOption {
     // Translate `fontWeight` config to the `font-variation-settings` CSS property.
     static { this.TRANSLATE = 'translate'; }
     constructor() {
-        super(54 /* EditorOption.fontVariations */, 'fontVariations', EditorFontVariations.OFF, {
+        super(63 /* EditorOption.fontVariations */, 'fontVariations', EditorFontVariations.OFF, {
             anyOf: [
                 {
                     type: 'boolean',
-                    description: nls.localize('fontVariations', "Enables/Disables the translation from font-weight to font-variation-settings. Change this to a string for fine-grained control of the 'font-variation-settings' CSS property."),
+                    description: nls.localize(227, "Enables/Disables the translation from font-weight to font-variation-settings. Change this to a string for fine-grained control of the 'font-variation-settings' CSS property."),
                 },
                 {
                     type: 'string',
-                    description: nls.localize('fontVariationSettings', "Explicit 'font-variation-settings' CSS property. A boolean can be passed instead if one only needs to translate font-weight to font-variation-settings.")
+                    description: nls.localize(228, "Explicit 'font-variation-settings' CSS property. A boolean can be passed instead if one only needs to translate font-weight to font-variation-settings.")
                 }
             ],
-            description: nls.localize('fontVariationsGeneral', "Configures font variations. Can be either a boolean to enable/disable the translation from font-weight to font-variation-settings or a string for the value of the CSS 'font-variation-settings' property."),
+            description: nls.localize(229, "Configures font variations. Can be either a boolean to enable/disable the translation from font-weight to font-variation-settings or a string for the value of the CSS 'font-variation-settings' property."),
             default: false
         });
     }
@@ -623,22 +664,60 @@ export class EditorFontVariations extends BaseEditorOption {
 //#region fontInfo
 class EditorFontInfo extends ComputedEditorOption {
     constructor() {
-        super(50 /* EditorOption.fontInfo */);
+        super(59 /* EditorOption.fontInfo */);
     }
     compute(env, options, _) {
         return env.fontInfo;
     }
 }
 //#endregion
+//#region effectiveCursorStyle
+class EffectiveCursorStyle extends ComputedEditorOption {
+    constructor() {
+        super(161 /* EditorOption.effectiveCursorStyle */);
+    }
+    compute(env, options, _) {
+        return env.inputMode === 'overtype' ?
+            options.get(92 /* EditorOption.overtypeCursorStyle */) :
+            options.get(34 /* EditorOption.cursorStyle */);
+    }
+}
+//#endregion
+//#region effectiveExperimentalEditContext
+class EffectiveEditContextEnabled extends ComputedEditorOption {
+    constructor() {
+        super(170 /* EditorOption.effectiveEditContext */);
+    }
+    compute(env, options) {
+        return env.editContextSupported && options.get(44 /* EditorOption.editContext */);
+    }
+}
+//#endregion
+//#region effectiveAllowVariableFonts
+class EffectiveAllowVariableFonts extends ComputedEditorOption {
+    constructor() {
+        super(172 /* EditorOption.effectiveAllowVariableFonts */);
+    }
+    compute(env, options) {
+        const accessibilitySupport = env.accessibilitySupport;
+        if (accessibilitySupport === 2 /* AccessibilitySupport.Enabled */) {
+            return options.get(7 /* EditorOption.allowVariableFontsInAccessibilityMode */);
+        }
+        else {
+            return options.get(6 /* EditorOption.allowVariableFonts */);
+        }
+    }
+}
+//#engregion
 //#region fontSize
 class EditorFontSize extends SimpleEditorOption {
     constructor() {
-        super(52 /* EditorOption.fontSize */, 'fontSize', EDITOR_FONT_DEFAULTS.fontSize, {
+        super(61 /* EditorOption.fontSize */, 'fontSize', EDITOR_FONT_DEFAULTS.fontSize, {
             type: 'number',
             minimum: 6,
             maximum: 100,
             default: EDITOR_FONT_DEFAULTS.fontSize,
-            description: nls.localize('fontSize', "Controls the font size in pixels.")
+            description: nls.localize(230, "Controls the font size in pixels.")
         });
     }
     validate(input) {
@@ -661,13 +740,13 @@ class EditorFontWeight extends BaseEditorOption {
     static { this.MINIMUM_VALUE = 1; }
     static { this.MAXIMUM_VALUE = 1000; }
     constructor() {
-        super(53 /* EditorOption.fontWeight */, 'fontWeight', EDITOR_FONT_DEFAULTS.fontWeight, {
+        super(62 /* EditorOption.fontWeight */, 'fontWeight', EDITOR_FONT_DEFAULTS.fontWeight, {
             anyOf: [
                 {
                     type: 'number',
                     minimum: EditorFontWeight.MINIMUM_VALUE,
                     maximum: EditorFontWeight.MAXIMUM_VALUE,
-                    errorMessage: nls.localize('fontWeightErrorMessage', "Only \"normal\" and \"bold\" keywords or numbers between 1 and 1000 are allowed.")
+                    errorMessage: nls.localize(231, "Only \"normal\" and \"bold\" keywords or numbers between 1 and 1000 are allowed.")
                 },
                 {
                     type: 'string',
@@ -678,7 +757,7 @@ class EditorFontWeight extends BaseEditorOption {
                 }
             ],
             default: EDITOR_FONT_DEFAULTS.fontWeight,
-            description: nls.localize('fontWeight', "Controls the font weight. Accepts \"normal\" and \"bold\" keywords or numbers between 1 and 1000.")
+            description: nls.localize(232, "Controls the font weight. Accepts \"normal\" and \"bold\" keywords or numbers between 1 and 1000.")
         });
     }
     validate(input) {
@@ -710,65 +789,65 @@ class EditorGoToLocation extends BaseEditorOption {
             enum: ['peek', 'gotoAndPeek', 'goto'],
             default: defaults.multiple,
             enumDescriptions: [
-                nls.localize('editor.gotoLocation.multiple.peek', 'Show Peek view of the results (default)'),
-                nls.localize('editor.gotoLocation.multiple.gotoAndPeek', 'Go to the primary result and show a Peek view'),
-                nls.localize('editor.gotoLocation.multiple.goto', 'Go to the primary result and enable Peek-less navigation to others')
+                nls.localize(233, 'Show Peek view of the results (default)'),
+                nls.localize(234, 'Go to the primary result and show a Peek view'),
+                nls.localize(235, 'Go to the primary result and enable Peek-less navigation to others')
             ]
         };
         const alternativeCommandOptions = ['', 'editor.action.referenceSearch.trigger', 'editor.action.goToReferences', 'editor.action.peekImplementation', 'editor.action.goToImplementation', 'editor.action.peekTypeDefinition', 'editor.action.goToTypeDefinition', 'editor.action.peekDeclaration', 'editor.action.revealDeclaration', 'editor.action.peekDefinition', 'editor.action.revealDefinitionAside', 'editor.action.revealDefinition'];
-        super(58 /* EditorOption.gotoLocation */, 'gotoLocation', defaults, {
+        super(67 /* EditorOption.gotoLocation */, 'gotoLocation', defaults, {
             'editor.gotoLocation.multiple': {
-                deprecationMessage: nls.localize('editor.gotoLocation.multiple.deprecated', "This setting is deprecated, please use separate settings like 'editor.editor.gotoLocation.multipleDefinitions' or 'editor.editor.gotoLocation.multipleImplementations' instead."),
+                deprecationMessage: nls.localize(236, "This setting is deprecated, please use separate settings like 'editor.editor.gotoLocation.multipleDefinitions' or 'editor.editor.gotoLocation.multipleImplementations' instead."),
             },
             'editor.gotoLocation.multipleDefinitions': {
-                description: nls.localize('editor.editor.gotoLocation.multipleDefinitions', "Controls the behavior the 'Go to Definition'-command when multiple target locations exist."),
+                description: nls.localize(237, "Controls the behavior the 'Go to Definition'-command when multiple target locations exist."),
                 ...jsonSubset,
             },
             'editor.gotoLocation.multipleTypeDefinitions': {
-                description: nls.localize('editor.editor.gotoLocation.multipleTypeDefinitions', "Controls the behavior the 'Go to Type Definition'-command when multiple target locations exist."),
+                description: nls.localize(238, "Controls the behavior the 'Go to Type Definition'-command when multiple target locations exist."),
                 ...jsonSubset,
             },
             'editor.gotoLocation.multipleDeclarations': {
-                description: nls.localize('editor.editor.gotoLocation.multipleDeclarations', "Controls the behavior the 'Go to Declaration'-command when multiple target locations exist."),
+                description: nls.localize(239, "Controls the behavior the 'Go to Declaration'-command when multiple target locations exist."),
                 ...jsonSubset,
             },
             'editor.gotoLocation.multipleImplementations': {
-                description: nls.localize('editor.editor.gotoLocation.multipleImplemenattions', "Controls the behavior the 'Go to Implementations'-command when multiple target locations exist."),
+                description: nls.localize(240, "Controls the behavior the 'Go to Implementations'-command when multiple target locations exist."),
                 ...jsonSubset,
             },
             'editor.gotoLocation.multipleReferences': {
-                description: nls.localize('editor.editor.gotoLocation.multipleReferences', "Controls the behavior the 'Go to References'-command when multiple target locations exist."),
+                description: nls.localize(241, "Controls the behavior the 'Go to References'-command when multiple target locations exist."),
                 ...jsonSubset,
             },
             'editor.gotoLocation.alternativeDefinitionCommand': {
                 type: 'string',
                 default: defaults.alternativeDefinitionCommand,
                 enum: alternativeCommandOptions,
-                description: nls.localize('alternativeDefinitionCommand', "Alternative command id that is being executed when the result of 'Go to Definition' is the current location.")
+                description: nls.localize(242, "Alternative command id that is being executed when the result of 'Go to Definition' is the current location.")
             },
             'editor.gotoLocation.alternativeTypeDefinitionCommand': {
                 type: 'string',
                 default: defaults.alternativeTypeDefinitionCommand,
                 enum: alternativeCommandOptions,
-                description: nls.localize('alternativeTypeDefinitionCommand', "Alternative command id that is being executed when the result of 'Go to Type Definition' is the current location.")
+                description: nls.localize(243, "Alternative command id that is being executed when the result of 'Go to Type Definition' is the current location.")
             },
             'editor.gotoLocation.alternativeDeclarationCommand': {
                 type: 'string',
                 default: defaults.alternativeDeclarationCommand,
                 enum: alternativeCommandOptions,
-                description: nls.localize('alternativeDeclarationCommand', "Alternative command id that is being executed when the result of 'Go to Declaration' is the current location.")
+                description: nls.localize(244, "Alternative command id that is being executed when the result of 'Go to Declaration' is the current location.")
             },
             'editor.gotoLocation.alternativeImplementationCommand': {
                 type: 'string',
                 default: defaults.alternativeImplementationCommand,
                 enum: alternativeCommandOptions,
-                description: nls.localize('alternativeImplementationCommand', "Alternative command id that is being executed when the result of 'Go to Implementation' is the current location.")
+                description: nls.localize(245, "Alternative command id that is being executed when the result of 'Go to Implementation' is the current location.")
             },
             'editor.gotoLocation.alternativeReferenceCommand': {
                 type: 'string',
                 default: defaults.alternativeReferenceCommand,
                 enum: alternativeCommandOptions,
-                description: nls.localize('alternativeReferenceCommand', "Alternative command id that is being executed when the result of 'Go to Reference' is the current location.")
+                description: nls.localize(246, "Alternative command id that is being executed when the result of 'Go to Reference' is the current location.")
             },
         });
     }
@@ -803,34 +882,34 @@ class EditorHover extends BaseEditorOption {
             sticky: true,
             above: true,
         };
-        super(60 /* EditorOption.hover */, 'hover', defaults, {
+        super(69 /* EditorOption.hover */, 'hover', defaults, {
             'editor.hover.enabled': {
                 type: 'boolean',
                 default: defaults.enabled,
-                description: nls.localize('hover.enabled', "Controls whether the hover is shown.")
+                description: nls.localize(247, "Controls whether the hover is shown.")
             },
             'editor.hover.delay': {
                 type: 'number',
                 default: defaults.delay,
                 minimum: 0,
                 maximum: 10000,
-                description: nls.localize('hover.delay', "Controls the delay in milliseconds after which the hover is shown.")
+                description: nls.localize(248, "Controls the delay in milliseconds after which the hover is shown.")
             },
             'editor.hover.sticky': {
                 type: 'boolean',
                 default: defaults.sticky,
-                description: nls.localize('hover.sticky', "Controls whether the hover should remain visible when mouse is moved over it.")
+                description: nls.localize(249, "Controls whether the hover should remain visible when mouse is moved over it.")
             },
             'editor.hover.hidingDelay': {
                 type: 'integer',
                 minimum: 0,
                 default: defaults.hidingDelay,
-                description: nls.localize('hover.hidingDelay', "Controls the delay in milliseconds after which the hover is hidden. Requires `editor.hover.sticky` to be enabled.")
+                markdownDescription: nls.localize(250, "Controls the delay in milliseconds after which the hover is hidden. Requires `#editor.hover.sticky#` to be enabled.")
             },
             'editor.hover.above': {
                 type: 'boolean',
                 default: defaults.above,
-                description: nls.localize('hover.above', "Prefer showing hovers above the line, if there's space.")
+                description: nls.localize(251, "Prefer showing hovers above the line, if there's space.")
             },
         });
     }
@@ -853,7 +932,7 @@ class EditorHover extends BaseEditorOption {
  */
 export class EditorLayoutInfoComputer extends ComputedEditorOption {
     constructor() {
-        super(146 /* EditorOption.layoutInfo */);
+        super(165 /* EditorOption.layoutInfo */);
     }
     compute(env, options, _) {
         return EditorLayoutInfoComputer.computeLayout(options, {
@@ -1052,25 +1131,25 @@ export class EditorLayoutInfoComputer extends ComputedEditorOption {
         const maxDigitWidth = env.maxDigitWidth;
         const pixelRatio = env.pixelRatio;
         const viewLineCount = env.viewLineCount;
-        const wordWrapOverride2 = options.get(138 /* EditorOption.wordWrapOverride2 */);
-        const wordWrapOverride1 = (wordWrapOverride2 === 'inherit' ? options.get(137 /* EditorOption.wordWrapOverride1 */) : wordWrapOverride2);
-        const wordWrap = (wordWrapOverride1 === 'inherit' ? options.get(133 /* EditorOption.wordWrap */) : wordWrapOverride1);
-        const wordWrapColumn = options.get(136 /* EditorOption.wordWrapColumn */);
+        const wordWrapOverride2 = options.get(154 /* EditorOption.wordWrapOverride2 */);
+        const wordWrapOverride1 = (wordWrapOverride2 === 'inherit' ? options.get(153 /* EditorOption.wordWrapOverride1 */) : wordWrapOverride2);
+        const wordWrap = (wordWrapOverride1 === 'inherit' ? options.get(149 /* EditorOption.wordWrap */) : wordWrapOverride1);
+        const wordWrapColumn = options.get(152 /* EditorOption.wordWrapColumn */);
         const isDominatedByLongLines = env.isDominatedByLongLines;
-        const showGlyphMargin = options.get(57 /* EditorOption.glyphMargin */);
-        const showLineNumbers = (options.get(68 /* EditorOption.lineNumbers */).renderType !== 0 /* RenderLineNumbersType.Off */);
-        const lineNumbersMinChars = options.get(69 /* EditorOption.lineNumbersMinChars */);
-        const scrollBeyondLastLine = options.get(106 /* EditorOption.scrollBeyondLastLine */);
-        const padding = options.get(84 /* EditorOption.padding */);
-        const minimap = options.get(73 /* EditorOption.minimap */);
-        const scrollbar = options.get(104 /* EditorOption.scrollbar */);
+        const showGlyphMargin = options.get(66 /* EditorOption.glyphMargin */);
+        const showLineNumbers = (options.get(76 /* EditorOption.lineNumbers */).renderType !== 0 /* RenderLineNumbersType.Off */);
+        const lineNumbersMinChars = options.get(77 /* EditorOption.lineNumbersMinChars */);
+        const scrollBeyondLastLine = options.get(119 /* EditorOption.scrollBeyondLastLine */);
+        const padding = options.get(96 /* EditorOption.padding */);
+        const minimap = options.get(81 /* EditorOption.minimap */);
+        const scrollbar = options.get(117 /* EditorOption.scrollbar */);
         const verticalScrollbarWidth = scrollbar.verticalScrollbarSize;
         const verticalScrollbarHasArrows = scrollbar.verticalHasArrows;
         const scrollbarArrowSize = scrollbar.arrowSize;
         const horizontalScrollbarHeight = scrollbar.horizontalScrollbarSize;
-        const folding = options.get(43 /* EditorOption.folding */);
-        const showFoldingDecoration = options.get(111 /* EditorOption.showFoldingControls */) !== 'never';
-        let lineDecorationsWidth = options.get(66 /* EditorOption.lineDecorationsWidth */);
+        const folding = options.get(52 /* EditorOption.folding */);
+        const showFoldingDecoration = options.get(126 /* EditorOption.showFoldingControls */) !== 'never';
+        let lineDecorationsWidth = options.get(74 /* EditorOption.lineDecorationsWidth */);
         if (folding && showFoldingDecoration) {
             lineDecorationsWidth += 16;
         }
@@ -1091,7 +1170,7 @@ export class EditorLayoutInfoComputer extends ComputedEditorOption {
         let isWordWrapMinified = false;
         let isViewportWrapping = false;
         let wrappingColumn = -1;
-        if (wordWrapOverride1 === 'inherit' && isDominatedByLongLines) {
+        if (options.get(2 /* EditorOption.accessibilitySupport */) === 2 /* AccessibilitySupport.Enabled */ && wordWrapOverride1 === 'inherit' && isDominatedByLongLines) {
             // Force viewport width wrapping if model is dominated by long lines
             isWordWrapMinified = true;
             isViewportWrapping = true;
@@ -1167,16 +1246,16 @@ export class EditorLayoutInfoComputer extends ComputedEditorOption {
 //#region WrappingStrategy
 class WrappingStrategy extends BaseEditorOption {
     constructor() {
-        super(140 /* EditorOption.wrappingStrategy */, 'wrappingStrategy', 'simple', {
+        super(156 /* EditorOption.wrappingStrategy */, 'wrappingStrategy', 'simple', {
             'editor.wrappingStrategy': {
                 enumDescriptions: [
-                    nls.localize('wrappingStrategy.simple', "Assumes that all characters are of the same width. This is a fast algorithm that works correctly for monospace fonts and certain scripts (like Latin characters) where glyphs are of equal width."),
-                    nls.localize('wrappingStrategy.advanced', "Delegates wrapping points computation to the browser. This is a slow algorithm, that might cause freezes for large files, but it works correctly in all cases.")
+                    nls.localize(252, "Assumes that all characters are of the same width. This is a fast algorithm that works correctly for monospace fonts and certain scripts (like Latin characters) where glyphs are of equal width."),
+                    nls.localize(253, "Delegates wrapping points computation to the browser. This is a slow algorithm, that might cause freezes for large files, but it works correctly in all cases.")
                 ],
                 type: 'string',
                 enum: ['simple', 'advanced'],
                 default: 'simple',
-                description: nls.localize('wrappingStrategy', "Controls the algorithm that computes wrapping points. Note that when in accessibility mode, advanced will be used for the best experience.")
+                description: nls.localize(254, "Controls the algorithm that computes wrapping points. Note that when in accessibility mode, advanced will be used for the best experience.")
             }
         });
     }
@@ -1204,18 +1283,17 @@ export var ShowLightbulbIconMode;
 class EditorLightbulb extends BaseEditorOption {
     constructor() {
         const defaults = { enabled: ShowLightbulbIconMode.OnCode };
-        super(65 /* EditorOption.lightbulb */, 'lightbulb', defaults, {
+        super(73 /* EditorOption.lightbulb */, 'lightbulb', defaults, {
             'editor.lightbulb.enabled': {
                 type: 'string',
-                tags: ['experimental'],
                 enum: [ShowLightbulbIconMode.Off, ShowLightbulbIconMode.OnCode, ShowLightbulbIconMode.On],
                 default: defaults.enabled,
                 enumDescriptions: [
-                    nls.localize('editor.lightbulb.enabled.off', 'Disable the code action menu.'),
-                    nls.localize('editor.lightbulb.enabled.onCode', 'Show the code action menu when the cursor is on lines with code.'),
-                    nls.localize('editor.lightbulb.enabled.on', 'Show the code action menu when the cursor is on lines with code or on empty lines.'),
+                    nls.localize(255, 'Disable the code action menu.'),
+                    nls.localize(256, 'Show the code action menu when the cursor is on lines with code.'),
+                    nls.localize(257, 'Show the code action menu when the cursor is on lines with code or on empty lines.'),
                 ],
-                description: nls.localize('enabled', "Enables the Code Action lightbulb in the editor.")
+                description: nls.localize(258, "Enables the Code Action lightbulb in the editor.")
             }
         });
     }
@@ -1232,30 +1310,29 @@ class EditorLightbulb extends BaseEditorOption {
 class EditorStickyScroll extends BaseEditorOption {
     constructor() {
         const defaults = { enabled: true, maxLineCount: 5, defaultModel: 'outlineModel', scrollWithEditor: true };
-        super(116 /* EditorOption.stickyScroll */, 'stickyScroll', defaults, {
+        super(131 /* EditorOption.stickyScroll */, 'stickyScroll', defaults, {
             'editor.stickyScroll.enabled': {
                 type: 'boolean',
                 default: defaults.enabled,
-                description: nls.localize('editor.stickyScroll.enabled', "Shows the nested current scopes during the scroll at the top of the editor."),
-                tags: ['experimental']
+                description: nls.localize(259, "Shows the nested current scopes during the scroll at the top of the editor.")
             },
             'editor.stickyScroll.maxLineCount': {
                 type: 'number',
                 default: defaults.maxLineCount,
                 minimum: 1,
                 maximum: 20,
-                description: nls.localize('editor.stickyScroll.maxLineCount', "Defines the maximum number of sticky lines to show.")
+                description: nls.localize(260, "Defines the maximum number of sticky lines to show.")
             },
             'editor.stickyScroll.defaultModel': {
                 type: 'string',
                 enum: ['outlineModel', 'foldingProviderModel', 'indentationModel'],
                 default: defaults.defaultModel,
-                description: nls.localize('editor.stickyScroll.defaultModel', "Defines the model to use for determining which lines to stick. If the outline model does not exist, it will fall back on the folding provider model which falls back on the indentation model. This order is respected in all three cases.")
+                description: nls.localize(261, "Defines the model to use for determining which lines to stick. If the outline model does not exist, it will fall back on the folding provider model which falls back on the indentation model. This order is respected in all three cases.")
             },
             'editor.stickyScroll.scrollWithEditor': {
                 type: 'boolean',
                 default: defaults.scrollWithEditor,
-                description: nls.localize('editor.stickyScroll.scrollWithEditor', "Enable scrolling of Sticky Scroll with the editor's horizontal scrollbar.")
+                description: nls.localize(262, "Enable scrolling of Sticky Scroll with the editor's horizontal scrollbar.")
             },
         });
     }
@@ -1274,34 +1351,39 @@ class EditorStickyScroll extends BaseEditorOption {
 }
 class EditorInlayHints extends BaseEditorOption {
     constructor() {
-        const defaults = { enabled: 'on', fontSize: 0, fontFamily: '', padding: false };
-        super(142 /* EditorOption.inlayHints */, 'inlayHints', defaults, {
+        const defaults = { enabled: 'on', fontSize: 0, fontFamily: '', padding: false, maximumLength: 43 };
+        super(159 /* EditorOption.inlayHints */, 'inlayHints', defaults, {
             'editor.inlayHints.enabled': {
                 type: 'string',
                 default: defaults.enabled,
-                description: nls.localize('inlayHints.enable', "Enables the inlay hints in the editor."),
+                description: nls.localize(263, "Enables the inlay hints in the editor."),
                 enum: ['on', 'onUnlessPressed', 'offUnlessPressed', 'off'],
                 markdownEnumDescriptions: [
-                    nls.localize('editor.inlayHints.on', "Inlay hints are enabled"),
-                    nls.localize('editor.inlayHints.onUnlessPressed', "Inlay hints are showing by default and hide when holding {0}", platform.isMacintosh ? `Ctrl+Option` : `Ctrl+Alt`),
-                    nls.localize('editor.inlayHints.offUnlessPressed', "Inlay hints are hidden by default and show when holding {0}", platform.isMacintosh ? `Ctrl+Option` : `Ctrl+Alt`),
-                    nls.localize('editor.inlayHints.off', "Inlay hints are disabled"),
+                    nls.localize(264, "Inlay hints are enabled"),
+                    nls.localize(265, "Inlay hints are showing by default and hide when holding {0}", platform.isMacintosh ? `Ctrl+Option` : `Ctrl+Alt`),
+                    nls.localize(266, "Inlay hints are hidden by default and show when holding {0}", platform.isMacintosh ? `Ctrl+Option` : `Ctrl+Alt`),
+                    nls.localize(267, "Inlay hints are disabled"),
                 ],
             },
             'editor.inlayHints.fontSize': {
                 type: 'number',
                 default: defaults.fontSize,
-                markdownDescription: nls.localize('inlayHints.fontSize', "Controls font size of inlay hints in the editor. As default the {0} is used when the configured value is less than {1} or greater than the editor font size.", '`#editor.fontSize#`', '`5`')
+                markdownDescription: nls.localize(268, "Controls font size of inlay hints in the editor. As default the {0} is used when the configured value is less than {1} or greater than the editor font size.", '`#editor.fontSize#`', '`5`')
             },
             'editor.inlayHints.fontFamily': {
                 type: 'string',
                 default: defaults.fontFamily,
-                markdownDescription: nls.localize('inlayHints.fontFamily', "Controls font family of inlay hints in the editor. When set to empty, the {0} is used.", '`#editor.fontFamily#`')
+                markdownDescription: nls.localize(269, "Controls font family of inlay hints in the editor. When set to empty, the {0} is used.", '`#editor.fontFamily#`')
             },
             'editor.inlayHints.padding': {
                 type: 'boolean',
                 default: defaults.padding,
-                description: nls.localize('inlayHints.padding', "Enables the padding around the inlay hints in the editor.")
+                description: nls.localize(270, "Enables the padding around the inlay hints in the editor.")
+            },
+            'editor.inlayHints.maximumLength': {
+                type: 'number',
+                default: defaults.maximumLength,
+                markdownDescription: nls.localize(271, "Maximum overall length of inlay hints, for a single line, before they get truncated by the editor. Set to `0` to never truncate")
             }
         });
     }
@@ -1317,7 +1399,8 @@ class EditorInlayHints extends BaseEditorOption {
             enabled: stringSet(input.enabled, this.defaultValue.enabled, ['on', 'off', 'offUnlessPressed', 'onUnlessPressed']),
             fontSize: EditorIntOption.clampedInt(input.fontSize, this.defaultValue.fontSize, 0, 100),
             fontFamily: EditorStringOption.string(input.fontFamily, this.defaultValue.fontFamily),
-            padding: boolean(input.padding, this.defaultValue.padding)
+            padding: boolean(input.padding, this.defaultValue.padding),
+            maximumLength: EditorIntOption.clampedInt(input.maximumLength, this.defaultValue.maximumLength, 0, Number.MAX_SAFE_INTEGER),
         };
     }
 }
@@ -1325,7 +1408,7 @@ class EditorInlayHints extends BaseEditorOption {
 //#region lineDecorationsWidth
 class EditorLineDecorationsWidth extends BaseEditorOption {
     constructor() {
-        super(66 /* EditorOption.lineDecorationsWidth */, 'lineDecorationsWidth', 10);
+        super(74 /* EditorOption.lineDecorationsWidth */, 'lineDecorationsWidth', 10);
     }
     validate(input) {
         if (typeof input === 'string' && /^\d+(\.\d+)?ch$/.test(input)) {
@@ -1350,7 +1433,7 @@ class EditorLineDecorationsWidth extends BaseEditorOption {
 //#region lineHeight
 class EditorLineHeight extends EditorFloatOption {
     constructor() {
-        super(67 /* EditorOption.lineHeight */, 'lineHeight', EDITOR_FONT_DEFAULTS.lineHeight, x => EditorFloatOption.clamp(x, 0, 150), { markdownDescription: nls.localize('lineHeight', "Controls the line height. \n - Use 0 to automatically compute the line height from the font size.\n - Values between 0 and 8 will be used as a multiplier with the font size.\n - Values greater than or equal to 8 will be used as effective values.") });
+        super(75 /* EditorOption.lineHeight */, 'lineHeight', EDITOR_FONT_DEFAULTS.lineHeight, x => EditorFloatOption.clamp(x, 0, 150), { markdownDescription: nls.localize(272, "Controls the line height. \n - Use 0 to automatically compute the line height from the font size.\n - Values between 0 and 8 will be used as a multiplier with the font size.\n - Values greater than or equal to 8 will be used as effective values.") }, 0, 150);
     }
     compute(env, options, value) {
         // The lineHeight is computed from the fontSize if it is 0.
@@ -1366,48 +1449,55 @@ class EditorMinimap extends BaseEditorOption {
             size: 'proportional',
             side: 'right',
             showSlider: 'mouseover',
-            autohide: false,
+            autohide: 'none',
             renderCharacters: true,
             maxColumn: 120,
             scale: 1,
             showRegionSectionHeaders: true,
             showMarkSectionHeaders: true,
+            markSectionHeaderRegex: '\\bMARK:\\s*(?<separator>\-?)\\s*(?<label>.*)$',
             sectionHeaderFontSize: 9,
             sectionHeaderLetterSpacing: 1,
         };
-        super(73 /* EditorOption.minimap */, 'minimap', defaults, {
+        super(81 /* EditorOption.minimap */, 'minimap', defaults, {
             'editor.minimap.enabled': {
                 type: 'boolean',
                 default: defaults.enabled,
-                description: nls.localize('minimap.enabled', "Controls whether the minimap is shown.")
+                description: nls.localize(273, "Controls whether the minimap is shown.")
             },
             'editor.minimap.autohide': {
-                type: 'boolean',
+                type: 'string',
+                enum: ['none', 'mouseover', 'scroll'],
+                enumDescriptions: [
+                    nls.localize(274, "The minimap is always shown."),
+                    nls.localize(275, "The minimap is hidden when mouse is not over the minimap and shown when mouse is over the minimap."),
+                    nls.localize(276, "The minimap is only shown when the editor is scrolled"),
+                ],
                 default: defaults.autohide,
-                description: nls.localize('minimap.autohide', "Controls whether the minimap is hidden automatically.")
+                description: nls.localize(277, "Controls whether the minimap is hidden automatically.")
             },
             'editor.minimap.size': {
                 type: 'string',
                 enum: ['proportional', 'fill', 'fit'],
                 enumDescriptions: [
-                    nls.localize('minimap.size.proportional', "The minimap has the same size as the editor contents (and might scroll)."),
-                    nls.localize('minimap.size.fill', "The minimap will stretch or shrink as necessary to fill the height of the editor (no scrolling)."),
-                    nls.localize('minimap.size.fit', "The minimap will shrink as necessary to never be larger than the editor (no scrolling)."),
+                    nls.localize(278, "The minimap has the same size as the editor contents (and might scroll)."),
+                    nls.localize(279, "The minimap will stretch or shrink as necessary to fill the height of the editor (no scrolling)."),
+                    nls.localize(280, "The minimap will shrink as necessary to never be larger than the editor (no scrolling)."),
                 ],
                 default: defaults.size,
-                description: nls.localize('minimap.size', "Controls the size of the minimap.")
+                description: nls.localize(281, "Controls the size of the minimap.")
             },
             'editor.minimap.side': {
                 type: 'string',
                 enum: ['left', 'right'],
                 default: defaults.side,
-                description: nls.localize('minimap.side', "Controls the side where to render the minimap.")
+                description: nls.localize(282, "Controls the side where to render the minimap.")
             },
             'editor.minimap.showSlider': {
                 type: 'string',
                 enum: ['always', 'mouseover'],
                 default: defaults.showSlider,
-                description: nls.localize('minimap.showSlider', "Controls when the minimap slider is shown.")
+                description: nls.localize(283, "Controls when the minimap slider is shown.")
             },
             'editor.minimap.scale': {
                 type: 'number',
@@ -1415,37 +1505,42 @@ class EditorMinimap extends BaseEditorOption {
                 minimum: 1,
                 maximum: 3,
                 enum: [1, 2, 3],
-                description: nls.localize('minimap.scale', "Scale of content drawn in the minimap: 1, 2 or 3.")
+                description: nls.localize(284, "Scale of content drawn in the minimap: 1, 2 or 3.")
             },
             'editor.minimap.renderCharacters': {
                 type: 'boolean',
                 default: defaults.renderCharacters,
-                description: nls.localize('minimap.renderCharacters', "Render the actual characters on a line as opposed to color blocks.")
+                description: nls.localize(285, "Render the actual characters on a line as opposed to color blocks.")
             },
             'editor.minimap.maxColumn': {
                 type: 'number',
                 default: defaults.maxColumn,
-                description: nls.localize('minimap.maxColumn', "Limit the width of the minimap to render at most a certain number of columns.")
+                description: nls.localize(286, "Limit the width of the minimap to render at most a certain number of columns.")
             },
             'editor.minimap.showRegionSectionHeaders': {
                 type: 'boolean',
                 default: defaults.showRegionSectionHeaders,
-                description: nls.localize('minimap.showRegionSectionHeaders', "Controls whether named regions are shown as section headers in the minimap.")
+                description: nls.localize(287, "Controls whether named regions are shown as section headers in the minimap.")
             },
             'editor.minimap.showMarkSectionHeaders': {
                 type: 'boolean',
                 default: defaults.showMarkSectionHeaders,
-                description: nls.localize('minimap.showMarkSectionHeaders', "Controls whether MARK: comments are shown as section headers in the minimap.")
+                description: nls.localize(288, "Controls whether MARK: comments are shown as section headers in the minimap.")
+            },
+            'editor.minimap.markSectionHeaderRegex': {
+                type: 'string',
+                default: defaults.markSectionHeaderRegex,
+                description: nls.localize(289, "Defines the regular expression used to find section headers in comments. The regex must contain a named match group `label` (written as `(?<label>.+)`) that encapsulates the section header, otherwise it will not work. Optionally you can include another match group named `separator`. Use \\n in the pattern to match multi-line headers."),
             },
             'editor.minimap.sectionHeaderFontSize': {
                 type: 'number',
                 default: defaults.sectionHeaderFontSize,
-                description: nls.localize('minimap.sectionHeaderFontSize', "Controls the font size of section headers in the minimap.")
+                description: nls.localize(290, "Controls the font size of section headers in the minimap.")
             },
             'editor.minimap.sectionHeaderLetterSpacing': {
                 type: 'number',
                 default: defaults.sectionHeaderLetterSpacing,
-                description: nls.localize('minimap.sectionHeaderLetterSpacing', "Controls the amount of space (in pixels) between characters of section header. This helps the readability of the header in small font sizes.")
+                description: nls.localize(291, "Controls the amount of space (in pixels) between characters of section header. This helps the readability of the header in small font sizes.")
             }
         });
     }
@@ -1454,9 +1549,19 @@ class EditorMinimap extends BaseEditorOption {
             return this.defaultValue;
         }
         const input = _input;
+        // Validate mark section header regex
+        let markSectionHeaderRegex = this.defaultValue.markSectionHeaderRegex;
+        const inputRegex = _input.markSectionHeaderRegex;
+        if (typeof inputRegex === 'string') {
+            try {
+                new RegExp(inputRegex, 'd');
+                markSectionHeaderRegex = inputRegex;
+            }
+            catch { }
+        }
         return {
             enabled: boolean(input.enabled, this.defaultValue.enabled),
-            autohide: boolean(input.autohide, this.defaultValue.autohide),
+            autohide: stringSet(input.autohide, this.defaultValue.autohide, ['none', 'mouseover', 'scroll']),
             size: stringSet(input.size, this.defaultValue.size, ['proportional', 'fill', 'fit']),
             side: stringSet(input.side, this.defaultValue.side, ['right', 'left']),
             showSlider: stringSet(input.showSlider, this.defaultValue.showSlider, ['always', 'mouseover']),
@@ -1465,6 +1570,7 @@ class EditorMinimap extends BaseEditorOption {
             maxColumn: EditorIntOption.clampedInt(input.maxColumn, this.defaultValue.maxColumn, 1, 10000),
             showRegionSectionHeaders: boolean(input.showRegionSectionHeaders, this.defaultValue.showRegionSectionHeaders),
             showMarkSectionHeaders: boolean(input.showMarkSectionHeaders, this.defaultValue.showMarkSectionHeaders),
+            markSectionHeaderRegex: markSectionHeaderRegex,
             sectionHeaderFontSize: EditorFloatOption.clamp(input.sectionHeaderFontSize ?? this.defaultValue.sectionHeaderFontSize, 4, 32),
             sectionHeaderLetterSpacing: EditorFloatOption.clamp(input.sectionHeaderLetterSpacing ?? this.defaultValue.sectionHeaderLetterSpacing, 0, 5),
         };
@@ -1480,20 +1586,20 @@ function _multiCursorModifierFromString(multiCursorModifier) {
 }
 class EditorPadding extends BaseEditorOption {
     constructor() {
-        super(84 /* EditorOption.padding */, 'padding', { top: 0, bottom: 0 }, {
+        super(96 /* EditorOption.padding */, 'padding', { top: 0, bottom: 0 }, {
             'editor.padding.top': {
                 type: 'number',
                 default: 0,
                 minimum: 0,
                 maximum: 1000,
-                description: nls.localize('padding.top', "Controls the amount of space between the top edge of the editor and the first line.")
+                description: nls.localize(292, "Controls the amount of space between the top edge of the editor and the first line.")
             },
             'editor.padding.bottom': {
                 type: 'number',
                 default: 0,
                 minimum: 0,
                 maximum: 1000,
-                description: nls.localize('padding.bottom', "Controls the amount of space between the bottom edge of the editor and the last line.")
+                description: nls.localize(293, "Controls the amount of space between the bottom edge of the editor and the last line.")
             }
         });
     }
@@ -1514,16 +1620,16 @@ class EditorParameterHints extends BaseEditorOption {
             enabled: true,
             cycle: true
         };
-        super(86 /* EditorOption.parameterHints */, 'parameterHints', defaults, {
+        super(98 /* EditorOption.parameterHints */, 'parameterHints', defaults, {
             'editor.parameterHints.enabled': {
                 type: 'boolean',
                 default: defaults.enabled,
-                description: nls.localize('parameterHints.enabled', "Enables a pop-up that shows parameter documentation and type information as you type.")
+                description: nls.localize(294, "Enables a pop-up that shows parameter documentation and type information as you type.")
             },
             'editor.parameterHints.cycle': {
                 type: 'boolean',
                 default: defaults.cycle,
-                description: nls.localize('parameterHints.cycle', "Controls whether the parameter hints menu cycles or closes when reaching the end of the list.")
+                description: nls.localize(295, "Controls whether the parameter hints menu cycles or closes when reaching the end of the list.")
             },
         });
     }
@@ -1542,7 +1648,7 @@ class EditorParameterHints extends BaseEditorOption {
 //#region pixelRatio
 class EditorPixelRatio extends ComputedEditorOption {
     constructor() {
-        super(144 /* EditorOption.pixelRatio */);
+        super(163 /* EditorOption.pixelRatio */);
     }
     compute(env, options, _) {
         return env.pixelRatio;
@@ -1552,7 +1658,7 @@ class EditorPixelRatio extends ComputedEditorOption {
 //#region
 class PlaceholderOption extends BaseEditorOption {
     constructor() {
-        super(88 /* EditorOption.placeholder */, 'placeholder', undefined);
+        super(100 /* EditorOption.placeholder */, 'placeholder', undefined);
     }
     validate(input) {
         if (typeof input === 'undefined') {
@@ -1576,31 +1682,31 @@ class EditorQuickSuggestions extends BaseEditorOption {
             {
                 type: 'string',
                 enum: ['on', 'inline', 'off'],
-                enumDescriptions: [nls.localize('on', "Quick suggestions show inside the suggest widget"), nls.localize('inline', "Quick suggestions show as ghost text"), nls.localize('off', "Quick suggestions are disabled")]
+                enumDescriptions: [nls.localize(296, "Quick suggestions show inside the suggest widget"), nls.localize(297, "Quick suggestions show as ghost text"), nls.localize(298, "Quick suggestions are disabled")]
             }
         ];
-        super(90 /* EditorOption.quickSuggestions */, 'quickSuggestions', defaults, {
+        super(102 /* EditorOption.quickSuggestions */, 'quickSuggestions', defaults, {
             type: 'object',
             additionalProperties: false,
             properties: {
                 strings: {
                     anyOf: types,
                     default: defaults.strings,
-                    description: nls.localize('quickSuggestions.strings', "Enable quick suggestions inside strings.")
+                    description: nls.localize(299, "Enable quick suggestions inside strings.")
                 },
                 comments: {
                     anyOf: types,
                     default: defaults.comments,
-                    description: nls.localize('quickSuggestions.comments', "Enable quick suggestions inside comments.")
+                    description: nls.localize(300, "Enable quick suggestions inside comments.")
                 },
                 other: {
                     anyOf: types,
                     default: defaults.other,
-                    description: nls.localize('quickSuggestions.other', "Enable quick suggestions outside of strings and comments.")
+                    description: nls.localize(301, "Enable quick suggestions outside of strings and comments.")
                 },
             },
             default: defaults,
-            markdownDescription: nls.localize('quickSuggestions', "Controls whether suggestions should automatically show up while typing. This can be controlled for typing in comments, strings, and other code. Quick suggestion can be configured to show as ghost text or with the suggest widget. Also be aware of the {0}-setting which controls if suggestions are triggered by special characters.", '`#editor.suggestOnTriggerCharacters#`')
+            markdownDescription: nls.localize(302, "Controls whether suggestions should automatically show up while typing. This can be controlled for typing in comments, strings, and other code. Quick suggestion can be configured to show as ghost text or with the suggest widget. Also be aware of the {0}-setting which controls if suggestions are triggered by special characters.", '`#editor.suggestOnTriggerCharacters#`')
         });
         this.defaultValue = defaults;
     }
@@ -1646,17 +1752,17 @@ class EditorQuickSuggestions extends BaseEditorOption {
 }
 class EditorRenderLineNumbersOption extends BaseEditorOption {
     constructor() {
-        super(68 /* EditorOption.lineNumbers */, 'lineNumbers', { renderType: 1 /* RenderLineNumbersType.On */, renderFn: null }, {
+        super(76 /* EditorOption.lineNumbers */, 'lineNumbers', { renderType: 1 /* RenderLineNumbersType.On */, renderFn: null }, {
             type: 'string',
             enum: ['off', 'on', 'relative', 'interval'],
             enumDescriptions: [
-                nls.localize('lineNumbers.off', "Line numbers are not rendered."),
-                nls.localize('lineNumbers.on', "Line numbers are rendered as absolute number."),
-                nls.localize('lineNumbers.relative', "Line numbers are rendered as distance in lines to cursor position."),
-                nls.localize('lineNumbers.interval', "Line numbers are rendered every 10 lines.")
+                nls.localize(303, "Line numbers are not rendered."),
+                nls.localize(304, "Line numbers are rendered as absolute number."),
+                nls.localize(305, "Line numbers are rendered as distance in lines to cursor position."),
+                nls.localize(306, "Line numbers are rendered every 10 lines.")
             ],
             default: 'on',
-            description: nls.localize('lineNumbers', "Controls the display of line numbers.")
+            description: nls.localize(307, "Controls the display of line numbers.")
         });
     }
     validate(lineNumbers) {
@@ -1692,17 +1798,25 @@ class EditorRenderLineNumbersOption extends BaseEditorOption {
  * @internal
  */
 export function filterValidationDecorations(options) {
-    const renderValidationDecorations = options.get(99 /* EditorOption.renderValidationDecorations */);
+    const renderValidationDecorations = options.get(112 /* EditorOption.renderValidationDecorations */);
     if (renderValidationDecorations === 'editable') {
-        return options.get(92 /* EditorOption.readOnly */);
+        return options.get(104 /* EditorOption.readOnly */);
     }
     return renderValidationDecorations === 'on' ? false : true;
+}
+//#endregion
+//#region filterFontDecorations
+/**
+ * @internal
+ */
+export function filterFontDecorations(options) {
+    return !options.get(172 /* EditorOption.effectiveAllowVariableFonts */);
 }
 class EditorRulers extends BaseEditorOption {
     constructor() {
         const defaults = [];
-        const columnSchema = { type: 'number', description: nls.localize('rulers.size', "Number of monospace characters at which this editor ruler will render.") };
-        super(103 /* EditorOption.rulers */, 'rulers', defaults, {
+        const columnSchema = { type: 'number', description: nls.localize(308, "Number of monospace characters at which this editor ruler will render.") };
+        super(116 /* EditorOption.rulers */, 'rulers', defaults, {
             type: 'array',
             items: {
                 anyOf: [
@@ -1715,7 +1829,7 @@ class EditorRulers extends BaseEditorOption {
                             column: columnSchema,
                             color: {
                                 type: 'string',
-                                description: nls.localize('rulers.color', "Color of this editor ruler."),
+                                description: nls.localize(309, "Color of this editor ruler."),
                                 format: 'color-hex'
                             }
                         }
@@ -1723,7 +1837,7 @@ class EditorRulers extends BaseEditorOption {
                 ]
             },
             default: defaults,
-            description: nls.localize('rulers', "Render vertical rulers after a certain number of monospace characters. Use multiple values for multiple rulers. No rulers are drawn if array is empty.")
+            description: nls.localize(310, "Render vertical rulers after a certain number of monospace characters. Use multiple values for multiple rulers. No rulers are drawn if array is empty.")
         });
     }
     validate(input) {
@@ -1758,7 +1872,7 @@ class EditorRulers extends BaseEditorOption {
 class ReadonlyMessage extends BaseEditorOption {
     constructor() {
         const defaults = undefined;
-        super(93 /* EditorOption.readOnlyMessage */, 'readOnlyMessage', defaults);
+        super(105 /* EditorOption.readOnlyMessage */, 'readOnlyMessage', defaults);
     }
     validate(_input) {
         if (!_input || typeof _input !== 'object') {
@@ -1795,48 +1909,48 @@ class EditorScrollbar extends BaseEditorOption {
             scrollByPage: false,
             ignoreHorizontalScrollbarInContentHeight: false,
         };
-        super(104 /* EditorOption.scrollbar */, 'scrollbar', defaults, {
+        super(117 /* EditorOption.scrollbar */, 'scrollbar', defaults, {
             'editor.scrollbar.vertical': {
                 type: 'string',
                 enum: ['auto', 'visible', 'hidden'],
                 enumDescriptions: [
-                    nls.localize('scrollbar.vertical.auto', "The vertical scrollbar will be visible only when necessary."),
-                    nls.localize('scrollbar.vertical.visible', "The vertical scrollbar will always be visible."),
-                    nls.localize('scrollbar.vertical.fit', "The vertical scrollbar will always be hidden."),
+                    nls.localize(311, "The vertical scrollbar will be visible only when necessary."),
+                    nls.localize(312, "The vertical scrollbar will always be visible."),
+                    nls.localize(313, "The vertical scrollbar will always be hidden."),
                 ],
                 default: 'auto',
-                description: nls.localize('scrollbar.vertical', "Controls the visibility of the vertical scrollbar.")
+                description: nls.localize(314, "Controls the visibility of the vertical scrollbar.")
             },
             'editor.scrollbar.horizontal': {
                 type: 'string',
                 enum: ['auto', 'visible', 'hidden'],
                 enumDescriptions: [
-                    nls.localize('scrollbar.horizontal.auto', "The horizontal scrollbar will be visible only when necessary."),
-                    nls.localize('scrollbar.horizontal.visible', "The horizontal scrollbar will always be visible."),
-                    nls.localize('scrollbar.horizontal.fit', "The horizontal scrollbar will always be hidden."),
+                    nls.localize(315, "The horizontal scrollbar will be visible only when necessary."),
+                    nls.localize(316, "The horizontal scrollbar will always be visible."),
+                    nls.localize(317, "The horizontal scrollbar will always be hidden."),
                 ],
                 default: 'auto',
-                description: nls.localize('scrollbar.horizontal', "Controls the visibility of the horizontal scrollbar.")
+                description: nls.localize(318, "Controls the visibility of the horizontal scrollbar.")
             },
             'editor.scrollbar.verticalScrollbarSize': {
                 type: 'number',
                 default: defaults.verticalScrollbarSize,
-                description: nls.localize('scrollbar.verticalScrollbarSize', "The width of the vertical scrollbar.")
+                description: nls.localize(319, "The width of the vertical scrollbar.")
             },
             'editor.scrollbar.horizontalScrollbarSize': {
                 type: 'number',
                 default: defaults.horizontalScrollbarSize,
-                description: nls.localize('scrollbar.horizontalScrollbarSize', "The height of the horizontal scrollbar.")
+                description: nls.localize(320, "The height of the horizontal scrollbar.")
             },
             'editor.scrollbar.scrollByPage': {
                 type: 'boolean',
                 default: defaults.scrollByPage,
-                description: nls.localize('scrollbar.scrollByPage', "Controls whether clicks scroll by page or jump to click position.")
+                description: nls.localize(321, "Controls whether clicks scroll by page or jump to click position.")
             },
             'editor.scrollbar.ignoreHorizontalScrollbarInContentHeight': {
                 type: 'boolean',
                 default: defaults.ignoreHorizontalScrollbarInContentHeight,
-                description: nls.localize('scrollbar.ignoreHorizontalScrollbarInContentHeight', "When set, the horizontal scrollbar will not increase the size of the editor's content.")
+                description: nls.localize(322, "When set, the horizontal scrollbar will not increase the size of the editor's content.")
             }
         });
     }
@@ -1892,45 +2006,45 @@ class UnicodeHighlight extends BaseEditorOption {
             allowedCharacters: {},
             allowedLocales: { _os: true, _vscode: true },
         };
-        super(126 /* EditorOption.unicodeHighlighting */, 'unicodeHighlight', defaults, {
+        super(142 /* EditorOption.unicodeHighlighting */, 'unicodeHighlight', defaults, {
             [unicodeHighlightConfigKeys.nonBasicASCII]: {
                 restricted: true,
                 type: ['boolean', 'string'],
                 enum: [true, false, inUntrustedWorkspace],
                 default: defaults.nonBasicASCII,
-                description: nls.localize('unicodeHighlight.nonBasicASCII', "Controls whether all non-basic ASCII characters are highlighted. Only characters between U+0020 and U+007E, tab, line-feed and carriage-return are considered basic ASCII.")
+                description: nls.localize(323, "Controls whether all non-basic ASCII characters are highlighted. Only characters between U+0020 and U+007E, tab, line-feed and carriage-return are considered basic ASCII.")
             },
             [unicodeHighlightConfigKeys.invisibleCharacters]: {
                 restricted: true,
                 type: 'boolean',
                 default: defaults.invisibleCharacters,
-                description: nls.localize('unicodeHighlight.invisibleCharacters', "Controls whether characters that just reserve space or have no width at all are highlighted.")
+                description: nls.localize(324, "Controls whether characters that just reserve space or have no width at all are highlighted.")
             },
             [unicodeHighlightConfigKeys.ambiguousCharacters]: {
                 restricted: true,
                 type: 'boolean',
                 default: defaults.ambiguousCharacters,
-                description: nls.localize('unicodeHighlight.ambiguousCharacters', "Controls whether characters are highlighted that can be confused with basic ASCII characters, except those that are common in the current user locale.")
+                description: nls.localize(325, "Controls whether characters are highlighted that can be confused with basic ASCII characters, except those that are common in the current user locale.")
             },
             [unicodeHighlightConfigKeys.includeComments]: {
                 restricted: true,
                 type: ['boolean', 'string'],
                 enum: [true, false, inUntrustedWorkspace],
                 default: defaults.includeComments,
-                description: nls.localize('unicodeHighlight.includeComments', "Controls whether characters in comments should also be subject to Unicode highlighting.")
+                description: nls.localize(326, "Controls whether characters in comments should also be subject to Unicode highlighting.")
             },
             [unicodeHighlightConfigKeys.includeStrings]: {
                 restricted: true,
                 type: ['boolean', 'string'],
                 enum: [true, false, inUntrustedWorkspace],
                 default: defaults.includeStrings,
-                description: nls.localize('unicodeHighlight.includeStrings', "Controls whether characters in strings should also be subject to Unicode highlighting.")
+                description: nls.localize(327, "Controls whether characters in strings should also be subject to Unicode highlighting.")
             },
             [unicodeHighlightConfigKeys.allowedCharacters]: {
                 restricted: true,
                 type: 'object',
                 default: defaults.allowedCharacters,
-                description: nls.localize('unicodeHighlight.allowedCharacters', "Defines allowed characters that are not being highlighted."),
+                description: nls.localize(328, "Defines allowed characters that are not being highlighted."),
                 additionalProperties: {
                     type: 'boolean'
                 }
@@ -1942,7 +2056,7 @@ class UnicodeHighlight extends BaseEditorOption {
                     type: 'boolean'
                 },
                 default: defaults.allowedLocales,
-                description: nls.localize('unicodeHighlight.allowedLocales', "Unicode characters that are common in allowed locales are not being highlighted.")
+                description: nls.localize(329, "Unicode characters that are common in allowed locales are not being highlighted.")
             },
         });
     }
@@ -2007,34 +2121,127 @@ class InlineEditorSuggest extends BaseEditorOption {
             showToolbar: 'onHover',
             suppressSuggestions: false,
             keepOnBlur: false,
-            fontFamily: 'default'
+            fontFamily: 'default',
+            syntaxHighlightingEnabled: true,
+            minShowDelay: 0,
+            suppressInSnippetMode: false,
+            edits: {
+                enabled: true,
+                showCollapsed: false,
+                renderSideBySide: 'auto',
+                allowCodeShifting: 'always',
+            },
+            triggerCommandOnProviderChange: true,
+            experimental: {
+                suppressInlineSuggestions: '',
+                showOnSuggestConflict: 'never',
+                emptyResponseInformation: true,
+            },
         };
-        super(62 /* EditorOption.inlineSuggest */, 'inlineSuggest', defaults, {
+        super(71 /* EditorOption.inlineSuggest */, 'inlineSuggest', defaults, {
             'editor.inlineSuggest.enabled': {
                 type: 'boolean',
                 default: defaults.enabled,
-                description: nls.localize('inlineSuggest.enabled', "Controls whether to automatically show inline suggestions in the editor.")
+                description: nls.localize(330, "Controls whether to automatically show inline suggestions in the editor.")
             },
             'editor.inlineSuggest.showToolbar': {
                 type: 'string',
                 default: defaults.showToolbar,
                 enum: ['always', 'onHover', 'never'],
                 enumDescriptions: [
-                    nls.localize('inlineSuggest.showToolbar.always', "Show the inline suggestion toolbar whenever an inline suggestion is shown."),
-                    nls.localize('inlineSuggest.showToolbar.onHover', "Show the inline suggestion toolbar when hovering over an inline suggestion."),
-                    nls.localize('inlineSuggest.showToolbar.never', "Never show the inline suggestion toolbar."),
+                    nls.localize(331, "Show the inline suggestion toolbar whenever an inline suggestion is shown."),
+                    nls.localize(332, "Show the inline suggestion toolbar when hovering over an inline suggestion."),
+                    nls.localize(333, "Never show the inline suggestion toolbar."),
                 ],
-                description: nls.localize('inlineSuggest.showToolbar', "Controls when to show the inline suggestion toolbar."),
+                description: nls.localize(334, "Controls when to show the inline suggestion toolbar."),
+            },
+            'editor.inlineSuggest.syntaxHighlightingEnabled': {
+                type: 'boolean',
+                default: defaults.syntaxHighlightingEnabled,
+                description: nls.localize(335, "Controls whether to show syntax highlighting for inline suggestions in the editor."),
             },
             'editor.inlineSuggest.suppressSuggestions': {
                 type: 'boolean',
                 default: defaults.suppressSuggestions,
-                description: nls.localize('inlineSuggest.suppressSuggestions', "Controls how inline suggestions interact with the suggest widget. If enabled, the suggest widget is not shown automatically when inline suggestions are available.")
+                description: nls.localize(336, "Controls how inline suggestions interact with the suggest widget. If enabled, the suggest widget is not shown automatically when inline suggestions are available.")
+            },
+            'editor.inlineSuggest.suppressInSnippetMode': {
+                type: 'boolean',
+                default: defaults.suppressInSnippetMode,
+                description: nls.localize(337, "Controls whether inline suggestions are suppressed when in snippet mode."),
+            },
+            'editor.inlineSuggest.minShowDelay': {
+                type: 'number',
+                default: 0,
+                minimum: 0,
+                maximum: 10000,
+                description: nls.localize(338, "Controls the minimal delay in milliseconds after which inline suggestions are shown after typing."),
+            },
+            'editor.inlineSuggest.experimental.suppressInlineSuggestions': {
+                type: 'string',
+                default: defaults.experimental.suppressInlineSuggestions,
+                tags: ['experimental'],
+                description: nls.localize(339, "Suppresses inline completions for specified extension IDs -- comma separated."),
+                experiment: {
+                    mode: 'auto'
+                }
+            },
+            'editor.inlineSuggest.experimental.emptyResponseInformation': {
+                type: 'boolean',
+                default: defaults.experimental.emptyResponseInformation,
+                tags: ['experimental'],
+                description: nls.localize(340, "Controls whether to send request information from the inline suggestion provider."),
+                experiment: {
+                    mode: 'auto'
+                }
+            },
+            'editor.inlineSuggest.triggerCommandOnProviderChange': {
+                type: 'boolean',
+                default: defaults.triggerCommandOnProviderChange,
+                tags: ['experimental'],
+                description: nls.localize(341, "Controls whether to trigger a command when the inline suggestion provider changes."),
+                experiment: {
+                    mode: 'auto'
+                }
+            },
+            'editor.inlineSuggest.experimental.showOnSuggestConflict': {
+                type: 'string',
+                default: defaults.experimental.showOnSuggestConflict,
+                tags: ['experimental'],
+                enum: ['always', 'never', 'whenSuggestListIsIncomplete'],
+                description: nls.localize(342, "Controls whether to show inline suggestions when there is a suggest conflict."),
+                experiment: {
+                    mode: 'auto'
+                }
             },
             'editor.inlineSuggest.fontFamily': {
                 type: 'string',
                 default: defaults.fontFamily,
-                description: nls.localize('inlineSuggest.fontFamily', "Controls the font family of the inline suggestions.")
+                description: nls.localize(343, "Controls the font family of the inline suggestions.")
+            },
+            'editor.inlineSuggest.edits.allowCodeShifting': {
+                type: 'string',
+                default: defaults.edits.allowCodeShifting,
+                description: nls.localize(344, "Controls whether showing a suggestion will shift the code to make space for the suggestion inline."),
+                enum: ['always', 'horizontal', 'never'],
+                tags: ['nextEditSuggestions']
+            },
+            'editor.inlineSuggest.edits.renderSideBySide': {
+                type: 'string',
+                default: defaults.edits.renderSideBySide,
+                description: nls.localize(345, "Controls whether larger suggestions can be shown side by side."),
+                enum: ['auto', 'never'],
+                enumDescriptions: [
+                    nls.localize(346, "Larger suggestions will show side by side if there is enough space, otherwise they will be shown below."),
+                    nls.localize(347, "Larger suggestions are never shown side by side and will always be shown below."),
+                ],
+                tags: ['nextEditSuggestions']
+            },
+            'editor.inlineSuggest.edits.showCollapsed': {
+                type: 'boolean',
+                default: defaults.edits.showCollapsed,
+                description: nls.localize(348, "Controls whether the suggestion will show as collapsed until jumping to it."),
+                tags: ['nextEditSuggestions']
             },
         });
     }
@@ -2049,52 +2256,22 @@ class InlineEditorSuggest extends BaseEditorOption {
             showToolbar: stringSet(input.showToolbar, this.defaultValue.showToolbar, ['always', 'onHover', 'never']),
             suppressSuggestions: boolean(input.suppressSuggestions, this.defaultValue.suppressSuggestions),
             keepOnBlur: boolean(input.keepOnBlur, this.defaultValue.keepOnBlur),
-            fontFamily: EditorStringOption.string(input.fontFamily, this.defaultValue.fontFamily)
-        };
-    }
-}
-class InlineEditorEdit extends BaseEditorOption {
-    constructor() {
-        const defaults = {
-            enabled: false,
-            showToolbar: 'onHover',
-            fontFamily: 'default',
-            keepOnBlur: false,
-        };
-        super(63 /* EditorOption.inlineEdit */, 'experimentalInlineEdit', defaults, {
-            'editor.experimentalInlineEdit.enabled': {
-                type: 'boolean',
-                default: defaults.enabled,
-                description: nls.localize('inlineEdit.enabled', "Controls whether to show inline edits in the editor.")
-            },
-            'editor.experimentalInlineEdit.showToolbar': {
-                type: 'string',
-                default: defaults.showToolbar,
-                enum: ['always', 'onHover', 'never'],
-                enumDescriptions: [
-                    nls.localize('inlineEdit.showToolbar.always', "Show the inline edit toolbar whenever an inline suggestion is shown."),
-                    nls.localize('inlineEdit.showToolbar.onHover', "Show the inline edit toolbar when hovering over an inline suggestion."),
-                    nls.localize('inlineEdit.showToolbar.never', "Never show the inline edit toolbar."),
-                ],
-                description: nls.localize('inlineEdit.showToolbar', "Controls when to show the inline edit toolbar."),
-            },
-            'editor.experimentalInlineEdit.fontFamily': {
-                type: 'string',
-                default: defaults.fontFamily,
-                description: nls.localize('inlineEdit.fontFamily', "Controls the font family of the inline edit.")
-            },
-        });
-    }
-    validate(_input) {
-        if (!_input || typeof _input !== 'object') {
-            return this.defaultValue;
-        }
-        const input = _input;
-        return {
-            enabled: boolean(input.enabled, this.defaultValue.enabled),
-            showToolbar: stringSet(input.showToolbar, this.defaultValue.showToolbar, ['always', 'onHover', 'never']),
             fontFamily: EditorStringOption.string(input.fontFamily, this.defaultValue.fontFamily),
-            keepOnBlur: boolean(input.keepOnBlur, this.defaultValue.keepOnBlur),
+            syntaxHighlightingEnabled: boolean(input.syntaxHighlightingEnabled, this.defaultValue.syntaxHighlightingEnabled),
+            minShowDelay: EditorIntOption.clampedInt(input.minShowDelay, 0, 0, 10000),
+            suppressInSnippetMode: boolean(input.suppressInSnippetMode, this.defaultValue.suppressInSnippetMode),
+            edits: {
+                enabled: boolean(input.edits?.enabled, this.defaultValue.edits.enabled),
+                showCollapsed: boolean(input.edits?.showCollapsed, this.defaultValue.edits.showCollapsed),
+                allowCodeShifting: stringSet(input.edits?.allowCodeShifting, this.defaultValue.edits.allowCodeShifting, ['always', 'horizontal', 'never']),
+                renderSideBySide: stringSet(input.edits?.renderSideBySide, this.defaultValue.edits.renderSideBySide, ['never', 'auto']),
+            },
+            triggerCommandOnProviderChange: boolean(input.triggerCommandOnProviderChange, this.defaultValue.triggerCommandOnProviderChange),
+            experimental: {
+                suppressInlineSuggestions: EditorStringOption.string(input.experimental?.suppressInlineSuggestions, this.defaultValue.experimental.suppressInlineSuggestions),
+                showOnSuggestConflict: stringSet(input.experimental?.showOnSuggestConflict, this.defaultValue.experimental.showOnSuggestConflict, ['always', 'never', 'whenSuggestListIsIncomplete']),
+                emptyResponseInformation: boolean(input.experimental?.emptyResponseInformation, this.defaultValue.experimental.emptyResponseInformation),
+            },
         };
     }
 }
@@ -2107,16 +2284,16 @@ class BracketPairColorization extends BaseEditorOption {
             enabled: EDITOR_MODEL_DEFAULTS.bracketPairColorizationOptions.enabled,
             independentColorPoolPerBracketType: EDITOR_MODEL_DEFAULTS.bracketPairColorizationOptions.independentColorPoolPerBracketType,
         };
-        super(15 /* EditorOption.bracketPairColorization */, 'bracketPairColorization', defaults, {
+        super(21 /* EditorOption.bracketPairColorization */, 'bracketPairColorization', defaults, {
             'editor.bracketPairColorization.enabled': {
                 type: 'boolean',
                 default: defaults.enabled,
-                markdownDescription: nls.localize('bracketPairColorization.enabled', "Controls whether bracket pair colorization is enabled or not. Use {0} to override the bracket highlight colors.", '`#workbench.colorCustomizations#`')
+                markdownDescription: nls.localize(349, "Controls whether bracket pair colorization is enabled or not. Use {0} to override the bracket highlight colors.", '`#workbench.colorCustomizations#`')
             },
             'editor.bracketPairColorization.independentColorPoolPerBracketType': {
                 type: 'boolean',
                 default: defaults.independentColorPoolPerBracketType,
-                description: nls.localize('bracketPairColorization.independentColorPoolPerBracketType', "Controls whether each bracket type has its own independent color pool.")
+                description: nls.localize(350, "Controls whether each bracket type has its own independent color pool.")
             },
         });
     }
@@ -2143,49 +2320,49 @@ class GuideOptions extends BaseEditorOption {
             indentation: true,
             highlightActiveIndentation: true
         };
-        super(16 /* EditorOption.guides */, 'guides', defaults, {
+        super(22 /* EditorOption.guides */, 'guides', defaults, {
             'editor.guides.bracketPairs': {
                 type: ['boolean', 'string'],
                 enum: [true, 'active', false],
                 enumDescriptions: [
-                    nls.localize('editor.guides.bracketPairs.true', "Enables bracket pair guides."),
-                    nls.localize('editor.guides.bracketPairs.active', "Enables bracket pair guides only for the active bracket pair."),
-                    nls.localize('editor.guides.bracketPairs.false', "Disables bracket pair guides."),
+                    nls.localize(351, "Enables bracket pair guides."),
+                    nls.localize(352, "Enables bracket pair guides only for the active bracket pair."),
+                    nls.localize(353, "Disables bracket pair guides."),
                 ],
                 default: defaults.bracketPairs,
-                description: nls.localize('editor.guides.bracketPairs', "Controls whether bracket pair guides are enabled or not.")
+                description: nls.localize(354, "Controls whether bracket pair guides are enabled or not.")
             },
             'editor.guides.bracketPairsHorizontal': {
                 type: ['boolean', 'string'],
                 enum: [true, 'active', false],
                 enumDescriptions: [
-                    nls.localize('editor.guides.bracketPairsHorizontal.true', "Enables horizontal guides as addition to vertical bracket pair guides."),
-                    nls.localize('editor.guides.bracketPairsHorizontal.active', "Enables horizontal guides only for the active bracket pair."),
-                    nls.localize('editor.guides.bracketPairsHorizontal.false', "Disables horizontal bracket pair guides."),
+                    nls.localize(355, "Enables horizontal guides as addition to vertical bracket pair guides."),
+                    nls.localize(356, "Enables horizontal guides only for the active bracket pair."),
+                    nls.localize(357, "Disables horizontal bracket pair guides."),
                 ],
                 default: defaults.bracketPairsHorizontal,
-                description: nls.localize('editor.guides.bracketPairsHorizontal', "Controls whether horizontal bracket pair guides are enabled or not.")
+                description: nls.localize(358, "Controls whether horizontal bracket pair guides are enabled or not.")
             },
             'editor.guides.highlightActiveBracketPair': {
                 type: 'boolean',
                 default: defaults.highlightActiveBracketPair,
-                description: nls.localize('editor.guides.highlightActiveBracketPair', "Controls whether the editor should highlight the active bracket pair.")
+                description: nls.localize(359, "Controls whether the editor should highlight the active bracket pair.")
             },
             'editor.guides.indentation': {
                 type: 'boolean',
                 default: defaults.indentation,
-                description: nls.localize('editor.guides.indentation', "Controls whether the editor should render indent guides.")
+                description: nls.localize(360, "Controls whether the editor should render indent guides.")
             },
             'editor.guides.highlightActiveIndentation': {
                 type: ['boolean', 'string'],
                 enum: [true, 'always', false],
                 enumDescriptions: [
-                    nls.localize('editor.guides.highlightActiveIndentation.true', "Highlights the active indent guide."),
-                    nls.localize('editor.guides.highlightActiveIndentation.always', "Highlights the active indent guide even if bracket guides are highlighted."),
-                    nls.localize('editor.guides.highlightActiveIndentation.false', "Do not highlight the active indent guide."),
+                    nls.localize(361, "Highlights the active indent guide."),
+                    nls.localize(362, "Highlights the active indent guide even if bracket guides are highlighted."),
+                    nls.localize(363, "Do not highlight the active indent guide."),
                 ],
                 default: defaults.highlightActiveIndentation,
-                description: nls.localize('editor.guides.highlightActiveIndentation', "Controls whether the editor should highlight the active indent guide.")
+                description: nls.localize(364, "Controls whether the editor should highlight the active indent guide.")
             }
         });
     }
@@ -2254,226 +2431,226 @@ class EditorSuggest extends BaseEditorOption {
             showUsers: true,
             showIssues: true,
         };
-        super(119 /* EditorOption.suggest */, 'suggest', defaults, {
+        super(134 /* EditorOption.suggest */, 'suggest', defaults, {
             'editor.suggest.insertMode': {
                 type: 'string',
                 enum: ['insert', 'replace'],
                 enumDescriptions: [
-                    nls.localize('suggest.insertMode.insert', "Insert suggestion without overwriting text right of the cursor."),
-                    nls.localize('suggest.insertMode.replace', "Insert suggestion and overwrite text right of the cursor."),
+                    nls.localize(365, "Insert suggestion without overwriting text right of the cursor."),
+                    nls.localize(366, "Insert suggestion and overwrite text right of the cursor."),
                 ],
                 default: defaults.insertMode,
-                description: nls.localize('suggest.insertMode', "Controls whether words are overwritten when accepting completions. Note that this depends on extensions opting into this feature.")
+                description: nls.localize(367, "Controls whether words are overwritten when accepting completions. Note that this depends on extensions opting into this feature.")
             },
             'editor.suggest.filterGraceful': {
                 type: 'boolean',
                 default: defaults.filterGraceful,
-                description: nls.localize('suggest.filterGraceful', "Controls whether filtering and sorting suggestions accounts for small typos.")
+                description: nls.localize(368, "Controls whether filtering and sorting suggestions accounts for small typos.")
             },
             'editor.suggest.localityBonus': {
                 type: 'boolean',
                 default: defaults.localityBonus,
-                description: nls.localize('suggest.localityBonus', "Controls whether sorting favors words that appear close to the cursor.")
+                description: nls.localize(369, "Controls whether sorting favors words that appear close to the cursor.")
             },
             'editor.suggest.shareSuggestSelections': {
                 type: 'boolean',
                 default: defaults.shareSuggestSelections,
-                markdownDescription: nls.localize('suggest.shareSuggestSelections', "Controls whether remembered suggestion selections are shared between multiple workspaces and windows (needs `#editor.suggestSelection#`).")
+                markdownDescription: nls.localize(370, "Controls whether remembered suggestion selections are shared between multiple workspaces and windows (needs `#editor.suggestSelection#`).")
             },
             'editor.suggest.selectionMode': {
                 type: 'string',
                 enum: ['always', 'never', 'whenTriggerCharacter', 'whenQuickSuggestion'],
                 enumDescriptions: [
-                    nls.localize('suggest.insertMode.always', "Always select a suggestion when automatically triggering IntelliSense."),
-                    nls.localize('suggest.insertMode.never', "Never select a suggestion when automatically triggering IntelliSense."),
-                    nls.localize('suggest.insertMode.whenTriggerCharacter', "Select a suggestion only when triggering IntelliSense from a trigger character."),
-                    nls.localize('suggest.insertMode.whenQuickSuggestion', "Select a suggestion only when triggering IntelliSense as you type."),
+                    nls.localize(371, "Always select a suggestion when automatically triggering IntelliSense."),
+                    nls.localize(372, "Never select a suggestion when automatically triggering IntelliSense."),
+                    nls.localize(373, "Select a suggestion only when triggering IntelliSense from a trigger character."),
+                    nls.localize(374, "Select a suggestion only when triggering IntelliSense as you type."),
                 ],
                 default: defaults.selectionMode,
-                markdownDescription: nls.localize('suggest.selectionMode', "Controls whether a suggestion is selected when the widget shows. Note that this only applies to automatically triggered suggestions ({0} and {1}) and that a suggestion is always selected when explicitly invoked, e.g via `Ctrl+Space`.", '`#editor.quickSuggestions#`', '`#editor.suggestOnTriggerCharacters#`')
+                markdownDescription: nls.localize(375, "Controls whether a suggestion is selected when the widget shows. Note that this only applies to automatically triggered suggestions ({0} and {1}) and that a suggestion is always selected when explicitly invoked, e.g via `Ctrl+Space`.", '`#editor.quickSuggestions#`', '`#editor.suggestOnTriggerCharacters#`')
             },
             'editor.suggest.snippetsPreventQuickSuggestions': {
                 type: 'boolean',
                 default: defaults.snippetsPreventQuickSuggestions,
-                description: nls.localize('suggest.snippetsPreventQuickSuggestions', "Controls whether an active snippet prevents quick suggestions.")
+                description: nls.localize(376, "Controls whether an active snippet prevents quick suggestions.")
             },
             'editor.suggest.showIcons': {
                 type: 'boolean',
                 default: defaults.showIcons,
-                description: nls.localize('suggest.showIcons', "Controls whether to show or hide icons in suggestions.")
+                description: nls.localize(377, "Controls whether to show or hide icons in suggestions.")
             },
             'editor.suggest.showStatusBar': {
                 type: 'boolean',
                 default: defaults.showStatusBar,
-                description: nls.localize('suggest.showStatusBar', "Controls the visibility of the status bar at the bottom of the suggest widget.")
+                description: nls.localize(378, "Controls the visibility of the status bar at the bottom of the suggest widget.")
             },
             'editor.suggest.preview': {
                 type: 'boolean',
                 default: defaults.preview,
-                description: nls.localize('suggest.preview', "Controls whether to preview the suggestion outcome in the editor.")
+                description: nls.localize(379, "Controls whether to preview the suggestion outcome in the editor.")
             },
             'editor.suggest.showInlineDetails': {
                 type: 'boolean',
                 default: defaults.showInlineDetails,
-                description: nls.localize('suggest.showInlineDetails', "Controls whether suggest details show inline with the label or only in the details widget.")
+                description: nls.localize(380, "Controls whether suggest details show inline with the label or only in the details widget.")
             },
             'editor.suggest.maxVisibleSuggestions': {
                 type: 'number',
-                deprecationMessage: nls.localize('suggest.maxVisibleSuggestions.dep', "This setting is deprecated. The suggest widget can now be resized."),
+                deprecationMessage: nls.localize(381, "This setting is deprecated. The suggest widget can now be resized."),
             },
             'editor.suggest.filteredTypes': {
                 type: 'object',
-                deprecationMessage: nls.localize('deprecated', "This setting is deprecated, please use separate settings like 'editor.suggest.showKeywords' or 'editor.suggest.showSnippets' instead.")
+                deprecationMessage: nls.localize(382, "This setting is deprecated, please use separate settings like 'editor.suggest.showKeywords' or 'editor.suggest.showSnippets' instead.")
             },
             'editor.suggest.showMethods': {
                 type: 'boolean',
                 default: true,
-                markdownDescription: nls.localize('editor.suggest.showMethods', "When enabled IntelliSense shows `method`-suggestions.")
+                markdownDescription: nls.localize(383, "When enabled IntelliSense shows `method`-suggestions.")
             },
             'editor.suggest.showFunctions': {
                 type: 'boolean',
                 default: true,
-                markdownDescription: nls.localize('editor.suggest.showFunctions', "When enabled IntelliSense shows `function`-suggestions.")
+                markdownDescription: nls.localize(384, "When enabled IntelliSense shows `function`-suggestions.")
             },
             'editor.suggest.showConstructors': {
                 type: 'boolean',
                 default: true,
-                markdownDescription: nls.localize('editor.suggest.showConstructors', "When enabled IntelliSense shows `constructor`-suggestions.")
+                markdownDescription: nls.localize(385, "When enabled IntelliSense shows `constructor`-suggestions.")
             },
             'editor.suggest.showDeprecated': {
                 type: 'boolean',
                 default: true,
-                markdownDescription: nls.localize('editor.suggest.showDeprecated', "When enabled IntelliSense shows `deprecated`-suggestions.")
+                markdownDescription: nls.localize(386, "When enabled IntelliSense shows `deprecated`-suggestions.")
             },
             'editor.suggest.matchOnWordStartOnly': {
                 type: 'boolean',
                 default: true,
-                markdownDescription: nls.localize('editor.suggest.matchOnWordStartOnly', "When enabled IntelliSense filtering requires that the first character matches on a word start. For example, `c` on `Console` or `WebContext` but _not_ on `description`. When disabled IntelliSense will show more results but still sorts them by match quality.")
+                markdownDescription: nls.localize(387, "When enabled IntelliSense filtering requires that the first character matches on a word start. For example, `c` on `Console` or `WebContext` but _not_ on `description`. When disabled IntelliSense will show more results but still sorts them by match quality.")
             },
             'editor.suggest.showFields': {
                 type: 'boolean',
                 default: true,
-                markdownDescription: nls.localize('editor.suggest.showFields', "When enabled IntelliSense shows `field`-suggestions.")
+                markdownDescription: nls.localize(388, "When enabled IntelliSense shows `field`-suggestions.")
             },
             'editor.suggest.showVariables': {
                 type: 'boolean',
                 default: true,
-                markdownDescription: nls.localize('editor.suggest.showVariables', "When enabled IntelliSense shows `variable`-suggestions.")
+                markdownDescription: nls.localize(389, "When enabled IntelliSense shows `variable`-suggestions.")
             },
             'editor.suggest.showClasses': {
                 type: 'boolean',
                 default: true,
-                markdownDescription: nls.localize('editor.suggest.showClasss', "When enabled IntelliSense shows `class`-suggestions.")
+                markdownDescription: nls.localize(390, "When enabled IntelliSense shows `class`-suggestions.")
             },
             'editor.suggest.showStructs': {
                 type: 'boolean',
                 default: true,
-                markdownDescription: nls.localize('editor.suggest.showStructs', "When enabled IntelliSense shows `struct`-suggestions.")
+                markdownDescription: nls.localize(391, "When enabled IntelliSense shows `struct`-suggestions.")
             },
             'editor.suggest.showInterfaces': {
                 type: 'boolean',
                 default: true,
-                markdownDescription: nls.localize('editor.suggest.showInterfaces', "When enabled IntelliSense shows `interface`-suggestions.")
+                markdownDescription: nls.localize(392, "When enabled IntelliSense shows `interface`-suggestions.")
             },
             'editor.suggest.showModules': {
                 type: 'boolean',
                 default: true,
-                markdownDescription: nls.localize('editor.suggest.showModules', "When enabled IntelliSense shows `module`-suggestions.")
+                markdownDescription: nls.localize(393, "When enabled IntelliSense shows `module`-suggestions.")
             },
             'editor.suggest.showProperties': {
                 type: 'boolean',
                 default: true,
-                markdownDescription: nls.localize('editor.suggest.showPropertys', "When enabled IntelliSense shows `property`-suggestions.")
+                markdownDescription: nls.localize(394, "When enabled IntelliSense shows `property`-suggestions.")
             },
             'editor.suggest.showEvents': {
                 type: 'boolean',
                 default: true,
-                markdownDescription: nls.localize('editor.suggest.showEvents', "When enabled IntelliSense shows `event`-suggestions.")
+                markdownDescription: nls.localize(395, "When enabled IntelliSense shows `event`-suggestions.")
             },
             'editor.suggest.showOperators': {
                 type: 'boolean',
                 default: true,
-                markdownDescription: nls.localize('editor.suggest.showOperators', "When enabled IntelliSense shows `operator`-suggestions.")
+                markdownDescription: nls.localize(396, "When enabled IntelliSense shows `operator`-suggestions.")
             },
             'editor.suggest.showUnits': {
                 type: 'boolean',
                 default: true,
-                markdownDescription: nls.localize('editor.suggest.showUnits', "When enabled IntelliSense shows `unit`-suggestions.")
+                markdownDescription: nls.localize(397, "When enabled IntelliSense shows `unit`-suggestions.")
             },
             'editor.suggest.showValues': {
                 type: 'boolean',
                 default: true,
-                markdownDescription: nls.localize('editor.suggest.showValues', "When enabled IntelliSense shows `value`-suggestions.")
+                markdownDescription: nls.localize(398, "When enabled IntelliSense shows `value`-suggestions.")
             },
             'editor.suggest.showConstants': {
                 type: 'boolean',
                 default: true,
-                markdownDescription: nls.localize('editor.suggest.showConstants', "When enabled IntelliSense shows `constant`-suggestions.")
+                markdownDescription: nls.localize(399, "When enabled IntelliSense shows `constant`-suggestions.")
             },
             'editor.suggest.showEnums': {
                 type: 'boolean',
                 default: true,
-                markdownDescription: nls.localize('editor.suggest.showEnums', "When enabled IntelliSense shows `enum`-suggestions.")
+                markdownDescription: nls.localize(400, "When enabled IntelliSense shows `enum`-suggestions.")
             },
             'editor.suggest.showEnumMembers': {
                 type: 'boolean',
                 default: true,
-                markdownDescription: nls.localize('editor.suggest.showEnumMembers', "When enabled IntelliSense shows `enumMember`-suggestions.")
+                markdownDescription: nls.localize(401, "When enabled IntelliSense shows `enumMember`-suggestions.")
             },
             'editor.suggest.showKeywords': {
                 type: 'boolean',
                 default: true,
-                markdownDescription: nls.localize('editor.suggest.showKeywords', "When enabled IntelliSense shows `keyword`-suggestions.")
+                markdownDescription: nls.localize(402, "When enabled IntelliSense shows `keyword`-suggestions.")
             },
             'editor.suggest.showWords': {
                 type: 'boolean',
                 default: true,
-                markdownDescription: nls.localize('editor.suggest.showTexts', "When enabled IntelliSense shows `text`-suggestions.")
+                markdownDescription: nls.localize(403, "When enabled IntelliSense shows `text`-suggestions.")
             },
             'editor.suggest.showColors': {
                 type: 'boolean',
                 default: true,
-                markdownDescription: nls.localize('editor.suggest.showColors', "When enabled IntelliSense shows `color`-suggestions.")
+                markdownDescription: nls.localize(404, "When enabled IntelliSense shows `color`-suggestions.")
             },
             'editor.suggest.showFiles': {
                 type: 'boolean',
                 default: true,
-                markdownDescription: nls.localize('editor.suggest.showFiles', "When enabled IntelliSense shows `file`-suggestions.")
+                markdownDescription: nls.localize(405, "When enabled IntelliSense shows `file`-suggestions.")
             },
             'editor.suggest.showReferences': {
                 type: 'boolean',
                 default: true,
-                markdownDescription: nls.localize('editor.suggest.showReferences', "When enabled IntelliSense shows `reference`-suggestions.")
+                markdownDescription: nls.localize(406, "When enabled IntelliSense shows `reference`-suggestions.")
             },
             'editor.suggest.showCustomcolors': {
                 type: 'boolean',
                 default: true,
-                markdownDescription: nls.localize('editor.suggest.showCustomcolors', "When enabled IntelliSense shows `customcolor`-suggestions.")
+                markdownDescription: nls.localize(407, "When enabled IntelliSense shows `customcolor`-suggestions.")
             },
             'editor.suggest.showFolders': {
                 type: 'boolean',
                 default: true,
-                markdownDescription: nls.localize('editor.suggest.showFolders', "When enabled IntelliSense shows `folder`-suggestions.")
+                markdownDescription: nls.localize(408, "When enabled IntelliSense shows `folder`-suggestions.")
             },
             'editor.suggest.showTypeParameters': {
                 type: 'boolean',
                 default: true,
-                markdownDescription: nls.localize('editor.suggest.showTypeParameters', "When enabled IntelliSense shows `typeParameter`-suggestions.")
+                markdownDescription: nls.localize(409, "When enabled IntelliSense shows `typeParameter`-suggestions.")
             },
             'editor.suggest.showSnippets': {
                 type: 'boolean',
                 default: true,
-                markdownDescription: nls.localize('editor.suggest.showSnippets', "When enabled IntelliSense shows `snippet`-suggestions.")
+                markdownDescription: nls.localize(410, "When enabled IntelliSense shows `snippet`-suggestions.")
             },
             'editor.suggest.showUsers': {
                 type: 'boolean',
                 default: true,
-                markdownDescription: nls.localize('editor.suggest.showUsers', "When enabled IntelliSense shows `user`-suggestions.")
+                markdownDescription: nls.localize(411, "When enabled IntelliSense shows `user`-suggestions.")
             },
             'editor.suggest.showIssues': {
                 type: 'boolean',
                 default: true,
-                markdownDescription: nls.localize('editor.suggest.showIssues', "When enabled IntelliSense shows `issues`-suggestions.")
+                markdownDescription: nls.localize(412, "When enabled IntelliSense shows `issues`-suggestions.")
             }
         });
     }
@@ -2528,17 +2705,17 @@ class EditorSuggest extends BaseEditorOption {
 }
 class SmartSelect extends BaseEditorOption {
     constructor() {
-        super(114 /* EditorOption.smartSelect */, 'smartSelect', {
+        super(129 /* EditorOption.smartSelect */, 'smartSelect', {
             selectLeadingAndTrailingWhitespace: true,
             selectSubwords: true,
         }, {
             'editor.smartSelect.selectLeadingAndTrailingWhitespace': {
-                description: nls.localize('selectLeadingAndTrailingWhitespace', "Whether leading and trailing whitespace should always be selected."),
+                description: nls.localize(413, "Whether leading and trailing whitespace should always be selected."),
                 default: true,
                 type: 'boolean'
             },
             'editor.smartSelect.selectSubwords': {
-                description: nls.localize('selectSubwords', "Whether subwords (like 'foo' in 'fooBar' or 'foo_bar') should be selected."),
+                description: nls.localize(414, "Whether subwords (like 'foo' in 'fooBar' or 'foo_bar') should be selected."),
                 default: true,
                 type: 'boolean'
             }
@@ -2564,19 +2741,23 @@ class SmartSelect extends BaseEditorOption {
 class WordSegmenterLocales extends BaseEditorOption {
     constructor() {
         const defaults = [];
-        super(131 /* EditorOption.wordSegmenterLocales */, 'wordSegmenterLocales', defaults, {
+        super(147 /* EditorOption.wordSegmenterLocales */, 'wordSegmenterLocales', defaults, {
             anyOf: [
                 {
-                    description: nls.localize('wordSegmenterLocales', "Locales to be used for word segmentation when doing word related navigations or operations. Specify the BCP 47 language tag of the word you wish to recognize (e.g., ja, zh-CN, zh-Hant-TW, etc.)."),
                     type: 'string',
                 }, {
-                    description: nls.localize('wordSegmenterLocales', "Locales to be used for word segmentation when doing word related navigations or operations. Specify the BCP 47 language tag of the word you wish to recognize (e.g., ja, zh-CN, zh-Hant-TW, etc.)."),
                     type: 'array',
                     items: {
                         type: 'string'
                     }
                 }
-            ]
+            ],
+            description: nls.localize(415, "Locales to be used for word segmentation when doing word related navigations or operations. Specify the BCP 47 language tag of the word you wish to recognize (e.g., ja, zh-CN, zh-Hant-TW, etc.)."),
+            type: 'array',
+            items: {
+                type: 'string',
+            },
+            default: defaults,
         });
     }
     validate(input) {
@@ -2604,17 +2785,17 @@ class WordSegmenterLocales extends BaseEditorOption {
 }
 class WrappingIndentOption extends BaseEditorOption {
     constructor() {
-        super(139 /* EditorOption.wrappingIndent */, 'wrappingIndent', 1 /* WrappingIndent.Same */, {
+        super(155 /* EditorOption.wrappingIndent */, 'wrappingIndent', 1 /* WrappingIndent.Same */, {
             'editor.wrappingIndent': {
                 type: 'string',
                 enum: ['none', 'same', 'indent', 'deepIndent'],
                 enumDescriptions: [
-                    nls.localize('wrappingIndent.none', "No indentation. Wrapped lines begin at column 1."),
-                    nls.localize('wrappingIndent.same', "Wrapped lines get the same indentation as the parent."),
-                    nls.localize('wrappingIndent.indent', "Wrapped lines get +1 indentation toward the parent."),
-                    nls.localize('wrappingIndent.deepIndent', "Wrapped lines get +2 indentation toward the parent."),
+                    nls.localize(416, "No indentation. Wrapped lines begin at column 1."),
+                    nls.localize(417, "Wrapped lines get the same indentation as the parent."),
+                    nls.localize(418, "Wrapped lines get +1 indentation toward the parent."),
+                    nls.localize(419, "Wrapped lines get +2 indentation toward the parent."),
                 ],
-                description: nls.localize('wrappingIndent', "Controls the indentation of wrapped lines."),
+                description: nls.localize(420, "Controls the indentation of wrapped lines."),
                 default: 'same'
             }
         });
@@ -2640,10 +2821,10 @@ class WrappingIndentOption extends BaseEditorOption {
 }
 class EditorWrappingInfoComputer extends ComputedEditorOption {
     constructor() {
-        super(147 /* EditorOption.wrappingInfo */);
+        super(166 /* EditorOption.wrappingInfo */);
     }
     compute(env, options, _) {
-        const layoutInfo = options.get(146 /* EditorOption.layoutInfo */);
+        const layoutInfo = options.get(165 /* EditorOption.layoutInfo */);
         return {
             isDominatedByLongLines: env.isDominatedByLongLines,
             isWordWrapMinified: layoutInfo.isWordWrapMinified,
@@ -2655,22 +2836,22 @@ class EditorWrappingInfoComputer extends ComputedEditorOption {
 class EditorDropIntoEditor extends BaseEditorOption {
     constructor() {
         const defaults = { enabled: true, showDropSelector: 'afterDrop' };
-        super(36 /* EditorOption.dropIntoEditor */, 'dropIntoEditor', defaults, {
+        super(43 /* EditorOption.dropIntoEditor */, 'dropIntoEditor', defaults, {
             'editor.dropIntoEditor.enabled': {
                 type: 'boolean',
                 default: defaults.enabled,
-                markdownDescription: nls.localize('dropIntoEditor.enabled', "Controls whether you can drag and drop a file into a text editor by holding down the `Shift` key (instead of opening the file in an editor)."),
+                markdownDescription: nls.localize(421, "Controls whether you can drag and drop a file into a text editor by holding down the `Shift` key (instead of opening the file in an editor)."),
             },
             'editor.dropIntoEditor.showDropSelector': {
                 type: 'string',
-                markdownDescription: nls.localize('dropIntoEditor.showDropSelector', "Controls if a widget is shown when dropping files into the editor. This widget lets you control how the file is dropped."),
+                markdownDescription: nls.localize(422, "Controls if a widget is shown when dropping files into the editor. This widget lets you control how the file is dropped."),
                 enum: [
                     'afterDrop',
                     'never'
                 ],
                 enumDescriptions: [
-                    nls.localize('dropIntoEditor.showDropSelector.afterDrop', "Show the drop selector widget after a file is dropped into the editor."),
-                    nls.localize('dropIntoEditor.showDropSelector.never', "Never show the drop selector widget. Instead the default drop provider is always used."),
+                    nls.localize(423, "Show the drop selector widget after a file is dropped into the editor."),
+                    nls.localize(424, "Never show the drop selector widget. Instead the default drop provider is always used."),
                 ],
                 default: 'afterDrop',
             },
@@ -2690,22 +2871,22 @@ class EditorDropIntoEditor extends BaseEditorOption {
 class EditorPasteAs extends BaseEditorOption {
     constructor() {
         const defaults = { enabled: true, showPasteSelector: 'afterPaste' };
-        super(85 /* EditorOption.pasteAs */, 'pasteAs', defaults, {
+        super(97 /* EditorOption.pasteAs */, 'pasteAs', defaults, {
             'editor.pasteAs.enabled': {
                 type: 'boolean',
                 default: defaults.enabled,
-                markdownDescription: nls.localize('pasteAs.enabled', "Controls whether you can paste content in different ways."),
+                markdownDescription: nls.localize(425, "Controls whether you can paste content in different ways."),
             },
             'editor.pasteAs.showPasteSelector': {
                 type: 'string',
-                markdownDescription: nls.localize('pasteAs.showPasteSelector', "Controls if a widget is shown when pasting content in to the editor. This widget lets you control how the file is pasted."),
+                markdownDescription: nls.localize(426, "Controls if a widget is shown when pasting content in to the editor. This widget lets you control how the file is pasted."),
                 enum: [
                     'afterPaste',
                     'never'
                 ],
                 enumDescriptions: [
-                    nls.localize('pasteAs.showPasteSelector.afterPaste', "Show the paste selector widget after content is pasted into the editor."),
-                    nls.localize('pasteAs.showPasteSelector.never', "Never show the paste selector widget. Instead the default pasting behavior is always used."),
+                    nls.localize(427, "Show the paste selector widget after content is pasted into the editor."),
+                    nls.localize(428, "Never show the paste selector widget. Instead the default pasting behavior is always used."),
                 ],
                 default: 'afterPaste',
             },
@@ -2730,7 +2911,7 @@ const DEFAULT_LINUX_FONT_FAMILY = '\'Droid Sans Mono\', \'monospace\', monospace
  * @internal
  */
 export const EDITOR_FONT_DEFAULTS = {
-    fontFamily: (platform.isMacintosh ? DEFAULT_MAC_FONT_FAMILY : (platform.isLinux ? DEFAULT_LINUX_FONT_FAMILY : DEFAULT_WINDOWS_FONT_FAMILY)),
+    fontFamily: (platform.isMacintosh ? DEFAULT_MAC_FONT_FAMILY : (platform.isWindows ? DEFAULT_WINDOWS_FONT_FAMILY : DEFAULT_LINUX_FONT_FAMILY)),
     fontWeight: 'normal',
     fontSize: (platform.isMacintosh ? 12 : 14),
     lineHeight: 0,
@@ -2745,402 +2926,459 @@ function register(option) {
     return option;
 }
 export const EditorOptions = {
-    acceptSuggestionOnCommitCharacter: register(new EditorBooleanOption(0 /* EditorOption.acceptSuggestionOnCommitCharacter */, 'acceptSuggestionOnCommitCharacter', true, { markdownDescription: nls.localize('acceptSuggestionOnCommitCharacter', "Controls whether suggestions should be accepted on commit characters. For example, in JavaScript, the semi-colon (`;`) can be a commit character that accepts a suggestion and types that character.") })),
+    acceptSuggestionOnCommitCharacter: register(new EditorBooleanOption(0 /* EditorOption.acceptSuggestionOnCommitCharacter */, 'acceptSuggestionOnCommitCharacter', true, { markdownDescription: nls.localize(429, "Controls whether suggestions should be accepted on commit characters. For example, in JavaScript, the semi-colon (`;`) can be a commit character that accepts a suggestion and types that character.") })),
     acceptSuggestionOnEnter: register(new EditorStringEnumOption(1 /* EditorOption.acceptSuggestionOnEnter */, 'acceptSuggestionOnEnter', 'on', ['on', 'smart', 'off'], {
         markdownEnumDescriptions: [
             '',
-            nls.localize('acceptSuggestionOnEnterSmart', "Only accept a suggestion with `Enter` when it makes a textual change."),
+            nls.localize(430, "Only accept a suggestion with `Enter` when it makes a textual change."),
             ''
         ],
-        markdownDescription: nls.localize('acceptSuggestionOnEnter', "Controls whether suggestions should be accepted on `Enter`, in addition to `Tab`. Helps to avoid ambiguity between inserting new lines or accepting suggestions.")
+        markdownDescription: nls.localize(431, "Controls whether suggestions should be accepted on `Enter`, in addition to `Tab`. Helps to avoid ambiguity between inserting new lines or accepting suggestions.")
     })),
     accessibilitySupport: register(new EditorAccessibilitySupport()),
-    accessibilityPageSize: register(new EditorIntOption(3 /* EditorOption.accessibilityPageSize */, 'accessibilityPageSize', 10, 1, 1073741824 /* Constants.MAX_SAFE_SMALL_INTEGER */, {
-        description: nls.localize('accessibilityPageSize', "Controls the number of lines in the editor that can be read out by a screen reader at once. When we detect a screen reader we automatically set the default to be 500. Warning: this has a performance implication for numbers larger than the default."),
+    accessibilityPageSize: register(new EditorIntOption(3 /* EditorOption.accessibilityPageSize */, 'accessibilityPageSize', 500, 1, 1073741824 /* Constants.MAX_SAFE_SMALL_INTEGER */, {
+        description: nls.localize(432, "Controls the number of lines in the editor that can be read out by a screen reader at once. When we detect a screen reader we automatically set the default to be 500. Warning: this has a performance implication for numbers larger than the default."),
         tags: ['accessibility']
     })),
-    ariaLabel: register(new EditorStringOption(4 /* EditorOption.ariaLabel */, 'ariaLabel', nls.localize('editorViewAccessibleLabel', "Editor content"))),
-    ariaRequired: register(new EditorBooleanOption(5 /* EditorOption.ariaRequired */, 'ariaRequired', false, undefined)),
-    screenReaderAnnounceInlineSuggestion: register(new EditorBooleanOption(8 /* EditorOption.screenReaderAnnounceInlineSuggestion */, 'screenReaderAnnounceInlineSuggestion', true, {
-        description: nls.localize('screenReaderAnnounceInlineSuggestion', "Control whether inline suggestions are announced by a screen reader."),
+    allowOverflow: register(new EditorBooleanOption(4 /* EditorOption.allowOverflow */, 'allowOverflow', true)),
+    allowVariableLineHeights: register(new EditorBooleanOption(5 /* EditorOption.allowVariableLineHeights */, 'allowVariableLineHeights', true, {
+        description: nls.localize(433, "Controls whether to allow using variable line heights in the editor.")
+    })),
+    allowVariableFonts: register(new EditorBooleanOption(6 /* EditorOption.allowVariableFonts */, 'allowVariableFonts', true, {
+        description: nls.localize(434, "Controls whether to allow using variable fonts in the editor.")
+    })),
+    allowVariableFontsInAccessibilityMode: register(new EditorBooleanOption(7 /* EditorOption.allowVariableFontsInAccessibilityMode */, 'allowVariableFontsInAccessibilityMode', false, {
+        description: nls.localize(435, "Controls whether to allow using variable fonts in the editor in the accessibility mode."),
         tags: ['accessibility']
     })),
-    autoClosingBrackets: register(new EditorStringEnumOption(6 /* EditorOption.autoClosingBrackets */, 'autoClosingBrackets', 'languageDefined', ['always', 'languageDefined', 'beforeWhitespace', 'never'], {
+    ariaLabel: register(new EditorStringOption(8 /* EditorOption.ariaLabel */, 'ariaLabel', nls.localize(436, "Editor content"))),
+    ariaRequired: register(new EditorBooleanOption(9 /* EditorOption.ariaRequired */, 'ariaRequired', false, undefined)),
+    screenReaderAnnounceInlineSuggestion: register(new EditorBooleanOption(12 /* EditorOption.screenReaderAnnounceInlineSuggestion */, 'screenReaderAnnounceInlineSuggestion', true, {
+        description: nls.localize(437, "Control whether inline suggestions are announced by a screen reader."),
+        tags: ['accessibility']
+    })),
+    autoClosingBrackets: register(new EditorStringEnumOption(10 /* EditorOption.autoClosingBrackets */, 'autoClosingBrackets', 'languageDefined', ['always', 'languageDefined', 'beforeWhitespace', 'never'], {
         enumDescriptions: [
             '',
-            nls.localize('editor.autoClosingBrackets.languageDefined', "Use language configurations to determine when to autoclose brackets."),
-            nls.localize('editor.autoClosingBrackets.beforeWhitespace', "Autoclose brackets only when the cursor is to the left of whitespace."),
+            nls.localize(438, "Use language configurations to determine when to autoclose brackets."),
+            nls.localize(439, "Autoclose brackets only when the cursor is to the left of whitespace."),
             '',
         ],
-        description: nls.localize('autoClosingBrackets', "Controls whether the editor should automatically close brackets after the user adds an opening bracket.")
+        description: nls.localize(440, "Controls whether the editor should automatically close brackets after the user adds an opening bracket.")
     })),
-    autoClosingComments: register(new EditorStringEnumOption(7 /* EditorOption.autoClosingComments */, 'autoClosingComments', 'languageDefined', ['always', 'languageDefined', 'beforeWhitespace', 'never'], {
+    autoClosingComments: register(new EditorStringEnumOption(11 /* EditorOption.autoClosingComments */, 'autoClosingComments', 'languageDefined', ['always', 'languageDefined', 'beforeWhitespace', 'never'], {
         enumDescriptions: [
             '',
-            nls.localize('editor.autoClosingComments.languageDefined', "Use language configurations to determine when to autoclose comments."),
-            nls.localize('editor.autoClosingComments.beforeWhitespace', "Autoclose comments only when the cursor is to the left of whitespace."),
+            nls.localize(441, "Use language configurations to determine when to autoclose comments."),
+            nls.localize(442, "Autoclose comments only when the cursor is to the left of whitespace."),
             '',
         ],
-        description: nls.localize('autoClosingComments', "Controls whether the editor should automatically close comments after the user adds an opening comment.")
+        description: nls.localize(443, "Controls whether the editor should automatically close comments after the user adds an opening comment.")
     })),
-    autoClosingDelete: register(new EditorStringEnumOption(9 /* EditorOption.autoClosingDelete */, 'autoClosingDelete', 'auto', ['always', 'auto', 'never'], {
+    autoClosingDelete: register(new EditorStringEnumOption(13 /* EditorOption.autoClosingDelete */, 'autoClosingDelete', 'auto', ['always', 'auto', 'never'], {
         enumDescriptions: [
             '',
-            nls.localize('editor.autoClosingDelete.auto', "Remove adjacent closing quotes or brackets only if they were automatically inserted."),
+            nls.localize(444, "Remove adjacent closing quotes or brackets only if they were automatically inserted."),
             '',
         ],
-        description: nls.localize('autoClosingDelete', "Controls whether the editor should remove adjacent closing quotes or brackets when deleting.")
+        description: nls.localize(445, "Controls whether the editor should remove adjacent closing quotes or brackets when deleting.")
     })),
-    autoClosingOvertype: register(new EditorStringEnumOption(10 /* EditorOption.autoClosingOvertype */, 'autoClosingOvertype', 'auto', ['always', 'auto', 'never'], {
+    autoClosingOvertype: register(new EditorStringEnumOption(14 /* EditorOption.autoClosingOvertype */, 'autoClosingOvertype', 'auto', ['always', 'auto', 'never'], {
         enumDescriptions: [
             '',
-            nls.localize('editor.autoClosingOvertype.auto', "Type over closing quotes or brackets only if they were automatically inserted."),
-            '',
-        ],
-        description: nls.localize('autoClosingOvertype', "Controls whether the editor should type over closing quotes or brackets.")
-    })),
-    autoClosingQuotes: register(new EditorStringEnumOption(11 /* EditorOption.autoClosingQuotes */, 'autoClosingQuotes', 'languageDefined', ['always', 'languageDefined', 'beforeWhitespace', 'never'], {
-        enumDescriptions: [
-            '',
-            nls.localize('editor.autoClosingQuotes.languageDefined', "Use language configurations to determine when to autoclose quotes."),
-            nls.localize('editor.autoClosingQuotes.beforeWhitespace', "Autoclose quotes only when the cursor is to the left of whitespace."),
+            nls.localize(446, "Type over closing quotes or brackets only if they were automatically inserted."),
             '',
         ],
-        description: nls.localize('autoClosingQuotes', "Controls whether the editor should automatically close quotes after the user adds an opening quote.")
+        description: nls.localize(447, "Controls whether the editor should type over closing quotes or brackets.")
     })),
-    autoIndent: register(new EditorEnumOption(12 /* EditorOption.autoIndent */, 'autoIndent', 4 /* EditorAutoIndentStrategy.Full */, 'full', ['none', 'keep', 'brackets', 'advanced', 'full'], _autoIndentFromString, {
+    autoClosingQuotes: register(new EditorStringEnumOption(15 /* EditorOption.autoClosingQuotes */, 'autoClosingQuotes', 'languageDefined', ['always', 'languageDefined', 'beforeWhitespace', 'never'], {
         enumDescriptions: [
-            nls.localize('editor.autoIndent.none', "The editor will not insert indentation automatically."),
-            nls.localize('editor.autoIndent.keep', "The editor will keep the current line's indentation."),
-            nls.localize('editor.autoIndent.brackets', "The editor will keep the current line's indentation and honor language defined brackets."),
-            nls.localize('editor.autoIndent.advanced', "The editor will keep the current line's indentation, honor language defined brackets and invoke special onEnterRules defined by languages."),
-            nls.localize('editor.autoIndent.full', "The editor will keep the current line's indentation, honor language defined brackets, invoke special onEnterRules defined by languages, and honor indentationRules defined by languages."),
+            '',
+            nls.localize(448, "Use language configurations to determine when to autoclose quotes."),
+            nls.localize(449, "Autoclose quotes only when the cursor is to the left of whitespace."),
+            '',
         ],
-        description: nls.localize('autoIndent', "Controls whether the editor should automatically adjust the indentation when users type, paste, move or indent lines.")
+        description: nls.localize(450, "Controls whether the editor should automatically close quotes after the user adds an opening quote.")
     })),
-    automaticLayout: register(new EditorBooleanOption(13 /* EditorOption.automaticLayout */, 'automaticLayout', false)),
-    autoSurround: register(new EditorStringEnumOption(14 /* EditorOption.autoSurround */, 'autoSurround', 'languageDefined', ['languageDefined', 'quotes', 'brackets', 'never'], {
+    autoIndent: register(new EditorEnumOption(16 /* EditorOption.autoIndent */, 'autoIndent', 4 /* EditorAutoIndentStrategy.Full */, 'full', ['none', 'keep', 'brackets', 'advanced', 'full'], _autoIndentFromString, {
         enumDescriptions: [
-            nls.localize('editor.autoSurround.languageDefined', "Use language configurations to determine when to automatically surround selections."),
-            nls.localize('editor.autoSurround.quotes', "Surround with quotes but not brackets."),
-            nls.localize('editor.autoSurround.brackets', "Surround with brackets but not quotes."),
+            nls.localize(451, "The editor will not insert indentation automatically."),
+            nls.localize(452, "The editor will keep the current line's indentation."),
+            nls.localize(453, "The editor will keep the current line's indentation and honor language defined brackets."),
+            nls.localize(454, "The editor will keep the current line's indentation, honor language defined brackets and invoke special onEnterRules defined by languages."),
+            nls.localize(455, "The editor will keep the current line's indentation, honor language defined brackets, invoke special onEnterRules defined by languages, and honor indentationRules defined by languages."),
+        ],
+        description: nls.localize(456, "Controls whether the editor should automatically adjust the indentation when users type, paste, move or indent lines.")
+    })),
+    autoIndentOnPaste: register(new EditorBooleanOption(17 /* EditorOption.autoIndentOnPaste */, 'autoIndentOnPaste', false, { description: nls.localize(457, "Controls whether the editor should automatically auto-indent the pasted content.") })),
+    autoIndentOnPasteWithinString: register(new EditorBooleanOption(18 /* EditorOption.autoIndentOnPasteWithinString */, 'autoIndentOnPasteWithinString', true, { description: nls.localize(458, "Controls whether the editor should automatically auto-indent the pasted content when pasted within a string. This takes effect when autoIndentOnPaste is true.") })),
+    automaticLayout: register(new EditorBooleanOption(19 /* EditorOption.automaticLayout */, 'automaticLayout', false)),
+    autoSurround: register(new EditorStringEnumOption(20 /* EditorOption.autoSurround */, 'autoSurround', 'languageDefined', ['languageDefined', 'quotes', 'brackets', 'never'], {
+        enumDescriptions: [
+            nls.localize(459, "Use language configurations to determine when to automatically surround selections."),
+            nls.localize(460, "Surround with quotes but not brackets."),
+            nls.localize(461, "Surround with brackets but not quotes."),
             ''
         ],
-        description: nls.localize('autoSurround', "Controls whether the editor should automatically surround selections when typing quotes or brackets.")
+        description: nls.localize(462, "Controls whether the editor should automatically surround selections when typing quotes or brackets.")
     })),
     bracketPairColorization: register(new BracketPairColorization()),
     bracketPairGuides: register(new GuideOptions()),
-    stickyTabStops: register(new EditorBooleanOption(117 /* EditorOption.stickyTabStops */, 'stickyTabStops', false, { description: nls.localize('stickyTabStops', "Emulate selection behavior of tab characters when using spaces for indentation. Selection will stick to tab stops.") })),
-    codeLens: register(new EditorBooleanOption(17 /* EditorOption.codeLens */, 'codeLens', true, { description: nls.localize('codeLens', "Controls whether the editor shows CodeLens.") })),
-    codeLensFontFamily: register(new EditorStringOption(18 /* EditorOption.codeLensFontFamily */, 'codeLensFontFamily', '', { description: nls.localize('codeLensFontFamily', "Controls the font family for CodeLens.") })),
-    codeLensFontSize: register(new EditorIntOption(19 /* EditorOption.codeLensFontSize */, 'codeLensFontSize', 0, 0, 100, {
+    stickyTabStops: register(new EditorBooleanOption(132 /* EditorOption.stickyTabStops */, 'stickyTabStops', false, { description: nls.localize(463, "Emulate selection behavior of tab characters when using spaces for indentation. Selection will stick to tab stops.") })),
+    codeLens: register(new EditorBooleanOption(23 /* EditorOption.codeLens */, 'codeLens', true, { description: nls.localize(464, "Controls whether the editor shows CodeLens.") })),
+    codeLensFontFamily: register(new EditorStringOption(24 /* EditorOption.codeLensFontFamily */, 'codeLensFontFamily', '', { description: nls.localize(465, "Controls the font family for CodeLens.") })),
+    codeLensFontSize: register(new EditorIntOption(25 /* EditorOption.codeLensFontSize */, 'codeLensFontSize', 0, 0, 100, {
         type: 'number',
         default: 0,
         minimum: 0,
         maximum: 100,
-        markdownDescription: nls.localize('codeLensFontSize', "Controls the font size in pixels for CodeLens. When set to 0, 90% of `#editor.fontSize#` is used.")
+        markdownDescription: nls.localize(466, "Controls the font size in pixels for CodeLens. When set to 0, 90% of `#editor.fontSize#` is used.")
     })),
-    colorDecorators: register(new EditorBooleanOption(20 /* EditorOption.colorDecorators */, 'colorDecorators', true, { description: nls.localize('colorDecorators', "Controls whether the editor should render the inline color decorators and color picker.") })),
-    colorDecoratorActivatedOn: register(new EditorStringEnumOption(149 /* EditorOption.colorDecoratorsActivatedOn */, 'colorDecoratorsActivatedOn', 'clickAndHover', ['clickAndHover', 'hover', 'click'], {
+    colorDecorators: register(new EditorBooleanOption(26 /* EditorOption.colorDecorators */, 'colorDecorators', true, { description: nls.localize(467, "Controls whether the editor should render the inline color decorators and color picker.") })),
+    colorDecoratorActivatedOn: register(new EditorStringEnumOption(168 /* EditorOption.colorDecoratorsActivatedOn */, 'colorDecoratorsActivatedOn', 'clickAndHover', ['clickAndHover', 'hover', 'click'], {
         enumDescriptions: [
-            nls.localize('editor.colorDecoratorActivatedOn.clickAndHover', "Make the color picker appear both on click and hover of the color decorator"),
-            nls.localize('editor.colorDecoratorActivatedOn.hover', "Make the color picker appear on hover of the color decorator"),
-            nls.localize('editor.colorDecoratorActivatedOn.click', "Make the color picker appear on click of the color decorator")
+            nls.localize(468, "Make the color picker appear both on click and hover of the color decorator"),
+            nls.localize(469, "Make the color picker appear on hover of the color decorator"),
+            nls.localize(470, "Make the color picker appear on click of the color decorator")
         ],
-        description: nls.localize('colorDecoratorActivatedOn', "Controls the condition to make a color picker appear from a color decorator")
+        description: nls.localize(471, "Controls the condition to make a color picker appear from a color decorator.")
     })),
-    colorDecoratorsLimit: register(new EditorIntOption(21 /* EditorOption.colorDecoratorsLimit */, 'colorDecoratorsLimit', 500, 1, 1000000, {
-        markdownDescription: nls.localize('colorDecoratorsLimit', "Controls the max number of color decorators that can be rendered in an editor at once.")
+    colorDecoratorsLimit: register(new EditorIntOption(27 /* EditorOption.colorDecoratorsLimit */, 'colorDecoratorsLimit', 500, 1, 1000000, {
+        markdownDescription: nls.localize(472, "Controls the max number of color decorators that can be rendered in an editor at once.")
     })),
-    columnSelection: register(new EditorBooleanOption(22 /* EditorOption.columnSelection */, 'columnSelection', false, { description: nls.localize('columnSelection', "Enable that the selection with the mouse and keys is doing column selection.") })),
+    columnSelection: register(new EditorBooleanOption(28 /* EditorOption.columnSelection */, 'columnSelection', false, { description: nls.localize(473, "Enable that the selection with the mouse and keys is doing column selection.") })),
     comments: register(new EditorComments()),
-    contextmenu: register(new EditorBooleanOption(24 /* EditorOption.contextmenu */, 'contextmenu', true)),
-    copyWithSyntaxHighlighting: register(new EditorBooleanOption(25 /* EditorOption.copyWithSyntaxHighlighting */, 'copyWithSyntaxHighlighting', true, { description: nls.localize('copyWithSyntaxHighlighting', "Controls whether syntax highlighting should be copied into the clipboard.") })),
-    cursorBlinking: register(new EditorEnumOption(26 /* EditorOption.cursorBlinking */, 'cursorBlinking', 1 /* TextEditorCursorBlinkingStyle.Blink */, 'blink', ['blink', 'smooth', 'phase', 'expand', 'solid'], _cursorBlinkingStyleFromString, { description: nls.localize('cursorBlinking', "Control the cursor animation style.") })),
-    cursorSmoothCaretAnimation: register(new EditorStringEnumOption(27 /* EditorOption.cursorSmoothCaretAnimation */, 'cursorSmoothCaretAnimation', 'off', ['off', 'explicit', 'on'], {
+    contextmenu: register(new EditorBooleanOption(30 /* EditorOption.contextmenu */, 'contextmenu', true)),
+    copyWithSyntaxHighlighting: register(new EditorBooleanOption(31 /* EditorOption.copyWithSyntaxHighlighting */, 'copyWithSyntaxHighlighting', true, { description: nls.localize(474, "Controls whether syntax highlighting should be copied into the clipboard.") })),
+    cursorBlinking: register(new EditorEnumOption(32 /* EditorOption.cursorBlinking */, 'cursorBlinking', 1 /* TextEditorCursorBlinkingStyle.Blink */, 'blink', ['blink', 'smooth', 'phase', 'expand', 'solid'], cursorBlinkingStyleFromString, { description: nls.localize(475, "Control the cursor animation style.") })),
+    cursorSmoothCaretAnimation: register(new EditorStringEnumOption(33 /* EditorOption.cursorSmoothCaretAnimation */, 'cursorSmoothCaretAnimation', 'off', ['off', 'explicit', 'on'], {
         enumDescriptions: [
-            nls.localize('cursorSmoothCaretAnimation.off', "Smooth caret animation is disabled."),
-            nls.localize('cursorSmoothCaretAnimation.explicit', "Smooth caret animation is enabled only when the user moves the cursor with an explicit gesture."),
-            nls.localize('cursorSmoothCaretAnimation.on', "Smooth caret animation is always enabled.")
+            nls.localize(476, "Smooth caret animation is disabled."),
+            nls.localize(477, "Smooth caret animation is enabled only when the user moves the cursor with an explicit gesture."),
+            nls.localize(478, "Smooth caret animation is always enabled.")
         ],
-        description: nls.localize('cursorSmoothCaretAnimation', "Controls whether the smooth caret animation should be enabled.")
+        description: nls.localize(479, "Controls whether the smooth caret animation should be enabled.")
     })),
-    cursorStyle: register(new EditorEnumOption(28 /* EditorOption.cursorStyle */, 'cursorStyle', TextEditorCursorStyle.Line, 'line', ['line', 'block', 'underline', 'line-thin', 'block-outline', 'underline-thin'], _cursorStyleFromString, { description: nls.localize('cursorStyle', "Controls the cursor style.") })),
-    cursorSurroundingLines: register(new EditorIntOption(29 /* EditorOption.cursorSurroundingLines */, 'cursorSurroundingLines', 0, 0, 1073741824 /* Constants.MAX_SAFE_SMALL_INTEGER */, { description: nls.localize('cursorSurroundingLines', "Controls the minimal number of visible leading lines (minimum 0) and trailing lines (minimum 1) surrounding the cursor. Known as 'scrollOff' or 'scrollOffset' in some other editors.") })),
-    cursorSurroundingLinesStyle: register(new EditorStringEnumOption(30 /* EditorOption.cursorSurroundingLinesStyle */, 'cursorSurroundingLinesStyle', 'default', ['default', 'all'], {
+    cursorStyle: register(new EditorEnumOption(34 /* EditorOption.cursorStyle */, 'cursorStyle', TextEditorCursorStyle.Line, 'line', ['line', 'block', 'underline', 'line-thin', 'block-outline', 'underline-thin'], cursorStyleFromString, { description: nls.localize(480, "Controls the cursor style in insert input mode.") })),
+    overtypeCursorStyle: register(new EditorEnumOption(92 /* EditorOption.overtypeCursorStyle */, 'overtypeCursorStyle', TextEditorCursorStyle.Block, 'block', ['line', 'block', 'underline', 'line-thin', 'block-outline', 'underline-thin'], cursorStyleFromString, { description: nls.localize(481, "Controls the cursor style in overtype input mode.") })),
+    cursorSurroundingLines: register(new EditorIntOption(35 /* EditorOption.cursorSurroundingLines */, 'cursorSurroundingLines', 0, 0, 1073741824 /* Constants.MAX_SAFE_SMALL_INTEGER */, { description: nls.localize(482, "Controls the minimal number of visible leading lines (minimum 0) and trailing lines (minimum 1) surrounding the cursor. Known as 'scrollOff' or 'scrollOffset' in some other editors.") })),
+    cursorSurroundingLinesStyle: register(new EditorStringEnumOption(36 /* EditorOption.cursorSurroundingLinesStyle */, 'cursorSurroundingLinesStyle', 'default', ['default', 'all'], {
         enumDescriptions: [
-            nls.localize('cursorSurroundingLinesStyle.default', "`cursorSurroundingLines` is enforced only when triggered via the keyboard or API."),
-            nls.localize('cursorSurroundingLinesStyle.all', "`cursorSurroundingLines` is enforced always.")
+            nls.localize(483, "`cursorSurroundingLines` is enforced only when triggered via the keyboard or API."),
+            nls.localize(484, "`cursorSurroundingLines` is enforced always.")
         ],
-        markdownDescription: nls.localize('cursorSurroundingLinesStyle', "Controls when `#editor.cursorSurroundingLines#` should be enforced.")
+        markdownDescription: nls.localize(485, "Controls when `#editor.cursorSurroundingLines#` should be enforced.")
     })),
-    cursorWidth: register(new EditorIntOption(31 /* EditorOption.cursorWidth */, 'cursorWidth', 0, 0, 1073741824 /* Constants.MAX_SAFE_SMALL_INTEGER */, { markdownDescription: nls.localize('cursorWidth', "Controls the width of the cursor when `#editor.cursorStyle#` is set to `line`.") })),
-    disableLayerHinting: register(new EditorBooleanOption(32 /* EditorOption.disableLayerHinting */, 'disableLayerHinting', false)),
-    disableMonospaceOptimizations: register(new EditorBooleanOption(33 /* EditorOption.disableMonospaceOptimizations */, 'disableMonospaceOptimizations', false)),
-    domReadOnly: register(new EditorBooleanOption(34 /* EditorOption.domReadOnly */, 'domReadOnly', false)),
-    dragAndDrop: register(new EditorBooleanOption(35 /* EditorOption.dragAndDrop */, 'dragAndDrop', true, { description: nls.localize('dragAndDrop', "Controls whether the editor should allow moving selections via drag and drop.") })),
+    cursorWidth: register(new EditorIntOption(37 /* EditorOption.cursorWidth */, 'cursorWidth', 0, 0, 1073741824 /* Constants.MAX_SAFE_SMALL_INTEGER */, { markdownDescription: nls.localize(486, "Controls the width of the cursor when `#editor.cursorStyle#` is set to `line`.") })),
+    cursorHeight: register(new EditorIntOption(38 /* EditorOption.cursorHeight */, 'cursorHeight', 0, 0, 1073741824 /* Constants.MAX_SAFE_SMALL_INTEGER */, { markdownDescription: nls.localize(487, "Controls the height of the cursor when `#editor.cursorStyle#` is set to `line`. Cursor's max height depends on line height.") })),
+    disableLayerHinting: register(new EditorBooleanOption(39 /* EditorOption.disableLayerHinting */, 'disableLayerHinting', false)),
+    disableMonospaceOptimizations: register(new EditorBooleanOption(40 /* EditorOption.disableMonospaceOptimizations */, 'disableMonospaceOptimizations', false)),
+    domReadOnly: register(new EditorBooleanOption(41 /* EditorOption.domReadOnly */, 'domReadOnly', false)),
+    dragAndDrop: register(new EditorBooleanOption(42 /* EditorOption.dragAndDrop */, 'dragAndDrop', true, { description: nls.localize(488, "Controls whether the editor should allow moving selections via drag and drop.") })),
     emptySelectionClipboard: register(new EditorEmptySelectionClipboard()),
     dropIntoEditor: register(new EditorDropIntoEditor()),
+    editContext: register(new EditorBooleanOption(44 /* EditorOption.editContext */, 'editContext', true, {
+        description: nls.localize(489, "Sets whether the EditContext API should be used instead of the text area to power input in the editor."),
+        included: platform.isChrome || platform.isEdge || platform.isNative
+    })),
+    renderRichScreenReaderContent: register(new EditorBooleanOption(107 /* EditorOption.renderRichScreenReaderContent */, 'renderRichScreenReaderContent', false, {
+        markdownDescription: nls.localize(490, "Whether to render rich screen reader content when the `#editor.editContext#` setting is enabled."),
+    })),
     stickyScroll: register(new EditorStickyScroll()),
-    experimentalWhitespaceRendering: register(new EditorStringEnumOption(38 /* EditorOption.experimentalWhitespaceRendering */, 'experimentalWhitespaceRendering', 'svg', ['svg', 'font', 'off'], {
+    experimentalGpuAcceleration: register(new EditorStringEnumOption(46 /* EditorOption.experimentalGpuAcceleration */, 'experimentalGpuAcceleration', 'off', ['off', 'on'], {
+        tags: ['experimental'],
         enumDescriptions: [
-            nls.localize('experimentalWhitespaceRendering.svg', "Use a new rendering method with svgs."),
-            nls.localize('experimentalWhitespaceRendering.font', "Use a new rendering method with font characters."),
-            nls.localize('experimentalWhitespaceRendering.off', "Use the stable rendering method."),
+            nls.localize(491, "Use regular DOM-based rendering."),
+            nls.localize(492, "Use GPU acceleration."),
         ],
-        description: nls.localize('experimentalWhitespaceRendering', "Controls whether whitespace is rendered with a new, experimental method.")
+        description: nls.localize(493, "Controls whether to use the experimental GPU acceleration to render the editor.")
     })),
-    extraEditorClassName: register(new EditorStringOption(39 /* EditorOption.extraEditorClassName */, 'extraEditorClassName', '')),
-    fastScrollSensitivity: register(new EditorFloatOption(40 /* EditorOption.fastScrollSensitivity */, 'fastScrollSensitivity', 5, x => (x <= 0 ? 5 : x), { markdownDescription: nls.localize('fastScrollSensitivity', "Scrolling speed multiplier when pressing `Alt`.") })),
+    experimentalWhitespaceRendering: register(new EditorStringEnumOption(47 /* EditorOption.experimentalWhitespaceRendering */, 'experimentalWhitespaceRendering', 'svg', ['svg', 'font', 'off'], {
+        enumDescriptions: [
+            nls.localize(494, "Use a new rendering method with svgs."),
+            nls.localize(495, "Use a new rendering method with font characters."),
+            nls.localize(496, "Use the stable rendering method."),
+        ],
+        description: nls.localize(497, "Controls whether whitespace is rendered with a new, experimental method.")
+    })),
+    extraEditorClassName: register(new EditorStringOption(48 /* EditorOption.extraEditorClassName */, 'extraEditorClassName', '')),
+    fastScrollSensitivity: register(new EditorFloatOption(49 /* EditorOption.fastScrollSensitivity */, 'fastScrollSensitivity', 5, x => (x <= 0 ? 5 : x), { markdownDescription: nls.localize(498, "Scrolling speed multiplier when pressing `Alt`.") })),
     find: register(new EditorFind()),
-    fixedOverflowWidgets: register(new EditorBooleanOption(42 /* EditorOption.fixedOverflowWidgets */, 'fixedOverflowWidgets', false)),
-    folding: register(new EditorBooleanOption(43 /* EditorOption.folding */, 'folding', true, { description: nls.localize('folding', "Controls whether the editor has code folding enabled.") })),
-    foldingStrategy: register(new EditorStringEnumOption(44 /* EditorOption.foldingStrategy */, 'foldingStrategy', 'auto', ['auto', 'indentation'], {
+    fixedOverflowWidgets: register(new EditorBooleanOption(51 /* EditorOption.fixedOverflowWidgets */, 'fixedOverflowWidgets', false)),
+    folding: register(new EditorBooleanOption(52 /* EditorOption.folding */, 'folding', true, { description: nls.localize(499, "Controls whether the editor has code folding enabled.") })),
+    foldingStrategy: register(new EditorStringEnumOption(53 /* EditorOption.foldingStrategy */, 'foldingStrategy', 'auto', ['auto', 'indentation'], {
         enumDescriptions: [
-            nls.localize('foldingStrategy.auto', "Use a language-specific folding strategy if available, else the indentation-based one."),
-            nls.localize('foldingStrategy.indentation', "Use the indentation-based folding strategy."),
+            nls.localize(500, "Use a language-specific folding strategy if available, else the indentation-based one."),
+            nls.localize(501, "Use the indentation-based folding strategy."),
         ],
-        description: nls.localize('foldingStrategy', "Controls the strategy for computing folding ranges.")
+        description: nls.localize(502, "Controls the strategy for computing folding ranges.")
     })),
-    foldingHighlight: register(new EditorBooleanOption(45 /* EditorOption.foldingHighlight */, 'foldingHighlight', true, { description: nls.localize('foldingHighlight', "Controls whether the editor should highlight folded ranges.") })),
-    foldingImportsByDefault: register(new EditorBooleanOption(46 /* EditorOption.foldingImportsByDefault */, 'foldingImportsByDefault', false, { description: nls.localize('foldingImportsByDefault', "Controls whether the editor automatically collapses import ranges.") })),
-    foldingMaximumRegions: register(new EditorIntOption(47 /* EditorOption.foldingMaximumRegions */, 'foldingMaximumRegions', 5000, 10, 65000, // limit must be less than foldingRanges MAX_FOLDING_REGIONS
-    { description: nls.localize('foldingMaximumRegions', "The maximum number of foldable regions. Increasing this value may result in the editor becoming less responsive when the current source has a large number of foldable regions.") })),
-    unfoldOnClickAfterEndOfLine: register(new EditorBooleanOption(48 /* EditorOption.unfoldOnClickAfterEndOfLine */, 'unfoldOnClickAfterEndOfLine', false, { description: nls.localize('unfoldOnClickAfterEndOfLine', "Controls whether clicking on the empty content after a folded line will unfold the line.") })),
-    fontFamily: register(new EditorStringOption(49 /* EditorOption.fontFamily */, 'fontFamily', EDITOR_FONT_DEFAULTS.fontFamily, { description: nls.localize('fontFamily', "Controls the font family.") })),
+    foldingHighlight: register(new EditorBooleanOption(54 /* EditorOption.foldingHighlight */, 'foldingHighlight', true, { description: nls.localize(503, "Controls whether the editor should highlight folded ranges.") })),
+    foldingImportsByDefault: register(new EditorBooleanOption(55 /* EditorOption.foldingImportsByDefault */, 'foldingImportsByDefault', false, { description: nls.localize(504, "Controls whether the editor automatically collapses import ranges.") })),
+    foldingMaximumRegions: register(new EditorIntOption(56 /* EditorOption.foldingMaximumRegions */, 'foldingMaximumRegions', 5000, 10, 65000, // limit must be less than foldingRanges MAX_FOLDING_REGIONS
+    { description: nls.localize(505, "The maximum number of foldable regions. Increasing this value may result in the editor becoming less responsive when the current source has a large number of foldable regions.") })),
+    unfoldOnClickAfterEndOfLine: register(new EditorBooleanOption(57 /* EditorOption.unfoldOnClickAfterEndOfLine */, 'unfoldOnClickAfterEndOfLine', false, { description: nls.localize(506, "Controls whether clicking on the empty content after a folded line will unfold the line.") })),
+    fontFamily: register(new EditorStringOption(58 /* EditorOption.fontFamily */, 'fontFamily', EDITOR_FONT_DEFAULTS.fontFamily, { description: nls.localize(507, "Controls the font family.") })),
     fontInfo: register(new EditorFontInfo()),
     fontLigatures2: register(new EditorFontLigatures()),
     fontSize: register(new EditorFontSize()),
     fontWeight: register(new EditorFontWeight()),
     fontVariations: register(new EditorFontVariations()),
-    formatOnPaste: register(new EditorBooleanOption(55 /* EditorOption.formatOnPaste */, 'formatOnPaste', false, { description: nls.localize('formatOnPaste', "Controls whether the editor should automatically format the pasted content. A formatter must be available and the formatter should be able to format a range in a document.") })),
-    formatOnType: register(new EditorBooleanOption(56 /* EditorOption.formatOnType */, 'formatOnType', false, { description: nls.localize('formatOnType', "Controls whether the editor should automatically format the line after typing.") })),
-    glyphMargin: register(new EditorBooleanOption(57 /* EditorOption.glyphMargin */, 'glyphMargin', true, { description: nls.localize('glyphMargin', "Controls whether the editor should render the vertical glyph margin. Glyph margin is mostly used for debugging.") })),
+    formatOnPaste: register(new EditorBooleanOption(64 /* EditorOption.formatOnPaste */, 'formatOnPaste', false, { description: nls.localize(508, "Controls whether the editor should automatically format the pasted content. A formatter must be available and the formatter should be able to format a range in a document.") })),
+    formatOnType: register(new EditorBooleanOption(65 /* EditorOption.formatOnType */, 'formatOnType', false, { description: nls.localize(509, "Controls whether the editor should automatically format the line after typing.") })),
+    glyphMargin: register(new EditorBooleanOption(66 /* EditorOption.glyphMargin */, 'glyphMargin', true, { description: nls.localize(510, "Controls whether the editor should render the vertical glyph margin. Glyph margin is mostly used for debugging.") })),
     gotoLocation: register(new EditorGoToLocation()),
-    hideCursorInOverviewRuler: register(new EditorBooleanOption(59 /* EditorOption.hideCursorInOverviewRuler */, 'hideCursorInOverviewRuler', false, { description: nls.localize('hideCursorInOverviewRuler', "Controls whether the cursor should be hidden in the overview ruler.") })),
+    hideCursorInOverviewRuler: register(new EditorBooleanOption(68 /* EditorOption.hideCursorInOverviewRuler */, 'hideCursorInOverviewRuler', false, { description: nls.localize(511, "Controls whether the cursor should be hidden in the overview ruler.") })),
     hover: register(new EditorHover()),
-    inDiffEditor: register(new EditorBooleanOption(61 /* EditorOption.inDiffEditor */, 'inDiffEditor', false)),
-    letterSpacing: register(new EditorFloatOption(64 /* EditorOption.letterSpacing */, 'letterSpacing', EDITOR_FONT_DEFAULTS.letterSpacing, x => EditorFloatOption.clamp(x, -5, 20), { description: nls.localize('letterSpacing', "Controls the letter spacing in pixels.") })),
+    inDiffEditor: register(new EditorBooleanOption(70 /* EditorOption.inDiffEditor */, 'inDiffEditor', false)),
+    inertialScroll: register(new EditorBooleanOption(158 /* EditorOption.inertialScroll */, 'inertialScroll', false, { description: nls.localize(512, "Make scrolling inertial - mostly useful with touchpad on linux.") })),
+    letterSpacing: register(new EditorFloatOption(72 /* EditorOption.letterSpacing */, 'letterSpacing', EDITOR_FONT_DEFAULTS.letterSpacing, x => EditorFloatOption.clamp(x, -5, 20), { description: nls.localize(513, "Controls the letter spacing in pixels.") })),
     lightbulb: register(new EditorLightbulb()),
     lineDecorationsWidth: register(new EditorLineDecorationsWidth()),
     lineHeight: register(new EditorLineHeight()),
     lineNumbers: register(new EditorRenderLineNumbersOption()),
-    lineNumbersMinChars: register(new EditorIntOption(69 /* EditorOption.lineNumbersMinChars */, 'lineNumbersMinChars', 5, 1, 300)),
-    linkedEditing: register(new EditorBooleanOption(70 /* EditorOption.linkedEditing */, 'linkedEditing', false, { description: nls.localize('linkedEditing', "Controls whether the editor has linked editing enabled. Depending on the language, related symbols such as HTML tags, are updated while editing.") })),
-    links: register(new EditorBooleanOption(71 /* EditorOption.links */, 'links', true, { description: nls.localize('links', "Controls whether the editor should detect links and make them clickable.") })),
-    matchBrackets: register(new EditorStringEnumOption(72 /* EditorOption.matchBrackets */, 'matchBrackets', 'always', ['always', 'near', 'never'], { description: nls.localize('matchBrackets', "Highlight matching brackets.") })),
+    lineNumbersMinChars: register(new EditorIntOption(77 /* EditorOption.lineNumbersMinChars */, 'lineNumbersMinChars', 5, 1, 300)),
+    linkedEditing: register(new EditorBooleanOption(78 /* EditorOption.linkedEditing */, 'linkedEditing', false, { description: nls.localize(514, "Controls whether the editor has linked editing enabled. Depending on the language, related symbols such as HTML tags, are updated while editing.") })),
+    links: register(new EditorBooleanOption(79 /* EditorOption.links */, 'links', true, { description: nls.localize(515, "Controls whether the editor should detect links and make them clickable.") })),
+    matchBrackets: register(new EditorStringEnumOption(80 /* EditorOption.matchBrackets */, 'matchBrackets', 'always', ['always', 'near', 'never'], { description: nls.localize(516, "Highlight matching brackets.") })),
     minimap: register(new EditorMinimap()),
-    mouseStyle: register(new EditorStringEnumOption(74 /* EditorOption.mouseStyle */, 'mouseStyle', 'text', ['text', 'default', 'copy'])),
-    mouseWheelScrollSensitivity: register(new EditorFloatOption(75 /* EditorOption.mouseWheelScrollSensitivity */, 'mouseWheelScrollSensitivity', 1, x => (x === 0 ? 1 : x), { markdownDescription: nls.localize('mouseWheelScrollSensitivity', "A multiplier to be used on the `deltaX` and `deltaY` of mouse wheel scroll events.") })),
-    mouseWheelZoom: register(new EditorBooleanOption(76 /* EditorOption.mouseWheelZoom */, 'mouseWheelZoom', false, {
+    mouseStyle: register(new EditorStringEnumOption(82 /* EditorOption.mouseStyle */, 'mouseStyle', 'text', ['text', 'default', 'copy'])),
+    mouseWheelScrollSensitivity: register(new EditorFloatOption(83 /* EditorOption.mouseWheelScrollSensitivity */, 'mouseWheelScrollSensitivity', 1, x => (x === 0 ? 1 : x), { markdownDescription: nls.localize(517, "A multiplier to be used on the `deltaX` and `deltaY` of mouse wheel scroll events.") })),
+    mouseWheelZoom: register(new EditorBooleanOption(84 /* EditorOption.mouseWheelZoom */, 'mouseWheelZoom', false, {
         markdownDescription: platform.isMacintosh
-            ? nls.localize('mouseWheelZoom.mac', "Zoom the font of the editor when using mouse wheel and holding `Cmd`.")
-            : nls.localize('mouseWheelZoom', "Zoom the font of the editor when using mouse wheel and holding `Ctrl`.")
+            ? nls.localize(518, "Zoom the font of the editor when using mouse wheel and holding `Cmd`.")
+            : nls.localize(519, "Zoom the font of the editor when using mouse wheel and holding `Ctrl`.")
     })),
-    multiCursorMergeOverlapping: register(new EditorBooleanOption(77 /* EditorOption.multiCursorMergeOverlapping */, 'multiCursorMergeOverlapping', true, { description: nls.localize('multiCursorMergeOverlapping', "Merge multiple cursors when they are overlapping.") })),
-    multiCursorModifier: register(new EditorEnumOption(78 /* EditorOption.multiCursorModifier */, 'multiCursorModifier', 'altKey', 'alt', ['ctrlCmd', 'alt'], _multiCursorModifierFromString, {
+    multiCursorMergeOverlapping: register(new EditorBooleanOption(85 /* EditorOption.multiCursorMergeOverlapping */, 'multiCursorMergeOverlapping', true, { description: nls.localize(520, "Merge multiple cursors when they are overlapping.") })),
+    multiCursorModifier: register(new EditorEnumOption(86 /* EditorOption.multiCursorModifier */, 'multiCursorModifier', 'altKey', 'alt', ['ctrlCmd', 'alt'], _multiCursorModifierFromString, {
         markdownEnumDescriptions: [
-            nls.localize('multiCursorModifier.ctrlCmd', "Maps to `Control` on Windows and Linux and to `Command` on macOS."),
-            nls.localize('multiCursorModifier.alt', "Maps to `Alt` on Windows and Linux and to `Option` on macOS.")
+            nls.localize(521, "Maps to `Control` on Windows and Linux and to `Command` on macOS."),
+            nls.localize(522, "Maps to `Alt` on Windows and Linux and to `Option` on macOS.")
         ],
-        markdownDescription: nls.localize({
-            key: 'multiCursorModifier',
-            comment: [
-                '- `ctrlCmd` refers to a value the setting can take and should not be localized.',
-                '- `Control` and `Command` refer to the modifier keys Ctrl or Cmd on the keyboard and can be localized.'
-            ]
-        }, "The modifier to be used to add multiple cursors with the mouse. The Go to Definition and Open Link mouse gestures will adapt such that they do not conflict with the [multicursor modifier](https://code.visualstudio.com/docs/editor/codebasics#_multicursor-modifier).")
+        markdownDescription: nls.localize(523, "The modifier to be used to add multiple cursors with the mouse. The Go to Definition and Open Link mouse gestures will adapt such that they do not conflict with the [multicursor modifier](https://code.visualstudio.com/docs/editor/codebasics#_multicursor-modifier).")
+
+
+
+
+
+
     })),
-    multiCursorPaste: register(new EditorStringEnumOption(79 /* EditorOption.multiCursorPaste */, 'multiCursorPaste', 'spread', ['spread', 'full'], {
+    mouseMiddleClickAction: register(new EditorStringEnumOption(87 /* EditorOption.mouseMiddleClickAction */, 'mouseMiddleClickAction', 'default', ['default', 'openLink', 'ctrlLeftClick'], { description: nls.localize(524, "Controls what happens when middle mouse button is clicked in the editor.") })),
+    multiCursorPaste: register(new EditorStringEnumOption(88 /* EditorOption.multiCursorPaste */, 'multiCursorPaste', 'spread', ['spread', 'full'], {
         markdownEnumDescriptions: [
-            nls.localize('multiCursorPaste.spread', "Each cursor pastes a single line of the text."),
-            nls.localize('multiCursorPaste.full', "Each cursor pastes the full text.")
+            nls.localize(525, "Each cursor pastes a single line of the text."),
+            nls.localize(526, "Each cursor pastes the full text.")
         ],
-        markdownDescription: nls.localize('multiCursorPaste', "Controls pasting when the line count of the pasted text matches the cursor count.")
+        markdownDescription: nls.localize(527, "Controls pasting when the line count of the pasted text matches the cursor count.")
     })),
-    multiCursorLimit: register(new EditorIntOption(80 /* EditorOption.multiCursorLimit */, 'multiCursorLimit', 10000, 1, 100000, {
-        markdownDescription: nls.localize('multiCursorLimit', "Controls the max number of cursors that can be in an active editor at once.")
+    multiCursorLimit: register(new EditorIntOption(89 /* EditorOption.multiCursorLimit */, 'multiCursorLimit', 10000, 1, 100000, {
+        markdownDescription: nls.localize(528, "Controls the max number of cursors that can be in an active editor at once.")
     })),
-    occurrencesHighlight: register(new EditorStringEnumOption(81 /* EditorOption.occurrencesHighlight */, 'occurrencesHighlight', 'singleFile', ['off', 'singleFile', 'multiFile'], {
+    occurrencesHighlight: register(new EditorStringEnumOption(90 /* EditorOption.occurrencesHighlight */, 'occurrencesHighlight', 'singleFile', ['off', 'singleFile', 'multiFile'], {
         markdownEnumDescriptions: [
-            nls.localize('occurrencesHighlight.off', "Does not highlight occurrences."),
-            nls.localize('occurrencesHighlight.singleFile', "Highlights occurrences only in the current file."),
-            nls.localize('occurrencesHighlight.multiFile', "Experimental: Highlights occurrences across all valid open files.")
+            nls.localize(529, "Does not highlight occurrences."),
+            nls.localize(530, "Highlights occurrences only in the current file."),
+            nls.localize(531, "Experimental: Highlights occurrences across all valid open files.")
         ],
-        markdownDescription: nls.localize('occurrencesHighlight', "Controls whether occurrences should be highlighted across open files.")
+        markdownDescription: nls.localize(532, "Controls whether occurrences should be highlighted across open files.")
     })),
-    overviewRulerBorder: register(new EditorBooleanOption(82 /* EditorOption.overviewRulerBorder */, 'overviewRulerBorder', true, { description: nls.localize('overviewRulerBorder', "Controls whether a border should be drawn around the overview ruler.") })),
-    overviewRulerLanes: register(new EditorIntOption(83 /* EditorOption.overviewRulerLanes */, 'overviewRulerLanes', 3, 0, 3)),
+    occurrencesHighlightDelay: register(new EditorIntOption(91 /* EditorOption.occurrencesHighlightDelay */, 'occurrencesHighlightDelay', 0, 0, 2000, {
+        description: nls.localize(533, "Controls the delay in milliseconds after which occurrences are highlighted."),
+        tags: ['preview']
+    })),
+    overtypeOnPaste: register(new EditorBooleanOption(93 /* EditorOption.overtypeOnPaste */, 'overtypeOnPaste', true, { description: nls.localize(534, "Controls whether pasting should overtype.") })),
+    overviewRulerBorder: register(new EditorBooleanOption(94 /* EditorOption.overviewRulerBorder */, 'overviewRulerBorder', true, { description: nls.localize(535, "Controls whether a border should be drawn around the overview ruler.") })),
+    overviewRulerLanes: register(new EditorIntOption(95 /* EditorOption.overviewRulerLanes */, 'overviewRulerLanes', 3, 0, 3)),
     padding: register(new EditorPadding()),
     pasteAs: register(new EditorPasteAs()),
     parameterHints: register(new EditorParameterHints()),
-    peekWidgetDefaultFocus: register(new EditorStringEnumOption(87 /* EditorOption.peekWidgetDefaultFocus */, 'peekWidgetDefaultFocus', 'tree', ['tree', 'editor'], {
+    peekWidgetDefaultFocus: register(new EditorStringEnumOption(99 /* EditorOption.peekWidgetDefaultFocus */, 'peekWidgetDefaultFocus', 'tree', ['tree', 'editor'], {
         enumDescriptions: [
-            nls.localize('peekWidgetDefaultFocus.tree', "Focus the tree when opening peek"),
-            nls.localize('peekWidgetDefaultFocus.editor', "Focus the editor when opening peek")
+            nls.localize(536, "Focus the tree when opening peek"),
+            nls.localize(537, "Focus the editor when opening peek")
         ],
-        description: nls.localize('peekWidgetDefaultFocus', "Controls whether to focus the inline editor or the tree in the peek widget.")
+        description: nls.localize(538, "Controls whether to focus the inline editor or the tree in the peek widget.")
     })),
     placeholder: register(new PlaceholderOption()),
-    definitionLinkOpensInPeek: register(new EditorBooleanOption(89 /* EditorOption.definitionLinkOpensInPeek */, 'definitionLinkOpensInPeek', false, { description: nls.localize('definitionLinkOpensInPeek', "Controls whether the Go to Definition mouse gesture always opens the peek widget.") })),
+    definitionLinkOpensInPeek: register(new EditorBooleanOption(101 /* EditorOption.definitionLinkOpensInPeek */, 'definitionLinkOpensInPeek', false, { description: nls.localize(539, "Controls whether the Go to Definition mouse gesture always opens the peek widget.") })),
     quickSuggestions: register(new EditorQuickSuggestions()),
-    quickSuggestionsDelay: register(new EditorIntOption(91 /* EditorOption.quickSuggestionsDelay */, 'quickSuggestionsDelay', 10, 0, 1073741824 /* Constants.MAX_SAFE_SMALL_INTEGER */, { description: nls.localize('quickSuggestionsDelay', "Controls the delay in milliseconds after which quick suggestions will show up.") })),
-    readOnly: register(new EditorBooleanOption(92 /* EditorOption.readOnly */, 'readOnly', false)),
-    readOnlyMessage: register(new ReadonlyMessage()),
-    renameOnType: register(new EditorBooleanOption(94 /* EditorOption.renameOnType */, 'renameOnType', false, { description: nls.localize('renameOnType', "Controls whether the editor auto renames on type."), markdownDeprecationMessage: nls.localize('renameOnTypeDeprecate', "Deprecated, use `editor.linkedEditing` instead.") })),
-    renderControlCharacters: register(new EditorBooleanOption(95 /* EditorOption.renderControlCharacters */, 'renderControlCharacters', true, { description: nls.localize('renderControlCharacters', "Controls whether the editor should render control characters."), restricted: true })),
-    renderFinalNewline: register(new EditorStringEnumOption(96 /* EditorOption.renderFinalNewline */, 'renderFinalNewline', (platform.isLinux ? 'dimmed' : 'on'), ['off', 'on', 'dimmed'], { description: nls.localize('renderFinalNewline', "Render last line number when the file ends with a newline.") })),
-    renderLineHighlight: register(new EditorStringEnumOption(97 /* EditorOption.renderLineHighlight */, 'renderLineHighlight', 'line', ['none', 'gutter', 'line', 'all'], {
-        enumDescriptions: [
-            '',
-            '',
-            '',
-            nls.localize('renderLineHighlight.all', "Highlights both the gutter and the current line."),
-        ],
-        description: nls.localize('renderLineHighlight', "Controls how the editor should render the current line highlight.")
+    quickSuggestionsDelay: register(new EditorIntOption(103 /* EditorOption.quickSuggestionsDelay */, 'quickSuggestionsDelay', 10, 0, 1073741824 /* Constants.MAX_SAFE_SMALL_INTEGER */, {
+        description: nls.localize(540, "Controls the delay in milliseconds after which quick suggestions will show up."),
+        experiment: {
+            mode: 'auto'
+        }
     })),
-    renderLineHighlightOnlyWhenFocus: register(new EditorBooleanOption(98 /* EditorOption.renderLineHighlightOnlyWhenFocus */, 'renderLineHighlightOnlyWhenFocus', false, { description: nls.localize('renderLineHighlightOnlyWhenFocus', "Controls if the editor should render the current line highlight only when the editor is focused.") })),
-    renderValidationDecorations: register(new EditorStringEnumOption(99 /* EditorOption.renderValidationDecorations */, 'renderValidationDecorations', 'editable', ['editable', 'on', 'off'])),
-    renderWhitespace: register(new EditorStringEnumOption(100 /* EditorOption.renderWhitespace */, 'renderWhitespace', 'selection', ['none', 'boundary', 'selection', 'trailing', 'all'], {
+    readOnly: register(new EditorBooleanOption(104 /* EditorOption.readOnly */, 'readOnly', false)),
+    readOnlyMessage: register(new ReadonlyMessage()),
+    renameOnType: register(new EditorBooleanOption(106 /* EditorOption.renameOnType */, 'renameOnType', false, { description: nls.localize(541, "Controls whether the editor auto renames on type."), markdownDeprecationMessage: nls.localize(542, "Deprecated, use `#editor.linkedEditing#` instead.") })),
+    renderControlCharacters: register(new EditorBooleanOption(108 /* EditorOption.renderControlCharacters */, 'renderControlCharacters', true, { description: nls.localize(543, "Controls whether the editor should render control characters."), restricted: true })),
+    renderFinalNewline: register(new EditorStringEnumOption(109 /* EditorOption.renderFinalNewline */, 'renderFinalNewline', (platform.isLinux ? 'dimmed' : 'on'), ['off', 'on', 'dimmed'], { description: nls.localize(544, "Render last line number when the file ends with a newline.") })),
+    renderLineHighlight: register(new EditorStringEnumOption(110 /* EditorOption.renderLineHighlight */, 'renderLineHighlight', 'line', ['none', 'gutter', 'line', 'all'], {
         enumDescriptions: [
             '',
-            nls.localize('renderWhitespace.boundary', "Render whitespace characters except for single spaces between words."),
-            nls.localize('renderWhitespace.selection', "Render whitespace characters only on selected text."),
-            nls.localize('renderWhitespace.trailing', "Render only trailing whitespace characters."),
+            '',
+            '',
+            nls.localize(545, "Highlights both the gutter and the current line."),
+        ],
+        description: nls.localize(546, "Controls how the editor should render the current line highlight.")
+    })),
+    renderLineHighlightOnlyWhenFocus: register(new EditorBooleanOption(111 /* EditorOption.renderLineHighlightOnlyWhenFocus */, 'renderLineHighlightOnlyWhenFocus', false, { description: nls.localize(547, "Controls if the editor should render the current line highlight only when the editor is focused.") })),
+    renderValidationDecorations: register(new EditorStringEnumOption(112 /* EditorOption.renderValidationDecorations */, 'renderValidationDecorations', 'editable', ['editable', 'on', 'off'])),
+    renderWhitespace: register(new EditorStringEnumOption(113 /* EditorOption.renderWhitespace */, 'renderWhitespace', 'selection', ['none', 'boundary', 'selection', 'trailing', 'all'], {
+        enumDescriptions: [
+            '',
+            nls.localize(548, "Render whitespace characters except for single spaces between words."),
+            nls.localize(549, "Render whitespace characters only on selected text."),
+            nls.localize(550, "Render only trailing whitespace characters."),
             ''
         ],
-        description: nls.localize('renderWhitespace', "Controls how the editor should render whitespace characters.")
+        description: nls.localize(551, "Controls how the editor should render whitespace characters.")
     })),
-    revealHorizontalRightPadding: register(new EditorIntOption(101 /* EditorOption.revealHorizontalRightPadding */, 'revealHorizontalRightPadding', 15, 0, 1000)),
-    roundedSelection: register(new EditorBooleanOption(102 /* EditorOption.roundedSelection */, 'roundedSelection', true, { description: nls.localize('roundedSelection', "Controls whether selections should have rounded corners.") })),
+    revealHorizontalRightPadding: register(new EditorIntOption(114 /* EditorOption.revealHorizontalRightPadding */, 'revealHorizontalRightPadding', 15, 0, 1000)),
+    roundedSelection: register(new EditorBooleanOption(115 /* EditorOption.roundedSelection */, 'roundedSelection', true, { description: nls.localize(552, "Controls whether selections should have rounded corners.") })),
     rulers: register(new EditorRulers()),
     scrollbar: register(new EditorScrollbar()),
-    scrollBeyondLastColumn: register(new EditorIntOption(105 /* EditorOption.scrollBeyondLastColumn */, 'scrollBeyondLastColumn', 4, 0, 1073741824 /* Constants.MAX_SAFE_SMALL_INTEGER */, { description: nls.localize('scrollBeyondLastColumn', "Controls the number of extra characters beyond which the editor will scroll horizontally.") })),
-    scrollBeyondLastLine: register(new EditorBooleanOption(106 /* EditorOption.scrollBeyondLastLine */, 'scrollBeyondLastLine', true, { description: nls.localize('scrollBeyondLastLine', "Controls whether the editor will scroll beyond the last line.") })),
-    scrollPredominantAxis: register(new EditorBooleanOption(107 /* EditorOption.scrollPredominantAxis */, 'scrollPredominantAxis', true, { description: nls.localize('scrollPredominantAxis', "Scroll only along the predominant axis when scrolling both vertically and horizontally at the same time. Prevents horizontal drift when scrolling vertically on a trackpad.") })),
-    selectionClipboard: register(new EditorBooleanOption(108 /* EditorOption.selectionClipboard */, 'selectionClipboard', true, {
-        description: nls.localize('selectionClipboard', "Controls whether the Linux primary clipboard should be supported."),
+    scrollBeyondLastColumn: register(new EditorIntOption(118 /* EditorOption.scrollBeyondLastColumn */, 'scrollBeyondLastColumn', 4, 0, 1073741824 /* Constants.MAX_SAFE_SMALL_INTEGER */, { description: nls.localize(553, "Controls the number of extra characters beyond which the editor will scroll horizontally.") })),
+    scrollBeyondLastLine: register(new EditorBooleanOption(119 /* EditorOption.scrollBeyondLastLine */, 'scrollBeyondLastLine', true, { description: nls.localize(554, "Controls whether the editor will scroll beyond the last line.") })),
+    scrollOnMiddleClick: register(new EditorBooleanOption(171 /* EditorOption.scrollOnMiddleClick */, 'scrollOnMiddleClick', false, { description: nls.localize(555, "Controls whether the editor will scroll when the middle button is pressed.") })),
+    scrollPredominantAxis: register(new EditorBooleanOption(120 /* EditorOption.scrollPredominantAxis */, 'scrollPredominantAxis', true, { description: nls.localize(556, "Scroll only along the predominant axis when scrolling both vertically and horizontally at the same time. Prevents horizontal drift when scrolling vertically on a trackpad.") })),
+    selectionClipboard: register(new EditorBooleanOption(121 /* EditorOption.selectionClipboard */, 'selectionClipboard', true, {
+        description: nls.localize(557, "Controls whether the Linux primary clipboard should be supported."),
         included: platform.isLinux
     })),
-    selectionHighlight: register(new EditorBooleanOption(109 /* EditorOption.selectionHighlight */, 'selectionHighlight', true, { description: nls.localize('selectionHighlight', "Controls whether the editor should highlight matches similar to the selection.") })),
-    selectOnLineNumbers: register(new EditorBooleanOption(110 /* EditorOption.selectOnLineNumbers */, 'selectOnLineNumbers', true)),
-    showFoldingControls: register(new EditorStringEnumOption(111 /* EditorOption.showFoldingControls */, 'showFoldingControls', 'mouseover', ['always', 'never', 'mouseover'], {
+    selectionHighlight: register(new EditorBooleanOption(122 /* EditorOption.selectionHighlight */, 'selectionHighlight', true, { description: nls.localize(558, "Controls whether the editor should highlight matches similar to the selection.") })),
+    selectionHighlightMaxLength: register(new EditorIntOption(123 /* EditorOption.selectionHighlightMaxLength */, 'selectionHighlightMaxLength', 200, 0, 1073741824 /* Constants.MAX_SAFE_SMALL_INTEGER */, { description: nls.localize(559, "Controls how many characters can be in the selection before similiar matches are not highlighted. Set to zero for unlimited.") })),
+    selectionHighlightMultiline: register(new EditorBooleanOption(124 /* EditorOption.selectionHighlightMultiline */, 'selectionHighlightMultiline', false, { description: nls.localize(560, "Controls whether the editor should highlight selection matches that span multiple lines.") })),
+    selectOnLineNumbers: register(new EditorBooleanOption(125 /* EditorOption.selectOnLineNumbers */, 'selectOnLineNumbers', true)),
+    showFoldingControls: register(new EditorStringEnumOption(126 /* EditorOption.showFoldingControls */, 'showFoldingControls', 'mouseover', ['always', 'never', 'mouseover'], {
         enumDescriptions: [
-            nls.localize('showFoldingControls.always', "Always show the folding controls."),
-            nls.localize('showFoldingControls.never', "Never show the folding controls and reduce the gutter size."),
-            nls.localize('showFoldingControls.mouseover', "Only show the folding controls when the mouse is over the gutter."),
+            nls.localize(561, "Always show the folding controls."),
+            nls.localize(562, "Never show the folding controls and reduce the gutter size."),
+            nls.localize(563, "Only show the folding controls when the mouse is over the gutter."),
         ],
-        description: nls.localize('showFoldingControls', "Controls when the folding controls on the gutter are shown.")
+        description: nls.localize(564, "Controls when the folding controls on the gutter are shown.")
     })),
-    showUnused: register(new EditorBooleanOption(112 /* EditorOption.showUnused */, 'showUnused', true, { description: nls.localize('showUnused', "Controls fading out of unused code.") })),
-    showDeprecated: register(new EditorBooleanOption(141 /* EditorOption.showDeprecated */, 'showDeprecated', true, { description: nls.localize('showDeprecated', "Controls strikethrough deprecated variables.") })),
+    showUnused: register(new EditorBooleanOption(127 /* EditorOption.showUnused */, 'showUnused', true, { description: nls.localize(565, "Controls fading out of unused code.") })),
+    showDeprecated: register(new EditorBooleanOption(157 /* EditorOption.showDeprecated */, 'showDeprecated', true, { description: nls.localize(566, "Controls strikethrough deprecated variables.") })),
     inlayHints: register(new EditorInlayHints()),
-    snippetSuggestions: register(new EditorStringEnumOption(113 /* EditorOption.snippetSuggestions */, 'snippetSuggestions', 'inline', ['top', 'bottom', 'inline', 'none'], {
+    snippetSuggestions: register(new EditorStringEnumOption(128 /* EditorOption.snippetSuggestions */, 'snippetSuggestions', 'inline', ['top', 'bottom', 'inline', 'none'], {
         enumDescriptions: [
-            nls.localize('snippetSuggestions.top', "Show snippet suggestions on top of other suggestions."),
-            nls.localize('snippetSuggestions.bottom', "Show snippet suggestions below other suggestions."),
-            nls.localize('snippetSuggestions.inline', "Show snippets suggestions with other suggestions."),
-            nls.localize('snippetSuggestions.none', "Do not show snippet suggestions."),
+            nls.localize(567, "Show snippet suggestions on top of other suggestions."),
+            nls.localize(568, "Show snippet suggestions below other suggestions."),
+            nls.localize(569, "Show snippets suggestions with other suggestions."),
+            nls.localize(570, "Do not show snippet suggestions."),
         ],
-        description: nls.localize('snippetSuggestions', "Controls whether snippets are shown with other suggestions and how they are sorted.")
+        description: nls.localize(571, "Controls whether snippets are shown with other suggestions and how they are sorted.")
     })),
     smartSelect: register(new SmartSelect()),
-    smoothScrolling: register(new EditorBooleanOption(115 /* EditorOption.smoothScrolling */, 'smoothScrolling', false, { description: nls.localize('smoothScrolling', "Controls whether the editor will scroll using an animation.") })),
-    stopRenderingLineAfter: register(new EditorIntOption(118 /* EditorOption.stopRenderingLineAfter */, 'stopRenderingLineAfter', 10000, -1, 1073741824 /* Constants.MAX_SAFE_SMALL_INTEGER */)),
+    smoothScrolling: register(new EditorBooleanOption(130 /* EditorOption.smoothScrolling */, 'smoothScrolling', false, { description: nls.localize(572, "Controls whether the editor will scroll using an animation.") })),
+    stopRenderingLineAfter: register(new EditorIntOption(133 /* EditorOption.stopRenderingLineAfter */, 'stopRenderingLineAfter', 10000, -1, 1073741824 /* Constants.MAX_SAFE_SMALL_INTEGER */)),
     suggest: register(new EditorSuggest()),
     inlineSuggest: register(new InlineEditorSuggest()),
-    inlineEdit: register(new InlineEditorEdit()),
-    inlineCompletionsAccessibilityVerbose: register(new EditorBooleanOption(150 /* EditorOption.inlineCompletionsAccessibilityVerbose */, 'inlineCompletionsAccessibilityVerbose', false, { description: nls.localize('inlineCompletionsAccessibilityVerbose', "Controls whether the accessibility hint should be provided to screen reader users when an inline completion is shown.") })),
-    suggestFontSize: register(new EditorIntOption(120 /* EditorOption.suggestFontSize */, 'suggestFontSize', 0, 0, 1000, { markdownDescription: nls.localize('suggestFontSize', "Font size for the suggest widget. When set to {0}, the value of {1} is used.", '`0`', '`#editor.fontSize#`') })),
-    suggestLineHeight: register(new EditorIntOption(121 /* EditorOption.suggestLineHeight */, 'suggestLineHeight', 0, 0, 1000, { markdownDescription: nls.localize('suggestLineHeight', "Line height for the suggest widget. When set to {0}, the value of {1} is used. The minimum value is 8.", '`0`', '`#editor.lineHeight#`') })),
-    suggestOnTriggerCharacters: register(new EditorBooleanOption(122 /* EditorOption.suggestOnTriggerCharacters */, 'suggestOnTriggerCharacters', true, { description: nls.localize('suggestOnTriggerCharacters', "Controls whether suggestions should automatically show up when typing trigger characters.") })),
-    suggestSelection: register(new EditorStringEnumOption(123 /* EditorOption.suggestSelection */, 'suggestSelection', 'first', ['first', 'recentlyUsed', 'recentlyUsedByPrefix'], {
+    inlineCompletionsAccessibilityVerbose: register(new EditorBooleanOption(169 /* EditorOption.inlineCompletionsAccessibilityVerbose */, 'inlineCompletionsAccessibilityVerbose', false, { description: nls.localize(573, "Controls whether the accessibility hint should be provided to screen reader users when an inline completion is shown.") })),
+    suggestFontSize: register(new EditorIntOption(135 /* EditorOption.suggestFontSize */, 'suggestFontSize', 0, 0, 1000, { markdownDescription: nls.localize(574, "Font size for the suggest widget. When set to {0}, the value of {1} is used.", '`0`', '`#editor.fontSize#`') })),
+    suggestLineHeight: register(new EditorIntOption(136 /* EditorOption.suggestLineHeight */, 'suggestLineHeight', 0, 0, 1000, { markdownDescription: nls.localize(575, "Line height for the suggest widget. When set to {0}, the value of {1} is used. The minimum value is 8.", '`0`', '`#editor.lineHeight#`') })),
+    suggestOnTriggerCharacters: register(new EditorBooleanOption(137 /* EditorOption.suggestOnTriggerCharacters */, 'suggestOnTriggerCharacters', true, { description: nls.localize(576, "Controls whether suggestions should automatically show up when typing trigger characters.") })),
+    suggestSelection: register(new EditorStringEnumOption(138 /* EditorOption.suggestSelection */, 'suggestSelection', 'first', ['first', 'recentlyUsed', 'recentlyUsedByPrefix'], {
         markdownEnumDescriptions: [
-            nls.localize('suggestSelection.first', "Always select the first suggestion."),
-            nls.localize('suggestSelection.recentlyUsed', "Select recent suggestions unless further typing selects one, e.g. `console.| -> console.log` because `log` has been completed recently."),
-            nls.localize('suggestSelection.recentlyUsedByPrefix', "Select suggestions based on previous prefixes that have completed those suggestions, e.g. `co -> console` and `con -> const`."),
+            nls.localize(577, "Always select the first suggestion."),
+            nls.localize(578, "Select recent suggestions unless further typing selects one, e.g. `console.| -> console.log` because `log` has been completed recently."),
+            nls.localize(579, "Select suggestions based on previous prefixes that have completed those suggestions, e.g. `co -> console` and `con -> const`."),
         ],
-        description: nls.localize('suggestSelection', "Controls how suggestions are pre-selected when showing the suggest list.")
+        description: nls.localize(580, "Controls how suggestions are pre-selected when showing the suggest list.")
     })),
-    tabCompletion: register(new EditorStringEnumOption(124 /* EditorOption.tabCompletion */, 'tabCompletion', 'off', ['on', 'off', 'onlySnippets'], {
+    tabCompletion: register(new EditorStringEnumOption(139 /* EditorOption.tabCompletion */, 'tabCompletion', 'off', ['on', 'off', 'onlySnippets'], {
         enumDescriptions: [
-            nls.localize('tabCompletion.on', "Tab complete will insert the best matching suggestion when pressing tab."),
-            nls.localize('tabCompletion.off', "Disable tab completions."),
-            nls.localize('tabCompletion.onlySnippets', "Tab complete snippets when their prefix match. Works best when 'quickSuggestions' aren't enabled."),
+            nls.localize(581, "Tab complete will insert the best matching suggestion when pressing tab."),
+            nls.localize(582, "Disable tab completions."),
+            nls.localize(583, "Tab complete snippets when their prefix match. Works best when 'quickSuggestions' aren't enabled."),
         ],
-        description: nls.localize('tabCompletion', "Enables tab completions.")
+        description: nls.localize(584, "Enables tab completions.")
     })),
-    tabIndex: register(new EditorIntOption(125 /* EditorOption.tabIndex */, 'tabIndex', 0, -1, 1073741824 /* Constants.MAX_SAFE_SMALL_INTEGER */)),
+    tabIndex: register(new EditorIntOption(140 /* EditorOption.tabIndex */, 'tabIndex', 0, -1, 1073741824 /* Constants.MAX_SAFE_SMALL_INTEGER */)),
+    trimWhitespaceOnDelete: register(new EditorBooleanOption(141 /* EditorOption.trimWhitespaceOnDelete */, 'trimWhitespaceOnDelete', false, { description: nls.localize(585, "Controls whether the editor will also delete the next line's indentation whitespace when deleting a newline.") })),
     unicodeHighlight: register(new UnicodeHighlight()),
-    unusualLineTerminators: register(new EditorStringEnumOption(127 /* EditorOption.unusualLineTerminators */, 'unusualLineTerminators', 'prompt', ['auto', 'off', 'prompt'], {
+    unusualLineTerminators: register(new EditorStringEnumOption(143 /* EditorOption.unusualLineTerminators */, 'unusualLineTerminators', 'prompt', ['auto', 'off', 'prompt'], {
         enumDescriptions: [
-            nls.localize('unusualLineTerminators.auto', "Unusual line terminators are automatically removed."),
-            nls.localize('unusualLineTerminators.off', "Unusual line terminators are ignored."),
-            nls.localize('unusualLineTerminators.prompt', "Unusual line terminators prompt to be removed."),
+            nls.localize(586, "Unusual line terminators are automatically removed."),
+            nls.localize(587, "Unusual line terminators are ignored."),
+            nls.localize(588, "Unusual line terminators prompt to be removed."),
         ],
-        description: nls.localize('unusualLineTerminators', "Remove unusual line terminators that might cause problems.")
+        description: nls.localize(589, "Remove unusual line terminators that might cause problems.")
     })),
-    useShadowDOM: register(new EditorBooleanOption(128 /* EditorOption.useShadowDOM */, 'useShadowDOM', true)),
-    useTabStops: register(new EditorBooleanOption(129 /* EditorOption.useTabStops */, 'useTabStops', true, { description: nls.localize('useTabStops', "Spaces and tabs are inserted and deleted in alignment with tab stops.") })),
-    wordBreak: register(new EditorStringEnumOption(130 /* EditorOption.wordBreak */, 'wordBreak', 'normal', ['normal', 'keepAll'], {
+    useShadowDOM: register(new EditorBooleanOption(144 /* EditorOption.useShadowDOM */, 'useShadowDOM', true)),
+    useTabStops: register(new EditorBooleanOption(145 /* EditorOption.useTabStops */, 'useTabStops', true, { description: nls.localize(590, "Spaces and tabs are inserted and deleted in alignment with tab stops.") })),
+    wordBreak: register(new EditorStringEnumOption(146 /* EditorOption.wordBreak */, 'wordBreak', 'normal', ['normal', 'keepAll'], {
         markdownEnumDescriptions: [
-            nls.localize('wordBreak.normal', "Use the default line break rule."),
-            nls.localize('wordBreak.keepAll', "Word breaks should not be used for Chinese/Japanese/Korean (CJK) text. Non-CJK text behavior is the same as for normal."),
+            nls.localize(591, "Use the default line break rule."),
+            nls.localize(592, "Word breaks should not be used for Chinese/Japanese/Korean (CJK) text. Non-CJK text behavior is the same as for normal."),
         ],
-        description: nls.localize('wordBreak', "Controls the word break rules used for Chinese/Japanese/Korean (CJK) text.")
+        description: nls.localize(593, "Controls the word break rules used for Chinese/Japanese/Korean (CJK) text.")
     })),
     wordSegmenterLocales: register(new WordSegmenterLocales()),
-    wordSeparators: register(new EditorStringOption(132 /* EditorOption.wordSeparators */, 'wordSeparators', USUAL_WORD_SEPARATORS, { description: nls.localize('wordSeparators', "Characters that will be used as word separators when doing word related navigations or operations.") })),
-    wordWrap: register(new EditorStringEnumOption(133 /* EditorOption.wordWrap */, 'wordWrap', 'off', ['off', 'on', 'wordWrapColumn', 'bounded'], {
+    wordSeparators: register(new EditorStringOption(148 /* EditorOption.wordSeparators */, 'wordSeparators', USUAL_WORD_SEPARATORS, { description: nls.localize(594, "Characters that will be used as word separators when doing word related navigations or operations.") })),
+    wordWrap: register(new EditorStringEnumOption(149 /* EditorOption.wordWrap */, 'wordWrap', 'off', ['off', 'on', 'wordWrapColumn', 'bounded'], {
         markdownEnumDescriptions: [
-            nls.localize('wordWrap.off', "Lines will never wrap."),
-            nls.localize('wordWrap.on', "Lines will wrap at the viewport width."),
-            nls.localize({
-                key: 'wordWrap.wordWrapColumn',
-                comment: [
-                    '- `editor.wordWrapColumn` refers to a different setting and should not be localized.'
-                ]
-            }, "Lines will wrap at `#editor.wordWrapColumn#`."),
-            nls.localize({
-                key: 'wordWrap.bounded',
-                comment: [
-                    '- viewport means the edge of the visible window size.',
-                    '- `editor.wordWrapColumn` refers to a different setting and should not be localized.'
-                ]
-            }, "Lines will wrap at the minimum of viewport and `#editor.wordWrapColumn#`."),
+            nls.localize(595, "Lines will never wrap."),
+            nls.localize(596, "Lines will wrap at the viewport width."),
+            nls.localize(597, "Lines will wrap at `#editor.wordWrapColumn#`."),
+
+
+
+
+
+            nls.localize(598, "Lines will wrap at the minimum of viewport and `#editor.wordWrapColumn#`."),
+
+
+
+
+
+
         ],
-        description: nls.localize({
-            key: 'wordWrap',
-            comment: [
-                '- \'off\', \'on\', \'wordWrapColumn\' and \'bounded\' refer to values the setting can take and should not be localized.',
-                '- `editor.wordWrapColumn` refers to a different setting and should not be localized.'
-            ]
-        }, "Controls how lines should wrap.")
+        description: nls.localize(599, "Controls how lines should wrap.")
+
+
+
+
+
+
     })),
-    wordWrapBreakAfterCharacters: register(new EditorStringOption(134 /* EditorOption.wordWrapBreakAfterCharacters */, 'wordWrapBreakAfterCharacters', 
+    wordWrapBreakAfterCharacters: register(new EditorStringOption(150 /* EditorOption.wordWrapBreakAfterCharacters */, 'wordWrapBreakAfterCharacters', 
     // allow-any-unicode-next-line
     ' \t})]?|/&.,;¢°′″‰℃、。｡､￠，．：；？！％・･ゝゞヽヾーァィゥェォッャュョヮヵヶぁぃぅぇぉっゃゅょゎゕゖㇰㇱㇲㇳㇴㇵㇶㇷㇸㇹㇺㇻㇼㇽㇾㇿ々〻ｧｨｩｪｫｬｭｮｯｰ”〉》」』】〕）］｝｣')),
-    wordWrapBreakBeforeCharacters: register(new EditorStringOption(135 /* EditorOption.wordWrapBreakBeforeCharacters */, 'wordWrapBreakBeforeCharacters', 
+    wordWrapBreakBeforeCharacters: register(new EditorStringOption(151 /* EditorOption.wordWrapBreakBeforeCharacters */, 'wordWrapBreakBeforeCharacters', 
     // allow-any-unicode-next-line
     '([{‘“〈《「『【〔（［｛｢£¥＄￡￥+＋')),
-    wordWrapColumn: register(new EditorIntOption(136 /* EditorOption.wordWrapColumn */, 'wordWrapColumn', 80, 1, 1073741824 /* Constants.MAX_SAFE_SMALL_INTEGER */, {
-        markdownDescription: nls.localize({
-            key: 'wordWrapColumn',
-            comment: [
-                '- `editor.wordWrap` refers to a different setting and should not be localized.',
-                '- \'wordWrapColumn\' and \'bounded\' refer to values the different setting can take and should not be localized.'
-            ]
-        }, "Controls the wrapping column of the editor when `#editor.wordWrap#` is `wordWrapColumn` or `bounded`.")
+    wordWrapColumn: register(new EditorIntOption(152 /* EditorOption.wordWrapColumn */, 'wordWrapColumn', 80, 1, 1073741824 /* Constants.MAX_SAFE_SMALL_INTEGER */, {
+        markdownDescription: nls.localize(600, "Controls the wrapping column of the editor when `#editor.wordWrap#` is `wordWrapColumn` or `bounded`.")
+
+
+
+
+
+
     })),
-    wordWrapOverride1: register(new EditorStringEnumOption(137 /* EditorOption.wordWrapOverride1 */, 'wordWrapOverride1', 'inherit', ['off', 'on', 'inherit'])),
-    wordWrapOverride2: register(new EditorStringEnumOption(138 /* EditorOption.wordWrapOverride2 */, 'wordWrapOverride2', 'inherit', ['off', 'on', 'inherit'])),
+    wordWrapOverride1: register(new EditorStringEnumOption(153 /* EditorOption.wordWrapOverride1 */, 'wordWrapOverride1', 'inherit', ['off', 'on', 'inherit'])),
+    wordWrapOverride2: register(new EditorStringEnumOption(154 /* EditorOption.wordWrapOverride2 */, 'wordWrapOverride2', 'inherit', ['off', 'on', 'inherit'])),
+    wrapOnEscapedLineFeeds: register(new EditorBooleanOption(160 /* EditorOption.wrapOnEscapedLineFeeds */, 'wrapOnEscapedLineFeeds', false, { markdownDescription: nls.localize(601, "Controls whether literal `\\n` shall trigger a wordWrap when `#editor.wordWrap#` is enabled.\n\nFor example:\n```c\nchar* str=\"hello\\nworld\"\n```\nwill be displayed as\n```c\nchar* str=\"hello\\n\n           world\"\n```") })),
     // Leave these at the end (because they have dependencies!)
+    effectiveCursorStyle: register(new EffectiveCursorStyle()),
     editorClassName: register(new EditorClassName()),
-    defaultColorDecorators: register(new EditorBooleanOption(148 /* EditorOption.defaultColorDecorators */, 'defaultColorDecorators', false, { markdownDescription: nls.localize('defaultColorDecorators', "Controls whether inline color decorations should be shown using the default document color provider") })),
+    defaultColorDecorators: register(new EditorStringEnumOption(167 /* EditorOption.defaultColorDecorators */, 'defaultColorDecorators', 'auto', ['auto', 'always', 'never'], {
+        enumDescriptions: [
+            nls.localize(602, "Show default color decorators only when no extension provides colors decorators."),
+            nls.localize(603, "Always show default color decorators."),
+            nls.localize(604, "Never show default color decorators."),
+        ],
+        description: nls.localize(605, "Controls whether inline color decorations should be shown using the default document color provider.")
+    })),
     pixelRatio: register(new EditorPixelRatio()),
-    tabFocusMode: register(new EditorBooleanOption(145 /* EditorOption.tabFocusMode */, 'tabFocusMode', false, { markdownDescription: nls.localize('tabFocusMode', "Controls whether the editor receives tabs or defers them to the workbench for navigation.") })),
+    tabFocusMode: register(new EditorBooleanOption(164 /* EditorOption.tabFocusMode */, 'tabFocusMode', false, { markdownDescription: nls.localize(606, "Controls whether the editor receives tabs or defers them to the workbench for navigation.") })),
     layoutInfo: register(new EditorLayoutInfoComputer()),
     wrappingInfo: register(new EditorWrappingInfoComputer()),
     wrappingIndent: register(new WrappingIndentOption()),
-    wrappingStrategy: register(new WrappingStrategy())
+    wrappingStrategy: register(new WrappingStrategy()),
+    effectiveEditContextEnabled: register(new EffectiveEditContextEnabled()),
+    effectiveAllowVariableFonts: register(new EffectiveAllowVariableFonts())
 };
+//# sourceMappingURL=editorOptions.js.map

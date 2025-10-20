@@ -11,9 +11,9 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { PauseableEmitter } from '../../../base/common/event.js';
+import { Event, PauseableEmitter } from '../../../base/common/event.js';
 import { Iterable } from '../../../base/common/iterator.js';
-import { Disposable, MutableDisposable } from '../../../base/common/lifecycle.js';
+import { Disposable, DisposableStore, MutableDisposable } from '../../../base/common/lifecycle.js';
 import { cloneAndChange } from '../../../base/common/objects.js';
 import { TernarySearchTree } from '../../../base/common/ternarySearchTree.js';
 import { URI } from '../../../base/common/uri.js';
@@ -21,6 +21,9 @@ import { localize } from '../../../nls.js';
 import { CommandsRegistry } from '../../commands/common/commands.js';
 import { IConfigurationService } from '../../configuration/common/configuration.js';
 import { IContextKeyService, RawContextKey } from '../common/contextkey.js';
+import { InputFocusedContext } from '../common/contextkeys.js';
+import { mainWindow } from '../../../base/browser/window.js';
+import { addDisposableListener, EventType, getActiveWindow, isEditableElement, onDidRegisterWindow, trackFocus } from '../../../base/browser/dom.js';
 const KEYBINDING_CONTEXT_ATTR = 'data-keybinding-context';
 export class Context {
     constructor(id, parent) {
@@ -208,10 +211,10 @@ function allEventKeysInContext(event, context) {
     return event.allKeysContainedIn(new Set(Object.keys(context)));
 }
 export class AbstractContextKeyService extends Disposable {
+    get onDidChangeContext() { return this._onDidChangeContext.event; }
     constructor(myContextId) {
         super();
         this._onDidChangeContext = this._register(new PauseableEmitter({ merge: input => new CompositeContextKeyChangeEvent(input) }));
-        this.onDidChangeContext = this._onDidChangeContext.event;
         this._isDisposed = false;
         this._myContextId = myContextId;
     }
@@ -289,6 +292,7 @@ let ContextKeyService = class ContextKeyService extends AbstractContextKeyServic
         super(0);
         this._contexts = new Map();
         this._lastContextId = 0;
+        this.inputFocusedContext = InputFocusedContext.bindTo(this);
         const myContext = this._register(new ConfigAwareContextValuesContainer(this._myContextId, configurationService, this._onDidChangeContext));
         this._contexts.set(this._myContextId, myContext);
         // Uncomment this to see the contexts continuously logged
@@ -301,6 +305,36 @@ let ContextKeyService = class ContextKeyService extends AbstractContextKeyServic
         // 		console.log(lastLoggedValue);
         // 	}
         // }, 2000);
+        this._register(Event.runAndSubscribe(onDidRegisterWindow, ({ window, disposables }) => {
+            const onFocusDisposables = disposables.add(new MutableDisposable());
+            disposables.add(addDisposableListener(window, EventType.FOCUS_IN, () => {
+                onFocusDisposables.value = new DisposableStore();
+                this.updateInputContextKeys(window.document, onFocusDisposables.value);
+            }, true));
+        }, { window: mainWindow, disposables: this._store }));
+    }
+    updateInputContextKeys(ownerDocument, disposables) {
+        function activeElementIsInput() {
+            return !!ownerDocument.activeElement && isEditableElement(ownerDocument.activeElement);
+        }
+        const isInputFocused = activeElementIsInput();
+        this.inputFocusedContext.set(isInputFocused);
+        if (isInputFocused) {
+            const tracker = disposables.add(trackFocus(ownerDocument.activeElement));
+            Event.once(tracker.onDidBlur)(() => {
+                // Ensure we are only updating the context key if we are
+                // still in the same document that we are tracking. This
+                // fixes a race condition in multi-window setups where
+                // the blur event arrives in the inactive window overwriting
+                // the context key of the active window. This is because
+                // blur events from the focus tracker are emitted with a
+                // timeout of 0.
+                if (getActiveWindow().document === ownerDocument) {
+                    this.inputFocusedContext.set(activeElementIsInput());
+                }
+                tracker.dispose();
+            }, undefined, disposables);
+        }
     }
     getContextValuesContainer(contextId) {
         if (this._isDisposed) {
@@ -414,7 +448,7 @@ CommandsRegistry.registerCommand({
         return [...RawContextKey.all()].sort((a, b) => a.key.localeCompare(b.key));
     },
     metadata: {
-        description: localize('getContextKeyInfo', "A command that returns information about context keys"),
+        description: localize(1659, "A command that returns information about context keys"),
         args: []
     }
 });
@@ -430,3 +464,4 @@ CommandsRegistry.registerCommand('_generateContextKeyInfo', function () {
     result.sort((a, b) => a.key.localeCompare(b.key));
     console.log(JSON.stringify(result, undefined, 2));
 });
+//# sourceMappingURL=contextKeyService.js.map

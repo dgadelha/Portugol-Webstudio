@@ -558,7 +558,7 @@ export function fuzzyScore(pattern, patternLow, patternStart, word, wordLow, wor
                 score = _doScore(pattern, patternLow, patternPos, patternStart, word, wordLow, wordPos, wordLen, wordStart, _diag[row - 1][column - 1] === 0, hasStrongFirstMatch);
             }
             let diagScore = 0;
-            if (score !== Number.MAX_SAFE_INTEGER) {
+            if (score !== Number.MIN_SAFE_INTEGER) {
                 canComeDiag = true;
                 diagScore = score + _table[row - 1][column - 1];
             }
@@ -767,3 +767,4 @@ function nextTypoPermutation(pattern, patternPos) {
         + pattern.slice(patternPos + 2);
 }
 //#endregion
+//# sourceMappingURL=filters.js.map

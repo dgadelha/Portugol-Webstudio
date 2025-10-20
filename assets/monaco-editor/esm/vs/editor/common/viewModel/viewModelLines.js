@@ -12,8 +12,9 @@ import * as viewEvents from '../viewEvents.js';
 import { createModelLineProjection } from './modelLineProjection.js';
 import { ConstantTimePrefixSumComputer } from '../model/prefixSumComputer.js';
 import { ViewLineData } from '../viewModel.js';
+import { IdentityCoordinatesConverter } from '../coordinatesConverter.js';
 export class ViewModelLinesFromProjectedModel {
-    constructor(editorId, model, domLineBreaksComputerFactory, monospaceLineBreaksComputerFactory, fontInfo, tabSize, wrappingStrategy, wrappingColumn, wrappingIndent, wordBreak) {
+    constructor(editorId, model, domLineBreaksComputerFactory, monospaceLineBreaksComputerFactory, fontInfo, tabSize, wrappingStrategy, wrappingColumn, wrappingIndent, wordBreak, wrapOnEscapedLineFeeds) {
         this._editorId = editorId;
         this.model = model;
         this._validModelVersionId = -1;
@@ -25,6 +26,7 @@ export class ViewModelLinesFromProjectedModel {
         this.wrappingColumn = wrappingColumn;
         this.wrappingIndent = wrappingIndent;
         this.wordBreak = wordBreak;
+        this.wrapOnEscapedLineFeeds = wrapOnEscapedLineFeeds;
         this._constructLines(/*resetHiddenAreas*/ true, null);
     }
     dispose() {
@@ -186,7 +188,7 @@ export class ViewModelLinesFromProjectedModel {
         const lineBreaksComputerFactory = (this.wrappingStrategy === 'advanced'
             ? this._domLineBreaksComputerFactory
             : this._monospaceLineBreaksComputerFactory);
-        return lineBreaksComputerFactory.createLineBreaksComputer(this.fontInfo, this.tabSize, this.wrappingColumn, this.wrappingIndent, this.wordBreak);
+        return lineBreaksComputerFactory.createLineBreaksComputer(this.fontInfo, this.tabSize, this.wrappingColumn, this.wrappingIndent, this.wordBreak, this.wrapOnEscapedLineFeeds);
     }
     onModelFlushed() {
         this._constructLines(/*resetHiddenAreas*/ true, null);
@@ -658,13 +660,13 @@ export class ViewModelLinesFromProjectedModel {
         const deltaLineNumber = 1 + this.projectedModelLineLineCounts.getPrefixSum(lineIndex);
         return this.modelLineProjections[lineIndex].getViewLineNumberOfModelPosition(deltaLineNumber, this.model.getLineMaxColumn(lineIndex + 1));
     }
-    getDecorationsInRange(range, ownerId, filterOutValidation, onlyMinimapDecorations, onlyMarginDecorations) {
+    getDecorationsInRange(range, ownerId, filterOutValidation, filterFontDecorations, onlyMinimapDecorations, onlyMarginDecorations) {
         const modelStart = this.convertViewPositionToModelPosition(range.startLineNumber, range.startColumn);
         const modelEnd = this.convertViewPositionToModelPosition(range.endLineNumber, range.endColumn);
         if (modelEnd.lineNumber - modelStart.lineNumber <= range.endLineNumber - range.startLineNumber) {
             // most likely there are no hidden lines => fast path
             // fetch decorations from column 1 to cover the case of wrapped lines that have whole line decorations at column 1
-            return this.model.getDecorationsInRange(new Range(modelStart.lineNumber, 1, modelEnd.lineNumber, modelEnd.column), ownerId, filterOutValidation, onlyMinimapDecorations, onlyMarginDecorations);
+            return this.model.getDecorationsInRange(new Range(modelStart.lineNumber, 1, modelEnd.lineNumber, modelEnd.column), ownerId, filterOutValidation, filterFontDecorations, onlyMinimapDecorations, onlyMarginDecorations);
         }
         let result = [];
         const modelStartLineIndex = modelStart.lineNumber - 1;
@@ -682,13 +684,13 @@ export class ViewModelLinesFromProjectedModel {
                 // hit invisible line => flush request
                 if (reqStart !== null) {
                     const maxLineColumn = this.model.getLineMaxColumn(modelLineIndex);
-                    result = result.concat(this.model.getDecorationsInRange(new Range(reqStart.lineNumber, reqStart.column, modelLineIndex, maxLineColumn), ownerId, filterOutValidation, onlyMinimapDecorations));
+                    result = result.concat(this.model.getDecorationsInRange(new Range(reqStart.lineNumber, reqStart.column, modelLineIndex, maxLineColumn), ownerId, filterOutValidation, filterFontDecorations, onlyMinimapDecorations));
                     reqStart = null;
                 }
             }
         }
         if (reqStart !== null) {
-            result = result.concat(this.model.getDecorationsInRange(new Range(reqStart.lineNumber, reqStart.column, modelEnd.lineNumber, modelEnd.column), ownerId, filterOutValidation, onlyMinimapDecorations));
+            result = result.concat(this.model.getDecorationsInRange(new Range(reqStart.lineNumber, reqStart.column, modelEnd.lineNumber, modelEnd.column), ownerId, filterOutValidation, filterFontDecorations, onlyMinimapDecorations));
             reqStart = null;
         }
         result.sort((a, b) => {
@@ -830,7 +832,7 @@ export class ViewModelLinesFromModelAsIs {
     dispose() {
     }
     createCoordinatesConverter() {
-        return new IdentityCoordinatesConverter(this);
+        return new IdentityCoordinatesConverter(this.model);
     }
     getHiddenAreas() {
         return [];
@@ -917,8 +919,8 @@ export class ViewModelLinesFromModelAsIs {
         }
         return result;
     }
-    getDecorationsInRange(range, ownerId, filterOutValidation, onlyMinimapDecorations, onlyMarginDecorations) {
-        return this.model.getDecorationsInRange(range, ownerId, filterOutValidation, onlyMinimapDecorations, onlyMarginDecorations);
+    getDecorationsInRange(range, ownerId, filterOutValidation, filterFontDecorations, onlyMinimapDecorations, onlyMarginDecorations) {
+        return this.model.getDecorationsInRange(range, ownerId, filterOutValidation, filterFontDecorations, onlyMinimapDecorations, onlyMarginDecorations);
     }
     normalizePosition(position, affinity) {
         return this.model.normalizePosition(position, affinity);
@@ -931,48 +933,4 @@ export class ViewModelLinesFromModelAsIs {
         return null;
     }
 }
-class IdentityCoordinatesConverter {
-    constructor(lines) {
-        this._lines = lines;
-    }
-    _validPosition(pos) {
-        return this._lines.model.validatePosition(pos);
-    }
-    _validRange(range) {
-        return this._lines.model.validateRange(range);
-    }
-    // View -> Model conversion and related methods
-    convertViewPositionToModelPosition(viewPosition) {
-        return this._validPosition(viewPosition);
-    }
-    convertViewRangeToModelRange(viewRange) {
-        return this._validRange(viewRange);
-    }
-    validateViewPosition(_viewPosition, expectedModelPosition) {
-        return this._validPosition(expectedModelPosition);
-    }
-    validateViewRange(_viewRange, expectedModelRange) {
-        return this._validRange(expectedModelRange);
-    }
-    // Model -> View conversion and related methods
-    convertModelPositionToViewPosition(modelPosition) {
-        return this._validPosition(modelPosition);
-    }
-    convertModelRangeToViewRange(modelRange) {
-        return this._validRange(modelRange);
-    }
-    modelPositionIsVisible(modelPosition) {
-        const lineCount = this._lines.model.getLineCount();
-        if (modelPosition.lineNumber < 1 || modelPosition.lineNumber > lineCount) {
-            // invalid arguments
-            return false;
-        }
-        return true;
-    }
-    getModelLineViewLineCount(modelLineNumber) {
-        return 1;
-    }
-    getViewLineNumberOfModelPosition(modelLineNumber, modelColumn) {
-        return modelLineNumber;
-    }
-}
+//# sourceMappingURL=viewModelLines.js.map

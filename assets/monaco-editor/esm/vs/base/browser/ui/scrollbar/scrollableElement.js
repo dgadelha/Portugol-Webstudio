@@ -122,18 +122,21 @@ export class MouseWheelClassifier {
         return Math.min(Math.max(score, 0), 1);
     }
     _isAlmostInt(value) {
+        const epsilon = Number.EPSILON * 100; // Use a small tolerance factor for floating-point errors
         const delta = Math.abs(Math.round(value) - value);
-        return (delta < 0.01);
+        return (delta < 0.01 + epsilon);
     }
 }
 export class AbstractScrollableElement extends Widget {
+    get onScroll() { return this._onScroll.event; }
     get options() {
         return this._options;
     }
     constructor(element, options, scrollable) {
         super();
+        this._inertialTimeout = null;
+        this._inertialSpeed = { X: 0, Y: 0 };
         this._onScroll = this._register(new Emitter());
-        this.onScroll = this._onScroll.event;
         this._onWillScroll = this._register(new Emitter());
         element.style.overflow = 'hidden';
         this._options = resolveOptions(options);
@@ -187,6 +190,10 @@ export class AbstractScrollableElement extends Widget {
     }
     dispose() {
         this._mouseWheelToDispose = dispose(this._mouseWheelToDispose);
+        if (this._inertialTimeout) {
+            this._inertialTimeout.dispose();
+            this._inertialTimeout = null;
+        }
         super.dispose();
     }
     /**
@@ -266,6 +273,34 @@ export class AbstractScrollableElement extends Widget {
     delegateScrollFromMouseWheelEvent(browserEvent) {
         this._onMouseWheel(new StandardWheelEvent(browserEvent));
     }
+    async _periodicSync() {
+        let scheduleAgain = false;
+        if (this._inertialSpeed.X !== 0 || this._inertialSpeed.Y !== 0) {
+            this._scrollable.setScrollPositionNow({
+                scrollTop: this._scrollable.getCurrentScrollPosition().scrollTop - this._inertialSpeed.Y * 100,
+                scrollLeft: this._scrollable.getCurrentScrollPosition().scrollLeft - this._inertialSpeed.X * 100
+            });
+            this._inertialSpeed.X *= 0.9;
+            this._inertialSpeed.Y *= 0.9;
+            if (Math.abs(this._inertialSpeed.X) < 0.01) {
+                this._inertialSpeed.X = 0;
+            }
+            if (Math.abs(this._inertialSpeed.Y) < 0.01) {
+                this._inertialSpeed.Y = 0;
+            }
+            scheduleAgain = (this._inertialSpeed.X !== 0 || this._inertialSpeed.Y !== 0);
+        }
+        if (scheduleAgain) {
+            if (!this._inertialTimeout) {
+                this._inertialTimeout = new TimeoutTimer();
+            }
+            this._inertialTimeout.cancelAndSet(() => this._periodicSync(), 1000 / 60);
+        }
+        else {
+            this._inertialTimeout?.dispose();
+            this._inertialTimeout = null;
+        }
+    }
     // -------------------- mouse wheel scrolling --------------------
     _setListeningToMouseWheel(shouldListen) {
         const isListening = (this._mouseWheelToDispose.length > 0);
@@ -343,6 +378,18 @@ export class AbstractScrollableElement extends Widget {
             }
             // Check that we are scrolling towards a location which is valid
             desiredScrollPosition = this._scrollable.validateScrollPosition(desiredScrollPosition);
+            if (this._options.inertialScroll && (deltaX || deltaY)) {
+                let startPeriodic = false;
+                // Only start periodic if it's not running
+                if (this._inertialSpeed.X === 0 && this._inertialSpeed.Y === 0) {
+                    startPeriodic = true;
+                }
+                this._inertialSpeed.Y = (deltaY < 0 ? -1 : 1) * (Math.abs(deltaY) ** 1.02);
+                this._inertialSpeed.X = (deltaX < 0 ? -1 : 1) * (Math.abs(deltaX) ** 1.02);
+                if (startPeriodic) {
+                    this._periodicSync();
+                }
+            }
             if (futureScrollPosition.scrollLeft !== desiredScrollPosition.scrollLeft || futureScrollPosition.scrollTop !== desiredScrollPosition.scrollTop) {
                 const canPerformSmoothScroll = (SCROLL_WHEEL_SMOOTH_SCROLL_ENABLED
                     && this._options.mouseWheelSmoothScroll
@@ -532,6 +579,7 @@ function resolveOptions(opts) {
         fastScrollSensitivity: (typeof opts.fastScrollSensitivity !== 'undefined' ? opts.fastScrollSensitivity : 5),
         scrollPredominantAxis: (typeof opts.scrollPredominantAxis !== 'undefined' ? opts.scrollPredominantAxis : true),
         mouseWheelSmoothScroll: (typeof opts.mouseWheelSmoothScroll !== 'undefined' ? opts.mouseWheelSmoothScroll : true),
+        inertialScroll: (typeof opts.inertialScroll !== 'undefined' ? opts.inertialScroll : false),
         arrowSize: (typeof opts.arrowSize !== 'undefined' ? opts.arrowSize : 11),
         listenOnDomNode: (typeof opts.listenOnDomNode !== 'undefined' ? opts.listenOnDomNode : null),
         horizontal: (typeof opts.horizontal !== 'undefined' ? opts.horizontal : 1 /* ScrollbarVisibility.Auto */),
@@ -552,3 +600,4 @@ function resolveOptions(opts) {
     }
     return result;
 }
+//# sourceMappingURL=scrollableElement.js.map

@@ -25,3 +25,4 @@ export class MovedText {
         this.changes = changes;
     }
 }
+//# sourceMappingURL=linesDiffComputer.js.map

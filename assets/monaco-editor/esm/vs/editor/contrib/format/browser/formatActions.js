@@ -44,7 +44,7 @@ let FormatOnType = class FormatOnType {
         this._disposables.add(_editor.onDidChangeModel(() => this._update()));
         this._disposables.add(_editor.onDidChangeModelLanguage(() => this._update()));
         this._disposables.add(_editor.onDidChangeConfiguration(e => {
-            if (e.hasChanged(56 /* EditorOption.formatOnType */)) {
+            if (e.hasChanged(65 /* EditorOption.formatOnType */)) {
                 this._update();
             }
         }));
@@ -58,7 +58,7 @@ let FormatOnType = class FormatOnType {
         // clean up
         this._sessionDisposables.clear();
         // we are disabled
-        if (!this._editor.getOption(56 /* EditorOption.formatOnType */)) {
+        if (!this._editor.getOption(65 /* EditorOption.formatOnType */)) {
             return;
         }
         // no model
@@ -154,7 +154,7 @@ let FormatOnPaste = class FormatOnPaste {
         // clean up
         this._callOnModel.clear();
         // we are disabled
-        if (!this.editor.getOption(55 /* EditorOption.formatOnPaste */)) {
+        if (!this.editor.getOption(64 /* EditorOption.formatOnPaste */)) {
             return;
         }
         // no model
@@ -185,8 +185,7 @@ class FormatDocumentAction extends EditorAction {
     constructor() {
         super({
             id: 'editor.action.formatDocument',
-            label: nls.localize('formatDocument.label', "Format Document"),
-            alias: 'Format Document',
+            label: nls.localize2(1009, "Format Document"),
             precondition: ContextKeyExpr.and(EditorContextKeys.notInCompositeEditor, EditorContextKeys.writable, EditorContextKeys.hasDocumentFormattingProvider),
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
@@ -212,8 +211,7 @@ class FormatSelectionAction extends EditorAction {
     constructor() {
         super({
             id: 'editor.action.formatSelection',
-            label: nls.localize('formatSelection.label', "Format Selection"),
-            alias: 'Format Selection',
+            label: nls.localize2(1010, "Format Selection"),
             precondition: ContextKeyExpr.and(EditorContextKeys.writable, EditorContextKeys.hasDocumentSelectionFormattingProvider),
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
@@ -261,3 +259,4 @@ CommandsRegistry.registerCommand('editor.action.format', async (accessor) => {
         await commandService.executeCommand('editor.action.formatSelection');
     }
 });
+//# sourceMappingURL=formatActions.js.map

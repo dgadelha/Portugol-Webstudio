@@ -22,3 +22,4 @@ export class InternalEditorAction {
         return this._run(args);
     }
 }
+//# sourceMappingURL=editorAction.js.map

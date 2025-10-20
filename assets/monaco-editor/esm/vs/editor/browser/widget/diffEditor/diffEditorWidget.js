@@ -15,39 +15,39 @@ import { getWindow, h } from '../../../../base/browser/dom.js';
 import { findLast } from '../../../../base/common/arraysFind.js';
 import { BugIndicatingError, onUnexpectedError } from '../../../../base/common/errors.js';
 import { Event } from '../../../../base/common/event.js';
+import { readHotReloadableExport } from '../../../../base/common/hotReloadHelpers.js';
 import { toDisposable } from '../../../../base/common/lifecycle.js';
-import { autorun, autorunWithStore, derived, disposableObservableValue, observableFromEvent, observableValue, recomputeInitiallyAndOnChange, subtransaction, transaction } from '../../../../base/common/observable.js';
-import { derivedDisposable } from '../../../../base/common/observableInternal/derived.js';
-import './style.css';
+import { autorun, autorunWithStore, derived, derivedDisposable, disposableObservableValue, observableFromEvent, observableValue, recomputeInitiallyAndOnChange, subtransaction, transaction } from '../../../../base/common/observable.js';
+import { AccessibilitySignal, IAccessibilitySignalService } from '../../../../platform/accessibilitySignal/browser/accessibilitySignalService.js';
+import { IContextKeyService } from '../../../../platform/contextkey/common/contextkey.js';
+import { IInstantiationService } from '../../../../platform/instantiation/common/instantiation.js';
+import { ServiceCollection } from '../../../../platform/instantiation/common/serviceCollection.js';
+import { bindContextKey } from '../../../../platform/observable/common/platformObservableUtils.js';
+import { IEditorProgressService } from '../../../../platform/progress/common/progress.js';
+import { LineRange } from '../../../common/core/ranges/lineRange.js';
+import { Position } from '../../../common/core/position.js';
+import { Range } from '../../../common/core/range.js';
+import { EditorType } from '../../../common/editorCommon.js';
+import { EditorContextKeys } from '../../../common/editorContextKeys.js';
 import { EditorExtensionsRegistry } from '../../editorExtensions.js';
 import { ICodeEditorService } from '../../services/codeEditorService.js';
 import { StableEditorScrollState } from '../../stableEditorScroll.js';
 import { CodeEditorWidget } from '../codeEditor/codeEditorWidget.js';
 import { AccessibleDiffViewer, AccessibleDiffViewerModelFromEditors } from './components/accessibleDiffViewer.js';
 import { DiffEditorDecorations } from './components/diffEditorDecorations.js';
+import { DiffEditorEditors } from './components/diffEditorEditors.js';
 import { DiffEditorSash, SashLayout } from './components/diffEditorSash.js';
 import { DiffEditorViewZones } from './components/diffEditorViewZones/diffEditorViewZones.js';
+import { DelegatingEditor } from './delegatingEditorImpl.js';
+import { DiffEditorOptions } from './diffEditorOptions.js';
+import { DiffEditorViewModel } from './diffEditorViewModel.js';
 import { DiffEditorGutter } from './features/gutterFeature.js';
 import { HideUnchangedRegionsFeature } from './features/hideUnchangedRegionsFeature.js';
 import { MovedBlocksLinesFeature } from './features/movedBlocksLinesFeature.js';
 import { OverviewRulerFeature } from './features/overviewRulerFeature.js';
 import { RevertButtonsFeature } from './features/revertButtonsFeature.js';
+import './style.css';
 import { ObservableElementSizeObserver, RefCounted, applyStyle, applyViewZones, translatePosition } from './utils.js';
-import { readHotReloadableExport } from '../../../../base/common/hotReloadHelpers.js';
-import { bindContextKey } from '../../../../platform/observable/common/platformObservableUtils.js';
-import { Position } from '../../../common/core/position.js';
-import { Range } from '../../../common/core/range.js';
-import { EditorType } from '../../../common/editorCommon.js';
-import { EditorContextKeys } from '../../../common/editorContextKeys.js';
-import { AccessibilitySignal, IAccessibilitySignalService } from '../../../../platform/accessibilitySignal/browser/accessibilitySignalService.js';
-import { IContextKeyService } from '../../../../platform/contextkey/common/contextkey.js';
-import { IInstantiationService } from '../../../../platform/instantiation/common/instantiation.js';
-import { ServiceCollection } from '../../../../platform/instantiation/common/serviceCollection.js';
-import { IEditorProgressService } from '../../../../platform/progress/common/progress.js';
-import { DiffEditorEditors } from './components/diffEditorEditors.js';
-import { DelegatingEditor } from './delegatingEditorImpl.js';
-import { DiffEditorOptions } from './diffEditorOptions.js';
-import { DiffEditorViewModel } from './diffEditorViewModel.js';
 let DiffEditorWidget = class DiffEditorWidget extends DelegatingEditor {
     get onDidContentSizeChange() { return this._editors.onDidContentSizeChange; }
     constructor(_domElement, options, codeEditorWidgetOptions, _parentContextKeyService, _parentInstantiationService, codeEditorService, _accessibilitySignalService, _editorProgressService) {
@@ -163,7 +163,7 @@ let DiffEditorWidget = class DiffEditorWidget extends DelegatingEditor {
         const origViewZoneIdsToIgnore = new Set();
         const modViewZoneIdsToIgnore = new Set();
         let isUpdatingViewZones = false;
-        const viewZoneManager = derivedDisposable(this, reader => /** @description ViewZoneManager */ this._instantiationService.createInstance(readHotReloadableExport(DiffEditorViewZones, reader), getWindow(this._domElement), this._editors, this._diffModel, this._options, this, () => isUpdatingViewZones || unchangedRangesFeature.get().isUpdatingHiddenAreas, origViewZoneIdsToIgnore, modViewZoneIdsToIgnore)).recomputeInitiallyAndOnChange(this._store);
+        const viewZoneManager = derivedDisposable(this, reader => /** @description ViewZoneManager */ this._instantiationService.createInstance(readHotReloadableExport(DiffEditorViewZones, reader), getWindow(this._domElement), this._editors, this._diffModel, this._options, this, () => isUpdatingViewZones || unchangedRangesFeature.read(undefined).isUpdatingHiddenAreas, origViewZoneIdsToIgnore, modViewZoneIdsToIgnore)).recomputeInitiallyAndOnChange(this._store);
         const originalViewZones = derived(this, (reader) => {
             const orig = viewZoneManager.read(reader).viewZones.read(reader).orig;
             const orig2 = unchangedRangesFeature.read(reader).viewZones.read(reader).origViewZones;
@@ -359,6 +359,30 @@ let DiffEditorWidget = class DiffEditorWidget extends DelegatingEditor {
         }));
         this._editors.modified.executeEdits('diffEditor', changes);
     }
+    revertFocusedRangeMappings() {
+        const model = this._diffModel.get();
+        if (!model || !model.isDiffUpToDate.get()) {
+            return;
+        }
+        const diffs = this._diffModel.get()?.diff.get()?.mappings;
+        if (!diffs || diffs.length === 0) {
+            return;
+        }
+        const modifiedEditor = this._editors.modified;
+        if (!modifiedEditor.hasTextFocus()) {
+            return;
+        }
+        const curLineNumber = modifiedEditor.getPosition().lineNumber;
+        const selection = modifiedEditor.getSelection();
+        const selectedRange = LineRange.fromRange(selection || new Range(curLineNumber, 0, curLineNumber, 0));
+        const diffsToRevert = diffs.filter(d => {
+            return d.lineRangeMapping.modified.intersect(selectedRange);
+        });
+        modifiedEditor.executeEdits('diffEditor', diffsToRevert.map(d => ({
+            range: d.lineRangeMapping.modified.toExclusiveRange(),
+            text: model.model.original.getValueInRange(d.lineRangeMapping.original.toExclusiveRange())
+        })));
+    }
     _goTo(diff) {
         this._editors.modified.setPosition(new Position(diff.lineRangeMapping.modified.startLineNumber, 1));
         this._editors.modified.revealRangeInCenter(diff.lineRangeMapping.modified.toExclusiveRange());
@@ -371,7 +395,13 @@ let DiffEditorWidget = class DiffEditorWidget extends DelegatingEditor {
         const curLineNumber = this._editors.modified.getPosition().lineNumber;
         let diff;
         if (target === 'next') {
-            diff = diffs.find(d => d.lineRangeMapping.modified.startLineNumber > curLineNumber) ?? diffs[0];
+            const modifiedLineCount = this._editors.modified.getModel().getLineCount();
+            if (modifiedLineCount === curLineNumber) {
+                diff = diffs[0];
+            }
+            else {
+                diff = diffs.find(d => d.lineRangeMapping.modified.startLineNumber > curLineNumber) ?? diffs[0];
+            }
         }
         else {
             diff = findLast(diffs, d => d.lineRangeMapping.modified.startLineNumber < curLineNumber) ?? diffs[diffs.length - 1];
@@ -485,7 +515,7 @@ DiffEditorWidget = __decorate([
     __param(7, IEditorProgressService)
 ], DiffEditorWidget);
 export { DiffEditorWidget };
-function toLineChanges(state) {
+export function toLineChanges(state) {
     return state.mappings.map(x => {
         const m = x.lineRangeMapping;
         let originalStartLineNumber;
@@ -531,3 +561,4 @@ function toLineChanges(state) {
         };
     });
 }
+//# sourceMappingURL=diffEditorWidget.js.map

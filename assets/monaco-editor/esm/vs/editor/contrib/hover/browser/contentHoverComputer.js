@@ -3,23 +3,11 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 import { coalesce } from '../../../../base/common/arrays.js';
-import { AsyncIterableObject } from '../../../../base/common/async.js';
+import { AsyncIterableProducer } from '../../../../base/common/async.js';
 export class ContentHoverComputer {
-    get anchor() { return this._anchor; }
-    set anchor(value) { this._anchor = value; }
-    get shouldFocus() { return this._shouldFocus; }
-    set shouldFocus(value) { this._shouldFocus = value; }
-    get source() { return this._source; }
-    set source(value) { this._source = value; }
-    get insistOnKeepingHoverVisible() { return this._insistOnKeepingHoverVisible; }
-    set insistOnKeepingHoverVisible(value) { this._insistOnKeepingHoverVisible = value; }
     constructor(_editor, _participants) {
         this._editor = _editor;
         this._participants = _participants;
-        this._anchor = null;
-        this._shouldFocus = false;
-        this._source = 0 /* HoverStartSource.Mouse */;
-        this._insistOnKeepingHoverVisible = false;
     }
     static _getLineDecorations(editor, anchor) {
         if (anchor.type !== 1 /* HoverAnchorType.Range */ && !anchor.supportsMarkerHover) {
@@ -52,28 +40,30 @@ export class ContentHoverComputer {
             return true;
         });
     }
-    computeAsync(token) {
-        const anchor = this._anchor;
+    computeAsync(options, token) {
+        const anchor = options.anchor;
         if (!this._editor.hasModel() || !anchor) {
-            return AsyncIterableObject.EMPTY;
+            return AsyncIterableProducer.EMPTY;
         }
         const lineDecorations = ContentHoverComputer._getLineDecorations(this._editor, anchor);
-        return AsyncIterableObject.merge(this._participants.map((participant) => {
+        return AsyncIterableProducer.merge(this._participants.map((participant) => {
             if (!participant.computeAsync) {
-                return AsyncIterableObject.EMPTY;
+                return AsyncIterableProducer.EMPTY;
             }
-            return participant.computeAsync(anchor, lineDecorations, token);
+            return participant.computeAsync(anchor, lineDecorations, options.source, token);
         }));
     }
-    computeSync() {
-        if (!this._editor.hasModel() || !this._anchor) {
+    computeSync(options) {
+        if (!this._editor.hasModel()) {
             return [];
         }
-        const lineDecorations = ContentHoverComputer._getLineDecorations(this._editor, this._anchor);
+        const anchor = options.anchor;
+        const lineDecorations = ContentHoverComputer._getLineDecorations(this._editor, anchor);
         let result = [];
         for (const participant of this._participants) {
-            result = result.concat(participant.computeSync(this._anchor, lineDecorations));
+            result = result.concat(participant.computeSync(anchor, lineDecorations, options.source));
         }
         return coalesce(result);
     }
 }
+//# sourceMappingURL=contentHoverComputer.js.map

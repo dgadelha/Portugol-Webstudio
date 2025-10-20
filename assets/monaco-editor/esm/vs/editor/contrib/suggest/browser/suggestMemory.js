@@ -250,3 +250,4 @@ SuggestMemoryService = SuggestMemoryService_1 = __decorate([
 export { SuggestMemoryService };
 export const ISuggestMemoryService = createDecorator('ISuggestMemories');
 registerSingleton(ISuggestMemoryService, SuggestMemoryService, 1 /* InstantiationType.Delayed */);
+//# sourceMappingURL=suggestMemory.js.map

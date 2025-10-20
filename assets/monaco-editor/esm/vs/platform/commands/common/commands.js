@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 import { Emitter } from '../../../base/common/event.js';
 import { Iterable } from '../../../base/common/iterator.js';
-import { toDisposable } from '../../../base/common/lifecycle.js';
+import { markAsSingleton, toDisposable } from '../../../base/common/lifecycle.js';
 import { LinkedList } from '../../../base/common/linkedList.js';
 import { validateConstraints } from '../../../base/common/types.js';
 import { createDecorator } from '../../instantiation/common/instantiation.js';
@@ -54,7 +54,7 @@ export const CommandsRegistry = new class {
         });
         // tell the world about this command
         this._onDidRegisterCommand.fire(id);
-        return ret;
+        return markAsSingleton(ret);
     }
     registerCommandAlias(oldId, newId) {
         return CommandsRegistry.registerCommand(oldId, (accessor, ...args) => accessor.get(ICommandService).executeCommand(newId, ...args));
@@ -78,3 +78,4 @@ export const CommandsRegistry = new class {
     }
 };
 CommandsRegistry.registerCommand('noop', () => { });
+//# sourceMappingURL=commands.js.map

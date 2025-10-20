@@ -18,7 +18,7 @@ import { Range } from '../common/core/range.js';
 import { EditorContextKeys } from '../common/editorContextKeys.js';
 import { ContextKeyExpr } from '../../platform/contextkey/common/contextkey.js';
 import { KeybindingsRegistry } from '../../platform/keybinding/common/keybindingsRegistry.js';
-import { getActiveElement } from '../../base/browser/dom.js';
+import { getActiveElement, isEditableElement } from '../../base/browser/dom.js';
 import { EnterOperation } from '../common/cursor/cursorTypeEditOperations.js';
 const CORE_WEIGHT = 0 /* KeybindingWeight.EditorCore */;
 export class CoreEditorCommand extends EditorCommand {
@@ -236,7 +236,7 @@ class EditorOrNativeTextInputCommand {
         target.addImplementation(1000, 'generic-dom-input-textarea', (accessor, args) => {
             // Only if focused on an element that allows for entering text
             const activeElement = getActiveElement();
-            if (activeElement && ['input', 'textarea'].indexOf(activeElement.tagName.toLowerCase()) >= 0) {
+            if (activeElement && isEditableElement(activeElement)) {
                 this.runDOMCommand(activeElement);
                 return true;
             }
@@ -858,7 +858,7 @@ export var CoreNavigationCommands;
                         type: 'object',
                         properties: {
                             'sticky': {
-                                description: nls.localize('stickydesc', "Stick to the end even when going to longer lines"),
+                                description: nls.localize(61, "Stick to the end even when going to longer lines"),
                                 type: 'boolean',
                                 default: false
                             }
@@ -886,7 +886,7 @@ export var CoreNavigationCommands;
                         type: 'object',
                         properties: {
                             'sticky': {
-                                description: nls.localize('stickydesc', "Stick to the end even when going to longer lines"),
+                                description: nls.localize(62, "Stick to the end even when going to longer lines"),
                                 type: 'boolean',
                                 default: false
                             }
@@ -1434,7 +1434,7 @@ export var CoreNavigationCommands;
                 viewModel.getPrimaryCursorState()
             ]);
             viewModel.revealAllCursors(args.source, true);
-            status(nls.localize('removedCursor', "Removed secondary cursors"));
+            status(nls.localize(63, "Removed secondary cursors"));
         }
     });
     CoreNavigationCommands.RevealLine = registerEditorCommand(new class extends CoreEditorCommand {
@@ -1660,7 +1660,7 @@ export var CoreEditingCommands;
             activeElement.ownerDocument.execCommand('undo');
         }
         runEditorCommand(accessor, editor, args) {
-            if (!editor.hasModel() || editor.getOption(92 /* EditorOption.readOnly */) === true) {
+            if (!editor.hasModel() || editor.getOption(104 /* EditorOption.readOnly */) === true) {
                 return;
             }
             return editor.getModel().undo();
@@ -1674,7 +1674,7 @@ export var CoreEditingCommands;
             activeElement.ownerDocument.execCommand('redo');
         }
         runEditorCommand(accessor, editor, args) {
-            if (!editor.hasModel() || editor.getOption(92 /* EditorOption.readOnly */) === true) {
+            if (!editor.hasModel() || editor.getOption(104 /* EditorOption.readOnly */) === true) {
                 return;
             }
             return editor.getModel().redo();
@@ -1726,3 +1726,4 @@ registerOverwritableCommand("compositionStart" /* Handler.CompositionStart */);
 registerOverwritableCommand("compositionEnd" /* Handler.CompositionEnd */);
 registerOverwritableCommand("paste" /* Handler.Paste */);
 registerOverwritableCommand("cut" /* Handler.Cut */);
+//# sourceMappingURL=coreCommands.js.map

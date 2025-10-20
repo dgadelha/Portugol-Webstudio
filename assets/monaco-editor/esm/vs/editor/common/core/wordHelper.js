@@ -122,3 +122,4 @@ function _findRegexMatchEnclosingPosition(wordDefinition, text, pos, stopPos) {
     }
     return null;
 }
+//# sourceMappingURL=wordHelper.js.map

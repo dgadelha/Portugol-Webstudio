@@ -4,10 +4,11 @@
  *--------------------------------------------------------------------------------------------*/
 import { localize2 } from '../../../nls.js';
 export const Categories = Object.freeze({
-    View: localize2('view', 'View'),
-    Help: localize2('help', 'Help'),
-    Test: localize2('test', 'Test'),
-    File: localize2('file', 'File'),
-    Preferences: localize2('preferences', 'Preferences'),
-    Developer: localize2({ key: 'developer', comment: ['A developer on Code itself or someone diagnosing issues in Code'] }, "Developer"),
+    View: localize2(1623, 'View'),
+    Help: localize2(1624, 'Help'),
+    Test: localize2(1625, 'Test'),
+    File: localize2(1626, 'File'),
+    Preferences: localize2(1627, 'Preferences'),
+    Developer: localize2(1628, "Developer"),
 });
+//# sourceMappingURL=actionCommonCategories.js.map

@@ -282,3 +282,4 @@ export function generateTokensCSSForColorMap(colorMap) {
     rules.push('.mtks.mtku { text-decoration: underline line-through; text-underline-position: under; }');
     return rules.join('\n');
 }
+//# sourceMappingURL=tokenization.js.map

@@ -4,3 +4,4 @@
  *--------------------------------------------------------------------------------------------*/
 import { createDecorator } from '../../../platform/instantiation/common/instantiation.js';
 export const IEditorWorkerService = createDecorator('editorWorkerService');
+//# sourceMappingURL=editorWorker.js.map

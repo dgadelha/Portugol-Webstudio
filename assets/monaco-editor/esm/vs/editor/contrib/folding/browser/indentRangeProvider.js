@@ -164,3 +164,4 @@ export function computeRanges(model, offSide, markers, foldingRangesLimit = fold
     }
     return result.toIndentRanges(model);
 }
+//# sourceMappingURL=indentRangeProvider.js.map

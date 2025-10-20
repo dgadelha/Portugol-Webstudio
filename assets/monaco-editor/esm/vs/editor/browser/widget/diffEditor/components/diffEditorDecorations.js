@@ -109,3 +109,4 @@ export class DiffEditorDecorations extends Disposable {
         this._register(applyObservableDecorations(this._editors.modified, this._decorations.map(d => d?.modifiedDecorations || [])));
     }
 }
+//# sourceMappingURL=diffEditorDecorations.js.map

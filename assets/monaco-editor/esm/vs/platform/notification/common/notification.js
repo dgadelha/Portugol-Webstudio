@@ -4,3 +4,4 @@ export var Severity = BaseSeverity;
 export const INotificationService = createDecorator('notificationService');
 export class NoOpNotification {
 }
+//# sourceMappingURL=notification.js.map

@@ -20,17 +20,6 @@ import { isMarkdownString } from '../../../../base/common/htmlContent.js';
 import { DisposableStore } from '../../../../base/common/lifecycle.js';
 import { assertType } from '../../../../base/common/types.js';
 import { URI } from '../../../../base/common/uri.js';
-import { EditorAction, EditorCommand, registerEditorAction, registerEditorCommand, registerEditorContribution, registerModelAndPositionCommand } from '../../../browser/editorExtensions.js';
-import { IBulkEditService } from '../../../browser/services/bulkEditService.js';
-import { ICodeEditorService } from '../../../browser/services/codeEditorService.js';
-import { Position } from '../../../common/core/position.js';
-import { Range } from '../../../common/core/range.js';
-import { EditorContextKeys } from '../../../common/editorContextKeys.js';
-import { NewSymbolNameTriggerKind } from '../../../common/languages.js';
-import { ILanguageFeaturesService } from '../../../common/services/languageFeatures.js';
-import { ITextResourceConfigurationService } from '../../../common/services/textResourceConfiguration.js';
-import { EditorStateCancellationTokenSource } from '../../editorState/browser/editorState.js';
-import { MessageController } from '../../message/browser/messageController.js';
 import * as nls from '../../../../nls.js';
 import { Action2, registerAction2 } from '../../../../platform/actions/common/actions.js';
 import { Extensions } from '../../../../platform/configuration/common/configurationRegistry.js';
@@ -40,7 +29,18 @@ import { ILogService } from '../../../../platform/log/common/log.js';
 import { INotificationService } from '../../../../platform/notification/common/notification.js';
 import { IEditorProgressService } from '../../../../platform/progress/common/progress.js';
 import { Registry } from '../../../../platform/registry/common/platform.js';
-import { ITelemetryService } from '../../../../platform/telemetry/common/telemetry.js';
+import { EditorAction, EditorCommand, registerEditorAction, registerEditorCommand, registerEditorContribution, registerModelAndPositionCommand } from '../../../browser/editorExtensions.js';
+import { IBulkEditService } from '../../../browser/services/bulkEditService.js';
+import { ICodeEditorService } from '../../../browser/services/codeEditorService.js';
+import { Position } from '../../../common/core/position.js';
+import { Range } from '../../../common/core/range.js';
+import { EditorContextKeys } from '../../../common/editorContextKeys.js';
+import { NewSymbolNameTriggerKind } from '../../../common/languages.js';
+import { ILanguageFeaturesService } from '../../../common/services/languageFeatures.js';
+import { ITextResourceConfigurationService } from '../../../common/services/textResourceConfiguration.js';
+import { EditSources } from '../../../common/textModelEditSource.js';
+import { EditorStateCancellationTokenSource } from '../../editorState/browser/editorState.js';
+import { MessageController } from '../../message/browser/messageController.js';
 import { CONTEXT_RENAME_INPUT_VISIBLE, RenameWidget } from './renameWidget.js';
 class RenameSkeleton {
     constructor(model, position, registry) {
@@ -99,7 +99,7 @@ class RenameSkeleton {
         }
         const result = await provider.provideRenameEdits(this.model, this.position, newName, token);
         if (!result) {
-            return this._provideRenameEdits(newName, i + 1, rejects.concat(nls.localize('no result', "No result.")), token);
+            return this._provideRenameEdits(newName, i + 1, rejects.concat(nls.localize(1365, "No result.")), token);
         }
         else if (result.rejectReason) {
             return this._provideRenameEdits(newName, i + 1, rejects.concat(result.rejectReason), token);
@@ -122,7 +122,7 @@ let RenameController = class RenameController {
     static get(editor) {
         return editor.getContribution(RenameController_1.ID);
     }
-    constructor(editor, _instaService, _notificationService, _bulkEditService, _progressService, _logService, _configService, _languageFeaturesService, _telemetryService) {
+    constructor(editor, _instaService, _notificationService, _bulkEditService, _progressService, _logService, _configService, _languageFeaturesService) {
         this.editor = editor;
         this._instaService = _instaService;
         this._notificationService = _notificationService;
@@ -131,7 +131,6 @@ let RenameController = class RenameController {
         this._logService = _logService;
         this._configService = _configService;
         this._languageFeaturesService = _languageFeaturesService;
-        this._telemetryService = _telemetryService;
         this._disposableStore = new DisposableStore();
         this._cts = new CancellationTokenSource();
         this._renameWidget = this._disposableStore.add(this._instaService.createInstance(RenameWidget, this.editor, ['acceptRenameInput', 'acceptRenameInputWithPreview']));
@@ -173,7 +172,7 @@ let RenameController = class RenameController {
             else {
                 trace('resolve rename location failed', e instanceof Error ? e : JSON.stringify(e, null, '\t'));
                 if (typeof e === 'string' || isMarkdownString(e)) {
-                    MessageController.get(this.editor)?.showMessage(e || nls.localize('resolveRenameLocationFailed', "An unknown error occurred while resolving rename location"), position);
+                    MessageController.get(this.editor)?.showMessage(e || nls.localize(1366, "An unknown error occurred while resolving rename location"), position);
                 }
             }
             return undefined;
@@ -210,9 +209,6 @@ let RenameController = class RenameController {
         const supportPreview = this._bulkEditService.hasPreviewHandler() && this._configService.getValue(this.editor.getModel().uri, 'editor.rename.enablePreview');
         const inputFieldResult = await this._renameWidget.getInput(loc.range, loc.text, supportPreview, newSymbolNamesProviders.length > 0 ? requestRenameSuggestions : undefined, cts2);
         trace('received response from rename input field');
-        if (newSymbolNamesProviders.length > 0) { // @ulugbekna: we're interested only in telemetry for rename suggestions currently
-            this._reportTelemetry(newSymbolNamesProviders.length, model.getLanguageId(), inputFieldResult);
-        }
         // no result, only hint to focus the editor or not
         if (typeof inputFieldResult === 'boolean') {
             trace(`returning early - rename input field response - ${inputFieldResult}`);
@@ -244,23 +240,24 @@ let RenameController = class RenameController {
             this._bulkEditService.apply(renameResult, {
                 editor: this.editor,
                 showPreview: inputFieldResult.wantsPreview,
-                label: nls.localize('label', "Renaming '{0}' to '{1}'", loc?.text, inputFieldResult.newName),
+                label: nls.localize(1367, "Renaming '{0}' to '{1}'", loc?.text, inputFieldResult.newName),
                 code: 'undoredo.rename',
-                quotableLabel: nls.localize('quotableLabel', "Renaming {0} to {1}", loc?.text, inputFieldResult.newName),
-                respectAutoSaveConfig: true
+                quotableLabel: nls.localize(1368, "Renaming {0} to {1}", loc?.text, inputFieldResult.newName),
+                respectAutoSaveConfig: true,
+                reason: EditSources.rename(),
             }).then(result => {
                 trace('edits applied');
                 if (result.ariaSummary) {
-                    alert(nls.localize('aria', "Successfully renamed '{0}' to '{1}'. Summary: {2}", loc.text, inputFieldResult.newName, result.ariaSummary));
+                    alert(nls.localize(1369, "Successfully renamed '{0}' to '{1}'. Summary: {2}", loc.text, inputFieldResult.newName, result.ariaSummary));
                 }
             }).catch(err => {
                 trace(`error when applying edits ${JSON.stringify(err, null, '\t')}`);
-                this._notificationService.error(nls.localize('rename.failedApply', "Rename failed to apply edits"));
+                this._notificationService.error(nls.localize(1370, "Rename failed to apply edits"));
                 this._logService.error(err);
             });
         }, err => {
             trace('error when providing rename edits', JSON.stringify(err, null, '\t'));
-            this._notificationService.error(nls.localize('rename.failed', "Rename failed to compute edits"));
+            this._notificationService.error(nls.localize(1371, "Rename failed to compute edits"));
             this._logService.error(err);
         }).finally(() => {
             cts2.dispose();
@@ -281,26 +278,6 @@ let RenameController = class RenameController {
     focusPreviousRenameSuggestion() {
         this._renameWidget.focusPreviousRenameSuggestion();
     }
-    _reportTelemetry(nRenameSuggestionProviders, languageId, inputFieldResult) {
-        const value = typeof inputFieldResult === 'boolean'
-            ? {
-                kind: 'cancelled',
-                languageId,
-                nRenameSuggestionProviders,
-            }
-            : {
-                kind: 'accepted',
-                languageId,
-                nRenameSuggestionProviders,
-                source: inputFieldResult.stats.source.k,
-                nRenameSuggestions: inputFieldResult.stats.nRenameSuggestions,
-                timeBeforeFirstInputFieldEdit: inputFieldResult.stats.timeBeforeFirstInputFieldEdit,
-                wantsPreview: inputFieldResult.wantsPreview,
-                nRenameSuggestionsInvocations: inputFieldResult.stats.nRenameSuggestionsInvocations,
-                hadAutomaticRenameSuggestionsInvocation: inputFieldResult.stats.hadAutomaticRenameSuggestionsInvocation,
-            };
-        this._telemetryService.publicLog2('renameInvokedEvent', value);
-    }
 };
 RenameController = RenameController_1 = __decorate([
     __param(1, IInstantiationService),
@@ -309,16 +286,14 @@ RenameController = RenameController_1 = __decorate([
     __param(4, IEditorProgressService),
     __param(5, ILogService),
     __param(6, ITextResourceConfigurationService),
-    __param(7, ILanguageFeaturesService),
-    __param(8, ITelemetryService)
+    __param(7, ILanguageFeaturesService)
 ], RenameController);
 // ---- action implementation
 export class RenameAction extends EditorAction {
     constructor() {
         super({
             id: 'editor.action.rename',
-            label: nls.localize('rename.label', "Rename Symbol"),
-            alias: 'Rename Symbol',
+            label: nls.localize2(1373, "Rename Symbol"),
             precondition: ContextKeyExpr.and(EditorContextKeys.writable, EditorContextKeys.hasRenameProvider),
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
@@ -398,7 +373,7 @@ registerAction2(class FocusNextRenameSuggestion extends Action2 {
         super({
             id: 'focusNextRenameSuggestion',
             title: {
-                ...nls.localize2('focusNextRenameSuggestion', "Focus Next Rename Suggestion"),
+                ...nls.localize2(1374, "Focus Next Rename Suggestion"),
             },
             precondition: CONTEXT_RENAME_INPUT_VISIBLE,
             keybinding: [
@@ -426,7 +401,7 @@ registerAction2(class FocusPreviousRenameSuggestion extends Action2 {
         super({
             id: 'focusPreviousRenameSuggestion',
             title: {
-                ...nls.localize2('focusPreviousRenameSuggestion', "Focus Previous Rename Suggestion"),
+                ...nls.localize2(1375, "Focus Previous Rename Suggestion"),
             },
             precondition: CONTEXT_RENAME_INPUT_VISIBLE,
             keybinding: [
@@ -470,10 +445,11 @@ Registry.as(Extensions.Configuration).registerConfiguration({
     id: 'editor',
     properties: {
         'editor.rename.enablePreview': {
-            scope: 5 /* ConfigurationScope.LANGUAGE_OVERRIDABLE */,
-            description: nls.localize('enablePreview', "Enable/disable the ability to preview changes before renaming"),
+            scope: 6 /* ConfigurationScope.LANGUAGE_OVERRIDABLE */,
+            description: nls.localize(1372, "Enable/disable the ability to preview changes before renaming"),
             default: true,
             type: 'boolean'
         }
     }
 });
+//# sourceMappingURL=rename.js.map

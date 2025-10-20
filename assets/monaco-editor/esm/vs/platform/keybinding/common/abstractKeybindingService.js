@@ -45,8 +45,8 @@ export class AbstractKeybindingService extends Disposable {
     getKeybindings() {
         return this._getResolver().getKeybindings();
     }
-    lookupKeybinding(commandId, context) {
-        const result = this._getResolver().lookupPrimaryKeybinding(commandId, context || this._contextKeyService);
+    lookupKeybinding(commandId, context, enforceContextCheck = false) {
+        const result = this._getResolver().lookupPrimaryKeybinding(commandId, context || this._contextKeyService, enforceContextCheck);
         if (!result) {
             return undefined;
         }
@@ -95,11 +95,11 @@ export class AbstractKeybindingService extends Disposable {
                 throw illegalState('impossible');
             case 1:
                 // TODO@ulugbekna: revise this message and the one below (at least, fix terminology)
-                this._currentChordStatusMessage = this._notificationService.status(nls.localize('first.chord', "({0}) was pressed. Waiting for second key of chord...", keypressLabel));
+                this._currentChordStatusMessage = this._notificationService.status(nls.localize(1684, "({0}) was pressed. Waiting for second key of chord...", keypressLabel));
                 break;
             default: {
                 const fullKeypressLabel = this._currentChords.map(({ label }) => label).join(', ');
-                this._currentChordStatusMessage = this._notificationService.status(nls.localize('next.chord', "({0}) was pressed. Waiting for next key of chord...", fullKeypressLabel));
+                this._currentChordStatusMessage = this._notificationService.status(nls.localize(1685, "({0}) was pressed. Waiting for next key of chord...", fullKeypressLabel));
             }
         }
         this._scheduleLeaveChordMode();
@@ -109,7 +109,7 @@ export class AbstractKeybindingService extends Disposable {
     }
     _leaveChordMode() {
         if (this._currentChordStatusMessage) {
-            this._currentChordStatusMessage.dispose();
+            this._currentChordStatusMessage.close();
             this._currentChordStatusMessage = null;
         }
         this._currentChordChecker.cancel();
@@ -198,7 +198,7 @@ export class AbstractKeybindingService extends Disposable {
                 if (this.inChordMode) {
                     const currentChordsLabel = this._currentChords.map(({ label }) => label).join(', ');
                     this._log(`+ Leaving multi-chord mode: Nothing bound to "${currentChordsLabel}, ${keypressLabel}".`);
-                    this._notificationService.status(nls.localize('missing.chord', "The key combination ({0}, {1}) is not a command.", currentChordsLabel, keypressLabel), { hideAfter: 10 * 1000 /* 10s */ });
+                    this._notificationService.status(nls.localize(1686, "The key combination ({0}, {1}) is not a command.", currentChordsLabel, keypressLabel), { hideAfter: 10 * 1000 /* 10s */ });
                     this._leaveChordMode();
                     shouldPreventDefault = true;
                 }
@@ -217,7 +217,7 @@ export class AbstractKeybindingService extends Disposable {
                     if (this.inChordMode) {
                         const currentChordsLabel = this._currentChords.map(({ label }) => label).join(', ');
                         this._log(`+ Leaving chord mode: Nothing bound to "${currentChordsLabel}, ${keypressLabel}".`);
-                        this._notificationService.status(nls.localize('missing.chord', "The key combination ({0}, {1}) is not a command.", currentChordsLabel, keypressLabel), { hideAfter: 10 * 1000 /* 10s */ });
+                        this._notificationService.status(nls.localize(1687, "The key combination ({0}, {1}) is not a command.", currentChordsLabel, keypressLabel), { hideAfter: 10 * 1000 /* 10s */ });
                         this._leaveChordMode();
                         shouldPreventDefault = true;
                     }
@@ -281,3 +281,4 @@ class KeybindingModifierSet {
         }
     }
 }
+//# sourceMappingURL=abstractKeybindingService.js.map

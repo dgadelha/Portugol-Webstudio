@@ -77,3 +77,4 @@ function encodeSemanticTokensDtoSize(semanticTokens) {
     }
     return result;
 }
+//# sourceMappingURL=semanticTokensDto.js.map

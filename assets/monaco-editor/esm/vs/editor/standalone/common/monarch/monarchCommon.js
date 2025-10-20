@@ -2,6 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+import { escapeRegExpCharacters } from '../../../../base/common/strings.js';
 export function isFuzzyActionArr(what) {
     return (Array.isArray(what));
 }
@@ -94,7 +95,7 @@ export function substituteMatchesRe(lexer, str, state) {
             stateMatches.unshift(state);
         }
         if (!empty(s) && s < stateMatches.length) {
-            return fixCase(lexer, stateMatches[s]); //$Sn
+            return escapeRegExpCharacters(fixCase(lexer, stateMatches[s])); //$Sn
         }
         return '';
     });
@@ -141,3 +142,4 @@ export function stateExists(lexer, inState) {
     }
     return false;
 }
+//# sourceMappingURL=monarchCommon.js.map

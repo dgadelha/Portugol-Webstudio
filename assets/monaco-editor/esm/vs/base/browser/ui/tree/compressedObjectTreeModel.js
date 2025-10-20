@@ -2,6 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+import { getVisibleState, isFilterResult } from './indexTreeModel.js';
 import { ObjectTreeModel } from './objectTreeModel.js';
 import { TreeError, WeakMapper } from './tree.js';
 import { equals } from '../../../common/arrays.js';
@@ -82,14 +83,15 @@ const wrapIdentityProvider = (base) => ({
 });
 // Exported only for test reasons, do not use directly
 export class CompressedObjectTreeModel {
-    get onDidSplice() { return this.model.onDidSplice; }
+    get onDidSpliceRenderedNodes() { return this.model.onDidSpliceRenderedNodes; }
+    get onDidSpliceModel() { return this.model.onDidSpliceModel; }
     get onDidChangeCollapseState() { return this.model.onDidChangeCollapseState; }
     get onDidChangeRenderNodeCount() { return this.model.onDidChangeRenderNodeCount; }
-    constructor(user, list, options = {}) {
+    constructor(user, options = {}) {
         this.user = user;
         this.rootRef = null;
         this.nodes = new Map();
-        this.model = new ObjectTreeModel(user, list, options);
+        this.model = new ObjectTreeModel(user, options);
         this.enabled = typeof options.compressionEnabled === 'undefined' ? true : options.compressionEnabled;
         this.identityProvider = options.identityProvider;
     }
@@ -257,16 +259,6 @@ class CompressedTreeNodeWrapper {
         this.node = node;
     }
 }
-function mapList(nodeMapper, list) {
-    return {
-        splice(start, deleteCount, toInsert) {
-            list.splice(start, deleteCount, toInsert.map(node => nodeMapper.map(node)));
-        },
-        updateElementHeight(index, height) {
-            list.updateElementHeight(index, height);
-        }
-    };
-}
 function mapOptions(compressedNodeUnwrapper, options) {
     return {
         ...options,
@@ -282,16 +274,28 @@ function mapOptions(compressedNodeUnwrapper, options) {
         },
         filter: options.filter && {
             filter(node, parentVisibility) {
-                return options.filter.filter(compressedNodeUnwrapper(node), parentVisibility);
+                const elements = node.elements;
+                for (let i = 0; i < elements.length - 1; i++) {
+                    const result = options.filter.filter(elements[i], parentVisibility);
+                    parentVisibility = getVisibleState(isFilterResult(result) ? result.visibility : result);
+                }
+                return options.filter.filter(elements[elements.length - 1], parentVisibility);
             }
         }
     };
 }
 export class CompressibleObjectTreeModel {
-    get onDidSplice() {
-        return Event.map(this.model.onDidSplice, ({ insertedNodes, deletedNodes }) => ({
+    get onDidSpliceModel() {
+        return Event.map(this.model.onDidSpliceModel, ({ insertedNodes, deletedNodes }) => ({
             insertedNodes: insertedNodes.map(node => this.nodeMapper.map(node)),
             deletedNodes: deletedNodes.map(node => this.nodeMapper.map(node)),
+        }));
+    }
+    get onDidSpliceRenderedNodes() {
+        return Event.map(this.model.onDidSpliceRenderedNodes, ({ start, deleteCount, elements }) => ({
+            start,
+            deleteCount,
+            elements: elements.map(node => this.nodeMapper.map(node))
         }));
     }
     get onDidChangeCollapseState() {
@@ -303,12 +307,12 @@ export class CompressibleObjectTreeModel {
     get onDidChangeRenderNodeCount() {
         return Event.map(this.model.onDidChangeRenderNodeCount, node => this.nodeMapper.map(node));
     }
-    constructor(user, list, options = {}) {
+    constructor(user, options = {}) {
         this.rootRef = null;
         this.elementMapper = options.elementMapper || DefaultElementMapper;
         const compressedNodeUnwrapper = node => this.elementMapper(node.elements);
         this.nodeMapper = new WeakMapper(node => new CompressedTreeNodeWrapper(compressedNodeUnwrapper, node));
-        this.model = new CompressedObjectTreeModel(user, mapList(this.nodeMapper, list), mapOptions(compressedNodeUnwrapper, options));
+        this.model = new CompressedObjectTreeModel(user, mapOptions(compressedNodeUnwrapper, options));
     }
     setChildren(element, children = Iterable.empty(), options = {}) {
         this.model.setChildren(element, children, options);
@@ -369,3 +373,4 @@ export class CompressibleObjectTreeModel {
         return this.model.getNode(location);
     }
 }
+//# sourceMappingURL=compressedObjectTreeModel.js.map

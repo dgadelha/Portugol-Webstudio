@@ -183,3 +183,4 @@ class CodePointHighlighter {
 function isAllowedInvisibleCharacter(character) {
     return character === ' ' || character === '\n' || character === '\t';
 }
+//# sourceMappingURL=unicodeTextModelHighlighter.js.map

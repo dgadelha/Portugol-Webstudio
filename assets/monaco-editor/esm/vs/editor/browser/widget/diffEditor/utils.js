@@ -9,7 +9,7 @@ import { autorun, autorunHandleChanges, autorunOpts, autorunWithStore, observabl
 import { ElementSizeObserver } from '../../config/elementSizeObserver.js';
 import { Position } from '../../../common/core/position.js';
 import { Range } from '../../../common/core/range.js';
-import { TextLength } from '../../../common/core/textLength.js';
+import { TextLength } from '../../../common/core/text/textLength.js';
 export function joinCombine(arr1, arr2, keySelector, combine) {
     if (arr1.length === 0) {
         return arr2;
@@ -114,12 +114,14 @@ export function animatedObservable(targetWindow, base, store) {
     const durationMs = 300;
     let animationFrame = undefined;
     store.add(autorunHandleChanges({
-        createEmptyChangeSummary: () => ({ animate: false }),
-        handleChange: (ctx, s) => {
-            if (ctx.didChange(base)) {
-                s.animate = s.animate || ctx.change;
+        changeTracker: {
+            createChangeSummary: () => ({ animate: false }),
+            handleChange: (ctx, s) => {
+                if (ctx.didChange(base)) {
+                    s.animate = s.animate || ctx.change;
+                }
+                return true;
             }
-            return true;
         }
     }, (reader, s) => {
         /** @description update value */
@@ -243,16 +245,18 @@ export function applyViewZones(editor, viewZones, setIsUpdating, zoneIds) {
         }
         // Layout zone on change
         store.add(autorunHandleChanges({
-            createEmptyChangeSummary() {
-                return { zoneIds: [] };
-            },
-            handleChange(context, changeSummary) {
-                const id = viewZoneIdPerOnChangeObservable.get(context.changedObservable);
-                if (id !== undefined) {
-                    changeSummary.zoneIds.push(id);
-                }
-                return true;
-            },
+            changeTracker: {
+                createChangeSummary() {
+                    return { zoneIds: [] };
+                },
+                handleChange(context, changeSummary) {
+                    const id = viewZoneIdPerOnChangeObservable.get(context.changedObservable);
+                    if (id !== undefined) {
+                        changeSummary.zoneIds.push(id);
+                    }
+                    return true;
+                },
+            }
         }, (reader, changeSummary) => {
             /** @description layoutZone on change */
             for (const vz of curViewZones) {
@@ -411,3 +415,4 @@ class ClonedRefCounted extends RefCounted {
         this._base._decreaseRefCount(this._debugOwner);
     }
 }
+//# sourceMappingURL=utils.js.map

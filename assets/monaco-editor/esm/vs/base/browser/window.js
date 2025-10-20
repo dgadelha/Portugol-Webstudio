@@ -12,3 +12,4 @@ export function ensureCodeWindow(targetWindow, fallbackWindowId) {
 }
 // eslint-disable-next-line no-restricted-globals
 export const mainWindow = window;
+//# sourceMappingURL=window.js.map

@@ -21,12 +21,15 @@ let WorkbenchHoverDelegate = class WorkbenchHoverDelegate extends Disposable {
         if (this.isInstantlyHovering()) {
             return 0; // show instantly when a hover was recently shown
         }
+        if (this.hoverOptions?.dynamicDelay) {
+            return content => this.hoverOptions?.dynamicDelay?.(content) ?? this._delay;
+        }
         return this._delay;
     }
-    constructor(placement, instantHover, overrideOptions = {}, configurationService, hoverService) {
+    constructor(placement, hoverOptions, overrideOptions = {}, configurationService, hoverService) {
         super();
         this.placement = placement;
-        this.instantHover = instantHover;
+        this.hoverOptions = hoverOptions;
         this.overrideOptions = overrideOptions;
         this.configurationService = configurationService;
         this.hoverService = hoverService;
@@ -52,8 +55,12 @@ let WorkbenchHoverDelegate = class WorkbenchHoverDelegate extends Disposable {
                 }
             }));
         }
-        const id = isHTMLElement(options.content) ? undefined : options.content.toString();
-        return this.hoverService.showHover({
+        const id = isHTMLElement(options.content)
+            ? undefined
+            : typeof options.content === 'string'
+                ? options.content.toString()
+                : options.content.value;
+        return this.hoverService.showInstantHover({
             ...options,
             ...overrideOptions,
             persistence: {
@@ -70,11 +77,11 @@ let WorkbenchHoverDelegate = class WorkbenchHoverDelegate extends Disposable {
         }, focus);
     }
     isInstantlyHovering() {
-        return this.instantHover && Date.now() - this.lastHoverHideTime < this.timeLimit;
+        return !!this.hoverOptions?.instantHover && Date.now() - this.lastHoverHideTime < this.timeLimit;
     }
     onDidHideHover() {
         this.hoverDisposables.clear();
-        if (this.instantHover) {
+        if (this.hoverOptions?.instantHover) {
             this.lastHoverHideTime = Date.now();
         }
     }
@@ -92,3 +99,4 @@ export const nativeHoverDelegate = {
     delay: 0,
     showNativeHover: true
 };
+//# sourceMappingURL=hover.js.map

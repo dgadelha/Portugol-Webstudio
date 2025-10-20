@@ -128,3 +128,4 @@ export class ClosingBracketKind extends BracketKindBase {
         return [...this.openingBrackets];
     }
 }
+//# sourceMappingURL=languageBracketsConfiguration.js.map

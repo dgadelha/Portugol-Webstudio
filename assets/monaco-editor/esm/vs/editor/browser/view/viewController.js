@@ -44,7 +44,7 @@ export class ViewController {
         return viewPosition;
     }
     _hasMulticursorModifier(data) {
-        switch (this.configuration.options.get(78 /* EditorOption.multiCursorModifier */)) {
+        switch (this.configuration.options.get(86 /* EditorOption.multiCursorModifier */)) {
             case 'altKey':
                 return data.altKey;
             case 'ctrlKey':
@@ -56,7 +56,7 @@ export class ViewController {
         }
     }
     _hasNonMulticursorModifier(data) {
-        switch (this.configuration.options.get(78 /* EditorOption.multiCursorModifier */)) {
+        switch (this.configuration.options.get(86 /* EditorOption.multiCursorModifier */)) {
             case 'altKey':
                 return data.ctrlKey || data.metaKey;
             case 'ctrlKey':
@@ -69,10 +69,16 @@ export class ViewController {
     }
     dispatchMouse(data) {
         const options = this.configuration.options;
-        const selectionClipboardIsOn = (platform.isLinux && options.get(108 /* EditorOption.selectionClipboard */));
-        const columnSelection = options.get(22 /* EditorOption.columnSelection */);
+        const selectionClipboardIsOn = (platform.isLinux && options.get(121 /* EditorOption.selectionClipboard */));
+        const columnSelection = options.get(28 /* EditorOption.columnSelection */);
+        const scrollOnMiddleClick = options.get(171 /* EditorOption.scrollOnMiddleClick */);
         if (data.middleButton && !selectionClipboardIsOn) {
-            this._columnSelect(data.position, data.mouseColumn, data.inSelectionMode);
+            if (scrollOnMiddleClick) {
+                // nothing to do here, handled in the contribution
+            }
+            else {
+                this._columnSelect(data.position, data.mouseColumn, data.inSelectionMode);
+            }
         }
         else if (data.startedOnLineNumbers) {
             // If the dragging started on the gutter, then have operations work on the entire line
@@ -265,3 +271,4 @@ export class ViewController {
         this.userInputEvents.emitMouseWheel(e);
     }
 }
+//# sourceMappingURL=viewController.js.map

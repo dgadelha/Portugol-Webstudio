@@ -370,3 +370,4 @@ export function KeyChord(firstPart, secondPart) {
     const chordPart = ((secondPart & 0x0000FFFF) << 16) >>> 0;
     return (firstPart | chordPart) >>> 0;
 }
+//# sourceMappingURL=keyCodes.js.map

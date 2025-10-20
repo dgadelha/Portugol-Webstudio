@@ -11,7 +11,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { AsyncIterableObject } from '../../../../base/common/async.js';
+import { AsyncIterableProducer } from '../../../../base/common/async.js';
 import { isEmptyMarkdownString, MarkdownString } from '../../../../base/common/htmlContent.js';
 import { Position } from '../../../common/core/position.js';
 import { ModelDecorationInjectedTextOptions } from '../../../common/model/textModel.js';
@@ -60,11 +60,11 @@ let InlayHintsHover = class InlayHintsHover extends MarkdownHoverParticipant {
     computeSync() {
         return [];
     }
-    computeAsync(anchor, _lineDecorations, token) {
+    computeAsync(anchor, _lineDecorations, source, token) {
         if (!(anchor instanceof InlayHintsHoverAnchor)) {
-            return AsyncIterableObject.EMPTY;
+            return AsyncIterableProducer.EMPTY;
         }
-        return new AsyncIterableObject(async (executor) => {
+        return new AsyncIterableProducer(async (executor) => {
             const { part } = anchor;
             await part.item.resolve(token);
             if (token.isCancellationRequested) {
@@ -83,7 +83,7 @@ let InlayHintsHover = class InlayHintsHover extends MarkdownHoverParticipant {
             }
             // (1.2) Inlay dbl-click gesture
             if (isNonEmptyArray(part.item.hint.textEdits)) {
-                executor.emitOne(new MarkdownHover(this, anchor.range, [new MarkdownString().appendText(localize('hint.dbl', "Double-click to insert"))], false, 10001));
+                executor.emitOne(new MarkdownHover(this, anchor.range, [new MarkdownString().appendText(localize(1157, "Double-click to insert"))], false, 10001));
             }
             // (2) Inlay Label Part Tooltip
             let partTooltip;
@@ -99,48 +99,50 @@ let InlayHintsHover = class InlayHintsHover extends MarkdownHoverParticipant {
             // (2.2) Inlay Label Part Help Hover
             if (part.part.location || part.part.command) {
                 let linkHint;
-                const useMetaKey = this._editor.getOption(78 /* EditorOption.multiCursorModifier */) === 'altKey';
+                const useMetaKey = this._editor.getOption(86 /* EditorOption.multiCursorModifier */) === 'altKey';
                 const kb = useMetaKey
                     ? platform.isMacintosh
-                        ? localize('links.navigate.kb.meta.mac', "cmd + click")
-                        : localize('links.navigate.kb.meta', "ctrl + click")
+                        ? localize(1158, "cmd + click")
+                        : localize(1159, "ctrl + click")
                     : platform.isMacintosh
-                        ? localize('links.navigate.kb.alt.mac', "option + click")
-                        : localize('links.navigate.kb.alt', "alt + click");
+                        ? localize(1160, "option + click")
+                        : localize(1161, "alt + click");
                 if (part.part.location && part.part.command) {
-                    linkHint = new MarkdownString().appendText(localize('hint.defAndCommand', 'Go to Definition ({0}), right click for more', kb));
+                    linkHint = new MarkdownString().appendText(localize(1162, 'Go to Definition ({0}), right click for more', kb));
                 }
                 else if (part.part.location) {
-                    linkHint = new MarkdownString().appendText(localize('hint.def', 'Go to Definition ({0})', kb));
+                    linkHint = new MarkdownString().appendText(localize(1163, 'Go to Definition ({0})', kb));
                 }
                 else if (part.part.command) {
-                    linkHint = new MarkdownString(`[${localize('hint.cmd', "Execute Command")}](${asCommandLink(part.part.command)} "${part.part.command.title}") (${kb})`, { isTrusted: true });
+                    linkHint = new MarkdownString(`[${localize(1164, "Execute Command")}](${asCommandLink(part.part.command)} "${part.part.command.title}") (${kb})`, { isTrusted: true });
                 }
                 if (linkHint) {
                     executor.emitOne(new MarkdownHover(this, anchor.range, [linkHint], false, 10000));
                 }
             }
             // (3) Inlay Label Part Location tooltip
-            const iterable = await this._resolveInlayHintLabelPartHover(part, token);
+            const iterable = this._resolveInlayHintLabelPartHover(part, token);
             for await (const item of iterable) {
                 executor.emitOne(item);
             }
         });
     }
-    async _resolveInlayHintLabelPartHover(part, token) {
+    async *_resolveInlayHintLabelPartHover(part, token) {
         if (!part.part.location) {
-            return AsyncIterableObject.EMPTY;
+            return;
         }
         const { uri, range } = part.part.location;
         const ref = await this._resolverService.createModelReference(uri);
         try {
             const model = ref.object.textEditorModel;
             if (!this._languageFeaturesService.hoverProvider.has(model)) {
-                return AsyncIterableObject.EMPTY;
+                return;
             }
-            return getHoverProviderResultsAsAsyncIterable(this._languageFeaturesService.hoverProvider, model, new Position(range.startLineNumber, range.startColumn), token)
-                .filter(item => !isEmptyMarkdownString(item.hover.contents))
-                .map(item => new MarkdownHover(this, part.item.anchor.range, item.hover.contents, false, 2 + item.ordinal));
+            for await (const item of getHoverProviderResultsAsAsyncIterable(this._languageFeaturesService.hoverProvider, model, new Position(range.startLineNumber, range.startColumn), token)) {
+                if (!isEmptyMarkdownString(item.hover.contents)) {
+                    yield new MarkdownHover(this, part.item.anchor.range, item.hover.contents, false, 2 + item.ordinal);
+                }
+            }
         }
         finally {
             ref.dispose();
@@ -158,3 +160,4 @@ InlayHintsHover = __decorate([
     __param(8, ICommandService)
 ], InlayHintsHover);
 export { InlayHintsHover };
+//# sourceMappingURL=inlayHintsHover.js.map

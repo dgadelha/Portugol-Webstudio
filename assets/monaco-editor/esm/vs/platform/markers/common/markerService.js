@@ -5,9 +5,10 @@
 import { isFalsyOrEmpty, isNonEmptyArray } from '../../../base/common/arrays.js';
 import { DebounceEmitter } from '../../../base/common/event.js';
 import { Iterable } from '../../../base/common/iterator.js';
-import { ResourceMap } from '../../../base/common/map.js';
+import { ResourceMap, ResourceSet } from '../../../base/common/map.js';
 import { Schemas } from '../../../base/common/network.js';
 import { URI } from '../../../base/common/uri.js';
+import { localize } from '../../../nls.js';
 import { MarkerSeverity } from './markers.js';
 export const unsupportedSchemas = new Set([
     Schemas.inMemory,
@@ -15,6 +16,7 @@ export const unsupportedSchemas = new Set([
     Schemas.walkThrough,
     Schemas.walkThroughSnippet,
     Schemas.vscodeChatCodeBlock,
+    Schemas.vscodeTerminal
 ]);
 class DoubleResourceMap {
     constructor() {
@@ -133,6 +135,7 @@ export class MarkerService {
         this.onMarkerChanged = this._onMarkerChanged.event;
         this._data = new DoubleResourceMap();
         this._stats = new MarkerStats(this);
+        this._filteredResources = new ResourceMap();
     }
     dispose() {
         this._stats.dispose();
@@ -165,7 +168,7 @@ export class MarkerService {
         }
     }
     static _toMarker(owner, resource, data) {
-        let { code, severity, message, source, startLineNumber, startColumn, endLineNumber, endColumn, relatedInformation, tags, } = data;
+        let { code, severity, message, source, startLineNumber, startColumn, endLineNumber, endColumn, relatedInformation, tags, origin } = data;
         if (!message) {
             return undefined;
         }
@@ -187,6 +190,7 @@ export class MarkerService {
             endColumn,
             relatedInformation,
             tags,
+            origin
         };
     }
     changeAll(owner, data) {
@@ -230,6 +234,24 @@ export class MarkerService {
             this._onMarkerChanged.fire(changes);
         }
     }
+    /**
+     * Creates an information marker for filtered resources
+     */
+    _createFilteredMarker(resource, reasons) {
+        const message = reasons.length === 1
+            ? localize(1721, "Problems are paused because: \"{0}\"", reasons[0])
+            : localize(1722, "Problems are paused because: \"{0}\" and {1} more", reasons[0], reasons.length - 1);
+        return {
+            owner: 'markersFilter',
+            resource,
+            severity: MarkerSeverity.Info,
+            message,
+            startLineNumber: 1,
+            startColumn: 1,
+            endLineNumber: 1,
+            endColumn: 1,
+        };
+    }
     read(filter = Object.create(null)) {
         let { owner, resource, severities, take } = filter;
         if (!take || take < 0) {
@@ -237,49 +259,52 @@ export class MarkerService {
         }
         if (owner && resource) {
             // exactly one owner AND resource
+            const reasons = !filter.ignoreResourceFilters ? this._filteredResources.get(resource) : undefined;
+            if (reasons?.length) {
+                const infoMarker = this._createFilteredMarker(resource, reasons);
+                return [infoMarker];
+            }
             const data = this._data.get(resource, owner);
             if (!data) {
                 return [];
             }
-            else {
-                const result = [];
-                for (const marker of data) {
-                    if (MarkerService._accept(marker, severities)) {
-                        const newLen = result.push(marker);
-                        if (take > 0 && newLen === take) {
-                            break;
-                        }
-                    }
-                }
-                return result;
-            }
-        }
-        else if (!owner && !resource) {
-            // all
             const result = [];
-            for (const markers of this._data.values()) {
-                for (const data of markers) {
-                    if (MarkerService._accept(data, severities)) {
-                        const newLen = result.push(data);
-                        if (take > 0 && newLen === take) {
-                            return result;
-                        }
-                    }
+            for (const marker of data) {
+                if (take > 0 && result.length === take) {
+                    break;
+                }
+                const reasons = !filter.ignoreResourceFilters ? this._filteredResources.get(resource) : undefined;
+                if (reasons?.length) {
+                    result.push(this._createFilteredMarker(resource, reasons));
+                }
+                else if (MarkerService._accept(marker, severities)) {
+                    result.push(marker);
                 }
             }
             return result;
         }
         else {
             // of one resource OR owner
-            const iterable = this._data.values(resource ?? owner);
+            const iterable = !owner && !resource
+                ? this._data.values()
+                : this._data.values(resource ?? owner);
             const result = [];
+            const filtered = new ResourceSet();
             for (const markers of iterable) {
                 for (const data of markers) {
-                    if (MarkerService._accept(data, severities)) {
-                        const newLen = result.push(data);
-                        if (take > 0 && newLen === take) {
-                            return result;
-                        }
+                    if (filtered.has(data.resource)) {
+                        continue;
+                    }
+                    if (take > 0 && result.length === take) {
+                        break;
+                    }
+                    const reasons = !filter.ignoreResourceFilters ? this._filteredResources.get(data.resource) : undefined;
+                    if (reasons?.length) {
+                        result.push(this._createFilteredMarker(data.resource, reasons));
+                        filtered.add(data.resource);
+                    }
+                    else if (MarkerService._accept(data, severities)) {
+                        result.push(data);
                     }
                 }
             }
@@ -300,3 +325,4 @@ export class MarkerService {
         return Array.from(set.keys());
     }
 }
+//# sourceMappingURL=markerService.js.map

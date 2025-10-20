@@ -12,6 +12,7 @@ import { URI } from '../../../base/common/uri.js';
 import { localize } from '../../../nls.js';
 import { Extensions as JSONExtensions } from '../../jsonschemas/common/jsonContributionRegistry.js';
 import * as platform from '../../registry/common/platform.js';
+import { Disposable } from '../../../base/common/lifecycle.js';
 //  ------ API types
 // icon registry
 export const Extensions = {
@@ -55,17 +56,21 @@ export var IconFontDefinition;
     }
     IconFontDefinition.fromJSONObject = fromJSONObject;
 })(IconFontDefinition || (IconFontDefinition = {}));
-class IconRegistry {
+// regexes for validation of font properties
+export const fontIdRegex = /^([\w_-]+)$/;
+export const fontIdErrorMessage = localize(2006, 'The font ID must only contain letters, numbers, underscores and dashes.');
+class IconRegistry extends Disposable {
     constructor() {
-        this._onDidChange = new Emitter();
+        super();
+        this._onDidChange = this._register(new Emitter());
         this.onDidChange = this._onDidChange.event;
         this.iconSchema = {
             definitions: {
                 icons: {
                     type: 'object',
                     properties: {
-                        fontId: { type: 'string', description: localize('iconDefinition.fontId', 'The id of the font to use. If not set, the font that is defined first is used.') },
-                        fontCharacter: { type: 'string', description: localize('iconDefinition.fontCharacter', 'The font character associated with the icon definition.') }
+                        fontId: { type: 'string', description: localize(2007, 'The id of the font to use. If not set, the font that is defined first is used.'), pattern: fontIdRegex.source, patternErrorMessage: fontIdErrorMessage },
+                        fontCharacter: { type: 'string', description: localize(2008, 'The font character associated with the icon definition.') }
                     },
                     additionalProperties: false,
                     defaultSnippets: [{ body: { fontCharacter: '\\\\e030' } }]
@@ -168,8 +173,9 @@ iconRegistry.onDidChange(() => {
 });
 //setTimeout(_ => console.log(iconRegistry.toString()), 5000);
 // common icons
-export const widgetClose = registerIcon('widget-close', Codicon.close, localize('widgetClose', 'Icon for the close action in widgets.'));
-export const gotoPreviousLocation = registerIcon('goto-previous-location', Codicon.arrowUp, localize('previousChangeIcon', 'Icon for goto previous editor location.'));
-export const gotoNextLocation = registerIcon('goto-next-location', Codicon.arrowDown, localize('nextChangeIcon', 'Icon for goto next editor location.'));
+export const widgetClose = registerIcon('widget-close', Codicon.close, localize(2009, 'Icon for the close action in widgets.'));
+export const gotoPreviousLocation = registerIcon('goto-previous-location', Codicon.arrowUp, localize(2010, 'Icon for goto previous editor location.'));
+export const gotoNextLocation = registerIcon('goto-next-location', Codicon.arrowDown, localize(2011, 'Icon for goto next editor location.'));
 export const syncing = ThemeIcon.modify(Codicon.sync, 'spin');
 export const spinningLoading = ThemeIcon.modify(Codicon.loading, 'spin');
+//# sourceMappingURL=iconRegistry.js.map

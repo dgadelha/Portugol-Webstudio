@@ -14,3 +14,4 @@ export * from './colors/minimapColors.js';
 export * from './colors/miscColors.js';
 export * from './colors/quickpickColors.js';
 export * from './colors/searchColors.js';
+//# sourceMappingURL=colorRegistry.js.map

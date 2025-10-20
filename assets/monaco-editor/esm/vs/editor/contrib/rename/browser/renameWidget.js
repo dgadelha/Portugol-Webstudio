@@ -15,7 +15,6 @@ import * as dom from '../../../../base/browser/dom.js';
 import { StandardKeyboardEvent } from '../../../../base/browser/keyboardEvent.js';
 import * as aria from '../../../../base/browser/ui/aria/aria.js';
 import { getBaseLayerHoverDelegate } from '../../../../base/browser/ui/hover/hoverDelegate2.js';
-import { getDefaultHoverDelegate } from '../../../../base/browser/ui/hover/hoverDelegateFactory.js';
 import { renderIcon } from '../../../../base/browser/ui/iconLabel/iconLabels.js';
 import { List } from '../../../../base/browser/ui/list/listWidget.js';
 import * as arrays from '../../../../base/common/arrays.js';
@@ -40,8 +39,8 @@ import { editorWidgetBackground, inputBackground, inputBorder, inputForeground, 
 import { IThemeService } from '../../../../platform/theme/common/themeService.js';
 /** for debugging */
 const _sticky = false;
-export const CONTEXT_RENAME_INPUT_VISIBLE = new RawContextKey('renameInputVisible', false, nls.localize('renameInputVisible', "Whether the rename input widget is visible"));
-export const CONTEXT_RENAME_INPUT_FOCUSED = new RawContextKey('renameInputFocused', false, nls.localize('renameInputFocused', "Whether the rename input widget is focused"));
+export const CONTEXT_RENAME_INPUT_VISIBLE = new RawContextKey('renameInputVisible', false, nls.localize(1376, "Whether the rename input widget is visible"));
+export const CONTEXT_RENAME_INPUT_FOCUSED = new RawContextKey('renameInputFocused', false, nls.localize(1377, "Whether the rename input widget is focused"));
 let RenameWidget = class RenameWidget {
     constructor(_editor, _acceptKeybindings, _themeService, _keybindingService, contextKeyService, _logService) {
         this._editor = _editor;
@@ -62,7 +61,7 @@ let RenameWidget = class RenameWidget {
         this._disposables.add(this._inputWithButton);
         this._editor.addContentWidget(this);
         this._disposables.add(this._editor.onDidChangeConfiguration(e => {
-            if (e.hasChanged(50 /* EditorOption.fontInfo */)) {
+            if (e.hasChanged(59 /* EditorOption.fontInfo */)) {
                 this._updateFont();
             }
         }));
@@ -81,7 +80,7 @@ let RenameWidget = class RenameWidget {
             this._domNode.className = 'monaco-editor rename-box';
             this._domNode.appendChild(this._inputWithButton.domNode);
             this._renameCandidateListView = this._disposables.add(new RenameCandidateListView(this._domNode, {
-                fontInfo: this._editor.getOption(50 /* EditorOption.fontInfo */),
+                fontInfo: this._editor.getOption(59 /* EditorOption.fontInfo */),
                 onFocusChange: (newSymbolName) => {
                     this._inputWithButton.input.value = newSymbolName;
                     this._isEditingRenameCandidate = false; // @ulugbekna: reset
@@ -132,7 +131,7 @@ let RenameWidget = class RenameWidget {
         }
         assertType(this._label !== undefined, 'RenameWidget#_updateFont: _label must not be undefined given _domNode is defined');
         this._editor.applyFontInfo(this._inputWithButton.input);
-        const fontInfo = this._editor.getOption(50 /* EditorOption.fontInfo */);
+        const fontInfo = this._editor.getOption(59 /* EditorOption.fontInfo */);
         this._label.style.fontSize = `${this._computeLabelFontSize(fontInfo.fontSize)}px`;
     }
     _computeLabelFontSize(editorFontSize) {
@@ -152,7 +151,7 @@ let RenameWidget = class RenameWidget {
         const cursorBoxTop = this._getTopForPosition();
         this._nPxAvailableAbove = cursorBoxTop + editorBox.top;
         this._nPxAvailableBelow = bodyBox.height - this._nPxAvailableAbove;
-        const lineHeight = this._editor.getOption(67 /* EditorOption.lineHeight */);
+        const lineHeight = this._editor.getOption(75 /* EditorOption.lineHeight */);
         const { totalHeight: candidateViewHeight } = RenameCandidateView.getLayoutInfo({ lineHeight });
         const positionPreference = this._nPxAvailableBelow > candidateViewHeight * 6 /* approximate # of candidates to fit in (inclusive of rename input box & rename label) */
             ? [2 /* ContentWidgetPositionPreference.BELOW */, 1 /* ContentWidgetPositionPreference.ABOVE */]
@@ -164,7 +163,7 @@ let RenameWidget = class RenameWidget {
     }
     beforeRender() {
         const [accept, preview] = this._acceptKeybindings;
-        this._label.innerText = nls.localize({ key: 'label', comment: ['placeholders are keybindings, e.g "F2 to Rename, Shift+F2 to Preview"'] }, "{0} to Rename, {1} to Preview", this._keybindingService.lookupKeybinding(accept)?.getLabel(), this._keybindingService.lookupKeybinding(preview)?.getLabel());
+        this._label.innerText = nls.localize(1378, "{0} to Rename, {1} to Preview", this._keybindingService.lookupKeybinding(accept)?.getLabel(), this._keybindingService.lookupKeybinding(preview)?.getLabel());
         this._domNode.style.minWidth = `200px`; // to prevent from widening when candidates come in
         return null;
     }
@@ -441,16 +440,16 @@ class RenameCandidateListView {
         this._listContainer.className = 'rename-box rename-candidate-list-container';
         parent.appendChild(this._listContainer);
         this._listWidget = RenameCandidateListView._createListWidget(this._listContainer, this._candidateViewHeight, opts.fontInfo);
-        this._listWidget.onDidChangeFocus(e => {
+        this._disposables.add(this._listWidget.onDidChangeFocus(e => {
             if (e.elements.length === 1) {
                 opts.onFocusChange(e.elements[0].newSymbolName);
             }
-        }, this._disposables);
-        this._listWidget.onDidChangeSelection(e => {
+        }, this._disposables));
+        this._disposables.add(this._listWidget.onDidChangeSelection(e => {
             if (e.elements.length === 1) {
                 opts.onSelectionChange();
             }
-        }, this._disposables);
+        }, this._disposables));
         this._disposables.add(this._listWidget.onDidBlur(e => {
             this._listWidget.setFocus([]);
         }));
@@ -478,7 +477,7 @@ class RenameCandidateListView {
         // adjust list container layout
         this._listContainer.style.height = `${height}px`;
         this._listContainer.style.width = `${width}px`;
-        aria.status(nls.localize('renameSuggestionsReceivedAria', "Received {0} rename suggestions", candidates.length));
+        aria.status(nls.localize(1379, "Received {0} rename suggestions", candidates.length));
     }
     clearCandidates() {
         this._listContainer.style.height = '0px';
@@ -604,6 +603,7 @@ class RenameCandidateListView {
 }
 class InputWithButton {
     constructor() {
+        this._buttonHoverContent = '';
         this._onDidInputChange = new Emitter();
         this.onDidInputChange = this._onDidInputChange.event;
         this._disposables = new DisposableStore();
@@ -619,15 +619,21 @@ class InputWithButton {
             this._inputNode.className = 'rename-input';
             this._inputNode.type = 'text';
             this._inputNode.style.border = 'none';
-            this._inputNode.setAttribute('aria-label', nls.localize('renameAriaLabel', "Rename input. Type new name and press Enter to commit."));
+            this._inputNode.setAttribute('aria-label', nls.localize(1380, "Rename input. Type new name and press Enter to commit."));
             this._domNode.appendChild(this._inputNode);
             this._buttonNode = document.createElement('div');
             this._buttonNode.className = 'rename-suggestions-button';
             this._buttonNode.setAttribute('tabindex', '0');
-            this._buttonGenHoverText = nls.localize('generateRenameSuggestionsButton', "Generate new name suggestions");
-            this._buttonCancelHoverText = nls.localize('cancelRenameSuggestionsButton', "Cancel");
-            this._buttonHover = getBaseLayerHoverDelegate().setupManagedHover(getDefaultHoverDelegate('element'), this._buttonNode, this._buttonGenHoverText);
-            this._disposables.add(this._buttonHover);
+            this._buttonGenHoverText = nls.localize(1381, "Generate new name suggestions");
+            this._buttonCancelHoverText = nls.localize(1382, "Cancel");
+            this._buttonHoverContent = this._buttonGenHoverText;
+            this._disposables.add(getBaseLayerHoverDelegate().setupDelayedHover(this._buttonNode, () => ({
+                content: this._buttonHoverContent,
+                appearance: {
+                    showPointer: true,
+                    compact: true,
+                }
+            })));
             this._domNode.appendChild(this._buttonNode);
             // notify if selection changes to cancel request to rename-suggestion providers
             this._disposables.add(dom.addDisposableListener(this.input, dom.EventType.INPUT, () => this._onDidInputChange.fire()));
@@ -668,16 +674,16 @@ class InputWithButton {
         dom.clearNode(this.button);
         this.button.appendChild(this._sparkleIcon);
         this.button.setAttribute('aria-label', 'Generating new name suggestions');
-        this._buttonHover?.update(this._buttonGenHoverText);
+        this._buttonHoverContent = this._buttonGenHoverText;
         this.input.focus();
     }
     setStopButton() {
         this._buttonState = 'stop';
-        this._stopIcon ??= renderIcon(Codicon.primitiveSquare);
+        this._stopIcon ??= renderIcon(Codicon.stopCircle);
         dom.clearNode(this.button);
         this.button.appendChild(this._stopIcon);
         this.button.setAttribute('aria-label', 'Cancel generating new name suggestions');
-        this._buttonHover?.update(this._buttonCancelHoverText);
+        this._buttonHoverContent = this._buttonCancelHoverText;
         this.input.focus();
     }
     dispose() {
@@ -726,3 +732,4 @@ class RenameCandidateView {
     dispose() {
     }
 }
+//# sourceMappingURL=renameWidget.js.map

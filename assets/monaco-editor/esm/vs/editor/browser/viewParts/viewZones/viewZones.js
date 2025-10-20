@@ -7,12 +7,17 @@ import { onUnexpectedError } from '../../../../base/common/errors.js';
 import { ViewPart } from '../../view/viewPart.js';
 import { Position } from '../../../common/core/position.js';
 const invalidFunc = () => { throw new Error(`Invalid change accessor`); };
+/**
+ * A view zone is a rectangle that is a section that is inserted into the editor
+ * lines that can be used for various purposes such as showing a diffs, peeking
+ * an implementation, etc.
+ */
 export class ViewZones extends ViewPart {
     constructor(context) {
         super(context);
         const options = this._context.configuration.options;
-        const layoutInfo = options.get(146 /* EditorOption.layoutInfo */);
-        this._lineHeight = options.get(67 /* EditorOption.lineHeight */);
+        const layoutInfo = options.get(165 /* EditorOption.layoutInfo */);
+        this._lineHeight = options.get(75 /* EditorOption.lineHeight */);
         this._contentWidth = layoutInfo.contentWidth;
         this._contentLeft = layoutInfo.contentLeft;
         this.domNode = createFastDomNode(document.createElement('div'));
@@ -58,11 +63,11 @@ export class ViewZones extends ViewPart {
     }
     onConfigurationChanged(e) {
         const options = this._context.configuration.options;
-        const layoutInfo = options.get(146 /* EditorOption.layoutInfo */);
-        this._lineHeight = options.get(67 /* EditorOption.lineHeight */);
+        const layoutInfo = options.get(165 /* EditorOption.layoutInfo */);
+        this._lineHeight = options.get(75 /* EditorOption.lineHeight */);
         this._contentWidth = layoutInfo.contentWidth;
         this._contentLeft = layoutInfo.contentLeft;
-        if (e.hasChanged(67 /* EditorOption.lineHeight */)) {
+        if (e.hasChanged(75 /* EditorOption.lineHeight */)) {
             this._recomputeWhitespacesProps();
         }
         return true;
@@ -324,3 +329,4 @@ function safeInvoke1Arg(func, arg1) {
         onUnexpectedError(e);
     }
 }
+//# sourceMappingURL=viewZones.js.map

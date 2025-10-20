@@ -22,3 +22,4 @@ export class InPlaceReplaceCommand {
         return new Selection(srcRange.endLineNumber, Math.min(this._originalSelection.positionColumn, srcRange.endColumn), srcRange.endLineNumber, Math.min(this._originalSelection.positionColumn, srcRange.endColumn));
     }
 }
+//# sourceMappingURL=inPlaceReplaceCommand.js.map

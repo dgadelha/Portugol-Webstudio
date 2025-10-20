@@ -14,24 +14,27 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 var PostEditWidget_1;
 import * as dom from '../../../../base/browser/dom.js';
 import { Button } from '../../../../base/browser/ui/button/button.js';
-import { toAction } from '../../../../base/common/actions.js';
+import { raceCancellationError } from '../../../../base/common/async.js';
+import { Codicon } from '../../../../base/common/codicons.js';
 import { toErrorMessage } from '../../../../base/common/errorMessage.js';
 import { isCancellationError } from '../../../../base/common/errors.js';
 import { Event } from '../../../../base/common/event.js';
 import { Disposable, MutableDisposable, toDisposable } from '../../../../base/common/lifecycle.js';
-import './postEditWidget.css';
-import { IBulkEditService } from '../../../browser/services/bulkEditService.js';
-import { createCombinedWorkspaceEdit } from './edit.js';
+import { ThemeIcon } from '../../../../base/common/themables.js';
 import { localize } from '../../../../nls.js';
+import { IActionWidgetService } from '../../../../platform/actionWidget/browser/actionWidget.js';
 import { IContextKeyService } from '../../../../platform/contextkey/common/contextkey.js';
-import { IContextMenuService } from '../../../../platform/contextview/browser/contextView.js';
 import { IInstantiationService } from '../../../../platform/instantiation/common/instantiation.js';
 import { IKeybindingService } from '../../../../platform/keybinding/common/keybinding.js';
 import { INotificationService } from '../../../../platform/notification/common/notification.js';
+import { IBulkEditService } from '../../../browser/services/bulkEditService.js';
+import { EditorStateCancellationTokenSource } from '../../editorState/browser/editorState.js';
+import { createCombinedWorkspaceEdit } from './edit.js';
+import './postEditWidget.css';
 let PostEditWidget = class PostEditWidget extends Disposable {
     static { PostEditWidget_1 = this; }
     static { this.baseId = 'editor.widget.postEditWidget'; }
-    constructor(typeId, editor, visibleContext, showCommand, range, edits, onSelectNewEdit, _contextMenuService, contextKeyService, _keybindingService) {
+    constructor(typeId, editor, visibleContext, showCommand, range, edits, onSelectNewEdit, additionalActions, contextKeyService, _keybindingService, _actionWidgetService) {
         super();
         this.typeId = typeId;
         this.editor = editor;
@@ -39,8 +42,9 @@ let PostEditWidget = class PostEditWidget extends Disposable {
         this.range = range;
         this.edits = edits;
         this.onSelectNewEdit = onSelectNewEdit;
-        this._contextMenuService = _contextMenuService;
+        this.additionalActions = additionalActions;
         this._keybindingService = _keybindingService;
+        this._actionWidgetService = _actionWidgetService;
         this.allowEditorOverflow = true;
         this.suppressMouseDown = true;
         this.create();
@@ -51,9 +55,7 @@ let PostEditWidget = class PostEditWidget extends Disposable {
         this.editor.layoutContentWidget(this);
         this._register(toDisposable((() => this.editor.removeContentWidget(this))));
         this._register(this.editor.onDidChangeCursorPosition(e => {
-            if (!range.containsPosition(e.position)) {
-                this.dispose();
-            }
+            this.dispose();
         }));
         this._register(Event.runAndSubscribe(_keybindingService.onDidUpdateKeybindings, () => {
             this._updateButtonTitle();
@@ -84,38 +86,44 @@ let PostEditWidget = class PostEditWidget extends Disposable {
         };
     }
     showSelector() {
-        this._contextMenuService.showContextMenu({
-            getAnchor: () => {
-                const pos = dom.getDomNodePagePosition(this.button.element);
-                return { x: pos.left + pos.width, y: pos.top + pos.height };
+        const pos = dom.getDomNodePagePosition(this.button.element);
+        const anchor = { x: pos.left + pos.width, y: pos.top + pos.height };
+        this._actionWidgetService.show('postEditWidget', false, this.edits.allEdits.map((edit, i) => {
+            return {
+                kind: "action" /* ActionListItemKind.Action */,
+                item: edit,
+                label: edit.title,
+                disabled: false,
+                canPreview: false,
+                group: { title: '', icon: ThemeIcon.fromId(i === this.edits.activeEditIndex ? Codicon.check.id : Codicon.blank.id) },
+            };
+        }), {
+            onHide: () => {
+                this.editor.focus();
             },
-            getActions: () => {
-                return this.edits.allEdits.map((edit, i) => toAction({
-                    id: '',
-                    label: edit.title,
-                    checked: i === this.edits.activeEditIndex,
-                    run: () => {
-                        if (i !== this.edits.activeEditIndex) {
-                            return this.onSelectNewEdit(i);
-                        }
-                    },
-                }));
-            }
-        });
+            onSelect: (item) => {
+                this._actionWidgetService.hide(false);
+                const i = this.edits.allEdits.findIndex(edit => edit === item);
+                if (i !== this.edits.activeEditIndex) {
+                    return this.onSelectNewEdit(i);
+                }
+            },
+        }, anchor, this.editor.getDomNode() ?? undefined, this.additionalActions);
     }
 };
 PostEditWidget = PostEditWidget_1 = __decorate([
-    __param(7, IContextMenuService),
     __param(8, IContextKeyService),
-    __param(9, IKeybindingService)
+    __param(9, IKeybindingService),
+    __param(10, IActionWidgetService)
 ], PostEditWidget);
 let PostEditWidgetManager = class PostEditWidgetManager extends Disposable {
-    constructor(_id, _editor, _visibleContext, _showCommand, _instantiationService, _bulkEditService, _notificationService) {
+    constructor(_id, _editor, _visibleContext, _showCommand, _getAdditionalActions, _instantiationService, _bulkEditService, _notificationService) {
         super();
         this._id = _id;
         this._editor = _editor;
         this._visibleContext = _visibleContext;
         this._showCommand = _showCommand;
+        this._getAdditionalActions = _getAdditionalActions;
         this._instantiationService = _instantiationService;
         this._bulkEditService = _bulkEditService;
         this._notificationService = _notificationService;
@@ -123,10 +131,10 @@ let PostEditWidgetManager = class PostEditWidgetManager extends Disposable {
         this._register(Event.any(_editor.onDidChangeModel, _editor.onDidChangeModelContent)(() => this.clear()));
     }
     async applyEditAndShowIfNeeded(ranges, edits, canShowWidget, resolve, token) {
-        const model = this._editor.getModel();
-        if (!model || !ranges.length) {
+        if (!ranges.length || !this._editor.hasModel()) {
             return;
         }
+        const model = this._editor.getModel();
         const edit = edits.allEdits.at(edits.activeEditIndex);
         if (!edit) {
             return;
@@ -148,12 +156,16 @@ let PostEditWidgetManager = class PostEditWidgetManager extends Disposable {
                 this.show(ranges[0], edits, onDidSelectEdit);
             }
         };
+        const editorStateCts = new EditorStateCancellationTokenSource(this._editor, 1 /* CodeEditorStateFlag.Value */ | 2 /* CodeEditorStateFlag.Selection */, undefined, token);
         let resolvedEdit;
         try {
-            resolvedEdit = await resolve(edit, token);
+            resolvedEdit = await raceCancellationError(resolve(edit, editorStateCts.token), editorStateCts.token);
         }
         catch (e) {
-            return handleError(e, localize('resolveError', "Error resolving edit '{0}':\n{1}", edit.title, toErrorMessage(e)));
+            return handleError(e, localize(932, "Error resolving edit '{0}':\n{1}", edit.title, toErrorMessage(e)));
+        }
+        finally {
+            editorStateCts.dispose();
         }
         if (token.isCancellationRequested) {
             return;
@@ -173,7 +185,7 @@ let PostEditWidgetManager = class PostEditWidgetManager extends Disposable {
             editRange = model.getDecorationRange(editTrackingDecoration[0]);
         }
         catch (e) {
-            return handleError(e, localize('applyError', "Error applying edit '{0}':\n{1}", edit.title, toErrorMessage(e)));
+            return handleError(e, localize(933, "Error applying edit '{0}':\n{1}", edit.title, toErrorMessage(e)));
         }
         finally {
             model.deltaDecorations(editTrackingDecoration, []);
@@ -188,7 +200,7 @@ let PostEditWidgetManager = class PostEditWidgetManager extends Disposable {
     show(range, edits, onDidSelectEdit) {
         this.clear();
         if (this._editor.hasModel()) {
-            this._currentWidget.value = this._instantiationService.createInstance((PostEditWidget), this._id, this._editor, this._visibleContext, this._showCommand, range, edits, onDidSelectEdit);
+            this._currentWidget.value = this._instantiationService.createInstance((PostEditWidget), this._id, this._editor, this._visibleContext, this._showCommand, range, edits, onDidSelectEdit, this._getAdditionalActions());
         }
     }
     clear() {
@@ -199,8 +211,9 @@ let PostEditWidgetManager = class PostEditWidgetManager extends Disposable {
     }
 };
 PostEditWidgetManager = __decorate([
-    __param(4, IInstantiationService),
-    __param(5, IBulkEditService),
-    __param(6, INotificationService)
+    __param(5, IInstantiationService),
+    __param(6, IBulkEditService),
+    __param(7, INotificationService)
 ], PostEditWidgetManager);
 export { PostEditWidgetManager };
+//# sourceMappingURL=postEditWidget.js.map

@@ -172,3 +172,4 @@ export class OverviewZoneManager {
         return allColorZones;
     }
 }
+//# sourceMappingURL=overviewZoneManager.js.map

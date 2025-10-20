@@ -34,7 +34,7 @@ import { Iterable } from '../../../../base/common/iterator.js';
 import { IsWebContext } from '../../../../platform/contextkey/common/contextkeys.js';
 MenuRegistry.appendMenuItem(MenuId.EditorContext, {
     submenu: MenuId.EditorContextPeek,
-    title: nls.localize('peek.submenu', "Peek"),
+    title: nls.localize(1033, "Peek"),
     group: 'navigation',
     order: 100
 });
@@ -101,7 +101,7 @@ export class SymbolNavigationAction extends EditorAction2 {
             let altAction;
             if (references.referenceAt(model.uri, position)) {
                 const altActionId = this._getAlternativeCommand(editor);
-                if (!SymbolNavigationAction._activeAlternativeCommands.has(altActionId) && SymbolNavigationAction._allSymbolNavigationCommands.has(altActionId)) {
+                if (altActionId !== undefined && !SymbolNavigationAction._activeAlternativeCommands.has(altActionId) && SymbolNavigationAction._allSymbolNavigationCommands.has(altActionId)) {
                     altAction = SymbolNavigationAction._allSymbolNavigationCommands.get(altActionId);
                 }
             }
@@ -203,18 +203,18 @@ export class SymbolNavigationAction extends EditorAction2 {
 //#region --- DEFINITION
 export class DefinitionAction extends SymbolNavigationAction {
     async _getLocationModel(languageFeaturesService, model, position, token) {
-        return new ReferencesModel(await getDefinitionsAtPosition(languageFeaturesService.definitionProvider, model, position, false, token), nls.localize('def.title', 'Definitions'));
+        return new ReferencesModel(await getDefinitionsAtPosition(languageFeaturesService.definitionProvider, model, position, false, token), nls.localize(1034, 'Definitions'));
     }
     _getNoResultFoundMessage(info) {
         return info && info.word
-            ? nls.localize('noResultWord', "No definition found for '{0}'", info.word)
-            : nls.localize('generic.noResults', "No definition found");
+            ? nls.localize(1035, "No definition found for '{0}'", info.word)
+            : nls.localize(1036, "No definition found");
     }
     _getAlternativeCommand(editor) {
-        return editor.getOption(58 /* EditorOption.gotoLocation */).alternativeDefinitionCommand;
+        return editor.getOption(67 /* EditorOption.gotoLocation */).alternativeDefinitionCommand;
     }
     _getGoToPreference(editor) {
-        return editor.getOption(58 /* EditorOption.gotoLocation */).multipleDefinitions;
+        return editor.getOption(67 /* EditorOption.gotoLocation */).multipleDefinitions;
     }
 }
 registerAction2(class GoToDefinitionAction extends DefinitionAction {
@@ -227,8 +227,8 @@ registerAction2(class GoToDefinitionAction extends DefinitionAction {
         }, {
             id: GoToDefinitionAction.id,
             title: {
-                ...nls.localize2('actions.goToDecl.label', "Go to Definition"),
-                mnemonicTitle: nls.localize({ key: 'miGotoDefinition', comment: ['&& denotes a mnemonic'] }, "Go to &&Definition"),
+                ...nls.localize2(1060, "Go to Definition"),
+                mnemonicTitle: nls.localize(1037, "Go to &&Definition"),
             },
             precondition: EditorContextKeys.hasDefinitionProvider,
             keybinding: [{
@@ -263,7 +263,7 @@ registerAction2(class OpenDefinitionToSideAction extends DefinitionAction {
             muteMessage: false
         }, {
             id: OpenDefinitionToSideAction.id,
-            title: nls.localize2('actions.goToDeclToSide.label', "Open Definition to the Side"),
+            title: nls.localize2(1061, "Open Definition to the Side"),
             precondition: ContextKeyExpr.and(EditorContextKeys.hasDefinitionProvider, EditorContextKeys.isInEmbeddedEditor.toNegated()),
             keybinding: [{
                     when: EditorContextKeys.editorTextFocus,
@@ -287,7 +287,7 @@ registerAction2(class PeekDefinitionAction extends DefinitionAction {
             muteMessage: false
         }, {
             id: PeekDefinitionAction.id,
-            title: nls.localize2('actions.previewDecl.label', "Peek Definition"),
+            title: nls.localize2(1062, "Peek Definition"),
             precondition: ContextKeyExpr.and(EditorContextKeys.hasDefinitionProvider, PeekContext.notInPeekEditor, EditorContextKeys.isInEmbeddedEditor.toNegated()),
             keybinding: {
                 when: EditorContextKeys.editorTextFocus,
@@ -308,18 +308,18 @@ registerAction2(class PeekDefinitionAction extends DefinitionAction {
 //#region --- DECLARATION
 class DeclarationAction extends SymbolNavigationAction {
     async _getLocationModel(languageFeaturesService, model, position, token) {
-        return new ReferencesModel(await getDeclarationsAtPosition(languageFeaturesService.declarationProvider, model, position, false, token), nls.localize('decl.title', 'Declarations'));
+        return new ReferencesModel(await getDeclarationsAtPosition(languageFeaturesService.declarationProvider, model, position, false, token), nls.localize(1038, 'Declarations'));
     }
     _getNoResultFoundMessage(info) {
         return info && info.word
-            ? nls.localize('decl.noResultWord', "No declaration found for '{0}'", info.word)
-            : nls.localize('decl.generic.noResults', "No declaration found");
+            ? nls.localize(1039, "No declaration found for '{0}'", info.word)
+            : nls.localize(1040, "No declaration found");
     }
     _getAlternativeCommand(editor) {
-        return editor.getOption(58 /* EditorOption.gotoLocation */).alternativeDeclarationCommand;
+        return editor.getOption(67 /* EditorOption.gotoLocation */).alternativeDeclarationCommand;
     }
     _getGoToPreference(editor) {
-        return editor.getOption(58 /* EditorOption.gotoLocation */).multipleDeclarations;
+        return editor.getOption(67 /* EditorOption.gotoLocation */).multipleDeclarations;
     }
 }
 registerAction2(class GoToDeclarationAction extends DeclarationAction {
@@ -332,8 +332,8 @@ registerAction2(class GoToDeclarationAction extends DeclarationAction {
         }, {
             id: GoToDeclarationAction.id,
             title: {
-                ...nls.localize2('actions.goToDeclaration.label', "Go to Declaration"),
-                mnemonicTitle: nls.localize({ key: 'miGotoDeclaration', comment: ['&& denotes a mnemonic'] }, "Go to &&Declaration"),
+                ...nls.localize2(1063, "Go to Declaration"),
+                mnemonicTitle: nls.localize(1041, "Go to &&Declaration"),
             },
             precondition: ContextKeyExpr.and(EditorContextKeys.hasDeclarationProvider, EditorContextKeys.isInEmbeddedEditor.toNegated()),
             menu: [{
@@ -350,8 +350,8 @@ registerAction2(class GoToDeclarationAction extends DeclarationAction {
     }
     _getNoResultFoundMessage(info) {
         return info && info.word
-            ? nls.localize('decl.noResultWord', "No declaration found for '{0}'", info.word)
-            : nls.localize('decl.generic.noResults', "No declaration found");
+            ? nls.localize(1042, "No declaration found for '{0}'", info.word)
+            : nls.localize(1043, "No declaration found");
     }
 });
 registerAction2(class PeekDeclarationAction extends DeclarationAction {
@@ -362,7 +362,7 @@ registerAction2(class PeekDeclarationAction extends DeclarationAction {
             muteMessage: false
         }, {
             id: 'editor.action.peekDeclaration',
-            title: nls.localize2('actions.peekDecl.label', "Peek Declaration"),
+            title: nls.localize2(1064, "Peek Declaration"),
             precondition: ContextKeyExpr.and(EditorContextKeys.hasDeclarationProvider, PeekContext.notInPeekEditor, EditorContextKeys.isInEmbeddedEditor.toNegated()),
             menu: {
                 id: MenuId.EditorContextPeek,
@@ -376,18 +376,18 @@ registerAction2(class PeekDeclarationAction extends DeclarationAction {
 //#region --- TYPE DEFINITION
 class TypeDefinitionAction extends SymbolNavigationAction {
     async _getLocationModel(languageFeaturesService, model, position, token) {
-        return new ReferencesModel(await getTypeDefinitionsAtPosition(languageFeaturesService.typeDefinitionProvider, model, position, false, token), nls.localize('typedef.title', 'Type Definitions'));
+        return new ReferencesModel(await getTypeDefinitionsAtPosition(languageFeaturesService.typeDefinitionProvider, model, position, false, token), nls.localize(1044, 'Type Definitions'));
     }
     _getNoResultFoundMessage(info) {
         return info && info.word
-            ? nls.localize('goToTypeDefinition.noResultWord', "No type definition found for '{0}'", info.word)
-            : nls.localize('goToTypeDefinition.generic.noResults', "No type definition found");
+            ? nls.localize(1045, "No type definition found for '{0}'", info.word)
+            : nls.localize(1046, "No type definition found");
     }
     _getAlternativeCommand(editor) {
-        return editor.getOption(58 /* EditorOption.gotoLocation */).alternativeTypeDefinitionCommand;
+        return editor.getOption(67 /* EditorOption.gotoLocation */).alternativeTypeDefinitionCommand;
     }
     _getGoToPreference(editor) {
-        return editor.getOption(58 /* EditorOption.gotoLocation */).multipleTypeDefinitions;
+        return editor.getOption(67 /* EditorOption.gotoLocation */).multipleTypeDefinitions;
     }
 }
 registerAction2(class GoToTypeDefinitionAction extends TypeDefinitionAction {
@@ -400,8 +400,8 @@ registerAction2(class GoToTypeDefinitionAction extends TypeDefinitionAction {
         }, {
             id: GoToTypeDefinitionAction.ID,
             title: {
-                ...nls.localize2('actions.goToTypeDefinition.label', "Go to Type Definition"),
-                mnemonicTitle: nls.localize({ key: 'miGotoTypeDefinition', comment: ['&& denotes a mnemonic'] }, "Go to &&Type Definition"),
+                ...nls.localize2(1065, "Go to Type Definition"),
+                mnemonicTitle: nls.localize(1047, "Go to &&Type Definition"),
             },
             precondition: EditorContextKeys.hasTypeDefinitionProvider,
             keybinding: {
@@ -431,7 +431,7 @@ registerAction2(class PeekTypeDefinitionAction extends TypeDefinitionAction {
             muteMessage: false
         }, {
             id: PeekTypeDefinitionAction.ID,
-            title: nls.localize2('actions.peekTypeDefinition.label', "Peek Type Definition"),
+            title: nls.localize2(1066, "Peek Type Definition"),
             precondition: ContextKeyExpr.and(EditorContextKeys.hasTypeDefinitionProvider, PeekContext.notInPeekEditor, EditorContextKeys.isInEmbeddedEditor.toNegated()),
             menu: {
                 id: MenuId.EditorContextPeek,
@@ -445,18 +445,18 @@ registerAction2(class PeekTypeDefinitionAction extends TypeDefinitionAction {
 //#region --- IMPLEMENTATION
 class ImplementationAction extends SymbolNavigationAction {
     async _getLocationModel(languageFeaturesService, model, position, token) {
-        return new ReferencesModel(await getImplementationsAtPosition(languageFeaturesService.implementationProvider, model, position, false, token), nls.localize('impl.title', 'Implementations'));
+        return new ReferencesModel(await getImplementationsAtPosition(languageFeaturesService.implementationProvider, model, position, false, token), nls.localize(1048, 'Implementations'));
     }
     _getNoResultFoundMessage(info) {
         return info && info.word
-            ? nls.localize('goToImplementation.noResultWord', "No implementation found for '{0}'", info.word)
-            : nls.localize('goToImplementation.generic.noResults', "No implementation found");
+            ? nls.localize(1049, "No implementation found for '{0}'", info.word)
+            : nls.localize(1050, "No implementation found");
     }
     _getAlternativeCommand(editor) {
-        return editor.getOption(58 /* EditorOption.gotoLocation */).alternativeImplementationCommand;
+        return editor.getOption(67 /* EditorOption.gotoLocation */).alternativeImplementationCommand;
     }
     _getGoToPreference(editor) {
-        return editor.getOption(58 /* EditorOption.gotoLocation */).multipleImplementations;
+        return editor.getOption(67 /* EditorOption.gotoLocation */).multipleImplementations;
     }
 }
 registerAction2(class GoToImplementationAction extends ImplementationAction {
@@ -469,8 +469,8 @@ registerAction2(class GoToImplementationAction extends ImplementationAction {
         }, {
             id: GoToImplementationAction.ID,
             title: {
-                ...nls.localize2('actions.goToImplementation.label', "Go to Implementations"),
-                mnemonicTitle: nls.localize({ key: 'miGotoImplementation', comment: ['&& denotes a mnemonic'] }, "Go to &&Implementations"),
+                ...nls.localize2(1067, "Go to Implementations"),
+                mnemonicTitle: nls.localize(1051, "Go to &&Implementations"),
             },
             precondition: EditorContextKeys.hasImplementationProvider,
             keybinding: {
@@ -500,7 +500,7 @@ registerAction2(class PeekImplementationAction extends ImplementationAction {
             muteMessage: false
         }, {
             id: PeekImplementationAction.ID,
-            title: nls.localize2('actions.peekImplementation.label', "Peek Implementations"),
+            title: nls.localize2(1068, "Peek Implementations"),
             precondition: ContextKeyExpr.and(EditorContextKeys.hasImplementationProvider, PeekContext.notInPeekEditor, EditorContextKeys.isInEmbeddedEditor.toNegated()),
             keybinding: {
                 when: EditorContextKeys.editorTextFocus,
@@ -520,14 +520,14 @@ registerAction2(class PeekImplementationAction extends ImplementationAction {
 class ReferencesAction extends SymbolNavigationAction {
     _getNoResultFoundMessage(info) {
         return info
-            ? nls.localize('references.no', "No references found for '{0}'", info.word)
-            : nls.localize('references.noGeneric', "No references found");
+            ? nls.localize(1052, "No references found for '{0}'", info.word)
+            : nls.localize(1053, "No references found");
     }
     _getAlternativeCommand(editor) {
-        return editor.getOption(58 /* EditorOption.gotoLocation */).alternativeReferenceCommand;
+        return editor.getOption(67 /* EditorOption.gotoLocation */).alternativeReferenceCommand;
     }
     _getGoToPreference(editor) {
-        return editor.getOption(58 /* EditorOption.gotoLocation */).multipleReferences;
+        return editor.getOption(67 /* EditorOption.gotoLocation */).multipleReferences;
     }
 }
 registerAction2(class GoToReferencesAction extends ReferencesAction {
@@ -539,8 +539,8 @@ registerAction2(class GoToReferencesAction extends ReferencesAction {
         }, {
             id: 'editor.action.goToReferences',
             title: {
-                ...nls.localize2('goToReferences.label', "Go to References"),
-                mnemonicTitle: nls.localize({ key: 'miGotoReference', comment: ['&& denotes a mnemonic'] }, "Go to &&References"),
+                ...nls.localize2(1069, "Go to References"),
+                mnemonicTitle: nls.localize(1054, "Go to &&References"),
             },
             precondition: ContextKeyExpr.and(EditorContextKeys.hasReferenceProvider, PeekContext.notInPeekEditor, EditorContextKeys.isInEmbeddedEditor.toNegated()),
             keybinding: {
@@ -561,7 +561,7 @@ registerAction2(class GoToReferencesAction extends ReferencesAction {
         });
     }
     async _getLocationModel(languageFeaturesService, model, position, token) {
-        return new ReferencesModel(await getReferencesAtPosition(languageFeaturesService.referenceProvider, model, position, true, false, token), nls.localize('ref.title', 'References'));
+        return new ReferencesModel(await getReferencesAtPosition(languageFeaturesService.referenceProvider, model, position, true, false, token), nls.localize(1055, 'References'));
     }
 });
 registerAction2(class PeekReferencesAction extends ReferencesAction {
@@ -572,7 +572,7 @@ registerAction2(class PeekReferencesAction extends ReferencesAction {
             muteMessage: false
         }, {
             id: 'editor.action.referenceSearch.trigger',
-            title: nls.localize2('references.action.label', "Peek References"),
+            title: nls.localize2(1070, "Peek References"),
             precondition: ContextKeyExpr.and(EditorContextKeys.hasReferenceProvider, PeekContext.notInPeekEditor, EditorContextKeys.isInEmbeddedEditor.toNegated()),
             menu: {
                 id: MenuId.EditorContextPeek,
@@ -582,7 +582,7 @@ registerAction2(class PeekReferencesAction extends ReferencesAction {
         });
     }
     async _getLocationModel(languageFeaturesService, model, position, token) {
-        return new ReferencesModel(await getReferencesAtPosition(languageFeaturesService.referenceProvider, model, position, false, false, token), nls.localize('ref.title', 'References'));
+        return new ReferencesModel(await getReferencesAtPosition(languageFeaturesService.referenceProvider, model, position, false, false, token), nls.localize(1056, 'References'));
     }
 });
 //#endregion
@@ -591,22 +591,24 @@ class GenericGoToLocationAction extends SymbolNavigationAction {
     constructor(config, _references, _gotoMultipleBehaviour) {
         super(config, {
             id: 'editor.action.goToLocation',
-            title: nls.localize2('label.generic', "Go to Any Symbol"),
+            title: nls.localize2(1071, "Go to Any Symbol"),
             precondition: ContextKeyExpr.and(PeekContext.notInPeekEditor, EditorContextKeys.isInEmbeddedEditor.toNegated()),
         });
         this._references = _references;
         this._gotoMultipleBehaviour = _gotoMultipleBehaviour;
     }
     async _getLocationModel(languageFeaturesService, _model, _position, _token) {
-        return new ReferencesModel(this._references, nls.localize('generic.title', 'Locations'));
+        return new ReferencesModel(this._references, nls.localize(1057, 'Locations'));
     }
     _getNoResultFoundMessage(info) {
-        return info && nls.localize('generic.noResult', "No results for '{0}'", info.word) || '';
+        return info && nls.localize(1058, "No results for '{0}'", info.word) || '';
     }
     _getGoToPreference(editor) {
-        return this._gotoMultipleBehaviour ?? editor.getOption(58 /* EditorOption.gotoLocation */).multipleReferences;
+        return this._gotoMultipleBehaviour ?? editor.getOption(67 /* EditorOption.gotoLocation */).multipleReferences;
     }
-    _getAlternativeCommand() { return ''; }
+    _getAlternativeCommand() {
+        return undefined;
+    }
 }
 CommandsRegistry.registerCommand({
     id: 'editor.action.goToLocations',
@@ -678,7 +680,7 @@ CommandsRegistry.registerCommand({
             if (!controller) {
                 return undefined;
             }
-            const references = createCancelablePromise(token => getReferencesAtPosition(languageFeaturesService.referenceProvider, control.getModel(), corePosition.Position.lift(position), false, false, token).then(references => new ReferencesModel(references, nls.localize('ref.title', 'References'))));
+            const references = createCancelablePromise(token => getReferencesAtPosition(languageFeaturesService.referenceProvider, control.getModel(), corePosition.Position.lift(position), false, false, token).then(references => new ReferencesModel(references, nls.localize(1059, 'References'))));
             const range = new Range(position.lineNumber, position.column, position.lineNumber, position.column);
             return Promise.resolve(controller.toggleWidget(range, references, false));
         });
@@ -687,3 +689,4 @@ CommandsRegistry.registerCommand({
 // use NEW command
 CommandsRegistry.registerCommandAlias('editor.action.showReferences', 'editor.action.peekLocations');
 //#endregion
+//# sourceMappingURL=goToCommands.js.map

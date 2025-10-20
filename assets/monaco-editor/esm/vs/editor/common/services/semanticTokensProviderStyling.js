@@ -274,3 +274,4 @@ class HashTable {
         this._elements[hash] = element;
     }
 }
+//# sourceMappingURL=semanticTokensProviderStyling.js.map

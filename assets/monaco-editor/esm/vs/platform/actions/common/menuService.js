@@ -403,7 +403,7 @@ function createMenuHide(menu, command, states) {
     const title = typeof command.title === 'string' ? command.title : command.title.value;
     const hide = toAction({
         id: `hide/${menu.id}/${id}`,
-        label: localize('hide.label', 'Hide \'{0}\'', title),
+        label: localize(1636, 'Hide \'{0}\'', title),
         run() { states.updateHidden(menu, id, true); }
     });
     const toggle = toAction({
@@ -421,7 +421,7 @@ function createMenuHide(menu, command, states) {
 export function createConfigureKeybindingAction(commandService, keybindingService, commandId, when = undefined, enabled = true) {
     return toAction({
         id: `configureKeybinding/${commandId}`,
-        label: localize('configure keybinding', "Configure Keybinding"),
+        label: localize(1637, "Configure Keybinding"),
         enabled,
         run() {
             // Only set the when clause when there is no keybinding
@@ -432,3 +432,4 @@ export function createConfigureKeybindingAction(commandService, keybindingServic
         }
     });
 }
+//# sourceMappingURL=menuService.js.map

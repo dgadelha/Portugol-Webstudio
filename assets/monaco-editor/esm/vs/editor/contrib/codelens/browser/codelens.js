@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 import { CancellationToken } from '../../../../base/common/cancellation.js';
 import { illegalArgument, onUnexpectedExternalError } from '../../../../base/common/errors.js';
-import { DisposableStore } from '../../../../base/common/lifecycle.js';
+import { DisposableStore, isDisposable } from '../../../../base/common/lifecycle.js';
 import { assertType } from '../../../../base/common/types.js';
 import { URI } from '../../../../base/common/uri.js';
 import { IModelService } from '../../../common/services/model.js';
@@ -13,16 +13,19 @@ import { ILanguageFeaturesService } from '../../../common/services/languageFeatu
 export class CodeLensModel {
     constructor() {
         this.lenses = [];
-        this._disposables = new DisposableStore();
     }
+    static { this.Empty = new CodeLensModel(); }
     dispose() {
-        this._disposables.dispose();
+        this._store?.dispose();
     }
     get isDisposed() {
-        return this._disposables.isDisposed;
+        return this._store?.isDisposed ?? false;
     }
     add(list, provider) {
-        this._disposables.add(list);
+        if (isDisposable(list)) {
+            this._store ??= new DisposableStore();
+            this._store.add(list);
+        }
         for (const symbol of list.lenses) {
             this.lenses.push({ symbol, provider });
         }
@@ -45,6 +48,10 @@ export async function getCodeLensModel(registry, model, token) {
         }
     });
     await Promise.all(promises);
+    if (token.isCancellationRequested) {
+        result.dispose();
+        return CodeLensModel.Empty;
+    }
     result.lenses = result.lenses.sort((a, b) => {
         // sort by lineNumber, provider-rank, and column
         if (a.symbol.range.startLineNumber < b.symbol.range.startLineNumber) {
@@ -102,3 +109,4 @@ CommandsRegistry.registerCommand('_executeCodeLensProvider', function (accessor,
         setTimeout(() => disposables.dispose(), 100);
     });
 });
+//# sourceMappingURL=codelens.js.map

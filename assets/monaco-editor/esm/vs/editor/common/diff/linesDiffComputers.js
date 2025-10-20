@@ -8,3 +8,4 @@ export const linesDiffComputers = {
     getLegacy: () => new LegacyLinesDiffComputer(),
     getDefault: () => new DefaultLinesDiffComputer(),
 };
+//# sourceMappingURL=linesDiffComputers.js.map

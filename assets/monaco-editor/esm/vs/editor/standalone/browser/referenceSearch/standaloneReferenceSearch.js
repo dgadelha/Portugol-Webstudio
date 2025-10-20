@@ -34,3 +34,4 @@ StandaloneReferencesController = __decorate([
 ], StandaloneReferencesController);
 export { StandaloneReferencesController };
 registerEditorContribution(ReferencesController.ID, StandaloneReferencesController, 4 /* EditorContributionInstantiation.Lazy */);
+//# sourceMappingURL=standaloneReferenceSearch.js.map

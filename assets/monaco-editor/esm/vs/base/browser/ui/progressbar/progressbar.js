@@ -100,3 +100,4 @@ export class ProgressBar extends Disposable {
         return this.element;
     }
 }
+//# sourceMappingURL=progressbar.js.map

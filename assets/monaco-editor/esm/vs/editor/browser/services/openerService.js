@@ -141,12 +141,13 @@ let OpenerService = class OpenerService {
     }
     async open(target, options) {
         // check with contributed validators
-        const targetURI = typeof target === 'string' ? URI.parse(target) : target;
-        // validate against the original URI that this URI resolves to, if one exists
-        const validationTarget = this._resolvedUriTargets.get(targetURI) ?? target;
-        for (const validator of this._validators) {
-            if (!(await validator.shouldOpen(validationTarget, options))) {
-                return false;
+        if (!options?.skipValidation) {
+            const targetURI = typeof target === 'string' ? URI.parse(target) : target;
+            const validationTarget = this._resolvedUriTargets.get(targetURI) ?? target; // validate against the original URI that this URI resolves to, if one exists
+            for (const validator of this._validators) {
+                if (!(await validator.shouldOpen(validationTarget, options))) {
+                    return false;
+                }
             }
         }
         // check with contributed openers
@@ -217,3 +218,4 @@ OpenerService = __decorate([
     __param(1, ICommandService)
 ], OpenerService);
 export { OpenerService };
+//# sourceMappingURL=openerService.js.map

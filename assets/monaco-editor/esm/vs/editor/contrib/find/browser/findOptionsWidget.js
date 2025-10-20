@@ -141,3 +141,4 @@ export class FindOptionsWidget extends Widget {
         this._domNode.style.display = 'none';
     }
 }
+//# sourceMappingURL=findOptionsWidget.js.map

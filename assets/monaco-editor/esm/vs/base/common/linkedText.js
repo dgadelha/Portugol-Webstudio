@@ -43,3 +43,4 @@ export function parseLinkedText(text) {
     }
     return new LinkedText(result);
 }
+//# sourceMappingURL=linkedText.js.map

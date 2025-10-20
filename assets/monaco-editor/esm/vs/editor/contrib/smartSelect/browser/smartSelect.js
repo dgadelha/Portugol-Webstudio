@@ -68,7 +68,7 @@ let SmartSelectController = class SmartSelectController {
         const selections = this._editor.getSelections();
         const model = this._editor.getModel();
         if (!this._state) {
-            await provideSelectionRanges(this._languageFeaturesService.selectionRangeProvider, model, selections.map(s => s.getPosition()), this._editor.getOption(114 /* EditorOption.smartSelect */), CancellationToken.None).then(ranges => {
+            await provideSelectionRanges(this._languageFeaturesService.selectionRangeProvider, model, selections.map(s => s.getPosition()), this._editor.getOption(129 /* EditorOption.smartSelect */), CancellationToken.None).then(ranges => {
                 if (!arrays.isNonEmptyArray(ranges) || ranges.length !== selections.length) {
                     // invalid result
                     return;
@@ -131,8 +131,7 @@ class GrowSelectionAction extends AbstractSmartSelect {
     constructor() {
         super(true, {
             id: 'editor.action.smartSelect.expand',
-            label: nls.localize('smartSelect.expand', "Expand Selection"),
-            alias: 'Expand Selection',
+            label: nls.localize2(1385, "Expand Selection"),
             precondition: undefined,
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
@@ -146,7 +145,7 @@ class GrowSelectionAction extends AbstractSmartSelect {
             menuOpts: {
                 menuId: MenuId.MenubarSelectionMenu,
                 group: '1_basic',
-                title: nls.localize({ key: 'miSmartSelectGrow', comment: ['&& denotes a mnemonic'] }, "&&Expand Selection"),
+                title: nls.localize(1383, "&&Expand Selection"),
                 order: 2
             }
         });
@@ -158,8 +157,7 @@ class ShrinkSelectionAction extends AbstractSmartSelect {
     constructor() {
         super(false, {
             id: 'editor.action.smartSelect.shrink',
-            label: nls.localize('smartSelect.shrink', "Shrink Selection"),
-            alias: 'Shrink Selection',
+            label: nls.localize2(1386, "Shrink Selection"),
             precondition: undefined,
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
@@ -173,7 +171,7 @@ class ShrinkSelectionAction extends AbstractSmartSelect {
             menuOpts: {
                 menuId: MenuId.MenubarSelectionMenu,
                 group: '1_basic',
-                title: nls.localize({ key: 'miSmartSelectShrink', comment: ['&& denotes a mnemonic'] }, "&&Shrink Selection"),
+                title: nls.localize(1384, "&&Shrink Selection"),
                 order: 3
             }
         });
@@ -278,3 +276,4 @@ CommandsRegistry.registerCommand('_executeSelectionRangeProvider', async functio
         reference.dispose();
     }
 });
+//# sourceMappingURL=smartSelect.js.map

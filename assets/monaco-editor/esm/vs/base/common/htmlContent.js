@@ -4,6 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 import { illegalArgument } from './errors.js';
 import { escapeIcons } from './iconLabels.js';
+import { Schemas } from './network.js';
 import { isEqual } from './resources.js';
 import { escapeRegExpCharacters } from './strings.js';
 import { URI } from './uri.js';
@@ -147,3 +148,11 @@ export function parseHrefAndDimensions(href) {
     }
     return { href, dimensions };
 }
+export function createCommandUri(commandId, ...commandArgs) {
+    return URI.from({
+        scheme: Schemas.command,
+        path: commandId,
+        query: commandArgs.length ? encodeURIComponent(JSON.stringify(commandArgs)) : undefined,
+    });
+}
+//# sourceMappingURL=htmlContent.js.map

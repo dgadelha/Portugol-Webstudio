@@ -55,3 +55,11 @@ EmbeddedCodeEditorWidget = __decorate([
     __param(12, ILanguageFeaturesService)
 ], EmbeddedCodeEditorWidget);
 export { EmbeddedCodeEditorWidget };
+export function getOuterEditor(accessor) {
+    const editor = accessor.get(ICodeEditorService).getFocusedCodeEditor();
+    if (editor instanceof EmbeddedCodeEditorWidget) {
+        return editor.getParentEditor();
+    }
+    return editor;
+}
+//# sourceMappingURL=embeddedCodeEditorWidget.js.map

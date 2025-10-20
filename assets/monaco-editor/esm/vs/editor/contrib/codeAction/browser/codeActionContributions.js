@@ -24,8 +24,8 @@ Registry.as(Extensions.Configuration).registerConfiguration({
     properties: {
         'editor.codeActionWidget.showHeaders': {
             type: 'boolean',
-            scope: 5 /* ConfigurationScope.LANGUAGE_OVERRIDABLE */,
-            description: nls.localize('showCodeActionHeaders', "Enable/disable showing group headers in the Code Action menu."),
+            scope: 6 /* ConfigurationScope.LANGUAGE_OVERRIDABLE */,
+            description: nls.localize(856, "Enable/disable showing group headers in the Code Action menu."),
             default: true,
         },
     }
@@ -35,8 +35,8 @@ Registry.as(Extensions.Configuration).registerConfiguration({
     properties: {
         'editor.codeActionWidget.includeNearbyQuickFixes': {
             type: 'boolean',
-            scope: 5 /* ConfigurationScope.LANGUAGE_OVERRIDABLE */,
-            description: nls.localize('includeNearbyQuickFixes', "Enable/disable showing nearest Quick Fix within a line when not currently on a diagnostic."),
+            scope: 6 /* ConfigurationScope.LANGUAGE_OVERRIDABLE */,
+            description: nls.localize(857, "Enable/disable showing nearest Quick Fix within a line when not currently on a diagnostic."),
             default: true,
         },
     }
@@ -46,9 +46,10 @@ Registry.as(Extensions.Configuration).registerConfiguration({
     properties: {
         'editor.codeActions.triggerOnFocusChange': {
             type: 'boolean',
-            scope: 5 /* ConfigurationScope.LANGUAGE_OVERRIDABLE */,
-            markdownDescription: nls.localize('triggerOnFocusChange', 'Enable triggering {0} when {1} is set to {2}. Code Actions must be set to {3} to be triggered for window and focus changes.', '`#editor.codeActionsOnSave#`', '`#files.autoSave#`', '`afterDelay`', '`always`'),
+            scope: 6 /* ConfigurationScope.LANGUAGE_OVERRIDABLE */,
+            markdownDescription: nls.localize(858, 'Enable triggering {0} when {1} is set to {2}. Code Actions must be set to {3} to be triggered for window and focus changes.', '`#editor.codeActionsOnSave#`', '`#files.autoSave#`', '`afterDelay`', '`always`'),
             default: false,
         },
     }
 });
+//# sourceMappingURL=codeActionContributions.js.map

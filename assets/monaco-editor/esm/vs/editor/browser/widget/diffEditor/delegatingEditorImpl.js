@@ -106,3 +106,4 @@ export class DelegatingEditor extends Disposable {
         return this._targetEditor.changeDecorations(callback);
     }
 }
+//# sourceMappingURL=delegatingEditorImpl.js.map

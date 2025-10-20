@@ -54,3 +54,4 @@ CommandsRegistry.registerCommand('_executeSignatureHelpProvider', async (accesso
         ref.dispose();
     }
 });
+//# sourceMappingURL=provideSignatureHelp.js.map

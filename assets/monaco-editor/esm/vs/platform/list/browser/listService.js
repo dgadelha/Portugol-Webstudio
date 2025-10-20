@@ -11,11 +11,11 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { createStyleSheet, isActiveElement, isKeyboardEvent } from '../../../base/browser/dom.js';
+import { isActiveElement, isKeyboardEvent } from '../../../base/browser/dom.js';
 import { PagedList } from '../../../base/browser/ui/list/listPaging.js';
-import { DefaultStyleController, isSelectionRangeChangeEvent, isSelectionSingleChangeEvent, List, TypeNavigationMode } from '../../../base/browser/ui/list/listWidget.js';
+import { isSelectionRangeChangeEvent, isSelectionSingleChangeEvent, List, TypeNavigationMode } from '../../../base/browser/ui/list/listWidget.js';
 import { Table } from '../../../base/browser/ui/table/tableWidget.js';
-import { TreeFindMode, TreeFindMatchType } from '../../../base/browser/ui/tree/abstractTree.js';
+import { TreeFindMatchType, TreeFindMode } from '../../../base/browser/ui/tree/abstractTree.js';
 import { AsyncDataTree, CompressibleAsyncDataTree } from '../../../base/browser/ui/tree/asyncDataTree.js';
 import { DataTree } from '../../../base/browser/ui/tree/dataTree.js';
 import { CompressibleObjectTree, ObjectTree } from '../../../base/browser/ui/tree/objectTree.js';
@@ -40,7 +40,6 @@ export class ListService {
         this.disposables = new DisposableStore();
         this.lists = [];
         this._lastFocusedWidget = undefined;
-        this._hasCreatedStyleController = false;
     }
     setLastFocusedList(widget) {
         if (widget === this._lastFocusedWidget) {
@@ -51,12 +50,6 @@ export class ListService {
         this._lastFocusedWidget?.getHTMLElement().classList.add('last-focused');
     }
     register(widget, extraContextKeys) {
-        if (!this._hasCreatedStyleController) {
-            this._hasCreatedStyleController = true;
-            // create a shared default tree style sheet for performance reasons
-            const styleController = new DefaultStyleController(createStyleSheet(), '');
-            styleController.style(defaultListStyles);
-        }
         if (this.lists.some(l => l.widget === widget)) {
             throw new Error('Cannot register the same widget multiple times');
         }
@@ -572,6 +565,7 @@ function createKeyboardNavigationEventFilter(keybindingService) {
     };
 }
 let WorkbenchObjectTree = class WorkbenchObjectTree extends ObjectTree {
+    get onDidOpen() { return this.internals.onDidOpen; }
     constructor(user, container, delegate, renderers, options, instantiationService, contextKeyService, listService, configurationService) {
         const { options: treeOptions, getTypeNavigationMode, disposable } = instantiationService.invokeFunction(workbenchTreeDataPreamble, options);
         super(user, container, delegate, renderers, treeOptions);
@@ -744,6 +738,7 @@ function workbenchTreeDataPreamble(accessor, options) {
     return {
         getTypeNavigationMode,
         disposable,
+        // eslint-disable-next-line local/code-no-dangerous-type-assertions
         options: {
             // ...options, // TODO@Joao why is this not splatted here?
             keyboardSupport: false,
@@ -904,127 +899,128 @@ const configurationRegistry = Registry.as(ConfigurationExtensions.Configuration)
 configurationRegistry.registerConfiguration({
     id: 'workbench',
     order: 7,
-    title: localize('workbenchConfigurationTitle', "Workbench"),
+    title: localize(1688, "Workbench"),
     type: 'object',
     properties: {
         [multiSelectModifierSettingKey]: {
             type: 'string',
             enum: ['ctrlCmd', 'alt'],
             markdownEnumDescriptions: [
-                localize('multiSelectModifier.ctrlCmd', "Maps to `Control` on Windows and Linux and to `Command` on macOS."),
-                localize('multiSelectModifier.alt', "Maps to `Alt` on Windows and Linux and to `Option` on macOS.")
+                localize(1689, "Maps to `Control` on Windows and Linux and to `Command` on macOS."),
+                localize(1690, "Maps to `Alt` on Windows and Linux and to `Option` on macOS.")
             ],
             default: 'ctrlCmd',
-            description: localize({
-                key: 'multiSelectModifier',
-                comment: [
-                    '- `ctrlCmd` refers to a value the setting can take and should not be localized.',
-                    '- `Control` and `Command` refer to the modifier keys Ctrl or Cmd on the keyboard and can be localized.'
-                ]
-            }, "The modifier to be used to add an item in trees and lists to a multi-selection with the mouse (for example in the explorer, open editors and scm view). The 'Open to Side' mouse gestures - if supported - will adapt such that they do not conflict with the multiselect modifier.")
+            description: localize(1691, "The modifier to be used to add an item in trees and lists to a multi-selection with the mouse (for example in the explorer, open editors and scm view). The 'Open to Side' mouse gestures - if supported - will adapt such that they do not conflict with the multiselect modifier.")
+
+
+
+
+
+
         },
         [openModeSettingKey]: {
             type: 'string',
             enum: ['singleClick', 'doubleClick'],
             default: 'singleClick',
-            description: localize({
-                key: 'openModeModifier',
-                comment: ['`singleClick` and `doubleClick` refers to a value the setting can take and should not be localized.']
-            }, "Controls how to open items in trees and lists using the mouse (if supported). Note that some trees and lists might choose to ignore this setting if it is not applicable.")
+            description: localize(1692, "Controls how to open items in trees and lists using the mouse (if supported). Note that some trees and lists might choose to ignore this setting if it is not applicable.")
+
+
+
         },
         [horizontalScrollingKey]: {
             type: 'boolean',
             default: false,
-            description: localize('horizontalScrolling setting', "Controls whether lists and trees support horizontal scrolling in the workbench. Warning: turning on this setting has a performance implication.")
+            description: localize(1693, "Controls whether lists and trees support horizontal scrolling in the workbench. Warning: turning on this setting has a performance implication.")
         },
         [scrollByPageKey]: {
             type: 'boolean',
             default: false,
-            description: localize('list.scrollByPage', "Controls whether clicks in the scrollbar scroll page by page.")
+            description: localize(1694, "Controls whether clicks in the scrollbar scroll page by page.")
         },
         [treeIndentKey]: {
             type: 'number',
             default: 8,
             minimum: 4,
             maximum: 40,
-            description: localize('tree indent setting', "Controls tree indentation in pixels.")
+            description: localize(1695, "Controls tree indentation in pixels.")
         },
         [treeRenderIndentGuidesKey]: {
             type: 'string',
             enum: ['none', 'onHover', 'always'],
             default: 'onHover',
-            description: localize('render tree indent guides', "Controls whether the tree should render indent guides.")
+            description: localize(1696, "Controls whether the tree should render indent guides.")
         },
         [listSmoothScrolling]: {
             type: 'boolean',
             default: false,
-            description: localize('list smoothScrolling setting', "Controls whether lists and trees have smooth scrolling."),
+            description: localize(1697, "Controls whether lists and trees have smooth scrolling."),
         },
         [mouseWheelScrollSensitivityKey]: {
             type: 'number',
             default: 1,
-            markdownDescription: localize('Mouse Wheel Scroll Sensitivity', "A multiplier to be used on the `deltaX` and `deltaY` of mouse wheel scroll events.")
+            markdownDescription: localize(1698, "A multiplier to be used on the `deltaX` and `deltaY` of mouse wheel scroll events.")
         },
         [fastScrollSensitivityKey]: {
             type: 'number',
             default: 5,
-            markdownDescription: localize('Fast Scroll Sensitivity', "Scrolling speed multiplier when pressing `Alt`.")
+            markdownDescription: localize(1699, "Scrolling speed multiplier when pressing `Alt`.")
         },
         [defaultFindModeSettingKey]: {
             type: 'string',
             enum: ['highlight', 'filter'],
             enumDescriptions: [
-                localize('defaultFindModeSettingKey.highlight', "Highlight elements when searching. Further up and down navigation will traverse only the highlighted elements."),
-                localize('defaultFindModeSettingKey.filter', "Filter elements when searching.")
+                localize(1700, "Highlight elements when searching. Further up and down navigation will traverse only the highlighted elements."),
+                localize(1701, "Filter elements when searching.")
             ],
             default: 'highlight',
-            description: localize('defaultFindModeSettingKey', "Controls the default find mode for lists and trees in the workbench.")
+            description: localize(1702, "Controls the default find mode for lists and trees in the workbench.")
         },
         [keyboardNavigationSettingKey]: {
             type: 'string',
             enum: ['simple', 'highlight', 'filter'],
             enumDescriptions: [
-                localize('keyboardNavigationSettingKey.simple', "Simple keyboard navigation focuses elements which match the keyboard input. Matching is done only on prefixes."),
-                localize('keyboardNavigationSettingKey.highlight', "Highlight keyboard navigation highlights elements which match the keyboard input. Further up and down navigation will traverse only the highlighted elements."),
-                localize('keyboardNavigationSettingKey.filter', "Filter keyboard navigation will filter out and hide all the elements which do not match the keyboard input.")
+                localize(1703, "Simple keyboard navigation focuses elements which match the keyboard input. Matching is done only on prefixes."),
+                localize(1704, "Highlight keyboard navigation highlights elements which match the keyboard input. Further up and down navigation will traverse only the highlighted elements."),
+                localize(1705, "Filter keyboard navigation will filter out and hide all the elements which do not match the keyboard input.")
             ],
             default: 'highlight',
-            description: localize('keyboardNavigationSettingKey', "Controls the keyboard navigation style for lists and trees in the workbench. Can be simple, highlight and filter."),
+            description: localize(1706, "Controls the keyboard navigation style for lists and trees in the workbench. Can be simple, highlight and filter."),
             deprecated: true,
-            deprecationMessage: localize('keyboardNavigationSettingKeyDeprecated', "Please use 'workbench.list.defaultFindMode' and	'workbench.list.typeNavigationMode' instead.")
+            deprecationMessage: localize(1707, "Please use 'workbench.list.defaultFindMode' and	'workbench.list.typeNavigationMode' instead.")
         },
         [defaultFindMatchTypeSettingKey]: {
             type: 'string',
             enum: ['fuzzy', 'contiguous'],
             enumDescriptions: [
-                localize('defaultFindMatchTypeSettingKey.fuzzy', "Use fuzzy matching when searching."),
-                localize('defaultFindMatchTypeSettingKey.contiguous', "Use contiguous matching when searching.")
+                localize(1708, "Use fuzzy matching when searching."),
+                localize(1709, "Use contiguous matching when searching.")
             ],
             default: 'fuzzy',
-            description: localize('defaultFindMatchTypeSettingKey', "Controls the type of matching used when searching lists and trees in the workbench.")
+            description: localize(1710, "Controls the type of matching used when searching lists and trees in the workbench.")
         },
         [treeExpandMode]: {
             type: 'string',
             enum: ['singleClick', 'doubleClick'],
             default: 'singleClick',
-            description: localize('expand mode', "Controls how tree folders are expanded when clicking the folder names. Note that some trees and lists might choose to ignore this setting if it is not applicable."),
+            description: localize(1711, "Controls how tree folders are expanded when clicking the folder names. Note that some trees and lists might choose to ignore this setting if it is not applicable."),
         },
         [treeStickyScroll]: {
             type: 'boolean',
             default: true,
-            description: localize('sticky scroll', "Controls whether sticky scrolling is enabled in trees."),
+            description: localize(1712, "Controls whether sticky scrolling is enabled in trees."),
         },
         [treeStickyScrollMaxElements]: {
             type: 'number',
             minimum: 1,
             default: 7,
-            markdownDescription: localize('sticky scroll maximum items', "Controls the number of sticky elements displayed in the tree when {0} is enabled.", '`#workbench.tree.enableStickyScroll#`'),
+            markdownDescription: localize(1713, "Controls the number of sticky elements displayed in the tree when {0} is enabled.", '`#workbench.tree.enableStickyScroll#`'),
         },
         [typeNavigationModeSettingKey]: {
             type: 'string',
             enum: ['automatic', 'trigger'],
             default: 'automatic',
-            markdownDescription: localize('typeNavigationMode2', "Controls how type navigation works in lists and trees in the workbench. When set to `trigger`, type navigation begins once the `list.triggerTypeNavigation` command is run."),
+            markdownDescription: localize(1714, "Controls how type navigation works in lists and trees in the workbench. When set to `trigger`, type navigation begins once the `list.triggerTypeNavigation` command is run."),
         }
     }
 });
+//# sourceMappingURL=listService.js.map

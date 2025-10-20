@@ -1,7 +1,6 @@
 import { addDisposableListener, EventHelper, EventType, reset, trackFocus } from '../../dom.js';
-import { sanitize } from '../../dompurify/dompurify.js';
 import { StandardKeyboardEvent } from '../../keyboardEvent.js';
-import { renderMarkdown, renderStringAsPlaintext } from '../../markdownRenderer.js';
+import { renderMarkdown, renderAsPlaintext } from '../../markdownRenderer.js';
 import { Gesture, EventType as TouchEventType } from '../../touch.js';
 import { getDefaultHoverDelegate } from '../hover/hoverDelegateFactory.js';
 import { renderLabelWithIcons } from '../iconLabel/iconLabels.js';
@@ -12,6 +11,7 @@ import { Disposable } from '../../../common/lifecycle.js';
 import { ThemeIcon } from '../../../common/themables.js';
 import './button.css';
 import { getBaseLayerHoverDelegate } from '../hover/hoverDelegate2.js';
+import { safeSetInnerHtml } from '../../domSanitize.js';
 export const unthemedButtonStyles = {
     buttonBackground: '#0E639C',
     buttonHoverBackground: '#006BB3',
@@ -22,6 +22,15 @@ export const unthemedButtonStyles = {
     buttonSecondaryForeground: undefined,
     buttonSecondaryHoverBackground: undefined
 };
+// Only allow a very limited set of inline html tags
+const buttonSanitizerConfig = Object.freeze({
+    allowedTags: {
+        override: ['b', 'i', 'u', 'code', 'span'],
+    },
+    allowedAttributes: {
+        override: ['class'],
+    },
+});
 export class Button extends Disposable {
     get onDidClick() { return this._onDidClick.event; }
     constructor(container, options) {
@@ -55,6 +64,7 @@ export class Button extends Disposable {
             this._element.setAttribute('aria-label', options.ariaLabel);
         }
         container.appendChild(this._element);
+        this.enabled = !options.disabled;
         this._register(Gesture.addTarget(this._element));
         [EventType.CLICK, TouchEventType.Tap].forEach(eventType => {
             this._register(addDisposableListener(this._element, eventType, e => {
@@ -147,14 +157,12 @@ export class Button extends Disposable {
         this._element.classList.add('monaco-text-button');
         const labelElement = this.options.supportShortLabel ? this._labelElement : this._element;
         if (isMarkdownString(value)) {
-            const rendered = renderMarkdown(value, { inline: true });
+            const rendered = renderMarkdown(value, undefined, document.createElement('span'));
             rendered.dispose();
             // Don't include outer `<p>`
             const root = rendered.element.querySelector('p')?.innerHTML;
             if (root) {
-                // Only allow a very limited set of inline html tags
-                const sanitized = sanitize(root, { ADD_TAGS: ['b', 'i', 'u', 'code', 'span'], ALLOWED_ATTR: ['class'], RETURN_TRUSTED_TYPE: true });
-                labelElement.innerHTML = sanitized;
+                safeSetInnerHtml(labelElement, root, buttonSanitizerConfig);
             }
             else {
                 reset(labelElement);
@@ -173,21 +181,27 @@ export class Button extends Disposable {
             title = this.options.title;
         }
         else if (this.options.title) {
-            title = renderStringAsPlaintext(value);
+            title = renderAsPlaintext(value);
         }
         this.setTitle(title);
-        if (typeof this.options.ariaLabel === 'string') {
-            this._element.setAttribute('aria-label', this.options.ariaLabel);
-        }
-        else if (this.options.ariaLabel) {
-            this._element.setAttribute('aria-label', title);
-        }
+        this._setAriaLabel();
         this._label = value;
     }
     get label() {
         return this._label;
     }
+    _setAriaLabel() {
+        if (typeof this.options.ariaLabel === 'string') {
+            this._element.setAttribute('aria-label', this.options.ariaLabel);
+        }
+        else if (typeof this.options.title === 'string') {
+            this._element.setAttribute('aria-label', this.options.title);
+        }
+    }
     set icon(icon) {
+        this._setAriaLabel();
+        const oldIcons = Array.from(this._element.classList).filter(item => item.startsWith('codicon-'));
+        this._element.classList.remove(...oldIcons);
         this._element.classList.add(...ThemeIcon.asClassNameArray(icon));
     }
     set enabled(value) {
@@ -206,10 +220,11 @@ export class Button extends Disposable {
     }
     setTitle(title) {
         if (!this._hover && title !== '') {
-            this._hover = this._register(getBaseLayerHoverDelegate().setupManagedHover(this.options.hoverDelegate ?? getDefaultHoverDelegate('mouse'), this._element, title));
+            this._hover = this._register(getBaseLayerHoverDelegate().setupManagedHover(this.options.hoverDelegate ?? getDefaultHoverDelegate('element'), this._element, title));
         }
         else if (this._hover) {
             this._hover.update(title);
         }
     }
 }
+//# sourceMappingURL=button.js.map

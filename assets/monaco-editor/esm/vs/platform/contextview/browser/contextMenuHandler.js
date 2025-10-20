@@ -37,6 +37,7 @@ export class ContextMenuHandler {
             canRelayout: false,
             anchorAlignment: delegate.anchorAlignment,
             anchorAxisAlignment: delegate.anchorAxisAlignment,
+            layer: delegate.layer,
             render: (container) => {
                 this.lastContainer = container;
                 const className = delegate.getMenuClassName ? delegate.getMenuClassName() : '';
@@ -57,7 +58,7 @@ export class ContextMenuHandler {
                     this.blockDisposable = addDisposableListener(this.block, EventType.MOUSE_DOWN, e => e.stopPropagation());
                 }
                 const menuDisposables = new DisposableStore();
-                const actionRunner = delegate.actionRunner || new ActionRunner();
+                const actionRunner = delegate.actionRunner || menuDisposables.add(new ActionRunner());
                 actionRunner.onWillRun(evt => this.onActionRun(evt, !delegate.skipTelemetry), this, menuDisposables);
                 actionRunner.onDidRun(this.onDidActionRun, this, menuDisposables);
                 menu = new Menu(container, actions, {
@@ -120,3 +121,4 @@ export class ContextMenuHandler {
         }
     }
 }
+//# sourceMappingURL=contextMenuHandler.js.map

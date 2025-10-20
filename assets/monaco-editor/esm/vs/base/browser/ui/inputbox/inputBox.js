@@ -3,12 +3,12 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 import * as dom from '../../dom.js';
+import * as cssJs from '../../cssValue.js';
 import { DomEmitter } from '../../event.js';
 import { renderFormattedText, renderText } from '../../formattedTextRenderer.js';
 import { ActionBar } from '../actionbar/actionbar.js';
 import * as aria from '../aria/aria.js';
 import { getBaseLayerHoverDelegate } from '../hover/hoverDelegate2.js';
-import { getDefaultHoverDelegate } from '../hover/hoverDelegateFactory.js';
 import { ScrollableElement } from '../scrollbar/scrollableElement.js';
 import { Widget } from '../widget.js';
 import { Emitter, Event } from '../../../common/event.js';
@@ -16,6 +16,7 @@ import { HistoryNavigator } from '../../../common/history.js';
 import { equals } from '../../../common/objects.js';
 import './inputBox.css';
 import * as nls from '../../../../nls.js';
+import { MutableDisposable } from '../../../common/lifecycle.js';
 const $ = dom.$;
 export const unthemedInboxStyles = {
     inputBackground: '#3C3C3C',
@@ -32,14 +33,15 @@ export const unthemedInboxStyles = {
     inputValidationWarningForeground: undefined
 };
 export class InputBox extends Widget {
+    get onDidChange() { return this._onDidChange.event; }
+    get onDidHeightChange() { return this._onDidHeightChange.event; }
     constructor(container, contextViewProvider, options) {
         super();
         this.state = 'idle';
         this.maxHeight = Number.POSITIVE_INFINITY;
+        this.hover = this._register(new MutableDisposable());
         this._onDidChange = this._register(new Emitter());
-        this.onDidChange = this._onDidChange.event;
         this._onDidHeightChange = this._register(new Emitter());
-        this.onDidHeightChange = this._onDidHeightChange.event;
         this.contextViewProvider = contextViewProvider;
         this.options = options;
         this.message = null;
@@ -124,11 +126,13 @@ export class InputBox extends Widget {
     }
     setTooltip(tooltip) {
         this.tooltip = tooltip;
-        if (!this.hover) {
-            this.hover = this._register(getBaseLayerHoverDelegate().setupManagedHover(getDefaultHoverDelegate('mouse'), this.input, tooltip));
-        }
-        else {
-            this.hover.update(tooltip);
+        if (!this.hover.value) {
+            this.hover.value = this._register(getBaseLayerHoverDelegate().setupDelayedHoverAtMouse(this.input, () => ({
+                content: this.tooltip,
+                appearance: {
+                    compact: true,
+                }
+            })));
         }
     }
     get inputElement() {
@@ -215,7 +219,7 @@ export class InputBox extends Widget {
         this.element.classList.remove('error');
         this.element.classList.add(this.classForType(message.type));
         const styles = this.stylesForType(this.message.type);
-        this.element.style.border = `1px solid ${dom.asCssValueWithDefault(styles.border, 'transparent')}`;
+        this.element.style.border = `1px solid ${cssJs.asCssValueWithDefault(styles.border, 'transparent')}`;
         if (this.message.content && (this.hasFocus() || force)) {
             this._showMessage();
         }
@@ -274,13 +278,13 @@ export class InputBox extends Widget {
                 }
                 div = dom.append(container, $('.monaco-inputbox-container'));
                 layout();
-                const renderOptions = {
-                    inline: true,
-                    className: 'monaco-inputbox-message'
-                };
-                const spanElement = (this.message.formatContent
-                    ? renderFormattedText(this.message.content, renderOptions)
-                    : renderText(this.message.content, renderOptions));
+                const spanElement = $('span.monaco-inputbox-message');
+                if (this.message.formatContent) {
+                    renderFormattedText(this.message.content, undefined, spanElement);
+                }
+                else {
+                    renderText(this.message.content, undefined, spanElement);
+                }
                 spanElement.classList.add(this.classForType(this.message.type));
                 const styles = this.stylesForType(this.message.type);
                 spanElement.style.backgroundColor = styles.background ?? '';
@@ -297,13 +301,13 @@ export class InputBox extends Widget {
         // ARIA Support
         let alertText;
         if (this.message.type === 3 /* MessageType.ERROR */) {
-            alertText = nls.localize('alertErrorMessage', "Error: {0}", this.message.content);
+            alertText = nls.localize(9, "Error: {0}", this.message.content);
         }
         else if (this.message.type === 2 /* MessageType.WARNING */) {
-            alertText = nls.localize('alertWarningMessage', "Warning: {0}", this.message.content);
+            alertText = nls.localize(10, "Warning: {0}", this.message.content);
         }
         else {
-            alertText = nls.localize('alertInfoMessage', "Info: {0}", this.message.content);
+            alertText = nls.localize(11, "Info: {0}", this.message.content);
         }
         aria.alert(alertText);
         this.state = 'open';
@@ -353,7 +357,7 @@ export class InputBox extends Widget {
         this.input.style.backgroundColor = 'inherit';
         this.input.style.color = foreground;
         // there's always a border, even if the color is not set.
-        this.element.style.border = `1px solid ${dom.asCssValueWithDefault(border, 'transparent')}`;
+        this.element.style.border = `1px solid ${cssJs.asCssValueWithDefault(border, 'transparent')}`;
     }
     layout() {
         if (!this.mirror) {
@@ -387,20 +391,20 @@ export class InputBox extends Widget {
 }
 export class HistoryInputBox extends InputBox {
     constructor(container, contextViewProvider, options) {
-        const NLS_PLACEHOLDER_HISTORY_HINT_SUFFIX_NO_PARENS = nls.localize({
-            key: 'history.inputbox.hint.suffix.noparens',
-            comment: ['Text is the suffix of an input field placeholder coming after the action the input field performs, this will be used when the input field ends in a closing parenthesis ")", for example "Filter (e.g. text, !exclude)". The character inserted into the final string is \u21C5 to represent the up and down arrow keys.']
-        }, ' or {0} for history', `\u21C5`);
-        const NLS_PLACEHOLDER_HISTORY_HINT_SUFFIX_IN_PARENS = nls.localize({
-            key: 'history.inputbox.hint.suffix.inparens',
-            comment: ['Text is the suffix of an input field placeholder coming after the action the input field performs, this will be used when the input field does NOT end in a closing parenthesis (eg. "Find"). The character inserted into the final string is \u21C5 to represent the up and down arrow keys.']
-        }, ' ({0} for history)', `\u21C5`);
+        const NLS_PLACEHOLDER_HISTORY_HINT_SUFFIX_NO_PARENS = nls.localize(12, ' or {0} for history', `\u21C5`);
+
+
+
+        const NLS_PLACEHOLDER_HISTORY_HINT_SUFFIX_IN_PARENS = nls.localize(13, ' ({0} for history)', `\u21C5`);
+
+
+
         super(container, contextViewProvider, options);
         this._onDidFocus = this._register(new Emitter());
         this.onDidFocus = this._onDidFocus.event;
         this._onDidBlur = this._register(new Emitter());
         this.onDidBlur = this._onDidBlur.event;
-        this.history = new HistoryNavigator(options.history, 100);
+        this.history = this._register(new HistoryNavigator(options.history, 100));
         // Function to append the history suffix to the placeholder if necessary
         const addSuffix = () => {
             if (options.showHistoryHint && options.showHistoryHint() && !this.placeholder.endsWith(NLS_PLACEHOLDER_HISTORY_HINT_SUFFIX_NO_PARENS) && !this.placeholder.endsWith(NLS_PLACEHOLDER_HISTORY_HINT_SUFFIX_IN_PARENS) && this.history.getHistory().length) {
@@ -473,7 +477,7 @@ export class HistoryInputBox extends InputBox {
             next = next === this.value ? this.getNextValue() : next;
         }
         this.value = next ?? '';
-        aria.status(this.value ? this.value : nls.localize('clearedInput', "Cleared Input"));
+        aria.status(this.value ? this.value : nls.localize(14, "Cleared Input"));
     }
     showPreviousValue() {
         if (!this.history.has(this.value)) {
@@ -515,3 +519,4 @@ export class HistoryInputBox extends InputBox {
         return this.history.next();
     }
 }
+//# sourceMappingURL=inputBox.js.map

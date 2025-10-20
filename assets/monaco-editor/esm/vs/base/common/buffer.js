@@ -66,3 +66,14 @@ export function readUInt8(source, offset) {
 export function writeUInt8(destination, value, offset) {
     destination[offset] = value;
 }
+const hexChars = '0123456789abcdef';
+export function encodeHex({ buffer }) {
+    let result = '';
+    for (let i = 0; i < buffer.length; i++) {
+        const byte = buffer[i];
+        result += hexChars[byte >>> 4];
+        result += hexChars[byte & 0x0f];
+    }
+    return result;
+}
+//# sourceMappingURL=buffer.js.map

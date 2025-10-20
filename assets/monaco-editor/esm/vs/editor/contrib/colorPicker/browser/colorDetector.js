@@ -20,7 +20,6 @@ import { Disposable, DisposableStore } from '../../../../base/common/lifecycle.j
 import { StopWatch } from '../../../../base/common/stopwatch.js';
 import { noBreakWhitespace } from '../../../../base/common/strings.js';
 import { DynamicCssRules } from '../../../browser/editorDom.js';
-import { registerEditorContribution } from '../../../browser/editorExtensions.js';
 import { Range } from '../../../common/core/range.js';
 import { ModelDecorationOptions } from '../../../common/model/textModel.js';
 import { ILanguageFeatureDebounceService } from '../../../common/services/languageFeatureDebounce.js';
@@ -40,10 +39,10 @@ let ColorDetector = class ColorDetector extends Disposable {
         this._localToDispose = this._register(new DisposableStore());
         this._decorationsIds = [];
         this._colorDatas = new Map();
-        this._colorDecoratorIds = this._editor.createDecorationsCollection();
-        this._ruleFactory = new DynamicCssRules(this._editor);
-        this._decoratorLimitReporter = new DecoratorLimitReporter();
+        this._decoratorLimitReporter = this._register(new DecoratorLimitReporter());
         this._colorDecorationClassRefs = this._register(new DisposableStore());
+        this._colorDecoratorIds = this._editor.createDecorationsCollection();
+        this._ruleFactory = this._register(new DynamicCssRules(this._editor));
         this._debounceInformation = languageFeatureDebounceService.for(_languageFeaturesService.colorProvider, 'Document Colors', { min: ColorDetector_1.RECOMPUTE_TIME });
         this._register(_editor.onDidChangeModel(() => {
             this._isColorDecoratorsEnabled = this.isEnabled();
@@ -54,9 +53,9 @@ let ColorDetector = class ColorDetector extends Disposable {
         this._register(_editor.onDidChangeConfiguration((e) => {
             const prevIsEnabled = this._isColorDecoratorsEnabled;
             this._isColorDecoratorsEnabled = this.isEnabled();
-            this._isDefaultColorDecoratorsEnabled = this._editor.getOption(148 /* EditorOption.defaultColorDecorators */);
-            const updatedColorDecoratorsSetting = prevIsEnabled !== this._isColorDecoratorsEnabled || e.hasChanged(21 /* EditorOption.colorDecoratorsLimit */);
-            const updatedDefaultColorDecoratorsSetting = e.hasChanged(148 /* EditorOption.defaultColorDecorators */);
+            this._defaultColorDecoratorsEnablement = this._editor.getOption(167 /* EditorOption.defaultColorDecorators */);
+            const updatedColorDecoratorsSetting = prevIsEnabled !== this._isColorDecoratorsEnabled || e.hasChanged(27 /* EditorOption.colorDecoratorsLimit */);
+            const updatedDefaultColorDecoratorsSetting = e.hasChanged(167 /* EditorOption.defaultColorDecorators */);
             if (updatedColorDecoratorsSetting || updatedDefaultColorDecoratorsSetting) {
                 if (this._isColorDecoratorsEnabled) {
                     this.updateColors();
@@ -69,7 +68,7 @@ let ColorDetector = class ColorDetector extends Disposable {
         this._timeoutTimer = null;
         this._computePromise = null;
         this._isColorDecoratorsEnabled = this.isEnabled();
-        this._isDefaultColorDecoratorsEnabled = this._editor.getOption(148 /* EditorOption.defaultColorDecorators */);
+        this._defaultColorDecoratorsEnablement = this._editor.getOption(167 /* EditorOption.defaultColorDecorators */);
         this.updateColors();
     }
     isEnabled() {
@@ -86,7 +85,7 @@ let ColorDetector = class ColorDetector extends Disposable {
                 return colorDecorators['enable'];
             }
         }
-        return this._editor.getOption(20 /* EditorOption.colorDecorators */);
+        return this._editor.getOption(26 /* EditorOption.colorDecorators */);
     }
     static get(editor) {
         return editor.getContribution(this.ID);
@@ -123,7 +122,7 @@ let ColorDetector = class ColorDetector extends Disposable {
                 return [];
             }
             const sw = new StopWatch(false);
-            const colors = await getColors(this._languageFeaturesService.colorProvider, model, token, this._isDefaultColorDecoratorsEnabled);
+            const colors = await getColors(this._languageFeaturesService.colorProvider, model, token, this._defaultColorDecoratorsEnablement);
             this._debounceInformation.update(model, sw.elapsed());
             return colors;
         });
@@ -167,7 +166,7 @@ let ColorDetector = class ColorDetector extends Disposable {
     updateColorDecorators(colorData) {
         this._colorDecorationClassRefs.clear();
         const decorations = [];
-        const limit = this._editor.getOption(21 /* EditorOption.colorDecoratorsLimit */);
+        const limit = this._editor.getOption(27 /* EditorOption.colorDecoratorsLimit */);
         for (let i = 0; i < colorData.length && decorations.length < limit; i++) {
             const { red, green, blue, alpha } = colorData[i].colorInfo.color;
             const rgba = new RGBA(Math.round(red * 255), Math.round(green * 255), Math.round(blue * 255), alpha);
@@ -226,9 +225,10 @@ ColorDetector = ColorDetector_1 = __decorate([
     __param(3, ILanguageFeatureDebounceService)
 ], ColorDetector);
 export { ColorDetector };
-export class DecoratorLimitReporter {
+export class DecoratorLimitReporter extends Disposable {
     constructor() {
-        this._onDidChange = new Emitter();
+        super(...arguments);
+        this._onDidChange = this._register(new Emitter());
         this._computed = 0;
         this._limited = false;
     }
@@ -240,4 +240,4 @@ export class DecoratorLimitReporter {
         }
     }
 }
-registerEditorContribution(ColorDetector.ID, ColorDetector, 1 /* EditorContributionInstantiation.AfterFirstRender */);
+//# sourceMappingURL=colorDetector.js.map

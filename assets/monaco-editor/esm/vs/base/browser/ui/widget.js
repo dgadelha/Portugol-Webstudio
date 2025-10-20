@@ -39,3 +39,4 @@ export class Widget extends Disposable {
         return Gesture.ignoreTarget(domNode);
     }
 }
+//# sourceMappingURL=widget.js.map

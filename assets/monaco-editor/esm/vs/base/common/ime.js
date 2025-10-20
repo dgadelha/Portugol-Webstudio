@@ -28,3 +28,4 @@ export class IMEImpl {
     }
 }
 export const IME = new IMEImpl();
+//# sourceMappingURL=ime.js.map

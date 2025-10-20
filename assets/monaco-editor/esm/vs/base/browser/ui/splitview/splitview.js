@@ -824,3 +824,4 @@ export class SplitView extends Disposable {
         super.dispose();
     }
 }
+//# sourceMappingURL=splitview.js.map

@@ -16,6 +16,7 @@ import { MonarchTokenizer } from '../common/monarch/monarchLexer.js';
 import { IStandaloneThemeService } from '../common/standaloneTheme.js';
 import { IConfigurationService } from '../../../platform/configuration/common/configuration.js';
 import { IMarkerService } from '../../../platform/markers/common/markers.js';
+import { EditDeltaInfo } from '../../common/textModelEditSource.js';
 /**
  * Register information about a new language.
  */
@@ -504,10 +505,6 @@ export function registerInlineCompletionsProvider(languageSelector, provider) {
     const languageFeaturesService = StandaloneServices.get(ILanguageFeaturesService);
     return languageFeaturesService.inlineCompletionsProvider.register(languageSelector, provider);
 }
-export function registerInlineEditProvider(languageSelector, provider) {
-    const languageFeaturesService = StandaloneServices.get(ILanguageFeaturesService);
-    return languageFeaturesService.inlineEditProvider.register(languageSelector, provider);
-}
 /**
  * Register an inlay hints provider.
  */
@@ -556,7 +553,6 @@ export function createMonacoLanguagesAPI() {
         registerDocumentSemanticTokensProvider: registerDocumentSemanticTokensProvider,
         registerDocumentRangeSemanticTokensProvider: registerDocumentRangeSemanticTokensProvider,
         registerInlineCompletionsProvider: registerInlineCompletionsProvider,
-        registerInlineEditProvider: registerInlineEditProvider,
         registerInlayHintsProvider: registerInlayHintsProvider,
         // enums
         DocumentHighlightKind: standaloneEnums.DocumentHighlightKind,
@@ -570,14 +566,17 @@ export function createMonacoLanguagesAPI() {
         SignatureHelpTriggerKind: standaloneEnums.SignatureHelpTriggerKind,
         InlayHintKind: standaloneEnums.InlayHintKind,
         InlineCompletionTriggerKind: standaloneEnums.InlineCompletionTriggerKind,
-        InlineEditTriggerKind: standaloneEnums.InlineEditTriggerKind,
         CodeActionTriggerType: standaloneEnums.CodeActionTriggerType,
         NewSymbolNameTag: standaloneEnums.NewSymbolNameTag,
         NewSymbolNameTriggerKind: standaloneEnums.NewSymbolNameTriggerKind,
         PartialAcceptTriggerKind: standaloneEnums.PartialAcceptTriggerKind,
         HoverVerbosityAction: standaloneEnums.HoverVerbosityAction,
+        InlineCompletionEndOfLifeReasonKind: standaloneEnums.InlineCompletionEndOfLifeReasonKind,
+        InlineCompletionDisplayLocationKind: standaloneEnums.InlineCompletionDisplayLocationKind,
         // classes
         FoldingRangeKind: languages.FoldingRangeKind,
         SelectedSuggestionInfo: languages.SelectedSuggestionInfo,
+        EditDeltaInfo: EditDeltaInfo,
     };
 }
+//# sourceMappingURL=standaloneLanguages.js.map

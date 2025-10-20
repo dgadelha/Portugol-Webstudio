@@ -10,3 +10,4 @@ export function isSemanticColoringEnabled(model, themeService, configurationServ
     }
     return themeService.getColorTheme().semanticHighlighting;
 }
+//# sourceMappingURL=semanticTokensConfig.js.map

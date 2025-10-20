@@ -5,7 +5,7 @@
 import { ShiftCommand } from '../commands/shiftCommand.js';
 import { CompositionSurroundSelectionCommand } from '../commands/surroundSelectionCommand.js';
 import { EditOperationResult, isQuote } from '../cursorCommon.js';
-import { AutoClosingOpenCharTypeOperation, AutoClosingOvertypeOperation, AutoClosingOvertypeWithInterceptorsOperation, AutoIndentOperation, CompositionOperation, EnterOperation, InterceptorElectricCharOperation, PasteOperation, shouldSurroundChar, SimpleCharacterTypeOperation, SurroundSelectionOperation, TabOperation, TypeWithoutInterceptorsOperation } from './cursorTypeEditOperations.js';
+import { AutoClosingOpenCharTypeOperation, AutoClosingOvertypeOperation, AutoClosingOvertypeWithInterceptorsOperation, AutoIndentOperation, CompositionOperation, CompositionEndOvertypeOperation, EnterOperation, InterceptorElectricCharOperation, PasteOperation, shouldSurroundChar, SimpleCharacterTypeOperation, SurroundSelectionOperation, TabOperation, TypeWithoutInterceptorsOperation } from './cursorTypeEditOperations.js';
 export class TypeOperations {
     static indent(config, model, selections) {
         if (model === null || selections === null) {
@@ -67,7 +67,7 @@ export class TypeOperations {
         }
         if (!insertedText || insertedText.length !== 1) {
             // we're only interested in the case where a single character was inserted
-            return null;
+            return CompositionEndOvertypeOperation.getEdits(config, compositions);
         }
         const ch = insertedText;
         let hasDeletion = false;
@@ -124,7 +124,7 @@ export class TypeOperations {
         if (autoClosingOpenCharEdits !== undefined) {
             return autoClosingOpenCharEdits;
         }
-        return null;
+        return CompositionEndOvertypeOperation.getEdits(config, compositions);
     }
     static typeWithInterceptors(isDoingComposition, prevEditOperationType, config, model, selections, autoClosedCharacters, ch) {
         const enterEdits = EnterOperation.getEdits(config, model, selections, ch, isDoingComposition);
@@ -151,19 +151,21 @@ export class TypeOperations {
         if (interceptorElectricCharOperation !== undefined) {
             return interceptorElectricCharOperation;
         }
-        return SimpleCharacterTypeOperation.getEdits(prevEditOperationType, selections, ch);
+        return SimpleCharacterTypeOperation.getEdits(config, prevEditOperationType, selections, ch, isDoingComposition);
     }
     static typeWithoutInterceptors(prevEditOperationType, config, model, selections, str) {
         return TypeWithoutInterceptorsOperation.getEdits(prevEditOperationType, selections, str);
     }
 }
 export class CompositionOutcome {
-    constructor(deletedText, deletedSelectionStart, deletedSelectionEnd, insertedText, insertedSelectionStart, insertedSelectionEnd) {
+    constructor(deletedText, deletedSelectionStart, deletedSelectionEnd, insertedText, insertedSelectionStart, insertedSelectionEnd, insertedTextRange) {
         this.deletedText = deletedText;
         this.deletedSelectionStart = deletedSelectionStart;
         this.deletedSelectionEnd = deletedSelectionEnd;
         this.insertedText = insertedText;
         this.insertedSelectionStart = insertedSelectionStart;
         this.insertedSelectionEnd = insertedSelectionEnd;
+        this.insertedTextRange = insertedTextRange;
     }
 }
+//# sourceMappingURL=cursorTypeOperations.js.map

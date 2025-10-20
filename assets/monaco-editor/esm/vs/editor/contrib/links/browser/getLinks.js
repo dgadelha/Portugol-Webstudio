@@ -51,6 +51,7 @@ export class Link {
     }
 }
 export class LinksList {
+    static { this.Empty = new LinksList([]); }
     constructor(tuples) {
         this._disposables = new DisposableStore();
         let links = [];
@@ -60,13 +61,14 @@ export class LinksList {
             links = LinksList._union(links, newLinks);
             // register disposables
             if (isDisposable(list)) {
+                this._disposables ??= new DisposableStore();
                 this._disposables.add(list);
             }
         }
         this.links = links;
     }
     dispose() {
-        this._disposables.dispose();
+        this._disposables?.dispose();
         this.links.length = 0;
     }
     static _union(oldLinks, newLinks) {
@@ -105,24 +107,27 @@ export class LinksList {
         return result;
     }
 }
-export function getLinks(providers, model, token) {
+export async function getLinks(providers, model, token) {
     const lists = [];
     // ask all providers for links in parallel
-    const promises = providers.ordered(model).reverse().map((provider, i) => {
-        return Promise.resolve(provider.provideLinks(model, token)).then(result => {
+    const promises = providers.ordered(model).reverse().map(async (provider, i) => {
+        try {
+            const result = await provider.provideLinks(model, token);
             if (result) {
                 lists[i] = [result, provider];
             }
-        }, onUnexpectedExternalError);
-    });
-    return Promise.all(promises).then(() => {
-        const result = new LinksList(coalesce(lists));
-        if (!token.isCancellationRequested) {
-            return result;
         }
-        result.dispose();
-        return new LinksList([]);
+        catch (err) {
+            onUnexpectedExternalError(err);
+        }
     });
+    await Promise.all(promises);
+    let res = new LinksList(coalesce(lists));
+    if (token.isCancellationRequested) {
+        res.dispose();
+        res = LinksList.Empty;
+    }
+    return res;
 }
 CommandsRegistry.registerCommand('_executeLinkProvider', async (accessor, ...args) => {
     let [uri, resolveCount] = args;
@@ -147,3 +152,4 @@ CommandsRegistry.registerCommand('_executeLinkProvider', async (accessor, ...arg
     list.dispose();
     return result;
 });
+//# sourceMappingURL=getLinks.js.map

@@ -54,3 +54,4 @@ export class CommitCharacterController {
         this._disposables.dispose();
     }
 }
+//# sourceMappingURL=suggestCommitCharacters.js.map

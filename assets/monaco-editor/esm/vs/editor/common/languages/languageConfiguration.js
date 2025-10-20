@@ -134,3 +134,4 @@ function appendEntry(target, key, value) {
         target.set(key, [value]);
     }
 }
+//# sourceMappingURL=languageConfiguration.js.map

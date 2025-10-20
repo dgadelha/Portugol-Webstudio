@@ -20,3 +20,4 @@ export class DraggedTreeItemsIdentifier {
         this.identifier = identifier;
     }
 }
+//# sourceMappingURL=treeViewsDnd.js.map

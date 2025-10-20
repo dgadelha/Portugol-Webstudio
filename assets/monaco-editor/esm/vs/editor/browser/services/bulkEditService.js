@@ -71,3 +71,4 @@ export class ResourceFileEdit extends ResourceEdit {
         this.options = options;
     }
 }
+//# sourceMappingURL=bulkEditService.js.map

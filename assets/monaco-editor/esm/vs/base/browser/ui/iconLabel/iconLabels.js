@@ -28,3 +28,4 @@ export function renderIcon(icon) {
     node.classList.add(...ThemeIcon.asClassNameArray(icon));
     return node;
 }
+//# sourceMappingURL=iconLabels.js.map

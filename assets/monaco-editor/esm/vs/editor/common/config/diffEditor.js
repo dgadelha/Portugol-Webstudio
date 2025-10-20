@@ -35,3 +35,4 @@ export const diffEditorDefaultOptions = {
     useInlineViewWhenSpaceIsLimited: true,
     compactMode: false,
 };
+//# sourceMappingURL=diffEditor.js.map

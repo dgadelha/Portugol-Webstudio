@@ -243,3 +243,4 @@ class TextChangeCompressor {
         return result;
     }
 }
+//# sourceMappingURL=textChange.js.map

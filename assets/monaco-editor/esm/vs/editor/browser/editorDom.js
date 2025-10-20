@@ -3,10 +3,11 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 import * as dom from '../../base/browser/dom.js';
+import * as domStylesheetsJs from '../../base/browser/domStylesheets.js';
 import { GlobalPointerMoveMonitor } from '../../base/browser/globalPointerMoveMonitor.js';
 import { StandardMouseEvent } from '../../base/browser/mouseEvent.js';
 import { RunOnceScheduler } from '../../base/common/async.js';
-import { Disposable, DisposableStore } from '../../base/common/lifecycle.js';
+import { Disposable, DisposableMap, DisposableStore } from '../../base/common/lifecycle.js';
 import { asCssVariable } from '../../platform/theme/common/colorRegistry.js';
 /**
  * Coordinates relative to the whole document (e.g. mouse event's pageX and pageY)
@@ -51,7 +52,7 @@ export class EditorPagePosition {
     }
 }
 /**
- * Coordinates relative to the the (top;left) of the editor that can be used safely with other internal editor metrics.
+ * Coordinates relative to the (top;left) of the editor that can be used safely with other internal editor metrics.
  * **NOTE**: This position is obtained by taking page coordinates and transforming them relative to the
  * editor's (top;left) position in a way in which scale transformations are taken into account.
  * **NOTE**: These coordinates could be negative if the mouse position is outside the editor.
@@ -102,12 +103,12 @@ export class EditorMouseEventFactory {
         return new EditorMouseEvent(e, false, this._editorViewDomNode);
     }
     onContextMenu(target, callback) {
-        return dom.addDisposableListener(target, 'contextmenu', (e) => {
+        return dom.addDisposableListener(target, dom.EventType.CONTEXT_MENU, (e) => {
             callback(this._create(e));
         });
     }
     onMouseUp(target, callback) {
-        return dom.addDisposableListener(target, 'mouseup', (e) => {
+        return dom.addDisposableListener(target, dom.EventType.MOUSE_UP, (e) => {
             callback(this._create(e));
         });
     }
@@ -127,7 +128,7 @@ export class EditorMouseEventFactory {
         });
     }
     onMouseMove(target, callback) {
-        return dom.addDisposableListener(target, 'mousemove', (e) => callback(this._create(e)));
+        return dom.addDisposableListener(target, dom.EventType.MOUSE_MOVE, (e) => callback(this._create(e)));
     }
 }
 export class EditorPointerEventFactory {
@@ -196,9 +197,13 @@ export class DynamicCssRules {
         this._editor = _editor;
         this._instanceId = ++DynamicCssRules._idPool;
         this._counter = 0;
-        this._rules = new Map();
+        this._rules = new DisposableMap();
         // We delay garbage collection so that hanging rules can be reused.
         this._garbageCollectionScheduler = new RunOnceScheduler(() => this.garbageCollect(), 1000);
+    }
+    dispose() {
+        this._rules.dispose();
+        this._garbageCollectionScheduler.dispose();
     }
     createClassNameRef(options) {
         const rule = this.getOrCreateRule(options);
@@ -229,8 +234,7 @@ export class DynamicCssRules {
     garbageCollect() {
         for (const rule of this._rules.values()) {
             if (!rule.hasReferences()) {
-                this._rules.delete(rule.key);
-                rule.dispose();
+                this._rules.deleteAndDispose(rule.key);
             }
         }
     }
@@ -242,7 +246,7 @@ class RefCountedCssRule {
         this.properties = properties;
         this._referenceCount = 0;
         this._styleElementDisposables = new DisposableStore();
-        this._styleElement = dom.createStyleSheet(_containerElement, undefined, this._styleElementDisposables);
+        this._styleElement = domStylesheetsJs.createStyleSheet(_containerElement, undefined, this._styleElementDisposables);
         this._styleElement.textContent = this.getCssText(this.className, this.properties);
     }
     getCssText(className, properties) {
@@ -280,3 +284,4 @@ function camelToDashes(str) {
     return str.replace(/(^[A-Z])/, ([first]) => first.toLowerCase())
         .replace(/([A-Z])/g, ([letter]) => `-${letter.toLowerCase()}`);
 }
+//# sourceMappingURL=editorDom.js.map

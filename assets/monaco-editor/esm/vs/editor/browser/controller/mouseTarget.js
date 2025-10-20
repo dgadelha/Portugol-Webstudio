@@ -4,12 +4,13 @@
  *--------------------------------------------------------------------------------------------*/
 import { PageCoordinates } from '../editorDom.js';
 import { PartFingerprints } from '../view/viewPart.js';
-import { ViewLine } from '../viewParts/lines/viewLine.js';
+import { ViewLine } from '../viewParts/viewLines/viewLine.js';
 import { Position } from '../../common/core/position.js';
 import { Range as EditorRange } from '../../common/core/range.js';
 import { CursorColumns } from '../../common/core/cursorColumns.js';
 import * as dom from '../../../base/browser/dom.js';
 import { AtomicTabMoveOperations } from '../../common/cursor/cursorAtomicMoveOperations.js';
+import { TextDirection } from '../../common/model.js';
 import { Lazy } from '../../../base/common/lazy.js';
 class UnknownHitTestResult {
     constructor(hitTarget = null) {
@@ -176,11 +177,12 @@ export class HitTestContext {
     constructor(context, viewHelper, lastRenderData) {
         this.viewModel = context.viewModel;
         const options = context.configuration.options;
-        this.layoutInfo = options.get(146 /* EditorOption.layoutInfo */);
+        this.layoutInfo = options.get(165 /* EditorOption.layoutInfo */);
         this.viewDomNode = viewHelper.viewDomNode;
-        this.lineHeight = options.get(67 /* EditorOption.lineHeight */);
-        this.stickyTabStops = options.get(117 /* EditorOption.stickyTabStops */);
-        this.typicalHalfwidthCharacterWidth = options.get(50 /* EditorOption.fontInfo */).typicalHalfwidthCharacterWidth;
+        this.viewLinesGpu = viewHelper.viewLinesGpu;
+        this.lineHeight = options.get(75 /* EditorOption.lineHeight */);
+        this.stickyTabStops = options.get(132 /* EditorOption.stickyTabStops */);
+        this.typicalHalfwidthCharacterWidth = options.get(59 /* EditorOption.fontInfo */).typicalHalfwidthCharacterWidth;
         this.lastRenderData = lastRenderData;
         this._context = context;
         this._viewHelper = viewHelper;
@@ -276,6 +278,9 @@ export class HitTestContext {
     }
     getLineWidth(lineNumber) {
         return this._viewHelper.getLineWidth(lineNumber);
+    }
+    isRtl(lineNumber) {
+        return this.viewModel.getTextDirection(lineNumber) === TextDirection.RTL;
     }
     visibleRangeForPosition(lineNumber, column) {
         return this._viewHelper.visibleRangeForPosition(lineNumber, column);
@@ -573,17 +578,56 @@ export class MouseTargetFactory {
         // See https://github.com/microsoft/vscode/issues/46942
         if (ElementPath.isStrictChildOfViewLines(request.targetPath)) {
             const lineNumber = ctx.getLineNumberAtVerticalOffset(request.mouseVerticalOffset);
-            if (ctx.viewModel.getLineLength(lineNumber) === 0) {
-                const lineWidth = ctx.getLineWidth(lineNumber);
+            const lineLength = ctx.viewModel.getLineLength(lineNumber);
+            const lineWidth = ctx.getLineWidth(lineNumber);
+            if (lineLength === 0) {
                 const detail = createEmptyContentDataInLines(request.mouseContentHorizontalOffset - lineWidth);
                 return request.fulfillContentEmpty(new Position(lineNumber, 1), detail);
             }
-            const lineWidth = ctx.getLineWidth(lineNumber);
-            if (request.mouseContentHorizontalOffset >= lineWidth) {
-                // TODO: This is wrong for RTL
+            const isRtl = ctx.isRtl(lineNumber);
+            if (isRtl) {
+                if (request.mouseContentHorizontalOffset + lineWidth <= ctx.layoutInfo.contentWidth - ctx.layoutInfo.verticalScrollbarWidth) {
+                    const detail = createEmptyContentDataInLines(request.mouseContentHorizontalOffset - lineWidth);
+                    const pos = new Position(lineNumber, ctx.viewModel.getLineMaxColumn(lineNumber));
+                    return request.fulfillContentEmpty(pos, detail);
+                }
+            }
+            else if (request.mouseContentHorizontalOffset >= lineWidth) {
                 const detail = createEmptyContentDataInLines(request.mouseContentHorizontalOffset - lineWidth);
                 const pos = new Position(lineNumber, ctx.viewModel.getLineMaxColumn(lineNumber));
                 return request.fulfillContentEmpty(pos, detail);
+            }
+        }
+        else {
+            if (ctx.viewLinesGpu) {
+                const lineNumber = ctx.getLineNumberAtVerticalOffset(request.mouseVerticalOffset);
+                if (ctx.viewModel.getLineLength(lineNumber) === 0) {
+                    const lineWidth = ctx.getLineWidth(lineNumber);
+                    const detail = createEmptyContentDataInLines(request.mouseContentHorizontalOffset - lineWidth);
+                    return request.fulfillContentEmpty(new Position(lineNumber, 1), detail);
+                }
+                const lineWidth = ctx.getLineWidth(lineNumber);
+                const isRtl = ctx.isRtl(lineNumber);
+                if (isRtl) {
+                    if (request.mouseContentHorizontalOffset + lineWidth <= ctx.layoutInfo.contentWidth - ctx.layoutInfo.verticalScrollbarWidth) {
+                        const detail = createEmptyContentDataInLines(request.mouseContentHorizontalOffset - lineWidth);
+                        const pos = new Position(lineNumber, ctx.viewModel.getLineMaxColumn(lineNumber));
+                        return request.fulfillContentEmpty(pos, detail);
+                    }
+                }
+                else if (request.mouseContentHorizontalOffset >= lineWidth) {
+                    const detail = createEmptyContentDataInLines(request.mouseContentHorizontalOffset - lineWidth);
+                    const pos = new Position(lineNumber, ctx.viewModel.getLineMaxColumn(lineNumber));
+                    return request.fulfillContentEmpty(pos, detail);
+                }
+                const position = ctx.viewLinesGpu.getPositionAtCoordinate(lineNumber, request.mouseContentHorizontalOffset);
+                if (position) {
+                    const detail = {
+                        injectedText: null,
+                        mightBeForeignElement: false
+                    };
+                    return request.fulfillContentText(position, EditorRange.fromPositions(position, position), detail);
+                }
             }
         }
         // Do the hit test (if not already done)
@@ -633,9 +677,9 @@ export class MouseTargetFactory {
     }
     getMouseColumn(relativePos) {
         const options = this._context.configuration.options;
-        const layoutInfo = options.get(146 /* EditorOption.layoutInfo */);
+        const layoutInfo = options.get(165 /* EditorOption.layoutInfo */);
         const mouseContentHorizontalOffset = this._context.viewLayout.getCurrentScrollLeft() + relativePos.x - layoutInfo.contentLeft;
-        return MouseTargetFactory._getMouseColumn(mouseContentHorizontalOffset, options.get(50 /* EditorOption.fontInfo */).typicalHalfwidthCharacterWidth);
+        return MouseTargetFactory._getMouseColumn(mouseContentHorizontalOffset, options.get(59 /* EditorOption.fontInfo */).typicalHalfwidthCharacterWidth);
     }
     static _getMouseColumn(mouseContentHorizontalOffset, typicalHalfwidthCharacterWidth) {
         if (mouseContentHorizontalOffset < 0) {
@@ -843,7 +887,8 @@ function shadowCaretRangeFromPoint(shadowRoot, x, y) {
     const range = document.createRange();
     // Get the element under the point
     let el = shadowRoot.elementFromPoint(x, y);
-    if (el !== null) {
+    // When el is not null, it may be div.monaco-mouse-cursor-text Element, which has not childNodes, we don't need to handle it.
+    if (el?.hasChildNodes()) {
         // Get the last child of the element until its firstChild is a text node
         // This assumes that the pointer is on the right of the line, out of the tokens
         // and that we want to get the offset of the last token of the line
@@ -920,3 +965,4 @@ class CharWidthReader {
         return width;
     }
 }
+//# sourceMappingURL=mouseTarget.js.map

@@ -24,3 +24,4 @@ export function nullTokenizeEncoded(languageId, state) {
         | (2 /* ColorId.DefaultBackground */ << 24 /* MetadataConsts.BACKGROUND_OFFSET */)) >>> 0;
     return new EncodedTokenizationResult(tokens, state === null ? NullState : state);
 }
+//# sourceMappingURL=nullTokenize.js.map

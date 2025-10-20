@@ -107,3 +107,4 @@ AccessibilityService = __decorate([
     __param(2, IConfigurationService)
 ], AccessibilityService);
 export { AccessibilityService };
+//# sourceMappingURL=accessibilityService.js.map

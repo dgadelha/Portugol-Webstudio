@@ -35,3 +35,4 @@ export class AbstractEditorCommandsQuickAccessProvider extends AbstractCommandsQ
         return editorCommandPicks;
     }
 }
+//# sourceMappingURL=commandsQuickAccess.js.map

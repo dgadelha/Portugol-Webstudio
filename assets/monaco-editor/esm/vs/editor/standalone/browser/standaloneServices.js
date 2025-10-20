@@ -18,6 +18,7 @@ import '../../common/services/languageFeatureDebounce.js';
 import '../../common/services/semanticTokensStylingService.js';
 import '../../common/services/languageFeaturesService.js';
 import '../../browser/services/hoverService/hoverService.js';
+import '../../browser/services/inlineCompletionsService.js';
 import * as strings from '../../../base/common/strings.js';
 import * as dom from '../../../base/browser/dom.js';
 import { StandardKeyboardEvent } from '../../../base/browser/keyboardEvent.js';
@@ -56,7 +57,7 @@ import { ILayoutService } from '../../../platform/layout/browser/layoutService.j
 import { StandaloneServicesNLS } from '../../common/standaloneStrings.js';
 import { basename } from '../../../base/common/resources.js';
 import { ICodeEditorService } from '../../browser/services/codeEditorService.js';
-import { ConsoleLogger, ILogService } from '../../../platform/log/common/log.js';
+import { ConsoleLogger, ILoggerService, ILogService, NullLoggerService } from '../../../platform/log/common/log.js';
 import { IWorkspaceTrustManagementService } from '../../../platform/workspace/common/workspaceTrust.js';
 import { IContextMenuService, IContextViewService } from '../../../platform/contextview/browser/contextView.js';
 import { ContextViewService } from '../../../platform/contextview/browser/contextViewService.js';
@@ -99,8 +100,9 @@ import { onUnexpectedError } from '../../../base/common/errors.js';
 import { IEnvironmentService } from '../../../platform/environment/common/environment.js';
 import { mainWindow } from '../../../base/browser/window.js';
 import { ResourceMap } from '../../../base/common/map.js';
-import { ITreeSitterParserService } from '../../common/services/treeSitterParserService.js';
-import { StandaloneTreeSitterParserService } from './standaloneTreeSitterService.js';
+import { ITreeSitterLibraryService } from '../../common/services/treeSitter/treeSitterLibraryService.js';
+import { StandaloneTreeSitterLibraryService } from './standaloneTreeSitterLibraryService.js';
+import { IDataChannelService, NullDataChannelService } from '../../../platform/dataChannel/common/dataChannel.js';
 class SimpleModel {
     constructor(model) {
         this.disposed = false;
@@ -216,7 +218,7 @@ export class StandaloneNotificationService {
         return StandaloneNotificationService.NO_OP;
     }
     status(message, options) {
-        return Disposable.None;
+        return { close: () => { } };
     }
 }
 let StandaloneCommandService = class StandaloneCommandService {
@@ -283,13 +285,13 @@ let StandaloneKeybindingService = class StandaloneKeybindingService extends Abst
             }
         };
         const addCodeEditor = (codeEditor) => {
-            if (codeEditor.getOption(61 /* EditorOption.inDiffEditor */)) {
+            if (codeEditor.getOption(70 /* EditorOption.inDiffEditor */)) {
                 return;
             }
             addContainer(codeEditor.getContainerDomNode());
         };
         const removeCodeEditor = (codeEditor) => {
-            if (codeEditor.getOption(61 /* EditorOption.inDiffEditor */)) {
+            if (codeEditor.getOption(70 /* EditorOption.inDiffEditor */)) {
                 return;
             }
             removeContainer(codeEditor.getContainerDomNode());
@@ -644,8 +646,7 @@ StandaloneContextMenuService = __decorate([
     __param(4, IMenuService),
     __param(5, IContextKeyService)
 ], StandaloneContextMenuService);
-export const standaloneEditorWorkerDescriptor = {
-    amdModuleId: 'vs/editor/common/services/editorSimpleWorker',
+const standaloneEditorWorkerDescriptor = {
     esmModuleLocation: undefined,
     label: 'editorWorkerService'
 };
@@ -699,7 +700,9 @@ registerSingleton(IClipboardService, BrowserClipboardService, 0 /* Instantiation
 registerSingleton(IContextMenuService, StandaloneContextMenuService, 0 /* InstantiationType.Eager */);
 registerSingleton(IMenuService, MenuService, 0 /* InstantiationType.Eager */);
 registerSingleton(IAccessibilitySignalService, StandaloneAccessbilitySignalService, 0 /* InstantiationType.Eager */);
-registerSingleton(ITreeSitterParserService, StandaloneTreeSitterParserService, 0 /* InstantiationType.Eager */);
+registerSingleton(ITreeSitterLibraryService, StandaloneTreeSitterLibraryService, 0 /* InstantiationType.Eager */);
+registerSingleton(ILoggerService, NullLoggerService, 0 /* InstantiationType.Eager */);
+registerSingleton(IDataChannelService, NullDataChannelService, 0 /* InstantiationType.Eager */);
 /**
  * We don't want to eagerly instantiate services because embedders get a one time chance
  * to override services when they create the first editor.
@@ -782,3 +785,4 @@ export var StandaloneServices;
     }
     StandaloneServices.withServices = withServices;
 })(StandaloneServices || (StandaloneServices = {}));
+//# sourceMappingURL=standaloneServices.js.map

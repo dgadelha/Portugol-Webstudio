@@ -17,7 +17,7 @@ export class ToggleCollapseUnchangedRegions extends Action2 {
     constructor() {
         super({
             id: 'diffEditor.toggleCollapseUnchangedRegions',
-            title: localize2('toggleCollapseUnchangedRegions', 'Toggle Collapse Unchanged Regions'),
+            title: localize2(82, 'Toggle Collapse Unchanged Regions'),
             icon: Codicon.map,
             toggled: ContextKeyExpr.has('config.diffEditor.hideUnchangedRegions.enabled'),
             precondition: ContextKeyExpr.has('isInDiffEditor'),
@@ -39,7 +39,7 @@ export class ToggleShowMovedCodeBlocks extends Action2 {
     constructor() {
         super({
             id: 'diffEditor.toggleShowMovedCodeBlocks',
-            title: localize2('toggleShowMovedCodeBlocks', 'Toggle Show Moved Code Blocks'),
+            title: localize2(83, 'Toggle Show Moved Code Blocks'),
             precondition: ContextKeyExpr.has('isInDiffEditor'),
         });
     }
@@ -53,7 +53,7 @@ export class ToggleUseInlineViewWhenSpaceIsLimited extends Action2 {
     constructor() {
         super({
             id: 'diffEditor.toggleUseInlineViewWhenSpaceIsLimited',
-            title: localize2('toggleUseInlineViewWhenSpaceIsLimited', 'Toggle Use Inline View When Space Is Limited'),
+            title: localize2(84, 'Toggle Use Inline View When Space Is Limited'),
             precondition: ContextKeyExpr.has('isInDiffEditor'),
         });
     }
@@ -63,12 +63,12 @@ export class ToggleUseInlineViewWhenSpaceIsLimited extends Action2 {
         configurationService.updateValue('diffEditor.useInlineViewWhenSpaceIsLimited', newValue);
     }
 }
-const diffEditorCategory = localize2('diffEditor', "Diff Editor");
+const diffEditorCategory = localize2(85, "Diff Editor");
 export class SwitchSide extends EditorAction2 {
     constructor() {
         super({
             id: 'diffEditor.switchSide',
-            title: localize2('switchSide', 'Switch Side'),
+            title: localize2(86, 'Switch Side'),
             icon: Codicon.arrowSwap,
             precondition: ContextKeyExpr.has('isInDiffEditor'),
             f1: true,
@@ -92,7 +92,7 @@ export class ExitCompareMove extends EditorAction2 {
     constructor() {
         super({
             id: 'diffEditor.exitCompareMove',
-            title: localize2('exitCompareMove', 'Exit Compare Move'),
+            title: localize2(87, 'Exit Compare Move'),
             icon: Codicon.close,
             precondition: EditorContextKeys.comparingMovedCode,
             f1: false,
@@ -114,7 +114,7 @@ export class CollapseAllUnchangedRegions extends EditorAction2 {
     constructor() {
         super({
             id: 'diffEditor.collapseAllUnchangedRegions',
-            title: localize2('collapseAllUnchangedRegions', 'Collapse All Unchanged Regions'),
+            title: localize2(88, 'Collapse All Unchanged Regions'),
             icon: Codicon.fold,
             precondition: ContextKeyExpr.has('isInDiffEditor'),
             f1: true,
@@ -132,7 +132,7 @@ export class ShowAllUnchangedRegions extends EditorAction2 {
     constructor() {
         super({
             id: 'diffEditor.showAllUnchangedRegions',
-            title: localize2('showAllUnchangedRegions', 'Show All Unchanged Regions'),
+            title: localize2(89, 'Show All Unchanged Regions'),
             icon: Codicon.unfold,
             precondition: ContextKeyExpr.has('isInDiffEditor'),
             f1: true,
@@ -150,12 +150,23 @@ export class RevertHunkOrSelection extends Action2 {
     constructor() {
         super({
             id: 'diffEditor.revert',
-            title: localize2('revert', 'Revert'),
-            f1: false,
+            title: localize2(90, 'Revert'),
+            f1: true,
             category: diffEditorCategory,
+            precondition: ContextKeyExpr.has('isInDiffEditor'),
         });
     }
     run(accessor, arg) {
+        return arg ? this.runViaToolbarContext(accessor, arg) : this.runViaCursorOrSelection(accessor);
+    }
+    runViaCursorOrSelection(accessor) {
+        const diffEditor = findFocusedDiffEditor(accessor);
+        if (diffEditor instanceof DiffEditorWidget) {
+            diffEditor.revertFocusedRangeMappings();
+        }
+        return undefined;
+    }
+    runViaToolbarContext(accessor, arg) {
         const diffEditor = findDiffEditor(accessor, arg.originalUri, arg.modifiedUri);
         if (diffEditor instanceof DiffEditorWidget) {
             diffEditor.revertRangeMappings(arg.mapping.innerChanges ?? []);
@@ -163,13 +174,13 @@ export class RevertHunkOrSelection extends Action2 {
         return undefined;
     }
 }
-const accessibleDiffViewerCategory = localize2('accessibleDiffViewer', "Accessible Diff Viewer");
+const accessibleDiffViewerCategory = localize2(91, "Accessible Diff Viewer");
 export class AccessibleDiffViewerNext extends Action2 {
     static { this.id = 'editor.action.accessibleDiffViewer.next'; }
     constructor() {
         super({
             id: AccessibleDiffViewerNext.id,
-            title: localize2('editor.action.accessibleDiffViewer.next', 'Go to Next Difference'),
+            title: localize2(92, 'Go to Next Difference'),
             category: accessibleDiffViewerCategory,
             precondition: ContextKeyExpr.has('isInDiffEditor'),
             keybinding: {
@@ -189,7 +200,7 @@ export class AccessibleDiffViewerPrev extends Action2 {
     constructor() {
         super({
             id: AccessibleDiffViewerPrev.id,
-            title: localize2('editor.action.accessibleDiffViewer.prev', 'Go to Previous Difference'),
+            title: localize2(93, 'Go to Previous Difference'),
             category: accessibleDiffViewerCategory,
             precondition: ContextKeyExpr.has('isInDiffEditor'),
             keybinding: {
@@ -221,20 +232,11 @@ export function findFocusedDiffEditor(accessor) {
     if (activeElement) {
         for (const d of diffEditors) {
             const container = d.getContainerDomNode();
-            if (isElementOrParentOf(container, activeElement)) {
+            if (container.contains(activeElement)) {
                 return d;
             }
         }
     }
     return null;
 }
-function isElementOrParentOf(elementOrParent, element) {
-    let e = element;
-    while (e) {
-        if (e === elementOrParent) {
-            return true;
-        }
-        e = e.parentElement;
-    }
-    return false;
-}
+//# sourceMappingURL=commands.js.map

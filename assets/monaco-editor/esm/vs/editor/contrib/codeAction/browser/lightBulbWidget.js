@@ -27,11 +27,11 @@ import * as nls from '../../../../nls.js';
 import { IKeybindingService } from '../../../../platform/keybinding/common/keybinding.js';
 import { registerIcon } from '../../../../platform/theme/common/iconRegistry.js';
 import { Range } from '../../../common/core/range.js';
-const GUTTER_LIGHTBULB_ICON = registerIcon('gutter-lightbulb', Codicon.lightBulb, nls.localize('gutterLightbulbWidget', 'Icon which spawns code actions menu from the gutter when there is no space in the editor.'));
-const GUTTER_LIGHTBULB_AUTO_FIX_ICON = registerIcon('gutter-lightbulb-auto-fix', Codicon.lightbulbAutofix, nls.localize('gutterLightbulbAutoFixWidget', 'Icon which spawns code actions menu from the gutter when there is no space in the editor and a quick fix is available.'));
-const GUTTER_LIGHTBULB_AIFIX_ICON = registerIcon('gutter-lightbulb-sparkle', Codicon.lightbulbSparkle, nls.localize('gutterLightbulbAIFixWidget', 'Icon which spawns code actions menu from the gutter when there is no space in the editor and an AI fix is available.'));
-const GUTTER_LIGHTBULB_AIFIX_AUTO_FIX_ICON = registerIcon('gutter-lightbulb-aifix-auto-fix', Codicon.lightbulbSparkleAutofix, nls.localize('gutterLightbulbAIFixAutoFixWidget', 'Icon which spawns code actions menu from the gutter when there is no space in the editor and an AI fix and a quick fix is available.'));
-const GUTTER_SPARKLE_FILLED_ICON = registerIcon('gutter-lightbulb-sparkle-filled', Codicon.sparkleFilled, nls.localize('gutterLightbulbSparkleFilledWidget', 'Icon which spawns code actions menu from the gutter when there is no space in the editor and an AI fix and a quick fix is available.'));
+const GUTTER_LIGHTBULB_ICON = registerIcon('gutter-lightbulb', Codicon.lightBulb, nls.localize(870, 'Icon which spawns code actions menu from the gutter when there is no space in the editor.'));
+const GUTTER_LIGHTBULB_AUTO_FIX_ICON = registerIcon('gutter-lightbulb-auto-fix', Codicon.lightbulbAutofix, nls.localize(871, 'Icon which spawns code actions menu from the gutter when there is no space in the editor and a quick fix is available.'));
+const GUTTER_LIGHTBULB_AIFIX_ICON = registerIcon('gutter-lightbulb-sparkle', Codicon.lightbulbSparkle, nls.localize(872, 'Icon which spawns code actions menu from the gutter when there is no space in the editor and an AI fix is available.'));
+const GUTTER_LIGHTBULB_AIFIX_AUTO_FIX_ICON = registerIcon('gutter-lightbulb-aifix-auto-fix', Codicon.lightbulbSparkleAutofix, nls.localize(873, 'Icon which spawns code actions menu from the gutter when there is no space in the editor and an AI fix and a quick fix is available.'));
+const GUTTER_SPARKLE_FILLED_ICON = registerIcon('gutter-lightbulb-sparkle-filled', Codicon.sparkleFilled, nls.localize(874, 'Icon which spawns code actions menu from the gutter when there is no space in the editor and an AI fix and a quick fix is available.'));
 var LightBulbState;
 (function (LightBulbState) {
     LightBulbState.Hidden = { type: 0 /* Type.Hidden */ };
@@ -97,7 +97,7 @@ let LightBulbWidget = class LightBulbWidget extends Disposable {
             // a bit of extra work to make sure the menu
             // doesn't cover the line-text
             const { top, height } = dom.getDomNodePagePosition(this._domNode);
-            const lineHeight = this._editor.getOption(67 /* EditorOption.lineHeight */);
+            const lineHeight = this._editor.getOption(75 /* EditorOption.lineHeight */);
             let pad = Math.floor(lineHeight / 3);
             if (this.state.widgetPosition.position !== null && this.state.widgetPosition.position.lineNumber < this.state.editorPosition.lineNumber) {
                 pad += lineHeight;
@@ -134,7 +134,7 @@ let LightBulbWidget = class LightBulbWidget extends Disposable {
             // a bit of extra work to make sure the menu
             // doesn't cover the line-text
             const { top, height } = dom.getDomNodePagePosition(e.target.element);
-            const lineHeight = this._editor.getOption(67 /* EditorOption.lineHeight */);
+            const lineHeight = this._editor.getOption(75 /* EditorOption.lineHeight */);
             let pad = Math.floor(lineHeight / 3);
             if (this.gutterState.widgetPosition.position !== null && this.gutterState.widgetPosition.position.lineNumber < this.gutterState.editorPosition.lineNumber) {
                 pad += lineHeight;
@@ -174,7 +174,7 @@ let LightBulbWidget = class LightBulbWidget extends Disposable {
             return this.hide();
         }
         const options = this._editor.getOptions();
-        if (!options.get(65 /* EditorOption.lightbulb */).enabled) {
+        if (!options.get(73 /* EditorOption.lightbulb */).enabled) {
             this.gutterHide();
             return this.hide();
         }
@@ -185,7 +185,7 @@ let LightBulbWidget = class LightBulbWidget extends Disposable {
         }
         const { lineNumber, column } = model.validatePosition(atPosition);
         const tabSize = model.getOptions().tabSize;
-        const fontInfo = this._editor.getOptions().get(50 /* EditorOption.fontInfo */);
+        const fontInfo = this._editor.getOptions().get(59 /* EditorOption.fontInfo */);
         const lineContent = model.getLineContent(lineNumber);
         const indent = computeIndentLevel(lineContent, tabSize);
         const lineHasSpace = fontInfo.spaceWidth * indent > 22;
@@ -403,16 +403,16 @@ let LightBulbWidget = class LightBulbWidget extends Disposable {
             return;
         }
         if (autoRun) {
-            this.title = nls.localize('codeActionAutoRun', "Run: {0}", this.state.actions.validActions[0].action.title);
+            this.title = nls.localize(875, "Run: {0}", this.state.actions.validActions[0].action.title);
         }
         else if (autoFix && this._preferredKbLabel) {
-            this.title = nls.localize('preferredcodeActionWithKb', "Show Code Actions. Preferred Quick Fix Available ({0})", this._preferredKbLabel);
+            this.title = nls.localize(876, "Show Code Actions. Preferred Quick Fix Available ({0})", this._preferredKbLabel);
         }
         else if (!autoFix && this._quickFixKbLabel) {
-            this.title = nls.localize('codeActionWithKb', "Show Code Actions ({0})", this._quickFixKbLabel);
+            this.title = nls.localize(877, "Show Code Actions ({0})", this._quickFixKbLabel);
         }
         else if (!autoFix) {
-            this.title = nls.localize('codeAction', "Show Code Actions");
+            this.title = nls.localize(878, "Show Code Actions");
         }
     }
     set title(value) {
@@ -423,3 +423,4 @@ LightBulbWidget = LightBulbWidget_1 = __decorate([
     __param(1, IKeybindingService)
 ], LightBulbWidget);
 export { LightBulbWidget };
+//# sourceMappingURL=lightBulbWidget.js.map

@@ -60,3 +60,4 @@ export class DragAndDropCommand {
         return this.targetSelection;
     }
 }
+//# sourceMappingURL=dragAndDropCommand.js.map

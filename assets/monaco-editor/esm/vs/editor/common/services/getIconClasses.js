@@ -28,13 +28,13 @@ export function getIconClasses(modelService, languageService, resource, fileKind
         else {
             const match = resource.path.match(fileIconDirectoryRegex);
             if (match) {
-                name = cssEscape(match[2].toLowerCase());
+                name = fileIconSelectorEscape(match[2].toLowerCase());
                 if (match[1]) {
-                    classes.push(`${cssEscape(match[1].toLowerCase())}-name-dir-icon`); // parent directory
+                    classes.push(`${fileIconSelectorEscape(match[1].toLowerCase())}-name-dir-icon`); // parent directory
                 }
             }
             else {
-                name = cssEscape(resource.authority.toLowerCase());
+                name = fileIconSelectorEscape(resource.authority.toLowerCase());
             }
         }
         // Root Folders
@@ -65,7 +65,7 @@ export function getIconClasses(modelService, languageService, resource, fileKind
             // Detected Mode
             const detectedLanguageId = detectLanguageId(modelService, languageService, resource);
             if (detectedLanguageId) {
-                classes.push(`${cssEscape(detectedLanguageId)}-lang-file-icon`);
+                classes.push(`${fileIconSelectorEscape(detectedLanguageId)}-lang-file-icon`);
             }
         }
     }
@@ -98,6 +98,7 @@ function detectLanguageId(modelService, languageService, resource) {
     // otherwise fallback to path based detection
     return languageService.guessLanguageIdByFilepathOrFirstLine(resource);
 }
-function cssEscape(str) {
+export function fileIconSelectorEscape(str) {
     return str.replace(/[\s]/g, '/'); // HTML class names can not contain certain whitespace characters (https://dom.spec.whatwg.org/#interface-domtokenlist), use / instead, which doesn't exist in file names.
 }
+//# sourceMappingURL=getIconClasses.js.map

@@ -296,3 +296,4 @@ export class FastTokenizer {
         throw new NotSupportedError();
     }
 }
+//# sourceMappingURL=tokenizer.js.map

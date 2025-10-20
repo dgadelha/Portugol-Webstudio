@@ -79,7 +79,7 @@ function formatOwner(owner) {
     if (id) {
         return id;
     }
-    const className = getClassName(owner);
+    const className = getClassName(owner) ?? 'Object';
     let count = countPerClassName.get(className) ?? 0;
     count++;
     countPerClassName.set(className, count);
@@ -87,12 +87,15 @@ function formatOwner(owner) {
     ownerId.set(owner, result);
     return result;
 }
-function getClassName(obj) {
+export function getClassName(obj) {
     const ctor = obj.constructor;
     if (ctor) {
+        if (ctor.name === 'Object') {
+            return undefined;
+        }
         return ctor.name;
     }
-    return 'Object';
+    return undefined;
 }
 export function getFunctionName(fn) {
     const fnSrc = fn.toString();
@@ -102,3 +105,4 @@ export function getFunctionName(fn) {
     const result = match ? match[1] : undefined;
     return result?.trim();
 }
+//# sourceMappingURL=debugName.js.map

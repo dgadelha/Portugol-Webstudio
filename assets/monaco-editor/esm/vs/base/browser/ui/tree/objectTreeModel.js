@@ -6,13 +6,14 @@ import { IndexTreeModel } from './indexTreeModel.js';
 import { ObjectTreeElementCollapseState, TreeError } from './tree.js';
 import { Iterable } from '../../../common/iterator.js';
 export class ObjectTreeModel {
-    constructor(user, list, options = {}) {
+    constructor(user, options = {}) {
         this.user = user;
         this.rootRef = null;
         this.nodes = new Map();
         this.nodesByIdentity = new Map();
-        this.model = new IndexTreeModel(user, list, null, options);
-        this.onDidSplice = this.model.onDidSplice;
+        this.model = new IndexTreeModel(user, null, options);
+        this.onDidSpliceModel = this.model.onDidSpliceModel;
+        this.onDidSpliceRenderedNodes = this.model.onDidSpliceRenderedNodes;
         this.onDidChangeCollapseState = this.model.onDidChangeCollapseState;
         this.onDidChangeRenderNodeCount = this.model.onDidChangeRenderNodeCount;
         if (options.sorter) {
@@ -194,3 +195,4 @@ export class ObjectTreeModel {
         return this.model.getNodeLocation(node);
     }
 }
+//# sourceMappingURL=objectTreeModel.js.map

@@ -13,7 +13,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 import { Emitter } from '../../../../../base/common/event.js';
 import { Disposable } from '../../../../../base/common/lifecycle.js';
-import { autorunHandleChanges, derivedOpts, observableFromEvent } from '../../../../../base/common/observable.js';
+import { autorunHandleChanges, derived, derivedOpts, observableFromEvent } from '../../../../../base/common/observable.js';
 import { observableCodeEditor } from '../../../observableCodeEditor.js';
 import { OverviewRulerFeature } from '../features/overviewRulerFeature.js';
 import { EditorOptions } from '../../../../common/config/editorOptions.js';
@@ -21,15 +21,17 @@ import { Position } from '../../../../common/core/position.js';
 import { localize } from '../../../../../nls.js';
 import { IInstantiationService } from '../../../../../platform/instantiation/common/instantiation.js';
 import { IKeybindingService } from '../../../../../platform/keybinding/common/keybinding.js';
+import { IContextKeyService } from '../../../../../platform/contextkey/common/contextkey.js';
 let DiffEditorEditors = class DiffEditorEditors extends Disposable {
     get onDidContentSizeChange() { return this._onDidContentSizeChange.event; }
-    constructor(originalEditorElement, modifiedEditorElement, _options, _argCodeEditorWidgetOptions, _createInnerEditor, _instantiationService, _keybindingService) {
+    constructor(originalEditorElement, modifiedEditorElement, _options, _argCodeEditorWidgetOptions, _createInnerEditor, _contextKeyService, _instantiationService, _keybindingService) {
         super();
         this.originalEditorElement = originalEditorElement;
         this.modifiedEditorElement = modifiedEditorElement;
         this._options = _options;
         this._argCodeEditorWidgetOptions = _argCodeEditorWidgetOptions;
         this._createInnerEditor = _createInnerEditor;
+        this._contextKeyService = _contextKeyService;
         this._instantiationService = _instantiationService;
         this._keybindingService = _keybindingService;
         this.original = this._register(this._createLeftHandSideEditor(this._options.editorOptions.get(), this._argCodeEditorWidgetOptions.originalEditor || {}));
@@ -43,14 +45,19 @@ let DiffEditorEditors = class DiffEditorEditors extends Disposable {
         this.modifiedSelections = observableFromEvent(this, this.modified.onDidChangeCursorSelection, () => this.modified.getSelections() ?? []);
         this.modifiedCursor = derivedOpts({ owner: this, equalsFn: Position.equals }, reader => this.modifiedSelections.read(reader)[0]?.getPosition() ?? new Position(1, 1));
         this.originalCursor = observableFromEvent(this, this.original.onDidChangeCursorPosition, () => this.original.getPosition() ?? new Position(1, 1));
+        this.isOriginalFocused = observableCodeEditor(this.original).isFocused;
+        this.isModifiedFocused = observableCodeEditor(this.modified).isFocused;
+        this.isFocused = derived(this, reader => this.isOriginalFocused.read(reader) || this.isModifiedFocused.read(reader));
         this._argCodeEditorWidgetOptions = null;
         this._register(autorunHandleChanges({
-            createEmptyChangeSummary: () => ({}),
-            handleChange: (ctx, changeSummary) => {
-                if (ctx.didChange(_options.editorOptions)) {
-                    Object.assign(changeSummary, ctx.change.changedOptions);
+            changeTracker: {
+                createChangeSummary: () => ({}),
+                handleChange: (ctx, changeSummary) => {
+                    if (ctx.didChange(_options.editorOptions)) {
+                        Object.assign(changeSummary, ctx.change.changedOptions);
+                    }
+                    return true;
                 }
-                return true;
             }
         }, (reader, changeSummary) => {
             /** @description update editor options */
@@ -63,13 +70,17 @@ let DiffEditorEditors = class DiffEditorEditors extends Disposable {
     _createLeftHandSideEditor(options, codeEditorWidgetOptions) {
         const leftHandSideOptions = this._adjustOptionsForLeftHandSide(undefined, options);
         const editor = this._constructInnerEditor(this._instantiationService, this.originalEditorElement, leftHandSideOptions, codeEditorWidgetOptions);
-        editor.setContextValue('isInDiffLeftEditor', true);
+        const isInDiffLeftEditorKey = this._contextKeyService.createKey('isInDiffLeftEditor', editor.hasWidgetFocus());
+        this._register(editor.onDidFocusEditorWidget(() => isInDiffLeftEditorKey.set(true)));
+        this._register(editor.onDidBlurEditorWidget(() => isInDiffLeftEditorKey.set(false)));
         return editor;
     }
     _createRightHandSideEditor(options, codeEditorWidgetOptions) {
         const rightHandSideOptions = this._adjustOptionsForRightHandSide(undefined, options);
         const editor = this._constructInnerEditor(this._instantiationService, this.modifiedEditorElement, rightHandSideOptions, codeEditorWidgetOptions);
-        editor.setContextValue('isInDiffRightEditor', true);
+        const isInDiffRightEditorKey = this._contextKeyService.createKey('isInDiffRightEditor', editor.hasWidgetFocus());
+        this._register(editor.onDidFocusEditorWidget(() => isInDiffRightEditorKey.set(true)));
+        this._register(editor.onDidBlurEditorWidget(() => isInDiffRightEditorKey.set(false)));
         return editor;
     }
     _constructInnerEditor(instantiationService, container, options, editorWidgetOptions) {
@@ -132,6 +143,9 @@ let DiffEditorEditors = class DiffEditorEditors extends Disposable {
         };
         clonedOptions.inDiffEditor = true;
         clonedOptions.automaticLayout = false;
+        clonedOptions.allowVariableLineHeights = false;
+        clonedOptions.allowVariableFonts = false;
+        clonedOptions.allowVariableFontsInAccessibilityMode = false;
         // Clone scrollbar options before changing them
         clonedOptions.scrollbar = { ...(clonedOptions.scrollbar || {}) };
         clonedOptions.folding = false;
@@ -152,7 +166,7 @@ let DiffEditorEditors = class DiffEditorEditors extends Disposable {
         if (!ariaLabel) {
             ariaLabel = '';
         }
-        const ariaNavigationTip = localize('diff-aria-navigation-tip', ' use {0} to open the accessibility help.', this._keybindingService.lookupKeybinding('editor.action.accessibilityHelp')?.getAriaLabel());
+        const ariaNavigationTip = localize(108, ' use {0} to open the accessibility help.', this._keybindingService.lookupKeybinding('editor.action.accessibilityHelp')?.getAriaLabel());
         if (this._options.accessibilityVerbose.get()) {
             return ariaLabel + ariaNavigationTip;
         }
@@ -163,7 +177,9 @@ let DiffEditorEditors = class DiffEditorEditors extends Disposable {
     }
 };
 DiffEditorEditors = __decorate([
-    __param(5, IInstantiationService),
-    __param(6, IKeybindingService)
+    __param(5, IContextKeyService),
+    __param(6, IInstantiationService),
+    __param(7, IKeybindingService)
 ], DiffEditorEditors);
 export { DiffEditorEditors };
+//# sourceMappingURL=diffEditorEditors.js.map

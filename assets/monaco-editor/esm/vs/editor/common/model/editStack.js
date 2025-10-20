@@ -9,6 +9,7 @@ import { URI } from '../../../base/common/uri.js';
 import { TextChange, compressConsecutiveTextChanges } from '../core/textChange.js';
 import * as buffer from '../../../base/common/buffer.js';
 import { basename } from '../../../base/common/resources.js';
+import { EditSources } from '../textModelEditSource.js';
 function uriGetComparisonKey(resource) {
     return resource.toString();
 }
@@ -324,7 +325,7 @@ export class EditStack {
         if (isEditStackElement(lastElement) && lastElement.canAppend(this._model)) {
             return lastElement;
         }
-        const newElement = new SingleModelEditStackElement(nls.localize('edit', "Typing"), 'undoredo.textBufferEdit', this._model, beforeCursorState);
+        const newElement = new SingleModelEditStackElement(nls.localize(781, "Typing"), 'undoredo.textBufferEdit', this._model, beforeCursorState);
         this._undoRedoService.pushElement(newElement, group);
         return newElement;
     }
@@ -333,9 +334,9 @@ export class EditStack {
         this._model.setEOL(eol);
         editStackElement.append(this._model, [], getModelEOL(this._model), this._model.getAlternativeVersionId(), null);
     }
-    pushEditOperation(beforeCursorState, editOperations, cursorStateComputer, group) {
+    pushEditOperation(beforeCursorState, editOperations, cursorStateComputer, group, reason = EditSources.unknown({ name: 'pushEditOperation' })) {
         const editStackElement = this._getOrCreateEditStackElement(beforeCursorState, group);
-        const inverseEditOperations = this._model.applyEdits(editOperations, true);
+        const inverseEditOperations = this._model.applyEdits(editOperations, true, reason);
         const afterCursorState = EditStack._computeCursorState(cursorStateComputer, inverseEditOperations);
         const textChanges = inverseEditOperations.map((op, index) => ({ index: index, textChange: op.textChange }));
         textChanges.sort((a, b) => {
@@ -357,3 +358,4 @@ export class EditStack {
         }
     }
 }
+//# sourceMappingURL=editStack.js.map

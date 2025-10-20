@@ -6,6 +6,7 @@
  * This module only exports 'compile' which compiles a JSON language definition
  * into a typed and checked ILexer definition.
  */
+import { isString } from '../../../../base/common/types.js';
 import * as monarchCommon from './monarchCommon.js';
 /*
  * Type helpers
@@ -308,6 +309,7 @@ function compileAction(lexer, ruleName, action) {
     else if (action.cases) {
         // build an array of test cases
         const cases = [];
+        let hasEmbeddedEndInCases = false;
         // for each case, push a test function and result value
         for (const tkey in action.cases) {
             if (action.cases.hasOwnProperty(tkey)) {
@@ -322,11 +324,15 @@ function compileAction(lexer, ruleName, action) {
                 else {
                     cases.push(createGuard(lexer, ruleName, tkey, val)); // call separate function to avoid local variable capture
                 }
+                if (!hasEmbeddedEndInCases) {
+                    hasEmbeddedEndInCases = !isString(val) && (val.hasEmbeddedEndInCases || ['@pop', '@popall'].includes(val.nextEmbedded || ''));
+                }
             }
         }
         // create a matching function
         const def = lexer.defaultToken;
         return {
+            hasEmbeddedEndInCases,
             test: function (id, matches, state, eos) {
                 for (const _case of cases) {
                     const didmatch = (!_case.test || _case.test(id, matches, state, eos));
@@ -532,3 +538,4 @@ export function compile(languageId, json) {
     lexer.noThrow = true;
     return lexer;
 }
+//# sourceMappingURL=monarchCompile.js.map
