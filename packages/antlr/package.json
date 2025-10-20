@@ -44,6 +44,6 @@
   },
   "devDependencies": {
     "antlr-ng": "^1.0.10",
-    "typescript": "~5.9.2"
+    "typescript": "~5.9.3"
   }
 }
