@@ -5,6 +5,7 @@
     "group:all",
     ":disableDependencyDashboard",
     ":maintainLockFilesWeekly",
+    ":preserveSemverRanges",
     ":rebaseStalePrs"
   ],
   "baseBranches": ["beta"],
