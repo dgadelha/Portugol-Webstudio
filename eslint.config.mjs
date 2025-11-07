@@ -2,14 +2,16 @@ import eslint from "@eslint/js";
 import angular from "angular-eslint";
 import prettier from "eslint-plugin-prettier/recommended";
 import unicorn from "eslint-plugin-unicorn";
+import { defineConfig } from "eslint/config";
 import tseslint from "typescript-eslint";
 
-export default tseslint.config(
+export default defineConfig(
   eslint.configs.recommended,
   unicorn.configs.all,
   prettier,
   {
     files: ["**/*.html"],
+    // @ts-expect-error - Configuração válida, tipos desatualizados
     extends: [...angular.configs.templateAll, ...angular.configs.templateAccessibility],
     rules: {
       "@angular-eslint/template/i18n": "off",
@@ -107,6 +109,7 @@ export default tseslint.config(
       "unicorn/prefer-export-from": "off",
       "unicorn/prefer-global-this": "off",
       "unicorn/prefer-spread": "off",
+      "unicorn/prefer-string-raw": "off",
       "unicorn/prefer-ternary": "off",
       "unicorn/prefer-top-level-await": "off",
       "unicorn/prevent-abbreviations": "off",
