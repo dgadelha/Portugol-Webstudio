@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1760997511570,
+  "timestamp": 1762548356347,
   "index": "/index.html",
   "assetGroups": [
     {
@@ -13,7 +13,7 @@
       "urls": [
         "/favicon.ico",
         "/index.html",
-        "/main-7AJBXQAM.js",
+        "/main-NHUPVJNR.js",
         "/manifest.webmanifest",
         "/polyfills-JUTM3XWE.js",
         "/styles-S3DURN62.css"
@@ -6030,8 +6030,8 @@
     "/assets/monaco-editor/node_modules/marked/marked.min.js": "3047b39af0235349cc40ca369feaa257b6c412a0",
     "/assets/monaco-editor/node_modules/marked/package.json": "f3500d0c806ff7fef52230dbc99437ec6bb582d8",
     "/assets/monaco-editor/package.json": "798ea3fd2320ff015fb17ae0be436cb672aaaccb",
-    "/assets/portugol-worker/worker.js": "50e394efd9bab18be9227cd27597d09583e2a1f2",
-    "/assets/portugol-worker/worker.js.map": "b627232fd25b41462c5d08b26bb50af9c2bda892",
+    "/assets/portugol-worker/worker.js": "c0b7b0e2a26c9eb422cd2c170344c8934d63ba3b",
+    "/assets/portugol-worker/worker.js.map": "c5d355eb0d35482cf13894335e82a1e8f2ae7e56",
     "/assets/recursos/ajuda/estilos/SyntaxHighlighter.css": "4162675b3b4d2354973021572bfd4685deb6712d",
     "/assets/recursos/ajuda/estilos/ajuda.css": "9e6ad574f9fa6c48d6f856756016eac3c1a5686b",
     "/assets/recursos/ajuda/estilos/index.css": "df28a87aa49702297859fb7900c44f8250da8786",
@@ -6710,8 +6710,8 @@
     "/assets/recursos/exercicios/exercicio60.pex": "6082892362c640c5b7c9e63b12d6594dab32128d",
     "/assets/recursos/exercicios/schema.xsd": "cd13152ea836b1eed121a6972a619f595ac5d46c",
     "/favicon.ico": "a3dadb5b6906874517b9a2bc021bb3f154290edd",
-    "/index.html": "f051ec5fda1b2af765d880e71530f8cdbe304ba1",
-    "/main-7AJBXQAM.js": "624bb6b85eb9bc2cad43322763af8cb909667902",
+    "/index.html": "e2467157cc649d6a98e33d8dfd255b6fee14e630",
+    "/main-NHUPVJNR.js": "c0a2935b402f8acc8909ef22fee6b292675daff1",
     "/manifest.webmanifest": "bbfd674042155ddb102be018a75422fd949cb37f",
     "/polyfills-JUTM3XWE.js": "0f6422efb2ab40d839d1957e4130a29a0e38626f",
     "/styles-S3DURN62.css": "9243fca82ec7d355313d85bff1b6a6693950840b"
