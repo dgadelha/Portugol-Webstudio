@@ -40,7 +40,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
-    "angular-eslint": "^20.5.1",
+    "angular-eslint": "^20.6.0",
     "eslint": "^9.39.1",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.4",
@@ -49,9 +49,9 @@
     "patch-package": "^8.0.1",
     "sherif": "^1.8.0",
     "typescript": "~5.9.3",
-    "typescript-eslint": "^8.46.3"
+    "typescript-eslint": "^8.46.4"
   },
   "overrides": {
-    "tmp": "^0.2.4"
+    "tmp": "^0.2.5"
   }
 }
