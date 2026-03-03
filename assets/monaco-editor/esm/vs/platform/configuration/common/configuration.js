@@ -1,13 +1,14 @@
 import { createDecorator } from '../../instantiation/common/instantiation.js';
-export const IConfigurationService = createDecorator('configurationService');
-export function toValuesTree(properties, conflictReporter) {
+
+const IConfigurationService = createDecorator('configurationService');
+function toValuesTree(properties, conflictReporter) {
     const root = Object.create(null);
     for (const key in properties) {
         addToValueTree(root, key, properties[key], conflictReporter);
     }
     return root;
 }
-export function addToValueTree(settingsTreeRoot, key, value, conflictReporter) {
+function addToValueTree(settingsTreeRoot, key, value, conflictReporter) {
     const segments = key.split('.');
     const last = segments.pop();
     let curr = settingsTreeRoot;
@@ -42,7 +43,7 @@ export function addToValueTree(settingsTreeRoot, key, value, conflictReporter) {
         conflictReporter(`Ignoring ${key} as ${segments.join('.')} is ${JSON.stringify(curr)}`);
     }
 }
-export function removeFromValueTree(valueTree, key) {
+function removeFromValueTree(valueTree, key) {
     const segments = key.split('.');
     doRemoveFromValueTree(valueTree, segments);
 }
@@ -66,7 +67,7 @@ function doRemoveFromValueTree(valueTree, segments) {
         }
     }
 }
-export function getConfigurationValue(config, settingPath, defaultValue) {
+function getConfigurationValue(config, settingPath, defaultValue) {
     function accessSetting(config, path) {
         let current = config;
         for (const component of path) {
@@ -81,10 +82,11 @@ export function getConfigurationValue(config, settingPath, defaultValue) {
     const result = accessSetting(config, path);
     return typeof result === 'undefined' ? defaultValue : result;
 }
-export function getLanguageTagSettingPlainKey(settingKey) {
+function getLanguageTagSettingPlainKey(settingKey) {
     return settingKey
         .replace(/^\[/, '')
         .replace(/]$/g, '')
         .replace(/\]\[/g, ', ');
 }
-//# sourceMappingURL=configuration.js.map
+
+export { IConfigurationService, addToValueTree, getConfigurationValue, getLanguageTagSettingPlainKey, removeFromValueTree, toValuesTree };

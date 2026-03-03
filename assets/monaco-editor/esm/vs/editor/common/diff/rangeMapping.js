@@ -1,7 +1,3 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { groupAdjacentBy } from '../../../base/common/arrays.js';
 import { assertFn, checkAdjacentItems } from '../../../base/common/assert.js';
 import { BugIndicatingError } from '../../../base/common/errors.js';
@@ -9,10 +5,15 @@ import { LineRange } from '../core/ranges/lineRange.js';
 import { Position } from '../core/position.js';
 import { Range } from '../core/range.js';
 import { TextReplacement } from '../core/edits/textEdit.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
 /**
  * Maps a line range in the original text model to a line range in the modified text model.
  */
-export class LineRangeMapping {
+class LineRangeMapping {
     static inverse(mapping, originalLineCount, modifiedLineCount) {
         const result = [];
         let lastOriginalEndLineNumber = 1;
@@ -121,7 +122,7 @@ function isValidLineNumber(lineNumber, lines) {
  * Maps a line range in the original text model to a line range in the modified text model.
  * Also contains inner range mappings.
  */
-export class DetailedLineRangeMapping extends LineRangeMapping {
+class DetailedLineRangeMapping extends LineRangeMapping {
     static fromRangeMappings(rangeMappings) {
         const originalRange = LineRange.join(rangeMappings.map(r => LineRange.fromRangeInclusive(r.originalRange)));
         const modifiedRange = LineRange.join(rangeMappings.map(r => LineRange.fromRangeInclusive(r.modifiedRange)));
@@ -141,7 +142,7 @@ export class DetailedLineRangeMapping extends LineRangeMapping {
 /**
  * Maps a range in the original text model to a range in the modified text model.
  */
-export class RangeMapping {
+class RangeMapping {
     static fromEdit(edit) {
         const newRanges = edit.getNewRanges();
         const result = edit.replacements.map((e, idx) => new RangeMapping(e.range, newRanges[idx]));
@@ -175,7 +176,7 @@ export class RangeMapping {
         return new TextReplacement(this.originalRange, newText);
     }
 }
-export function lineRangeMappingFromRangeMappings(alignments, originalLines, modifiedLines, dontAssertStartLine = false) {
+function lineRangeMappingFromRangeMappings(alignments, originalLines, modifiedLines, dontAssertStartLine = false) {
     const changes = [];
     for (const g of groupAdjacentBy(alignments.map(a => getLineRangeMapping(a, originalLines, modifiedLines)), (a1, a2) => a1.original.intersectsOrTouches(a2.original)
         || a1.modified.intersectsOrTouches(a2.modified))) {
@@ -199,7 +200,7 @@ export function lineRangeMappingFromRangeMappings(alignments, originalLines, mod
     });
     return changes;
 }
-export function getLineRangeMapping(rangeMapping, originalLines, modifiedLines) {
+function getLineRangeMapping(rangeMapping, originalLines, modifiedLines) {
     let lineStartDelta = 0;
     let lineEndDelta = 0;
     // rangeMapping describes the edit that replaces `rangeMapping.originalRange` with `newText := getText(modifiedLines, rangeMapping.modifiedRange)`.
@@ -224,4 +225,5 @@ export function getLineRangeMapping(rangeMapping, originalLines, modifiedLines) 
     const modifiedLineRange = new LineRange(rangeMapping.modifiedRange.startLineNumber + lineStartDelta, rangeMapping.modifiedRange.endLineNumber + 1 + lineEndDelta);
     return new DetailedLineRangeMapping(originalLineRange, modifiedLineRange, [rangeMapping]);
 }
-//# sourceMappingURL=rangeMapping.js.map
+
+export { DetailedLineRangeMapping, LineRangeMapping, RangeMapping, getLineRangeMapping, lineRangeMappingFromRangeMappings };

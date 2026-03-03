@@ -1,32 +1,33 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-import * as browser from '../../../../../base/browser/browser.js';
-import * as dom from '../../../../../base/browser/dom.js';
+import { isFirefox } from '../../../../../base/browser/browser.js';
+import { addDisposableListener, getShadowRoot, getActiveElement, getWindow, saveParentsScrollTop, restoreParentsScrollTop } from '../../../../../base/browser/dom.js';
 import { DomEmitter } from '../../../../../base/browser/event.js';
 import { StandardKeyboardEvent } from '../../../../../base/browser/keyboardEvent.js';
 import { inputLatency } from '../../../../../base/browser/performance.js';
 import { RunOnceScheduler } from '../../../../../base/common/async.js';
 import { Emitter, Event } from '../../../../../base/common/event.js';
 import { Disposable, MutableDisposable } from '../../../../../base/common/lifecycle.js';
-import * as strings from '../../../../../base/common/strings.js';
+import { isHighSurrogate } from '../../../../../base/common/strings.js';
 import { Selection } from '../../../../common/core/selection.js';
 import { IAccessibilityService } from '../../../../../platform/accessibility/common/accessibility.js';
 import { ILogService, LogLevel } from '../../../../../platform/log/common/log.js';
-import { ClipboardEventUtils, InMemoryClipboardMetadataManager } from '../clipboardUtils.js';
-import { _debugComposition, TextAreaState } from './textAreaEditContextState.js';
+import { InMemoryClipboardMetadataManager, ClipboardEventUtils } from '../clipboardUtils.js';
+import { TextAreaState } from './textAreaEditContextState.js';
 import { generateUuid } from '../../../../../base/common/uuid.js';
-export var TextAreaSyntethicEvents;
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var TextAreaSyntethicEvents;
 (function (TextAreaSyntethicEvents) {
     TextAreaSyntethicEvents.Tap = '-monaco-textarea-synthetic-tap';
 })(TextAreaSyntethicEvents || (TextAreaSyntethicEvents = {}));
@@ -126,9 +127,6 @@ let TextAreaInput = class TextAreaInput extends Disposable {
             this._onKeyUp.fire(e);
         }));
         this._register(this._textArea.onCompositionStart((e) => {
-            if (_debugComposition) {
-                console.log(`[compositionstart]`, e);
-            }
             const currentComposition = new CompositionContext();
             if (this._currentComposition) {
                 // simply reset the composition context
@@ -143,10 +141,6 @@ let TextAreaInput = class TextAreaInput extends Disposable {
                 && this._textAreaState.selectionStart > 0
                 && this._textAreaState.value.substr(this._textAreaState.selectionStart - 1, 1) === e.data
                 && (lastKeyDown.code === 'ArrowRight' || lastKeyDown.code === 'ArrowLeft')) {
-                // Handling long press case on Chromium/Safari macOS + arrow key => pretend the character was selected
-                if (_debugComposition) {
-                    console.log(`[compositionstart] Handling long press case on macOS + arrow key`, e);
-                }
                 // Pretend the previous character was composed (in order to get it removed by subsequent compositionupdate events)
                 currentComposition.handleCompositionUpdate('x');
                 this._onCompositionStart.fire({ data: e.data });
@@ -161,9 +155,6 @@ let TextAreaInput = class TextAreaInput extends Disposable {
             this._onCompositionStart.fire({ data: e.data });
         }));
         this._register(this._textArea.onCompositionUpdate((e) => {
-            if (_debugComposition) {
-                console.log(`[compositionupdate]`, e);
-            }
             const currentComposition = this._currentComposition;
             if (!currentComposition) {
                 // should not be possible to receive a 'compositionupdate' without a 'compositionstart'
@@ -187,9 +178,6 @@ let TextAreaInput = class TextAreaInput extends Disposable {
             this._onCompositionUpdate.fire(e);
         }));
         this._register(this._textArea.onCompositionEnd((e) => {
-            if (_debugComposition) {
-                console.log(`[compositionend]`, e);
-            }
             const currentComposition = this._currentComposition;
             if (!currentComposition) {
                 // https://github.com/microsoft/monaco-editor/issues/1663
@@ -215,9 +203,6 @@ let TextAreaInput = class TextAreaInput extends Disposable {
             this._onCompositionEnd.fire();
         }));
         this._register(this._textArea.onInput((e) => {
-            if (_debugComposition) {
-                console.log(`[input]`, e);
-            }
             // Pretend here we touched the text area, as the `input` event will most likely
             // result in a `selectionchange` event which we want to ignore
             this._textArea.setIgnoreSelectionChangeTime('received input event');
@@ -228,7 +213,7 @@ let TextAreaInput = class TextAreaInput extends Disposable {
             const typeInput = TextAreaState.deduceInput(this._textAreaState, newState, /*couldBeEmojiInput*/ this._OS === 2 /* OperatingSystem.Macintosh */);
             if (typeInput.replacePrevCharCnt === 0 && typeInput.text.length === 1) {
                 // one character was typed
-                if (strings.isHighSurrogate(typeInput.text.charCodeAt(0))
+                if (isHighSurrogate(typeInput.text.charCodeAt(0))
                     || typeInput.text.charCodeAt(0) === 0x7f /* Delete */) {
                     // Ignore invalid input but keep it around for next time
                     return;
@@ -344,7 +329,7 @@ let TextAreaInput = class TextAreaInput extends Disposable {
         // `selectionchange` events often come multiple times for a single logical change
         // so throttle multiple `selectionchange` events that burst in a short period of time.
         let previousSelectionChangeEventTime = 0;
-        return dom.addDisposableListener(this._textArea.ownerDocument, 'selectionchange', (e) => {
+        return addDisposableListener(this._textArea.ownerDocument, 'selectionchange', (e) => {
             inputLatency.onSelectionChange();
             if (!this._hasFocus) {
                 return;
@@ -483,8 +468,7 @@ TextAreaInput = __decorate([
     __param(4, IAccessibilityService),
     __param(5, ILogService)
 ], TextAreaInput);
-export { TextAreaInput };
-export class TextAreaWrapper extends Disposable {
+class TextAreaWrapper extends Disposable {
     get ownerDocument() {
         return this._actual.ownerDocument;
     }
@@ -511,15 +495,15 @@ export class TextAreaWrapper extends Disposable {
         this._register(this.onBeforeInput(() => inputLatency.onBeforeInput()));
         this._register(this.onInput(() => inputLatency.onInput()));
         this._register(this.onKeyUp(() => inputLatency.onKeyUp()));
-        this._register(dom.addDisposableListener(this._actual, TextAreaSyntethicEvents.Tap, () => this._onSyntheticTap.fire()));
+        this._register(addDisposableListener(this._actual, TextAreaSyntethicEvents.Tap, () => this._onSyntheticTap.fire()));
     }
     hasFocus() {
-        const shadowRoot = dom.getShadowRoot(this._actual);
+        const shadowRoot = getShadowRoot(this._actual);
         if (shadowRoot) {
             return shadowRoot.activeElement === this._actual;
         }
         else if (this._actual.isConnected) {
-            return dom.getActiveElement() === this._actual;
+            return getActiveElement() === this._actual;
         }
         else {
             return false;
@@ -557,21 +541,21 @@ export class TextAreaWrapper extends Disposable {
     setSelectionRange(reason, selectionStart, selectionEnd) {
         const textArea = this._actual;
         let activeElement = null;
-        const shadowRoot = dom.getShadowRoot(textArea);
+        const shadowRoot = getShadowRoot(textArea);
         if (shadowRoot) {
             activeElement = shadowRoot.activeElement;
         }
         else {
-            activeElement = dom.getActiveElement();
+            activeElement = getActiveElement();
         }
-        const activeWindow = dom.getWindow(activeElement);
+        const activeWindow = getWindow(activeElement);
         const currentIsFocused = (activeElement === textArea);
         const currentSelectionStart = textArea.selectionStart;
         const currentSelectionEnd = textArea.selectionEnd;
         if (currentIsFocused && currentSelectionStart === selectionStart && currentSelectionEnd === selectionEnd) {
             // No change
             // Firefox iframe bug https://github.com/microsoft/monaco-editor/issues/643#issuecomment-367871377
-            if (browser.isFirefox && activeWindow.parent !== activeWindow) {
+            if (isFirefox && activeWindow.parent !== activeWindow) {
                 textArea.focus();
             }
             return;
@@ -581,7 +565,7 @@ export class TextAreaWrapper extends Disposable {
             // No need to focus, only need to change the selection range
             this.setIgnoreSelectionChangeTime('setSelectionRange');
             textArea.setSelectionRange(selectionStart, selectionEnd);
-            if (browser.isFirefox && activeWindow.parent !== activeWindow) {
+            if (isFirefox && activeWindow.parent !== activeWindow) {
                 textArea.focus();
             }
             return;
@@ -589,15 +573,16 @@ export class TextAreaWrapper extends Disposable {
         // If the focus is outside the textarea, browsers will try really hard to reveal the textarea.
         // Here, we try to undo the browser's desperate reveal.
         try {
-            const scrollState = dom.saveParentsScrollTop(textArea);
+            const scrollState = saveParentsScrollTop(textArea);
             this.setIgnoreSelectionChangeTime('setSelectionRange');
             textArea.focus();
             textArea.setSelectionRange(selectionStart, selectionEnd);
-            dom.restoreParentsScrollTop(textArea, scrollState);
+            restoreParentsScrollTop(textArea, scrollState);
         }
         catch (e) {
             // Sometimes IE throws when setting selection (e.g. textarea is off-DOM)
         }
     }
 }
-//# sourceMappingURL=textAreaEditContextInput.js.map
+
+export { TextAreaInput, TextAreaSyntethicEvents, TextAreaWrapper };

@@ -1,21 +1,8 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-import { createCancelablePromise, RunOnceScheduler } from '../../../../base/common/async.js';
-import { Disposable } from '../../../../base/common/lifecycle.js';
+import { RunOnceScheduler, createCancelablePromise } from '../../../../base/common/async.js';
+import { Disposable, dispose } from '../../../../base/common/lifecycle.js';
 import { registerEditorContribution } from '../../../browser/editorExtensions.js';
-import { getDocumentRangeSemanticTokens, hasDocumentRangeSemanticTokensProvider } from '../common/getSemanticTokens.js';
-import { isSemanticColoringEnabled, SEMANTIC_HIGHLIGHTING_SETTING_ID } from '../common/semanticTokensConfig.js';
+import { hasDocumentRangeSemanticTokensProvider, getDocumentRangeSemanticTokens } from '../common/getSemanticTokens.js';
+import { SEMANTIC_HIGHLIGHTING_SETTING_ID, isSemanticColoringEnabled } from '../common/semanticTokensConfig.js';
 import { toMultilineTokens2 } from '../../../common/services/semanticTokensProviderStyling.js';
 import { IConfigurationService } from '../../../../platform/configuration/common/configuration.js';
 import { IThemeService } from '../../../../platform/theme/common/themeService.js';
@@ -23,6 +10,20 @@ import { ILanguageFeatureDebounceService } from '../../../common/services/langua
 import { StopWatch } from '../../../../base/common/stopwatch.js';
 import { ILanguageFeaturesService } from '../../../common/services/languageFeatures.js';
 import { ISemanticTokensStylingService } from '../../../common/services/semanticTokensStyling.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 let ViewportSemanticTokensContribution = class ViewportSemanticTokensContribution extends Disposable {
     static { this.ID = 'editor.contrib.viewportSemanticTokens'; }
     constructor(editor, _semanticTokensStylingService, _themeService, _configurationService, languageFeatureDebounceService, languageFeaturesService) {
@@ -35,15 +36,38 @@ let ViewportSemanticTokensContribution = class ViewportSemanticTokensContributio
         this._debounceInformation = languageFeatureDebounceService.for(this._provider, 'DocumentRangeSemanticTokens', { min: 100, max: 500 });
         this._tokenizeViewport = this._register(new RunOnceScheduler(() => this._tokenizeViewportNow(), 100));
         this._outstandingRequests = [];
+        this._rangeProvidersChangeListeners = [];
         const scheduleTokenizeViewport = () => {
             if (this._editor.hasModel()) {
                 this._tokenizeViewport.schedule(this._debounceInformation.get(this._editor.getModel()));
+            }
+        };
+        const bindRangeProvidersChangeListeners = () => {
+            this._cleanupProviderListeners();
+            if (this._editor.hasModel()) {
+                const model = this._editor.getModel();
+                for (const provider of this._provider.all(model)) {
+                    const disposable = provider.onDidChange?.(() => {
+                        this._cancelAll();
+                        scheduleTokenizeViewport();
+                    });
+                    if (disposable) {
+                        this._rangeProvidersChangeListeners.push(disposable);
+                    }
+                }
             }
         };
         this._register(this._editor.onDidScrollChange(() => {
             scheduleTokenizeViewport();
         }));
         this._register(this._editor.onDidChangeModel(() => {
+            bindRangeProvidersChangeListeners();
+            this._cancelAll();
+            scheduleTokenizeViewport();
+        }));
+        this._register(this._editor.onDidChangeModelLanguage(() => {
+            // The cleanup of the model's semantic tokens happens in the DocumentSemanticTokensFeature
+            bindRangeProvidersChangeListeners();
             this._cancelAll();
             scheduleTokenizeViewport();
         }));
@@ -51,7 +75,9 @@ let ViewportSemanticTokensContribution = class ViewportSemanticTokensContributio
             this._cancelAll();
             scheduleTokenizeViewport();
         }));
+        bindRangeProvidersChangeListeners();
         this._register(this._provider.onDidChange(() => {
+            bindRangeProvidersChangeListeners();
             this._cancelAll();
             scheduleTokenizeViewport();
         }));
@@ -66,6 +92,14 @@ let ViewportSemanticTokensContribution = class ViewportSemanticTokensContributio
             scheduleTokenizeViewport();
         }));
         scheduleTokenizeViewport();
+    }
+    dispose() {
+        this._cleanupProviderListeners();
+        super.dispose();
+    }
+    _cleanupProviderListeners() {
+        dispose(this._rangeProvidersChangeListeners);
+        this._rangeProvidersChangeListeners = [];
     }
     _cancelAll() {
         for (const request of this._outstandingRequests) {
@@ -127,6 +161,6 @@ ViewportSemanticTokensContribution = __decorate([
     __param(4, ILanguageFeatureDebounceService),
     __param(5, ILanguageFeaturesService)
 ], ViewportSemanticTokensContribution);
-export { ViewportSemanticTokensContribution };
 registerEditorContribution(ViewportSemanticTokensContribution.ID, ViewportSemanticTokensContribution, 1 /* EditorContributionInstantiation.AfterFirstRender */);
-//# sourceMappingURL=viewportSemanticTokens.js.map
+
+export { ViewportSemanticTokensContribution };

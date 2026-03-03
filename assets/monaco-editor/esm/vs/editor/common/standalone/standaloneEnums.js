@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 // THIS IS A GENERATED FILE. DO NOT EDIT DIRECTLY.
-export var AccessibilitySupport;
+var AccessibilitySupport;
 (function (AccessibilitySupport) {
     /**
      * This should be the browser case where it is not known if a screen reader is attached or no.
@@ -12,12 +12,12 @@ export var AccessibilitySupport;
     AccessibilitySupport[AccessibilitySupport["Disabled"] = 1] = "Disabled";
     AccessibilitySupport[AccessibilitySupport["Enabled"] = 2] = "Enabled";
 })(AccessibilitySupport || (AccessibilitySupport = {}));
-export var CodeActionTriggerType;
+var CodeActionTriggerType;
 (function (CodeActionTriggerType) {
     CodeActionTriggerType[CodeActionTriggerType["Invoke"] = 1] = "Invoke";
     CodeActionTriggerType[CodeActionTriggerType["Auto"] = 2] = "Auto";
 })(CodeActionTriggerType || (CodeActionTriggerType = {}));
-export var CompletionItemInsertTextRule;
+var CompletionItemInsertTextRule;
 (function (CompletionItemInsertTextRule) {
     CompletionItemInsertTextRule[CompletionItemInsertTextRule["None"] = 0] = "None";
     /**
@@ -30,7 +30,7 @@ export var CompletionItemInsertTextRule;
      */
     CompletionItemInsertTextRule[CompletionItemInsertTextRule["InsertAsSnippet"] = 4] = "InsertAsSnippet";
 })(CompletionItemInsertTextRule || (CompletionItemInsertTextRule = {}));
-export var CompletionItemKind;
+var CompletionItemKind;
 (function (CompletionItemKind) {
     CompletionItemKind[CompletionItemKind["Method"] = 0] = "Method";
     CompletionItemKind[CompletionItemKind["Function"] = 1] = "Function";
@@ -62,14 +62,14 @@ export var CompletionItemKind;
     CompletionItemKind[CompletionItemKind["Tool"] = 27] = "Tool";
     CompletionItemKind[CompletionItemKind["Snippet"] = 28] = "Snippet";
 })(CompletionItemKind || (CompletionItemKind = {}));
-export var CompletionItemTag;
+var CompletionItemTag;
 (function (CompletionItemTag) {
     CompletionItemTag[CompletionItemTag["Deprecated"] = 1] = "Deprecated";
 })(CompletionItemTag || (CompletionItemTag = {}));
 /**
  * How a suggest provider was triggered.
  */
-export var CompletionTriggerKind;
+var CompletionTriggerKind;
 (function (CompletionTriggerKind) {
     CompletionTriggerKind[CompletionTriggerKind["Invoke"] = 0] = "Invoke";
     CompletionTriggerKind[CompletionTriggerKind["TriggerCharacter"] = 1] = "TriggerCharacter";
@@ -78,7 +78,7 @@ export var CompletionTriggerKind;
 /**
  * A positioning preference for rendering content widgets.
  */
-export var ContentWidgetPositionPreference;
+var ContentWidgetPositionPreference;
 (function (ContentWidgetPositionPreference) {
     /**
      * Place the content widget exactly at a position
@@ -96,7 +96,7 @@ export var ContentWidgetPositionPreference;
 /**
  * Describes the reason the cursor has changed its position.
  */
-export var CursorChangeReason;
+var CursorChangeReason;
 (function (CursorChangeReason) {
     /**
      * Unknown or not set.
@@ -130,7 +130,7 @@ export var CursorChangeReason;
 /**
  * The default end of line to use when instantiating models.
  */
-export var DefaultEndOfLine;
+var DefaultEndOfLine;
 (function (DefaultEndOfLine) {
     /**
      * Use line feed (\n) as the end of line character.
@@ -144,7 +144,7 @@ export var DefaultEndOfLine;
 /**
  * A document highlight kind.
  */
-export var DocumentHighlightKind;
+var DocumentHighlightKind;
 (function (DocumentHighlightKind) {
     /**
      * A textual occurrence.
@@ -162,7 +162,7 @@ export var DocumentHighlightKind;
 /**
  * Configuration options for auto indentation in the editor
  */
-export var EditorAutoIndentStrategy;
+var EditorAutoIndentStrategy;
 (function (EditorAutoIndentStrategy) {
     EditorAutoIndentStrategy[EditorAutoIndentStrategy["None"] = 0] = "None";
     EditorAutoIndentStrategy[EditorAutoIndentStrategy["Keep"] = 1] = "Keep";
@@ -170,7 +170,7 @@ export var EditorAutoIndentStrategy;
     EditorAutoIndentStrategy[EditorAutoIndentStrategy["Advanced"] = 3] = "Advanced";
     EditorAutoIndentStrategy[EditorAutoIndentStrategy["Full"] = 4] = "Full";
 })(EditorAutoIndentStrategy || (EditorAutoIndentStrategy = {}));
-export var EditorOption;
+var EditorOption;
 (function (EditorOption) {
     EditorOption[EditorOption["acceptSuggestionOnCommitCharacter"] = 0] = "acceptSuggestionOnCommitCharacter";
     EditorOption[EditorOption["acceptSuggestionOnEnter"] = 1] = "acceptSuggestionOnEnter";
@@ -349,7 +349,7 @@ export var EditorOption;
 /**
  * End of line character preference.
  */
-export var EndOfLinePreference;
+var EndOfLinePreference;
 (function (EndOfLinePreference) {
     /**
      * Use the end of line character identified in the text buffer.
@@ -367,7 +367,7 @@ export var EndOfLinePreference;
 /**
  * End of line character preference.
  */
-export var EndOfLineSequence;
+var EndOfLineSequence;
 (function (EndOfLineSequence) {
     /**
      * Use line feed (\n) as the end of line character.
@@ -381,13 +381,13 @@ export var EndOfLineSequence;
 /**
  * Vertical Lane in the glyph margin of the editor.
  */
-export var GlyphMarginLane;
+var GlyphMarginLane;
 (function (GlyphMarginLane) {
     GlyphMarginLane[GlyphMarginLane["Left"] = 1] = "Left";
     GlyphMarginLane[GlyphMarginLane["Center"] = 2] = "Center";
     GlyphMarginLane[GlyphMarginLane["Right"] = 3] = "Right";
 })(GlyphMarginLane || (GlyphMarginLane = {}));
-export var HoverVerbosityAction;
+var HoverVerbosityAction;
 (function (HoverVerbosityAction) {
     /**
      * Increase the verbosity of the hover
@@ -401,7 +401,7 @@ export var HoverVerbosityAction;
 /**
  * Describes what to do with the indentation when pressing Enter.
  */
-export var IndentAction;
+var IndentAction;
 (function (IndentAction) {
     /**
      * Insert new line and copy the previous line's indentation.
@@ -422,33 +422,33 @@ export var IndentAction;
      */
     IndentAction[IndentAction["Outdent"] = 3] = "Outdent";
 })(IndentAction || (IndentAction = {}));
-export var InjectedTextCursorStops;
+var InjectedTextCursorStops;
 (function (InjectedTextCursorStops) {
     InjectedTextCursorStops[InjectedTextCursorStops["Both"] = 0] = "Both";
     InjectedTextCursorStops[InjectedTextCursorStops["Right"] = 1] = "Right";
     InjectedTextCursorStops[InjectedTextCursorStops["Left"] = 2] = "Left";
     InjectedTextCursorStops[InjectedTextCursorStops["None"] = 3] = "None";
 })(InjectedTextCursorStops || (InjectedTextCursorStops = {}));
-export var InlayHintKind;
+var InlayHintKind;
 (function (InlayHintKind) {
     InlayHintKind[InlayHintKind["Type"] = 1] = "Type";
     InlayHintKind[InlayHintKind["Parameter"] = 2] = "Parameter";
 })(InlayHintKind || (InlayHintKind = {}));
-export var InlineCompletionDisplayLocationKind;
-(function (InlineCompletionDisplayLocationKind) {
-    InlineCompletionDisplayLocationKind[InlineCompletionDisplayLocationKind["Code"] = 1] = "Code";
-    InlineCompletionDisplayLocationKind[InlineCompletionDisplayLocationKind["Label"] = 2] = "Label";
-})(InlineCompletionDisplayLocationKind || (InlineCompletionDisplayLocationKind = {}));
-export var InlineCompletionEndOfLifeReasonKind;
+var InlineCompletionEndOfLifeReasonKind;
 (function (InlineCompletionEndOfLifeReasonKind) {
     InlineCompletionEndOfLifeReasonKind[InlineCompletionEndOfLifeReasonKind["Accepted"] = 0] = "Accepted";
     InlineCompletionEndOfLifeReasonKind[InlineCompletionEndOfLifeReasonKind["Rejected"] = 1] = "Rejected";
     InlineCompletionEndOfLifeReasonKind[InlineCompletionEndOfLifeReasonKind["Ignored"] = 2] = "Ignored";
 })(InlineCompletionEndOfLifeReasonKind || (InlineCompletionEndOfLifeReasonKind = {}));
+var InlineCompletionHintStyle;
+(function (InlineCompletionHintStyle) {
+    InlineCompletionHintStyle[InlineCompletionHintStyle["Code"] = 1] = "Code";
+    InlineCompletionHintStyle[InlineCompletionHintStyle["Label"] = 2] = "Label";
+})(InlineCompletionHintStyle || (InlineCompletionHintStyle = {}));
 /**
  * How an {@link InlineCompletionsProvider inline completion provider} was triggered.
  */
-export var InlineCompletionTriggerKind;
+var InlineCompletionTriggerKind;
 (function (InlineCompletionTriggerKind) {
     /**
      * Completion was triggered automatically while editing.
@@ -466,7 +466,7 @@ export var InlineCompletionTriggerKind;
  * Inspired somewhat from https://msdn.microsoft.com/en-us/library/windows/desktop/dd375731(v=vs.85).aspx
  * But these are "more general", as they should work across browsers & OS`s.
  */
-export var KeyCode;
+var KeyCode;
 (function (KeyCode) {
     KeyCode[KeyCode["DependsOnKbLayout"] = -1] = "DependsOnKbLayout";
     /**
@@ -666,14 +666,14 @@ export var KeyCode;
      */
     KeyCode[KeyCode["MAX_VALUE"] = 132] = "MAX_VALUE";
 })(KeyCode || (KeyCode = {}));
-export var MarkerSeverity;
+var MarkerSeverity;
 (function (MarkerSeverity) {
     MarkerSeverity[MarkerSeverity["Hint"] = 1] = "Hint";
     MarkerSeverity[MarkerSeverity["Info"] = 2] = "Info";
     MarkerSeverity[MarkerSeverity["Warning"] = 4] = "Warning";
     MarkerSeverity[MarkerSeverity["Error"] = 8] = "Error";
 })(MarkerSeverity || (MarkerSeverity = {}));
-export var MarkerTag;
+var MarkerTag;
 (function (MarkerTag) {
     MarkerTag[MarkerTag["Unnecessary"] = 1] = "Unnecessary";
     MarkerTag[MarkerTag["Deprecated"] = 2] = "Deprecated";
@@ -681,7 +681,7 @@ export var MarkerTag;
 /**
  * Position in the minimap to render the decoration.
  */
-export var MinimapPosition;
+var MinimapPosition;
 (function (MinimapPosition) {
     MinimapPosition[MinimapPosition["Inline"] = 1] = "Inline";
     MinimapPosition[MinimapPosition["Gutter"] = 2] = "Gutter";
@@ -689,7 +689,7 @@ export var MinimapPosition;
 /**
  * Section header style.
  */
-export var MinimapSectionHeaderStyle;
+var MinimapSectionHeaderStyle;
 (function (MinimapSectionHeaderStyle) {
     MinimapSectionHeaderStyle[MinimapSectionHeaderStyle["Normal"] = 1] = "Normal";
     MinimapSectionHeaderStyle[MinimapSectionHeaderStyle["Underlined"] = 2] = "Underlined";
@@ -697,7 +697,7 @@ export var MinimapSectionHeaderStyle;
 /**
  * Type of hit element with the mouse in the editor.
  */
-export var MouseTargetType;
+var MouseTargetType;
 (function (MouseTargetType) {
     /**
      * Mouse is on top of an unknown element.
@@ -756,11 +756,11 @@ export var MouseTargetType;
      */
     MouseTargetType[MouseTargetType["OUTSIDE_EDITOR"] = 13] = "OUTSIDE_EDITOR";
 })(MouseTargetType || (MouseTargetType = {}));
-export var NewSymbolNameTag;
+var NewSymbolNameTag;
 (function (NewSymbolNameTag) {
     NewSymbolNameTag[NewSymbolNameTag["AIGenerated"] = 1] = "AIGenerated";
 })(NewSymbolNameTag || (NewSymbolNameTag = {}));
-export var NewSymbolNameTriggerKind;
+var NewSymbolNameTriggerKind;
 (function (NewSymbolNameTriggerKind) {
     NewSymbolNameTriggerKind[NewSymbolNameTriggerKind["Invoke"] = 0] = "Invoke";
     NewSymbolNameTriggerKind[NewSymbolNameTriggerKind["Automatic"] = 1] = "Automatic";
@@ -768,7 +768,7 @@ export var NewSymbolNameTriggerKind;
 /**
  * A positioning preference for rendering overlay widgets.
  */
-export var OverlayWidgetPositionPreference;
+var OverlayWidgetPositionPreference;
 (function (OverlayWidgetPositionPreference) {
     /**
      * Position the overlay widget in the top right corner
@@ -786,7 +786,7 @@ export var OverlayWidgetPositionPreference;
 /**
  * Vertical Lane in the overview ruler of the editor.
  */
-export var OverviewRulerLane;
+var OverviewRulerLane;
 (function (OverviewRulerLane) {
     OverviewRulerLane[OverviewRulerLane["Left"] = 1] = "Left";
     OverviewRulerLane[OverviewRulerLane["Center"] = 2] = "Center";
@@ -796,13 +796,13 @@ export var OverviewRulerLane;
 /**
  * How a partial acceptance was triggered.
  */
-export var PartialAcceptTriggerKind;
+var PartialAcceptTriggerKind;
 (function (PartialAcceptTriggerKind) {
     PartialAcceptTriggerKind[PartialAcceptTriggerKind["Word"] = 0] = "Word";
     PartialAcceptTriggerKind[PartialAcceptTriggerKind["Line"] = 1] = "Line";
     PartialAcceptTriggerKind[PartialAcceptTriggerKind["Suggest"] = 2] = "Suggest";
 })(PartialAcceptTriggerKind || (PartialAcceptTriggerKind = {}));
-export var PositionAffinity;
+var PositionAffinity;
 (function (PositionAffinity) {
     /**
      * Prefers the left most position.
@@ -825,7 +825,7 @@ export var PositionAffinity;
     */
     PositionAffinity[PositionAffinity["RightOfInjectedText"] = 4] = "RightOfInjectedText";
 })(PositionAffinity || (PositionAffinity = {}));
-export var RenderLineNumbersType;
+var RenderLineNumbersType;
 (function (RenderLineNumbersType) {
     RenderLineNumbersType[RenderLineNumbersType["Off"] = 0] = "Off";
     RenderLineNumbersType[RenderLineNumbersType["On"] = 1] = "On";
@@ -833,18 +833,18 @@ export var RenderLineNumbersType;
     RenderLineNumbersType[RenderLineNumbersType["Interval"] = 3] = "Interval";
     RenderLineNumbersType[RenderLineNumbersType["Custom"] = 4] = "Custom";
 })(RenderLineNumbersType || (RenderLineNumbersType = {}));
-export var RenderMinimap;
+var RenderMinimap;
 (function (RenderMinimap) {
     RenderMinimap[RenderMinimap["None"] = 0] = "None";
     RenderMinimap[RenderMinimap["Text"] = 1] = "Text";
     RenderMinimap[RenderMinimap["Blocks"] = 2] = "Blocks";
 })(RenderMinimap || (RenderMinimap = {}));
-export var ScrollType;
+var ScrollType;
 (function (ScrollType) {
     ScrollType[ScrollType["Smooth"] = 0] = "Smooth";
     ScrollType[ScrollType["Immediate"] = 1] = "Immediate";
 })(ScrollType || (ScrollType = {}));
-export var ScrollbarVisibility;
+var ScrollbarVisibility;
 (function (ScrollbarVisibility) {
     ScrollbarVisibility[ScrollbarVisibility["Auto"] = 1] = "Auto";
     ScrollbarVisibility[ScrollbarVisibility["Hidden"] = 2] = "Hidden";
@@ -853,7 +853,7 @@ export var ScrollbarVisibility;
 /**
  * The direction of a selection.
  */
-export var SelectionDirection;
+var SelectionDirection;
 (function (SelectionDirection) {
     /**
      * The selection starts above where it ends.
@@ -864,13 +864,13 @@ export var SelectionDirection;
      */
     SelectionDirection[SelectionDirection["RTL"] = 1] = "RTL";
 })(SelectionDirection || (SelectionDirection = {}));
-export var ShowLightbulbIconMode;
+var ShowLightbulbIconMode;
 (function (ShowLightbulbIconMode) {
     ShowLightbulbIconMode["Off"] = "off";
     ShowLightbulbIconMode["OnCode"] = "onCode";
     ShowLightbulbIconMode["On"] = "on";
 })(ShowLightbulbIconMode || (ShowLightbulbIconMode = {}));
-export var SignatureHelpTriggerKind;
+var SignatureHelpTriggerKind;
 (function (SignatureHelpTriggerKind) {
     SignatureHelpTriggerKind[SignatureHelpTriggerKind["Invoke"] = 1] = "Invoke";
     SignatureHelpTriggerKind[SignatureHelpTriggerKind["TriggerCharacter"] = 2] = "TriggerCharacter";
@@ -879,7 +879,7 @@ export var SignatureHelpTriggerKind;
 /**
  * A symbol kind.
  */
-export var SymbolKind;
+var SymbolKind;
 (function (SymbolKind) {
     SymbolKind[SymbolKind["File"] = 0] = "File";
     SymbolKind[SymbolKind["Module"] = 1] = "Module";
@@ -908,14 +908,14 @@ export var SymbolKind;
     SymbolKind[SymbolKind["Operator"] = 24] = "Operator";
     SymbolKind[SymbolKind["TypeParameter"] = 25] = "TypeParameter";
 })(SymbolKind || (SymbolKind = {}));
-export var SymbolTag;
+var SymbolTag;
 (function (SymbolTag) {
     SymbolTag[SymbolTag["Deprecated"] = 1] = "Deprecated";
 })(SymbolTag || (SymbolTag = {}));
 /**
  * Text Direction for a decoration.
  */
-export var TextDirection;
+var TextDirection;
 (function (TextDirection) {
     TextDirection[TextDirection["LTR"] = 0] = "LTR";
     TextDirection[TextDirection["RTL"] = 1] = "RTL";
@@ -923,7 +923,7 @@ export var TextDirection;
 /**
  * The kind of animation in which the editor's cursor should be rendered.
  */
-export var TextEditorCursorBlinkingStyle;
+var TextEditorCursorBlinkingStyle;
 (function (TextEditorCursorBlinkingStyle) {
     /**
      * Hidden
@@ -953,7 +953,7 @@ export var TextEditorCursorBlinkingStyle;
 /**
  * The style in which the editor's cursor should be rendered.
  */
-export var TextEditorCursorStyle;
+var TextEditorCursorStyle;
 (function (TextEditorCursorStyle) {
     /**
      * As a vertical line (sitting between two characters).
@@ -984,7 +984,7 @@ export var TextEditorCursorStyle;
  * Describes the behavior of decorations when typing/editing near their edges.
  * Note: Please do not edit the values, as they very carefully match `DecorationRangeBehavior`
  */
-export var TrackedRangeStickiness;
+var TrackedRangeStickiness;
 (function (TrackedRangeStickiness) {
     TrackedRangeStickiness[TrackedRangeStickiness["AlwaysGrowsWhenTypingAtEdges"] = 0] = "AlwaysGrowsWhenTypingAtEdges";
     TrackedRangeStickiness[TrackedRangeStickiness["NeverGrowsWhenTypingAtEdges"] = 1] = "NeverGrowsWhenTypingAtEdges";
@@ -994,7 +994,7 @@ export var TrackedRangeStickiness;
 /**
  * Describes how to indent wrapped lines.
  */
-export var WrappingIndent;
+var WrappingIndent;
 (function (WrappingIndent) {
     /**
      * No indentation => wrapped lines begin at column 1.
@@ -1013,4 +1013,5 @@ export var WrappingIndent;
      */
     WrappingIndent[WrappingIndent["DeepIndent"] = 3] = "DeepIndent";
 })(WrappingIndent || (WrappingIndent = {}));
-//# sourceMappingURL=standaloneEnums.js.map
+
+export { AccessibilitySupport, CodeActionTriggerType, CompletionItemInsertTextRule, CompletionItemKind, CompletionItemTag, CompletionTriggerKind, ContentWidgetPositionPreference, CursorChangeReason, DefaultEndOfLine, DocumentHighlightKind, EditorAutoIndentStrategy, EditorOption, EndOfLinePreference, EndOfLineSequence, GlyphMarginLane, HoverVerbosityAction, IndentAction, InjectedTextCursorStops, InlayHintKind, InlineCompletionEndOfLifeReasonKind, InlineCompletionHintStyle, InlineCompletionTriggerKind, KeyCode, MarkerSeverity, MarkerTag, MinimapPosition, MinimapSectionHeaderStyle, MouseTargetType, NewSymbolNameTag, NewSymbolNameTriggerKind, OverlayWidgetPositionPreference, OverviewRulerLane, PartialAcceptTriggerKind, PositionAffinity, RenderLineNumbersType, RenderMinimap, ScrollType, ScrollbarVisibility, SelectionDirection, ShowLightbulbIconMode, SignatureHelpTriggerKind, SymbolKind, SymbolTag, TextDirection, TextEditorCursorBlinkingStyle, TextEditorCursorStyle, TrackedRangeStickiness, WrappingIndent };

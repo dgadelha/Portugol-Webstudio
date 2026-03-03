@@ -1,12 +1,13 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-import * as dom from '../../../../base/browser/dom.js';
+import { $, reset } from '../../../../base/browser/dom.js';
 import { renderLabelWithIcons } from '../../../../base/browser/ui/iconLabel/iconLabels.js';
 import './codelensWidget.css';
 import { Range } from '../../../common/core/range.js';
 import { ModelDecorationOptions } from '../../../common/model/textModel.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
 class CodeLensViewZone {
     constructor(afterLineNumber, heightInPx, onHeight) {
         /**
@@ -62,24 +63,24 @@ class CodeLensContentWidget {
                 const title = renderLabelWithIcons(lens.command.title.trim());
                 if (lens.command.id) {
                     const id = `c${(CodeLensContentWidget._idPool++)}`;
-                    children.push(dom.$('a', { id, title: lens.command.tooltip, role: 'button' }, ...title));
+                    children.push($('a', { id, title: lens.command.tooltip, role: 'button' }, ...title));
                     this._commands.set(id, lens.command);
                 }
                 else {
-                    children.push(dom.$('span', { title: lens.command.tooltip }, ...title));
+                    children.push($('span', { title: lens.command.tooltip }, ...title));
                 }
                 if (i + 1 < lenses.length) {
-                    children.push(dom.$('span', undefined, '\u00a0|\u00a0'));
+                    children.push($('span', undefined, '\u00a0|\u00a0'));
                 }
             }
         }
         if (!hasSymbol) {
             // symbols but no commands
-            dom.reset(this._domNode, dom.$('span', undefined, 'no commands'));
+            reset(this._domNode, $('span', undefined, 'no commands'));
         }
         else {
             // symbols and commands
-            dom.reset(this._domNode, ...children);
+            reset(this._domNode, ...children);
             if (this._isEmpty && animate) {
                 this._domNode.classList.add('fadein');
             }
@@ -108,7 +109,7 @@ class CodeLensContentWidget {
         return this._widgetPosition || null;
     }
 }
-export class CodeLensHelper {
+class CodeLensHelper {
     constructor() {
         this._removeDecorations = [];
         this._addDecorations = [];
@@ -132,7 +133,7 @@ const codeLensDecorationOptions = ModelDecorationOptions.register({
     collapseOnReplaceEdit: true,
     description: 'codelens'
 });
-export class CodeLensWidget {
+class CodeLensWidget {
     constructor(data, editor, helper, viewZoneChangeAccessor, heightInPx, updateCallback) {
         this._isDisposed = false;
         this._editor = editor;
@@ -260,4 +261,5 @@ export class CodeLensWidget {
         }
     }
 }
-//# sourceMappingURL=codelensWidget.js.map
+
+export { CodeLensHelper, CodeLensWidget };

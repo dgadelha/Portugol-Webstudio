@@ -1,9 +1,10 @@
+import { matchesFuzzyIconAware, parseLabelWithIcons } from '../../../../base/common/iconLabels.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { matchesFuzzyIconAware, parseLabelWithIcons } from '../../../../base/common/iconLabels.js';
-export class QuickInputTreeFilter {
+class QuickInputTreeFilter {
     constructor() {
         this.filterValue = '';
         this.matchOnLabel = true;
@@ -37,4 +38,5 @@ export class QuickInputTreeFilter {
         };
     }
 }
-//# sourceMappingURL=quickInputTreeFilter.js.map
+
+export { QuickInputTreeFilter };

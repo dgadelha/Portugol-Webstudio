@@ -18,5 +18,6 @@ class NativeEditContextRegistryImpl {
         return this._nativeEditContextMapping.get(ownerID);
     }
 }
-export const NativeEditContextRegistry = new NativeEditContextRegistryImpl();
-//# sourceMappingURL=nativeEditContextRegistry.js.map
+const NativeEditContextRegistry = new NativeEditContextRegistryImpl();
+
+export { NativeEditContextRegistry };

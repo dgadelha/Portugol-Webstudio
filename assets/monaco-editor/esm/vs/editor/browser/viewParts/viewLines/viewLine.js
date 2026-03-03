@@ -1,24 +1,25 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-import * as browser from '../../../../base/browser/browser.js';
+import { isFirefox, isSafari, isWebKit } from '../../../../base/browser/browser.js';
 import { createFastDomNode } from '../../../../base/browser/fastDomNode.js';
-import * as platform from '../../../../base/common/platform.js';
+import { isNative, isLinux } from '../../../../base/common/platform.js';
 import { RangeUtil } from './rangeUtil.js';
-import { FloatHorizontalRange, VisibleRanges } from '../../view/renderingContext.js';
+import { VisibleRanges, FloatHorizontalRange } from '../../view/renderingContext.js';
 import { LineDecoration } from '../../../common/viewLayout/lineDecorations.js';
 import { RenderLineInput, renderViewLine, DomPosition } from '../../../common/viewLayout/viewLineRenderer.js';
 import { isHighContrast } from '../../../../platform/theme/common/theme.js';
 import { EditorFontLigatures } from '../../../common/config/editorOptions.js';
 import { OffsetRange } from '../../../common/core/ranges/offsetRange.js';
 import { TextDirection } from '../../../common/model.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
 const canUseFastRenderedViewLine = (function () {
-    if (platform.isNative) {
+    if (isNative) {
         // In VSCode we know very well when the zoom level changes
         return true;
     }
-    if (platform.isLinux || browser.isFirefox || browser.isSafari) {
+    if (isLinux || isFirefox || isSafari) {
         // On Linux, it appears that zooming affects char widths (in pixels), which is unexpected.
         // --
         // Even though we read character widths correctly, having read them at a specific zoom level
@@ -35,7 +36,7 @@ const canUseFastRenderedViewLine = (function () {
     return true;
 })();
 let monospaceAssumptionsAreValid = true;
-export class ViewLine {
+class ViewLine {
     static { this.CLASS_NAME = 'view-line'; }
     constructor(_viewGpuContext, options) {
         this._viewGpuContext = _viewGpuContext;
@@ -519,7 +520,7 @@ class WebKitRenderedViewLine extends RenderedViewLine {
     }
 }
 const createRenderedLine = (function () {
-    if (browser.isWebKit) {
+    if (isWebKit) {
         return createWebKitRenderedLine;
     }
     return createNormalRenderedLine;
@@ -530,7 +531,7 @@ function createWebKitRenderedLine(domNode, renderLineInput, characterMapping, co
 function createNormalRenderedLine(domNode, renderLineInput, characterMapping, containsForeignElements) {
     return new RenderedViewLine(domNode, renderLineInput, characterMapping, containsForeignElements);
 }
-export function getColumnOfNodeOffset(characterMapping, spanNode, offset) {
+function getColumnOfNodeOffset(characterMapping, spanNode, offset) {
     const spanNodeTextContentLength = spanNode.textContent.length;
     let spanIndex = -1;
     while (spanNode) {
@@ -539,4 +540,5 @@ export function getColumnOfNodeOffset(characterMapping, spanNode, offset) {
     }
     return characterMapping.getColumn(new DomPosition(spanIndex, offset), spanNodeTextContentLength);
 }
-//# sourceMappingURL=viewLine.js.map
+
+export { ViewLine, getColumnOfNodeOffset };

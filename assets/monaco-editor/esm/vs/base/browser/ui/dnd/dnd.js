@@ -1,10 +1,11 @@
+import { $ } from '../../dom.js';
+import './dnd.css';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { $ } from '../../dom.js';
-import './dnd.css';
-export function applyDragImage(event, container, label, extraClasses = []) {
+function applyDragImage(event, container, label, extraClasses = []) {
     if (!event.dataTransfer) {
         return;
     }
@@ -23,4 +24,5 @@ export function applyDragImage(event, container, label, extraClasses = []) {
     // Removes the element when the DND operation is done
     setTimeout(() => dragImage.remove(), 0);
 }
-//# sourceMappingURL=dnd.js.map
+
+export { applyDragImage };

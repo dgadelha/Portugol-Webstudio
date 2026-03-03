@@ -1,27 +1,38 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { RunOnceScheduler } from '../../../../base/common/async.js';
 import { Disposable } from '../../../../base/common/lifecycle.js';
 import './bracketMatching.css';
-import { EditorAction, registerEditorAction, registerEditorContribution } from '../../../browser/editorExtensions.js';
+import { registerEditorContribution, registerEditorAction, EditorAction } from '../../../browser/editorExtensions.js';
 import { Position } from '../../../common/core/position.js';
 import { Range } from '../../../common/core/range.js';
 import { Selection } from '../../../common/core/selection.js';
 import { EditorContextKeys } from '../../../common/editorContextKeys.js';
 import { OverviewRulerLane } from '../../../common/model.js';
 import { ModelDecorationOptions } from '../../../common/model/textModel.js';
-import * as nls from '../../../../nls.js';
-import { MenuId, MenuRegistry } from '../../../../platform/actions/common/actions.js';
-import { registerColor } from '../../../../platform/theme/common/colorRegistry.js';
+import { localize, localize2 } from '../../../../nls.js';
+import { MenuRegistry, MenuId } from '../../../../platform/actions/common/actions.js';
+import { registerColor } from '../../../../platform/theme/common/colorUtils.js';
+import '../../../../platform/theme/common/colors/baseColors.js';
+import '../../../../platform/theme/common/colors/chartsColors.js';
+import '../../../../platform/theme/common/colors/editorColors.js';
+import '../../../../platform/theme/common/colors/inputColors.js';
+import '../../../../platform/theme/common/colors/listColors.js';
+import '../../../../platform/theme/common/colors/menuColors.js';
+import '../../../../platform/theme/common/colors/minimapColors.js';
+import '../../../../platform/theme/common/colors/miscColors.js';
+import '../../../../platform/theme/common/colors/quickpickColors.js';
+import '../../../../platform/theme/common/colors/searchColors.js';
 import { themeColorFromId } from '../../../../platform/theme/common/themeService.js';
-const overviewRulerBracketMatchForeground = registerColor('editorOverviewRuler.bracketMatchForeground', '#A0A0A0', nls.localize(800, 'Overview ruler marker color for matching brackets.'));
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+const overviewRulerBracketMatchForeground = registerColor('editorOverviewRuler.bracketMatchForeground', '#A0A0A0', localize(804, 'Overview ruler marker color for matching brackets.'));
 class JumpToBracketAction extends EditorAction {
     constructor() {
         super({
             id: 'editor.action.jumpToBracket',
-            label: nls.localize2(802, "Go to Bracket"),
+            label: localize2(806, "Go to Bracket"),
             precondition: undefined,
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
@@ -38,10 +49,10 @@ class SelectToBracketAction extends EditorAction {
     constructor() {
         super({
             id: 'editor.action.selectToBracket',
-            label: nls.localize2(803, "Select to Bracket"),
+            label: localize2(807, "Select to Bracket"),
             precondition: undefined,
             metadata: {
-                description: nls.localize2(804, "Select the text inside and including the brackets or curly braces"),
+                description: localize2(808, "Select the text inside and including the brackets or curly braces"),
                 args: [{
                         name: 'args',
                         schema: {
@@ -69,13 +80,14 @@ class RemoveBracketsAction extends EditorAction {
     constructor() {
         super({
             id: 'editor.action.removeBrackets',
-            label: nls.localize2(805, "Remove Brackets"),
+            label: localize2(809, "Remove Brackets"),
             precondition: undefined,
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
                 primary: 2048 /* KeyMod.CtrlCmd */ | 512 /* KeyMod.Alt */ | 1 /* KeyCode.Backspace */,
                 weight: 100 /* KeybindingWeight.EditorContrib */
-            }
+            },
+            canTriggerInlineEdits: true,
         });
     }
     run(accessor, editor) {
@@ -89,7 +101,7 @@ class BracketsData {
         this.options = options;
     }
 }
-export class BracketMatchingController extends Disposable {
+class BracketMatchingController extends Disposable {
     static { this.ID = 'editor.contrib.bracketMatchingController'; }
     static get(editor) {
         return editor.getContribution(BracketMatchingController.ID);
@@ -339,8 +351,9 @@ MenuRegistry.appendMenuItem(MenuId.MenubarGoMenu, {
     group: '5_infile_nav',
     command: {
         id: 'editor.action.jumpToBracket',
-        title: nls.localize(801, "Go to &&Bracket")
+        title: localize(805, "Go to &&Bracket")
     },
     order: 2
 });
-//# sourceMappingURL=bracketMatching.js.map
+
+export { BracketMatchingController };

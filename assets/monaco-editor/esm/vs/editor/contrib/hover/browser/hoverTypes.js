@@ -2,7 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-export class HoverRangeAnchor {
+class HoverRangeAnchor {
     constructor(priority, range, initialMousePosX, initialMousePosY) {
         this.priority = priority;
         this.range = range;
@@ -17,7 +17,7 @@ export class HoverRangeAnchor {
         return (lastAnchor.type === 1 /* HoverAnchorType.Range */ && showAtPosition.lineNumber === this.range.startLineNumber);
     }
 }
-export class HoverForeignElementAnchor {
+class HoverForeignElementAnchor {
     constructor(priority, owner, range, initialMousePosX, initialMousePosY, supportsMarkerHover) {
         this.priority = priority;
         this.owner = owner;
@@ -37,7 +37,7 @@ export class HoverForeignElementAnchor {
 /**
  * Default implementation of IRenderedHoverParts.
  */
-export class RenderedHoverParts {
+class RenderedHoverParts {
     constructor(renderedHoverParts, disposables) {
         this.renderedHoverParts = renderedHoverParts;
         this.disposables = disposables;
@@ -49,7 +49,7 @@ export class RenderedHoverParts {
         this.disposables?.dispose();
     }
 }
-export const HoverParticipantRegistry = (new class HoverParticipantRegistry {
+const HoverParticipantRegistry = (new class HoverParticipantRegistry {
     constructor() {
         this._participants = [];
     }
@@ -60,4 +60,5 @@ export const HoverParticipantRegistry = (new class HoverParticipantRegistry {
         return this._participants;
     }
 }());
-//# sourceMappingURL=hoverTypes.js.map
+
+export { HoverForeignElementAnchor, HoverParticipantRegistry, HoverRangeAnchor, RenderedHoverParts };

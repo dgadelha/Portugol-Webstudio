@@ -2,7 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-export class BracketInfo {
+class BracketInfo {
     constructor(range, 
     /** 0-based level */
     nestingLevel, nestingLevelOfEqualBracketType, isInvalid) {
@@ -12,7 +12,7 @@ export class BracketInfo {
         this.isInvalid = isInvalid;
     }
 }
-export class BracketPairInfo {
+class BracketPairInfo {
     constructor(range, openingBracketRange, closingBracketRange, 
     /** 0-based */
     nestingLevel, nestingLevelOfEqualBracketType, bracketPairNode) {
@@ -27,7 +27,7 @@ export class BracketPairInfo {
         return this.bracketPairNode.openingBracket.bracketInfo;
     }
 }
-export class BracketPairWithMinIndentationInfo extends BracketPairInfo {
+class BracketPairWithMinIndentationInfo extends BracketPairInfo {
     constructor(range, openingBracketRange, closingBracketRange, 
     /**
      * 0-based
@@ -41,4 +41,5 @@ export class BracketPairWithMinIndentationInfo extends BracketPairInfo {
         this.minVisibleColumnIndentation = minVisibleColumnIndentation;
     }
 }
-//# sourceMappingURL=textModelBracketPairs.js.map
+
+export { BracketInfo, BracketPairInfo, BracketPairWithMinIndentationInfo };

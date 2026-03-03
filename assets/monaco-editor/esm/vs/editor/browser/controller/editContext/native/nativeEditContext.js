@@ -1,30 +1,17 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
 import './nativeEditContext.css';
 import { isFirefox } from '../../../../../base/browser/browser.js';
-import { addDisposableListener, getActiveElement, getWindow, getWindowId } from '../../../../../base/browser/dom.js';
+import { getWindow, addDisposableListener, getActiveElement, getWindowId } from '../../../../../base/browser/dom.js';
 import { FastDomNode } from '../../../../../base/browser/fastDomNode.js';
 import { StandardKeyboardEvent } from '../../../../../base/browser/keyboardEvent.js';
 import { IInstantiationService } from '../../../../../platform/instantiation/common/instantiation.js';
-import { ClipboardEventUtils, getDataToCopy, InMemoryClipboardMetadataManager } from '../clipboardUtils.js';
+import { ClipboardEventUtils, InMemoryClipboardMetadataManager, getDataToCopy } from '../clipboardUtils.js';
 import { AbstractEditContext } from '../editContext.js';
-import { editContextAddDisposableListener, FocusTracker } from './nativeEditContextUtils.js';
+import { FocusTracker, editContextAddDisposableListener } from './nativeEditContextUtils.js';
 import { ScreenReaderSupport } from './screenReaderSupport.js';
 import { Range } from '../../../../common/core/range.js';
 import { Selection } from '../../../../common/core/selection.js';
 import { Position } from '../../../../common/core/position.js';
-import { PositionOffsetTransformer } from '../../../../common/core/text/positionToOffset.js';
+import '../../../../common/core/text/positionToOffset.js';
 import { EditContext } from './editContextFactory.js';
 import { NativeEditContextRegistry } from './nativeEditContextRegistry.js';
 import { isHighSurrogate, isLowSurrogate } from '../../../../../base/common/strings.js';
@@ -32,6 +19,21 @@ import { IME } from '../../../../../base/common/ime.js';
 import { OffsetRange } from '../../../../common/core/ranges/offsetRange.js';
 import { ILogService, LogLevel } from '../../../../../platform/log/common/log.js';
 import { generateUuid } from '../../../../../base/common/uuid.js';
+import { PositionOffsetTransformer } from '../../../../common/core/text/positionToOffsetImpl.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 // Corresponds to classes in nativeEditContext.css
 var CompositionClassName;
 (function (CompositionClassName) {
@@ -52,6 +54,7 @@ let NativeEditContext = class NativeEditContext extends AbstractEditContext {
         this._targetWindowId = -1;
         this._scrollTop = 0;
         this._scrollLeft = 0;
+        this._linesVisibleRanges = null;
         this.domNode = new FastDomNode(document.createElement('div'));
         this.domNode.setClassName(`native-edit-context`);
         this._imeTextArea = new FastDomNode(document.createElement('textarea'));
@@ -200,7 +203,10 @@ let NativeEditContext = class NativeEditContext extends AbstractEditContext {
     }
     prepareRender(ctx) {
         this._screenReaderSupport.prepareRender(ctx);
-        this._updateSelectionAndControlBounds(ctx);
+        this._updateSelectionAndControlBoundsData(ctx);
+    }
+    onDidRender() {
+        this._updateSelectionAndControlBoundsAfterRender();
     }
     render(ctx) {
         this._screenReaderSupport.render(ctx);
@@ -409,24 +415,31 @@ let NativeEditContext = class NativeEditContext extends AbstractEditContext {
         });
         this._decorations = this._context.viewModel.model.deltaDecorations(this._decorations, decorations);
     }
-    _updateSelectionAndControlBounds(ctx) {
-        if (!this._parent) {
-            return;
+    _updateSelectionAndControlBoundsData(ctx) {
+        const viewSelection = this._context.viewModel.coordinatesConverter.convertModelRangeToViewRange(this._primarySelection);
+        if (this._primarySelection.isEmpty()) {
+            const linesVisibleRanges = ctx.visibleRangeForPosition(viewSelection.getStartPosition());
+            this._linesVisibleRanges = linesVisibleRanges;
         }
+        else {
+            this._linesVisibleRanges = null;
+        }
+    }
+    _updateSelectionAndControlBoundsAfterRender() {
         const options = this._context.configuration.options;
         const contentLeft = options.get(165 /* EditorOption.layoutInfo */).contentLeft;
-        const parentBounds = this._parent.getBoundingClientRect();
         const viewSelection = this._context.viewModel.coordinatesConverter.convertModelRangeToViewRange(this._primarySelection);
         const verticalOffsetStart = this._context.viewLayout.getVerticalOffsetForLineNumber(viewSelection.startLineNumber);
-        const top = parentBounds.top + verticalOffsetStart - this._scrollTop;
         const verticalOffsetEnd = this._context.viewLayout.getVerticalOffsetAfterLineNumber(viewSelection.endLineNumber);
+        // Make sure this doesn't force an extra layout (i.e. don't call it before rendering finished)
+        const parentBounds = this._parent.getBoundingClientRect();
+        const top = parentBounds.top + verticalOffsetStart - this._scrollTop;
         const height = verticalOffsetEnd - verticalOffsetStart;
         let left = parentBounds.left + contentLeft - this._scrollLeft;
         let width;
         if (this._primarySelection.isEmpty()) {
-            const linesVisibleRanges = ctx.visibleRangeForPosition(viewSelection.getStartPosition());
-            if (linesVisibleRanges) {
-                left += linesVisibleRanges.left;
+            if (this._linesVisibleRanges) {
+                left += this._linesVisibleRanges.left;
             }
             width = 0;
         }
@@ -438,9 +451,6 @@ let NativeEditContext = class NativeEditContext extends AbstractEditContext {
         this._editContext.updateControlBounds(selectionBounds);
     }
     _updateCharacterBounds(e) {
-        if (!this._parent) {
-            return;
-        }
         const options = this._context.configuration.options;
         const typicalHalfWidthCharacterWidth = options.get(59 /* EditorOption.fontInfo */).typicalHalfwidthCharacterWidth;
         const contentLeft = options.get(165 /* EditorOption.layoutInfo */).contentLeft;
@@ -504,5 +514,5 @@ NativeEditContext = __decorate([
     __param(5, IInstantiationService),
     __param(6, ILogService)
 ], NativeEditContext);
+
 export { NativeEditContext };
-//# sourceMappingURL=nativeEditContext.js.map

@@ -1,18 +1,18 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-import * as dom from '../../dom.js';
+import { EventHelper } from '../../dom.js';
 import { Toggle } from '../toggle/toggle.js';
 import { HistoryInputBox } from '../inputbox/inputBox.js';
 import { Widget } from '../widget.js';
 import { Codicon } from '../../../common/codicons.js';
 import { Emitter } from '../../../common/event.js';
 import './findInput.css';
-import * as nls from '../../../../nls.js';
-import { getDefaultHoverDelegate } from '../hover/hoverDelegateFactory.js';
-const NLS_DEFAULT_LABEL = nls.localize(5, "input");
-const NLS_PRESERVE_CASE_LABEL = nls.localize(6, "Preserve Case");
+import { localize } from '../../../../nls.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+const NLS_DEFAULT_LABEL = localize(5, "input");
+const NLS_PRESERVE_CASE_LABEL = localize(6, "Preserve Case");
 class PreserveCaseToggle extends Toggle {
     constructor(opts) {
         super({
@@ -20,14 +20,14 @@ class PreserveCaseToggle extends Toggle {
             icon: Codicon.preserveCase,
             title: NLS_PRESERVE_CASE_LABEL + opts.appendTitle,
             isChecked: opts.isChecked,
-            hoverDelegate: opts.hoverDelegate ?? getDefaultHoverDelegate('element'),
+            hoverLifecycleOptions: opts.hoverLifecycleOptions,
             inputActiveOptionBorder: opts.inputActiveOptionBorder,
             inputActiveOptionForeground: opts.inputActiveOptionForeground,
             inputActiveOptionBackground: opts.inputActiveOptionBackground,
         });
     }
 }
-export class ReplaceInput extends Widget {
+class ReplaceInput extends Widget {
     get onDidOptionChange() { return this._onDidOptionChange.event; }
     get onKeyDown() { return this._onKeyDown.event; }
     get onPreserveCaseKeyDown() { return this._onPreserveCaseKeyDown.event; }
@@ -69,6 +69,7 @@ export class ReplaceInput extends Widget {
         this.preserveCase = this._register(new PreserveCaseToggle({
             appendTitle: appendPreserveCaseLabel,
             isChecked: false,
+            hoverLifecycleOptions: options.hoverLifecycleOptions,
             ...options.toggleStyles
         }));
         this._register(this.preserveCase.onChange(viaKeyboard => {
@@ -112,7 +113,7 @@ export class ReplaceInput extends Widget {
                     else if (newIndex >= 0) {
                         indexes[newIndex].focus();
                     }
-                    dom.EventHelper.stop(event, true);
+                    EventHelper.stop(event, true);
                 }
             }
         });
@@ -171,4 +172,5 @@ export class ReplaceInput extends Widget {
         super.dispose();
     }
 }
-//# sourceMappingURL=replaceInput.js.map
+
+export { ReplaceInput };

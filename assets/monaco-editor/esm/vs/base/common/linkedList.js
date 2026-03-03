@@ -10,7 +10,7 @@ class Node {
         this.prev = Node.Undefined;
     }
 }
-export class LinkedList {
+class LinkedList {
     constructor() {
         this._first = Node.Undefined;
         this._last = Node.Undefined;
@@ -122,4 +122,5 @@ export class LinkedList {
         }
     }
 }
-//# sourceMappingURL=linkedList.js.map
+
+export { LinkedList };

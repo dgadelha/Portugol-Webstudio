@@ -1,7 +1,3 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { getActiveWindow } from '../../../base/browser/dom.js';
 import { Event } from '../../../base/common/event.js';
 import { MutableDisposable } from '../../../base/common/lifecycle.js';
@@ -10,7 +6,12 @@ import { GPULifecycle } from './gpuDisposable.js';
 import { observeDevicePixelDimensions, quadVertices } from './gpuUtils.js';
 import { createObjectCollectionBuffer } from './objectCollectionBuffer.js';
 import { rectangleRendererWgsl } from './rectangleRenderer.wgsl.js';
-export class RectangleRenderer extends ViewEventHandler {
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+class RectangleRenderer extends ViewEventHandler {
     constructor(_context, _contentLeft, _devicePixelRatio, _canvas, _ctx, device) {
         super();
         this._context = _context;
@@ -209,4 +210,5 @@ export class RectangleRenderer extends ViewEventHandler {
         this._device.queue.submit([commandBuffer]);
     }
 }
-//# sourceMappingURL=rectangleRenderer.js.map
+
+export { RectangleRenderer };

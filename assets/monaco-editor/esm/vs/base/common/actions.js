@@ -1,11 +1,17 @@
+import { Emitter } from './event.js';
+import { Disposable } from './lifecycle.js';
+import { localize } from '../../nls.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { Emitter } from './event.js';
-import { Disposable } from './lifecycle.js';
-import * as nls from '../../nls.js';
-export class Action extends Disposable {
+/**
+ * A concrete implementation of {@link IAction}.
+ *
+ * Note that in most cases you should use the lighter-weight {@linkcode toAction} function instead.
+ */
+class Action extends Disposable {
     get onDidChange() { return this._onDidChange.event; }
     constructor(id, label = '', cssClass = '', enabled = true, actionCallback) {
         super();
@@ -86,7 +92,7 @@ export class Action extends Disposable {
         }
     }
 }
-export class ActionRunner extends Disposable {
+class ActionRunner extends Disposable {
     constructor() {
         super(...arguments);
         this._onWillRun = this._register(new Emitter());
@@ -112,7 +118,7 @@ export class ActionRunner extends Disposable {
         await action.run(context);
     }
 }
-export class Separator {
+class Separator {
     constructor() {
         this.id = Separator.ID;
         this.label = '';
@@ -127,9 +133,7 @@ export class Separator {
     static join(...actionLists) {
         let out = [];
         for (const list of actionLists) {
-            if (!list.length) {
-                // skip
-            }
+            if (!list.length) ;
             else if (out.length) {
                 out = [...out, new Separator(), ...list];
             }
@@ -142,7 +146,7 @@ export class Separator {
     static { this.ID = 'vs.actions.separator'; }
     async run() { }
 }
-export class SubmenuAction {
+class SubmenuAction {
     get actions() { return this._actions; }
     constructor(id, label, actions, cssClass) {
         this.tooltip = '';
@@ -155,13 +159,13 @@ export class SubmenuAction {
     }
     async run() { }
 }
-export class EmptySubmenuAction extends Action {
+class EmptySubmenuAction extends Action {
     static { this.ID = 'vs.actions.empty'; }
     constructor() {
-        super(EmptySubmenuAction.ID, nls.localize(28, '(empty)'), undefined, false);
+        super(EmptySubmenuAction.ID, localize(28, '(empty)'), undefined, false);
     }
 }
-export function toAction(props) {
+function toAction(props) {
     return {
         id: props.id,
         label: props.label,
@@ -172,4 +176,5 @@ export function toAction(props) {
         run: async (...args) => props.run(...args),
     };
 }
-//# sourceMappingURL=actions.js.map
+
+export { Action, ActionRunner, EmptySubmenuAction, Separator, SubmenuAction, toAction };

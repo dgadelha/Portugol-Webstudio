@@ -1,10 +1,11 @@
+import { arrayInsert } from '../../../base/common/arrays.js';
+import { toUint32 } from '../../../base/common/uint.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { arrayInsert } from '../../../base/common/arrays.js';
-import { toUint32 } from '../../../base/common/uint.js';
-export class PrefixSumComputer {
+class PrefixSumComputer {
     constructor(values) {
         this.values = values;
         this.prefixSum = new Uint32Array(values.length);
@@ -137,7 +138,7 @@ export class PrefixSumComputer {
  *
  * ({@link PrefixSumComputer.getIndexOf} is just  O(log n))
 */
-export class ConstantTimePrefixSumComputer {
+class ConstantTimePrefixSumComputer {
     constructor(values) {
         this._values = values;
         this._isValid = false;
@@ -212,7 +213,7 @@ export class ConstantTimePrefixSumComputer {
         this._invalidate(index);
     }
 }
-export class PrefixSumIndexOfResult {
+class PrefixSumIndexOfResult {
     constructor(index, remainder) {
         this.index = index;
         this.remainder = remainder;
@@ -221,4 +222,5 @@ export class PrefixSumIndexOfResult {
         this.remainder = remainder;
     }
 }
-//# sourceMappingURL=prefixSumComputer.js.map
+
+export { ConstantTimePrefixSumComputer, PrefixSumComputer, PrefixSumIndexOfResult };

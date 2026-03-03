@@ -1,13 +1,7 @@
-/*!-----------------------------------------------------------------------------
- * Copyright (c) Microsoft Corporation. All rights reserved.
- * Version: 0.54.0(7c2310116c57517348bbd868a21139f32454be22)
- * Released under the MIT license
- * https://github.com/microsoft/monaco-editor/blob/main/LICENSE.txt
- *-----------------------------------------------------------------------------*/
-
-
-// src/basic-languages/swift/swift.ts
-var conf = {
+/*!---------------------------------------------------------------------------------------------
+ *  Copyright (C) David Owens II, owensd.io. All rights reserved.
+ *--------------------------------------------------------------------------------------------*/
+const conf = {
   comments: {
     lineComment: "//",
     blockComment: ["/*", "*/"]
@@ -34,7 +28,7 @@ var conf = {
     { open: "`", close: "`" }
   ]
 };
-var language = {
+const language = {
   defaultToken: "",
   tokenPostfix: ".swift",
   // TODO(owensd): Support the full range of unicode valid identifiers.
@@ -313,10 +307,5 @@ var language = {
     ]
   }
 };
-export {
-  conf,
-  language
-};
-/*!---------------------------------------------------------------------------------------------
- *  Copyright (C) David Owens II, owensd.io. All rights reserved.
- *--------------------------------------------------------------------------------------------*/
+
+export { conf, language };

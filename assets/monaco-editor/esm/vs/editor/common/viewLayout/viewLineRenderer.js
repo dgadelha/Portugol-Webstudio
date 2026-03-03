@@ -1,14 +1,15 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-import * as nls from '../../../nls.js';
-import * as strings from '../../../base/common/strings.js';
+import { localize } from '../../../nls.js';
+import { containsRTL, firstNonWhitespaceIndex, lastNonWhitespaceIndex, isFullWidthCharacter } from '../../../base/common/strings.js';
 import { StringBuilder } from '../core/stringBuilder.js';
 import { LineDecoration, LineDecorationsNormalizer } from './lineDecorations.js';
 import { LinePart } from './linePart.js';
 import { TextDirection } from '../model.js';
-export class RenderLineInput {
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+class RenderLineInput {
     get isLTR() {
         return !this.containsRTL && this.textDirection !== TextDirection.RTL;
     }
@@ -94,7 +95,7 @@ export class RenderLineInput {
             && this.renderNewLineWhenEmpty === other.renderNewLineWhenEmpty);
     }
 }
-export class DomPosition {
+class DomPosition {
     constructor(partIndex, charIndex) {
         this.partIndex = partIndex;
         this.charIndex = charIndex;
@@ -103,7 +104,7 @@ export class DomPosition {
 /**
  * Provides a both direction mapping between a line's character and its rendered position.
  */
-export class CharacterMapping {
+class CharacterMapping {
     static getPartIndex(partData) {
         return (partData & 4294901760 /* CharacterMappingConstants.PART_INDEX_MASK */) >>> 16 /* CharacterMappingConstants.PART_INDEX_OFFSET */;
     }
@@ -201,14 +202,14 @@ export class CharacterMapping {
         return max;
     }
 }
-export class RenderLineOutput {
+class RenderLineOutput {
     constructor(characterMapping, containsForeignElements) {
         this._renderLineOutputBrand = undefined;
         this.characterMapping = characterMapping;
         this.containsForeignElements = containsForeignElements;
     }
 }
-export function renderViewLine(input, sb) {
+function renderViewLine(input, sb) {
     if (input.lineContent.length === 0) {
         if (input.lineDecorations.length > 0) {
             // This line is empty, but it contains inline decorations
@@ -247,14 +248,14 @@ export function renderViewLine(input, sb) {
     }
     return _renderLine(resolveRenderLineInput(input), sb);
 }
-export class RenderLineOutput2 {
+class RenderLineOutput2 {
     constructor(characterMapping, html, containsForeignElements) {
         this.characterMapping = characterMapping;
         this.html = html;
         this.containsForeignElements = containsForeignElements;
     }
 }
-export function renderViewLine2(input) {
+function renderViewLine2(input) {
     const sb = new StringBuilder(10000);
     const out = renderViewLine(input, sb);
     return new RenderLineOutput2(out.characterMapping, sb.build(), out.containsForeignElements);
@@ -327,6 +328,10 @@ function resolveRenderLineInput(input) {
         // We can never split RTL text, as it ruins the rendering
         tokens = splitLargeTokens(lineContent, tokens, !input.isBasicASCII || input.fontLigatures);
     }
+    else {
+        // Split the first token if it contains both leading whitespace and RTL text
+        tokens = splitLeadingWhitespaceFromRTL(lineContent, tokens);
+    }
     return new ResolvedRenderLineInput(input.useMonospaceOptimizations, input.canUseHalfwidthRightwardsArrow, lineContent, len, isOverflowing, overflowingCharCount, tokens, containsForeignElements, input.fauxIndentLength, input.tabSize, input.startVisibleColumn, input.spaceWidth, input.renderSpaceCharCode, input.renderWhitespace, input.renderControlCharacters);
 }
 /**
@@ -349,11 +354,11 @@ function transformAndRemoveOverflowing(lineContent, lineContainsRTL, tokens, fau
         }
         const type = tokens.getClassName(tokenIndex);
         if (endIndex >= len) {
-            const tokenContainsRTL = (lineContainsRTL ? strings.containsRTL(lineContent.substring(startOffset, len)) : false);
+            const tokenContainsRTL = (lineContainsRTL ? containsRTL(lineContent.substring(startOffset, len)) : false);
             result[resultLen++] = new LinePart(len, type, 0, tokenContainsRTL);
             break;
         }
-        const tokenContainsRTL = (lineContainsRTL ? strings.containsRTL(lineContent.substring(startOffset, endIndex)) : false);
+        const tokenContainsRTL = (lineContainsRTL ? containsRTL(lineContent.substring(startOffset, endIndex)) : false);
         result[resultLen++] = new LinePart(endIndex, type, 0, tokenContainsRTL);
         startOffset = endIndex;
     }
@@ -422,6 +427,41 @@ function splitLargeTokens(lineContent, tokens, onlyAtSpaces) {
             }
             lastTokenEndIndex = tokenEndIndex;
         }
+    }
+    return result;
+}
+/**
+ * Splits leading whitespace from the first token if it contains RTL text.
+ */
+function splitLeadingWhitespaceFromRTL(lineContent, tokens) {
+    if (tokens.length === 0) {
+        return tokens;
+    }
+    const firstToken = tokens[0];
+    if (!firstToken.containsRTL) {
+        return tokens;
+    }
+    // Check if the first token starts with whitespace
+    const firstTokenEndIndex = firstToken.endIndex;
+    let firstNonWhitespaceIndex = 0;
+    for (let i = 0; i < firstTokenEndIndex; i++) {
+        const charCode = lineContent.charCodeAt(i);
+        if (charCode !== 32 /* CharCode.Space */ && charCode !== 9 /* CharCode.Tab */) {
+            firstNonWhitespaceIndex = i;
+            break;
+        }
+    }
+    if (firstNonWhitespaceIndex === 0) {
+        // No leading whitespace
+        return tokens;
+    }
+    // Split the first token into leading whitespace and the rest
+    const result = [];
+    result.push(new LinePart(firstNonWhitespaceIndex, firstToken.type, firstToken.metadata, false));
+    result.push(new LinePart(firstTokenEndIndex, firstToken.type, firstToken.metadata, firstToken.containsRTL));
+    // Add remaining tokens
+    for (let i = 1; i < tokens.length; i++) {
+        result.push(tokens[i]);
     }
     return result;
 }
@@ -503,15 +543,15 @@ function _applyRenderWhitespace(input, lineContent, len, tokens) {
     let tokenEndIndex = tokens[tokenIndex].endIndex;
     const tokensLength = tokens.length;
     let lineIsEmptyOrWhitespace = false;
-    let firstNonWhitespaceIndex = strings.firstNonWhitespaceIndex(lineContent);
-    let lastNonWhitespaceIndex;
-    if (firstNonWhitespaceIndex === -1) {
+    let firstNonWhitespaceIndex$1 = firstNonWhitespaceIndex(lineContent);
+    let lastNonWhitespaceIndex$1;
+    if (firstNonWhitespaceIndex$1 === -1) {
         lineIsEmptyOrWhitespace = true;
-        firstNonWhitespaceIndex = len;
-        lastNonWhitespaceIndex = len;
+        firstNonWhitespaceIndex$1 = len;
+        lastNonWhitespaceIndex$1 = len;
     }
     else {
-        lastNonWhitespaceIndex = strings.lastNonWhitespaceIndex(lineContent);
+        lastNonWhitespaceIndex$1 = lastNonWhitespaceIndex(lineContent);
     }
     let wasInWhitespace = false;
     let currentSelectionIndex = 0;
@@ -524,7 +564,7 @@ function _applyRenderWhitespace(input, lineContent, len, tokens) {
             currentSelection = selections && selections[currentSelectionIndex];
         }
         let isInWhitespace;
-        if (charIndex < firstNonWhitespaceIndex || charIndex > lastNonWhitespaceIndex) {
+        if (charIndex < firstNonWhitespaceIndex$1 || charIndex > lastNonWhitespaceIndex$1) {
             // in leading or trailing whitespace
             isInWhitespace = true;
         }
@@ -557,7 +597,7 @@ function _applyRenderWhitespace(input, lineContent, len, tokens) {
         }
         // If rendering only trailing whitespace, check that the charIndex points to trailing whitespace.
         if (isInWhitespace && onlyTrailing) {
-            isInWhitespace = lineIsEmptyOrWhitespace || charIndex > lastNonWhitespaceIndex;
+            isInWhitespace = lineIsEmptyOrWhitespace || charIndex > lastNonWhitespaceIndex$1;
         }
         if (isInWhitespace && tokenContainsRTL) {
             // If the token contains RTL text, breaking it up into multiple line parts
@@ -566,7 +606,7 @@ function _applyRenderWhitespace(input, lineContent, len, tokens) {
             // We render whitespace in such tokens only if the whitespace
             // is the leading or the trailing whitespace of the line,
             // which doesn't affect the browser's bidi layout.
-            if (charIndex >= firstNonWhitespaceIndex && charIndex <= lastNonWhitespaceIndex) {
+            if (charIndex >= firstNonWhitespaceIndex$1 && charIndex <= lastNonWhitespaceIndex$1) {
                 isInWhitespace = false;
             }
         }
@@ -596,7 +636,7 @@ function _applyRenderWhitespace(input, lineContent, len, tokens) {
         if (chCode === 9 /* CharCode.Tab */) {
             tmpIndent = tabSize;
         }
-        else if (strings.isFullWidthCharacter(chCode)) {
+        else if (isFullWidthCharacter(chCode)) {
             tmpIndent += 2;
         }
         else {
@@ -737,7 +777,7 @@ function _renderLine(input, sb) {
         charOffsetInPart = 0;
         sb.appendString('<span ');
         if (partContainsRTL) {
-            sb.appendString('style="unicode-bidi:isolate" ');
+            sb.appendString('dir="rtl" style="unicode-bidi:isolate" ');
         }
         sb.appendString('class="');
         sb.appendString(partRendersWhitespaceWithWidth ? 'mtkz' : partType);
@@ -838,7 +878,7 @@ function _renderLine(input, sb) {
                         sb.appendCharCode(0xFFFD);
                         break;
                     default:
-                        if (strings.isFullWidthCharacter(charCode)) {
+                        if (isFullWidthCharacter(charCode)) {
                             charWidth++;
                         }
                         // See https://unicode-table.com/en/blocks/control-pictures/
@@ -886,7 +926,7 @@ function _renderLine(input, sb) {
     }
     if (isOverflowing) {
         sb.appendString('<span class="mtkoverflow">');
-        sb.appendString(nls.localize(792, "Show more ({0})", renderOverflowingCharCount(overflowingCharCount)));
+        sb.appendString(localize(796, "Show more ({0})", renderOverflowingCharCount(overflowingCharCount)));
         sb.appendString('</span>');
     }
     sb.appendString('</span>');
@@ -897,11 +937,12 @@ function to4CharHex(n) {
 }
 function renderOverflowingCharCount(n) {
     if (n < 1024) {
-        return nls.localize(793, "{0} chars", n);
+        return localize(797, "{0} chars", n);
     }
     if (n < 1024 * 1024) {
         return `${(n / 1024).toFixed(1)} KB`;
     }
     return `${(n / 1024 / 1024).toFixed(1)} MB`;
 }
-//# sourceMappingURL=viewLineRenderer.js.map
+
+export { CharacterMapping, DomPosition, RenderLineInput, RenderLineOutput, RenderLineOutput2, renderViewLine, renderViewLine2 };

@@ -1,20 +1,21 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-import * as dom from '../../../base/browser/dom.js';
+import { addDisposableListener, EventType, getWindow, getShadowRoot, isKeyboardEvent } from '../../../base/browser/dom.js';
 import { StandardWheelEvent } from '../../../base/browser/mouseEvent.js';
 import { Disposable } from '../../../base/common/lifecycle.js';
-import * as platform from '../../../base/common/platform.js';
-import { HitTestContext, MouseTarget, MouseTargetFactory } from './mouseTarget.js';
-import { ClientCoordinates, EditorMouseEvent, EditorMouseEventFactory, GlobalEditorPointerMoveMonitor, createEditorPagePosition, createCoordinatesRelativeToEditor } from '../editorDom.js';
+import { isMacintosh } from '../../../base/common/platform.js';
+import { MouseTargetFactory, HitTestContext, MouseTarget } from './mouseTarget.js';
+import { EditorMouseEventFactory, EditorMouseEvent, ClientCoordinates, createEditorPagePosition, createCoordinatesRelativeToEditor, GlobalEditorPointerMoveMonitor } from '../editorDom.js';
 import { EditorZoom } from '../../common/config/editorZoom.js';
 import { Position } from '../../common/core/position.js';
 import { Selection } from '../../common/core/selection.js';
 import { ViewEventHandler } from '../../common/viewEventHandler.js';
 import { MouseWheelClassifier } from '../../../base/browser/ui/scrollbar/scrollableElement.js';
 import { TopBottomDragScrolling, LeftRightDragScrolling } from './dragScrolling.js';
-export class MouseHandler extends ViewEventHandler {
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+class MouseHandler extends ViewEventHandler {
     constructor(context, viewController, viewHelper) {
         super();
         this._mouseLeaveMonitor = null;
@@ -36,7 +37,7 @@ export class MouseHandler extends ViewEventHandler {
             // the editor. As soon as the mouse leaves outside of the editor, we
             // remove this listener
             if (!this._mouseLeaveMonitor) {
-                this._mouseLeaveMonitor = dom.addDisposableListener(this.viewHelper.viewDomNode.ownerDocument, 'mousemove', (e) => {
+                this._mouseLeaveMonitor = addDisposableListener(this.viewHelper.viewDomNode.ownerDocument, 'mousemove', (e) => {
                     if (!this.viewHelper.viewDomNode.contains(e.target)) {
                         // went outside the editor!
                         this._onMouseLeave(new EditorMouseEvent(e, false, this.viewHelper.viewDomNode));
@@ -59,7 +60,7 @@ export class MouseHandler extends ViewEventHandler {
         // the `pointerup` event is already queued for dispatching, which makes it that the new listener doesn't get fired.
         // See https://github.com/microsoft/vscode/issues/146486 for repro steps.
         // To compensate for that, we simply register here a `pointerup` listener and just communicate it.
-        this._register(dom.addDisposableListener(this.viewHelper.viewDomNode, dom.EventType.POINTER_UP, (e) => {
+        this._register(addDisposableListener(this.viewHelper.viewDomNode, EventType.POINTER_UP, (e) => {
             this._mouseDownOperation.onPointerUp();
         }));
         this._register(mouseEvents.onMouseDown(this.viewHelper.viewDomNode, (e) => this._onMouseDown(e, capturePointerId)));
@@ -107,9 +108,9 @@ export class MouseHandler extends ViewEventHandler {
                 }
             }
         };
-        this._register(dom.addDisposableListener(this.viewHelper.viewDomNode, dom.EventType.MOUSE_WHEEL, onMouseWheel, { capture: true, passive: false }));
+        this._register(addDisposableListener(this.viewHelper.viewDomNode, EventType.MOUSE_WHEEL, onMouseWheel, { capture: true, passive: false }));
         function hasMouseWheelZoomModifiers(browserEvent) {
-            return (platform.isMacintosh
+            return (isMacintosh
                 // on macOS we support cmd + two fingers scroll (`metaKey` set)
                 // and also the two fingers pinch gesture (`ctrKey` set)
                 ? ((browserEvent.metaKey || browserEvent.ctrlKey) && !browserEvent.shiftKey && !browserEvent.altKey)
@@ -146,7 +147,7 @@ export class MouseHandler extends ViewEventHandler {
     // --- end event handlers
     getTargetAtClientPoint(clientX, clientY) {
         const clientPos = new ClientCoordinates(clientX, clientY);
-        const pos = clientPos.toPageCoordinates(dom.getWindow(this.viewHelper.viewDomNode));
+        const pos = clientPos.toPageCoordinates(getWindow(this.viewHelper.viewDomNode));
         const editorPos = createEditorPagePosition(this.viewHelper.viewDomNode);
         if (pos.y < editorPos.y || pos.y > editorPos.y + editorPos.height || pos.x < editorPos.x || pos.x > editorPos.x + editorPos.width) {
             return null;
@@ -157,9 +158,10 @@ export class MouseHandler extends ViewEventHandler {
     _createMouseTarget(e, testEventTarget) {
         let target = e.target;
         if (!this.viewHelper.viewDomNode.contains(target)) {
-            const shadowRoot = dom.getShadowRoot(this.viewHelper.viewDomNode);
+            const shadowRoot = getShadowRoot(this.viewHelper.viewDomNode);
             if (shadowRoot) {
-                target = shadowRoot.elementsFromPoint(e.posx, e.posy).find((el) => this.viewHelper.viewDomNode.contains(el));
+                const potentialTarget = shadowRoot.elementsFromPoint(e.posx, e.posy).find((el) => this.viewHelper.viewDomNode.contains(el)) ?? null;
+                target = potentialTarget;
             }
         }
         return this.mouseTargetFactory.createMouseTarget(this.viewHelper.getLastRenderData(), e.editorPos, e.pos, e.relativePos, testEventTarget ? target : null);
@@ -218,7 +220,7 @@ export class MouseHandler extends ViewEventHandler {
         const targetIsViewZone = (t.type === 8 /* MouseTargetType.CONTENT_VIEW_ZONE */ || t.type === 5 /* MouseTargetType.GUTTER_VIEW_ZONE */);
         const targetIsWidget = (t.type === 9 /* MouseTargetType.CONTENT_WIDGET */);
         let shouldHandle = e.leftButton || e.middleButton;
-        if (platform.isMacintosh && e.leftButton && e.ctrlKey) {
+        if (isMacintosh && e.leftButton && e.ctrlKey) {
             shouldHandle = false;
         }
         const focus = () => {
@@ -334,7 +336,7 @@ class MouseDownOperation extends Disposable {
             this._isActive = true;
             this._mouseMoveMonitor.startMonitoring(this._viewHelper.viewLinesDomNode, pointerId, e.buttons, (e) => this._onMouseDownThenMove(e), (browserEvent) => {
                 const position = this._findMousePosition(this._lastMouseEvent, false);
-                if (dom.isKeyboardEvent(browserEvent)) {
+                if (isKeyboardEvent(browserEvent)) {
                     // cancel
                     this._viewController.emitMouseDropCanceled();
                 }
@@ -533,4 +535,5 @@ class MouseDownState {
         this._lastMouseDownCount = Math.min(setMouseDownCount, this._lastMouseDownPositionEqualCount);
     }
 }
-//# sourceMappingURL=mouseHandler.js.map
+
+export { MouseHandler };

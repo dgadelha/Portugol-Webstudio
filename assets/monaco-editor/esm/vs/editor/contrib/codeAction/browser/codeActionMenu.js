@@ -1,25 +1,27 @@
+import '../../../../base/browser/ui/codicons/codicon/codicon.css';
+import '../../../../base/browser/ui/codicons/codicon/codicon-modifiers.css';
+import { Codicon } from '../../../../base/common/codicons.js';
+import { CodeActionKind } from '../common/types.js';
+import '../../symbolIcons/browser/symbolIcons.js';
+import { localize } from '../../../../nls.js';
+import { HierarchicalKind } from '../../../../base/common/hierarchicalKind.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import '../../../../base/browser/ui/codicons/codiconStyles.js'; // The codicon symbol styles are defined here and must be loaded
-import { Codicon } from '../../../../base/common/codicons.js';
-import { CodeActionKind } from '../common/types.js';
-import '../../symbolIcons/browser/symbolIcons.js'; // The codicon symbol colors are defined here and must be loaded to get colors
-import { localize } from '../../../../nls.js';
-import { HierarchicalKind } from '../../../../base/common/hierarchicalKind.js';
-const uncategorizedCodeActionGroup = Object.freeze({ kind: HierarchicalKind.Empty, title: localize(862, 'More Actions...') });
+const uncategorizedCodeActionGroup = Object.freeze({ kind: HierarchicalKind.Empty, title: localize(866, 'More Actions...') });
 const codeActionGroups = Object.freeze([
-    { kind: CodeActionKind.QuickFix, title: localize(863, 'Quick Fix') },
-    { kind: CodeActionKind.RefactorExtract, title: localize(864, 'Extract'), icon: Codicon.wrench },
-    { kind: CodeActionKind.RefactorInline, title: localize(865, 'Inline'), icon: Codicon.wrench },
-    { kind: CodeActionKind.RefactorRewrite, title: localize(866, 'Rewrite'), icon: Codicon.wrench },
-    { kind: CodeActionKind.RefactorMove, title: localize(867, 'Move'), icon: Codicon.wrench },
-    { kind: CodeActionKind.SurroundWith, title: localize(868, 'Surround With'), icon: Codicon.surroundWith },
-    { kind: CodeActionKind.Source, title: localize(869, 'Source Action'), icon: Codicon.symbolFile },
+    { kind: CodeActionKind.QuickFix, title: localize(867, 'Quick Fix') },
+    { kind: CodeActionKind.RefactorExtract, title: localize(868, 'Extract'), icon: Codicon.wrench },
+    { kind: CodeActionKind.RefactorInline, title: localize(869, 'Inline'), icon: Codicon.wrench },
+    { kind: CodeActionKind.RefactorRewrite, title: localize(870, 'Rewrite'), icon: Codicon.wrench },
+    { kind: CodeActionKind.RefactorMove, title: localize(871, 'Move'), icon: Codicon.wrench },
+    { kind: CodeActionKind.SurroundWith, title: localize(872, 'Surround With'), icon: Codicon.surroundWith },
+    { kind: CodeActionKind.Source, title: localize(873, 'Source Action'), icon: Codicon.symbolFile },
     uncategorizedCodeActionGroup,
 ]);
-export function toMenuItems(inputCodeActions, showHeaders, keybindingResolver) {
+function toMenuItems(inputCodeActions, showHeaders, keybindingResolver) {
     if (!showHeaders) {
         return inputCodeActions.map((action) => {
             return {
@@ -62,4 +64,5 @@ export function toMenuItems(inputCodeActions, showHeaders, keybindingResolver) {
     }
     return allMenuItems;
 }
-//# sourceMappingURL=codeActionMenu.js.map
+
+export { toMenuItems };

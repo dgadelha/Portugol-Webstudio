@@ -1,10 +1,11 @@
+import { getDomNodePagePosition } from '../../../../base/browser/dom.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import * as dom from '../../../../base/browser/dom.js';
-export function isMousePositionWithinElement(element, posx, posy) {
-    const elementRect = dom.getDomNodePagePosition(element);
+function isMousePositionWithinElement(element, posx, posy) {
+    const elementRect = getDomNodePagePosition(element);
     if (posx < elementRect.left
         || posx > elementRect.left + elementRect.width
         || posy < elementRect.top
@@ -13,4 +14,5 @@ export function isMousePositionWithinElement(element, posx, posy) {
     }
     return true;
 }
-//# sourceMappingURL=hoverUtils.js.map
+
+export { isMousePositionWithinElement };

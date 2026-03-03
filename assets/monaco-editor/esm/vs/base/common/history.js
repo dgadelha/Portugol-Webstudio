@@ -1,5 +1,6 @@
 import { ArrayNavigator } from './navigator.js';
-export class HistoryNavigator {
+
+class HistoryNavigator {
     constructor(_history = new Set(), limit = 10) {
         this._history = _history;
         this._limit = limit;
@@ -80,4 +81,5 @@ export class HistoryNavigator {
         }
     }
 }
-//# sourceMappingURL=history.js.map
+
+export { HistoryNavigator };

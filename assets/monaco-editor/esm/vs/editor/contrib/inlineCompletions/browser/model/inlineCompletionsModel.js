@@ -1,22 +1,9 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
 import { mapFindFirst } from '../../../../../base/common/arraysFind.js';
 import { itemsEquals } from '../../../../../base/common/equals.js';
 import { BugIndicatingError, onUnexpectedExternalError } from '../../../../../base/common/errors.js';
 import { Emitter } from '../../../../../base/common/event.js';
 import { Disposable } from '../../../../../base/common/lifecycle.js';
-import { autorun, constObservable, derived, derivedHandleChanges, derivedOpts, mapObservableArrayCached, observableFromEvent, observableSignal, observableValue, recomputeInitiallyAndOnChange, subtransaction, transaction } from '../../../../../base/common/observable.js';
+import '../../../../../base/common/observableInternal/index.js';
 import { firstNonWhitespaceIndex } from '../../../../../base/common/strings.js';
 import { isDefined } from '../../../../../base/common/types.js';
 import { IAccessibilityService } from '../../../../../platform/accessibility/common/accessibility.js';
@@ -28,21 +15,21 @@ import { LineRange } from '../../../../common/core/ranges/lineRange.js';
 import { Position } from '../../../../common/core/position.js';
 import { Range } from '../../../../common/core/range.js';
 import { Selection } from '../../../../common/core/selection.js';
-import { TextReplacement, TextEdit } from '../../../../common/core/edits/textEdit.js';
+import { TextEdit, TextReplacement } from '../../../../common/core/edits/textEdit.js';
 import { TextLength } from '../../../../common/core/text/textLength.js';
-import { InlineCompletionEndOfLifeReasonKind, InlineCompletionTriggerKind } from '../../../../common/languages.js';
+import { InlineCompletionTriggerKind, InlineCompletionEndOfLifeReasonKind } from '../../../../common/languages.js';
 import { ILanguageConfigurationService } from '../../../../common/languages/languageConfigurationRegistry.js';
 import { TextModelText } from '../../../../common/model/textModelText.js';
 import { ILanguageFeaturesService } from '../../../../common/services/languageFeatures.js';
 import { SnippetController2 } from '../../../snippet/browser/snippetController2.js';
-import { getEndPositionsAfterApplying, removeTextReplacementCommonSuffixPrefix } from '../utils.js';
-import { AnimatedValue, easeOutCubic, ObservableAnimatedValue } from './animation.js';
+import { removeTextReplacementCommonSuffixPrefix, getEndPositionsAfterApplying } from '../utils.js';
+import { ObservableAnimatedValue, AnimatedValue, easeOutCubic } from './animation.js';
 import { computeGhostText } from './computeGhostText.js';
-import { GhostText, ghostTextOrReplacementEquals, ghostTextsOrReplacementsEqual } from './ghostText.js';
+import { GhostText, ghostTextsOrReplacementsEqual, ghostTextOrReplacementEquals } from './ghostText.js';
 import { InlineCompletionsSource } from './inlineCompletionsSource.js';
 import { InlineEdit } from './inlineEdit.js';
 import { InlineCompletionEditorType } from './provideInlineCompletions.js';
-import { singleTextEditAugments, singleTextRemoveCommonPrefix } from './singleTextEditHelpers.js';
+import { singleTextRemoveCommonPrefix, singleTextEditAugments } from './singleTextEditHelpers.js';
 import { EditSources } from '../../../../common/textModelEditSource.js';
 import { ICodeEditorService } from '../../../../browser/services/codeEditorService.js';
 import { IInlineCompletionsService } from '../../../../browser/services/inlineCompletionsService.js';
@@ -50,6 +37,28 @@ import { TypingInterval } from './typingSpeed.js';
 import { StringReplacement } from '../../../../common/core/edits/stringEdit.js';
 import { OffsetRange } from '../../../../common/core/ranges/offsetRange.js';
 import { URI } from '../../../../../base/common/uri.js';
+import { derived, derivedHandleChanges, derivedOpts } from '../../../../../base/common/observableInternal/observables/derived.js';
+import { recomputeInitiallyAndOnChange, mapObservableArrayCached } from '../../../../../base/common/observableInternal/utils/utils.js';
+import { observableValue } from '../../../../../base/common/observableInternal/observables/observableValue.js';
+import { observableSignal } from '../../../../../base/common/observableInternal/observables/observableSignal.js';
+import { constObservable } from '../../../../../base/common/observableInternal/observables/constObservable.js';
+import { autorun } from '../../../../../base/common/observableInternal/reactions/autorun.js';
+import { observableFromEvent } from '../../../../../base/common/observableInternal/observables/observableFromEvent.js';
+import { subtransaction, transaction } from '../../../../../base/common/observableInternal/transaction.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 let InlineCompletionsModel = class InlineCompletionsModel extends Disposable {
     get isAcceptingPartially() { return this._isAcceptingPartially; }
     constructor(textModel, _selectedSuggestItem, _textModelVersionId, _positions, _debounceValue, _enabled, _editor, _instantiationService, _commandService, _languageConfigurationService, _accessibilityService, _languageFeaturesService, _codeEditorService, _inlineCompletionsService) {
@@ -76,19 +85,14 @@ let InlineCompletionsModel = class InlineCompletionsModel extends Disposable {
         // We use a semantic id to keep the same inline completion selected even if the provider reorders the completions.
         this._selectedInlineCompletionId = observableValue(this, undefined);
         this.primaryPosition = derived(this, reader => this._positions.read(reader)[0] ?? new Position(1, 1));
+        this.allPositions = derived(this, reader => this._positions.read(reader));
         this._isAcceptingPartially = false;
         this._appearedInsideViewport = derived(this, reader => {
             const state = this.state.read(reader);
             if (!state || !state.inlineCompletion) {
                 return false;
             }
-            const targetRange = state.inlineCompletion.targetRange;
-            const visibleRanges = this._editorObs.editor.getVisibleRanges();
-            if (visibleRanges.length < 1) {
-                return false;
-            }
-            const viewportRange = new Range(visibleRanges[0].startLineNumber, visibleRanges[0].startColumn, visibleRanges[visibleRanges.length - 1].endLineNumber, visibleRanges[visibleRanges.length - 1].endColumn);
-            return viewportRange.containsRange(targetRange);
+            return isSuggestionInViewport(this._editor, state.inlineCompletion);
         });
         this._onDidAccept = new Emitter();
         this.onDidAccept = this._onDidAccept.event;
@@ -351,6 +355,7 @@ let InlineCompletionsModel = class InlineCompletionsModel extends Disposable {
                 const edits = inlineEditResult.updatedEdit;
                 const e = edits ? TextEdit.fromStringEdit(edits, new TextModelText(this.textModel)).replacements : [edit];
                 const nextEditUri = (item.inlineEdit?.command?.id === 'vscode.open' || item.inlineEdit?.command?.id === '_workbench.open') &&
+                    // eslint-disable-next-line local/code-no-any-casts
                     item.inlineEdit?.command.arguments?.length ? URI.from(item.inlineEdit?.command.arguments[0]) : undefined;
                 return { kind: 'inlineEdit', inlineEdit, inlineCompletion: inlineEditResult, edits: e, cursorAtInlineEdit, nextEditUri };
             }
@@ -441,7 +446,7 @@ let InlineCompletionsModel = class InlineCompletionsModel extends Disposable {
             if (!state || state.kind !== 'inlineEdit') {
                 return false;
             }
-            if (state.inlineCompletion.displayLocation) {
+            if (state.inlineCompletion.hint) {
                 return false;
             }
             const isCurrentModelVersion = state.inlineCompletion.updatedEditModelVersion === this._textModelVersionId.read(reader);
@@ -483,7 +488,7 @@ let InlineCompletionsModel = class InlineCompletionsModel extends Disposable {
             if (this.showCollapsed.read(reader)) {
                 return true;
             }
-            if (this._inAcceptFlow.read(reader) && this._appearedInsideViewport.read(reader)) {
+            if (this._inAcceptFlow.read(reader) && this._appearedInsideViewport.read(reader) && !s.inlineCompletion.hint?.jumpToEdit) {
                 return false;
             }
             return !s.cursorAtInlineEdit.read(reader);
@@ -496,7 +501,10 @@ let InlineCompletionsModel = class InlineCompletionsModel extends Disposable {
             if (this.showCollapsed.read(reader)) {
                 return false;
             }
-            if (this._inAcceptFlow.read(reader) && this._appearedInsideViewport.read(reader)) {
+            if (this._tabShouldIndent.read(reader)) {
+                return false;
+            }
+            if (this._inAcceptFlow.read(reader) && this._appearedInsideViewport.read(reader) && !s.inlineCompletion.hint?.jumpToEdit) {
                 return true;
             }
             if (s.inlineCompletion.targetRange.startLineNumber === this._editorObs.cursorLineNumber.read(reader)) {
@@ -504,9 +512,6 @@ let InlineCompletionsModel = class InlineCompletionsModel extends Disposable {
             }
             if (this._jumpedToId.read(reader) === s.inlineCompletion.semanticId) {
                 return true;
-            }
-            if (this._tabShouldIndent.read(reader)) {
-                return false;
             }
             return s.cursorAtInlineEdit.read(reader);
         });
@@ -661,28 +666,27 @@ let InlineCompletionsModel = class InlineCompletionsModel extends Disposable {
         }
         return availableProviders;
     }
-    async trigger(tx, options) {
+    async trigger(tx, options = {}) {
         subtransaction(tx, tx => {
-            if (options?.onlyFetchInlineEdits) {
+            if (options.onlyFetchInlineEdits) {
                 this._onlyRequestInlineEditsSignal.trigger(tx);
             }
-            if (options?.noDelay) {
+            if (options.noDelay) {
                 this._noDelaySignal.trigger(tx);
             }
             this._isActive.set(true, tx);
+            if (options.explicit) {
+                this._inAcceptFlow.set(true, tx);
+                this._forceUpdateExplicitlySignal.trigger(tx);
+            }
+            if (options.provider) {
+                this._fetchSpecificProviderSignal.trigger(tx, options.provider);
+            }
         });
         await this._fetchInlineCompletionsPromise.get();
     }
     async triggerExplicitly(tx, onlyFetchInlineEdits = false) {
-        subtransaction(tx, tx => {
-            if (onlyFetchInlineEdits) {
-                this._onlyRequestInlineEditsSignal.trigger(tx);
-            }
-            this._isActive.set(true, tx);
-            this._inAcceptFlow.set(true, tx);
-            this._forceUpdateExplicitlySignal.trigger(tx);
-        });
-        await this._fetchInlineCompletionsPromise.get();
+        return this.trigger(tx, { onlyFetchInlineEdits, explicit: true });
     }
     stop(stopReason = 'automatic', tx) {
         subtransaction(tx, tx => {
@@ -789,7 +793,7 @@ let InlineCompletionsModel = class InlineCompletionsModel extends Disposable {
                 const additionalEdits = completion.additionalTextEdits.map(e => new TextReplacement(Range.lift(e.range), e.text ?? ''));
                 const edit = TextEdit.fromParallelReplacementsUnsorted([...edits, ...additionalEdits]);
                 editor.edit(edit, this._getMetadata(completion, this.textModel.getLanguageId()));
-                if (completion.displayLocation === undefined) {
+                if (completion.hint === undefined) {
                     // do not move the cursor when the completion is displayed in a different location
                     editor.setSelections(state.kind === 'inlineEdit' ? selections.slice(-1) : selections, 'inlineCompletionAccept');
                 }
@@ -945,7 +949,7 @@ let InlineCompletionsModel = class InlineCompletionsModel extends Disposable {
             const targetPosition = targetRange.getStartPosition();
             this._editor.setPosition(targetPosition, 'inlineCompletions.jump');
             // TODO: consider using view information to reveal it
-            const isSingleLineChange = targetRange.isSingleLine() && (s.inlineCompletion.displayLocation || !s.inlineCompletion.insertText.includes('\n'));
+            const isSingleLineChange = targetRange.isSingleLine() && (s.inlineCompletion.hint || !s.inlineCompletion.insertText.includes('\n'));
             if (isSingleLineChange) {
                 this._editor.revealPosition(targetPosition);
             }
@@ -953,6 +957,7 @@ let InlineCompletionsModel = class InlineCompletionsModel extends Disposable {
                 const revealRange = new Range(targetRange.startLineNumber - 1, 1, targetRange.endLineNumber + 1, 1);
                 this._editor.revealRange(revealRange, 1 /* ScrollType.Immediate */);
             }
+            s.inlineCompletion.identity.setJumpTo(tx);
             this._editor.focus();
         });
     }
@@ -969,15 +974,14 @@ InlineCompletionsModel = __decorate([
     __param(12, ICodeEditorService),
     __param(13, IInlineCompletionsService)
 ], InlineCompletionsModel);
-export { InlineCompletionsModel };
-export var VersionIdChangeReason;
+var VersionIdChangeReason;
 (function (VersionIdChangeReason) {
     VersionIdChangeReason[VersionIdChangeReason["Undo"] = 0] = "Undo";
     VersionIdChangeReason[VersionIdChangeReason["Redo"] = 1] = "Redo";
     VersionIdChangeReason[VersionIdChangeReason["AcceptWord"] = 2] = "AcceptWord";
     VersionIdChangeReason[VersionIdChangeReason["Other"] = 3] = "Other";
 })(VersionIdChangeReason || (VersionIdChangeReason = {}));
-export function getSecondaryEdits(textModel, positions, primaryTextRepl) {
+function getSecondaryEdits(textModel, positions, primaryTextRepl) {
     if (positions.length === 1) {
         // No secondary cursor positions
         return [];
@@ -1031,4 +1035,14 @@ class FadeoutDecoration extends Disposable {
         }));
     }
 }
-//# sourceMappingURL=inlineCompletionsModel.js.map
+function isSuggestionInViewport(editor, suggestion) {
+    const targetRange = suggestion.targetRange;
+    const visibleRanges = editor.getVisibleRanges();
+    if (visibleRanges.length < 1) {
+        return false;
+    }
+    const viewportRange = new Range(visibleRanges[0].startLineNumber, visibleRanges[0].startColumn, visibleRanges[visibleRanges.length - 1].endLineNumber, visibleRanges[visibleRanges.length - 1].endColumn);
+    return viewportRange.containsRange(targetRange);
+}
+
+export { InlineCompletionsModel, VersionIdChangeReason, getSecondaryEdits };

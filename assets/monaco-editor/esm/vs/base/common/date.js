@@ -1,6 +1,7 @@
 import { Lazy } from './lazy.js';
 import { LANGUAGE_DEFAULT } from './platform.js';
-export const safeIntl = {
+
+const safeIntl = {
     DateTimeFormat(locales, options) {
         return new Lazy(() => {
             try {
@@ -52,4 +53,5 @@ export const safeIntl = {
         });
     }
 };
-//# sourceMappingURL=date.js.map
+
+export { safeIntl };

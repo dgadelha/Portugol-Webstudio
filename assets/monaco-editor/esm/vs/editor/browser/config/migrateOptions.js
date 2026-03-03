@@ -2,7 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-export class EditorSettingMigration {
+class EditorSettingMigration {
     static { this.items = []; }
     constructor(key, migrate) {
         this.key = key;
@@ -15,7 +15,7 @@ export class EditorSettingMigration {
         this.migrate(value, read, write);
     }
     static _read(source, key) {
-        if (typeof source === 'undefined') {
+        if (typeof source === 'undefined' || source === null) {
             return undefined;
         }
         const firstDotIndex = key.indexOf('.');
@@ -54,7 +54,7 @@ function registerSimpleEditorSettingMigration(key, values) {
 /**
  * Compatibility with old options
  */
-export function migrateOptions(options) {
+function migrateOptions(options) {
     EditorSettingMigration.items.forEach(migration => migration.apply(options));
 }
 registerSimpleEditorSettingMigration('wordWrap', [[true, 'on'], [false, 'off']]);
@@ -216,4 +216,5 @@ registerEditorSettingMigration('inlineSuggest.edits.codeShifting', (value, read,
         write('inlineSuggest.edits.allowCodeShifting', value ? 'always' : 'never');
     }
 });
-//# sourceMappingURL=migrateOptions.js.map
+
+export { EditorSettingMigration, migrateOptions };

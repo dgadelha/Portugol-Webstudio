@@ -2,7 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-export class DirectedGraph {
+class DirectedGraph {
     constructor() {
         this._nodes = new Set();
         this._outgoingEdges = new Map();
@@ -70,4 +70,5 @@ export class DirectedGraph {
         return outgoing ? Array.from(outgoing) : [];
     }
 }
-//# sourceMappingURL=graph.js.map
+
+export { DirectedGraph };

@@ -2,7 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-export class InlineEdit {
+class InlineEdit {
     constructor(edit, commands, inlineCompletion) {
         this.edit = edit;
         this.commands = commands;
@@ -13,4 +13,5 @@ export class InlineEdit {
             && this.inlineCompletion === other.inlineCompletion;
     }
 }
-//# sourceMappingURL=inlineEdit.js.map
+
+export { InlineEdit };

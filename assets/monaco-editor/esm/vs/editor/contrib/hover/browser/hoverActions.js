@@ -1,8 +1,4 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-import { DECREASE_HOVER_VERBOSITY_ACTION_ID, DECREASE_HOVER_VERBOSITY_ACTION_LABEL, GO_TO_BOTTOM_HOVER_ACTION_ID, GO_TO_TOP_HOVER_ACTION_ID, HIDE_HOVER_ACTION_ID, INCREASE_HOVER_VERBOSITY_ACTION_ID, INCREASE_HOVER_VERBOSITY_ACTION_LABEL, PAGE_DOWN_HOVER_ACTION_ID, PAGE_UP_HOVER_ACTION_ID, SCROLL_DOWN_HOVER_ACTION_ID, SCROLL_LEFT_HOVER_ACTION_ID, SCROLL_RIGHT_HOVER_ACTION_ID, SCROLL_UP_HOVER_ACTION_ID, SHOW_DEFINITION_PREVIEW_HOVER_ACTION_ID, SHOW_OR_FOCUS_HOVER_ACTION_ID } from './hoverActionIds.js';
+import { SHOW_OR_FOCUS_HOVER_ACTION_ID, SHOW_DEFINITION_PREVIEW_HOVER_ACTION_ID, HIDE_HOVER_ACTION_ID, SCROLL_UP_HOVER_ACTION_ID, SCROLL_DOWN_HOVER_ACTION_ID, SCROLL_LEFT_HOVER_ACTION_ID, SCROLL_RIGHT_HOVER_ACTION_ID, PAGE_UP_HOVER_ACTION_ID, PAGE_DOWN_HOVER_ACTION_ID, GO_TO_TOP_HOVER_ACTION_ID, GO_TO_BOTTOM_HOVER_ACTION_ID, INCREASE_HOVER_VERBOSITY_ACTION_LABEL, INCREASE_HOVER_VERBOSITY_ACTION_ID, DECREASE_HOVER_VERBOSITY_ACTION_LABEL, DECREASE_HOVER_VERBOSITY_ACTION_ID } from './hoverActionIds.js';
 import { KeyChord } from '../../../../base/common/keyCodes.js';
 import { EditorAction } from '../../../browser/editorExtensions.js';
 import { Range } from '../../../common/core/range.js';
@@ -10,19 +6,24 @@ import { EditorContextKeys } from '../../../common/editorContextKeys.js';
 import { GotoDefinitionAtPositionEditorContribution } from '../../gotoSymbol/browser/link/goToDefinitionAtPosition.js';
 import { ContentHoverController } from './contentHoverController.js';
 import { HoverVerbosityAction } from '../../../common/languages.js';
-import * as nls from '../../../../nls.js';
+import { localize, localize2 } from '../../../../nls.js';
 import './hover.css';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
 var HoverFocusBehavior;
 (function (HoverFocusBehavior) {
     HoverFocusBehavior["NoAutoFocus"] = "noAutoFocus";
     HoverFocusBehavior["FocusIfVisible"] = "focusIfVisible";
     HoverFocusBehavior["AutoFocusImmediately"] = "autoFocusImmediately";
 })(HoverFocusBehavior || (HoverFocusBehavior = {}));
-export class ShowOrFocusHoverAction extends EditorAction {
+class ShowOrFocusHoverAction extends EditorAction {
     constructor() {
         super({
             id: SHOW_OR_FOCUS_HOVER_ACTION_ID,
-            label: nls.localize2(1102, "Show or Focus Hover"),
+            label: localize2(1107, "Show or Focus Hover"),
 
 
 
@@ -31,7 +32,7 @@ export class ShowOrFocusHoverAction extends EditorAction {
 
 
             metadata: {
-                description: nls.localize2(1103, 'Show or focus the editor hover which shows documentation, references, and other content for a symbol at the current cursor position.'),
+                description: localize2(1108, 'Show or focus the editor hover which shows documentation, references, and other content for a symbol at the current cursor position.'),
                 args: [{
                         name: 'args',
                         schema: {
@@ -41,9 +42,9 @@ export class ShowOrFocusHoverAction extends EditorAction {
                                     description: 'Controls if and when the hover should take focus upon being triggered by this action.',
                                     enum: [HoverFocusBehavior.NoAutoFocus, HoverFocusBehavior.FocusIfVisible, HoverFocusBehavior.AutoFocusImmediately],
                                     enumDescriptions: [
-                                        nls.localize(1099, 'The hover will not automatically take focus.'),
-                                        nls.localize(1100, 'The hover will take focus only if it is already visible.'),
-                                        nls.localize(1101, 'The hover will automatically take focus when it appears.'),
+                                        localize(1104, 'The hover will not automatically take focus.'),
+                                        localize(1105, 'The hover will take focus only if it is already visible.'),
+                                        localize(1106, 'The hover will automatically take focus when it appears.'),
                                     ],
                                     default: HoverFocusBehavior.FocusIfVisible,
                                 }
@@ -94,11 +95,11 @@ export class ShowOrFocusHoverAction extends EditorAction {
         }
     }
 }
-export class ShowDefinitionPreviewHoverAction extends EditorAction {
+class ShowDefinitionPreviewHoverAction extends EditorAction {
     constructor() {
         super({
             id: SHOW_DEFINITION_PREVIEW_HOVER_ACTION_ID,
-            label: nls.localize2(1104, "Show Definition Preview Hover"),
+            label: localize2(1109, "Show Definition Preview Hover"),
 
 
 
@@ -107,7 +108,7 @@ export class ShowDefinitionPreviewHoverAction extends EditorAction {
 
             precondition: undefined,
             metadata: {
-                description: nls.localize2(1105, 'Show the definition preview hover in the editor.'),
+                description: localize2(1110, 'Show the definition preview hover in the editor.'),
             },
         });
     }
@@ -131,11 +132,11 @@ export class ShowDefinitionPreviewHoverAction extends EditorAction {
         });
     }
 }
-export class HideContentHoverAction extends EditorAction {
+class HideContentHoverAction extends EditorAction {
     constructor() {
         super({
             id: HIDE_HOVER_ACTION_ID,
-            label: nls.localize2(1106, "Hide Hover"),
+            label: localize2(1111, "Hide Hover"),
 
 
 
@@ -147,11 +148,11 @@ export class HideContentHoverAction extends EditorAction {
         ContentHoverController.get(editor)?.hideContentHover();
     }
 }
-export class ScrollUpHoverAction extends EditorAction {
+class ScrollUpHoverAction extends EditorAction {
     constructor() {
         super({
             id: SCROLL_UP_HOVER_ACTION_ID,
-            label: nls.localize2(1107, "Scroll Up Hover"),
+            label: localize2(1112, "Scroll Up Hover"),
 
 
 
@@ -164,7 +165,7 @@ export class ScrollUpHoverAction extends EditorAction {
                 weight: 100 /* KeybindingWeight.EditorContrib */
             },
             metadata: {
-                description: nls.localize2(1108, 'Scroll up the editor hover.')
+                description: localize2(1113, 'Scroll up the editor hover.')
             },
         });
     }
@@ -176,11 +177,11 @@ export class ScrollUpHoverAction extends EditorAction {
         controller.scrollUp();
     }
 }
-export class ScrollDownHoverAction extends EditorAction {
+class ScrollDownHoverAction extends EditorAction {
     constructor() {
         super({
             id: SCROLL_DOWN_HOVER_ACTION_ID,
-            label: nls.localize2(1109, "Scroll Down Hover"),
+            label: localize2(1114, "Scroll Down Hover"),
 
 
 
@@ -193,7 +194,7 @@ export class ScrollDownHoverAction extends EditorAction {
                 weight: 100 /* KeybindingWeight.EditorContrib */
             },
             metadata: {
-                description: nls.localize2(1110, 'Scroll down the editor hover.'),
+                description: localize2(1115, 'Scroll down the editor hover.'),
             },
         });
     }
@@ -205,11 +206,11 @@ export class ScrollDownHoverAction extends EditorAction {
         controller.scrollDown();
     }
 }
-export class ScrollLeftHoverAction extends EditorAction {
+class ScrollLeftHoverAction extends EditorAction {
     constructor() {
         super({
             id: SCROLL_LEFT_HOVER_ACTION_ID,
-            label: nls.localize2(1111, "Scroll Left Hover"),
+            label: localize2(1116, "Scroll Left Hover"),
 
 
 
@@ -222,7 +223,7 @@ export class ScrollLeftHoverAction extends EditorAction {
                 weight: 100 /* KeybindingWeight.EditorContrib */
             },
             metadata: {
-                description: nls.localize2(1112, 'Scroll left the editor hover.'),
+                description: localize2(1117, 'Scroll left the editor hover.'),
             },
         });
     }
@@ -234,11 +235,11 @@ export class ScrollLeftHoverAction extends EditorAction {
         controller.scrollLeft();
     }
 }
-export class ScrollRightHoverAction extends EditorAction {
+class ScrollRightHoverAction extends EditorAction {
     constructor() {
         super({
             id: SCROLL_RIGHT_HOVER_ACTION_ID,
-            label: nls.localize2(1113, "Scroll Right Hover"),
+            label: localize2(1118, "Scroll Right Hover"),
 
 
 
@@ -251,7 +252,7 @@ export class ScrollRightHoverAction extends EditorAction {
                 weight: 100 /* KeybindingWeight.EditorContrib */
             },
             metadata: {
-                description: nls.localize2(1114, 'Scroll right the editor hover.')
+                description: localize2(1119, 'Scroll right the editor hover.')
             },
         });
     }
@@ -263,11 +264,11 @@ export class ScrollRightHoverAction extends EditorAction {
         controller.scrollRight();
     }
 }
-export class PageUpHoverAction extends EditorAction {
+class PageUpHoverAction extends EditorAction {
     constructor() {
         super({
             id: PAGE_UP_HOVER_ACTION_ID,
-            label: nls.localize2(1115, "Page Up Hover"),
+            label: localize2(1120, "Page Up Hover"),
 
 
 
@@ -281,7 +282,7 @@ export class PageUpHoverAction extends EditorAction {
                 weight: 100 /* KeybindingWeight.EditorContrib */
             },
             metadata: {
-                description: nls.localize2(1116, 'Page up the editor hover.'),
+                description: localize2(1121, 'Page up the editor hover.'),
             },
         });
     }
@@ -293,11 +294,11 @@ export class PageUpHoverAction extends EditorAction {
         controller.pageUp();
     }
 }
-export class PageDownHoverAction extends EditorAction {
+class PageDownHoverAction extends EditorAction {
     constructor() {
         super({
             id: PAGE_DOWN_HOVER_ACTION_ID,
-            label: nls.localize2(1117, "Page Down Hover"),
+            label: localize2(1122, "Page Down Hover"),
 
 
 
@@ -311,7 +312,7 @@ export class PageDownHoverAction extends EditorAction {
                 weight: 100 /* KeybindingWeight.EditorContrib */
             },
             metadata: {
-                description: nls.localize2(1118, 'Page down the editor hover.'),
+                description: localize2(1123, 'Page down the editor hover.'),
             },
         });
     }
@@ -323,11 +324,11 @@ export class PageDownHoverAction extends EditorAction {
         controller.pageDown();
     }
 }
-export class GoToTopHoverAction extends EditorAction {
+class GoToTopHoverAction extends EditorAction {
     constructor() {
         super({
             id: GO_TO_TOP_HOVER_ACTION_ID,
-            label: nls.localize2(1119, "Go To Top Hover"),
+            label: localize2(1124, "Go To Top Hover"),
 
 
 
@@ -341,7 +342,7 @@ export class GoToTopHoverAction extends EditorAction {
                 weight: 100 /* KeybindingWeight.EditorContrib */
             },
             metadata: {
-                description: nls.localize2(1120, 'Go to the top of the editor hover.'),
+                description: localize2(1125, 'Go to the top of the editor hover.'),
             },
         });
     }
@@ -353,11 +354,11 @@ export class GoToTopHoverAction extends EditorAction {
         controller.goToTop();
     }
 }
-export class GoToBottomHoverAction extends EditorAction {
+class GoToBottomHoverAction extends EditorAction {
     constructor() {
         super({
             id: GO_TO_BOTTOM_HOVER_ACTION_ID,
-            label: nls.localize2(1121, "Go To Bottom Hover"),
+            label: localize2(1126, "Go To Bottom Hover"),
 
 
 
@@ -371,7 +372,7 @@ export class GoToBottomHoverAction extends EditorAction {
                 weight: 100 /* KeybindingWeight.EditorContrib */
             },
             metadata: {
-                description: nls.localize2(1122, 'Go to the bottom of the editor hover.')
+                description: localize2(1127, 'Go to the bottom of the editor hover.')
             },
         });
     }
@@ -383,7 +384,7 @@ export class GoToBottomHoverAction extends EditorAction {
         controller.goToBottom();
     }
 }
-export class IncreaseHoverVerbosityLevel extends EditorAction {
+class IncreaseHoverVerbosityLevel extends EditorAction {
     constructor() {
         super({
             id: INCREASE_HOVER_VERBOSITY_ACTION_ID,
@@ -401,7 +402,7 @@ export class IncreaseHoverVerbosityLevel extends EditorAction {
         hoverController.updateHoverVerbosityLevel(HoverVerbosityAction.Increase, index, args?.focus);
     }
 }
-export class DecreaseHoverVerbosityLevel extends EditorAction {
+class DecreaseHoverVerbosityLevel extends EditorAction {
     constructor() {
         super({
             id: DECREASE_HOVER_VERBOSITY_ACTION_ID,
@@ -419,4 +420,5 @@ export class DecreaseHoverVerbosityLevel extends EditorAction {
         ContentHoverController.get(editor)?.updateHoverVerbosityLevel(HoverVerbosityAction.Decrease, index, args?.focus);
     }
 }
-//# sourceMappingURL=hoverActions.js.map
+
+export { DecreaseHoverVerbosityLevel, GoToBottomHoverAction, GoToTopHoverAction, HideContentHoverAction, IncreaseHoverVerbosityLevel, PageDownHoverAction, PageUpHoverAction, ScrollDownHoverAction, ScrollLeftHoverAction, ScrollRightHoverAction, ScrollUpHoverAction, ShowDefinitionPreviewHoverAction, ShowOrFocusHoverAction };

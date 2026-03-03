@@ -1,18 +1,19 @@
+import { AutorunObserver } from '../../reactions/autorunImpl.js';
+import { formatValue } from '../consoleObservableLogger.js';
+import { registerDebugChannel } from './debuggerRpc.js';
+import { Throttler, deepAssignDeleteNulls, deepAssign } from './utils.js';
+import { isDefined } from '../../../types.js';
+import { FromEventObservable } from '../../observables/observableFromEvent.js';
+import { onUnexpectedError, BugIndicatingError } from '../../../errors.js';
+import { Derived } from '../../observables/derivedImpl.js';
+import { ObservableValue } from '../../observables/observableValue.js';
+import { DebugLocation } from '../../debugLocation.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { AutorunObserver } from '../../reactions/autorunImpl.js';
-import { formatValue } from '../consoleObservableLogger.js';
-import { registerDebugChannel } from './debuggerRpc.js';
-import { deepAssign, deepAssignDeleteNulls, Throttler } from './utils.js';
-import { isDefined } from '../../../types.js';
-import { FromEventObservable } from '../../observables/observableFromEvent.js';
-import { BugIndicatingError, onUnexpectedError } from '../../../errors.js';
-import { Derived } from '../../observables/derivedImpl.js';
-import { ObservableValue } from '../../observables/observableValue.js';
-import { DebugLocation } from '../../debugLocation.js';
-export class DevToolsLogger {
+class DevToolsLogger {
     static { this._instance = undefined; }
     static getInstance() {
         if (DevToolsLogger._instance === undefined) {
@@ -437,4 +438,5 @@ export class DevToolsLogger {
         this._activeTransactions.delete(transaction);
     }
 }
-//# sourceMappingURL=devToolsLogger.js.map
+
+export { DevToolsLogger };

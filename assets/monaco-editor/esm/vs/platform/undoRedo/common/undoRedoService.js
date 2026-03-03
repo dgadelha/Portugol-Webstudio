@@ -1,26 +1,26 @@
+import { onUnexpectedError } from '../../../base/common/errors.js';
+import { Disposable, isDisposable } from '../../../base/common/lifecycle.js';
+import { Schemas } from '../../../base/common/network.js';
+import Severity from '../../../base/common/severity.js';
+import { localize } from '../../../nls.js';
+import { IDialogService } from '../../dialogs/common/dialogs.js';
+import { registerSingleton } from '../../instantiation/common/extensions.js';
+import { INotificationService } from '../../notification/common/notification.js';
+import { ResourceEditStackSnapshot, UndoRedoGroup, UndoRedoSource, IUndoRedoService } from './undoRedo.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __param = (this && this.__param) || function (paramIndex, decorator) {
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { onUnexpectedError } from '../../../base/common/errors.js';
-import { Disposable, isDisposable } from '../../../base/common/lifecycle.js';
-import { Schemas } from '../../../base/common/network.js';
-import Severity from '../../../base/common/severity.js';
-import * as nls from '../../../nls.js';
-import { IDialogService } from '../../dialogs/common/dialogs.js';
-import { registerSingleton } from '../../instantiation/common/extensions.js';
-import { INotificationService } from '../../notification/common/notification.js';
-import { IUndoRedoService, ResourceEditStackSnapshot, UndoRedoGroup, UndoRedoSource } from './undoRedo.js';
-const DEBUG = false;
 function getResourceLabel(resource) {
     return resource.scheme === Schemas.file ? resource.fsPath : resource.path;
 }
@@ -70,10 +70,10 @@ class RemovedResources {
         }
         const messages = [];
         if (externalRemoval.length > 0) {
-            messages.push(nls.localize(2012, "The following files have been closed and modified on disk: {0}.", externalRemoval.join(', ')));
+            messages.push(localize(2030, "The following files have been closed and modified on disk: {0}.", externalRemoval.join(', ')));
         }
         if (noParallelUniverses.length > 0) {
-            messages.push(nls.localize(2013, "The following files have been modified in an incompatible way: {0}.", noParallelUniverses.join(', ')));
+            messages.push(localize(2031, "The following files have been modified in an incompatible way: {0}.", noParallelUniverses.join(', ')));
         }
         return messages.join('\n');
     }
@@ -400,9 +400,6 @@ let UndoRedoService = class UndoRedoService {
                 this._pushElement(new WorkspaceStackElement(element, resourceLabels, strResources, group.id, group.nextOrder(), source.id, source.nextOrder()));
             }
         }
-        if (DEBUG) {
-            this._print('pushElement');
-        }
     }
     _pushElement(element) {
         for (let i = 0, len = element.strResources.length; i < len; i++) {
@@ -472,18 +469,12 @@ let UndoRedoService = class UndoRedoService {
             editStack.dispose();
             this._editStacks.delete(strResource);
         }
-        if (DEBUG) {
-            this._print('removeElements');
-        }
     }
     setElementsValidFlag(resource, isValid, filter) {
         const strResource = this.getUriComparisonKey(resource);
         if (this._editStacks.has(strResource)) {
             const editStack = this._editStacks.get(strResource);
             editStack.setElementsValidFlag(isValid, filter);
-        }
-        if (DEBUG) {
-            this._print('setElementsValidFlag');
         }
     }
     createSnapshot(resource) {
@@ -504,9 +495,6 @@ let UndoRedoService = class UndoRedoService {
                 editStack.dispose();
                 this._editStacks.delete(strResource);
             }
-        }
-        if (DEBUG) {
-            this._print('restoreSnapshot');
         }
     }
     getElements(resource) {
@@ -657,10 +645,10 @@ let UndoRedoService = class UndoRedoService {
     }
     _checkWorkspaceUndo(strResource, element, editStackSnapshot, checkInvalidatedResources) {
         if (element.removedResources) {
-            return this._tryToSplitAndUndo(strResource, element, element.removedResources, nls.localize(2014, "Could not undo '{0}' across all files. {1}", element.label, element.removedResources.createMessage()));
+            return this._tryToSplitAndUndo(strResource, element, element.removedResources, localize(2032, "Could not undo '{0}' across all files. {1}", element.label, element.removedResources.createMessage()));
         }
         if (checkInvalidatedResources && element.invalidatedResources) {
-            return this._tryToSplitAndUndo(strResource, element, element.invalidatedResources, nls.localize(2015, "Could not undo '{0}' across all files. {1}", element.label, element.invalidatedResources.createMessage()));
+            return this._tryToSplitAndUndo(strResource, element, element.invalidatedResources, localize(2033, "Could not undo '{0}' across all files. {1}", element.label, element.invalidatedResources.createMessage()));
         }
         // this must be the last past element in all the impacted resources!
         const cannotUndoDueToResources = [];
@@ -670,7 +658,7 @@ let UndoRedoService = class UndoRedoService {
             }
         }
         if (cannotUndoDueToResources.length > 0) {
-            return this._tryToSplitAndUndo(strResource, element, null, nls.localize(2016, "Could not undo '{0}' across all files because changes were made to {1}", element.label, cannotUndoDueToResources.join(', ')));
+            return this._tryToSplitAndUndo(strResource, element, null, localize(2034, "Could not undo '{0}' across all files because changes were made to {1}", element.label, cannotUndoDueToResources.join(', ')));
         }
         const cannotLockDueToResources = [];
         for (const editStack of editStackSnapshot.editStacks) {
@@ -679,11 +667,11 @@ let UndoRedoService = class UndoRedoService {
             }
         }
         if (cannotLockDueToResources.length > 0) {
-            return this._tryToSplitAndUndo(strResource, element, null, nls.localize(2017, "Could not undo '{0}' across all files because there is already an undo or redo operation running on {1}", element.label, cannotLockDueToResources.join(', ')));
+            return this._tryToSplitAndUndo(strResource, element, null, localize(2035, "Could not undo '{0}' across all files because there is already an undo or redo operation running on {1}", element.label, cannotLockDueToResources.join(', ')));
         }
         // check if new stack elements were added in the meantime...
         if (!editStackSnapshot.isValid()) {
-            return this._tryToSplitAndUndo(strResource, element, null, nls.localize(2018, "Could not undo '{0}' across all files because an undo or redo operation occurred in the meantime", element.label));
+            return this._tryToSplitAndUndo(strResource, element, null, localize(2036, "Could not undo '{0}' across all files because an undo or redo operation occurred in the meantime", element.label));
         }
         return null;
     }
@@ -730,14 +718,14 @@ let UndoRedoService = class UndoRedoService {
             })(UndoChoice || (UndoChoice = {}));
             const { result } = await this._dialogService.prompt({
                 type: Severity.Info,
-                message: nls.localize(2019, "Would you like to undo '{0}' across all files?", element.label),
+                message: localize(2037, "Would you like to undo '{0}' across all files?", element.label),
                 buttons: [
                     {
-                        label: nls.localize(2020, "&&Undo in {0} Files", editStackSnapshot.editStacks.length),
+                        label: localize(2038, "&&Undo in {0} Files", editStackSnapshot.editStacks.length),
                         run: () => UndoChoice.All
                     },
                     {
-                        label: nls.localize(2021, "Undo this &&File"),
+                        label: localize(2039, "Undo this &&File"),
                         run: () => UndoChoice.This
                     }
                 ],
@@ -788,7 +776,7 @@ let UndoRedoService = class UndoRedoService {
             return;
         }
         if (editStack.locked) {
-            const message = nls.localize(2022, "Could not undo '{0}' because there is already an undo or redo operation running.", element.label);
+            const message = localize(2040, "Could not undo '{0}' because there is already an undo or redo operation running.", element.label);
             this._notificationService.warn(message);
             return;
         }
@@ -868,16 +856,13 @@ let UndoRedoService = class UndoRedoService {
             }
         }
         finally {
-            if (DEBUG) {
-                this._print('undo');
-            }
         }
     }
     async _confirmAndContinueUndo(strResource, sourceId, element) {
         const result = await this._dialogService.confirm({
-            message: nls.localize(2023, "Would you like to undo '{0}'?", element.label),
-            primaryButton: nls.localize(2024, "&&Yes"),
-            cancelButton: nls.localize(2025, "No")
+            message: localize(2041, "Would you like to undo '{0}'?", element.label),
+            primaryButton: localize(2042, "&&Yes"),
+            cancelButton: localize(2043, "No")
         });
         if (!result.confirmed) {
             return;
@@ -934,10 +919,10 @@ let UndoRedoService = class UndoRedoService {
     }
     _checkWorkspaceRedo(strResource, element, editStackSnapshot, checkInvalidatedResources) {
         if (element.removedResources) {
-            return this._tryToSplitAndRedo(strResource, element, element.removedResources, nls.localize(2026, "Could not redo '{0}' across all files. {1}", element.label, element.removedResources.createMessage()));
+            return this._tryToSplitAndRedo(strResource, element, element.removedResources, localize(2044, "Could not redo '{0}' across all files. {1}", element.label, element.removedResources.createMessage()));
         }
         if (checkInvalidatedResources && element.invalidatedResources) {
-            return this._tryToSplitAndRedo(strResource, element, element.invalidatedResources, nls.localize(2027, "Could not redo '{0}' across all files. {1}", element.label, element.invalidatedResources.createMessage()));
+            return this._tryToSplitAndRedo(strResource, element, element.invalidatedResources, localize(2045, "Could not redo '{0}' across all files. {1}", element.label, element.invalidatedResources.createMessage()));
         }
         // this must be the last future element in all the impacted resources!
         const cannotRedoDueToResources = [];
@@ -947,7 +932,7 @@ let UndoRedoService = class UndoRedoService {
             }
         }
         if (cannotRedoDueToResources.length > 0) {
-            return this._tryToSplitAndRedo(strResource, element, null, nls.localize(2028, "Could not redo '{0}' across all files because changes were made to {1}", element.label, cannotRedoDueToResources.join(', ')));
+            return this._tryToSplitAndRedo(strResource, element, null, localize(2046, "Could not redo '{0}' across all files because changes were made to {1}", element.label, cannotRedoDueToResources.join(', ')));
         }
         const cannotLockDueToResources = [];
         for (const editStack of editStackSnapshot.editStacks) {
@@ -956,11 +941,11 @@ let UndoRedoService = class UndoRedoService {
             }
         }
         if (cannotLockDueToResources.length > 0) {
-            return this._tryToSplitAndRedo(strResource, element, null, nls.localize(2029, "Could not redo '{0}' across all files because there is already an undo or redo operation running on {1}", element.label, cannotLockDueToResources.join(', ')));
+            return this._tryToSplitAndRedo(strResource, element, null, localize(2047, "Could not redo '{0}' across all files because there is already an undo or redo operation running on {1}", element.label, cannotLockDueToResources.join(', ')));
         }
         // check if new stack elements were added in the meantime...
         if (!editStackSnapshot.isValid()) {
-            return this._tryToSplitAndRedo(strResource, element, null, nls.localize(2030, "Could not redo '{0}' across all files because an undo or redo operation occurred in the meantime", element.label));
+            return this._tryToSplitAndRedo(strResource, element, null, localize(2048, "Could not redo '{0}' across all files because an undo or redo operation occurred in the meantime", element.label));
         }
         return null;
     }
@@ -999,7 +984,7 @@ let UndoRedoService = class UndoRedoService {
             return;
         }
         if (editStack.locked) {
-            const message = nls.localize(2031, "Could not redo '{0}' because there is already an undo or redo operation running.", element.label);
+            const message = localize(2049, "Could not redo '{0}' because there is already an undo or redo operation running.", element.label);
             this._notificationService.warn(message);
             return;
         }
@@ -1074,9 +1059,6 @@ let UndoRedoService = class UndoRedoService {
             }
         }
         finally {
-            if (DEBUG) {
-                this._print('redo');
-            }
         }
     }
 };
@@ -1084,11 +1066,11 @@ UndoRedoService = __decorate([
     __param(0, IDialogService),
     __param(1, INotificationService)
 ], UndoRedoService);
-export { UndoRedoService };
 class WorkspaceVerificationError {
     constructor(returnValue) {
         this.returnValue = returnValue;
     }
 }
 registerSingleton(IUndoRedoService, UndoRedoService, 1 /* InstantiationType.Delayed */);
-//# sourceMappingURL=undoRedoService.js.map
+
+export { UndoRedoService };

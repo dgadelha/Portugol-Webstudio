@@ -1,13 +1,14 @@
 import { Emitter } from '../../../base/common/event.js';
 import { Disposable, toDisposable } from '../../../base/common/lifecycle.js';
 import { createDecorator } from '../../instantiation/common/instantiation.js';
-import * as platform from '../../registry/common/platform.js';
-import { ColorScheme, ThemeTypeSelector } from './theme.js';
-export const IThemeService = createDecorator('themeService');
-export function themeColorFromId(id) {
+import { Registry } from '../../registry/common/platform.js';
+import { ThemeTypeSelector, ColorScheme } from './theme.js';
+
+const IThemeService = createDecorator('themeService');
+function themeColorFromId(id) {
     return { id };
 }
-export function getThemeTypeSelector(type) {
+function getThemeTypeSelector(type) {
     switch (type) {
         case ColorScheme.DARK: return ThemeTypeSelector.VS_DARK;
         case ColorScheme.HIGH_CONTRAST_DARK: return ThemeTypeSelector.HC_BLACK;
@@ -16,7 +17,7 @@ export function getThemeTypeSelector(type) {
     }
 }
 // static theming participant
-export const Extensions = {
+const Extensions = {
     ThemingContribution: 'base.contributions.theming'
 };
 class ThemingRegistry extends Disposable {
@@ -39,14 +40,14 @@ class ThemingRegistry extends Disposable {
     }
 }
 const themingRegistry = new ThemingRegistry();
-platform.Registry.add(Extensions.ThemingContribution, themingRegistry);
-export function registerThemingParticipant(participant) {
+Registry.add(Extensions.ThemingContribution, themingRegistry);
+function registerThemingParticipant(participant) {
     return themingRegistry.onColorThemeChange(participant);
 }
 /**
  * Utility base class for all themable components.
  */
-export class Themable extends Disposable {
+class Themable extends Disposable {
     constructor(themeService) {
         super();
         this.themeService = themeService;
@@ -62,4 +63,5 @@ export class Themable extends Disposable {
         // Subclasses to override
     }
 }
-//# sourceMappingURL=themeService.js.map
+
+export { Extensions, IThemeService, Themable, getThemeTypeSelector, registerThemingParticipant, themeColorFromId };

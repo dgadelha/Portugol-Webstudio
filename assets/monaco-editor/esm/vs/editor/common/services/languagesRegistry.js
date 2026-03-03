@@ -1,17 +1,18 @@
+import { Emitter } from '../../../base/common/event.js';
+import { Disposable } from '../../../base/common/lifecycle.js';
+import { regExpLeadsToEndlessLoop } from '../../../base/common/strings.js';
+import { clearPlatformLanguageAssociations, registerPlatformLanguageAssociation, getLanguageIds } from './languagesAssociations.js';
+import { ModesRegistry, PLAINTEXT_LANGUAGE_ID } from '../languages/modesRegistry.js';
+import { Extensions } from '../../../platform/configuration/common/configurationRegistry.js';
+import { Registry } from '../../../platform/registry/common/platform.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { Emitter } from '../../../base/common/event.js';
-import { Disposable } from '../../../base/common/lifecycle.js';
-import { regExpLeadsToEndlessLoop } from '../../../base/common/strings.js';
-import { clearPlatformLanguageAssociations, getLanguageIds, registerPlatformLanguageAssociation } from './languagesAssociations.js';
-import { ModesRegistry, PLAINTEXT_LANGUAGE_ID } from '../languages/modesRegistry.js';
-import { Extensions } from '../../../platform/configuration/common/configurationRegistry.js';
-import { Registry } from '../../../platform/registry/common/platform.js';
 const hasOwnProperty = Object.prototype.hasOwnProperty;
 const NULL_LANGUAGE_ID = 'vs.editor.nullLanguage';
-export class LanguageIdCodec {
+class LanguageIdCodec {
     constructor() {
         this._languageIdToLanguage = [];
         this._languageToLanguageId = new Map();
@@ -37,7 +38,7 @@ export class LanguageIdCodec {
         return this._languageIdToLanguage[languageId] || NULL_LANGUAGE_ID;
     }
 }
-export class LanguagesRegistry extends Disposable {
+class LanguagesRegistry extends Disposable {
     static { this.instanceCount = 0; }
     constructor(useModesRegistry = true, warnOnOverwrite = false) {
         super();
@@ -186,9 +187,7 @@ export class LanguagesRegistry extends Disposable {
             }
         }
         const containsAliases = (langAliases !== null && langAliases.length > 0);
-        if (containsAliases && langAliases[0] === null) {
-            // signal that this language should not get a name
-        }
+        if (containsAliases && langAliases[0] === null) ;
         else {
             const bestName = (containsAliases ? langAliases[0] : null) || langId;
             if (containsAliases || !resolvedLanguage.name) {
@@ -234,4 +233,5 @@ export class LanguagesRegistry extends Disposable {
         return getLanguageIds(resource, firstLine);
     }
 }
-//# sourceMappingURL=languagesRegistry.js.map
+
+export { LanguageIdCodec, LanguagesRegistry };

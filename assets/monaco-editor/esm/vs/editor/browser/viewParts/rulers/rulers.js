@@ -1,15 +1,16 @@
+import './rulers.css';
+import { createFastDomNode } from '../../../../base/browser/fastDomNode.js';
+import { ViewPart } from '../../view/viewPart.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import './rulers.css';
-import { createFastDomNode } from '../../../../base/browser/fastDomNode.js';
-import { ViewPart } from '../../view/viewPart.js';
 /**
  * Rulers are vertical lines that appear at certain columns in the editor. There can be >= 0 rulers
  * at a time.
  */
-export class Rulers extends ViewPart {
+class Rulers extends ViewPart {
     constructor(context) {
         super(context);
         this.domNode = createFastDomNode(document.createElement('div'));
@@ -77,4 +78,5 @@ export class Rulers extends ViewPart {
         }
     }
 }
-//# sourceMappingURL=rulers.js.map
+
+export { Rulers };

@@ -1,16 +1,17 @@
+import { initialize } from '../base/common/worker/webWorkerBootstrap.js';
+import { EditorWorker } from './common/services/editorWebWorker.js';
+import { EditorWorkerHost } from './common/services/editorWorkerHost.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { initialize } from '../base/common/worker/webWorkerBootstrap.js';
-import { EditorWorker } from './common/services/editorWebWorker.js';
-import { EditorWorkerHost } from './common/services/editorWorkerHost.js';
 /**
  * Used by `monaco-editor` to hook up web worker rpc.
  * @skipMangle
  * @internal
  */
-export function start(createClient) {
+function start(createClient) {
     let client;
     const webWorkerServer = initialize((workerServer) => {
         const editorWorkerHost = EditorWorkerHost.getChannel(workerServer);
@@ -39,4 +40,5 @@ export function start(createClient) {
     });
     return client;
 }
-//# sourceMappingURL=editor.worker.start.js.map
+
+export { start };

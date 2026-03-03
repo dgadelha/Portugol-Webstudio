@@ -1,24 +1,23 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
 import { Disposable, DisposableStore } from '../../../../base/common/lifecycle.js';
 import { IInstantiationService } from '../../../../platform/instantiation/common/instantiation.js';
 import { RunOnceScheduler } from '../../../../base/common/async.js';
 import { isMousePositionWithinElement } from './hoverUtils.js';
 import './hover.css';
 import { GlyphHoverWidget } from './glyphHoverWidget.js';
-// sticky hover widget which doesn't disappear on focus out and such
-const _sticky = false;
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 let GlyphHoverController = class GlyphHoverController extends Disposable {
     static { this.ID = 'editor.contrib.marginHover'; }
     constructor(_editor, _instantiationService) {
@@ -103,9 +102,6 @@ let GlyphHoverController = class GlyphHoverController extends Disposable {
         if (shouldNotHideCurrentHoverWidget) {
             return;
         }
-        if (_sticky) {
-            return;
-        }
         this.hideGlyphHover();
     }
     _shouldNotRecomputeCurrentHoverWidget(mouseEvent) {
@@ -133,9 +129,6 @@ let GlyphHoverController = class GlyphHoverController extends Disposable {
         if (glyphWidgetShowsOrWillShow) {
             return;
         }
-        if (_sticky) {
-            return;
-        }
         this.hideGlyphHover();
     }
     _tryShowHoverWidget(mouseEvent) {
@@ -156,9 +149,6 @@ let GlyphHoverController = class GlyphHoverController extends Disposable {
         this.hideGlyphHover();
     }
     hideGlyphHover() {
-        if (_sticky) {
-            return;
-        }
         this._glyphWidget?.hide();
     }
     _getOrCreateGlyphWidget() {
@@ -177,5 +167,5 @@ let GlyphHoverController = class GlyphHoverController extends Disposable {
 GlyphHoverController = __decorate([
     __param(1, IInstantiationService)
 ], GlyphHoverController);
+
 export { GlyphHoverController };
-//# sourceMappingURL=glyphHoverController.js.map

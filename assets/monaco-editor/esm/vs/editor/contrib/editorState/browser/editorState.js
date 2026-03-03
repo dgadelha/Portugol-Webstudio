@@ -1,18 +1,19 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-import * as strings from '../../../../base/common/strings.js';
+import { format } from '../../../../base/common/strings.js';
 import { Range } from '../../../common/core/range.js';
 import { CancellationTokenSource } from '../../../../base/common/cancellation.js';
 import { DisposableStore } from '../../../../base/common/lifecycle.js';
 import { EditorKeybindingCancellationTokenSource } from './keybindingCancellation.js';
-export class EditorState {
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+class EditorState {
     constructor(editor, flags) {
         this.flags = flags;
         if ((this.flags & 1 /* CodeEditorStateFlag.Value */) !== 0) {
             const model = editor.getModel();
-            this.modelVersionId = model ? strings.format('{0}#{1}', model.uri.toString(), model.getVersionId()) : null;
+            this.modelVersionId = model ? format('{0}#{1}', model.uri.toString(), model.getVersionId()) : null;
         }
         else {
             this.modelVersionId = null;
@@ -66,7 +67,7 @@ export class EditorState {
  * by the provided flags
  * @param range If provided, changes in position and selection within this range will not trigger cancellation
  */
-export class EditorStateCancellationTokenSource extends EditorKeybindingCancellationTokenSource {
+class EditorStateCancellationTokenSource extends EditorKeybindingCancellationTokenSource {
     constructor(editor, flags, range, parent) {
         super(editor, parent);
         this._listener = new DisposableStore();
@@ -100,7 +101,7 @@ export class EditorStateCancellationTokenSource extends EditorKeybindingCancella
 /**
  * A cancellation token source that cancels when the provided model changes
  */
-export class TextModelCancellationTokenSource extends CancellationTokenSource {
+class TextModelCancellationTokenSource extends CancellationTokenSource {
     constructor(model, parent) {
         super(parent);
         this._listener = model.onDidChangeContent(() => this.cancel());
@@ -110,4 +111,5 @@ export class TextModelCancellationTokenSource extends CancellationTokenSource {
         super.dispose();
     }
 }
-//# sourceMappingURL=editorState.js.map
+
+export { EditorState, EditorStateCancellationTokenSource, TextModelCancellationTokenSource };

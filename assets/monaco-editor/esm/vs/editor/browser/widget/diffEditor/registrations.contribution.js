@@ -1,70 +1,82 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { Codicon } from '../../../../base/common/codicons.js';
 import { ThemeIcon } from '../../../../base/common/themables.js';
 import { ModelDecorationOptions } from '../../../common/model/textModel.js';
 import { localize } from '../../../../nls.js';
-import { registerColor } from '../../../../platform/theme/common/colorRegistry.js';
+import { registerColor } from '../../../../platform/theme/common/colorUtils.js';
+import '../../../../platform/theme/common/colors/baseColors.js';
+import '../../../../platform/theme/common/colors/chartsColors.js';
+import '../../../../platform/theme/common/colors/editorColors.js';
+import '../../../../platform/theme/common/colors/inputColors.js';
+import '../../../../platform/theme/common/colors/listColors.js';
+import '../../../../platform/theme/common/colors/menuColors.js';
+import '../../../../platform/theme/common/colors/minimapColors.js';
+import '../../../../platform/theme/common/colors/miscColors.js';
+import '../../../../platform/theme/common/colors/quickpickColors.js';
+import '../../../../platform/theme/common/colors/searchColors.js';
 import { registerIcon } from '../../../../platform/theme/common/iconRegistry.js';
-export const diffMoveBorder = registerColor('diffEditor.move.border', '#8b8b8b9c', localize(134, 'The border color for text that got moved in the diff editor.'));
-export const diffMoveBorderActive = registerColor('diffEditor.moveActive.border', '#FFA500', localize(135, 'The active border color for text that got moved in the diff editor.'));
-export const diffEditorUnchangedRegionShadow = registerColor('diffEditor.unchangedRegionShadow', { dark: '#000000', light: '#737373BF', hcDark: '#000000', hcLight: '#737373BF', }, localize(136, 'The color of the shadow around unchanged region widgets.'));
-export const diffInsertIcon = registerIcon('diff-insert', Codicon.add, localize(137, 'Line decoration for inserts in the diff editor.'));
-export const diffRemoveIcon = registerIcon('diff-remove', Codicon.remove, localize(138, 'Line decoration for removals in the diff editor.'));
-export const diffLineAddDecorationBackgroundWithIndicator = ModelDecorationOptions.register({
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+registerColor('diffEditor.move.border', '#8b8b8b9c', localize(137, 'The border color for text that got moved in the diff editor.'));
+registerColor('diffEditor.moveActive.border', '#FFA500', localize(138, 'The active border color for text that got moved in the diff editor.'));
+registerColor('diffEditor.unchangedRegionShadow', { dark: '#000000', light: '#737373BF', hcDark: '#000000', hcLight: '#737373BF', }, localize(139, 'The color of the shadow around unchanged region widgets.'));
+const diffInsertIcon = registerIcon('diff-insert', Codicon.add, localize(140, 'Line decoration for inserts in the diff editor.'));
+const diffRemoveIcon = registerIcon('diff-remove', Codicon.remove, localize(141, 'Line decoration for removals in the diff editor.'));
+const diffLineAddDecorationBackgroundWithIndicator = ModelDecorationOptions.register({
     className: 'line-insert',
     description: 'line-insert',
     isWholeLine: true,
     linesDecorationsClassName: 'insert-sign ' + ThemeIcon.asClassName(diffInsertIcon),
     marginClassName: 'gutter-insert',
 });
-export const diffLineDeleteDecorationBackgroundWithIndicator = ModelDecorationOptions.register({
+const diffLineDeleteDecorationBackgroundWithIndicator = ModelDecorationOptions.register({
     className: 'line-delete',
     description: 'line-delete',
     isWholeLine: true,
     linesDecorationsClassName: 'delete-sign ' + ThemeIcon.asClassName(diffRemoveIcon),
     marginClassName: 'gutter-delete',
 });
-export const diffLineAddDecorationBackground = ModelDecorationOptions.register({
+const diffLineAddDecorationBackground = ModelDecorationOptions.register({
     className: 'line-insert',
     description: 'line-insert',
     isWholeLine: true,
     marginClassName: 'gutter-insert',
 });
-export const diffLineDeleteDecorationBackground = ModelDecorationOptions.register({
+const diffLineDeleteDecorationBackground = ModelDecorationOptions.register({
     className: 'line-delete',
     description: 'line-delete',
     isWholeLine: true,
     marginClassName: 'gutter-delete',
 });
-export const diffAddDecoration = ModelDecorationOptions.register({
+const diffAddDecoration = ModelDecorationOptions.register({
     className: 'char-insert',
     description: 'char-insert',
     shouldFillLineOnLineBreak: true,
 });
-export const diffWholeLineAddDecoration = ModelDecorationOptions.register({
+const diffWholeLineAddDecoration = ModelDecorationOptions.register({
     className: 'char-insert',
     description: 'char-insert',
     isWholeLine: true,
 });
-export const diffAddDecorationEmpty = ModelDecorationOptions.register({
+const diffAddDecorationEmpty = ModelDecorationOptions.register({
     className: 'char-insert diff-range-empty',
     description: 'char-insert diff-range-empty',
 });
-export const diffDeleteDecoration = ModelDecorationOptions.register({
+const diffDeleteDecoration = ModelDecorationOptions.register({
     className: 'char-delete',
     description: 'char-delete',
     shouldFillLineOnLineBreak: true,
 });
-export const diffWholeLineDeleteDecoration = ModelDecorationOptions.register({
+const diffWholeLineDeleteDecoration = ModelDecorationOptions.register({
     className: 'char-delete',
     description: 'char-delete',
     isWholeLine: true,
 });
-export const diffDeleteDecorationEmpty = ModelDecorationOptions.register({
+const diffDeleteDecorationEmpty = ModelDecorationOptions.register({
     className: 'char-delete diff-range-empty',
     description: 'char-delete diff-range-empty',
 });
-//# sourceMappingURL=registrations.contribution.js.map
+
+export { diffAddDecoration, diffAddDecorationEmpty, diffDeleteDecoration, diffDeleteDecorationEmpty, diffInsertIcon, diffLineAddDecorationBackground, diffLineAddDecorationBackgroundWithIndicator, diffLineDeleteDecorationBackground, diffLineDeleteDecorationBackgroundWithIndicator, diffRemoveIcon, diffWholeLineAddDecoration, diffWholeLineDeleteDecoration };

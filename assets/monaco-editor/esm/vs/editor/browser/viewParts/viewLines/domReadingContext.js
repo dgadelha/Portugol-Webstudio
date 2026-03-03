@@ -2,7 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-export class DomReadingContext {
+class DomReadingContext {
     get didDomLayout() {
         return this._didDomLayout;
     }
@@ -39,4 +39,5 @@ export class DomReadingContext {
         this._didDomLayout = true;
     }
 }
-//# sourceMappingURL=domReadingContext.js.map
+
+export { DomReadingContext };

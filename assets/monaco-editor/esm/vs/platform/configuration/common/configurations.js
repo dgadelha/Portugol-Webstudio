@@ -3,7 +3,8 @@ import { deepClone } from '../../../base/common/objects.js';
 import { ConfigurationModel } from './configurationModels.js';
 import { Extensions } from './configurationRegistry.js';
 import { Registry } from '../../registry/common/platform.js';
-export class DefaultConfiguration extends Disposable {
+
+class DefaultConfiguration extends Disposable {
     get configurationModel() {
         return this._configurationModel;
     }
@@ -41,4 +42,5 @@ export class DefaultConfiguration extends Disposable {
         }
     }
 }
-//# sourceMappingURL=configurations.js.map
+
+export { DefaultConfiguration };

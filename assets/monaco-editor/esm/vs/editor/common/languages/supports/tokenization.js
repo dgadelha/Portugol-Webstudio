@@ -1,9 +1,10 @@
+import { Color } from '../../../../base/common/color.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { Color } from '../../../../base/common/color.js';
-export class ParsedTokenThemeRule {
+class ParsedTokenThemeRule {
     constructor(token, index, fontStyle, foreground, background) {
         this._parsedThemeRuleBrand = undefined;
         this.token = token;
@@ -16,7 +17,7 @@ export class ParsedTokenThemeRule {
 /**
  * Parse a raw theme into rules.
  */
-export function parseTokenTheme(source) {
+function parseTokenTheme(source) {
     if (!source || !Array.isArray(source)) {
         return [];
     }
@@ -102,7 +103,7 @@ function resolveParsedTokenThemeRules(parsedThemeRules, customTokenColors) {
     return new TokenTheme(colorMap, root);
 }
 const colorRegExp = /^#?([0-9A-Fa-f]{6})([0-9A-Fa-f]{2})?$/;
-export class ColorMap {
+class ColorMap {
     constructor() {
         this._lastColorId = 0;
         this._id2color = [];
@@ -130,7 +131,7 @@ export class ColorMap {
         return this._id2color.slice(0);
     }
 }
-export class TokenTheme {
+class TokenTheme {
     static createFromRawTokenTheme(source, customTokenColors) {
         return this.createFromParsedTokenTheme(parseTokenTheme(source), customTokenColors);
     }
@@ -163,7 +164,7 @@ export class TokenTheme {
     }
 }
 const STANDARD_TOKEN_TYPE_REGEXP = /\b(comment|string|regex|regexp)\b/;
-export function toStandardTokenType(tokenType) {
+function toStandardTokenType(tokenType) {
     const m = tokenType.match(STANDARD_TOKEN_TYPE_REGEXP);
     if (!m) {
         return 0 /* StandardTokenType.Other */;
@@ -180,7 +181,7 @@ export function toStandardTokenType(tokenType) {
     }
     throw new Error('Unexpected match for standard token type!');
 }
-export function strcmp(a, b) {
+function strcmp(a, b) {
     if (a < b) {
         return -1;
     }
@@ -189,7 +190,7 @@ export function strcmp(a, b) {
     }
     return 0;
 }
-export class ThemeTrieElementRule {
+class ThemeTrieElementRule {
     constructor(fontStyle, foreground, background) {
         this._themeTrieElementRuleBrand = undefined;
         this._fontStyle = fontStyle;
@@ -217,7 +218,7 @@ export class ThemeTrieElementRule {
             | (this._background << 24 /* MetadataConsts.BACKGROUND_OFFSET */)) >>> 0;
     }
 }
-export class ThemeTrieElement {
+class ThemeTrieElement {
     constructor(mainRule) {
         this._themeTrieElementBrand = undefined;
         this._mainRule = mainRule;
@@ -269,7 +270,7 @@ export class ThemeTrieElement {
         child.insert(tail, fontStyle, foreground, background);
     }
 }
-export function generateTokensCSSForColorMap(colorMap) {
+function generateTokensCSSForColorMap(colorMap) {
     const rules = [];
     for (let i = 1, len = colorMap.length; i < len; i++) {
         const color = colorMap[i];
@@ -282,4 +283,5 @@ export function generateTokensCSSForColorMap(colorMap) {
     rules.push('.mtks.mtku { text-decoration: underline line-through; text-underline-position: under; }');
     return rules.join('\n');
 }
-//# sourceMappingURL=tokenization.js.map
+
+export { ColorMap, ParsedTokenThemeRule, ThemeTrieElement, ThemeTrieElementRule, TokenTheme, generateTokensCSSForColorMap, parseTokenTheme, strcmp, toStandardTokenType };

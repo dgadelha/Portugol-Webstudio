@@ -1,25 +1,11 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-var PostEditWidget_1;
-import * as dom from '../../../../base/browser/dom.js';
+import { $, addDisposableListener, EventType, getDomNodePagePosition } from '../../../../base/browser/dom.js';
 import { Button } from '../../../../base/browser/ui/button/button.js';
 import { raceCancellationError } from '../../../../base/common/async.js';
 import { Codicon } from '../../../../base/common/codicons.js';
 import { toErrorMessage } from '../../../../base/common/errorMessage.js';
 import { isCancellationError } from '../../../../base/common/errors.js';
 import { Event } from '../../../../base/common/event.js';
-import { Disposable, MutableDisposable, toDisposable } from '../../../../base/common/lifecycle.js';
+import { Disposable, toDisposable, MutableDisposable } from '../../../../base/common/lifecycle.js';
 import { ThemeIcon } from '../../../../base/common/themables.js';
 import { localize } from '../../../../nls.js';
 import { IActionWidgetService } from '../../../../platform/actionWidget/browser/actionWidget.js';
@@ -31,6 +17,21 @@ import { IBulkEditService } from '../../../browser/services/bulkEditService.js';
 import { EditorStateCancellationTokenSource } from '../../editorState/browser/editorState.js';
 import { createCombinedWorkspaceEdit } from './edit.js';
 import './postEditWidget.css';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var PostEditWidget_1;
 let PostEditWidget = class PostEditWidget extends Disposable {
     static { PostEditWidget_1 = this; }
     static { this.baseId = 'editor.widget.postEditWidget'; }
@@ -66,12 +67,12 @@ let PostEditWidget = class PostEditWidget extends Disposable {
         this.button.element.title = this.showCommand.label + (binding ? ` (${binding})` : '');
     }
     create() {
-        this.domNode = dom.$('.post-edit-widget');
+        this.domNode = $('.post-edit-widget');
         this.button = this._register(new Button(this.domNode, {
             supportIcons: true,
         }));
         this.button.label = '$(insert)';
-        this._register(dom.addDisposableListener(this.domNode, dom.EventType.CLICK, () => this.showSelector()));
+        this._register(addDisposableListener(this.domNode, EventType.CLICK, () => this.showSelector()));
     }
     getId() {
         return PostEditWidget_1.baseId + '.' + this.typeId;
@@ -86,7 +87,7 @@ let PostEditWidget = class PostEditWidget extends Disposable {
         };
     }
     showSelector() {
-        const pos = dom.getDomNodePagePosition(this.button.element);
+        const pos = getDomNodePagePosition(this.button.element);
         const anchor = { x: pos.left + pos.width, y: pos.top + pos.height };
         this._actionWidgetService.show('postEditWidget', false, this.edits.allEdits.map((edit, i) => {
             return {
@@ -162,7 +163,7 @@ let PostEditWidgetManager = class PostEditWidgetManager extends Disposable {
             resolvedEdit = await raceCancellationError(resolve(edit, editorStateCts.token), editorStateCts.token);
         }
         catch (e) {
-            return handleError(e, localize(932, "Error resolving edit '{0}':\n{1}", edit.title, toErrorMessage(e)));
+            return handleError(e, localize(937, "Error resolving edit '{0}':\n{1}", edit.title, toErrorMessage(e)));
         }
         finally {
             editorStateCts.dispose();
@@ -185,7 +186,7 @@ let PostEditWidgetManager = class PostEditWidgetManager extends Disposable {
             editRange = model.getDecorationRange(editTrackingDecoration[0]);
         }
         catch (e) {
-            return handleError(e, localize(933, "Error applying edit '{0}':\n{1}", edit.title, toErrorMessage(e)));
+            return handleError(e, localize(938, "Error applying edit '{0}':\n{1}", edit.title, toErrorMessage(e)));
         }
         finally {
             model.deltaDecorations(editTrackingDecoration, []);
@@ -215,5 +216,5 @@ PostEditWidgetManager = __decorate([
     __param(6, IBulkEditService),
     __param(7, INotificationService)
 ], PostEditWidgetManager);
+
 export { PostEditWidgetManager };
-//# sourceMappingURL=postEditWidget.js.map

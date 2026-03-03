@@ -1,7 +1,3 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { CancellationToken } from '../../../../base/common/cancellation.js';
 import { illegalArgument } from '../../../../base/common/errors.js';
 import { URI } from '../../../../base/common/uri.js';
@@ -10,7 +6,7 @@ import { CommandsRegistry } from '../../../../platform/commands/common/commands.
 import { registerEditorAction, registerEditorContribution } from '../../../browser/editorExtensions.js';
 import { registerEditorFeature } from '../../../common/editorFeatures.js';
 import { HoverParticipantRegistry } from '../../hover/browser/hoverTypes.js';
-import { _findColorData, _setupColorCommand, ColorPresentationsCollector, ExtColorDataCollector } from './color.js';
+import { _setupColorCommand, _findColorData, ExtColorDataCollector, ColorPresentationsCollector } from './color.js';
 import { ColorDetector } from './colorDetector.js';
 import { DefaultDocumentColorProviderFeature } from './defaultDocumentColorProvider.js';
 import { HoverColorPickerContribution } from './hoverColorPicker/hoverColorPickerContribution.js';
@@ -18,6 +14,11 @@ import { HoverColorPickerParticipant } from './hoverColorPicker/hoverColorPicker
 import { HideStandaloneColorPicker, InsertColorWithStandaloneColorPicker, ShowOrFocusStandaloneColorPicker } from './standaloneColorPicker/standaloneColorPickerActions.js';
 import { StandaloneColorPickerController } from './standaloneColorPicker/standaloneColorPickerController.js';
 import { Range } from '../../../common/core/range.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
 registerEditorAction(HideStandaloneColorPicker);
 registerEditorAction(InsertColorWithStandaloneColorPicker);
 registerAction2(ShowOrFocusStandaloneColorPicker);
@@ -36,6 +37,9 @@ CommandsRegistry.registerCommand('_executeDocumentColorProvider', function (acce
 });
 CommandsRegistry.registerCommand('_executeColorPresentationProvider', function (accessor, ...args) {
     const [color, context] = args;
+    if (!context) {
+        return;
+    }
     const { uri, range } = context;
     if (!(uri instanceof URI) || !Array.isArray(color) || color.length !== 4 || !Range.isIRange(range)) {
         throw illegalArgument();
@@ -44,4 +48,3 @@ CommandsRegistry.registerCommand('_executeColorPresentationProvider', function (
     const [red, green, blue, alpha] = color;
     return _findColorData(new ColorPresentationsCollector({ range: range, color: { red, green, blue, alpha } }), colorProviderRegistry, model, CancellationToken.None, defaultColorDecoratorsEnablement);
 });
-//# sourceMappingURL=colorPickerContribution.js.map

@@ -1,10 +1,11 @@
+import { expressionsAreEqualWithConstantSubstitution, implies } from '../../contextkey/common/contextkey.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { implies, expressionsAreEqualWithConstantSubstitution } from '../../contextkey/common/contextkey.js';
 // util definitions to make working with the above types easier within this module:
-export const NoMatchingKb = { kind: 0 /* ResultKind.NoMatchingKb */ };
+const NoMatchingKb = { kind: 0 /* ResultKind.NoMatchingKb */ };
 const MoreChordsNeeded = { kind: 1 /* ResultKind.MoreChordsNeeded */ };
 function KbFound(commandId, commandArgs, isBubble) {
     return { kind: 2 /* ResultKind.KbFound */, commandId, commandArgs, isBubble };
@@ -14,7 +15,7 @@ function KbFound(commandId, commandArgs, isBubble) {
  * Stores mappings from keybindings to commands and from commands to keybindings.
  * Given a sequence of chords, `resolve`s which keybinding it matches
  */
-export class KeybindingResolver {
+class KeybindingResolver {
     constructor(
     /** built-in and extension-provided keybindings */
     defaultKeybindings, 
@@ -299,4 +300,5 @@ function printSourceExplanation(kb) {
         ? (kb.isBuiltinExtension ? `built-in extension ${kb.extensionId}` : `user extension ${kb.extensionId}`)
         : (kb.isDefault ? `built-in` : `user`));
 }
-//# sourceMappingURL=keybindingResolver.js.map
+
+export { KeybindingResolver, NoMatchingKb };

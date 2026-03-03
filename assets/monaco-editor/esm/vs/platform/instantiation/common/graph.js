@@ -2,7 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-export class Node {
+class Node {
     constructor(key, data) {
         this.key = key;
         this.data = data;
@@ -10,7 +10,7 @@ export class Node {
         this.outgoing = new Map();
     }
 }
-export class Graph {
+class Graph {
     constructor(_hashFn) {
         this._hashFn = _hashFn;
         this._nodes = new Map();
@@ -87,4 +87,5 @@ export class Graph {
         return undefined;
     }
 }
-//# sourceMappingURL=graph.js.map
+
+export { Graph, Node };

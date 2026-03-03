@@ -1,27 +1,24 @@
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+import './bannerController.css';
+import { localize } from '../../../../nls.js';
+import { $, clearNode, append } from '../../../../base/browser/dom.js';
+import { ActionBar } from '../../../../base/browser/ui/actionbar/actionbar.js';
+import { Action } from '../../../../base/common/actions.js';
+import { Disposable } from '../../../../base/common/lifecycle.js';
+import { IMarkdownRendererService } from '../../../../platform/markdown/browser/markdownRenderer.js';
+import { IInstantiationService } from '../../../../platform/instantiation/common/instantiation.js';
+import { Link } from '../../../../platform/opener/browser/link.js';
+import { widgetClose } from '../../../../platform/theme/common/iconRegistry.js';
+import { ThemeIcon } from '../../../../base/common/themables.js';
+
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __param = (this && this.__param) || function (paramIndex, decorator) {
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-import './bannerController.css';
-import { localize } from '../../../../nls.js';
-import { $, append, clearNode } from '../../../../base/browser/dom.js';
-import { ActionBar } from '../../../../base/browser/ui/actionbar/actionbar.js';
-import { Action } from '../../../../base/common/actions.js';
-import { Disposable } from '../../../../base/common/lifecycle.js';
-import { MarkdownRenderer } from '../../../browser/widget/markdownRenderer/browser/markdownRenderer.js';
-import { IInstantiationService } from '../../../../platform/instantiation/common/instantiation.js';
-import { Link } from '../../../../platform/opener/browser/link.js';
-import { widgetClose } from '../../../../platform/theme/common/iconRegistry.js';
-import { ThemeIcon } from '../../../../base/common/themables.js';
 const BANNER_ELEMENT_HEIGHT = 26;
 let BannerController = class BannerController extends Disposable {
     constructor(_editor, instantiationService) {
@@ -48,13 +45,12 @@ let BannerController = class BannerController extends Disposable {
 BannerController = __decorate([
     __param(1, IInstantiationService)
 ], BannerController);
-export { BannerController };
 // TODO@hediet: Investigate if this can be reused by the workspace banner (bannerPart.ts).
 let Banner = class Banner extends Disposable {
-    constructor(instantiationService) {
+    constructor(instantiationService, markdownRendererService) {
         super();
         this.instantiationService = instantiationService;
-        this.markdownRenderer = this.instantiationService.createInstance(MarkdownRenderer, {});
+        this.markdownRendererService = markdownRendererService;
         this.element = $('div.editor-banner');
         this.element.tabIndex = 0;
     }
@@ -73,7 +69,7 @@ let Banner = class Banner extends Disposable {
             element.innerText = message;
             return element;
         }
-        return this.markdownRenderer.render(message).element;
+        return this.markdownRendererService.render(message).element;
     }
     clear() {
         clearNode(this.element);
@@ -106,7 +102,7 @@ let Banner = class Banner extends Disposable {
         // Action
         const actionBarContainer = append(this.element, $('div.action-container'));
         this.actionBar = this._register(new ActionBar(actionBarContainer));
-        this.actionBar.push(this._register(new Action('banner.close', localize(1518, "Close Banner"), ThemeIcon.asClassName(widgetClose), true, () => {
+        this.actionBar.push(this._register(new Action('banner.close', localize(1533, "Close Banner"), ThemeIcon.asClassName(widgetClose), true, () => {
             if (typeof item.onClose === 'function') {
                 item.onClose();
             }
@@ -115,6 +111,8 @@ let Banner = class Banner extends Disposable {
     }
 };
 Banner = __decorate([
-    __param(0, IInstantiationService)
+    __param(0, IInstantiationService),
+    __param(1, IMarkdownRendererService)
 ], Banner);
-//# sourceMappingURL=bannerController.js.map
+
+export { BannerController };

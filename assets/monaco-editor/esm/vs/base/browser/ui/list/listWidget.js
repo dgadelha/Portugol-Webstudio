@@ -1,14 +1,4 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-import { EventHelper, getActiveElement, getWindow, isEditableElement, isHTMLElement, isMouseEvent } from '../../dom.js';
+import { isEditableElement, EventHelper, getWindow, isHTMLElement, getActiveElement, isMouseEvent } from '../../dom.js';
 import { createStyleSheet } from '../../domStylesheets.js';
 import { asCssValueWithDefault } from '../../cssValue.js';
 import { DomEmitter } from '../../event.js';
@@ -21,16 +11,29 @@ import { timeout } from '../../../common/async.js';
 import { Color } from '../../../common/color.js';
 import { memoize } from '../../../common/decorators.js';
 import { Emitter, Event, EventBufferer } from '../../../common/event.js';
-import { matchesFuzzy2, matchesPrefix } from '../../../common/filters.js';
-import { DisposableStore, dispose } from '../../../common/lifecycle.js';
+import { matchesPrefix, matchesFuzzy2 } from '../../../common/filters.js';
+import { dispose, DisposableStore } from '../../../common/lifecycle.js';
 import { clamp } from '../../../common/numbers.js';
-import * as platform from '../../../common/platform.js';
+import { isMacintosh } from '../../../common/platform.js';
 import { isNumber } from '../../../common/types.js';
 import './list.css';
 import { ListError } from './list.js';
 import { ListView } from './listView.js';
 import { StandardMouseEvent } from '../../mouseEvent.js';
-import { autorun, constObservable } from '../../../common/observable.js';
+import '../../../common/observableInternal/index.js';
+import { constObservable } from '../../../common/observableInternal/observables/constObservable.js';
+import { autorun } from '../../../common/observableInternal/reactions/autorun.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
 class TraitRenderer {
     constructor(trait) {
         this.trait = trait;
@@ -207,22 +210,22 @@ function isListElementDescendantOfClass(e, className) {
     }
     return isListElementDescendantOfClass(e.parentElement, className);
 }
-export function isMonacoEditor(e) {
+function isMonacoEditor(e) {
     return isListElementDescendantOfClass(e, 'monaco-editor');
 }
-export function isMonacoCustomToggle(e) {
+function isMonacoCustomToggle(e) {
     return isListElementDescendantOfClass(e, 'monaco-custom-toggle');
 }
-export function isActionItem(e) {
+function isActionItem(e) {
     return isListElementDescendantOfClass(e, 'action-item');
 }
-export function isStickyScrollElement(e) {
+function isStickyScrollElement(e) {
     return isListElementDescendantOfClass(e, 'monaco-tree-sticky-row');
 }
-export function isStickyScrollContainer(e) {
+function isStickyScrollContainer(e) {
     return e.classList.contains('monaco-tree-sticky-container');
 }
-export function isButton(e) {
+function isButton(e) {
     if ((e.tagName === 'A' && e.classList.contains('monaco-button')) ||
         (e.tagName === 'DIV' && e.classList.contains('monaco-button-dropdown'))) {
         return true;
@@ -261,7 +264,7 @@ class KeyboardController {
                 case 9 /* KeyCode.Escape */:
                     return this.onEscape(e);
                 case 31 /* KeyCode.KeyA */:
-                    if (this.multipleSelectionSupport && (platform.isMacintosh ? e.metaKey : e.ctrlKey)) {
+                    if (this.multipleSelectionSupport && (isMacintosh ? e.metaKey : e.ctrlKey)) {
                         this.onCtrlA(e);
                     }
             }
@@ -337,7 +340,7 @@ class KeyboardController {
 __decorate([
     memoize
 ], KeyboardController.prototype, "onKeyDown", null);
-export var TypeNavigationMode;
+var TypeNavigationMode;
 (function (TypeNavigationMode) {
     TypeNavigationMode[TypeNavigationMode["Automatic"] = 0] = "Automatic";
     TypeNavigationMode[TypeNavigationMode["Trigger"] = 1] = "Trigger";
@@ -347,7 +350,7 @@ var TypeNavigationControllerState;
     TypeNavigationControllerState[TypeNavigationControllerState["Idle"] = 0] = "Idle";
     TypeNavigationControllerState[TypeNavigationControllerState["Typing"] = 1] = "Typing";
 })(TypeNavigationControllerState || (TypeNavigationControllerState = {}));
-export const DefaultKeyboardNavigationDelegate = new class {
+const DefaultKeyboardNavigationDelegate = new class {
     mightProducePrintableCharacter(event) {
         if (event.ctrlKey || event.metaKey || event.altKey) {
             return false;
@@ -500,6 +503,7 @@ class DOMFocusController {
         if (!focusedDomElement) {
             return;
         }
+        // eslint-disable-next-line no-restricted-syntax
         const tabIndexElement = focusedDomElement.querySelector('[tabIndex]');
         if (!tabIndexElement || !(isHTMLElement(tabIndexElement)) || tabIndexElement.tabIndex === -1) {
             return;
@@ -516,10 +520,10 @@ class DOMFocusController {
         this.disposables.dispose();
     }
 }
-export function isSelectionSingleChangeEvent(event) {
-    return platform.isMacintosh ? event.browserEvent.metaKey : event.browserEvent.ctrlKey;
+function isSelectionSingleChangeEvent(event) {
+    return isMacintosh ? event.browserEvent.metaKey : event.browserEvent.ctrlKey;
 }
-export function isSelectionRangeChangeEvent(event) {
+function isSelectionRangeChangeEvent(event) {
     return event.browserEvent.shiftKey;
 }
 function isMouseRightClick(event) {
@@ -529,7 +533,7 @@ const DefaultMultipleSelectionController = {
     isSelectionSingleChangeEvent,
     isSelectionRangeChangeEvent
 };
-export class MouseController {
+class MouseController {
     get onPointer() { return this._onPointer.event; }
     constructor(list) {
         this.list = list;
@@ -666,7 +670,7 @@ export class MouseController {
         this.disposables.dispose();
     }
 }
-export class DefaultStyleController {
+class DefaultStyleController {
     constructor(styleElement, selectorSuffix) {
         this.styleElement = styleElement;
         this.selectorSuffix = selectorSuffix;
@@ -741,7 +745,7 @@ export class DefaultStyleController {
             content.push(`
 				.monaco-drag-image${suffix},
 				.monaco-list${suffix}:focus .monaco-list-row.focused,
-				.monaco-workbench.context-menu-visible .monaco-list${suffix}.last-focused .monaco-list-row.focused { outline: 1px solid ${styles.listFocusOutline}; outline-offset: -1px; }
+				.context-menu-visible .monaco-list${suffix}.last-focused .monaco-list-row.focused { outline: 1px solid ${styles.listFocusOutline}; outline-offset: -1px; }
 			`);
         }
         const inactiveFocusAndSelectionOutline = asCssValueWithDefault(styles.listSelectionOutline, styles.listInactiveFocusOutline ?? '');
@@ -782,13 +786,13 @@ export class DefaultStyleController {
             content.push(`
 				.monaco-table > .monaco-split-view2,
 				.monaco-table > .monaco-split-view2 .monaco-sash.vertical::before,
-				.monaco-workbench:not(.reduce-motion) .monaco-table:hover > .monaco-split-view2,
-				.monaco-workbench:not(.reduce-motion) .monaco-table:hover > .monaco-split-view2 .monaco-sash.vertical::before {
+				.monaco-enable-motion .monaco-table:hover > .monaco-split-view2,
+				.monaco-enable-motion .monaco-table:hover > .monaco-split-view2 .monaco-sash.vertical::before {
 					border-color: ${styles.tableColumnsBorder};
 				}
 
-				.monaco-workbench:not(.reduce-motion) .monaco-table > .monaco-split-view2,
-				.monaco-workbench:not(.reduce-motion) .monaco-table > .monaco-split-view2 .monaco-sash.vertical::before {
+				.monaco-enable-motion .monaco-table > .monaco-split-view2,
+				.monaco-enable-motion .monaco-table > .monaco-split-view2 .monaco-sash.vertical::before {
 					border-color: transparent;
 				}
 			`);
@@ -805,7 +809,7 @@ export class DefaultStyleController {
         this.styleElement.textContent = content.join('\n');
     }
 }
-export const unthemedListStyles = {
+const unthemedListStyles = {
     listFocusBackground: '#7FB0D0',
     listActiveSelectionBackground: '#0E639C',
     listActiveSelectionForeground: '#FFFFFF',
@@ -1045,7 +1049,7 @@ class ListViewDragAndDrop {
  * - Dynamic element height support
  * - Drag-and-drop support
  */
-export class List {
+class List {
     get onDidChangeFocus() {
         return Event.map(this.eventBufferer.wrapEvent(this.focus.onChange), e => this.toListEvent(e), this.disposables);
     }
@@ -1434,9 +1438,7 @@ export class List {
         else {
             const viewItemBottom = elementTop + elementHeight;
             const scrollBottom = scrollTop + this.view.renderHeight;
-            if (elementTop < scrollTop + paddingTop && viewItemBottom >= scrollBottom) {
-                // The element is already overflowing the viewport, no-op
-            }
+            if (elementTop < scrollTop + paddingTop && viewItemBottom >= scrollBottom) ;
             else if (elementTop < scrollTop + paddingTop || (viewItemBottom >= scrollBottom && elementHeight >= this.view.renderHeight)) {
                 this.view.setScrollTop(elementTop - paddingTop);
             }
@@ -1529,4 +1531,5 @@ __decorate([
 __decorate([
     memoize
 ], List.prototype, "onDidBlur", null);
-//# sourceMappingURL=listWidget.js.map
+
+export { DefaultKeyboardNavigationDelegate, DefaultStyleController, List, MouseController, TypeNavigationMode, isActionItem, isButton, isMonacoCustomToggle, isMonacoEditor, isSelectionRangeChangeEvent, isSelectionSingleChangeEvent, isStickyScrollContainer, isStickyScrollElement, unthemedListStyles };

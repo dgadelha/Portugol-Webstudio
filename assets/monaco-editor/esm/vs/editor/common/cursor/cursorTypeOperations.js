@@ -1,12 +1,13 @@
+import { ShiftCommand } from '../commands/shiftCommand.js';
+import { CompositionSurroundSelectionCommand } from '../commands/surroundSelectionCommand.js';
+import { isQuote, EditOperationResult } from '../cursorCommon.js';
+import { PasteOperation, TabOperation, CompositionOperation, CompositionEndOvertypeOperation, shouldSurroundChar, AutoClosingOvertypeWithInterceptorsOperation, AutoClosingOpenCharTypeOperation, EnterOperation, AutoIndentOperation, AutoClosingOvertypeOperation, SurroundSelectionOperation, InterceptorElectricCharOperation, SimpleCharacterTypeOperation, TypeWithoutInterceptorsOperation } from './cursorTypeEditOperations.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { ShiftCommand } from '../commands/shiftCommand.js';
-import { CompositionSurroundSelectionCommand } from '../commands/surroundSelectionCommand.js';
-import { EditOperationResult, isQuote } from '../cursorCommon.js';
-import { AutoClosingOpenCharTypeOperation, AutoClosingOvertypeOperation, AutoClosingOvertypeWithInterceptorsOperation, AutoIndentOperation, CompositionOperation, CompositionEndOvertypeOperation, EnterOperation, InterceptorElectricCharOperation, PasteOperation, shouldSurroundChar, SimpleCharacterTypeOperation, SurroundSelectionOperation, TabOperation, TypeWithoutInterceptorsOperation } from './cursorTypeEditOperations.js';
-export class TypeOperations {
+class TypeOperations {
     static indent(config, model, selections) {
         if (model === null || selections === null) {
             return [];
@@ -157,7 +158,7 @@ export class TypeOperations {
         return TypeWithoutInterceptorsOperation.getEdits(prevEditOperationType, selections, str);
     }
 }
-export class CompositionOutcome {
+class CompositionOutcome {
     constructor(deletedText, deletedSelectionStart, deletedSelectionEnd, insertedText, insertedSelectionStart, insertedSelectionEnd, insertedTextRange) {
         this.deletedText = deletedText;
         this.deletedSelectionStart = deletedSelectionStart;
@@ -168,4 +169,5 @@ export class CompositionOutcome {
         this.insertedTextRange = insertedTextRange;
     }
 }
-//# sourceMappingURL=cursorTypeOperations.js.map
+
+export { CompositionOutcome, TypeOperations };

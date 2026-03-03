@@ -1,29 +1,40 @@
+import { IMarkerService, MarkerSeverity } from '../../../platform/markers/common/markers.js';
+import { Disposable, toDisposable } from '../../../base/common/lifecycle.js';
+import { OverviewRulerLane } from '../model.js';
+import { themeColorFromId } from '../../../platform/theme/common/themeService.js';
+import { overviewRulerError, overviewRulerWarning, overviewRulerInfo } from '../core/editorColorRegistry.js';
+import { IModelService } from './model.js';
+import { Range } from '../core/range.js';
+import { Schemas } from '../../../base/common/network.js';
+import { Emitter } from '../../../base/common/event.js';
+import '../../../platform/theme/common/colorUtils.js';
+import '../../../platform/theme/common/colors/baseColors.js';
+import '../../../platform/theme/common/colors/chartsColors.js';
+import '../../../platform/theme/common/colors/editorColors.js';
+import '../../../platform/theme/common/colors/inputColors.js';
+import '../../../platform/theme/common/colors/listColors.js';
+import '../../../platform/theme/common/colors/menuColors.js';
+import { minimapError, minimapWarning, minimapInfo } from '../../../platform/theme/common/colors/minimapColors.js';
+import '../../../platform/theme/common/colors/miscColors.js';
+import '../../../platform/theme/common/colors/quickpickColors.js';
+import '../../../platform/theme/common/colors/searchColors.js';
+import { ResourceMap, BidirectionalMap } from '../../../base/common/map.js';
+import { diffSets } from '../../../base/common/collections.js';
+import { Iterable } from '../../../base/common/iterator.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __param = (this && this.__param) || function (paramIndex, decorator) {
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { IMarkerService, MarkerSeverity } from '../../../platform/markers/common/markers.js';
-import { Disposable, toDisposable } from '../../../base/common/lifecycle.js';
-import { OverviewRulerLane } from '../model.js';
-import { themeColorFromId } from '../../../platform/theme/common/themeService.js';
-import { overviewRulerWarning, overviewRulerInfo, overviewRulerError } from '../core/editorColorRegistry.js';
-import { IModelService } from './model.js';
-import { Range } from '../core/range.js';
-import { Schemas } from '../../../base/common/network.js';
-import { Emitter } from '../../../base/common/event.js';
-import { minimapInfo, minimapWarning, minimapError } from '../../../platform/theme/common/colorRegistry.js';
-import { BidirectionalMap, ResourceMap } from '../../../base/common/map.js';
-import { diffSets } from '../../../base/common/collections.js';
-import { Iterable } from '../../../base/common/iterator.js';
 let MarkerDecorationsService = class MarkerDecorationsService extends Disposable {
     constructor(modelService, _markerService) {
         super();
@@ -90,7 +101,6 @@ MarkerDecorationsService = __decorate([
     __param(0, IModelService),
     __param(1, IMarkerService)
 ], MarkerDecorationsService);
-export { MarkerDecorationsService };
 class MarkerDecorations extends Disposable {
     constructor(model) {
         super();
@@ -234,4 +244,5 @@ class MarkerDecorations extends Disposable {
         return false;
     }
 }
-//# sourceMappingURL=markerDecorationsService.js.map
+
+export { MarkerDecorationsService };

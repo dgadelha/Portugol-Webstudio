@@ -2,7 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-export function countEOL(text) {
+function countEOL(text) {
     let eolCount = 0;
     let firstLineLength = 0;
     let lastLineStart = 0;
@@ -40,4 +40,5 @@ export function countEOL(text) {
     }
     return [eolCount, firstLineLength, text.length - lastLineStart, eol];
 }
-//# sourceMappingURL=eolCounter.js.map
+
+export { countEOL };

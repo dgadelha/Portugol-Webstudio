@@ -1,6 +1,7 @@
 import { isString } from './types.js';
+
 const _codiconFontCharacters = Object.create(null);
-export function register(id, fontCharacter) {
+function register(id, fontCharacter) {
     if (isString(fontCharacter)) {
         const val = _codiconFontCharacters[fontCharacter];
         if (val === undefined) {
@@ -14,7 +15,8 @@ export function register(id, fontCharacter) {
 /**
  * Only to be used by the iconRegistry.
  */
-export function getCodiconFontCharacters() {
+function getCodiconFontCharacters() {
     return _codiconFontCharacters;
 }
-//# sourceMappingURL=codiconsUtil.js.map
+
+export { getCodiconFontCharacters, register };

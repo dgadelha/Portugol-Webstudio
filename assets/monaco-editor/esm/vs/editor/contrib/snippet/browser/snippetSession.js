@@ -1,17 +1,3 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-var SnippetSession_1;
 import { groupBy } from '../../../../base/common/arrays.js';
 import { dispose } from '../../../../base/common/lifecycle.js';
 import { getLeadingWhitespace } from '../../../../base/common/strings.js';
@@ -23,10 +9,25 @@ import { ILanguageConfigurationService } from '../../../common/languages/languag
 import { ModelDecorationOptions } from '../../../common/model/textModel.js';
 import { ILabelService } from '../../../../platform/label/common/label.js';
 import { IWorkspaceContextService } from '../../../../platform/workspace/common/workspace.js';
-import { Choice, Placeholder, SnippetParser, Text, TextmateSnippet } from './snippetParser.js';
-import { ClipboardBasedVariableResolver, CommentBasedVariableResolver, CompositeSnippetVariableResolver, ModelBasedVariableResolver, RandomBasedVariableResolver, SelectionBasedVariableResolver, TimeBasedVariableResolver, WorkspaceBasedVariableResolver } from './snippetVariables.js';
+import { Placeholder, Choice, Text, SnippetParser, TextmateSnippet } from './snippetParser.js';
+import { ModelBasedVariableResolver, CompositeSnippetVariableResolver, ClipboardBasedVariableResolver, SelectionBasedVariableResolver, CommentBasedVariableResolver, TimeBasedVariableResolver, WorkspaceBasedVariableResolver, RandomBasedVariableResolver } from './snippetVariables.js';
 import { EditSources } from '../../../common/textModelEditSource.js';
-export class OneSnippet {
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var SnippetSession_1;
+class OneSnippet {
     static { this._decor = {
         active: ModelDecorationOptions.register({ description: 'snippet-placeholder-1', stickiness: 0 /* TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges */, className: 'snippet-placeholder' }),
         inactive: ModelDecorationOptions.register({ description: 'snippet-placeholder-2', stickiness: 1 /* TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges */, className: 'snippet-placeholder' }),
@@ -108,10 +109,7 @@ export class OneSnippet {
             this._placeholderGroupsIdx -= 1;
             couldSkipThisPlaceholder = true;
         }
-        else {
-            // the selection of the current placeholder might
-            // not acurate any more -> simply restore it
-        }
+        else ;
         const newSelections = this._editor.getModel().changeDecorations(accessor => {
             const activePlaceholders = new Set();
             // change stickiness to always grow when typing at its edges
@@ -648,5 +646,5 @@ let SnippetSession = SnippetSession_1 = class SnippetSession {
 SnippetSession = SnippetSession_1 = __decorate([
     __param(3, ILanguageConfigurationService)
 ], SnippetSession);
-export { SnippetSession };
-//# sourceMappingURL=snippetSession.js.map
+
+export { OneSnippet, SnippetSession };

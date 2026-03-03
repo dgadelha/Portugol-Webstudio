@@ -1,7 +1,8 @@
 import { numberComparator } from '../../../../../../../base/common/arrays.js';
 import { findFirstMin } from '../../../../../../../base/common/arraysFind.js';
-import { derived, derivedObservableWithCache, derivedOpts } from '../../../../../../../base/common/observable.js';
+import '../../../../../../../base/common/observableInternal/index.js';
 import { splitLines } from '../../../../../../../base/common/strings.js';
+import { observableCodeEditor } from '../../../../../../browser/observableCodeEditor.js';
 import { Rect } from '../../../../../../common/core/2d/rect.js';
 import { OffsetRange } from '../../../../../../common/core/ranges/offsetRange.js';
 import { Position } from '../../../../../../common/core/position.js';
@@ -10,7 +11,11 @@ import { TextReplacement, TextEdit } from '../../../../../../common/core/edits/t
 import { RangeMapping } from '../../../../../../common/diff/rangeMapping.js';
 import { indentOfLine } from '../../../../../../common/model/textModel.js';
 import { BugIndicatingError } from '../../../../../../../base/common/errors.js';
-export function maxContentWidthInRange(editor, range, reader) {
+import { DebugLocation } from '../../../../../../../base/common/observableInternal/debugLocation.js';
+import { derivedObservableWithCache } from '../../../../../../../base/common/observableInternal/utils/utils.js';
+import { derivedOpts, derived } from '../../../../../../../base/common/observableInternal/observables/derived.js';
+
+function maxContentWidthInRange(editor, range, reader) {
     editor.layoutInfo.read(reader);
     editor.value.read(reader);
     const model = editor.model.read(reader);
@@ -36,7 +41,7 @@ export function maxContentWidthInRange(editor, range, reader) {
     }
     return maxContentWidth;
 }
-export function getOffsetForPos(editor, pos, reader) {
+function getOffsetForPos(editor, pos, reader) {
     editor.layoutInfo.read(reader);
     editor.value.read(reader);
     const model = editor.model.read(reader);
@@ -47,7 +52,7 @@ export function getOffsetForPos(editor, pos, reader) {
     const lineContentWidth = editor.editor.getOffsetForColumn(pos.lineNumber, pos.column);
     return lineContentWidth;
 }
-export function getPrefixTrim(diffRanges, originalLinesRange, modifiedLines, editor) {
+function getPrefixTrim(diffRanges, originalLinesRange, modifiedLines, editor, reader = undefined) {
     const textModel = editor.getModel();
     if (!textModel) {
         return { prefixTrim: 0, prefixLeftOffset: 0 };
@@ -60,6 +65,8 @@ export function getPrefixTrim(diffRanges, originalLinesRange, modifiedLines, edi
     const startLineIndent = textModel.getLineIndentColumn(originalLinesRange.startLineNumber);
     if (startLineIndent >= prefixTrim + 1) {
         // We can use the editor to get the offset
+        // TODO go through other usages of getOffsetForColumn and come up with a robust reactive solution to read it
+        observableCodeEditor(editor).scrollTop.read(reader); // getOffsetForColumn requires the line number to be visible. This might change on scroll top.
         prefixLeftOffset = editor.getOffsetForColumn(originalLinesRange.startLineNumber, prefixTrim + 1);
     }
     else if (modifiedLines.length > 0) {
@@ -72,14 +79,14 @@ export function getPrefixTrim(diffRanges, originalLinesRange, modifiedLines, edi
     }
     return { prefixTrim, prefixLeftOffset };
 }
-export function getContentRenderWidth(content, editor, textModel) {
+function getContentRenderWidth(content, editor, textModel) {
     const w = editor.getOption(59 /* EditorOption.fontInfo */).typicalHalfwidthCharacterWidth;
     const tabSize = textModel.getOptions().tabSize * w;
     const numTabs = content.split('\t').length - 1;
     const numNoneTabs = content.length - numTabs;
     return numNoneTabs * w + numTabs * tabSize;
 }
-export function getEditorValidOverlayRect(editor) {
+function getEditorValidOverlayRect(editor) {
     const contentLeft = editor.layoutInfoContentLeft;
     const width = derived({ name: 'editor.validOverlay.width' }, r => {
         const hasMinimapOnTheRight = editor.layoutInfoMinimap.read(r).minimapLeft !== 0;
@@ -93,7 +100,7 @@ export function getEditorValidOverlayRect(editor) {
     const height = derived({ name: 'editor.validOverlay.height' }, r => editor.layoutInfoHeight.read(r) + editor.contentHeight.read(r));
     return derived({ name: 'editor.validOverlay' }, r => Rect.fromLeftTopWidthHeight(contentLeft.read(r), 0, width.read(r), height.read(r)));
 }
-export function applyEditToModifiedRangeMappings(rangeMapping, edit) {
+function applyEditToModifiedRangeMappings(rangeMapping, edit) {
     const updatedMappings = [];
     for (const m of rangeMapping) {
         const updatedRange = edit.mapRange(m.modifiedRange);
@@ -101,7 +108,7 @@ export function applyEditToModifiedRangeMappings(rangeMapping, edit) {
     }
     return updatedMappings;
 }
-export function classNames(...classes) {
+function classNames(...classes) {
     return classes.filter(c => typeof c === 'string').join(' ');
 }
 function offsetRangeToRange(columnOffsetRange, startPos) {
@@ -151,7 +158,7 @@ function indentSizeToIndentLength(line, indentSize, tabSize) {
     }
     return i;
 }
-export function createReindentEdit(text, range, tabSize) {
+function createReindentEdit(text, range, tabSize) {
     const newLines = splitLines(text);
     const edits = [];
     const minIndentSize = findFirstMin(range.mapToLineArray(l => getIndentationSize(newLines[l - 1], tabSize)), numberComparator);
@@ -161,7 +168,7 @@ export function createReindentEdit(text, range, tabSize) {
     });
     return new TextEdit(edits);
 }
-export class PathBuilder {
+class PathBuilder {
     constructor() {
         this._data = '';
     }
@@ -177,7 +184,7 @@ export class PathBuilder {
         return this._data;
     }
 }
-export function mapOutFalsy(obs) {
+function mapOutFalsy(obs) {
     const nonUndefinedObs = derivedObservableWithCache(undefined, (reader, lastValue) => obs.read(reader) || lastValue);
     return derivedOpts({
         debugName: () => `${obs.debugName}.mapOutFalsy`
@@ -190,12 +197,13 @@ export function mapOutFalsy(obs) {
         return nonUndefinedObs;
     });
 }
-export function rectToProps(fn) {
+function rectToProps(fn, debugLocation = DebugLocation.ofCaller()) {
     return {
-        left: derived({ name: 'editor.validOverlay.left' }, reader => /** @description left */ fn(reader).left),
-        top: derived({ name: 'editor.validOverlay.top' }, reader => /** @description top */ fn(reader).top),
-        width: derived({ name: 'editor.validOverlay.width' }, reader => /** @description width */ fn(reader).right - fn(reader).left),
-        height: derived({ name: 'editor.validOverlay.height' }, reader => /** @description height */ fn(reader).bottom - fn(reader).top),
+        left: derived({ name: 'editor.validOverlay.left' }, reader => /** @description left */ fn(reader).left, debugLocation),
+        top: derived({ name: 'editor.validOverlay.top' }, reader => /** @description top */ fn(reader).top, debugLocation),
+        width: derived({ name: 'editor.validOverlay.width' }, reader => /** @description width */ fn(reader).right - fn(reader).left, debugLocation),
+        height: derived({ name: 'editor.validOverlay.height' }, reader => /** @description height */ fn(reader).bottom - fn(reader).top, debugLocation),
     };
 }
-//# sourceMappingURL=utils.js.map
+
+export { PathBuilder, applyEditToModifiedRangeMappings, classNames, createReindentEdit, getContentRenderWidth, getEditorValidOverlayRect, getOffsetForPos, getPrefixTrim, mapOutFalsy, maxContentWidthInRange, rectToProps };

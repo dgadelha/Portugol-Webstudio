@@ -1,21 +1,24 @@
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
 import { TaskQueue } from '../../../../../base/common/async.js';
 import { Disposable, toDisposable } from '../../../../../base/common/lifecycle.js';
-import { observableValue, transaction } from '../../../../../base/common/observable.js';
+import '../../../../../base/common/observableInternal/index.js';
 import { setTimeout0 } from '../../../../../base/common/platform.js';
 import { ILogService } from '../../../../../platform/log/common/log.js';
 import { ITelemetryService } from '../../../../../platform/telemetry/common/telemetry.js';
 import { TextLength } from '../../../core/text/textLength.js';
 import { gotoParent, getClosestPreviousNodes, nextSiblingOrParentSibling, gotoNthChild } from './cursorUtils.js';
 import { Range } from '../../../core/range.js';
+import { transaction } from '../../../../../base/common/observableInternal/transaction.js';
+import { observableValue } from '../../../../../base/common/observableInternal/observables/observableValue.js';
+
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 let TreeSitterTree = class TreeSitterTree extends Disposable {
     constructor(languageId, _ranges, 
     // readonly treeSitterLanguage: Language,
@@ -198,7 +201,7 @@ let TreeSitterTree = class TreeSitterTree extends Disposable {
             const startIndex = cursor.currentNode.startIndex;
             const endIndex = cursor.currentNode.endIndex;
             const newChange = { newRange: new Range(startPosition.row + 1, startPosition.column + 1, endPosition.row + 1, endPosition.column + 1), newRangeStartOffset: startIndex, newRangeEndOffset: endIndex };
-            if ((newRangeIndex < newRanges.length) && rangesIntersect(newRanges[newRangeIndex], { startIndex, endIndex, startPosition, endPosition })) {
+            if ((newRangeIndex < newRanges.length) && rangesIntersect(newRanges[newRangeIndex], { startIndex, endIndex})) {
                 // combine the new change with the range
                 if (newRanges[newRangeIndex].startIndex < newChange.newRangeStartOffset) {
                     newChange.newRange = newChange.newRange.setStartPosition(newRanges[newRangeIndex].startPosition.row + 1, newRanges[newRangeIndex].startPosition.column + 1);
@@ -365,7 +368,6 @@ TreeSitterTree = __decorate([
     __param(5, ILogService),
     __param(6, ITelemetryService)
 ], TreeSitterTree);
-export { TreeSitterTree };
 function newTimeOutProgressCallback() {
     let lastYieldTime = performance.now();
     return function parseProgressCallback(_state) {
@@ -377,7 +379,7 @@ function newTimeOutProgressCallback() {
         return false;
     };
 }
-export function rangesEqual(a, b) {
+function rangesEqual(a, b) {
     return (a.startPosition.row === b.startPosition.row)
         && (a.startPosition.column === b.startPosition.column)
         && (a.endPosition.row === b.endPosition.row)
@@ -385,8 +387,9 @@ export function rangesEqual(a, b) {
         && (a.startIndex === b.startIndex)
         && (a.endIndex === b.endIndex);
 }
-export function rangesIntersect(a, b) {
+function rangesIntersect(a, b) {
     return (a.startIndex <= b.startIndex && a.endIndex >= b.startIndex) ||
         (b.startIndex <= a.startIndex && b.endIndex >= a.startIndex);
 }
-//# sourceMappingURL=treeSitterTree.js.map
+
+export { TreeSitterTree, rangesEqual, rangesIntersect };

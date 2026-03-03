@@ -1,30 +1,31 @@
+import { FindInput } from '../../../base/browser/ui/findinput/findInput.js';
+import { ReplaceInput } from '../../../base/browser/ui/findinput/replaceInput.js';
+import { RawContextKey, IContextKeyService, ContextKeyExpr } from '../../contextkey/common/contextkey.js';
+import { KeybindingsRegistry } from '../../keybinding/common/keybindingsRegistry.js';
+import { localize } from '../../../nls.js';
+import { DisposableStore, toDisposable } from '../../../base/common/lifecycle.js';
+import { isActiveElement } from '../../../base/browser/dom.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __param = (this && this.__param) || function (paramIndex, decorator) {
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { FindInput } from '../../../base/browser/ui/findinput/findInput.js';
-import { ReplaceInput } from '../../../base/browser/ui/findinput/replaceInput.js';
-import { ContextKeyExpr, IContextKeyService, RawContextKey } from '../../contextkey/common/contextkey.js';
-import { KeybindingsRegistry } from '../../keybinding/common/keybindingsRegistry.js';
-import { localize } from '../../../nls.js';
-import { DisposableStore, toDisposable } from '../../../base/common/lifecycle.js';
-import { isActiveElement } from '../../../base/browser/dom.js';
-export const historyNavigationVisible = new RawContextKey('suggestWidgetVisible', false, localize(1683, "Whether suggestion are visible"));
+const historyNavigationVisible = new RawContextKey('suggestWidgetVisible', false, localize(1698, "Whether suggestion are visible"));
 const HistoryNavigationWidgetFocusContext = 'historyNavigationWidgetFocus';
 const HistoryNavigationForwardsEnablementContext = 'historyNavigationForwardsEnabled';
 const HistoryNavigationBackwardsEnablementContext = 'historyNavigationBackwardsEnabled';
 let lastFocusedWidget = undefined;
 const widgets = [];
-export function registerAndCreateHistoryNavigationContext(scopedContextKeyService, widget) {
+function registerAndCreateHistoryNavigationContext(scopedContextKeyService, widget) {
     if (widgets.includes(widget)) {
         throw new Error('Cannot register the same widget multiple times');
     }
@@ -71,7 +72,6 @@ let ContextScopedFindInput = class ContextScopedFindInput extends FindInput {
 ContextScopedFindInput = __decorate([
     __param(3, IContextKeyService)
 ], ContextScopedFindInput);
-export { ContextScopedFindInput };
 let ContextScopedReplaceInput = class ContextScopedReplaceInput extends ReplaceInput {
     constructor(container, contextViewProvider, options, contextKeyService, showReplaceOptions = false) {
         super(container, contextViewProvider, showReplaceOptions, options);
@@ -82,7 +82,6 @@ let ContextScopedReplaceInput = class ContextScopedReplaceInput extends ReplaceI
 ContextScopedReplaceInput = __decorate([
     __param(3, IContextKeyService)
 ], ContextScopedReplaceInput);
-export { ContextScopedReplaceInput };
 KeybindingsRegistry.registerCommandAndKeybindingRule({
     id: 'history.showPrevious',
     weight: 200 /* KeybindingWeight.WorkbenchContrib */,
@@ -103,4 +102,5 @@ KeybindingsRegistry.registerCommandAndKeybindingRule({
         lastFocusedWidget?.showNextValue();
     }
 });
-//# sourceMappingURL=contextScopedHistoryWidget.js.map
+
+export { ContextScopedFindInput, ContextScopedReplaceInput, historyNavigationVisible, registerAndCreateHistoryNavigationContext };

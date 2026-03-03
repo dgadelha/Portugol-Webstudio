@@ -1,8 +1,4 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-import * as nls from '../../nls.js';
+import { localize } from '../../nls.js';
 import { URI } from '../../base/common/uri.js';
 import { ICodeEditorService } from './services/codeEditorService.js';
 import { Position } from '../common/core/position.js';
@@ -10,7 +6,7 @@ import { IModelService } from '../common/services/model.js';
 import { ITextModelService } from '../common/services/resolverService.js';
 import { MenuId, MenuRegistry, Action2 } from '../../platform/actions/common/actions.js';
 import { CommandsRegistry } from '../../platform/commands/common/commands.js';
-import { ContextKeyExpr, IContextKeyService } from '../../platform/contextkey/common/contextkey.js';
+import { IContextKeyService, ContextKeyExpr } from '../../platform/contextkey/common/contextkey.js';
 import { IInstantiationService } from '../../platform/instantiation/common/instantiation.js';
 import { KeybindingsRegistry } from '../../platform/keybinding/common/keybindingsRegistry.js';
 import { Registry } from '../../platform/registry/common/platform.js';
@@ -18,13 +14,20 @@ import { ITelemetryService } from '../../platform/telemetry/common/telemetry.js'
 import { assertType } from '../../base/common/types.js';
 import { ILogService } from '../../platform/log/common/log.js';
 import { getActiveElement } from '../../base/browser/dom.js';
-export class Command {
+import { TriggerInlineEditCommandsRegistry } from './triggerInlineEditCommandsRegistry.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+class Command {
     constructor(opts) {
         this.id = opts.id;
         this.precondition = opts.precondition;
         this._kbOpts = opts.kbOpts;
         this._menuOpts = opts.menuOpts;
         this.metadata = opts.metadata;
+        this.canTriggerInlineEdits = opts.canTriggerInlineEdits;
     }
     register() {
         if (Array.isArray(this._menuOpts)) {
@@ -64,6 +67,9 @@ export class Command {
             handler: (accessor, args) => this.runCommand(accessor, args),
             metadata: this.metadata
         });
+        if (this.canTriggerInlineEdits) {
+            TriggerInlineEditCommandsRegistry.registerCommand(this.id);
+        }
     }
     _registerMenuItem(item) {
         MenuRegistry.appendMenuItem(item.menuId, {
@@ -79,7 +85,7 @@ export class Command {
         });
     }
 }
-export class MultiCommand extends Command {
+class MultiCommand extends Command {
     constructor() {
         super(...arguments);
         this._implementations = [];
@@ -131,7 +137,7 @@ export class MultiCommand extends Command {
  *
  * This lets different commands be registered but share the same implementation
  */
-export class ProxyCommand extends Command {
+class ProxyCommand extends Command {
     constructor(command, opts) {
         super(opts);
         this.command = command;
@@ -140,7 +146,7 @@ export class ProxyCommand extends Command {
         return this.command.runCommand(accessor, args);
     }
 }
-export class EditorCommand extends Command {
+class EditorCommand extends Command {
     /**
      * Create a command class that is bound to a certain editor contribution.
      */
@@ -179,7 +185,7 @@ export class EditorCommand extends Command {
         return EditorCommand.runEditorCommand(accessor, args, this.precondition, (accessor, editor, args) => this.runEditorCommand(accessor, editor, args));
     }
 }
-export class EditorAction extends EditorCommand {
+class EditorAction extends EditorCommand {
     static convertOptions(opts) {
         let menuOpts;
         if (Array.isArray(opts.menuOpts)) {
@@ -229,7 +235,7 @@ export class EditorAction extends EditorCommand {
         accessor.get(ITelemetryService).publicLog2('editorActionInvoked', { name: this.label, id: this.id });
     }
 }
-export class MultiEditorAction extends EditorAction {
+class MultiEditorAction extends EditorAction {
     constructor() {
         super(...arguments);
         this._implementations = [];
@@ -265,7 +271,7 @@ export class MultiEditorAction extends EditorAction {
 }
 //#endregion EditorAction
 //#region EditorAction2
-export class EditorAction2 extends Action2 {
+class EditorAction2 extends Action2 {
     run(accessor, ...args) {
         // Find the editor with text focus or active
         const codeEditorService = accessor.get(ICodeEditorService);
@@ -289,7 +295,7 @@ export class EditorAction2 extends Action2 {
 }
 //#endregion
 // --- Registration of commands and actions
-export function registerModelAndPositionCommand(id, handler) {
+function registerModelAndPositionCommand(id, handler) {
     CommandsRegistry.registerCommand(id, function (accessor, ...args) {
         const instaService = accessor.get(IInstantiationService);
         const [resource, position] = args;
@@ -315,30 +321,30 @@ export function registerModelAndPositionCommand(id, handler) {
         });
     });
 }
-export function registerEditorCommand(editorCommand) {
+function registerEditorCommand(editorCommand) {
     EditorContributionRegistry.INSTANCE.registerEditorCommand(editorCommand);
     return editorCommand;
 }
-export function registerEditorAction(ctor) {
+function registerEditorAction(ctor) {
     const action = new ctor();
     EditorContributionRegistry.INSTANCE.registerEditorAction(action);
     return action;
 }
-export function registerMultiEditorAction(action) {
+function registerMultiEditorAction(action) {
     EditorContributionRegistry.INSTANCE.registerEditorAction(action);
     return action;
 }
-export function registerInstantiatedEditorAction(editorAction) {
+function registerInstantiatedEditorAction(editorAction) {
     EditorContributionRegistry.INSTANCE.registerEditorAction(editorAction);
 }
 /**
  * Registers an editor contribution. Editor contributions have a lifecycle which is bound
  * to a specific code editor instance.
  */
-export function registerEditorContribution(id, ctor, instantiation) {
+function registerEditorContribution(id, ctor, instantiation) {
     EditorContributionRegistry.INSTANCE.registerEditorContribution(id, ctor, instantiation);
 }
-export var EditorExtensionsRegistry;
+var EditorExtensionsRegistry;
 (function (EditorExtensionsRegistry) {
     function getEditorCommand(commandId) {
         return EditorContributionRegistry.INSTANCE.getEditorCommand(commandId);
@@ -402,7 +408,7 @@ function registerCommand(command) {
     command.register();
     return command;
 }
-export const UndoCommand = registerCommand(new MultiCommand({
+const UndoCommand = registerCommand(new MultiCommand({
     id: 'undo',
     precondition: undefined,
     kbOpts: {
@@ -412,22 +418,22 @@ export const UndoCommand = registerCommand(new MultiCommand({
     menuOpts: [{
             menuId: MenuId.MenubarEditMenu,
             group: '1_do',
-            title: nls.localize(64, "&&Undo"),
+            title: localize(69, "&&Undo"),
             order: 1
         }, {
             menuId: MenuId.CommandPalette,
             group: '',
-            title: nls.localize(65, "Undo"),
+            title: localize(70, "Undo"),
             order: 1
         }, {
             menuId: MenuId.SimpleEditorContext,
             group: '1_do',
-            title: nls.localize(66, "Undo"),
+            title: localize(71, "Undo"),
             order: 1
         }]
 }));
 registerCommand(new ProxyCommand(UndoCommand, { id: 'default:undo', precondition: undefined }));
-export const RedoCommand = registerCommand(new MultiCommand({
+const RedoCommand = registerCommand(new MultiCommand({
     id: 'redo',
     precondition: undefined,
     kbOpts: {
@@ -439,22 +445,22 @@ export const RedoCommand = registerCommand(new MultiCommand({
     menuOpts: [{
             menuId: MenuId.MenubarEditMenu,
             group: '1_do',
-            title: nls.localize(67, "&&Redo"),
+            title: localize(72, "&&Redo"),
             order: 2
         }, {
             menuId: MenuId.CommandPalette,
             group: '',
-            title: nls.localize(68, "Redo"),
+            title: localize(73, "Redo"),
             order: 1
         }, {
             menuId: MenuId.SimpleEditorContext,
             group: '1_do',
-            title: nls.localize(69, "Redo"),
+            title: localize(74, "Redo"),
             order: 2
         }]
 }));
 registerCommand(new ProxyCommand(RedoCommand, { id: 'default:redo', precondition: undefined }));
-export const SelectAllCommand = registerCommand(new MultiCommand({
+const SelectAllCommand = registerCommand(new MultiCommand({
     id: 'editor.action.selectAll',
     precondition: undefined,
     kbOpts: {
@@ -465,18 +471,19 @@ export const SelectAllCommand = registerCommand(new MultiCommand({
     menuOpts: [{
             menuId: MenuId.MenubarSelectionMenu,
             group: '1_basic',
-            title: nls.localize(70, "&&Select All"),
+            title: localize(75, "&&Select All"),
             order: 1
         }, {
             menuId: MenuId.CommandPalette,
             group: '',
-            title: nls.localize(71, "Select All"),
+            title: localize(76, "Select All"),
             order: 1
         }, {
             menuId: MenuId.SimpleEditorContext,
             group: '9_select',
-            title: nls.localize(72, "Select All"),
+            title: localize(77, "Select All"),
             order: 1
         }]
 }));
-//# sourceMappingURL=editorExtensions.js.map
+
+export { Command, EditorAction, EditorAction2, EditorCommand, EditorExtensionsRegistry, MultiCommand, MultiEditorAction, ProxyCommand, RedoCommand, SelectAllCommand, UndoCommand, registerEditorAction, registerEditorCommand, registerEditorContribution, registerInstantiatedEditorAction, registerModelAndPositionCommand, registerMultiEditorAction };

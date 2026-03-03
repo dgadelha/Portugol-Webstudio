@@ -1,7 +1,3 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { coalesce } from '../../../../base/common/arrays.js';
 import { CancellationToken } from '../../../../base/common/cancellation.js';
 import { onUnexpectedExternalError } from '../../../../base/common/errors.js';
@@ -9,6 +5,11 @@ import { matchesSomeScheme, Schemas } from '../../../../base/common/network.js';
 import { registerModelAndPositionCommand } from '../../../browser/editorExtensions.js';
 import { ILanguageFeaturesService } from '../../../common/services/languageFeatures.js';
 import { ReferencesModel } from './referencesModel.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
 function shouldIncludeLocationLink(sourceModel, loc) {
     // Always allow the location if the request comes from a document with the same scheme.
     if (loc.uri.scheme === sourceModel.uri.scheme) {
@@ -32,27 +33,27 @@ async function getLocationLinks(model, position, registry, recursive, provide) {
     const values = await Promise.all(promises);
     return coalesce(values.flat()).filter(loc => shouldIncludeLocationLink(model, loc));
 }
-export function getDefinitionsAtPosition(registry, model, position, recursive, token) {
+function getDefinitionsAtPosition(registry, model, position, recursive, token) {
     return getLocationLinks(model, position, registry, recursive, (provider, model, position) => {
         return provider.provideDefinition(model, position, token);
     });
 }
-export function getDeclarationsAtPosition(registry, model, position, recursive, token) {
+function getDeclarationsAtPosition(registry, model, position, recursive, token) {
     return getLocationLinks(model, position, registry, recursive, (provider, model, position) => {
         return provider.provideDeclaration(model, position, token);
     });
 }
-export function getImplementationsAtPosition(registry, model, position, recursive, token) {
+function getImplementationsAtPosition(registry, model, position, recursive, token) {
     return getLocationLinks(model, position, registry, recursive, (provider, model, position) => {
         return provider.provideImplementation(model, position, token);
     });
 }
-export function getTypeDefinitionsAtPosition(registry, model, position, recursive, token) {
+function getTypeDefinitionsAtPosition(registry, model, position, recursive, token) {
     return getLocationLinks(model, position, registry, recursive, (provider, model, position) => {
         return provider.provideTypeDefinition(model, position, token);
     });
 }
-export function getReferencesAtPosition(registry, model, position, compact, recursive, token) {
+function getReferencesAtPosition(registry, model, position, compact, recursive, token) {
     return getLocationLinks(model, position, registry, recursive, async (provider, model, position) => {
         const result = (await provider.provideReferences(model, position, { includeDeclaration: true }, token))?.filter(ref => shouldIncludeLocationLink(model, ref));
         if (!compact || !result || result.length !== 2) {
@@ -123,4 +124,5 @@ registerModelAndPositionCommand('_executeImplementationProvider_recursive', (acc
     const promise = getImplementationsAtPosition(languageFeaturesService.implementationProvider, model, position, true, CancellationToken.None);
     return _sortedAndDeduped(() => promise);
 });
-//# sourceMappingURL=goToSymbol.js.map
+
+export { getDeclarationsAtPosition, getDefinitionsAtPosition, getImplementationsAtPosition, getReferencesAtPosition, getTypeDefinitionsAtPosition };

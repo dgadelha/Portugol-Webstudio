@@ -1,21 +1,7 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-var PersistedMenuHideState_1, MenuInfo_1;
 import { RunOnceScheduler } from '../../../base/common/async.js';
-import { DebounceEmitter, Emitter } from '../../../base/common/event.js';
+import { Emitter, DebounceEmitter } from '../../../base/common/event.js';
 import { DisposableStore } from '../../../base/common/lifecycle.js';
-import { isIMenuItem, isISubmenuItem, MenuItemAction, MenuRegistry, SubmenuItemAction } from './actions.js';
+import { isIMenuItem, MenuItemAction, SubmenuItemAction, MenuRegistry, isISubmenuItem } from './actions.js';
 import { ICommandService } from '../../commands/common/commands.js';
 import { IContextKeyService } from '../../contextkey/common/contextkey.js';
 import { Separator, toAction } from '../../../base/common/actions.js';
@@ -23,6 +9,21 @@ import { IStorageService } from '../../storage/common/storage.js';
 import { removeFastWithoutKeepingOrder } from '../../../base/common/arrays.js';
 import { localize } from '../../../nls.js';
 import { IKeybindingService } from '../../keybinding/common/keybinding.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var PersistedMenuHideState_1, MenuInfo_1;
 let MenuService = class MenuService {
     constructor(_commandService, _keybindingService, storageService) {
         this._commandService = _commandService;
@@ -47,7 +48,6 @@ MenuService = __decorate([
     __param(1, IKeybindingService),
     __param(2, IStorageService)
 ], MenuService);
-export { MenuService };
 let PersistedMenuHideState = class PersistedMenuHideState {
     static { PersistedMenuHideState_1 = this; }
     static { this._key = 'menu.hiddenCommands'; }
@@ -403,7 +403,7 @@ function createMenuHide(menu, command, states) {
     const title = typeof command.title === 'string' ? command.title : command.title.value;
     const hide = toAction({
         id: `hide/${menu.id}/${id}`,
-        label: localize(1636, 'Hide \'{0}\'', title),
+        label: localize(1651, 'Hide \'{0}\'', title),
         run() { states.updateHidden(menu, id, true); }
     });
     const toggle = toAction({
@@ -418,10 +418,10 @@ function createMenuHide(menu, command, states) {
         get isHidden() { return !toggle.checked; },
     };
 }
-export function createConfigureKeybindingAction(commandService, keybindingService, commandId, when = undefined, enabled = true) {
+function createConfigureKeybindingAction(commandService, keybindingService, commandId, when = undefined, enabled = true) {
     return toAction({
         id: `configureKeybinding/${commandId}`,
-        label: localize(1637, "Configure Keybinding"),
+        label: localize(1652, "Configure Keybinding"),
         enabled,
         run() {
             // Only set the when clause when there is no keybinding
@@ -432,4 +432,5 @@ export function createConfigureKeybindingAction(commandService, keybindingServic
         }
     });
 }
-//# sourceMappingURL=menuService.js.map
+
+export { MenuService, createConfigureKeybindingAction };

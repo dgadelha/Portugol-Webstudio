@@ -1,12 +1,13 @@
+import { equals } from '../../base/common/objects.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { equals } from '../../base/common/objects.js';
 /**
  * Vertical Lane in the overview ruler of the editor.
  */
-export var OverviewRulerLane;
+var OverviewRulerLane;
 (function (OverviewRulerLane) {
     OverviewRulerLane[OverviewRulerLane["Left"] = 1] = "Left";
     OverviewRulerLane[OverviewRulerLane["Center"] = 2] = "Center";
@@ -16,7 +17,7 @@ export var OverviewRulerLane;
 /**
  * Vertical Lane in the glyph margin of the editor.
  */
-export var GlyphMarginLane;
+var GlyphMarginLane;
 (function (GlyphMarginLane) {
     GlyphMarginLane[GlyphMarginLane["Left"] = 1] = "Left";
     GlyphMarginLane[GlyphMarginLane["Center"] = 2] = "Center";
@@ -25,19 +26,19 @@ export var GlyphMarginLane;
 /**
  * Text Direction for a decoration.
  */
-export var TextDirection;
+var TextDirection;
 (function (TextDirection) {
     TextDirection[TextDirection["LTR"] = 0] = "LTR";
     TextDirection[TextDirection["RTL"] = 1] = "RTL";
 })(TextDirection || (TextDirection = {}));
-export var InjectedTextCursorStops;
+var InjectedTextCursorStops;
 (function (InjectedTextCursorStops) {
     InjectedTextCursorStops[InjectedTextCursorStops["Both"] = 0] = "Both";
     InjectedTextCursorStops[InjectedTextCursorStops["Right"] = 1] = "Right";
     InjectedTextCursorStops[InjectedTextCursorStops["Left"] = 2] = "Left";
     InjectedTextCursorStops[InjectedTextCursorStops["None"] = 3] = "None";
 })(InjectedTextCursorStops || (InjectedTextCursorStops = {}));
-export class TextModelResolvedOptions {
+class TextModelResolvedOptions {
     get originalIndentSize() {
         return this._indentSizeIsTabSize ? 'tabSize' : this.indentSize;
     }
@@ -84,7 +85,7 @@ export class TextModelResolvedOptions {
         };
     }
 }
-export class FindMatch {
+class FindMatch {
     /**
      * @internal
      */
@@ -97,13 +98,13 @@ export class FindMatch {
 /**
  * @internal
  */
-export function isITextSnapshot(obj) {
-    return (obj && typeof obj.read === 'function');
+function isITextSnapshot(obj) {
+    return (!!obj && typeof obj.read === 'function');
 }
 /**
  * @internal
  */
-export class ValidAnnotatedEditOperation {
+class ValidAnnotatedEditOperation {
     constructor(identifier, range, text, forceMoveMarkers, isAutoWhitespaceEdit, _isTracked) {
         this.identifier = identifier;
         this.range = range;
@@ -116,7 +117,7 @@ export class ValidAnnotatedEditOperation {
 /**
  * @internal
  */
-export class SearchData {
+class SearchData {
     constructor(regex, wordSeparators, simpleSearch) {
         this.regex = regex;
         this.wordSeparators = wordSeparators;
@@ -126,7 +127,7 @@ export class SearchData {
 /**
  * @internal
  */
-export class ApplyEditsResult {
+class ApplyEditsResult {
     constructor(reverseEdits, changes, trimAutoWhitespaceLineNumbers) {
         this.reverseEdits = reverseEdits;
         this.changes = changes;
@@ -136,7 +137,8 @@ export class ApplyEditsResult {
 /**
  * @internal
  */
-export function shouldSynchronizeModel(model) {
+function shouldSynchronizeModel(model) {
     return (!model.isTooLargeForSyncing() && !model.isForSimpleWidget);
 }
-//# sourceMappingURL=model.js.map
+
+export { ApplyEditsResult, FindMatch, GlyphMarginLane, InjectedTextCursorStops, OverviewRulerLane, SearchData, TextDirection, TextModelResolvedOptions, ValidAnnotatedEditOperation, isITextSnapshot, shouldSynchronizeModel };

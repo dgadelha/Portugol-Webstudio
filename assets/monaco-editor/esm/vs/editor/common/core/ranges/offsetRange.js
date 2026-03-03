@@ -1,12 +1,13 @@
+import { BugIndicatingError } from '../../../../base/common/errors.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { BugIndicatingError } from '../../../../base/common/errors.js';
 /**
  * A range of offsets (0-based).
 */
-export class OffsetRange {
+class OffsetRange {
     static fromTo(start, endExclusive) {
         return new OffsetRange(start, endExclusive);
     }
@@ -166,7 +167,7 @@ export class OffsetRange {
         return new OffsetRange(this.start, range.endExclusive);
     }
 }
-export class OffsetRangeSet {
+class OffsetRangeSet {
     constructor() {
         this._sortedRanges = [];
     }
@@ -220,4 +221,5 @@ export class OffsetRangeSet {
         return this._sortedRanges.reduce((prev, cur) => prev + cur.length, 0);
     }
 }
-//# sourceMappingURL=offsetRange.js.map
+
+export { OffsetRange, OffsetRangeSet };

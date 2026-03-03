@@ -1,22 +1,23 @@
+import { Disposable } from '../../../../base/common/lifecycle.js';
+import { basename } from '../../../../base/common/resources.js';
+import { registerEditorContribution } from '../../../browser/editorExtensions.js';
+import { ICodeEditorService } from '../../../browser/services/codeEditorService.js';
+import { localize } from '../../../../nls.js';
+import { IDialogService } from '../../../../platform/dialogs/common/dialogs.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __param = (this && this.__param) || function (paramIndex, decorator) {
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { Disposable } from '../../../../base/common/lifecycle.js';
-import { basename } from '../../../../base/common/resources.js';
-import { registerEditorContribution } from '../../../browser/editorExtensions.js';
-import { ICodeEditorService } from '../../../browser/services/codeEditorService.js';
-import * as nls from '../../../../nls.js';
-import { IDialogService } from '../../../../platform/dialogs/common/dialogs.js';
 const ignoreUnusualLineTerminators = 'ignoreUnusualLineTerminators';
 function writeIgnoreState(codeEditorService, model, state) {
     codeEditorService.setModelProperty(model.uri, ignoreUnusualLineTerminators, state);
@@ -85,11 +86,11 @@ let UnusualLineTerminatorsDetector = class UnusualLineTerminatorsDetector extend
         try {
             this._isPresentingDialog = true;
             result = await this._dialogService.confirm({
-                title: nls.localize(1543, "Unusual Line Terminators"),
-                message: nls.localize(1544, "Detected unusual line terminators"),
-                detail: nls.localize(1545, "The file '{0}' contains one or more unusual line terminator characters, like Line Separator (LS) or Paragraph Separator (PS).\n\nIt is recommended to remove them from the file. This can be configured via `editor.unusualLineTerminators`.", basename(model.uri)),
-                primaryButton: nls.localize(1546, "&&Remove Unusual Line Terminators"),
-                cancelButton: nls.localize(1547, "Ignore")
+                title: localize(1558, "Unusual Line Terminators"),
+                message: localize(1559, "Detected unusual line terminators"),
+                detail: localize(1560, "The file '{0}' contains one or more unusual line terminator characters, like Line Separator (LS) or Paragraph Separator (PS).\n\nIt is recommended to remove them from the file. This can be configured via `editor.unusualLineTerminators`.", basename(model.uri)),
+                primaryButton: localize(1561, "&&Remove Unusual Line Terminators"),
+                cancelButton: localize(1562, "Ignore")
             });
         }
         finally {
@@ -107,6 +108,6 @@ UnusualLineTerminatorsDetector = __decorate([
     __param(1, IDialogService),
     __param(2, ICodeEditorService)
 ], UnusualLineTerminatorsDetector);
-export { UnusualLineTerminatorsDetector };
 registerEditorContribution(UnusualLineTerminatorsDetector.ID, UnusualLineTerminatorsDetector, 1 /* EditorContributionInstantiation.AfterFirstRender */);
-//# sourceMappingURL=unusualLineTerminators.js.map
+
+export { UnusualLineTerminatorsDetector };

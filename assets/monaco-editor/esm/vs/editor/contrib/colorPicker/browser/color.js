@@ -1,17 +1,18 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { CancellationToken } from '../../../../base/common/cancellation.js';
-import { illegalArgument, onUnexpectedExternalError } from '../../../../base/common/errors.js';
+import { onUnexpectedExternalError, illegalArgument } from '../../../../base/common/errors.js';
 import { IModelService } from '../../../common/services/model.js';
 import { ILanguageFeaturesService } from '../../../common/services/languageFeatures.js';
 import { DefaultDocumentColorProvider } from './defaultDocumentColorProvider.js';
 import { IConfigurationService } from '../../../../platform/configuration/common/configuration.js';
-export async function getColors(colorProviderRegistry, model, token, defaultColorDecoratorsEnablement = 'auto') {
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+async function getColors(colorProviderRegistry, model, token, defaultColorDecoratorsEnablement = 'auto') {
     return _findColorData(new ColorDataCollector(), colorProviderRegistry, model, token, defaultColorDecoratorsEnablement);
 }
-export function getColorPresentations(model, colorInfo, provider, token) {
+function getColorPresentations(model, colorInfo, provider, token) {
     return Promise.resolve(provider.provideColorPresentations(model, colorInfo, token));
 }
 class ColorDataCollector {
@@ -26,7 +27,7 @@ class ColorDataCollector {
         return Array.isArray(documentColors);
     }
 }
-export class ExtColorDataCollector {
+class ExtColorDataCollector {
     constructor() { }
     async compute(provider, model, token, colors) {
         const documentColors = await provider.provideDocumentColors(model, token);
@@ -38,7 +39,7 @@ export class ExtColorDataCollector {
         return Array.isArray(documentColors);
     }
 }
-export class ColorPresentationsCollector {
+class ColorPresentationsCollector {
     constructor(colorInfo) {
         this.colorInfo = colorInfo;
     }
@@ -50,7 +51,7 @@ export class ColorPresentationsCollector {
         return Array.isArray(documentColors);
     }
 }
-export async function _findColorData(collector, colorProviderRegistry, model, token, defaultColorDecoratorsEnablement) {
+async function _findColorData(collector, colorProviderRegistry, model, token, defaultColorDecoratorsEnablement) {
     let validDocumentColorProviderFound = false;
     let defaultProvider;
     const colorData = [];
@@ -80,7 +81,7 @@ export async function _findColorData(collector, colorProviderRegistry, model, to
     }
     return [];
 }
-export function _setupColorCommand(accessor, resource) {
+function _setupColorCommand(accessor, resource) {
     const { colorProvider: colorProviderRegistry } = accessor.get(ILanguageFeaturesService);
     const model = accessor.get(IModelService).getModel(resource);
     if (!model) {
@@ -89,4 +90,5 @@ export function _setupColorCommand(accessor, resource) {
     const defaultColorDecoratorsEnablement = accessor.get(IConfigurationService).getValue('editor.defaultColorDecorators', { resource });
     return { model, colorProviderRegistry, defaultColorDecoratorsEnablement };
 }
-//# sourceMappingURL=color.js.map
+
+export { ColorPresentationsCollector, ExtColorDataCollector, _findColorData, _setupColorCommand, getColorPresentations, getColors };

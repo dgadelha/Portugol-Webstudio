@@ -1,16 +1,17 @@
+import { registerEditorAction, EditorAction } from '../../../browser/editorExtensions.js';
+import { CursorMoveCommands } from '../../../common/cursor/cursorMoveCommands.js';
+import { EditorContextKeys } from '../../../common/editorContextKeys.js';
+import { localize2 } from '../../../../nls.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { EditorAction, registerEditorAction } from '../../../browser/editorExtensions.js';
-import { CursorMoveCommands } from '../../../common/cursor/cursorMoveCommands.js';
-import { EditorContextKeys } from '../../../common/editorContextKeys.js';
-import * as nls from '../../../../nls.js';
-export class ExpandLineSelectionAction extends EditorAction {
+class ExpandLineSelectionAction extends EditorAction {
     constructor() {
         super({
             id: 'expandLineSelection',
-            label: nls.localize2(1233, "Expand Line Selection"),
+            label: localize2(1243, "Expand Line Selection"),
             precondition: undefined,
             kbOpts: {
                 weight: 0 /* KeybindingWeight.EditorCore */,
@@ -31,4 +32,5 @@ export class ExpandLineSelectionAction extends EditorAction {
     }
 }
 registerEditorAction(ExpandLineSelectionAction);
-//# sourceMappingURL=lineSelection.js.map
+
+export { ExpandLineSelectionAction };

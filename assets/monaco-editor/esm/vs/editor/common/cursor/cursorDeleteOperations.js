@@ -1,15 +1,16 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-import * as strings from '../../../base/common/strings.js';
+import { firstNonWhitespaceIndex, getLeftDeleteOffset } from '../../../base/common/strings.js';
 import { ReplaceCommand } from '../commands/replaceCommand.js';
-import { EditOperationResult, isQuote } from '../cursorCommon.js';
+import { isQuote, EditOperationResult } from '../cursorCommon.js';
 import { CursorColumns } from '../core/cursorColumns.js';
 import { MoveOperations } from './cursorMoveOperations.js';
 import { Range } from '../core/range.js';
 import { Position } from '../core/position.js';
-export class DeleteOperations {
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+class DeleteOperations {
     static deleteRight(prevEditOperationType, config, model, selections) {
         const commands = [];
         let shouldPushStackElementBefore = (prevEditOperationType !== 3 /* EditOperationType.DeletingRight */);
@@ -143,10 +144,10 @@ export class DeleteOperations {
         // Unintend when using tab stops and cursor is within indentation
         if (config.useTabStops && position.column > 1) {
             const lineContent = model.getLineContent(position.lineNumber);
-            const firstNonWhitespaceIndex = strings.firstNonWhitespaceIndex(lineContent);
-            const lastIndentationColumn = (firstNonWhitespaceIndex === -1
+            const firstNonWhitespaceIndex$1 = firstNonWhitespaceIndex(lineContent);
+            const lastIndentationColumn = (firstNonWhitespaceIndex$1 === -1
                 ? /* entire string is whitespace */ lineContent.length + 1
-                : firstNonWhitespaceIndex + 1);
+                : firstNonWhitespaceIndex$1 + 1);
             if (position.column <= lastIndentationColumn) {
                 const fromVisibleColumn = config.visibleColumnFromColumn(model, position);
                 const toVisibleColumn = CursorColumns.prevIndentTabStop(fromVisibleColumn, config.indentSize);
@@ -159,7 +160,7 @@ export class DeleteOperations {
     static getPositionAfterDeleteLeft(position, model) {
         if (position.column > 1) {
             // Convert 1-based columns to 0-based offsets and back.
-            const idx = strings.getLeftDeleteOffset(position.column - 1, model.getLineContent(position.lineNumber));
+            const idx = getLeftDeleteOffset(position.column - 1, model.getLineContent(position.lineNumber));
             return position.with(undefined, idx + 1);
         }
         else if (position.lineNumber > 1) {
@@ -226,4 +227,5 @@ export class DeleteOperations {
         });
     }
 }
-//# sourceMappingURL=cursorDeleteOperations.js.map
+
+export { DeleteOperations };

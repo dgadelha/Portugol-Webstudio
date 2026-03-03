@@ -1,9 +1,11 @@
+import { SimpleTypedRpcConnection } from './rpc.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { SimpleTypedRpcConnection } from './rpc.js';
-export function registerDebugChannel(channelId, createClient) {
+function registerDebugChannel(channelId, createClient) {
+    // eslint-disable-next-line local/code-no-any-casts
     const g = globalThis;
     let queuedNotifications = [];
     let curHost = undefined;
@@ -61,4 +63,5 @@ function createChannelFactoryFromDebugChannel(host) {
         },
     };
 }
-//# sourceMappingURL=debuggerRpc.js.map
+
+export { registerDebugChannel };

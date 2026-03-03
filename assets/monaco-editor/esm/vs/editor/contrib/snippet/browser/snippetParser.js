@@ -2,7 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-export class Scanner {
+class Scanner {
     constructor() {
         this.value = '';
         this.pos = 0;
@@ -82,7 +82,7 @@ export class Scanner {
         return { type, pos, len };
     }
 }
-export class Marker {
+class Marker {
     constructor() {
         this._children = [];
     }
@@ -139,7 +139,7 @@ export class Marker {
         return 0;
     }
 }
-export class Text extends Marker {
+class Text extends Marker {
     constructor(value) {
         super();
         this.value = value;
@@ -154,9 +154,9 @@ export class Text extends Marker {
         return new Text(this.value);
     }
 }
-export class TransformableMarker extends Marker {
+class TransformableMarker extends Marker {
 }
-export class Placeholder extends TransformableMarker {
+class Placeholder extends TransformableMarker {
     static compareByIndex(a, b) {
         if (a.index === b.index) {
             return 0;
@@ -198,7 +198,7 @@ export class Placeholder extends TransformableMarker {
         return ret;
     }
 }
-export class Choice extends Marker {
+class Choice extends Marker {
     constructor() {
         super(...arguments);
         this.options = [];
@@ -222,7 +222,7 @@ export class Choice extends Marker {
         return ret;
     }
 }
-export class Transform extends Marker {
+class Transform extends Marker {
     constructor() {
         super(...arguments);
         this.regexp = new RegExp('');
@@ -265,7 +265,7 @@ export class Transform extends Marker {
         return ret;
     }
 }
-export class FormatString extends Marker {
+class FormatString extends Marker {
     constructor(index, shorthandName, ifValue, elseValue) {
         super();
         this.index = index;
@@ -327,7 +327,7 @@ export class FormatString extends Marker {
         return ret;
     }
 }
-export class Variable extends TransformableMarker {
+class Variable extends TransformableMarker {
     constructor(name) {
         super();
         this.name = name;
@@ -363,7 +363,7 @@ function walk(marker, visitor) {
         stack.unshift(...marker.children);
     }
 }
-export class TextmateSnippet extends Marker {
+class TextmateSnippet extends Marker {
     get placeholderInfo() {
         if (!this._placeholders) {
             // fill in placeholders
@@ -447,7 +447,7 @@ export class TextmateSnippet extends Marker {
         walk(this.children, visitor);
     }
 }
-export class SnippetParser {
+class SnippetParser {
     constructor() {
         this._scanner = new Scanner();
         this._token = { type: 14 /* TokenType.EOF */, pos: 0, len: 0 };
@@ -886,4 +886,5 @@ export class SnippetParser {
         return false;
     }
 }
-//# sourceMappingURL=snippetParser.js.map
+
+export { Choice, FormatString, Marker, Placeholder, Scanner, SnippetParser, Text, TextmateSnippet, Transform, TransformableMarker, Variable };

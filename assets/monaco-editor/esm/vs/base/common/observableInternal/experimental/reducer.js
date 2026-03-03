@@ -1,17 +1,21 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-import { strictEquals, BugIndicatingError } from '../commonFacade/deps.js';
+import { BugIndicatingError } from '../../errors.js';
+import { strictEquals } from '../../equals.js';
+import '../../event.js';
+import '../../lifecycle.js';
 import { subtransaction } from '../transaction.js';
 import { DebugNameData } from '../debugName.js';
 import { DerivedWithSetter } from '../observables/derivedImpl.js';
 import { DebugLocation } from '../debugLocation.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
 /**
  * Creates an observable value that is based on values and changes from other observables.
  * Additionally, a reducer can report how that state changed.
 */
-export function observableReducerSettable(owner, options) {
+function observableReducerSettable(owner, options) {
     let prevValue = undefined;
     let hasValue = false;
     const d = new DerivedWithSetter(new DebugNameData(owner, undefined, options.update), (reader, changeSummary) => {
@@ -38,4 +42,5 @@ export function observableReducerSettable(owner, options) {
     }, DebugLocation.ofCaller());
     return d;
 }
-//# sourceMappingURL=reducer.js.map
+
+export { observableReducerSettable };

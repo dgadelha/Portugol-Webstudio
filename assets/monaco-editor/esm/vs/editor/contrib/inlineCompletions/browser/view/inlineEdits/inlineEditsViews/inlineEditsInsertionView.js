@@ -1,37 +1,46 @@
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { $, n } from '../../../../../../../base/browser/dom.js';
 import { Emitter } from '../../../../../../../base/common/event.js';
 import { Disposable } from '../../../../../../../base/common/lifecycle.js';
-import { constObservable, derived, observableValue } from '../../../../../../../base/common/observable.js';
+import '../../../../../../../base/common/observableInternal/index.js';
 import { IInstantiationService } from '../../../../../../../platform/instantiation/common/instantiation.js';
-import { editorBackground } from '../../../../../../../platform/theme/common/colorRegistry.js';
 import { asCssVariable } from '../../../../../../../platform/theme/common/colorUtils.js';
+import '../../../../../../../platform/theme/common/colors/baseColors.js';
+import '../../../../../../../platform/theme/common/colors/chartsColors.js';
+import { editorBackground } from '../../../../../../../platform/theme/common/colors/editorColors.js';
+import '../../../../../../../platform/theme/common/colors/inputColors.js';
+import '../../../../../../../platform/theme/common/colors/listColors.js';
+import '../../../../../../../platform/theme/common/colors/menuColors.js';
+import '../../../../../../../platform/theme/common/colors/minimapColors.js';
+import '../../../../../../../platform/theme/common/colors/miscColors.js';
+import '../../../../../../../platform/theme/common/colors/quickpickColors.js';
+import '../../../../../../../platform/theme/common/colors/searchColors.js';
 import { observableCodeEditor } from '../../../../../../browser/observableCodeEditor.js';
-import { LineSource, renderLines, RenderOptions } from '../../../../../../browser/widget/diffEditor/components/diffEditorViewZones/renderLines.js';
+import { RenderOptions, renderLines, LineSource } from '../../../../../../browser/widget/diffEditor/components/diffEditorViewZones/renderLines.js';
 import { Rect } from '../../../../../../common/core/2d/rect.js';
 import { Position } from '../../../../../../common/core/position.js';
 import { Range } from '../../../../../../common/core/range.js';
 import { LineRange } from '../../../../../../common/core/ranges/lineRange.js';
 import { OffsetRange } from '../../../../../../common/core/ranges/offsetRange.js';
 import { ILanguageService } from '../../../../../../common/languages/language.js';
-import { LineTokens, TokenArray } from '../../../../../../common/tokens/lineTokens.js';
+import { TokenArray, LineTokens } from '../../../../../../common/tokens/lineTokens.js';
 import { InlineDecoration } from '../../../../../../common/viewModel/inlineDecorations.js';
 import { GhostText, GhostTextPart } from '../../../model/ghostText.js';
 import { GhostTextView } from '../../ghostText/ghostTextView.js';
 import { getModifiedBorderColor, modifiedBackgroundColor } from '../theme.js';
 import { getPrefixTrim, mapOutFalsy } from '../utils/utils.js';
+import { derived } from '../../../../../../../base/common/observableInternal/observables/derived.js';
+import { observableValue } from '../../../../../../../base/common/observableInternal/observables/observableValue.js';
+import { constObservable } from '../../../../../../../base/common/observableInternal/observables/constObservable.js';
+
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 const BORDER_WIDTH = 1;
 const WIDGET_SEPARATOR_WIDTH = 1;
 const WIDGET_SEPARATOR_DIFF_EDITOR_WIDTH = 3;
@@ -254,5 +263,5 @@ InlineEditsInsertionView = __decorate([
     __param(3, IInstantiationService),
     __param(4, ILanguageService)
 ], InlineEditsInsertionView);
+
 export { InlineEditsInsertionView };
-//# sourceMappingURL=inlineEditsInsertionView.js.map

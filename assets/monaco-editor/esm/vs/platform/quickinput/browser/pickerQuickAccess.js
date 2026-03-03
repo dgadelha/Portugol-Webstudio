@@ -1,12 +1,13 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { timeout } from '../../../base/common/async.js';
 import { CancellationTokenSource } from '../../../base/common/cancellation.js';
 import { Disposable, DisposableStore, MutableDisposable } from '../../../base/common/lifecycle.js';
 import { isFunction } from '../../../base/common/types.js';
-export var TriggerAction;
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var TriggerAction;
 (function (TriggerAction) {
     /**
      * Do nothing after the button was clicked.
@@ -33,7 +34,7 @@ function isFastAndSlowPicks(obj) {
     const candidate = obj;
     return !!candidate.picks && candidate.additionalPicks instanceof Promise;
 }
-export class PickerQuickAccessProvider extends Disposable {
+class PickerQuickAccessProvider extends Disposable {
     constructor(prefix, options) {
         super();
         this.prefix = prefix;
@@ -171,9 +172,7 @@ export class PickerQuickAccessProvider extends Disposable {
                 ]);
             };
             // No Picks
-            if (providedPicks === null) {
-                // Ignore
-            }
+            if (providedPicks === null) ;
             // Fast and Slow Picks
             else if (isFastAndSlowPicks(providedPicks)) {
                 await applyFastAndSlowPicks(providedPicks);
@@ -268,4 +267,5 @@ export class PickerQuickAccessProvider extends Disposable {
         return disposables;
     }
 }
-//# sourceMappingURL=pickerQuickAccess.js.map
+
+export { PickerQuickAccessProvider, TriggerAction };

@@ -1,22 +1,23 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-import * as dom from '../../../../base/browser/dom.js';
+import { getDomNodePagePosition } from '../../../../base/browser/dom.js';
 import { Action, Separator } from '../../../../base/common/actions.js';
 import { CancellationToken } from '../../../../base/common/cancellation.js';
 import { generateUuid } from '../../../../base/common/uuid.js';
 import { Range } from '../../../common/core/range.js';
 import { ITextModelService } from '../../../common/services/resolverService.js';
-import { DefinitionAction, SymbolNavigationAction, SymbolNavigationAnchor } from '../../gotoSymbol/browser/goToCommands.js';
+import { DefinitionAction, SymbolNavigationAnchor, SymbolNavigationAction } from '../../gotoSymbol/browser/goToCommands.js';
 import { PeekContext } from '../../peekView/browser/peekView.js';
-import { isIMenuItem, MenuId, MenuItemAction, MenuRegistry } from '../../../../platform/actions/common/actions.js';
+import { MenuRegistry, MenuId, isIMenuItem, MenuItemAction } from '../../../../platform/actions/common/actions.js';
 import { ICommandService } from '../../../../platform/commands/common/commands.js';
 import { IContextKeyService } from '../../../../platform/contextkey/common/contextkey.js';
 import { IContextMenuService } from '../../../../platform/contextview/browser/contextView.js';
 import { IInstantiationService } from '../../../../platform/instantiation/common/instantiation.js';
 import { INotificationService, Severity } from '../../../../platform/notification/common/notification.js';
-export async function showGoToContextMenu(accessor, editor, anchor, part) {
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+async function showGoToContextMenu(accessor, editor, anchor, part) {
     const resolverService = accessor.get(ITextModelService);
     const contextMenuService = accessor.get(IContextMenuService);
     const commandService = accessor.get(ICommandService);
@@ -68,7 +69,7 @@ export async function showGoToContextMenu(accessor, editor, anchor, part) {
     contextMenuService.showContextMenu({
         domForShadowRoot: useShadowDOM ? editor.getDomNode() ?? undefined : undefined,
         getAnchor: () => {
-            const box = dom.getDomNodePagePosition(anchor);
+            const box = getDomNodePagePosition(anchor);
             return { x: box.left, y: box.top + box.height + 8 };
         },
         getActions: () => menuActions,
@@ -78,7 +79,7 @@ export async function showGoToContextMenu(accessor, editor, anchor, part) {
         autoSelectFirstItem: true,
     });
 }
-export async function goToDefinitionWithLocation(accessor, event, editor, location) {
+async function goToDefinitionWithLocation(accessor, event, editor, location) {
     const resolverService = accessor.get(ITextModelService);
     const ref = await resolverService.createModelReference(location.uri);
     await editor.invokeWithinContext(async (accessor) => {
@@ -91,4 +92,5 @@ export async function goToDefinitionWithLocation(accessor, event, editor, locati
     });
     ref.dispose();
 }
-//# sourceMappingURL=inlayHintsLocations.js.map
+
+export { goToDefinitionWithLocation, showGoToContextMenu };

@@ -1,18 +1,19 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-import { EditorAction, registerEditorAction } from '../../../browser/editorExtensions.js';
+import { registerEditorAction, EditorAction } from '../../../browser/editorExtensions.js';
 import { ReplaceCommand } from '../../../common/commands/replaceCommand.js';
 import { MoveOperations } from '../../../common/cursor/cursorMoveOperations.js';
 import { Range } from '../../../common/core/range.js';
 import { EditorContextKeys } from '../../../common/editorContextKeys.js';
-import * as nls from '../../../../nls.js';
+import { localize2 } from '../../../../nls.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
 class TransposeLettersAction extends EditorAction {
     constructor() {
         super({
             id: 'editor.action.transposeLetters',
-            label: nls.localize2(808, "Transpose Letters"),
+            label: localize2(812, "Transpose Letters"),
             precondition: EditorContextKeys.writable,
             kbOpts: {
                 kbExpr: EditorContextKeys.textInputFocus,
@@ -62,4 +63,3 @@ class TransposeLettersAction extends EditorAction {
     }
 }
 registerEditorAction(TransposeLettersAction);
-//# sourceMappingURL=transpose.js.map

@@ -1,16 +1,17 @@
+import { RunOnceScheduler, runWhenGlobalIdle, Promises } from '../../../base/common/async.js';
+import { PauseableEmitter, Emitter, Event } from '../../../base/common/event.js';
+import { Disposable, MutableDisposable } from '../../../base/common/lifecycle.js';
+import { isUndefinedOrNull } from '../../../base/common/types.js';
+import { Storage, InMemoryStorageDatabase, StorageHint } from '../../../base/parts/storage/common/storage.js';
+import { createDecorator } from '../../instantiation/common/instantiation.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { Promises, RunOnceScheduler, runWhenGlobalIdle } from '../../../base/common/async.js';
-import { Emitter, Event, PauseableEmitter } from '../../../base/common/event.js';
-import { Disposable, MutableDisposable } from '../../../base/common/lifecycle.js';
-import { isUndefinedOrNull } from '../../../base/common/types.js';
-import { InMemoryStorageDatabase, Storage, StorageHint } from '../../../base/parts/storage/common/storage.js';
-import { createDecorator } from '../../instantiation/common/instantiation.js';
-export const TARGET_KEY = '__$__targetStorageMarker';
-export const IStorageService = createDecorator('storageService');
-export var WillSaveStateReason;
+const TARGET_KEY = '__$__targetStorageMarker';
+const IStorageService = createDecorator('storageService');
+var WillSaveStateReason;
 (function (WillSaveStateReason) {
     /**
      * No specific reason to save state.
@@ -21,7 +22,7 @@ export var WillSaveStateReason;
      */
     WillSaveStateReason[WillSaveStateReason["SHUTDOWN"] = 1] = "SHUTDOWN";
 })(WillSaveStateReason || (WillSaveStateReason = {}));
-export function loadKeyTargets(storage) {
+function loadKeyTargets(storage) {
     const keysRaw = storage.get(TARGET_KEY);
     if (keysRaw) {
         try {
@@ -33,7 +34,7 @@ export function loadKeyTargets(storage) {
     }
     return Object.create(null);
 }
-export class AbstractStorageService extends Disposable {
+class AbstractStorageService extends Disposable {
     static { this.DEFAULT_FLUSH_INTERVAL = 60 * 1000; } // every minute
     constructor(options = { flushInterval: AbstractStorageService.DEFAULT_FLUSH_INTERVAL }) {
         super();
@@ -207,7 +208,7 @@ export class AbstractStorageService extends Disposable {
         }
     }
 }
-export class InMemoryStorageService extends AbstractStorageService {
+class InMemoryStorageService extends AbstractStorageService {
     constructor() {
         super();
         this.applicationStorage = this._register(new Storage(new InMemoryStorageDatabase(), { hint: StorageHint.STORAGE_IN_MEMORY }));
@@ -231,4 +232,5 @@ export class InMemoryStorageService extends AbstractStorageService {
         return false;
     }
 }
-//# sourceMappingURL=storage.js.map
+
+export { AbstractStorageService, IStorageService, InMemoryStorageService, TARGET_KEY, WillSaveStateReason, loadKeyTargets };

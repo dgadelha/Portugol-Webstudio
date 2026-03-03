@@ -1,36 +1,37 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
 import { isNonEmptyArray } from '../../../../base/common/arrays.js';
-import { CancellationToken, CancellationTokenSource } from '../../../../base/common/cancellation.js';
+import { CancellationTokenSource, CancellationToken } from '../../../../base/common/cancellation.js';
 import { onUnexpectedError } from '../../../../base/common/errors.js';
 import { KeyChord } from '../../../../base/common/keyCodes.js';
 import { DisposableStore } from '../../../../base/common/lifecycle.js';
-import { EditorAction, registerEditorAction, registerEditorContribution } from '../../../browser/editorExtensions.js';
+import { registerEditorContribution, registerEditorAction, EditorAction } from '../../../browser/editorExtensions.js';
 import { ICodeEditorService } from '../../../browser/services/codeEditorService.js';
 import { CharacterSet } from '../../../common/core/characterClassifier.js';
 import { Range } from '../../../common/core/range.js';
 import { EditorContextKeys } from '../../../common/editorContextKeys.js';
 import { IEditorWorkerService } from '../../../common/services/editorWorker.js';
 import { ILanguageFeaturesService } from '../../../common/services/languageFeatures.js';
-import { formatDocumentRangesWithSelectedProvider, formatDocumentWithSelectedProvider, getOnTypeFormattingEdits } from './format.js';
+import { getOnTypeFormattingEdits, formatDocumentRangesWithSelectedProvider, formatDocumentWithSelectedProvider } from './format.js';
 import { FormattingEdit } from './formattingEdit.js';
-import * as nls from '../../../../nls.js';
-import { AccessibilitySignal, IAccessibilitySignalService } from '../../../../platform/accessibilitySignal/browser/accessibilitySignalService.js';
+import { localize2 } from '../../../../nls.js';
+import { IAccessibilitySignalService, AccessibilitySignal } from '../../../../platform/accessibilitySignal/browser/accessibilitySignalService.js';
 import { CommandsRegistry, ICommandService } from '../../../../platform/commands/common/commands.js';
 import { ContextKeyExpr } from '../../../../platform/contextkey/common/contextkey.js';
 import { IInstantiationService } from '../../../../platform/instantiation/common/instantiation.js';
-import { IEditorProgressService, Progress } from '../../../../platform/progress/common/progress.js';
+import { Progress, IEditorProgressService } from '../../../../platform/progress/common/progress.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 let FormatOnType = class FormatOnType {
     static { this.ID = 'editor.contrib.autoFormat'; }
     constructor(_editor, _languageFeaturesService, _workerService, _accessibilitySignalService) {
@@ -132,7 +133,6 @@ FormatOnType = __decorate([
     __param(2, IEditorWorkerService),
     __param(3, IAccessibilitySignalService)
 ], FormatOnType);
-export { FormatOnType };
 let FormatOnPaste = class FormatOnPaste {
     static { this.ID = 'editor.contrib.formatOnPaste'; }
     constructor(editor, _languageFeaturesService, _instantiationService) {
@@ -185,7 +185,7 @@ class FormatDocumentAction extends EditorAction {
     constructor() {
         super({
             id: 'editor.action.formatDocument',
-            label: nls.localize2(1009, "Format Document"),
+            label: localize2(1014, "Format Document"),
             precondition: ContextKeyExpr.and(EditorContextKeys.notInCompositeEditor, EditorContextKeys.writable, EditorContextKeys.hasDocumentFormattingProvider),
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
@@ -211,7 +211,7 @@ class FormatSelectionAction extends EditorAction {
     constructor() {
         super({
             id: 'editor.action.formatSelection',
-            label: nls.localize2(1010, "Format Selection"),
+            label: localize2(1015, "Format Selection"),
             precondition: ContextKeyExpr.and(EditorContextKeys.writable, EditorContextKeys.hasDocumentSelectionFormattingProvider),
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
@@ -259,4 +259,5 @@ CommandsRegistry.registerCommand('editor.action.format', async (accessor) => {
         await commandService.executeCommand('editor.action.formatSelection');
     }
 });
-//# sourceMappingURL=formatActions.js.map
+
+export { FormatOnType };

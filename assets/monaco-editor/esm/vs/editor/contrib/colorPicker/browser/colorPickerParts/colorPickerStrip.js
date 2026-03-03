@@ -1,15 +1,16 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import '../colorPicker.css';
-import * as dom from '../../../../../base/browser/dom.js';
+import { append, $ as $$1, addDisposableListener, EventType, getDomNodePagePosition } from '../../../../../base/browser/dom.js';
 import { GlobalPointerMoveMonitor } from '../../../../../base/browser/globalPointerMoveMonitor.js';
 import { Color, RGBA } from '../../../../../base/common/color.js';
 import { Emitter } from '../../../../../base/common/event.js';
 import { Disposable } from '../../../../../base/common/lifecycle.js';
-const $ = dom.$;
-export class Strip extends Disposable {
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+const $ = $$1;
+class Strip extends Disposable {
     constructor(container, model, type) {
         super();
         this.model = model;
@@ -18,16 +19,16 @@ export class Strip extends Disposable {
         this._onColorFlushed = new Emitter();
         this.onColorFlushed = this._onColorFlushed.event;
         if (type === "standalone" /* ColorPickerWidgetType.Standalone */) {
-            this.domNode = dom.append(container, $('.standalone-strip'));
-            this.overlay = dom.append(this.domNode, $('.standalone-overlay'));
+            this.domNode = append(container, $('.standalone-strip'));
+            this.overlay = append(this.domNode, $('.standalone-overlay'));
         }
         else {
-            this.domNode = dom.append(container, $('.strip'));
-            this.overlay = dom.append(this.domNode, $('.overlay'));
+            this.domNode = append(container, $('.strip'));
+            this.overlay = append(this.domNode, $('.overlay'));
         }
-        this.slider = dom.append(this.domNode, $('.slider'));
+        this.slider = append(this.domNode, $('.slider'));
         this.slider.style.top = `0px`;
-        this._register(dom.addDisposableListener(this.domNode, dom.EventType.POINTER_DOWN, e => this.onPointerDown(e)));
+        this._register(addDisposableListener(this.domNode, EventType.POINTER_DOWN, e => this.onPointerDown(e)));
         this._register(model.onDidChangeColor(this.onDidChangeColor, this));
         this.layout();
     }
@@ -45,13 +46,13 @@ export class Strip extends Disposable {
             return;
         }
         const monitor = this._register(new GlobalPointerMoveMonitor());
-        const origin = dom.getDomNodePagePosition(this.domNode);
+        const origin = getDomNodePagePosition(this.domNode);
         this.domNode.classList.add('grabbing');
         if (e.target !== this.slider) {
             this.onDidChangeTop(e.offsetY);
         }
         monitor.startMonitoring(e.target, e.pointerId, e.buttons, event => this.onDidChangeTop(event.pageY - origin.top), () => null);
-        const pointerUpListener = dom.addDisposableListener(e.target.ownerDocument, dom.EventType.POINTER_UP, () => {
+        const pointerUpListener = addDisposableListener(e.target.ownerDocument, EventType.POINTER_UP, () => {
             this._onColorFlushed.fire();
             pointerUpListener.dispose();
             monitor.stopMonitoring(true);
@@ -67,7 +68,7 @@ export class Strip extends Disposable {
         this.slider.style.top = `${(1 - value) * this.height}px`;
     }
 }
-export class OpacityStrip extends Strip {
+class OpacityStrip extends Strip {
     constructor(container, model, type) {
         super(container, model, type);
         this.domNode.classList.add('opacity-strip');
@@ -84,7 +85,7 @@ export class OpacityStrip extends Strip {
         return color.hsva.a;
     }
 }
-export class HueStrip extends Strip {
+class HueStrip extends Strip {
     constructor(container, model, type) {
         super(container, model, type);
         this.domNode.classList.add('hue-strip');
@@ -93,4 +94,5 @@ export class HueStrip extends Strip {
         return 1 - (color.hsva.h / 360);
     }
 }
-//# sourceMappingURL=colorPickerStrip.js.map
+
+export { HueStrip, OpacityStrip, Strip };

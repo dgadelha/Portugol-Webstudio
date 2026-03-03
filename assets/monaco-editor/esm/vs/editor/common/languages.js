@@ -1,9 +1,10 @@
 import { Codicon } from '../../base/common/codicons.js';
 import { URI } from '../../base/common/uri.js';
 import { Range } from './core/range.js';
-import { TokenizationRegistry as TokenizationRegistryImpl } from './tokenizationRegistry.js';
+import { TokenizationRegistry as TokenizationRegistry$1 } from './tokenizationRegistry.js';
 import { localize } from '../../nls.js';
-export class Token {
+
+class Token {
     constructor(offset, type, language) {
         this.offset = offset;
         this.type = type;
@@ -17,7 +18,7 @@ export class Token {
 /**
  * @internal
  */
-export class TokenizationResult {
+class TokenizationResult {
     constructor(tokens, endState) {
         this.tokens = tokens;
         this.endState = endState;
@@ -27,7 +28,7 @@ export class TokenizationResult {
 /**
  * @internal
  */
-export class EncodedTokenizationResult {
+class EncodedTokenizationResult {
     constructor(
     /**
      * The tokens in binary format. Each token occupies two array indices. For token i:
@@ -41,7 +42,7 @@ export class EncodedTokenizationResult {
         this._encodedTokenizationResultBrand = undefined;
     }
 }
-export var HoverVerbosityAction;
+var HoverVerbosityAction;
 (function (HoverVerbosityAction) {
     /**
      * Increase the verbosity of the hover
@@ -55,7 +56,7 @@ export var HoverVerbosityAction;
 /**
  * @internal
  */
-export var CompletionItemKinds;
+var CompletionItemKinds;
 (function (CompletionItemKinds) {
     const byKind = new Map();
     byKind.set(0 /* CompletionItemKind.Method */, Codicon.symbolMethod);
@@ -105,35 +106,35 @@ export var CompletionItemKinds;
      */
     function toLabel(kind) {
         switch (kind) {
-            case 0 /* CompletionItemKind.Method */: return localize(724, 'Method');
-            case 1 /* CompletionItemKind.Function */: return localize(725, 'Function');
-            case 2 /* CompletionItemKind.Constructor */: return localize(726, 'Constructor');
-            case 3 /* CompletionItemKind.Field */: return localize(727, 'Field');
-            case 4 /* CompletionItemKind.Variable */: return localize(728, 'Variable');
-            case 5 /* CompletionItemKind.Class */: return localize(729, 'Class');
-            case 6 /* CompletionItemKind.Struct */: return localize(730, 'Struct');
-            case 7 /* CompletionItemKind.Interface */: return localize(731, 'Interface');
-            case 8 /* CompletionItemKind.Module */: return localize(732, 'Module');
-            case 9 /* CompletionItemKind.Property */: return localize(733, 'Property');
-            case 10 /* CompletionItemKind.Event */: return localize(734, 'Event');
-            case 11 /* CompletionItemKind.Operator */: return localize(735, 'Operator');
-            case 12 /* CompletionItemKind.Unit */: return localize(736, 'Unit');
-            case 13 /* CompletionItemKind.Value */: return localize(737, 'Value');
-            case 14 /* CompletionItemKind.Constant */: return localize(738, 'Constant');
-            case 15 /* CompletionItemKind.Enum */: return localize(739, 'Enum');
-            case 16 /* CompletionItemKind.EnumMember */: return localize(740, 'Enum Member');
-            case 17 /* CompletionItemKind.Keyword */: return localize(741, 'Keyword');
-            case 18 /* CompletionItemKind.Text */: return localize(742, 'Text');
-            case 19 /* CompletionItemKind.Color */: return localize(743, 'Color');
-            case 20 /* CompletionItemKind.File */: return localize(744, 'File');
-            case 21 /* CompletionItemKind.Reference */: return localize(745, 'Reference');
-            case 22 /* CompletionItemKind.Customcolor */: return localize(746, 'Custom Color');
-            case 23 /* CompletionItemKind.Folder */: return localize(747, 'Folder');
-            case 24 /* CompletionItemKind.TypeParameter */: return localize(748, 'Type Parameter');
-            case 25 /* CompletionItemKind.User */: return localize(749, 'User');
-            case 26 /* CompletionItemKind.Issue */: return localize(750, 'Issue');
-            case 27 /* CompletionItemKind.Tool */: return localize(751, 'Tool');
-            case 28 /* CompletionItemKind.Snippet */: return localize(752, 'Snippet');
+            case 0 /* CompletionItemKind.Method */: return localize(728, 'Method');
+            case 1 /* CompletionItemKind.Function */: return localize(729, 'Function');
+            case 2 /* CompletionItemKind.Constructor */: return localize(730, 'Constructor');
+            case 3 /* CompletionItemKind.Field */: return localize(731, 'Field');
+            case 4 /* CompletionItemKind.Variable */: return localize(732, 'Variable');
+            case 5 /* CompletionItemKind.Class */: return localize(733, 'Class');
+            case 6 /* CompletionItemKind.Struct */: return localize(734, 'Struct');
+            case 7 /* CompletionItemKind.Interface */: return localize(735, 'Interface');
+            case 8 /* CompletionItemKind.Module */: return localize(736, 'Module');
+            case 9 /* CompletionItemKind.Property */: return localize(737, 'Property');
+            case 10 /* CompletionItemKind.Event */: return localize(738, 'Event');
+            case 11 /* CompletionItemKind.Operator */: return localize(739, 'Operator');
+            case 12 /* CompletionItemKind.Unit */: return localize(740, 'Unit');
+            case 13 /* CompletionItemKind.Value */: return localize(741, 'Value');
+            case 14 /* CompletionItemKind.Constant */: return localize(742, 'Constant');
+            case 15 /* CompletionItemKind.Enum */: return localize(743, 'Enum');
+            case 16 /* CompletionItemKind.EnumMember */: return localize(744, 'Enum Member');
+            case 17 /* CompletionItemKind.Keyword */: return localize(745, 'Keyword');
+            case 18 /* CompletionItemKind.Text */: return localize(746, 'Text');
+            case 19 /* CompletionItemKind.Color */: return localize(747, 'Color');
+            case 20 /* CompletionItemKind.File */: return localize(748, 'File');
+            case 21 /* CompletionItemKind.Reference */: return localize(749, 'Reference');
+            case 22 /* CompletionItemKind.Customcolor */: return localize(750, 'Custom Color');
+            case 23 /* CompletionItemKind.Folder */: return localize(751, 'Folder');
+            case 24 /* CompletionItemKind.TypeParameter */: return localize(752, 'Type Parameter');
+            case 25 /* CompletionItemKind.User */: return localize(753, 'User');
+            case 26 /* CompletionItemKind.Issue */: return localize(754, 'Issue');
+            case 27 /* CompletionItemKind.Tool */: return localize(755, 'Tool');
+            case 28 /* CompletionItemKind.Snippet */: return localize(756, 'Snippet');
             default: return '';
         }
     }
@@ -185,7 +186,7 @@ export var CompletionItemKinds;
 /**
  * How an {@link InlineCompletionsProvider inline completion provider} was triggered.
  */
-export var InlineCompletionTriggerKind;
+var InlineCompletionTriggerKind;
 (function (InlineCompletionTriggerKind) {
     /**
      * Completion was triggered automatically while editing.
@@ -198,7 +199,7 @@ export var InlineCompletionTriggerKind;
      */
     InlineCompletionTriggerKind[InlineCompletionTriggerKind["Explicit"] = 1] = "Explicit";
 })(InlineCompletionTriggerKind || (InlineCompletionTriggerKind = {}));
-export class SelectedSuggestionInfo {
+class SelectedSuggestionInfo {
     constructor(range, text, completionKind, isSnippetText) {
         this.range = range;
         this.text = text;
@@ -212,13 +213,13 @@ export class SelectedSuggestionInfo {
             && this.isSnippetText === other.isSnippetText;
     }
 }
-export var InlineCompletionDisplayLocationKind;
-(function (InlineCompletionDisplayLocationKind) {
-    InlineCompletionDisplayLocationKind[InlineCompletionDisplayLocationKind["Code"] = 1] = "Code";
-    InlineCompletionDisplayLocationKind[InlineCompletionDisplayLocationKind["Label"] = 2] = "Label";
-})(InlineCompletionDisplayLocationKind || (InlineCompletionDisplayLocationKind = {}));
+var InlineCompletionHintStyle;
+(function (InlineCompletionHintStyle) {
+    InlineCompletionHintStyle[InlineCompletionHintStyle["Code"] = 1] = "Code";
+    InlineCompletionHintStyle[InlineCompletionHintStyle["Label"] = 2] = "Label";
+})(InlineCompletionHintStyle || (InlineCompletionHintStyle = {}));
 /** @internal */
-export class ProviderId {
+class ProviderId {
     static fromExtensionId(extensionId) {
         return new ProviderId(extensionId, undefined, undefined);
     }
@@ -243,18 +244,18 @@ export class ProviderId {
         }
         return result;
     }
-}
-/** @internal */
-export class VersionedExtensionId {
-    constructor(extensionId, version) {
-        this.extensionId = extensionId;
-        this.version = version;
+    toStringWithoutVersion() {
+        let result = '';
+        if (this.extensionId) {
+            result += this.extensionId;
+        }
+        if (this.providerId) {
+            result += `:${this.providerId}`;
+        }
+        return result;
     }
-    toString() {
-        return `${this.extensionId}@${this.version}`;
-    }
 }
-export var InlineCompletionEndOfLifeReasonKind;
+var InlineCompletionEndOfLifeReasonKind;
 (function (InlineCompletionEndOfLifeReasonKind) {
     InlineCompletionEndOfLifeReasonKind[InlineCompletionEndOfLifeReasonKind["Accepted"] = 0] = "Accepted";
     InlineCompletionEndOfLifeReasonKind[InlineCompletionEndOfLifeReasonKind["Rejected"] = 1] = "Rejected";
@@ -263,12 +264,12 @@ export var InlineCompletionEndOfLifeReasonKind;
 /**
  * @internal
  */
-export var DocumentPasteTriggerKind;
+var DocumentPasteTriggerKind;
 (function (DocumentPasteTriggerKind) {
     DocumentPasteTriggerKind[DocumentPasteTriggerKind["Automatic"] = 0] = "Automatic";
     DocumentPasteTriggerKind[DocumentPasteTriggerKind["PasteAs"] = 1] = "PasteAs";
 })(DocumentPasteTriggerKind || (DocumentPasteTriggerKind = {}));
-export var SignatureHelpTriggerKind;
+var SignatureHelpTriggerKind;
 (function (SignatureHelpTriggerKind) {
     SignatureHelpTriggerKind[SignatureHelpTriggerKind["Invoke"] = 1] = "Invoke";
     SignatureHelpTriggerKind[SignatureHelpTriggerKind["TriggerCharacter"] = 2] = "TriggerCharacter";
@@ -277,7 +278,7 @@ export var SignatureHelpTriggerKind;
 /**
  * A document highlight kind.
  */
-export var DocumentHighlightKind;
+var DocumentHighlightKind;
 (function (DocumentHighlightKind) {
     /**
      * A textual occurrence.
@@ -295,8 +296,8 @@ export var DocumentHighlightKind;
 /**
  * @internal
  */
-export function isLocationLink(thing) {
-    return thing
+function isLocationLink(thing) {
+    return !!thing
         && URI.isUri(thing.uri)
         && Range.isIRange(thing.range)
         && (Range.isIRange(thing.originSelectionRange) || Range.isIRange(thing.targetSelectionRange));
@@ -304,44 +305,44 @@ export function isLocationLink(thing) {
 /**
  * @internal
  */
-export const symbolKindNames = {
-    [17 /* SymbolKind.Array */]: localize(753, "array"),
-    [16 /* SymbolKind.Boolean */]: localize(754, "boolean"),
-    [4 /* SymbolKind.Class */]: localize(755, "class"),
-    [13 /* SymbolKind.Constant */]: localize(756, "constant"),
-    [8 /* SymbolKind.Constructor */]: localize(757, "constructor"),
-    [9 /* SymbolKind.Enum */]: localize(758, "enumeration"),
-    [21 /* SymbolKind.EnumMember */]: localize(759, "enumeration member"),
-    [23 /* SymbolKind.Event */]: localize(760, "event"),
-    [7 /* SymbolKind.Field */]: localize(761, "field"),
-    [0 /* SymbolKind.File */]: localize(762, "file"),
-    [11 /* SymbolKind.Function */]: localize(763, "function"),
-    [10 /* SymbolKind.Interface */]: localize(764, "interface"),
-    [19 /* SymbolKind.Key */]: localize(765, "key"),
-    [5 /* SymbolKind.Method */]: localize(766, "method"),
-    [1 /* SymbolKind.Module */]: localize(767, "module"),
-    [2 /* SymbolKind.Namespace */]: localize(768, "namespace"),
-    [20 /* SymbolKind.Null */]: localize(769, "null"),
-    [15 /* SymbolKind.Number */]: localize(770, "number"),
-    [18 /* SymbolKind.Object */]: localize(771, "object"),
-    [24 /* SymbolKind.Operator */]: localize(772, "operator"),
-    [3 /* SymbolKind.Package */]: localize(773, "package"),
-    [6 /* SymbolKind.Property */]: localize(774, "property"),
-    [14 /* SymbolKind.String */]: localize(775, "string"),
-    [22 /* SymbolKind.Struct */]: localize(776, "struct"),
-    [25 /* SymbolKind.TypeParameter */]: localize(777, "type parameter"),
-    [12 /* SymbolKind.Variable */]: localize(778, "variable"),
+const symbolKindNames = {
+    [17 /* SymbolKind.Array */]: localize(757, "array"),
+    [16 /* SymbolKind.Boolean */]: localize(758, "boolean"),
+    [4 /* SymbolKind.Class */]: localize(759, "class"),
+    [13 /* SymbolKind.Constant */]: localize(760, "constant"),
+    [8 /* SymbolKind.Constructor */]: localize(761, "constructor"),
+    [9 /* SymbolKind.Enum */]: localize(762, "enumeration"),
+    [21 /* SymbolKind.EnumMember */]: localize(763, "enumeration member"),
+    [23 /* SymbolKind.Event */]: localize(764, "event"),
+    [7 /* SymbolKind.Field */]: localize(765, "field"),
+    [0 /* SymbolKind.File */]: localize(766, "file"),
+    [11 /* SymbolKind.Function */]: localize(767, "function"),
+    [10 /* SymbolKind.Interface */]: localize(768, "interface"),
+    [19 /* SymbolKind.Key */]: localize(769, "key"),
+    [5 /* SymbolKind.Method */]: localize(770, "method"),
+    [1 /* SymbolKind.Module */]: localize(771, "module"),
+    [2 /* SymbolKind.Namespace */]: localize(772, "namespace"),
+    [20 /* SymbolKind.Null */]: localize(773, "null"),
+    [15 /* SymbolKind.Number */]: localize(774, "number"),
+    [18 /* SymbolKind.Object */]: localize(775, "object"),
+    [24 /* SymbolKind.Operator */]: localize(776, "operator"),
+    [3 /* SymbolKind.Package */]: localize(777, "package"),
+    [6 /* SymbolKind.Property */]: localize(778, "property"),
+    [14 /* SymbolKind.String */]: localize(779, "string"),
+    [22 /* SymbolKind.Struct */]: localize(780, "struct"),
+    [25 /* SymbolKind.TypeParameter */]: localize(781, "type parameter"),
+    [12 /* SymbolKind.Variable */]: localize(782, "variable"),
 };
 /**
  * @internal
  */
-export function getAriaLabelForSymbol(symbolName, kind) {
-    return localize(779, '{0} ({1})', symbolName, symbolKindNames[kind]);
+function getAriaLabelForSymbol(symbolName, kind) {
+    return localize(783, '{0} ({1})', symbolName, symbolKindNames[kind]);
 }
 /**
  * @internal
  */
-export var SymbolKinds;
+var SymbolKinds;
 (function (SymbolKinds) {
     const byKind = new Map();
     byKind.set(0 /* SymbolKind.File */, Codicon.symbolFile);
@@ -422,10 +423,7 @@ export var SymbolKinds;
     }
     SymbolKinds.toCompletionKind = toCompletionKind;
 })(SymbolKinds || (SymbolKinds = {}));
-/** @internal */
-export class TextEdit {
-}
-export class FoldingRangeKind {
+class FoldingRangeKind {
     /**
      * Kind for folding range representing a comment. The value of the kind is 'comment'.
      */
@@ -461,11 +459,11 @@ export class FoldingRangeKind {
         this.value = value;
     }
 }
-export var NewSymbolNameTag;
+var NewSymbolNameTag;
 (function (NewSymbolNameTag) {
     NewSymbolNameTag[NewSymbolNameTag["AIGenerated"] = 1] = "AIGenerated";
 })(NewSymbolNameTag || (NewSymbolNameTag = {}));
-export var NewSymbolNameTriggerKind;
+var NewSymbolNameTriggerKind;
 (function (NewSymbolNameTriggerKind) {
     NewSymbolNameTriggerKind[NewSymbolNameTriggerKind["Invoke"] = 0] = "Invoke";
     NewSymbolNameTriggerKind[NewSymbolNameTriggerKind["Automatic"] = 1] = "Automatic";
@@ -473,7 +471,7 @@ export var NewSymbolNameTriggerKind;
 /**
  * @internal
  */
-export var Command;
+var Command;
 (function (Command) {
     /**
      * @internal
@@ -487,7 +485,7 @@ export var Command;
     }
     Command.is = is;
 })(Command || (Command = {}));
-export var InlayHintKind;
+var InlayHintKind;
 (function (InlayHintKind) {
     InlayHintKind[InlayHintKind["Type"] = 1] = "Type";
     InlayHintKind[InlayHintKind["Parameter"] = 2] = "Parameter";
@@ -495,7 +493,7 @@ export var InlayHintKind;
 /**
  * @internal
  */
-export class LazyTokenizationSupport {
+class LazyTokenizationSupport {
     constructor(createSupport) {
         this.createSupport = createSupport;
         this._tokenizationSupport = null;
@@ -519,5 +517,6 @@ export class LazyTokenizationSupport {
 /**
  * @internal
  */
-export const TokenizationRegistry = new TokenizationRegistryImpl();
-//# sourceMappingURL=languages.js.map
+const TokenizationRegistry = new TokenizationRegistry$1();
+
+export { Command, CompletionItemKinds, DocumentHighlightKind, DocumentPasteTriggerKind, EncodedTokenizationResult, FoldingRangeKind, HoverVerbosityAction, InlayHintKind, InlineCompletionEndOfLifeReasonKind, InlineCompletionHintStyle, InlineCompletionTriggerKind, LazyTokenizationSupport, NewSymbolNameTag, NewSymbolNameTriggerKind, ProviderId, SelectedSuggestionInfo, SignatureHelpTriggerKind, SymbolKinds, Token, TokenizationRegistry, TokenizationResult, getAriaLabelForSymbol, isLocationLink, symbolKindNames };

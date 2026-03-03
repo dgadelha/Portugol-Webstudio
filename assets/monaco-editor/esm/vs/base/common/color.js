@@ -6,7 +6,7 @@ function roundFloat(number, decimalPoints) {
     const decimal = Math.pow(10, decimalPoints);
     return Math.round(number * decimal) / decimal;
 }
-export class RGBA {
+class RGBA {
     constructor(r, g, b, a = 1) {
         this._rgbaBrand = undefined;
         this.r = Math.min(255, Math.max(0, r)) | 0;
@@ -18,7 +18,7 @@ export class RGBA {
         return a.r === b.r && a.g === b.g && a.b === b.b && a.a === b.a;
     }
 }
-export class HSLA {
+class HSLA {
     constructor(h, s, l, a) {
         this._hslaBrand = undefined;
         this.h = Math.max(Math.min(360, h), 0) | 0;
@@ -105,7 +105,7 @@ export class HSLA {
         return new RGBA(Math.round(r * 255), Math.round(g * 255), Math.round(b * 255), a);
     }
 }
-export class HSVA {
+class HSVA {
     constructor(h, s, v, a) {
         this._hsvaBrand = undefined;
         this.h = Math.max(Math.min(360, h), 0) | 0;
@@ -177,7 +177,7 @@ export class HSVA {
         return new RGBA(r, g, b, a);
     }
 }
-export class Color {
+class Color {
     static fromHex(hex) {
         return Color.Format.CSS.parseHex(hex) || Color.red;
     }
@@ -348,9 +348,7 @@ export class Color {
     static { this.transparent = new Color(new RGBA(0, 0, 0, 0)); }
 }
 (function (Color) {
-    let Format;
     (function (Format) {
-        let CSS;
         (function (CSS) {
             function formatRGB(color) {
                 if (color.rgba.a === 1) {
@@ -673,7 +671,8 @@ export class Color {
                 }
                 return 0;
             }
-        })(CSS = Format.CSS || (Format.CSS = {}));
-    })(Format = Color.Format || (Color.Format = {}));
+        })(Format.CSS || (Format.CSS = {}));
+    })(Color.Format || (Color.Format = {}));
 })(Color || (Color = {}));
-//# sourceMappingURL=color.js.map
+
+export { Color, HSLA, HSVA, RGBA };

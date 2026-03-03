@@ -1,16 +1,3 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
 import './standaloneQuickInput.css';
 import { Event } from '../../../../base/common/event.js';
 import { registerEditorContribution } from '../../../browser/editorExtensions.js';
@@ -23,6 +10,20 @@ import { ICodeEditorService } from '../../../browser/services/codeEditorService.
 import { QuickInputService } from '../../../../platform/quickinput/browser/quickInputService.js';
 import { createSingleCallFunction } from '../../../../base/common/functional.js';
 import { IConfigurationService } from '../../../../platform/configuration/common/configuration.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 let EditorScopedQuickInputService = class EditorScopedQuickInputService extends QuickInputService {
     constructor(editor, instantiationService, contextKeyService, themeService, codeEditorService, configurationService) {
         super(instantiationService, contextKeyService, themeService, new EditorScopedLayoutService(editor.getContainerDomNode(), codeEditorService), configurationService);
@@ -111,8 +112,7 @@ StandaloneQuickInputService = __decorate([
     __param(0, IInstantiationService),
     __param(1, ICodeEditorService)
 ], StandaloneQuickInputService);
-export { StandaloneQuickInputService };
-export class QuickInputEditorContribution {
+class QuickInputEditorContribution {
     static { this.ID = 'editor.controller.quickInput'; }
     static get(editor) {
         return editor.getContribution(QuickInputEditorContribution.ID);
@@ -125,7 +125,7 @@ export class QuickInputEditorContribution {
         this.widget.dispose();
     }
 }
-export class QuickInputEditorWidget {
+class QuickInputEditorWidget {
     static { this.ID = 'editor.contrib.quickInputWidget'; }
     constructor(codeEditor) {
         this.codeEditor = codeEditor;
@@ -146,4 +146,5 @@ export class QuickInputEditorWidget {
     }
 }
 registerEditorContribution(QuickInputEditorContribution.ID, QuickInputEditorContribution, 4 /* EditorContributionInstantiation.Lazy */);
-//# sourceMappingURL=standaloneQuickInputService.js.map
+
+export { QuickInputEditorContribution, QuickInputEditorWidget, StandaloneQuickInputService };

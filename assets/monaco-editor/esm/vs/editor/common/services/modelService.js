@@ -1,31 +1,33 @@
+import { Emitter } from '../../../base/common/event.js';
+import { StringSHA1 } from '../../../base/common/hash.js';
+import { Disposable, DisposableStore } from '../../../base/common/lifecycle.js';
+import { Schemas } from '../../../base/common/network.js';
+import { equals } from '../../../base/common/objects.js';
+import { OS, isLinux, isMacintosh } from '../../../base/common/platform.js';
+import { IConfigurationService } from '../../../platform/configuration/common/configuration.js';
+import { IInstantiationService } from '../../../platform/instantiation/common/instantiation.js';
+import { IUndoRedoService } from '../../../platform/undoRedo/common/undoRedo.js';
+import { clampedInt } from '../config/editorOptions.js';
+import { EDITOR_MODEL_DEFAULTS } from '../core/misc/textModelDefaults.js';
+import { PLAINTEXT_LANGUAGE_ID } from '../languages/modesRegistry.js';
+import { isEditStackElement } from '../model/editStack.js';
+import { TextModel } from '../model/textModel.js';
+import { ITextResourcePropertiesService } from './textResourceConfiguration.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __param = (this && this.__param) || function (paramIndex, decorator) {
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 var ModelService_1;
-import { Emitter } from '../../../base/common/event.js';
-import { Disposable, DisposableStore } from '../../../base/common/lifecycle.js';
-import * as platform from '../../../base/common/platform.js';
-import { TextModel } from '../model/textModel.js';
-import { EDITOR_MODEL_DEFAULTS } from '../core/misc/textModelDefaults.js';
-import { PLAINTEXT_LANGUAGE_ID } from '../languages/modesRegistry.js';
-import { ITextResourcePropertiesService } from './textResourceConfiguration.js';
-import { IConfigurationService } from '../../../platform/configuration/common/configuration.js';
-import { IUndoRedoService } from '../../../platform/undoRedo/common/undoRedo.js';
-import { StringSHA1 } from '../../../base/common/hash.js';
-import { isEditStackElement } from '../model/editStack.js';
-import { Schemas } from '../../../base/common/network.js';
-import { equals } from '../../../base/common/objects.js';
-import { IInstantiationService } from '../../../platform/instantiation/common/instantiation.js';
 function MODEL_ID(resource) {
     return resource.toString();
 }
@@ -41,7 +43,7 @@ class ModelData {
         this._modelEventListeners.dispose();
     }
 }
-const DEFAULT_EOL = (platform.isLinux || platform.isMacintosh) ? 1 /* DefaultEndOfLine.LF */ : 2 /* DefaultEndOfLine.CRLF */;
+const DEFAULT_EOL = (isLinux || isMacintosh) ? 1 /* DefaultEndOfLine.LF */ : 2 /* DefaultEndOfLine.CRLF */;
 class DisposedModelInfo {
     constructor(uri, initialUndoRedoSnapshot, time, sharesUndoRedoStack, heapSize, sha1, versionId, alternativeVersionId) {
         this.uri = uri;
@@ -79,20 +81,11 @@ let ModelService = class ModelService extends Disposable {
     static _readModelOptions(config, isForSimpleWidget) {
         let tabSize = EDITOR_MODEL_DEFAULTS.tabSize;
         if (config.editor && typeof config.editor.tabSize !== 'undefined') {
-            const parsedTabSize = parseInt(config.editor.tabSize, 10);
-            if (!isNaN(parsedTabSize)) {
-                tabSize = parsedTabSize;
-            }
-            if (tabSize < 1) {
-                tabSize = 1;
-            }
+            tabSize = clampedInt(config.editor.tabSize, EDITOR_MODEL_DEFAULTS.tabSize, 1, 100);
         }
         let indentSize = 'tabSize';
         if (config.editor && typeof config.editor.indentSize !== 'undefined' && config.editor.indentSize !== 'tabSize') {
-            const parsedIndentSize = parseInt(config.editor.indentSize, 10);
-            if (!isNaN(parsedIndentSize)) {
-                indentSize = Math.max(parsedIndentSize, 1);
-            }
+            indentSize = clampedInt(config.editor.indentSize, 'tabSize', 1, 100);
         }
         let insertSpaces = EDITOR_MODEL_DEFAULTS.insertSpaces;
         if (config.editor && typeof config.editor.insertSpaces !== 'undefined') {
@@ -120,9 +113,10 @@ let ModelService = class ModelService extends Disposable {
         }
         let bracketPairColorizationOptions = EDITOR_MODEL_DEFAULTS.bracketPairColorizationOptions;
         if (config.editor?.bracketPairColorization && typeof config.editor.bracketPairColorization === 'object') {
+            const bpConfig = config.editor.bracketPairColorization;
             bracketPairColorizationOptions = {
-                enabled: !!config.editor.bracketPairColorization.enabled,
-                independentColorPoolPerBracketType: !!config.editor.bracketPairColorization.independentColorPoolPerBracketType
+                enabled: !!bpConfig.enabled,
+                independentColorPoolPerBracketType: !!bpConfig.independentColorPoolPerBracketType
             };
         }
         return {
@@ -145,7 +139,7 @@ let ModelService = class ModelService extends Disposable {
         if (eol && typeof eol === 'string' && eol !== 'auto') {
             return eol;
         }
-        return platform.OS === 3 /* platform.OperatingSystem.Linux */ || platform.OS === 2 /* platform.OperatingSystem.Macintosh */ ? '\n' : '\r\n';
+        return OS === 3 /* platform.OperatingSystem.Linux */ || OS === 2 /* platform.OperatingSystem.Macintosh */ ? '\n' : '\r\n';
     }
     _shouldRestoreUndoStack() {
         const result = this._configurationService.getValue('files.restoreUndoStack');
@@ -399,8 +393,7 @@ ModelService = ModelService_1 = __decorate([
     __param(2, IUndoRedoService),
     __param(3, IInstantiationService)
 ], ModelService);
-export { ModelService };
-export class DefaultModelSHA1Computer {
+class DefaultModelSHA1Computer {
     static { this.MAX_MODEL_SIZE = 10 * 1024 * 1024; } // takes 200ms to compute a sha1 on a 10MB model on a new machine
     canComputeSHA1(model) {
         return (model.getValueLength() <= DefaultModelSHA1Computer.MAX_MODEL_SIZE);
@@ -416,4 +409,5 @@ export class DefaultModelSHA1Computer {
         return shaComputer.digest();
     }
 }
-//# sourceMappingURL=modelService.js.map
+
+export { DefaultModelSHA1Computer, ModelService };

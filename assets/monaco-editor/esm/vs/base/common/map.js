@@ -12,7 +12,7 @@ class ResourceMapEntry {
 function isEntries(arg) {
     return Array.isArray(arg);
 }
-export class ResourceMap {
+class ResourceMap {
     static { this.defaultToKey = (resource) => resource.toString(); }
     constructor(arg, toKey) {
         this[_a] = 'ResourceMap';
@@ -80,7 +80,7 @@ export class ResourceMap {
         }
     }
 }
-export class ResourceSet {
+class ResourceSet {
     constructor(entriesOrKey, toKey) {
         this[_b] = 'ResourceSet';
         if (!entriesOrKey || typeof entriesOrKey === 'function') {
@@ -123,7 +123,7 @@ export class ResourceSet {
         return this.keys();
     }
 }
-export class LinkedMap {
+class LinkedMap {
     constructor() {
         this[_c] = 'LinkedMap';
         this._map = new Map();
@@ -520,7 +520,7 @@ class Cache extends LinkedMap {
         }
     }
 }
-export class LRUCache extends Cache {
+class LRUCache extends Cache {
     constructor(limit, ratio = 1) {
         super(limit, ratio);
     }
@@ -537,7 +537,7 @@ export class LRUCache extends Cache {
  * A map that allows access both by keys and values.
  * **NOTE**: values need to be unique.
  */
-export class BidirectionalMap {
+class BidirectionalMap {
     constructor(entries) {
         this._m1 = new Map();
         this._m2 = new Map();
@@ -577,7 +577,7 @@ export class BidirectionalMap {
         return this._m1.values();
     }
 }
-export class SetMap {
+class SetMap {
     constructor() {
         this.map = new Map();
     }
@@ -613,7 +613,7 @@ export class SetMap {
  * example for a very hot function, constructing a string like `first-second-third` for every call
  * will cause a significant hit to performance.
  */
-export class NKeyMap {
+class NKeyMap {
     constructor() {
         this._data = new Map();
     }
@@ -666,4 +666,5 @@ export class NKeyMap {
         return printMap(this._data, 0);
     }
 }
-//# sourceMappingURL=map.js.map
+
+export { BidirectionalMap, LRUCache, LinkedMap, NKeyMap, ResourceMap, ResourceSet, SetMap };

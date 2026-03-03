@@ -1,15 +1,16 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-import { $, addDisposableListener, EventType, getActiveElement, getWindow, isAncestor, isHTMLElement } from '../../../base/browser/dom.js';
+import { getActiveElement, isHTMLElement, isAncestor, $, addDisposableListener, EventType, getWindow } from '../../../base/browser/dom.js';
 import { StandardMouseEvent } from '../../../base/browser/mouseEvent.js';
 import { Menu } from '../../../base/browser/ui/menu/menu.js';
 import { ActionRunner } from '../../../base/common/actions.js';
 import { isCancellationError } from '../../../base/common/errors.js';
-import { combinedDisposable, DisposableStore } from '../../../base/common/lifecycle.js';
+import { DisposableStore, combinedDisposable } from '../../../base/common/lifecycle.js';
 import { defaultMenuStyles } from '../../theme/browser/defaultStyles.js';
-export class ContextMenuHandler {
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+class ContextMenuHandler {
     constructor(contextViewService, telemetryService, notificationService, keybindingService) {
         this.contextViewService = contextViewService;
         this.telemetryService = telemetryService;
@@ -121,4 +122,5 @@ export class ContextMenuHandler {
         }
     }
 }
-//# sourceMappingURL=contextMenuHandler.js.map
+
+export { ContextMenuHandler };

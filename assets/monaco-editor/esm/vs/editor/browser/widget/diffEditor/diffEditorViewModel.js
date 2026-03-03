@@ -1,32 +1,43 @@
+import { RunOnceScheduler } from '../../../../base/common/async.js';
+import { CancellationTokenSource } from '../../../../base/common/cancellation.js';
+import { Disposable, toDisposable } from '../../../../base/common/lifecycle.js';
+import '../../../../base/common/observableInternal/index.js';
+import { IDiffProviderFactoryService } from './diffProviderFactoryService.js';
+import { filterWithPrevious } from './utils.js';
+import { LineRange, LineRangeSet } from '../../../common/core/ranges/lineRange.js';
+import { groupAdjacentBy } from '../../../../base/common/arrays.js';
+import { softAssert } from '../../../../base/common/assert.js';
+import '../../../common/core/text/textLength.js';
+import '../../../common/core/text/positionToOffsetImpl.js';
+import { LineRangeMapping, DetailedLineRangeMapping, RangeMapping } from '../../../common/diff/rangeMapping.js';
+import '../../../common/diff/defaultLinesDiffComputer/algorithms/diffAlgorithm.js';
+import '../../../common/diff/defaultLinesDiffComputer/utils.js';
+import '../../../../base/common/arraysFind.js';
+import '../../../../base/common/map.js';
+import { TextEditInfo } from '../../../common/model/bracketPairsTextModelPart/bracketPairsTree/beforeEditPositionMapper.js';
+import { combineTextEditInfos } from '../../../common/model/bracketPairsTextModelPart/bracketPairsTree/combineTextEditInfos.js';
+import { isDefined } from '../../../../base/common/types.js';
+import { waitForState } from '../../../../base/common/observableInternal/utils/utilsCancellation.js';
+import { observableValue } from '../../../../base/common/observableInternal/observables/observableValue.js';
+import { derived } from '../../../../base/common/observableInternal/observables/derived.js';
+import { transaction } from '../../../../base/common/observableInternal/transaction.js';
+import { observableSignalFromEvent } from '../../../../base/common/observableInternal/observables/observableSignalFromEvent.js';
+import { observableSignal } from '../../../../base/common/observableInternal/observables/observableSignal.js';
+import { autorun, autorunWithStore } from '../../../../base/common/observableInternal/reactions/autorun.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __param = (this && this.__param) || function (paramIndex, decorator) {
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { RunOnceScheduler } from '../../../../base/common/async.js';
-import { CancellationTokenSource } from '../../../../base/common/cancellation.js';
-import { Disposable, toDisposable } from '../../../../base/common/lifecycle.js';
-import { autorun, autorunWithStore, derived, observableSignal, observableSignalFromEvent, observableValue, transaction, waitForState } from '../../../../base/common/observable.js';
-import { IDiffProviderFactoryService } from './diffProviderFactoryService.js';
-import { filterWithPrevious } from './utils.js';
-import { readHotReloadableExport } from '../../../../base/common/hotReloadHelpers.js';
-import { LineRange, LineRangeSet } from '../../../common/core/ranges/lineRange.js';
-import { DefaultLinesDiffComputer } from '../../../common/diff/defaultLinesDiffComputer/defaultLinesDiffComputer.js';
-import { DetailedLineRangeMapping, LineRangeMapping, RangeMapping } from '../../../common/diff/rangeMapping.js';
-import { TextEditInfo } from '../../../common/model/bracketPairsTextModelPart/bracketPairsTree/beforeEditPositionMapper.js';
-import { combineTextEditInfos } from '../../../common/model/bracketPairsTextModelPart/bracketPairsTree/combineTextEditInfos.js';
-import { optimizeSequenceDiffs } from '../../../common/diff/defaultLinesDiffComputer/heuristicSequenceOptimizations.js';
-import { isDefined } from '../../../../base/common/types.js';
-import { groupAdjacentBy } from '../../../../base/common/arrays.js';
-import { softAssert } from '../../../../base/common/assert.js';
 let DiffEditorViewModel = class DiffEditorViewModel extends Disposable {
     setActiveMovedText(movedText) {
         this._activeMovedText.set(movedText, undefined);
@@ -160,16 +171,7 @@ let DiffEditorViewModel = class DiffEditorViewModel extends Disposable {
             const diff = this._diff.get();
             if (diff) {
                 const textEdits = TextEditInfo.fromModelContentChanges(e.changes);
-                const result = applyModifiedEdits(this._lastDiff, textEdits, model.original, model.modified);
-                if (result) {
-                    this._lastDiff = result;
-                    transaction(tx => {
-                        this._diff.set(DiffState.fromDiffResult(this._lastDiff), tx);
-                        updateUnchangedRegions(result, tx);
-                        const currentSyncedMovedText = this.movedTextToCompare.get();
-                        this.movedTextToCompare.set(currentSyncedMovedText ? this._lastDiff.moves.find(m => m.lineRangeMapping.modified.intersect(currentSyncedMovedText.lineRangeMapping.modified)) : undefined, tx);
-                    });
-                }
+                applyModifiedEdits(this._lastDiff, textEdits, model.original, model.modified);
             }
             this._isDiffUpToDate.set(false, undefined);
             debouncer.schedule();
@@ -178,16 +180,7 @@ let DiffEditorViewModel = class DiffEditorViewModel extends Disposable {
             const diff = this._diff.get();
             if (diff) {
                 const textEdits = TextEditInfo.fromModelContentChanges(e.changes);
-                const result = applyOriginalEdits(this._lastDiff, textEdits, model.original, model.modified);
-                if (result) {
-                    this._lastDiff = result;
-                    transaction(tx => {
-                        this._diff.set(DiffState.fromDiffResult(this._lastDiff), tx);
-                        updateUnchangedRegions(result, tx);
-                        const currentSyncedMovedText = this.movedTextToCompare.get();
-                        this.movedTextToCompare.set(currentSyncedMovedText ? this._lastDiff.moves.find(m => m.lineRangeMapping.modified.intersect(currentSyncedMovedText.lineRangeMapping.modified)) : undefined, tx);
-                    });
-                }
+                applyOriginalEdits(this._lastDiff, textEdits, model.original, model.modified);
             }
             this._isDiffUpToDate.set(false, undefined);
             debouncer.schedule();
@@ -201,8 +194,6 @@ let DiffEditorViewModel = class DiffEditorViewModel extends Disposable {
             contentChangedSignal.read(reader);
             const documentDiffProvider = this._diffProvider.read(reader);
             documentDiffProvider.onChangeSignal.read(reader);
-            readHotReloadableExport(DefaultLinesDiffComputer, reader);
-            readHotReloadableExport(optimizeSequenceDiffs, reader);
             this._isDiffUpToDate.set(false, undefined);
             let originalTextEditInfos = [];
             store.add(model.original.onDidChangeContent((e) => {
@@ -295,7 +286,6 @@ let DiffEditorViewModel = class DiffEditorViewModel extends Disposable {
 DiffEditorViewModel = __decorate([
     __param(2, IDiffProviderFactoryService)
 ], DiffEditorViewModel);
-export { DiffEditorViewModel };
 function normalizeDocumentDiff(diff, original, modified) {
     return {
         changes: diff.changes.map(c => new DetailedLineRangeMapping(c.original, c.modified, c.innerChanges ? c.innerChanges.map(i => normalizeRangeMapping(i, original, modified)) : undefined)),
@@ -318,7 +308,7 @@ function normalizeRangeMapping(rangeMapping, original, modified) {
     }
     return new RangeMapping(originalRange, modifiedRange);
 }
-export class DiffState {
+class DiffState {
     static fromDiffResult(result) {
         return new DiffState(result.changes.map(c => new DiffMapping(c)), result.moves || [], result.identical, result.quitEarly);
     }
@@ -329,7 +319,7 @@ export class DiffState {
         this.quitEarly = quitEarly;
     }
 }
-export class DiffMapping {
+class DiffMapping {
     constructor(lineRangeMapping) {
         this.lineRangeMapping = lineRangeMapping;
         /*
@@ -352,7 +342,7 @@ export class DiffMapping {
         */
     }
 }
-export class UnchangedRegion {
+class UnchangedRegion {
     static fromDiffs(changes, originalLineCount, modifiedLineCount, minHiddenLineCount, minContext) {
         const inversedMappings = DetailedLineRangeMapping.inverse(changes, originalLineCount, modifiedLineCount);
         const result = [];
@@ -614,4 +604,5 @@ function applyModifiedEditsToLineRangeMappings(changes: readonly LineRangeMappin
     return newChanges;
 }
 */
-//# sourceMappingURL=diffEditorViewModel.js.map
+
+export { DiffEditorViewModel, DiffMapping, DiffState, UnchangedRegion };

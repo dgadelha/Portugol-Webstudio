@@ -1,20 +1,28 @@
+import { h } from '../../../../../base/browser/dom.js';
+import { ActionBar } from '../../../../../base/browser/ui/actionbar/actionbar.js';
+import { Action } from '../../../../../base/common/actions.js';
+import { tieBreakComparators, compareBy, numberComparator, booleanComparator } from '../../../../../base/common/arrays.js';
+import { findMaxIdx } from '../../../../../base/common/arraysFind.js';
+import { Codicon } from '../../../../../base/common/codicons.js';
+import { Disposable, toDisposable } from '../../../../../base/common/lifecycle.js';
+import '../../../../../base/common/observableInternal/index.js';
+import { ThemeIcon } from '../../../../../base/common/themables.js';
+import { PlaceholderViewZone, applyViewZones, ViewZoneOverlayWidget, applyStyle } from '../utils.js';
+import { OffsetRange, OffsetRangeSet } from '../../../../common/core/ranges/offsetRange.js';
+import { localize } from '../../../../../nls.js';
+import { recomputeInitiallyAndOnChange } from '../../../../../base/common/observableInternal/utils/utils.js';
+import { observableFromEvent } from '../../../../../base/common/observableInternal/observables/observableFromEvent.js';
+import { observableSignalFromEvent } from '../../../../../base/common/observableInternal/observables/observableSignalFromEvent.js';
+import { observableValue } from '../../../../../base/common/observableInternal/observables/observableValue.js';
+import { derived } from '../../../../../base/common/observableInternal/observables/derived.js';
+import { autorun, autorunWithStore, autorunHandleChanges } from '../../../../../base/common/observableInternal/reactions/autorun.js';
+import { constObservable } from '../../../../../base/common/observableInternal/observables/constObservable.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { h } from '../../../../../base/browser/dom.js';
-import { ActionBar } from '../../../../../base/browser/ui/actionbar/actionbar.js';
-import { Action } from '../../../../../base/common/actions.js';
-import { booleanComparator, compareBy, numberComparator, tieBreakComparators } from '../../../../../base/common/arrays.js';
-import { findMaxIdx } from '../../../../../base/common/arraysFind.js';
-import { Codicon } from '../../../../../base/common/codicons.js';
-import { Disposable, toDisposable } from '../../../../../base/common/lifecycle.js';
-import { autorun, autorunHandleChanges, autorunWithStore, constObservable, derived, observableFromEvent, observableSignalFromEvent, observableValue, recomputeInitiallyAndOnChange } from '../../../../../base/common/observable.js';
-import { ThemeIcon } from '../../../../../base/common/themables.js';
-import { PlaceholderViewZone, ViewZoneOverlayWidget, applyStyle, applyViewZones } from '../utils.js';
-import { OffsetRange, OffsetRangeSet } from '../../../../common/core/ranges/offsetRange.js';
-import { localize } from '../../../../../nls.js';
-export class MovedBlocksLinesFeature extends Disposable {
+class MovedBlocksLinesFeature extends Disposable {
     static { this.movedCodeBlockPadding = 4; }
     constructor(_rootElement, _diffModel, _originalEditorLayoutInfo, _modifiedEditorLayoutInfo, _editors) {
         super();
@@ -244,10 +252,10 @@ class MovedBlockOverlayWidget extends ViewZoneOverlayWidget {
         }));
         let text;
         if (_move.changes.length > 0) {
-            text = this._kind === 'original' ? localize(128, 'Code moved with changes to line {0}-{1}', this._move.lineRangeMapping.modified.startLineNumber, this._move.lineRangeMapping.modified.endLineNumberExclusive - 1) : localize(129, 'Code moved with changes from line {0}-{1}', this._move.lineRangeMapping.original.startLineNumber, this._move.lineRangeMapping.original.endLineNumberExclusive - 1);
+            text = this._kind === 'original' ? localize(131, 'Code moved with changes to line {0}-{1}', this._move.lineRangeMapping.modified.startLineNumber, this._move.lineRangeMapping.modified.endLineNumberExclusive - 1) : localize(132, 'Code moved with changes from line {0}-{1}', this._move.lineRangeMapping.original.startLineNumber, this._move.lineRangeMapping.original.endLineNumberExclusive - 1);
         }
         else {
-            text = this._kind === 'original' ? localize(130, 'Code moved to line {0}-{1}', this._move.lineRangeMapping.modified.startLineNumber, this._move.lineRangeMapping.modified.endLineNumberExclusive - 1) : localize(131, 'Code moved from line {0}-{1}', this._move.lineRangeMapping.original.startLineNumber, this._move.lineRangeMapping.original.endLineNumberExclusive - 1);
+            text = this._kind === 'original' ? localize(133, 'Code moved to line {0}-{1}', this._move.lineRangeMapping.modified.startLineNumber, this._move.lineRangeMapping.modified.endLineNumberExclusive - 1) : localize(134, 'Code moved from line {0}-{1}', this._move.lineRangeMapping.original.startLineNumber, this._move.lineRangeMapping.original.endLineNumberExclusive - 1);
         }
         const actionBar = this._register(new ActionBar(this._nodes.actionBar, {
             highlightToggledItems: true,
@@ -265,4 +273,5 @@ class MovedBlockOverlayWidget extends ViewZoneOverlayWidget {
         actionBar.push(actionCompare, { icon: false, label: true });
     }
 }
-//# sourceMappingURL=movedBlocksLinesFeature.js.map
+
+export { MovedBlocksLinesFeature };

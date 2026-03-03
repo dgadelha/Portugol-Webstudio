@@ -1,19 +1,5 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-var QuickInputTreeRenderer_1;
-import * as cssJs from '../../../../base/browser/cssValue.js';
-import * as dom from '../../../../base/browser/dom.js';
+import { asCSSUrl } from '../../../../base/browser/cssValue.js';
+import { append, $ as $$1, prepend } from '../../../../base/browser/dom.js';
 import { ActionBar } from '../../../../base/browser/ui/actionbar/actionbar.js';
 import { IconLabel } from '../../../../base/browser/ui/iconLabel/iconLabel.js';
 import { TriStateCheckbox } from '../../../../base/browser/ui/toggle/toggle.js';
@@ -25,7 +11,22 @@ import { isDark } from '../../../theme/common/theme.js';
 import { escape } from '../../../../base/common/strings.js';
 import { IThemeService } from '../../../theme/common/themeService.js';
 import { quickInputButtonToAction } from '../quickInputUtils.js';
-const $ = dom.$;
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var QuickInputTreeRenderer_1;
+const $ = $$1;
 let QuickInputTreeRenderer = class QuickInputTreeRenderer extends Disposable {
     static { QuickInputTreeRenderer_1 = this; }
     static { this.ID = 'quickInputTreeElement'; }
@@ -40,13 +41,13 @@ let QuickInputTreeRenderer = class QuickInputTreeRenderer extends Disposable {
     renderTemplate(container) {
         const store = new DisposableStore();
         // Main entry container
-        const entry = dom.append(container, $('.quick-input-tree-entry'));
+        const entry = append(container, $('.quick-input-tree-entry'));
         const checkbox = store.add(new TriStateCheckbox('', false, { ...defaultCheckboxStyles, size: 15 }));
         entry.appendChild(checkbox.domNode);
-        const checkboxLabel = dom.append(entry, $('label.quick-input-tree-label'));
-        const rows = dom.append(checkboxLabel, $('.quick-input-tree-rows'));
-        const row1 = dom.append(rows, $('.quick-input-tree-row'));
-        const icon = dom.prepend(row1, $('.quick-input-tree-icon'));
+        const checkboxLabel = append(entry, $('label.quick-input-tree-label'));
+        const rows = append(checkboxLabel, $('.quick-input-tree-rows'));
+        const row1 = append(rows, $('.quick-input-tree-row'));
+        const icon = prepend(row1, $('.quick-input-tree-icon'));
         const label = store.add(new IconLabel(row1, {
             supportHighlights: true,
             supportDescriptionHighlights: true,
@@ -86,7 +87,7 @@ let QuickInputTreeRenderer = class QuickInputTreeRenderer extends Disposable {
             const icon = isDark(this._themeService.getColorTheme().type) ? quickTreeItem.iconPath.dark : (quickTreeItem.iconPath.light ?? quickTreeItem.iconPath.dark);
             const iconUrl = URI.revive(icon);
             templateData.icon.className = 'quick-input-tree-icon';
-            templateData.icon.style.backgroundImage = cssJs.asCSSUrl(iconUrl);
+            templateData.icon.style.backgroundImage = asCSSUrl(iconUrl);
         }
         else {
             templateData.icon.style.backgroundImage = '';
@@ -136,5 +137,5 @@ let QuickInputTreeRenderer = class QuickInputTreeRenderer extends Disposable {
 QuickInputTreeRenderer = QuickInputTreeRenderer_1 = __decorate([
     __param(3, IThemeService)
 ], QuickInputTreeRenderer);
+
 export { QuickInputTreeRenderer };
-//# sourceMappingURL=quickInputTreeRenderer.js.map

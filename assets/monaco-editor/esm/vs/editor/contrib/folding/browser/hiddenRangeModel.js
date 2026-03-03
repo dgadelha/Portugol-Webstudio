@@ -1,12 +1,13 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { findFirstIdxMonotonousOrArrLen } from '../../../../base/common/arraysFind.js';
 import { Emitter } from '../../../../base/common/event.js';
 import { Range } from '../../../common/core/range.js';
 import { countEOL } from '../../../common/core/misc/eolCounter.js';
-export class HiddenRangeModel {
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+class HiddenRangeModel {
     get onDidChange() { return this._updateEventEmitter.event; }
     get hiddenRanges() { return this._hiddenRanges; }
     constructor(model) {
@@ -121,4 +122,5 @@ function findRange(ranges, line) {
     }
     return null;
 }
-//# sourceMappingURL=hiddenRangeModel.js.map
+
+export { HiddenRangeModel };

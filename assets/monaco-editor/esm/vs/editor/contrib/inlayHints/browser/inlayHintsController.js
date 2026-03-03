@@ -1,46 +1,57 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-var InlayHintsController_1;
-import { isHTMLElement, ModifierKeyEmitter } from '../../../../base/browser/dom.js';
+import { ModifierKeyEmitter, isHTMLElement } from '../../../../base/browser/dom.js';
 import { isNonEmptyArray } from '../../../../base/common/arrays.js';
-import { disposableTimeout, RunOnceScheduler } from '../../../../base/common/async.js';
-import { CancellationToken, CancellationTokenSource } from '../../../../base/common/cancellation.js';
+import { RunOnceScheduler, disposableTimeout } from '../../../../base/common/async.js';
+import { CancellationTokenSource, CancellationToken } from '../../../../base/common/cancellation.js';
 import { onUnexpectedError } from '../../../../base/common/errors.js';
-import { DisposableStore, MutableDisposable, toDisposable } from '../../../../base/common/lifecycle.js';
+import { DisposableStore, toDisposable, MutableDisposable } from '../../../../base/common/lifecycle.js';
 import { LRUCache } from '../../../../base/common/map.js';
 import { assertType } from '../../../../base/common/types.js';
 import { URI } from '../../../../base/common/uri.js';
 import { DynamicCssRules } from '../../../browser/editorDom.js';
 import { StableEditorScrollState } from '../../../browser/stableEditorScroll.js';
-import { EDITOR_FONT_DEFAULTS } from '../../../common/config/editorOptions.js';
+import { EDITOR_FONT_DEFAULTS } from '../../../common/config/fontInfo.js';
 import { EditOperation } from '../../../common/core/editOperation.js';
 import { Range } from '../../../common/core/range.js';
-import * as languages from '../../../common/languages.js';
+import { Command, InlayHintKind } from '../../../common/languages.js';
 import { InjectedTextCursorStops } from '../../../common/model.js';
 import { ModelDecorationInjectedTextOptions } from '../../../common/model/textModel.js';
 import { ILanguageFeatureDebounceService } from '../../../common/services/languageFeatureDebounce.js';
 import { ILanguageFeaturesService } from '../../../common/services/languageFeatures.js';
 import { ITextModelService } from '../../../common/services/resolverService.js';
 import { ClickLinkGesture } from '../../gotoSymbol/browser/link/clickLinkGesture.js';
-import { InlayHintAnchor, InlayHintsFragments } from './inlayHints.js';
+import { InlayHintsFragments, InlayHintAnchor } from './inlayHints.js';
 import { goToDefinitionWithLocation, showGoToContextMenu } from './inlayHintsLocations.js';
-import { CommandsRegistry, ICommandService } from '../../../../platform/commands/common/commands.js';
+import { ICommandService, CommandsRegistry } from '../../../../platform/commands/common/commands.js';
 import { registerSingleton } from '../../../../platform/instantiation/common/extensions.js';
 import { createDecorator, IInstantiationService } from '../../../../platform/instantiation/common/instantiation.js';
-import { INotificationService, Severity } from '../../../../platform/notification/common/notification.js';
-import * as colors from '../../../../platform/theme/common/colorRegistry.js';
+import { Severity, INotificationService } from '../../../../platform/notification/common/notification.js';
+import '../../../../platform/theme/common/colorUtils.js';
+import '../../../../platform/theme/common/colors/baseColors.js';
+import '../../../../platform/theme/common/colors/chartsColors.js';
+import { editorActiveLinkForeground, editorInlayHintParameterBackground, editorInlayHintParameterForeground, editorInlayHintTypeBackground, editorInlayHintTypeForeground, editorInlayHintBackground, editorInlayHintForeground } from '../../../../platform/theme/common/colors/editorColors.js';
+import '../../../../platform/theme/common/colors/inputColors.js';
+import '../../../../platform/theme/common/colors/listColors.js';
+import '../../../../platform/theme/common/colors/menuColors.js';
+import '../../../../platform/theme/common/colors/minimapColors.js';
+import '../../../../platform/theme/common/colors/miscColors.js';
+import '../../../../platform/theme/common/colors/quickpickColors.js';
+import '../../../../platform/theme/common/colors/searchColors.js';
 import { themeColorFromId } from '../../../../platform/theme/common/themeService.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var InlayHintsController_1;
 // --- hint caching service (per session)
 class InlayHintsCache {
     constructor() {
@@ -61,7 +72,7 @@ class InlayHintsCache {
 const IInlayHintsCache = createDecorator('IInlayHintsCache');
 registerSingleton(IInlayHintsCache, InlayHintsCache, 1 /* InstantiationType.Delayed */);
 // --- rendered label
-export class RenderedInlayHintLabelPart {
+class RenderedInlayHintLabelPart {
     constructor(item, index) {
         this.item = item;
         this.index = index;
@@ -80,6 +91,28 @@ class ActiveInlayHintInfo {
     constructor(part, hasTriggerModifier) {
         this.part = part;
         this.hasTriggerModifier = hasTriggerModifier;
+    }
+}
+/**
+ *  Mix of CancellationTokenSource, DisposableStore and MutableDisposable
+ */
+class CancellationStore {
+    constructor() {
+        this._store = new MutableDisposable();
+        this._tokenSource = new CancellationTokenSource();
+    }
+    dispose() {
+        this._store.dispose();
+        this._tokenSource.dispose(true);
+    }
+    reset() {
+        this._tokenSource.dispose(true);
+        this._tokenSource = new CancellationTokenSource();
+        this._store.value = new DisposableStore();
+        return {
+            store: this._store.value,
+            token: this._tokenSource.token
+        };
     }
 }
 // --- controller
@@ -174,16 +207,15 @@ let InlayHintsController = class InlayHintsController {
         }));
         let cts;
         const watchedProviders = new Set();
+        this._sessionDisposables.add(model.onWillDispose(() => cts?.cancel()));
+        const cancellationStore = this._sessionDisposables.add(new CancellationStore());
         const scheduler = new RunOnceScheduler(async () => {
             const t1 = Date.now();
-            cts?.dispose(true);
-            cts = new CancellationTokenSource();
-            const listener = model.onWillDispose(() => cts?.cancel());
+            const { store, token } = cancellationStore.reset();
             try {
-                const myToken = cts.token;
-                const inlayHints = await InlayHintsFragments.create(this._languageFeaturesService.inlayHintsProvider, model, this._getHintsRanges(), myToken);
+                const inlayHints = await InlayHintsFragments.create(this._languageFeaturesService.inlayHintsProvider, model, this._getHintsRanges(), token);
                 scheduler.delay = this._debounceInfo.update(model, Date.now() - t1);
-                if (myToken.isCancellationRequested) {
+                if (token.isCancellationRequested) {
                     inlayHints.dispose();
                     return;
                 }
@@ -191,27 +223,22 @@ let InlayHintsController = class InlayHintsController {
                 for (const provider of inlayHints.provider) {
                     if (typeof provider.onDidChangeInlayHints === 'function' && !watchedProviders.has(provider)) {
                         watchedProviders.add(provider);
-                        this._sessionDisposables.add(provider.onDidChangeInlayHints(() => {
+                        store.add(provider.onDidChangeInlayHints(() => {
                             if (!scheduler.isScheduled()) { // ignore event when request is already scheduled
                                 scheduler.schedule();
                             }
                         }));
                     }
                 }
-                this._sessionDisposables.add(inlayHints);
+                store.add(inlayHints);
                 this._updateHintsDecorators(inlayHints.ranges, inlayHints.items);
                 this._cacheHintsForFastRestore(model);
             }
             catch (err) {
                 onUnexpectedError(err);
             }
-            finally {
-                cts.dispose();
-                listener.dispose();
-            }
         }, this._debounceInfo.get(model));
         this._sessionDisposables.add(scheduler);
-        this._sessionDisposables.add(toDisposable(() => cts?.dispose(true)));
         scheduler.schedule(0);
         this._sessionDisposables.add(this._editor.onDidScrollChange((e) => {
             // update when scroll position changes
@@ -223,7 +250,6 @@ let InlayHintsController = class InlayHintsController {
         }));
         const cursor = this._sessionDisposables.add(new MutableDisposable());
         this._sessionDisposables.add(this._editor.onDidChangeModelContent((e) => {
-            cts?.cancel();
             // mark current cursor position and time after which the whole can be updated/redrawn
             const delay = Math.max(scheduler.delay, 800);
             this._cursorInfo = { position: this._editor.getPosition(), notEarlierThan: Date.now() + delay };
@@ -280,7 +306,7 @@ let InlayHintsController = class InlayHintsController {
                     // location -> execute go to def
                     this._instaService.invokeFunction(goToDefinitionWithLocation, e, this._editor, part.location);
                 }
-                else if (languages.Command.is(part.command)) {
+                else if (Command.is(part.command)) {
                     // command -> execute it
                     await this._invokeCommand(part.command, label.item);
                 }
@@ -509,7 +535,7 @@ let InlayHintsController = class InlayHintsController {
                     // active link!
                     cssProperties.textDecoration = 'underline';
                     if (this._activeInlayHintPart.hasTriggerModifier) {
-                        cssProperties.color = themeColorFromId(colors.editorActiveLinkForeground);
+                        cssProperties.color = themeColorFromId(editorActiveLinkForeground);
                         cssProperties.cursor = 'pointer';
                     }
                 }
@@ -591,17 +617,17 @@ let InlayHintsController = class InlayHintsController {
         scrollState.restore(this._editor);
     }
     _fillInColors(props, hint) {
-        if (hint.kind === languages.InlayHintKind.Parameter) {
-            props.backgroundColor = themeColorFromId(colors.editorInlayHintParameterBackground);
-            props.color = themeColorFromId(colors.editorInlayHintParameterForeground);
+        if (hint.kind === InlayHintKind.Parameter) {
+            props.backgroundColor = themeColorFromId(editorInlayHintParameterBackground);
+            props.color = themeColorFromId(editorInlayHintParameterForeground);
         }
-        else if (hint.kind === languages.InlayHintKind.Type) {
-            props.backgroundColor = themeColorFromId(colors.editorInlayHintTypeBackground);
-            props.color = themeColorFromId(colors.editorInlayHintTypeForeground);
+        else if (hint.kind === InlayHintKind.Type) {
+            props.backgroundColor = themeColorFromId(editorInlayHintTypeBackground);
+            props.color = themeColorFromId(editorInlayHintTypeForeground);
         }
         else {
-            props.backgroundColor = themeColorFromId(colors.editorInlayHintBackground);
-            props.color = themeColorFromId(colors.editorInlayHintForeground);
+            props.backgroundColor = themeColorFromId(editorInlayHintBackground);
+            props.color = themeColorFromId(editorInlayHintForeground);
         }
     }
     _getLayoutInfo() {
@@ -635,7 +661,6 @@ InlayHintsController = InlayHintsController_1 = __decorate([
     __param(5, INotificationService),
     __param(6, IInstantiationService)
 ], InlayHintsController);
-export { InlayHintsController };
 // Prevents the view from potentially visible whitespace
 function fixSpace(str) {
     const noBreakWhitespace = '\xa0';
@@ -657,4 +682,5 @@ CommandsRegistry.registerCommand('_executeInlayHintProvider', async (accessor, .
         ref.dispose();
     }
 });
-//# sourceMappingURL=inlayHintsController.js.map
+
+export { InlayHintsController, RenderedInlayHintLabelPart };

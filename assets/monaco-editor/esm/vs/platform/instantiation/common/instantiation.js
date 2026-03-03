@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 // ------ internal util
-export var _util;
+var _util;
 (function (_util) {
     _util.serviceIds = new Map();
     _util.DI_TARGET = '$di$target';
@@ -13,7 +13,7 @@ export var _util;
     }
     _util.getServiceDependencies = getServiceDependencies;
 })(_util || (_util = {}));
-export const IInstantiationService = createDecorator('instantiationService');
+const IInstantiationService = createDecorator('instantiationService');
 function storeServiceDependency(id, target, index) {
     if (target[_util.DI_TARGET] === target) {
         target[_util.DI_DEPENDENCIES].push({ id, index });
@@ -26,7 +26,7 @@ function storeServiceDependency(id, target, index) {
 /**
  * The *only* valid way to create a {{ServiceIdentifier}}.
  */
-export function createDecorator(serviceId) {
+function createDecorator(serviceId) {
     if (_util.serviceIds.has(serviceId)) {
         return _util.serviceIds.get(serviceId);
     }
@@ -40,4 +40,5 @@ export function createDecorator(serviceId) {
     _util.serviceIds.set(serviceId, id);
     return id;
 }
-//# sourceMappingURL=instantiation.js.map
+
+export { IInstantiationService, _util, createDecorator };

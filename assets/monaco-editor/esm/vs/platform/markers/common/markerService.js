@@ -1,7 +1,3 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { isFalsyOrEmpty, isNonEmptyArray } from '../../../base/common/arrays.js';
 import { DebounceEmitter } from '../../../base/common/event.js';
 import { Iterable } from '../../../base/common/iterator.js';
@@ -10,7 +6,12 @@ import { Schemas } from '../../../base/common/network.js';
 import { URI } from '../../../base/common/uri.js';
 import { localize } from '../../../nls.js';
 import { MarkerSeverity } from './markers.js';
-export const unsupportedSchemas = new Set([
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+const unsupportedSchemas = new Set([
     Schemas.inMemory,
     Schemas.vscodeSourceControl,
     Schemas.walkThrough,
@@ -126,7 +127,7 @@ class MarkerStats {
         this.unknowns += op.unknowns;
     }
 }
-export class MarkerService {
+class MarkerService {
     constructor() {
         this._onMarkerChanged = new DebounceEmitter({
             delay: 0,
@@ -239,8 +240,8 @@ export class MarkerService {
      */
     _createFilteredMarker(resource, reasons) {
         const message = reasons.length === 1
-            ? localize(1721, "Problems are paused because: \"{0}\"", reasons[0])
-            : localize(1722, "Problems are paused because: \"{0}\" and {1} more", reasons[0], reasons.length - 1);
+            ? localize(1738, "Problems are paused because: \"{0}\"", reasons[0])
+            : localize(1739, "Problems are paused because: \"{0}\" and {1} more", reasons[0], reasons.length - 1);
         return {
             owner: 'markersFilter',
             resource,
@@ -325,4 +326,5 @@ export class MarkerService {
         return Array.from(set.keys());
     }
 }
-//# sourceMappingURL=markerService.js.map
+
+export { MarkerService, unsupportedSchemas };

@@ -1,11 +1,12 @@
+import { CoreNavigationCommands } from '../coreCommands.js';
+import { Position } from '../../common/core/position.js';
+import { isLinux } from '../../../base/common/platform.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { CoreNavigationCommands } from '../coreCommands.js';
-import { Position } from '../../common/core/position.js';
-import * as platform from '../../../base/common/platform.js';
-export class ViewController {
+class ViewController {
     constructor(configuration, viewModel, userInputEvents, commandDelegate) {
         this.configuration = configuration;
         this.viewModel = viewModel;
@@ -69,13 +70,11 @@ export class ViewController {
     }
     dispatchMouse(data) {
         const options = this.configuration.options;
-        const selectionClipboardIsOn = (platform.isLinux && options.get(121 /* EditorOption.selectionClipboard */));
+        const selectionClipboardIsOn = (isLinux && options.get(121 /* EditorOption.selectionClipboard */));
         const columnSelection = options.get(28 /* EditorOption.columnSelection */);
         const scrollOnMiddleClick = options.get(171 /* EditorOption.scrollOnMiddleClick */);
         if (data.middleButton && !selectionClipboardIsOn) {
-            if (scrollOnMiddleClick) {
-                // nothing to do here, handled in the contribution
-            }
+            if (scrollOnMiddleClick) ;
             else {
                 this._columnSelect(data.position, data.mouseColumn, data.inSelectionMode);
             }
@@ -271,4 +270,5 @@ export class ViewController {
         this.userInputEvents.emitMouseWheel(e);
     }
 }
-//# sourceMappingURL=viewController.js.map
+
+export { ViewController };

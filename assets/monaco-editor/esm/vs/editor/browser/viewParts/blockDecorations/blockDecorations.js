@@ -1,11 +1,12 @@
+import { createFastDomNode } from '../../../../base/browser/fastDomNode.js';
+import './blockDecorations.css';
+import { ViewPart } from '../../view/viewPart.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { createFastDomNode } from '../../../../base/browser/fastDomNode.js';
-import './blockDecorations.css';
-import { ViewPart } from '../../view/viewPart.js';
-export class BlockDecorations extends ViewPart {
+class BlockDecorations extends ViewPart {
     constructor(context) {
         super(context);
         this.blocks = [];
@@ -92,4 +93,5 @@ export class BlockDecorations extends ViewPart {
         this.blocks.length = count;
     }
 }
-//# sourceMappingURL=blockDecorations.js.map
+
+export { BlockDecorations };

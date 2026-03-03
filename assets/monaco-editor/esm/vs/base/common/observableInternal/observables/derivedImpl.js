@@ -1,10 +1,15 @@
+import { BaseObservable } from './baseObservable.js';
+import { assertFn } from '../../assert.js';
+import '../../arrays.js';
+import { onBugIndicatingError, BugIndicatingError } from '../../errors.js';
+import '../../event.js';
+import { DisposableStore } from '../../lifecycle.js';
+import { getLogger } from '../logging/logging.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { BaseObservable } from './baseObservable.js';
-import { BugIndicatingError, DisposableStore, assertFn, onBugIndicatingError } from '../commonFacade/deps.js';
-import { getLogger } from '../logging/logging.js';
 function derivedStateToString(state) {
     switch (state) {
         case 0 /* DerivedState.initial */: return 'initial';
@@ -14,7 +19,7 @@ function derivedStateToString(state) {
         default: return '<unknown>';
     }
 }
-export class Derived extends BaseObservable {
+class Derived extends BaseObservable {
     get debugName() {
         return this._debugNameData.getDebugName(this) ?? '(anonymous)';
     }
@@ -65,10 +70,7 @@ export class Derived extends BaseObservable {
     }
     get() {
         const checkEnabled = false; // TODO set to true
-        if (this._isComputing && checkEnabled) {
-            // investigate why this fails in the diff editor!
-            throw new BugIndicatingError('Cyclic deriveds are not supported yet!');
-        }
+        if (this._isComputing && checkEnabled) ;
         if (this._observers.size === 0) {
             let result;
             // Without observers, we don't know when to clean up stuff.
@@ -247,6 +249,7 @@ export class Derived extends BaseObservable {
                 shouldReact = this._changeTracker ? this._changeTracker.handleChange({
                     changedObservable: observable,
                     change,
+                    // eslint-disable-next-line local/code-no-any-casts
                     didChange: (o) => o === observable,
                 }, this._changeSummary) : true;
             }
@@ -320,6 +323,7 @@ export class Derived extends BaseObservable {
         };
     }
     debugSetValue(newValue) {
+        // eslint-disable-next-line local/code-no-any-casts
         this._value = newValue;
     }
     debugRecompute() {
@@ -339,10 +343,11 @@ export class Derived extends BaseObservable {
         }
     }
 }
-export class DerivedWithSetter extends Derived {
+class DerivedWithSetter extends Derived {
     constructor(debugNameData, computeFn, changeTracker, handleLastObserverRemoved = undefined, equalityComparator, set, debugLocation) {
         super(debugNameData, computeFn, changeTracker, handleLastObserverRemoved, equalityComparator, debugLocation);
         this.set = set;
     }
 }
-//# sourceMappingURL=derivedImpl.js.map
+
+export { Derived, DerivedWithSetter };

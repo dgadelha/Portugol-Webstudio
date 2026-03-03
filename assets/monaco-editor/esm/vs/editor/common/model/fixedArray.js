@@ -1,13 +1,14 @@
+import { arrayInsert } from '../../../base/common/arrays.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { arrayInsert } from '../../../base/common/arrays.js';
 /**
  * An array that avoids being sparse by always
  * filling up unused indices with a default value.
  */
-export class FixedArray {
+class FixedArray {
     constructor(_default) {
         this._default = _default;
         this._store = [];
@@ -65,4 +66,5 @@ function arrayFill(length, value) {
     }
     return arr;
 }
-//# sourceMappingURL=fixedArray.js.map
+
+export { FixedArray };

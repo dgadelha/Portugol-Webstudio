@@ -1,7 +1,3 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { compareBy, numberComparator } from '../../../../../base/common/arrays.js';
 import { findFirstMax } from '../../../../../base/common/arraysFind.js';
 import { Emitter, Event } from '../../../../../base/common/event.js';
@@ -10,12 +6,18 @@ import { Position } from '../../../../common/core/position.js';
 import { Range } from '../../../../common/core/range.js';
 import { TextReplacement } from '../../../../common/core/edits/textEdit.js';
 import { SelectedSuggestionInfo } from '../../../../common/languages.js';
-import { singleTextEditAugments, singleTextRemoveCommonPrefix } from './singleTextEditHelpers.js';
+import { singleTextRemoveCommonPrefix, singleTextEditAugments } from './singleTextEditHelpers.js';
 import { SnippetParser } from '../../../snippet/browser/snippetParser.js';
 import { SnippetSession } from '../../../snippet/browser/snippetSession.js';
 import { SuggestController } from '../../../suggest/browser/suggestController.js';
-import { observableFromEvent } from '../../../../../base/common/observable.js';
-export class SuggestWidgetAdaptor extends Disposable {
+import '../../../../../base/common/observableInternal/index.js';
+import { observableFromEvent } from '../../../../../base/common/observableInternal/observables/observableFromEvent.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+class SuggestWidgetAdaptor extends Disposable {
     get selectedItem() {
         return this._currentSuggestItemInfo;
     }
@@ -135,7 +137,7 @@ export class SuggestWidgetAdaptor extends Disposable {
         suggestController?.forceRenderingAbove();
     }
 }
-export class SuggestItemInfo {
+class SuggestItemInfo {
     static fromSuggestion(suggestController, model, position, item, toggleMode) {
         let { insertText } = item.completion;
         let isSnippetText = false;
@@ -180,7 +182,7 @@ function suggestItemInfoEquals(a, b) {
     }
     return a.equals(b);
 }
-export class ObservableSuggestWidgetAdapter extends Disposable {
+class ObservableSuggestWidgetAdapter extends Disposable {
     constructor(_editorObs, _handleSuggestAccepted, _suggestControllerPreselector) {
         super();
         this._editorObs = _editorObs;
@@ -204,4 +206,5 @@ export class ObservableSuggestWidgetAdapter extends Disposable {
         this._suggestWidgetAdaptor.forceRenderingAbove();
     }
 }
-//# sourceMappingURL=suggestWidgetAdapter.js.map
+
+export { ObservableSuggestWidgetAdapter, SuggestItemInfo, SuggestWidgetAdaptor };

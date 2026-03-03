@@ -1,7 +1,3 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { getActiveWindow } from '../../../../base/browser/dom.js';
 import { Color } from '../../../../base/common/color.js';
 import { BugIndicatingError } from '../../../../base/common/errors.js';
@@ -12,12 +8,17 @@ import { GPULifecycle } from '../gpuDisposable.js';
 import { quadVertices } from '../gpuUtils.js';
 import { ViewGpuContext } from '../viewGpuContext.js';
 import { BaseRenderStrategy } from './baseRenderStrategy.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
 /**
  * A render strategy that tracks a large buffer, uploading only dirty lines as they change and
  * leveraging heavy caching. This is the most performant strategy but has limitations around long
  * lines and too many lines.
  */
-export class FullFileRenderStrategy extends BaseRenderStrategy {
+class FullFileRenderStrategy extends BaseRenderStrategy {
     /**
      * The hard cap for line count that can be rendered by the GPU renderer.
      */
@@ -409,4 +410,5 @@ function parseCssOpacity(value) {
     }
     return 1;
 }
-//# sourceMappingURL=fullFileRenderStrategy.js.map
+
+export { FullFileRenderStrategy };

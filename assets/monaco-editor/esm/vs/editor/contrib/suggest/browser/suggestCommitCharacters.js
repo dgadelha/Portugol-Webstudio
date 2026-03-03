@@ -1,11 +1,12 @@
+import { isNonEmptyArray } from '../../../../base/common/arrays.js';
+import { DisposableStore } from '../../../../base/common/lifecycle.js';
+import { CharacterSet } from '../../../common/core/characterClassifier.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { isNonEmptyArray } from '../../../../base/common/arrays.js';
-import { DisposableStore } from '../../../../base/common/lifecycle.js';
-import { CharacterSet } from '../../../common/core/characterClassifier.js';
-export class CommitCharacterController {
+class CommitCharacterController {
     constructor(editor, widget, model, accept) {
         this._disposables = new DisposableStore();
         this._disposables.add(model.onDidSuggest(e => {
@@ -54,4 +55,5 @@ export class CommitCharacterController {
         this._disposables.dispose();
     }
 }
-//# sourceMappingURL=suggestCommitCharacters.js.map
+
+export { CommitCharacterController };

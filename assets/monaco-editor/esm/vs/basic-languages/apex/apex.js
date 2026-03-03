@@ -1,13 +1,4 @@
-/*!-----------------------------------------------------------------------------
- * Copyright (c) Microsoft Corporation. All rights reserved.
- * Version: 0.54.0(7c2310116c57517348bbd868a21139f32454be22)
- * Released under the MIT license
- * https://github.com/microsoft/monaco-editor/blob/main/LICENSE.txt
- *-----------------------------------------------------------------------------*/
-
-
-// src/basic-languages/apex/apex.ts
-var conf = {
+const conf = {
   // the default separators except `@$`
   wordPattern: /(-?\d*\.\d\w*)|([^\`\~\!\#\%\^\&\*\(\)\-\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\?\s]+)/g,
   comments: {
@@ -41,7 +32,7 @@ var conf = {
     }
   }
 };
-var keywords = [
+const keywords = [
   "abstract",
   "activate",
   "and",
@@ -184,14 +175,14 @@ var keywords = [
   "while",
   "yesterday"
 ];
-var uppercaseFirstLetter = (lowercase) => lowercase.charAt(0).toUpperCase() + lowercase.substr(1);
-var keywordsWithCaseVariations = [];
+const uppercaseFirstLetter = (lowercase) => lowercase.charAt(0).toUpperCase() + lowercase.substr(1);
+let keywordsWithCaseVariations = [];
 keywords.forEach((lowercase) => {
   keywordsWithCaseVariations.push(lowercase);
   keywordsWithCaseVariations.push(lowercase.toUpperCase());
   keywordsWithCaseVariations.push(uppercaseFirstLetter(lowercase));
 });
-var language = {
+const language = {
   defaultToken: "",
   tokenPostfix: ".apex",
   keywords: keywordsWithCaseVariations,
@@ -334,7 +325,5 @@ var language = {
     ]
   }
 };
-export {
-  conf,
-  language
-};
+
+export { conf, language };

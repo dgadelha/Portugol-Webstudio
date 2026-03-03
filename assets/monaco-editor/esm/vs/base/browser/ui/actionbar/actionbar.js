@@ -1,17 +1,18 @@
+import { addDisposableListener, EventType, trackFocus, getActiveElement, isAncestor, isHTMLElement, EventHelper, clearNode } from '../../dom.js';
+import { StandardKeyboardEvent } from '../../keyboardEvent.js';
+import { BaseActionViewItem, ActionViewItem } from './actionViewItems.js';
+import { createInstantHoverDelegate } from '../hover/hoverDelegateFactory.js';
+import { ActionRunner, Separator } from '../../../common/actions.js';
+import { Emitter } from '../../../common/event.js';
+import { Disposable, DisposableStore, DisposableMap, dispose } from '../../../common/lifecycle.js';
+import { isNumber, isFunction } from '../../../common/types.js';
+import './actionbar.css';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import * as DOM from '../../dom.js';
-import { StandardKeyboardEvent } from '../../keyboardEvent.js';
-import { ActionViewItem, BaseActionViewItem } from './actionViewItems.js';
-import { createInstantHoverDelegate } from '../hover/hoverDelegateFactory.js';
-import { ActionRunner, Separator } from '../../../common/actions.js';
-import { Emitter } from '../../../common/event.js';
-import { Disposable, DisposableMap, DisposableStore, dispose } from '../../../common/lifecycle.js';
-import * as types from '../../../common/types.js';
-import './actionbar.css';
-export class ActionBar extends Disposable {
+class ActionBar extends Disposable {
     get onDidBlur() { return this._onDidBlur.event; }
     get onDidCancel() { return this._onDidCancel.event; }
     get onDidRun() { return this._onDidRun.event; }
@@ -62,7 +63,7 @@ export class ActionBar extends Disposable {
                 this.domNode.className += ' vertical';
                 break;
         }
-        this._register(DOM.addDisposableListener(this.domNode, DOM.EventType.KEY_DOWN, e => {
+        this._register(addDisposableListener(this.domNode, EventType.KEY_DOWN, e => {
             const event = new StandardKeyboardEvent(e);
             let eventHandled = true;
             const focusedItem = typeof this.focusedItem === 'number' ? this.viewItems[this.focusedItem] : undefined;
@@ -102,7 +103,7 @@ export class ActionBar extends Disposable {
                 event.stopPropagation();
             }
         }));
-        this._register(DOM.addDisposableListener(this.domNode, DOM.EventType.KEY_UP, e => {
+        this._register(addDisposableListener(this.domNode, EventType.KEY_UP, e => {
             const event = new StandardKeyboardEvent(e);
             // Run action on Enter/Space
             if (this.isTriggerKeyEvent(event)) {
@@ -118,9 +119,9 @@ export class ActionBar extends Disposable {
                 this.updateFocusedItem();
             }
         }));
-        this.focusTracker = this._register(DOM.trackFocus(this.domNode));
+        this.focusTracker = this._register(trackFocus(this.domNode));
         this._register(this.focusTracker.onDidBlur(() => {
-            if (DOM.getActiveElement() === this.domNode || !DOM.isAncestor(DOM.getActiveElement(), this.domNode)) {
+            if (getActiveElement() === this.domNode || !isAncestor(getActiveElement(), this.domNode)) {
                 this._onDidBlur.fire();
                 this.previouslyFocusedItem = this.focusedItem;
                 this.focusedItem = undefined;
@@ -177,7 +178,7 @@ export class ActionBar extends Disposable {
     updateFocusedItem() {
         for (let i = 0; i < this.actionsList.children.length; i++) {
             const elem = this.actionsList.children[i];
-            if (DOM.isAncestor(DOM.getActiveElement(), elem)) {
+            if (isAncestor(getActiveElement(), elem)) {
                 this.focusedItem = i;
                 this.viewItems[this.focusedItem]?.showHover?.();
                 break;
@@ -212,7 +213,7 @@ export class ActionBar extends Disposable {
             return this.viewItems[indexOrElement]?.action;
         }
         // by element
-        if (DOM.isHTMLElement(indexOrElement)) {
+        if (isHTMLElement(indexOrElement)) {
             while (indexOrElement.parentElement !== this.actionsList) {
                 if (!indexOrElement.parentElement) {
                     return undefined;
@@ -229,7 +230,7 @@ export class ActionBar extends Disposable {
     }
     push(arg, options = {}) {
         const actions = Array.isArray(arg) ? arg : [arg];
-        let index = types.isNumber(options.index) ? options.index : null;
+        let index = isNumber(options.index) ? options.index : null;
         actions.forEach((action) => {
             const actionViewItemElement = document.createElement('li');
             actionViewItemElement.className = 'action-item';
@@ -244,8 +245,8 @@ export class ActionBar extends Disposable {
             }
             // Prevent native context menu on actions
             if (!this.options.allowContextMenu) {
-                this.viewItemDisposables.set(item, DOM.addDisposableListener(actionViewItemElement, DOM.EventType.CONTEXT_MENU, (e) => {
-                    DOM.EventHelper.stop(e, true);
+                this.viewItemDisposables.set(item, addDisposableListener(actionViewItemElement, EventType.CONTEXT_MENU, (e) => {
+                    EventHelper.stop(e, true);
                 }));
             }
             item.actionRunner = this._actionRunner;
@@ -296,13 +297,30 @@ export class ActionBar extends Disposable {
         }
         this.refreshRole();
     }
+    getWidth(index) {
+        if (index >= 0 && index < this.actionsList.children.length) {
+            const item = this.actionsList.children.item(index);
+            if (item) {
+                return item.clientWidth;
+            }
+        }
+        return 0;
+    }
+    pull(index) {
+        if (index >= 0 && index < this.viewItems.length) {
+            this.actionsList.childNodes[index].remove();
+            this.viewItemDisposables.deleteAndDispose(this.viewItems[index]);
+            dispose(this.viewItems.splice(index, 1));
+            this.refreshRole();
+        }
+    }
     clear() {
         if (this.isEmpty()) {
             return;
         }
         this.viewItems = dispose(this.viewItems);
         this.viewItemDisposables.clearAndDisposeAll();
-        DOM.clearNode(this.actionsList);
+        clearNode(this.actionsList);
         this.refreshRole();
     }
     length() {
@@ -397,10 +415,10 @@ export class ActionBar extends Disposable {
         const actionViewItem = this.focusedItem !== undefined ? this.viewItems[this.focusedItem] : undefined;
         if (actionViewItem) {
             let focusItem = true;
-            if (!types.isFunction(actionViewItem.focus)) {
+            if (!isFunction(actionViewItem.focus)) {
                 focusItem = false;
             }
-            if (this.options.focusOnlyEnabledItems && types.isFunction(actionViewItem.isEnabled) && !actionViewItem.isEnabled()) {
+            if (this.options.focusOnlyEnabledItems && isFunction(actionViewItem.isEnabled) && !actionViewItem.isEnabled()) {
                 focusItem = false;
             }
             if (actionViewItem.action.id === Separator.ID) {
@@ -440,4 +458,5 @@ export class ActionBar extends Disposable {
         super.dispose();
     }
 }
-//# sourceMappingURL=actionbar.js.map
+
+export { ActionBar };

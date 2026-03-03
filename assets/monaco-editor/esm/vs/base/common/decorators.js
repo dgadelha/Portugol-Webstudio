@@ -1,4 +1,4 @@
-export function memoize(_target, key, descriptor) {
+function memoize(_target, key, descriptor) {
     let fnKey = null;
     let fn = null;
     if (typeof descriptor.value === 'function') {
@@ -25,7 +25,9 @@ export function memoize(_target, key, descriptor) {
                 value: fn.apply(this, args)
             });
         }
+        // eslint-disable-next-line local/code-no-any-casts
         return this[memoizeKey];
     };
 }
-//# sourceMappingURL=decorators.js.map
+
+export { memoize };

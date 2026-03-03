@@ -1,9 +1,10 @@
+import { ActionRunner } from '../../../../base/common/actions.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { ActionRunner } from '../../../../base/common/actions.js';
-export class ActionRunnerWithContext extends ActionRunner {
+class ActionRunnerWithContext extends ActionRunner {
     constructor(_getContext) {
         super();
         this._getContext = _getContext;
@@ -13,4 +14,5 @@ export class ActionRunnerWithContext extends ActionRunner {
         return super.runAction(action, ctx);
     }
 }
-//# sourceMappingURL=utils.js.map
+
+export { ActionRunnerWithContext };

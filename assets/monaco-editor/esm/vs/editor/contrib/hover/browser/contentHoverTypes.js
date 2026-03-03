@@ -2,7 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-export class ContentHoverResult {
+class ContentHoverResult {
     constructor(hoverParts, isComplete, options) {
         this.hoverParts = hoverParts;
         this.isComplete = isComplete;
@@ -16,7 +16,7 @@ export class ContentHoverResult {
         return new FilteredContentHoverResult(this, filteredHoverParts, this.isComplete, this.options);
     }
 }
-export class FilteredContentHoverResult extends ContentHoverResult {
+class FilteredContentHoverResult extends ContentHoverResult {
     constructor(original, messages, isComplete, options) {
         super(messages, isComplete, options);
         this.original = original;
@@ -25,4 +25,5 @@ export class FilteredContentHoverResult extends ContentHoverResult {
         return this.original.filter(anchor);
     }
 }
-//# sourceMappingURL=contentHoverTypes.js.map
+
+export { ContentHoverResult, FilteredContentHoverResult };

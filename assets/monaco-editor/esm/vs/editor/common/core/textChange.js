@@ -1,15 +1,16 @@
+import { writeUInt32BE, writeUInt16LE, readUInt32BE } from '../../../base/common/buffer.js';
+import { decodeUTF16LE } from './stringBuilder.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import * as buffer from '../../../base/common/buffer.js';
-import { decodeUTF16LE } from './stringBuilder.js';
 function escapeNewLine(str) {
     return (str
         .replace(/\n/g, '\\n')
         .replace(/\r/g, '\\r'));
 }
-export class TextChange {
+class TextChange {
     get oldLength() {
         return this.oldText.length;
     }
@@ -42,38 +43,38 @@ export class TextChange {
     }
     static _writeString(b, str, offset) {
         const len = str.length;
-        buffer.writeUInt32BE(b, len, offset);
+        writeUInt32BE(b, len, offset);
         offset += 4;
         for (let i = 0; i < len; i++) {
-            buffer.writeUInt16LE(b, str.charCodeAt(i), offset);
+            writeUInt16LE(b, str.charCodeAt(i), offset);
             offset += 2;
         }
         return offset;
     }
     static _readString(b, offset) {
-        const len = buffer.readUInt32BE(b, offset);
+        const len = readUInt32BE(b, offset);
         offset += 4;
         return decodeUTF16LE(b, offset, len);
     }
     writeSize() {
-        return (+4 // oldPosition
+        return (4 // oldPosition
             + 4 // newPosition
             + TextChange._writeStringSize(this.oldText)
             + TextChange._writeStringSize(this.newText));
     }
     write(b, offset) {
-        buffer.writeUInt32BE(b, this.oldPosition, offset);
+        writeUInt32BE(b, this.oldPosition, offset);
         offset += 4;
-        buffer.writeUInt32BE(b, this.newPosition, offset);
+        writeUInt32BE(b, this.newPosition, offset);
         offset += 4;
         offset = TextChange._writeString(b, this.oldText, offset);
         offset = TextChange._writeString(b, this.newText, offset);
         return offset;
     }
     static read(b, offset, dest) {
-        const oldPosition = buffer.readUInt32BE(b, offset);
+        const oldPosition = readUInt32BE(b, offset);
         offset += 4;
-        const newPosition = buffer.readUInt32BE(b, offset);
+        const newPosition = readUInt32BE(b, offset);
         offset += 4;
         const oldText = TextChange._readString(b, offset);
         offset += TextChange._writeStringSize(oldText);
@@ -83,7 +84,7 @@ export class TextChange {
         return offset;
     }
 }
-export function compressConsecutiveTextChanges(prevEdits, currEdits) {
+function compressConsecutiveTextChanges(prevEdits, currEdits) {
     if (prevEdits === null || prevEdits.length === 0) {
         return currEdits;
     }
@@ -243,4 +244,5 @@ class TextChangeCompressor {
         return result;
     }
 }
-//# sourceMappingURL=textChange.js.map
+
+export { TextChange, compressConsecutiveTextChanges };

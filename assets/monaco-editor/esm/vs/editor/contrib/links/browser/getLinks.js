@@ -1,7 +1,3 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { coalesce } from '../../../../base/common/arrays.js';
 import { CancellationToken } from '../../../../base/common/cancellation.js';
 import { onUnexpectedExternalError } from '../../../../base/common/errors.js';
@@ -12,7 +8,12 @@ import { Range } from '../../../common/core/range.js';
 import { IModelService } from '../../../common/services/model.js';
 import { CommandsRegistry } from '../../../../platform/commands/common/commands.js';
 import { ILanguageFeaturesService } from '../../../common/services/languageFeatures.js';
-export class Link {
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+class Link {
     constructor(link, provider) {
         this._link = link;
         this._provider = provider;
@@ -50,7 +51,7 @@ export class Link {
         return Promise.reject(new Error('missing'));
     }
 }
-export class LinksList {
+class LinksList {
     static { this.Empty = new LinksList([]); }
     constructor(tuples) {
         this._disposables = new DisposableStore();
@@ -107,7 +108,7 @@ export class LinksList {
         return result;
     }
 }
-export async function getLinks(providers, model, token) {
+async function getLinks(providers, model, token) {
     const lists = [];
     // ask all providers for links in parallel
     const promises = providers.ordered(model).reverse().map(async (provider, i) => {
@@ -152,4 +153,5 @@ CommandsRegistry.registerCommand('_executeLinkProvider', async (accessor, ...arg
     list.dispose();
     return result;
 });
-//# sourceMappingURL=getLinks.js.map
+
+export { Link, LinksList, getLinks };

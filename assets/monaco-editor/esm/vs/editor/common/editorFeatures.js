@@ -7,10 +7,11 @@ const editorFeatures = [];
  * Registers an editor feature. Editor features will be instantiated only once, as soon as
  * the first code editor is instantiated.
  */
-export function registerEditorFeature(ctor) {
+function registerEditorFeature(ctor) {
     editorFeatures.push(ctor);
 }
-export function getEditorFeatures() {
+function getEditorFeatures() {
     return editorFeatures.slice(0);
 }
-//# sourceMappingURL=editorFeatures.js.map
+
+export { getEditorFeatures, registerEditorFeature };

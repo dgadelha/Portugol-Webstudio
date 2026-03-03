@@ -1,19 +1,20 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { isMacintosh } from '../../../base/common/platform.js';
 import { localize } from '../../../nls.js';
 import { ContextKeyExpr } from '../../contextkey/common/contextkey.js';
 import { InputFocusedContext } from '../../contextkey/common/contextkeys.js';
 import { KeybindingsRegistry } from '../../keybinding/common/keybindingsRegistry.js';
-import { endOfQuickInputBoxContext, inQuickInputContext, quickInputTypeContextKeyValue } from './quickInput.js';
-import { IQuickInputService, QuickPickFocus } from '../common/quickInput.js';
+import { quickInputTypeContextKeyValue, inQuickInputContext, endOfQuickInputBoxContext } from './quickInput.js';
+import { QuickPickFocus, IQuickInputService } from '../common/quickInput.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
 function registerQuickInputCommandAndKeybindingRule(rule, options = {}) {
     KeybindingsRegistry.registerCommandAndKeybindingRule({
         weight: 200 /* KeybindingWeight.WorkbenchContrib */,
         when: inQuickInputContext,
-        metadata: { description: localize(1741, "Used while in the context of any kind of quick input. If you change one keybinding for this command, you should change all of the other keybindings (modifier variants) of this command as well.") },
+        metadata: { description: localize(1758, "Used while in the context of any kind of quick input. If you change one keybinding for this command, you should change all of the other keybindings (modifier variants) of this command as well.") },
         ...rule,
         secondary: getSecondary(rule.primary, rule.secondary ?? [], options)
     });
@@ -24,7 +25,7 @@ function registerQuickPickCommandAndKeybindingRule(rule, options = {}) {
         when: ContextKeyExpr.and(ContextKeyExpr.or(
         // Only things that use Tree widgets
         ContextKeyExpr.equals(quickInputTypeContextKeyValue, "quickPick" /* QuickInputType.QuickPick */), ContextKeyExpr.equals(quickInputTypeContextKeyValue, "quickTree" /* QuickInputType.QuickTree */)), inQuickInputContext),
-        metadata: { description: localize(1742, "Used while in the context of the quick pick. If you change one keybinding for this command, you should change all of the other keybindings (modifier variants) of this command as well.") },
+        metadata: { description: localize(1759, "Used while in the context of the quick pick. If you change one keybinding for this command, you should change all of the other keybindings (modifier variants) of this command as well.") },
         ...rule,
         secondary: getSecondary(rule.primary, rule.secondary ?? [], options)
     });
@@ -79,8 +80,8 @@ registerQuickPickCommandAndKeybindingRule({ id: 'quickInput.previous', primary: 
 // In this case, we want that modifier key+up/down to navigate to the next/previous item, not the next/previous separator.
 // To handle this, we have a separate command for navigating to the next/previous separator when we are not in quick access mode.
 // If, however, we are in quick access mode, and you hold down an additional modifier key, we will navigate to the next/previous separator.
-const nextSeparatorFallbackDesc = localize(1743, "If we're in quick access mode, this will navigate to the next item. If we are not in quick access mode, this will navigate to the next separator.");
-const prevSeparatorFallbackDesc = localize(1744, "If we're in quick access mode, this will navigate to the previous item. If we are not in quick access mode, this will navigate to the previous separator.");
+const nextSeparatorFallbackDesc = localize(1760, "If we're in quick access mode, this will navigate to the next item. If we are not in quick access mode, this will navigate to the next separator.");
+const prevSeparatorFallbackDesc = localize(1761, "If we're in quick access mode, this will navigate to the previous item. If we are not in quick access mode, this will navigate to the previous separator.");
 if (isMacintosh) {
     registerQuickPickCommandAndKeybindingRule({
         id: 'quickInput.nextSeparatorWithQuickAccessFallback',
@@ -144,8 +145,8 @@ KeybindingsRegistry.registerCommandAndKeybindingRule({
     when: ContextKeyExpr.and(
     // All other kinds of Quick things handle Accept, except Widget. In other words, Accepting is a detail on the things
     // that extend IQuickInput
-    ContextKeyExpr.notEquals(quickInputTypeContextKeyValue, "quickWidget" /* QuickInputType.QuickWidget */), inQuickInputContext),
-    metadata: { description: localize(1745, "Used while in the context of some quick input. If you change one keybinding for this command, you should change all of the other keybindings (modifier variants) of this command as well.") },
+    ContextKeyExpr.notEquals(quickInputTypeContextKeyValue, "quickWidget" /* QuickInputType.QuickWidget */), inQuickInputContext, ContextKeyExpr.not('isComposing')),
+    metadata: { description: localize(1762, "Used while in the context of some quick input. If you change one keybinding for this command, you should change all of the other keybindings (modifier variants) of this command as well.") },
     handler: (accessor) => {
         const currentQuickPick = accessor.get(IQuickInputService).currentQuickInput;
         currentQuickPick?.accept();
@@ -186,4 +187,3 @@ registerQuickPickCommandAndKeybindingRule({
     }
 });
 //#endregion
-//# sourceMappingURL=quickInputActions.js.map

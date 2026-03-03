@@ -1,11 +1,12 @@
 import { Emitter } from '../../../common/event.js';
-import { $, append } from '../../dom.js';
+import { append, $ } from '../../dom.js';
 import { BaseActionViewItem } from '../actionbar/actionViewItems.js';
 import { getBaseLayerHoverDelegate } from '../hover/hoverDelegate2.js';
 import { getDefaultHoverDelegate } from '../hover/hoverDelegateFactory.js';
 import './dropdown.css';
 import { DropdownMenu } from './dropdown.js';
-export class DropdownMenuActionViewItem extends BaseActionViewItem {
+
+class DropdownMenuActionViewItem extends BaseActionViewItem {
     get onDidChangeVisibility() { return this._onDidChangeVisibility.event; }
     constructor(action, menuActionsOrProvider, contextMenuProvider, options = Object.create(null)) {
         super(null, action, options);
@@ -104,4 +105,5 @@ export class DropdownMenuActionViewItem extends BaseActionViewItem {
         this.element?.classList.toggle('disabled', disabled);
     }
 }
-//# sourceMappingURL=dropdownActionViewItem.js.map
+
+export { DropdownMenuActionViewItem };

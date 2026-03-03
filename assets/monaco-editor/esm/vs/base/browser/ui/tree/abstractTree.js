@@ -1,35 +1,44 @@
+import { isEditableElement, isKeyboardEvent, hasParentWithClass, append, $, clearNode, addDisposableListener } from '../../dom.js';
+import { createStyleSheet } from '../../domStylesheets.js';
+import { asCssValueWithDefault } from '../../cssValue.js';
+import { Event, EventBufferer, Emitter, Relay } from '../../../common/event.js';
+import { StandardKeyboardEvent } from '../../keyboardEvent.js';
+import '../../browser.js';
+import '../../dnd.js';
+import '../../touch.js';
+import '../hover/hoverDelegateFactory.js';
+import '../../../common/platform.js';
+import { DisposableStore, dispose, Disposable, toDisposable } from '../../../common/lifecycle.js';
+import '../selectBox/selectBox.css';
+import '../selectBox/selectBoxCustom.js';
+import { equals, distinct, range } from '../../../common/arrays.js';
+import '../../../common/actions.js';
+import '../actionbar/actionbar.css';
+import { localize } from '../../../../nls.js';
+import '../findinput/findInput.js';
+import { alert } from '../aria/aria.js';
+import '../scrollbar/scrollableElement.js';
+import '../inputbox/inputBox.css';
+import { ElementsDragAndDropData } from '../list/listView.js';
+import { isStickyScrollContainer, List, MouseController, isButton, isMonacoEditor, isStickyScrollElement, isMonacoCustomToggle, isActionItem } from '../list/listWidget.js';
+import '../toggle/toggle.js';
+import { isFilterResult, getVisibleState } from './indexTreeModel.js';
+import { TreeMouseEventTarget } from './tree.js';
+import { Delayer, disposableTimeout } from '../../../common/async.js';
+import { Codicon } from '../../../common/codicons.js';
+import { ThemeIcon } from '../../../common/themables.js';
+import { SetMap } from '../../../common/map.js';
+import { FuzzyScore, fuzzyScore } from '../../../common/filters.js';
+import { clamp } from '../../../common/numbers.js';
+import './media/tree.css';
+import '../../../common/observableInternal/index.js';
+import { constObservable } from '../../../common/observableInternal/observables/constObservable.js';
+import { autorun } from '../../../common/observableInternal/reactions/autorun.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { $, append, clearNode, h, hasParentWithClass, isKeyboardEvent, addDisposableListener, isEditableElement } from '../../dom.js';
-import { createStyleSheet } from '../../domStylesheets.js';
-import { asCssValueWithDefault } from '../../cssValue.js';
-import { DomEmitter } from '../../event.js';
-import { StandardKeyboardEvent } from '../../keyboardEvent.js';
-import { ActionBar } from '../actionbar/actionbar.js';
-import { FindInput } from '../findinput/findInput.js';
-import { unthemedInboxStyles } from '../inputbox/inputBox.js';
-import { ElementsDragAndDropData } from '../list/listView.js';
-import { isActionItem, isButton, isMonacoCustomToggle, isMonacoEditor, isStickyScrollContainer, isStickyScrollElement, List, MouseController } from '../list/listWidget.js';
-import { Toggle, unthemedToggleStyles } from '../toggle/toggle.js';
-import { getVisibleState, isFilterResult } from './indexTreeModel.js';
-import { TreeMouseEventTarget } from './tree.js';
-import { Action } from '../../../common/actions.js';
-import { distinct, equals, range } from '../../../common/arrays.js';
-import { Delayer, disposableTimeout, timeout } from '../../../common/async.js';
-import { Codicon } from '../../../common/codicons.js';
-import { ThemeIcon } from '../../../common/themables.js';
-import { SetMap } from '../../../common/map.js';
-import { Emitter, Event, EventBufferer, Relay } from '../../../common/event.js';
-import { fuzzyScore, FuzzyScore } from '../../../common/filters.js';
-import { Disposable, DisposableStore, dispose, toDisposable } from '../../../common/lifecycle.js';
-import { clamp } from '../../../common/numbers.js';
-import './media/tree.css';
-import { localize } from '../../../../nls.js';
-import { createInstantHoverDelegate } from '../hover/hoverDelegateFactory.js';
-import { autorun, constObservable } from '../../../common/observable.js';
-import { alert } from '../aria/aria.js';
 class TreeElementsDragAndDropData extends ElementsDragAndDropData {
     constructor(data) {
         super(data.elements.map(node => node.element));
@@ -127,9 +136,11 @@ function asListOptions(modelProvider, disposableStore, options) {
         dnd: options.dnd && disposableStore.add(new TreeNodeListDragAndDrop(modelProvider, options.dnd)),
         multipleSelectionController: options.multipleSelectionController && {
             isSelectionSingleChangeEvent(e) {
+                // eslint-disable-next-line local/code-no-dangerous-type-assertions
                 return options.multipleSelectionController.isSelectionSingleChangeEvent({ ...e, element: e.element });
             },
             isSelectionRangeChangeEvent(e) {
+                // eslint-disable-next-line local/code-no-dangerous-type-assertions
                 return options.multipleSelectionController.isSelectionRangeChangeEvent({ ...e, element: e.element });
             }
         },
@@ -173,7 +184,7 @@ function asListOptions(modelProvider, disposableStore, options) {
         }
     };
 }
-export class ComposedTreeDelegate {
+class ComposedTreeDelegate {
     constructor(delegate) {
         this.delegate = delegate;
     }
@@ -190,7 +201,7 @@ export class ComposedTreeDelegate {
         this.delegate.setDynamicHeight?.(element.element, height);
     }
 }
-export var RenderIndentGuides;
+var RenderIndentGuides;
 (function (RenderIndentGuides) {
     RenderIndentGuides["None"] = "none";
     RenderIndentGuides["OnHover"] = "onHover";
@@ -209,7 +220,7 @@ class EventCollection {
         this.disposables.dispose();
     }
 }
-export class TreeRenderer {
+class TreeRenderer {
     static { this.DefaultIndent = 8; }
     constructor(renderer, model, onDidChangeCollapseState, activeNodes, renderedIndentGuides, options = {}) {
         this.renderer = renderer;
@@ -396,7 +407,7 @@ export class TreeRenderer {
         dispose(this.disposables);
     }
 }
-export function contiguousFuzzyScore(patternLower, wordLower) {
+function contiguousFuzzyScore(patternLower, wordLower) {
     const index = wordLower.toLowerCase().indexOf(patternLower);
     let score;
     if (index > -1) {
@@ -407,7 +418,7 @@ export function contiguousFuzzyScore(patternLower, wordLower) {
     }
     return score;
 }
-export class FindFilter {
+class FindFilter {
     get totalCount() { return this._totalCount; }
     get matchCount() { return this._matchCount; }
     set findMatchType(type) { this._findMatchType = type; }
@@ -492,21 +503,7 @@ export class FindFilter {
         dispose(this.disposables);
     }
 }
-class TreeFindToggle extends Toggle {
-    constructor(contribution, opts, hoverDelegate) {
-        super({
-            icon: contribution.icon,
-            title: contribution.title,
-            isChecked: contribution.isChecked,
-            inputActiveOptionBorder: opts.inputActiveOptionBorder,
-            inputActiveOptionForeground: opts.inputActiveOptionForeground,
-            inputActiveOptionBackground: opts.inputActiveOptionBackground,
-            hoverDelegate,
-        });
-        this.id = contribution.id;
-    }
-}
-export class FindToggles {
+class FindToggles {
     constructor(startStates) {
         this.stateMap = new Map(startStates.map(state => [state.id, { ...state }]));
     }
@@ -529,123 +526,22 @@ export class FindToggles {
         return true;
     }
 }
-const unthemedFindWidgetStyles = {
-    inputBoxStyles: unthemedInboxStyles,
-    toggleStyles: unthemedToggleStyles,
-    listFilterWidgetBackground: undefined,
-    listFilterWidgetNoMatchesOutline: undefined,
-    listFilterWidgetOutline: undefined,
-    listFilterWidgetShadow: undefined
-};
-export var TreeFindMode;
+var TreeFindMode;
 (function (TreeFindMode) {
     TreeFindMode[TreeFindMode["Highlight"] = 0] = "Highlight";
     TreeFindMode[TreeFindMode["Filter"] = 1] = "Filter";
 })(TreeFindMode || (TreeFindMode = {}));
-export var TreeFindMatchType;
+var TreeFindMatchType;
 (function (TreeFindMatchType) {
     TreeFindMatchType[TreeFindMatchType["Fuzzy"] = 0] = "Fuzzy";
     TreeFindMatchType[TreeFindMatchType["Contiguous"] = 1] = "Contiguous";
 })(TreeFindMatchType || (TreeFindMatchType = {}));
-class FindWidget extends Disposable {
-    constructor(container, tree, contextViewProvider, placeholder, toggleContributions = [], options) {
-        super();
-        this.tree = tree;
-        this.elements = h('.monaco-tree-type-filter', [
-            h('.monaco-tree-type-filter-input@findInput'),
-            h('.monaco-tree-type-filter-actionbar@actionbar'),
-        ]);
-        this.toggles = [];
-        this._onDidDisable = new Emitter();
-        container.appendChild(this.elements.root);
-        this._register(toDisposable(() => this.elements.root.remove()));
-        const styles = options?.styles ?? unthemedFindWidgetStyles;
-        if (styles.listFilterWidgetBackground) {
-            this.elements.root.style.backgroundColor = styles.listFilterWidgetBackground;
-        }
-        if (styles.listFilterWidgetShadow) {
-            this.elements.root.style.boxShadow = `0 0 8px 2px ${styles.listFilterWidgetShadow}`;
-        }
-        const toggleHoverDelegate = this._register(createInstantHoverDelegate());
-        this.toggles = toggleContributions.map(contribution => this._register(new TreeFindToggle(contribution, styles.toggleStyles, toggleHoverDelegate)));
-        this.onDidToggleChange = Event.any(...this.toggles.map(toggle => Event.map(toggle.onChange, () => ({ id: toggle.id, isChecked: toggle.checked }))));
-        const history = options?.history || [];
-        this.findInput = this._register(new FindInput(this.elements.findInput, contextViewProvider, {
-            label: localize(18, "Type to search"),
-            placeholder,
-            additionalToggles: this.toggles,
-            showCommonFindToggles: false,
-            inputBoxStyles: styles.inputBoxStyles,
-            toggleStyles: styles.toggleStyles,
-            history: new Set(history)
-        }));
-        this.actionbar = this._register(new ActionBar(this.elements.actionbar));
-        const emitter = this._register(new DomEmitter(this.findInput.inputBox.inputElement, 'keydown'));
-        const onKeyDown = Event.chain(emitter.event, $ => $.map(e => new StandardKeyboardEvent(e)));
-        this._register(onKeyDown((e) => {
-            // Using equals() so we reserve modified keys for future use
-            if (e.equals(3 /* KeyCode.Enter */)) {
-                // This is the only keyboard way to return to the tree from a history item that isn't the last one
-                e.preventDefault();
-                e.stopPropagation();
-                this.findInput.inputBox.addToHistory();
-                this.tree.domFocus();
-                return;
-            }
-            if (e.equals(18 /* KeyCode.DownArrow */)) {
-                e.preventDefault();
-                e.stopPropagation();
-                if (this.findInput.inputBox.isAtLastInHistory() || this.findInput.inputBox.isNowhereInHistory()) {
-                    // Retain original pre-history DownArrow behavior
-                    this.findInput.inputBox.addToHistory();
-                    this.tree.domFocus();
-                }
-                else {
-                    // Downward through history
-                    this.findInput.inputBox.showNextValue();
-                }
-                return;
-            }
-            if (e.equals(16 /* KeyCode.UpArrow */)) {
-                e.preventDefault();
-                e.stopPropagation();
-                // Upward through history
-                this.findInput.inputBox.showPreviousValue();
-                return;
-            }
-        }));
-        const closeAction = this._register(new Action('close', localize(19, "Close"), 'codicon codicon-close', true, () => this.dispose()));
-        this.actionbar.push(closeAction, { icon: true, label: false });
-        this.onDidChangeValue = this.findInput.onDidChange;
-    }
-    setToggleState(id, checked) {
-        const toggle = this.toggles.find(toggle => toggle.id === id);
-        if (toggle) {
-            toggle.checked = checked;
-        }
-    }
-    setPlaceHolder(placeHolder) {
-        this.findInput.inputBox.setPlaceHolder(placeHolder);
-    }
-    showMessage(message) {
-        this.findInput.showMessage(message);
-    }
-    clearMessage() {
-        this.findInput.clearMessage();
-    }
-    async dispose() {
-        this._onDidDisable.fire();
-        this.elements.root.classList.add('disabled');
-        await timeout(300);
-        super.dispose();
-    }
-}
 var DefaultTreeToggles;
 (function (DefaultTreeToggles) {
     DefaultTreeToggles["Mode"] = "mode";
     DefaultTreeToggles["MatchType"] = "matchType";
 })(DefaultTreeToggles || (DefaultTreeToggles = {}));
-export class AbstractFindController {
+class AbstractFindController {
     get pattern() { return this._pattern; }
     get placeholder() { return this._placeholder; }
     set placeholder(value) {
@@ -701,7 +597,7 @@ export class AbstractFindController {
         this.disposables.dispose();
     }
 }
-export class FindController extends AbstractFindController {
+class FindController extends AbstractFindController {
     get mode() { return this.toggles.get(DefaultTreeToggles.Mode) ? TreeFindMode.Filter : TreeFindMode.Highlight; }
     set mode(mode) {
         if (mode === this.mode) {
@@ -1215,8 +1111,7 @@ class StickyScrollWidget {
                 container.removeAttribute('aria-label');
             }
         });
-        if (typeof ariaLabel === 'string') {
-        }
+        if (typeof ariaLabel === 'string') ;
         else if (ariaLabel) {
             container.setAttribute('aria-label', ariaLabel.get());
         }
@@ -1513,7 +1408,8 @@ class Trait {
         this.onDidChange = this._onDidChange.event;
     }
     set(nodes, browserEvent) {
-        if (!browserEvent?.__forceEvent && equals(this.nodes, nodes)) {
+        const event = browserEvent;
+        if (!(event?.__forceEvent) && equals(this.nodes, nodes)) {
             return;
         }
         this._set(nodes, false, browserEvent);
@@ -1754,7 +1650,7 @@ class TreeNodeList extends List {
         }
     }
 }
-export class AbstractTree {
+class AbstractTree {
     get onDidScroll() { return this.view.onDidScroll; }
     get onDidChangeFocus() { return this.eventBufferer.wrapEvent(this.focus.onDidChange); }
     get onDidChangeSelection() { return this.eventBufferer.wrapEvent(this.selection.onDidChange); }
@@ -1933,9 +1829,9 @@ export class AbstractTree {
         if (styles.listFocusOutline) { // default: set
             content.push(`.monaco-list${suffix}.sticky-scroll-focused .monaco-scrollable-element .monaco-tree-sticky-container:focus .monaco-list-row.focused { outline: 1px solid ${styles.listFocusOutline}; outline-offset: -1px; }`);
             content.push(`.monaco-list${suffix}:not(.sticky-scroll-focused) .monaco-scrollable-element .monaco-tree-sticky-container .monaco-list-row.focused { outline: inherit; }`);
-            content.push(`.monaco-workbench.context-menu-visible .monaco-list${suffix}.last-focused.sticky-scroll-focused .monaco-scrollable-element .monaco-tree-sticky-container .monaco-list-row.passive-focused { outline: 1px solid ${styles.listFocusOutline}; outline-offset: -1px; }`);
-            content.push(`.monaco-workbench.context-menu-visible .monaco-list${suffix}.last-focused.sticky-scroll-focused .monaco-list-rows .monaco-list-row.focused { outline: inherit; }`);
-            content.push(`.monaco-workbench.context-menu-visible .monaco-list${suffix}.last-focused:not(.sticky-scroll-focused) .monaco-tree-sticky-container .monaco-list-rows .monaco-list-row.focused { outline: inherit; }`);
+            content.push(`.context-menu-visible .monaco-list${suffix}.last-focused.sticky-scroll-focused .monaco-scrollable-element .monaco-tree-sticky-container .monaco-list-row.passive-focused { outline: 1px solid ${styles.listFocusOutline}; outline-offset: -1px; }`);
+            content.push(`.context-menu-visible .monaco-list${suffix}.last-focused.sticky-scroll-focused .monaco-list-rows .monaco-list-row.focused { outline: inherit; }`);
+            content.push(`.context-menu-visible .monaco-list${suffix}.last-focused:not(.sticky-scroll-focused) .monaco-tree-sticky-container .monaco-list-rows .monaco-list-row.focused { outline: inherit; }`);
         }
         this.styleElement.textContent = content.join('\n');
         this.view.style(styles);
@@ -2127,4 +2023,5 @@ export class AbstractTree {
         this.modelDisposables.dispose();
     }
 }
-//# sourceMappingURL=abstractTree.js.map
+
+export { AbstractFindController, AbstractTree, ComposedTreeDelegate, FindController, FindFilter, FindToggles, RenderIndentGuides, TreeFindMatchType, TreeFindMode, TreeRenderer, contiguousFuzzyScore };

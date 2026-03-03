@@ -1,16 +1,3 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
 import { coalesce } from '../../../../base/common/arrays.js';
 import { UriList } from '../../../../base/common/dataTransfer.js';
 import { HierarchicalKind } from '../../../../base/common/hierarchicalKind.js';
@@ -23,6 +10,20 @@ import { localize } from '../../../../nls.js';
 import { IWorkspaceContextService } from '../../../../platform/workspace/common/workspace.js';
 import { DocumentPasteTriggerKind } from '../../../common/languages.js';
 import { ILanguageFeaturesService } from '../../../common/services/languageFeatures.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 class SimplePasteAndDropProvider {
     constructor(kind) {
         this.copyMimeTypes = [];
@@ -51,7 +52,7 @@ class SimplePasteAndDropProvider {
         };
     }
 }
-export class DefaultTextPasteOrDropEditProvider extends SimplePasteAndDropProvider {
+class DefaultTextPasteOrDropEditProvider extends SimplePasteAndDropProvider {
     static { this.id = 'text'; }
     constructor() {
         super(HierarchicalKind.Empty.append('text', 'plain'));
@@ -72,7 +73,7 @@ export class DefaultTextPasteOrDropEditProvider extends SimplePasteAndDropProvid
         const insertText = await textEntry.asString();
         return {
             handledMimeType: Mimes.text,
-            title: localize(921, "Insert Plain Text"),
+            title: localize(926, "Insert Plain Text"),
             insertText,
             kind: this.kind,
         };
@@ -105,14 +106,14 @@ class PathProvider extends SimplePasteAndDropProvider {
         if (uriCount > 0) {
             // Dropping at least one generic uri (such as https) so use most generic label
             label = entries.length > 1
-                ? localize(922, "Insert Uris")
-                : localize(923, "Insert Uri");
+                ? localize(927, "Insert Uris")
+                : localize(928, "Insert Uri");
         }
         else {
             // All the paths are file paths
             label = entries.length > 1
-                ? localize(924, "Insert Paths")
-                : localize(925, "Insert Path");
+                ? localize(929, "Insert Paths")
+                : localize(930, "Insert Path");
         }
         return {
             handledMimeType: Mimes.uriList,
@@ -145,8 +146,8 @@ let RelativePathProvider = class RelativePathProvider extends SimplePasteAndDrop
             handledMimeType: Mimes.uriList,
             insertText: relativeUris.join(' '),
             title: entries.length > 1
-                ? localize(926, "Insert Relative Paths")
-                : localize(927, "Insert Relative Path"),
+                ? localize(931, "Insert Relative Paths")
+                : localize(932, "Insert Relative Path"),
             kind: this.kind,
         };
     }
@@ -176,7 +177,7 @@ class PasteHtmlProvider {
             edits: [{
                     insertText: htmlText,
                     yieldTo: this._yieldTo,
-                    title: localize(928, 'Insert HTML'),
+                    title: localize(933, 'Insert HTML'),
                     kind: this.kind,
                 }],
         };
@@ -212,7 +213,6 @@ DefaultDropProvidersFeature = __decorate([
     __param(0, ILanguageFeaturesService),
     __param(1, IWorkspaceContextService)
 ], DefaultDropProvidersFeature);
-export { DefaultDropProvidersFeature };
 let DefaultPasteProvidersFeature = class DefaultPasteProvidersFeature extends Disposable {
     constructor(languageFeaturesService, workspaceContextService) {
         super();
@@ -226,5 +226,5 @@ DefaultPasteProvidersFeature = __decorate([
     __param(0, ILanguageFeaturesService),
     __param(1, IWorkspaceContextService)
 ], DefaultPasteProvidersFeature);
-export { DefaultPasteProvidersFeature };
-//# sourceMappingURL=defaultProviders.js.map
+
+export { DefaultDropProvidersFeature, DefaultPasteProvidersFeature, DefaultTextPasteOrDropEditProvider };

@@ -1,31 +1,32 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
 import { Event, PauseableEmitter } from '../../../base/common/event.js';
 import { Iterable } from '../../../base/common/iterator.js';
-import { Disposable, DisposableStore, MutableDisposable } from '../../../base/common/lifecycle.js';
+import { MutableDisposable, DisposableStore, Disposable } from '../../../base/common/lifecycle.js';
 import { cloneAndChange } from '../../../base/common/objects.js';
 import { TernarySearchTree } from '../../../base/common/ternarySearchTree.js';
 import { URI } from '../../../base/common/uri.js';
 import { localize } from '../../../nls.js';
 import { CommandsRegistry } from '../../commands/common/commands.js';
 import { IConfigurationService } from '../../configuration/common/configuration.js';
-import { IContextKeyService, RawContextKey } from '../common/contextkey.js';
+import { RawContextKey, IContextKeyService } from '../common/contextkey.js';
 import { InputFocusedContext } from '../common/contextkeys.js';
 import { mainWindow } from '../../../base/browser/window.js';
-import { addDisposableListener, EventType, getActiveWindow, isEditableElement, onDidRegisterWindow, trackFocus } from '../../../base/browser/dom.js';
+import { onDidRegisterWindow, addDisposableListener, EventType, trackFocus, getActiveWindow, isEditableElement } from '../../../base/browser/dom.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 const KEYBINDING_CONTEXT_ATTR = 'data-keybinding-context';
-export class Context {
+class Context {
     constructor(id, parent) {
         this._id = id;
         this._parent = parent;
@@ -210,7 +211,7 @@ class CompositeContextKeyChangeEvent {
 function allEventKeysInContext(event, context) {
     return event.allKeysContainedIn(new Set(Object.keys(context)));
 }
-export class AbstractContextKeyService extends Disposable {
+class AbstractContextKeyService extends Disposable {
     get onDidChangeContext() { return this._onDidChangeContext.event; }
     constructor(myContextId) {
         super();
@@ -359,7 +360,6 @@ let ContextKeyService = class ContextKeyService extends AbstractContextKeyServic
 ContextKeyService = __decorate([
     __param(0, IConfigurationService)
 ], ContextKeyService);
-export { ContextKeyService };
 class ScopedContextKeyService extends AbstractContextKeyService {
     constructor(parent, domNode) {
         super(parent.createChildContext());
@@ -426,7 +426,7 @@ function findContextAttr(domNode) {
     }
     return 0;
 }
-export function setContext(accessor, contextKey, contextValue) {
+function setContext(accessor, contextKey, contextValue) {
     const contextKeyService = accessor.get(IContextKeyService);
     contextKeyService.createKey(String(contextKey), stringifyURIs(contextValue));
 }
@@ -448,7 +448,7 @@ CommandsRegistry.registerCommand({
         return [...RawContextKey.all()].sort((a, b) => a.key.localeCompare(b.key));
     },
     metadata: {
-        description: localize(1659, "A command that returns information about context keys"),
+        description: localize(1674, "A command that returns information about context keys"),
         args: []
     }
 });
@@ -464,4 +464,5 @@ CommandsRegistry.registerCommand('_generateContextKeyInfo', function () {
     result.sort((a, b) => a.key.localeCompare(b.key));
     console.log(JSON.stringify(result, undefined, 2));
 });
-//# sourceMappingURL=contextKeyService.js.map
+
+export { AbstractContextKeyService, Context, ContextKeyService, setContext };

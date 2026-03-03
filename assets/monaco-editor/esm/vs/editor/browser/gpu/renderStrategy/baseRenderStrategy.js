@@ -1,9 +1,10 @@
+import { ViewEventHandler } from '../../../common/viewEventHandler.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { ViewEventHandler } from '../../../common/viewEventHandler.js';
-export class BaseRenderStrategy extends ViewEventHandler {
+class BaseRenderStrategy extends ViewEventHandler {
     get glyphRasterizer() { return this._glyphRasterizer.value; }
     constructor(_context, _viewGpuContext, _device, _glyphRasterizer) {
         super();
@@ -14,4 +15,5 @@ export class BaseRenderStrategy extends ViewEventHandler {
         this._context.addEventHandler(this);
     }
 }
-//# sourceMappingURL=baseRenderStrategy.js.map
+
+export { BaseRenderStrategy };

@@ -8,7 +8,7 @@ var LazyValueState;
     LazyValueState[LazyValueState["Running"] = 1] = "Running";
     LazyValueState[LazyValueState["Completed"] = 2] = "Completed";
 })(LazyValueState || (LazyValueState = {}));
-export class Lazy {
+class Lazy {
     constructor(executor) {
         this.executor = executor;
         this._state = LazyValueState.Uninitialized;
@@ -45,4 +45,5 @@ export class Lazy {
      */
     get rawValue() { return this._value; }
 }
-//# sourceMappingURL=lazy.js.map
+
+export { Lazy };

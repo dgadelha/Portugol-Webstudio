@@ -1,13 +1,14 @@
+import { NotSupportedError } from '../../../../../base/common/errors.js';
+import { TokenMetadata } from '../../../encodedTokenAttributes.js';
+import { TextAstNode } from './ast.js';
+import { lengthZero, toLength, lengthAdd, lengthToObj, lengthGetColumnCountIfZeroLineCount, lengthDiff } from './length.js';
+import { SmallImmutableSet } from './smallImmutableSet.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { NotSupportedError } from '../../../../../base/common/errors.js';
-import { TokenMetadata } from '../../../encodedTokenAttributes.js';
-import { TextAstNode } from './ast.js';
-import { lengthAdd, lengthDiff, lengthGetColumnCountIfZeroLineCount, lengthToObj, lengthZero, toLength } from './length.js';
-import { SmallImmutableSet } from './smallImmutableSet.js';
-export class Token {
+class Token {
     constructor(length, kind, 
     /**
      * If this token is an opening bracket, this is the id of the opening bracket.
@@ -28,7 +29,7 @@ export class Token {
         this.astNode = astNode;
     }
 }
-export class TextBufferTokenizer {
+class TextBufferTokenizer {
     constructor(textModel, bracketTokens) {
         this.textModel = textModel;
         this.bracketTokens = bracketTokens;
@@ -209,7 +210,7 @@ class NonPeekableTextBufferTokenizer {
         return new Token(length, 0 /* TokenKind.Text */, -1, SmallImmutableSet.getEmpty(), new TextAstNode(length));
     }
 }
-export class FastTokenizer {
+class FastTokenizer {
     constructor(text, brackets) {
         this.text = text;
         this._offset = lengthZero;
@@ -296,4 +297,5 @@ export class FastTokenizer {
         throw new NotSupportedError();
     }
 }
-//# sourceMappingURL=tokenizer.js.map
+
+export { FastTokenizer, TextBufferTokenizer, Token };

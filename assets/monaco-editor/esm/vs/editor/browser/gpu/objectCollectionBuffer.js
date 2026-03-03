@@ -1,12 +1,13 @@
+import { Emitter, Event } from '../../../base/common/event.js';
+import { Disposable, toDisposable, dispose } from '../../../base/common/lifecycle.js';
+import { LinkedList } from '../../../base/common/linkedList.js';
+import { BufferDirtyTracker } from './bufferDirtyTracker.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { Emitter, Event } from '../../../base/common/event.js';
-import { Disposable, dispose, toDisposable } from '../../../base/common/lifecycle.js';
-import { LinkedList } from '../../../base/common/linkedList.js';
-import { BufferDirtyTracker } from './bufferDirtyTracker.js';
-export function createObjectCollectionBuffer(propertySpecs, capacity) {
+function createObjectCollectionBuffer(propertySpecs, capacity) {
     return new ObjectCollectionBuffer(propertySpecs, capacity);
 }
 class ObjectCollectionBuffer extends Disposable {
@@ -97,4 +98,5 @@ class ObjectCollectionBufferEntry extends Disposable {
         this._dirtyTracker.flag(this.i * this._propertySpecsMap.size, this._propertySpecsMap.size);
     }
 }
-//# sourceMappingURL=objectCollectionBuffer.js.map
+
+export { createObjectCollectionBuffer };

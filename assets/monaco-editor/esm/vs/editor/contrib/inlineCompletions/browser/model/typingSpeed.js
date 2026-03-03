@@ -1,14 +1,15 @@
+import { sum } from '../../../../../base/common/arrays.js';
+import { Disposable } from '../../../../../base/common/lifecycle.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { sum } from '../../../../../base/common/arrays.js';
-import { Disposable } from '../../../../../base/common/lifecycle.js';
 /**
  * Tracks typing speed as average milliseconds between keystrokes.
  * Higher values indicate slower typing.
  */
-export class TypingInterval extends Disposable {
+class TypingInterval extends Disposable {
     // Configuration constants
     static { this.MAX_SESSION_GAP_MS = 3_000; } // 3 seconds max gap between keystrokes in a session
     static { this.MIN_SESSION_DURATION_MS = 1_000; } // Minimum session duration to consider
@@ -160,4 +161,5 @@ export class TypingInterval extends Disposable {
         super.dispose();
     }
 }
-//# sourceMappingURL=typingSpeed.js.map
+
+export { TypingInterval };

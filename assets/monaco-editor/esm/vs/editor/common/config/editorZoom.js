@@ -1,9 +1,10 @@
+import { Emitter } from '../../../base/common/event.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { Emitter } from '../../../base/common/event.js';
-export const EditorZoom = new class {
+const EditorZoom = new class {
     constructor() {
         this._zoomLevel = 0;
         this._onDidChangeZoomLevel = new Emitter();
@@ -21,4 +22,5 @@ export const EditorZoom = new class {
         this._onDidChangeZoomLevel.fire(this._zoomLevel);
     }
 };
-//# sourceMappingURL=editorZoom.js.map
+
+export { EditorZoom };

@@ -1,19 +1,10 @@
-/*!-----------------------------------------------------------------------------
- * Copyright (c) Microsoft Corporation. All rights reserved.
- * Version: 0.54.0(7c2310116c57517348bbd868a21139f32454be22)
- * Released under the MIT license
- * https://github.com/microsoft/monaco-editor/blob/main/LICENSE.txt
- *-----------------------------------------------------------------------------*/
-
-
-// src/basic-languages/typespec/typespec.ts
-var bounded = (text) => `\\b${text}\\b`;
-var notBefore = (regex) => `(?!${regex})`;
-var identifierStart = "[_a-zA-Z]";
-var identifierContinue = "[_a-zA-Z0-9]";
-var identifier = bounded(`${identifierStart}${identifierContinue}*`);
-var directive = bounded(`[_a-zA-Z-0-9]+`);
-var keywords = [
+const bounded = (text) => `\\b${text}\\b`;
+const notBefore = (regex) => `(?!${regex})`;
+const identifierStart = "[_a-zA-Z]";
+const identifierContinue = "[_a-zA-Z0-9]";
+const identifier = bounded(`${identifierStart}${identifierContinue}*`);
+const directive = bounded(`[_a-zA-Z-0-9]+`);
+const keywords = [
   "import",
   "model",
   "scalar",
@@ -35,10 +26,10 @@ var keywords = [
   "extern",
   "fn"
 ];
-var namedLiterals = ["true", "false", "null", "unknown", "never"];
-var nonCommentWs = `[ \\t\\r\\n]`;
-var numericLiteral = `[0-9]+`;
-var conf = {
+const namedLiterals = ["true", "false", "null", "unknown", "never"];
+const nonCommentWs = `[ \\t\\r\\n]`;
+const numericLiteral = `[0-9]+`;
+const conf = {
   comments: {
     lineComment: "//",
     blockComment: ["/*", "*/"]
@@ -72,7 +63,7 @@ var conf = {
     )
   }
 };
-var language = {
+const language = {
   defaultToken: "",
   tokenPostfix: ".tsp",
   brackets: [
@@ -131,7 +122,5 @@ var language = {
     ]
   }
 };
-export {
-  conf,
-  language
-};
+
+export { conf, language };

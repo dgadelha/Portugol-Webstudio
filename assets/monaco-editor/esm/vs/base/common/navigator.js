@@ -2,7 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-export class ArrayNavigator {
+class ArrayNavigator {
     constructor(items, start = 0, end = items.length, index = start - 1) {
         this.items = items;
         this.start = start;
@@ -32,4 +32,5 @@ export class ArrayNavigator {
         return this.current();
     }
 }
-//# sourceMappingURL=navigator.js.map
+
+export { ArrayNavigator };

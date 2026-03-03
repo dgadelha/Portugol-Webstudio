@@ -1,23 +1,9 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-var TextModel_1;
 import { ArrayQueue, pushMany } from '../../../base/common/arrays.js';
 import { Color } from '../../../base/common/color.js';
 import { BugIndicatingError, illegalArgument, onUnexpectedError } from '../../../base/common/errors.js';
 import { Emitter } from '../../../base/common/event.js';
-import { Disposable, MutableDisposable, combinedDisposable } from '../../../base/common/lifecycle.js';
-import * as strings from '../../../base/common/strings.js';
+import { Disposable, combinedDisposable, MutableDisposable } from '../../../base/common/lifecycle.js';
+import { singleLetterHash, UNUSUAL_LINE_TERMINATORS, isHighSurrogate, htmlAttributeEncodeValue } from '../../../base/common/strings.js';
 import { URI } from '../../../base/common/uri.js';
 import { countEOL } from '../core/misc/eolCounter.js';
 import { normalizeIndentation } from '../core/misc/indentation.js';
@@ -27,29 +13,45 @@ import { Selection } from '../core/selection.js';
 import { EDITOR_MODEL_DEFAULTS } from '../core/misc/textModelDefaults.js';
 import { ILanguageService } from '../languages/language.js';
 import { ILanguageConfigurationService } from '../languages/languageConfigurationRegistry.js';
-import * as model from '../model.js';
+import { TextModelResolvedOptions, ValidAnnotatedEditOperation, isITextSnapshot, OverviewRulerLane, GlyphMarginLane } from '../model.js';
 import { BracketPairsTextModelPart } from './bracketPairsTextModelPart/bracketPairsImpl.js';
 import { ColorizedBracketPairsDecorationProvider } from './bracketPairsTextModelPart/colorizedBracketPairsDecorationProvider.js';
 import { EditStack } from './editStack.js';
 import { GuidesTextModelPart } from './guidesTextModelPart.js';
 import { guessIndentation } from './indentationGuesser.js';
-import { IntervalNode, IntervalTree, recomputeMaxEnd } from './intervalTree.js';
+import { recomputeMaxEnd, IntervalNode, IntervalTree } from './intervalTree.js';
 import { PieceTreeTextBuffer } from './pieceTreeTextBuffer/pieceTreeTextBuffer.js';
 import { PieceTreeTextBufferBuilder } from './pieceTreeTextBuffer/pieceTreeTextBufferBuilder.js';
 import { SearchParams, TextModelSearch } from './textModelSearch.js';
 import { TokenizationTextModelPart } from './tokens/tokenizationTextModelPart.js';
 import { AttachedViews } from './tokens/abstractSyntaxTokenBackend.js';
-import { InternalModelContentChangeEvent, ModelInjectedTextChangedEvent, ModelRawContentChangedEvent, ModelRawEOLChanged, ModelRawFlush, ModelRawLineChanged, ModelRawLinesDeleted, ModelRawLinesInserted, ModelLineHeightChangedEvent, ModelLineHeightChanged, ModelFontChangedEvent, ModelFontChanged, LineInjectedText } from '../textModelEvents.js';
+import { InternalModelContentChangeEvent, ModelRawContentChangedEvent, ModelRawFlush, ModelRawEOLChanged, LineInjectedText, ModelRawLineChanged, ModelRawLinesDeleted, ModelRawLinesInserted, ModelInjectedTextChangedEvent, ModelLineHeightChanged, ModelLineHeightChangedEvent, ModelFontChanged, ModelFontChangedEvent } from '../textModelEvents.js';
 import { IInstantiationService } from '../../../platform/instantiation/common/instantiation.js';
 import { IUndoRedoService } from '../../../platform/undoRedo/common/undoRedo.js';
 import { SetWithKey } from '../../../base/common/collections.js';
 import { EditSources } from '../textModelEditSource.js';
-export function createTextBufferFactory(text) {
+import { isDark } from '../../../platform/theme/common/theme.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var TextModel_1;
+function createTextBufferFactory(text) {
     const builder = new PieceTreeTextBufferBuilder();
     builder.acceptChunk(text);
     return builder.finish();
 }
-export function createTextBufferFactoryFromSnapshot(snapshot) {
+function createTextBufferFactoryFromSnapshot(snapshot) {
     const builder = new PieceTreeTextBufferBuilder();
     let chunk;
     while (typeof (chunk = snapshot.read()) === 'string') {
@@ -57,12 +59,12 @@ export function createTextBufferFactoryFromSnapshot(snapshot) {
     }
     return builder.finish();
 }
-export function createTextBuffer(value, defaultEOL) {
+function createTextBuffer(value, defaultEOL) {
     let factory;
     if (typeof value === 'string') {
         factory = createTextBufferFactory(value);
     }
-    else if (model.isITextSnapshot(value)) {
+    else if (isITextSnapshot(value)) {
         factory = createTextBufferFactoryFromSnapshot(value);
     }
     else {
@@ -129,7 +131,7 @@ let TextModel = class TextModel extends Disposable {
     static resolveOptions(textBuffer, options) {
         if (options.detectIndentation) {
             const guessedIndentation = guessIndentation(textBuffer, options.tabSize, options.insertSpaces);
-            return new model.TextModelResolvedOptions({
+            return new TextModelResolvedOptions({
                 tabSize: guessedIndentation.tabSize,
                 indentSize: 'tabSize', // TODO@Alex: guess indentSize independent of tabSize
                 insertSpaces: guessedIndentation.insertSpaces,
@@ -138,7 +140,7 @@ let TextModel = class TextModel extends Disposable {
                 bracketPairColorizationOptions: options.bracketPairColorizationOptions,
             });
         }
-        return new model.TextModelResolvedOptions(options);
+        return new TextModelResolvedOptions(options);
     }
     get onDidChangeLanguage() { return this._tokenizationTextModelPart.onDidChangeLanguage; }
     get onDidChangeLanguageConfiguration() { return this._tokenizationTextModelPart.onDidChangeLanguageConfiguration; }
@@ -220,7 +222,7 @@ let TextModel = class TextModel extends Disposable {
         this._initialUndoRedoSnapshot = null;
         this._isDisposed = false;
         this.__isDisposing = false;
-        this._instanceId = strings.singleLetterHash(MODEL_ID);
+        this._instanceId = singleLetterHash(MODEL_ID);
         this._lastDecorationId = 0;
         this._decorations = Object.create(null);
         this._decorationsTree = new DecorationsTrees();
@@ -434,7 +436,7 @@ let TextModel = class TextModel extends Disposable {
         const insertSpaces = (typeof _newOpts.insertSpaces !== 'undefined') ? _newOpts.insertSpaces : this._options.insertSpaces;
         const trimAutoWhitespace = (typeof _newOpts.trimAutoWhitespace !== 'undefined') ? _newOpts.trimAutoWhitespace : this._options.trimAutoWhitespace;
         const bracketPairColorizationOptions = (typeof _newOpts.bracketColorizationOptions !== 'undefined') ? _newOpts.bracketColorizationOptions : this._options.bracketPairColorizationOptions;
-        const newOpts = new model.TextModelResolvedOptions({
+        const newOpts = new TextModelResolvedOptions({
             tabSize: tabSize,
             indentSize: indentSize,
             insertSpaces: insertSpaces,
@@ -477,7 +479,7 @@ let TextModel = class TextModel extends Disposable {
         return this._buffer.mightContainUnusualLineTerminators();
     }
     removeUnusualLineTerminators(selections = null) {
-        const matches = this.findMatches(strings.UNUSUAL_LINE_TERMINATORS.source, false, true, false, null, false, 1073741824 /* Constants.MAX_SAFE_SMALL_INTEGER */);
+        const matches = this.findMatches(UNUSUAL_LINE_TERMINATORS.source, false, true, false, null, false, 1073741824 /* Constants.MAX_SAFE_SMALL_INTEGER */);
         this._buffer.resetMightContainUnusualLineTerminators();
         this.pushEditOperations(selections, matches.map(m => ({ range: m.range, text: null })), () => null);
     }
@@ -700,7 +702,7 @@ let TextModel = class TextModel extends Disposable {
         if (validationType === 1 /* StringOffsetValidationType.SurrogatePairs */) {
             // !!At this point, column > 1
             const charCodeBefore = this._buffer.getLineCharCode(lineNumber, column - 2);
-            if (strings.isHighSurrogate(charCodeBefore)) {
+            if (isHighSurrogate(charCodeBefore)) {
                 return false;
             }
         }
@@ -728,7 +730,7 @@ let TextModel = class TextModel extends Disposable {
             // we move it to before the pair
             // !!At this point, column > 1
             const charCodeBefore = this._buffer.getLineCharCode(lineNumber, column - 2);
-            if (strings.isHighSurrogate(charCodeBefore)) {
+            if (isHighSurrogate(charCodeBefore)) {
                 return new Position(lineNumber, column - 1);
             }
         }
@@ -762,8 +764,8 @@ let TextModel = class TextModel extends Disposable {
         if (validationType === 1 /* StringOffsetValidationType.SurrogatePairs */) {
             const charCodeBeforeStart = (startColumn > 1 ? this._buffer.getLineCharCode(startLineNumber, startColumn - 2) : 0);
             const charCodeBeforeEnd = (endColumn > 1 && endColumn <= this._buffer.getLineLength(endLineNumber) ? this._buffer.getLineCharCode(endLineNumber, endColumn - 2) : 0);
-            const startInsideSurrogatePair = strings.isHighSurrogate(charCodeBeforeStart);
-            const endInsideSurrogatePair = strings.isHighSurrogate(charCodeBeforeEnd);
+            const startInsideSurrogatePair = isHighSurrogate(charCodeBeforeStart);
+            const endInsideSurrogatePair = isHighSurrogate(charCodeBeforeEnd);
             if (!startInsideSurrogatePair && !endInsideSurrogatePair) {
                 return true;
             }
@@ -786,11 +788,11 @@ let TextModel = class TextModel extends Disposable {
         const startColumn = start.column;
         const endLineNumber = end.lineNumber;
         const endColumn = end.column;
-        if (validationType === 1 /* StringOffsetValidationType.SurrogatePairs */) {
+        {
             const charCodeBeforeStart = (startColumn > 1 ? this._buffer.getLineCharCode(startLineNumber, startColumn - 2) : 0);
             const charCodeBeforeEnd = (endColumn > 1 && endColumn <= this._buffer.getLineLength(endLineNumber) ? this._buffer.getLineCharCode(endLineNumber, endColumn - 2) : 0);
-            const startInsideSurrogatePair = strings.isHighSurrogate(charCodeBeforeStart);
-            const endInsideSurrogatePair = strings.isHighSurrogate(charCodeBeforeEnd);
+            const startInsideSurrogatePair = isHighSurrogate(charCodeBeforeStart);
+            const endInsideSurrogatePair = isHighSurrogate(charCodeBeforeEnd);
             if (!startInsideSurrogatePair && !endInsideSurrogatePair) {
                 return new Range(startLineNumber, startColumn, endLineNumber, endColumn);
             }
@@ -809,7 +811,6 @@ let TextModel = class TextModel extends Disposable {
             // only expand range at the end
             return new Range(startLineNumber, startColumn, endLineNumber, endColumn + 1);
         }
-        return new Range(startLineNumber, startColumn, endLineNumber, endColumn);
     }
     modifyPosition(rawPosition, offset) {
         this._assertNotDisposed();
@@ -827,7 +828,7 @@ let TextModel = class TextModel extends Disposable {
     findMatches(searchString, rawSearchScope, isRegex, matchCase, wordSeparators, captureMatches, limitResultCount = LIMIT_FIND_COUNT) {
         this._assertNotDisposed();
         let searchRanges = null;
-        if (rawSearchScope !== null) {
+        if (rawSearchScope !== null && typeof rawSearchScope !== 'boolean') {
             if (!Array.isArray(rawSearchScope)) {
                 rawSearchScope = [rawSearchScope];
             }
@@ -919,10 +920,10 @@ let TextModel = class TextModel extends Disposable {
         }
     }
     _validateEditOperation(rawOperation) {
-        if (rawOperation instanceof model.ValidAnnotatedEditOperation) {
+        if (rawOperation instanceof ValidAnnotatedEditOperation) {
             return rawOperation;
         }
-        return new model.ValidAnnotatedEditOperation(rawOperation.identifier || null, this.validateRange(rawOperation.range), rawOperation.text, rawOperation.forceMoveMarkers || false, rawOperation.isAutoWhitespaceEdit || false, rawOperation._isTracked || false);
+        return new ValidAnnotatedEditOperation(rawOperation.identifier || null, this.validateRange(rawOperation.range), rawOperation.text, rawOperation.forceMoveMarkers || false, rawOperation.isAutoWhitespaceEdit || false, rawOperation._isTracked || false);
     }
     _validateEditOperations(rawOperations) {
         const result = [];
@@ -1004,7 +1005,7 @@ let TextModel = class TextModel extends Disposable {
                     }
                     if (allowTrimLine) {
                         const trimRange = new Range(trimLineNumber, 1, trimLineNumber, maxLineColumn);
-                        editOperations.push(new model.ValidAnnotatedEditOperation(null, trimRange, null, false, false, false));
+                        editOperations.push(new ValidAnnotatedEditOperation(null, trimRange, null, false, false, false));
                     }
                 }
             }
@@ -1576,8 +1577,7 @@ TextModel = TextModel_1 = __decorate([
     __param(6, ILanguageConfigurationService),
     __param(7, IInstantiationService)
 ], TextModel);
-export { TextModel };
-export function indentOfLine(line) {
+function indentOfLine(line) {
     let indent = 0;
     for (const c of line) {
         if (c === ' ' || c === '\t') {
@@ -1733,15 +1733,15 @@ class DecorationOptions {
         this.darkColor = options.darkColor || '';
     }
 }
-export class ModelDecorationOverviewRulerOptions extends DecorationOptions {
+class ModelDecorationOverviewRulerOptions extends DecorationOptions {
     constructor(options) {
         super(options);
         this._resolvedColor = null;
-        this.position = (typeof options.position === 'number' ? options.position : model.OverviewRulerLane.Center);
+        this.position = (typeof options.position === 'number' ? options.position : OverviewRulerLane.Center);
     }
     getColor(theme) {
         if (!this._resolvedColor) {
-            if (theme.type !== 'light' && this.darkColor) {
+            if (isDark(theme.type) && this.darkColor) {
                 this._resolvedColor = this._resolveColor(this.darkColor, theme);
             }
             else {
@@ -1764,13 +1764,13 @@ export class ModelDecorationOverviewRulerOptions extends DecorationOptions {
         return c.toString();
     }
 }
-export class ModelDecorationGlyphMarginOptions {
+class ModelDecorationGlyphMarginOptions {
     constructor(options) {
-        this.position = options?.position ?? model.GlyphMarginLane.Center;
+        this.position = options?.position ?? GlyphMarginLane.Center;
         this.persistLane = options?.persistLane;
     }
 }
-export class ModelDecorationMinimapOptions extends DecorationOptions {
+class ModelDecorationMinimapOptions extends DecorationOptions {
     constructor(options) {
         super(options);
         this.position = options.position;
@@ -1779,7 +1779,7 @@ export class ModelDecorationMinimapOptions extends DecorationOptions {
     }
     getColor(theme) {
         if (!this._resolvedColor) {
-            if (theme.type !== 'light' && this.darkColor) {
+            if (isDark(theme.type) && this.darkColor) {
                 this._resolvedColor = this._resolveColor(this.darkColor, theme);
             }
             else {
@@ -1798,7 +1798,7 @@ export class ModelDecorationMinimapOptions extends DecorationOptions {
         return theme.getColor(color.id);
     }
 }
-export class ModelDecorationInjectedTextOptions {
+class ModelDecorationInjectedTextOptions {
     static from(options) {
         if (options instanceof ModelDecorationInjectedTextOptions) {
             return options;
@@ -1814,7 +1814,7 @@ export class ModelDecorationInjectedTextOptions {
         this.cursorStops = options.cursorStops || null;
     }
 }
-export class ModelDecorationOptions {
+class ModelDecorationOptions {
     static register(options) {
         return new ModelDecorationOptions(options);
     }
@@ -1846,7 +1846,7 @@ export class ModelDecorationOptions {
         this.glyphMarginClassName = options.glyphMarginClassName ? cleanClassName(options.glyphMarginClassName) : null;
         this.linesDecorationsClassName = options.linesDecorationsClassName ? cleanClassName(options.linesDecorationsClassName) : null;
         this.lineNumberClassName = options.lineNumberClassName ? cleanClassName(options.lineNumberClassName) : null;
-        this.linesDecorationsTooltip = options.linesDecorationsTooltip ? strings.htmlAttributeEncodeValue(options.linesDecorationsTooltip) : null;
+        this.linesDecorationsTooltip = options.linesDecorationsTooltip ? htmlAttributeEncodeValue(options.linesDecorationsTooltip) : null;
         this.firstLineDecorationClassName = options.firstLineDecorationClassName ? cleanClassName(options.firstLineDecorationClassName) : null;
         this.marginClassName = options.marginClassName ? cleanClassName(options.marginClassName) : null;
         this.inlineClassName = options.inlineClassName ? cleanClassName(options.inlineClassName) : null;
@@ -2027,4 +2027,5 @@ class DidChangeContentEmitter extends Disposable {
         this._slowEmitter.fire(e);
     }
 }
-//# sourceMappingURL=textModel.js.map
+
+export { ModelDecorationGlyphMarginOptions, ModelDecorationInjectedTextOptions, ModelDecorationMinimapOptions, ModelDecorationOptions, ModelDecorationOverviewRulerOptions, TextModel, createTextBuffer, createTextBufferFactory, createTextBufferFactoryFromSnapshot, indentOfLine };

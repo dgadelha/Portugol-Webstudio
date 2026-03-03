@@ -1,7 +1,3 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { CancellationToken } from '../../../../base/common/cancellation.js';
 import { onUnexpectedExternalError } from '../../../../base/common/errors.js';
 import { URI } from '../../../../base/common/uri.js';
@@ -11,27 +7,32 @@ import { assertType } from '../../../../base/common/types.js';
 import { encodeSemanticTokensDto } from '../../../common/services/semanticTokensDto.js';
 import { Range } from '../../../common/core/range.js';
 import { ILanguageFeaturesService } from '../../../common/services/languageFeatures.js';
-export function isSemanticTokens(v) {
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+function isSemanticTokens(v) {
     return v && !!(v.data);
 }
-export function isSemanticTokensEdits(v) {
+function isSemanticTokensEdits(v) {
     return v && Array.isArray(v.edits);
 }
-export class DocumentSemanticTokensResult {
+class DocumentSemanticTokensResult {
     constructor(provider, tokens, error) {
         this.provider = provider;
         this.tokens = tokens;
         this.error = error;
     }
 }
-export function hasDocumentSemanticTokensProvider(registry, model) {
+function hasDocumentSemanticTokensProvider(registry, model) {
     return registry.has(model);
 }
 function getDocumentSemanticTokensProviders(registry, model) {
     const groups = registry.orderedGroups(model);
     return (groups.length > 0 ? groups[0] : []);
 }
-export async function getDocumentSemanticTokens(registry, model, lastProvider, lastResultId, token) {
+async function getDocumentSemanticTokens(registry, model, lastProvider, lastResultId, token) {
     const providers = getDocumentSemanticTokensProviders(registry, model);
     // Get tokens from all providers at the same time.
     const results = await Promise.all(providers.map(async (provider) => {
@@ -75,14 +76,14 @@ class DocumentRangeSemanticTokensResult {
         this.tokens = tokens;
     }
 }
-export function hasDocumentRangeSemanticTokensProvider(providers, model) {
+function hasDocumentRangeSemanticTokensProvider(providers, model) {
     return providers.has(model);
 }
 function getDocumentRangeSemanticTokensProviders(providers, model) {
     const groups = providers.orderedGroups(model);
     return (groups.length > 0 ? groups[0] : []);
 }
-export async function getDocumentRangeSemanticTokens(registry, model, range, token) {
+async function getDocumentRangeSemanticTokens(registry, model, range, token) {
     const providers = getDocumentRangeSemanticTokensProviders(registry, model);
     // Get tokens from all providers at the same time.
     const results = await Promise.all(providers.map(async (provider) => {
@@ -206,4 +207,5 @@ CommandsRegistry.registerCommand('_provideDocumentRangeSemanticTokens', async (a
         data: result.tokens.data
     });
 });
-//# sourceMappingURL=getSemanticTokens.js.map
+
+export { DocumentSemanticTokensResult, getDocumentRangeSemanticTokens, getDocumentSemanticTokens, hasDocumentRangeSemanticTokensProvider, hasDocumentSemanticTokensProvider, isSemanticTokens, isSemanticTokensEdits };

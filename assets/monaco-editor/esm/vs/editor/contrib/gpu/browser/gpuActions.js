@@ -1,11 +1,7 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { getActiveWindow } from '../../../../base/browser/dom.js';
 import { VSBuffer } from '../../../../base/common/buffer.js';
 import { URI } from '../../../../base/common/uri.js';
-import { localize, localize2 } from '../../../../nls.js';
+import { localize2, localize } from '../../../../nls.js';
 import { IConfigurationService } from '../../../../platform/configuration/common/configuration.js';
 import { ContextKeyExpr } from '../../../../platform/contextkey/common/contextkey.js';
 import { IFileService } from '../../../../platform/files/common/files.js';
@@ -13,15 +9,20 @@ import { IInstantiationService } from '../../../../platform/instantiation/common
 import { ILogService } from '../../../../platform/log/common/log.js';
 import { IQuickInputService } from '../../../../platform/quickinput/common/quickInput.js';
 import { IWorkspaceContextService } from '../../../../platform/workspace/common/workspace.js';
-import { EditorAction, registerEditorAction } from '../../../browser/editorExtensions.js';
+import { registerEditorAction, EditorAction } from '../../../browser/editorExtensions.js';
 import { ensureNonNullable } from '../../../browser/gpu/gpuUtils.js';
 import { GlyphRasterizer } from '../../../browser/gpu/raster/glyphRasterizer.js';
 import { ViewGpuContext } from '../../../browser/gpu/viewGpuContext.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
 class DebugEditorGpuRendererAction extends EditorAction {
     constructor() {
         super({
             id: 'editor.action.debugEditorGpuRenderer',
-            label: localize2(1096, "Developer: Debug Editor GPU Renderer"),
+            label: localize2(1101, "Developer: Debug Editor GPU Renderer"),
             // TODO: Why doesn't `ContextKeyExpr.equals('config:editor.experimentalGpuAcceleration', 'on')` work?
             precondition: ContextKeyExpr.true(),
         });
@@ -31,15 +32,15 @@ class DebugEditorGpuRendererAction extends EditorAction {
         const quickInputService = accessor.get(IQuickInputService);
         const choice = await quickInputService.pick([
             {
-                label: localize(1093, "Log Texture Atlas Stats"),
+                label: localize(1098, "Log Texture Atlas Stats"),
                 id: 'logTextureAtlasStats',
             },
             {
-                label: localize(1094, "Save Texture Atlas"),
+                label: localize(1099, "Save Texture Atlas"),
                 id: 'saveTextureAtlas',
             },
             {
-                label: localize(1095, "Draw Glyph"),
+                label: localize(1100, "Draw Glyph"),
                 id: 'drawGlyph',
             },
         ], { canPickMany: false });
@@ -123,4 +124,3 @@ class DebugEditorGpuRendererAction extends EditorAction {
     }
 }
 registerEditorAction(DebugEditorGpuRendererAction);
-//# sourceMappingURL=gpuActions.js.map

@@ -1,7 +1,3 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { onUnexpectedError } from '../../../../base/common/errors.js';
 import { Emitter } from '../../../../base/common/event.js';
 import { MutableDisposable, DisposableMap } from '../../../../base/common/lifecycle.js';
@@ -11,10 +7,15 @@ import { LineRange } from '../../core/ranges/lineRange.js';
 import { TokenizationRegistry } from '../../languages.js';
 import { ContiguousMultilineTokensBuilder } from '../../tokens/contiguousMultilineTokensBuilder.js';
 import { ContiguousTokensStore } from '../../tokens/contiguousTokensStore.js';
-import { TokenizerWithStateStoreAndTextModel, DefaultBackgroundTokenizer, TrackingTokenizationStateStore } from '../textModelTokens.js';
+import { TrackingTokenizationStateStore, TokenizerWithStateStoreAndTextModel, DefaultBackgroundTokenizer } from '../textModelTokens.js';
 import { AbstractSyntaxTokenBackend, AttachedViewHandler } from './abstractSyntaxTokenBackend.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
 /** For TextMate */
-export class TokenizerSyntaxTokenBackend extends AbstractSyntaxTokenBackend {
+class TokenizerSyntaxTokenBackend extends AbstractSyntaxTokenBackend {
     constructor(languageIdCodec, textModel, getLanguageId, attachedViews) {
         super(languageIdCodec, textModel);
         this.getLanguageId = getLanguageId;
@@ -256,4 +257,5 @@ export class TokenizerSyntaxTokenBackend extends AbstractSyntaxTokenBackend {
         return this._tokens.hasTokens;
     }
 }
-//# sourceMappingURL=tokenizerSyntaxTokenBackend.js.map
+
+export { TokenizerSyntaxTokenBackend };

@@ -1,10 +1,11 @@
+import { BugIndicatingError } from '../../../../base/common/errors.js';
+import { Point } from './point.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { BugIndicatingError } from '../../../../base/common/errors.js';
-import { Point } from './point.js';
-export class Rect {
+class Rect {
     static fromPoints(topLeft, bottomRight) {
         return new Rect(topLeft.x, topLeft.y, bottomRight.x, bottomRight.y);
     }
@@ -158,4 +159,5 @@ export class Rect {
         };
     }
 }
-//# sourceMappingURL=rect.js.map
+
+export { Rect };

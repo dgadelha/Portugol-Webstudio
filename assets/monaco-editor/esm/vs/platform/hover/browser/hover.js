@@ -1,21 +1,22 @@
+import { createDecorator } from '../../instantiation/common/instantiation.js';
+import { Disposable, DisposableStore } from '../../../base/common/lifecycle.js';
+import { IConfigurationService } from '../../configuration/common/configuration.js';
+import { isHTMLElement, addStandardDisposableListener } from '../../../base/browser/dom.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __param = (this && this.__param) || function (paramIndex, decorator) {
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { createDecorator } from '../../instantiation/common/instantiation.js';
-import { Disposable, DisposableStore } from '../../../base/common/lifecycle.js';
-import { IConfigurationService } from '../../configuration/common/configuration.js';
-import { addStandardDisposableListener, isHTMLElement } from '../../../base/browser/dom.js';
-export const IHoverService = createDecorator('hoverService');
+const IHoverService = createDecorator('hoverService');
 let WorkbenchHoverDelegate = class WorkbenchHoverDelegate extends Disposable {
     get delay() {
         if (this.isInstantlyHovering()) {
@@ -90,13 +91,13 @@ WorkbenchHoverDelegate = __decorate([
     __param(3, IConfigurationService),
     __param(4, IHoverService)
 ], WorkbenchHoverDelegate);
-export { WorkbenchHoverDelegate };
 // TODO@benibenj remove this, only temp fix for contextviews
-export const nativeHoverDelegate = {
+const nativeHoverDelegate = {
     showHover: function () {
         throw new Error('Native hover function not implemented.');
     },
     delay: 0,
     showNativeHover: true
 };
-//# sourceMappingURL=hover.js.map
+
+export { IHoverService, WorkbenchHoverDelegate, nativeHoverDelegate };

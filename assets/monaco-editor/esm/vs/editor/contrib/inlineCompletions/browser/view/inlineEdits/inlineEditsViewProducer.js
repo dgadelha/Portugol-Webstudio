@@ -1,20 +1,6 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-var InlineEditsViewAndDiffProducer_1;
 import { createHotClass } from '../../../../../../base/common/hotReloadHelpers.js';
 import { Disposable } from '../../../../../../base/common/lifecycle.js';
-import { derived } from '../../../../../../base/common/observable.js';
+import '../../../../../../base/common/observableInternal/index.js';
 import { IInstantiationService } from '../../../../../../platform/instantiation/common/instantiation.js';
 import { observableCodeEditor } from '../../../../../browser/observableCodeEditor.js';
 import { LineRange } from '../../../../../common/core/ranges/lineRange.js';
@@ -22,12 +8,26 @@ import { Range } from '../../../../../common/core/range.js';
 import { TextReplacement, TextEdit } from '../../../../../common/core/edits/textEdit.js';
 import { TextModelText } from '../../../../../common/model/textModelText.js';
 import { InlineEditWithChanges } from './inlineEditWithChanges.js';
-import { GhostTextIndicator, InlineEditHost, InlineEditModel } from './inlineEditsModel.js';
+import { InlineEditModel, InlineEditHost, GhostTextIndicator } from './inlineEditsModel.js';
 import { InlineEditsView } from './inlineEditsView.js';
 import { InlineEditTabAction } from './inlineEditsViewInterface.js';
+import { derived } from '../../../../../../base/common/observableInternal/observables/derived.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 let InlineEditsViewAndDiffProducer = class InlineEditsViewAndDiffProducer extends Disposable {
-    static { InlineEditsViewAndDiffProducer_1 = this; }
-    static { this.hot = createHotClass(InlineEditsViewAndDiffProducer_1); }
+    static { this.hot = createHotClass(this); }
     constructor(_editor, _edit, _model, _focusIsInMenu, instantiationService) {
         super();
         this._editor = _editor;
@@ -57,7 +57,7 @@ let InlineEditsViewAndDiffProducer = class InlineEditsViewAndDiffProducer extend
             });
             const diffEdits = new TextEdit(edits);
             const text = new TextModelText(textModel);
-            return new InlineEditWithChanges(text, diffEdits, model.primaryPosition.read(undefined), inlineEdit.commands, inlineEdit.inlineCompletion);
+            return new InlineEditWithChanges(text, diffEdits, model.primaryPosition.read(undefined), model.allPositions.read(undefined), inlineEdit.commands, inlineEdit.inlineCompletion);
         });
         this._inlineEditModel = derived(this, reader => {
             const model = this._model.read(reader);
@@ -112,8 +112,8 @@ let InlineEditsViewAndDiffProducer = class InlineEditsViewAndDiffProducer extend
         this._register(instantiationService.createInstance(InlineEditsView, this._editor, this._inlineEditHost, this._inlineEditModel, this._ghostTextIndicator, this._focusIsInMenu));
     }
 };
-InlineEditsViewAndDiffProducer = InlineEditsViewAndDiffProducer_1 = __decorate([
+InlineEditsViewAndDiffProducer = __decorate([
     __param(4, IInstantiationService)
 ], InlineEditsViewAndDiffProducer);
+
 export { InlineEditsViewAndDiffProducer };
-//# sourceMappingURL=inlineEditsViewProducer.js.map

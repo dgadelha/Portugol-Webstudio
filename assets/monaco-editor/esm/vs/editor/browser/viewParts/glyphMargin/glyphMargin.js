@@ -1,7 +1,3 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { createFastDomNode } from '../../../../base/browser/fastDomNode.js';
 import { ArrayQueue } from '../../../../base/common/arrays.js';
 import './glyphMargin.css';
@@ -10,11 +6,16 @@ import { ViewPart } from '../../view/viewPart.js';
 import { Position } from '../../../common/core/position.js';
 import { Range } from '../../../common/core/range.js';
 import { GlyphMarginLane } from '../../../common/model.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
 /**
  * Represents a decoration that should be shown along the lines from `startLineNumber` to `endLineNumber`.
  * This can end up producing multiple `LineDecorationToRender`.
  */
-export class DecorationToRender {
+class DecorationToRender {
     constructor(startLineNumber, endLineNumber, className, tooltip, zIndex) {
         this.startLineNumber = startLineNumber;
         this.endLineNumber = endLineNumber;
@@ -27,7 +28,7 @@ export class DecorationToRender {
 /**
  * A decoration that should be shown along a line.
  */
-export class LineDecorationToRender {
+class LineDecorationToRender {
     constructor(className, zIndex, tooltip) {
         this.className = className;
         this.zIndex = zIndex;
@@ -37,7 +38,7 @@ export class LineDecorationToRender {
 /**
  * Decorations to render on a visible line.
  */
-export class VisibleLineDecorationsToRender {
+class VisibleLineDecorationsToRender {
     constructor() {
         this.decorations = [];
     }
@@ -48,7 +49,7 @@ export class VisibleLineDecorationsToRender {
         return this.decorations;
     }
 }
-export class DedupOverlay extends DynamicViewOverlay {
+class DedupOverlay extends DynamicViewOverlay {
     /**
      * Returns an array with an element for each visible line number.
      */
@@ -95,7 +96,7 @@ export class DedupOverlay extends DynamicViewOverlay {
         return output;
     }
 }
-export class GlyphMarginWidgets extends ViewPart {
+class GlyphMarginWidgets extends ViewPart {
     constructor(context) {
         super(context);
         this._widgets = {};
@@ -398,4 +399,5 @@ class DecorationBasedGlyph {
         this.combinedClassName = combinedClassName;
     }
 }
-//# sourceMappingURL=glyphMargin.js.map
+
+export { DecorationToRender, DedupOverlay, GlyphMarginWidgets, LineDecorationToRender, VisibleLineDecorationsToRender };

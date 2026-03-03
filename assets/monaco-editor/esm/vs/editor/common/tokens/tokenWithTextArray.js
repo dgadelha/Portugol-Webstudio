@@ -1,9 +1,10 @@
+import { OffsetRange } from '../core/ranges/offsetRange.js';
+import { LineTokens } from './lineTokens.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { OffsetRange } from '../core/ranges/offsetRange.js';
-import { LineTokens } from './lineTokens.js';
 /**
  * This class represents a sequence of tokens.
  * Conceptually, each token has a length and a metadata number.
@@ -12,7 +13,7 @@ import { LineTokens } from './lineTokens.js';
  *
  * TODO: Make this class more efficient (e.g. by using a Int32Array).
 */
-export class TokenWithTextArray {
+class TokenWithTextArray {
     static fromLineTokens(lineTokens) {
         const tokenInfo = [];
         for (let i = 0; i < lineTokens.getCount(); i++) {
@@ -62,10 +63,11 @@ export class TokenWithTextArray {
         return TokenWithTextArray.create(result);
     }
 }
-export class TokenWithTextInfo {
+class TokenWithTextInfo {
     constructor(text, metadata) {
         this.text = text;
         this.metadata = metadata;
     }
 }
-//# sourceMappingURL=tokenWithTextArray.js.map
+
+export { TokenWithTextArray, TokenWithTextInfo };

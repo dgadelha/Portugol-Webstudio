@@ -2,15 +2,15 @@ import { Codicon } from '../../../common/codicons.js';
 import { Emitter } from '../../../common/event.js';
 import { ThemeIcon } from '../../../common/themables.js';
 import { getBaseLayerHoverDelegate } from '../hover/hoverDelegate2.js';
-import { getDefaultHoverDelegate } from '../hover/hoverDelegateFactory.js';
 import { Widget } from '../widget.js';
 import './toggle.css';
-export const unthemedToggleStyles = {
+
+const unthemedToggleStyles = {
     inputActiveOptionBorder: '#007ACC00',
     inputActiveOptionForeground: '#FFFFFF',
     inputActiveOptionBackground: '#0E639C50'
 };
-export class Toggle extends Widget {
+class Toggle extends Widget {
     get onChange() { return this._onChange.event; }
     get onKeyDown() { return this._onKeyDown.event; }
     constructor(opts) {
@@ -18,6 +18,7 @@ export class Toggle extends Widget {
         this._onChange = this._register(new Emitter());
         this._onKeyDown = this._register(new Emitter());
         this._opts = opts;
+        this._title = this._opts.title;
         this._checked = this._opts.isChecked;
         const classes = ['monaco-custom-toggle'];
         if (this._opts.icon) {
@@ -31,14 +32,17 @@ export class Toggle extends Widget {
             classes.push('checked');
         }
         this.domNode = document.createElement('div');
-        this._hover = this._register(getBaseLayerHoverDelegate().setupManagedHover(opts.hoverDelegate ?? getDefaultHoverDelegate('mouse'), this.domNode, this._opts.title));
+        this._register(getBaseLayerHoverDelegate().setupDelayedHover(this.domNode, () => ({
+            content: this._title,
+            style: 1 /* HoverStyle.Pointer */,
+        }), this._opts.hoverLifecycleOptions));
         this.domNode.classList.add(...classes);
         if (!this._opts.notFocusable) {
             this.domNode.tabIndex = 0;
         }
         this.domNode.setAttribute('role', 'checkbox');
         this.domNode.setAttribute('aria-checked', String(this._checked));
-        this.domNode.setAttribute('aria-label', this._opts.title);
+        this.setTitle(this._opts.title);
         this.applyStyles();
         this.onclick(this.domNode, (ev) => {
             if (this.enabled) {
@@ -105,8 +109,14 @@ export class Toggle extends Widget {
         this.domNode.classList.add('disabled');
     }
     setTitle(newTitle) {
-        this._hover.update(newTitle);
+        this._title = newTitle;
         this.domNode.setAttribute('aria-label', newTitle);
+    }
+    set visible(visible) {
+        this.domNode.style.display = visible ? '' : 'none';
+    }
+    get visible() {
+        return this.domNode.style.display !== 'none';
     }
 }
 class BaseCheckbox extends Widget {
@@ -145,9 +155,9 @@ class BaseCheckbox extends Widget {
         this.domNode.style.fontSize = `${size - 2}px`;
     }
 }
-export class Checkbox extends BaseCheckbox {
+class Checkbox extends BaseCheckbox {
     constructor(title, isChecked, styles) {
-        const toggle = new Toggle({ title, isChecked, icon: Codicon.check, actionClassName: BaseCheckbox.CLASS_NAME, hoverDelegate: styles.hoverDelegate, ...unthemedToggleStyles });
+        const toggle = new Toggle({ title, isChecked, icon: Codicon.check, actionClassName: BaseCheckbox.CLASS_NAME, hoverLifecycleOptions: styles.hoverLifecycleOptions, ...unthemedToggleStyles });
         super(toggle, toggle.domNode, styles);
         this._register(toggle);
         this._register(this.checkbox.onChange(keyboard => {
@@ -172,14 +182,14 @@ export class Checkbox extends BaseCheckbox {
         super.applyStyles(enabled);
     }
 }
-export class TriStateCheckbox extends BaseCheckbox {
+class TriStateCheckbox extends BaseCheckbox {
     constructor(title, _state, styles) {
         let icon;
         switch (_state) {
             case true:
                 icon = Codicon.check;
                 break;
-            case 'partial':
+            case 'mixed':
                 icon = Codicon.dash;
                 break;
             case false:
@@ -191,7 +201,7 @@ export class TriStateCheckbox extends BaseCheckbox {
             isChecked: _state === true,
             icon,
             actionClassName: Checkbox.CLASS_NAME,
-            hoverDelegate: styles.hoverDelegate,
+            hoverLifecycleOptions: styles.hoverLifecycleOptions,
             ...unthemedToggleStyles
         });
         super(checkbox, checkbox.domNode, styles);
@@ -218,7 +228,7 @@ export class TriStateCheckbox extends BaseCheckbox {
             case true:
                 this.checkbox.setIcon(Codicon.check);
                 break;
-            case 'partial':
+            case 'mixed':
                 this.checkbox.setIcon(Codicon.dash);
                 break;
             case false:
@@ -228,4 +238,5 @@ export class TriStateCheckbox extends BaseCheckbox {
         super.applyStyles(enabled);
     }
 }
-//# sourceMappingURL=toggle.js.map
+
+export { Checkbox, Toggle, TriStateCheckbox, unthemedToggleStyles };

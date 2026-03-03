@@ -1,13 +1,14 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { LineTokens } from '../tokens/lineTokens.js';
 import { Position } from '../core/position.js';
 import { LineInjectedText } from '../textModelEvents.js';
 import { ViewLineData } from '../viewModel.js';
 import { SingleLineInlineDecoration } from './inlineDecorations.js';
-export function createModelLineProjection(lineBreakData, isVisible) {
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+function createModelLineProjection(lineBreakData, isVisible) {
     if (lineBreakData === null) {
         // No mapping needed
         if (isVisible) {
@@ -345,4 +346,5 @@ function spaces(count) {
 function _makeSpaces(count) {
     return new Array(count + 1).join(' ');
 }
-//# sourceMappingURL=modelLineProjection.js.map
+
+export { createModelLineProjection };

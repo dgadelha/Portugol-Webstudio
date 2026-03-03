@@ -1,18 +1,19 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import './lineNumbers.css';
-import * as platform from '../../../../base/common/platform.js';
+import { isLinux } from '../../../../base/common/platform.js';
 import { DynamicViewOverlay } from '../../view/dynamicViewOverlay.js';
 import { Position } from '../../../common/core/position.js';
 import { Range } from '../../../common/core/range.js';
 import { registerThemingParticipant } from '../../../../platform/theme/common/themeService.js';
-import { editorDimmedLineNumber, editorLineNumbers } from '../../../common/core/editorColorRegistry.js';
+import { editorLineNumbers, editorDimmedLineNumber } from '../../../common/core/editorColorRegistry.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
 /**
  * Renders line numbers to the left of the main view lines content.
  */
-export class LineNumbersOverlay extends DynamicViewOverlay {
+class LineNumbersOverlay extends DynamicViewOverlay {
     static { this.CLASS_NAME = 'line-numbers'; }
     constructor(context) {
         super();
@@ -115,7 +116,7 @@ export class LineNumbersOverlay extends DynamicViewOverlay {
             this._renderResult = null;
             return;
         }
-        const lineHeightClassName = (platform.isLinux ? (this._lineHeight % 2 === 0 ? ' lh-even' : ' lh-odd') : '');
+        const lineHeightClassName = (isLinux ? (this._lineHeight % 2 === 0 ? ' lh-even' : ' lh-odd') : '');
         const visibleStartLineNumber = ctx.visibleRange.startLineNumber;
         const visibleEndLineNumber = ctx.visibleRange.endLineNumber;
         const lineNoDecorations = this._context.viewModel.getDecorationsInViewport(ctx.visibleRange).filter(d => !!d.options.lineNumberClassName);
@@ -179,4 +180,5 @@ registerThemingParticipant((theme, collector) => {
         collector.addRule(`.monaco-editor .line-numbers.dimmed-line-number { color: ${editorLineNumbersColor.transparent(0.4)}; }`);
     }
 });
-//# sourceMappingURL=lineNumbers.js.map
+
+export { LineNumbersOverlay };

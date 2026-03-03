@@ -5,7 +5,7 @@
 /**
  * Describes what to do with the indentation when pressing Enter.
  */
-export var IndentAction;
+var IndentAction;
 (function (IndentAction) {
     /**
      * Insert new line and copy the previous line's indentation.
@@ -29,7 +29,7 @@ export var IndentAction;
 /**
  * @internal
  */
-export class StandardAutoClosingPairConditional {
+class StandardAutoClosingPairConditional {
     constructor(source) {
         this._neutralCharacter = null;
         this._neutralCharacterSearched = false;
@@ -108,7 +108,7 @@ export class StandardAutoClosingPairConditional {
 /**
  * @internal
  */
-export class AutoClosingPairs {
+class AutoClosingPairs {
     constructor(autoClosingPairs) {
         this.autoClosingPairsOpenByStart = new Map();
         this.autoClosingPairsOpenByEnd = new Map();
@@ -134,4 +134,5 @@ function appendEntry(target, key, value) {
         target.set(key, [value]);
     }
 }
-//# sourceMappingURL=languageConfiguration.js.map
+
+export { AutoClosingPairs, IndentAction, StandardAutoClosingPairConditional };

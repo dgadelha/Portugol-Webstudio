@@ -1,19 +1,26 @@
+import { assert } from './assert.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { assert } from './assert.js';
 /**
  * @returns whether the provided parameter is a JavaScript String or not.
  */
-export function isString(str) {
+function isString(str) {
     return (typeof str === 'string');
+}
+/**
+ * @returns whether the provided parameter is a JavaScript Array and each element in the array satisfies the provided type guard.
+ */
+function isArrayOf(value, check) {
+    return Array.isArray(value) && value.every(check);
 }
 /**
  * @returns whether the provided parameter is of type `object` but **not**
  *	`null`, an `array`, a `regexp`, nor a `date`.
  */
-export function isObject(obj) {
+function isObject(obj) {
     // The method can't do a type cast since there are type (like strings) which
     // are subclasses of any put not positvely matched by the function. Hence type
     // narrowing results in wrong results.
@@ -26,7 +33,7 @@ export function isObject(obj) {
 /**
  * @returns whether the provided parameter is of type `Buffer` or Uint8Array dervived type
  */
-export function isTypedArray(obj) {
+function isTypedArray(obj) {
     const TypedArray = Object.getPrototypeOf(Uint8Array);
     return typeof obj === 'object'
         && obj instanceof TypedArray;
@@ -35,40 +42,41 @@ export function isTypedArray(obj) {
  * In **contrast** to just checking `typeof` this will return `false` for `NaN`.
  * @returns whether the provided parameter is a JavaScript Number or not.
  */
-export function isNumber(obj) {
+function isNumber(obj) {
     return (typeof obj === 'number' && !isNaN(obj));
 }
 /**
  * @returns whether the provided parameter is an Iterable, casting to the given generic
  */
-export function isIterable(obj) {
+function isIterable(obj) {
+    // eslint-disable-next-line local/code-no-any-casts
     return !!obj && typeof obj[Symbol.iterator] === 'function';
 }
 /**
  * @returns whether the provided parameter is a JavaScript Boolean or not.
  */
-export function isBoolean(obj) {
+function isBoolean(obj) {
     return (obj === true || obj === false);
 }
 /**
  * @returns whether the provided parameter is undefined.
  */
-export function isUndefined(obj) {
+function isUndefined(obj) {
     return (typeof obj === 'undefined');
 }
 /**
  * @returns whether the provided parameter is defined.
  */
-export function isDefined(arg) {
+function isDefined(arg) {
     return !isUndefinedOrNull(arg);
 }
 /**
  * @returns whether the provided parameter is undefined or null.
  */
-export function isUndefinedOrNull(obj) {
+function isUndefinedOrNull(obj) {
     return (isUndefined(obj) || obj === null);
 }
-export function assertType(condition, type) {
+function assertType(condition, type) {
     if (!condition) {
         throw new Error(type ? `Unexpected type, expected '${type}'` : 'Unexpected type');
     }
@@ -78,51 +86,23 @@ export function assertType(condition, type) {
  *
  * @see {@link assertDefined} for a similar utility that leverages TS assertion functions to narrow down the type of `arg` to be non-nullable.
  */
-export function assertReturnsDefined(arg) {
+function assertReturnsDefined(arg) {
     assert(arg !== null && arg !== undefined, 'Argument is `undefined` or `null`.');
     return arg;
 }
 /**
- * Checks if the provided value is one of the vales in the provided list.
- *
- * ## Examples
- *
- * ```typescript
- * // note! item type is a `subset of string`
- * type TItem = ':' | '.' | '/';
- *
- * // note! item is type of `string` here
- * const item: string = ':';
- * // list of the items to check against
- * const list: TItem[] = [':', '.'];
- *
- * // ok
- * assert(
- *   isOneOf(item, list),
- *   'Must succeed.',
- * );
- *
- * // `item` is of `TItem` type now
- * ```
- */
-export const isOneOf = (value, validValues) => {
-    // note! it is OK to type cast here, because we rely on the includes
-    //       utility to check if the value is present in the provided list
-    return validValues.includes(value);
-};
-/**
  * @returns whether the provided parameter is a JavaScript Function or not.
  */
-export function isFunction(obj) {
+function isFunction(obj) {
     return (typeof obj === 'function');
 }
-export function validateConstraints(args, constraints) {
+function validateConstraints(args, constraints) {
     const len = Math.min(args.length, constraints.length);
     for (let i = 0; i < len; i++) {
         validateConstraint(args[i], constraints[i]);
     }
 }
-export function validateConstraint(arg, constraint) {
+function validateConstraint(arg, constraint) {
     if (isString(constraint)) {
         if (typeof arg !== constraint) {
             throw new Error(`argument does not match constraint: typeof ${constraint}`);
@@ -137,6 +117,7 @@ export function validateConstraint(arg, constraint) {
         catch {
             // ignore
         }
+        // eslint-disable-next-line local/code-no-any-casts
         if (!isUndefinedOrNull(arg) && arg.constructor === constraint) {
             return;
         }
@@ -152,7 +133,8 @@ export function validateConstraint(arg, constraint) {
  * This can be used to make sure the argument correctly conforms to the subtype while still being able to pass it
  * to contexts that expects the supertype.
  */
-export function upcast(x) {
+function upcast(x) {
     return x;
 }
-//# sourceMappingURL=types.js.map
+
+export { assertReturnsDefined, assertType, isArrayOf, isBoolean, isDefined, isFunction, isIterable, isNumber, isObject, isString, isTypedArray, isUndefined, isUndefinedOrNull, upcast, validateConstraint, validateConstraints };

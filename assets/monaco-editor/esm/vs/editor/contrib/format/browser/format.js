@@ -1,8 +1,4 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-import { asArray, isNonEmptyArray } from '../../../../base/common/arrays.js';
+import { isNonEmptyArray, asArray } from '../../../../base/common/arrays.js';
 import { CancellationToken } from '../../../../base/common/cancellation.js';
 import { onUnexpectedExternalError } from '../../../../base/common/errors.js';
 import { Iterable } from '../../../../base/common/iterator.js';
@@ -22,8 +18,13 @@ import { ExtensionIdentifierSet } from '../../../../platform/extensions/common/e
 import { IInstantiationService } from '../../../../platform/instantiation/common/instantiation.js';
 import { ILanguageFeaturesService } from '../../../common/services/languageFeatures.js';
 import { ILogService } from '../../../../platform/log/common/log.js';
-import { AccessibilitySignal, IAccessibilitySignalService } from '../../../../platform/accessibilitySignal/browser/accessibilitySignalService.js';
-export function getRealAndSyntheticDocumentFormattersOrdered(documentFormattingEditProvider, documentRangeFormattingEditProvider, model) {
+import { IAccessibilitySignalService, AccessibilitySignal } from '../../../../platform/accessibilitySignal/browser/accessibilitySignalService.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+function getRealAndSyntheticDocumentFormattersOrdered(documentFormattingEditProvider, documentRangeFormattingEditProvider, model) {
     const result = [];
     const seen = new ExtensionIdentifierSet();
     // (1) add all document formatter
@@ -53,7 +54,7 @@ export function getRealAndSyntheticDocumentFormattersOrdered(documentFormattingE
     }
     return result;
 }
-export class FormattingConflicts {
+class FormattingConflicts {
     static { this._selectors = new LinkedList(); }
     static setFormatterSelector(selector) {
         const remove = FormattingConflicts._selectors.unshift(selector);
@@ -70,7 +71,7 @@ export class FormattingConflicts {
         return undefined;
     }
 }
-export async function formatDocumentRangesWithSelectedProvider(accessor, editorOrModel, rangeOrRanges, mode, progress, token, userGesture) {
+async function formatDocumentRangesWithSelectedProvider(accessor, editorOrModel, rangeOrRanges, mode, progress, token, userGesture) {
     const instaService = accessor.get(IInstantiationService);
     const { documentRangeFormattingEditProvider: documentRangeFormattingEditProviderRegistry } = accessor.get(ILanguageFeaturesService);
     const model = isCodeEditor(editorOrModel) ? editorOrModel.getModel() : editorOrModel;
@@ -81,7 +82,7 @@ export async function formatDocumentRangesWithSelectedProvider(accessor, editorO
         await instaService.invokeFunction(formatDocumentRangesWithProvider, selected, editorOrModel, rangeOrRanges, token, userGesture);
     }
 }
-export async function formatDocumentRangesWithProvider(accessor, provider, editorOrModel, rangeOrRanges, token, userGesture) {
+async function formatDocumentRangesWithProvider(accessor, provider, editorOrModel, rangeOrRanges, token, userGesture) {
     const workerService = accessor.get(IEditorWorkerService);
     const logService = accessor.get(ILogService);
     const accessibilitySignalService = accessor.get(IAccessibilitySignalService);
@@ -215,7 +216,7 @@ export async function formatDocumentRangesWithProvider(accessor, provider, edito
     accessibilitySignalService.playSignal(AccessibilitySignal.format, { userGesture });
     return true;
 }
-export async function formatDocumentWithSelectedProvider(accessor, editorOrModel, mode, progress, token, userGesture) {
+async function formatDocumentWithSelectedProvider(accessor, editorOrModel, mode, progress, token, userGesture) {
     const instaService = accessor.get(IInstantiationService);
     const languageFeaturesService = accessor.get(ILanguageFeaturesService);
     const model = isCodeEditor(editorOrModel) ? editorOrModel.getModel() : editorOrModel;
@@ -226,7 +227,7 @@ export async function formatDocumentWithSelectedProvider(accessor, editorOrModel
         await instaService.invokeFunction(formatDocumentWithProvider, selected, editorOrModel, mode, token, userGesture);
     }
 }
-export async function formatDocumentWithProvider(accessor, provider, editorOrModel, mode, token, userGesture) {
+async function formatDocumentWithProvider(accessor, provider, editorOrModel, mode, token, userGesture) {
     const workerService = accessor.get(IEditorWorkerService);
     const accessibilitySignalService = accessor.get(IAccessibilitySignalService);
     let model;
@@ -282,7 +283,7 @@ export async function formatDocumentWithProvider(accessor, provider, editorOrMod
     accessibilitySignalService.playSignal(AccessibilitySignal.format, { userGesture });
     return true;
 }
-export async function getDocumentRangeFormattingEditsUntilResult(workerService, languageFeaturesService, model, range, options, token) {
+async function getDocumentRangeFormattingEditsUntilResult(workerService, languageFeaturesService, model, range, options, token) {
     const providers = languageFeaturesService.documentRangeFormattingEditProvider.ordered(model);
     for (const provider of providers) {
         const rawEdits = await Promise.resolve(provider.provideDocumentRangeFormattingEdits(model, range, options, token)).catch(onUnexpectedExternalError);
@@ -292,7 +293,7 @@ export async function getDocumentRangeFormattingEditsUntilResult(workerService, 
     }
     return undefined;
 }
-export async function getDocumentFormattingEditsUntilResult(workerService, languageFeaturesService, model, options, token) {
+async function getDocumentFormattingEditsUntilResult(workerService, languageFeaturesService, model, options, token) {
     const providers = getRealAndSyntheticDocumentFormattersOrdered(languageFeaturesService.documentFormattingEditProvider, languageFeaturesService.documentRangeFormattingEditProvider, model);
     for (const provider of providers) {
         const rawEdits = await Promise.resolve(provider.provideDocumentFormattingEdits(model, options, token)).catch(onUnexpectedExternalError);
@@ -302,7 +303,7 @@ export async function getDocumentFormattingEditsUntilResult(workerService, langu
     }
     return undefined;
 }
-export function getOnTypeFormattingEdits(workerService, languageFeaturesService, model, position, ch, options, token) {
+function getOnTypeFormattingEdits(workerService, languageFeaturesService, model, position, ch, options, token) {
     const providers = languageFeaturesService.onTypeFormattingEditProvider.ordered(model);
     if (providers.length === 0) {
         return Promise.resolve(undefined);
@@ -314,6 +315,7 @@ export function getOnTypeFormattingEdits(workerService, languageFeaturesService,
         return workerService.computeMoreMinimalEdits(model.uri, edits);
     });
 }
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 CommandsRegistry.registerCommand('_executeFormatRangeProvider', async function (accessor, ...args) {
     const [resource, range, options] = args;
     assertType(URI.isUri(resource));
@@ -329,6 +331,7 @@ CommandsRegistry.registerCommand('_executeFormatRangeProvider', async function (
         reference.dispose();
     }
 });
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 CommandsRegistry.registerCommand('_executeFormatDocumentProvider', async function (accessor, ...args) {
     const [resource, options] = args;
     assertType(URI.isUri(resource));
@@ -343,6 +346,7 @@ CommandsRegistry.registerCommand('_executeFormatDocumentProvider', async functio
         reference.dispose();
     }
 });
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 CommandsRegistry.registerCommand('_executeFormatOnTypeProvider', async function (accessor, ...args) {
     const [resource, position, ch, options] = args;
     assertType(URI.isUri(resource));
@@ -359,4 +363,5 @@ CommandsRegistry.registerCommand('_executeFormatOnTypeProvider', async function 
         reference.dispose();
     }
 });
-//# sourceMappingURL=format.js.map
+
+export { FormattingConflicts, formatDocumentRangesWithProvider, formatDocumentRangesWithSelectedProvider, formatDocumentWithProvider, formatDocumentWithSelectedProvider, getDocumentFormattingEditsUntilResult, getDocumentRangeFormattingEditsUntilResult, getOnTypeFormattingEdits, getRealAndSyntheticDocumentFormattersOrdered };

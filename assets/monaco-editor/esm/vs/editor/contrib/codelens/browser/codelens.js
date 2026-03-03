@@ -1,16 +1,17 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { CancellationToken } from '../../../../base/common/cancellation.js';
 import { illegalArgument, onUnexpectedExternalError } from '../../../../base/common/errors.js';
-import { DisposableStore, isDisposable } from '../../../../base/common/lifecycle.js';
+import { isDisposable, DisposableStore } from '../../../../base/common/lifecycle.js';
 import { assertType } from '../../../../base/common/types.js';
 import { URI } from '../../../../base/common/uri.js';
 import { IModelService } from '../../../common/services/model.js';
 import { CommandsRegistry } from '../../../../platform/commands/common/commands.js';
 import { ILanguageFeaturesService } from '../../../common/services/languageFeatures.js';
-export class CodeLensModel {
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+class CodeLensModel {
     constructor() {
         this.lenses = [];
     }
@@ -31,7 +32,7 @@ export class CodeLensModel {
         }
     }
 }
-export async function getCodeLensModel(registry, model, token) {
+async function getCodeLensModel(registry, model, token) {
     const provider = registry.ordered(model);
     const providerRanks = new Map();
     const result = new CodeLensModel();
@@ -109,4 +110,5 @@ CommandsRegistry.registerCommand('_executeCodeLensProvider', function (accessor,
         setTimeout(() => disposables.dispose(), 100);
     });
 });
-//# sourceMappingURL=codelens.js.map
+
+export { CodeLensModel, getCodeLensModel };

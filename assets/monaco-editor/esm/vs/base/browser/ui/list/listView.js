@@ -1,19 +1,9 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 import { DataTransfers } from '../../dnd.js';
-import { addDisposableListener, animate, getActiveElement, getContentHeight, getContentWidth, getDocument, getTopLeftOffset, getWindow, isAncestor, isHTMLElement, isSVGElement, scheduleAtNextAnimationFrame } from '../../dom.js';
+import { getContentWidth, scheduleAtNextAnimationFrame, getWindow, addDisposableListener, getActiveElement, getContentHeight, getDocument, getTopLeftOffset, animate, isHTMLElement, isSVGElement, isAncestor } from '../../dom.js';
 import { DomEmitter } from '../../event.js';
-import { EventType as TouchEventType, Gesture } from '../../touch.js';
+import { Gesture, EventType } from '../../touch.js';
 import { SmoothScrollableElement } from '../scrollbar/scrollableElement.js';
-import { distinct, equals, splice } from '../../../common/arrays.js';
+import { splice, distinct, equals } from '../../../common/arrays.js';
 import { Delayer, disposableTimeout } from '../../../common/async.js';
 import { memoize } from '../../../common/decorators.js';
 import { Emitter, Event } from '../../../common/event.js';
@@ -25,6 +15,17 @@ import { RowCache } from './rowCache.js';
 import { BugIndicatingError } from '../../../common/errors.js';
 import { clamp } from '../../../common/numbers.js';
 import { applyDragImage } from '../dnd/dnd.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
 const StaticDND = {
     CurrentDragAndDropData: undefined
 };
@@ -46,7 +47,7 @@ const DefaultOptions = {
     transformOptimization: true,
     alwaysConsumeMouseWheel: true,
 };
-export class ElementsDragAndDropData {
+class ElementsDragAndDropData {
     constructor(elements) {
         this.elements = elements;
     }
@@ -55,7 +56,7 @@ export class ElementsDragAndDropData {
         return this.elements;
     }
 }
-export class ExternalElementsDragAndDropData {
+class ExternalElementsDragAndDropData {
     constructor(elements) {
         this.elements = elements;
     }
@@ -64,7 +65,7 @@ export class ExternalElementsDragAndDropData {
         return this.elements;
     }
 }
-export class NativeDragAndDropData {
+class NativeDragAndDropData {
     constructor() {
         this.types = [];
         this.files = [];
@@ -134,7 +135,7 @@ class ListViewAccessibilityProvider {
  * @remarks It is a low-level widget, not meant to be used directly. Refer to the
  * List widget instead.
  */
-export class ListView {
+class ListView {
     static { this.InstanceCount = 0; }
     get contentHeight() { return this.rangeMap.size; }
     get onDidScroll() { return this.scrollableElement.onScroll; }
@@ -230,7 +231,7 @@ export class ListView {
         this.domNode.appendChild(this.scrollableElement.getDomNode());
         container.appendChild(this.domNode);
         this.scrollableElement.onScroll(this.onScroll, this, this.disposables);
-        this.disposables.add(addDisposableListener(this.rowsContainer, TouchEventType.Change, e => this.onTouchChange(e)));
+        this.disposables.add(addDisposableListener(this.rowsContainer, EventType.Change, e => this.onTouchChange(e)));
         this.disposables.add(addDisposableListener(this.scrollableElement.getDomNode(), 'scroll', e => {
             // Make sure the active element is scrolled into view
             const element = e.target;
@@ -568,11 +569,12 @@ export class ListView {
         const role = this.accessibilityProvider.getRole(item.element) || 'listitem';
         item.row.domNode.setAttribute('role', role);
         const checked = this.accessibilityProvider.isChecked(item.element);
-        if (typeof checked === 'boolean') {
-            item.row.domNode.setAttribute('aria-checked', String(!!checked));
+        const toAriaState = (value) => value === 'mixed' ? 'mixed' : String(!!value);
+        if (typeof checked === 'boolean' || checked === 'mixed') {
+            item.row.domNode.setAttribute('aria-checked', toAriaState(checked));
         }
         else if (checked) {
-            const update = (checked) => item.row.domNode.setAttribute('aria-checked', String(!!checked));
+            const update = (value) => item.row.domNode.setAttribute('aria-checked', toAriaState(value));
             update(checked.value);
             item.checkedDisposable = checked.onDidChange(() => update(checked.value));
         }
@@ -675,9 +677,9 @@ export class ListView {
     get onMouseDown() { return Event.map(this.disposables.add(new DomEmitter(this.domNode, 'mousedown')).event, e => this.toMouseEvent(e), this.disposables); }
     get onMouseOver() { return Event.map(this.disposables.add(new DomEmitter(this.domNode, 'mouseover')).event, e => this.toMouseEvent(e), this.disposables); }
     get onMouseOut() { return Event.map(this.disposables.add(new DomEmitter(this.domNode, 'mouseout')).event, e => this.toMouseEvent(e), this.disposables); }
-    get onContextMenu() { return Event.any(Event.map(this.disposables.add(new DomEmitter(this.domNode, 'contextmenu')).event, e => this.toMouseEvent(e), this.disposables), Event.map(this.disposables.add(new DomEmitter(this.domNode, TouchEventType.Contextmenu)).event, e => this.toGestureEvent(e), this.disposables)); }
+    get onContextMenu() { return Event.any(Event.map(this.disposables.add(new DomEmitter(this.domNode, 'contextmenu')).event, e => this.toMouseEvent(e), this.disposables), Event.map(this.disposables.add(new DomEmitter(this.domNode, EventType.Contextmenu)).event, e => this.toGestureEvent(e), this.disposables)); }
     get onTouchStart() { return Event.map(this.disposables.add(new DomEmitter(this.domNode, 'touchstart')).event, e => this.toTouchEvent(e), this.disposables); }
-    get onTap() { return Event.map(this.disposables.add(new DomEmitter(this.rowsContainer, TouchEventType.Tap)).event, e => this.toGestureEvent(e), this.disposables); }
+    get onTap() { return Event.map(this.disposables.add(new DomEmitter(this.rowsContainer, EventType.Tap)).event, e => this.toGestureEvent(e), this.disposables); }
     toMouseEvent(browserEvent) {
         const index = this.getItemIndexFromEventTarget(browserEvent.target || null);
         const item = typeof index === 'undefined' ? undefined : this.items[index];
@@ -1167,4 +1169,5 @@ __decorate([
 __decorate([
     memoize
 ], ListView.prototype, "onTap", null);
-//# sourceMappingURL=listView.js.map
+
+export { ElementsDragAndDropData, ExternalElementsDragAndDropData, ListView, NativeDragAndDropData };

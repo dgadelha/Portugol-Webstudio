@@ -2,7 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-export class RateLimiter {
+class RateLimiter {
     constructor(timesPerSecond = 5) {
         this.timesPerSecond = timesPerSecond;
         this._lastRun = 0;
@@ -16,4 +16,5 @@ export class RateLimiter {
         }
     }
 }
-//# sourceMappingURL=common.js.map
+
+export { RateLimiter };

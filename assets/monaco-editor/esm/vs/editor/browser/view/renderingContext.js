@@ -2,7 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-export class RestrictedRenderingContext {
+class RestrictedRenderingContext {
     constructor(viewLayout, viewportData) {
         this._restrictedRenderingContextBrand = undefined;
         this._viewLayout = viewLayout;
@@ -33,7 +33,7 @@ export class RestrictedRenderingContext {
         return this.viewportData.getDecorationsInViewport();
     }
 }
-export class RenderingContext extends RestrictedRenderingContext {
+class RenderingContext extends RestrictedRenderingContext {
     constructor(viewLayout, viewportData, viewLines, viewLinesGpu) {
         super(viewLayout, viewportData);
         this._renderingContextBrand = undefined;
@@ -58,7 +58,7 @@ export class RenderingContext extends RestrictedRenderingContext {
         return this._viewLines.visibleRangeForPosition(position) ?? this._viewLinesGpu?.visibleRangeForPosition(position) ?? null;
     }
 }
-export class LineVisibleRanges {
+class LineVisibleRanges {
     constructor(outsideRenderedLine, lineNumber, ranges, 
     /**
      * Indicates if the requested range does not end in this line, but continues on the next line.
@@ -70,7 +70,7 @@ export class LineVisibleRanges {
         this.continuesOnNextLine = continuesOnNextLine;
     }
 }
-export class HorizontalRange {
+class HorizontalRange {
     static from(ranges) {
         const result = new Array(ranges.length);
         for (let i = 0, len = ranges.length; i < len; i++) {
@@ -88,7 +88,7 @@ export class HorizontalRange {
         return `[${this.left},${this.width}]`;
     }
 }
-export class FloatHorizontalRange {
+class FloatHorizontalRange {
     constructor(left, width) {
         this._floatHorizontalRangeBrand = undefined;
         this.left = left;
@@ -101,17 +101,18 @@ export class FloatHorizontalRange {
         return a.left - b.left;
     }
 }
-export class HorizontalPosition {
+class HorizontalPosition {
     constructor(outsideRenderedLine, left) {
         this.outsideRenderedLine = outsideRenderedLine;
         this.originalLeft = left;
         this.left = Math.round(this.originalLeft);
     }
 }
-export class VisibleRanges {
+class VisibleRanges {
     constructor(outsideRenderedLine, ranges) {
         this.outsideRenderedLine = outsideRenderedLine;
         this.ranges = ranges;
     }
 }
-//# sourceMappingURL=renderingContext.js.map
+
+export { FloatHorizontalRange, HorizontalPosition, HorizontalRange, LineVisibleRanges, RenderingContext, RestrictedRenderingContext, VisibleRanges };

@@ -1,31 +1,32 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
 import { Emitter } from '../../../../base/common/event.js';
 import { combinedDisposable, DisposableStore, dispose } from '../../../../base/common/lifecycle.js';
 import { isEqual } from '../../../../base/common/resources.js';
-import { EditorCommand, registerEditorCommand } from '../../../browser/editorExtensions.js';
+import { registerEditorCommand, EditorCommand } from '../../../browser/editorExtensions.js';
 import { ICodeEditorService } from '../../../browser/services/codeEditorService.js';
 import { Range } from '../../../common/core/range.js';
 import { localize } from '../../../../nls.js';
-import { IContextKeyService, RawContextKey } from '../../../../platform/contextkey/common/contextkey.js';
+import { RawContextKey, IContextKeyService } from '../../../../platform/contextkey/common/contextkey.js';
 import { registerSingleton } from '../../../../platform/instantiation/common/extensions.js';
 import { createDecorator } from '../../../../platform/instantiation/common/instantiation.js';
 import { IKeybindingService } from '../../../../platform/keybinding/common/keybinding.js';
 import { KeybindingsRegistry } from '../../../../platform/keybinding/common/keybindingsRegistry.js';
 import { INotificationService } from '../../../../platform/notification/common/notification.js';
-export const ctxHasSymbols = new RawContextKey('hasSymbols', false, localize(1090, "Whether there are symbol locations that can be navigated via keyboard-only."));
-export const ISymbolNavigationService = createDecorator('ISymbolNavigationService');
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+const ctxHasSymbols = new RawContextKey('hasSymbols', false, localize(1095, "Whether there are symbol locations that can be navigated via keyboard-only."));
+const ISymbolNavigationService = createDecorator('ISymbolNavigationService');
 let SymbolNavigationService = class SymbolNavigationService {
     constructor(contextKeyService, _editorService, _notificationService, _keybindingService) {
         this._editorService = _editorService;
@@ -110,8 +111,8 @@ let SymbolNavigationService = class SymbolNavigationService {
         this._currentMessage?.close();
         const kb = this._keybindingService.lookupKeybinding('editor.gotoNextSymbolFromResult');
         const message = kb
-            ? localize(1091, "Symbol {0} of {1}, {2} for next", this._currentIdx + 1, this._currentModel.references.length, kb.getLabel())
-            : localize(1092, "Symbol {0} of {1}", this._currentIdx + 1, this._currentModel.references.length);
+            ? localize(1096, "Symbol {0} of {1}, {2} for next", this._currentIdx + 1, this._currentModel.references.length, kb.getLabel())
+            : localize(1097, "Symbol {0} of {1}", this._currentIdx + 1, this._currentModel.references.length);
         this._currentMessage = this._notificationService.status(message);
     }
 };
@@ -173,4 +174,5 @@ let EditorState = class EditorState {
 EditorState = __decorate([
     __param(0, ICodeEditorService)
 ], EditorState);
-//# sourceMappingURL=symbolNavigation.js.map
+
+export { ISymbolNavigationService, ctxHasSymbols };

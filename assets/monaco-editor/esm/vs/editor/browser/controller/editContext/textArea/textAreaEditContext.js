@@ -1,22 +1,9 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
 import './textAreaEditContext.css';
-import * as nls from '../../../../../nls.js';
-import * as browser from '../../../../../base/browser/browser.js';
+import { localize } from '../../../../../nls.js';
+import { isSafari, isFirefox, isChrome, isAndroid } from '../../../../../base/browser/browser.js';
 import { createFastDomNode } from '../../../../../base/browser/fastDomNode.js';
-import * as platform from '../../../../../base/common/platform.js';
-import * as strings from '../../../../../base/common/strings.js';
+import { OS, isMacintosh } from '../../../../../base/common/platform.js';
+import { isHighSurrogate } from '../../../../../base/common/strings.js';
 import { applyFontInfo } from '../../../config/domFontInfo.js';
 import { PartFingerprints } from '../../../view/viewPart.js';
 import { LineNumbersOverlay } from '../../../viewParts/lineNumbers/lineNumbers.js';
@@ -32,11 +19,25 @@ import { IME } from '../../../../../base/common/ime.js';
 import { IKeybindingService } from '../../../../../platform/keybinding/common/keybinding.js';
 import { IInstantiationService } from '../../../../../platform/instantiation/common/instantiation.js';
 import { AbstractEditContext } from '../editContext.js';
-import { TextAreaInput, TextAreaWrapper } from './textAreaEditContextInput.js';
+import { TextAreaWrapper, TextAreaInput } from './textAreaEditContextInput.js';
 import { ariaLabelForScreenReaderContent, newlinecount, SimplePagedScreenReaderStrategy } from '../screenReaderUtils.js';
 import { getDataToCopy } from '../clipboardUtils.js';
-import { _debugComposition, TextAreaState } from './textAreaEditContextState.js';
+import { TextAreaState } from './textAreaEditContextState.js';
 import { getMapForWordSeparators } from '../../../../common/core/wordCharacterClassifier.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 class VisibleTextAreaData {
     constructor(_context, modelLineNumber, distanceToModelLineStart, widthOfHiddenLineTextBefore, distanceToModelLineEnd) {
         this._context = _context;
@@ -91,7 +92,7 @@ class VisibleTextAreaData {
         return this._previousPresentation;
     }
 }
-const canUseZeroSizeTextarea = (browser.isFirefox);
+const canUseZeroSizeTextarea = (isFirefox);
 let TextAreaEditContext = class TextAreaEditContext extends AbstractEditContext {
     constructor(context, overflowGuardContainer, viewController, visibleRangeProvider, _keybindingService, _instantiationService) {
         super(context);
@@ -131,7 +132,7 @@ let TextAreaEditContext = class TextAreaEditContext extends AbstractEditContext 
         this.textArea.setAttribute('aria-required', options.get(9 /* EditorOption.ariaRequired */) ? 'true' : 'false');
         this.textArea.setAttribute('tabindex', String(options.get(140 /* EditorOption.tabIndex */)));
         this.textArea.setAttribute('role', 'textbox');
-        this.textArea.setAttribute('aria-roledescription', nls.localize(60, "editor"));
+        this.textArea.setAttribute('aria-roledescription', localize(65, "editor"));
         this.textArea.setAttribute('aria-multiline', 'true');
         this.textArea.setAttribute('aria-autocomplete', options.get(104 /* EditorOption.readOnly */) ? 'none' : 'both');
         this._ensureReadOnlyAttribute();
@@ -150,7 +151,7 @@ let TextAreaEditContext = class TextAreaEditContext extends AbstractEditContext 
                     // On OSX, we write the character before the cursor to allow for "long-press" composition
                     // Also on OSX, we write the word before the cursor to allow for the Accessibility Keyboard to give good hints
                     const selection = this._selections[0];
-                    if (platform.isMacintosh && selection.isEmpty()) {
+                    if (isMacintosh && selection.isEmpty()) {
                         const position = selection.getStartPosition();
                         let textBefore = this._getWordBeforePosition(position);
                         if (textBefore.length === 0) {
@@ -165,20 +166,20 @@ let TextAreaEditContext = class TextAreaEditContext extends AbstractEditContext 
                     // thousand chars
                     // (https://github.com/microsoft/vscode/issues/27799)
                     const LIMIT_CHARS = 500;
-                    if (platform.isMacintosh && !selection.isEmpty() && this._context.viewModel.getValueLengthInRange(selection, 0 /* EndOfLinePreference.TextDefined */) < LIMIT_CHARS) {
+                    if (isMacintosh && !selection.isEmpty() && this._context.viewModel.getValueLengthInRange(selection, 0 /* EndOfLinePreference.TextDefined */) < LIMIT_CHARS) {
                         const text = this._context.viewModel.getValueInRange(selection, 0 /* EndOfLinePreference.TextDefined */);
                         return new TextAreaState(text, 0, text.length, selection, 0);
                     }
                     // on Safari, document.execCommand('cut') and document.execCommand('copy') will just not work
                     // if the textarea has no content selected. So if there is an editor selection, ensure something
                     // is selected in the textarea.
-                    if (browser.isSafari && !selection.isEmpty()) {
+                    if (isSafari && !selection.isEmpty()) {
                         const placeholderText = 'vscode-placeholder';
                         return new TextAreaState(placeholderText, 0, placeholderText.length, null, undefined);
                     }
                     return TextAreaState.EMPTY;
                 }
-                if (browser.isAndroid) {
+                if (isAndroid) {
                     // when tapping in the editor on a word, Android enters composition mode.
                     // in the `compositionstart` event we cannot clear the textarea, because
                     // it then forgets to ever send a `compositionend`.
@@ -201,11 +202,11 @@ let TextAreaEditContext = class TextAreaEditContext extends AbstractEditContext 
             }
         };
         const textAreaWrapper = this._register(new TextAreaWrapper(this.textArea.domNode));
-        this._textAreaInput = this._register(this._instantiationService.createInstance(TextAreaInput, textAreaInputHost, textAreaWrapper, platform.OS, {
-            isAndroid: browser.isAndroid,
-            isChrome: browser.isChrome,
-            isFirefox: browser.isFirefox,
-            isSafari: browser.isSafari,
+        this._textAreaInput = this._register(this._instantiationService.createInstance(TextAreaInput, textAreaInputHost, textAreaWrapper, OS, {
+            isAndroid: isAndroid,
+            isChrome: isChrome,
+            isFirefox: isFirefox,
+            isSafari: isSafari,
         }));
         this._register(this._textAreaInput.onKeyDown((e) => {
             this._viewController.emitKeyDown(e);
@@ -229,16 +230,9 @@ let TextAreaEditContext = class TextAreaEditContext extends AbstractEditContext 
         }));
         this._register(this._textAreaInput.onType((e) => {
             if (e.replacePrevCharCnt || e.replaceNextCharCnt || e.positionDelta) {
-                // must be handled through the new command
-                if (_debugComposition) {
-                    console.log(` => compositionType: <<${e.text}>>, ${e.replacePrevCharCnt}, ${e.replaceNextCharCnt}, ${e.positionDelta}`);
-                }
                 this._viewController.compositionType(e.text, e.replacePrevCharCnt, e.replaceNextCharCnt, e.positionDelta);
             }
             else {
-                if (_debugComposition) {
-                    console.log(` => type: <<${e.text}>>`);
-                }
                 this._viewController.type(e.text);
             }
         }));
@@ -403,7 +397,7 @@ let TextAreaEditContext = class TextAreaEditContext extends AbstractEditContext 
         if (position.column > 1) {
             const lineContent = this._context.viewModel.getLineContent(position.lineNumber);
             const charBefore = lineContent.charAt(position.column - 2);
-            if (!strings.isHighSurrogate(charBefore.charCodeAt(0))) {
+            if (!isHighSurrogate(charBefore.charCodeAt(0))) {
                 return charBefore;
             }
         }
@@ -622,7 +616,7 @@ let TextAreaEditContext = class TextAreaEditContext extends AbstractEditContext 
             return;
         }
         // The primary cursor is in the viewport (at least vertically) => place textarea on the cursor
-        if (platform.isMacintosh || this._accessibilitySupport === 2 /* AccessibilitySupport.Enabled */) {
+        if (isMacintosh || this._accessibilitySupport === 2 /* AccessibilitySupport.Enabled */) {
             // For the popup emoji input, we will make the text area as high as the line height
             // We will also make the fontSize and lineHeight the correct dimensions to help with the placement of these pickers
             const lineNumber = this._primaryCursorPosition.lineNumber;
@@ -703,7 +697,6 @@ TextAreaEditContext = __decorate([
     __param(4, IKeybindingService),
     __param(5, IInstantiationService)
 ], TextAreaEditContext);
-export { TextAreaEditContext };
 function measureText(targetDocument, text, fontInfo, tabSize) {
     if (text.length === 0) {
         return 0;
@@ -723,4 +716,5 @@ function measureText(targetDocument, text, fontInfo, tabSize) {
     container.remove();
     return res;
 }
-//# sourceMappingURL=textAreaEditContext.js.map
+
+export { TextAreaEditContext };

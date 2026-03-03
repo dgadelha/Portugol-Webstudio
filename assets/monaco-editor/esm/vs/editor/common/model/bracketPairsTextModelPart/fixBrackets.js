@@ -1,13 +1,14 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { LanguageAgnosticBracketTokens } from './bracketPairsTree/brackets.js';
 import { lengthAdd, lengthGetColumnCountIfZeroLineCount, lengthZero } from './bracketPairsTree/length.js';
 import { parseDocument } from './bracketPairsTree/parser.js';
 import { DenseKeyProvider } from './bracketPairsTree/smallImmutableSet.js';
 import { TextBufferTokenizer } from './bracketPairsTree/tokenizer.js';
-export function fixBracketsInLine(tokens, languageConfigurationService) {
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+function fixBracketsInLine(tokens, languageConfigurationService) {
     const denseKeyProvider = new DenseKeyProvider();
     const bracketTokens = new LanguageAgnosticBracketTokens(denseKeyProvider, (languageId) => languageConfigurationService.getLanguageConfiguration(languageId));
     const tokenizer = new TextBufferTokenizer(new StaticTokenizerSource([tokens]), bracketTokens);
@@ -32,9 +33,7 @@ export function fixBracketsInLine(tokens, languageConfigurationService) {
                 str += closingTokenText;
             }
         }
-        else if (node.kind === 3 /* AstNodeKind.UnexpectedClosingBracket */) {
-            // remove the bracket
-        }
+        else if (node.kind === 3 /* AstNodeKind.UnexpectedClosingBracket */) ;
         else if (node.kind === 0 /* AstNodeKind.Text */ || node.kind === 1 /* AstNodeKind.Bracket */) {
             str += line.substring(lengthGetColumnCountIfZeroLineCount(offset), lengthGetColumnCountIfZeroLineCount(lengthAdd(offset, node.length)));
         }
@@ -64,4 +63,5 @@ class StaticTokenizerSource {
         return this.lines[lineNumber - 1].getLineContent().length;
     }
 }
-//# sourceMappingURL=fixBrackets.js.map
+
+export { fixBracketsInLine };

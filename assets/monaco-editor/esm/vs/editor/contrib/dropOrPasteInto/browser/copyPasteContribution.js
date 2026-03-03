@@ -1,15 +1,16 @@
+import { HierarchicalKind } from '../../../../base/common/hierarchicalKind.js';
+import { localize, localize2 } from '../../../../nls.js';
+import { registerEditorContribution, registerEditorCommand, EditorCommand, registerEditorAction, EditorAction } from '../../../browser/editorExtensions.js';
+import { EditorContextKeys } from '../../../common/editorContextKeys.js';
+import { registerEditorFeature } from '../../../common/editorFeatures.js';
+import { CopyPasteController, pasteWidgetVisibleCtx, changePasteTypeCommandId } from './copyPasteController.js';
+import { DefaultTextPasteOrDropEditProvider, DefaultPasteProvidersFeature } from './defaultProviders.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { HierarchicalKind } from '../../../../base/common/hierarchicalKind.js';
-import * as nls from '../../../../nls.js';
-import { EditorAction, EditorCommand, registerEditorAction, registerEditorCommand, registerEditorContribution } from '../../../browser/editorExtensions.js';
-import { EditorContextKeys } from '../../../common/editorContextKeys.js';
-import { registerEditorFeature } from '../../../common/editorFeatures.js';
-import { CopyPasteController, changePasteTypeCommandId, pasteWidgetVisibleCtx } from './copyPasteController.js';
-import { DefaultPasteProvidersFeature, DefaultTextPasteOrDropEditProvider } from './defaultProviders.js';
-export const pasteAsCommandId = 'editor.action.pasteAs';
+const pasteAsCommandId = 'editor.action.pasteAs';
 registerEditorContribution(CopyPasteController.ID, CopyPasteController, 0 /* EditorContributionInstantiation.Eager */); // eager because it listens to events on the container dom node of the editor
 registerEditorFeature(DefaultPasteProvidersFeature);
 registerEditorCommand(new class extends EditorCommand {
@@ -51,7 +52,7 @@ registerEditorAction(class PasteAsAction extends EditorAction {
                 properties: {
                     kind: {
                         type: 'string',
-                        description: nls.localize(908, "The kind of the paste edit to try pasting with.\nIf there are multiple edits for this kind, the editor will show a picker. If there are no edits of this kind, the editor will show an error message."),
+                        description: localize(913, "The kind of the paste edit to try pasting with.\nIf there are multiple edits for this kind, the editor will show a picker. If there are no edits of this kind, the editor will show an error message."),
                     }
                 },
             },
@@ -61,7 +62,7 @@ registerEditorAction(class PasteAsAction extends EditorAction {
                 properties: {
                     preferences: {
                         type: 'array',
-                        description: nls.localize(909, "List of preferred paste edit kind to try applying.\nThe first edit matching the preferences will be applied."),
+                        description: localize(914, "List of preferred paste edit kind to try applying.\nThe first edit matching the preferences will be applied."),
                         items: { type: 'string' }
                     }
                 },
@@ -71,7 +72,7 @@ registerEditorAction(class PasteAsAction extends EditorAction {
     constructor() {
         super({
             id: pasteAsCommandId,
-            label: nls.localize2(910, "Paste As..."),
+            label: localize2(915, "Paste As..."),
             precondition: EditorContextKeys.writable,
             metadata: {
                 description: 'Paste as',
@@ -79,7 +80,8 @@ registerEditorAction(class PasteAsAction extends EditorAction {
                         name: 'args',
                         schema: PasteAsAction.argsSchema
                     }]
-            }
+            },
+            canTriggerInlineEdits: true,
         });
     }
     run(_accessor, editor, args) {
@@ -99,12 +101,14 @@ registerEditorAction(class extends EditorAction {
     constructor() {
         super({
             id: 'editor.action.pasteAsText',
-            label: nls.localize2(911, "Paste as Text"),
+            label: localize2(916, "Paste as Text"),
             precondition: EditorContextKeys.writable,
+            canTriggerInlineEdits: true,
         });
     }
     run(_accessor, editor) {
         return CopyPasteController.get(editor)?.pasteAs({ providerId: DefaultTextPasteOrDropEditProvider.id });
     }
 });
-//# sourceMappingURL=copyPasteContribution.js.map
+
+export { pasteAsCommandId };

@@ -1,12 +1,13 @@
+import { Lazy } from './lazy.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { Lazy } from './lazy.js';
 const hasBuffer = (typeof Buffer !== 'undefined');
-const indexOfTable = new Lazy(() => new Uint8Array(256));
+new Lazy(() => new Uint8Array(256));
 let textDecoder;
-export class VSBuffer {
+class VSBuffer {
     /**
      * When running in a nodejs context, if `actual` is not a nodejs Buffer, the backing store for
      * the returned `VSBuffer` instance might use a nodejs Buffer allocated from node's Buffer pool,
@@ -36,22 +37,22 @@ export class VSBuffer {
         }
     }
 }
-export function readUInt16LE(source, offset) {
+function readUInt16LE(source, offset) {
     return (((source[offset + 0] << 0) >>> 0) |
         ((source[offset + 1] << 8) >>> 0));
 }
-export function writeUInt16LE(destination, value, offset) {
+function writeUInt16LE(destination, value, offset) {
     destination[offset + 0] = (value & 0b11111111);
     value = value >>> 8;
     destination[offset + 1] = (value & 0b11111111);
 }
-export function readUInt32BE(source, offset) {
+function readUInt32BE(source, offset) {
     return (source[offset] * 2 ** 24
         + source[offset + 1] * 2 ** 16
         + source[offset + 2] * 2 ** 8
         + source[offset + 3]);
 }
-export function writeUInt32BE(destination, value, offset) {
+function writeUInt32BE(destination, value, offset) {
     destination[offset + 3] = value;
     value = value >>> 8;
     destination[offset + 2] = value;
@@ -60,14 +61,14 @@ export function writeUInt32BE(destination, value, offset) {
     value = value >>> 8;
     destination[offset] = value;
 }
-export function readUInt8(source, offset) {
+function readUInt8(source, offset) {
     return source[offset];
 }
-export function writeUInt8(destination, value, offset) {
+function writeUInt8(destination, value, offset) {
     destination[offset] = value;
 }
 const hexChars = '0123456789abcdef';
-export function encodeHex({ buffer }) {
+function encodeHex({ buffer }) {
     let result = '';
     for (let i = 0; i < buffer.length; i++) {
         const byte = buffer[i];
@@ -76,4 +77,5 @@ export function encodeHex({ buffer }) {
     }
     return result;
 }
-//# sourceMappingURL=buffer.js.map
+
+export { VSBuffer, encodeHex, readUInt16LE, readUInt32BE, readUInt8, writeUInt16LE, writeUInt32BE, writeUInt8 };

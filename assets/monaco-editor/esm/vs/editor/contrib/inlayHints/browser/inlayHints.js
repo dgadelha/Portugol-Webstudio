@@ -1,19 +1,20 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-import { CancellationError, onUnexpectedExternalError } from '../../../../base/common/errors.js';
+import { onUnexpectedExternalError, CancellationError } from '../../../../base/common/errors.js';
 import { DisposableStore } from '../../../../base/common/lifecycle.js';
 import { Position } from '../../../common/core/position.js';
 import { Range } from '../../../common/core/range.js';
 import { createCommandUri } from '../../../../base/common/htmlContent.js';
-export class InlayHintAnchor {
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+class InlayHintAnchor {
     constructor(range, direction) {
         this.range = range;
         this.direction = direction;
     }
 }
-export class InlayHintItem {
+class InlayHintItem {
     constructor(hint, anchor, provider) {
         this.hint = hint;
         this.anchor = anchor;
@@ -59,7 +60,7 @@ export class InlayHintItem {
         }
     }
 }
-export class InlayHintsFragments {
+class InlayHintsFragments {
     static { this._emptyInlayHintList = Object.freeze({ dispose() { }, hints: [] }); }
     static async create(registry, model, ranges, token) {
         const data = [];
@@ -139,7 +140,8 @@ export class InlayHintsFragments {
         return new Range(line, start + 1, line, end + 1);
     }
 }
-export function asCommandLink(command) {
+function asCommandLink(command) {
     return createCommandUri(command.id, ...(command.arguments ?? [])).toString();
 }
-//# sourceMappingURL=inlayHints.js.map
+
+export { InlayHintAnchor, InlayHintItem, InlayHintsFragments, asCommandLink };

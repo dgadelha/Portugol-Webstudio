@@ -3,7 +3,8 @@ import { splitLines } from '../../../../base/common/strings.js';
 import { LineRange } from '../ranges/lineRange.js';
 import { Position } from '../position.js';
 import { Range } from '../range.js';
-export class LineEdit {
+
+class LineEdit {
     static { this.empty = new LineEdit([]); }
     constructor(
     /**
@@ -26,7 +27,7 @@ export class LineEdit {
         return ranges;
     }
 }
-export class LineReplacement {
+class LineReplacement {
     static fromSingleTextEdit(edit, initialValue) {
         // 1: ab[cde
         // 2: fghijk
@@ -70,4 +71,5 @@ export class LineReplacement {
         return new LineEdit([this]);
     }
 }
-//# sourceMappingURL=lineEdit.js.map
+
+export { LineEdit, LineReplacement };

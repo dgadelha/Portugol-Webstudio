@@ -1,10 +1,11 @@
+import { GlyphMarginLane } from '../model.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { GlyphMarginLane } from '../model.js';
 const MAX_LANE = GlyphMarginLane.Right;
-export class GlyphMarginLanesModel {
+class GlyphMarginLanesModel {
     constructor(maxLine) {
         this.persist = 0;
         this._requiredLanes = 1; // always render at least one lane
@@ -56,4 +57,5 @@ export class GlyphMarginLanesModel {
         return count;
     }
 }
-//# sourceMappingURL=glyphLanesModel.js.map
+
+export { GlyphMarginLanesModel };

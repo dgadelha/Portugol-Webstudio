@@ -1,13 +1,14 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { AsyncIterableProducer } from '../../../../base/common/async.js';
 import { CancellationToken } from '../../../../base/common/cancellation.js';
 import { onUnexpectedExternalError } from '../../../../base/common/errors.js';
 import { registerModelAndPositionCommand } from '../../../browser/editorExtensions.js';
 import { ILanguageFeaturesService } from '../../../common/services/languageFeatures.js';
-export class HoverProviderResult {
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+class HoverProviderResult {
     constructor(provider, hover, ordinal) {
         this.provider = provider;
         this.hover = hover;
@@ -26,12 +27,12 @@ async function executeProvider(provider, ordinal, model, position, token) {
     }
     return new HoverProviderResult(provider, result, ordinal);
 }
-export function getHoverProviderResultsAsAsyncIterable(registry, model, position, token, recursive = false) {
+function getHoverProviderResultsAsAsyncIterable(registry, model, position, token, recursive = false) {
     const providers = registry.ordered(model, recursive);
     const promises = providers.map((provider, index) => executeProvider(provider, index, model, position, token));
     return AsyncIterableProducer.fromPromisesResolveOrder(promises).coalesce();
 }
-export async function getHoversPromise(registry, model, position, token, recursive = false) {
+async function getHoversPromise(registry, model, position, token, recursive = false) {
     const out = [];
     for await (const item of getHoverProviderResultsAsAsyncIterable(registry, model, position, token, recursive)) {
         out.push(item.hover);
@@ -51,4 +52,5 @@ function isValid(result) {
     const hasHtmlContent = typeof result.contents !== 'undefined' && result.contents && result.contents.length > 0;
     return hasRange && hasHtmlContent;
 }
-//# sourceMappingURL=getHover.js.map
+
+export { HoverProviderResult, getHoverProviderResultsAsAsyncIterable, getHoversPromise };

@@ -1,18 +1,5 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-import * as dom from '../../../../../base/browser/dom.js';
-import { Sizing, SplitView } from '../../../../../base/browser/ui/splitview/splitview.js';
+import { Dimension, append, $, hide, addStandardDisposableListener, show } from '../../../../../base/browser/dom.js';
+import { SplitView, Sizing } from '../../../../../base/browser/ui/splitview/splitview.js';
 import { Color } from '../../../../../base/common/color.js';
 import { Emitter, Event } from '../../../../../base/common/event.js';
 import { DisposableStore, dispose } from '../../../../../base/common/lifecycle.js';
@@ -24,9 +11,9 @@ import { Range } from '../../../../common/core/range.js';
 import { ModelDecorationOptions, TextModel } from '../../../../common/model/textModel.js';
 import { PLAINTEXT_LANGUAGE_ID } from '../../../../common/languages/modesRegistry.js';
 import { ITextModelService } from '../../../../common/services/resolverService.js';
-import { AccessibilityProvider, DataSource, Delegate, FileReferencesRenderer, IdentityProvider, OneReferenceRenderer, StringRepresentationProvider } from './referencesTree.js';
-import * as peekView from '../../../peekView/browser/peekView.js';
-import * as nls from '../../../../../nls.js';
+import { StringRepresentationProvider, Delegate, FileReferencesRenderer, OneReferenceRenderer, DataSource, IdentityProvider, AccessibilityProvider } from './referencesTree.js';
+import { IPeekViewService, PeekViewWidget, peekViewBorder, peekViewTitleInfoForeground, peekViewTitleForeground, peekViewTitleBackground, peekViewResultsBackground } from '../../../peekView/browser/peekView.js';
+import { localize } from '../../../../../nls.js';
 import { IInstantiationService } from '../../../../../platform/instantiation/common/instantiation.js';
 import { IKeybindingService } from '../../../../../platform/keybinding/common/keybinding.js';
 import { ILabelService } from '../../../../../platform/label/common/label.js';
@@ -35,6 +22,20 @@ import { IThemeService } from '../../../../../platform/theme/common/themeService
 import { FileReferences, OneReference } from '../referencesModel.js';
 import { DataTransfers } from '../../../../../base/browser/dnd.js';
 import { withSelection } from '../../../../../platform/opener/common/opener.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 class DecorationsManager {
     static { this.DecorationOptions = ModelDecorationOptions.register({
         description: 'reference-decoration',
@@ -140,7 +141,7 @@ class DecorationsManager {
         this._decorations.clear();
     }
 }
-export class LayoutData {
+class LayoutData {
     constructor() {
         this.ratio = 0.7;
         this.heightInLines = 18;
@@ -208,7 +209,7 @@ ReferencesDragAndDrop = __decorate([
 /**
  * ZoneWidget that is shown inside the editor
  */
-let ReferenceWidget = class ReferenceWidget extends peekView.PeekViewWidget {
+let ReferenceWidget = class ReferenceWidget extends PeekViewWidget {
     constructor(editor, _defaultTreeKeyboardSupport, layoutData, themeService, _textModelResolverService, _instantiationService, _peekViewService, _uriLabel, _keybindingService) {
         super(editor, { showFrame: false, showArrow: true, isResizeable: true, isAccessible: true, supportOnTitleClick: true }, _instantiationService);
         this._defaultTreeKeyboardSupport = _defaultTreeKeyboardSupport;
@@ -222,7 +223,7 @@ let ReferenceWidget = class ReferenceWidget extends peekView.PeekViewWidget {
         this._callOnDispose = new DisposableStore();
         this._onDidSelectReference = new Emitter();
         this.onDidSelectReference = this._onDidSelectReference.event;
-        this._dim = new dom.Dimension(0, 0);
+        this._dim = new Dimension(0, 0);
         this._isClosing = false; // whether or not a dispose is already in progress
         this._applyTheme(themeService.getColorTheme());
         this._callOnDispose.add(themeService.onDidColorThemeChange(this._applyTheme.bind(this)));
@@ -245,13 +246,13 @@ let ReferenceWidget = class ReferenceWidget extends peekView.PeekViewWidget {
         super.dispose();
     }
     _applyTheme(theme) {
-        const borderColor = theme.getColor(peekView.peekViewBorder) || Color.transparent;
+        const borderColor = theme.getColor(peekViewBorder) || Color.transparent;
         this.style({
             arrowColor: borderColor,
             frameColor: borderColor,
-            headerBackgroundColor: theme.getColor(peekView.peekViewTitleBackground) || Color.transparent,
-            primaryHeadingColor: theme.getColor(peekView.peekViewTitleForeground),
-            secondaryHeadingColor: theme.getColor(peekView.peekViewTitleInfoForeground)
+            headerBackgroundColor: theme.getColor(peekViewTitleBackground) || Color.transparent,
+            primaryHeadingColor: theme.getColor(peekViewTitleForeground),
+            secondaryHeadingColor: theme.getColor(peekViewTitleInfoForeground)
         });
     }
     show(where) {
@@ -278,11 +279,11 @@ let ReferenceWidget = class ReferenceWidget extends peekView.PeekViewWidget {
     _fillBody(containerElement) {
         this.setCssClass('reference-zone-widget');
         // message pane
-        this._messageContainer = dom.append(containerElement, dom.$('div.messages'));
-        dom.hide(this._messageContainer);
+        this._messageContainer = append(containerElement, $('div.messages'));
+        hide(this._messageContainer);
         this._splitView = new SplitView(containerElement, { orientation: 1 /* Orientation.HORIZONTAL */ });
         // editor
-        this._previewContainer = dom.append(containerElement, dom.$('div.preview.inline'));
+        this._previewContainer = append(containerElement, $('div.preview.inline'));
         const options = {
             scrollBeyondLastLine: false,
             scrollbar: {
@@ -300,10 +301,10 @@ let ReferenceWidget = class ReferenceWidget extends peekView.PeekViewWidget {
             }
         };
         this._preview = this._instantiationService.createInstance(EmbeddedCodeEditorWidget, this._previewContainer, options, {}, this.editor);
-        dom.hide(this._previewContainer);
-        this._previewNotAvailableMessage = this._instantiationService.createInstance(TextModel, nls.localize(1079, "no preview available"), PLAINTEXT_LANGUAGE_ID, TextModel.DEFAULT_CREATION_OPTIONS, null);
+        hide(this._previewContainer);
+        this._previewNotAvailableMessage = this._instantiationService.createInstance(TextModel, localize(1084, "no preview available"), PLAINTEXT_LANGUAGE_ID, TextModel.DEFAULT_CREATION_OPTIONS, null);
         // tree
-        this._treeContainer = dom.append(containerElement, dom.$('div.ref-tree.inline'));
+        this._treeContainer = append(containerElement, $('div.ref-tree.inline'));
         const treeOptions = {
             keyboardSupport: this._defaultTreeKeyboardSupport,
             accessibilityProvider: new AccessibilityProvider(),
@@ -312,13 +313,13 @@ let ReferenceWidget = class ReferenceWidget extends peekView.PeekViewWidget {
             openOnSingleClick: true,
             selectionNavigation: true,
             overrideStyles: {
-                listBackground: peekView.peekViewResultsBackground
+                listBackground: peekViewResultsBackground
             },
             dnd: this._instantiationService.createInstance(ReferencesDragAndDrop)
         };
         if (this._defaultTreeKeyboardSupport) {
             // the tree will consume `Escape` and prevent the widget from closing
-            this._callOnDispose.add(dom.addStandardDisposableListener(this._treeContainer, 'keydown', (e) => {
+            this._callOnDispose.add(addStandardDisposableListener(this._treeContainer, 'keydown', (e) => {
                 if (e.equals(9 /* KeyCode.Escape */)) {
                     this._keybindingService.dispatchEvent(e, e.target);
                     e.stopPropagation();
@@ -375,7 +376,7 @@ let ReferenceWidget = class ReferenceWidget extends peekView.PeekViewWidget {
                 onEvent(e.element, 'show');
             }
         }));
-        dom.hide(this._treeContainer);
+        hide(this._treeContainer);
     }
     _onWidth(width) {
         if (this._dim) {
@@ -384,7 +385,7 @@ let ReferenceWidget = class ReferenceWidget extends peekView.PeekViewWidget {
     }
     _doLayoutBody(heightInPixel, widthInPixel) {
         super._doLayoutBody(heightInPixel, widthInPixel);
-        this._dim = new dom.Dimension(widthInPixel, heightInPixel);
+        this._dim = new Dimension(widthInPixel, heightInPixel);
         this.layoutData.heightInLines = this._viewZone ? this._viewZone.heightInLines : this.layoutData.heightInLines;
         this._splitView.layout(widthInPixel);
         this._splitView.resizeView(0, widthInPixel * this.layoutData.ratio);
@@ -415,11 +416,11 @@ let ReferenceWidget = class ReferenceWidget extends peekView.PeekViewWidget {
         }
         if (this._model.isEmpty) {
             this.setTitle('');
-            this._messageContainer.innerText = nls.localize(1080, "No results");
-            dom.show(this._messageContainer);
+            this._messageContainer.innerText = localize(1085, "No results");
+            show(this._messageContainer);
             return Promise.resolve(undefined);
         }
-        dom.hide(this._messageContainer);
+        hide(this._messageContainer);
         this._decorationsManager = new DecorationsManager(this._preview, this._model);
         this._disposeOnNewModel.add(this._decorationsManager);
         // listen on model changes
@@ -442,8 +443,8 @@ let ReferenceWidget = class ReferenceWidget extends peekView.PeekViewWidget {
         }));
         // make sure things are rendered
         this.container.classList.add('results-loaded');
-        dom.show(this._treeContainer);
-        dom.show(this._previewContainer);
+        show(this._treeContainer);
+        show(this._previewContainer);
         this._splitView.layout(this._dim.width);
         this.focusOnReferenceTree();
         // pick input and a reference to begin with
@@ -476,7 +477,7 @@ let ReferenceWidget = class ReferenceWidget extends peekView.PeekViewWidget {
             this.setTitle(basenameOrAuthority(reference.uri), this._uriLabel.getUriLabel(dirname(reference.uri)));
         }
         else {
-            this.setTitle(nls.localize(1081, "References"));
+            this.setTitle(localize(1086, "References"));
         }
         const promise = this._textModelResolverService.createModelReference(reference.uri);
         if (this._tree.getInput() === reference.parent) {
@@ -516,9 +517,9 @@ ReferenceWidget = __decorate([
     __param(3, IThemeService),
     __param(4, ITextModelService),
     __param(5, IInstantiationService),
-    __param(6, peekView.IPeekViewService),
+    __param(6, IPeekViewService),
     __param(7, ILabelService),
     __param(8, IKeybindingService)
 ], ReferenceWidget);
-export { ReferenceWidget };
-//# sourceMappingURL=referencesWidget.js.map
+
+export { LayoutData, ReferenceWidget };

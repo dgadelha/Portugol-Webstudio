@@ -2,7 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-export function toUint8(v) {
+function toUint8(v) {
     if (v < 0) {
         return 0;
     }
@@ -11,7 +11,7 @@ export function toUint8(v) {
     }
     return v | 0;
 }
-export function toUint32(v) {
+function toUint32(v) {
     if (v < 0) {
         return 0;
     }
@@ -20,4 +20,5 @@ export function toUint32(v) {
     }
     return v | 0;
 }
-//# sourceMappingURL=uint.js.map
+
+export { toUint32, toUint8 };

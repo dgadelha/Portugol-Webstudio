@@ -1,8 +1,9 @@
+import { Emitter } from '../../../base/common/event.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { Emitter } from '../../../base/common/event.js';
 class TabFocusImpl {
     constructor() {
         this._tabFocus = false;
@@ -23,5 +24,6 @@ class TabFocusImpl {
  * If it is true, pressing Tab or Shift-Tab will move the browser focus.
  * Defaults to false.
  */
-export const TabFocus = new TabFocusImpl();
-//# sourceMappingURL=tabFocus.js.map
+const TabFocus = new TabFocusImpl();
+
+export { TabFocus };

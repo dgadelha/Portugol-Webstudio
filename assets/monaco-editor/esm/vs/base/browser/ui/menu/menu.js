@@ -1,10 +1,6 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { isFirefox } from '../../browser.js';
-import { EventType as TouchEventType, Gesture } from '../../touch.js';
-import { $, addDisposableListener, append, clearNode, Dimension, EventHelper, EventType, getActiveElement, getWindow, isAncestor, isInShadowDOM } from '../../dom.js';
+import { Gesture, EventType as EventType$1 } from '../../touch.js';
+import { addDisposableListener, EventType, EventHelper, isAncestor, getWindow, isInShadowDOM, getActiveElement, append, $, Dimension, clearNode } from '../../dom.js';
 import { createStyleSheet } from '../../domStylesheets.js';
 import { StandardKeyboardEvent } from '../../keyboardEvent.js';
 import { StandardMouseEvent } from '../../mouseEvent.js';
@@ -12,28 +8,33 @@ import { ActionBar } from '../actionbar/actionbar.js';
 import { ActionViewItem, BaseActionViewItem } from '../actionbar/actionViewItems.js';
 import { layout } from '../contextview/contextview.js';
 import { DomScrollableElement } from '../scrollbar/scrollableElement.js';
-import { EmptySubmenuAction, Separator, SubmenuAction } from '../../../common/actions.js';
+import { Separator, SubmenuAction, EmptySubmenuAction } from '../../../common/actions.js';
 import { RunOnceScheduler } from '../../../common/async.js';
 import { Codicon } from '../../../common/codicons.js';
 import { getCodiconFontCharacters } from '../../../common/codiconsUtil.js';
 import { ThemeIcon } from '../../../common/themables.js';
 import { stripIcons } from '../../../common/iconLabels.js';
 import { DisposableStore } from '../../../common/lifecycle.js';
-import { isLinux, isMacintosh } from '../../../common/platform.js';
-import * as strings from '../../../common/strings.js';
-export const MENU_MNEMONIC_REGEX = /\(&([^\s&])\)|(^|[^&])&([^\s&])/;
-export const MENU_ESCAPED_MNEMONIC_REGEX = /(&amp;)?(&amp;)([^\s&])/g;
-export var HorizontalDirection;
+import { isMacintosh, isLinux } from '../../../common/platform.js';
+import { escape, ltrim, rtrim } from '../../../common/strings.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+const MENU_MNEMONIC_REGEX = /\(&([^\s&])\)|(^|[^&])&([^\s&])/;
+const MENU_ESCAPED_MNEMONIC_REGEX = /(&amp;)?(&amp;)([^\s&])/g;
+var HorizontalDirection;
 (function (HorizontalDirection) {
     HorizontalDirection[HorizontalDirection["Right"] = 0] = "Right";
     HorizontalDirection[HorizontalDirection["Left"] = 1] = "Left";
 })(HorizontalDirection || (HorizontalDirection = {}));
-export var VerticalDirection;
+var VerticalDirection;
 (function (VerticalDirection) {
     VerticalDirection[VerticalDirection["Above"] = 0] = "Above";
     VerticalDirection[VerticalDirection["Below"] = 1] = "Below";
 })(VerticalDirection || (VerticalDirection = {}));
-export class Menu extends ActionBar {
+class Menu extends ActionBar {
     constructor(container, actions, options, menuStyles) {
         container.classList.add('monaco-menu-container');
         container.setAttribute('role', 'presentation');
@@ -126,7 +127,7 @@ export class Menu extends ActionBar {
         }));
         // Support touch on actions list to focus items (needed for submenus)
         this._register(Gesture.addTarget(this.actionsList));
-        this._register(addDisposableListener(this.actionsList, TouchEventType.Tap, e => {
+        this._register(addDisposableListener(this.actionsList, EventType$1.Tap, e => {
             let target = e.initialTarget;
             if (!target || !isAncestor(target, this.actionsList) || target === this.actionsList) {
                 return;
@@ -159,7 +160,7 @@ export class Menu extends ActionBar {
         scrollElement.style.position = '';
         this.styleScrollElement(scrollElement, menuStyles);
         // Support scroll on menu drag
-        this._register(addDisposableListener(menuElement, TouchEventType.Change, e => {
+        this._register(addDisposableListener(menuElement, EventType$1.Change, e => {
             EventHelper.stop(e, true);
             const scrollTop = this.scrollableElement.getScrollPosition().scrollTop;
             this.scrollableElement.setScrollPosition({ scrollTop: scrollTop - e.translationY });
@@ -421,7 +422,7 @@ class BaseMenuActionViewItem extends BaseActionViewItem {
                 this.label.setAttribute('aria-label', cleanLabel.replace(/&&/g, '&'));
                 const matches = MENU_MNEMONIC_REGEX.exec(label);
                 if (matches) {
-                    label = strings.escape(label);
+                    label = escape(label);
                     // This is global, reset it
                     MENU_ESCAPED_MNEMONIC_REGEX.lastIndex = 0;
                     let escMatch = MENU_ESCAPED_MNEMONIC_REGEX.exec(label);
@@ -431,7 +432,7 @@ class BaseMenuActionViewItem extends BaseActionViewItem {
                     }
                     const replaceDoubleEscapes = (str) => str.replace(/&amp;&amp;/g, '&amp;');
                     if (escMatch) {
-                        this.label.append(strings.ltrim(replaceDoubleEscapes(label.substr(0, escMatch.index)), ' '), $('u', { 'aria-hidden': 'true' }, escMatch[3]), strings.rtrim(replaceDoubleEscapes(label.substr(escMatch.index + escMatch[0].length)), ' '));
+                        this.label.append(ltrim(replaceDoubleEscapes(label.substr(0, escMatch.index)), ' '), $('u', { 'aria-hidden': 'true' }, escMatch[3]), rtrim(replaceDoubleEscapes(label.substr(escMatch.index + escMatch[0].length)), ' '));
                     }
                     else {
                         this.label.textContent = replaceDoubleEscapes(label).trim();
@@ -733,7 +734,7 @@ class MenuSeparatorActionViewItem extends ActionViewItem {
         }
     }
 }
-export function cleanMnemonic(label) {
+function cleanMnemonic(label) {
     const regex = MENU_MNEMONIC_REGEX;
     const matches = regex.exec(label);
     if (!matches) {
@@ -742,11 +743,11 @@ export function cleanMnemonic(label) {
     const mnemonicInText = !matches[1];
     return label.replace(regex, mnemonicInText ? '$2$3' : '').trim();
 }
-export function formatRule(c) {
+function formatRule(c) {
     const fontCharacter = getCodiconFontCharacters()[c.id];
     return `.codicon-${c.id}:before { content: '\\${fontCharacter.toString(16)}'; }`;
 }
-export function getMenuWidgetCSS(style, isForShadowDom) {
+function getMenuWidgetCSS(style, isForShadowDom) {
     let result = /* css */ `
 .monaco-menu {
 	font-size: 13px;
@@ -1142,4 +1143,5 @@ ${formatRule(Codicon.menuSubmenu)}
     }
     return result;
 }
-//# sourceMappingURL=menu.js.map
+
+export { HorizontalDirection, MENU_ESCAPED_MNEMONIC_REGEX, MENU_MNEMONIC_REGEX, Menu, VerticalDirection, cleanMnemonic, formatRule, getMenuWidgetCSS };

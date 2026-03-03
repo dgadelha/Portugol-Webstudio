@@ -1,35 +1,21 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-var FoldingController_1;
-import { createCancelablePromise, Delayer, RunOnceScheduler } from '../../../../base/common/async.js';
+import { Delayer, RunOnceScheduler, createCancelablePromise } from '../../../../base/common/async.js';
 import { CancellationToken } from '../../../../base/common/cancellation.js';
-import { illegalArgument, onUnexpectedError } from '../../../../base/common/errors.js';
+import { onUnexpectedError, illegalArgument } from '../../../../base/common/errors.js';
 import { KeyChord } from '../../../../base/common/keyCodes.js';
 import { Disposable, DisposableStore } from '../../../../base/common/lifecycle.js';
 import { escapeRegExpCharacters } from '../../../../base/common/strings.js';
-import * as types from '../../../../base/common/types.js';
+import { isUndefined, isObject, isNumber, isString } from '../../../../base/common/types.js';
 import './folding.css';
 import { StableEditorScrollState } from '../../../browser/stableEditorScroll.js';
-import { EditorAction, registerEditorAction, registerEditorContribution, registerInstantiatedEditorAction } from '../../../browser/editorExtensions.js';
+import { registerEditorContribution, registerEditorAction, registerInstantiatedEditorAction, EditorAction } from '../../../browser/editorExtensions.js';
 import { EditorContextKeys } from '../../../common/editorContextKeys.js';
 import { FoldingRangeKind } from '../../../common/languages.js';
 import { ILanguageConfigurationService } from '../../../common/languages/languageConfigurationRegistry.js';
-import { FoldingModel, getNextFoldLine, getParentFoldLine as getParentFoldLine, getPreviousFoldLine, setCollapseStateAtLevel, setCollapseStateForMatchingLines, setCollapseStateForRest, setCollapseStateForType, setCollapseStateLevelsDown, setCollapseStateLevelsUp, setCollapseStateUp, toggleCollapseState } from './foldingModel.js';
+import { FoldingModel, setCollapseStateAtLevel, setCollapseStateLevelsUp, setCollapseStateLevelsDown, setCollapseStateUp, toggleCollapseState, setCollapseStateForType, setCollapseStateForMatchingLines, setCollapseStateForRest, getParentFoldLine, getPreviousFoldLine, getNextFoldLine } from './foldingModel.js';
 import { HiddenRangeModel } from './hiddenRangeModel.js';
 import { IndentRangeProvider } from './indentRangeProvider.js';
-import * as nls from '../../../../nls.js';
-import { IContextKeyService, RawContextKey } from '../../../../platform/contextkey/common/contextkey.js';
+import { localize2 } from '../../../../nls.js';
+import { RawContextKey, IContextKeyService } from '../../../../platform/contextkey/common/contextkey.js';
 import { FoldingDecorationProvider } from './foldingDecorations.js';
 import { FoldingRegions } from './foldingRanges.js';
 import { SyntaxRangeProvider } from './syntaxRangeProvider.js';
@@ -42,6 +28,21 @@ import { CommandsRegistry } from '../../../../platform/commands/common/commands.
 import { URI } from '../../../../base/common/uri.js';
 import { IModelService } from '../../../common/services/model.js';
 import { IConfigurationService } from '../../../../platform/configuration/common/configuration.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var FoldingController_1;
 const CONTEXT_FOLDING_ENABLED = new RawContextKey('foldingEnabled', false);
 let FoldingController = class FoldingController extends Disposable {
     static { FoldingController_1 = this; }
@@ -414,8 +415,7 @@ FoldingController = FoldingController_1 = __decorate([
     __param(4, ILanguageFeatureDebounceService),
     __param(5, ILanguageFeaturesService)
 ], FoldingController);
-export { FoldingController };
-export class RangesLimitReporter extends Disposable {
+class RangesLimitReporter extends Disposable {
     constructor(editor) {
         super();
         this.editor = editor;
@@ -468,7 +468,7 @@ class FoldingAction extends EditorAction {
     run(_accessor, _editor) {
     }
 }
-export function toSelectedLines(selections) {
+function toSelectedLines(selections) {
     if (!selections || selections.length === 0) {
         return {
             startsInside: () => false
@@ -487,18 +487,18 @@ export function toSelectedLines(selections) {
     };
 }
 function foldingArgumentsConstraint(args) {
-    if (!types.isUndefined(args)) {
-        if (!types.isObject(args)) {
+    if (!isUndefined(args)) {
+        if (!isObject(args)) {
             return false;
         }
         const foldingArgs = args;
-        if (!types.isUndefined(foldingArgs.levels) && !types.isNumber(foldingArgs.levels)) {
+        if (!isUndefined(foldingArgs.levels) && !isNumber(foldingArgs.levels)) {
             return false;
         }
-        if (!types.isUndefined(foldingArgs.direction) && !types.isString(foldingArgs.direction)) {
+        if (!isUndefined(foldingArgs.direction) && !isString(foldingArgs.direction)) {
             return false;
         }
-        if (!types.isUndefined(foldingArgs.selectionLines) && (!Array.isArray(foldingArgs.selectionLines) || !foldingArgs.selectionLines.every(types.isNumber))) {
+        if (!isUndefined(foldingArgs.selectionLines) && (!Array.isArray(foldingArgs.selectionLines) || !foldingArgs.selectionLines.every(isNumber))) {
             return false;
         }
     }
@@ -508,7 +508,7 @@ class UnfoldAction extends FoldingAction {
     constructor() {
         super({
             id: 'editor.unfold',
-            label: nls.localize2(977, "Unfold"),
+            label: localize2(982, "Unfold"),
             precondition: CONTEXT_FOLDING_ENABLED,
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
@@ -569,7 +569,7 @@ class UnFoldRecursivelyAction extends FoldingAction {
     constructor() {
         super({
             id: 'editor.unfoldRecursively',
-            label: nls.localize2(978, "Unfold Recursively"),
+            label: localize2(983, "Unfold Recursively"),
             precondition: CONTEXT_FOLDING_ENABLED,
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
@@ -586,7 +586,7 @@ class FoldAction extends FoldingAction {
     constructor() {
         super({
             id: 'editor.fold',
-            label: nls.localize2(979, "Fold"),
+            label: localize2(984, "Fold"),
             precondition: CONTEXT_FOLDING_ENABLED,
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
@@ -653,7 +653,7 @@ class ToggleFoldAction extends FoldingAction {
     constructor() {
         super({
             id: 'editor.toggleFold',
-            label: nls.localize2(980, "Toggle Fold"),
+            label: localize2(985, "Toggle Fold"),
             precondition: CONTEXT_FOLDING_ENABLED,
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
@@ -671,7 +671,7 @@ class FoldRecursivelyAction extends FoldingAction {
     constructor() {
         super({
             id: 'editor.foldRecursively',
-            label: nls.localize2(981, "Fold Recursively"),
+            label: localize2(986, "Fold Recursively"),
             precondition: CONTEXT_FOLDING_ENABLED,
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
@@ -689,7 +689,7 @@ class ToggleFoldRecursivelyAction extends FoldingAction {
     constructor() {
         super({
             id: 'editor.toggleFoldRecursively',
-            label: nls.localize2(982, "Toggle Fold Recursively"),
+            label: localize2(987, "Toggle Fold Recursively"),
             precondition: CONTEXT_FOLDING_ENABLED,
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
@@ -707,7 +707,7 @@ class FoldAllBlockCommentsAction extends FoldingAction {
     constructor() {
         super({
             id: 'editor.foldAllBlockComments',
-            label: nls.localize2(983, "Fold All Block Comments"),
+            label: localize2(988, "Fold All Block Comments"),
             precondition: CONTEXT_FOLDING_ENABLED,
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
@@ -737,7 +737,7 @@ class FoldAllRegionsAction extends FoldingAction {
     constructor() {
         super({
             id: 'editor.foldAllMarkerRegions',
-            label: nls.localize2(984, "Fold All Regions"),
+            label: localize2(989, "Fold All Regions"),
             precondition: CONTEXT_FOLDING_ENABLED,
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
@@ -767,7 +767,7 @@ class UnfoldAllRegionsAction extends FoldingAction {
     constructor() {
         super({
             id: 'editor.unfoldAllMarkerRegions',
-            label: nls.localize2(985, "Unfold All Regions"),
+            label: localize2(990, "Unfold All Regions"),
             precondition: CONTEXT_FOLDING_ENABLED,
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
@@ -797,7 +797,7 @@ class FoldAllExceptAction extends FoldingAction {
     constructor() {
         super({
             id: 'editor.foldAllExcept',
-            label: nls.localize2(986, "Fold All Except Selected"),
+            label: localize2(991, "Fold All Except Selected"),
             precondition: CONTEXT_FOLDING_ENABLED,
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
@@ -815,7 +815,7 @@ class UnfoldAllExceptAction extends FoldingAction {
     constructor() {
         super({
             id: 'editor.unfoldAllExcept',
-            label: nls.localize2(987, "Unfold All Except Selected"),
+            label: localize2(992, "Unfold All Except Selected"),
             precondition: CONTEXT_FOLDING_ENABLED,
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
@@ -833,7 +833,7 @@ class FoldAllAction extends FoldingAction {
     constructor() {
         super({
             id: 'editor.foldAll',
-            label: nls.localize2(988, "Fold All"),
+            label: localize2(993, "Fold All"),
             precondition: CONTEXT_FOLDING_ENABLED,
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
@@ -850,7 +850,7 @@ class UnfoldAllAction extends FoldingAction {
     constructor() {
         super({
             id: 'editor.unfoldAll',
-            label: nls.localize2(989, "Unfold All"),
+            label: localize2(994, "Unfold All"),
             precondition: CONTEXT_FOLDING_ENABLED,
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
@@ -878,7 +878,7 @@ class GotoParentFoldAction extends FoldingAction {
     constructor() {
         super({
             id: 'editor.gotoParentFold',
-            label: nls.localize2(990, "Go to Parent Fold"),
+            label: localize2(995, "Go to Parent Fold"),
             precondition: CONTEXT_FOLDING_ENABLED,
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
@@ -906,7 +906,7 @@ class GotoPreviousFoldAction extends FoldingAction {
     constructor() {
         super({
             id: 'editor.gotoPreviousFold',
-            label: nls.localize2(991, "Go to Previous Folding Range"),
+            label: localize2(996, "Go to Previous Folding Range"),
             precondition: CONTEXT_FOLDING_ENABLED,
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
@@ -934,7 +934,7 @@ class GotoNextFoldAction extends FoldingAction {
     constructor() {
         super({
             id: 'editor.gotoNextFold',
-            label: nls.localize2(992, "Go to Next Folding Range"),
+            label: localize2(997, "Go to Next Folding Range"),
             precondition: CONTEXT_FOLDING_ENABLED,
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
@@ -961,7 +961,7 @@ class FoldRangeFromSelectionAction extends FoldingAction {
     constructor() {
         super({
             id: 'editor.createFoldingRangeFromSelection',
-            label: nls.localize2(993, "Create Folding Range from Selection"),
+            label: localize2(998, "Create Folding Range from Selection"),
             precondition: CONTEXT_FOLDING_ENABLED,
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
@@ -1009,7 +1009,7 @@ class RemoveFoldRangeFromSelectionAction extends FoldingAction {
     constructor() {
         super({
             id: 'editor.removeManualFoldingRanges',
-            label: nls.localize2(994, "Remove Manual Folding Ranges"),
+            label: localize2(999, "Remove Manual Folding Ranges"),
             precondition: CONTEXT_FOLDING_ENABLED,
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
@@ -1035,7 +1035,7 @@ class ToggleImportFoldAction extends FoldingAction {
     constructor() {
         super({
             id: 'editor.toggleImportFold',
-            label: nls.localize2(995, "Toggle Import Fold"),
+            label: localize2(1000, "Toggle Import Fold"),
             precondition: CONTEXT_FOLDING_ENABLED,
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
@@ -1078,7 +1078,7 @@ registerEditorAction(ToggleImportFoldAction);
 for (let i = 1; i <= 7; i++) {
     registerInstantiatedEditorAction(new FoldLevelAction({
         id: FoldLevelAction.ID(i),
-        label: nls.localize2(996, "Fold Level {0}", i),
+        label: localize2(1001, "Fold Level {0}", i),
         precondition: CONTEXT_FOLDING_ENABLED,
         kbOpts: {
             kbExpr: EditorContextKeys.editorTextFocus,
@@ -1132,4 +1132,5 @@ CommandsRegistry.registerCommand('_executeFoldingRangeProvider', async function 
         rangeProvider.dispose();
     }
 });
-//# sourceMappingURL=folding.js.map
+
+export { FoldingController, RangesLimitReporter, toSelectedLines };

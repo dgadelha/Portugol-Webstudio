@@ -1,21 +1,22 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { MOUSE_CURSOR_TEXT_CSS_CLASS_NAME } from '../../../../base/browser/ui/mouseCursor/mouseCursor.js';
 import { RunOnceScheduler } from '../../../../base/common/async.js';
-import * as platform from '../../../../base/common/platform.js';
+import { isLinux } from '../../../../base/common/platform.js';
 import './viewLines.css';
 import { applyFontInfo } from '../../config/domFontInfo.js';
-import { HorizontalPosition, HorizontalRange, LineVisibleRanges } from '../../view/renderingContext.js';
+import { LineVisibleRanges, HorizontalRange, HorizontalPosition } from '../../view/renderingContext.js';
 import { VisibleLinesCollection } from '../../view/viewLayer.js';
-import { PartFingerprints, ViewPart } from '../../view/viewPart.js';
+import { ViewPart, PartFingerprints } from '../../view/viewPart.js';
 import { DomReadingContext } from './domReadingContext.js';
 import { ViewLine } from './viewLine.js';
 import { Position } from '../../../common/core/position.js';
 import { Range } from '../../../common/core/range.js';
 import { ViewLineOptions } from './viewLineOptions.js';
 import { TextDirection } from '../../../common/model.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
 class LastRenderedData {
     constructor() {
         this._currentVisibleRange = new Range(1, 1, 1, 1);
@@ -64,7 +65,7 @@ class HorizontalRevealSelectionsRequest {
  * The view lines part is responsible for rendering the actual content of a
  * file.
  */
-export class ViewLines extends ViewPart {
+class ViewLines extends ViewPart {
     /**
      * Adds this amount of pixels to the right of lines (no-one wants to type near the edge of the viewport)
      */
@@ -165,7 +166,7 @@ export class ViewLines extends ViewPart {
         return r;
     }
     onDecorationsChanged(e) {
-        if (true /*e.inlineDecorationsChanged*/) {
+        {
             const rendStartLineNumber = this._visibleLines.getStartLineNumber();
             const rendEndLineNumber = this._visibleLines.getEndLineNumber();
             for (let lineNumber = rendStartLineNumber; lineNumber <= rendEndLineNumber; lineNumber++) {
@@ -516,7 +517,7 @@ export class ViewLines extends ViewPart {
         else {
             this._asyncUpdateLineWidths.cancel();
         }
-        if (platform.isLinux && !this._asyncCheckMonospaceFontAssumptions.isScheduled()) {
+        if (isLinux && !this._asyncCheckMonospaceFontAssumptions.isScheduled()) {
             const rendStartLineNumber = this._visibleLines.getStartLineNumber();
             const rendEndLineNumber = this._visibleLines.getEndLineNumber();
             for (let lineNumber = rendStartLineNumber; lineNumber <= rendEndLineNumber; lineNumber++) {
@@ -716,4 +717,5 @@ export class ViewLines extends ViewPart {
         return viewportStart;
     }
 }
-//# sourceMappingURL=viewLines.js.map
+
+export { ViewLines };

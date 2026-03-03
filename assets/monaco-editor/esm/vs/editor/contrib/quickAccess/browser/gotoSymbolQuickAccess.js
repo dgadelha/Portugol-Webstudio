@@ -1,24 +1,10 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-var AbstractGotoSymbolQuickAccessProvider_1;
 import { DeferredPromise } from '../../../../base/common/async.js';
 import { CancellationTokenSource } from '../../../../base/common/cancellation.js';
 import { Codicon } from '../../../../base/common/codicons.js';
 import { ThemeIcon } from '../../../../base/common/themables.js';
-import { pieceToQuery, prepareQuery, scoreFuzzy2 } from '../../../../base/common/fuzzyScorer.js';
-import { Disposable, DisposableStore, MutableDisposable, toDisposable } from '../../../../base/common/lifecycle.js';
-import { format, trim } from '../../../../base/common/strings.js';
+import { pieceToQuery, scoreFuzzy2, prepareQuery } from '../../../../base/common/fuzzyScorer.js';
+import { Disposable, DisposableStore, toDisposable, MutableDisposable } from '../../../../base/common/lifecycle.js';
+import { trim, format } from '../../../../base/common/strings.js';
 import { Range } from '../../../common/core/range.js';
 import { SymbolKinds, getAriaLabelForSymbol } from '../../../common/languages.js';
 import { IOutlineModelService } from '../../documentSymbols/browser/outlineModel.js';
@@ -26,6 +12,21 @@ import { AbstractEditorNavigationQuickAccessProvider } from './editorNavigationQ
 import { localize } from '../../../../nls.js';
 import { ILanguageFeaturesService } from '../../../common/services/languageFeatures.js';
 import { findLast } from '../../../../base/common/arraysFind.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var AbstractGotoSymbolQuickAccessProvider_1;
 let AbstractGotoSymbolQuickAccessProvider = class AbstractGotoSymbolQuickAccessProvider extends AbstractEditorNavigationQuickAccessProvider {
     static { AbstractGotoSymbolQuickAccessProvider_1 = this; }
     static { this.PREFIX = '@'; }
@@ -39,7 +40,7 @@ let AbstractGotoSymbolQuickAccessProvider = class AbstractGotoSymbolQuickAccessP
         this.options.canAcceptInBackground = true;
     }
     provideWithoutTextEditor(picker) {
-        this.provideLabelPick(picker, localize(1330, "To go to a symbol, first open a text editor with symbol information."));
+        this.provideLabelPick(picker, localize(1345, "To go to a symbol, first open a text editor with symbol information."));
         return Disposable.None;
     }
     provideWithTextEditor(context, picker, token, runOptions) {
@@ -60,7 +61,7 @@ let AbstractGotoSymbolQuickAccessProvider = class AbstractGotoSymbolQuickAccessP
     doProvideWithoutEditorSymbols(context, model, picker, token) {
         const disposables = new DisposableStore();
         // Generic pick for not having any symbol information
-        this.provideLabelPick(picker, localize(1331, "The active text editor does not provide symbol information."));
+        this.provideLabelPick(picker, localize(1346, "The active text editor does not provide symbol information."));
         // Wait for changes to the registry and see if eventually
         // we do get symbols. This can happen if the picker is opened
         // very early after the model has loaded but before the
@@ -146,10 +147,10 @@ let AbstractGotoSymbolQuickAccessProvider = class AbstractGotoSymbolQuickAccessP
                 }
                 else {
                     if (query.original.length > 0) {
-                        this.provideLabelPick(picker, localize(1332, "No matching editor symbols"));
+                        this.provideLabelPick(picker, localize(1347, "No matching editor symbols"));
                     }
                     else {
-                        this.provideLabelPick(picker, localize(1333, "No editor symbols"));
+                        this.provideLabelPick(picker, localize(1348, "No editor symbols"));
                     }
                 }
             }
@@ -196,7 +197,7 @@ let AbstractGotoSymbolQuickAccessProvider = class AbstractGotoSymbolQuickAccessP
         if (openSideBySideDirection) {
             buttons = [{
                     iconClass: openSideBySideDirection === 'right' ? ThemeIcon.asClassName(Codicon.splitHorizontal) : ThemeIcon.asClassName(Codicon.splitVertical),
-                    tooltip: openSideBySideDirection === 'right' ? localize(1334, "Open to the Side") : localize(1335, "Open to the Bottom")
+                    tooltip: openSideBySideDirection === 'right' ? localize(1349, "Open to the Side") : localize(1350, "Open to the Bottom")
                 }];
         }
         const filteredSymbolPicks = [];
@@ -312,7 +313,7 @@ let AbstractGotoSymbolQuickAccessProvider = class AbstractGotoSymbolQuickAccessP
         }
         else if (sortedFilteredSymbolPicks.length > 0) {
             symbolPicks = [
-                { label: localize(1336, "symbols ({0})", filteredSymbolPicks.length), type: 'separator' },
+                { label: localize(1351, "symbols ({0})", filteredSymbolPicks.length), type: 'separator' },
                 ...sortedFilteredSymbolPicks
             ];
         }
@@ -360,35 +361,35 @@ AbstractGotoSymbolQuickAccessProvider = AbstractGotoSymbolQuickAccessProvider_1 
     __param(0, ILanguageFeaturesService),
     __param(1, IOutlineModelService)
 ], AbstractGotoSymbolQuickAccessProvider);
-export { AbstractGotoSymbolQuickAccessProvider };
 // #region NLS Helpers
-const FALLBACK_NLS_SYMBOL_KIND = localize(1337, "properties ({0})");
+const FALLBACK_NLS_SYMBOL_KIND = localize(1352, "properties ({0})");
 const NLS_SYMBOL_KIND_CACHE = {
-    [5 /* SymbolKind.Method */]: localize(1338, "methods ({0})"),
-    [11 /* SymbolKind.Function */]: localize(1339, "functions ({0})"),
-    [8 /* SymbolKind.Constructor */]: localize(1340, "constructors ({0})"),
-    [12 /* SymbolKind.Variable */]: localize(1341, "variables ({0})"),
-    [4 /* SymbolKind.Class */]: localize(1342, "classes ({0})"),
-    [22 /* SymbolKind.Struct */]: localize(1343, "structs ({0})"),
-    [23 /* SymbolKind.Event */]: localize(1344, "events ({0})"),
-    [24 /* SymbolKind.Operator */]: localize(1345, "operators ({0})"),
-    [10 /* SymbolKind.Interface */]: localize(1346, "interfaces ({0})"),
-    [2 /* SymbolKind.Namespace */]: localize(1347, "namespaces ({0})"),
-    [3 /* SymbolKind.Package */]: localize(1348, "packages ({0})"),
-    [25 /* SymbolKind.TypeParameter */]: localize(1349, "type parameters ({0})"),
-    [1 /* SymbolKind.Module */]: localize(1350, "modules ({0})"),
-    [6 /* SymbolKind.Property */]: localize(1351, "properties ({0})"),
-    [9 /* SymbolKind.Enum */]: localize(1352, "enumerations ({0})"),
-    [21 /* SymbolKind.EnumMember */]: localize(1353, "enumeration members ({0})"),
-    [14 /* SymbolKind.String */]: localize(1354, "strings ({0})"),
-    [0 /* SymbolKind.File */]: localize(1355, "files ({0})"),
-    [17 /* SymbolKind.Array */]: localize(1356, "arrays ({0})"),
-    [15 /* SymbolKind.Number */]: localize(1357, "numbers ({0})"),
-    [16 /* SymbolKind.Boolean */]: localize(1358, "booleans ({0})"),
-    [18 /* SymbolKind.Object */]: localize(1359, "objects ({0})"),
-    [19 /* SymbolKind.Key */]: localize(1360, "keys ({0})"),
-    [7 /* SymbolKind.Field */]: localize(1361, "fields ({0})"),
-    [13 /* SymbolKind.Constant */]: localize(1362, "constants ({0})")
+    [5 /* SymbolKind.Method */]: localize(1353, "methods ({0})"),
+    [11 /* SymbolKind.Function */]: localize(1354, "functions ({0})"),
+    [8 /* SymbolKind.Constructor */]: localize(1355, "constructors ({0})"),
+    [12 /* SymbolKind.Variable */]: localize(1356, "variables ({0})"),
+    [4 /* SymbolKind.Class */]: localize(1357, "classes ({0})"),
+    [22 /* SymbolKind.Struct */]: localize(1358, "structs ({0})"),
+    [23 /* SymbolKind.Event */]: localize(1359, "events ({0})"),
+    [24 /* SymbolKind.Operator */]: localize(1360, "operators ({0})"),
+    [10 /* SymbolKind.Interface */]: localize(1361, "interfaces ({0})"),
+    [2 /* SymbolKind.Namespace */]: localize(1362, "namespaces ({0})"),
+    [3 /* SymbolKind.Package */]: localize(1363, "packages ({0})"),
+    [25 /* SymbolKind.TypeParameter */]: localize(1364, "type parameters ({0})"),
+    [1 /* SymbolKind.Module */]: localize(1365, "modules ({0})"),
+    [6 /* SymbolKind.Property */]: localize(1366, "properties ({0})"),
+    [9 /* SymbolKind.Enum */]: localize(1367, "enumerations ({0})"),
+    [21 /* SymbolKind.EnumMember */]: localize(1368, "enumeration members ({0})"),
+    [14 /* SymbolKind.String */]: localize(1369, "strings ({0})"),
+    [0 /* SymbolKind.File */]: localize(1370, "files ({0})"),
+    [17 /* SymbolKind.Array */]: localize(1371, "arrays ({0})"),
+    [15 /* SymbolKind.Number */]: localize(1372, "numbers ({0})"),
+    [16 /* SymbolKind.Boolean */]: localize(1373, "booleans ({0})"),
+    [18 /* SymbolKind.Object */]: localize(1374, "objects ({0})"),
+    [19 /* SymbolKind.Key */]: localize(1375, "keys ({0})"),
+    [7 /* SymbolKind.Field */]: localize(1376, "fields ({0})"),
+    [13 /* SymbolKind.Constant */]: localize(1377, "constants ({0})")
 };
 //#endregion
-//# sourceMappingURL=gotoSymbolQuickAccess.js.map
+
+export { AbstractGotoSymbolQuickAccessProvider };

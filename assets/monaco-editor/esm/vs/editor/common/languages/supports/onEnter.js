@@ -1,11 +1,12 @@
+import { onUnexpectedError } from '../../../../base/common/errors.js';
+import { escapeRegExpCharacters } from '../../../../base/common/strings.js';
+import { IndentAction } from '../languageConfiguration.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { onUnexpectedError } from '../../../../base/common/errors.js';
-import * as strings from '../../../../base/common/strings.js';
-import { IndentAction } from '../languageConfiguration.js';
-export class OnEnterSupport {
+class OnEnterSupport {
     constructor(opts) {
         opts = opts || {};
         opts.brackets = opts.brackets || [
@@ -79,7 +80,7 @@ export class OnEnterSupport {
         return null;
     }
     static _createOpenBracketRegExp(bracket) {
-        let str = strings.escapeRegExpCharacters(bracket);
+        let str = escapeRegExpCharacters(bracket);
         if (!/\B/.test(str.charAt(0))) {
             str = '\\b' + str;
         }
@@ -87,7 +88,7 @@ export class OnEnterSupport {
         return OnEnterSupport._safeRegExp(str);
     }
     static _createCloseBracketRegExp(bracket) {
-        let str = strings.escapeRegExpCharacters(bracket);
+        let str = escapeRegExpCharacters(bracket);
         if (!/\B/.test(str.charAt(str.length - 1))) {
             str = str + '\\b';
         }
@@ -104,4 +105,5 @@ export class OnEnterSupport {
         }
     }
 }
-//# sourceMappingURL=onEnter.js.map
+
+export { OnEnterSupport };

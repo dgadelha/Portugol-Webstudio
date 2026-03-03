@@ -1,12 +1,13 @@
-import * as domStylesheetsJs from '../../../../base/browser/domStylesheets.js';
+import { removeCSSRulesContainingSelector, createCSSRule } from '../../../../base/browser/domStylesheets.js';
 import { Sash } from '../../../../base/browser/ui/sash/sash.js';
 import { Color, RGBA } from '../../../../base/common/color.js';
 import { IdGenerator } from '../../../../base/common/idGenerator.js';
 import { DisposableStore } from '../../../../base/common/lifecycle.js';
-import * as objects from '../../../../base/common/objects.js';
+import { deepClone, mixin } from '../../../../base/common/objects.js';
 import './zoneWidget.css';
 import { Range } from '../../../common/core/range.js';
 import { ModelDecorationOptions } from '../../../common/model/textModel.js';
+
 const defaultColor = new Color(new RGBA(0, 122, 204));
 const defaultOptions = {
     showArrow: true,
@@ -36,7 +37,7 @@ class ViewZoneDelegate {
         this._onComputedHeight(height);
     }
 }
-export class OverlayWidgetDelegate {
+class OverlayWidgetDelegate {
     constructor(id, domNode) {
         this._id = id;
         this._domNode = domNode;
@@ -62,7 +63,7 @@ class Arrow {
     }
     dispose() {
         this.hide();
-        domStylesheetsJs.removeCSSRulesContainingSelector(this._ruleName);
+        removeCSSRulesContainingSelector(this._ruleName);
     }
     set color(value) {
         if (this._color !== value) {
@@ -77,8 +78,8 @@ class Arrow {
         }
     }
     _updateStyle() {
-        domStylesheetsJs.removeCSSRulesContainingSelector(this._ruleName);
-        domStylesheetsJs.createCSSRule(`.monaco-editor ${this._ruleName}`, `border-style: solid; border-color: transparent; border-bottom-color: ${this._color}; border-width: ${this._height}px; bottom: -${this._height}px !important; margin-left: -${this._height}px; `);
+        removeCSSRulesContainingSelector(this._ruleName);
+        createCSSRule(`.monaco-editor ${this._ruleName}`, `border-style: solid; border-color: transparent; border-bottom-color: ${this._color}; border-width: ${this._height}px; bottom: -${this._height}px !important; margin-left: -${this._height}px; `);
     }
     show(where) {
         if (where.column === 1) {
@@ -98,7 +99,7 @@ class Arrow {
         this._decorations.clear();
     }
 }
-export class ZoneWidget {
+class ZoneWidget {
     constructor(editor, options = {}) {
         this._arrow = null;
         this._overlayWidget = null;
@@ -110,8 +111,8 @@ export class ZoneWidget {
         this._isShowing = false;
         this.editor = editor;
         this._positionMarkerId = this.editor.createDecorationsCollection();
-        this.options = objects.deepClone(options);
-        objects.mixin(this.options, defaultOptions, false);
+        this.options = deepClone(options);
+        mixin(this.options, defaultOptions, false);
         this.domNode = document.createElement('div');
         if (!this.options.isAccessible) {
             this.domNode.setAttribute('aria-hidden', 'true');
@@ -401,4 +402,5 @@ export class ZoneWidget {
         return layoutInfo.width - layoutInfo.minimap.minimapWidth;
     }
 }
-//# sourceMappingURL=zoneWidget.js.map
+
+export { OverlayWidgetDelegate, ZoneWidget };

@@ -1,16 +1,12 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { localize } from '../../../../nls.js';
-import * as arrays from '../../../common/arrays.js';
+import { equals } from '../../../common/arrays.js';
 import { Emitter, Event } from '../../../common/event.js';
 import { KeyCodeUtils } from '../../../common/keyCodes.js';
-import { Disposable } from '../../../common/lifecycle.js';
+import { Disposable, DisposableStore } from '../../../common/lifecycle.js';
 import { isMacintosh } from '../../../common/platform.js';
-import * as cssJs from '../../cssValue.js';
-import * as dom from '../../dom.js';
-import * as domStylesheetsJs from '../../domStylesheets.js';
+import { asCssValueWithDefault } from '../../cssValue.js';
+import { $ as $$1, append, addDisposableListener, EventHelper, EventType, addStandardDisposableListener, getWindow, getDomNodePagePosition, getTotalWidth, isAncestor } from '../../dom.js';
+import { createStyleSheet } from '../../domStylesheets.js';
 import { DomEmitter } from '../../event.js';
 import { StandardKeyboardEvent } from '../../keyboardEvent.js';
 import { renderMarkdown } from '../../markdownRenderer.js';
@@ -18,16 +14,21 @@ import { getBaseLayerHoverDelegate } from '../hover/hoverDelegate2.js';
 import { getDefaultHoverDelegate } from '../hover/hoverDelegateFactory.js';
 import { List } from '../list/listWidget.js';
 import './selectBoxCustom.css';
-const $ = dom.$;
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+const $ = $$1;
 const SELECT_OPTION_ENTRY_TEMPLATE_ID = 'selectOption.entry.template';
 class SelectListRenderer {
     get templateId() { return SELECT_OPTION_ENTRY_TEMPLATE_ID; }
     renderTemplate(container) {
         const data = Object.create(null);
         data.root = container;
-        data.text = dom.append(container, $('.option-text'));
-        data.detail = dom.append(container, $('.option-detail'));
-        data.decoratorRight = dom.append(container, $('.option-decorator-right'));
+        data.text = append(container, $('.option-text'));
+        data.detail = append(container, $('.option-detail'));
+        data.decoratorRight = append(container, $('.option-decorator-right'));
         return data;
     }
     renderElement(element, index, templateData) {
@@ -52,7 +53,7 @@ class SelectListRenderer {
         // noop
     }
 }
-export class SelectBoxList extends Disposable {
+class SelectBoxList extends Disposable {
     static { this.DEFAULT_DROPDOWN_MINIMUM_BOTTOM_MARGIN = 32; }
     static { this.DEFAULT_DROPDOWN_MINIMUM_TOP_MARGIN = 2; }
     static { this.DEFAULT_MINIMUM_VISIBLE_OPTIONS = 3; }
@@ -61,6 +62,7 @@ export class SelectBoxList extends Disposable {
         this.options = [];
         this._currentSelection = 0;
         this._hasDetails = false;
+        this._selectionDetailsDisposables = this._register(new DisposableStore());
         this._skipLayout = false;
         this._sticky = false; // for dev purposes only
         this._isVisible = false;
@@ -109,30 +111,30 @@ export class SelectBoxList extends Disposable {
     constructSelectDropDown(contextViewProvider) {
         // SetUp ContextView container to hold select Dropdown
         this.contextViewProvider = contextViewProvider;
-        this.selectDropDownContainer = dom.$('.monaco-select-box-dropdown-container');
+        this.selectDropDownContainer = $$1('.monaco-select-box-dropdown-container');
         // Use custom CSS vars for padding calculation (shared with parent select)
         this.selectDropDownContainer.classList.add('monaco-select-box-dropdown-padding');
         // Setup container for select option details
-        this.selectionDetailsPane = dom.append(this.selectDropDownContainer, $('.select-box-details-pane'));
+        this.selectionDetailsPane = append(this.selectDropDownContainer, $('.select-box-details-pane'));
         // Create span flex box item/div we can measure and control
-        const widthControlOuterDiv = dom.append(this.selectDropDownContainer, $('.select-box-dropdown-container-width-control'));
-        const widthControlInnerDiv = dom.append(widthControlOuterDiv, $('.width-control-div'));
+        const widthControlOuterDiv = append(this.selectDropDownContainer, $('.select-box-dropdown-container-width-control'));
+        const widthControlInnerDiv = append(widthControlOuterDiv, $('.width-control-div'));
         this.widthControlElement = document.createElement('span');
         this.widthControlElement.className = 'option-text-width-control';
-        dom.append(widthControlInnerDiv, this.widthControlElement);
+        append(widthControlInnerDiv, this.widthControlElement);
         // Always default to below position
         this._dropDownPosition = 0 /* AnchorPosition.BELOW */;
         // Inline stylesheet for themes
-        this.styleElement = domStylesheetsJs.createStyleSheet(this.selectDropDownContainer);
+        this.styleElement = createStyleSheet(this.selectDropDownContainer);
         // Prevent dragging of dropdown #114329
         this.selectDropDownContainer.setAttribute('draggable', 'true');
-        this._register(dom.addDisposableListener(this.selectDropDownContainer, dom.EventType.DRAG_START, (e) => {
-            dom.EventHelper.stop(e, true);
+        this._register(addDisposableListener(this.selectDropDownContainer, EventType.DRAG_START, (e) => {
+            EventHelper.stop(e, true);
         }));
     }
     registerListeners() {
         // Parent native select keyboard listeners
-        this._register(dom.addStandardDisposableListener(this.selectElement, 'change', (e) => {
+        this._register(addStandardDisposableListener(this.selectElement, 'change', (e) => {
             this.selected = e.target.selectedIndex;
             this._onDidSelect.fire({
                 index: e.target.selectedIndex,
@@ -144,8 +146,8 @@ export class SelectBoxList extends Disposable {
         }));
         // Have to implement both keyboard and mouse controllers to handle disabled options
         // Intercept mouse events to override normal select actions on parents
-        this._register(dom.addDisposableListener(this.selectElement, dom.EventType.CLICK, (e) => {
-            dom.EventHelper.stop(e);
+        this._register(addDisposableListener(this.selectElement, EventType.CLICK, (e) => {
+            EventHelper.stop(e);
             if (this._isVisible) {
                 this.hideSelectDropDown(true);
             }
@@ -153,18 +155,18 @@ export class SelectBoxList extends Disposable {
                 this.showSelectDropDown();
             }
         }));
-        this._register(dom.addDisposableListener(this.selectElement, dom.EventType.MOUSE_DOWN, (e) => {
-            dom.EventHelper.stop(e);
+        this._register(addDisposableListener(this.selectElement, EventType.MOUSE_DOWN, (e) => {
+            EventHelper.stop(e);
         }));
         // Intercept touch events
         // The following implementation is slightly different from the mouse event handlers above.
         // Use the following helper variable, otherwise the list flickers.
         let listIsVisibleOnTouchStart;
-        this._register(dom.addDisposableListener(this.selectElement, 'touchstart', (e) => {
+        this._register(addDisposableListener(this.selectElement, 'touchstart', (e) => {
             listIsVisibleOnTouchStart = this._isVisible;
         }));
-        this._register(dom.addDisposableListener(this.selectElement, 'touchend', (e) => {
-            dom.EventHelper.stop(e);
+        this._register(addDisposableListener(this.selectElement, 'touchend', (e) => {
+            EventHelper.stop(e);
             if (listIsVisibleOnTouchStart) {
                 this.hideSelectDropDown(true);
             }
@@ -173,7 +175,7 @@ export class SelectBoxList extends Disposable {
             }
         }));
         // Intercept keyboard handling
-        this._register(dom.addDisposableListener(this.selectElement, dom.EventType.KEY_DOWN, (e) => {
+        this._register(addDisposableListener(this.selectElement, EventType.KEY_DOWN, (e) => {
             const event = new StandardKeyboardEvent(e);
             let showDropDown = false;
             // Create and drop down select list on keyboard select
@@ -189,7 +191,7 @@ export class SelectBoxList extends Disposable {
             }
             if (showDropDown) {
                 this.showSelectDropDown();
-                dom.EventHelper.stop(e, true);
+                EventHelper.stop(e, true);
             }
         }));
     }
@@ -197,7 +199,7 @@ export class SelectBoxList extends Disposable {
         return this._onDidSelect.event;
     }
     setOptions(options, selected) {
-        if (!arrays.equals(this.options, options)) {
+        if (!equals(this.options, options)) {
             this.options = options;
             this.selectElement.options.length = 0;
             this._hasDetails = false;
@@ -309,7 +311,7 @@ export class SelectBoxList extends Disposable {
     }
     styleList() {
         const background = this.styles.selectBackground ?? '';
-        const listBackground = cssJs.asCssValueWithDefault(this.styles.selectListBackground, background);
+        const listBackground = asCssValueWithDefault(this.styles.selectListBackground, background);
         this.selectDropDownListContainer.style.backgroundColor = listBackground;
         this.selectionDetailsPane.style.backgroundColor = listBackground;
         const optionsBorder = this.styles.focusBorder ?? '';
@@ -410,9 +412,9 @@ export class SelectBoxList extends Disposable {
         if (this.selectList) {
             // Make visible to enable measurements
             this.selectDropDownContainer.classList.add('visible');
-            const window = dom.getWindow(this.selectElement);
-            const selectPosition = dom.getDomNodePagePosition(this.selectElement);
-            const styles = dom.getWindow(this.selectElement).getComputedStyle(this.selectElement);
+            const window = getWindow(this.selectElement);
+            const selectPosition = getDomNodePagePosition(this.selectElement);
+            const styles = getWindow(this.selectElement).getComputedStyle(this.selectElement);
             const verticalPadding = parseFloat(styles.getPropertyValue('--dropdown-padding-top')) + parseFloat(styles.getPropertyValue('--dropdown-padding-bottom'));
             const maxSelectDropDownHeightBelow = (window.innerHeight - selectPosition.top - selectPosition.height - (this.selectBoxOptions.minBottomMargin || 0));
             const maxSelectDropDownHeightAbove = (selectPosition.top - SelectBoxList.DEFAULT_DROPDOWN_MINIMUM_TOP_MARGIN);
@@ -541,7 +543,7 @@ export class SelectBoxList extends Disposable {
                 }
             });
             container.textContent = this.options[longest].text + (!!this.options[longest].decoratorRight ? (this.options[longest].decoratorRight + ' ') : '');
-            elementWidth = dom.getTotalWidth(container);
+            elementWidth = getTotalWidth(container);
         }
         return elementWidth;
     }
@@ -551,7 +553,7 @@ export class SelectBoxList extends Disposable {
             return;
         }
         // SetUp container for list
-        this.selectDropDownListContainer = dom.append(parent, $('.select-box-dropdown-list-container'));
+        this.selectDropDownListContainer = append(parent, $('.select-box-dropdown-list-container'));
         this.listRenderer = new SelectListRenderer();
         this.selectList = this._register(new List('SelectBoxCustom', this.selectDropDownListContainer, this, [this.listRenderer], {
             useShadows: false,
@@ -595,11 +597,11 @@ export class SelectBoxList extends Disposable {
         this._register(Event.chain(onSelectDropDownKeyDown, $ => $.filter(e => e.keyCode === 13 /* KeyCode.End */))(this.onEnd, this));
         this._register(Event.chain(onSelectDropDownKeyDown, $ => $.filter(e => (e.keyCode >= 21 /* KeyCode.Digit0 */ && e.keyCode <= 56 /* KeyCode.KeyZ */) || (e.keyCode >= 85 /* KeyCode.Semicolon */ && e.keyCode <= 113 /* KeyCode.NumpadDivide */)))(this.onCharacter, this));
         // SetUp list mouse controller - control navigation, disabled items, focus
-        this._register(dom.addDisposableListener(this.selectList.getHTMLElement(), dom.EventType.POINTER_UP, e => this.onPointerUp(e)));
+        this._register(addDisposableListener(this.selectList.getHTMLElement(), EventType.POINTER_UP, e => this.onPointerUp(e)));
         this._register(this.selectList.onMouseOver(e => typeof e.index !== 'undefined' && this.selectList.setFocus([e.index])));
         this._register(this.selectList.onDidChangeFocus(e => this.onListFocus(e)));
-        this._register(dom.addDisposableListener(this.selectDropDownContainer, dom.EventType.FOCUS_OUT, e => {
-            if (!this._isVisible || dom.isAncestor(e.relatedTarget, this.selectDropDownContainer)) {
+        this._register(addDisposableListener(this.selectDropDownContainer, EventType.FOCUS_OUT, e => {
+            if (!this._isVisible || isAncestor(e.relatedTarget, this.selectDropDownContainer)) {
                 return;
             }
             this.onListBlur();
@@ -615,7 +617,7 @@ export class SelectBoxList extends Disposable {
         if (!this.selectList.length) {
             return;
         }
-        dom.EventHelper.stop(e);
+        EventHelper.stop(e);
         const target = e.target;
         if (!target) {
             return;
@@ -678,7 +680,7 @@ export class SelectBoxList extends Disposable {
         const rendered = renderMarkdown({ value: text, supportThemeIcons: true }, { actionHandler });
         rendered.element.classList.add('select-box-description-markdown');
         cleanRenderedMarkdown(rendered.element);
-        return rendered.element;
+        return rendered;
     }
     // List Focus Change - passive - update details pane with newly focused element's data
     onListFocus(e) {
@@ -689,6 +691,8 @@ export class SelectBoxList extends Disposable {
         this.updateDetail(e.indexes[0]);
     }
     updateDetail(selectedIndex) {
+        // Reset
+        this._selectionDetailsDisposables.clear();
         this.selectionDetailsPane.textContent = '';
         const option = this.options[selectedIndex];
         const description = option?.description ?? '';
@@ -696,7 +700,8 @@ export class SelectBoxList extends Disposable {
         if (description) {
             if (descriptionIsMarkdown) {
                 const actionHandler = option.descriptionMarkdownActionHandler;
-                this.selectionDetailsPane.appendChild(this.renderDescriptionMarkdown(description, actionHandler));
+                const result = this._selectionDetailsDisposables.add(this.renderDescriptionMarkdown(description, actionHandler));
+                this.selectionDetailsPane.appendChild(result.element);
             }
             else {
                 this.selectionDetailsPane.textContent = description;
@@ -714,14 +719,14 @@ export class SelectBoxList extends Disposable {
     // List keyboard controller
     // List exit - active - hide ContextView dropdown, reset selection, return focus to parent select
     onEscape(e) {
-        dom.EventHelper.stop(e);
+        EventHelper.stop(e);
         // Reset selection to value when opened
         this.select(this._currentSelection);
         this.hideSelectDropDown(true);
     }
     // List exit - active - hide ContextView dropdown, return focus to parent select, fire onDidSelect if change
     onEnter(e) {
-        dom.EventHelper.stop(e);
+        EventHelper.stop(e);
         // Only fire if selection change
         if (this.selected !== this._currentSelection) {
             this._currentSelection = this.selected;
@@ -738,7 +743,7 @@ export class SelectBoxList extends Disposable {
     // List navigation - have to handle a disabled option (jump over)
     onDownArrow(e) {
         if (this.selected < this.options.length - 1) {
-            dom.EventHelper.stop(e, true);
+            EventHelper.stop(e, true);
             // Skip disabled options
             const nextOptionDisabled = this.options[this.selected + 1].isDisabled;
             if (nextOptionDisabled && this.options.length > this.selected + 2) {
@@ -758,7 +763,7 @@ export class SelectBoxList extends Disposable {
     }
     onUpArrow(e) {
         if (this.selected > 0) {
-            dom.EventHelper.stop(e, true);
+            EventHelper.stop(e, true);
             // Skip disabled options
             const previousOptionDisabled = this.options[this.selected - 1].isDisabled;
             if (previousOptionDisabled && this.selected > 1) {
@@ -774,7 +779,7 @@ export class SelectBoxList extends Disposable {
         }
     }
     onPageUp(e) {
-        dom.EventHelper.stop(e);
+        EventHelper.stop(e);
         this.selectList.focusPreviousPage();
         // Allow scrolling to settle
         setTimeout(() => {
@@ -789,7 +794,7 @@ export class SelectBoxList extends Disposable {
         }, 1);
     }
     onPageDown(e) {
-        dom.EventHelper.stop(e);
+        EventHelper.stop(e);
         this.selectList.focusNextPage();
         // Allow scrolling to settle
         setTimeout(() => {
@@ -804,7 +809,7 @@ export class SelectBoxList extends Disposable {
         }, 1);
     }
     onHome(e) {
-        dom.EventHelper.stop(e);
+        EventHelper.stop(e);
         if (this.options.length < 2) {
             return;
         }
@@ -817,7 +822,7 @@ export class SelectBoxList extends Disposable {
         this.select(this.selected);
     }
     onEnd(e) {
-        dom.EventHelper.stop(e);
+        EventHelper.stop(e);
         if (this.options.length < 2) {
             return;
         }
@@ -839,7 +844,7 @@ export class SelectBoxList extends Disposable {
                 this.select(optionIndex);
                 this.selectList.setFocus([optionIndex]);
                 this.selectList.reveal(this.selectList.getFocus()[0]);
-                dom.EventHelper.stop(e);
+                EventHelper.stop(e);
                 break;
             }
         }
@@ -849,4 +854,5 @@ export class SelectBoxList extends Disposable {
         super.dispose();
     }
 }
-//# sourceMappingURL=selectBoxCustom.js.map
+
+export { SelectBoxList };

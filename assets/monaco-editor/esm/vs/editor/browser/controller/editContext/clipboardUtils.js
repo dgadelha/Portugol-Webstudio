@@ -1,6 +1,7 @@
 import { isWindows } from '../../../../base/common/platform.js';
 import { Mimes } from '../../../../base/common/mime.js';
-export function getDataToCopy(viewModel, modelSelections, emptySelectionClipboard, copyWithSyntaxHighlighting) {
+
+function getDataToCopy(viewModel, modelSelections, emptySelectionClipboard, copyWithSyntaxHighlighting) {
     const rawTextToCopy = viewModel.getPlainTextToCopy(modelSelections, emptySelectionClipboard, isWindows);
     const newLineCharacter = viewModel.model.getEOL();
     const isFromEmptySelection = (emptySelectionClipboard && modelSelections.length === 1 && modelSelections[0].isEmpty());
@@ -29,7 +30,7 @@ export function getDataToCopy(viewModel, modelSelections, emptySelectionClipboar
  * Every time we read from the cipboard, if the text matches our last written text,
  * we can fetch the previous metadata.
  */
-export class InMemoryClipboardMetadataManager {
+class InMemoryClipboardMetadataManager {
     static { this.INSTANCE = new InMemoryClipboardMetadataManager(); }
     constructor() {
         this._lastState = null;
@@ -46,10 +47,10 @@ export class InMemoryClipboardMetadataManager {
         return null;
     }
 }
-export const CopyOptions = {
+const CopyOptions = {
     forceCopyWithSyntaxHighlighting: false
 };
-export const ClipboardEventUtils = {
+const ClipboardEventUtils = {
     getTextData(clipboardData) {
         const text = clipboardData.getData(Mimes.text);
         let metadata = null;
@@ -80,4 +81,5 @@ export const ClipboardEventUtils = {
         clipboardData.setData('vscode-editor-data', JSON.stringify(metadata));
     }
 };
-//# sourceMappingURL=clipboardUtils.js.map
+
+export { ClipboardEventUtils, CopyOptions, InMemoryClipboardMetadataManager, getDataToCopy };

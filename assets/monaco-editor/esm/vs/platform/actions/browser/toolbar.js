@@ -1,19 +1,6 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
 import { addDisposableListener, getWindow } from '../../../base/browser/dom.js';
 import { StandardMouseEvent } from '../../../base/browser/mouseEvent.js';
-import { ToggleMenuAction, ToolBar } from '../../../base/browser/ui/toolbar/toolbar.js';
+import { ToolBar, ToggleMenuAction } from '../../../base/browser/ui/toolbar/toolbar.js';
 import { Separator, toAction } from '../../../base/common/actions.js';
 import { coalesceInPlace } from '../../../base/common/arrays.js';
 import { intersection } from '../../../base/common/collections.js';
@@ -32,6 +19,20 @@ import { IKeybindingService } from '../../keybinding/common/keybinding.js';
 import { ITelemetryService } from '../../telemetry/common/telemetry.js';
 import { IActionViewItemService } from './actionViewItemService.js';
 import { IInstantiationService } from '../../instantiation/common/instantiation.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 /**
  * The `WorkbenchToolBar` does
  * - support hiding of menu items
@@ -173,7 +174,7 @@ let WorkbenchToolBar = class WorkbenchToolBar extends ToolBar {
                     else {
                         primaryActions.push(toAction({
                             id: 'label',
-                            label: localize(1634, "Hide"),
+                            label: localize(1649, "Hide"),
                             enabled: false,
                             run() { }
                         }));
@@ -188,7 +189,7 @@ let WorkbenchToolBar = class WorkbenchToolBar extends ToolBar {
                     actions.push(new Separator());
                     actions.push(toAction({
                         id: 'resetThisMenu',
-                        label: localize(1635, "Reset Menu"),
+                        label: localize(1650, "Reset Menu"),
                         run: () => this._menuService.resetHiddenStates(menuIds)
                     }));
                 }
@@ -216,7 +217,6 @@ WorkbenchToolBar = __decorate([
     __param(6, ICommandService),
     __param(7, ITelemetryService)
 ], WorkbenchToolBar);
-export { WorkbenchToolBar };
 /**
  * A {@link WorkbenchToolBar workbench toolbar} that is purely driven from a {@link MenuId menu}-identifier.
  *
@@ -276,5 +276,5 @@ MenuWorkbenchToolBar = __decorate([
     __param(9, IActionViewItemService),
     __param(10, IInstantiationService)
 ], MenuWorkbenchToolBar);
-export { MenuWorkbenchToolBar };
-//# sourceMappingURL=toolbar.js.map
+
+export { MenuWorkbenchToolBar, WorkbenchToolBar };

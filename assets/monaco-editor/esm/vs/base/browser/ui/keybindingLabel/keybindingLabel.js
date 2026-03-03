@@ -1,8 +1,4 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-import * as dom from '../../dom.js';
+import { append, $ as $$1, clearNode } from '../../dom.js';
 import { getBaseLayerHoverDelegate } from '../hover/hoverDelegate2.js';
 import { getDefaultHoverDelegate } from '../hover/hoverDelegateFactory.js';
 import { UILabelProvider } from '../../../common/keybindingLabels.js';
@@ -10,22 +6,27 @@ import { Disposable } from '../../../common/lifecycle.js';
 import { equals } from '../../../common/objects.js';
 import './keybindingLabel.css';
 import { localize } from '../../../../nls.js';
-const $ = dom.$;
-export const unthemedKeybindingLabelOptions = {
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+const $ = $$1;
+const unthemedKeybindingLabelOptions = {
     keybindingLabelBackground: undefined,
     keybindingLabelForeground: undefined,
     keybindingLabelBorder: undefined,
     keybindingLabelBottomBorder: undefined,
     keybindingLabelShadow: undefined
 };
-export class KeybindingLabel extends Disposable {
+class KeybindingLabel extends Disposable {
     constructor(container, os, options) {
         super();
         this.os = os;
         this.keyElements = new Set();
         this.options = options || Object.create(null);
         const labelForeground = this.options.keybindingLabelForeground;
-        this.domNode = dom.append(container, $('.monaco-keybinding'));
+        this.domNode = append(container, $('.monaco-keybinding'));
         if (labelForeground) {
             this.domNode.style.color = labelForeground;
         }
@@ -49,7 +50,7 @@ export class KeybindingLabel extends Disposable {
                 this.renderChord(this.domNode, chords[0], this.matches ? this.matches.firstPart : null);
             }
             for (let i = 1; i < chords.length; i++) {
-                dom.append(this.domNode, $('span.monaco-keybinding-key-chord-separator', undefined, ' '));
+                append(this.domNode, $('span.monaco-keybinding-key-chord-separator', undefined, ' '));
                 this.renderChord(this.domNode, chords[i], this.matches ? this.matches.chordPart : null);
             }
             const title = (this.options.disableTitle ?? false) ? undefined : this.keybinding.getAriaLabel() || undefined;
@@ -62,7 +63,7 @@ export class KeybindingLabel extends Disposable {
         this.didEverRender = true;
     }
     clear() {
-        dom.clearNode(this.domNode);
+        clearNode(this.domNode);
         this.keyElements.clear();
     }
     renderChord(parent, chord, match) {
@@ -85,13 +86,13 @@ export class KeybindingLabel extends Disposable {
         }
     }
     renderKey(parent, label, highlight, separator) {
-        dom.append(parent, this.createKeyElement(label, highlight ? '.highlight' : ''));
+        append(parent, this.createKeyElement(label, highlight ? '.highlight' : ''));
         if (separator) {
-            dom.append(parent, $('span.monaco-keybinding-key-separator', undefined, separator));
+            append(parent, $('span.monaco-keybinding-key-separator', undefined, separator));
         }
     }
     renderUnbound(parent) {
-        dom.append(parent, this.createKeyElement(localize(15, "Unbound")));
+        append(parent, this.createKeyElement(localize(15, "Unbound")));
     }
     createKeyElement(label, extraClass = '') {
         const keyElement = $('span.monaco-keybinding-key' + extraClass, undefined, label);
@@ -117,4 +118,5 @@ export class KeybindingLabel extends Disposable {
         return !!a && !!b && equals(a.firstPart, b.firstPart) && equals(a.chordPart, b.chordPart);
     }
 }
-//# sourceMappingURL=keybindingLabel.js.map
+
+export { KeybindingLabel, unthemedKeybindingLabelOptions };

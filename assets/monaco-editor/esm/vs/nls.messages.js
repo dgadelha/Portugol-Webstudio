@@ -8,10 +8,11 @@
  *
  * TODO@esm remove me once we no longer ship an AMD build.
  */
-export function getNLSMessages() {
+function getNLSMessages() {
     return globalThis._VSCODE_NLS_MESSAGES;
 }
-export function getNLSLanguage() {
+function getNLSLanguage() {
     return globalThis._VSCODE_NLS_LANGUAGE;
 }
-//# sourceMappingURL=nls.messages.js.map
+
+export { getNLSLanguage, getNLSMessages };

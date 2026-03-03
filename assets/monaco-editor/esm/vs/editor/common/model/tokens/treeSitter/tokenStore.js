@@ -2,6 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+// Exported for tests
 class ListNode {
     get children() { return this._children; }
     get length() { return this._length; }
@@ -67,7 +68,7 @@ class ListNode {
         this._children.splice(0, this._children.length);
     }
 }
-export var TokenQuality;
+var TokenQuality;
 (function (TokenQuality) {
     TokenQuality[TokenQuality["None"] = 0] = "None";
     TokenQuality[TokenQuality["ViewportGuess"] = 1] = "ViewportGuess";
@@ -166,7 +167,7 @@ function concat(node1, node2) {
         return prepend(node2, node1);
     }
 }
-export class TokenStore {
+class TokenStore {
     constructor(_textModel) {
         this._textModel = _textModel;
         this._root = this.createEmptyRoot();
@@ -387,9 +388,7 @@ export class TokenStore {
         const stack = [[this._root, false]];
         while (stack.length > 0) {
             const [node, visited] = stack.pop();
-            if (isLeaf(node)) {
-                // leaf node does not need to be disposed
-            }
+            if (isLeaf(node)) ;
             else if (!visited) {
                 stack.push([node, true]);
                 for (let i = node.children.length - 1; i >= 0; i--) {
@@ -404,4 +403,5 @@ export class TokenStore {
         this._root = undefined;
     }
 }
-//# sourceMappingURL=tokenStore.js.map
+
+export { ListNode, TokenQuality, TokenStore };

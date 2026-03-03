@@ -2,7 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-export class ServiceCollection {
+class ServiceCollection {
     constructor(...entries) {
         this._entries = new Map();
         for (const [id, service] of entries) {
@@ -18,4 +18,5 @@ export class ServiceCollection {
         return this._entries.get(id);
     }
 }
-//# sourceMappingURL=serviceCollection.js.map
+
+export { ServiceCollection };

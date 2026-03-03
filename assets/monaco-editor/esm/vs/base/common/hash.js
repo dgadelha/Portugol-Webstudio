@@ -1,19 +1,20 @@
+import { encodeHex, VSBuffer } from './buffer.js';
+import { isHighSurrogate, isLowSurrogate, computeCodePoint } from './strings.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { encodeHex, VSBuffer } from './buffer.js';
-import * as strings from './strings.js';
 /**
  * Return a hash value for an object.
  *
  * Note that this should not be used for binary data types. Instead,
  * prefer {@link hashAsync}.
  */
-export function hash(obj) {
+function hash(obj) {
     return doHash(obj, 0);
 }
-export function doHash(obj, hashVal) {
+function doHash(obj, hashVal) {
     switch (typeof obj) {
         case 'object':
             if (obj === null) {
@@ -35,13 +36,13 @@ export function doHash(obj, hashVal) {
             return numberHash(617, hashVal);
     }
 }
-export function numberHash(val, initialHashVal) {
+function numberHash(val, initialHashVal) {
     return (((initialHashVal << 5) - initialHashVal) + val) | 0; // hashVal * 31 + ch, keep as int32
 }
 function booleanHash(b, initialHashVal) {
     return numberHash(b ? 433 : 863, initialHashVal);
 }
-export function stringHash(s, hashVal) {
+function stringHash(s, hashVal) {
     hashVal = numberHash(149417, hashVal);
     for (let i = 0, length = s.length; i < length; i++) {
         hashVal = numberHash(s.charCodeAt(i), hashVal);
@@ -59,29 +60,6 @@ function objectHash(obj, initialHashVal) {
         return doHash(obj[key], hashVal);
     }, initialHashVal);
 }
-/** Hashes the input as SHA-1, returning a hex-encoded string. */
-export const hashAsync = (input) => {
-    // Note: I would very much like to expose a streaming interface for hashing
-    // generally, but this is not available in web crypto yet, see
-    // https://github.com/w3c/webcrypto/issues/73
-    // StringSHA1 is faster for small string input, use it since we have it:
-    if (typeof input === 'string' && input.length < 250) {
-        const sha = new StringSHA1();
-        sha.update(input);
-        return Promise.resolve(sha.digest());
-    }
-    let buff;
-    if (typeof input === 'string') {
-        buff = new TextEncoder().encode(input);
-    }
-    else if (input instanceof VSBuffer) {
-        buff = input.buffer;
-    }
-    else {
-        buff = input;
-    }
-    return crypto.subtle.digest('sha-1', buff).then(toHexString); // CodeQL [SM04514] we use sha1 here for validating old stored client state, not for security
-};
 function leftRotate(value, bits, totalBits = 32) {
     // delta + bits = totalBits
     const delta = totalBits - bits;
@@ -101,7 +79,7 @@ function toHexString(bufferOrValue, bitsize = 32) {
  *
  * Prefer to use {@link hashAsync} in async contexts
  */
-export class StringSHA1 {
+class StringSHA1 {
     static { this._bigBlock32 = new DataView(new ArrayBuffer(320)); } // 80 * 4 = 320
     constructor() {
         this._h0 = 0x67452301;
@@ -137,12 +115,12 @@ export class StringSHA1 {
         }
         while (true) {
             let codePoint = charCode;
-            if (strings.isHighSurrogate(charCode)) {
+            if (isHighSurrogate(charCode)) {
                 if (offset + 1 < strLen) {
                     const nextCharCode = str.charCodeAt(offset + 1);
-                    if (strings.isLowSurrogate(nextCharCode)) {
+                    if (isLowSurrogate(nextCharCode)) {
                         offset++;
-                        codePoint = strings.computeCodePoint(charCode, nextCharCode);
+                        codePoint = computeCodePoint(charCode, nextCharCode);
                     }
                     else {
                         // illegal => unicode replacement character
@@ -155,7 +133,7 @@ export class StringSHA1 {
                     break;
                 }
             }
-            else if (strings.isLowSurrogate(charCode)) {
+            else if (isLowSurrogate(charCode)) {
                 // illegal => unicode replacement character
                 codePoint = 65533 /* SHA1Constant.UNICODE_REPLACEMENT */;
             }
@@ -274,4 +252,5 @@ export class StringSHA1 {
         this._h4 = (this._h4 + e) & 0xffffffff;
     }
 }
-//# sourceMappingURL=hash.js.map
+
+export { StringSHA1, doHash, hash, numberHash, stringHash };

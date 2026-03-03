@@ -1,34 +1,35 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-var SmartSelectController_1;
-import * as arrays from '../../../../base/common/arrays.js';
+import { isNonEmptyArray, equals } from '../../../../base/common/arrays.js';
 import { CancellationToken } from '../../../../base/common/cancellation.js';
 import { onUnexpectedExternalError } from '../../../../base/common/errors.js';
-import { EditorAction, registerEditorAction, registerEditorContribution } from '../../../browser/editorExtensions.js';
+import { registerEditorContribution, registerEditorAction, EditorAction } from '../../../browser/editorExtensions.js';
 import { Position } from '../../../common/core/position.js';
 import { Range } from '../../../common/core/range.js';
 import { Selection } from '../../../common/core/selection.js';
 import { EditorContextKeys } from '../../../common/editorContextKeys.js';
 import { BracketSelectionRangeProvider } from './bracketSelections.js';
 import { WordSelectionRangeProvider } from './wordSelections.js';
-import * as nls from '../../../../nls.js';
+import { localize, localize2 } from '../../../../nls.js';
 import { MenuId } from '../../../../platform/actions/common/actions.js';
 import { CommandsRegistry } from '../../../../platform/commands/common/commands.js';
 import { ILanguageFeaturesService } from '../../../common/services/languageFeatures.js';
 import { ITextModelService } from '../../../common/services/resolverService.js';
-import { assertType } from '../../../../base/common/types.js';
+import { assertType, isArrayOf } from '../../../../base/common/types.js';
 import { URI } from '../../../../base/common/uri.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var SmartSelectController_1;
 class SelectionRanges {
     constructor(index, ranges) {
         this.index = index;
@@ -69,11 +70,11 @@ let SmartSelectController = class SmartSelectController {
         const model = this._editor.getModel();
         if (!this._state) {
             await provideSelectionRanges(this._languageFeaturesService.selectionRangeProvider, model, selections.map(s => s.getPosition()), this._editor.getOption(129 /* EditorOption.smartSelect */), CancellationToken.None).then(ranges => {
-                if (!arrays.isNonEmptyArray(ranges) || ranges.length !== selections.length) {
+                if (!isNonEmptyArray(ranges) || ranges.length !== selections.length) {
                     // invalid result
                     return;
                 }
-                if (!this._editor.hasModel() || !arrays.equals(this._editor.getSelections(), selections, (a, b) => a.equalsSelection(b))) {
+                if (!this._editor.hasModel() || !equals(this._editor.getSelections(), selections, (a, b) => a.equalsSelection(b))) {
                     // invalid editor state
                     return;
                 }
@@ -114,7 +115,6 @@ let SmartSelectController = class SmartSelectController {
 SmartSelectController = SmartSelectController_1 = __decorate([
     __param(1, ILanguageFeaturesService)
 ], SmartSelectController);
-export { SmartSelectController };
 class AbstractSmartSelect extends EditorAction {
     constructor(forward, opts) {
         super(opts);
@@ -131,7 +131,7 @@ class GrowSelectionAction extends AbstractSmartSelect {
     constructor() {
         super(true, {
             id: 'editor.action.smartSelect.expand',
-            label: nls.localize2(1385, "Expand Selection"),
+            label: localize2(1400, "Expand Selection"),
             precondition: undefined,
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
@@ -145,7 +145,7 @@ class GrowSelectionAction extends AbstractSmartSelect {
             menuOpts: {
                 menuId: MenuId.MenubarSelectionMenu,
                 group: '1_basic',
-                title: nls.localize(1383, "&&Expand Selection"),
+                title: localize(1398, "&&Expand Selection"),
                 order: 2
             }
         });
@@ -157,7 +157,7 @@ class ShrinkSelectionAction extends AbstractSmartSelect {
     constructor() {
         super(false, {
             id: 'editor.action.smartSelect.shrink',
-            label: nls.localize2(1386, "Shrink Selection"),
+            label: localize2(1401, "Shrink Selection"),
             precondition: undefined,
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
@@ -171,7 +171,7 @@ class ShrinkSelectionAction extends AbstractSmartSelect {
             menuOpts: {
                 menuId: MenuId.MenubarSelectionMenu,
                 group: '1_basic',
-                title: nls.localize(1384, "&&Shrink Selection"),
+                title: localize(1399, "&&Shrink Selection"),
                 order: 3
             }
         });
@@ -180,7 +180,7 @@ class ShrinkSelectionAction extends AbstractSmartSelect {
 registerEditorContribution(SmartSelectController.ID, SmartSelectController, 4 /* EditorContributionInstantiation.Lazy */);
 registerEditorAction(GrowSelectionAction);
 registerEditorAction(ShrinkSelectionAction);
-export async function provideSelectionRanges(registry, model, positions, options, token) {
+async function provideSelectionRanges(registry, model, positions, options, token) {
     const providers = registry.all(model)
         .concat(new WordSelectionRangeProvider(options.selectSubwords)); // ALWAYS have word based selection range
     if (providers.length === 1) {
@@ -191,7 +191,7 @@ export async function provideSelectionRanges(registry, model, positions, options
     const allRawRanges = [];
     for (const provider of providers) {
         work.push(Promise.resolve(provider.provideSelectionRanges(model, positions, token)).then(allProviderRanges => {
-            if (arrays.isNonEmptyArray(allProviderRanges) && allProviderRanges.length === positions.length) {
+            if (isNonEmptyArray(allProviderRanges) && allProviderRanges.length === positions.length) {
                 for (let i = 0; i < positions.length; i++) {
                     if (!allRawRanges[i]) {
                         allRawRanges[i] = [];
@@ -267,13 +267,15 @@ export async function provideSelectionRanges(registry, model, positions, options
 CommandsRegistry.registerCommand('_executeSelectionRangeProvider', async function (accessor, ...args) {
     const [resource, positions] = args;
     assertType(URI.isUri(resource));
+    assertType(isArrayOf(positions, p => Position.isIPosition(p)));
     const registry = accessor.get(ILanguageFeaturesService).selectionRangeProvider;
     const reference = await accessor.get(ITextModelService).createModelReference(resource);
     try {
-        return provideSelectionRanges(registry, reference.object.textEditorModel, positions, { selectLeadingAndTrailingWhitespace: true, selectSubwords: true }, CancellationToken.None);
+        return provideSelectionRanges(registry, reference.object.textEditorModel, positions.map(Position.lift), { selectLeadingAndTrailingWhitespace: true, selectSubwords: true }, CancellationToken.None);
     }
     finally {
         reference.dispose();
     }
 });
-//# sourceMappingURL=smartSelect.js.map
+
+export { SmartSelectController, provideSelectionRanges };

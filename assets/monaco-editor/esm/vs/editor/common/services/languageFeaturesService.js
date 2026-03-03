@@ -1,11 +1,12 @@
+import { LanguageFeatureRegistry } from '../languageFeatureRegistry.js';
+import { ILanguageFeaturesService } from './languageFeatures.js';
+import { registerSingleton } from '../../../platform/instantiation/common/extensions.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { LanguageFeatureRegistry } from '../languageFeatureRegistry.js';
-import { ILanguageFeaturesService } from './languageFeatures.js';
-import { registerSingleton } from '../../../platform/instantiation/common/extensions.js';
-export class LanguageFeaturesService {
+class LanguageFeaturesService {
     constructor() {
         this.referenceProvider = new LanguageFeatureRegistry(this._score.bind(this));
         this.renameProvider = new LanguageFeatureRegistry(this._score.bind(this));
@@ -42,4 +43,5 @@ export class LanguageFeaturesService {
     }
 }
 registerSingleton(ILanguageFeaturesService, LanguageFeaturesService, 1 /* InstantiationType.Delayed */);
-//# sourceMappingURL=languageFeaturesService.js.map
+
+export { LanguageFeaturesService };

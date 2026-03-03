@@ -1,10 +1,11 @@
 import { register } from './codiconsUtil.js';
 import { codiconsLibrary } from './codiconsLibrary.js';
+
 /**
  * Derived icons, that could become separate icons.
  * These mappings should be moved into the mapping file in the vscode-codicons repo at some point.
  */
-export const codiconsDerived = {
+const codiconsDerived = {
     dialogError: register('dialog-error', 'error'),
     dialogWarning: register('dialog-warning', 'warning'),
     dialogInfo: register('dialog-info', 'info'),
@@ -41,8 +42,9 @@ export const codiconsDerived = {
  * themeable, component should define new, UI component specific icons using `iconRegistry.registerIcon`.
  * In that call a Codicon can be named as default.
  */
-export const Codicon = {
+const Codicon = {
     ...codiconsLibrary,
     ...codiconsDerived
 };
-//# sourceMappingURL=codicons.js.map
+
+export { Codicon, codiconsDerived };

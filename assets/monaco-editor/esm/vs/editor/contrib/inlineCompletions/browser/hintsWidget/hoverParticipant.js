@@ -1,33 +1,34 @@
+import { $, append, reset } from '../../../../../base/browser/dom.js';
+import { MarkdownString } from '../../../../../base/common/htmlContent.js';
+import { DisposableStore } from '../../../../../base/common/lifecycle.js';
+import '../../../../../base/common/observableInternal/index.js';
+import { Range } from '../../../../common/core/range.js';
+import { HoverForeignElementAnchor, RenderedHoverParts } from '../../../hover/browser/hoverTypes.js';
+import { InlineCompletionsController } from '../controller/inlineCompletionsController.js';
+import { InlineSuggestionHintsContentWidget } from './inlineCompletionsHintsWidget.js';
+import { IMarkdownRendererService } from '../../../../../platform/markdown/browser/markdownRenderer.js';
+import { localize } from '../../../../../nls.js';
+import { IAccessibilityService } from '../../../../../platform/accessibility/common/accessibility.js';
+import { IInstantiationService } from '../../../../../platform/instantiation/common/instantiation.js';
+import { ITelemetryService } from '../../../../../platform/telemetry/common/telemetry.js';
+import { GhostTextView } from '../view/ghostText/ghostTextView.js';
+import { autorunWithStore, autorun } from '../../../../../base/common/observableInternal/reactions/autorun.js';
+import { constObservable } from '../../../../../base/common/observableInternal/observables/constObservable.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __param = (this && this.__param) || function (paramIndex, decorator) {
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import * as dom from '../../../../../base/browser/dom.js';
-import { MarkdownString } from '../../../../../base/common/htmlContent.js';
-import { DisposableStore } from '../../../../../base/common/lifecycle.js';
-import { autorun, autorunWithStore, constObservable } from '../../../../../base/common/observable.js';
-import { Range } from '../../../../common/core/range.js';
-import { ILanguageService } from '../../../../common/languages/language.js';
-import { HoverForeignElementAnchor, RenderedHoverParts } from '../../../hover/browser/hoverTypes.js';
-import { InlineCompletionsController } from '../controller/inlineCompletionsController.js';
-import { InlineSuggestionHintsContentWidget } from './inlineCompletionsHintsWidget.js';
-import { MarkdownRenderer } from '../../../../browser/widget/markdownRenderer/browser/markdownRenderer.js';
-import * as nls from '../../../../../nls.js';
-import { IAccessibilityService } from '../../../../../platform/accessibility/common/accessibility.js';
-import { IInstantiationService } from '../../../../../platform/instantiation/common/instantiation.js';
-import { IOpenerService } from '../../../../../platform/opener/common/opener.js';
-import { ITelemetryService } from '../../../../../platform/telemetry/common/telemetry.js';
-import { GhostTextView } from '../view/ghostText/ghostTextView.js';
-export class InlineCompletionsHover {
+class InlineCompletionsHover {
     constructor(owner, range, controller) {
         this.owner = owner;
         this.range = range;
@@ -40,13 +41,12 @@ export class InlineCompletionsHover {
     }
 }
 let InlineCompletionsHoverParticipant = class InlineCompletionsHoverParticipant {
-    constructor(_editor, _languageService, _openerService, accessibilityService, _instantiationService, _telemetryService) {
+    constructor(_editor, accessibilityService, _instantiationService, _telemetryService, _markdownRendererService) {
         this._editor = _editor;
-        this._languageService = _languageService;
-        this._openerService = _openerService;
         this.accessibilityService = accessibilityService;
         this._instantiationService = _instantiationService;
         this._telemetryService = _telemetryService;
+        this._markdownRendererService = _markdownRendererService;
         this.hoverOrdinal = 4;
     }
     suggestHoverAnchor(mouseEvent) {
@@ -117,15 +117,18 @@ let InlineCompletionsHoverParticipant = class InlineCompletionsHoverParticipant 
         };
         return new RenderedHoverParts([renderedHoverPart]);
     }
+    getAccessibleContent(hoverPart) {
+        return localize(1205, 'There are inline completions here');
+    }
     renderScreenReaderText(context, part) {
         const disposables = new DisposableStore();
-        const $ = dom.$;
-        const markdownHoverElement = $('div.hover-row.markdown-hover');
-        const hoverContentsElement = dom.append(markdownHoverElement, $('div.hover-contents', { ['aria-live']: 'assertive' }));
-        const renderer = new MarkdownRenderer({ editor: this._editor }, this._languageService, this._openerService);
+        const $$1 = $;
+        const markdownHoverElement = $$1('div.hover-row.markdown-hover');
+        const hoverContentsElement = append(markdownHoverElement, $$1('div.hover-contents', { ['aria-live']: 'assertive' }));
         const render = (code) => {
-            const inlineSuggestionAvailable = nls.localize(1197, "Suggestion:");
-            const renderedContents = disposables.add(renderer.render(new MarkdownString().appendText(inlineSuggestionAvailable).appendCodeblock('text', code), {
+            const inlineSuggestionAvailable = localize(1206, "Suggestion:");
+            const renderedContents = disposables.add(this._markdownRendererService.render(new MarkdownString().appendText(inlineSuggestionAvailable).appendCodeblock('text', code), {
+                context: this._editor,
                 asyncRenderCallback: () => {
                     hoverContentsElement.className = 'hover-contents code-hover-contents';
                     context.onContentsChanged();
@@ -141,7 +144,7 @@ let InlineCompletionsHoverParticipant = class InlineCompletionsHoverParticipant 
                 render(ghostText.renderForScreenReader(lineText));
             }
             else {
-                dom.reset(hoverContentsElement);
+                reset(hoverContentsElement);
             }
         }));
         context.fragment.appendChild(markdownHoverElement);
@@ -149,11 +152,10 @@ let InlineCompletionsHoverParticipant = class InlineCompletionsHoverParticipant 
     }
 };
 InlineCompletionsHoverParticipant = __decorate([
-    __param(1, ILanguageService),
-    __param(2, IOpenerService),
-    __param(3, IAccessibilityService),
-    __param(4, IInstantiationService),
-    __param(5, ITelemetryService)
+    __param(1, IAccessibilityService),
+    __param(2, IInstantiationService),
+    __param(3, ITelemetryService),
+    __param(4, IMarkdownRendererService)
 ], InlineCompletionsHoverParticipant);
-export { InlineCompletionsHoverParticipant };
-//# sourceMappingURL=hoverParticipant.js.map
+
+export { InlineCompletionsHover, InlineCompletionsHoverParticipant };

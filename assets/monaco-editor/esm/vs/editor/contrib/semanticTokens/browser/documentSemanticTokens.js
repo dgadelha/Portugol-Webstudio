@@ -1,20 +1,6 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-var ModelSemanticColoring_1;
 import { RunOnceScheduler } from '../../../../base/common/async.js';
 import { CancellationTokenSource } from '../../../../base/common/cancellation.js';
-import * as errors from '../../../../base/common/errors.js';
+import { isCancellationError, onUnexpectedError } from '../../../../base/common/errors.js';
 import { Disposable, dispose } from '../../../../base/common/lifecycle.js';
 import { ResourceMap } from '../../../../base/common/map.js';
 import { StopWatch } from '../../../../base/common/stopwatch.js';
@@ -26,8 +12,23 @@ import { ILanguageFeaturesService } from '../../../common/services/languageFeatu
 import { IModelService } from '../../../common/services/model.js';
 import { toMultilineTokens2 } from '../../../common/services/semanticTokensProviderStyling.js';
 import { ISemanticTokensStylingService } from '../../../common/services/semanticTokensStyling.js';
-import { getDocumentSemanticTokens, hasDocumentSemanticTokensProvider, isSemanticTokens, isSemanticTokensEdits } from '../common/getSemanticTokens.js';
-import { SEMANTIC_HIGHLIGHTING_SETTING_ID, isSemanticColoringEnabled } from '../common/semanticTokensConfig.js';
+import { hasDocumentSemanticTokensProvider, getDocumentSemanticTokens, isSemanticTokensEdits, isSemanticTokens } from '../common/getSemanticTokens.js';
+import { isSemanticColoringEnabled, SEMANTIC_HIGHLIGHTING_SETTING_ID } from '../common/semanticTokensConfig.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var ModelSemanticColoring_1;
 let DocumentSemanticTokensFeature = class DocumentSemanticTokensFeature extends Disposable {
     constructor(semanticTokensStylingService, modelService, themeService, configurationService, languageFeatureDebounceService, languageFeaturesService) {
         super();
@@ -92,7 +93,6 @@ DocumentSemanticTokensFeature = __decorate([
     __param(4, ILanguageFeatureDebounceService),
     __param(5, ILanguageFeaturesService)
 ], DocumentSemanticTokensFeature);
-export { DocumentSemanticTokensFeature };
 let ModelSemanticColoring = class ModelSemanticColoring extends Disposable {
     static { ModelSemanticColoring_1 = this; }
     static { this.REQUEST_MIN_DELAY = 300; }
@@ -216,9 +216,9 @@ let ModelSemanticColoring = class ModelSemanticColoring extends Disposable {
                 this._setDocumentSemanticTokens(provider, tokens || null, styling, pendingChanges);
             }
         }, (err) => {
-            const isExpectedError = err && (errors.isCancellationError(err) || (typeof err.message === 'string' && err.message.indexOf('busy') !== -1));
+            const isExpectedError = err && (isCancellationError(err) || (typeof err.message === 'string' && err.message.indexOf('busy') !== -1));
             if (!isExpectedError) {
-                errors.onUnexpectedError(err);
+                onUnexpectedError(err);
             }
             // Semantic tokens eats up all errors and considers errors to mean that the result is temporarily not available
             // The API does not have a special error kind to express this...
@@ -358,4 +358,5 @@ class SemanticTokensResponse {
     }
 }
 registerEditorFeature(DocumentSemanticTokensFeature);
-//# sourceMappingURL=documentSemanticTokens.js.map
+
+export { DocumentSemanticTokensFeature };

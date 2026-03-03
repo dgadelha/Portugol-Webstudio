@@ -1,8 +1,9 @@
+import { Emitter } from '../../base/common/event.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { Emitter } from '../../base/common/event.js';
 class InputModeImpl {
     constructor() {
         this._inputMode = 'insert';
@@ -16,5 +17,6 @@ class InputModeImpl {
 /**
  * Controls the type mode, whether insert or overtype
  */
-export const InputMode = new InputModeImpl();
-//# sourceMappingURL=inputMode.js.map
+const InputMode = new InputModeImpl();
+
+export { InputMode };

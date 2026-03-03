@@ -1,19 +1,6 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
 import { getActiveWindow } from '../../../../base/browser/dom.js';
 import { BugIndicatingError } from '../../../../base/common/errors.js';
-import { autorun, runOnChange } from '../../../../base/common/observable.js';
+import '../../../../base/common/observableInternal/index.js';
 import { IInstantiationService } from '../../../../platform/instantiation/common/instantiation.js';
 import { ILogService } from '../../../../platform/log/common/log.js';
 import { Position } from '../../../common/core/position.js';
@@ -22,7 +9,7 @@ import { TextureAtlasPage } from '../../gpu/atlas/textureAtlasPage.js';
 import { GPULifecycle } from '../../gpu/gpuDisposable.js';
 import { quadVertices } from '../../gpu/gpuUtils.js';
 import { ViewGpuContext } from '../../gpu/viewGpuContext.js';
-import { FloatHorizontalRange, HorizontalPosition, HorizontalRange, LineVisibleRanges, VisibleRanges } from '../../view/renderingContext.js';
+import { LineVisibleRanges, HorizontalRange, VisibleRanges, FloatHorizontalRange, HorizontalPosition } from '../../view/renderingContext.js';
 import { ViewPart } from '../../view/viewPart.js';
 import { ViewLineOptions } from '../viewLines/viewLineOptions.js';
 import { CursorColumns } from '../../../common/core/cursorColumns.js';
@@ -32,6 +19,22 @@ import { ViewportRenderStrategy } from '../../gpu/renderStrategy/viewportRenderS
 import { FullFileRenderStrategy } from '../../gpu/renderStrategy/fullFileRenderStrategy.js';
 import { MutableDisposable } from '../../../../base/common/lifecycle.js';
 import { GlyphRasterizer } from '../../gpu/raster/glyphRasterizer.js';
+import { autorun } from '../../../../base/common/observableInternal/reactions/autorun.js';
+import { runOnChange } from '../../../../base/common/observableInternal/utils/runOnChange.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 /**
  * The GPU implementation of the ViewLines part.
  */
@@ -564,5 +567,5 @@ ViewLinesGpu = __decorate([
     __param(2, IInstantiationService),
     __param(3, ILogService)
 ], ViewLinesGpu);
+
 export { ViewLinesGpu };
-//# sourceMappingURL=viewLinesGpu.js.map

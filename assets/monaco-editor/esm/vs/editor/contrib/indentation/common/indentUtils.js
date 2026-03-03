@@ -2,7 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-export function getSpaceCnt(str, tabSize) {
+function getSpaceCnt(str, tabSize) {
     let spacesCnt = 0;
     for (let i = 0; i < str.length; i++) {
         if (str.charAt(i) === '\t') {
@@ -14,7 +14,7 @@ export function getSpaceCnt(str, tabSize) {
     }
     return spacesCnt;
 }
-export function generateIndent(spacesCnt, tabSize, insertSpaces) {
+function generateIndent(spacesCnt, tabSize, insertSpaces) {
     spacesCnt = spacesCnt < 0 ? 0 : spacesCnt;
     let result = '';
     if (!insertSpaces) {
@@ -29,4 +29,5 @@ export function generateIndent(spacesCnt, tabSize, insertSpaces) {
     }
     return result;
 }
-//# sourceMappingURL=indentUtils.js.map
+
+export { generateIndent, getSpaceCnt };

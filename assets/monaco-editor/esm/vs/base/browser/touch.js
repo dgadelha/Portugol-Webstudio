@@ -1,20 +1,21 @@
+import { onDidRegisterWindow, addDisposableListener, scheduleAtNextAnimationFrame } from './dom.js';
+import { mainWindow } from './window.js';
+import { memoize } from '../common/decorators.js';
+import { Event } from '../common/event.js';
+import { Disposable, markAsSingleton, toDisposable } from '../common/lifecycle.js';
+import { LinkedList } from '../common/linkedList.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-import * as DomUtils from './dom.js';
-import { mainWindow } from './window.js';
-import { memoize } from '../common/decorators.js';
-import { Event as EventUtils } from '../common/event.js';
-import { Disposable, markAsSingleton, toDisposable } from '../common/lifecycle.js';
-import { LinkedList } from '../common/linkedList.js';
-export var EventType;
+var EventType;
 (function (EventType) {
     EventType.Tap = '-monaco-gesturetap';
     EventType.Change = '-monaco-gesturechange';
@@ -22,8 +23,8 @@ export var EventType;
     EventType.End = '-monaco-gesturesend';
     EventType.Contextmenu = '-monaco-gesturecontextmenu';
 })(EventType || (EventType = {}));
-export class Gesture extends Disposable {
-    static { this.SCROLL_FRICTION = -0.005; }
+class Gesture extends Disposable {
+    static { this.SCROLL_FRICTION = -5e-3; }
     static { this.HOLD_DELAY = 700; }
     static { this.CLEAR_TAP_COUNT_TIME = 400; } // ms
     constructor() {
@@ -34,10 +35,10 @@ export class Gesture extends Disposable {
         this.activeTouches = {};
         this.handle = null;
         this._lastSetTapCountTime = 0;
-        this._register(EventUtils.runAndSubscribe(DomUtils.onDidRegisterWindow, ({ window, disposables }) => {
-            disposables.add(DomUtils.addDisposableListener(window.document, 'touchstart', (e) => this.onTouchStart(e), { passive: false }));
-            disposables.add(DomUtils.addDisposableListener(window.document, 'touchend', (e) => this.onTouchEnd(window, e)));
-            disposables.add(DomUtils.addDisposableListener(window.document, 'touchmove', (e) => this.onTouchMove(e), { passive: false }));
+        this._register(Event.runAndSubscribe(onDidRegisterWindow, ({ window, disposables }) => {
+            disposables.add(addDisposableListener(window.document, 'touchstart', (e) => this.onTouchStart(e), { passive: false }));
+            disposables.add(addDisposableListener(window.document, 'touchend', (e) => this.onTouchEnd(window, e)));
+            disposables.add(addDisposableListener(window.document, 'touchmove', (e) => this.onTouchMove(e), { passive: false }));
         }, { window: mainWindow, disposables: this._store }));
     }
     static addTarget(element) {
@@ -204,7 +205,7 @@ export class Gesture extends Disposable {
         }
     }
     inertia(targetWindow, dispatchTo, t1, vX, dirX, x, vY, dirY, y) {
-        this.handle = DomUtils.scheduleAtNextAnimationFrame(targetWindow, () => {
+        this.handle = scheduleAtNextAnimationFrame(targetWindow, () => {
             const now = Date.now();
             // velocity: old speed + accel_over_time
             const deltaT = now - t1;
@@ -265,4 +266,5 @@ export class Gesture extends Disposable {
 __decorate([
     memoize
 ], Gesture, "isTouchDevice", null);
-//# sourceMappingURL=touch.js.map
+
+export { EventType, Gesture };

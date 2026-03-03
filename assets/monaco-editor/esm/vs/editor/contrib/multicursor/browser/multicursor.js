@@ -1,46 +1,47 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-var SelectionHighlighter_1;
 import { status } from '../../../../base/browser/ui/aria/aria.js';
 import { RunOnceScheduler } from '../../../../base/common/async.js';
 import { KeyChord } from '../../../../base/common/keyCodes.js';
 import { Disposable, DisposableStore } from '../../../../base/common/lifecycle.js';
-import { EditorAction, registerEditorAction, registerEditorContribution } from '../../../browser/editorExtensions.js';
+import { registerEditorContribution, registerEditorAction, EditorAction } from '../../../browser/editorExtensions.js';
 import { CursorMoveCommands } from '../../../common/cursor/cursorMoveCommands.js';
 import { Range } from '../../../common/core/range.js';
 import { Selection } from '../../../common/core/selection.js';
 import { EditorContextKeys } from '../../../common/editorContextKeys.js';
 import { CommonFindController } from '../../find/browser/findController.js';
-import * as nls from '../../../../nls.js';
+import { localize, localize2 } from '../../../../nls.js';
 import { MenuId } from '../../../../platform/actions/common/actions.js';
 import { ContextKeyExpr } from '../../../../platform/contextkey/common/contextkey.js';
 import { ILanguageFeaturesService } from '../../../common/services/languageFeatures.js';
 import { getSelectionHighlightDecorationOptions } from '../../wordHighlighter/browser/highlightDecorations.js';
 import { IInstantiationService } from '../../../../platform/instantiation/common/instantiation.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var SelectionHighlighter_1;
 function announceCursorChange(previousCursorState, cursorState) {
     const cursorDiff = cursorState.filter(cs => !previousCursorState.find(pcs => pcs.equals(cs)));
     if (cursorDiff.length >= 1) {
         const cursorPositions = cursorDiff.map(cs => `line ${cs.viewState.position.lineNumber} column ${cs.viewState.position.column}`).join(', ');
-        const msg = cursorDiff.length === 1 ? nls.localize(1278, "Cursor added: {0}", cursorPositions) : nls.localize(1279, "Cursors added: {0}", cursorPositions);
+        const msg = cursorDiff.length === 1 ? localize(1288, "Cursor added: {0}", cursorPositions) : localize(1289, "Cursors added: {0}", cursorPositions);
         status(msg);
     }
 }
-export class InsertCursorAbove extends EditorAction {
+class InsertCursorAbove extends EditorAction {
     constructor() {
         super({
             id: 'editor.action.insertCursorAbove',
-            label: nls.localize2(1288, "Add Cursor Above"),
+            label: localize2(1298, "Add Cursor Above"),
             precondition: undefined,
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
@@ -54,7 +55,7 @@ export class InsertCursorAbove extends EditorAction {
             menuOpts: {
                 menuId: MenuId.MenubarSelectionMenu,
                 group: '3_multi',
-                title: nls.localize(1280, "&&Add Cursor Above"),
+                title: localize(1290, "&&Add Cursor Above"),
                 order: 2
             }
         });
@@ -78,11 +79,11 @@ export class InsertCursorAbove extends EditorAction {
         announceCursorChange(previousCursorState, viewModel.getCursorStates());
     }
 }
-export class InsertCursorBelow extends EditorAction {
+class InsertCursorBelow extends EditorAction {
     constructor() {
         super({
             id: 'editor.action.insertCursorBelow',
-            label: nls.localize2(1289, "Add Cursor Below"),
+            label: localize2(1299, "Add Cursor Below"),
             precondition: undefined,
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
@@ -96,7 +97,7 @@ export class InsertCursorBelow extends EditorAction {
             menuOpts: {
                 menuId: MenuId.MenubarSelectionMenu,
                 group: '3_multi',
-                title: nls.localize(1281, "A&&dd Cursor Below"),
+                title: localize(1291, "A&&dd Cursor Below"),
                 order: 3
             }
         });
@@ -124,7 +125,7 @@ class InsertCursorAtEndOfEachLineSelected extends EditorAction {
     constructor() {
         super({
             id: 'editor.action.insertCursorAtEndOfEachLineSelected',
-            label: nls.localize2(1290, "Add Cursors to Line Ends"),
+            label: localize2(1300, "Add Cursors to Line Ends"),
             precondition: undefined,
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
@@ -134,7 +135,7 @@ class InsertCursorAtEndOfEachLineSelected extends EditorAction {
             menuOpts: {
                 menuId: MenuId.MenubarSelectionMenu,
                 group: '3_multi',
-                title: nls.localize(1282, "Add C&&ursors to Line Ends"),
+                title: localize(1292, "Add C&&ursors to Line Ends"),
                 order: 4
             }
         });
@@ -171,7 +172,7 @@ class InsertCursorAtEndOfLineSelected extends EditorAction {
     constructor() {
         super({
             id: 'editor.action.addCursorsToBottom',
-            label: nls.localize2(1291, "Add Cursors to Bottom"),
+            label: localize2(1301, "Add Cursors to Bottom"),
             precondition: undefined
         });
     }
@@ -197,7 +198,7 @@ class InsertCursorAtTopOfLineSelected extends EditorAction {
     constructor() {
         super({
             id: 'editor.action.addCursorsToTop',
-            label: nls.localize2(1292, "Add Cursors to Top"),
+            label: localize2(1302, "Add Cursors to Top"),
             precondition: undefined
         });
     }
@@ -218,14 +219,14 @@ class InsertCursorAtTopOfLineSelected extends EditorAction {
         announceCursorChange(previousCursorState, viewModel.getCursorStates());
     }
 }
-export class MultiCursorSessionResult {
+class MultiCursorSessionResult {
     constructor(selections, revealRange, revealScrollType) {
         this.selections = selections;
         this.revealRange = revealRange;
         this.revealScrollType = revealScrollType;
     }
 }
-export class MultiCursorSession {
+class MultiCursorSession {
     static create(editor, findController) {
         if (!editor.hasModel()) {
             return null;
@@ -373,7 +374,7 @@ export class MultiCursorSession {
         return editorModel.findMatches(this.searchText, true, false, this.matchCase, this.wholeWord ? this._editor.getOption(148 /* EditorOption.wordSeparators */) : null, false, 1073741824 /* Constants.MAX_SAFE_SMALL_INTEGER */);
     }
 }
-export class MultiCursorSelectionController extends Disposable {
+class MultiCursorSelectionController extends Disposable {
     static { this.ID = 'editor.contrib.multiCursorController'; }
     static get(editor) {
         return editor.getContribution(MultiCursorSelectionController.ID);
@@ -548,7 +549,7 @@ export class MultiCursorSelectionController extends Disposable {
         }
     }
 }
-export class MultiCursorSelectionControllerAction extends EditorAction {
+class MultiCursorSelectionControllerAction extends EditorAction {
     run(accessor, editor) {
         const multiCursorController = MultiCursorSelectionController.get(editor);
         if (!multiCursorController) {
@@ -570,11 +571,11 @@ export class MultiCursorSelectionControllerAction extends EditorAction {
         }
     }
 }
-export class AddSelectionToNextFindMatchAction extends MultiCursorSelectionControllerAction {
+class AddSelectionToNextFindMatchAction extends MultiCursorSelectionControllerAction {
     constructor() {
         super({
             id: 'editor.action.addSelectionToNextFindMatch',
-            label: nls.localize2(1293, "Add Selection to Next Find Match"),
+            label: localize2(1303, "Add Selection to Next Find Match"),
             precondition: undefined,
             kbOpts: {
                 kbExpr: EditorContextKeys.focus,
@@ -584,7 +585,7 @@ export class AddSelectionToNextFindMatchAction extends MultiCursorSelectionContr
             menuOpts: {
                 menuId: MenuId.MenubarSelectionMenu,
                 group: '3_multi',
-                title: nls.localize(1283, "Add &&Next Occurrence"),
+                title: localize(1293, "Add &&Next Occurrence"),
                 order: 5
             }
         });
@@ -593,16 +594,16 @@ export class AddSelectionToNextFindMatchAction extends MultiCursorSelectionContr
         multiCursorController.addSelectionToNextFindMatch(findController);
     }
 }
-export class AddSelectionToPreviousFindMatchAction extends MultiCursorSelectionControllerAction {
+class AddSelectionToPreviousFindMatchAction extends MultiCursorSelectionControllerAction {
     constructor() {
         super({
             id: 'editor.action.addSelectionToPreviousFindMatch',
-            label: nls.localize2(1294, "Add Selection to Previous Find Match"),
+            label: localize2(1304, "Add Selection to Previous Find Match"),
             precondition: undefined,
             menuOpts: {
                 menuId: MenuId.MenubarSelectionMenu,
                 group: '3_multi',
-                title: nls.localize(1284, "Add P&&revious Occurrence"),
+                title: localize(1294, "Add P&&revious Occurrence"),
                 order: 6
             }
         });
@@ -611,11 +612,11 @@ export class AddSelectionToPreviousFindMatchAction extends MultiCursorSelectionC
         multiCursorController.addSelectionToPreviousFindMatch(findController);
     }
 }
-export class MoveSelectionToNextFindMatchAction extends MultiCursorSelectionControllerAction {
+class MoveSelectionToNextFindMatchAction extends MultiCursorSelectionControllerAction {
     constructor() {
         super({
             id: 'editor.action.moveSelectionToNextFindMatch',
-            label: nls.localize2(1295, "Move Last Selection to Next Find Match"),
+            label: localize2(1305, "Move Last Selection to Next Find Match"),
             precondition: undefined,
             kbOpts: {
                 kbExpr: EditorContextKeys.focus,
@@ -628,11 +629,11 @@ export class MoveSelectionToNextFindMatchAction extends MultiCursorSelectionCont
         multiCursorController.moveSelectionToNextFindMatch(findController);
     }
 }
-export class MoveSelectionToPreviousFindMatchAction extends MultiCursorSelectionControllerAction {
+class MoveSelectionToPreviousFindMatchAction extends MultiCursorSelectionControllerAction {
     constructor() {
         super({
             id: 'editor.action.moveSelectionToPreviousFindMatch',
-            label: nls.localize2(1296, "Move Last Selection to Previous Find Match"),
+            label: localize2(1306, "Move Last Selection to Previous Find Match"),
             precondition: undefined
         });
     }
@@ -640,11 +641,11 @@ export class MoveSelectionToPreviousFindMatchAction extends MultiCursorSelection
         multiCursorController.moveSelectionToPreviousFindMatch(findController);
     }
 }
-export class SelectHighlightsAction extends MultiCursorSelectionControllerAction {
+class SelectHighlightsAction extends MultiCursorSelectionControllerAction {
     constructor() {
         super({
             id: 'editor.action.selectHighlights',
-            label: nls.localize2(1297, "Select All Occurrences of Find Match"),
+            label: localize2(1307, "Select All Occurrences of Find Match"),
             precondition: undefined,
             kbOpts: {
                 kbExpr: EditorContextKeys.focus,
@@ -654,7 +655,7 @@ export class SelectHighlightsAction extends MultiCursorSelectionControllerAction
             menuOpts: {
                 menuId: MenuId.MenubarSelectionMenu,
                 group: '3_multi',
-                title: nls.localize(1285, "Select All &&Occurrences"),
+                title: localize(1295, "Select All &&Occurrences"),
                 order: 7
             }
         });
@@ -663,11 +664,11 @@ export class SelectHighlightsAction extends MultiCursorSelectionControllerAction
         multiCursorController.selectAll(findController);
     }
 }
-export class CompatChangeAll extends MultiCursorSelectionControllerAction {
+class CompatChangeAll extends MultiCursorSelectionControllerAction {
     constructor() {
         super({
             id: 'editor.action.changeAll',
-            label: nls.localize2(1298, "Change All Occurrences"),
+            label: localize2(1308, "Change All Occurrences"),
             precondition: ContextKeyExpr.and(EditorContextKeys.writable, EditorContextKeys.editorTextFocus),
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
@@ -902,7 +903,6 @@ let SelectionHighlighter = class SelectionHighlighter extends Disposable {
 SelectionHighlighter = SelectionHighlighter_1 = __decorate([
     __param(1, ILanguageFeaturesService)
 ], SelectionHighlighter);
-export { SelectionHighlighter };
 function modelRangesContainSameText(model, ranges, matchCase) {
     const selectedText = getValueInRange(model, ranges[0], !matchCase);
     for (let i = 1, len = ranges.length; i < len; i++) {
@@ -921,13 +921,13 @@ function getValueInRange(model, range, toLowerCase) {
     const text = model.getValueInRange(range);
     return (toLowerCase ? text.toLowerCase() : text);
 }
-export class FocusNextCursor extends EditorAction {
+class FocusNextCursor extends EditorAction {
     constructor() {
         super({
             id: 'editor.action.focusNextCursor',
-            label: nls.localize2(1299, "Focus Next Cursor"),
+            label: localize2(1309, "Focus Next Cursor"),
             metadata: {
-                description: nls.localize(1286, "Focuses the next cursor"),
+                description: localize(1296, "Focuses the next cursor"),
                 args: [],
             },
             precondition: undefined
@@ -953,13 +953,13 @@ export class FocusNextCursor extends EditorAction {
         announceCursorChange(previousCursorState, viewModel.getCursorStates());
     }
 }
-export class FocusPreviousCursor extends EditorAction {
+class FocusPreviousCursor extends EditorAction {
     constructor() {
         super({
             id: 'editor.action.focusPreviousCursor',
-            label: nls.localize2(1300, "Focus Previous Cursor"),
+            label: localize2(1310, "Focus Previous Cursor"),
             metadata: {
-                description: nls.localize(1287, "Focuses the previous cursor"),
+                description: localize(1297, "Focuses the previous cursor"),
                 args: [],
             },
             precondition: undefined
@@ -1000,4 +1000,5 @@ registerEditorAction(InsertCursorAtEndOfLineSelected);
 registerEditorAction(InsertCursorAtTopOfLineSelected);
 registerEditorAction(FocusNextCursor);
 registerEditorAction(FocusPreviousCursor);
-//# sourceMappingURL=multicursor.js.map
+
+export { AddSelectionToNextFindMatchAction, AddSelectionToPreviousFindMatchAction, CompatChangeAll, FocusNextCursor, FocusPreviousCursor, InsertCursorAbove, InsertCursorBelow, MoveSelectionToNextFindMatchAction, MoveSelectionToPreviousFindMatchAction, MultiCursorSelectionController, MultiCursorSelectionControllerAction, MultiCursorSession, MultiCursorSessionResult, SelectHighlightsAction, SelectionHighlighter };

@@ -1,9 +1,10 @@
+import { safeIntl } from './date.js';
+import { Lazy } from './lazy.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { safeIntl } from './date.js';
-import { Lazy } from './lazy.js';
 // When comparing large numbers of strings it's better for performance to create an
 // Intl.Collator object and use the function provided by its compare property
 // than it is to use String.prototype.localeCompare()
@@ -16,21 +17,21 @@ const intlFileNameCollatorBaseNumeric = new Lazy(() => {
     };
 });
 // A collator with numeric sorting enabled.
-const intlFileNameCollatorNumeric = new Lazy(() => {
+new Lazy(() => {
     const collator = safeIntl.Collator(undefined, { numeric: true }).value;
     return {
         collator
     };
 });
 // A collator with numeric sorting enabled, and sensitivity to accents and diacritics but not case.
-const intlFileNameCollatorNumericCaseInsensitive = new Lazy(() => {
+new Lazy(() => {
     const collator = safeIntl.Collator(undefined, { numeric: true, sensitivity: 'accent' }).value;
     return {
         collator
     };
 });
 /** Compares filenames without distinguishing the name from the extension. Disambiguates by unicode comparison. */
-export function compareFileNames(one, other, caseSensitive = false) {
+function compareFileNames(one, other, caseSensitive = false) {
     const a = one || '';
     const b = other || '';
     const result = intlFileNameCollatorBaseNumeric.value.collator.compare(a, b);
@@ -40,7 +41,7 @@ export function compareFileNames(one, other, caseSensitive = false) {
     }
     return result;
 }
-export function compareAnything(one, other, lookFor) {
+function compareAnything(one, other, lookFor) {
     const elementAName = one.toLowerCase();
     const elementBName = other.toLowerCase();
     // Sort prefix matches over non prefix matches
@@ -62,7 +63,7 @@ export function compareAnything(one, other, lookFor) {
     // Compare by name
     return elementAName.localeCompare(elementBName);
 }
-export function compareByPrefix(one, other, lookFor) {
+function compareByPrefix(one, other, lookFor) {
     const elementAName = one.toLowerCase();
     const elementBName = other.toLowerCase();
     // Sort prefix matches over non prefix matches
@@ -82,4 +83,5 @@ export function compareByPrefix(one, other, lookFor) {
     }
     return 0;
 }
-//# sourceMappingURL=comparers.js.map
+
+export { compareAnything, compareByPrefix, compareFileNames };

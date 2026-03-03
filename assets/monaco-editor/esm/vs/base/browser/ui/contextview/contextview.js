@@ -1,18 +1,19 @@
+import { BrowserFeatures } from '../../canIUse.js';
+import { $, hide, addStandardDisposableListener, clearNode, show, isHTMLElement, getDomNodePagePosition, getDomNodeZoomLevel, getTotalWidth, getTotalHeight, getActiveWindow, getWindow, isAncestor } from '../../dom.js';
+import { Disposable, toDisposable, DisposableStore } from '../../../common/lifecycle.js';
+import { isIOS } from '../../../common/platform.js';
+import { Range } from '../../../common/range.js';
+import './contextview.css';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { BrowserFeatures } from '../../canIUse.js';
-import * as DOM from '../../dom.js';
-import { Disposable, DisposableStore, toDisposable } from '../../../common/lifecycle.js';
-import * as platform from '../../../common/platform.js';
-import { Range } from '../../../common/range.js';
-import './contextview.css';
-export function isAnchor(obj) {
+function isAnchor(obj) {
     const anchor = obj;
     return !!anchor && typeof anchor.x === 'number' && typeof anchor.y === 'number';
 }
-export var LayoutAnchorMode;
+var LayoutAnchorMode;
 (function (LayoutAnchorMode) {
     LayoutAnchorMode[LayoutAnchorMode["AVOID"] = 0] = "AVOID";
     LayoutAnchorMode[LayoutAnchorMode["ALIGN"] = 1] = "ALIGN";
@@ -22,7 +23,7 @@ export var LayoutAnchorMode;
  *
  * @returns The view offset within the viewport.
  */
-export function layout(viewportSize, viewSize, anchor) {
+function layout(viewportSize, viewSize, anchor) {
     const layoutAfterAnchorBoundary = anchor.mode === LayoutAnchorMode.ALIGN ? anchor.offset : anchor.offset + anchor.size;
     const layoutBeforeAnchorBoundary = anchor.mode === LayoutAnchorMode.ALIGN ? anchor.offset + anchor.size : anchor.offset;
     if (anchor.position === 0 /* LayoutAnchorPosition.Before */) {
@@ -44,7 +45,7 @@ export function layout(viewportSize, viewSize, anchor) {
         return 0; // sad case, lay it over the anchor
     }
 }
-export class ContextView extends Disposable {
+class ContextView extends Disposable {
     static { this.BUBBLE_UP_EVENTS = ['click', 'keydown', 'focus', 'blur']; }
     static { this.BUBBLE_DOWN_EVENTS = ['click']; }
     constructor(container, domPosition) {
@@ -57,8 +58,8 @@ export class ContextView extends Disposable {
         this.toDisposeOnSetContainer = Disposable.None;
         this.shadowRoot = null;
         this.shadowRootHostElement = null;
-        this.view = DOM.$('.context-view');
-        DOM.hide(this.view);
+        this.view = $('.context-view');
+        hide(this.view);
         this.setContainer(container, domPosition);
         this._register(toDisposable(() => this.setContainer(null, 1 /* ContextViewDOMPosition.ABSOLUTE */)));
     }
@@ -82,26 +83,26 @@ export class ContextView extends Disposable {
         if (container) {
             this.container = container;
             if (this.useShadowDOM) {
-                this.shadowRootHostElement = DOM.$('.shadow-root-host');
+                this.shadowRootHostElement = $('.shadow-root-host');
                 this.container.appendChild(this.shadowRootHostElement);
                 this.shadowRoot = this.shadowRootHostElement.attachShadow({ mode: 'open' });
                 const style = document.createElement('style');
                 style.textContent = SHADOW_ROOT_CSS;
                 this.shadowRoot.appendChild(style);
                 this.shadowRoot.appendChild(this.view);
-                this.shadowRoot.appendChild(DOM.$('slot'));
+                this.shadowRoot.appendChild($('slot'));
             }
             else {
                 this.container.appendChild(this.view);
             }
             const toDisposeOnSetContainer = new DisposableStore();
             ContextView.BUBBLE_UP_EVENTS.forEach(event => {
-                toDisposeOnSetContainer.add(DOM.addStandardDisposableListener(this.container, event, e => {
+                toDisposeOnSetContainer.add(addStandardDisposableListener(this.container, event, e => {
                     this.onDOMEvent(e, false);
                 }));
             });
             ContextView.BUBBLE_DOWN_EVENTS.forEach(event => {
-                toDisposeOnSetContainer.add(DOM.addStandardDisposableListener(this.container, event, e => {
+                toDisposeOnSetContainer.add(addStandardDisposableListener(this.container, event, e => {
                     this.onDOMEvent(e, true);
                 }, true));
             });
@@ -113,13 +114,13 @@ export class ContextView extends Disposable {
             this.hide();
         }
         // Show static box
-        DOM.clearNode(this.view);
+        clearNode(this.view);
         this.view.className = 'context-view monaco-component';
         this.view.style.top = '0px';
         this.view.style.left = '0px';
         this.view.style.zIndex = `${2575 + (delegate.layer ?? 0)}`;
         this.view.style.position = this.useFixedPosition ? 'fixed' : 'absolute';
-        DOM.show(this.view);
+        show(this.view);
         // Render content
         this.toDisposeOnClean = delegate.render(this.view) || Disposable.None;
         // Set active delegate
@@ -136,7 +137,7 @@ export class ContextView extends Disposable {
         if (!this.isVisible()) {
             return;
         }
-        if (this.delegate.canRelayout === false && !(platform.isIOS && BrowserFeatures.pointerEvents)) {
+        if (this.delegate.canRelayout === false && !(isIOS && BrowserFeatures.pointerEvents)) {
             this.hide();
             return;
         }
@@ -153,12 +154,12 @@ export class ContextView extends Disposable {
         // Compute around
         let around;
         // Get the element's position and size (to anchor the view)
-        if (DOM.isHTMLElement(anchor)) {
-            const elementPosition = DOM.getDomNodePagePosition(anchor);
+        if (isHTMLElement(anchor)) {
+            const elementPosition = getDomNodePagePosition(anchor);
             // In areas where zoom is applied to the element or its ancestors, we need to adjust the size of the element
             // e.g. The title bar has counter zoom behavior meaning it applies the inverse of zoom level.
             // Window Zoom Level: 1.5, Title Bar Zoom: 1/1.5, Size Multiplier: 1.5
-            const zoom = DOM.getDomNodeZoomLevel(anchor);
+            const zoom = getDomNodeZoomLevel(anchor);
             around = {
                 top: elementPosition.top * zoom,
                 left: elementPosition.left * zoom,
@@ -186,14 +187,14 @@ export class ContextView extends Disposable {
                 height: 2
             };
         }
-        const viewSizeWidth = DOM.getTotalWidth(this.view);
-        const viewSizeHeight = DOM.getTotalHeight(this.view);
+        const viewSizeWidth = getTotalWidth(this.view);
+        const viewSizeHeight = getTotalHeight(this.view);
         const anchorPosition = this.delegate.anchorPosition ?? 0 /* AnchorPosition.BELOW */;
         const anchorAlignment = this.delegate.anchorAlignment ?? 0 /* AnchorAlignment.LEFT */;
         const anchorAxisAlignment = this.delegate.anchorAxisAlignment ?? 0 /* AnchorAxisAlignment.VERTICAL */;
         let top;
         let left;
-        const activeWindow = DOM.getActiveWindow();
+        const activeWindow = getActiveWindow();
         if (anchorAxisAlignment === 0 /* AnchorAxisAlignment.VERTICAL */) {
             const verticalAnchor = { offset: around.top - activeWindow.pageYOffset, size: around.height, position: anchorPosition === 0 /* AnchorPosition.BELOW */ ? 0 /* LayoutAnchorPosition.Before */ : 1 /* LayoutAnchorPosition.After */ };
             const horizontalAnchor = { offset: around.left, size: around.width, position: anchorAlignment === 0 /* AnchorAlignment.LEFT */ ? 0 /* LayoutAnchorPosition.Before */ : 1 /* LayoutAnchorPosition.After */, mode: LayoutAnchorMode.ALIGN };
@@ -218,12 +219,12 @@ export class ContextView extends Disposable {
         this.view.classList.add(anchorPosition === 0 /* AnchorPosition.BELOW */ ? 'bottom' : 'top');
         this.view.classList.add(anchorAlignment === 0 /* AnchorAlignment.LEFT */ ? 'left' : 'right');
         this.view.classList.toggle('fixed', this.useFixedPosition);
-        const containerPosition = DOM.getDomNodePagePosition(this.container);
+        const containerPosition = getDomNodePagePosition(this.container);
         // Account for container scroll when positioning the context view
         const containerScrollTop = this.container.scrollTop || 0;
         const containerScrollLeft = this.container.scrollLeft || 0;
-        this.view.style.top = `${top - (this.useFixedPosition ? DOM.getDomNodePagePosition(this.view).top : containerPosition.top) + containerScrollTop}px`;
-        this.view.style.left = `${left - (this.useFixedPosition ? DOM.getDomNodePagePosition(this.view).left : containerPosition.left) + containerScrollLeft}px`;
+        this.view.style.top = `${top - (this.useFixedPosition ? getDomNodePagePosition(this.view).top : containerPosition.top) + containerScrollTop}px`;
+        this.view.style.left = `${left - (this.useFixedPosition ? getDomNodePagePosition(this.view).left : containerPosition.left) + containerScrollLeft}px`;
         this.view.style.width = 'initial';
     }
     hide(data) {
@@ -233,7 +234,7 @@ export class ContextView extends Disposable {
             delegate.onHide(data);
         }
         this.toDisposeOnClean.dispose();
-        DOM.hide(this.view);
+        hide(this.view);
     }
     isVisible() {
         return !!this.delegate;
@@ -241,9 +242,9 @@ export class ContextView extends Disposable {
     onDOMEvent(e, onCapture) {
         if (this.delegate) {
             if (this.delegate.onDOMEvent) {
-                this.delegate.onDOMEvent(e, DOM.getWindow(e).document.activeElement);
+                this.delegate.onDOMEvent(e, getWindow(e).document.activeElement);
             }
-            else if (onCapture && !DOM.isAncestor(e.target, this.container)) {
+            else if (onCapture && !isAncestor(e.target, this.container)) {
                 this.hide();
             }
         }
@@ -293,4 +294,5 @@ const SHADOW_ROOT_CSS = /* css */ `
 	:host-context(.linux:lang(ja)) { font-family: system-ui, "Ubuntu", "Droid Sans", "Source Han Sans J", "Source Han Sans JP", "Source Han Sans", sans-serif; }
 	:host-context(.linux:lang(ko)) { font-family: system-ui, "Ubuntu", "Droid Sans", "Source Han Sans K", "Source Han Sans JR", "Source Han Sans", "UnDotum", "FBaekmuk Gulim", sans-serif; }
 `;
-//# sourceMappingURL=contextview.js.map
+
+export { ContextView, LayoutAnchorMode, isAnchor, layout };

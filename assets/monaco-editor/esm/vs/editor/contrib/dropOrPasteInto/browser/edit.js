@@ -1,14 +1,15 @@
+import { ResourceTextEdit } from '../../../browser/services/bulkEditService.js';
+import { SnippetParser } from '../../snippet/browser/snippetParser.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { ResourceTextEdit } from '../../../browser/services/bulkEditService.js';
-import { SnippetParser } from '../../snippet/browser/snippetParser.js';
 /**
  * Given a {@link DropOrPasteEdit} and set of ranges, creates a {@link WorkspaceEdit} that applies the insert text from
  * the {@link DropOrPasteEdit} at each range plus any additional edits.
  */
-export function createCombinedWorkspaceEdit(uri, ranges, edit) {
+function createCombinedWorkspaceEdit(uri, ranges, edit) {
     // If the edit insert text is empty, skip applying at each range
     if (typeof edit.insertText === 'string' ? edit.insertText === '' : edit.insertText.snippet === '') {
         return {
@@ -22,7 +23,7 @@ export function createCombinedWorkspaceEdit(uri, ranges, edit) {
         ]
     };
 }
-export function sortEditsByYieldTo(edits) {
+function sortEditsByYieldTo(edits) {
     function yieldsTo(yTo, other) {
         if ('mimeType' in yTo) {
             return yTo.mimeType === other.handledMimeType;
@@ -78,4 +79,5 @@ export function sortEditsByYieldTo(edits) {
     }
     return visit(Array.from(edits));
 }
-//# sourceMappingURL=edit.js.map
+
+export { createCombinedWorkspaceEdit, sortEditsByYieldTo };

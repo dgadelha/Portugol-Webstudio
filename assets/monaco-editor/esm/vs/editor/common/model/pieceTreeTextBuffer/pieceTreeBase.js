@@ -1,12 +1,13 @@
+import { Position } from '../../core/position.js';
+import { Range } from '../../core/range.js';
+import { FindMatch } from '../../model.js';
+import { SENTINEL, rbDelete, updateTreeMetadata, TreeNode, leftest, fixInsert, righttest } from './rbTreeBase.js';
+import { createFindMatch, Searcher, isValidMatch } from '../textModelSearch.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { Position } from '../../core/position.js';
-import { Range } from '../../core/range.js';
-import { FindMatch } from '../../model.js';
-import { SENTINEL, TreeNode, fixInsert, leftest, rbDelete, righttest, updateTreeMetadata } from './rbTreeBase.js';
-import { Searcher, createFindMatch, isValidMatch } from '../textModelSearch.js';
 // const lfRegex = new RegExp(/\r\n|\r|\n/g);
 const AverageBufferSize = 65535;
 function createUintArray(arr) {
@@ -29,7 +30,7 @@ class LineStarts {
         this.isBasicASCII = isBasicASCII;
     }
 }
-export function createLineStartsFast(str, readonly = true) {
+function createLineStartsFast(str, readonly = true) {
     const r = [0];
     let rLength = 1;
     for (let i = 0, len = str.length; i < len; i++) {
@@ -56,7 +57,7 @@ export function createLineStartsFast(str, readonly = true) {
         return r;
     }
 }
-export function createLineStarts(r, str) {
+function createLineStarts(r, str) {
     r.length = 0;
     r[0] = 0;
     let rLength = 1;
@@ -93,7 +94,7 @@ export function createLineStarts(r, str) {
     r.length = 0;
     return result;
 }
-export class Piece {
+class Piece {
     constructor(bufferIndex, start, end, lineFeedCnt, length) {
         this.bufferIndex = bufferIndex;
         this.start = start;
@@ -102,7 +103,7 @@ export class Piece {
         this.length = length;
     }
 }
-export class StringBuffer {
+class StringBuffer {
     constructor(buffer, lineStarts) {
         this.buffer = buffer;
         this.lineStarts = lineStarts;
@@ -199,7 +200,7 @@ class PieceTreeSearchCache {
         }
     }
 }
-export class PieceTreeBase {
+class PieceTreeBase {
     constructor(chunks, eol, eolNormalized) {
         this.create(chunks, eol, eolNormalized);
     }
@@ -338,8 +339,6 @@ export class PieceTreeBase {
                 return value.replace(/\r\n|\r|\n/g, eol);
             }
             if (eol === this.getEOL() && this._EOLNormalized) {
-                if (eol === '\r\n') {
-                }
                 return value;
             }
             return value.replace(/\r\n|\r|\n/g, eol);
@@ -1470,4 +1469,5 @@ export class PieceTreeBase {
         return z;
     }
 }
-//# sourceMappingURL=pieceTreeBase.js.map
+
+export { Piece, PieceTreeBase, StringBuffer, createLineStarts, createLineStartsFast };

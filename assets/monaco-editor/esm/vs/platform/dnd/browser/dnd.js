@@ -1,17 +1,13 @@
 import { isNative } from '../../../base/common/platform.js';
 import { Registry } from '../../registry/common/platform.js';
+
 //#region Editor / Resources DND
-export const CodeDataTransfers = {
+const CodeDataTransfers = {
     EDITORS: 'CodeEditors',
-    FILES: 'CodeFiles',
-    SYMBOLS: 'application/vnd.code.symbols',
-    MARKERS: 'application/vnd.code.diagnostics',
-    NOTEBOOK_CELL_OUTPUT: 'notebook-cell-output',
-    SCM_HISTORY_ITEM: 'scm-history-item',
-};
+    FILES: 'CodeFiles'};
 class DragAndDropContributionRegistry {
 }
-export const Extensions = {
+const Extensions = {
     DragAndDropContribution: 'workbench.contributions.dragAndDrop'
 };
 Registry.add(Extensions.DragAndDropContribution, new DragAndDropContributionRegistry());
@@ -20,7 +16,7 @@ Registry.add(Extensions.DragAndDropContribution, new DragAndDropContributionRegi
 /**
  * A singleton to store transfer data during drag & drop operations that are only valid within the application.
  */
-export class LocalSelectionTransfer {
+class LocalSelectionTransfer {
     static { this.INSTANCE = new LocalSelectionTransfer(); }
     constructor() {
         // protect against external instantiation
@@ -42,11 +38,12 @@ export class LocalSelectionTransfer {
  * A helper to get access to Electrons `webUtils.getPathForFile` function
  * in a safe way without crashing the application when running in the web.
  */
-export function getPathForFile(file) {
+function getPathForFile(file) {
     if (isNative && typeof globalThis.vscode?.webUtils?.getPathForFile === 'function') {
-        return globalThis.vscode.webUtils.getPathForFile(file);
+        return globalThis.vscode?.webUtils?.getPathForFile(file);
     }
     return undefined;
 }
 //#endregion
-//# sourceMappingURL=dnd.js.map
+
+export { CodeDataTransfers, Extensions, LocalSelectionTransfer, getPathForFile };

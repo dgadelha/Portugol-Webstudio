@@ -1,14 +1,15 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-import * as strings from '../../../base/common/strings.js';
+import { prevCharLength, nextCharLength } from '../../../base/common/strings.js';
 import { CursorColumns } from '../core/cursorColumns.js';
 import { Position } from '../core/position.js';
 import { Range } from '../core/range.js';
 import { AtomicTabMoveOperations } from './cursorAtomicMoveOperations.js';
 import { SingleCursorState } from '../cursorCommon.js';
-export class CursorPosition {
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+class CursorPosition {
     constructor(lineNumber, column, leftoverVisibleColumns) {
         this._cursorPositionBrand = undefined;
         this.lineNumber = lineNumber;
@@ -16,10 +17,10 @@ export class CursorPosition {
         this.leftoverVisibleColumns = leftoverVisibleColumns;
     }
 }
-export class MoveOperations {
+class MoveOperations {
     static leftPosition(model, position) {
         if (position.column > model.getLineMinColumn(position.lineNumber)) {
-            return position.delta(undefined, -strings.prevCharLength(model.getLineContent(position.lineNumber), position.column - 1));
+            return position.delta(undefined, -prevCharLength(model.getLineContent(position.lineNumber), position.column - 1));
         }
         else if (position.lineNumber > 1) {
             const newLineNumber = position.lineNumber - 1;
@@ -88,7 +89,7 @@ export class MoveOperations {
     }
     static rightPosition(model, lineNumber, column) {
         if (column < model.getLineMaxColumn(lineNumber)) {
-            column = column + strings.nextCharLength(model.getLineContent(lineNumber), column - 1);
+            column = column + nextCharLength(model.getLineContent(lineNumber), column - 1);
         }
         else if (lineNumber < model.getLineCount()) {
             lineNumber = lineNumber + 1;
@@ -285,4 +286,5 @@ export class MoveOperations {
         return cursor.move(inSelectionMode, lastLineNumber, lastColumn, 0);
     }
 }
-//# sourceMappingURL=cursorMoveOperations.js.map
+
+export { CursorPosition, MoveOperations };

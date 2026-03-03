@@ -2,7 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-export const rectangleRendererWgsl = /*wgsl*/ `
+const rectangleRendererWgsl = /*wgsl*/ `
 
 struct Vertex {
 	@location(0) position: vec2f,
@@ -64,4 +64,5 @@ struct VSOutput {
 	return vsOut.color;
 }
 `;
-//# sourceMappingURL=rectangleRenderer.wgsl.js.map
+
+export { rectangleRendererWgsl };

@@ -1,14 +1,15 @@
+import { DynamicViewOverlay } from '../../view/dynamicViewOverlay.js';
+import { ViewLineOptions } from '../viewLines/viewLineOptions.js';
+import './gpuMark.css';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { DynamicViewOverlay } from '../../view/dynamicViewOverlay.js';
-import { ViewLineOptions } from '../viewLines/viewLineOptions.js';
-import './gpuMark.css';
 /**
  * A mark on lines to make identification of GPU-rendered lines vs DOM easier.
  */
-export class GpuMarkOverlay extends DynamicViewOverlay {
+class GpuMarkOverlay extends DynamicViewOverlay {
     static { this.CLASS_NAME = 'gpu-mark'; }
     constructor(context, _viewGpuContext) {
         super();
@@ -75,4 +76,5 @@ export class GpuMarkOverlay extends DynamicViewOverlay {
         return this._renderResult[lineIndex];
     }
 }
-//# sourceMappingURL=gpuMark.js.map
+
+export { GpuMarkOverlay };

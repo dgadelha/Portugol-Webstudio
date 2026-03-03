@@ -1,11 +1,12 @@
+import Severity from '../../../base/common/severity.js';
+import { localize } from '../../../nls.js';
+import { createDecorator } from '../../instantiation/common/instantiation.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import Severity from '../../../base/common/severity.js';
-import { localize } from '../../../nls.js';
-import { createDecorator } from '../../instantiation/common/instantiation.js';
-export var MarkerSeverity;
+var MarkerSeverity;
 (function (MarkerSeverity) {
     MarkerSeverity[MarkerSeverity["Hint"] = 1] = "Hint";
     MarkerSeverity[MarkerSeverity["Info"] = 2] = "Info";
@@ -18,17 +19,17 @@ export var MarkerSeverity;
     }
     MarkerSeverity.compare = compare;
     const _displayStrings = Object.create(null);
-    _displayStrings[MarkerSeverity.Error] = localize(1715, "Error");
-    _displayStrings[MarkerSeverity.Warning] = localize(1716, "Warning");
-    _displayStrings[MarkerSeverity.Info] = localize(1717, "Info");
+    _displayStrings[MarkerSeverity.Error] = localize(1732, "Error");
+    _displayStrings[MarkerSeverity.Warning] = localize(1733, "Warning");
+    _displayStrings[MarkerSeverity.Info] = localize(1734, "Info");
     function toString(a) {
         return _displayStrings[a] || '';
     }
     MarkerSeverity.toString = toString;
     const _displayStringsPlural = Object.create(null);
-    _displayStringsPlural[MarkerSeverity.Error] = localize(1718, "Errors");
-    _displayStringsPlural[MarkerSeverity.Warning] = localize(1719, "Warnings");
-    _displayStringsPlural[MarkerSeverity.Info] = localize(1720, "Infos");
+    _displayStringsPlural[MarkerSeverity.Error] = localize(1735, "Errors");
+    _displayStringsPlural[MarkerSeverity.Warning] = localize(1736, "Warnings");
+    _displayStringsPlural[MarkerSeverity.Info] = localize(1737, "Infos");
     function toStringPlural(a) {
         return _displayStringsPlural[a] || '';
     }
@@ -52,7 +53,7 @@ export var MarkerSeverity;
     }
     MarkerSeverity.toSeverity = toSeverity;
 })(MarkerSeverity || (MarkerSeverity = {}));
-export var IMarkerData;
+var IMarkerData;
 (function (IMarkerData) {
     const emptyString = '';
     function makeKey(markerData) {
@@ -121,5 +122,6 @@ export var IMarkerData;
     }
     IMarkerData.makeKeyOptionalMessage = makeKeyOptionalMessage;
 })(IMarkerData || (IMarkerData = {}));
-export const IMarkerService = createDecorator('markerService');
-//# sourceMappingURL=markers.js.map
+const IMarkerService = createDecorator('markerService');
+
+export { IMarkerData, IMarkerService, MarkerSeverity };

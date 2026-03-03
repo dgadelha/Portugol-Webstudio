@@ -1,17 +1,3 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-var StickyScrollController_1;
 import { Disposable, DisposableStore, toDisposable } from '../../../../base/common/lifecycle.js';
 import { ILanguageFeaturesService } from '../../../common/services/languageFeatures.js';
 import { StickyScrollWidget, StickyScrollWidgetState } from './stickyScrollWidget.js';
@@ -29,13 +15,28 @@ import { Position } from '../../../common/core/position.js';
 import { CancellationTokenSource } from '../../../../base/common/cancellation.js';
 import { ILanguageConfigurationService } from '../../../common/languages/languageConfigurationRegistry.js';
 import { ILanguageFeatureDebounceService } from '../../../common/services/languageFeatureDebounce.js';
-import * as dom from '../../../../base/browser/dom.js';
+import { addDisposableListener, getWindow, EventType, trackFocus, addStandardDisposableListener, isHTMLElement } from '../../../../base/browser/dom.js';
 import { StickyRange } from './stickyScrollElement.js';
 import { StandardMouseEvent } from '../../../../base/browser/mouseEvent.js';
 import { FoldingController } from '../../folding/browser/folding.js';
 import { toggleCollapseState } from '../../folding/browser/foldingModel.js';
 import { Emitter } from '../../../../base/common/event.js';
 import { mainWindow } from '../../../../base/browser/window.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var StickyScrollController_1;
 let StickyScrollController = class StickyScrollController extends Disposable {
     static { StickyScrollController_1 = this; }
     static { this.ID = 'store.contrib.stickyScrollController'; }
@@ -83,12 +84,12 @@ let StickyScrollController = class StickyScrollController extends Disposable {
         this._register(this._editor.onDidChangeConfiguration(e => {
             this._readConfigurationChange(e);
         }));
-        this._register(dom.addDisposableListener(stickyScrollDomNode, dom.EventType.CONTEXT_MENU, async (event) => {
-            this._onContextMenu(dom.getWindow(stickyScrollDomNode), event);
+        this._register(addDisposableListener(stickyScrollDomNode, EventType.CONTEXT_MENU, async (event) => {
+            this._onContextMenu(getWindow(stickyScrollDomNode), event);
         }));
         this._stickyScrollFocusedContextKey = EditorContextKeys.stickyScrollFocused.bindTo(this._contextKeyService);
         this._stickyScrollVisibleContextKey = EditorContextKeys.stickyScrollVisible.bindTo(this._contextKeyService);
-        const focusTracker = this._register(dom.trackFocus(stickyScrollDomNode));
+        const focusTracker = this._register(trackFocus(stickyScrollDomNode));
         this._register(focusTracker.onDidBlur(_ => {
             // Suppose that the blurring is caused by scrolling, then keep the focus on the sticky scroll
             // This is determined by the fact that the height of the widget has become zero and there has been no position revealing
@@ -106,7 +107,7 @@ let StickyScrollController = class StickyScrollController extends Disposable {
         }));
         this._registerMouseListeners();
         // Suppose that mouse down on the sticky scroll, then do not focus on the sticky scroll because this will be followed by the revealing of a position
-        this._register(dom.addDisposableListener(stickyScrollDomNode, dom.EventType.MOUSE_DOWN, (e) => {
+        this._register(addDisposableListener(stickyScrollDomNode, EventType.MOUSE_DOWN, (e) => {
             this._onMouseDown = true;
         }));
         this._register(this._stickyScrollWidget.onDidChangeStickyScrollHeight((e) => {
@@ -218,7 +219,7 @@ let StickyScrollController = class StickyScrollController extends Disposable {
             };
         };
         const stickyScrollWidgetDomNode = this._stickyScrollWidget.getDomNode();
-        this._register(dom.addStandardDisposableListener(stickyScrollWidgetDomNode, dom.EventType.CLICK, (mouseEvent) => {
+        this._register(addStandardDisposableListener(stickyScrollWidgetDomNode, EventType.CLICK, (mouseEvent) => {
             if (mouseEvent.ctrlKey || mouseEvent.altKey || mouseEvent.metaKey) {
                 // modifier pressed
                 return;
@@ -260,14 +261,14 @@ let StickyScrollController = class StickyScrollController extends Disposable {
             }
             this._revealPosition(position);
         }));
-        this._register(dom.addDisposableListener(mainWindow, dom.EventType.MOUSE_MOVE, mouseEvent => {
+        this._register(addDisposableListener(mainWindow, EventType.MOUSE_MOVE, mouseEvent => {
             this._mouseTarget = mouseEvent.target;
             this._onMouseMoveOrKeyDown(mouseEvent);
         }));
-        this._register(dom.addDisposableListener(mainWindow, dom.EventType.KEY_DOWN, mouseEvent => {
+        this._register(addDisposableListener(mainWindow, EventType.KEY_DOWN, mouseEvent => {
             this._onMouseMoveOrKeyDown(mouseEvent);
         }));
-        this._register(dom.addDisposableListener(mainWindow, dom.EventType.KEY_UP, () => {
+        this._register(addDisposableListener(mainWindow, EventType.KEY_UP, () => {
             if (this._showEndForLine !== undefined) {
                 this._showEndForLine = undefined;
                 this._renderStickyScroll();
@@ -354,7 +355,7 @@ let StickyScrollController = class StickyScrollController extends Disposable {
         if (!mouseEvent.shiftKey) {
             return;
         }
-        if (!this._mouseTarget || !dom.isHTMLElement(this._mouseTarget)) {
+        if (!this._mouseTarget || !isHTMLElement(this._mouseTarget)) {
             return;
         }
         const currentEndForLineIndex = this._stickyScrollWidget.getLineIndexFromChildDomNode(this._mouseTarget);
@@ -561,5 +562,5 @@ StickyScrollController = StickyScrollController_1 = __decorate([
     __param(5, ILanguageFeatureDebounceService),
     __param(6, IContextKeyService)
 ], StickyScrollController);
+
 export { StickyScrollController };
-//# sourceMappingURL=stickyScrollController.js.map

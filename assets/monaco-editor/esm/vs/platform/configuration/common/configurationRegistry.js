@@ -1,27 +1,22 @@
+import { distinct } from '../../../base/common/arrays.js';
+import { Emitter } from '../../../base/common/event.js';
+import { isObject, isUndefined, isUndefinedOrNull } from '../../../base/common/types.js';
+import { localize } from '../../../nls.js';
+import { getLanguageTagSettingPlainKey } from './configuration.js';
+import { Extensions as Extensions$1 } from '../../jsonschemas/common/jsonContributionRegistry.js';
+import { Registry } from '../../registry/common/platform.js';
+import { Disposable } from '../../../base/common/lifecycle.js';
+import product from '../../product/common/product.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { distinct } from '../../../base/common/arrays.js';
-import { Emitter } from '../../../base/common/event.js';
-import * as types from '../../../base/common/types.js';
-import * as nls from '../../../nls.js';
-import { getLanguageTagSettingPlainKey } from './configuration.js';
-import { Extensions as JSONExtensions } from '../../jsonschemas/common/jsonContributionRegistry.js';
-import { Registry } from '../../registry/common/platform.js';
-import { Disposable } from '../../../base/common/lifecycle.js';
-export const Extensions = {
+const Extensions = {
     Configuration: 'base.contributions.configuration'
 };
-export const allSettings = { properties: {}, patternProperties: {} };
-export const applicationSettings = { properties: {}, patternProperties: {} };
-export const applicationMachineSettings = { properties: {}, patternProperties: {} };
-export const machineSettings = { properties: {}, patternProperties: {} };
-export const machineOverridableSettings = { properties: {}, patternProperties: {} };
-export const windowSettings = { properties: {}, patternProperties: {} };
-export const resourceSettings = { properties: {}, patternProperties: {} };
-export const resourceLanguageSettingsSchemaId = 'vscode://schemas/settings/resourceLanguage';
-const contributionRegistry = Registry.as(JSONExtensions.JSONContribution);
+const resourceLanguageSettingsSchemaId = 'vscode://schemas/settings/resourceLanguage';
+const contributionRegistry = Registry.as(Extensions$1.JSONContribution);
 class ConfigurationRegistry extends Disposable {
     constructor() {
         super();
@@ -32,7 +27,7 @@ class ConfigurationRegistry extends Disposable {
         this.configurationDefaultsOverrides = new Map();
         this.defaultLanguageConfigurationOverridesNode = {
             id: 'defaultOverrides',
-            title: nls.localize(1649, "Default Language Configuration Overrides"),
+            title: localize(1664, "Default Language Configuration Overrides"),
             properties: {}
         };
         this.configurationContributors = [this.defaultLanguageConfigurationOverridesNode];
@@ -105,9 +100,15 @@ class ConfigurationRegistry extends Disposable {
     }
     updateDefaultOverrideProperty(key, newDefaultOverride, source) {
         const property = {
+            section: {
+                id: this.defaultLanguageConfigurationOverridesNode.id,
+                title: this.defaultLanguageConfigurationOverridesNode.title,
+                order: this.defaultLanguageConfigurationOverridesNode.order,
+                extensionInfo: this.defaultLanguageConfigurationOverridesNode.extensionInfo
+            },
             type: 'object',
             default: newDefaultOverride.value,
-            description: nls.localize(1650, "Configure settings to be overridden for {0}.", getLanguageTagSettingPlainKey(key)),
+            description: localize(1665, "Configure settings to be overridden for {0}.", getLanguageTagSettingPlainKey(key)),
             $ref: resourceLanguageSettingsSchemaId,
             defaultDefaultValue: newDefaultOverride.value,
             source,
@@ -126,8 +127,8 @@ class ConfigurationRegistry extends Disposable {
         }
         for (const propertyKey of Object.keys(configurationValueObject)) {
             const propertyDefaultValue = configurationValueObject[propertyKey];
-            const isObjectSetting = types.isObject(propertyDefaultValue) &&
-                (types.isUndefined(defaultValue[propertyKey]) || types.isObject(defaultValue[propertyKey]));
+            const isObjectSetting = isObject(propertyDefaultValue) &&
+                (isUndefined(defaultValue[propertyKey]) || isObject(defaultValue[propertyKey]));
             // If the default value is an object, merge the objects and store the source of each keys
             if (isObjectSetting) {
                 defaultValue[propertyKey] = { ...(defaultValue[propertyKey] ?? {}), ...propertyDefaultValue };
@@ -155,9 +156,9 @@ class ConfigurationRegistry extends Disposable {
         const property = this.configurationProperties[propertyKey];
         const existingDefaultValue = existingDefaultOverride?.value ?? property?.defaultDefaultValue;
         let source = valuesSource;
-        const isObjectSetting = types.isObject(value) &&
+        const isObjectSetting = isObject(value) &&
             (property !== undefined && property.type === 'object' ||
-                property === undefined && (types.isUndefined(existingDefaultValue) || types.isObject(existingDefaultValue)));
+                property === undefined && (isUndefined(existingDefaultValue) || isObject(existingDefaultValue)));
         // If the default value is an object, merge the objects and store the source of each keys
         if (isObjectSetting) {
             source = existingDefaultOverride?.source ?? new Map();
@@ -171,7 +172,7 @@ class ConfigurationRegistry extends Disposable {
                     source.set(`${propertyKey}.${objectKey}`, valuesSource);
                 }
             }
-            value = { ...(types.isObject(existingDefaultValue) ? existingDefaultValue : {}), ...value };
+            value = { ...(isObject(existingDefaultValue) ? existingDefaultValue : {}), ...value };
         }
         return { value, source };
     }
@@ -193,12 +194,18 @@ class ConfigurationRegistry extends Disposable {
         });
     }
     validateAndRegisterProperties(configuration, validate = true, extensionInfo, restrictedProperties, scope = 4 /* ConfigurationScope.WINDOW */, bucket) {
-        scope = types.isUndefinedOrNull(configuration.scope) ? scope : configuration.scope;
+        scope = isUndefinedOrNull(configuration.scope) ? scope : configuration.scope;
         const properties = configuration.properties;
         if (properties) {
             for (const key in properties) {
                 const property = properties[key];
-                if (validate && validateProperty(key, property)) {
+                property.section = {
+                    id: configuration.id,
+                    title: configuration.title,
+                    order: configuration.order,
+                    extensionInfo: configuration.extensionInfo
+                };
+                if (validate && validateProperty(key, property, extensionInfo?.id)) {
                     delete properties[key];
                     continue;
                 }
@@ -211,8 +218,8 @@ class ConfigurationRegistry extends Disposable {
                     property.scope = undefined; // No scope for overridable properties `[${identifier}]`
                 }
                 else {
-                    property.scope = types.isUndefinedOrNull(property.scope) ? scope : property.scope;
-                    property.restricted = types.isUndefinedOrNull(property.restricted) ? !!restrictedProperties?.includes(key) : property.restricted;
+                    property.scope = isUndefinedOrNull(property.scope) ? scope : property.scope;
+                    property.restricted = isUndefinedOrNull(property.restricted) ? !!restrictedProperties?.includes(key) : property.restricted;
                 }
                 if (property.experiment) {
                     if (!property.tags?.some(tag => tag.toLowerCase() === 'onexp')) {
@@ -277,28 +284,20 @@ class ConfigurationRegistry extends Disposable {
         register(configuration);
     }
     updateSchema(key, property) {
-        allSettings.properties[key] = property;
         switch (property.scope) {
             case 1 /* ConfigurationScope.APPLICATION */:
-                applicationSettings.properties[key] = property;
                 break;
             case 2 /* ConfigurationScope.MACHINE */:
-                machineSettings.properties[key] = property;
                 break;
             case 3 /* ConfigurationScope.APPLICATION_MACHINE */:
-                applicationMachineSettings.properties[key] = property;
                 break;
             case 7 /* ConfigurationScope.MACHINE_OVERRIDABLE */:
-                machineOverridableSettings.properties[key] = property;
                 break;
             case 4 /* ConfigurationScope.WINDOW */:
-                windowSettings.properties[key] = property;
                 break;
             case 5 /* ConfigurationScope.RESOURCE */:
-                resourceSettings.properties[key] = property;
                 break;
             case 6 /* ConfigurationScope.LANGUAGE_OVERRIDABLE */:
-                resourceSettings.properties[key] = property;
                 this.resourceLanguageSettingsSchema.properties[key] = property;
                 break;
         }
@@ -308,34 +307,17 @@ class ConfigurationRegistry extends Disposable {
             const overrideIdentifierProperty = `[${overrideIdentifier}]`;
             const resourceLanguagePropertiesSchema = {
                 type: 'object',
-                description: nls.localize(1651, "Configure editor settings to be overridden for a language."),
-                errorMessage: nls.localize(1652, "This setting does not support per-language configuration."),
+                description: localize(1666, "Configure editor settings to be overridden for a language."),
+                errorMessage: localize(1667, "This setting does not support per-language configuration."),
                 $ref: resourceLanguageSettingsSchemaId,
             };
             this.updatePropertyDefaultValue(overrideIdentifierProperty, resourceLanguagePropertiesSchema);
-            allSettings.properties[overrideIdentifierProperty] = resourceLanguagePropertiesSchema;
-            applicationSettings.properties[overrideIdentifierProperty] = resourceLanguagePropertiesSchema;
-            applicationMachineSettings.properties[overrideIdentifierProperty] = resourceLanguagePropertiesSchema;
-            machineSettings.properties[overrideIdentifierProperty] = resourceLanguagePropertiesSchema;
-            machineOverridableSettings.properties[overrideIdentifierProperty] = resourceLanguagePropertiesSchema;
-            windowSettings.properties[overrideIdentifierProperty] = resourceLanguagePropertiesSchema;
-            resourceSettings.properties[overrideIdentifierProperty] = resourceLanguagePropertiesSchema;
         }
     }
     registerOverridePropertyPatternKey() {
-        const resourceLanguagePropertiesSchema = {
-            type: 'object',
-            description: nls.localize(1653, "Configure editor settings to be overridden for a language."),
-            errorMessage: nls.localize(1654, "This setting does not support per-language configuration."),
-            $ref: resourceLanguageSettingsSchemaId,
-        };
-        allSettings.patternProperties[OVERRIDE_PROPERTY_PATTERN] = resourceLanguagePropertiesSchema;
-        applicationSettings.patternProperties[OVERRIDE_PROPERTY_PATTERN] = resourceLanguagePropertiesSchema;
-        applicationMachineSettings.patternProperties[OVERRIDE_PROPERTY_PATTERN] = resourceLanguagePropertiesSchema;
-        machineSettings.patternProperties[OVERRIDE_PROPERTY_PATTERN] = resourceLanguagePropertiesSchema;
-        machineOverridableSettings.patternProperties[OVERRIDE_PROPERTY_PATTERN] = resourceLanguagePropertiesSchema;
-        windowSettings.patternProperties[OVERRIDE_PROPERTY_PATTERN] = resourceLanguagePropertiesSchema;
-        resourceSettings.patternProperties[OVERRIDE_PROPERTY_PATTERN] = resourceLanguagePropertiesSchema;
+        ({
+            description: localize(1668, "Configure editor settings to be overridden for a language."),
+            errorMessage: localize(1669, "This setting does not support per-language configuration.")});
         this._onDidSchemaChange.fire();
     }
     updatePropertyDefaultValue(key, property) {
@@ -348,11 +330,11 @@ class ConfigurationRegistry extends Disposable {
             defaultValue = configurationdefaultOverride.value;
             defaultSource = configurationdefaultOverride.source;
         }
-        if (types.isUndefined(defaultValue)) {
+        if (isUndefined(defaultValue)) {
             defaultValue = property.defaultDefaultValue;
             defaultSource = undefined;
         }
-        if (types.isUndefined(defaultValue)) {
+        if (isUndefined(defaultValue)) {
             defaultValue = getDefaultValue(property.type);
         }
         property.default = defaultValue;
@@ -361,9 +343,9 @@ class ConfigurationRegistry extends Disposable {
 }
 const OVERRIDE_IDENTIFIER_PATTERN = `\\[([^\\]]+)\\]`;
 const OVERRIDE_IDENTIFIER_REGEX = new RegExp(OVERRIDE_IDENTIFIER_PATTERN, 'g');
-export const OVERRIDE_PROPERTY_PATTERN = `^(${OVERRIDE_IDENTIFIER_PATTERN})+$`;
-export const OVERRIDE_PROPERTY_REGEX = new RegExp(OVERRIDE_PROPERTY_PATTERN);
-export function overrideIdentifiersFromKey(key) {
+const OVERRIDE_PROPERTY_PATTERN = `^(${OVERRIDE_IDENTIFIER_PATTERN})+$`;
+const OVERRIDE_PROPERTY_REGEX = new RegExp(OVERRIDE_PROPERTY_PATTERN);
+function overrideIdentifiersFromKey(key) {
     const identifiers = [];
     if (OVERRIDE_PROPERTY_REGEX.test(key)) {
         let matches = OVERRIDE_IDENTIFIER_REGEX.exec(key);
@@ -377,7 +359,7 @@ export function overrideIdentifiersFromKey(key) {
     }
     return distinct(identifiers);
 }
-export function getDefaultValue(type) {
+function getDefaultValue(type) {
     const t = Array.isArray(type) ? type[0] : type;
     switch (t) {
         case 'boolean':
@@ -397,19 +379,22 @@ export function getDefaultValue(type) {
 }
 const configurationRegistry = new ConfigurationRegistry();
 Registry.add(Extensions.Configuration, configurationRegistry);
-export function validateProperty(property, schema) {
+function validateProperty(property, schema, extensionId) {
     if (!property.trim()) {
-        return nls.localize(1655, "Cannot register an empty property");
+        return localize(1670, "Cannot register an empty property");
     }
     if (OVERRIDE_PROPERTY_REGEX.test(property)) {
-        return nls.localize(1656, "Cannot register '{0}'. This matches property pattern '\\\\[.*\\\\]$' for describing language specific editor settings. Use 'configurationDefaults' contribution.", property);
+        return localize(1671, "Cannot register '{0}'. This matches property pattern '\\\\[.*\\\\]$' for describing language specific editor settings. Use 'configurationDefaults' contribution.", property);
     }
-    if (configurationRegistry.getConfigurationProperties()[property] !== undefined) {
-        return nls.localize(1657, "Cannot register '{0}'. This property is already registered.", property);
+    if (configurationRegistry.getConfigurationProperties()[property] !== undefined && (!extensionId || !EXTENSION_UNIFICATION_EXTENSION_IDS.has(extensionId.toLowerCase()))) {
+        return localize(1672, "Cannot register '{0}'. This property is already registered.", property);
     }
     if (schema.policy?.name && configurationRegistry.getPolicyConfigurations().get(schema.policy?.name) !== undefined) {
-        return nls.localize(1658, "Cannot register '{0}'. The associated policy {1} is already registered with {2}.", property, schema.policy?.name, configurationRegistry.getPolicyConfigurations().get(schema.policy?.name));
+        return localize(1673, "Cannot register '{0}'. The associated policy {1} is already registered with {2}.", property, schema.policy?.name, configurationRegistry.getPolicyConfigurations().get(schema.policy?.name));
     }
     return null;
 }
-//# sourceMappingURL=configurationRegistry.js.map
+// Used for extension unification. Should be removed when complete.
+const EXTENSION_UNIFICATION_EXTENSION_IDS = new Set(product.defaultChatAgent ? [product.defaultChatAgent.extensionId, product.defaultChatAgent.chatExtensionId].map(id => id.toLowerCase()) : []);
+
+export { EXTENSION_UNIFICATION_EXTENSION_IDS, Extensions, OVERRIDE_PROPERTY_PATTERN, OVERRIDE_PROPERTY_REGEX, getDefaultValue, overrideIdentifiersFromKey, resourceLanguageSettingsSchemaId, validateProperty };

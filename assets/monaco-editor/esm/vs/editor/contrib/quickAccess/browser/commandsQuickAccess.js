@@ -1,11 +1,12 @@
+import { stripIcons } from '../../../../base/common/iconLabels.js';
+import { isLocalizedString } from '../../../../platform/action/common/action.js';
+import { AbstractCommandsQuickAccessProvider } from '../../../../platform/quickinput/browser/commandsQuickAccess.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { stripIcons } from '../../../../base/common/iconLabels.js';
-import { isLocalizedString } from '../../../../platform/action/common/action.js';
-import { AbstractCommandsQuickAccessProvider } from '../../../../platform/quickinput/browser/commandsQuickAccess.js';
-export class AbstractEditorCommandsQuickAccessProvider extends AbstractCommandsQuickAccessProvider {
+class AbstractEditorCommandsQuickAccessProvider extends AbstractCommandsQuickAccessProvider {
     constructor(options, instantiationService, keybindingService, commandService, telemetryService, dialogService) {
         super(options, instantiationService, keybindingService, commandService, telemetryService, dialogService);
     }
@@ -35,4 +36,5 @@ export class AbstractEditorCommandsQuickAccessProvider extends AbstractCommandsQ
         return editorCommandPicks;
     }
 }
-//# sourceMappingURL=commandsQuickAccess.js.map
+
+export { AbstractEditorCommandsQuickAccessProvider };

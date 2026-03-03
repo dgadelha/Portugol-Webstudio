@@ -1,23 +1,9 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-var HideUnchangedRegionsFeature_1;
-import { $, addDisposableListener, getWindow, h, reset } from '../../../../../base/browser/dom.js';
-import { renderIcon, renderLabelWithIcons } from '../../../../../base/browser/ui/iconLabel/iconLabels.js';
+import { h, $, reset, addDisposableListener, getWindow } from '../../../../../base/browser/dom.js';
+import { renderLabelWithIcons, renderIcon } from '../../../../../base/browser/ui/iconLabel/iconLabels.js';
 import { Codicon } from '../../../../../base/common/codicons.js';
 import { MarkdownString } from '../../../../../base/common/htmlContent.js';
 import { Disposable } from '../../../../../base/common/lifecycle.js';
-import { autorun, derived, derivedDisposable, observableValue, transaction } from '../../../../../base/common/observable.js';
+import '../../../../../base/common/observableInternal/index.js';
 import { ThemeIcon } from '../../../../../base/common/themables.js';
 import { isDefined } from '../../../../../base/common/types.js';
 import { localize } from '../../../../../nls.js';
@@ -27,13 +13,32 @@ import { Position } from '../../../../common/core/position.js';
 import { Range } from '../../../../common/core/range.js';
 import { SymbolKinds } from '../../../../common/languages.js';
 import { observableCodeEditor } from '../../../observableCodeEditor.js';
-import { PlaceholderViewZone, ViewZoneOverlayWidget, applyObservableDecorations, applyStyle } from '../utils.js';
+import { PlaceholderViewZone, applyObservableDecorations, ViewZoneOverlayWidget, applyStyle } from '../utils.js';
+import { observableValue } from '../../../../../base/common/observableInternal/observables/observableValue.js';
+import { derivedDisposable, derived } from '../../../../../base/common/observableInternal/observables/derived.js';
+import { transaction } from '../../../../../base/common/observableInternal/transaction.js';
+import { autorun } from '../../../../../base/common/observableInternal/reactions/autorun.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var HideUnchangedRegionsFeature_1;
 /**
  * Make sure to add the view zones to the editor!
  */
 let HideUnchangedRegionsFeature = class HideUnchangedRegionsFeature extends Disposable {
     static { HideUnchangedRegionsFeature_1 = this; }
-    static { this._breadcrumbsSourceFactory = observableValue(HideUnchangedRegionsFeature_1, () => ({
+    static { this._breadcrumbsSourceFactory = observableValue(this, () => ({
         dispose() {
         },
         getBreadcrumbItems(startRange, reader) {
@@ -145,7 +150,7 @@ let HideUnchangedRegionsFeature = class HideUnchangedRegionsFeature extends Disp
         const unchangedLinesDecorationShow = {
             description: 'Fold Unchanged',
             glyphMarginHoverMessage: new MarkdownString(undefined, { isTrusted: true, supportThemeIcons: true })
-                .appendMarkdown(localize(121, 'Fold Unchanged Region')),
+                .appendMarkdown(localize(124, 'Fold Unchanged Region')),
             glyphMarginClassName: 'fold-unchanged ' + ThemeIcon.asClassName(Codicon.fold),
             zIndex: 10001,
         };
@@ -232,7 +237,6 @@ let HideUnchangedRegionsFeature = class HideUnchangedRegionsFeature extends Disp
 HideUnchangedRegionsFeature = HideUnchangedRegionsFeature_1 = __decorate([
     __param(3, IInstantiationService)
 ], HideUnchangedRegionsFeature);
-export { HideUnchangedRegionsFeature };
 class CompactCollapsedCodeOverlayWidget extends ViewZoneOverlayWidget {
     constructor(editor, _viewZone, _unchangedRegion, _hide = false) {
         const root = h('div.diff-hidden-lines-widget');
@@ -252,7 +256,7 @@ class CompactCollapsedCodeOverlayWidget extends ViewZoneOverlayWidget {
             /** @description update labels */
             if (!this._hide) {
                 const lineCount = this._unchangedRegion.getHiddenModifiedRange(reader).length;
-                const linesHiddenText = localize(122, '{0} hidden lines', lineCount);
+                const linesHiddenText = localize(125, '{0} hidden lines', lineCount);
                 this._nodes.text.innerText = linesHiddenText;
             }
         }));
@@ -270,12 +274,12 @@ class CollapsedCodeOverlayWidget extends ViewZoneOverlayWidget {
         this._revealModifiedHiddenLine = _revealModifiedHiddenLine;
         this._options = _options;
         this._nodes = h('div.diff-hidden-lines', [
-            h('div.top@top', { title: localize(123, 'Click or drag to show more above') }),
+            h('div.top@top', { title: localize(126, 'Click or drag to show more above') }),
             h('div.center@content', { style: { display: 'flex' } }, [
-                h('div@first', { style: { display: 'flex', justifyContent: 'center', alignItems: 'center', flexShrink: '0' } }, [$('a', { title: localize(124, 'Show Unchanged Region'), role: 'button', onclick: () => { this._unchangedRegion.showAll(undefined); } }, ...renderLabelWithIcons('$(unfold)'))]),
+                h('div@first', { style: { display: 'flex', justifyContent: 'center', alignItems: 'center', flexShrink: '0' } }, [$('a', { title: localize(127, 'Show Unchanged Region'), role: 'button', onclick: () => { this._unchangedRegion.showAll(undefined); } }, ...renderLabelWithIcons('$(unfold)'))]),
                 h('div@others', { style: { display: 'flex', justifyContent: 'center', alignItems: 'center' } }),
             ]),
-            h('div.bottom@bottom', { title: localize(125, 'Click or drag to show more below'), role: 'button' }),
+            h('div.bottom@bottom', { title: localize(128, 'Click or drag to show more below'), role: 'button' }),
         ]);
         root.root.appendChild(this._nodes.root);
         if (!this._hide) {
@@ -387,8 +391,8 @@ class CollapsedCodeOverlayWidget extends ViewZoneOverlayWidget {
             const children = [];
             if (!this._hide) {
                 const lineCount = _unchangedRegion.getHiddenModifiedRange(reader).length;
-                const linesHiddenText = localize(126, '{0} hidden lines', lineCount);
-                const span = $('span', { title: localize(127, 'Double click to unfold') }, linesHiddenText);
+                const linesHiddenText = localize(129, '{0} hidden lines', lineCount);
+                const span = $('span', { title: localize(130, 'Double click to unfold') }, linesHiddenText);
                 span.addEventListener('dblclick', e => {
                     if (e.button !== 0) {
                         return;
@@ -425,4 +429,5 @@ class CollapsedCodeOverlayWidget extends ViewZoneOverlayWidget {
         }));
     }
 }
-//# sourceMappingURL=hideUnchangedRegionsFeature.js.map
+
+export { HideUnchangedRegionsFeature };

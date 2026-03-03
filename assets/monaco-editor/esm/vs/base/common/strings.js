@@ -1,10 +1,11 @@
+import { LRUCachedFunction } from './cache.js';
+import { Lazy } from './lazy.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { LRUCachedFunction } from './cache.js';
-import { Lazy } from './lazy.js';
-export function isFalsyOrWhitespace(str) {
+function isFalsyOrWhitespace(str) {
     if (!str || typeof str !== 'string') {
         return true;
     }
@@ -17,7 +18,7 @@ const _formatRegexp = /{(\d+)}/g;
  * @param value string to which formatting is applied
  * @param args replacements for {n}-entries
  */
-export function format(value, ...args) {
+function format(value, ...args) {
     if (args.length === 0) {
         return value;
     }
@@ -34,7 +35,7 @@ export function format(value, ...args) {
  * In other words, computes `$val`, such that `attr` in `<div attr="$val" />` has the runtime value `value`.
  * This prevents XSS injection.
  */
-export function htmlAttributeEncodeValue(value) {
+function htmlAttributeEncodeValue(value) {
     return value.replace(/[<>"'&]/g, ch => {
         switch (ch) {
             case '<': return '&lt;';
@@ -50,7 +51,7 @@ export function htmlAttributeEncodeValue(value) {
  * Converts HTML characters inside the string to use entities instead. Makes the string safe from
  * being used e.g. in HTMLElement.innerHTML.
  */
-export function escape(html) {
+function escape(html) {
     return html.replace(/[<>&]/g, function (match) {
         switch (match) {
             case '<': return '&lt;';
@@ -63,7 +64,7 @@ export function escape(html) {
 /**
  * Escapes regular expression characters in a given string
  */
-export function escapeRegExpCharacters(value) {
+function escapeRegExpCharacters(value) {
     return value.replace(/[\\\{\}\*\+\?\|\^\$\.\[\]\(\)]/g, '\\$&');
 }
 /**
@@ -71,7 +72,7 @@ export function escapeRegExpCharacters(value) {
  * @param haystack string to trim
  * @param needle the thing to trim (default is a blank)
  */
-export function trim(haystack, needle = ' ') {
+function trim(haystack, needle = ' ') {
     const trimmed = ltrim(haystack, needle);
     return rtrim(trimmed, needle);
 }
@@ -80,7 +81,7 @@ export function trim(haystack, needle = ' ') {
  * @param haystack string to trim
  * @param needle the thing to trim
  */
-export function ltrim(haystack, needle) {
+function ltrim(haystack, needle) {
     if (!haystack || !needle) {
         return haystack;
     }
@@ -99,7 +100,7 @@ export function ltrim(haystack, needle) {
  * @param haystack string to trim
  * @param needle the thing to trim
  */
-export function rtrim(haystack, needle) {
+function rtrim(haystack, needle) {
     if (!haystack || !needle) {
         return haystack;
     }
@@ -120,10 +121,10 @@ export function rtrim(haystack, needle) {
     }
     return haystack.substring(0, offset);
 }
-export function convertSimple2RegExpPattern(pattern) {
+function convertSimple2RegExpPattern(pattern) {
     return pattern.replace(/[\-\\\{\}\+\?\|\^\$\.\,\[\]\(\)\#\s]/g, '\\$&').replace(/[\*]/g, '.*');
 }
-export function createRegExp(searchString, isRegex, options = {}) {
+function createRegExp(searchString, isRegex, options = {}) {
     if (!searchString) {
         throw new Error('Cannot create regex from empty string');
     }
@@ -153,7 +154,7 @@ export function createRegExp(searchString, isRegex, options = {}) {
     }
     return new RegExp(searchString, modifiers);
 }
-export function regExpLeadsToEndlessLoop(regexp) {
+function regExpLeadsToEndlessLoop(regexp) {
     // Exit early if it's one of these special cases which are meant to match
     // against an empty string
     if (regexp.source === '^' || regexp.source === '^$' || regexp.source === '$' || regexp.source === '^\\s*$') {
@@ -164,14 +165,14 @@ export function regExpLeadsToEndlessLoop(regexp) {
     const match = regexp.exec('');
     return !!(match && regexp.lastIndex === 0);
 }
-export function splitLines(str) {
+function splitLines(str) {
     return str.split(/\r\n|\r|\n/);
 }
 /**
  * Returns first index of the string that is not whitespace.
  * If string is empty or contains only whitespaces, returns -1
  */
-export function firstNonWhitespaceIndex(str) {
+function firstNonWhitespaceIndex(str) {
     for (let i = 0, len = str.length; i < len; i++) {
         const chCode = str.charCodeAt(i);
         if (chCode !== 32 /* CharCode.Space */ && chCode !== 9 /* CharCode.Tab */) {
@@ -184,7 +185,7 @@ export function firstNonWhitespaceIndex(str) {
  * Returns the leading whitespace of the string.
  * If the string contains only whitespaces, returns entire string
  */
-export function getLeadingWhitespace(str, start = 0, end = str.length) {
+function getLeadingWhitespace(str, start = 0, end = str.length) {
     for (let i = start; i < end; i++) {
         const chCode = str.charCodeAt(i);
         if (chCode !== 32 /* CharCode.Space */ && chCode !== 9 /* CharCode.Tab */) {
@@ -197,7 +198,7 @@ export function getLeadingWhitespace(str, start = 0, end = str.length) {
  * Returns last index of the string that is not whitespace.
  * If string is empty or contains only whitespaces, returns -1
  */
-export function lastNonWhitespaceIndex(str, startIndex = str.length - 1) {
+function lastNonWhitespaceIndex(str, startIndex = str.length - 1) {
     for (let i = startIndex; i >= 0; i--) {
         const chCode = str.charCodeAt(i);
         if (chCode !== 32 /* CharCode.Space */ && chCode !== 9 /* CharCode.Tab */) {
@@ -206,7 +207,7 @@ export function lastNonWhitespaceIndex(str, startIndex = str.length - 1) {
     }
     return -1;
 }
-export function compare(a, b) {
+function compare(a, b) {
     if (a < b) {
         return -1;
     }
@@ -217,7 +218,7 @@ export function compare(a, b) {
         return 0;
     }
 }
-export function compareSubstring(a, b, aStart = 0, aEnd = a.length, bStart = 0, bEnd = b.length) {
+function compareSubstring(a, b, aStart = 0, aEnd = a.length, bStart = 0, bEnd = b.length) {
     for (; aStart < aEnd && bStart < bEnd; aStart++, bStart++) {
         const codeA = a.charCodeAt(aStart);
         const codeB = b.charCodeAt(bStart);
@@ -238,10 +239,10 @@ export function compareSubstring(a, b, aStart = 0, aEnd = a.length, bStart = 0, 
     }
     return 0;
 }
-export function compareIgnoreCase(a, b) {
+function compareIgnoreCase(a, b) {
     return compareSubstringIgnoreCase(a, b, 0, a.length, 0, b.length);
 }
-export function compareSubstringIgnoreCase(a, b, aStart = 0, aEnd = a.length, bStart = 0, bEnd = b.length) {
+function compareSubstringIgnoreCase(a, b, aStart = 0, aEnd = a.length, bStart = 0, bEnd = b.length) {
     for (; aStart < aEnd && bStart < bEnd; aStart++, bStart++) {
         let codeA = a.charCodeAt(aStart);
         let codeB = b.charCodeAt(bStart);
@@ -278,29 +279,31 @@ export function compareSubstringIgnoreCase(a, b, aStart = 0, aEnd = a.length, bS
     }
     return 0;
 }
-export function isAsciiDigit(code) {
+function isAsciiDigit(code) {
     return code >= 48 /* CharCode.Digit0 */ && code <= 57 /* CharCode.Digit9 */;
 }
-export function isLowerAsciiLetter(code) {
+function isLowerAsciiLetter(code) {
     return code >= 97 /* CharCode.a */ && code <= 122 /* CharCode.z */;
 }
-export function isUpperAsciiLetter(code) {
+function isUpperAsciiLetter(code) {
     return code >= 65 /* CharCode.A */ && code <= 90 /* CharCode.Z */;
 }
-export function equalsIgnoreCase(a, b) {
+function equalsIgnoreCase(a, b) {
     return a.length === b.length && compareSubstringIgnoreCase(a, b) === 0;
 }
-export function startsWithIgnoreCase(str, candidate) {
-    const candidateLength = candidate.length;
-    if (candidate.length > str.length) {
-        return false;
-    }
-    return compareSubstringIgnoreCase(str, candidate, 0, candidateLength) === 0;
+function startsWithIgnoreCase(str, candidate) {
+    const len = candidate.length;
+    return len <= str.length && compareSubstringIgnoreCase(str, candidate, 0, len) === 0;
+}
+function endsWithIgnoreCase(str, candidate) {
+    const len = str.length;
+    const start = len - candidate.length;
+    return start >= 0 && compareSubstringIgnoreCase(str, candidate, start, len) === 0;
 }
 /**
  * @returns the length of the common prefix of the two strings.
  */
-export function commonPrefixLength(a, b) {
+function commonPrefixLength(a, b) {
     const len = Math.min(a.length, b.length);
     let i;
     for (i = 0; i < len; i++) {
@@ -313,7 +316,7 @@ export function commonPrefixLength(a, b) {
 /**
  * @returns the length of the common suffix of the two strings.
  */
-export function commonSuffixLength(a, b) {
+function commonSuffixLength(a, b) {
     const len = Math.min(a.length, b.length);
     let i;
     const aLastIndex = a.length - 1;
@@ -328,25 +331,25 @@ export function commonSuffixLength(a, b) {
 /**
  * See http://en.wikipedia.org/wiki/Surrogate_pair
  */
-export function isHighSurrogate(charCode) {
+function isHighSurrogate(charCode) {
     return (0xD800 <= charCode && charCode <= 0xDBFF);
 }
 /**
  * See http://en.wikipedia.org/wiki/Surrogate_pair
  */
-export function isLowSurrogate(charCode) {
+function isLowSurrogate(charCode) {
     return (0xDC00 <= charCode && charCode <= 0xDFFF);
 }
 /**
  * See http://en.wikipedia.org/wiki/Surrogate_pair
  */
-export function computeCodePoint(highSurrogate, lowSurrogate) {
+function computeCodePoint(highSurrogate, lowSurrogate) {
     return ((highSurrogate - 0xD800) << 10) + (lowSurrogate - 0xDC00) + 0x10000;
 }
 /**
  * get the code point that begins at offset `offset`
  */
-export function getNextCodePoint(str, len, offset) {
+function getNextCodePoint(str, len, offset) {
     const charCode = str.charCodeAt(offset);
     if (isHighSurrogate(charCode) && offset + 1 < len) {
         const nextCharCode = str.charCodeAt(offset + 1);
@@ -369,7 +372,7 @@ function getPrevCodePoint(str, offset) {
     }
     return charCode;
 }
-export class CodePointIterator {
+class CodePointIterator {
     get offset() {
         return this._offset;
     }
@@ -395,7 +398,7 @@ export class CodePointIterator {
         return (this._offset >= this._len);
     }
 }
-export class GraphemeIterator {
+class GraphemeIterator {
     get offset() {
         return this._iterator.offset;
     }
@@ -440,15 +443,15 @@ export class GraphemeIterator {
         return this._iterator.eol();
     }
 }
-export function nextCharLength(str, initialOffset) {
+function nextCharLength(str, initialOffset) {
     const iterator = new GraphemeIterator(str, initialOffset);
     return iterator.nextGraphemeLength();
 }
-export function prevCharLength(str, initialOffset) {
+function prevCharLength(str, initialOffset) {
     const iterator = new GraphemeIterator(str, initialOffset);
     return iterator.prevGraphemeLength();
 }
-export function getCharContainingOffset(str, offset) {
+function getCharContainingOffset(str, offset) {
     if (offset > 0 && isLowSurrogate(str.charCodeAt(offset))) {
         offset--;
     }
@@ -464,7 +467,7 @@ function makeContainsRtl() {
 /**
  * Returns true if `str` contains any Unicode character that is classified as "R" or "AL".
  */
-export function containsRTL(str) {
+function containsRTL(str) {
     if (!CONTAINS_RTL) {
         CONTAINS_RTL = makeContainsRtl();
     }
@@ -474,17 +477,17 @@ const IS_BASIC_ASCII = /^[\t\n\r\x20-\x7E]*$/;
 /**
  * Returns true if `str` contains only basic ASCII characters in the range 32 - 126 (including 32 and 126) or \n, \r, \t
  */
-export function isBasicASCII(str) {
+function isBasicASCII(str) {
     return IS_BASIC_ASCII.test(str);
 }
-export const UNUSUAL_LINE_TERMINATORS = /[\u2028\u2029]/; // LINE SEPARATOR (LS) or PARAGRAPH SEPARATOR (PS)
+const UNUSUAL_LINE_TERMINATORS = /[\u2028\u2029]/; // LINE SEPARATOR (LS) or PARAGRAPH SEPARATOR (PS)
 /**
  * Returns true if `str` contains unusual line terminators, like LS or PS
  */
-export function containsUnusualLineTerminators(str) {
+function containsUnusualLineTerminators(str) {
     return UNUSUAL_LINE_TERMINATORS.test(str);
 }
-export function isFullWidthCharacter(charCode) {
+function isFullWidthCharacter(charCode) {
     // Do a cheap trick to better support wrapping of wide characters, treat them as 2 columns
     // http://jrgraphix.net/research/unicode_blocks.php
     //          2E80 - 2EFF   CJK Radicals Supplement
@@ -531,28 +534,19 @@ export function isFullWidthCharacter(charCode) {
  * A fast function (therefore imprecise) to check if code points are emojis.
  * Generated using https://github.com/alexdima/unicode-utils/blob/main/emoji-test.js
  */
-export function isEmojiImprecise(x) {
+function isEmojiImprecise(x) {
     return ((x >= 0x1F1E6 && x <= 0x1F1FF) || (x === 8986) || (x === 8987) || (x === 9200)
         || (x === 9203) || (x >= 9728 && x <= 10175) || (x === 11088) || (x === 11093)
         || (x >= 127744 && x <= 128591) || (x >= 128640 && x <= 128764)
         || (x >= 128992 && x <= 129008) || (x >= 129280 && x <= 129535)
         || (x >= 129648 && x <= 129782));
 }
-// Defacto standard: https://invisible-island.net/xterm/ctlseqs/ctlseqs.html
-const CSI_SEQUENCE = /(?:\x1b\[|\x9b)[=?>!]?[\d;:]*["$#'* ]?[a-zA-Z@^`{}|~]/;
-const OSC_SEQUENCE = /(?:\x1b\]|\x9d).*?(?:\x1b\\|\x07|\x9c)/;
-const ESC_SEQUENCE = /\x1b(?:[ #%\(\)\*\+\-\.\/]?[a-zA-Z0-9\|}~@])/;
-const CONTROL_SEQUENCES = new RegExp('(?:' + [
-    CSI_SEQUENCE.source,
-    OSC_SEQUENCE.source,
-    ESC_SEQUENCE.source,
-].join('|') + ')', 'g');
 // -- UTF-8 BOM
-export const UTF8_BOM_CHARACTER = String.fromCharCode(65279 /* CharCode.UTF8_BOM */);
-export function startsWithUTF8BOM(str) {
+const UTF8_BOM_CHARACTER = String.fromCharCode(65279 /* CharCode.UTF8_BOM */);
+function startsWithUTF8BOM(str) {
     return !!(str && str.length > 0 && str.charCodeAt(0) === 65279 /* CharCode.UTF8_BOM */);
 }
-export function containsUppercaseCharacter(target, ignoreEscapedChars = false) {
+function containsUppercaseCharacter(target, ignoreEscapedChars = false) {
     if (!target) {
         return false;
     }
@@ -564,7 +558,7 @@ export function containsUppercaseCharacter(target, ignoreEscapedChars = false) {
 /**
  * Produces 'a'-'z', followed by 'A'-'Z'... followed by 'a'-'z', etc.
  */
-export function singleLetterHash(n) {
+function singleLetterHash(n) {
     const LETTERS_CNT = (90 /* CharCode.Z */ - 65 /* CharCode.A */ + 1);
     n = n % (2 * LETTERS_CNT);
     if (n < LETTERS_CNT) {
@@ -698,7 +692,7 @@ function getGraphemeBreakRawData() {
  * Computes the offset after performing a left delete on the given string,
  * while considering unicode grapheme/emoji rules.
 */
-export function getLeftDeleteOffset(offset, str) {
+function getLeftDeleteOffset(offset, str) {
     if (offset === 0) {
         return 0;
     }
@@ -745,8 +739,8 @@ function getOffsetBeforeLastEmojiComponent(initialOffset, str) {
 function isEmojiModifier(codePoint) {
     return 0x1F3FB <= codePoint && codePoint <= 0x1F3FF;
 }
-export const noBreakWhitespace = '\xa0';
-export class AmbiguousCharacters {
+const noBreakWhitespace = '\xa0';
+class AmbiguousCharacters {
     static { this.ambiguousCharacterData = new Lazy(() => {
         // Generated using https://github.com/hediet/vscode-unicode-data
         // Stored as key1, value1, key2, value2, ...
@@ -780,7 +774,7 @@ export class AmbiguousCharacters {
             return result;
         }
         const data = this.ambiguousCharacterData.value;
-        let filteredLocales = locales.filter((l) => !l.startsWith('_') && l in data);
+        let filteredLocales = locales.filter((l) => !l.startsWith('_') && Object.hasOwn(data, l));
         if (filteredLocales.length === 0) {
             filteredLocales = ['_default'];
         }
@@ -817,7 +811,7 @@ export class AmbiguousCharacters {
         return new Set(this.confusableDictionary.keys());
     }
 }
-export class InvisibleCharacters {
+class InvisibleCharacters {
     static getRawData() {
         // Generated using https://github.com/hediet/vscode-unicode-data
         return JSON.parse('{\"_common\":[11,12,13,127,847,1564,4447,4448,6068,6069,6155,6156,6157,6158,7355,7356,8192,8193,8194,8195,8196,8197,8198,8199,8200,8201,8202,8204,8205,8206,8207,8234,8235,8236,8237,8238,8239,8287,8288,8289,8290,8291,8292,8293,8294,8295,8296,8297,8298,8299,8300,8301,8302,8303,10240,12644,65024,65025,65026,65027,65028,65029,65030,65031,65032,65033,65034,65035,65036,65037,65038,65039,65279,65440,65520,65521,65522,65523,65524,65525,65526,65527,65528,65532,78844,119155,119156,119157,119158,119159,119160,119161,119162,917504,917505,917506,917507,917508,917509,917510,917511,917512,917513,917514,917515,917516,917517,917518,917519,917520,917521,917522,917523,917524,917525,917526,917527,917528,917529,917530,917531,917532,917533,917534,917535,917536,917537,917538,917539,917540,917541,917542,917543,917544,917545,917546,917547,917548,917549,917550,917551,917552,917553,917554,917555,917556,917557,917558,917559,917560,917561,917562,917563,917564,917565,917566,917567,917568,917569,917570,917571,917572,917573,917574,917575,917576,917577,917578,917579,917580,917581,917582,917583,917584,917585,917586,917587,917588,917589,917590,917591,917592,917593,917594,917595,917596,917597,917598,917599,917600,917601,917602,917603,917604,917605,917606,917607,917608,917609,917610,917611,917612,917613,917614,917615,917616,917617,917618,917619,917620,917621,917622,917623,917624,917625,917626,917627,917628,917629,917630,917631,917760,917761,917762,917763,917764,917765,917766,917767,917768,917769,917770,917771,917772,917773,917774,917775,917776,917777,917778,917779,917780,917781,917782,917783,917784,917785,917786,917787,917788,917789,917790,917791,917792,917793,917794,917795,917796,917797,917798,917799,917800,917801,917802,917803,917804,917805,917806,917807,917808,917809,917810,917811,917812,917813,917814,917815,917816,917817,917818,917819,917820,917821,917822,917823,917824,917825,917826,917827,917828,917829,917830,917831,917832,917833,917834,917835,917836,917837,917838,917839,917840,917841,917842,917843,917844,917845,917846,917847,917848,917849,917850,917851,917852,917853,917854,917855,917856,917857,917858,917859,917860,917861,917862,917863,917864,917865,917866,917867,917868,917869,917870,917871,917872,917873,917874,917875,917876,917877,917878,917879,917880,917881,917882,917883,917884,917885,917886,917887,917888,917889,917890,917891,917892,917893,917894,917895,917896,917897,917898,917899,917900,917901,917902,917903,917904,917905,917906,917907,917908,917909,917910,917911,917912,917913,917914,917915,917916,917917,917918,917919,917920,917921,917922,917923,917924,917925,917926,917927,917928,917929,917930,917931,917932,917933,917934,917935,917936,917937,917938,917939,917940,917941,917942,917943,917944,917945,917946,917947,917948,917949,917950,917951,917952,917953,917954,917955,917956,917957,917958,917959,917960,917961,917962,917963,917964,917965,917966,917967,917968,917969,917970,917971,917972,917973,917974,917975,917976,917977,917978,917979,917980,917981,917982,917983,917984,917985,917986,917987,917988,917989,917990,917991,917992,917993,917994,917995,917996,917997,917998,917999],\"cs\":[173,8203,12288],\"de\":[173,8203,12288],\"es\":[8203,12288],\"fr\":[173,8203,12288],\"it\":[160,173,12288],\"ja\":[173],\"ko\":[173,12288],\"pl\":[173,8203,12288],\"pt-BR\":[173,8203,12288],\"qps-ploc\":[160,173,8203,12288],\"ru\":[173,12288],\"tr\":[160,173,8203,12288],\"zh-hans\":[160,173,8203,12288],\"zh-hant\":[173,12288]}');
@@ -836,4 +830,5 @@ export class InvisibleCharacters {
         return InvisibleCharacters.getData();
     }
 }
-//# sourceMappingURL=strings.js.map
+
+export { AmbiguousCharacters, CodePointIterator, GraphemeIterator, InvisibleCharacters, UNUSUAL_LINE_TERMINATORS, UTF8_BOM_CHARACTER, commonPrefixLength, commonSuffixLength, compare, compareIgnoreCase, compareSubstring, compareSubstringIgnoreCase, computeCodePoint, containsRTL, containsUnusualLineTerminators, containsUppercaseCharacter, convertSimple2RegExpPattern, createRegExp, endsWithIgnoreCase, equalsIgnoreCase, escape, escapeRegExpCharacters, firstNonWhitespaceIndex, format, getCharContainingOffset, getLeadingWhitespace, getLeftDeleteOffset, getNextCodePoint, htmlAttributeEncodeValue, isAsciiDigit, isBasicASCII, isEmojiImprecise, isFalsyOrWhitespace, isFullWidthCharacter, isHighSurrogate, isLowSurrogate, isLowerAsciiLetter, isUpperAsciiLetter, lastNonWhitespaceIndex, ltrim, nextCharLength, noBreakWhitespace, prevCharLength, regExpLeadsToEndlessLoop, rtrim, singleLetterHash, splitLines, startsWithIgnoreCase, startsWithUTF8BOM, trim };

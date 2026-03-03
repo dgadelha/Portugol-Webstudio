@@ -1,12 +1,13 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { Emitter } from '../../../base/common/event.js';
 import { registerSingleton } from '../../instantiation/common/extensions.js';
 import { createDecorator } from '../../instantiation/common/instantiation.js';
 import { MenuId } from '../common/actions.js';
-export const IActionViewItemService = createDecorator('IActionViewItemService');
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+const IActionViewItemService = createDecorator('IActionViewItemService');
 class ActionViewItemService {
     constructor() {
         this._providers = new Map();
@@ -24,4 +25,5 @@ class ActionViewItemService {
     }
 }
 registerSingleton(IActionViewItemService, ActionViewItemService, 1 /* InstantiationType.Delayed */);
-//# sourceMappingURL=actionViewItemService.js.map
+
+export { IActionViewItemService };

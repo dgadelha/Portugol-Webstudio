@@ -1,10 +1,11 @@
+import { createDecorator } from '../../instantiation/common/instantiation.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { createDecorator } from '../../instantiation/common/instantiation.js';
-export const NO_KEY_MODS = { ctrlCmd: false, alt: false };
-export var QuickInputHideReason;
+const NO_KEY_MODS = { ctrlCmd: false, alt: false };
+var QuickInputHideReason;
 (function (QuickInputHideReason) {
     /**
      * Focus moved away from the quick input.
@@ -23,7 +24,7 @@ export var QuickInputHideReason;
  * Represents the activation behavior for items in a quick input. This means which item will be
  * "active" (aka focused).
  */
-export var ItemActivation;
+var ItemActivation;
 (function (ItemActivation) {
     /**
      * No item will be active.
@@ -45,7 +46,7 @@ export var ItemActivation;
 /**
  * Represents the focus options for a quick pick.
  */
-export var QuickPickFocus;
+var QuickPickFocus;
 (function (QuickPickFocus) {
     /**
      * Focus the first item in the list.
@@ -84,7 +85,7 @@ export var QuickPickFocus;
      */
     QuickPickFocus[QuickPickFocus["PreviousSeparator"] = 9] = "PreviousSeparator";
 })(QuickPickFocus || (QuickPickFocus = {}));
-export var QuickInputButtonLocation;
+var QuickInputButtonLocation;
 (function (QuickInputButtonLocation) {
     /**
      * In the title bar.
@@ -94,14 +95,14 @@ export var QuickInputButtonLocation;
      * To the right of the input box.
      */
     QuickInputButtonLocation[QuickInputButtonLocation["Inline"] = 2] = "Inline";
+    /**
+     * At the far end inside the input box.
+     * Used by the public API to create toggles.
+     */
+    QuickInputButtonLocation[QuickInputButtonLocation["Input"] = 3] = "Input";
 })(QuickInputButtonLocation || (QuickInputButtonLocation = {}));
-export class QuickPickItemScorerAccessor {
-    constructor(options) {
-        this.options = options;
-    }
-}
-export const quickPickItemScorerAccessor = new QuickPickItemScorerAccessor();
 //#endregion
-export const IQuickInputService = createDecorator('quickInputService');
+const IQuickInputService = createDecorator('quickInputService');
 //#endregion
-//# sourceMappingURL=quickInput.js.map
+
+export { IQuickInputService, ItemActivation, NO_KEY_MODS, QuickInputButtonLocation, QuickInputHideReason, QuickPickFocus };

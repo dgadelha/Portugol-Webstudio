@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 const performanceNow = globalThis.performance.now.bind(globalThis.performance);
-export class StopWatch {
+class StopWatch {
     static create(highResolution) {
         return new StopWatch(highResolution);
     }
@@ -26,4 +26,5 @@ export class StopWatch {
         return this._now() - this._startTime;
     }
 }
-//# sourceMappingURL=stopwatch.js.map
+
+export { StopWatch };

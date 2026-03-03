@@ -1,23 +1,24 @@
+import { illegalState } from '../../../base/common/errors.js';
+import { localize } from '../../../nls.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { illegalState } from '../../../base/common/errors.js';
-import { localize } from '../../../nls.js';
 function hintDidYouMean(...meant) {
     switch (meant.length) {
         case 1:
-            return localize(1678, "Did you mean {0}?", meant[0]);
+            return localize(1693, "Did you mean {0}?", meant[0]);
         case 2:
-            return localize(1679, "Did you mean {0} or {1}?", meant[0], meant[1]);
+            return localize(1694, "Did you mean {0} or {1}?", meant[0], meant[1]);
         case 3:
-            return localize(1680, "Did you mean {0}, {1} or {2}?", meant[0], meant[1], meant[2]);
+            return localize(1695, "Did you mean {0}, {1} or {2}?", meant[0], meant[1], meant[2]);
         default: // we just don't expect that many
             return undefined;
     }
 }
-const hintDidYouForgetToOpenOrCloseQuote = localize(1681, "Did you forget to open or close the quote?");
-const hintDidYouForgetToEscapeSlash = localize(1682, "Did you forget to escape the '/' (slash) character? Put two backslashes before it to escape, e.g., '\\\\/\'.");
+const hintDidYouForgetToOpenOrCloseQuote = localize(1696, "Did you forget to open or close the quote?");
+const hintDidYouForgetToEscapeSlash = localize(1697, "Did you forget to escape the '/' (slash) character? Put two backslashes before it to escape, e.g., '\\\\/\'.");
 /**
  * A simple scanner for context keys.
  *
@@ -33,7 +34,7 @@ const hintDidYouForgetToEscapeSlash = localize(1682, "Did you forget to escape t
  * }
  * ```
  */
-export class Scanner {
+class Scanner {
     constructor() {
         this._input = '';
         this._start = 0;
@@ -282,4 +283,5 @@ export class Scanner {
         return this._current >= this._input.length;
     }
 }
-//# sourceMappingURL=scanner.js.map
+
+export { Scanner };

@@ -1,11 +1,12 @@
+import { asArray } from '../../../../base/common/arrays.js';
+import { isEmptyMarkdownString } from '../../../../base/common/htmlContent.js';
+import { GlyphMarginLane } from '../../../common/model.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { asArray } from '../../../../base/common/arrays.js';
-import { isEmptyMarkdownString } from '../../../../base/common/htmlContent.js';
-import { GlyphMarginLane } from '../../../common/model.js';
-export class GlyphHoverComputer {
+class GlyphHoverComputer {
     constructor(_editor) {
         this._editor = _editor;
     }
@@ -35,4 +36,5 @@ export class GlyphHoverComputer {
         return result;
     }
 }
-//# sourceMappingURL=glyphHoverComputer.js.map
+
+export { GlyphHoverComputer };

@@ -1,10 +1,11 @@
+import { match } from '../../base/common/glob.js';
+import { normalize } from '../../base/common/path.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { match as matchGlobPattern } from '../../base/common/glob.js';
-import { normalize } from '../../base/common/path.js';
-export function score(selector, candidateUri, candidateLanguage, candidateIsSynchronized, candidateNotebookUri, candidateNotebookType) {
+function score(selector, candidateUri, candidateLanguage, candidateIsSynchronized, candidateNotebookUri, candidateNotebookType) {
     if (Array.isArray(selector)) {
         // array -> take max individual value
         let ret = 0;
@@ -94,7 +95,7 @@ export function score(selector, candidateUri, candidateLanguage, candidateIsSync
                 // Refs: https://github.com/microsoft/vscode/issues/99938
                 normalizedPattern = { ...pattern, base: normalize(pattern.base) };
             }
-            if (normalizedPattern === candidateUri.fsPath || matchGlobPattern(normalizedPattern, candidateUri.fsPath)) {
+            if (normalizedPattern === candidateUri.fsPath || match(normalizedPattern, candidateUri.fsPath)) {
                 ret = 10;
             }
             else {
@@ -107,4 +108,5 @@ export function score(selector, candidateUri, candidateLanguage, candidateIsSync
         return 0;
     }
 }
-//# sourceMappingURL=languageSelector.js.map
+
+export { score };

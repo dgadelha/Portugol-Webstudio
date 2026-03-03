@@ -1,22 +1,9 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
 import { n, trackFocus } from '../../../../../../../base/browser/dom.js';
 import { renderIcon } from '../../../../../../../base/browser/ui/iconLabel/iconLabels.js';
 import { Codicon } from '../../../../../../../base/common/codicons.js';
 import { BugIndicatingError } from '../../../../../../../base/common/errors.js';
 import { Disposable, DisposableStore, toDisposable } from '../../../../../../../base/common/lifecycle.js';
-import { autorun, constObservable, debouncedObservable, derived, observableFromEvent, observableValue, runOnChange } from '../../../../../../../base/common/observable.js';
+import '../../../../../../../base/common/observableInternal/index.js';
 import { IAccessibilityService } from '../../../../../../../platform/accessibility/common/accessibility.js';
 import { IHoverService } from '../../../../../../../platform/hover/browser/hover.js';
 import { IInstantiationService } from '../../../../../../../platform/instantiation/common/instantiation.js';
@@ -27,10 +14,31 @@ import { Rect } from '../../../../../../common/core/2d/rect.js';
 import { OffsetRange } from '../../../../../../common/core/ranges/offsetRange.js';
 import { StickyScrollController } from '../../../../../stickyScroll/browser/stickyScrollController.js';
 import { InlineEditTabAction } from '../inlineEditsViewInterface.js';
-import { getEditorBlendedColor, inlineEditIndicatorBackground, inlineEditIndicatorPrimaryBackground, inlineEditIndicatorPrimaryBorder, inlineEditIndicatorPrimaryForeground, inlineEditIndicatorSecondaryBackground, inlineEditIndicatorSecondaryBorder, inlineEditIndicatorSecondaryForeground, inlineEditIndicatorsuccessfulBackground, inlineEditIndicatorsuccessfulBorder, inlineEditIndicatorsuccessfulForeground } from '../theme.js';
+import { getEditorBlendedColor, inlineEditIndicatorsuccessfulBorder, inlineEditIndicatorsuccessfulForeground, inlineEditIndicatorsuccessfulBackground, inlineEditIndicatorPrimaryBorder, inlineEditIndicatorPrimaryForeground, inlineEditIndicatorPrimaryBackground, inlineEditIndicatorSecondaryBorder, inlineEditIndicatorSecondaryForeground, inlineEditIndicatorSecondaryBackground, inlineEditIndicatorBackground } from '../theme.js';
 import { mapOutFalsy, rectToProps } from '../utils/utils.js';
 import { GutterIndicatorMenuContent } from './gutterIndicatorMenu.js';
 import { assertNever } from '../../../../../../../base/common/assert.js';
+import { debouncedObservable } from '../../../../../../../base/common/observableInternal/utils/utils.js';
+import { derived } from '../../../../../../../base/common/observableInternal/observables/derived.js';
+import { observableValue } from '../../../../../../../base/common/observableInternal/observables/observableValue.js';
+import { observableFromEvent } from '../../../../../../../base/common/observableInternal/observables/observableFromEvent.js';
+import { constObservable } from '../../../../../../../base/common/observableInternal/observables/constObservable.js';
+import { runOnChange } from '../../../../../../../base/common/observableInternal/utils/runOnChange.js';
+import { autorun } from '../../../../../../../base/common/observableInternal/reactions/autorun.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 let InlineEditsGutterIndicator = class InlineEditsGutterIndicator extends Disposable {
     get model() {
         const model = this._model.get();
@@ -81,7 +89,7 @@ let InlineEditsGutterIndicator = class InlineEditsGutterIndicator extends Dispos
                     border: getEditorBlendedColor(inlineEditIndicatorsuccessfulBorder, themeService).read(reader).toString()
                 };
                 default:
-                    assertNever(v);
+                    assertNever();
             }
         });
         this._originalRangeObs = mapOutFalsy(this._originalRange);
@@ -92,7 +100,7 @@ let InlineEditsGutterIndicator = class InlineEditsGutterIndicator extends Dispos
             }
             return {
                 range,
-                lineOffsetRange: this._editorObs.observeLineOffsetRange(range, this._store),
+                lineOffsetRange: this._editorObs.observeLineOffsetRange(range, reader.store),
             };
         });
         this._stickyScrollController = StickyScrollController.get(this._editorObs.editor);
@@ -308,6 +316,7 @@ let InlineEditsGutterIndicator = class InlineEditsGutterIndicator extends Dispos
                     zIndex: '20',
                     position: 'absolute',
                     backgroundColor: this._gutterIndicatorStyles.map(v => v.background),
+                    // eslint-disable-next-line local/code-no-any-casts
                     ['--vscodeIconForeground']: this._gutterIndicatorStyles.map(v => v.foreground),
                     border: this._gutterIndicatorStyles.map(v => `1px solid ${v.border}`),
                     boxSizing: 'border-box',
@@ -436,7 +445,6 @@ InlineEditsGutterIndicator = __decorate([
     __param(8, IAccessibilityService),
     __param(9, IThemeService)
 ], InlineEditsGutterIndicator);
-export { InlineEditsGutterIndicator };
 function getRotationFromDirection(direction) {
     switch (direction) {
         case 'top': return 90;
@@ -444,4 +452,5 @@ function getRotationFromDirection(direction) {
         case 'right': return 0;
     }
 }
-//# sourceMappingURL=gutterIndicatorView.js.map
+
+export { InlineEditsGutterIndicator };

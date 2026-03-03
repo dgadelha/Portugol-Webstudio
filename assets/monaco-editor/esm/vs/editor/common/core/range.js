@@ -1,12 +1,13 @@
+import { Position } from './position.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { Position } from './position.js';
 /**
  * A range in the editor. (startLineNumber,startColumn) is <= (endLineNumber,endColumn)
  */
-export class Range {
+class Range {
     constructor(startLineNumber, startColumn, endLineNumber, endColumn) {
         if ((startLineNumber > endLineNumber) || (startLineNumber === endLineNumber && startColumn > endColumn)) {
             this.startLineNumber = endLineNumber;
@@ -310,7 +311,7 @@ export class Range {
      * Test if `obj` is an `IRange`.
      */
     static isIRange(obj) {
-        return (obj
+        return (!!obj
             && (typeof obj.startLineNumber === 'number')
             && (typeof obj.startColumn === 'number')
             && (typeof obj.endLineNumber === 'number')
@@ -416,4 +417,5 @@ export class Range {
         return this;
     }
 }
-//# sourceMappingURL=range.js.map
+
+export { Range };

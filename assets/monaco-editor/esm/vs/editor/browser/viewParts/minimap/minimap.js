@@ -1,29 +1,40 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import './minimap.css';
-import * as dom from '../../../../base/browser/dom.js';
+import { addStandardDisposableListener, addDisposableListener, getDomNodePagePosition, EventType as EventType$1 } from '../../../../base/browser/dom.js';
 import { createFastDomNode } from '../../../../base/browser/fastDomNode.js';
 import { GlobalPointerMoveMonitor } from '../../../../base/browser/globalPointerMoveMonitor.js';
 import { Disposable } from '../../../../base/common/lifecycle.js';
-import * as platform from '../../../../base/common/platform.js';
-import * as strings from '../../../../base/common/strings.js';
+import { isWindows } from '../../../../base/common/platform.js';
+import { isFullWidthCharacter } from '../../../../base/common/strings.js';
 import { RenderedLinesCollection } from '../../view/viewLayer.js';
-import { PartFingerprints, ViewPart } from '../../view/viewPart.js';
-import { MINIMAP_GUTTER_WIDTH, EditorLayoutInfoComputer } from '../../../common/config/editorOptions.js';
+import { ViewPart, PartFingerprints } from '../../view/viewPart.js';
+import { EditorLayoutInfoComputer, MINIMAP_GUTTER_WIDTH } from '../../../common/config/editorOptions.js';
 import { Range } from '../../../common/core/range.js';
 import { RGBA8 } from '../../../common/core/misc/rgba.js';
 import { MinimapTokensColorTracker } from '../../../common/viewModel/minimapTokensColorTracker.js';
-import { minimapSelection, minimapBackground, minimapForegroundOpacity, editorForeground } from '../../../../platform/theme/common/colorRegistry.js';
+import '../../../../platform/theme/common/colorUtils.js';
+import '../../../../platform/theme/common/colors/baseColors.js';
+import '../../../../platform/theme/common/colors/chartsColors.js';
+import { editorForeground } from '../../../../platform/theme/common/colors/editorColors.js';
+import '../../../../platform/theme/common/colors/inputColors.js';
+import '../../../../platform/theme/common/colors/listColors.js';
+import '../../../../platform/theme/common/colors/menuColors.js';
+import { minimapBackground, minimapForegroundOpacity, minimapSelection } from '../../../../platform/theme/common/colors/minimapColors.js';
+import '../../../../platform/theme/common/colors/miscColors.js';
+import '../../../../platform/theme/common/colors/quickpickColors.js';
+import '../../../../platform/theme/common/colors/searchColors.js';
 import { Selection } from '../../../common/core/selection.js';
-import { EventType, Gesture } from '../../../../base/browser/touch.js';
+import { Gesture, EventType } from '../../../../base/browser/touch.js';
 import { MinimapCharRendererFactory } from './minimapCharRendererFactory.js';
 import { createSingleCallFunction } from '../../../../base/common/functional.js';
 import { LRUCache } from '../../../../base/common/map.js';
 import { DEFAULT_FONT_FAMILY } from '../../../../base/browser/fonts.js';
 import { ViewModelDecoration } from '../../../common/viewModel/viewModelDecoration.js';
 import { RunOnceScheduler } from '../../../../base/common/async.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
 /**
  * The orthogonal distance to the slider at which dragging "resets". This implements "snapping"
  */
@@ -600,7 +611,7 @@ class MinimapSamplingState {
  * The minimap appears beside the editor scroll bar and visualizes a zoomed out
  * view of the file.
  */
-export class Minimap extends ViewPart {
+class Minimap extends ViewPart {
     constructor(context) {
         super(context);
         this._sectionHeaderCache = new LRUCache(10, 1.5);
@@ -930,13 +941,13 @@ class InnerMinimap extends Disposable {
         this._slider.appendChild(this._sliderHorizontal);
         this._applyLayout();
         this._hideDelayedScheduler = this._register(new RunOnceScheduler(() => this._hideImmediatelyIfMouseIsOutside(), 500));
-        this._register(dom.addStandardDisposableListener(this._domNode.domNode, dom.EventType.MOUSE_OVER, () => {
+        this._register(addStandardDisposableListener(this._domNode.domNode, EventType$1.MOUSE_OVER, () => {
             this._isMouseOverMinimap = true;
         }));
-        this._register(dom.addStandardDisposableListener(this._domNode.domNode, dom.EventType.MOUSE_LEAVE, () => {
+        this._register(addStandardDisposableListener(this._domNode.domNode, EventType$1.MOUSE_LEAVE, () => {
             this._isMouseOverMinimap = false;
         }));
-        this._pointerDownListener = dom.addStandardDisposableListener(this._domNode.domNode, dom.EventType.POINTER_DOWN, (e) => {
+        this._pointerDownListener = addStandardDisposableListener(this._domNode.domNode, EventType$1.POINTER_DOWN, (e) => {
             e.preventDefault();
             const isMouse = (e.pointerType === 'mouse');
             const isLeftClick = (e.button === 0);
@@ -950,7 +961,7 @@ class InnerMinimap extends Disposable {
             if (this._model.options.size !== 'proportional') {
                 if (isLeftClick && this._lastRenderData) {
                     // pretend the click occurred in the center of the slider
-                    const position = dom.getDomNodePagePosition(this._slider.domNode);
+                    const position = getDomNodePagePosition(this._slider.domNode);
                     const initialPosY = position.top + position.height / 2;
                     this._startSliderDragging(e, initialPosY, this._lastRenderData.renderedLayout);
                 }
@@ -966,7 +977,7 @@ class InnerMinimap extends Disposable {
             }
         });
         this._sliderPointerMoveMonitor = new GlobalPointerMoveMonitor();
-        this._sliderPointerDownListener = dom.addStandardDisposableListener(this._slider.domNode, dom.EventType.POINTER_DOWN, (e) => {
+        this._sliderPointerDownListener = addStandardDisposableListener(this._slider.domNode, EventType$1.POINTER_DOWN, (e) => {
             e.preventDefault();
             e.stopPropagation();
             if (e.button === 0 && this._lastRenderData) {
@@ -974,7 +985,7 @@ class InnerMinimap extends Disposable {
             }
         });
         this._gestureDisposable = Gesture.addTarget(this._domNode.domNode);
-        this._sliderTouchStartListener = dom.addDisposableListener(this._domNode.domNode, EventType.Start, (e) => {
+        this._sliderTouchStartListener = addDisposableListener(this._domNode.domNode, EventType.Start, (e) => {
             e.preventDefault();
             e.stopPropagation();
             if (this._lastRenderData) {
@@ -983,14 +994,14 @@ class InnerMinimap extends Disposable {
                 this.scrollDueToTouchEvent(e);
             }
         }, { passive: false });
-        this._sliderTouchMoveListener = dom.addDisposableListener(this._domNode.domNode, EventType.Change, (e) => {
+        this._sliderTouchMoveListener = addDisposableListener(this._domNode.domNode, EventType.Change, (e) => {
             e.preventDefault();
             e.stopPropagation();
             if (this._lastRenderData && this._gestureInProgress) {
                 this.scrollDueToTouchEvent(e);
             }
         }, { passive: false });
-        this._sliderTouchEndListener = dom.addStandardDisposableListener(this._domNode.domNode, EventType.End, (e) => {
+        this._sliderTouchEndListener = addStandardDisposableListener(this._domNode.domNode, EventType.End, (e) => {
             e.preventDefault();
             e.stopPropagation();
             this._gestureInProgress = false;
@@ -1015,9 +1026,9 @@ class InnerMinimap extends Disposable {
         const initialPosX = e.pageX;
         this._slider.toggleClassName('active', true);
         const handlePointerMove = (posy, posx) => {
-            const minimapPosition = dom.getDomNodePagePosition(this._domNode.domNode);
+            const minimapPosition = getDomNodePagePosition(this._domNode.domNode);
             const pointerOrthogonalDelta = Math.min(Math.abs(posx - initialPosX), Math.abs(posx - minimapPosition.left), Math.abs(posx - minimapPosition.left - minimapPosition.width));
-            if (platform.isWindows && pointerOrthogonalDelta > POINTER_DRAG_RESET_DISTANCE) {
+            if (isWindows && pointerOrthogonalDelta > POINTER_DRAG_RESET_DISTANCE) {
                 // The pointer has wondered away from the scrollbar => reset dragging
                 this._model.setScrollTop(initialSliderState.scrollTop);
                 return;
@@ -1356,7 +1367,7 @@ class InnerMinimap extends Disposable {
                 const charCode = lineData.charCodeAt(i - 1);
                 const dx = charCode === 9 /* CharCode.Tab */
                     ? tabSize * charWidth
-                    : strings.isFullWidthCharacter(charCode)
+                    : isFullWidthCharacter(charCode)
                         ? 2 * charWidth
                         : charWidth;
                 const x = prevx + dx;
@@ -1602,7 +1613,7 @@ class InnerMinimap extends Disposable {
                 }
                 else {
                     // Render twice for a full width character
-                    const count = strings.isFullWidthCharacter(charCode) ? 2 : 1;
+                    const count = isFullWidthCharacter(charCode) ? 2 : 1;
                     for (let i = 0; i < count; i++) {
                         if (renderMinimap === 2 /* RenderMinimap.Blocks */) {
                             minimapCharRenderer.blockRenderChar(target, dx, dy + innerLinePadding, tokenColor, foregroundAlpha, backgroundColor, backgroundAlpha, force1pxHeight);
@@ -1647,4 +1658,5 @@ class ContiguousLineMap {
         return this._values[lineNumber - this._startLineNumber];
     }
 }
-//# sourceMappingURL=minimap.js.map
+
+export { Minimap };

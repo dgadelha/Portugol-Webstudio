@@ -1,21 +1,7 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-var CodeEditorWidget_1;
 import '../../services/markerDecorations.js';
-import * as dom from '../../../../base/browser/dom.js';
+import { DragAndDropObserver, getWindow, scheduleAtNextAnimationFrame } from '../../../../base/browser/dom.js';
 import { onUnexpectedError } from '../../../../base/common/errors.js';
-import { Emitter, createEventDeliveryQueue } from '../../../../base/common/event.js';
+import { createEventDeliveryQueue, Emitter } from '../../../../base/common/event.js';
 import { Disposable, dispose } from '../../../../base/common/lifecycle.js';
 import { Schemas } from '../../../../base/common/network.js';
 import './editor.css';
@@ -28,7 +14,7 @@ import { View } from '../../view.js';
 import { DOMLineBreaksComputerFactory } from '../../view/domLineBreaksComputer.js';
 import { ViewUserInputEvents } from '../../view/viewUserInputEvents.js';
 import { CodeEditorContributions } from './codeEditorContributions.js';
-import { filterFontDecorations, filterValidationDecorations } from '../../../common/config/editorOptions.js';
+import { filterValidationDecorations, filterFontDecorations } from '../../../common/config/editorOptions.js';
 import { CursorColumns } from '../../../common/core/cursorColumns.js';
 import { editorUnnecessaryCodeOpacity } from '../../../common/core/editorColorRegistry.js';
 import { Position } from '../../../common/core/position.js';
@@ -36,24 +22,50 @@ import { Range } from '../../../common/core/range.js';
 import { Selection } from '../../../common/core/selection.js';
 import { WordOperations } from '../../../common/cursor/cursorWordOperations.js';
 import { InternalEditorAction } from '../../../common/editorAction.js';
-import * as editorCommon from '../../../common/editorCommon.js';
+import { EditorType } from '../../../common/editorCommon.js';
 import { EditorContextKeys } from '../../../common/editorContextKeys.js';
 import { ILanguageConfigurationService } from '../../../common/languages/languageConfigurationRegistry.js';
 import { ModelDecorationOptions } from '../../../common/model/textModel.js';
 import { ILanguageFeaturesService } from '../../../common/services/languageFeatures.js';
 import { MonospaceLineBreaksComputerFactory } from '../../../common/viewModel/monospaceLineBreaksComputer.js';
 import { ViewModel } from '../../../common/viewModel/viewModelImpl.js';
-import * as nls from '../../../../nls.js';
+import { localize } from '../../../../nls.js';
 import { IAccessibilityService } from '../../../../platform/accessibility/common/accessibility.js';
 import { ICommandService } from '../../../../platform/commands/common/commands.js';
 import { IContextKeyService } from '../../../../platform/contextkey/common/contextkey.js';
 import { IInstantiationService } from '../../../../platform/instantiation/common/instantiation.js';
 import { ServiceCollection } from '../../../../platform/instantiation/common/serviceCollection.js';
-import { INotificationService, Severity } from '../../../../platform/notification/common/notification.js';
-import { editorErrorForeground, editorHintForeground, editorInfoForeground, editorWarningForeground } from '../../../../platform/theme/common/colorRegistry.js';
+import { Severity, INotificationService } from '../../../../platform/notification/common/notification.js';
+import '../../../../platform/theme/common/colorUtils.js';
+import '../../../../platform/theme/common/colors/baseColors.js';
+import '../../../../platform/theme/common/colors/chartsColors.js';
+import { editorErrorForeground, editorWarningForeground, editorInfoForeground, editorHintForeground } from '../../../../platform/theme/common/colors/editorColors.js';
+import '../../../../platform/theme/common/colors/inputColors.js';
+import '../../../../platform/theme/common/colors/listColors.js';
+import '../../../../platform/theme/common/colors/menuColors.js';
+import '../../../../platform/theme/common/colors/minimapColors.js';
+import '../../../../platform/theme/common/colors/miscColors.js';
+import '../../../../platform/theme/common/colors/quickpickColors.js';
+import '../../../../platform/theme/common/colors/searchColors.js';
 import { IThemeService, registerThemingParticipant } from '../../../../platform/theme/common/themeService.js';
 import { MenuId } from '../../../../platform/actions/common/actions.js';
 import { TextModelEditSource, EditSources } from '../../../common/textModelEditSource.js';
+import { isObject } from '../../../../base/common/types.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var CodeEditorWidget_1;
 let CodeEditorWidget = class CodeEditorWidget extends Disposable {
     static { CodeEditorWidget_1 = this; }
     static { this.dropIntoEditorDecorationOptions = ModelDecorationOptions.register({
@@ -225,7 +237,7 @@ let CodeEditorWidget = class CodeEditorWidget extends Disposable {
             return !this._configuration.options.get(104 /* EditorOption.readOnly */)
                 && this._configuration.options.get(43 /* EditorOption.dropIntoEditor */).enabled;
         };
-        this._register(new dom.DragAndDropObserver(this._domElement, {
+        this._register(new DragAndDropObserver(this._domElement, {
             onDragOver: e => {
                 if (!isDropIntoEnabled()) {
                     return;
@@ -267,7 +279,7 @@ let CodeEditorWidget = class CodeEditorWidget extends Disposable {
         return this.getEditorType() + ':' + this._id;
     }
     getEditorType() {
-        return editorCommon.EditorType.ICodeEditor;
+        return EditorType.ICodeEditor;
     }
     dispose() {
         this._codeEditorService.removeCodeEditor(this);
@@ -864,7 +876,9 @@ let CodeEditorWidget = class CodeEditorWidget extends Disposable {
         const command = EditorExtensionsRegistry.getEditorCommand(handlerId);
         if (command) {
             payload = payload || {};
-            payload.source = source;
+            if (isObject(payload)) {
+                payload.source = source;
+            }
             this._instantiationService.invokeFunction((accessor) => {
                 Promise.resolve(command.runEditorCommand(accessor, this, payload)).then(undefined, onUnexpectedError);
             });
@@ -1236,7 +1250,7 @@ let CodeEditorWidget = class CodeEditorWidget extends Disposable {
         this._configuration.setIsDominatedByLongLines(model.isDominatedByLongLines());
         this._configuration.setModelLineCount(model.getLineCount());
         const attachedView = model.onBeforeAttached();
-        const viewModel = new ViewModel(this._id, this._configuration, model, DOMLineBreaksComputerFactory.create(dom.getWindow(this._domElement)), MonospaceLineBreaksComputerFactory.create(this._configuration.options), (callback) => dom.scheduleAtNextAnimationFrame(dom.getWindow(this._domElement), callback), this.languageConfigurationService, this._themeService, attachedView, {
+        const viewModel = new ViewModel(this._id, this._configuration, model, DOMLineBreaksComputerFactory.create(getWindow(this._domElement)), MonospaceLineBreaksComputerFactory.create(this._configuration.options), (callback) => scheduleAtNextAnimationFrame(getWindow(this._domElement), callback), this.languageConfigurationService, this._themeService, attachedView, {
             batchChanges: (cb) => {
                 try {
                     this._beginUpdate();
@@ -1275,7 +1289,7 @@ let CodeEditorWidget = class CodeEditorWidget extends Disposable {
                 case 7 /* OutgoingViewModelEventKind.CursorStateChanged */: {
                     if (e.reachedMaxCursorCount) {
                         const multiCursorLimit = this.getOption(89 /* EditorOption.multiCursorLimit */);
-                        const message = nls.localize(80, "The number of cursors has been limited to {0}. Consider using [find and replace](https://code.visualstudio.com/docs/editor/codebasics#_find-and-replace) for larger changes or increase the editor multi cursor limit setting.", multiCursorLimit);
+                        const message = localize(83, "The number of cursors has been limited to {0}. Consider using [find and replace](https://code.visualstudio.com/docs/editor/codebasics#_find-and-replace) for larger changes or increase the editor multi cursor limit setting.", multiCursorLimit);
                         this._notificationService.prompt(Severity.Warning, message, [
                             {
                                 label: 'Find and Replace',
@@ -1284,7 +1298,7 @@ let CodeEditorWidget = class CodeEditorWidget extends Disposable {
                                 }
                             },
                             {
-                                label: nls.localize(81, 'Increase Multi Cursor Limit'),
+                                label: localize(84, 'Increase Multi Cursor Limit'),
                                 run: () => {
                                     this._commandService.executeCommand('workbench.action.openSettings2', {
                                         query: 'editor.multiCursorLimit'
@@ -1501,7 +1515,6 @@ CodeEditorWidget = CodeEditorWidget_1 = __decorate([
     __param(10, ILanguageConfigurationService),
     __param(11, ILanguageFeaturesService)
 ], CodeEditorWidget);
-export { CodeEditorWidget };
 let EDITOR_ID = 0;
 class ModelData {
     constructor(model, viewModel, view, hasRealView, listenersToRemove, attachedView) {
@@ -1521,7 +1534,7 @@ class ModelData {
         this.viewModel.dispose();
     }
 }
-export class BooleanEventEmitter extends Disposable {
+class BooleanEventEmitter extends Disposable {
     constructor(_emitterOptions) {
         super();
         this._emitterOptions = _emitterOptions;
@@ -1619,7 +1632,7 @@ class EditorContextKeysManager extends Disposable {
         this._canRedo.set(Boolean(model && model.canRedo()));
     }
 }
-export class EditorModeContext extends Disposable {
+class EditorModeContext extends Disposable {
     constructor(_editor, _contextKeyService, _languageFeaturesService) {
         super();
         this._editor = _editor;
@@ -1839,4 +1852,5 @@ registerThemingParticipant((theme, collector) => {
         collector.addRule(`:root { --monaco-editor-unnecessary-decoration-opacity: ${unnecessaryForeground.rgba.a}; }`);
     }
 });
-//# sourceMappingURL=codeEditorWidget.js.map
+
+export { BooleanEventEmitter, CodeEditorWidget, EditorModeContext };

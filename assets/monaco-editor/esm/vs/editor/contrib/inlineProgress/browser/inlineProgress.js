@@ -1,17 +1,4 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-import * as dom from '../../../../base/browser/dom.js';
+import { $, addDisposableListener, EventType } from '../../../../base/browser/dom.js';
 import { disposableTimeout } from '../../../../base/common/async.js';
 import { Codicon } from '../../../../base/common/codicons.js';
 import { Disposable, MutableDisposable } from '../../../../base/common/lifecycle.js';
@@ -21,6 +8,20 @@ import './inlineProgressWidget.css';
 import { Range } from '../../../common/core/range.js';
 import { ModelDecorationOptions } from '../../../common/model/textModel.js';
 import { IInstantiationService } from '../../../../platform/instantiation/common/instantiation.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 const inlineProgressDecoration = ModelDecorationOptions.register({
     description: 'inline-progress-widget',
     stickiness: 1 /* TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges */,
@@ -46,10 +47,10 @@ class InlineProgressWidget extends Disposable {
         this.editor.layoutContentWidget(this);
     }
     create(title) {
-        this.domNode = dom.$('.inline-progress-widget');
+        this.domNode = $('.inline-progress-widget');
         this.domNode.role = 'button';
         this.domNode.title = title;
-        const iconElement = dom.$('span.icon');
+        const iconElement = $('span.icon');
         this.domNode.append(iconElement);
         iconElement.classList.add(...ThemeIcon.asClassNameArray(Codicon.loading), 'codicon-modifier-spin');
         const updateSize = () => {
@@ -63,7 +64,7 @@ class InlineProgressWidget extends Disposable {
                 updateSize();
             }
         }));
-        this._register(dom.addDisposableListener(this.domNode, dom.EventType.CLICK, e => {
+        this._register(addDisposableListener(this.domNode, EventType.CLICK, e => {
             this.delegate.cancel();
         }));
     }
@@ -134,5 +135,5 @@ let InlineProgressManager = class InlineProgressManager extends Disposable {
 InlineProgressManager = __decorate([
     __param(2, IInstantiationService)
 ], InlineProgressManager);
+
 export { InlineProgressManager };
-//# sourceMappingURL=inlineProgress.js.map

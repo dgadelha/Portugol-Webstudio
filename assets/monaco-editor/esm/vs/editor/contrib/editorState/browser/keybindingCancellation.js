@@ -1,16 +1,17 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-import { EditorCommand, registerEditorCommand } from '../../../browser/editorExtensions.js';
-import { IContextKeyService, RawContextKey } from '../../../../platform/contextkey/common/contextkey.js';
+import { registerEditorCommand, EditorCommand } from '../../../browser/editorExtensions.js';
+import { RawContextKey, IContextKeyService } from '../../../../platform/contextkey/common/contextkey.js';
 import { CancellationTokenSource } from '../../../../base/common/cancellation.js';
 import { LinkedList } from '../../../../base/common/linkedList.js';
 import { createDecorator } from '../../../../platform/instantiation/common/instantiation.js';
 import { registerSingleton } from '../../../../platform/instantiation/common/extensions.js';
 import { localize } from '../../../../nls.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
 const IEditorCancellationTokens = createDecorator('IEditorCancelService');
-const ctxCancellableOperation = new RawContextKey('cancellableOperation', false, localize(934, 'Whether the editor runs a cancellable operation, e.g. like \'Peek References\''));
+const ctxCancellableOperation = new RawContextKey('cancellableOperation', false, localize(939, 'Whether the editor runs a cancellable operation, e.g. like \'Peek References\''));
 registerSingleton(IEditorCancellationTokens, class {
     constructor() {
         this._tokens = new WeakMap();
@@ -50,7 +51,7 @@ registerSingleton(IEditorCancellationTokens, class {
         }
     }
 }, 1 /* InstantiationType.Delayed */);
-export class EditorKeybindingCancellationTokenSource extends CancellationTokenSource {
+class EditorKeybindingCancellationTokenSource extends CancellationTokenSource {
     constructor(editor, parent) {
         super(parent);
         this.editor = editor;
@@ -76,4 +77,5 @@ registerEditorCommand(new class extends EditorCommand {
         accessor.get(IEditorCancellationTokens).cancel(editor);
     }
 });
-//# sourceMappingURL=keybindingCancellation.js.map
+
+export { EditorKeybindingCancellationTokenSource };

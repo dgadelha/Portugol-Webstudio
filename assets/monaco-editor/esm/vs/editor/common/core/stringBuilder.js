@@ -1,10 +1,11 @@
+import { isHighSurrogate } from '../../../base/common/strings.js';
+import { isLittleEndian } from '../../../base/common/platform.js';
+import { readUInt16LE } from '../../../base/common/buffer.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import * as strings from '../../../base/common/strings.js';
-import * as platform from '../../../base/common/platform.js';
-import * as buffer from '../../../base/common/buffer.js';
 let _utf16LE_TextDecoder;
 function getUTF16LE_TextDecoder() {
     if (!_utf16LE_TextDecoder) {
@@ -20,13 +21,13 @@ function getUTF16BE_TextDecoder() {
     return _utf16BE_TextDecoder;
 }
 let _platformTextDecoder;
-export function getPlatformTextDecoder() {
+function getPlatformTextDecoder() {
     if (!_platformTextDecoder) {
-        _platformTextDecoder = platform.isLittleEndian() ? getUTF16LE_TextDecoder() : getUTF16BE_TextDecoder();
+        _platformTextDecoder = isLittleEndian() ? getUTF16LE_TextDecoder() : getUTF16BE_TextDecoder();
     }
     return _platformTextDecoder;
 }
-export function decodeUTF16LE(source, offset, len) {
+function decodeUTF16LE(source, offset, len) {
     const view = new Uint16Array(source.buffer, offset, len);
     if (len > 0 && (view[0] === 0xFEFF || view[0] === 0xFFFE)) {
         // UTF16 sometimes starts with a BOM https://de.wikipedia.org/wiki/Byte_Order_Mark
@@ -41,13 +42,13 @@ function compatDecodeUTF16LE(source, offset, len) {
     const result = [];
     let resultLen = 0;
     for (let i = 0; i < len; i++) {
-        const charCode = buffer.readUInt16LE(source, offset);
+        const charCode = readUInt16LE(source, offset);
         offset += 2;
         result[resultLen++] = String.fromCharCode(charCode);
     }
     return result.join('');
 }
-export class StringBuilder {
+class StringBuilder {
     constructor(capacity) {
         this._capacity = capacity | 0;
         this._buffer = new Uint16Array(this._capacity);
@@ -88,7 +89,7 @@ export class StringBuilder {
     appendCharCode(charCode) {
         const remainingSpace = this._capacity - this._bufferLength;
         if (remainingSpace <= 1) {
-            if (remainingSpace === 0 || strings.isHighSurrogate(charCode)) {
+            if (remainingSpace === 0 || isHighSurrogate(charCode)) {
                 this._flushBuffer();
             }
         }
@@ -117,4 +118,5 @@ export class StringBuilder {
         }
     }
 }
-//# sourceMappingURL=stringBuilder.js.map
+
+export { StringBuilder, decodeUTF16LE, getPlatformTextDecoder };

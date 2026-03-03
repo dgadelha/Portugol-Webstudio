@@ -5,5 +5,6 @@
 /**
  * Can be passed into the Delayed to defer using a microtask
  * */
-export const MicrotaskDelay = Symbol('MicrotaskDelay');
-//# sourceMappingURL=symbols.js.map
+const MicrotaskDelay = Symbol('MicrotaskDelay');
+
+export { MicrotaskDelay };

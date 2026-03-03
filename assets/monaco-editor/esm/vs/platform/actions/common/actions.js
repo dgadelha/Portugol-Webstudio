@@ -1,33 +1,34 @@
+import { SubmenuAction } from '../../../base/common/actions.js';
+import { MicrotaskEmitter } from '../../../base/common/event.js';
+import { markAsSingleton, toDisposable, DisposableStore, dispose } from '../../../base/common/lifecycle.js';
+import { LinkedList } from '../../../base/common/linkedList.js';
+import { ThemeIcon } from '../../../base/common/themables.js';
+import { ICommandService, CommandsRegistry } from '../../commands/common/commands.js';
+import { IContextKeyService, ContextKeyExpr } from '../../contextkey/common/contextkey.js';
+import { createDecorator } from '../../instantiation/common/instantiation.js';
+import { KeybindingsRegistry } from '../../keybinding/common/keybindingsRegistry.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __param = (this && this.__param) || function (paramIndex, decorator) {
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 var MenuItemAction_1;
-import { SubmenuAction } from '../../../base/common/actions.js';
-import { MicrotaskEmitter } from '../../../base/common/event.js';
-import { DisposableStore, dispose, markAsSingleton, toDisposable } from '../../../base/common/lifecycle.js';
-import { LinkedList } from '../../../base/common/linkedList.js';
-import { ThemeIcon } from '../../../base/common/themables.js';
-import { CommandsRegistry, ICommandService } from '../../commands/common/commands.js';
-import { ContextKeyExpr, IContextKeyService } from '../../contextkey/common/contextkey.js';
-import { createDecorator } from '../../instantiation/common/instantiation.js';
-import { KeybindingsRegistry } from '../../keybinding/common/keybindingsRegistry.js';
-export function isIMenuItem(item) {
+function isIMenuItem(item) {
     return item.command !== undefined;
 }
-export function isISubmenuItem(item) {
+function isISubmenuItem(item) {
     return item.submenu !== undefined;
 }
-export class MenuId {
+class MenuId {
     static { this._instances = new Map(); }
     static { this.CommandPalette = new MenuId('CommandPalette'); }
     static { this.DebugBreakpointsContext = new MenuId('DebugBreakpointsContext'); }
@@ -108,8 +109,9 @@ export class MenuId {
     static { this.SCMHistoryTitle = new MenuId('SCMHistoryTitle'); }
     static { this.SCMHistoryItemContext = new MenuId('SCMHistoryItemContext'); }
     static { this.SCMHistoryItemChangeContext = new MenuId('SCMHistoryItemChangeContext'); }
-    static { this.SCMHistoryItemHover = new MenuId('SCMHistoryItemHover'); }
     static { this.SCMHistoryItemRefContext = new MenuId('SCMHistoryItemRefContext'); }
+    static { this.SCMArtifactGroupContext = new MenuId('SCMArtifactGroupContext'); }
+    static { this.SCMArtifactContext = new MenuId('SCMArtifactContext'); }
     static { this.SCMQuickDiffDecorations = new MenuId('SCMQuickDiffDecorations'); }
     static { this.SCMTitle = new MenuId('SCMTitle'); }
     static { this.SearchContext = new MenuId('SearchContext'); }
@@ -210,10 +212,9 @@ export class MenuId {
     static { this.ChatCompareBlock = new MenuId('ChatCompareBlock'); }
     static { this.ChatMessageTitle = new MenuId('ChatMessageTitle'); }
     static { this.ChatHistory = new MenuId('ChatHistory'); }
-    static { this.ChatWelcomeHistoryContext = new MenuId('ChatWelcomeHistoryContext'); }
+    static { this.ChatWelcomeContext = new MenuId('ChatWelcomeContext'); }
     static { this.ChatMessageFooter = new MenuId('ChatMessageFooter'); }
     static { this.ChatExecute = new MenuId('ChatExecute'); }
-    static { this.ChatExecuteSecondary = new MenuId('ChatExecuteSecondary'); }
     static { this.ChatInput = new MenuId('ChatInput'); }
     static { this.ChatInputSide = new MenuId('ChatInputSide'); }
     static { this.ChatModePicker = new MenuId('ChatModePicker'); }
@@ -229,6 +230,7 @@ export class MenuId {
     static { this.ChatInlineSymbolAnchorContext = new MenuId('ChatInlineSymbolAnchorContext'); }
     static { this.ChatMessageCheckpoint = new MenuId('ChatMessageCheckpoint'); }
     static { this.ChatMessageRestoreCheckpoint = new MenuId('ChatMessageRestoreCheckpoint'); }
+    static { this.ChatNewMenu = new MenuId('ChatNewMenu'); }
     static { this.ChatEditingCodeBlockContext = new MenuId('ChatEditingCodeBlockContext'); }
     static { this.ChatTitleBarMenu = new MenuId('ChatTitleBarMenu'); }
     static { this.ChatAttachmentsContext = new MenuId('ChatAttachmentsContext'); }
@@ -237,7 +239,10 @@ export class MenuId {
     static { this.ChatToolOutputResourceContext = new MenuId('ChatToolOutputResourceContext'); }
     static { this.ChatMultiDiffContext = new MenuId('ChatMultiDiffContext'); }
     static { this.ChatSessionsMenu = new MenuId('ChatSessionsMenu'); }
+    static { this.ChatSessionsCreateSubMenu = new MenuId('ChatSessionsCreateSubMenu'); }
     static { this.ChatConfirmationMenu = new MenuId('ChatConfirmationMenu'); }
+    static { this.ChatEditorInlineExecute = new MenuId('ChatEditorInputExecute'); }
+    static { this.ChatEditorInlineInputSide = new MenuId('ChatEditorInputSide'); }
     static { this.AccessibleView = new MenuId('AccessibleView'); }
     static { this.MultiDiffEditorFileToolbar = new MenuId('MultiDiffEditorFileToolbar'); }
     static { this.DiffEditorHunkToolbar = new MenuId('DiffEditorHunkToolbar'); }
@@ -255,7 +260,7 @@ export class MenuId {
         this.id = identifier;
     }
 }
-export const IMenuService = createDecorator('menuService');
+const IMenuService = createDecorator('menuService');
 class MenuRegistryChangeEvent {
     static { this._all = new Map(); }
     static for(id) {
@@ -280,7 +285,7 @@ class MenuRegistryChangeEvent {
         this.has = candidate => candidate === id;
     }
 }
-export const MenuRegistry = new class {
+const MenuRegistry = new class {
     constructor() {
         this._commands = new Map();
         this._menuItems = new Map();
@@ -358,7 +363,7 @@ export const MenuRegistry = new class {
         });
     }
 };
-export class SubmenuItemAction extends SubmenuAction {
+class SubmenuItemAction extends SubmenuAction {
     constructor(item, hideActions, actions) {
         super(`submenuitem.${item.submenu.id}`, typeof item.title === 'string' ? item.title : item.title.value, actions, 'submenu');
         this.item = item;
@@ -419,13 +424,12 @@ MenuItemAction = MenuItemAction_1 = __decorate([
     __param(5, IContextKeyService),
     __param(6, ICommandService)
 ], MenuItemAction);
-export { MenuItemAction };
-export class Action2 {
+class Action2 {
     constructor(desc) {
         this.desc = desc;
     }
 }
-export function registerAction2(ctor) {
+function registerAction2(ctor) {
     const disposables = []; // not using `DisposableStore` to reduce startup perf cost
     const action = new ctor();
     const { f1, menu, keybinding, ...command } = action.desc;
@@ -475,4 +479,5 @@ export function registerAction2(ctor) {
     };
 }
 //#endregion
-//# sourceMappingURL=actions.js.map
+
+export { Action2, IMenuService, MenuId, MenuItemAction, MenuRegistry, SubmenuItemAction, isIMenuItem, isISubmenuItem, registerAction2 };

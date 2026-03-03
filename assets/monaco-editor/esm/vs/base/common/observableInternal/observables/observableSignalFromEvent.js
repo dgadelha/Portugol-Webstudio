@@ -1,12 +1,13 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { transaction } from '../transaction.js';
 import { DebugNameData } from '../debugName.js';
 import { BaseObservable } from './baseObservable.js';
 import { DebugLocation } from '../debugLocation.js';
-export function observableSignalFromEvent(owner, event, debugLocation = DebugLocation.ofCaller()) {
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+function observableSignalFromEvent(owner, event, debugLocation = DebugLocation.ofCaller()) {
     return new FromEventObservableSignal(typeof owner === 'string' ? owner : new DebugNameData(owner, undefined, undefined), event, debugLocation);
 }
 class FromEventObservableSignal extends BaseObservable {
@@ -36,4 +37,5 @@ class FromEventObservableSignal extends BaseObservable {
         // NO OP
     }
 }
-//# sourceMappingURL=observableSignalFromEvent.js.map
+
+export { observableSignalFromEvent };

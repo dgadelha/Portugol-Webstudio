@@ -1,7 +1,7 @@
-import { addDisposableListener, EventHelper, EventType, reset, trackFocus } from '../../dom.js';
+import { EventType, addDisposableListener, EventHelper, trackFocus, reset } from '../../dom.js';
 import { StandardKeyboardEvent } from '../../keyboardEvent.js';
 import { renderMarkdown, renderAsPlaintext } from '../../markdownRenderer.js';
-import { Gesture, EventType as TouchEventType } from '../../touch.js';
+import { Gesture, EventType as EventType$1 } from '../../touch.js';
 import { getDefaultHoverDelegate } from '../hover/hoverDelegateFactory.js';
 import { renderLabelWithIcons } from '../iconLabel/iconLabels.js';
 import { Color } from '../../../common/color.js';
@@ -12,16 +12,10 @@ import { ThemeIcon } from '../../../common/themables.js';
 import './button.css';
 import { getBaseLayerHoverDelegate } from '../hover/hoverDelegate2.js';
 import { safeSetInnerHtml } from '../../domSanitize.js';
-export const unthemedButtonStyles = {
-    buttonBackground: '#0E639C',
-    buttonHoverBackground: '#006BB3',
+
+({
     buttonSeparator: Color.white.toString(),
-    buttonForeground: Color.white.toString(),
-    buttonBorder: undefined,
-    buttonSecondaryBackground: undefined,
-    buttonSecondaryForeground: undefined,
-    buttonSecondaryHoverBackground: undefined
-};
+    buttonForeground: Color.white.toString()});
 // Only allow a very limited set of inline html tags
 const buttonSanitizerConfig = Object.freeze({
     allowedTags: {
@@ -31,7 +25,7 @@ const buttonSanitizerConfig = Object.freeze({
         override: ['class'],
     },
 });
-export class Button extends Disposable {
+class Button extends Disposable {
     get onDidClick() { return this._onDidClick.event; }
     constructor(container, options) {
         super();
@@ -66,7 +60,7 @@ export class Button extends Disposable {
         container.appendChild(this._element);
         this.enabled = !options.disabled;
         this._register(Gesture.addTarget(this._element));
-        [EventType.CLICK, TouchEventType.Tap].forEach(eventType => {
+        [EventType.CLICK, EventType$1.Tap].forEach(eventType => {
             this._register(addDisposableListener(this._element, eventType, e => {
                 if (!this.enabled) {
                     EventHelper.stop(e);
@@ -160,6 +154,7 @@ export class Button extends Disposable {
             const rendered = renderMarkdown(value, undefined, document.createElement('span'));
             rendered.dispose();
             // Don't include outer `<p>`
+            // eslint-disable-next-line no-restricted-syntax
             const root = rendered.element.querySelector('p')?.innerHTML;
             if (root) {
                 safeSetInnerHtml(labelElement, root, buttonSanitizerConfig);
@@ -227,4 +222,5 @@ export class Button extends Disposable {
         }
     }
 }
-//# sourceMappingURL=button.js.map
+
+export { Button };

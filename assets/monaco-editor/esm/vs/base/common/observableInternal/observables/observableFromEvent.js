@@ -1,14 +1,17 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { subtransaction } from '../transaction.js';
-import { strictEquals } from '../commonFacade/deps.js';
+import { strictEquals } from '../../equals.js';
+import '../../event.js';
+import '../../lifecycle.js';
 import { DebugNameData } from '../debugName.js';
 import { getLogger } from '../logging/logging.js';
 import { BaseObservable } from './baseObservable.js';
 import { DebugLocation } from '../debugLocation.js';
-export function observableFromEvent(...args) {
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+function observableFromEvent(...args) {
     let owner;
     let event;
     let getValue;
@@ -21,10 +24,10 @@ export function observableFromEvent(...args) {
     }
     return new FromEventObservable(new DebugNameData(owner, undefined, getValue), event, getValue, () => FromEventObservable.globalTransaction, strictEquals, debugLocation ?? DebugLocation.ofCaller());
 }
-export function observableFromEventOpts(options, event, getValue, debugLocation = DebugLocation.ofCaller()) {
+function observableFromEventOpts(options, event, getValue, debugLocation = DebugLocation.ofCaller()) {
     return new FromEventObservable(new DebugNameData(options.owner, options.debugName, options.debugReferenceFn ?? getValue), event, getValue, () => FromEventObservable.globalTransaction, options.equalsFn ?? strictEquals, debugLocation);
 }
-export class FromEventObservable extends BaseObservable {
+class FromEventObservable extends BaseObservable {
     constructor(_debugNameData, event, _getValue, _getTransaction, _equalityComparator, debugLocation) {
         super(debugLocation);
         this._debugNameData = _debugNameData;
@@ -90,6 +93,7 @@ export class FromEventObservable extends BaseObservable {
         }
     }
     debugSetValue(value) {
+        // eslint-disable-next-line local/code-no-any-casts
         this._value = value;
     }
     debugGetState() {
@@ -115,4 +119,5 @@ export class FromEventObservable extends BaseObservable {
     }
     observableFromEvent.batchEventsGlobally = batchEventsGlobally;
 })(observableFromEvent || (observableFromEvent = {}));
-//# sourceMappingURL=observableFromEvent.js.map
+
+export { FromEventObservable, observableFromEvent, observableFromEventOpts };

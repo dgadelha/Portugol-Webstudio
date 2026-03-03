@@ -1,11 +1,12 @@
+import { Position } from '../core/position.js';
+import { Range } from '../core/range.js';
+import { Selection } from '../core/selection.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { Position } from '../core/position.js';
-import { Range } from '../core/range.js';
-import { Selection } from '../core/selection.js';
-export class ReplaceCommand {
+class ReplaceCommand {
     constructor(range, text, insertsAutoWhitespace = false) {
         this._range = range;
         this._text = text;
@@ -20,7 +21,7 @@ export class ReplaceCommand {
         return Selection.fromPositions(srcRange.getEndPosition());
     }
 }
-export class ReplaceOvertypeCommand {
+class ReplaceOvertypeCommand {
     constructor(range, text, insertsAutoWhitespace = false) {
         this._range = range;
         this._text = text;
@@ -44,7 +45,7 @@ export class ReplaceOvertypeCommand {
         return Selection.fromPositions(srcRange.getEndPosition());
     }
 }
-export class ReplaceCommandThatSelectsText {
+class ReplaceCommandThatSelectsText {
     constructor(range, text) {
         this._range = range;
         this._text = text;
@@ -58,7 +59,7 @@ export class ReplaceCommandThatSelectsText {
         return Selection.fromRange(srcRange, 0 /* SelectionDirection.LTR */);
     }
 }
-export class ReplaceCommandWithoutChangingPosition {
+class ReplaceCommandWithoutChangingPosition {
     constructor(range, text, insertsAutoWhitespace = false) {
         this._range = range;
         this._text = text;
@@ -73,7 +74,7 @@ export class ReplaceCommandWithoutChangingPosition {
         return Selection.fromPositions(srcRange.getStartPosition());
     }
 }
-export class ReplaceCommandWithOffsetCursorState {
+class ReplaceCommandWithOffsetCursorState {
     constructor(range, text, lineNumberDeltaOffset, columnDeltaOffset, insertsAutoWhitespace = false) {
         this._range = range;
         this._text = text;
@@ -90,7 +91,7 @@ export class ReplaceCommandWithOffsetCursorState {
         return Selection.fromPositions(srcRange.getEndPosition().delta(this._lineNumberDeltaOffset, this._columnDeltaOffset));
     }
 }
-export class ReplaceOvertypeCommandOnCompositionEnd {
+class ReplaceOvertypeCommandOnCompositionEnd {
     constructor(range) {
         this._range = range;
     }
@@ -111,7 +112,7 @@ export class ReplaceOvertypeCommandOnCompositionEnd {
         return Selection.fromPositions(srcRange.getEndPosition());
     }
 }
-export class ReplaceCommandThatPreservesSelection {
+class ReplaceCommandThatPreservesSelection {
     constructor(editRange, text, initialSelection, forceMoveMarkers = false) {
         this._range = editRange;
         this._text = text;
@@ -153,4 +154,5 @@ function addPositiveOffsetToModelPosition(model, position, offset) {
     }
     return endPosition;
 }
-//# sourceMappingURL=replaceCommand.js.map
+
+export { ReplaceCommand, ReplaceCommandThatPreservesSelection, ReplaceCommandThatSelectsText, ReplaceCommandWithOffsetCursorState, ReplaceCommandWithoutChangingPosition, ReplaceOvertypeCommand, ReplaceOvertypeCommandOnCompositionEnd };

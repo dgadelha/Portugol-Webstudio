@@ -1,34 +1,22 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-var InlineEditsView_1;
+import { $ } from '../../../../../../base/browser/dom.js';
 import { equalsIfDefined, itemEquals } from '../../../../../../base/common/equals.js';
-import { BugIndicatingError } from '../../../../../../base/common/errors.js';
+import { onUnexpectedError, BugIndicatingError } from '../../../../../../base/common/errors.js';
 import { Event } from '../../../../../../base/common/event.js';
 import { Disposable } from '../../../../../../base/common/lifecycle.js';
-import { autorun, autorunWithStore, derived, derivedOpts, mapObservableArrayCached, observableValue } from '../../../../../../base/common/observable.js';
+import '../../../../../../base/common/observableInternal/index.js';
 import { IInstantiationService } from '../../../../../../platform/instantiation/common/instantiation.js';
 import { observableCodeEditor } from '../../../../../browser/observableCodeEditor.js';
-import { LineRange } from '../../../../../common/core/ranges/lineRange.js';
-import { Range } from '../../../../../common/core/range.js';
 import { TextReplacement } from '../../../../../common/core/edits/textEdit.js';
+import { Range } from '../../../../../common/core/range.js';
+import { LineRange } from '../../../../../common/core/ranges/lineRange.js';
 import { StringText } from '../../../../../common/core/text/abstractText.js';
 import { TextLength } from '../../../../../common/core/text/textLength.js';
-import { lineRangeMappingFromRangeMappings, RangeMapping } from '../../../../../common/diff/rangeMapping.js';
+import { RangeMapping, lineRangeMappingFromRangeMappings } from '../../../../../common/diff/rangeMapping.js';
 import { TextModel } from '../../../../../common/model/textModel.js';
+import { InlineEditItem } from '../../model/inlineSuggestionItem.js';
 import { InlineEditsGutterIndicator } from './components/gutterIndicatorView.js';
 import { InlineEditsOnboardingExperience } from './inlineEditsNewUsers.js';
-import { InlineCompletionViewKind, InlineEditTabAction } from './inlineEditsViewInterface.js';
+import { InlineEditTabAction, InlineCompletionViewKind } from './inlineEditsViewInterface.js';
 import { InlineEditsCollapsedView } from './inlineEditsViews/inlineEditsCollapsedView.js';
 import { InlineEditsCustomView } from './inlineEditsViews/inlineEditsCustomView.js';
 import { InlineEditsDeletionView } from './inlineEditsViews/inlineEditsDeletionView.js';
@@ -37,10 +25,27 @@ import { InlineEditsLineReplacementView } from './inlineEditsViews/inlineEditsLi
 import { InlineEditsSideBySideView } from './inlineEditsViews/inlineEditsSideBySideView.js';
 import { InlineEditsWordReplacementView } from './inlineEditsViews/inlineEditsWordReplacementView.js';
 import { OriginalEditorInlineDiffView } from './inlineEditsViews/originalEditorInlineDiffView.js';
-import { applyEditToModifiedRangeMappings, createReindentEdit } from './utils/utils.js';
+import { createReindentEdit, applyEditToModifiedRangeMappings } from './utils/utils.js';
 import './view.css';
-import { $ } from '../../../../../../base/browser/dom.js';
-let InlineEditsView = InlineEditsView_1 = class InlineEditsView extends Disposable {
+import { derived, derivedOpts } from '../../../../../../base/common/observableInternal/observables/derived.js';
+import { observableValue } from '../../../../../../base/common/observableInternal/observables/observableValue.js';
+import { mapObservableArrayCached } from '../../../../../../base/common/observableInternal/utils/utils.js';
+import { autorunWithStore, autorun } from '../../../../../../base/common/observableInternal/reactions/autorun.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+let InlineEditsView = class InlineEditsView extends Disposable {
     constructor(_editor, _host, _model, _ghostTextIndicator, _focusIsInMenu, _instantiationService) {
         super();
         this._editor = _editor;
@@ -63,7 +68,7 @@ let InlineEditsView = InlineEditsView_1 = class InlineEditsView extends Disposab
             let diff = lineRangeMappingFromRangeMappings(mappings, inlineEdit.originalText, new StringText(newText));
             let state = this.determineRenderState(model, reader, diff, new StringText(newText));
             if (!state) {
-                model.abort(`unable to determine view: tried to render ${this._previousView?.view}`);
+                onUnexpectedError(new Error(`unable to determine view: tried to render ${this._previousView?.view}`));
                 return undefined;
             }
             if (state.kind === InlineCompletionViewKind.SideBySide) {
@@ -246,14 +251,17 @@ let InlineEditsView = InlineEditsView_1 = class InlineEditsView extends Disposab
     determineView(model, reader, diff, newText) {
         // Check if we can use the previous view if it is the same InlineCompletion as previously shown
         const inlineEdit = model.inlineEdit;
-        const canUseCache = this._previousView?.id === this.getCacheId(model);
+        const canUseCache = this._previousView?.id === this.getCacheId(model) && !model.displayLocation?.jumpToEdit;
         const reconsiderViewEditorWidthChange = this._previousView?.editorWidth !== this._editorObs.layoutInfoWidth.read(reader) &&
             (this._previousView?.view === InlineCompletionViewKind.SideBySide ||
                 this._previousView?.view === InlineCompletionViewKind.LineReplacement);
         if (canUseCache && !reconsiderViewEditorWidthChange) {
             return this._previousView.view;
         }
-        if (model.displayLocation) {
+        if (model.inlineEdit.inlineCompletion instanceof InlineEditItem && model.inlineEdit.inlineCompletion.uri) {
+            return InlineCompletionViewKind.Custom;
+        }
+        if (model.displayLocation && !model.inlineEdit.inlineCompletion.identity.jumpedTo.read(reader)) {
             return InlineCompletionViewKind.Custom;
         }
         // Determine the view based on the edit / diff
@@ -313,7 +321,15 @@ let InlineEditsView = InlineEditsView_1 = class InlineEditsView extends Disposab
     }
     determineRenderState(model, reader, diff, newText) {
         const inlineEdit = model.inlineEdit;
-        const view = this.determineView(model, reader, diff, newText);
+        let view = this.determineView(model, reader, diff, newText);
+        if (this._willRenderAboveCursor(reader, inlineEdit, view)) {
+            switch (view) {
+                case InlineCompletionViewKind.LineReplacement:
+                case InlineCompletionViewKind.WordReplacements:
+                    view = InlineCompletionViewKind.SideBySide;
+                    break;
+            }
+        }
         this._previousView = { id: this.getCacheId(model), view, editorWidth: this._editor.getLayoutInfo().width, timestamp: Date.now() };
         const inner = diff.flatMap(d => d.innerChanges ?? []);
         const textModel = this._editor.getModel();
@@ -324,9 +340,9 @@ let InlineEditsView = InlineEditsView_1 = class InlineEditsView extends Disposab
             modified: newText.getValueOfRange(m.modifiedRange)
         }));
         const cursorPosition = inlineEdit.cursorPosition;
-        const startsWithEOL = stringChanges[0].modified.startsWith(textModel.getEOL());
+        const startsWithEOL = stringChanges.length === 0 ? false : stringChanges[0].modified.startsWith(textModel.getEOL());
         const viewData = {
-            cursorColumnDistance: inlineEdit.edit.replacements[0].range.getStartPosition().column - cursorPosition.column,
+            cursorColumnDistance: inlineEdit.edit.replacements.length === 0 ? 0 : inlineEdit.edit.replacements[0].range.getStartPosition().column - cursorPosition.column,
             cursorLineDistance: inlineEdit.lineEdit.lineRange.startLineNumber - cursorPosition.lineNumber + (startsWithEOL && inlineEdit.lineEdit.lineRange.startLineNumber >= cursorPosition.lineNumber ? 1 : 0),
             lineCountOriginal: inlineEdit.lineEdit.lineRange.length,
             lineCountModified: inlineEdit.lineEdit.newLines.length,
@@ -386,6 +402,24 @@ let InlineEditsView = InlineEditsView_1 = class InlineEditsView extends Disposab
         }
         return undefined;
     }
+    _willRenderAboveCursor(reader, inlineEdit, view) {
+        const useCodeShifting = this._useCodeShifting.read(reader);
+        if (useCodeShifting === 'always') {
+            return false;
+        }
+        for (const cursorPosition of inlineEdit.multiCursorPositions) {
+            if (view === InlineCompletionViewKind.WordReplacements &&
+                cursorPosition.lineNumber === inlineEdit.originalLineRange.startLineNumber + 1) {
+                return true;
+            }
+            if (view === InlineCompletionViewKind.LineReplacement &&
+                cursorPosition.lineNumber >= inlineEdit.originalLineRange.endLineNumberExclusive &&
+                cursorPosition.lineNumber < inlineEdit.modifiedLineRange.endLineNumberExclusive + inlineEdit.modifiedLineRange.length) {
+                return true;
+            }
+        }
+        return false;
+    }
     _viewHasBeenShownLongerThan(durationMs) {
         const viewCreationTime = this._previousView?.timestamp;
         if (!viewCreationTime) {
@@ -395,10 +429,9 @@ let InlineEditsView = InlineEditsView_1 = class InlineEditsView extends Disposab
         return (currentTime - viewCreationTime) >= durationMs;
     }
 };
-InlineEditsView = InlineEditsView_1 = __decorate([
+InlineEditsView = __decorate([
     __param(5, IInstantiationService)
 ], InlineEditsView);
-export { InlineEditsView };
 function isSingleLineInsertion(diff) {
     return diff.every(m => m.innerChanges.every(r => isWordInsertion(r)));
     function isWordInsertion(r) {
@@ -524,4 +557,5 @@ function countPrefixRepeats(str, prefix) {
     }
     return count;
 }
-//# sourceMappingURL=inlineEditsView.js.map
+
+export { InlineEditsView };

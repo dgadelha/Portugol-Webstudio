@@ -1,34 +1,45 @@
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+import { n, getWindow } from '../../../../../../../base/browser/dom.js';
+import { StandardMouseEvent } from '../../../../../../../base/browser/mouseEvent.js';
+import { Emitter } from '../../../../../../../base/common/event.js';
+import { Disposable } from '../../../../../../../base/common/lifecycle.js';
+import '../../../../../../../base/common/observableInternal/index.js';
+import { asCssVariable } from '../../../../../../../platform/theme/common/colorUtils.js';
+import '../../../../../../../platform/theme/common/colors/baseColors.js';
+import '../../../../../../../platform/theme/common/colors/chartsColors.js';
+import { editorBackground } from '../../../../../../../platform/theme/common/colors/editorColors.js';
+import '../../../../../../../platform/theme/common/colors/inputColors.js';
+import '../../../../../../../platform/theme/common/colors/listColors.js';
+import '../../../../../../../platform/theme/common/colors/menuColors.js';
+import '../../../../../../../platform/theme/common/colors/minimapColors.js';
+import '../../../../../../../platform/theme/common/colors/miscColors.js';
+import '../../../../../../../platform/theme/common/colors/quickpickColors.js';
+import '../../../../../../../platform/theme/common/colors/searchColors.js';
+import { IThemeService } from '../../../../../../../platform/theme/common/themeService.js';
+import { observableCodeEditor } from '../../../../../../browser/observableCodeEditor.js';
+import { renderLines, RenderOptions, LineSource } from '../../../../../../browser/widget/diffEditor/components/diffEditorViewZones/renderLines.js';
+import { Rect } from '../../../../../../common/core/2d/rect.js';
+import { LineRange } from '../../../../../../common/core/ranges/lineRange.js';
+import { InlineCompletionHintStyle } from '../../../../../../common/languages.js';
+import { ILanguageService } from '../../../../../../common/languages/language.js';
+import { TokenArray, LineTokens } from '../../../../../../common/tokens/lineTokens.js';
+import { InlineEditTabAction } from '../inlineEditsViewInterface.js';
+import { getEditorBlendedColor, inlineEditIndicatorsuccessfulBackground, inlineEditIndicatorPrimaryBackground, inlineEditIndicatorSecondaryBackground } from '../theme.js';
+import { maxContentWidthInRange, getContentRenderWidth, rectToProps } from '../utils/utils.js';
+import { observableValue } from '../../../../../../../base/common/observableInternal/observables/observableValue.js';
+import { derived } from '../../../../../../../base/common/observableInternal/observables/derived.js';
+import { derivedObservableWithCache } from '../../../../../../../base/common/observableInternal/utils/utils.js';
+import { constObservable } from '../../../../../../../base/common/observableInternal/observables/constObservable.js';
+import { autorun } from '../../../../../../../base/common/observableInternal/reactions/autorun.js';
+
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __param = (this && this.__param) || function (paramIndex, decorator) {
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-import { getWindow, n } from '../../../../../../../base/browser/dom.js';
-import { StandardMouseEvent } from '../../../../../../../base/browser/mouseEvent.js';
-import { Emitter } from '../../../../../../../base/common/event.js';
-import { Disposable } from '../../../../../../../base/common/lifecycle.js';
-import { autorun, constObservable, derived, derivedObservableWithCache, observableValue } from '../../../../../../../base/common/observable.js';
-import { editorBackground } from '../../../../../../../platform/theme/common/colorRegistry.js';
-import { asCssVariable } from '../../../../../../../platform/theme/common/colorUtils.js';
-import { IThemeService } from '../../../../../../../platform/theme/common/themeService.js';
-import { observableCodeEditor } from '../../../../../../browser/observableCodeEditor.js';
-import { LineSource, renderLines, RenderOptions } from '../../../../../../browser/widget/diffEditor/components/diffEditorViewZones/renderLines.js';
-import { Rect } from '../../../../../../common/core/2d/rect.js';
-import { LineRange } from '../../../../../../common/core/ranges/lineRange.js';
-import { InlineCompletionDisplayLocationKind } from '../../../../../../common/languages.js';
-import { ILanguageService } from '../../../../../../common/languages/language.js';
-import { LineTokens, TokenArray } from '../../../../../../common/tokens/lineTokens.js';
-import { InlineEditTabAction } from '../inlineEditsViewInterface.js';
-import { getEditorBlendedColor, inlineEditIndicatorPrimaryBackground, inlineEditIndicatorSecondaryBackground, inlineEditIndicatorsuccessfulBackground } from '../theme.js';
-import { getContentRenderWidth, maxContentWidthInRange, rectToProps } from '../utils/utils.js';
 const MIN_END_OF_LINE_PADDING = 14;
 const PADDING_VERTICALLY = 0;
 const PADDING_HORIZONTALLY = 4;
@@ -142,7 +153,7 @@ let InlineEditsCustomView = class InlineEditsCustomView extends Disposable {
         const startLineNumber = displayLocation.range.startLineNumber;
         const endLineNumber = displayLocation.range.endLineNumber;
         // only check viewport once in the beginning when rendering the view
-        const fitsInsideViewport = this.fitsInsideViewport(new LineRange(startLineNumber, endLineNumber + 1), displayLocation.label, undefined);
+        const fitsInsideViewport = this.fitsInsideViewport(new LineRange(startLineNumber, endLineNumber + 1), displayLocation.content, undefined);
         const rect = derived(this, reader => {
             const w = this._editorObs.getOption(59 /* EditorOption.fontInfo */).read(reader).typicalHalfwidthCharacterWidth;
             const { lineWidth, lineWidthBelow, lineWidthAbove, startContentLeftOffset, endContentLeftOffset } = contentState.read(reader);
@@ -189,20 +200,20 @@ let InlineEditsCustomView = class InlineEditsCustomView extends Disposable {
                     break;
                 }
             }
-            const textRect = Rect.fromLeftTopWidthHeight(contentLeft + contentStartOffset - scrollLeft, topOfLine - scrollTop, w * displayLocation.label.length, lineHeight);
+            const textRect = Rect.fromLeftTopWidthHeight(contentLeft + contentStartOffset - scrollLeft, topOfLine - scrollTop, w * displayLocation.content.length, lineHeight);
             return textRect.withMargin(PADDING_VERTICALLY, PADDING_HORIZONTALLY).translateX(deltaX).translateY(deltaY);
         });
         return {
             rect,
-            label: displayLocation.label,
-            kind: displayLocation.kind
+            label: displayLocation.content,
+            kind: displayLocation.style
         };
     }
     getRendering(state, styles) {
         const line = document.createElement('div');
         const t = this._editor.getModel().tokenization.tokenizeLinesAt(1, [state.label])?.[0];
         let tokens;
-        if (t && state.kind === InlineCompletionDisplayLocationKind.Code) {
+        if (t && state.kind === InlineCompletionHintStyle.Code) {
             tokens = TokenArray.fromLineTokens(t).toLineTokens(state.label, this._languageService.languageIdCodec);
         }
         else {
@@ -241,5 +252,5 @@ InlineEditsCustomView = __decorate([
     __param(3, IThemeService),
     __param(4, ILanguageService)
 ], InlineEditsCustomView);
+
 export { InlineEditsCustomView };
-//# sourceMappingURL=inlineEditsCustomView.js.map

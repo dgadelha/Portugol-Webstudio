@@ -7,13 +7,13 @@
  * @returns A tuple of [rest, last] where rest is all but the last element and last is the last element
  * @throws Error if the array is empty
  */
-export function tail(arr) {
+function tail(arr) {
     if (arr.length === 0) {
         throw new Error('Invalid tail call');
     }
     return [arr.slice(0, arr.length - 1), arr[arr.length - 1]];
 }
-export function equals(one, other, itemEquals = (a, b) => a === b) {
+function equals(one, other, itemEquals = (a, b) => a === b) {
     if (one === other) {
         return true;
     }
@@ -34,7 +34,7 @@ export function equals(one, other, itemEquals = (a, b) => a === b) {
  * Remove the element at `index` by replacing it with the last element. This is faster than `splice`
  * but changes the order of the array
  */
-export function removeFastWithoutKeepingOrder(array, index) {
+function removeFastWithoutKeepingOrder(array, index) {
     const last = array.length - 1;
     if (index < last) {
         array[index] = array[last];
@@ -52,7 +52,7 @@ export function removeFastWithoutKeepingOrder(array, index) {
  *   precedes the first one.
  * @return See {@link binarySearch2}
  */
-export function binarySearch(array, key, comparator) {
+function binarySearch(array, key, comparator) {
     return binarySearch2(array.length, i => comparator(array[i], key));
 }
 /**
@@ -70,7 +70,7 @@ export function binarySearch(array, key, comparator) {
  *   result is -(n+1) (or ~n, using bitwise notation), where n is the index
  *   where the key should be inserted to maintain the sorting order.
  */
-export function binarySearch2(length, compareToKey) {
+function binarySearch2(length, compareToKey) {
     let low = 0, high = length - 1;
     while (low <= high) {
         const mid = ((low + high) / 2) | 0;
@@ -87,7 +87,7 @@ export function binarySearch2(length, compareToKey) {
     }
     return -(low + 1);
 }
-export function quickSelect(nth, data, compare) {
+function quickSelect(nth, data, compare) {
     nth = nth | 0;
     if (nth >= data.length) {
         throw new TypeError('invalid index');
@@ -118,7 +118,7 @@ export function quickSelect(nth, data, compare) {
         return quickSelect(nth - (lower.length + pivots.length), higher, compare);
     }
 }
-export function groupBy(data, compare) {
+function groupBy(data, compare) {
     const result = [];
     let currentGroup = undefined;
     for (const element of data.slice(0).sort(compare)) {
@@ -137,7 +137,7 @@ export function groupBy(data, compare) {
  * `shouldBeGrouped` is used to decide if two consecutive items should be in the same group.
  * The order of the items is preserved.
  */
-export function* groupAdjacentBy(items, shouldBeGrouped) {
+function* groupAdjacentBy(items, shouldBeGrouped) {
     let currentGroup;
     let last;
     for (const item of items) {
@@ -156,12 +156,12 @@ export function* groupAdjacentBy(items, shouldBeGrouped) {
         yield currentGroup;
     }
 }
-export function forEachAdjacent(arr, f) {
+function forEachAdjacent(arr, f) {
     for (let i = 0; i <= arr.length; i++) {
         f(i === 0 ? undefined : arr[i - 1], i === arr.length ? undefined : arr[i]);
     }
 }
-export function forEachWithNeighbors(arr, f) {
+function forEachWithNeighbors(arr, f) {
     for (let i = 0; i < arr.length; i++) {
         f(i === 0 ? undefined : arr[i - 1], arr[i], i + 1 === arr.length ? undefined : arr[i + 1]);
     }
@@ -169,13 +169,13 @@ export function forEachWithNeighbors(arr, f) {
 /**
  * @returns New array with all falsy values removed. The original array IS NOT modified.
  */
-export function coalesce(array) {
+function coalesce(array) {
     return array.filter((e) => !!e);
 }
 /**
  * Remove all falsy values from `array`. The original array IS modified.
  */
-export function coalesceInPlace(array) {
+function coalesceInPlace(array) {
     let to = 0;
     for (let i = 0; i < array.length; i++) {
         if (!!array[i]) {
@@ -188,17 +188,17 @@ export function coalesceInPlace(array) {
 /**
  * @returns false if the provided object is an array and not empty.
  */
-export function isFalsyOrEmpty(obj) {
+function isFalsyOrEmpty(obj) {
     return !Array.isArray(obj) || obj.length === 0;
 }
-export function isNonEmptyArray(obj) {
+function isNonEmptyArray(obj) {
     return Array.isArray(obj) && obj.length > 0;
 }
 /**
  * Removes duplicates from the given array. The optional keyFn allows to specify
  * how elements are checked for equality by returning an alternate value for each.
  */
-export function distinct(array, keyFn = value => value) {
+function distinct(array, keyFn = value => value) {
     const seen = new Set();
     return array.filter(element => {
         const key = keyFn(element);
@@ -209,7 +209,7 @@ export function distinct(array, keyFn = value => value) {
         return true;
     });
 }
-export function range(arg, to) {
+function range(arg, to) {
     let from = typeof to === 'number' ? arg : 0;
     if (typeof to === 'number') {
         from = arg;
@@ -235,7 +235,7 @@ export function range(arg, to) {
  * Insert `insertArr` inside `target` at `insertIndex`.
  * Please don't touch unless you understand https://jsperf.com/inserting-an-array-within-an-array
  */
-export function arrayInsert(target, insertIndex, insertArr) {
+function arrayInsert(target, insertIndex, insertArr) {
     const before = target.slice(0, insertIndex);
     const after = target.slice(insertIndex);
     return before.concat(insertArr, after);
@@ -243,7 +243,7 @@ export function arrayInsert(target, insertIndex, insertArr) {
 /**
  * Pushes an element to the start of the array, if found.
  */
-export function pushToStart(arr, value) {
+function pushToStart(arr, value) {
     const index = arr.indexOf(value);
     if (index > -1) {
         arr.splice(index, 1);
@@ -253,19 +253,29 @@ export function pushToStart(arr, value) {
 /**
  * Pushes an element to the end of the array, if found.
  */
-export function pushToEnd(arr, value) {
+function pushToEnd(arr, value) {
     const index = arr.indexOf(value);
     if (index > -1) {
         arr.splice(index, 1);
         arr.push(value);
     }
 }
-export function pushMany(arr, items) {
+function pushMany(arr, items) {
     for (const item of items) {
         arr.push(item);
     }
 }
-export function asArray(x) {
+function mapFilter(array, fn) {
+    const result = [];
+    for (const item of array) {
+        const mapped = fn(item);
+        if (mapped !== undefined) {
+            result.push(mapped);
+        }
+    }
+    return result;
+}
+function asArray(x) {
     return Array.isArray(x) ? x : [x];
 }
 /**
@@ -274,7 +284,7 @@ export function asArray(x) {
  * @param start The zero-based location in the array from which to start inserting elements.
  * @param newItems The items to be inserted
  */
-export function insertInto(array, start, newItems) {
+function insertInto(array, start, newItems) {
     const startIdx = getActualStartIndex(array, start);
     const originalLength = array.length;
     const newItemsLength = newItems.length;
@@ -295,7 +305,7 @@ export function insertInto(array, start, newItems) {
  * @param deleteCount The number of elements to remove.
  * @returns An array containing the elements that were deleted.
  */
-export function splice(array, start, deleteCount, newItems) {
+function splice(array, start, deleteCount, newItems) {
     const index = getActualStartIndex(array, start);
     let result = array.splice(index, deleteCount);
     if (result === undefined) {
@@ -315,7 +325,7 @@ export function splice(array, start, deleteCount, newItems) {
 function getActualStartIndex(array, start) {
     return start < 0 ? Math.max(start + array.length, 0) : Math.min(start, array.length);
 }
-export var CompareResult;
+var CompareResult;
 (function (CompareResult) {
     function isLessThan(result) {
         return result < 0;
@@ -337,10 +347,10 @@ export var CompareResult;
     CompareResult.lessThan = -1;
     CompareResult.neitherLessOrGreaterThan = 0;
 })(CompareResult || (CompareResult = {}));
-export function compareBy(selector, comparator) {
+function compareBy(selector, comparator) {
     return (a, b) => comparator(selector(a), selector(b));
 }
-export function tieBreakComparators(...comparators) {
+function tieBreakComparators(...comparators) {
     return (item1, item2) => {
         for (const comparator of comparators) {
             const result = comparator(item1, item2);
@@ -354,16 +364,16 @@ export function tieBreakComparators(...comparators) {
 /**
  * The natural order on numbers.
 */
-export const numberComparator = (a, b) => a - b;
-export const booleanComparator = (a, b) => numberComparator(a ? 1 : 0, b ? 1 : 0);
-export function reverseOrder(comparator) {
+const numberComparator = (a, b) => a - b;
+const booleanComparator = (a, b) => numberComparator(a ? 1 : 0, b ? 1 : 0);
+function reverseOrder(comparator) {
     return (a, b) => -comparator(a, b);
 }
 /**
  * Returns a new comparator that treats `undefined` as the smallest value.
  * All other values are compared using the given comparator.
 */
-export function compareUndefinedSmallest(comparator) {
+function compareUndefinedSmallest(comparator) {
     return (a, b) => {
         if (a === undefined) {
             return b === undefined ? CompareResult.neitherLessOrGreaterThan : CompareResult.lessThan;
@@ -374,7 +384,7 @@ export function compareUndefinedSmallest(comparator) {
         return comparator(a, b);
     };
 }
-export class ArrayQueue {
+class ArrayQueue {
     /**
      * Constructs a queue that is backed by the given array. Runtime is O(1).
     */
@@ -437,7 +447,7 @@ export class ArrayQueue {
 /**
  * This class is faster than an iterator and array for lazy computed data.
 */
-export class CallbackIterable {
+class CallbackIterable {
     static { this.empty = new CallbackIterable(_callback => { }); }
     constructor(
     /**
@@ -484,7 +494,7 @@ export class CallbackIterable {
 /**
  * Represents a re-arrangement of items in an array.
  */
-export class Permutation {
+class Permutation {
     constructor(_indexMap) {
         this._indexMap = _indexMap;
     }
@@ -512,7 +522,8 @@ export class Permutation {
         return new Permutation(inverseIndexMap);
     }
 }
-export function sum(array) {
+function sum(array) {
     return array.reduce((acc, value) => acc + value, 0);
 }
-//# sourceMappingURL=arrays.js.map
+
+export { ArrayQueue, CallbackIterable, CompareResult, Permutation, arrayInsert, asArray, binarySearch, binarySearch2, booleanComparator, coalesce, coalesceInPlace, compareBy, compareUndefinedSmallest, distinct, equals, forEachAdjacent, forEachWithNeighbors, groupAdjacentBy, groupBy, insertInto, isFalsyOrEmpty, isNonEmptyArray, mapFilter, numberComparator, pushMany, pushToEnd, pushToStart, quickSelect, range, removeFastWithoutKeepingOrder, reverseOrder, splice, sum, tail, tieBreakComparators };

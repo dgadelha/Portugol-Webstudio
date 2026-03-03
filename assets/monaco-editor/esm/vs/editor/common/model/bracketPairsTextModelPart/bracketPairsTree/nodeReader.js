@@ -1,13 +1,14 @@
+import { lengthZero, lengthLessThan, lengthAdd } from './length.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { lengthAdd, lengthZero, lengthLessThan } from './length.js';
 /**
  * Allows to efficiently find a longest child at a given offset in a fixed node.
  * The requested offsets must increase monotonously.
 */
-export class NodeReader {
+class NodeReader {
     constructor(node) {
         this.lastOffset = lengthZero;
         this.nextNodes = [node];
@@ -122,4 +123,5 @@ function getNextChildIdx(node, curIdx = -1) {
 function lastOrUndefined(arr) {
     return arr.length > 0 ? arr[arr.length - 1] : undefined;
 }
-//# sourceMappingURL=nodeReader.js.map
+
+export { NodeReader };

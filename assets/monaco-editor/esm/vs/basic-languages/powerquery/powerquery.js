@@ -1,13 +1,4 @@
-/*!-----------------------------------------------------------------------------
- * Copyright (c) Microsoft Corporation. All rights reserved.
- * Version: 0.54.0(7c2310116c57517348bbd868a21139f32454be22)
- * Released under the MIT license
- * https://github.com/microsoft/monaco-editor/blob/main/LICENSE.txt
- *-----------------------------------------------------------------------------*/
-
-
-// src/basic-languages/powerquery/powerquery.ts
-var conf = {
+const conf = {
   comments: {
     lineComment: "//",
     blockComment: ["/*", "*/"]
@@ -24,7 +15,7 @@ var conf = {
     { open: "{", close: "}", notIn: ["string", "comment", "identifier"] }
   ]
 };
-var language = {
+const language = {
   defaultToken: "",
   tokenPostfix: ".pq",
   ignoreCase: false,
@@ -894,7 +885,5 @@ var language = {
     ]
   }
 };
-export {
-  conf,
-  language
-};
+
+export { conf, language };

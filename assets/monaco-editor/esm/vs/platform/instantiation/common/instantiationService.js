@@ -1,7 +1,3 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { GlobalIdleValue } from '../../../base/common/async.js';
 import { illegalState } from '../../../base/common/errors.js';
 import { dispose, isDisposable, toDisposable } from '../../../base/common/lifecycle.js';
@@ -10,6 +6,11 @@ import { Graph } from './graph.js';
 import { IInstantiationService, _util } from './instantiation.js';
 import { ServiceCollection } from './serviceCollection.js';
 import { LinkedList } from '../../../base/common/linkedList.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
 // TRACING
 const _enableAllTracing = false;
 class CyclicDependencyError extends Error {
@@ -18,7 +19,7 @@ class CyclicDependencyError extends Error {
         this.message = graph.findCycleSlow() ?? `UNABLE to detect cycle, dumping graph: \n${graph.toString()}`;
     }
 }
-export class InstantiationService {
+class InstantiationService {
     constructor(_services = new ServiceCollection(), _strict = false, _parent, _enableTracing = _enableAllTracing) {
         this._services = _services;
         this._strict = _strict;
@@ -268,6 +269,7 @@ export class InstantiationService {
                 // early listeners that we kept are now being subscribed to
                 // the real service
                 for (const [key, values] of earlyListeners) {
+                    // eslint-disable-next-line local/code-no-any-casts
                     const candidate = result[key];
                     if (typeof candidate === 'function') {
                         for (const value of values) {
@@ -339,7 +341,7 @@ export class InstantiationService {
         }
     }
 }
-export class Trace {
+class Trace {
     static { this.all = new Set(); }
     static { this._None = new class extends Trace {
         constructor() { super(0 /* TraceType.None */, null); }
@@ -397,4 +399,5 @@ export class Trace {
     }
 }
 //#endregion
-//# sourceMappingURL=instantiationService.js.map
+
+export { InstantiationService, Trace };

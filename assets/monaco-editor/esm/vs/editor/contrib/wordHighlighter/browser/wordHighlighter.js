@@ -1,31 +1,17 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-var WordHighlighter_1, WordHighlighterContribution_1;
-import * as nls from '../../../../nls.js';
+import { localize2 } from '../../../../nls.js';
 import { alert } from '../../../../base/browser/ui/aria/aria.js';
-import { createCancelablePromise, Delayer, first } from '../../../../base/common/async.js';
+import { Delayer, first, createCancelablePromise } from '../../../../base/common/async.js';
 import { CancellationToken } from '../../../../base/common/cancellation.js';
 import { onUnexpectedError, onUnexpectedExternalError } from '../../../../base/common/errors.js';
-import { Disposable, DisposableStore } from '../../../../base/common/lifecycle.js';
+import { DisposableStore, Disposable } from '../../../../base/common/lifecycle.js';
 import { ResourceMap } from '../../../../base/common/map.js';
 import { matchesScheme, Schemas } from '../../../../base/common/network.js';
 import { isEqual } from '../../../../base/common/resources.js';
 import { IConfigurationService } from '../../../../platform/configuration/common/configuration.js';
-import { IContextKeyService, RawContextKey } from '../../../../platform/contextkey/common/contextkey.js';
+import { RawContextKey, IContextKeyService } from '../../../../platform/contextkey/common/contextkey.js';
 import { ILogService } from '../../../../platform/log/common/log.js';
 import { isDiffEditor } from '../../../browser/editorBrowser.js';
-import { EditorAction, registerEditorAction, registerEditorContribution, registerModelAndPositionCommand } from '../../../browser/editorExtensions.js';
+import { registerModelAndPositionCommand, registerEditorContribution, registerEditorAction, EditorAction } from '../../../browser/editorExtensions.js';
 import { ICodeEditorService } from '../../../browser/services/codeEditorService.js';
 import { Range } from '../../../common/core/range.js';
 import { EditorContextKeys } from '../../../common/editorContextKeys.js';
@@ -36,8 +22,23 @@ import { ILanguageFeaturesService } from '../../../common/services/languageFeatu
 import { ITextModelService } from '../../../common/services/resolverService.js';
 import { getHighlightDecorationOptions } from './highlightDecorations.js';
 import { TextualMultiDocumentHighlightFeature } from './textualHighlightProvider.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var WordHighlighter_1, WordHighlighterContribution_1;
 const ctxHasWordHighlights = new RawContextKey('hasWordHighlights', false);
-export function getOccurrencesAtPosition(registry, model, position, token) {
+function getOccurrencesAtPosition(registry, model, position, token) {
     const orderedByScore = registry.ordered(model);
     // in order of score ask the occurrences provider
     // until someone response with a good result
@@ -55,7 +56,7 @@ export function getOccurrencesAtPosition(registry, model, position, token) {
         return new ResourceMap();
     });
 }
-export function getOccurrencesAcrossMultipleModels(registry, model, position, token, otherModels) {
+function getOccurrencesAcrossMultipleModels(registry, model, position, token, otherModels) {
     const orderedByScore = registry.ordered(model);
     // in order of score ask the occurrences provider
     // until someone response with a good result
@@ -719,7 +720,6 @@ WordHighlighterContribution = WordHighlighterContribution_1 = __decorate([
     __param(5, IConfigurationService),
     __param(6, ILogService)
 ], WordHighlighterContribution);
-export { WordHighlighterContribution };
 class WordHighlightNavigationAction extends EditorAction {
     constructor(next, opts) {
         super(opts);
@@ -742,7 +742,7 @@ class NextWordHighlightAction extends WordHighlightNavigationAction {
     constructor() {
         super(true, {
             id: 'editor.action.wordHighlight.next',
-            label: nls.localize2(1557, "Go to Next Symbol Highlight"),
+            label: localize2(1572, "Go to Next Symbol Highlight"),
             precondition: ctxHasWordHighlights,
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
@@ -756,7 +756,7 @@ class PrevWordHighlightAction extends WordHighlightNavigationAction {
     constructor() {
         super(false, {
             id: 'editor.action.wordHighlight.prev',
-            label: nls.localize2(1558, "Go to Previous Symbol Highlight"),
+            label: localize2(1573, "Go to Previous Symbol Highlight"),
             precondition: ctxHasWordHighlights,
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
@@ -770,7 +770,7 @@ class TriggerWordHighlightAction extends EditorAction {
     constructor() {
         super({
             id: 'editor.action.wordHighlight.trigger',
-            label: nls.localize2(1559, "Trigger Symbol Highlight"),
+            label: localize2(1574, "Trigger Symbol Highlight"),
             precondition: undefined,
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
@@ -792,4 +792,5 @@ registerEditorAction(NextWordHighlightAction);
 registerEditorAction(PrevWordHighlightAction);
 registerEditorAction(TriggerWordHighlightAction);
 registerEditorFeature(TextualMultiDocumentHighlightFeature);
-//# sourceMappingURL=wordHighlighter.js.map
+
+export { WordHighlighterContribution, getOccurrencesAcrossMultipleModels, getOccurrencesAtPosition };

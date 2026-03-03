@@ -11,7 +11,7 @@
  *
  * @param code The character code to get alternate characters for
  */
-export function getKoreanAltChars(code) {
+function getKoreanAltChars(code) {
     const result = disassembleKorean(code);
     if (result && result.length > 0) {
         return new Uint32Array(result);
@@ -317,4 +317,5 @@ const compatibilityJamo = new Uint16Array([
     // ㆍ
     // ㆎ
 ]);
-//# sourceMappingURL=korean.js.map
+
+export { getKoreanAltChars };

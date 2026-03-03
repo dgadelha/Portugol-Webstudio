@@ -1,7 +1,4 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
+import './internal/initialize.js';
 import './browser/coreCommands.js';
 import './browser/widget/codeEditor/codeEditorWidget.js';
 import './browser/widget/diffEditor/diffEditor.contribution.js';
@@ -63,8 +60,6 @@ import './contrib/wordPartOperations/browser/wordPartOperations.js';
 import './contrib/readOnlyMessage/browser/contribution.js';
 import './contrib/diffEditorBreadcrumbs/browser/contribution.js';
 import './contrib/floatingMenu/browser/floatingMenu.contribution.js';
-// Load up these strings even in VSCode, even if they are not used
-// in order to get them translated
 import './common/standaloneStrings.js';
-import '../base/browser/ui/codicons/codiconStyles.js'; // The codicons are defined here and must be loaded
-//# sourceMappingURL=editor.all.js.map
+import '../base/browser/ui/codicons/codicon/codicon.css';
+import '../base/browser/ui/codicons/codicon/codicon-modifiers.css';

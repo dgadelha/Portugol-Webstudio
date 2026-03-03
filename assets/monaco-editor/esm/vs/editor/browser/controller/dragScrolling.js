@@ -1,13 +1,14 @@
+import { scheduleAtNextAnimationFrame, getWindow } from '../../../base/browser/dom.js';
+import { Disposable } from '../../../base/common/lifecycle.js';
+import { Position } from '../../common/core/position.js';
+import { createEditorPagePosition, PageCoordinates, createCoordinatesRelativeToEditor } from '../editorDom.js';
+import { MouseTarget } from './mouseTarget.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import * as dom from '../../../base/browser/dom.js';
-import { Disposable } from '../../../base/common/lifecycle.js';
-import { Position } from '../../common/core/position.js';
-import { createCoordinatesRelativeToEditor, createEditorPagePosition, PageCoordinates } from '../editorDom.js';
-import { MouseTarget } from './mouseTarget.js';
-export class DragScrolling extends Disposable {
+class DragScrolling extends Disposable {
     constructor(_context, _viewHelper, _mouseTargetFactory, _dispatchMouse) {
         super();
         this._context = _context;
@@ -35,7 +36,7 @@ export class DragScrolling extends Disposable {
         }
     }
 }
-export class DragScrollingOperation extends Disposable {
+class DragScrollingOperation extends Disposable {
     constructor(_context, _viewHelper, _mouseTargetFactory, _dispatchMouse, position, mouseEvent) {
         super();
         this._context = _context;
@@ -45,7 +46,7 @@ export class DragScrollingOperation extends Disposable {
         this._position = position;
         this._mouseEvent = mouseEvent;
         this._lastTime = Date.now();
-        this._animationFrameDisposable = dom.scheduleAtNextAnimationFrame(dom.getWindow(mouseEvent.browserEvent), () => this._execute());
+        this._animationFrameDisposable = scheduleAtNextAnimationFrame(getWindow(mouseEvent.browserEvent), () => this._execute());
     }
     dispose() {
         this._animationFrameDisposable.dispose();
@@ -65,12 +66,12 @@ export class DragScrollingOperation extends Disposable {
         return elapsed;
     }
 }
-export class TopBottomDragScrolling extends DragScrolling {
+class TopBottomDragScrolling extends DragScrolling {
     _createDragScrollingOperation(position, mouseEvent) {
         return new TopBottomDragScrollingOperation(this._context, this._viewHelper, this._mouseTargetFactory, this._dispatchMouse, position, mouseEvent);
     }
 }
-export class TopBottomDragScrollingOperation extends DragScrollingOperation {
+class TopBottomDragScrollingOperation extends DragScrollingOperation {
     /**
      * get the number of lines per second to auto-scroll
      */
@@ -114,15 +115,15 @@ export class TopBottomDragScrollingOperation extends DragScrollingOperation {
             }
         }
         this._dispatchMouse(mouseTarget, true, 2 /* NavigationCommandRevealType.None */);
-        this._animationFrameDisposable = dom.scheduleAtNextAnimationFrame(dom.getWindow(mouseTarget.element), () => this._execute());
+        this._animationFrameDisposable = scheduleAtNextAnimationFrame(getWindow(mouseTarget.element), () => this._execute());
     }
 }
-export class LeftRightDragScrolling extends DragScrolling {
+class LeftRightDragScrolling extends DragScrolling {
     _createDragScrollingOperation(position, mouseEvent) {
         return new LeftRightDragScrollingOperation(this._context, this._viewHelper, this._mouseTargetFactory, this._dispatchMouse, position, mouseEvent);
     }
 }
-export class LeftRightDragScrollingOperation extends DragScrollingOperation {
+class LeftRightDragScrollingOperation extends DragScrollingOperation {
     /**
      * get the number of cols per second to auto-scroll
      */
@@ -166,7 +167,8 @@ export class LeftRightDragScrollingOperation extends DragScrollingOperation {
             mouseTarget = MouseTarget.createOutsideEditor(mouseTarget.mouseColumn, new Position(edgeLineNumber, mouseTarget.mouseColumn), 'right', this._position.outsideDistance);
         }
         this._dispatchMouse(mouseTarget, true, 2 /* NavigationCommandRevealType.None */);
-        this._animationFrameDisposable = dom.scheduleAtNextAnimationFrame(dom.getWindow(mouseTarget.element), () => this._execute());
+        this._animationFrameDisposable = scheduleAtNextAnimationFrame(getWindow(mouseTarget.element), () => this._execute());
     }
 }
-//# sourceMappingURL=dragScrolling.js.map
+
+export { DragScrolling, DragScrollingOperation, LeftRightDragScrolling, LeftRightDragScrollingOperation, TopBottomDragScrolling, TopBottomDragScrollingOperation };

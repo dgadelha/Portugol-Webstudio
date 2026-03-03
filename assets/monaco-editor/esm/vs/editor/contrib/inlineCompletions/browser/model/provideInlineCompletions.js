@@ -1,7 +1,3 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { assertNever } from '../../../../../base/common/assert.js';
 import { AsyncIterableProducer } from '../../../../../base/common/async.js';
 import { CancellationTokenSource } from '../../../../../base/common/cancellation.js';
@@ -23,7 +19,13 @@ import { InlineCompletionViewKind } from '../view/inlineEdits/inlineEditsViewInt
 import { isDefined } from '../../../../../base/common/types.js';
 import { inlineCompletionIsVisible } from './inlineSuggestionItem.js';
 import { EditDeltaInfo } from '../../../../common/textModelEditSource.js';
-export function provideInlineCompletions(providers, position, model, context, requestInfo, languageConfigurationService) {
+import { URI } from '../../../../../base/common/uri.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+function provideInlineCompletions(providers, position, model, context, requestInfo, languageConfigurationService) {
     const requestUuid = prefixedUuid('icr');
     const cancellationTokenSource = new CancellationTokenSource();
     let cancelReason = undefined;
@@ -51,12 +53,14 @@ export function provideInlineCompletions(providers, position, model, context, re
                 const result = await queryProvider.get(p);
                 if (result) {
                     for (const item of result.inlineSuggestions.items) {
-                        if (item.isInlineEdit || typeof item.insertText !== 'string') {
+                        if (item.isInlineEdit || typeof item.insertText !== 'string' && item.insertText !== undefined) {
                             return undefined;
                         }
-                        const t = new TextReplacement(Range.lift(item.range) ?? defaultReplaceRange, item.insertText);
-                        if (inlineCompletionIsVisible(t, undefined, model, position)) {
-                            return undefined;
+                        if (item.insertText !== undefined) {
+                            const t = new TextReplacement(Range.lift(item.range) ?? defaultReplaceRange, item.insertText);
+                            if (inlineCompletionIsVisible(t, undefined, model, position)) {
+                                return undefined;
+                            }
                         }
                         // else: inline completion is not visible, so lets not block
                     }
@@ -108,7 +112,7 @@ export function provideInlineCompletions(providers, position, model, context, re
     };
 }
 /** If the token is eventually cancelled, this will not leak either. */
-export function runWhenCancelled(token, callback) {
+function runWhenCancelled(token, callback) {
     if (token.isCancellationRequested) {
         callback();
         return Disposable.None;
@@ -137,6 +141,11 @@ function toInlineSuggestData(inlineCompletion, source, defaultReplaceRange, text
         }
         snippetInfo = undefined;
     }
+    else if (inlineCompletion.insertText === undefined) {
+        insertText = ''; // TODO use undefined
+        snippetInfo = undefined;
+        range = new Range(1, 1, 1, 1);
+    }
     else if ('snippet' in inlineCompletion.insertText) {
         const preBracketCompletionLength = inlineCompletion.insertText.snippet.length;
         if (languageConfigurationService && inlineCompletion.completeBracketPairs) {
@@ -163,19 +172,15 @@ function toInlineSuggestData(inlineCompletion, source, defaultReplaceRange, text
     else {
         assertNever(inlineCompletion.insertText);
     }
-    const displayLocation = inlineCompletion.displayLocation ? {
-        range: Range.lift(inlineCompletion.displayLocation.range),
-        label: inlineCompletion.displayLocation.label,
-        kind: inlineCompletion.displayLocation.kind
-    } : undefined;
-    return new InlineSuggestData(range, insertText, snippetInfo, displayLocation, inlineCompletion.additionalTextEdits || getReadonlyEmptyArray(), inlineCompletion, source, context, inlineCompletion.isInlineEdit ?? false, requestInfo, providerRequestInfo, inlineCompletion.correlationId);
+    return new InlineSuggestData(range, insertText, snippetInfo, URI.revive(inlineCompletion.uri), inlineCompletion.hint, inlineCompletion.additionalTextEdits || getReadonlyEmptyArray(), inlineCompletion, source, context, inlineCompletion.isInlineEdit ?? false, requestInfo, providerRequestInfo, inlineCompletion.correlationId);
 }
-export class InlineSuggestData {
-    constructor(range, insertText, snippetInfo, displayLocation, additionalTextEdits, sourceInlineCompletion, source, context, isInlineEdit, _requestInfo, _providerRequestInfo, _correlationId) {
+class InlineSuggestData {
+    constructor(range, insertText, snippetInfo, uri, hint, additionalTextEdits, sourceInlineCompletion, source, context, isInlineEdit, _requestInfo, _providerRequestInfo, _correlationId) {
         this.range = range;
         this.insertText = insertText;
         this.snippetInfo = snippetInfo;
-        this.displayLocation = displayLocation;
+        this.uri = uri;
+        this.hint = hint;
         this.additionalTextEdits = additionalTextEdits;
         this.sourceInlineCompletion = sourceInlineCompletion;
         this.source = source;
@@ -260,21 +265,12 @@ export class InlineSuggestData {
                 requestReason: this._requestInfo.reason,
                 viewKind: this._viewData.viewKind,
                 notShownReason: this._notShownReason,
-                error: this._viewData.error,
                 typingInterval: this._requestInfo.typingInterval,
                 typingIntervalCharacterCount: this._requestInfo.typingIntervalCharacterCount,
                 availableProviders: this._requestInfo.availableProviders.map(p => p.toString()).join(','),
                 ...this._viewData.renderData,
             };
             this.source.provider.handleEndOfLifetime(this.source.inlineSuggestions, this.sourceInlineCompletion, reason, summary);
-        }
-    }
-    reportInlineEditError(message) {
-        if (this._viewData.error) {
-            this._viewData.error += `; ${message}`;
-        }
-        else {
-            this._viewData.error = message;
         }
     }
     setIsPreceeded(partialAccepts) {
@@ -321,7 +317,7 @@ export class InlineSuggestData {
         this._showUncollapsedStartTime = undefined;
     }
 }
-export var InlineCompletionEditorType;
+var InlineCompletionEditorType;
 (function (InlineCompletionEditorType) {
     InlineCompletionEditorType["TextEditor"] = "textEditor";
     InlineCompletionEditorType["DiffEditor"] = "diffEditor";
@@ -331,7 +327,7 @@ export var InlineCompletionEditorType;
  * A ref counted pointer to the computed `InlineCompletions` and the `InlineCompletionsProvider` that
  * computed them.
  */
-export class InlineSuggestionList {
+class InlineSuggestionList {
     constructor(inlineSuggestions, inlineSuggestionsData, provider) {
         this.inlineSuggestions = inlineSuggestions;
         this.inlineSuggestionsData = inlineSuggestionsData;
@@ -372,4 +368,5 @@ function closeBrackets(text, position, model, languageConfigurationService) {
     const fixedText = fixBracketsInLine(textTokens, languageConfigurationService);
     return fixedText;
 }
-//# sourceMappingURL=provideInlineCompletions.js.map
+
+export { InlineCompletionEditorType, InlineSuggestData, InlineSuggestionList, provideInlineCompletions, runWhenCancelled };

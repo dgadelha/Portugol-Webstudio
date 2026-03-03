@@ -1,9 +1,10 @@
+import { ViewEventHandler } from '../../common/viewEventHandler.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { ViewEventHandler } from '../../common/viewEventHandler.js';
-export class ViewPart extends ViewEventHandler {
+class ViewPart extends ViewEventHandler {
     constructor(context) {
         super();
         this._context = context;
@@ -14,7 +15,7 @@ export class ViewPart extends ViewEventHandler {
         super.dispose();
     }
 }
-export class PartFingerprints {
+class PartFingerprints {
     static write(target, partId) {
         target.setAttribute('data-mprt', String(partId));
     }
@@ -44,4 +45,5 @@ export class PartFingerprints {
         return r;
     }
 }
-//# sourceMappingURL=viewPart.js.map
+
+export { PartFingerprints, ViewPart };

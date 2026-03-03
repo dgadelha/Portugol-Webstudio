@@ -6,7 +6,7 @@
  * The minimal size of the slider (such that it can still be clickable) -- it is artificially enlarged.
  */
 const MINIMUM_SLIDER_SIZE = 20;
-export class ScrollbarState {
+class ScrollbarState {
     constructor(arrowSize, scrollbarSize, oppositeScrollbarSize, visibleSize, scrollSize, scrollPosition) {
         this._scrollbarSize = Math.round(scrollbarSize);
         this._oppositeScrollbarSize = Math.round(oppositeScrollbarSize);
@@ -159,4 +159,5 @@ export class ScrollbarState {
         return Math.round(desiredSliderPosition / this._computedSliderRatio);
     }
 }
-//# sourceMappingURL=scrollbarState.js.map
+
+export { ScrollbarState };

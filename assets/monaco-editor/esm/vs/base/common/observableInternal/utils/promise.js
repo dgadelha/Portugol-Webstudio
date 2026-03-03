@@ -1,9 +1,10 @@
 import { transaction } from '../transaction.js';
 import { observableValue } from '../observables/observableValue.js';
+
 /**
  * A promise whose state is observable.
  */
-export class ObservablePromise {
+class ObservablePromise {
     constructor(promise) {
         this._value = observableValue(this, undefined);
         /**
@@ -26,7 +27,7 @@ export class ObservablePromise {
         });
     }
 }
-export class PromiseResult {
+class PromiseResult {
     constructor(
     /**
      * The value of the resolved promise.
@@ -51,4 +52,5 @@ export class PromiseResult {
         return this.data;
     }
 }
-//# sourceMappingURL=promise.js.map
+
+export { ObservablePromise, PromiseResult };

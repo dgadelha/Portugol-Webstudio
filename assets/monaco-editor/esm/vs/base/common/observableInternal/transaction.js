@@ -1,16 +1,17 @@
+import { handleBugIndicatingErrorRecovery } from './base.js';
+import { getFunctionName } from './debugName.js';
+import { getLogger } from './logging/logging.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { handleBugIndicatingErrorRecovery } from './base.js';
-import { getFunctionName } from './debugName.js';
-import { getLogger } from './logging/logging.js';
 /**
  * Starts a transaction in which many observables can be changed at once.
  * {@link fn} should start with a JS Doc using `@description` to give the transaction a debug name.
  * Reaction run on demand or when the transaction ends.
  */
-export function transaction(fn, getDebugName) {
+function transaction(fn, getDebugName) {
     const tx = new TransactionImpl(fn, getDebugName);
     try {
         fn(tx);
@@ -20,7 +21,7 @@ export function transaction(fn, getDebugName) {
     }
 }
 let _globalTransaction = undefined;
-export function globalTransaction(fn) {
+function globalTransaction(fn) {
     if (_globalTransaction) {
         fn(_globalTransaction);
     }
@@ -38,7 +39,7 @@ export function globalTransaction(fn) {
     }
 }
 /** @deprecated */
-export async function asyncTransaction(fn, getDebugName) {
+async function asyncTransaction(fn, getDebugName) {
     const tx = new TransactionImpl(fn, getDebugName);
     try {
         await fn(tx);
@@ -50,7 +51,7 @@ export async function asyncTransaction(fn, getDebugName) {
 /**
  * Allows to chain transactions.
  */
-export function subtransaction(tx, fn, getDebugName) {
+function subtransaction(tx, fn, getDebugName) {
     if (!tx) {
         transaction(fn, getDebugName);
     }
@@ -58,7 +59,7 @@ export function subtransaction(tx, fn, getDebugName) {
         fn(tx);
     }
 }
-export class TransactionImpl {
+class TransactionImpl {
     constructor(_fn, _getDebugName) {
         this._fn = _fn;
         this._getDebugName = _getDebugName;
@@ -104,4 +105,5 @@ export class TransactionImpl {
         return this._updatingObservers;
     }
 }
-//# sourceMappingURL=transaction.js.map
+
+export { TransactionImpl, asyncTransaction, globalTransaction, subtransaction, transaction };

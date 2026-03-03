@@ -1,9 +1,14 @@
+import { assertFn } from '../../assert.js';
+import '../../arrays.js';
+import { onBugIndicatingError, BugIndicatingError } from '../../errors.js';
+import '../../event.js';
+import { DisposableStore } from '../../lifecycle.js';
+import { getLogger } from '../logging/logging.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { assertFn, BugIndicatingError, DisposableStore, markAsDisposed, onBugIndicatingError, trackDisposable } from '../commonFacade/deps.js';
-import { getLogger } from '../logging/logging.js';
 function autorunStateToString(state) {
     switch (state) {
         case 1 /* AutorunState.dependenciesMightHaveChanged */: return 'dependenciesMightHaveChanged';
@@ -12,7 +17,7 @@ function autorunStateToString(state) {
         default: return '<unknown>';
     }
 }
-export class AutorunObserver {
+class AutorunObserver {
     get debugName() {
         return this._debugNameData.getDebugName(this) ?? '(anonymous)';
     }
@@ -31,7 +36,6 @@ export class AutorunObserver {
         this._changeSummary = this._changeTracker?.createChangeSummary(undefined);
         getLogger()?.handleAutorunCreated(this, debugLocation);
         this._run();
-        trackDisposable(this);
     }
     dispose() {
         if (this._disposed) {
@@ -49,7 +53,6 @@ export class AutorunObserver {
             this._delayedStore.dispose();
         }
         getLogger()?.handleAutorunDisposed(this);
-        markAsDisposed(this);
     }
     _run() {
         const emptySet = this._dependenciesToBeRemoved;
@@ -147,6 +150,7 @@ export class AutorunObserver {
                 const shouldReact = this._changeTracker ? this._changeTracker.handleChange({
                     changedObservable: observable,
                     change,
+                    // eslint-disable-next-line local/code-no-any-casts
                     didChange: (o) => o === observable,
                 }, this._changeSummary) : true;
                 if (shouldReact) {
@@ -207,4 +211,5 @@ export class AutorunObserver {
         }
     }
 }
-//# sourceMappingURL=autorunImpl.js.map
+
+export { AutorunObserver };

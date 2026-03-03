@@ -1,25 +1,26 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
 import { doHash } from '../../../base/common/hash.js';
 import { LRUCache } from '../../../base/common/map.js';
-import { clamp, MovingAverage, SlidingWindowAverage } from '../../../base/common/numbers.js';
+import { MovingAverage, clamp, SlidingWindowAverage } from '../../../base/common/numbers.js';
 import { IEnvironmentService } from '../../../platform/environment/common/environment.js';
 import { registerSingleton } from '../../../platform/instantiation/common/extensions.js';
 import { createDecorator } from '../../../platform/instantiation/common/instantiation.js';
 import { ILogService } from '../../../platform/log/common/log.js';
 import { matchesScheme } from '../../../base/common/network.js';
-export const ILanguageFeatureDebounceService = createDecorator('ILanguageFeatureDebounceService');
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+const ILanguageFeatureDebounceService = createDecorator('ILanguageFeatureDebounceService');
 var IdentityHash;
 (function (IdentityHash) {
     const _hashes = new WeakMap();
@@ -131,6 +132,6 @@ LanguageFeatureDebounceService = __decorate([
     __param(0, ILogService),
     __param(1, IEnvironmentService)
 ], LanguageFeatureDebounceService);
-export { LanguageFeatureDebounceService };
 registerSingleton(ILanguageFeatureDebounceService, LanguageFeatureDebounceService, 1 /* InstantiationType.Delayed */);
-//# sourceMappingURL=languageFeatureDebounce.js.map
+
+export { ILanguageFeatureDebounceService, LanguageFeatureDebounceService };

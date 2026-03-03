@@ -1,18 +1,22 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { equals } from '../../../../base/common/arrays.js';
 import { RunOnceScheduler } from '../../../../base/common/async.js';
 import { Emitter } from '../../../../base/common/event.js';
 import { Disposable } from '../../../../base/common/lifecycle.js';
 import { LineRange } from '../../core/ranges/lineRange.js';
-import { derivedOpts, observableSignal, observableValueOpts } from '../../../../base/common/observable.js';
-import { equalsIfDefined, itemEquals, itemsEquals } from '../../../../base/common/equals.js';
+import '../../../../base/common/observableInternal/index.js';
+import { itemsEquals, itemEquals, equalsIfDefined } from '../../../../base/common/equals.js';
+import { observableSignal } from '../../../../base/common/observableInternal/observables/observableSignal.js';
+import { observableValueOpts } from '../../../../base/common/observableInternal/observables/observableValueOpts.js';
+import { derivedOpts } from '../../../../base/common/observableInternal/observables/derived.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
 /**
  * @internal
  */
-export class AttachedViews {
+class AttachedViews {
     constructor() {
         this._onDidChangeVisibleRanges = new Emitter();
         this.onDidChangeVisibleRanges = this._onDidChangeVisibleRanges.event;
@@ -44,7 +48,7 @@ export class AttachedViews {
 /**
  * @internal
  */
-export class AttachedViewState {
+class AttachedViewState {
     constructor(visibleLineRanges, stabilized) {
         this.visibleLineRanges = visibleLineRanges;
         this.stabilized = stabilized;
@@ -75,7 +79,7 @@ class AttachedViewImpl {
         this.handleStateChange(state);
     }
 }
-export class AttachedViewHandler extends Disposable {
+class AttachedViewHandler extends Disposable {
     get lineRanges() { return this._lineRanges; }
     constructor(_refreshTokens) {
         super();
@@ -102,7 +106,7 @@ export class AttachedViewHandler extends Disposable {
         }
     }
 }
-export class AbstractSyntaxTokenBackend extends Disposable {
+class AbstractSyntaxTokenBackend extends Disposable {
     get backgroundTokenizationState() {
         return this._backgroundTokenizationState;
     }
@@ -120,4 +124,5 @@ export class AbstractSyntaxTokenBackend extends Disposable {
         }
     }
 }
-//# sourceMappingURL=abstractSyntaxTokenBackend.js.map
+
+export { AbstractSyntaxTokenBackend, AttachedViewHandler, AttachedViewState, AttachedViews };

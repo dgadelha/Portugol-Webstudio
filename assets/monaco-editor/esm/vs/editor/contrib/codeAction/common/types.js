@@ -1,10 +1,11 @@
+import { onUnexpectedExternalError } from '../../../../base/common/errors.js';
+import { HierarchicalKind } from '../../../../base/common/hierarchicalKind.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { onUnexpectedExternalError } from '../../../../base/common/errors.js';
-import { HierarchicalKind } from '../../../../base/common/hierarchicalKind.js';
-export const CodeActionKind = new class {
+const CodeActionKind = new class {
     constructor() {
         this.QuickFix = new HierarchicalKind('quickfix');
         this.Refactor = new HierarchicalKind('refactor');
@@ -19,7 +20,7 @@ export const CodeActionKind = new class {
         this.SurroundWith = this.Refactor.append('surround');
     }
 };
-export var CodeActionTriggerSource;
+var CodeActionTriggerSource;
 (function (CodeActionTriggerSource) {
     CodeActionTriggerSource["Refactor"] = "refactor";
     CodeActionTriggerSource["RefactorPreview"] = "refactor preview";
@@ -34,7 +35,7 @@ export var CodeActionTriggerSource;
     CodeActionTriggerSource["OnSave"] = "save participants";
     CodeActionTriggerSource["ProblemsView"] = "problems view";
 })(CodeActionTriggerSource || (CodeActionTriggerSource = {}));
-export function mayIncludeActionsOfKind(filter, providedKind) {
+function mayIncludeActionsOfKind(filter, providedKind) {
     // A provided kind may be a subset or superset of our filtered kind.
     if (filter.include && !filter.include.intersects(providedKind)) {
         return false;
@@ -50,7 +51,7 @@ export function mayIncludeActionsOfKind(filter, providedKind) {
     }
     return true;
 }
-export function filtersAction(filter, action) {
+function filtersAction(filter, action) {
     const actionKind = action.kind ? new HierarchicalKind(action.kind) : undefined;
     // Filter out actions by kind
     if (filter.include) {
@@ -86,7 +87,7 @@ function excludesAction(providedKind, exclude, include) {
     }
     return true;
 }
-export class CodeActionCommandArgs {
+class CodeActionCommandArgs {
     static fromUser(arg, defaults) {
         if (!arg || typeof arg !== 'object') {
             return new CodeActionCommandArgs(defaults.kind, defaults.apply, false);
@@ -117,7 +118,7 @@ export class CodeActionCommandArgs {
         this.preferred = preferred;
     }
 }
-export class CodeActionItem {
+class CodeActionItem {
     constructor(action, provider, highlightRange) {
         this.action = action;
         this.provider = provider;
@@ -139,4 +140,5 @@ export class CodeActionItem {
         return this;
     }
 }
-//# sourceMappingURL=types.js.map
+
+export { CodeActionCommandArgs, CodeActionItem, CodeActionKind, CodeActionTriggerSource, filtersAction, mayIncludeActionsOfKind };

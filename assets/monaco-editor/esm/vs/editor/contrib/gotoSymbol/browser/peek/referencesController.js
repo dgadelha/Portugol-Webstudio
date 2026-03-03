@@ -1,17 +1,3 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-var ReferencesController_1;
 import { createCancelablePromise } from '../../../../../base/common/async.js';
 import { onUnexpectedError } from '../../../../../base/common/errors.js';
 import { KeyChord } from '../../../../../base/common/keyCodes.js';
@@ -21,10 +7,10 @@ import { Position } from '../../../../common/core/position.js';
 import { Range } from '../../../../common/core/range.js';
 import { PeekContext } from '../../../peekView/browser/peekView.js';
 import { getOuterEditor } from '../../../../browser/widget/codeEditor/embeddedCodeEditorWidget.js';
-import * as nls from '../../../../../nls.js';
+import { localize } from '../../../../../nls.js';
 import { CommandsRegistry } from '../../../../../platform/commands/common/commands.js';
 import { IConfigurationService } from '../../../../../platform/configuration/common/configuration.js';
-import { ContextKeyExpr, IContextKeyService, RawContextKey } from '../../../../../platform/contextkey/common/contextkey.js';
+import { RawContextKey, IContextKeyService, ContextKeyExpr } from '../../../../../platform/contextkey/common/contextkey.js';
 import { IInstantiationService } from '../../../../../platform/instantiation/common/instantiation.js';
 import { KeybindingsRegistry } from '../../../../../platform/keybinding/common/keybindingsRegistry.js';
 import { IListService, WorkbenchListFocusContextKey, WorkbenchTreeElementCanCollapse, WorkbenchTreeElementCanExpand } from '../../../../../platform/list/browser/listService.js';
@@ -34,7 +20,22 @@ import { OneReference } from '../referencesModel.js';
 import { LayoutData, ReferenceWidget } from './referencesWidget.js';
 import { EditorContextKeys } from '../../../../common/editorContextKeys.js';
 import { InputFocusedContext } from '../../../../../platform/contextkey/common/contextkeys.js';
-export const ctxReferenceSearchVisible = new RawContextKey('referenceSearchVisible', false, nls.localize(1073, "Whether reference peek is visible, like 'Peek References' or 'Peek Definition'"));
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var ReferencesController_1;
+const ctxReferenceSearchVisible = new RawContextKey('referenceSearchVisible', false, localize(1078, "Whether reference peek is visible, like 'Peek References' or 'Peek Definition'"));
 let ReferencesController = class ReferencesController {
     static { ReferencesController_1 = this; }
     static { this.ID = 'editor.contrib.referencesController'; }
@@ -84,7 +85,7 @@ let ReferencesController = class ReferencesController {
         const storageKey = 'peekViewLayout';
         const data = LayoutData.fromJSON(this._storageService.get(storageKey, 0 /* StorageScope.PROFILE */, '{}'));
         this._widget = this._instantiationService.createInstance(ReferenceWidget, this._editor, this._defaultTreeKeyboardSupport, data);
-        this._widget.setTitle(nls.localize(1074, "Loading..."));
+        this._widget.setTitle(localize(1079, "Loading..."));
         this._widget.show(range);
         this._disposables.add(this._widget.onDidClose(() => {
             modelPromise.cancel();
@@ -140,7 +141,7 @@ let ReferencesController = class ReferencesController {
                 if (this._widget && this._model && this._editor.hasModel()) { // might have been closed
                     // set title
                     if (!this._model.isEmpty) {
-                        this._widget.setMetaTitle(nls.localize(1075, "{0} ({1})", this._model.title, this._model.references.length));
+                        this._widget.setMetaTitle(localize(1080, "{0} ({1})", this._model.title, this._model.references.length));
                     }
                     else {
                         this._widget.setMetaTitle('');
@@ -272,7 +273,6 @@ ReferencesController = ReferencesController_1 = __decorate([
     __param(6, IStorageService),
     __param(7, IConfigurationService)
 ], ReferencesController);
-export { ReferencesController };
 function withController(accessor, fn) {
     const outerEditor = getOuterEditor(accessor);
     if (!outerEditor) {
@@ -378,4 +378,5 @@ CommandsRegistry.registerCommand('openReference', (accessor) => {
         withController(accessor, controller => controller.openReference(focus[0], false, true));
     }
 });
-//# sourceMappingURL=referencesController.js.map
+
+export { ReferencesController, ctxReferenceSearchVisible };

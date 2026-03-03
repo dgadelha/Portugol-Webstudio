@@ -1,8 +1,9 @@
+import { isWindows, isMacintosh } from './platform.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { isMacintosh, isWindows } from './platform.js';
 let safeProcess;
 // Native sandbox environment
 const vscodeGlobal = globalThis.vscode;
@@ -43,17 +44,18 @@ else {
  *
  * @skipMangle
  */
-export const cwd = safeProcess.cwd;
+const cwd = safeProcess.cwd;
 /**
  * Provides safe access to the `env` property in node.js, sandboxed or web
  * environments.
  *
  * Note: in web, this property is hardcoded to be `{}`.
  */
-export const env = safeProcess.env;
+const env = safeProcess.env;
 /**
  * Provides safe access to the `platform` property in node.js, sandboxed or web
  * environments.
  */
-export const platform = safeProcess.platform;
-//# sourceMappingURL=process.js.map
+const platform = safeProcess.platform;
+
+export { cwd, env, platform };

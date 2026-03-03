@@ -1,13 +1,14 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-import { $, append } from '../../dom.js';
+import { append, $ } from '../../dom.js';
 import { format } from '../../../common/strings.js';
 import './countBadge.css';
 import { Disposable, MutableDisposable, toDisposable } from '../../../common/lifecycle.js';
 import { getBaseLayerHoverDelegate } from '../hover/hoverDelegate2.js';
-export class CountBadge extends Disposable {
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+class CountBadge extends Disposable {
     constructor(container, options, styles) {
         super();
         this.options = options;
@@ -47,4 +48,5 @@ export class CountBadge extends Disposable {
         }
     }
 }
-//# sourceMappingURL=countBadge.js.map
+
+export { CountBadge };

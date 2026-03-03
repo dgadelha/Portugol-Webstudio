@@ -1,9 +1,10 @@
+import { containsUppercaseCharacter } from './strings.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import * as strings from './strings.js';
-export function buildReplaceStringWithCasePreserved(matches, pattern) {
+function buildReplaceStringWithCasePreserved(matches, pattern) {
     if (matches && (matches[0] !== '')) {
         const containsHyphens = validateSpecificSpecialCharacter(matches, pattern, '-');
         const containsUnderscores = validateSpecificSpecialCharacter(matches, pattern, '_');
@@ -19,7 +20,7 @@ export function buildReplaceStringWithCasePreserved(matches, pattern) {
         else if (matches[0].toLowerCase() === matches[0]) {
             return pattern.toLowerCase();
         }
-        else if (strings.containsUppercaseCharacter(matches[0][0]) && pattern.length > 0) {
+        else if (containsUppercaseCharacter(matches[0][0]) && pattern.length > 0) {
             return pattern[0].toUpperCase() + pattern.substr(1);
         }
         else if (matches[0][0].toUpperCase() !== matches[0][0] && pattern.length > 0) {
@@ -47,4 +48,5 @@ function buildReplaceStringForSpecificSpecialCharacter(matches, pattern, special
     });
     return replaceString.slice(0, -1);
 }
-//# sourceMappingURL=search.js.map
+
+export { buildReplaceStringWithCasePreserved };

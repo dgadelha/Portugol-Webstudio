@@ -1,8 +1,9 @@
+import { CharacterClassifier } from '../core/characterClassifier.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { CharacterClassifier } from '../core/characterClassifier.js';
 class Uint8Matrix {
     constructor(rows, cols, defaultValue) {
         const data = new Uint8Array(rows * cols);
@@ -20,7 +21,7 @@ class Uint8Matrix {
         this._data[row * this.cols + col] = value;
     }
 }
-export class StateMachine {
+class StateMachine {
     constructor(edges) {
         let maxCharCode = 0;
         let maxState = 0 /* State.Invalid */;
@@ -100,7 +101,7 @@ function getClassifier() {
     }
     return _classifier;
 }
-export class LinkComputer {
+class LinkComputer {
     static _createLink(classifier, line, lineNumber, linkBeginIndex, linkEndIndex) {
         // Do not allow to end link in certain characters...
         let lastIncludedCharIndex = linkEndIndex - 1;
@@ -257,11 +258,12 @@ export class LinkComputer {
  * document. *Note* that this operation is computational
  * expensive and should not run in the UI thread.
  */
-export function computeLinks(model) {
+function computeLinks(model) {
     if (!model || typeof model.getLineCount !== 'function' || typeof model.getLineContent !== 'function') {
         // Unknown caller!
         return [];
     }
     return LinkComputer.computeLinks(model);
 }
-//# sourceMappingURL=linkComputer.js.map
+
+export { LinkComputer, StateMachine, computeLinks };

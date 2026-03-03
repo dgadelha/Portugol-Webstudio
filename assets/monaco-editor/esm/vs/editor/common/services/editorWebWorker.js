@@ -1,7 +1,3 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { stringDiff } from '../../../base/common/diff/diff.js';
 import { Range } from '../core/range.js';
 import { computeLinks } from '../languages/linkComputer.js';
@@ -13,12 +9,18 @@ import { linesDiffComputers } from '../diff/linesDiffComputers.js';
 import { computeDefaultDocumentColors } from '../languages/defaultDocumentColorsComputer.js';
 import { findSectionHeaders } from './findSectionHeaders.js';
 import { WorkerTextModelSyncServer } from './textModelSync/textModelSync.impl.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
 /**
  * @internal
  */
-export class EditorWorker {
+class EditorWorker {
     constructor(_foreignModule = null) {
         this._foreignModule = _foreignModule;
+        this._requestHandlerBrand = undefined;
         this._workerTextModelSyncServer = new WorkerTextModelSyncServer();
     }
     dispose() {
@@ -293,4 +295,5 @@ if (typeof importScripts === 'function') {
     // Running in a web worker
     globalThis.monaco = createMonacoBaseAPI();
 }
-//# sourceMappingURL=editorWebWorker.js.map
+
+export { EditorWorker };

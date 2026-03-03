@@ -1,18 +1,19 @@
+import './whitespace.css';
+import { DynamicViewOverlay } from '../../view/dynamicViewOverlay.js';
+import { firstNonWhitespaceIndex, lastNonWhitespaceIndex } from '../../../../base/common/strings.js';
+import { Position } from '../../../common/core/position.js';
+import { editorWhitespaces } from '../../../common/core/editorColorRegistry.js';
+import { OffsetRange } from '../../../common/core/ranges/offsetRange.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import './whitespace.css';
-import { DynamicViewOverlay } from '../../view/dynamicViewOverlay.js';
-import * as strings from '../../../../base/common/strings.js';
-import { Position } from '../../../common/core/position.js';
-import { editorWhitespaces } from '../../../common/core/editorColorRegistry.js';
-import { OffsetRange } from '../../../common/core/ranges/offsetRange.js';
 /**
  * The whitespace overlay will visual certain whitespace depending on the
  * current editor configuration (boundary, selection, etc.).
  */
-export class WhitespaceOverlay extends DynamicViewOverlay {
+class WhitespaceOverlay extends DynamicViewOverlay {
     constructor(context) {
         super();
         this._context = context;
@@ -131,15 +132,15 @@ export class WhitespaceOverlay extends DynamicViewOverlay {
         const canUseHalfwidthRightwardsArrow = this._options.canUseHalfwidthRightwardsArrow;
         let result = '';
         let lineIsEmptyOrWhitespace = false;
-        let firstNonWhitespaceIndex = strings.firstNonWhitespaceIndex(lineContent);
-        let lastNonWhitespaceIndex;
-        if (firstNonWhitespaceIndex === -1) {
+        let firstNonWhitespaceIndex$1 = firstNonWhitespaceIndex(lineContent);
+        let lastNonWhitespaceIndex$1;
+        if (firstNonWhitespaceIndex$1 === -1) {
             lineIsEmptyOrWhitespace = true;
-            firstNonWhitespaceIndex = len;
-            lastNonWhitespaceIndex = len;
+            firstNonWhitespaceIndex$1 = len;
+            lastNonWhitespaceIndex$1 = len;
         }
         else {
-            lastNonWhitespaceIndex = strings.lastNonWhitespaceIndex(lineContent);
+            lastNonWhitespaceIndex$1 = lastNonWhitespaceIndex(lineContent);
         }
         let currentSelectionIndex = 0;
         let currentSelection = selections && selections[currentSelectionIndex];
@@ -153,11 +154,11 @@ export class WhitespaceOverlay extends DynamicViewOverlay {
             if (chCode !== 9 /* CharCode.Tab */ && chCode !== 32 /* CharCode.Space */) {
                 continue;
             }
-            if (onlyTrailing && !lineIsEmptyOrWhitespace && charIndex <= lastNonWhitespaceIndex) {
+            if (onlyTrailing && !lineIsEmptyOrWhitespace && charIndex <= lastNonWhitespaceIndex$1) {
                 // If rendering only trailing whitespace, check that the charIndex points to trailing whitespace.
                 continue;
             }
-            if (onlyBoundary && charIndex >= firstNonWhitespaceIndex && charIndex <= lastNonWhitespaceIndex && chCode === 32 /* CharCode.Space */) {
+            if (onlyBoundary && charIndex >= firstNonWhitespaceIndex$1 && charIndex <= lastNonWhitespaceIndex$1 && chCode === 32 /* CharCode.Space */) {
                 // rendering only boundary whitespace
                 const prevChCode = (charIndex - 1 >= 0 ? lineContent.charCodeAt(charIndex - 1) : 0 /* CharCode.Null */);
                 const nextChCode = (charIndex + 1 < len ? lineContent.charCodeAt(charIndex + 1) : 0 /* CharCode.Null */);
@@ -272,4 +273,5 @@ class WhitespaceOptions {
             && this.stopRenderingLineAfter === other.stopRenderingLineAfter);
     }
 }
-//# sourceMappingURL=whitespace.js.map
+
+export { WhitespaceOverlay };

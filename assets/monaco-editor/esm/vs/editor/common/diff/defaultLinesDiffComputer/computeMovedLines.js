@@ -1,7 +1,3 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { SequenceDiff } from './algorithms/diffAlgorithm.js';
 import { LineRangeMapping } from '../rangeMapping.js';
 import { pushMany, compareBy, numberComparator, reverseOrder } from '../../../../base/common/arrays.js';
@@ -12,7 +8,12 @@ import { LinesSliceCharSequence } from './linesSliceCharSequence.js';
 import { LineRangeFragment, isSpace } from './utils.js';
 import { MyersDiffAlgorithm } from './algorithms/myersDiffAlgorithm.js';
 import { Range } from '../../core/range.js';
-export function computeMovedLines(changes, originalLines, modifiedLines, hashedOriginalLines, hashedModifiedLines, timeout) {
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+function computeMovedLines(changes, originalLines, modifiedLines, hashedOriginalLines, hashedModifiedLines, timeout) {
     let { moves, excludedChanges } = computeMovesFromSimpleDeletionsToSimpleInsertions(changes, originalLines, modifiedLines, timeout);
     if (!timeout.isValid()) {
         return [];
@@ -244,4 +245,5 @@ function removeMovesInSameDiff(changes, moves) {
     });
     return moves;
 }
-//# sourceMappingURL=computeMovedLines.js.map
+
+export { computeMovedLines };

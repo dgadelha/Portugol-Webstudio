@@ -1,13 +1,14 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { CancellationToken } from '../../../../base/common/cancellation.js';
 import { Color, RGBA } from '../../../../base/common/color.js';
 import { getColorPresentations } from './color.js';
 import { ColorPickerModel } from './colorPickerModel.js';
 import { Range } from '../../../common/core/range.js';
-export async function createColorHover(editorModel, colorInfo, provider) {
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+async function createColorHover(editorModel, colorInfo, provider) {
     const originalText = editorModel.getValueInRange(colorInfo.range);
     const { red, green, blue, alpha } = colorInfo.color;
     const rgba = new RGBA(Math.round(red * 255), Math.round(green * 255), Math.round(blue * 255), alpha);
@@ -22,7 +23,7 @@ export async function createColorHover(editorModel, colorInfo, provider) {
         provider
     };
 }
-export function updateEditorModel(editor, range, model) {
+function updateEditorModel(editor, range, model) {
     const textEdits = [];
     const edit = model.presentation.textEdit ?? { range, text: model.presentation.label, forceMoveMarkers: false };
     textEdits.push(edit);
@@ -35,7 +36,7 @@ export function updateEditorModel(editor, range, model) {
     editor.pushUndoStop();
     return editor.getModel()._getTrackedRange(trackedRange) ?? replaceRange;
 }
-export async function updateColorPresentations(editorModel, colorPickerModel, color, range, colorHover) {
+async function updateColorPresentations(editorModel, colorPickerModel, color, range, colorHover) {
     const colorPresentations = await getColorPresentations(editorModel, {
         range: range,
         color: {
@@ -47,4 +48,5 @@ export async function updateColorPresentations(editorModel, colorPickerModel, co
     }, colorHover.provider, CancellationToken.None);
     colorPickerModel.colorPresentations = colorPresentations || [];
 }
-//# sourceMappingURL=colorPickerParticipantUtils.js.map
+
+export { createColorHover, updateColorPresentations, updateEditorModel };

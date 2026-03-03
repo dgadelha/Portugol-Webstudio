@@ -1,10 +1,11 @@
+import { Range } from '../core/range.js';
+import { Selection } from '../core/selection.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { Range } from '../core/range.js';
-import { Selection } from '../core/selection.js';
-export class SurroundSelectionCommand {
+class SurroundSelectionCommand {
     constructor(range, charBeforeSelection, charAfterSelection) {
         this._range = range;
         this._charBeforeSelection = charBeforeSelection;
@@ -24,7 +25,7 @@ export class SurroundSelectionCommand {
 /**
  * A surround selection command that runs after composition finished.
  */
-export class CompositionSurroundSelectionCommand {
+class CompositionSurroundSelectionCommand {
     constructor(_position, _text, _charAfter) {
         this._position = _position;
         this._text = _text;
@@ -39,4 +40,5 @@ export class CompositionSurroundSelectionCommand {
         return new Selection(opRange.endLineNumber, opRange.startColumn, opRange.endLineNumber, opRange.endColumn - this._charAfter.length);
     }
 }
-//# sourceMappingURL=surroundSelectionCommand.js.map
+
+export { CompositionSurroundSelectionCommand, SurroundSelectionCommand };

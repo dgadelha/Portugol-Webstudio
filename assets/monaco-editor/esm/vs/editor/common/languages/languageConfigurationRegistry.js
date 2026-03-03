@@ -1,19 +1,6 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
 import { Emitter } from '../../../base/common/event.js';
 import { Disposable, markAsSingleton, toDisposable } from '../../../base/common/lifecycle.js';
-import * as strings from '../../../base/common/strings.js';
+import { getLeadingWhitespace } from '../../../base/common/strings.js';
 import { DEFAULT_WORD_REGEXP, ensureValidWordDefinition } from '../core/wordHelper.js';
 import { AutoClosingPairs } from './languageConfiguration.js';
 import { CharacterPairSupport } from './supports/characterPair.js';
@@ -27,7 +14,21 @@ import { ILanguageService } from './language.js';
 import { registerSingleton } from '../../../platform/instantiation/common/extensions.js';
 import { PLAINTEXT_LANGUAGE_ID } from './modesRegistry.js';
 import { LanguageBracketsConfiguration } from './supports/languageBracketsConfiguration.js';
-export class LanguageConfigurationServiceChangeEvent {
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+class LanguageConfigurationServiceChangeEvent {
     constructor(languageId) {
         this.languageId = languageId;
     }
@@ -35,7 +36,7 @@ export class LanguageConfigurationServiceChangeEvent {
         return !this.languageId ? true : this.languageId === languageId;
     }
 }
-export const ILanguageConfigurationService = createDecorator('languageConfigurationService');
+const ILanguageConfigurationService = createDecorator('languageConfigurationService');
 let LanguageConfigurationService = class LanguageConfigurationService extends Disposable {
     constructor(configurationService, languageService) {
         super();
@@ -85,7 +86,6 @@ LanguageConfigurationService = __decorate([
     __param(0, IConfigurationService),
     __param(1, ILanguageService)
 ], LanguageConfigurationService);
-export { LanguageConfigurationService };
 function computeConfig(languageId, registry, configurationService, languageService) {
     let languageConfig = registry.getLanguageConfiguration(languageId);
     if (!languageConfig) {
@@ -128,9 +128,9 @@ function validateBracketPairs(data) {
         return [pair[0], pair[1]];
     }).filter((p) => !!p);
 }
-export function getIndentationAtPosition(model, lineNumber, column) {
+function getIndentationAtPosition(model, lineNumber, column) {
     const lineText = model.getLineContent(lineNumber);
-    let indentation = strings.getLeadingWhitespace(lineText);
+    let indentation = getLeadingWhitespace(lineText);
     if (indentation.length > column - 1) {
         indentation = indentation.substring(0, column - 1);
     }
@@ -221,12 +221,12 @@ class LanguageConfigurationContribution {
         return a.priority - b.priority;
     }
 }
-export class LanguageConfigurationChangeEvent {
+class LanguageConfigurationChangeEvent {
     constructor(languageId) {
         this.languageId = languageId;
     }
 }
-export class LanguageConfigurationRegistry extends Disposable {
+class LanguageConfigurationRegistry extends Disposable {
     constructor() {
         super();
         this._entries = new Map();
@@ -277,7 +277,7 @@ export class LanguageConfigurationRegistry extends Disposable {
 /**
  * Immutable.
 */
-export class ResolvedLanguageConfiguration {
+class ResolvedLanguageConfiguration {
     constructor(languageId, underlyingConfig) {
         this.languageId = languageId;
         this.underlyingConfig = underlyingConfig;
@@ -357,4 +357,5 @@ export class ResolvedLanguageConfiguration {
     }
 }
 registerSingleton(ILanguageConfigurationService, LanguageConfigurationService, 1 /* InstantiationType.Delayed */);
-//# sourceMappingURL=languageConfigurationRegistry.js.map
+
+export { ILanguageConfigurationService, LanguageConfigurationChangeEvent, LanguageConfigurationRegistry, LanguageConfigurationService, LanguageConfigurationServiceChangeEvent, ResolvedLanguageConfiguration, getIndentationAtPosition };

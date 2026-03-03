@@ -1,16 +1,20 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-import { getWindow, addDisposableListener, n } from '../../../../base/browser/dom.js';
+import { getWindow, n, addDisposableListener } from '../../../../base/browser/dom.js';
 import { Disposable, DisposableStore } from '../../../../base/common/lifecycle.js';
-import { autorun, derived, disposableObservableValue, observableValue } from '../../../../base/common/observable.js';
+import '../../../../base/common/observableInternal/index.js';
 import { observableCodeEditor } from '../../../browser/observableCodeEditor.js';
 import { Point } from '../../../common/core/2d/point.js';
 import { AnimationFrameScheduler } from '../../inlineCompletions/browser/model/animation.js';
 import { appendRemoveOnDispose } from '../../../browser/widget/diffEditor/utils.js';
 import './middleScroll.css';
-export class MiddleScrollController extends Disposable {
+import { autorun } from '../../../../base/common/observableInternal/reactions/autorun.js';
+import { disposableObservableValue, observableValue } from '../../../../base/common/observableInternal/observables/observableValue.js';
+import { derived } from '../../../../base/common/observableInternal/observables/derived.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+class MiddleScrollController extends Disposable {
     static { this.ID = 'editor.contrib.middleScroll'; }
     constructor(_editor) {
         super();
@@ -120,4 +124,5 @@ function toScrollPosition(p) {
         scrollTop: p.y,
     };
 }
-//# sourceMappingURL=middleScrollController.js.map
+
+export { MiddleScrollController };

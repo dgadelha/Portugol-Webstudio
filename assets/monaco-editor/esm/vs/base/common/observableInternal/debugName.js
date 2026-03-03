@@ -2,7 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-export class DebugNameData {
+class DebugNameData {
     constructor(owner, debugNameSource, referenceFn) {
         this.owner = owner;
         this.debugNameSource = debugNameSource;
@@ -14,7 +14,7 @@ export class DebugNameData {
 }
 const countPerName = new Map();
 const cachedDebugName = new WeakMap();
-export function getDebugName(target, data) {
+function getDebugName(target, data) {
     const cached = cachedDebugName.get(target);
     if (cached) {
         return cached;
@@ -66,6 +66,7 @@ function computeDebugName(self, data) {
 }
 function findKey(obj, value) {
     for (const key in obj) {
+        // eslint-disable-next-line local/code-no-any-casts
         if (obj[key] === value) {
             return key;
         }
@@ -87,7 +88,7 @@ function formatOwner(owner) {
     ownerId.set(owner, result);
     return result;
 }
-export function getClassName(obj) {
+function getClassName(obj) {
     const ctor = obj.constructor;
     if (ctor) {
         if (ctor.name === 'Object') {
@@ -97,7 +98,7 @@ export function getClassName(obj) {
     }
     return undefined;
 }
-export function getFunctionName(fn) {
+function getFunctionName(fn) {
     const fnSrc = fn.toString();
     // Pattern: /** @description ... */
     const regexp = /\/\*\*\s*@description\s*([^*]*)\*\//;
@@ -105,4 +106,5 @@ export function getFunctionName(fn) {
     const result = match ? match[1] : undefined;
     return result?.trim();
 }
-//# sourceMappingURL=debugName.js.map
+
+export { DebugNameData, getClassName, getDebugName, getFunctionName };

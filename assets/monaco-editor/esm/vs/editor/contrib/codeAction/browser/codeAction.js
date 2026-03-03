@@ -1,15 +1,11 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-import { coalesce, equals, isNonEmptyArray } from '../../../../base/common/arrays.js';
+import { equals, coalesce, isNonEmptyArray } from '../../../../base/common/arrays.js';
 import { CancellationToken } from '../../../../base/common/cancellation.js';
 import { illegalArgument, isCancellationError, onUnexpectedExternalError } from '../../../../base/common/errors.js';
 import { HierarchicalKind } from '../../../../base/common/hierarchicalKind.js';
-import { Disposable, DisposableStore } from '../../../../base/common/lifecycle.js';
+import { DisposableStore, Disposable } from '../../../../base/common/lifecycle.js';
 import { URI } from '../../../../base/common/uri.js';
-import * as nls from '../../../../nls.js';
-import { AccessibilitySignal, IAccessibilitySignalService } from '../../../../platform/accessibilitySignal/browser/accessibilitySignalService.js';
+import { localize } from '../../../../nls.js';
+import { IAccessibilitySignalService, AccessibilitySignal } from '../../../../platform/accessibilitySignal/browser/accessibilitySignalService.js';
 import { CommandsRegistry, ICommandService } from '../../../../platform/commands/common/commands.js';
 import { INotificationService } from '../../../../platform/notification/common/notification.js';
 import { Progress } from '../../../../platform/progress/common/progress.js';
@@ -17,19 +13,24 @@ import { ITelemetryService } from '../../../../platform/telemetry/common/telemet
 import { IBulkEditService } from '../../../browser/services/bulkEditService.js';
 import { Range } from '../../../common/core/range.js';
 import { Selection } from '../../../common/core/selection.js';
-import * as languages from '../../../common/languages.js';
+import { ProviderId } from '../../../common/languages.js';
 import { ILanguageFeaturesService } from '../../../common/services/languageFeatures.js';
 import { IModelService } from '../../../common/services/model.js';
 import { EditSources } from '../../../common/textModelEditSource.js';
 import { TextModelCancellationTokenSource } from '../../editorState/browser/editorState.js';
-import { CodeActionItem, CodeActionKind, CodeActionTriggerSource, filtersAction, mayIncludeActionsOfKind } from '../common/types.js';
-export const codeActionCommandId = 'editor.action.codeAction';
-export const quickFixCommandId = 'editor.action.quickFix';
-export const autoFixCommandId = 'editor.action.autoFix';
-export const refactorCommandId = 'editor.action.refactor';
-export const sourceActionCommandId = 'editor.action.sourceAction';
-export const organizeImportsCommandId = 'editor.action.organizeImports';
-export const fixAllCommandId = 'editor.action.fixAll';
+import { CodeActionTriggerSource, CodeActionKind, filtersAction, CodeActionItem, mayIncludeActionsOfKind } from '../common/types.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+const codeActionCommandId = 'editor.action.codeAction';
+const quickFixCommandId = 'editor.action.quickFix';
+const autoFixCommandId = 'editor.action.autoFix';
+const refactorCommandId = 'editor.action.refactor';
+const sourceActionCommandId = 'editor.action.sourceAction';
+const organizeImportsCommandId = 'editor.action.organizeImports';
+const fixAllCommandId = 'editor.action.fixAll';
 const CODE_ACTION_SOUND_APPLIED_DURATION = 1000;
 class ManagedCodeActionSet extends Disposable {
     static codeActionsPreferredComparator(a, b) {
@@ -78,7 +79,7 @@ class ManagedCodeActionSet extends Disposable {
     }
 }
 const emptyCodeActionsResponse = { actions: [], documentation: undefined };
-export async function getCodeActions(registry, model, rangeOrSelection, trigger, progress, token) {
+async function getCodeActions(registry, model, rangeOrSelection, trigger, progress, token) {
     const filter = trigger.filter || {};
     const notebookFilter = {
         ...filter,
@@ -205,7 +206,7 @@ function getDocumentationFromProvider(provider, providedCodeActions, only) {
     }
     return undefined;
 }
-export var ApplyCodeActionReason;
+var ApplyCodeActionReason;
 (function (ApplyCodeActionReason) {
     ApplyCodeActionReason["OnSave"] = "onSave";
     ApplyCodeActionReason["FromProblemsView"] = "fromProblemsView";
@@ -213,7 +214,7 @@ export var ApplyCodeActionReason;
     ApplyCodeActionReason["FromAILightbulb"] = "fromAILightbulb";
     ApplyCodeActionReason["FromProblemsHover"] = "fromProblemsHover";
 })(ApplyCodeActionReason || (ApplyCodeActionReason = {}));
-export async function applyCodeAction(accessor, item, codeActionReason, options, token = CancellationToken.None) {
+async function applyCodeAction(accessor, item, codeActionReason, options, token = CancellationToken.None) {
     const bulkEditService = accessor.get(IBulkEditService);
     const commandService = accessor.get(ICommandService);
     const telemetryService = accessor.get(ITelemetryService);
@@ -238,7 +239,7 @@ export async function applyCodeAction(accessor, item, codeActionReason, options,
             code: 'undoredo.codeAction',
             respectAutoSaveConfig: codeActionReason !== ApplyCodeActionReason.OnSave,
             showPreview: options?.preview,
-            reason: EditSources.codeAction({ kind: item.action.kind, providerId: languages.ProviderId.fromExtensionId(item.provider?.extensionId) }),
+            reason: EditSources.codeAction({ kind: item.action.kind, providerId: ProviderId.fromExtensionId(item.provider?.extensionId) }),
         });
         if (!result.isApplied) {
             return;
@@ -252,7 +253,7 @@ export async function applyCodeAction(accessor, item, codeActionReason, options,
             const message = asMessage(err);
             notificationService.error(typeof message === 'string'
                 ? message
-                : nls.localize(826, "An unknown error occurred while applying the code action"));
+                : localize(830, "An unknown error occurred while applying the code action"));
         }
     }
     // ensure the start sound and end sound do not overlap
@@ -301,4 +302,5 @@ CommandsRegistry.registerCommand('_executeCodeActionProvider', async function (a
         setTimeout(() => codeActionSet.dispose(), 100);
     }
 });
-//# sourceMappingURL=codeAction.js.map
+
+export { ApplyCodeActionReason, applyCodeAction, autoFixCommandId, codeActionCommandId, fixAllCommandId, getCodeActions, organizeImportsCommandId, quickFixCommandId, refactorCommandId, sourceActionCommandId };

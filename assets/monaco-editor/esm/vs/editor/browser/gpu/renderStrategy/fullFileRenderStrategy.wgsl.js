@@ -1,10 +1,11 @@
+import { TextureAtlas } from '../atlas/textureAtlas.js';
+import { TextureAtlasPage } from '../atlas/textureAtlasPage.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { TextureAtlas } from '../atlas/textureAtlas.js';
-import { TextureAtlasPage } from '../atlas/textureAtlasPage.js';
-export const fullFileRenderStrategyWgsl = /*wgsl*/ `
+const fullFileRenderStrategyWgsl = /*wgsl*/ `
 struct GlyphInfo {
 	position: vec2f,
 	size: vec2f,
@@ -88,4 +89,5 @@ struct VSOutput {
 	return textureSample(ourTexture, ourSampler, vsOut.texcoord, u32(vsOut.layerIndex));
 }
 `;
-//# sourceMappingURL=fullFileRenderStrategy.wgsl.js.map
+
+export { fullFileRenderStrategyWgsl };

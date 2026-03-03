@@ -1,14 +1,15 @@
+import { TransactionImpl } from '../transaction.js';
+import { getLogger } from '../logging/logging.js';
+import { BaseObservable } from './baseObservable.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { TransactionImpl } from '../transaction.js';
-import { getLogger } from '../logging/logging.js';
-import { BaseObservable } from './baseObservable.js';
 /**
  * Holds off updating observers until the value is actually read.
 */
-export class LazyObservableValue extends BaseObservable {
+class LazyObservableValue extends BaseObservable {
     get debugName() {
         return this._debugNameData.getDebugName(this) ?? 'LazyObservableValue';
     }
@@ -120,4 +121,5 @@ export class LazyObservableValue extends BaseObservable {
         this._value = newValue;
     }
 }
-//# sourceMappingURL=lazyObservableValue.js.map
+
+export { LazyObservableValue };

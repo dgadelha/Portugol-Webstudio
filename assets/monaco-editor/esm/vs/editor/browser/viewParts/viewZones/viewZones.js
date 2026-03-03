@@ -1,18 +1,19 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { createFastDomNode } from '../../../../base/browser/fastDomNode.js';
 import { onUnexpectedError } from '../../../../base/common/errors.js';
 import { ViewPart } from '../../view/viewPart.js';
 import { Position } from '../../../common/core/position.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
 const invalidFunc = () => { throw new Error(`Invalid change accessor`); };
 /**
  * A view zone is a rectangle that is a section that is inserted into the editor
  * lines that can be used for various purposes such as showing a diffs, peeking
  * an implementation, etc.
  */
-export class ViewZones extends ViewPart {
+class ViewZones extends ViewPart {
     constructor(context) {
         super(context);
         const options = this._context.configuration.options;
@@ -304,7 +305,7 @@ export class ViewZones extends ViewPart {
                     zone.domNode.removeAttribute('monaco-visible-view-zone');
                     zone.isVisible = false;
                 }
-                this._safeCallOnDomNodeTop(zone.delegate, ctx.getScrolledTopFromAbsoluteTop(-1000000));
+                this._safeCallOnDomNodeTop(zone.delegate, ctx.getScrolledTopFromAbsoluteTop(-1e6));
             }
             zone.domNode.setTop(newTop);
             zone.domNode.setHeight(newHeight);
@@ -327,6 +328,8 @@ function safeInvoke1Arg(func, arg1) {
     }
     catch (e) {
         onUnexpectedError(e);
+        return undefined;
     }
 }
-//# sourceMappingURL=viewZones.js.map
+
+export { ViewZones };

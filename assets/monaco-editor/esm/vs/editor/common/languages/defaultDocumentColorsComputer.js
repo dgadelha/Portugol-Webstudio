@@ -1,8 +1,9 @@
+import { Color, HSLA } from '../../../base/common/color.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { Color, HSLA } from '../../../base/common/color.js';
 function _parseCaptureGroups(captureGroups) {
     const values = [];
     for (const captureGroup of captureGroups) {
@@ -126,11 +127,12 @@ function computeColors(model) {
 /**
  * Returns an array of all default document colors in the provided document
  */
-export function computeDefaultDocumentColors(model) {
+function computeDefaultDocumentColors(model) {
     if (!model || typeof model.getValue !== 'function' || typeof model.positionAt !== 'function') {
         // Unknown caller!
         return [];
     }
     return computeColors(model);
 }
-//# sourceMappingURL=defaultDocumentColorsComputer.js.map
+
+export { computeDefaultDocumentColors };

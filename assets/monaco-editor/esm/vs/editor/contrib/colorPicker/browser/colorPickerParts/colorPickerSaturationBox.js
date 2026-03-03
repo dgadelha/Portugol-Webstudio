@@ -1,15 +1,16 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import '../colorPicker.css';
-import * as dom from '../../../../../base/browser/dom.js';
+import { $ as $$1, append, addDisposableListener, EventType, getDomNodePagePosition } from '../../../../../base/browser/dom.js';
 import { GlobalPointerMoveMonitor } from '../../../../../base/browser/globalPointerMoveMonitor.js';
 import { Color, HSVA } from '../../../../../base/common/color.js';
 import { Emitter } from '../../../../../base/common/event.js';
 import { Disposable } from '../../../../../base/common/lifecycle.js';
-const $ = dom.$;
-export class SaturationBox extends Disposable {
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+const $ = $$1;
+class SaturationBox extends Disposable {
     constructor(container, model, pixelRatio) {
         super();
         this.model = model;
@@ -19,16 +20,16 @@ export class SaturationBox extends Disposable {
         this._onColorFlushed = new Emitter();
         this.onColorFlushed = this._onColorFlushed.event;
         this._domNode = $('.saturation-wrap');
-        dom.append(container, this._domNode);
+        append(container, this._domNode);
         // Create canvas, draw selected color
         this._canvas = document.createElement('canvas');
         this._canvas.className = 'saturation-box';
-        dom.append(this._domNode, this._canvas);
+        append(this._domNode, this._canvas);
         // Add selection circle
         this.selection = $('.saturation-selection');
-        dom.append(this._domNode, this.selection);
+        append(this._domNode, this.selection);
         this.layout();
-        this._register(dom.addDisposableListener(this._domNode, dom.EventType.POINTER_DOWN, e => this.onPointerDown(e)));
+        this._register(addDisposableListener(this._domNode, EventType.POINTER_DOWN, e => this.onPointerDown(e)));
         this._register(this.model.onDidChangeColor(this.onDidChangeColor, this));
         this.monitor = null;
     }
@@ -40,12 +41,12 @@ export class SaturationBox extends Disposable {
             return;
         }
         this.monitor = this._register(new GlobalPointerMoveMonitor());
-        const origin = dom.getDomNodePagePosition(this._domNode);
+        const origin = getDomNodePagePosition(this._domNode);
         if (e.target !== this.selection) {
             this.onDidChangePosition(e.offsetX, e.offsetY);
         }
         this.monitor.startMonitoring(e.target, e.pointerId, e.buttons, event => this.onDidChangePosition(event.pageX - origin.left, event.pageY - origin.top), () => null);
-        const pointerUpListener = dom.addDisposableListener(e.target.ownerDocument, dom.EventType.POINTER_UP, () => {
+        const pointerUpListener = addDisposableListener(e.target.ownerDocument, EventType.POINTER_UP, () => {
             this._onColorFlushed.fire();
             pointerUpListener.dispose();
             if (this.monitor) {
@@ -101,4 +102,5 @@ export class SaturationBox extends Disposable {
         this.paintSelection(hsva.s, hsva.v);
     }
 }
-//# sourceMappingURL=colorPickerSaturationBox.js.map
+
+export { SaturationBox };

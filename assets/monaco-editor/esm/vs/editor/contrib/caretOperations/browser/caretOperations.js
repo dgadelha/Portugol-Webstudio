@@ -1,11 +1,12 @@
+import { registerEditorAction, EditorAction } from '../../../browser/editorExtensions.js';
+import { EditorContextKeys } from '../../../common/editorContextKeys.js';
+import { MoveCaretCommand } from './moveCaretCommand.js';
+import { localize2 } from '../../../../nls.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { EditorAction, registerEditorAction } from '../../../browser/editorExtensions.js';
-import { EditorContextKeys } from '../../../common/editorContextKeys.js';
-import { MoveCaretCommand } from './moveCaretCommand.js';
-import * as nls from '../../../../nls.js';
 class MoveCaretAction extends EditorAction {
     constructor(left, opts) {
         super(opts);
@@ -29,7 +30,7 @@ class MoveCaretLeftAction extends MoveCaretAction {
     constructor() {
         super(true, {
             id: 'editor.action.moveCarretLeftAction',
-            label: nls.localize2(806, "Move Selected Text Left"),
+            label: localize2(810, "Move Selected Text Left"),
             precondition: EditorContextKeys.writable
         });
     }
@@ -38,11 +39,10 @@ class MoveCaretRightAction extends MoveCaretAction {
     constructor() {
         super(false, {
             id: 'editor.action.moveCarretRightAction',
-            label: nls.localize2(807, "Move Selected Text Right"),
+            label: localize2(811, "Move Selected Text Right"),
             precondition: EditorContextKeys.writable
         });
     }
 }
 registerEditorAction(MoveCaretLeftAction);
 registerEditorAction(MoveCaretRightAction);
-//# sourceMappingURL=caretOperations.js.map

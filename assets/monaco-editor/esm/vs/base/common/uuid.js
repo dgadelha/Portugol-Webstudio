@@ -1,4 +1,4 @@
-export const generateUuid = (function () {
+const generateUuid = (function () {
     // use `randomUUID` if possible
     if (typeof crypto.randomUUID === 'function') {
         // see https://developer.mozilla.org/en-US/docs/Web/API/Window/crypto
@@ -46,7 +46,8 @@ export const generateUuid = (function () {
     };
 })();
 /** Namespace should be 3 letter. */
-export function prefixedUuid(namespace) {
+function prefixedUuid(namespace) {
     return `${namespace}-${generateUuid()}`;
 }
-//# sourceMappingURL=uuid.js.map
+
+export { generateUuid, prefixedUuid };

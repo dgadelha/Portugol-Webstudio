@@ -1,15 +1,16 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { Schemas } from '../../../base/common/network.js';
 import { DataUri } from '../../../base/common/resources.js';
 import { URI } from '../../../base/common/uri.js';
 import { PLAINTEXT_LANGUAGE_ID } from '../languages/modesRegistry.js';
 import { FileKind } from '../../../platform/files/common/files.js';
 import { ThemeIcon } from '../../../base/common/themables.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
 const fileIconDirectoryRegex = /(?:\/|^)(?:([^\/]+)\/)?([^\/]+)$/;
-export function getIconClasses(modelService, languageService, resource, fileKind, icon) {
+function getIconClasses(modelService, languageService, resource, fileKind, icon) {
     if (ThemeIcon.isThemeIcon(icon)) {
         return [`codicon-${icon.id}`, 'predefined-file-icon'];
     }
@@ -98,7 +99,8 @@ function detectLanguageId(modelService, languageService, resource) {
     // otherwise fallback to path based detection
     return languageService.guessLanguageIdByFilepathOrFirstLine(resource);
 }
-export function fileIconSelectorEscape(str) {
+function fileIconSelectorEscape(str) {
     return str.replace(/[\s]/g, '/'); // HTML class names can not contain certain whitespace characters (https://dom.spec.whatwg.org/#interface-domtokenlist), use / instead, which doesn't exist in file names.
 }
-//# sourceMappingURL=getIconClasses.js.map
+
+export { fileIconSelectorEscape, getIconClasses };

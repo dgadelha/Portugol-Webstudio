@@ -2,7 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-export class LinePart {
+class LinePart {
     constructor(
     /**
      * last char index of this token (not inclusive).
@@ -21,4 +21,5 @@ export class LinePart {
         return (this.metadata & 4 /* LinePartMetadata.PSEUDO_AFTER_MASK */ ? true : false);
     }
 }
-//# sourceMappingURL=linePart.js.map
+
+export { LinePart };

@@ -1,35 +1,39 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { Permutation, compareBy } from '../../../../base/common/arrays.js';
-import { observableValue, autorun, transaction } from '../../../../base/common/observable.js';
+import '../../../../base/common/observableInternal/index.js';
 import { bindContextKey } from '../../../../platform/observable/common/platformObservableUtils.js';
 import { Range } from '../../../common/core/range.js';
 import { TextEdit } from '../../../common/core/edits/textEdit.js';
 import { getPositionOffsetTransformerFromTextModel } from '../../../common/core/text/getPositionOffsetTransformerFromTextModel.js';
+import { observableValue } from '../../../../base/common/observableInternal/observables/observableValue.js';
+import { autorun } from '../../../../base/common/observableInternal/reactions/autorun.js';
+import { transaction } from '../../../../base/common/observableInternal/transaction.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
 const array = [];
-export function getReadonlyEmptyArray() {
+function getReadonlyEmptyArray() {
     return array;
 }
-export function getEndPositionsAfterApplying(edits) {
+function getEndPositionsAfterApplying(edits) {
     const newRanges = getModifiedRangesAfterApplying(edits);
     return newRanges.map(range => range.getEndPosition());
 }
-export function getModifiedRangesAfterApplying(edits) {
+function getModifiedRangesAfterApplying(edits) {
     const sortPerm = Permutation.createSortPermutation(edits, compareBy(e => e.range, Range.compareRangesUsingStarts));
     const edit = new TextEdit(sortPerm.apply(edits));
     const sortedNewRanges = edit.getNewRanges();
     return sortPerm.inverse().apply(sortedNewRanges);
 }
-export function removeTextReplacementCommonSuffixPrefix(edits, textModel) {
+function removeTextReplacementCommonSuffixPrefix(edits, textModel) {
     const transformer = getPositionOffsetTransformerFromTextModel(textModel);
     const text = textModel.getValue();
     const stringReplacements = edits.map(edit => transformer.getStringReplacement(edit));
     const minimalStringReplacements = stringReplacements.map(replacement => replacement.removeCommonSuffixPrefix(text));
     return minimalStringReplacements.map(replacement => transformer.getTextReplacement(replacement));
 }
-export function convertItemsToStableObservables(items, store) {
+function convertItemsToStableObservables(items, store) {
     const result = observableValue('result', []);
     const innerObservables = [];
     store.add(autorun(reader => {
@@ -49,7 +53,7 @@ export function convertItemsToStableObservables(items, store) {
     }));
     return result;
 }
-export class ObservableContextKeyService {
+class ObservableContextKeyService {
     constructor(_contextKeyService) {
         this._contextKeyService = _contextKeyService;
     }
@@ -57,7 +61,7 @@ export class ObservableContextKeyService {
         return bindContextKey(key, this._contextKeyService, obs instanceof Function ? obs : reader => obs.read(reader));
     }
 }
-export function wait(ms, cancellationToken) {
+function wait(ms, cancellationToken) {
     return new Promise(resolve => {
         let d = undefined;
         const handle = setTimeout(() => {
@@ -77,4 +81,5 @@ export function wait(ms, cancellationToken) {
         }
     });
 }
-//# sourceMappingURL=utils.js.map
+
+export { ObservableContextKeyService, convertItemsToStableObservables, getEndPositionsAfterApplying, getModifiedRangesAfterApplying, getReadonlyEmptyArray, removeTextReplacementCommonSuffixPrefix, wait };

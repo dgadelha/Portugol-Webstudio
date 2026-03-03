@@ -1,17 +1,18 @@
+import './overlayWidgets.css';
+import { createFastDomNode } from '../../../../base/browser/fastDomNode.js';
+import { ViewPart, PartFingerprints } from '../../view/viewPart.js';
+import { getDomNodePagePosition } from '../../../../base/browser/dom.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import './overlayWidgets.css';
-import { createFastDomNode } from '../../../../base/browser/fastDomNode.js';
-import { PartFingerprints, ViewPart } from '../../view/viewPart.js';
-import * as dom from '../../../../base/browser/dom.js';
 /*
  * This view part for rendering the overlay widgets, which are
  * floating widgets positioned based on the editor's viewport,
  * such as the find widget.
  */
-export class ViewOverlayWidgets extends ViewPart {
+class ViewOverlayWidgets extends ViewPart {
     constructor(context, viewDomNode) {
         super(context);
         this._viewDomNode = viewDomNode;
@@ -163,7 +164,7 @@ export class ViewOverlayWidgets extends ViewPart {
         }
     }
     prepareRender(ctx) {
-        this._viewDomNodeRect = dom.getDomNodePagePosition(this._viewDomNode.domNode);
+        this._viewDomNodeRect = getDomNodePagePosition(this._viewDomNode.domNode);
     }
     render(ctx) {
         this._domNode.setWidth(this._editorWidth);
@@ -176,4 +177,5 @@ export class ViewOverlayWidgets extends ViewPart {
         }
     }
 }
-//# sourceMappingURL=overlayWidgets.js.map
+
+export { ViewOverlayWidgets };

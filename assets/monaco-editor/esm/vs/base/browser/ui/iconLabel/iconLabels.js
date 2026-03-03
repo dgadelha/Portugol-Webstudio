@@ -1,11 +1,12 @@
+import { $ } from '../../dom.js';
+import { ThemeIcon } from '../../../common/themables.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import * as dom from '../../dom.js';
-import { ThemeIcon } from '../../../common/themables.js';
 const labelWithIconsRegex = new RegExp(`(\\\\)?\\$\\((${ThemeIcon.iconNameExpression}(?:${ThemeIcon.iconModifierExpression})?)\\)`, 'g');
-export function renderLabelWithIcons(text) {
+function renderLabelWithIcons(text) {
     const elements = new Array();
     let match;
     let textStart = 0, textStop = 0;
@@ -23,9 +24,10 @@ export function renderLabelWithIcons(text) {
     }
     return elements;
 }
-export function renderIcon(icon) {
-    const node = dom.$(`span`);
+function renderIcon(icon) {
+    const node = $(`span`);
     node.classList.add(...ThemeIcon.asClassNameArray(icon));
     return node;
 }
-//# sourceMappingURL=iconLabels.js.map
+
+export { renderIcon, renderLabelWithIcons };

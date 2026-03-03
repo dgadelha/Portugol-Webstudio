@@ -1,16 +1,17 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { KeyChord } from '../../../../base/common/keyCodes.js';
-import { EditorAction, registerEditorAction } from '../../../browser/editorExtensions.js';
+import { localize, localize2 } from '../../../../nls.js';
+import { MenuId } from '../../../../platform/actions/common/actions.js';
+import { registerEditorAction, EditorAction } from '../../../browser/editorExtensions.js';
 import { Range } from '../../../common/core/range.js';
 import { EditorContextKeys } from '../../../common/editorContextKeys.js';
 import { ILanguageConfigurationService } from '../../../common/languages/languageConfigurationRegistry.js';
 import { BlockCommentCommand } from './blockCommentCommand.js';
 import { LineCommentCommand } from './lineCommentCommand.js';
-import * as nls from '../../../../nls.js';
-import { MenuId } from '../../../../platform/actions/common/actions.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
 class CommentLineAction extends EditorAction {
     constructor(type, opts) {
         super(opts);
@@ -56,7 +57,7 @@ class ToggleCommentLineAction extends CommentLineAction {
     constructor() {
         super(0 /* Type.Toggle */, {
             id: 'editor.action.commentLine',
-            label: nls.localize2(892, "Toggle Line Comment"),
+            label: localize2(897, "Toggle Line Comment"),
             precondition: EditorContextKeys.writable,
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
@@ -66,9 +67,10 @@ class ToggleCommentLineAction extends CommentLineAction {
             menuOpts: {
                 menuId: MenuId.MenubarEditMenu,
                 group: '5_insert',
-                title: nls.localize(890, "&&Toggle Line Comment"),
+                title: localize(895, "&&Toggle Line Comment"),
                 order: 1
-            }
+            },
+            canTriggerInlineEdits: true,
         });
     }
 }
@@ -76,13 +78,14 @@ class AddLineCommentAction extends CommentLineAction {
     constructor() {
         super(1 /* Type.ForceAdd */, {
             id: 'editor.action.addCommentLine',
-            label: nls.localize2(893, "Add Line Comment"),
+            label: localize2(898, "Add Line Comment"),
             precondition: EditorContextKeys.writable,
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
                 primary: KeyChord(2048 /* KeyMod.CtrlCmd */ | 41 /* KeyCode.KeyK */, 2048 /* KeyMod.CtrlCmd */ | 33 /* KeyCode.KeyC */),
                 weight: 100 /* KeybindingWeight.EditorContrib */
-            }
+            },
+            canTriggerInlineEdits: true,
         });
     }
 }
@@ -90,13 +93,14 @@ class RemoveLineCommentAction extends CommentLineAction {
     constructor() {
         super(2 /* Type.ForceRemove */, {
             id: 'editor.action.removeCommentLine',
-            label: nls.localize2(894, "Remove Line Comment"),
+            label: localize2(899, "Remove Line Comment"),
             precondition: EditorContextKeys.writable,
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
                 primary: KeyChord(2048 /* KeyMod.CtrlCmd */ | 41 /* KeyCode.KeyK */, 2048 /* KeyMod.CtrlCmd */ | 51 /* KeyCode.KeyU */),
                 weight: 100 /* KeybindingWeight.EditorContrib */
-            }
+            },
+            canTriggerInlineEdits: true,
         });
     }
 }
@@ -104,7 +108,7 @@ class BlockCommentAction extends EditorAction {
     constructor() {
         super({
             id: 'editor.action.blockComment',
-            label: nls.localize2(895, "Toggle Block Comment"),
+            label: localize2(900, "Toggle Block Comment"),
             precondition: EditorContextKeys.writable,
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
@@ -115,9 +119,10 @@ class BlockCommentAction extends EditorAction {
             menuOpts: {
                 menuId: MenuId.MenubarEditMenu,
                 group: '5_insert',
-                title: nls.localize(891, "Toggle &&Block Comment"),
+                title: localize(896, "Toggle &&Block Comment"),
                 order: 2
-            }
+            },
+            canTriggerInlineEdits: true,
         });
     }
     run(accessor, editor) {
@@ -140,4 +145,3 @@ registerEditorAction(ToggleCommentLineAction);
 registerEditorAction(AddLineCommentAction);
 registerEditorAction(RemoveLineCommentAction);
 registerEditorAction(BlockCommentAction);
-//# sourceMappingURL=comment.js.map

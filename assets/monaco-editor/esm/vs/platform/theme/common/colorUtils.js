@@ -1,38 +1,39 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { assertNever } from '../../../base/common/assert.js';
 import { RunOnceScheduler } from '../../../base/common/async.js';
 import { Color } from '../../../base/common/color.js';
 import { Emitter } from '../../../base/common/event.js';
-import { Extensions as JSONExtensions } from '../../jsonschemas/common/jsonContributionRegistry.js';
-import * as platform from '../../registry/common/platform.js';
-import * as nls from '../../../nls.js';
+import { Extensions as Extensions$1 } from '../../jsonschemas/common/jsonContributionRegistry.js';
+import { Registry } from '../../registry/common/platform.js';
+import { localize } from '../../../nls.js';
 import { Disposable } from '../../../base/common/lifecycle.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
 /**
  * Returns the css variable name for the given color identifier. Dots (`.`) are replaced with hyphens (`-`) and
  * everything is prefixed with `--vscode-`.
  *
  * @sample `editorSuggestWidget.background` is `--vscode-editorSuggestWidget-background`.
  */
-export function asCssVariableName(colorIdent) {
+function asCssVariableName(colorIdent) {
     return `--vscode-${colorIdent.replace(/\./g, '-')}`;
 }
-export function asCssVariable(color) {
+function asCssVariable(color) {
     return `var(${asCssVariableName(color)})`;
 }
-export function asCssVariableWithDefault(color, defaultCssValue) {
+function asCssVariableWithDefault(color, defaultCssValue) {
     return `var(${asCssVariableName(color)}, ${defaultCssValue})`;
 }
-export function isColorDefaults(value) {
+function isColorDefaults(value) {
     return value !== null && typeof value === 'object' && 'light' in value && 'dark' in value;
 }
 // color registry
-export const Extensions = {
+const Extensions = {
     ColorContribution: 'base.contributions.colors'
 };
-export const DEFAULT_COLOR_CONFIG_VALUE = 'default';
+const DEFAULT_COLOR_CONFIG_VALUE = 'default';
 class ColorRegistry extends Disposable {
     constructor() {
         super();
@@ -51,13 +52,13 @@ class ColorRegistry extends Disposable {
         }
         if (needsTransparency) {
             propertySchema.pattern = '^#(?:(?<rgba>[0-9a-fA-f]{3}[0-9a-eA-E])|(?:[0-9a-fA-F]{6}(?:(?![fF]{2})(?:[0-9a-fA-F]{2}))))?$';
-            propertySchema.patternErrorMessage = nls.localize(2004, 'This color must be transparent or it will obscure content');
+            propertySchema.patternErrorMessage = localize(2022, 'This color must be transparent or it will obscure content');
         }
         this.colorSchema.properties[id] = {
             description,
             oneOf: [
                 propertySchema,
-                { type: 'string', const: DEFAULT_COLOR_CONFIG_VALUE, description: nls.localize(2005, 'Use the default color.') }
+                { type: 'string', const: DEFAULT_COLOR_CONFIG_VALUE, description: localize(2023, 'Use the default color.') }
             ]
         };
         this.colorReferenceSchema.enum.push(id);
@@ -92,12 +93,12 @@ class ColorRegistry extends Disposable {
     }
 }
 const colorRegistry = new ColorRegistry();
-platform.Registry.add(Extensions.ColorContribution, colorRegistry);
-export function registerColor(id, defaults, description, needsTransparency, deprecationMessage) {
+Registry.add(Extensions.ColorContribution, colorRegistry);
+function registerColor(id, defaults, description, needsTransparency, deprecationMessage) {
     return colorRegistry.registerColor(id, defaults, description, needsTransparency, deprecationMessage);
 }
 // ----- color functions
-export function executeTransform(transform, theme) {
+function executeTransform(transform, theme) {
     switch (transform.op) {
         case 0 /* ColorTransformType.Darken */:
             return resolveColorValue(transform.value, theme)?.darken(transform.factor);
@@ -141,32 +142,32 @@ export function executeTransform(transform, theme) {
                 : Color.getDarkerColor(from, backgroundColor, transform.factor).transparent(transform.transparency);
         }
         default:
-            throw assertNever(transform);
+            throw assertNever();
     }
 }
-export function darken(colorValue, factor) {
+function darken(colorValue, factor) {
     return { op: 0 /* ColorTransformType.Darken */, value: colorValue, factor };
 }
-export function lighten(colorValue, factor) {
+function lighten(colorValue, factor) {
     return { op: 1 /* ColorTransformType.Lighten */, value: colorValue, factor };
 }
-export function transparent(colorValue, factor) {
+function transparent(colorValue, factor) {
     return { op: 2 /* ColorTransformType.Transparent */, value: colorValue, factor };
 }
-export function oneOf(...colorValues) {
+function oneOf(...colorValues) {
     return { op: 4 /* ColorTransformType.OneOf */, values: colorValues };
 }
-export function ifDefinedThenElse(ifArg, thenArg, elseArg) {
+function ifDefinedThenElse(ifArg, thenArg, elseArg) {
     return { op: 6 /* ColorTransformType.IfDefinedThenElse */, if: ifArg, then: thenArg, else: elseArg };
 }
-export function lessProminent(colorValue, backgroundColorValue, factor, transparency) {
+function lessProminent(colorValue, backgroundColorValue, factor, transparency) {
     return { op: 5 /* ColorTransformType.LessProminent */, value: colorValue, background: backgroundColorValue, factor, transparency };
 }
 // ----- implementation
 /**
  * @param colorValue Resolve a color value in the context of a theme
  */
-export function resolveColorValue(colorValue, theme) {
+function resolveColorValue(colorValue, theme) {
     if (colorValue === null) {
         return undefined;
     }
@@ -184,8 +185,8 @@ export function resolveColorValue(colorValue, theme) {
     }
     return undefined;
 }
-export const workbenchColorsSchemaId = 'vscode://schemas/workbench-colors';
-const schemaRegistry = platform.Registry.as(JSONExtensions.JSONContribution);
+const workbenchColorsSchemaId = 'vscode://schemas/workbench-colors';
+const schemaRegistry = Registry.as(Extensions$1.JSONContribution);
 schemaRegistry.registerSchema(workbenchColorsSchemaId, colorRegistry.getColorSchema());
 const delayer = new RunOnceScheduler(() => schemaRegistry.notifySchemaChanged(workbenchColorsSchemaId), 200);
 colorRegistry.onDidChangeSchema(() => {
@@ -194,4 +195,5 @@ colorRegistry.onDidChangeSchema(() => {
     }
 });
 // setTimeout(_ => console.log(colorRegistry.toString()), 5000);
-//# sourceMappingURL=colorUtils.js.map
+
+export { DEFAULT_COLOR_CONFIG_VALUE, Extensions, asCssVariable, asCssVariableName, asCssVariableWithDefault, darken, executeTransform, ifDefinedThenElse, isColorDefaults, lessProminent, lighten, oneOf, registerColor, resolveColorValue, transparent, workbenchColorsSchemaId };

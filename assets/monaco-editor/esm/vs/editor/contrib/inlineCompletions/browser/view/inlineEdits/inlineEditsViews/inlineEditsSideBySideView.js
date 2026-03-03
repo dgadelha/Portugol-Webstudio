@@ -1,25 +1,21 @@
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-import { $, getWindow, n } from '../../../../../../../base/browser/dom.js';
+import { n, getWindow, $ } from '../../../../../../../base/browser/dom.js';
 import { StandardMouseEvent } from '../../../../../../../base/browser/mouseEvent.js';
 import { Color } from '../../../../../../../base/common/color.js';
 import { Emitter } from '../../../../../../../base/common/event.js';
 import { Disposable } from '../../../../../../../base/common/lifecycle.js';
-import { autorun, constObservable, derived, derivedObservableWithCache, observableFromEvent } from '../../../../../../../base/common/observable.js';
+import '../../../../../../../base/common/observableInternal/index.js';
 import { IInstantiationService } from '../../../../../../../platform/instantiation/common/instantiation.js';
-import { editorBackground } from '../../../../../../../platform/theme/common/colorRegistry.js';
-import { asCssVariable, asCssVariableWithDefault } from '../../../../../../../platform/theme/common/colorUtils.js';
+import { asCssVariableWithDefault, asCssVariable } from '../../../../../../../platform/theme/common/colorUtils.js';
+import '../../../../../../../platform/theme/common/colors/baseColors.js';
+import '../../../../../../../platform/theme/common/colors/chartsColors.js';
+import { editorBackground } from '../../../../../../../platform/theme/common/colors/editorColors.js';
+import '../../../../../../../platform/theme/common/colors/inputColors.js';
+import '../../../../../../../platform/theme/common/colors/listColors.js';
+import '../../../../../../../platform/theme/common/colors/menuColors.js';
+import '../../../../../../../platform/theme/common/colors/minimapColors.js';
+import '../../../../../../../platform/theme/common/colors/miscColors.js';
+import '../../../../../../../platform/theme/common/colors/quickpickColors.js';
+import '../../../../../../../platform/theme/common/colors/searchColors.js';
 import { IThemeService } from '../../../../../../../platform/theme/common/themeService.js';
 import { observableCodeEditor } from '../../../../../../browser/observableCodeEditor.js';
 import { Rect } from '../../../../../../common/core/2d/rect.js';
@@ -29,11 +25,25 @@ import { Position } from '../../../../../../common/core/position.js';
 import { Range } from '../../../../../../common/core/range.js';
 import { StickyScrollController } from '../../../../../stickyScroll/browser/stickyScrollController.js';
 import { InlineCompletionContextKeys } from '../../../controller/inlineCompletionContextKeys.js';
-import { getEditorBlendedColor, getModifiedBorderColor, getOriginalBorderColor, modifiedBackgroundColor, originalBackgroundColor } from '../theme.js';
-import { PathBuilder, getContentRenderWidth, getOffsetForPos, mapOutFalsy, maxContentWidthInRange } from '../utils/utils.js';
+import { originalBackgroundColor, getOriginalBorderColor, getEditorBlendedColor, getModifiedBorderColor, modifiedBackgroundColor } from '../theme.js';
+import { maxContentWidthInRange, getContentRenderWidth, getOffsetForPos, PathBuilder, mapOutFalsy } from '../utils/utils.js';
+import { derived } from '../../../../../../../base/common/observableInternal/observables/derived.js';
+import { constObservable } from '../../../../../../../base/common/observableInternal/observables/constObservable.js';
+import { derivedObservableWithCache } from '../../../../../../../base/common/observableInternal/utils/utils.js';
+import { observableFromEvent } from '../../../../../../../base/common/observableInternal/observables/observableFromEvent.js';
+import { autorun } from '../../../../../../../base/common/observableInternal/reactions/autorun.js';
+
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 const HORIZONTAL_PADDING = 0;
 const VERTICAL_PADDING = 0;
-const ENABLE_OVERFLOW = false;
 const BORDER_WIDTH = 1;
 const WIDGET_SEPARATOR_WIDTH = 1;
 const WIDGET_SEPARATOR_DIFF_EDITOR_WIDTH = 3;
@@ -284,23 +294,9 @@ let InlineEditsSideBySideView = class InlineEditsSideBySideView extends Disposab
         this._stickyScrollController = StickyScrollController.get(this._editorObs.editor);
         this._stickyScrollHeight = this._stickyScrollController ? observableFromEvent(this._stickyScrollController.onDidChangeStickyScrollHeight, () => this._stickyScrollController.stickyScrollWidgetHeight) : constObservable(0);
         this._shouldOverflow = derived(this, reader => {
-            if (!ENABLE_OVERFLOW) {
+            {
                 return false;
             }
-            const range = this._edit.read(reader)?.originalLineRange;
-            if (!range) {
-                return false;
-            }
-            const stickyScrollHeight = this._stickyScrollHeight.read(reader);
-            const top = this._editor.getTopForLineNumber(range.startLineNumber) - this._editorObs.scrollTop.read(reader);
-            if (top <= stickyScrollHeight) {
-                return false;
-            }
-            const bottom = this._editor.getTopForLineNumber(range.endLineNumberExclusive) - this._editorObs.scrollTop.read(reader);
-            if (bottom >= this._editorObs.layoutInfo.read(reader).height) {
-                return false;
-            }
-            return true;
         });
         this._originalBackgroundColor = observableFromEvent(this, this._themeService.onDidColorThemeChange, () => {
             return this._themeService.getColorTheme().getColor(originalBackgroundColor) ?? Color.transparent;
@@ -517,5 +513,5 @@ InlineEditsSideBySideView = __decorate([
     __param(5, IInstantiationService),
     __param(6, IThemeService)
 ], InlineEditsSideBySideView);
+
 export { InlineEditsSideBySideView };
-//# sourceMappingURL=inlineEditsSideBySideView.js.map

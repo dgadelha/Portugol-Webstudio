@@ -1,16 +1,3 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
 import { CancellationToken } from '../../../../../base/common/cancellation.js';
 import { Disposable } from '../../../../../base/common/lifecycle.js';
 import { IThemeService } from '../../../../../platform/theme/common/themeService.js';
@@ -20,7 +7,21 @@ import { createColorHover, updateColorPresentations, updateEditorModel } from '.
 import { ColorPickerWidget } from '../colorPickerWidget.js';
 import { Range } from '../../../../common/core/range.js';
 import { Dimension } from '../../../../../base/browser/dom.js';
-export class StandaloneColorPickerHover {
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+class StandaloneColorPickerHover {
     constructor(owner, range, model, provider) {
         this.owner = owner;
         this.range = range;
@@ -31,7 +32,7 @@ export class StandaloneColorPickerHover {
         return new StandaloneColorPickerHover(owner, color.range, color.model, color.provider);
     }
 }
-export class StandaloneColorPickerRenderedParts extends Disposable {
+class StandaloneColorPickerRenderedParts extends Disposable {
     constructor(editor, context, colorHover, themeService) {
         super();
         const editorModel = editor.getModel();
@@ -44,12 +45,8 @@ export class StandaloneColorPickerRenderedParts extends Disposable {
         this._register(colorPickerModel.onDidChangeColor((color) => {
             updateColorPresentations(editorModel, colorPickerModel, color, colorHover.range, colorHover);
         }));
-        let editorUpdatedByColorPicker = false;
         this._register(editor.onDidChangeModelContent((e) => {
-            if (editorUpdatedByColorPicker) {
-                editorUpdatedByColorPicker = false;
-            }
-            else {
+            {
                 context.hide();
                 editor.focus();
             }
@@ -116,5 +113,5 @@ let StandaloneColorPickerParticipant = class StandaloneColorPickerParticipant {
 StandaloneColorPickerParticipant = __decorate([
     __param(1, IThemeService)
 ], StandaloneColorPickerParticipant);
-export { StandaloneColorPickerParticipant };
-//# sourceMappingURL=standaloneColorPickerParticipant.js.map
+
+export { StandaloneColorPickerHover, StandaloneColorPickerParticipant, StandaloneColorPickerRenderedParts };

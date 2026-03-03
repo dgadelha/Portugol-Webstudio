@@ -1,10 +1,11 @@
+import { TimeoutTimer } from '../../../common/async.js';
+import { Disposable } from '../../../common/lifecycle.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { TimeoutTimer } from '../../../common/async.js';
-import { Disposable } from '../../../common/lifecycle.js';
-export class ScrollbarVisibilityController extends Disposable {
+class ScrollbarVisibilityController extends Disposable {
     constructor(visibility, visibleClassName, invisibleClassName) {
         super();
         this._visibility = visibility;
@@ -88,4 +89,5 @@ export class ScrollbarVisibilityController extends Disposable {
         this._domNode?.setClassName(this._invisibleClassName + (withFadeAway ? ' fade' : ''));
     }
 }
-//# sourceMappingURL=scrollbarVisibilityController.js.map
+
+export { ScrollbarVisibilityController };

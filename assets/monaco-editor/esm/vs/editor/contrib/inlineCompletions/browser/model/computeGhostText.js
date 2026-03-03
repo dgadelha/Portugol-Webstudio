@@ -1,18 +1,19 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { LcsDiff } from '../../../../../base/common/diff/diff.js';
 import { getLeadingWhitespace } from '../../../../../base/common/strings.js';
 import { Range } from '../../../../common/core/range.js';
 import { TextReplacement } from '../../../../common/core/edits/textEdit.js';
-import { GhostText, GhostTextPart } from './ghostText.js';
+import { GhostTextPart, GhostText } from './ghostText.js';
 import { singleTextRemoveCommonPrefix } from './singleTextEditHelpers.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
 /**
  * @param previewSuffixLength Sets where to split `inlineCompletion.text`.
  * 	If the text is `hello` and the suffix length is 2, the non-preview part is `hel` and the preview-part is `lo`.
 */
-export function computeGhostText(edit, model, mode, cursorPosition, previewSuffixLength = 0) {
+function computeGhostText(edit, model, mode, cursorPosition, previewSuffixLength = 0) {
     let e = singleTextRemoveCommonPrefix(edit, model);
     if (e.range.endLineNumber !== e.range.startLineNumber) {
         // This edit might span multiple lines, but the first lines must be a common prefix.
@@ -126,7 +127,7 @@ function deletedCharacters(changes) {
  *
  * The parenthesis are preprocessed to ensure that they match correctly.
  */
-export function smartDiff(originalValue, newValue, smartBracketMatching) {
+function smartDiff(originalValue, newValue, smartBracketMatching) {
     if (originalValue.length > 5000 || newValue.length > 5000) {
         // We don't want to work on strings that are too big
         return undefined;
@@ -177,4 +178,5 @@ export function smartDiff(originalValue, newValue, smartBracketMatching) {
     const elements2 = getElements(newValue);
     return new LcsDiff({ getElements: () => elements1 }, { getElements: () => elements2 }).ComputeDiff(false).changes;
 }
-//# sourceMappingURL=computeGhostText.js.map
+
+export { computeGhostText, smartDiff };

@@ -1,18 +1,4 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-var InlineSuggestionHintsContentWidget_1;
-import { h, n } from '../../../../../base/browser/dom.js';
+import { n, h } from '../../../../../base/browser/dom.js';
 import { renderMarkdown } from '../../../../../base/browser/markdownRenderer.js';
 import { ActionViewItem } from '../../../../../base/browser/ui/actionbar/actionViewItems.js';
 import { KeybindingLabel, unthemedKeybindingLabelOptions } from '../../../../../base/browser/ui/keybindingLabel/keybindingLabel.js';
@@ -22,13 +8,13 @@ import { RunOnceScheduler } from '../../../../../base/common/async.js';
 import { Codicon } from '../../../../../base/common/codicons.js';
 import { createHotClass } from '../../../../../base/common/hotReloadHelpers.js';
 import { Disposable, toDisposable } from '../../../../../base/common/lifecycle.js';
-import { autorun, autorunWithStore, derived, derivedObservableWithCache, observableFromEvent } from '../../../../../base/common/observable.js';
+import '../../../../../base/common/observableInternal/index.js';
 import { OS } from '../../../../../base/common/platform.js';
 import { ThemeIcon } from '../../../../../base/common/themables.js';
 import { localize } from '../../../../../nls.js';
 import { MenuEntryActionViewItem, getActionBarActions } from '../../../../../platform/actions/browser/menuEntryActionViewItem.js';
 import { WorkbenchToolBar } from '../../../../../platform/actions/browser/toolbar.js';
-import { IMenuService, MenuId, MenuItemAction } from '../../../../../platform/actions/common/actions.js';
+import { MenuId, MenuItemAction, IMenuService } from '../../../../../platform/actions/common/actions.js';
 import { ICommandService } from '../../../../../platform/commands/common/commands.js';
 import { IContextKeyService } from '../../../../../platform/contextkey/common/contextkey.js';
 import { IContextMenuService } from '../../../../../platform/contextview/browser/contextView.js';
@@ -38,8 +24,27 @@ import { ITelemetryService } from '../../../../../platform/telemetry/common/tele
 import { registerIcon } from '../../../../../platform/theme/common/iconRegistry.js';
 import { Position } from '../../../../common/core/position.js';
 import { InlineCompletionTriggerKind } from '../../../../common/languages.js';
-import { showNextInlineSuggestionActionId, showPreviousInlineSuggestionActionId } from '../controller/commandIds.js';
+import { showPreviousInlineSuggestionActionId, showNextInlineSuggestionActionId } from '../controller/commandIds.js';
 import './inlineCompletionsHintsWidget.css';
+import { derivedObservableWithCache } from '../../../../../base/common/observableInternal/utils/utils.js';
+import { derived } from '../../../../../base/common/observableInternal/observables/derived.js';
+import { autorun, autorunWithStore } from '../../../../../base/common/observableInternal/reactions/autorun.js';
+import { observableFromEvent } from '../../../../../base/common/observableInternal/observables/observableFromEvent.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var InlineSuggestionHintsContentWidget_1;
 let InlineCompletionsHintsWidget = class InlineCompletionsHintsWidget extends Disposable {
     constructor(editor, model, instantiationService) {
         super();
@@ -96,12 +101,11 @@ let InlineCompletionsHintsWidget = class InlineCompletionsHintsWidget extends Di
 InlineCompletionsHintsWidget = __decorate([
     __param(2, IInstantiationService)
 ], InlineCompletionsHintsWidget);
-export { InlineCompletionsHintsWidget };
-const inlineSuggestionHintsNextIcon = registerIcon('inline-suggestion-hints-next', Codicon.chevronRight, localize(1198, 'Icon for show next parameter hint.'));
-const inlineSuggestionHintsPreviousIcon = registerIcon('inline-suggestion-hints-previous', Codicon.chevronLeft, localize(1199, 'Icon for show previous parameter hint.'));
+const inlineSuggestionHintsNextIcon = registerIcon('inline-suggestion-hints-next', Codicon.chevronRight, localize(1207, 'Icon for show next parameter hint.'));
+const inlineSuggestionHintsPreviousIcon = registerIcon('inline-suggestion-hints-previous', Codicon.chevronLeft, localize(1208, 'Icon for show previous parameter hint.'));
 let InlineSuggestionHintsContentWidget = class InlineSuggestionHintsContentWidget extends Disposable {
     static { InlineSuggestionHintsContentWidget_1 = this; }
-    static { this.hot = createHotClass(InlineSuggestionHintsContentWidget_1); }
+    static { this.hot = createHotClass(this); }
     static { this._dropDownVisible = false; }
     static get dropDownVisible() { return this._dropDownVisible; }
     static { this.id = 0; }
@@ -110,7 +114,7 @@ let InlineSuggestionHintsContentWidget = class InlineSuggestionHintsContentWidge
         const kb = this.keybindingService.lookupKeybinding(commandId, this._contextKeyService);
         let tooltip = label;
         if (kb) {
-            tooltip = localize(1200, '{0} ({1})', label, kb.getLabel());
+            tooltip = localize(1209, '{0} ({1})', label, kb.getLabel());
         }
         action.tooltip = tooltip;
         return action;
@@ -158,9 +162,9 @@ let InlineSuggestionHintsContentWidget = class InlineSuggestionHintsContentWidge
             this._warningMessageNode.element,
             h('div@toolBar'),
         ]);
-        this.previousAction = this._register(this.createCommandAction(showPreviousInlineSuggestionActionId, localize(1201, 'Previous'), ThemeIcon.asClassName(inlineSuggestionHintsPreviousIcon)));
+        this.previousAction = this._register(this.createCommandAction(showPreviousInlineSuggestionActionId, localize(1210, 'Previous'), ThemeIcon.asClassName(inlineSuggestionHintsPreviousIcon)));
         this.availableSuggestionCountAction = this._register(new Action('inlineSuggestionHints.availableSuggestionCount', '', undefined, false));
-        this.nextAction = this._register(this.createCommandAction(showNextInlineSuggestionActionId, localize(1202, 'Next'), ThemeIcon.asClassName(inlineSuggestionHintsNextIcon)));
+        this.nextAction = this._register(this.createCommandAction(showNextInlineSuggestionActionId, localize(1211, 'Next'), ThemeIcon.asClassName(inlineSuggestionHintsNextIcon)));
         this.inlineCompletionsActionsMenus = this._register(this._menuService.createMenu(MenuId.InlineCompletionsActions, this._contextKeyService));
         this.clearAvailableSuggestionCountLabelDebounced = this._register(new RunOnceScheduler(() => {
             this.availableSuggestionCountAction.label = '';
@@ -267,7 +271,6 @@ InlineSuggestionHintsContentWidget = InlineSuggestionHintsContentWidget_1 = __de
     __param(11, IContextKeyService),
     __param(12, IMenuService)
 ], InlineSuggestionHintsContentWidget);
-export { InlineSuggestionHintsContentWidget };
 class ActionViewItemWithClassName extends ActionViewItem {
     constructor() {
         super(...arguments);
@@ -349,5 +352,5 @@ CustomizedMenuWorkbenchToolBar = __decorate([
     __param(7, ICommandService),
     __param(8, ITelemetryService)
 ], CustomizedMenuWorkbenchToolBar);
-export { CustomizedMenuWorkbenchToolBar };
-//# sourceMappingURL=inlineCompletionsHintsWidget.js.map
+
+export { CustomizedMenuWorkbenchToolBar, InlineCompletionsHintsWidget, InlineSuggestionHintsContentWidget };

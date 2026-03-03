@@ -1,19 +1,6 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
 import { Emitter } from '../../../../../base/common/event.js';
 import { Disposable } from '../../../../../base/common/lifecycle.js';
-import { autorunHandleChanges, derived, derivedOpts, observableFromEvent } from '../../../../../base/common/observable.js';
+import '../../../../../base/common/observableInternal/index.js';
 import { observableCodeEditor } from '../../../observableCodeEditor.js';
 import { OverviewRulerFeature } from '../features/overviewRulerFeature.js';
 import { EditorOptions } from '../../../../common/config/editorOptions.js';
@@ -22,6 +9,23 @@ import { localize } from '../../../../../nls.js';
 import { IInstantiationService } from '../../../../../platform/instantiation/common/instantiation.js';
 import { IKeybindingService } from '../../../../../platform/keybinding/common/keybinding.js';
 import { IContextKeyService } from '../../../../../platform/contextkey/common/contextkey.js';
+import { observableFromEvent } from '../../../../../base/common/observableInternal/observables/observableFromEvent.js';
+import { derivedOpts, derived } from '../../../../../base/common/observableInternal/observables/derived.js';
+import { autorunHandleChanges } from '../../../../../base/common/observableInternal/reactions/autorun.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 let DiffEditorEditors = class DiffEditorEditors extends Disposable {
     get onDidContentSizeChange() { return this._onDidContentSizeChange.event; }
     constructor(originalEditorElement, modifiedEditorElement, _options, _argCodeEditorWidgetOptions, _createInnerEditor, _contextKeyService, _instantiationService, _keybindingService) {
@@ -48,6 +52,7 @@ let DiffEditorEditors = class DiffEditorEditors extends Disposable {
         this.isOriginalFocused = observableCodeEditor(this.original).isFocused;
         this.isModifiedFocused = observableCodeEditor(this.modified).isFocused;
         this.isFocused = derived(this, reader => this.isOriginalFocused.read(reader) || this.isModifiedFocused.read(reader));
+        // eslint-disable-next-line local/code-no-any-casts, @typescript-eslint/no-explicit-any
         this._argCodeEditorWidgetOptions = null;
         this._register(autorunHandleChanges({
             changeTracker: {
@@ -166,7 +171,7 @@ let DiffEditorEditors = class DiffEditorEditors extends Disposable {
         if (!ariaLabel) {
             ariaLabel = '';
         }
-        const ariaNavigationTip = localize(108, ' use {0} to open the accessibility help.', this._keybindingService.lookupKeybinding('editor.action.accessibilityHelp')?.getAriaLabel());
+        const ariaNavigationTip = localize(111, ' use {0} to open the accessibility help.', this._keybindingService.lookupKeybinding('editor.action.accessibilityHelp')?.getAriaLabel());
         if (this._options.accessibilityVerbose.get()) {
             return ariaLabel + ariaNavigationTip;
         }
@@ -181,5 +186,5 @@ DiffEditorEditors = __decorate([
     __param(6, IInstantiationService),
     __param(7, IKeybindingService)
 ], DiffEditorEditors);
+
 export { DiffEditorEditors };
-//# sourceMappingURL=diffEditorEditors.js.map

@@ -1,3 +1,5 @@
+import { cwd, env, platform } from './process.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -30,7 +32,6 @@
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
  * USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-import * as process from './process.js';
 const CHAR_UPPERCASE_A = 65; /* A */
 const CHAR_LOWERCASE_A = 97; /* a */
 const CHAR_UPPERCASE_Z = 90; /* Z */
@@ -68,7 +69,7 @@ function validateString(value, name) {
         throw new ErrorInvalidArgType(name, 'string', value);
     }
 }
-const platformIsWin32 = (process.platform === 'win32');
+const platformIsWin32 = (platform === 'win32');
 function isPathSeparator(code) {
     return code === CHAR_FORWARD_SLASH || code === CHAR_BACKWARD_SLASH;
 }
@@ -97,9 +98,7 @@ function normalizeString(path, allowAboveRoot, separator, isPathSeparator) {
             code = CHAR_FORWARD_SLASH;
         }
         if (isPathSeparator(code)) {
-            if (lastSlash === i - 1 || dots === 1) {
-                // NOOP
-            }
+            if (lastSlash === i - 1 || dots === 1) ;
             else if (dots === 2) {
                 if (res.length < 2 || lastSegmentLength !== 2 ||
                     res.charCodeAt(res.length - 1) !== CHAR_DOT ||
@@ -165,7 +164,7 @@ function _format(sep, pathObject) {
     }
     return dir === pathObject.root ? `${dir}${base}` : `${dir}${sep}${base}`;
 }
-export const win32 = {
+const win32 = {
     // path.resolve([from ...], to)
     resolve(...pathSegments) {
         let resolvedDevice = '';
@@ -182,7 +181,7 @@ export const win32 = {
                 }
             }
             else if (resolvedDevice.length === 0) {
-                path = process.cwd();
+                path = cwd();
             }
             else {
                 // Windows has the concept of drive-specific current working
@@ -190,7 +189,7 @@ export const win32 = {
                 // absolute path, get cwd for that drive, or the process cwd if
                 // the drive cwd is not available. We're sure the device is not
                 // a UNC path at this points, because UNC paths are always absolute.
-                path = process.env[`=${resolvedDevice}`] || process.cwd();
+                path = env[`=${resolvedDevice}`] || cwd();
                 // Verify that a cwd was found and that it actually points
                 // to our drive. If not, default to the drive's root.
                 if (path === undefined ||
@@ -1042,14 +1041,14 @@ const posixCwd = (() => {
         // and truncates any drive indicator
         const regexp = /\\/g;
         return () => {
-            const cwd = process.cwd().replace(regexp, '/');
-            return cwd.slice(cwd.indexOf('/'));
+            const cwd$1 = cwd().replace(regexp, '/');
+            return cwd$1.slice(cwd$1.indexOf('/'));
         };
     }
     // We're already on POSIX, no need for any transformations
-    return () => process.cwd();
+    return () => cwd();
 })();
-export const posix = {
+const posix = {
     // path.resolve([from ...], to)
     resolve(...pathSegments) {
         let resolvedPath = '';
@@ -1441,11 +1440,12 @@ export const posix = {
 };
 posix.win32 = win32.win32 = win32;
 posix.posix = win32.posix = posix;
-export const normalize = (platformIsWin32 ? win32.normalize : posix.normalize);
-export const resolve = (platformIsWin32 ? win32.resolve : posix.resolve);
-export const relative = (platformIsWin32 ? win32.relative : posix.relative);
-export const dirname = (platformIsWin32 ? win32.dirname : posix.dirname);
-export const basename = (platformIsWin32 ? win32.basename : posix.basename);
-export const extname = (platformIsWin32 ? win32.extname : posix.extname);
-export const sep = (platformIsWin32 ? win32.sep : posix.sep);
-//# sourceMappingURL=path.js.map
+const normalize = (platformIsWin32 ? win32.normalize : posix.normalize);
+const resolve = (platformIsWin32 ? win32.resolve : posix.resolve);
+const relative = (platformIsWin32 ? win32.relative : posix.relative);
+const dirname = (platformIsWin32 ? win32.dirname : posix.dirname);
+const basename = (platformIsWin32 ? win32.basename : posix.basename);
+const extname = (platformIsWin32 ? win32.extname : posix.extname);
+const sep = (platformIsWin32 ? win32.sep : posix.sep);
+
+export { basename, dirname, extname, normalize, posix, relative, resolve, sep, win32 };

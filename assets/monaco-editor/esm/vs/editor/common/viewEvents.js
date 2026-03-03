@@ -2,17 +2,17 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-export class ViewCompositionStartEvent {
+class ViewCompositionStartEvent {
     constructor() {
         this.type = 0 /* ViewEventType.ViewCompositionStart */;
     }
 }
-export class ViewCompositionEndEvent {
+class ViewCompositionEndEvent {
     constructor() {
         this.type = 1 /* ViewEventType.ViewCompositionEnd */;
     }
 }
-export class ViewConfigurationChangedEvent {
+class ViewConfigurationChangedEvent {
     constructor(source) {
         this.type = 2 /* ViewEventType.ViewConfigurationChanged */;
         this._source = source;
@@ -21,7 +21,7 @@ export class ViewConfigurationChangedEvent {
         return this._source.hasChanged(id);
     }
 }
-export class ViewCursorStateChangedEvent {
+class ViewCursorStateChangedEvent {
     constructor(selections, modelSelections, reason) {
         this.selections = selections;
         this.modelSelections = modelSelections;
@@ -29,7 +29,7 @@ export class ViewCursorStateChangedEvent {
         this.type = 3 /* ViewEventType.ViewCursorStateChanged */;
     }
 }
-export class ViewDecorationsChangedEvent {
+class ViewDecorationsChangedEvent {
     constructor(source) {
         this.type = 4 /* ViewEventType.ViewDecorationsChanged */;
         if (source) {
@@ -46,30 +46,30 @@ export class ViewDecorationsChangedEvent {
         }
     }
 }
-export class ViewFlushedEvent {
+class ViewFlushedEvent {
     constructor() {
         this.type = 5 /* ViewEventType.ViewFlushed */;
         // Nothing to do
     }
 }
-export class ViewFocusChangedEvent {
+class ViewFocusChangedEvent {
     constructor(isFocused) {
         this.type = 6 /* ViewEventType.ViewFocusChanged */;
         this.isFocused = isFocused;
     }
 }
-export class ViewLanguageConfigurationEvent {
+class ViewLanguageConfigurationEvent {
     constructor() {
         this.type = 7 /* ViewEventType.ViewLanguageConfigurationChanged */;
     }
 }
-export class ViewLineMappingChangedEvent {
+class ViewLineMappingChangedEvent {
     constructor() {
         this.type = 8 /* ViewEventType.ViewLineMappingChanged */;
         // Nothing to do
     }
 }
-export class ViewLinesChangedEvent {
+class ViewLinesChangedEvent {
     constructor(
     /**
      * The first line that has changed.
@@ -84,21 +84,21 @@ export class ViewLinesChangedEvent {
         this.type = 9 /* ViewEventType.ViewLinesChanged */;
     }
 }
-export class ViewLinesDeletedEvent {
+class ViewLinesDeletedEvent {
     constructor(fromLineNumber, toLineNumber) {
         this.type = 10 /* ViewEventType.ViewLinesDeleted */;
         this.fromLineNumber = fromLineNumber;
         this.toLineNumber = toLineNumber;
     }
 }
-export class ViewLinesInsertedEvent {
+class ViewLinesInsertedEvent {
     constructor(fromLineNumber, toLineNumber) {
         this.type = 11 /* ViewEventType.ViewLinesInserted */;
         this.fromLineNumber = fromLineNumber;
         this.toLineNumber = toLineNumber;
     }
 }
-export class ViewRevealRangeRequestEvent {
+class ViewRevealRangeRequestEvent {
     constructor(
     /**
      * Source of the call that caused the event.
@@ -139,7 +139,7 @@ export class ViewRevealRangeRequestEvent {
         this.type = 12 /* ViewEventType.ViewRevealRangeRequest */;
     }
 }
-export class ViewScrollChangedEvent {
+class ViewScrollChangedEvent {
     constructor(source) {
         this.type = 13 /* ViewEventType.ViewScrollChanged */;
         this.scrollWidth = source.scrollWidth;
@@ -152,28 +152,29 @@ export class ViewScrollChangedEvent {
         this.scrollTopChanged = source.scrollTopChanged;
     }
 }
-export class ViewThemeChangedEvent {
+class ViewThemeChangedEvent {
     constructor(theme) {
         this.theme = theme;
         this.type = 14 /* ViewEventType.ViewThemeChanged */;
     }
 }
-export class ViewTokensChangedEvent {
+class ViewTokensChangedEvent {
     constructor(ranges) {
         this.type = 15 /* ViewEventType.ViewTokensChanged */;
         this.ranges = ranges;
     }
 }
-export class ViewTokensColorsChangedEvent {
+class ViewTokensColorsChangedEvent {
     constructor() {
         this.type = 16 /* ViewEventType.ViewTokensColorsChanged */;
         // Nothing to do
     }
 }
-export class ViewZonesChangedEvent {
+class ViewZonesChangedEvent {
     constructor() {
         this.type = 17 /* ViewEventType.ViewZonesChanged */;
         // Nothing to do
     }
 }
-//# sourceMappingURL=viewEvents.js.map
+
+export { ViewCompositionEndEvent, ViewCompositionStartEvent, ViewConfigurationChangedEvent, ViewCursorStateChangedEvent, ViewDecorationsChangedEvent, ViewFlushedEvent, ViewFocusChangedEvent, ViewLanguageConfigurationEvent, ViewLineMappingChangedEvent, ViewLinesChangedEvent, ViewLinesDeletedEvent, ViewLinesInsertedEvent, ViewRevealRangeRequestEvent, ViewScrollChangedEvent, ViewThemeChangedEvent, ViewTokensChangedEvent, ViewTokensColorsChangedEvent, ViewZonesChangedEvent };

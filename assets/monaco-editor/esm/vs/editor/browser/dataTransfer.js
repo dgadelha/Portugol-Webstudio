@@ -1,13 +1,14 @@
+import { DataTransfers } from '../../base/browser/dnd.js';
+import { VSDataTransfer, createStringDataTransferItem, UriList, createFileDataTransferItem } from '../../base/common/dataTransfer.js';
+import { Mimes } from '../../base/common/mime.js';
+import { URI } from '../../base/common/uri.js';
+import { getPathForFile, CodeDataTransfers } from '../../platform/dnd/browser/dnd.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { DataTransfers } from '../../base/browser/dnd.js';
-import { createFileDataTransferItem, createStringDataTransferItem, UriList, VSDataTransfer } from '../../base/common/dataTransfer.js';
-import { Mimes } from '../../base/common/mime.js';
-import { URI } from '../../base/common/uri.js';
-import { CodeDataTransfers, getPathForFile } from '../../platform/dnd/browser/dnd.js';
-export function toVSDataTransfer(dataTransfer) {
+function toVSDataTransfer(dataTransfer) {
     const vsDataTransfer = new VSDataTransfer();
     for (const item of dataTransfer.items) {
         const type = item.type;
@@ -37,7 +38,7 @@ const INTERNAL_DND_MIME_TYPES = Object.freeze([
     DataTransfers.RESOURCES,
     DataTransfers.INTERNAL_URI_LIST,
 ]);
-export function toExternalVSDataTransfer(sourceDataTransfer, overwriteUriList = false) {
+function toExternalVSDataTransfer(sourceDataTransfer, overwriteUriList = false) {
     const vsDataTransfer = toVSDataTransfer(sourceDataTransfer);
     // Try to expose the internal uri-list type as the standard type
     const uriList = vsDataTransfer.get(DataTransfers.INTERNAL_URI_LIST);
@@ -75,4 +76,5 @@ export function toExternalVSDataTransfer(sourceDataTransfer, overwriteUriList = 
     }
     return vsDataTransfer;
 }
-//# sourceMappingURL=dataTransfer.js.map
+
+export { toExternalVSDataTransfer, toVSDataTransfer };

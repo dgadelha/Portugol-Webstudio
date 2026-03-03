@@ -1,12 +1,13 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { findLastIdxMonotonous } from '../../../../base/common/arraysFind.js';
 import { OffsetRange } from '../ranges/offsetRange.js';
 import { Position } from '../position.js';
 import { Range } from '../range.js';
-export class PositionOffsetTransformerBase {
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+class PositionOffsetTransformerBase {
     getOffsetRange(range) {
         return new OffsetRange(this.getOffset(range.getStartPosition()), this.getOffset(range.getEndPosition()));
     }
@@ -34,10 +35,10 @@ class Deps {
     }
 }
 /** This is to break circular module dependencies. */
-export function _setPositionOffsetTransformerDependencies(deps) {
+function _setPositionOffsetTransformerDependencies(deps) {
     Deps._deps = deps;
 }
-export class PositionOffsetTransformer extends PositionOffsetTransformerBase {
+class PositionOffsetTransformer extends PositionOffsetTransformerBase {
     constructor(text) {
         super();
         this.text = text;
@@ -93,4 +94,5 @@ export class PositionOffsetTransformer extends PositionOffsetTransformerBase {
         return this.lineEndOffsetByLineIdx[lineNumber - 1] - this.lineStartOffsetByLineIdx[lineNumber - 1];
     }
 }
-//# sourceMappingURL=positionToOffsetImpl.js.map
+
+export { PositionOffsetTransformer, PositionOffsetTransformerBase, _setPositionOffsetTransformerDependencies };

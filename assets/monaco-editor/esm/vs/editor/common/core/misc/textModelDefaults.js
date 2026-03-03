@@ -2,7 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-export const EDITOR_MODEL_DEFAULTS = {
+const EDITOR_MODEL_DEFAULTS = {
     tabSize: 4,
     indentSize: 4,
     insertSpaces: true,
@@ -14,4 +14,5 @@ export const EDITOR_MODEL_DEFAULTS = {
         independentColorPoolPerBracketType: false,
     },
 };
-//# sourceMappingURL=textModelDefaults.js.map
+
+export { EDITOR_MODEL_DEFAULTS };

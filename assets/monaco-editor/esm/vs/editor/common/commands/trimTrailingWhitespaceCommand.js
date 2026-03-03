@@ -1,11 +1,12 @@
+import { lastNonWhitespaceIndex } from '../../../base/common/strings.js';
+import { EditOperation } from '../core/editOperation.js';
+import { Range } from '../core/range.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import * as strings from '../../../base/common/strings.js';
-import { EditOperation } from '../core/editOperation.js';
-import { Range } from '../core/range.js';
-export class TrimTrailingWhitespaceCommand {
+class TrimTrailingWhitespaceCommand {
     constructor(selection, cursors, trimInRegexesAndStrings) {
         this._selection = selection;
         this._cursors = cursors;
@@ -27,7 +28,7 @@ export class TrimTrailingWhitespaceCommand {
 /**
  * Generate commands for trimming trailing whitespace on a model and ignore lines on which cursors are sitting.
  */
-export function trimTrailingWhitespace(model, cursors, trimInRegexesAndStrings) {
+function trimTrailingWhitespace(model, cursors, trimInRegexesAndStrings) {
     // Sort cursors ascending
     cursors.sort((a, b) => {
         if (a.lineNumber === b.lineNumber) {
@@ -61,15 +62,15 @@ export function trimTrailingWhitespace(model, cursors, trimInRegexesAndStrings) 
         if (lineContent.length === 0) {
             continue;
         }
-        const lastNonWhitespaceIndex = strings.lastNonWhitespaceIndex(lineContent);
+        const lastNonWhitespaceIndex$1 = lastNonWhitespaceIndex(lineContent);
         let fromColumn = 0;
-        if (lastNonWhitespaceIndex === -1) {
+        if (lastNonWhitespaceIndex$1 === -1) {
             // Entire line is whitespace
             fromColumn = 1;
         }
-        else if (lastNonWhitespaceIndex !== lineContent.length - 1) {
+        else if (lastNonWhitespaceIndex$1 !== lineContent.length - 1) {
             // There is trailing whitespace
-            fromColumn = lastNonWhitespaceIndex + 2;
+            fromColumn = lastNonWhitespaceIndex$1 + 2;
         }
         else {
             // There is no trailing whitespace
@@ -93,4 +94,5 @@ export function trimTrailingWhitespace(model, cursors, trimInRegexesAndStrings) 
     }
     return r;
 }
-//# sourceMappingURL=trimTrailingWhitespaceCommand.js.map
+
+export { TrimTrailingWhitespaceCommand, trimTrailingWhitespace };

@@ -1,5 +1,6 @@
-import { isMacintosh, isWeb } from '../../../base/common/platform.js';
-export function hasNativeContextMenu(configurationService, titleBarStyle) {
+import { isWeb, isMacintosh } from '../../../base/common/platform.js';
+
+function hasNativeContextMenu(configurationService, titleBarStyle) {
     if (isWeb) {
         return false;
     }
@@ -17,13 +18,13 @@ export function hasNativeContextMenu(configurationService, titleBarStyle) {
     }
     return nativeTitle; // Default to inherit from title bar style
 }
-export function hasNativeTitlebar(configurationService, titleBarStyle) {
+function hasNativeTitlebar(configurationService, titleBarStyle) {
     if (!titleBarStyle) {
         titleBarStyle = getTitleBarStyle(configurationService);
     }
     return titleBarStyle === "native" /* TitlebarStyle.NATIVE */;
 }
-export function getTitleBarStyle(configurationService) {
+function getTitleBarStyle(configurationService) {
     if (isWeb) {
         return "custom" /* TitlebarStyle.CUSTOM */;
     }
@@ -44,7 +45,7 @@ export function getTitleBarStyle(configurationService) {
     }
     return "custom" /* TitlebarStyle.CUSTOM */; // default to custom on all OS
 }
-export function getWindowControlsStyle(configurationService) {
+function getWindowControlsStyle(configurationService) {
     if (isWeb || isMacintosh || getTitleBarStyle(configurationService) === "native" /* TitlebarStyle.NATIVE */) {
         return "native" /* WindowControlsStyle.NATIVE */; // only supported on Windows/Linux desktop with custom titlebar
     }
@@ -55,4 +56,5 @@ export function getWindowControlsStyle(configurationService) {
     }
     return "native" /* WindowControlsStyle.NATIVE */; // default to native on all OS
 }
-//# sourceMappingURL=window.js.map
+
+export { getTitleBarStyle, getWindowControlsStyle, hasNativeContextMenu, hasNativeTitlebar };

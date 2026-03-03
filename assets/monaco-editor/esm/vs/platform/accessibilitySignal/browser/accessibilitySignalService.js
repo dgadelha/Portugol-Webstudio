@@ -1,12 +1,11 @@
 import { localize } from '../../../nls.js';
 import { createDecorator } from '../../instantiation/common/instantiation.js';
-export const IAccessibilitySignalService = createDecorator('accessibilitySignalService');
-/** Make sure you understand the doc comments of the method you want to call when using this token! */
-export const AcknowledgeDocCommentsToken = Symbol('AcknowledgeDocCommentsToken');
+
+const IAccessibilitySignalService = createDecorator('accessibilitySignalService');
 /**
  * Corresponds to the audio files in ./media.
 */
-export class Sound {
+class Sound {
     static register(options) {
         const sound = new Sound(options.fileName);
         return sound;
@@ -46,12 +45,12 @@ export class Sound {
         this.fileName = fileName;
     }
 }
-export class SoundSource {
+class SoundSource {
     constructor(randomOneOf) {
         this.randomOneOf = randomOneOf;
     }
 }
-export class AccessibilitySignal {
+class AccessibilitySignal {
     constructor(sound, name, legacySoundSettingsKey, settingsKey, legacyAnnouncementSettingsKey, announcementMessage, managesOwnEnablement = false) {
         this.sound = sound;
         this.name = name;
@@ -69,176 +68,176 @@ export class AccessibilitySignal {
         return signal;
     }
     static { this.errorAtPosition = AccessibilitySignal.register({
-        name: localize(1561, 'Error at Position'),
+        name: localize(1576, 'Error at Position'),
         sound: Sound.error,
-        announcementMessage: localize(1562, 'Error'),
+        announcementMessage: localize(1577, 'Error'),
         settingsKey: 'accessibility.signals.positionHasError',
         delaySettingsKey: 'accessibility.signalOptions.delays.errorAtPosition'
     }); }
     static { this.warningAtPosition = AccessibilitySignal.register({
-        name: localize(1563, 'Warning at Position'),
+        name: localize(1578, 'Warning at Position'),
         sound: Sound.warning,
-        announcementMessage: localize(1564, 'Warning'),
+        announcementMessage: localize(1579, 'Warning'),
         settingsKey: 'accessibility.signals.positionHasWarning',
         delaySettingsKey: 'accessibility.signalOptions.delays.warningAtPosition'
     }); }
     static { this.errorOnLine = AccessibilitySignal.register({
-        name: localize(1565, 'Error on Line'),
+        name: localize(1580, 'Error on Line'),
         sound: Sound.error,
         legacySoundSettingsKey: 'audioCues.lineHasError',
         legacyAnnouncementSettingsKey: 'accessibility.alert.error',
-        announcementMessage: localize(1566, 'Error on Line'),
+        announcementMessage: localize(1581, 'Error on Line'),
         settingsKey: 'accessibility.signals.lineHasError',
     }); }
     static { this.warningOnLine = AccessibilitySignal.register({
-        name: localize(1567, 'Warning on Line'),
+        name: localize(1582, 'Warning on Line'),
         sound: Sound.warning,
         legacySoundSettingsKey: 'audioCues.lineHasWarning',
         legacyAnnouncementSettingsKey: 'accessibility.alert.warning',
-        announcementMessage: localize(1568, 'Warning on Line'),
+        announcementMessage: localize(1583, 'Warning on Line'),
         settingsKey: 'accessibility.signals.lineHasWarning',
     }); }
     static { this.foldedArea = AccessibilitySignal.register({
-        name: localize(1569, 'Folded Area on Line'),
+        name: localize(1584, 'Folded Area on Line'),
         sound: Sound.foldedArea,
         legacySoundSettingsKey: 'audioCues.lineHasFoldedArea',
         legacyAnnouncementSettingsKey: 'accessibility.alert.foldedArea',
-        announcementMessage: localize(1570, 'Folded'),
+        announcementMessage: localize(1585, 'Folded'),
         settingsKey: 'accessibility.signals.lineHasFoldedArea',
     }); }
     static { this.break = AccessibilitySignal.register({
-        name: localize(1571, 'Breakpoint on Line'),
+        name: localize(1586, 'Breakpoint on Line'),
         sound: Sound.break,
         legacySoundSettingsKey: 'audioCues.lineHasBreakpoint',
         legacyAnnouncementSettingsKey: 'accessibility.alert.breakpoint',
-        announcementMessage: localize(1572, 'Breakpoint'),
+        announcementMessage: localize(1587, 'Breakpoint'),
         settingsKey: 'accessibility.signals.lineHasBreakpoint',
     }); }
     static { this.inlineSuggestion = AccessibilitySignal.register({
-        name: localize(1573, 'Inline Suggestion on Line'),
+        name: localize(1588, 'Inline Suggestion on Line'),
         sound: Sound.quickFixes,
         legacySoundSettingsKey: 'audioCues.lineHasInlineSuggestion',
         settingsKey: 'accessibility.signals.lineHasInlineSuggestion',
     }); }
     static { this.nextEditSuggestion = AccessibilitySignal.register({
-        name: localize(1574, 'Next Edit Suggestion on Line'),
+        name: localize(1589, 'Next Edit Suggestion on Line'),
         sound: Sound.nextEditSuggestion,
         legacySoundSettingsKey: 'audioCues.nextEditSuggestion',
         settingsKey: 'accessibility.signals.nextEditSuggestion',
-        announcementMessage: localize(1575, 'Next Edit Suggestion'),
+        announcementMessage: localize(1590, 'Next Edit Suggestion'),
     }); }
     static { this.terminalQuickFix = AccessibilitySignal.register({
-        name: localize(1576, 'Terminal Quick Fix'),
+        name: localize(1591, 'Terminal Quick Fix'),
         sound: Sound.quickFixes,
         legacySoundSettingsKey: 'audioCues.terminalQuickFix',
         legacyAnnouncementSettingsKey: 'accessibility.alert.terminalQuickFix',
-        announcementMessage: localize(1577, 'Quick Fix'),
+        announcementMessage: localize(1592, 'Quick Fix'),
         settingsKey: 'accessibility.signals.terminalQuickFix',
     }); }
     static { this.onDebugBreak = AccessibilitySignal.register({
-        name: localize(1578, 'Debugger Stopped on Breakpoint'),
+        name: localize(1593, 'Debugger Stopped on Breakpoint'),
         sound: Sound.break,
         legacySoundSettingsKey: 'audioCues.onDebugBreak',
         legacyAnnouncementSettingsKey: 'accessibility.alert.onDebugBreak',
-        announcementMessage: localize(1579, 'Breakpoint'),
+        announcementMessage: localize(1594, 'Breakpoint'),
         settingsKey: 'accessibility.signals.onDebugBreak',
     }); }
     static { this.noInlayHints = AccessibilitySignal.register({
-        name: localize(1580, 'No Inlay Hints on Line'),
+        name: localize(1595, 'No Inlay Hints on Line'),
         sound: Sound.error,
         legacySoundSettingsKey: 'audioCues.noInlayHints',
         legacyAnnouncementSettingsKey: 'accessibility.alert.noInlayHints',
-        announcementMessage: localize(1581, 'No Inlay Hints'),
+        announcementMessage: localize(1596, 'No Inlay Hints'),
         settingsKey: 'accessibility.signals.noInlayHints',
     }); }
     static { this.taskCompleted = AccessibilitySignal.register({
-        name: localize(1582, 'Task Completed'),
+        name: localize(1597, 'Task Completed'),
         sound: Sound.taskCompleted,
         legacySoundSettingsKey: 'audioCues.taskCompleted',
         legacyAnnouncementSettingsKey: 'accessibility.alert.taskCompleted',
-        announcementMessage: localize(1583, 'Task Completed'),
+        announcementMessage: localize(1598, 'Task Completed'),
         settingsKey: 'accessibility.signals.taskCompleted',
     }); }
     static { this.taskFailed = AccessibilitySignal.register({
-        name: localize(1584, 'Task Failed'),
+        name: localize(1599, 'Task Failed'),
         sound: Sound.taskFailed,
         legacySoundSettingsKey: 'audioCues.taskFailed',
         legacyAnnouncementSettingsKey: 'accessibility.alert.taskFailed',
-        announcementMessage: localize(1585, 'Task Failed'),
+        announcementMessage: localize(1600, 'Task Failed'),
         settingsKey: 'accessibility.signals.taskFailed',
     }); }
     static { this.terminalCommandFailed = AccessibilitySignal.register({
-        name: localize(1586, 'Terminal Command Failed'),
+        name: localize(1601, 'Terminal Command Failed'),
         sound: Sound.error,
         legacySoundSettingsKey: 'audioCues.terminalCommandFailed',
         legacyAnnouncementSettingsKey: 'accessibility.alert.terminalCommandFailed',
-        announcementMessage: localize(1587, 'Command Failed'),
+        announcementMessage: localize(1602, 'Command Failed'),
         settingsKey: 'accessibility.signals.terminalCommandFailed',
     }); }
     static { this.terminalCommandSucceeded = AccessibilitySignal.register({
-        name: localize(1588, 'Terminal Command Succeeded'),
+        name: localize(1603, 'Terminal Command Succeeded'),
         sound: Sound.terminalCommandSucceeded,
-        announcementMessage: localize(1589, 'Command Succeeded'),
+        announcementMessage: localize(1604, 'Command Succeeded'),
         settingsKey: 'accessibility.signals.terminalCommandSucceeded',
     }); }
     static { this.terminalBell = AccessibilitySignal.register({
-        name: localize(1590, 'Terminal Bell'),
+        name: localize(1605, 'Terminal Bell'),
         sound: Sound.terminalBell,
         legacySoundSettingsKey: 'audioCues.terminalBell',
         legacyAnnouncementSettingsKey: 'accessibility.alert.terminalBell',
-        announcementMessage: localize(1591, 'Terminal Bell'),
+        announcementMessage: localize(1606, 'Terminal Bell'),
         settingsKey: 'accessibility.signals.terminalBell',
     }); }
     static { this.notebookCellCompleted = AccessibilitySignal.register({
-        name: localize(1592, 'Notebook Cell Completed'),
+        name: localize(1607, 'Notebook Cell Completed'),
         sound: Sound.taskCompleted,
         legacySoundSettingsKey: 'audioCues.notebookCellCompleted',
         legacyAnnouncementSettingsKey: 'accessibility.alert.notebookCellCompleted',
-        announcementMessage: localize(1593, 'Notebook Cell Completed'),
+        announcementMessage: localize(1608, 'Notebook Cell Completed'),
         settingsKey: 'accessibility.signals.notebookCellCompleted',
     }); }
     static { this.notebookCellFailed = AccessibilitySignal.register({
-        name: localize(1594, 'Notebook Cell Failed'),
+        name: localize(1609, 'Notebook Cell Failed'),
         sound: Sound.taskFailed,
         legacySoundSettingsKey: 'audioCues.notebookCellFailed',
         legacyAnnouncementSettingsKey: 'accessibility.alert.notebookCellFailed',
-        announcementMessage: localize(1595, 'Notebook Cell Failed'),
+        announcementMessage: localize(1610, 'Notebook Cell Failed'),
         settingsKey: 'accessibility.signals.notebookCellFailed',
     }); }
     static { this.diffLineInserted = AccessibilitySignal.register({
-        name: localize(1596, 'Diff Line Inserted'),
+        name: localize(1611, 'Diff Line Inserted'),
         sound: Sound.diffLineInserted,
         legacySoundSettingsKey: 'audioCues.diffLineInserted',
         settingsKey: 'accessibility.signals.diffLineInserted',
     }); }
     static { this.diffLineDeleted = AccessibilitySignal.register({
-        name: localize(1597, 'Diff Line Deleted'),
+        name: localize(1612, 'Diff Line Deleted'),
         sound: Sound.diffLineDeleted,
         legacySoundSettingsKey: 'audioCues.diffLineDeleted',
         settingsKey: 'accessibility.signals.diffLineDeleted',
     }); }
     static { this.diffLineModified = AccessibilitySignal.register({
-        name: localize(1598, 'Diff Line Modified'),
+        name: localize(1613, 'Diff Line Modified'),
         sound: Sound.diffLineModified,
         legacySoundSettingsKey: 'audioCues.diffLineModified',
         settingsKey: 'accessibility.signals.diffLineModified',
     }); }
     static { this.chatEditModifiedFile = AccessibilitySignal.register({
-        name: localize(1599, 'Chat Edit Modified File'),
+        name: localize(1614, 'Chat Edit Modified File'),
         sound: Sound.chatEditModifiedFile,
-        announcementMessage: localize(1600, 'File Modified from Chat Edits'),
+        announcementMessage: localize(1615, 'File Modified from Chat Edits'),
         settingsKey: 'accessibility.signals.chatEditModifiedFile',
     }); }
     static { this.chatRequestSent = AccessibilitySignal.register({
-        name: localize(1601, 'Chat Request Sent'),
+        name: localize(1616, 'Chat Request Sent'),
         sound: Sound.requestSent,
         legacySoundSettingsKey: 'audioCues.chatRequestSent',
         legacyAnnouncementSettingsKey: 'accessibility.alert.chatRequestSent',
-        announcementMessage: localize(1602, 'Chat Request Sent'),
+        announcementMessage: localize(1617, 'Chat Request Sent'),
         settingsKey: 'accessibility.signals.chatRequestSent',
     }); }
     static { this.chatResponseReceived = AccessibilitySignal.register({
-        name: localize(1603, 'Chat Response Received'),
+        name: localize(1618, 'Chat Response Received'),
         legacySoundSettingsKey: 'audioCues.chatResponseReceived',
         sound: {
             randomOneOf: [
@@ -251,81 +250,82 @@ export class AccessibilitySignal {
         settingsKey: 'accessibility.signals.chatResponseReceived'
     }); }
     static { this.codeActionTriggered = AccessibilitySignal.register({
-        name: localize(1604, 'Code Action Request Triggered'),
+        name: localize(1619, 'Code Action Request Triggered'),
         sound: Sound.codeActionTriggered,
         legacySoundSettingsKey: 'audioCues.codeActionRequestTriggered',
         legacyAnnouncementSettingsKey: 'accessibility.alert.codeActionRequestTriggered',
-        announcementMessage: localize(1605, 'Code Action Request Triggered'),
+        announcementMessage: localize(1620, 'Code Action Request Triggered'),
         settingsKey: 'accessibility.signals.codeActionTriggered',
     }); }
     static { this.codeActionApplied = AccessibilitySignal.register({
-        name: localize(1606, 'Code Action Applied'),
+        name: localize(1621, 'Code Action Applied'),
         legacySoundSettingsKey: 'audioCues.codeActionApplied',
         sound: Sound.codeActionApplied,
         settingsKey: 'accessibility.signals.codeActionApplied'
     }); }
     static { this.progress = AccessibilitySignal.register({
-        name: localize(1607, 'Progress'),
+        name: localize(1622, 'Progress'),
         sound: Sound.progress,
         legacySoundSettingsKey: 'audioCues.chatResponsePending',
         legacyAnnouncementSettingsKey: 'accessibility.alert.progress',
-        announcementMessage: localize(1608, 'Progress'),
+        announcementMessage: localize(1623, 'Progress'),
         settingsKey: 'accessibility.signals.progress'
     }); }
     static { this.clear = AccessibilitySignal.register({
-        name: localize(1609, 'Clear'),
+        name: localize(1624, 'Clear'),
         sound: Sound.clear,
         legacySoundSettingsKey: 'audioCues.clear',
         legacyAnnouncementSettingsKey: 'accessibility.alert.clear',
-        announcementMessage: localize(1610, 'Clear'),
+        announcementMessage: localize(1625, 'Clear'),
         settingsKey: 'accessibility.signals.clear'
     }); }
     static { this.save = AccessibilitySignal.register({
-        name: localize(1611, 'Save'),
+        name: localize(1626, 'Save'),
         sound: Sound.save,
         legacySoundSettingsKey: 'audioCues.save',
         legacyAnnouncementSettingsKey: 'accessibility.alert.save',
-        announcementMessage: localize(1612, 'Save'),
+        announcementMessage: localize(1627, 'Save'),
         settingsKey: 'accessibility.signals.save'
     }); }
     static { this.format = AccessibilitySignal.register({
-        name: localize(1613, 'Format'),
+        name: localize(1628, 'Format'),
         sound: Sound.format,
         legacySoundSettingsKey: 'audioCues.format',
         legacyAnnouncementSettingsKey: 'accessibility.alert.format',
-        announcementMessage: localize(1614, 'Format'),
+        announcementMessage: localize(1629, 'Format'),
         settingsKey: 'accessibility.signals.format'
     }); }
     static { this.voiceRecordingStarted = AccessibilitySignal.register({
-        name: localize(1615, 'Voice Recording Started'),
+        name: localize(1630, 'Voice Recording Started'),
         sound: Sound.voiceRecordingStarted,
         legacySoundSettingsKey: 'audioCues.voiceRecordingStarted',
         settingsKey: 'accessibility.signals.voiceRecordingStarted'
     }); }
     static { this.voiceRecordingStopped = AccessibilitySignal.register({
-        name: localize(1616, 'Voice Recording Stopped'),
+        name: localize(1631, 'Voice Recording Stopped'),
         sound: Sound.voiceRecordingStopped,
         legacySoundSettingsKey: 'audioCues.voiceRecordingStopped',
         settingsKey: 'accessibility.signals.voiceRecordingStopped'
     }); }
     static { this.editsKept = AccessibilitySignal.register({
-        name: localize(1617, 'Edits Kept'),
+        name: localize(1632, 'Edits Kept'),
         sound: Sound.editsKept,
-        announcementMessage: localize(1618, 'Edits Kept'),
+        announcementMessage: localize(1633, 'Edits Kept'),
         settingsKey: 'accessibility.signals.editsKept',
     }); }
     static { this.editsUndone = AccessibilitySignal.register({
-        name: localize(1619, 'Undo Edits'),
+        name: localize(1634, 'Undo Edits'),
         sound: Sound.editsUndone,
-        announcementMessage: localize(1620, 'Edits Undone'),
+        announcementMessage: localize(1635, 'Edits Undone'),
         settingsKey: 'accessibility.signals.editsUndone',
     }); }
     static { this.chatUserActionRequired = AccessibilitySignal.register({
-        name: localize(1621, 'Chat User Action Required'),
+        name: localize(1636, 'Chat User Action Required'),
         sound: Sound.chatUserActionRequired,
-        announcementMessage: localize(1622, 'Chat User Action Required'),
+        announcementMessage: localize(1637, 'Chat User Action Required'),
         settingsKey: 'accessibility.signals.chatUserActionRequired',
         managesOwnEnablement: true
     }); }
 }
-//# sourceMappingURL=accessibilitySignalService.js.map
+
+export { AccessibilitySignal, IAccessibilitySignalService, Sound, SoundSource };

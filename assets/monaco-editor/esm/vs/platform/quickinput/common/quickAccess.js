@@ -1,11 +1,12 @@
+import { coalesce } from '../../../base/common/arrays.js';
+import { toDisposable } from '../../../base/common/lifecycle.js';
+import { Registry } from '../../registry/common/platform.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { coalesce } from '../../../base/common/arrays.js';
-import { toDisposable } from '../../../base/common/lifecycle.js';
-import { Registry } from '../../registry/common/platform.js';
-export var DefaultQuickAccessFilterValue;
+var DefaultQuickAccessFilterValue;
 (function (DefaultQuickAccessFilterValue) {
     /**
      * Keep the value as it is given to quick access.
@@ -16,10 +17,10 @@ export var DefaultQuickAccessFilterValue;
      */
     DefaultQuickAccessFilterValue[DefaultQuickAccessFilterValue["LAST"] = 1] = "LAST";
 })(DefaultQuickAccessFilterValue || (DefaultQuickAccessFilterValue = {}));
-export const Extensions = {
+const Extensions = {
     Quickaccess: 'workbench.contributions.quickaccess'
 };
-export class QuickAccessRegistry {
+class QuickAccessRegistry {
     constructor() {
         this.providers = [];
         this.defaultProvider = undefined;
@@ -51,4 +52,5 @@ export class QuickAccessRegistry {
     }
 }
 Registry.add(Extensions.Quickaccess, new QuickAccessRegistry());
-//# sourceMappingURL=quickAccess.js.map
+
+export { DefaultQuickAccessFilterValue, Extensions, QuickAccessRegistry };

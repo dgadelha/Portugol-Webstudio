@@ -1,13 +1,14 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { MarkdownString } from '../../../../base/common/htmlContent.js';
 import { Disposable } from '../../../../base/common/lifecycle.js';
 import { registerEditorContribution } from '../../../browser/editorExtensions.js';
 import { MessageController } from '../../message/browser/messageController.js';
-import * as nls from '../../../../nls.js';
-export class ReadOnlyMessageController extends Disposable {
+import { localize } from '../../../../nls.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+class ReadOnlyMessageController extends Disposable {
     static { this.ID = 'editor.contrib.readOnlyMessageController'; }
     constructor(editor) {
         super();
@@ -20,10 +21,10 @@ export class ReadOnlyMessageController extends Disposable {
             let message = this.editor.getOptions().get(105 /* EditorOption.readOnlyMessage */);
             if (!message) {
                 if (this.editor.isSimpleWidget) {
-                    message = new MarkdownString(nls.localize(1363, "Cannot edit in read-only input"));
+                    message = new MarkdownString(localize(1378, "Cannot edit in read-only input"));
                 }
                 else {
-                    message = new MarkdownString(nls.localize(1364, "Cannot edit in read-only editor"));
+                    message = new MarkdownString(localize(1379, "Cannot edit in read-only editor"));
                 }
             }
             messageController.showMessage(message, this.editor.getPosition());
@@ -31,4 +32,5 @@ export class ReadOnlyMessageController extends Disposable {
     }
 }
 registerEditorContribution(ReadOnlyMessageController.ID, ReadOnlyMessageController, 2 /* EditorContributionInstantiation.BeforeFirstInteraction */);
-//# sourceMappingURL=contribution.js.map
+
+export { ReadOnlyMessageController };

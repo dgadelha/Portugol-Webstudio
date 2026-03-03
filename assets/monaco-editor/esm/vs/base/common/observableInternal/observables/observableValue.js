@@ -1,14 +1,17 @@
+import { TransactionImpl } from '../transaction.js';
+import { BaseObservable } from './baseObservable.js';
+import { strictEquals } from '../../equals.js';
+import '../../event.js';
+import '../../lifecycle.js';
+import { DebugNameData } from '../debugName.js';
+import { getLogger } from '../logging/logging.js';
+import { DebugLocation } from '../debugLocation.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { TransactionImpl } from '../transaction.js';
-import { BaseObservable } from './baseObservable.js';
-import { strictEquals } from '../commonFacade/deps.js';
-import { DebugNameData } from '../debugName.js';
-import { getLogger } from '../logging/logging.js';
-import { DebugLocation } from '../debugLocation.js';
-export function observableValue(nameOrOwner, initialValue, debugLocation = DebugLocation.ofCaller()) {
+function observableValue(nameOrOwner, initialValue, debugLocation = DebugLocation.ofCaller()) {
     let debugNameData;
     if (typeof nameOrOwner === 'string') {
         debugNameData = new DebugNameData(undefined, nameOrOwner, undefined);
@@ -18,7 +21,7 @@ export function observableValue(nameOrOwner, initialValue, debugLocation = Debug
     }
     return new ObservableValue(debugNameData, initialValue, strictEquals, debugLocation);
 }
-export class ObservableValue extends BaseObservable {
+class ObservableValue extends BaseObservable {
     get debugName() {
         return this._debugNameData.getDebugName(this) ?? 'ObservableValue';
     }
@@ -74,7 +77,7 @@ export class ObservableValue extends BaseObservable {
  * A disposable observable. When disposed, its value is also disposed.
  * When a new value is set, the previous value is disposed.
  */
-export function disposableObservableValue(nameOrOwner, initialValue, debugLocation = DebugLocation.ofCaller()) {
+function disposableObservableValue(nameOrOwner, initialValue, debugLocation = DebugLocation.ofCaller()) {
     let debugNameData;
     if (typeof nameOrOwner === 'string') {
         debugNameData = new DebugNameData(undefined, nameOrOwner, undefined);
@@ -84,7 +87,7 @@ export function disposableObservableValue(nameOrOwner, initialValue, debugLocati
     }
     return new DisposableObservableValue(debugNameData, initialValue, strictEquals, debugLocation);
 }
-export class DisposableObservableValue extends ObservableValue {
+class DisposableObservableValue extends ObservableValue {
     _setValue(newValue) {
         if (this._value === newValue) {
             return;
@@ -98,4 +101,5 @@ export class DisposableObservableValue extends ObservableValue {
         this._value?.dispose();
     }
 }
-//# sourceMappingURL=observableValue.js.map
+
+export { DisposableObservableValue, ObservableValue, disposableObservableValue, observableValue };

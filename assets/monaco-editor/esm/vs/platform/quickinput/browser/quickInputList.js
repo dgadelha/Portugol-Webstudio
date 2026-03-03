@@ -1,19 +1,5 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-var QuickPickItemElementRenderer_1;
-import * as cssJs from '../../../base/browser/cssValue.js';
-import * as dom from '../../../base/browser/dom.js';
+import { asCSSUrl } from '../../../base/browser/cssValue.js';
+import { append, $ as $$1, addStandardDisposableListener, EventType, prepend, addDisposableListener, isHTMLAnchorElement, isAncestor } from '../../../base/browser/dom.js';
 import { StandardKeyboardEvent } from '../../../base/browser/keyboardEvent.js';
 import { ActionBar } from '../../../base/browser/ui/actionbar/actionbar.js';
 import { IconLabel } from '../../../base/browser/ui/iconLabel/iconLabel.js';
@@ -26,10 +12,10 @@ import { compareAnything } from '../../../base/common/comparers.js';
 import { memoize } from '../../../base/common/decorators.js';
 import { isCancellationError } from '../../../base/common/errors.js';
 import { Emitter, Event, EventBufferer } from '../../../base/common/event.js';
-import { getCodiconAriaLabel, matchesFuzzyIconAware, parseLabelWithIcons } from '../../../base/common/iconLabels.js';
+import { matchesFuzzyIconAware, parseLabelWithIcons, getCodiconAriaLabel } from '../../../base/common/iconLabels.js';
 import { Lazy } from '../../../base/common/lazy.js';
-import { Disposable, DisposableStore, MutableDisposable } from '../../../base/common/lifecycle.js';
-import { observableValue, observableValueOpts, transaction } from '../../../base/common/observable.js';
+import { DisposableStore, MutableDisposable, Disposable } from '../../../base/common/lifecycle.js';
+import '../../../base/common/observableInternal/index.js';
 import { OS } from '../../../base/common/platform.js';
 import { escape, ltrim } from '../../../base/common/strings.js';
 import { URI } from '../../../base/common/uri.js';
@@ -42,7 +28,25 @@ import { isDark } from '../../theme/common/theme.js';
 import { IThemeService } from '../../theme/common/themeService.js';
 import { QuickPickFocus } from '../common/quickInput.js';
 import { quickInputButtonToAction } from './quickInputUtils.js';
-const $ = dom.$;
+import { observableValue } from '../../../base/common/observableInternal/observables/observableValue.js';
+import { observableValueOpts } from '../../../base/common/observableInternal/observables/observableValueOpts.js';
+import { transaction } from '../../../base/common/observableInternal/transaction.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var QuickPickItemElementRenderer_1;
+const $ = $$1;
 class BaseQuickPickItemElement {
     constructor(index, hasCheckbox, mainItem) {
         this.index = index;
@@ -206,7 +210,7 @@ class QuickInputItemDelegate {
 }
 class QuickInputAccessibilityProvider {
     getWidgetAriaLabel() {
-        return localize(1753, "Quick Input");
+        return localize(1770, "Quick Input");
     }
     getAriaLabel(element) {
         return element.separator?.label
@@ -238,12 +242,12 @@ class BaseQuickInputListRenderer {
         const data = Object.create(null);
         data.toDisposeElement = new DisposableStore();
         data.toDisposeTemplate = new DisposableStore();
-        data.entry = dom.append(container, $('.quick-input-list-entry'));
+        data.entry = append(container, $('.quick-input-list-entry'));
         // Checkbox
-        const label = dom.append(data.entry, $('label.quick-input-list-label'));
+        const label = append(data.entry, $('label.quick-input-list-label'));
         data.outerLabel = label;
         data.checkbox = data.toDisposeTemplate.add(new MutableDisposable());
-        data.toDisposeTemplate.add(dom.addStandardDisposableListener(label, dom.EventType.CLICK, e => {
+        data.toDisposeTemplate.add(addStandardDisposableListener(label, EventType.CLICK, e => {
             // `label` elements with role=checkboxes don't automatically toggle them like normal <checkbox> elements
             if (data.checkbox.value && !e.defaultPrevented && data.checkbox.value.enabled) {
                 const checked = !data.checkbox.value.checked;
@@ -252,23 +256,23 @@ class BaseQuickInputListRenderer {
             }
         }));
         // Rows
-        const rows = dom.append(label, $('.quick-input-list-rows'));
-        const row1 = dom.append(rows, $('.quick-input-list-row'));
-        const row2 = dom.append(rows, $('.quick-input-list-row'));
+        const rows = append(label, $('.quick-input-list-rows'));
+        const row1 = append(rows, $('.quick-input-list-row'));
+        const row2 = append(rows, $('.quick-input-list-row'));
         // Label
         data.label = new IconLabel(row1, { supportHighlights: true, supportDescriptionHighlights: true, supportIcons: true, hoverDelegate: this.hoverDelegate });
         data.toDisposeTemplate.add(data.label);
-        data.icon = dom.prepend(data.label.element, $('.quick-input-list-icon'));
+        data.icon = prepend(data.label.element, $('.quick-input-list-icon'));
         // Keybinding
-        const keybindingContainer = dom.append(row1, $('.quick-input-list-entry-keybinding'));
+        const keybindingContainer = append(row1, $('.quick-input-list-entry-keybinding'));
         data.keybinding = new KeybindingLabel(keybindingContainer, OS);
         data.toDisposeTemplate.add(data.keybinding);
         // Detail
-        const detailContainer = dom.append(row2, $('.quick-input-list-label-meta'));
+        const detailContainer = append(row2, $('.quick-input-list-label-meta'));
         data.detail = new IconLabel(detailContainer, { supportHighlights: true, supportIcons: true, hoverDelegate: this.hoverDelegate });
         data.toDisposeTemplate.add(data.detail);
         // Separator
-        data.separator = dom.append(data.entry, $('.quick-input-list-separator'));
+        data.separator = append(data.entry, $('.quick-input-list-separator'));
         // Actions
         data.actionBar = new ActionBar(data.entry, this.hoverDelegate ? { hoverDelegate: this.hoverDelegate } : undefined);
         data.actionBar.domNode.classList.add('quick-input-list-entry-action-bar');
@@ -334,7 +338,7 @@ let QuickPickItemElementRenderer = class QuickPickItemElementRenderer extends Ba
             const icon = isDark(this.themeService.getColorTheme().type) ? mainItem.iconPath.dark : (mainItem.iconPath.light ?? mainItem.iconPath.dark);
             const iconUrl = URI.revive(icon);
             data.icon.className = 'quick-input-list-icon';
-            data.icon.style.backgroundImage = cssJs.asCSSUrl(iconUrl);
+            data.icon.style.backgroundImage = asCSSUrl(iconUrl);
         }
         else {
             data.icon.style.backgroundImage = '';
@@ -559,7 +563,7 @@ let QuickInputList = class QuickInputList extends Disposable {
         this._matchOnLabelMode = 'fuzzy';
         this._sortByLabel = true;
         this._shouldLoop = true;
-        this._container = dom.append(this.parent, $('.quick-input-list'));
+        this._container = append(this.parent, $('.quick-input-list'));
         this._separatorRenderer = new QuickPickSeparatorElementRenderer(hoverDelegate);
         this._itemRenderer = instantiationService.createInstance(QuickPickItemElementRenderer, hoverDelegate);
         this._tree = this._register(instantiationService.createInstance((WorkbenchObjectTree), 'QuickInput', this._container, new QuickInputItemDelegate(), [this._itemRenderer, this._separatorRenderer], {
@@ -688,14 +692,14 @@ let QuickInputList = class QuickInputList extends Disposable {
         }));
     }
     _registerOnContainerClick() {
-        this._register(dom.addDisposableListener(this._container, dom.EventType.CLICK, e => {
+        this._register(addDisposableListener(this._container, EventType.CLICK, e => {
             if (e.x || e.y) { // Avoid 'click' triggered by 'space' on checkbox.
                 this._onLeave.fire();
             }
         }));
     }
     _registerOnMouseMiddleClick() {
-        this._register(dom.addDisposableListener(this._container, dom.EventType.AUXCLICK, e => {
+        this._register(addDisposableListener(this._container, EventType.AUXCLICK, e => {
             if (e.button === 1) {
                 this._onLeave.fire();
             }
@@ -732,15 +736,15 @@ let QuickInputList = class QuickInputList extends Disposable {
         this._register(this._tree.onMouseOver(async (e) => {
             // If we hover over an anchor element, we don't want to show the hover because
             // the anchor may have a tooltip that we want to show instead.
-            if (dom.isHTMLAnchorElement(e.browserEvent.target)) {
+            if (isHTMLAnchorElement(e.browserEvent.target)) {
                 delayer.cancel();
                 return;
             }
             if (
             // anchors are an exception as called out above so we skip them here
-            !(dom.isHTMLAnchorElement(e.browserEvent.relatedTarget)) &&
+            !(isHTMLAnchorElement(e.browserEvent.relatedTarget)) &&
                 // check if the mouse is still over the same element
-                dom.isAncestor(e.browserEvent.relatedTarget, e.element?.element)) {
+                isAncestor(e.browserEvent.relatedTarget, e.element?.element)) {
                 return;
             }
             try {
@@ -761,7 +765,7 @@ let QuickInputList = class QuickInputList extends Disposable {
             // onMouseOut triggers every time a new element has been moused over
             // even if it's on the same list item. We only want one event, so we
             // check if the mouse is still over the same element.
-            if (dom.isAncestor(e.browserEvent.relatedTarget, e.element?.element)) {
+            if (isAncestor(e.browserEvent.relatedTarget, e.element?.element)) {
                 return;
             }
             delayer.cancel();
@@ -890,6 +894,7 @@ let QuickInputList = class QuickInputList extends Disposable {
         // https://github.com/microsoft/vscode/issues/211976
         if (this.accessibilityService.isScreenReaderOptimized()) {
             setTimeout(() => {
+                // eslint-disable-next-line no-restricted-syntax
                 const focusedElement = this._tree.getHTMLElement().querySelector(`.monaco-list-row.focused`);
                 const parent = focusedElement?.parentNode;
                 if (focusedElement && parent) {
@@ -1339,7 +1344,6 @@ QuickInputList = __decorate([
     __param(4, IInstantiationService),
     __param(5, IAccessibilityService)
 ], QuickInputList);
-export { QuickInputList };
 function matchesContiguousIconAware(query, target) {
     const { text, iconOffsets } = target;
     // Return early if there are no icon markers in the word to match against
@@ -1383,4 +1387,5 @@ function compareEntries(elementA, elementB, lookFor) {
     }
     return compareAnything(elementA.saneSortLabel, elementB.saneSortLabel, lookFor);
 }
-//# sourceMappingURL=quickInputList.js.map
+
+export { QuickInputList };

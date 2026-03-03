@@ -1,7 +1,3 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { runWhenGlobalIdle } from '../../../base/common/async.js';
 import { BugIndicatingError, onUnexpectedError } from '../../../base/common/errors.js';
 import { setTimeout0 } from '../../../base/common/platform.js';
@@ -13,7 +9,12 @@ import { nullTokenizeEncoded } from '../languages/nullTokenize.js';
 import { FixedArray } from './fixedArray.js';
 import { ContiguousMultilineTokensBuilder } from '../tokens/contiguousMultilineTokensBuilder.js';
 import { LineTokens } from '../tokens/lineTokens.js';
-export class TokenizerWithStateStore {
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+class TokenizerWithStateStore {
     constructor(lineCount, tokenizationSupport) {
         this.tokenizationSupport = tokenizationSupport;
         this.initialState = this.tokenizationSupport.getInitialState();
@@ -26,7 +27,7 @@ export class TokenizerWithStateStore {
         return this.store.getFirstInvalidLine(this.initialState);
     }
 }
-export class TokenizerWithStateStoreAndTextModel extends TokenizerWithStateStore {
+class TokenizerWithStateStoreAndTextModel extends TokenizerWithStateStore {
     constructor(lineCount, tokenizationSupport, _textModel, _languageIdCodec) {
         super(lineCount, tokenizationSupport);
         this._textModel = _textModel;
@@ -134,7 +135,7 @@ export class TokenizerWithStateStoreAndTextModel extends TokenizerWithStateStore
         return state;
     }
 }
-export function findLikelyRelevantLines(model, lineNumber, store) {
+function findLikelyRelevantLines(model, lineNumber, store) {
     let nonWhitespaceColumn = model.getLineFirstNonWhitespaceColumn(lineNumber);
     const likelyRelevantLines = [];
     let initialState = null;
@@ -161,7 +162,7 @@ export function findLikelyRelevantLines(model, lineNumber, store) {
  * If the text model is retokenized from line 1 to {@link getFirstInvalidEndStateLineNumber}() - 1,
  * then the recomputed end state for line l will be equal to {@link getEndState}(l).
  */
-export class TrackingTokenizationStateStore {
+class TrackingTokenizationStateStore {
     constructor(lineCount) {
         this.lineCount = lineCount;
         this._tokenizationStateStore = new TokenizationStateStore();
@@ -223,7 +224,7 @@ export class TrackingTokenizationStateStore {
         return { lineNumber, startState };
     }
 }
-export class TokenizationStateStore {
+class TokenizationStateStore {
     constructor() {
         this._lineEndStates = new FixedArray(null);
     }
@@ -249,7 +250,7 @@ export class TokenizationStateStore {
         this._lineEndStates.replace(range.startLineNumber, length, newLineCount);
     }
 }
-export class RangePriorityQueueImpl {
+class RangePriorityQueueImpl {
     constructor() {
         this._ranges = [];
     }
@@ -335,7 +336,7 @@ function safeTokenize(languageIdCodec, languageId, tokenizationSupport, text, ha
     LineTokens.convertToEndOffset(r.tokens, text.length);
     return r;
 }
-export class DefaultBackgroundTokenizer {
+class DefaultBackgroundTokenizer {
     constructor(_tokenizerWithStateStore, _backgroundTokenStore) {
         this._tokenizerWithStateStore = _tokenizerWithStateStore;
         this._backgroundTokenStore = _backgroundTokenStore;
@@ -431,4 +432,5 @@ export class DefaultBackgroundTokenizer {
         this._tokenizerWithStateStore.store.invalidateEndStateRange(new LineRange(startLineNumber, endLineNumberExclusive));
     }
 }
-//# sourceMappingURL=textModelTokens.js.map
+
+export { DefaultBackgroundTokenizer, RangePriorityQueueImpl, TokenizationStateStore, TokenizerWithStateStore, TokenizerWithStateStoreAndTextModel, TrackingTokenizationStateStore, findLikelyRelevantLines };

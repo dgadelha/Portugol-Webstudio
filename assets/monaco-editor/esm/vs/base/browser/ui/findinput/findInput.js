@@ -1,18 +1,18 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-import * as dom from '../../dom.js';
-import { CaseSensitiveToggle, RegexToggle, WholeWordsToggle } from './findInputToggles.js';
+import { EventHelper, addDisposableListener } from '../../dom.js';
+import { RegexToggle, WholeWordsToggle, CaseSensitiveToggle } from './findInputToggles.js';
 import { HistoryInputBox } from '../inputbox/inputBox.js';
 import { Widget } from '../widget.js';
 import { Emitter } from '../../../common/event.js';
 import './findInput.css';
-import * as nls from '../../../../nls.js';
-import { DisposableStore, MutableDisposable } from '../../../common/lifecycle.js';
-import { createInstantHoverDelegate } from '../hover/hoverDelegateFactory.js';
-const NLS_DEFAULT_LABEL = nls.localize(1, "input");
-export class FindInput extends Widget {
+import { localize } from '../../../../nls.js';
+import { MutableDisposable, DisposableStore } from '../../../common/lifecycle.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+const NLS_DEFAULT_LABEL = localize(1, "input");
+class FindInput extends Widget {
     get onDidOptionChange() { return this._onDidOptionChange.event; }
     get onKeyDown() { return this._onKeyDown.event; }
     get onMouseDown() { return this._onMouseDown.event; }
@@ -57,12 +57,12 @@ export class FindInput extends Widget {
             inputBoxStyles: options.inputBoxStyles,
             history: options.history
         }));
-        const hoverDelegate = this._register(createInstantHoverDelegate());
         if (this.showCommonFindToggles) {
+            const hoverLifecycleOptions = options?.hoverLifecycleOptions || { groupId: 'find-input' };
             this.regex = this._register(new RegexToggle({
                 appendTitle: appendRegexLabel,
                 isChecked: false,
-                hoverDelegate,
+                hoverLifecycleOptions,
                 ...options.toggleStyles
             }));
             this._register(this.regex.onChange(viaKeyboard => {
@@ -78,7 +78,7 @@ export class FindInput extends Widget {
             this.wholeWords = this._register(new WholeWordsToggle({
                 appendTitle: appendWholeWordsLabel,
                 isChecked: false,
-                hoverDelegate,
+                hoverLifecycleOptions,
                 ...options.toggleStyles
             }));
             this._register(this.wholeWords.onChange(viaKeyboard => {
@@ -91,7 +91,7 @@ export class FindInput extends Widget {
             this.caseSensitive = this._register(new CaseSensitiveToggle({
                 appendTitle: appendCaseSensitiveLabel,
                 isChecked: false,
-                hoverDelegate,
+                hoverLifecycleOptions,
                 ...options.toggleStyles
             }));
             this._register(this.caseSensitive.onChange(viaKeyboard => {
@@ -129,7 +129,7 @@ export class FindInput extends Widget {
                         else if (newIndex >= 0) {
                             indexes[newIndex].focus();
                         }
-                        dom.EventHelper.stop(event, true);
+                        EventHelper.stop(event, true);
                     }
                 }
             });
@@ -151,10 +151,10 @@ export class FindInput extends Widget {
             this.domNode.appendChild(this.controls);
         }
         parent?.appendChild(this.domNode);
-        this._register(dom.addDisposableListener(this.inputBox.inputElement, 'compositionstart', (e) => {
+        this._register(addDisposableListener(this.inputBox.inputElement, 'compositionstart', (e) => {
             this.imeSessionInProgress = true;
         }));
-        this._register(dom.addDisposableListener(this.inputBox.inputElement, 'compositionend', (e) => {
+        this._register(addDisposableListener(this.inputBox.inputElement, 'compositionend', (e) => {
             this.imeSessionInProgress = false;
             this._onInput.fire();
         }));
@@ -290,4 +290,5 @@ export class FindInput extends Widget {
         this.inputBox.hideMessage();
     }
 }
-//# sourceMappingURL=findInput.js.map
+
+export { FindInput };

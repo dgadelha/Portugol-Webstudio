@@ -1,14 +1,16 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { Emitter, Event } from '../../../base/common/event.js';
 import { Disposable } from '../../../base/common/lifecycle.js';
 import { LanguagesRegistry } from './languagesRegistry.js';
 import { TokenizationRegistry } from '../languages.js';
 import { PLAINTEXT_LANGUAGE_ID } from '../languages/modesRegistry.js';
-import { observableFromEvent } from '../../../base/common/observable.js';
-export class LanguageService extends Disposable {
+import '../../../base/common/observableInternal/index.js';
+import { observableFromEvent } from '../../../base/common/observableInternal/observables/observableFromEvent.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+class LanguageService extends Disposable {
     static { this.instanceCount = 0; }
     constructor(warnOnOverwrite = false) {
         super();
@@ -86,4 +88,5 @@ class LanguageSelection {
         return this._value.get();
     }
 }
-//# sourceMappingURL=languageService.js.map
+
+export { LanguageService };

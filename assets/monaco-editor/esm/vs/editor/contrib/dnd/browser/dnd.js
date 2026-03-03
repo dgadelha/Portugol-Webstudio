@@ -1,7 +1,3 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { Disposable } from '../../../../base/common/lifecycle.js';
 import { isMacintosh } from '../../../../base/common/platform.js';
 import './dnd.css';
@@ -11,6 +7,11 @@ import { Range } from '../../../common/core/range.js';
 import { Selection } from '../../../common/core/selection.js';
 import { ModelDecorationOptions } from '../../../common/model/textModel.js';
 import { DragAndDropCommand } from './dragAndDropCommand.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
 function hasTriggerModifier(e) {
     if (isMacintosh) {
         return e.altKey;
@@ -19,7 +20,7 @@ function hasTriggerModifier(e) {
         return e.ctrlKey;
     }
 }
-export class DragAndDropController extends Disposable {
+class DragAndDropController extends Disposable {
     static { this.ID = 'editor.contrib.dragAndDrop'; }
     static { this.TRIGGER_KEY_VALUE = isMacintosh ? 6 /* KeyCode.Alt */ : 5 /* KeyCode.Ctrl */; }
     constructor(editor) {
@@ -193,4 +194,5 @@ export class DragAndDropController extends Disposable {
     }
 }
 registerEditorContribution(DragAndDropController.ID, DragAndDropController, 2 /* EditorContributionInstantiation.BeforeFirstInteraction */);
-//# sourceMappingURL=dnd.js.map
+
+export { DragAndDropController };

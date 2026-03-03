@@ -1,17 +1,18 @@
+import { Emitter } from '../../../../../base/common/event.js';
+import { Disposable } from '../../../../../base/common/lifecycle.js';
+import { isMacintosh } from '../../../../../base/common/platform.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { Emitter } from '../../../../../base/common/event.js';
-import { Disposable } from '../../../../../base/common/lifecycle.js';
-import * as platform from '../../../../../base/common/platform.js';
 function hasModifier(e, modifier) {
     return !!e[modifier];
 }
 /**
  * An event that encapsulates the various trigger modifiers logic needed for go to definition.
  */
-export class ClickLinkMouseEvent {
+class ClickLinkMouseEvent {
     constructor(source, opts) {
         this.target = source.target;
         this.isLeftClick = source.event.leftButton;
@@ -32,14 +33,14 @@ export class ClickLinkMouseEvent {
 /**
  * An event that encapsulates the various trigger modifiers logic needed for go to definition.
  */
-export class ClickLinkKeyboardEvent {
+class ClickLinkKeyboardEvent {
     constructor(source, opts) {
         this.keyCodeIsTriggerKey = (source.keyCode === opts.triggerKey);
         this.keyCodeIsSideBySideKey = (source.keyCode === opts.triggerSideBySideKey);
         this.hasTriggerModifier = hasModifier(source, opts.triggerModifier);
     }
 }
-export class ClickLinkOptions {
+class ClickLinkOptions {
     constructor(triggerKey, triggerModifier, triggerSideBySideKey, triggerSideBySideModifier, mouseMiddleClickAction) {
         this.mouseMiddleClickAction = mouseMiddleClickAction;
         this.triggerKey = triggerKey;
@@ -57,17 +58,17 @@ export class ClickLinkOptions {
 }
 function createOptions(multiCursorModifier, mouseMiddleClickAction) {
     if (multiCursorModifier === 'altKey') {
-        if (platform.isMacintosh) {
+        if (isMacintosh) {
             return new ClickLinkOptions(57 /* KeyCode.Meta */, 'metaKey', 6 /* KeyCode.Alt */, 'altKey', mouseMiddleClickAction);
         }
         return new ClickLinkOptions(5 /* KeyCode.Ctrl */, 'ctrlKey', 6 /* KeyCode.Alt */, 'altKey', mouseMiddleClickAction);
     }
-    if (platform.isMacintosh) {
+    if (isMacintosh) {
         return new ClickLinkOptions(6 /* KeyCode.Alt */, 'altKey', 57 /* KeyCode.Meta */, 'metaKey', mouseMiddleClickAction);
     }
     return new ClickLinkOptions(6 /* KeyCode.Alt */, 'altKey', 5 /* KeyCode.Ctrl */, 'ctrlKey', mouseMiddleClickAction);
 }
-export class ClickLinkGesture extends Disposable {
+class ClickLinkGesture extends Disposable {
     constructor(editor, opts) {
         super();
         this._onMouseMoveOrRelevantKeyDown = this._register(new Emitter());
@@ -156,4 +157,5 @@ export class ClickLinkGesture extends Disposable {
         this._onCancel.fire();
     }
 }
-//# sourceMappingURL=clickLinkGesture.js.map
+
+export { ClickLinkGesture, ClickLinkKeyboardEvent, ClickLinkMouseEvent, ClickLinkOptions };

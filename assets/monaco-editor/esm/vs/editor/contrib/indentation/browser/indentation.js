@@ -1,39 +1,40 @@
+import { DisposableStore } from '../../../../base/common/lifecycle.js';
+import { getLeadingWhitespace } from '../../../../base/common/strings.js';
+import { localize2, localize } from '../../../../nls.js';
+import { IQuickInputService } from '../../../../platform/quickinput/common/quickInput.js';
+import { EditorAction, registerEditorContribution, registerEditorAction } from '../../../browser/editorExtensions.js';
+import { ShiftCommand } from '../../../common/commands/shiftCommand.js';
+import { Range } from '../../../common/core/range.js';
+import { EditorContextKeys } from '../../../common/editorContextKeys.js';
+import { getGoodIndentForLine, getIndentMetadata } from '../../../common/languages/autoIndent.js';
+import { ILanguageConfigurationService } from '../../../common/languages/languageConfigurationRegistry.js';
+import { IModelService } from '../../../common/services/model.js';
+import { getStandardTokenTypeAtPosition } from '../../../common/tokens/lineTokens.js';
+import { getReindentEditOperations } from '../common/indentation.js';
+import { getSpaceCnt, generateIndent } from '../common/indentUtils.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __param = (this && this.__param) || function (paramIndex, decorator) {
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { DisposableStore } from '../../../../base/common/lifecycle.js';
-import * as strings from '../../../../base/common/strings.js';
-import { EditorAction, registerEditorAction, registerEditorContribution } from '../../../browser/editorExtensions.js';
-import { ShiftCommand } from '../../../common/commands/shiftCommand.js';
-import { Range } from '../../../common/core/range.js';
-import { EditorContextKeys } from '../../../common/editorContextKeys.js';
-import { ILanguageConfigurationService } from '../../../common/languages/languageConfigurationRegistry.js';
-import { IModelService } from '../../../common/services/model.js';
-import * as indentUtils from '../common/indentUtils.js';
-import * as nls from '../../../../nls.js';
-import { IQuickInputService } from '../../../../platform/quickinput/common/quickInput.js';
-import { getGoodIndentForLine, getIndentMetadata } from '../../../common/languages/autoIndent.js';
-import { getReindentEditOperations } from '../common/indentation.js';
-import { getStandardTokenTypeAtPosition } from '../../../common/tokens/lineTokens.js';
-export class IndentationToSpacesAction extends EditorAction {
+class IndentationToSpacesAction extends EditorAction {
     static { this.ID = 'editor.action.indentationToSpaces'; }
     constructor() {
         super({
             id: IndentationToSpacesAction.ID,
-            label: nls.localize2(1141, "Convert Indentation to Spaces"),
+            label: localize2(1148, "Convert Indentation to Spaces"),
             precondition: EditorContextKeys.writable,
             metadata: {
-                description: nls.localize2(1142, "Convert the tab indentation to spaces."),
+                description: localize2(1149, "Convert the tab indentation to spaces."),
             }
         });
     }
@@ -56,15 +57,15 @@ export class IndentationToSpacesAction extends EditorAction {
         });
     }
 }
-export class IndentationToTabsAction extends EditorAction {
+class IndentationToTabsAction extends EditorAction {
     static { this.ID = 'editor.action.indentationToTabs'; }
     constructor() {
         super({
             id: IndentationToTabsAction.ID,
-            label: nls.localize2(1143, "Convert Indentation to Tabs"),
+            label: localize2(1150, "Convert Indentation to Tabs"),
             precondition: EditorContextKeys.writable,
             metadata: {
-                description: nls.localize2(1144, "Convert the spaces indentation to tabs."),
+                description: localize2(1151, "Convert the spaces indentation to tabs."),
             }
         });
     }
@@ -87,7 +88,7 @@ export class IndentationToTabsAction extends EditorAction {
         });
     }
 }
-export class ChangeIndentationSizeAction extends EditorAction {
+class ChangeIndentationSizeAction extends EditorAction {
     constructor(insertSpaces, displaySizeOnly, opts) {
         super(opts);
         this.insertSpaces = insertSpaces;
@@ -107,17 +108,17 @@ export class ChangeIndentationSizeAction extends EditorAction {
             label: n.toString(),
             // add description for tabSize value set in the configuration
             description: (n === creationOpts.tabSize && n === modelOpts.tabSize
-                ? nls.localize(1137, "Configured Tab Size")
+                ? localize(1144, "Configured Tab Size")
                 : n === creationOpts.tabSize
-                    ? nls.localize(1138, "Default Tab Size")
+                    ? localize(1145, "Default Tab Size")
                     : n === modelOpts.tabSize
-                        ? nls.localize(1139, "Current Tab Size")
+                        ? localize(1146, "Current Tab Size")
                         : undefined)
         }));
         // auto focus the tabSize set for the current editor
         const autoFocusIndex = Math.min(model.getOptions().tabSize - 1, 7);
         setTimeout(() => {
-            quickInputService.pick(picks, { placeHolder: nls.localize(1140, "Select Tab Size for Current File"), activeItem: picks[autoFocusIndex] }).then(pick => {
+            quickInputService.pick(picks, { placeHolder: localize(1147, "Select Tab Size for Current File"), activeItem: picks[autoFocusIndex] }).then(pick => {
                 if (pick) {
                     if (model && !model.isDisposed()) {
                         const pickedVal = parseInt(pick.label, 10);
@@ -139,54 +140,54 @@ export class ChangeIndentationSizeAction extends EditorAction {
         }, 50 /* quick input is sensitive to being opened so soon after another */);
     }
 }
-export class IndentUsingTabs extends ChangeIndentationSizeAction {
+class IndentUsingTabs extends ChangeIndentationSizeAction {
     static { this.ID = 'editor.action.indentUsingTabs'; }
     constructor() {
         super(false, false, {
             id: IndentUsingTabs.ID,
-            label: nls.localize2(1145, "Indent Using Tabs"),
+            label: localize2(1152, "Indent Using Tabs"),
             precondition: undefined,
             metadata: {
-                description: nls.localize2(1146, "Use indentation with tabs."),
+                description: localize2(1153, "Use indentation with tabs."),
             }
         });
     }
 }
-export class IndentUsingSpaces extends ChangeIndentationSizeAction {
+class IndentUsingSpaces extends ChangeIndentationSizeAction {
     static { this.ID = 'editor.action.indentUsingSpaces'; }
     constructor() {
         super(true, false, {
             id: IndentUsingSpaces.ID,
-            label: nls.localize2(1147, "Indent Using Spaces"),
+            label: localize2(1154, "Indent Using Spaces"),
             precondition: undefined,
             metadata: {
-                description: nls.localize2(1148, "Use indentation with spaces."),
+                description: localize2(1155, "Use indentation with spaces."),
             }
         });
     }
 }
-export class ChangeTabDisplaySize extends ChangeIndentationSizeAction {
+class ChangeTabDisplaySize extends ChangeIndentationSizeAction {
     static { this.ID = 'editor.action.changeTabDisplaySize'; }
     constructor() {
         super(true, true, {
             id: ChangeTabDisplaySize.ID,
-            label: nls.localize2(1149, "Change Tab Display Size"),
+            label: localize2(1156, "Change Tab Display Size"),
             precondition: undefined,
             metadata: {
-                description: nls.localize2(1150, "Change the space size equivalent of the tab."),
+                description: localize2(1157, "Change the space size equivalent of the tab."),
             }
         });
     }
 }
-export class DetectIndentation extends EditorAction {
+class DetectIndentation extends EditorAction {
     static { this.ID = 'editor.action.detectIndentation'; }
     constructor() {
         super({
             id: DetectIndentation.ID,
-            label: nls.localize2(1151, "Detect Indentation from Content"),
+            label: localize2(1158, "Detect Indentation from Content"),
             precondition: undefined,
             metadata: {
-                description: nls.localize2(1152, "Detect the indentation from content."),
+                description: localize2(1159, "Detect the indentation from content."),
             }
         });
     }
@@ -200,15 +201,16 @@ export class DetectIndentation extends EditorAction {
         model.detectIndentation(creationOpts.insertSpaces, creationOpts.tabSize);
     }
 }
-export class ReindentLinesAction extends EditorAction {
+class ReindentLinesAction extends EditorAction {
     constructor() {
         super({
             id: 'editor.action.reindentlines',
-            label: nls.localize2(1153, "Reindent Lines"),
+            label: localize2(1160, "Reindent Lines"),
             precondition: EditorContextKeys.writable,
             metadata: {
-                description: nls.localize2(1154, "Reindent the lines of the editor."),
-            }
+                description: localize2(1161, "Reindent the lines of the editor."),
+            },
+            canTriggerInlineEdits: true,
         });
     }
     run(accessor, editor) {
@@ -225,15 +227,16 @@ export class ReindentLinesAction extends EditorAction {
         }
     }
 }
-export class ReindentSelectedLinesAction extends EditorAction {
+class ReindentSelectedLinesAction extends EditorAction {
     constructor() {
         super({
             id: 'editor.action.reindentselectedlines',
-            label: nls.localize2(1155, "Reindent Selected Lines"),
+            label: localize2(1162, "Reindent Selected Lines"),
             precondition: EditorContextKeys.writable,
             metadata: {
-                description: nls.localize2(1156, "Reindent the selected lines of the editor."),
-            }
+                description: localize2(1163, "Reindent the selected lines of the editor."),
+            },
+            canTriggerInlineEdits: true,
         });
     }
     run(accessor, editor) {
@@ -271,7 +274,7 @@ export class ReindentSelectedLinesAction extends EditorAction {
         }
     }
 }
-export class AutoIndentOnPasteCommand {
+class AutoIndentOnPasteCommand {
     constructor(edits, initialSelection) {
         this._initialSelection = initialSelection;
         this._edits = [];
@@ -368,11 +371,11 @@ let AutoIndentOnPaste = class AutoIndentOnPaste {
         if (!/\S/.test(firstLineText.substring(0, range.startColumn - 1))) {
             const indentOfFirstLine = getGoodIndentForLine(autoIndent, model, model.getLanguageId(), startLineNumber, indentConverter, this._languageConfigurationService);
             if (indentOfFirstLine !== null) {
-                const oldIndentation = strings.getLeadingWhitespace(firstLineText);
-                const newSpaceCnt = indentUtils.getSpaceCnt(indentOfFirstLine, tabSize);
-                const oldSpaceCnt = indentUtils.getSpaceCnt(oldIndentation, tabSize);
+                const oldIndentation = getLeadingWhitespace(firstLineText);
+                const newSpaceCnt = getSpaceCnt(indentOfFirstLine, tabSize);
+                const oldSpaceCnt = getSpaceCnt(oldIndentation, tabSize);
                 if (newSpaceCnt !== oldSpaceCnt) {
-                    const newIndent = indentUtils.generateIndent(newSpaceCnt, tabSize, insertSpaces);
+                    const newIndent = generateIndent(newSpaceCnt, tabSize, insertSpaces);
                     textEdits.push({
                         range: new Range(startLineNumber, 1, startLineNumber, oldIndentation.length + 1),
                         text: newIndent
@@ -424,16 +427,16 @@ let AutoIndentOnPaste = class AutoIndentOnPaste {
             };
             const indentOfSecondLine = getGoodIndentForLine(autoIndent, virtualModel, model.getLanguageId(), startLineNumber + 1, indentConverter, this._languageConfigurationService);
             if (indentOfSecondLine !== null) {
-                const newSpaceCntOfSecondLine = indentUtils.getSpaceCnt(indentOfSecondLine, tabSize);
-                const oldSpaceCntOfSecondLine = indentUtils.getSpaceCnt(strings.getLeadingWhitespace(model.getLineContent(startLineNumber + 1)), tabSize);
+                const newSpaceCntOfSecondLine = getSpaceCnt(indentOfSecondLine, tabSize);
+                const oldSpaceCntOfSecondLine = getSpaceCnt(getLeadingWhitespace(model.getLineContent(startLineNumber + 1)), tabSize);
                 if (newSpaceCntOfSecondLine !== oldSpaceCntOfSecondLine) {
                     const spaceCntOffset = newSpaceCntOfSecondLine - oldSpaceCntOfSecondLine;
                     for (let i = startLineNumber + 1; i <= range.endLineNumber; i++) {
                         const lineContent = model.getLineContent(i);
-                        const originalIndent = strings.getLeadingWhitespace(lineContent);
-                        const originalSpacesCnt = indentUtils.getSpaceCnt(originalIndent, tabSize);
+                        const originalIndent = getLeadingWhitespace(lineContent);
+                        const originalSpacesCnt = getSpaceCnt(originalIndent, tabSize);
                         const newSpacesCnt = originalSpacesCnt + spaceCntOffset;
-                        const newIndent = indentUtils.generateIndent(newSpacesCnt, tabSize, insertSpaces);
+                        const newIndent = generateIndent(newSpacesCnt, tabSize, insertSpaces);
                         if (newIndent !== originalIndent) {
                             textEdits.push({
                                 range: new Range(i, 1, i, originalIndent.length + 1),
@@ -490,7 +493,6 @@ let AutoIndentOnPaste = class AutoIndentOnPaste {
 AutoIndentOnPaste = __decorate([
     __param(1, ILanguageConfigurationService)
 ], AutoIndentOnPaste);
-export { AutoIndentOnPaste };
 function isStartOrEndInString(model, range) {
     const isPositionInString = (position) => {
         const tokenType = getStandardTokenTypeAtPosition(model, position);
@@ -524,7 +526,7 @@ function getIndentationEditOperations(model, builder, tabSize, tabsToSpaces) {
         builder.addEditOperation(originalIndentationRange, newIndentation);
     }
 }
-export class IndentationToSpacesCommand {
+class IndentationToSpacesCommand {
     constructor(selection, tabSize) {
         this.selection = selection;
         this.tabSize = tabSize;
@@ -538,7 +540,7 @@ export class IndentationToSpacesCommand {
         return helper.getTrackedSelection(this.selectionId);
     }
 }
-export class IndentationToTabsCommand {
+class IndentationToTabsCommand {
     constructor(selection, tabSize) {
         this.selection = selection;
         this.tabSize = tabSize;
@@ -561,4 +563,5 @@ registerEditorAction(ChangeTabDisplaySize);
 registerEditorAction(DetectIndentation);
 registerEditorAction(ReindentLinesAction);
 registerEditorAction(ReindentSelectedLinesAction);
-//# sourceMappingURL=indentation.js.map
+
+export { AutoIndentOnPaste, AutoIndentOnPasteCommand, ChangeIndentationSizeAction, ChangeTabDisplaySize, DetectIndentation, IndentUsingSpaces, IndentUsingTabs, IndentationToSpacesAction, IndentationToSpacesCommand, IndentationToTabsAction, IndentationToTabsCommand, ReindentLinesAction, ReindentSelectedLinesAction };

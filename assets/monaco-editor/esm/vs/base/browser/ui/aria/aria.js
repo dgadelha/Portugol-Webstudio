@@ -1,9 +1,10 @@
+import { clearNode } from '../../dom.js';
+import './aria.css';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import * as dom from '../../dom.js';
-import './aria.css';
 // Use a max length since we are inserting the whole msg in the DOM and that can cause browsers to freeze for long messages #94233
 const MAX_MESSAGE_LENGTH = 20000;
 let ariaContainer;
@@ -11,7 +12,7 @@ let alertContainer;
 let alertContainer2;
 let statusContainer;
 let statusContainer2;
-export function setARIAContainer(parent) {
+function setARIAContainer(parent) {
     ariaContainer = document.createElement('div');
     ariaContainer.className = 'monaco-aria-container';
     const createAlertContainer = () => {
@@ -39,38 +40,38 @@ export function setARIAContainer(parent) {
 /**
  * Given the provided message, will make sure that it is read as alert to screen readers.
  */
-export function alert(msg) {
+function alert(msg) {
     if (!ariaContainer) {
         return;
     }
     // Use alternate containers such that duplicated messages get read out by screen readers #99466
     if (alertContainer.textContent !== msg) {
-        dom.clearNode(alertContainer2);
+        clearNode(alertContainer2);
         insertMessage(alertContainer, msg);
     }
     else {
-        dom.clearNode(alertContainer);
+        clearNode(alertContainer);
         insertMessage(alertContainer2, msg);
     }
 }
 /**
  * Given the provided message, will make sure that it is read as status to screen readers.
  */
-export function status(msg) {
+function status(msg) {
     if (!ariaContainer) {
         return;
     }
     if (statusContainer.textContent !== msg) {
-        dom.clearNode(statusContainer2);
+        clearNode(statusContainer2);
         insertMessage(statusContainer, msg);
     }
     else {
-        dom.clearNode(statusContainer);
+        clearNode(statusContainer);
         insertMessage(statusContainer2, msg);
     }
 }
 function insertMessage(target, msg) {
-    dom.clearNode(target);
+    clearNode(target);
     if (msg.length > MAX_MESSAGE_LENGTH) {
         msg = msg.substr(0, MAX_MESSAGE_LENGTH);
     }
@@ -79,4 +80,5 @@ function insertMessage(target, msg) {
     target.style.visibility = 'hidden';
     target.style.visibility = 'visible';
 }
-//# sourceMappingURL=aria.js.map
+
+export { alert, setARIAContainer, status };

@@ -2,7 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-export class BasicInplaceReplace {
+class BasicInplaceReplace {
     constructor() {
         this._defaultValueSet = [
             ['true', 'false'],
@@ -71,7 +71,7 @@ export class BasicInplaceReplace {
     valueSetReplace(valueSet, value, up) {
         let idx = valueSet.indexOf(value);
         if (idx >= 0) {
-            idx += up ? +1 : -1;
+            idx += up ? 1 : -1;
             if (idx < 0) {
                 idx = valueSet.length - 1;
             }
@@ -83,4 +83,5 @@ export class BasicInplaceReplace {
         return null;
     }
 }
-//# sourceMappingURL=inplaceReplaceSupport.js.map
+
+export { BasicInplaceReplace };

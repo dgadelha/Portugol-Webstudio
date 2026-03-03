@@ -1,12 +1,13 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { Disposable } from '../../../../../base/common/lifecycle.js';
 import { Range } from '../../../../common/core/range.js';
 import { ContentHoverController } from '../../../hover/browser/contentHoverController.js';
 import { isOnColorDecorator } from './hoverColorPicker.js';
-export class HoverColorPickerContribution extends Disposable {
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+class HoverColorPickerContribution extends Disposable {
     static { this.ID = 'editor.contrib.colorContribution'; } // ms
     constructor(_editor) {
         super();
@@ -39,4 +40,5 @@ export class HoverColorPickerContribution extends Disposable {
         hoverController.showContentHover(range, 1 /* HoverStartMode.Immediate */, 1 /* HoverStartSource.Click */, false);
     }
 }
-//# sourceMappingURL=hoverColorPickerContribution.js.map
+
+export { HoverColorPickerContribution };

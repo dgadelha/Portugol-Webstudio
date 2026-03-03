@@ -1,7 +1,8 @@
 import { prefixedUuid } from '../../base/common/uuid.js';
 import { TextLength } from './core/text/textLength.js';
+
 const privateSymbol = Symbol('TextModelEditSource');
-export class TextModelEditSource {
+class TextModelEditSource {
     constructor(metadata, _privateCtorGuard) {
         this.metadata = metadata;
     }
@@ -38,10 +39,12 @@ export class TextModelEditSource {
         return keys.join('-');
     }
 }
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function createEditSource(metadata) {
+    // eslint-disable-next-line local/code-no-any-casts, @typescript-eslint/no-explicit-any
     return new TextModelEditSource(metadata, privateSymbol);
 }
-export const EditSources = {
+const EditSources = {
     unknown(data) {
         return createEditSource({
             source: 'unknown',
@@ -89,6 +92,7 @@ export const EditSources = {
             $modelId: avoidPathRedaction(data.modelId),
             $extensionId: data.extensionId?.extensionId,
             $extensionVersion: data.extensionId?.version,
+            $$sessionId: data.sessionId,
             $$requestId: data.requestId,
             $$languageId: data.languageId,
         });
@@ -125,7 +129,7 @@ function avoidPathRedaction(str) {
     // To avoid false-positive file path redaction.
     return str.replaceAll('/', '|');
 }
-export class EditDeltaInfo {
+class EditDeltaInfo {
     static fromText(text) {
         const linesAdded = TextLength.ofText(text).lineCount;
         const charsAdded = text.length;
@@ -144,13 +148,13 @@ export class EditDeltaInfo {
         this.charsRemoved = charsRemoved;
     }
 }
-export var EditSuggestionId;
+var EditSuggestionId;
 (function (EditSuggestionId) {
     /**
      * Use AiEditTelemetryServiceImpl to create a new id!
     */
-    function newId() {
-        const id = prefixedUuid('sgt');
+    function newId(genPrefixedUuid) {
+        const id = genPrefixedUuid ? genPrefixedUuid('sgt') : prefixedUuid('sgt');
         return toEditIdentity(id);
     }
     EditSuggestionId.newId = newId;
@@ -158,4 +162,5 @@ export var EditSuggestionId;
 function toEditIdentity(id) {
     return id;
 }
-//# sourceMappingURL=textModelEditSource.js.map
+
+export { EditDeltaInfo, EditSources, EditSuggestionId, TextModelEditSource };

@@ -1,9 +1,10 @@
+import { FloatHorizontalRange } from '../../view/renderingContext.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { FloatHorizontalRange } from '../../view/renderingContext.js';
-export class RangeUtil {
+class RangeUtil {
     static _createRange() {
         if (!this._handyReadyRange) {
             this._handyReadyRange = document.createRange();
@@ -112,4 +113,5 @@ export class RangeUtil {
         return this._createHorizontalRangesFromClientRects(clientRects, context.clientRectDeltaLeft, context.clientRectScale);
     }
 }
-//# sourceMappingURL=rangeUtil.js.map
+
+export { RangeUtil };

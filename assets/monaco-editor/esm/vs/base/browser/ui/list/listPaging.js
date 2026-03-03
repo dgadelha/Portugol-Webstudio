@@ -1,13 +1,14 @@
+import { range } from '../../../common/arrays.js';
+import { CancellationTokenSource } from '../../../common/cancellation.js';
+import { Event } from '../../../common/event.js';
+import { DisposableStore, Disposable } from '../../../common/lifecycle.js';
+import './list.css';
+import { List } from './listWidget.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { range } from '../../../common/arrays.js';
-import { CancellationTokenSource } from '../../../common/cancellation.js';
-import { Event } from '../../../common/event.js';
-import { Disposable } from '../../../common/lifecycle.js';
-import './list.css';
-import { List } from './listWidget.js';
 class PagedRenderer {
     get templateId() { return this.renderer.templateId; }
     constructor(renderer, modelProvider) {
@@ -66,8 +67,9 @@ function fromPagedListOptions(modelProvider, options) {
         accessibilityProvider: options.accessibilityProvider && new PagedAccessibilityProvider(modelProvider, options.accessibilityProvider)
     };
 }
-export class PagedList {
+class PagedList {
     constructor(user, container, virtualDelegate, renderers, options = {}) {
+        this.modelDisposables = new DisposableStore();
         const modelProvider = () => this.model;
         const pagedRenderers = renderers.map(r => new PagedRenderer(r, modelProvider));
         this.list = new List(user, container, virtualDelegate, pagedRenderers, fromPagedListOptions(modelProvider, options));
@@ -100,8 +102,10 @@ export class PagedList {
         return this._model;
     }
     set model(model) {
+        this.modelDisposables.clear();
         this._model = model;
         this.list.splice(0, this.list.length, range(model.length));
+        this.modelDisposables.add(model.onDidIncrementLength(newLength => this.list.splice(this.list.length, 0, range(this.list.length, newLength))));
     }
     getFocus() {
         return this.list.getFocus();
@@ -117,6 +121,8 @@ export class PagedList {
     }
     dispose() {
         this.list.dispose();
+        this.modelDisposables.dispose();
     }
 }
-//# sourceMappingURL=listPaging.js.map
+
+export { PagedList };

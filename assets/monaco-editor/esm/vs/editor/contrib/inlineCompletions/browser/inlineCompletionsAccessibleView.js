@@ -1,3 +1,4 @@
-export class InlineCompletionsAccessibleView {
+class InlineCompletionsAccessibleView {
 }
-//# sourceMappingURL=inlineCompletionsAccessibleView.js.map
+
+export { InlineCompletionsAccessibleView };

@@ -1,11 +1,11 @@
-export var InlineEditTabAction;
+var InlineEditTabAction;
 (function (InlineEditTabAction) {
     InlineEditTabAction["Jump"] = "jump";
     InlineEditTabAction["Accept"] = "accept";
     InlineEditTabAction["Inactive"] = "inactive";
 })(InlineEditTabAction || (InlineEditTabAction = {}));
 // TODO: Move this out of here as it is also includes ghosttext
-export var InlineCompletionViewKind;
+var InlineCompletionViewKind;
 (function (InlineCompletionViewKind) {
     InlineCompletionViewKind["GhostText"] = "ghostText";
     InlineCompletionViewKind["Custom"] = "custom";
@@ -17,4 +17,5 @@ export var InlineCompletionViewKind;
     InlineCompletionViewKind["LineReplacement"] = "lineReplacement";
     InlineCompletionViewKind["Collapsed"] = "collapsed";
 })(InlineCompletionViewKind || (InlineCompletionViewKind = {}));
-//# sourceMappingURL=inlineEditsViewInterface.js.map
+
+export { InlineCompletionViewKind, InlineEditTabAction };

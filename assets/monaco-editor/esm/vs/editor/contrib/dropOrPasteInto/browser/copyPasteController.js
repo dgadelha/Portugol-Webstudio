@@ -1,27 +1,13 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-var CopyPasteController_1;
 import { addDisposableListener } from '../../../../base/browser/dom.js';
 import { coalesce } from '../../../../base/common/arrays.js';
 import { createCancelablePromise, DeferredPromise, raceCancellation } from '../../../../base/common/async.js';
 import { CancellationTokenSource } from '../../../../base/common/cancellation.js';
-import { createStringDataTransferItem, matchesMimeType, UriList } from '../../../../base/common/dataTransfer.js';
+import { matchesMimeType, createStringDataTransferItem, UriList } from '../../../../base/common/dataTransfer.js';
 import { isCancellationError } from '../../../../base/common/errors.js';
 import { HierarchicalKind } from '../../../../base/common/hierarchicalKind.js';
 import { Disposable, DisposableStore } from '../../../../base/common/lifecycle.js';
 import { Mimes } from '../../../../base/common/mime.js';
-import * as platform from '../../../../base/common/platform.js';
+import { isWindows } from '../../../../base/common/platform.js';
 import { upcast } from '../../../../base/common/types.js';
 import { generateUuid } from '../../../../base/common/uuid.js';
 import { localize } from '../../../../nls.js';
@@ -34,7 +20,7 @@ import { ILogService } from '../../../../platform/log/common/log.js';
 import { IProgressService } from '../../../../platform/progress/common/progress.js';
 import { IQuickInputService } from '../../../../platform/quickinput/common/quickInput.js';
 import { ClipboardEventUtils, InMemoryClipboardMetadataManager } from '../../../browser/controller/editContext/clipboardUtils.js';
-import { toExternalVSDataTransfer, toVSDataTransfer } from '../../../browser/dataTransfer.js';
+import { toVSDataTransfer, toExternalVSDataTransfer } from '../../../browser/dataTransfer.js';
 import { IBulkEditService } from '../../../browser/services/bulkEditService.js';
 import { Range } from '../../../common/core/range.js';
 import { DocumentPasteTriggerKind } from '../../../common/languages.js';
@@ -45,9 +31,24 @@ import { MessageController } from '../../message/browser/messageController.js';
 import { DefaultTextPasteOrDropEditProvider } from './defaultProviders.js';
 import { createCombinedWorkspaceEdit, sortEditsByYieldTo } from './edit.js';
 import { PostEditWidgetManager } from './postEditWidget.js';
-export const changePasteTypeCommandId = 'editor.changePasteType';
-export const pasteAsPreferenceConfig = 'editor.pasteAs.preferences';
-export const pasteWidgetVisibleCtx = new RawContextKey('pasteWidgetVisible', false, localize(912, "Whether the paste widget is showing"));
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var CopyPasteController_1;
+const changePasteTypeCommandId = 'editor.changePasteType';
+const pasteAsPreferenceConfig = 'editor.pasteAs.preferences';
+const pasteWidgetVisibleCtx = new RawContextKey('pasteWidgetVisible', false, localize(917, "Whether the paste widget is showing"));
 const vscodeClipboardMime = 'application/vnd.code.copymetadata';
 let CopyPasteController = class CopyPasteController extends Disposable {
     static { CopyPasteController_1 = this; }
@@ -71,7 +72,7 @@ let CopyPasteController = class CopyPasteController extends Disposable {
         this._register(addDisposableListener(container, 'cut', e => this.handleCopy(e)));
         this._register(addDisposableListener(container, 'paste', e => this.handlePaste(e), true));
         this._pasteProgressManager = this._register(new InlineProgressManager('pasteIntoEditor', editor, instantiationService));
-        this._postPasteWidgetManager = this._register(instantiationService.createInstance(PostEditWidgetManager, 'pasteIntoEditor', editor, pasteWidgetVisibleCtx, { id: changePasteTypeCommandId, label: localize(913, "Show paste options...") }, () => CopyPasteController_1._configureDefaultAction ? [CopyPasteController_1._configureDefaultAction] : []));
+        this._postPasteWidgetManager = this._register(instantiationService.createInstance(PostEditWidgetManager, 'pasteIntoEditor', editor, pasteWidgetVisibleCtx, { id: changePasteTypeCommandId, label: localize(918, "Show paste options...") }, () => CopyPasteController_1._configureDefaultAction ? [CopyPasteController_1._configureDefaultAction] : []));
     }
     changePasteType() {
         this._postPasteWidgetManager.tryShowSelector();
@@ -132,7 +133,7 @@ let CopyPasteController = class CopyPasteController extends Disposable {
             }
             ranges = [new Range(ranges[0].startLineNumber, 1, ranges[0].startLineNumber, 1 + model.getLineLength(ranges[0].startLineNumber))];
         }
-        const toCopy = this._editor._getViewModel()?.getPlainTextToCopy(selections, enableEmptySelectionClipboard, platform.isWindows);
+        const toCopy = this._editor._getViewModel()?.getPlainTextToCopy(selections, enableEmptySelectionClipboard, isWindows);
         const multicursorText = Array.isArray(toCopy) ? toCopy : null;
         const defaultPastePayload = {
             multicursorText,
@@ -245,9 +246,9 @@ let CopyPasteController = class CopyPasteController extends Disposable {
         const kindLabel = 'only' in preference
             ? preference.only.value
             : 'preferences' in preference
-                ? (preference.preferences.length ? preference.preferences.map(preference => preference.value).join(', ') : localize(914, "empty"))
+                ? (preference.preferences.length ? preference.preferences.map(preference => preference.value).join(', ') : localize(919, "empty"))
                 : preference.providerId;
-        MessageController.get(this._editor)?.showMessage(localize(915, "No paste edits for '{0}' found", kindLabel), selections[0].getStartPosition());
+        MessageController.get(this._editor)?.showMessage(localize(920, "No paste edits for '{0}' found", kindLabel), selections[0].getStartPosition());
     }
     doPasteInline(allProviders, selections, dataTransfer, metadata, clipboardEvent) {
         this._logService.trace('CopyPasteController#doPasteInline');
@@ -297,7 +298,7 @@ let CopyPasteController = class CopyPasteController extends Disposable {
                         }
                         const resolveP = edit.provider.resolveDocumentPasteEdit(edit, resolveToken);
                         const showP = new DeferredPromise();
-                        const resolved = await this._pasteProgressManager.showWhile(selections[0].getEndPosition(), localize(916, "Resolving paste edit for '{0}'. Click to cancel", edit.title), raceCancellation(Promise.race([showP.p, resolveP]), resolveToken), {
+                        const resolved = await this._pasteProgressManager.showWhile(selections[0].getEndPosition(), localize(921, "Resolving paste edit for '{0}'. Click to cancel", edit.title), raceCancellation(Promise.race([showP.p, resolveP]), resolveToken), {
                             cancel: () => showP.cancel()
                         }, 0);
                         if (resolved) {
@@ -316,7 +317,7 @@ let CopyPasteController = class CopyPasteController extends Disposable {
                 }
             }
         });
-        this._pasteProgressManager.showWhile(selections[0].getEndPosition(), localize(917, "Running paste handlers. Click to cancel and do basic paste"), p, {
+        this._pasteProgressManager.showWhile(selections[0].getEndPosition(), localize(922, "Running paste handlers. Click to cancel and do basic paste"), p, {
             cancel: async () => {
                 p.cancel();
                 if (editorStateCts.token.isCancellationRequested) {
@@ -388,7 +389,7 @@ let CopyPasteController = class CopyPasteController extends Disposable {
                 else {
                     const configureDefaultItem = {
                         id: 'editor.pasteAs.default',
-                        label: localize(918, "Configure default paste action"),
+                        label: localize(923, "Configure default paste action"),
                         edit: undefined,
                     };
                     const selected = await this._quickInputService.pick([
@@ -405,7 +406,7 @@ let CopyPasteController = class CopyPasteController extends Disposable {
                             }
                         ] : [])
                     ], {
-                        placeHolder: localize(919, "Select Paste Action"),
+                        placeHolder: localize(924, "Select Paste Action"),
                     });
                     if (selected === configureDefaultItem) {
                         CopyPasteController_1._configureDefaultAction?.run();
@@ -428,7 +429,7 @@ let CopyPasteController = class CopyPasteController extends Disposable {
         });
         this._progressService.withProgress({
             location: 10 /* ProgressLocation.Window */,
-            title: localize(920, "Running paste handlers"),
+            title: localize(925, "Running paste handlers"),
         }, () => p);
     }
     setCopyMetadata(dataTransfer, metadata) {
@@ -580,5 +581,5 @@ CopyPasteController = CopyPasteController_1 = __decorate([
     __param(8, IQuickInputService),
     __param(9, IProgressService)
 ], CopyPasteController);
-export { CopyPasteController };
-//# sourceMappingURL=copyPasteController.js.map
+
+export { CopyPasteController, changePasteTypeCommandId, pasteAsPreferenceConfig, pasteWidgetVisibleCtx };

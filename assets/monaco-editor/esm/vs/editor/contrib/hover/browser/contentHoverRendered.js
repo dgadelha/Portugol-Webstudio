@@ -1,35 +1,39 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-var RenderedContentHover_1, RenderedContentHoverParts_1;
 import { RenderedHoverParts } from './hoverTypes.js';
-import { Disposable, DisposableStore, toDisposable } from '../../../../base/common/lifecycle.js';
+import { Disposable, toDisposable, DisposableStore } from '../../../../base/common/lifecycle.js';
 import { EditorHoverStatusBar } from './contentHoverStatusBar.js';
+import { HoverCopyButton } from './hoverCopyButton.js';
 import { IKeybindingService } from '../../../../platform/keybinding/common/keybinding.js';
 import { ModelDecorationOptions } from '../../../common/model/textModel.js';
 import { Position } from '../../../common/core/position.js';
 import { Range } from '../../../common/core/range.js';
-import * as dom from '../../../../base/browser/dom.js';
+import { addDisposableListener, EventType } from '../../../../base/browser/dom.js';
 import { MarkdownHoverParticipant } from './markdownHoverParticipant.js';
 import { HoverColorPickerParticipant } from '../../colorPicker/browser/hoverColorPicker/hoverColorPickerParticipant.js';
 import { InlayHintsHover } from '../../inlayHints/browser/inlayHintsHover.js';
 import { BugIndicatingError } from '../../../../base/common/errors.js';
 import { IHoverService } from '../../../../platform/hover/browser/hover.js';
+import { IClipboardService } from '../../../../platform/clipboard/common/clipboardService.js';
+import { MarkerHover } from './markerHoverParticipant.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var RenderedContentHover_1, RenderedContentHoverParts_1;
 let RenderedContentHover = RenderedContentHover_1 = class RenderedContentHover extends Disposable {
-    constructor(editor, hoverResult, participants, context, keybindingService, hoverService) {
+    constructor(editor, hoverResult, participants, context, keybindingService, hoverService, clipboardService) {
         super();
         const parts = hoverResult.hoverParts;
-        this._renderedHoverParts = this._register(new RenderedContentHoverParts(editor, participants, parts, context, keybindingService, hoverService));
+        this._renderedHoverParts = this._register(new RenderedContentHoverParts(editor, participants, parts, context, keybindingService, hoverService, clipboardService));
         const contentHoverComputerOptions = hoverResult.options;
         const anchor = contentHoverComputerOptions.anchor;
         const { showAtPosition, showAtSecondaryPosition } = RenderedContentHover_1.computeHoverPositions(editor, anchor.range, parts);
@@ -111,9 +115,9 @@ let RenderedContentHover = RenderedContentHover_1 = class RenderedContentHover e
 };
 RenderedContentHover = RenderedContentHover_1 = __decorate([
     __param(4, IKeybindingService),
-    __param(5, IHoverService)
+    __param(5, IHoverService),
+    __param(6, IClipboardService)
 ], RenderedContentHover);
-export { RenderedContentHover };
 class RenderedStatusBar {
     constructor(fragment, _statusBar) {
         this._statusBar = _statusBar;
@@ -135,13 +139,15 @@ let RenderedContentHoverParts = class RenderedContentHoverParts extends Disposab
         description: 'content-hover-highlight',
         className: 'hoverHighlight'
     }); }
-    constructor(editor, participants, hoverParts, context, keybindingService, hoverService) {
+    constructor(editor, participants, hoverParts, context, keybindingService, _hoverService, _clipboardService) {
         super();
+        this._hoverService = _hoverService;
+        this._clipboardService = _clipboardService;
         this._renderedParts = [];
         this._focusedHoverPartIndex = -1;
         this._context = context;
         this._fragment = document.createDocumentFragment();
-        this._register(this._renderParts(participants, hoverParts, context, keybindingService, hoverService));
+        this._register(this._renderParts(participants, hoverParts, context, keybindingService, this._hoverService));
         this._register(this._registerListenersOnRenderedParts());
         this._register(this._createEditorDecorations(editor, hoverParts));
         this._updateMarkdownAndColorParticipantInfo(participants);
@@ -215,14 +221,18 @@ let RenderedContentHoverParts = class RenderedContentHoverParts extends Disposab
         this._renderedParts.forEach((renderedPart, index) => {
             const element = renderedPart.hoverElement;
             element.tabIndex = 0;
-            disposables.add(dom.addDisposableListener(element, dom.EventType.FOCUS_IN, (event) => {
+            disposables.add(addDisposableListener(element, EventType.FOCUS_IN, (event) => {
                 event.stopPropagation();
                 this._focusedHoverPartIndex = index;
             }));
-            disposables.add(dom.addDisposableListener(element, dom.EventType.FOCUS_OUT, (event) => {
+            disposables.add(addDisposableListener(element, EventType.FOCUS_OUT, (event) => {
                 event.stopPropagation();
                 this._focusedHoverPartIndex = -1;
             }));
+            // Add copy button for marker hovers
+            if (renderedPart.type === 'hoverPart' && renderedPart.hoverPart instanceof MarkerHover) {
+                disposables.add(new HoverCopyButton(element, () => renderedPart.participant.getAccessibleContent(renderedPart.hoverPart), this._clipboardService, this._hoverService));
+            }
         });
         return disposables;
     }
@@ -319,6 +329,8 @@ let RenderedContentHoverParts = class RenderedContentHoverParts extends Disposab
 };
 RenderedContentHoverParts = RenderedContentHoverParts_1 = __decorate([
     __param(4, IKeybindingService),
-    __param(5, IHoverService)
+    __param(5, IHoverService),
+    __param(6, IClipboardService)
 ], RenderedContentHoverParts);
-//# sourceMappingURL=contentHoverRendered.js.map
+
+export { RenderedContentHover };

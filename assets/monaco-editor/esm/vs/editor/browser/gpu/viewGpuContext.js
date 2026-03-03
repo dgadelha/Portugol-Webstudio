@@ -1,33 +1,36 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-var ViewGpuContext_1;
-import * as nls from '../../../nls.js';
-import { addDisposableListener, getActiveWindow } from '../../../base/browser/dom.js';
+import { localize } from '../../../nls.js';
+import { getActiveWindow, addDisposableListener } from '../../../base/browser/dom.js';
 import { createFastDomNode } from '../../../base/browser/fastDomNode.js';
 import { BugIndicatingError } from '../../../base/common/errors.js';
 import { Disposable } from '../../../base/common/lifecycle.js';
-import { observableValue, runOnChange } from '../../../base/common/observable.js';
+import '../../../base/common/observableInternal/index.js';
 import { IInstantiationService } from '../../../platform/instantiation/common/instantiation.js';
 import { TextureAtlas } from './atlas/textureAtlas.js';
 import { IConfigurationService } from '../../../platform/configuration/common/configuration.js';
-import { INotificationService, Severity } from '../../../platform/notification/common/notification.js';
+import { Severity, INotificationService } from '../../../platform/notification/common/notification.js';
 import { GPULifecycle } from './gpuDisposable.js';
 import { ensureNonNullable, observeDevicePixelDimensions } from './gpuUtils.js';
 import { RectangleRenderer } from './rectangleRenderer.js';
 import { DecorationCssRuleExtractor } from './css/decorationCssRuleExtractor.js';
 import { Event } from '../../../base/common/event.js';
 import { DecorationStyleCache } from './css/decorationStyleCache.js';
+import { runOnChange } from '../../../base/common/observableInternal/utils/runOnChange.js';
+import { observableValue } from '../../../base/common/observableInternal/observables/observableValue.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var ViewGpuContext_1;
 let ViewGpuContext = class ViewGpuContext extends Disposable {
     static { ViewGpuContext_1 = this; }
     static { this._decorationCssRuleExtractor = new DecorationCssRuleExtractor(); }
@@ -83,7 +86,7 @@ let ViewGpuContext = class ViewGpuContext extends Disposable {
         if (!ViewGpuContext_1.device) {
             ViewGpuContext_1.device = GPULifecycle.requestDevice((message) => {
                 const choices = [{
-                        label: nls.localize(73, "Use DOM-based rendering"),
+                        label: localize(78, "Use DOM-based rendering"),
                         run: () => this.configurationService.updateValue('editor.experimentalGpuAcceleration', 'off'),
                     }];
                 this._notificationService.prompt(Severity.Warning, message, choices);
@@ -188,6 +191,7 @@ let ViewGpuContext = class ViewGpuContext extends Disposable {
                     }
                     for (const r of rule.style) {
                         if (!supportsCssRule(r, rule.style)) {
+                            // eslint-disable-next-line local/code-no-any-casts, @typescript-eslint/no-explicit-any
                             problemRules.push(`${r}: ${rule.style[r]}`);
                             return false;
                         }
@@ -216,7 +220,6 @@ ViewGpuContext = ViewGpuContext_1 = __decorate([
     __param(2, INotificationService),
     __param(3, IConfigurationService)
 ], ViewGpuContext);
-export { ViewGpuContext };
 /**
  * A list of supported decoration CSS rules that can be used in the GPU renderer.
  */
@@ -234,4 +237,5 @@ function supportsCssRule(rule, style) {
         default: return true;
     }
 }
-//# sourceMappingURL=viewGpuContext.js.map
+
+export { ViewGpuContext };

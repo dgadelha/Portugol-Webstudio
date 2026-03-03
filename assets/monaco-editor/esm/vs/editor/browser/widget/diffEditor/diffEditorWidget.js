@@ -1,24 +1,11 @@
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-import { getWindow, h } from '../../../../base/browser/dom.js';
+import { h, getWindow } from '../../../../base/browser/dom.js';
 import { findLast } from '../../../../base/common/arraysFind.js';
-import { BugIndicatingError, onUnexpectedError } from '../../../../base/common/errors.js';
+import { onUnexpectedError, BugIndicatingError } from '../../../../base/common/errors.js';
 import { Event } from '../../../../base/common/event.js';
 import { readHotReloadableExport } from '../../../../base/common/hotReloadHelpers.js';
 import { toDisposable } from '../../../../base/common/lifecycle.js';
-import { autorun, autorunWithStore, derived, derivedDisposable, disposableObservableValue, observableFromEvent, observableValue, recomputeInitiallyAndOnChange, subtransaction, transaction } from '../../../../base/common/observable.js';
-import { AccessibilitySignal, IAccessibilitySignalService } from '../../../../platform/accessibilitySignal/browser/accessibilitySignalService.js';
+import '../../../../base/common/observableInternal/index.js';
+import { IAccessibilitySignalService, AccessibilitySignal } from '../../../../platform/accessibilitySignal/browser/accessibilitySignalService.js';
 import { IContextKeyService } from '../../../../platform/contextkey/common/contextkey.js';
 import { IInstantiationService } from '../../../../platform/instantiation/common/instantiation.js';
 import { ServiceCollection } from '../../../../platform/instantiation/common/serviceCollection.js';
@@ -36,7 +23,7 @@ import { CodeEditorWidget } from '../codeEditor/codeEditorWidget.js';
 import { AccessibleDiffViewer, AccessibleDiffViewerModelFromEditors } from './components/accessibleDiffViewer.js';
 import { DiffEditorDecorations } from './components/diffEditorDecorations.js';
 import { DiffEditorEditors } from './components/diffEditorEditors.js';
-import { DiffEditorSash, SashLayout } from './components/diffEditorSash.js';
+import { SashLayout, DiffEditorSash } from './components/diffEditorSash.js';
 import { DiffEditorViewZones } from './components/diffEditorViewZones/diffEditorViewZones.js';
 import { DelegatingEditor } from './delegatingEditorImpl.js';
 import { DiffEditorOptions } from './diffEditorOptions.js';
@@ -47,14 +34,31 @@ import { MovedBlocksLinesFeature } from './features/movedBlocksLinesFeature.js';
 import { OverviewRulerFeature } from './features/overviewRulerFeature.js';
 import { RevertButtonsFeature } from './features/revertButtonsFeature.js';
 import './style.css';
-import { ObservableElementSizeObserver, RefCounted, applyStyle, applyViewZones, translatePosition } from './utils.js';
+import { ObservableElementSizeObserver, applyViewZones, applyStyle, RefCounted, translatePosition } from './utils.js';
+import { disposableObservableValue, observableValue } from '../../../../base/common/observableInternal/observables/observableValue.js';
+import { derived, derivedDisposable } from '../../../../base/common/observableInternal/observables/derived.js';
+import { autorun, autorunWithStore } from '../../../../base/common/observableInternal/reactions/autorun.js';
+import { recomputeInitiallyAndOnChange } from '../../../../base/common/observableInternal/utils/utils.js';
+import { subtransaction, transaction } from '../../../../base/common/observableInternal/transaction.js';
+import { observableFromEvent } from '../../../../base/common/observableInternal/observables/observableFromEvent.js';
+
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 let DiffEditorWidget = class DiffEditorWidget extends DelegatingEditor {
     get onDidContentSizeChange() { return this._editors.onDidContentSizeChange; }
-    constructor(_domElement, options, codeEditorWidgetOptions, _parentContextKeyService, _parentInstantiationService, codeEditorService, _accessibilitySignalService, _editorProgressService) {
+    constructor(_domElement, options, codeEditorWidgetOptions, _parentContextKeyService, _parentInstantiationService, _codeEditorService, _accessibilitySignalService, _editorProgressService) {
         super();
         this._domElement = _domElement;
         this._parentContextKeyService = _parentContextKeyService;
         this._parentInstantiationService = _parentInstantiationService;
+        this._codeEditorService = _codeEditorService;
         this._accessibilitySignalService = _accessibilitySignalService;
         this._editorProgressService = _editorProgressService;
         this.elements = h('div.monaco-diff-editor.side-by-side', { style: { position: 'relative', height: '100%' } }, [
@@ -124,7 +128,7 @@ let DiffEditorWidget = class DiffEditorWidget extends DelegatingEditor {
         });
         this._diffValue = this._diffModel.map((m, r) => m?.diff.read(r));
         this.onDidUpdateDiff = Event.fromObservableLight(this._diffValue);
-        codeEditorService.willCreateDiffEditor();
+        this._codeEditorService.willCreateDiffEditor();
         this._contextKeyService.createKey('isInDiffEditor', true);
         this._domElement.appendChild(this.elements.root);
         this._register(toDisposable(() => this.elements.root.remove()));
@@ -147,7 +151,7 @@ let DiffEditorWidget = class DiffEditorWidget extends DelegatingEditor {
         this._register(bindContextKey(EditorContextKeys.diffEditorModifiedUri, this._contextKeyService, reader => this._diffModel.read(reader)?.model.modified.uri.toString() ?? ''));
         this._overviewRulerPart = derivedDisposable(this, reader => !this._options.renderOverviewRuler.read(reader)
             ? undefined
-            : this._instantiationService.createInstance(readHotReloadableExport(OverviewRulerFeature, reader), this._editors, this.elements.root, this._diffModel, this._rootSizeObserver.width, this._rootSizeObserver.height, this._layoutInfo.map(i => i.modifiedEditor))).recomputeInitiallyAndOnChange(this._store);
+            : this._instantiationService.createInstance(readHotReloadableExport(OverviewRulerFeature), this._editors, this.elements.root, this._diffModel, this._rootSizeObserver.width, this._rootSizeObserver.height, this._layoutInfo.map(i => i.modifiedEditor))).recomputeInitiallyAndOnChange(this._store);
         const dimensions = {
             height: this._rootSizeObserver.height,
             width: this._rootSizeObserver.width.map((w, reader) => w - (this._overviewRulerPart.read(reader)?.width ?? 0)),
@@ -158,12 +162,12 @@ let DiffEditorWidget = class DiffEditorWidget extends DelegatingEditor {
             this.elements.root.classList.toggle('side-by-side', showSash);
             return !showSash ? undefined : new DiffEditorSash(this.elements.root, dimensions, this._options.enableSplitViewResizing, this._boundarySashes, this._sashLayout.sashLeft, () => this._sashLayout.resetSash());
         }).recomputeInitiallyAndOnChange(this._store);
-        const unchangedRangesFeature = derivedDisposable(this, reader => /** @description UnchangedRangesFeature */ this._instantiationService.createInstance(readHotReloadableExport(HideUnchangedRegionsFeature, reader), this._editors, this._diffModel, this._options)).recomputeInitiallyAndOnChange(this._store);
-        derivedDisposable(this, reader => /** @description DiffEditorDecorations */ this._instantiationService.createInstance(readHotReloadableExport(DiffEditorDecorations, reader), this._editors, this._diffModel, this._options, this)).recomputeInitiallyAndOnChange(this._store);
+        const unchangedRangesFeature = derivedDisposable(this, reader => /** @description UnchangedRangesFeature */ this._instantiationService.createInstance(readHotReloadableExport(HideUnchangedRegionsFeature), this._editors, this._diffModel, this._options)).recomputeInitiallyAndOnChange(this._store);
+        derivedDisposable(this, reader => /** @description DiffEditorDecorations */ this._instantiationService.createInstance(readHotReloadableExport(DiffEditorDecorations), this._editors, this._diffModel, this._options, this)).recomputeInitiallyAndOnChange(this._store);
         const origViewZoneIdsToIgnore = new Set();
         const modViewZoneIdsToIgnore = new Set();
         let isUpdatingViewZones = false;
-        const viewZoneManager = derivedDisposable(this, reader => /** @description ViewZoneManager */ this._instantiationService.createInstance(readHotReloadableExport(DiffEditorViewZones, reader), getWindow(this._domElement), this._editors, this._diffModel, this._options, this, () => isUpdatingViewZones || unchangedRangesFeature.read(undefined).isUpdatingHiddenAreas, origViewZoneIdsToIgnore, modViewZoneIdsToIgnore)).recomputeInitiallyAndOnChange(this._store);
+        const viewZoneManager = derivedDisposable(this, reader => /** @description ViewZoneManager */ this._instantiationService.createInstance(readHotReloadableExport(DiffEditorViewZones), getWindow(this._domElement), this._editors, this._diffModel, this._options, this, () => isUpdatingViewZones || unchangedRangesFeature.read(undefined).isUpdatingHiddenAreas, origViewZoneIdsToIgnore, modViewZoneIdsToIgnore)).recomputeInitiallyAndOnChange(this._store);
         const originalViewZones = derived(this, (reader) => {
             const orig = viewZoneManager.read(reader).viewZones.read(reader).orig;
             const orig2 = unchangedRangesFeature.read(reader).viewZones.read(reader).origViewZones;
@@ -188,19 +192,22 @@ let DiffEditorWidget = class DiffEditorWidget extends DelegatingEditor {
                 scrollState = undefined;
             }
         }, modViewZoneIdsToIgnore));
-        this._accessibleDiffViewer = derivedDisposable(this, reader => this._instantiationService.createInstance(readHotReloadableExport(AccessibleDiffViewer, reader), this.elements.accessibleDiffViewer, this._accessibleDiffViewerVisible, (visible, tx) => this._accessibleDiffViewerShouldBeVisible.set(visible, tx), this._options.onlyShowAccessibleDiffViewer.map(v => !v), this._rootSizeObserver.width, this._rootSizeObserver.height, this._diffModel.map((m, r) => m?.diff.read(r)?.mappings.map(m => m.lineRangeMapping)), new AccessibleDiffViewerModelFromEditors(this._editors))).recomputeInitiallyAndOnChange(this._store);
+        this._accessibleDiffViewer = derivedDisposable(this, reader => this._instantiationService.createInstance(readHotReloadableExport(AccessibleDiffViewer), this.elements.accessibleDiffViewer, this._accessibleDiffViewerVisible, (visible, tx) => this._accessibleDiffViewerShouldBeVisible.set(visible, tx), this._options.onlyShowAccessibleDiffViewer.map(v => !v), this._rootSizeObserver.width, this._rootSizeObserver.height, this._diffModel.map((m, r) => m?.diff.read(r)?.mappings.map(m => m.lineRangeMapping)), new AccessibleDiffViewerModelFromEditors(this._editors))).recomputeInitiallyAndOnChange(this._store);
         const visibility = this._accessibleDiffViewerVisible.map(v => v ? 'hidden' : 'visible');
         this._register(applyStyle(this.elements.modified, { visibility }));
         this._register(applyStyle(this.elements.original, { visibility }));
         this._createDiffEditorContributions();
-        codeEditorService.addDiffEditor(this);
+        this._codeEditorService.addDiffEditor(this);
+        this._register(toDisposable(() => {
+            this._codeEditorService.removeDiffEditor(this);
+        }));
         this._gutter = derivedDisposable(this, reader => {
             return this._options.shouldRenderGutterMenu.read(reader)
-                ? this._instantiationService.createInstance(readHotReloadableExport(DiffEditorGutter, reader), this.elements.root, this._diffModel, this._editors, this._options, this._sashLayout, this._boundarySashes)
+                ? this._instantiationService.createInstance(readHotReloadableExport(DiffEditorGutter), this.elements.root, this._diffModel, this._editors, this._options, this._sashLayout, this._boundarySashes)
                 : undefined;
         });
         this._register(recomputeInitiallyAndOnChange(this._layoutInfo));
-        derivedDisposable(this, reader => /** @description MovedBlocksLinesPart */ new (readHotReloadableExport(MovedBlocksLinesFeature, reader))(this.elements.root, this._diffModel, this._layoutInfo.map(i => i.originalEditor), this._layoutInfo.map(i => i.modifiedEditor), this._editors)).recomputeInitiallyAndOnChange(this._store, value => {
+        derivedDisposable(this, reader => /** @description MovedBlocksLinesPart */ new (readHotReloadableExport(MovedBlocksLinesFeature))(this.elements.root, this._diffModel, this._layoutInfo.map(i => i.originalEditor), this._layoutInfo.map(i => i.modifiedEditor), this._editors)).recomputeInitiallyAndOnChange(this._store, value => {
             // This is to break the layout info <-> moved blocks lines part dependency cycle.
             this._movedBlocksLinesPart.set(value, undefined);
         });
@@ -221,7 +228,7 @@ let DiffEditorWidget = class DiffEditorWidget extends DelegatingEditor {
             }
         }));
         this._register(autorunWithStore((reader, store) => {
-            store.add(new (readHotReloadableExport(RevertButtonsFeature, reader))(this._editors, this._diffModel, this._options, this));
+            store.add(new (readHotReloadableExport(RevertButtonsFeature))(this._editors, this._diffModel, this._options, this));
         }));
         this._register(autorunWithStore((reader, store) => {
             const model = this._diffModel.read(reader);
@@ -275,6 +282,7 @@ let DiffEditorWidget = class DiffEditorWidget extends DelegatingEditor {
             this._editors.original.restoreViewState(diffEditorState.original);
             this._editors.modified.restoreViewState(diffEditorState.modified);
             if (diffEditorState.modelState) {
+                // eslint-disable-next-line local/code-no-any-casts, @typescript-eslint/no-explicit-any
                 this._diffModel.get()?.restoreSerializedState(diffEditorState.modelState);
             }
         }
@@ -336,17 +344,31 @@ let DiffEditorWidget = class DiffEditorWidget extends DelegatingEditor {
         }
         return toLineChanges(diffState);
     }
+    getDiffComputationResult() {
+        const diffState = this._diffModel.get()?.diff.get();
+        if (!diffState) {
+            return null;
+        }
+        return {
+            changes: this.getLineChanges(),
+            changes2: diffState.mappings.map(m => m.lineRangeMapping),
+            identical: diffState.identical,
+            quitEarly: diffState.quitEarly,
+        };
+    }
     revert(diff) {
         const model = this._diffModel.get();
         if (!model || !model.isDiffUpToDate.get()) {
             return;
         }
+        this._editors.modified.pushUndoStop();
         this._editors.modified.executeEdits('diffEditor', [
             {
                 range: diff.modified.toExclusiveRange(),
                 text: model.model.original.getValueInRange(diff.original.toExclusiveRange())
             }
         ]);
+        this._editors.modified.pushUndoStop();
     }
     revertRangeMappings(diffs) {
         const model = this._diffModel.get();
@@ -357,7 +379,9 @@ let DiffEditorWidget = class DiffEditorWidget extends DelegatingEditor {
             range: c.modifiedRange,
             text: model.model.original.getValueInRange(c.originalRange)
         }));
+        this._editors.modified.pushUndoStop();
         this._editors.modified.executeEdits('diffEditor', changes);
+        this._editors.modified.pushUndoStop();
     }
     revertFocusedRangeMappings() {
         const model = this._diffModel.get();
@@ -378,10 +402,12 @@ let DiffEditorWidget = class DiffEditorWidget extends DelegatingEditor {
         const diffsToRevert = diffs.filter(d => {
             return d.lineRangeMapping.modified.intersect(selectedRange);
         });
+        modifiedEditor.pushUndoStop();
         modifiedEditor.executeEdits('diffEditor', diffsToRevert.map(d => ({
             range: d.lineRangeMapping.modified.toExclusiveRange(),
             text: model.model.original.getValueInRange(d.lineRangeMapping.original.toExclusiveRange())
         })));
+        modifiedEditor.pushUndoStop();
     }
     _goTo(diff) {
         this._editors.modified.setPosition(new Position(diff.lineRangeMapping.modified.startLineNumber, 1));
@@ -514,8 +540,7 @@ DiffEditorWidget = __decorate([
     __param(6, IAccessibilitySignalService),
     __param(7, IEditorProgressService)
 ], DiffEditorWidget);
-export { DiffEditorWidget };
-export function toLineChanges(state) {
+function toLineChanges(state) {
     return state.mappings.map(x => {
         const m = x.lineRangeMapping;
         let originalStartLineNumber;
@@ -561,4 +586,5 @@ export function toLineChanges(state) {
         };
     });
 }
-//# sourceMappingURL=diffEditorWidget.js.map
+
+export { DiffEditorWidget, toLineChanges };

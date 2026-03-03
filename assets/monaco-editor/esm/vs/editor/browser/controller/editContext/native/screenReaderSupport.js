@@ -1,16 +1,3 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
 import { Disposable, MutableDisposable } from '../../../../../base/common/lifecycle.js';
 import { localize } from '../../../../../nls.js';
 import { IAccessibilityService } from '../../../../../platform/accessibility/common/accessibility.js';
@@ -20,6 +7,20 @@ import { applyFontInfo } from '../../../config/domFontInfo.js';
 import { ariaLabelForScreenReaderContent } from '../screenReaderUtils.js';
 import { RichScreenReaderContent } from './screenReaderContentRich.js';
 import { SimpleScreenReaderContent } from './screenReaderContentSimple.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 let ScreenReaderSupport = class ScreenReaderSupport extends Disposable {
     constructor(_domNode, _context, _viewController, _keybindingService, _accessibilityService) {
         super();
@@ -90,7 +91,7 @@ let ScreenReaderSupport = class ScreenReaderSupport extends Disposable {
         this._domNode.domNode.setAttribute('aria-required', options.get(9 /* EditorOption.ariaRequired */) ? 'true' : 'false');
         this._domNode.domNode.setAttribute('aria-multiline', 'true');
         this._domNode.domNode.setAttribute('aria-autocomplete', options.get(104 /* EditorOption.readOnly */) ? 'none' : 'both');
-        this._domNode.domNode.setAttribute('aria-roledescription', localize(55, "editor"));
+        this._domNode.domNode.setAttribute('aria-roledescription', localize(60, "editor"));
         this._domNode.domNode.setAttribute('aria-label', ariaLabelForScreenReaderContent(options, this._keybindingService));
         const tabSize = this._context.viewModel.model.getOptions().tabSize;
         const spaceWidth = options.get(59 /* EditorOption.fontInfo */).spaceWidth;
@@ -170,5 +171,5 @@ ScreenReaderSupport = __decorate([
     __param(3, IKeybindingService),
     __param(4, IAccessibilityService)
 ], ScreenReaderSupport);
+
 export { ScreenReaderSupport };
-//# sourceMappingURL=screenReaderSupport.js.map

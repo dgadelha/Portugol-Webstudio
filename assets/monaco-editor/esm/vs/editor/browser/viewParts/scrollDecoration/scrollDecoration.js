@@ -1,11 +1,12 @@
+import './scrollDecoration.css';
+import { createFastDomNode } from '../../../../base/browser/fastDomNode.js';
+import { ViewPart } from '../../view/viewPart.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import './scrollDecoration.css';
-import { createFastDomNode } from '../../../../base/browser/fastDomNode.js';
-import { ViewPart } from '../../view/viewPart.js';
-export class ScrollDecorationViewPart extends ViewPart {
+class ScrollDecorationViewPart extends ViewPart {
     constructor(context) {
         super(context);
         this._scrollTop = 0;
@@ -65,4 +66,5 @@ export class ScrollDecorationViewPart extends ViewPart {
         this._domNode.setClassName(this._shouldShow ? 'scroll-decoration' : '');
     }
 }
-//# sourceMappingURL=scrollDecoration.js.map
+
+export { ScrollDecorationViewPart };

@@ -1,11 +1,12 @@
+import { safeIntl } from '../../../base/common/date.js';
+import { LRUCache } from '../../../base/common/map.js';
+import { CharacterClassifier } from './characterClassifier.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { safeIntl } from '../../../base/common/date.js';
-import { LRUCache } from '../../../base/common/map.js';
-import { CharacterClassifier } from './characterClassifier.js';
-export class WordCharacterClassifier extends CharacterClassifier {
+class WordCharacterClassifier extends CharacterClassifier {
     constructor(wordSeparators, intlSegmenterLocales) {
         super(0 /* WordCharacterClass.Regular */);
         this._segmenter = null;
@@ -73,7 +74,7 @@ export class WordCharacterClassifier extends CharacterClassifier {
     }
 }
 const wordClassifierCache = new LRUCache(10);
-export function getMapForWordSeparators(wordSeparators, intlSegmenterLocales) {
+function getMapForWordSeparators(wordSeparators, intlSegmenterLocales) {
     const key = `${wordSeparators}/${intlSegmenterLocales.join(',')}`;
     let result = wordClassifierCache.get(key);
     if (!result) {
@@ -82,4 +83,5 @@ export function getMapForWordSeparators(wordSeparators, intlSegmenterLocales) {
     }
     return result;
 }
-//# sourceMappingURL=wordCharacterClassifier.js.map
+
+export { WordCharacterClassifier, getMapForWordSeparators };

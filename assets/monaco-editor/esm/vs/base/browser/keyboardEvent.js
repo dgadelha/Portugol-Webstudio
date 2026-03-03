@@ -1,11 +1,12 @@
+import { isFirefox, isWebKit } from './browser.js';
+import { KeyCodeUtils, EVENT_KEY_CODE_MAP } from '../common/keyCodes.js';
+import { KeyCodeChord } from '../common/keybindings.js';
+import { isMacintosh, isLinux } from '../common/platform.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import * as browser from './browser.js';
-import { EVENT_KEY_CODE_MAP, KeyCodeUtils } from '../common/keyCodes.js';
-import { KeyCodeChord } from '../common/keybindings.js';
-import * as platform from '../common/platform.js';
 function extractKeyCode(e) {
     if (e.charCode) {
         // "keypress" events mostly
@@ -17,11 +18,11 @@ function extractKeyCode(e) {
     if (keyCode === 3) {
         return 7 /* KeyCode.PauseBreak */;
     }
-    else if (browser.isFirefox) {
+    else if (isFirefox) {
         switch (keyCode) {
             case 59: return 85 /* KeyCode.Semicolon */;
             case 60:
-                if (platform.isLinux) {
+                if (isLinux) {
                     return 97 /* KeyCode.IntlBackslash */;
                 }
                 break;
@@ -31,29 +32,29 @@ function extractKeyCode(e) {
             case 109: return 111 /* KeyCode.NumpadSubtract */;
             case 173: return 88 /* KeyCode.Minus */;
             case 224:
-                if (platform.isMacintosh) {
+                if (isMacintosh) {
                     return 57 /* KeyCode.Meta */;
                 }
                 break;
         }
     }
-    else if (browser.isWebKit) {
-        if (platform.isMacintosh && keyCode === 93) {
+    else if (isWebKit) {
+        if (isMacintosh && keyCode === 93) {
             // the two meta keys in the Mac have different key codes (91 and 93)
             return 57 /* KeyCode.Meta */;
         }
-        else if (!platform.isMacintosh && keyCode === 92) {
+        else if (!isMacintosh && keyCode === 92) {
             return 57 /* KeyCode.Meta */;
         }
     }
     // cross browser keycodes:
     return EVENT_KEY_CODE_MAP[keyCode] || 0 /* KeyCode.Unknown */;
 }
-const ctrlKeyMod = (platform.isMacintosh ? 256 /* KeyMod.WinCtrl */ : 2048 /* KeyMod.CtrlCmd */);
+const ctrlKeyMod = (isMacintosh ? 256 /* KeyMod.WinCtrl */ : 2048 /* KeyMod.CtrlCmd */);
 const altKeyMod = 512 /* KeyMod.Alt */;
 const shiftKeyMod = 1024 /* KeyMod.Shift */;
-const metaKeyMod = (platform.isMacintosh ? 2048 /* KeyMod.CtrlCmd */ : 256 /* KeyMod.WinCtrl */);
-export class StandardKeyboardEvent {
+const metaKeyMod = (isMacintosh ? 2048 /* KeyMod.CtrlCmd */ : 256 /* KeyMod.WinCtrl */);
+class StandardKeyboardEvent {
     constructor(source) {
         this._standardKeyboardEventBrand = true;
         const e = source;
@@ -120,4 +121,5 @@ export class StandardKeyboardEvent {
         return new KeyCodeChord(this.ctrlKey, this.shiftKey, this.altKey, this.metaKey, key);
     }
 }
-//# sourceMappingURL=keyboardEvent.js.map
+
+export { StandardKeyboardEvent };

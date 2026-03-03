@@ -1,26 +1,39 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { n } from '../../../../../../../base/browser/dom.js';
 import { Emitter } from '../../../../../../../base/common/event.js';
 import { Disposable } from '../../../../../../../base/common/lifecycle.js';
-import { constObservable, derived, derivedObservableWithCache } from '../../../../../../../base/common/observable.js';
-import { editorBackground } from '../../../../../../../platform/theme/common/colorRegistry.js';
+import '../../../../../../../base/common/observableInternal/index.js';
 import { asCssVariable } from '../../../../../../../platform/theme/common/colorUtils.js';
+import '../../../../../../../platform/theme/common/colors/baseColors.js';
+import '../../../../../../../platform/theme/common/colors/chartsColors.js';
+import { editorBackground } from '../../../../../../../platform/theme/common/colors/editorColors.js';
+import '../../../../../../../platform/theme/common/colors/inputColors.js';
+import '../../../../../../../platform/theme/common/colors/listColors.js';
+import '../../../../../../../platform/theme/common/colors/menuColors.js';
+import '../../../../../../../platform/theme/common/colors/minimapColors.js';
+import '../../../../../../../platform/theme/common/colors/miscColors.js';
+import '../../../../../../../platform/theme/common/colors/quickpickColors.js';
+import '../../../../../../../platform/theme/common/colors/searchColors.js';
 import { observableCodeEditor } from '../../../../../../browser/observableCodeEditor.js';
 import { Rect } from '../../../../../../common/core/2d/rect.js';
 import { OffsetRange } from '../../../../../../common/core/ranges/offsetRange.js';
 import { Position } from '../../../../../../common/core/position.js';
 import { getOriginalBorderColor, originalBackgroundColor } from '../theme.js';
-import { getPrefixTrim, mapOutFalsy, maxContentWidthInRange } from '../utils/utils.js';
+import { maxContentWidthInRange, getPrefixTrim, mapOutFalsy } from '../utils/utils.js';
+import { derived } from '../../../../../../../base/common/observableInternal/observables/derived.js';
+import { constObservable } from '../../../../../../../base/common/observableInternal/observables/constObservable.js';
+import { derivedObservableWithCache } from '../../../../../../../base/common/observableInternal/utils/utils.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
 const HORIZONTAL_PADDING = 0;
 const VERTICAL_PADDING = 0;
 const BORDER_WIDTH = 1;
 const WIDGET_SEPARATOR_WIDTH = 1;
 const WIDGET_SEPARATOR_DIFF_EDITOR_WIDTH = 3;
 const BORDER_RADIUS = 4;
-export class InlineEditsDeletionView extends Disposable {
+class InlineEditsDeletionView extends Disposable {
     constructor(_editor, _edit, _uiState, _tabAction) {
         super();
         this._editor = _editor;
@@ -161,4 +174,5 @@ export class InlineEditsDeletionView extends Disposable {
         }));
     }
 }
-//# sourceMappingURL=inlineEditsDeletionView.js.map
+
+export { InlineEditsDeletionView };

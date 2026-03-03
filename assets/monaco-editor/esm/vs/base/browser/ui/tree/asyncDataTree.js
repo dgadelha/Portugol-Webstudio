@@ -1,22 +1,23 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { ElementsDragAndDropData } from '../list/listView.js';
-import { ComposedTreeDelegate, TreeFindMode as TreeFindMode, FindFilter, FindController } from './abstractTree.js';
-import { getVisibleState, isFilterResult } from './indexTreeModel.js';
-import { CompressibleObjectTree, ObjectTree } from './objectTree.js';
-import { ObjectTreeElementCollapseState, TreeError, WeakMapper } from './tree.js';
+import { ComposedTreeDelegate, FindFilter, TreeFindMode, FindController } from './abstractTree.js';
+import { isFilterResult, getVisibleState } from './indexTreeModel.js';
+import { ObjectTree, CompressibleObjectTree } from './objectTree.js';
+import { WeakMapper, ObjectTreeElementCollapseState, TreeError } from './tree.js';
 import { createCancelablePromise, Promises, timeout } from '../../../common/async.js';
 import { Codicon } from '../../../common/codicons.js';
 import { ThemeIcon } from '../../../common/themables.js';
 import { isCancellationError, onUnexpectedError } from '../../../common/errors.js';
-import { Emitter, Event } from '../../../common/event.js';
+import { Event, Emitter } from '../../../common/event.js';
 import { Iterable } from '../../../common/iterator.js';
-import { DisposableStore, dispose, toDisposable } from '../../../common/lifecycle.js';
+import { DisposableStore, toDisposable, dispose } from '../../../common/lifecycle.js';
 import { isIterable } from '../../../common/types.js';
 import { FuzzyScore } from '../../../common/filters.js';
 import { splice } from '../../../common/arrays.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
 function createAsyncDataTreeNode(props) {
     return {
         ...props,
@@ -214,9 +215,11 @@ function asObjectTreeOptions(options) {
         dnd: options.dnd && new AsyncDataTreeNodeListDragAndDrop(options.dnd),
         multipleSelectionController: options.multipleSelectionController && {
             isSelectionSingleChangeEvent(e) {
+                // eslint-disable-next-line local/code-no-dangerous-type-assertions
                 return options.multipleSelectionController.isSelectionSingleChangeEvent({ ...e, element: e.element });
             },
             isSelectionRangeChangeEvent(e) {
+                // eslint-disable-next-line local/code-no-dangerous-type-assertions
                 return options.multipleSelectionController.isSelectionRangeChangeEvent({ ...e, element: e.element });
             }
         },
@@ -256,8 +259,8 @@ function asObjectTreeOptions(options) {
             }
         },
         sorter: undefined,
-        expandOnlyOnTwistieClick: typeof options.expandOnlyOnTwistieClick === 'undefined' ? undefined : (typeof options.expandOnlyOnTwistieClick !== 'function' ? options.expandOnlyOnTwistieClick : (e => options.expandOnlyOnTwistieClick(e.element))),
-        defaultFindVisibility: e => {
+        expandOnlyOnTwistieClick: typeof options.expandOnlyOnTwistieClick === 'undefined' ? undefined : (typeof options.expandOnlyOnTwistieClick !== 'function' ? options.expandOnlyOnTwistieClick : ((e) => options.expandOnlyOnTwistieClick(e.element))),
+        defaultFindVisibility: (e) => {
             if (e.hasChildren && e.stale) {
                 return 1 /* TreeVisibility.Visible */;
             }
@@ -270,14 +273,15 @@ function asObjectTreeOptions(options) {
             else {
                 return options.defaultFindVisibility(e.element);
             }
-        }
+        },
+        stickyScrollDelegate: options.stickyScrollDelegate
     };
 }
 function dfs(node, fn) {
     fn(node);
     node.children.forEach(child => dfs(child, fn));
 }
-export class AsyncDataTree {
+class AsyncDataTree {
     get onDidScroll() { return this.tree.onDidScroll; }
     get onDidChangeFocus() { return Event.map(this.tree.onDidChangeFocus, asTreeEvent); }
     get onDidChangeSelection() { return Event.map(this.tree.onDidChangeSelection, asTreeEvent); }
@@ -832,10 +836,11 @@ function asCompressibleObjectTreeOptions(options) {
             getCompressedNodeKeyboardNavigationLabel(els) {
                 return options.keyboardNavigationLabelProvider.getCompressedNodeKeyboardNavigationLabel(els.map(e => e.element));
             }
-        }
+        },
+        stickyScrollDelegate: objectTreeOptions.stickyScrollDelegate
     };
 }
-export class CompressibleAsyncDataTree extends AsyncDataTree {
+class CompressibleAsyncDataTree extends AsyncDataTree {
     constructor(user, container, virtualDelegate, compressionDelegate, renderers, dataSource, options = {}) {
         super(user, container, virtualDelegate, renderers, dataSource, options);
         this.compressionDelegate = compressionDelegate;
@@ -937,4 +942,5 @@ function getVisibility(filterResult) {
         return getVisibleState(filterResult);
     }
 }
-//# sourceMappingURL=asyncDataTree.js.map
+
+export { AsyncDataTree, CompressibleAsyncDataTree };

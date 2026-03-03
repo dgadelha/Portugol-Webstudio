@@ -2,14 +2,14 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-export class ViewModelDecoration {
+class ViewModelDecoration {
     constructor(range, options) {
         this._viewModelDecorationBrand = undefined;
         this.range = range;
         this.options = options;
     }
 }
-export function isModelDecorationVisible(model, decoration) {
+function isModelDecorationVisible(model, decoration) {
     if (decoration.options.hideInCommentTokens && isModelDecorationInComment(model, decoration)) {
         return false;
     }
@@ -18,10 +18,10 @@ export function isModelDecorationVisible(model, decoration) {
     }
     return true;
 }
-export function isModelDecorationInComment(model, decoration) {
+function isModelDecorationInComment(model, decoration) {
     return testTokensInRange(model, decoration.range, (tokenType) => tokenType === 1 /* StandardTokenType.Comment */);
 }
-export function isModelDecorationInString(model, decoration) {
+function isModelDecorationInString(model, decoration) {
     return testTokensInRange(model, decoration.range, (tokenType) => tokenType === 2 /* StandardTokenType.String */);
 }
 /**
@@ -51,4 +51,5 @@ function testTokensInRange(model, range, callback) {
     }
     return true;
 }
-//# sourceMappingURL=viewModelDecoration.js.map
+
+export { ViewModelDecoration, isModelDecorationInComment, isModelDecorationInString, isModelDecorationVisible };

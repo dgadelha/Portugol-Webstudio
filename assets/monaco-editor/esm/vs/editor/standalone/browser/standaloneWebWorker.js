@@ -1,13 +1,14 @@
+import { EditorWorkerClient } from '../../browser/services/editorWorkerService.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { EditorWorkerClient } from '../../browser/services/editorWorkerService.js';
 /**
  * Create a new web worker that has model syncing capabilities built in.
  * Specify an AMD module to load that will `create` an object that will be proxied.
  */
-export function createWebWorker(modelService, opts) {
+function createWebWorker(modelService, opts) {
     return new MonacoWebWorkerImpl(modelService, opts);
 }
 class MonacoWebWorkerImpl extends EditorWorkerClient {
@@ -50,4 +51,5 @@ class MonacoWebWorkerImpl extends EditorWorkerClient {
         return this.workerWithSyncedResources(resources).then(_ => this.getProxy());
     }
 }
-//# sourceMappingURL=standaloneWebWorker.js.map
+
+export { createWebWorker };

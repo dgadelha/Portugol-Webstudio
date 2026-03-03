@@ -1,15 +1,16 @@
+import { StopWatch } from '../../../../base/common/stopwatch.js';
+import { registerEditorAction, EditorAction } from '../../../browser/editorExtensions.js';
+import { localize2 } from '../../../../nls.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { StopWatch } from '../../../../base/common/stopwatch.js';
-import { EditorAction, registerEditorAction } from '../../../browser/editorExtensions.js';
-import * as nls from '../../../../nls.js';
 class ForceRetokenizeAction extends EditorAction {
     constructor() {
         super({
             id: 'editor.action.forceRetokenize',
-            label: nls.localize2(1517, "Developer: Force Retokenize"),
+            label: localize2(1532, "Developer: Force Retokenize"),
             precondition: undefined
         });
     }
@@ -26,4 +27,3 @@ class ForceRetokenizeAction extends EditorAction {
     }
 }
 registerEditorAction(ForceRetokenizeAction);
-//# sourceMappingURL=tokenization.js.map

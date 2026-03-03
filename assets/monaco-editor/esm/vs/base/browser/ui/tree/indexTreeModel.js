@@ -1,18 +1,19 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { TreeError } from './tree.js';
 import { splice, tail } from '../../../common/arrays.js';
 import { Delayer } from '../../../common/async.js';
 import { MicrotaskDelay } from '../../../common/symbols.js';
 import { LcsDiff } from '../../../common/diff/diff.js';
-import { Emitter, EventBufferer } from '../../../common/event.js';
+import { EventBufferer, Emitter } from '../../../common/event.js';
 import { Iterable } from '../../../common/iterator.js';
-export function isFilterResult(obj) {
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+function isFilterResult(obj) {
     return !!obj && obj.visibility !== undefined;
 }
-export function getVisibleState(visibility) {
+function getVisibleState(visibility) {
     switch (visibility) {
         case true: return 1 /* TreeVisibility.Visible */;
         case false: return 0 /* TreeVisibility.Hidden */;
@@ -20,9 +21,9 @@ export function getVisibleState(visibility) {
     }
 }
 function isCollapsibleStateUpdate(update) {
-    return typeof update.collapsible === 'boolean';
+    return 'collapsible' in update;
 }
-export class IndexTreeModel {
+class IndexTreeModel {
     constructor(user, rootElement, options = {}) {
         this.user = user;
         this.rootRef = [];
@@ -533,4 +534,5 @@ export class IndexTreeModel {
         return node.children[0].element;
     }
 }
-//# sourceMappingURL=indexTreeModel.js.map
+
+export { IndexTreeModel, getVisibleState, isFilterResult };

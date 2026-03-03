@@ -1,13 +1,14 @@
+import { assert } from '../../../../base/common/assert.js';
+import { Position } from '../position.js';
+import { Range } from '../range.js';
+import { TextLength } from './textLength.js';
+import { PositionOffsetTransformer } from './positionToOffsetImpl.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { assert } from '../../../../base/common/assert.js';
-import { Position } from '../position.js';
-import { PositionOffsetTransformer } from './positionToOffsetImpl.js';
-import { Range } from '../range.js';
-import { TextLength } from '../text/textLength.js';
-export class AbstractText {
+class AbstractText {
     constructor() {
         this._transformer = undefined;
     }
@@ -36,7 +37,7 @@ export class AbstractText {
         return this.getValueOfRange(new Range(lineNumber, 1, lineNumber, Number.MAX_SAFE_INTEGER));
     }
 }
-export class LineBasedText extends AbstractText {
+class LineBasedText extends AbstractText {
     constructor(_getLineContent, _lineCount) {
         assert(_lineCount >= 1);
         super();
@@ -62,12 +63,12 @@ export class LineBasedText extends AbstractText {
         return new TextLength(this._lineCount - 1, lastLine.length);
     }
 }
-export class ArrayText extends LineBasedText {
+class ArrayText extends LineBasedText {
     constructor(lines) {
         super(lineNumber => lines[lineNumber - 1], lines.length);
     }
 }
-export class StringText extends AbstractText {
+class StringText extends AbstractText {
     constructor(value) {
         super();
         this.value = value;
@@ -79,5 +80,10 @@ export class StringText extends AbstractText {
     get length() {
         return this._t.textLength;
     }
+    // Override the getTransformer method to return the cached transformer
+    getTransformer() {
+        return this._t;
+    }
 }
-//# sourceMappingURL=abstractText.js.map
+
+export { AbstractText, ArrayText, LineBasedText, StringText };

@@ -1,14 +1,15 @@
+import { addDisposableListener, addStandardDisposableListener, EventHelper } from '../../dom.js';
+import { Gesture, EventType } from '../../touch.js';
+import { equals } from '../../../common/arrays.js';
+import { Emitter } from '../../../common/event.js';
+import { Disposable } from '../../../common/lifecycle.js';
+import { isMacintosh } from '../../../common/platform.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import * as dom from '../../dom.js';
-import { EventType, Gesture } from '../../touch.js';
-import * as arrays from '../../../common/arrays.js';
-import { Emitter } from '../../../common/event.js';
-import { Disposable } from '../../../common/lifecycle.js';
-import { isMacintosh } from '../../../common/platform.js';
-export class SelectBoxNative extends Disposable {
+class SelectBoxNative extends Disposable {
     constructor(options, selected, styles, selectBoxOptions) {
         super();
         this.selected = 0;
@@ -30,21 +31,21 @@ export class SelectBoxNative extends Disposable {
     registerListeners() {
         this._register(Gesture.addTarget(this.selectElement));
         [EventType.Tap].forEach(eventType => {
-            this._register(dom.addDisposableListener(this.selectElement, eventType, (e) => {
+            this._register(addDisposableListener(this.selectElement, eventType, (e) => {
                 this.selectElement.focus();
             }));
         });
-        this._register(dom.addStandardDisposableListener(this.selectElement, 'click', (e) => {
-            dom.EventHelper.stop(e, true);
+        this._register(addStandardDisposableListener(this.selectElement, 'click', (e) => {
+            EventHelper.stop(e, true);
         }));
-        this._register(dom.addStandardDisposableListener(this.selectElement, 'change', (e) => {
+        this._register(addStandardDisposableListener(this.selectElement, 'change', (e) => {
             this.selectElement.title = e.target.value;
             this._onDidSelect.fire({
                 index: e.target.selectedIndex,
                 selected: e.target.value
             });
         }));
-        this._register(dom.addStandardDisposableListener(this.selectElement, 'keydown', (e) => {
+        this._register(addStandardDisposableListener(this.selectElement, 'keydown', (e) => {
             let showSelect = false;
             if (isMacintosh) {
                 if (e.keyCode === 18 /* KeyCode.DownArrow */ || e.keyCode === 16 /* KeyCode.UpArrow */ || e.keyCode === 10 /* KeyCode.Space */) {
@@ -66,7 +67,7 @@ export class SelectBoxNative extends Disposable {
         return this._onDidSelect.event;
     }
     setOptions(options, selected) {
-        if (!this.options || !arrays.equals(this.options, options)) {
+        if (!this.options || !equals(this.options, options)) {
             this.options = options;
             this.selectElement.options.length = 0;
             this.options.forEach((option, index) => {
@@ -137,4 +138,5 @@ export class SelectBoxNative extends Disposable {
         return option;
     }
 }
-//# sourceMappingURL=selectBoxNative.js.map
+
+export { SelectBoxNative };

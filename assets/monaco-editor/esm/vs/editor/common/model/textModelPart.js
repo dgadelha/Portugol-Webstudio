@@ -1,9 +1,10 @@
+import { Disposable } from '../../../base/common/lifecycle.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { Disposable } from '../../../base/common/lifecycle.js';
-export class TextModelPart extends Disposable {
+class TextModelPart extends Disposable {
     constructor() {
         super(...arguments);
         this._isDisposed = false;
@@ -18,4 +19,5 @@ export class TextModelPart extends Disposable {
         }
     }
 }
-//# sourceMappingURL=textModelPart.js.map
+
+export { TextModelPart };

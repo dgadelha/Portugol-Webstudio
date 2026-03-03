@@ -2,7 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-export class CursorContext {
+class CursorContext {
     constructor(model, viewModel, coordinatesConverter, cursorConfig) {
         this._cursorContextBrand = undefined;
         this.model = model;
@@ -11,4 +11,5 @@ export class CursorContext {
         this.cursorConfig = cursorConfig;
     }
 }
-//# sourceMappingURL=cursorContext.js.map
+
+export { CursorContext };

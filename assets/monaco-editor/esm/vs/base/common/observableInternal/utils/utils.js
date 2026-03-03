@@ -1,17 +1,20 @@
+import { autorun } from '../reactions/autorun.js';
+import '../../arrays.js';
+import '../../event.js';
+import { toDisposable, DisposableStore } from '../../lifecycle.js';
+import { derivedOpts } from '../observables/derived.js';
+import { observableFromEvent } from '../observables/observableFromEvent.js';
+import { _setRecomputeInitiallyAndOnChange } from '../observables/baseObservable.js';
+import '../debugLocation.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { autorun } from '../reactions/autorun.js';
-import { DisposableStore, toDisposable } from '../commonFacade/deps.js';
-import { derived, derivedOpts } from '../observables/derived.js';
-import { observableFromEvent } from '../observables/observableFromEvent.js';
-import { observableSignal } from '../observables/observableSignal.js';
-import { _setKeepObserved, _setRecomputeInitiallyAndOnChange } from '../observables/baseObservable.js';
 /**
  * Creates an observable that debounces the input observable.
  */
-export function debouncedObservable(observable, debounceMs) {
+function debouncedObservable(observable, debounceMs) {
     let hasValue = false;
     let lastValue;
     let timeout = undefined;
@@ -49,20 +52,9 @@ export function debouncedObservable(observable, debounceMs) {
     });
 }
 /**
- * This makes sure the observable is being observed and keeps its cache alive.
- */
-export function keepObserved(observable) {
-    const o = new KeepAliveObserver(false, undefined);
-    observable.addObserver(o);
-    return toDisposable(() => {
-        observable.removeObserver(o);
-    });
-}
-_setKeepObserved(keepObserved);
-/**
  * This converts the given observable into an autorun.
  */
-export function recomputeInitiallyAndOnChange(observable, handleValue) {
+function recomputeInitiallyAndOnChange(observable, handleValue) {
     const o = new KeepAliveObserver(true, handleValue);
     observable.addObserver(o);
     try {
@@ -76,7 +68,7 @@ export function recomputeInitiallyAndOnChange(observable, handleValue) {
     });
 }
 _setRecomputeInitiallyAndOnChange(recomputeInitiallyAndOnChange);
-export class KeepAliveObserver {
+class KeepAliveObserver {
     constructor(_forceRecompute, _handleValue) {
         this._forceRecompute = _forceRecompute;
         this._handleValue = _handleValue;
@@ -103,7 +95,7 @@ export class KeepAliveObserver {
         // NO OP
     }
 }
-export function derivedObservableWithCache(owner, computeFn) {
+function derivedObservableWithCache(owner, computeFn) {
     let lastValue = undefined;
     const observable = derivedOpts({ owner, debugReferenceFn: computeFn }, reader => {
         lastValue = computeFn(reader, lastValue);
@@ -111,29 +103,10 @@ export function derivedObservableWithCache(owner, computeFn) {
     });
     return observable;
 }
-export function derivedObservableWithWritableCache(owner, computeFn) {
-    let lastValue = undefined;
-    const onChange = observableSignal('derivedObservableWithWritableCache');
-    const observable = derived(owner, reader => {
-        onChange.read(reader);
-        lastValue = computeFn(reader, lastValue);
-        return lastValue;
-    });
-    return Object.assign(observable, {
-        clearCache: (tx) => {
-            lastValue = undefined;
-            onChange.trigger(tx);
-        },
-        setCache: (newValue, tx) => {
-            lastValue = newValue;
-            onChange.trigger(tx);
-        }
-    });
-}
 /**
  * When the items array changes, referential equal items are not mapped again.
  */
-export function mapObservableArrayCached(owner, items, map, keySelector) {
+function mapObservableArrayCached(owner, items, map, keySelector) {
     let m = new ArrayMap(map, keySelector);
     const self = derivedOpts({
         debugReferenceFn: map,
@@ -187,4 +160,5 @@ class ArrayMap {
         return this._items;
     }
 }
-//# sourceMappingURL=utils.js.map
+
+export { KeepAliveObserver, debouncedObservable, derivedObservableWithCache, mapObservableArrayCached, recomputeInitiallyAndOnChange };

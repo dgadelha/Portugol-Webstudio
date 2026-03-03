@@ -1,16 +1,20 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { findLast } from '../../../../base/common/arraysFind.js';
 import { CancellationTokenSource } from '../../../../base/common/cancellation.js';
-import { Disposable, DisposableStore, toDisposable } from '../../../../base/common/lifecycle.js';
-import { autorun, autorunHandleChanges, autorunOpts, autorunWithStore, observableValue, transaction } from '../../../../base/common/observable.js';
+import { DisposableStore, Disposable, toDisposable } from '../../../../base/common/lifecycle.js';
+import '../../../../base/common/observableInternal/index.js';
 import { ElementSizeObserver } from '../../config/elementSizeObserver.js';
 import { Position } from '../../../common/core/position.js';
 import { Range } from '../../../common/core/range.js';
 import { TextLength } from '../../../common/core/text/textLength.js';
-export function joinCombine(arr1, arr2, keySelector, combine) {
+import { autorun, autorunHandleChanges, autorunWithStore, autorunOpts } from '../../../../base/common/observableInternal/reactions/autorun.js';
+import { observableValue } from '../../../../base/common/observableInternal/observables/observableValue.js';
+import { transaction } from '../../../../base/common/observableInternal/transaction.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+function joinCombine(arr1, arr2, keySelector, combine) {
     if (arr1.length === 0) {
         return arr2;
     }
@@ -50,7 +54,7 @@ export function joinCombine(arr1, arr2, keySelector, combine) {
     return result;
 }
 // TODO make utility
-export function applyObservableDecorations(editor, decorations) {
+function applyObservableDecorations(editor, decorations) {
     const d = new DisposableStore();
     const decorationsCollection = editor.createDecorationsCollection();
     d.add(autorunOpts({ debugName: () => `Apply decorations from ${decorations.debugName}` }, reader => {
@@ -64,19 +68,19 @@ export function applyObservableDecorations(editor, decorations) {
     });
     return d;
 }
-export function appendRemoveOnDispose(parent, child) {
+function appendRemoveOnDispose(parent, child) {
     parent.appendChild(child);
     return toDisposable(() => {
         child.remove();
     });
 }
-export function prependRemoveOnDispose(parent, child) {
+function prependRemoveOnDispose(parent, child) {
     parent.prepend(child);
     return toDisposable(() => {
         child.remove();
     });
 }
-export class ObservableElementSizeObserver extends Disposable {
+class ObservableElementSizeObserver extends Disposable {
     get width() { return this._width; }
     get height() { return this._height; }
     get automaticLayout() { return this._automaticLayout; }
@@ -105,7 +109,7 @@ export class ObservableElementSizeObserver extends Disposable {
         }
     }
 }
-export function animatedObservable(targetWindow, base, store) {
+function animatedObservable(targetWindow, base, store) {
     let targetVal = base.get();
     let startVal = targetVal;
     let curVal = targetVal;
@@ -150,7 +154,7 @@ export function animatedObservable(targetWindow, base, store) {
 function easeOutExpo(t, b, c, d) {
     return t === d ? b + c : c * (-Math.pow(2, -10 * t / d) + 1) + b;
 }
-export class ViewZoneOverlayWidget extends Disposable {
+class ViewZoneOverlayWidget extends Disposable {
     constructor(editor, viewZone, htmlElement) {
         super();
         this._register(new ManagedOverlayWidget(editor, htmlElement));
@@ -160,7 +164,7 @@ export class ViewZoneOverlayWidget extends Disposable {
         }));
     }
 }
-export class PlaceholderViewZone {
+class PlaceholderViewZone {
     get afterLineNumber() { return this._afterLineNumber.get(); }
     constructor(_afterLineNumber, heightInPx) {
         this._afterLineNumber = _afterLineNumber;
@@ -180,7 +184,7 @@ export class PlaceholderViewZone {
         };
     }
 }
-export class ManagedOverlayWidget {
+class ManagedOverlayWidget {
     static { this._counter = 0; }
     constructor(_editor, _domElement) {
         this._editor = _editor;
@@ -197,22 +201,24 @@ export class ManagedOverlayWidget {
         this._editor.removeOverlayWidget(this._overlayWidget);
     }
 }
-export function applyStyle(domNode, style) {
+function applyStyle(domNode, style) {
     return autorun(reader => {
         /** @description applyStyle */
         for (let [key, val] of Object.entries(style)) {
             if (val && typeof val === 'object' && 'read' in val) {
+                // eslint-disable-next-line local/code-no-any-casts, @typescript-eslint/no-explicit-any
                 val = val.read(reader);
             }
             if (typeof val === 'number') {
                 val = `${val}px`;
             }
             key = key.replace(/[A-Z]/g, m => '-' + m.toLowerCase());
+            // eslint-disable-next-line local/code-no-any-casts, @typescript-eslint/no-explicit-any
             domNode.style[key] = val;
         }
     });
 }
-export function applyViewZones(editor, viewZones, setIsUpdating, zoneIds) {
+function applyViewZones(editor, viewZones, setIsUpdating, zoneIds) {
     const store = new DisposableStore();
     const lastViewZoneIds = [];
     store.add(autorunWithStore((reader, store) => {
@@ -292,12 +298,12 @@ export function applyViewZones(editor, viewZones, setIsUpdating, zoneIds) {
     });
     return store;
 }
-export class DisposableCancellationTokenSource extends CancellationTokenSource {
+class DisposableCancellationTokenSource extends CancellationTokenSource {
     dispose() {
         super.dispose(true);
     }
 }
-export function translatePosition(posInOriginal, mappings) {
+function translatePosition(posInOriginal, mappings) {
     const mapping = findLast(mappings, m => m.original.startLineNumber <= posInOriginal.lineNumber);
     if (!mapping) {
         // No changes before the position
@@ -332,7 +338,7 @@ function lengthBetweenPositions(position1, position2) {
         return new TextLength(position2.lineNumber - position1.lineNumber, position2.column - 1);
     }
 }
-export function filterWithPrevious(arr, filter) {
+function filterWithPrevious(arr, filter) {
     let prev;
     return arr.filter(cur => {
         const result = filter(cur, prev);
@@ -340,7 +346,7 @@ export function filterWithPrevious(arr, filter) {
         return result;
     });
 }
-export class RefCounted {
+class RefCounted {
     static create(value, debugOwner = undefined) {
         return new BaseRefCounted(value, value, debugOwner);
     }
@@ -415,4 +421,5 @@ class ClonedRefCounted extends RefCounted {
         this._base._decreaseRefCount(this._debugOwner);
     }
 }
-//# sourceMappingURL=utils.js.map
+
+export { DisposableCancellationTokenSource, ManagedOverlayWidget, ObservableElementSizeObserver, PlaceholderViewZone, RefCounted, ViewZoneOverlayWidget, animatedObservable, appendRemoveOnDispose, applyObservableDecorations, applyStyle, applyViewZones, filterWithPrevious, joinCombine, prependRemoveOnDispose, translatePosition };

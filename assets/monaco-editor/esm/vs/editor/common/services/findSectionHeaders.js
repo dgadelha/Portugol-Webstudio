@@ -1,9 +1,10 @@
+import { isMultilineRegexSource } from '../model/textModelSearch.js';
+import { regExpLeadsToEndlessLoop } from '../../../base/common/strings.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { isMultilineRegexSource } from '../model/textModelSearch.js';
-import { regExpLeadsToEndlessLoop } from '../../../base/common/strings.js';
 const trimDashesRegex = /^-+|-+$/g;
 const CHUNK_SIZE = 100;
 const MAX_SECTION_LINES = 5;
@@ -14,7 +15,7 @@ const MAX_SECTION_LINES = 5;
  * @param options options to search with
  * @returns an array of section headers
  */
-export function findSectionHeaders(model, options) {
+function findSectionHeaders(model, options) {
     let headers = [];
     if (options.findRegionSectionHeaders && options.foldingRules?.markers) {
         const regionHeaders = collectRegionHeaders(model, options);
@@ -48,7 +49,7 @@ function collectRegionHeaders(model, options) {
     }
     return regionHeaders;
 }
-export function collectMarkHeaders(model, options) {
+function collectMarkHeaders(model, options) {
     const markHeaders = [];
     const endLineNumber = model.getLineCount();
     // Validate regex to prevent infinite loops
@@ -123,4 +124,5 @@ function getHeaderText(text) {
     text = text.replace(trimDashesRegex, '');
     return { text, hasSeparatorLine };
 }
-//# sourceMappingURL=findSectionHeaders.js.map
+
+export { collectMarkHeaders, findSectionHeaders };

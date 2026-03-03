@@ -1,17 +1,18 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { onUnexpectedError } from '../../../../base/common/errors.js';
 import { Emitter } from '../../../../base/common/event.js';
 import { defaultGenerator } from '../../../../base/common/idGenerator.js';
 import { dispose } from '../../../../base/common/lifecycle.js';
 import { ResourceMap } from '../../../../base/common/map.js';
-import { basename, extUri } from '../../../../base/common/resources.js';
-import * as strings from '../../../../base/common/strings.js';
+import { extUri, basename } from '../../../../base/common/resources.js';
+import { commonPrefixLength } from '../../../../base/common/strings.js';
 import { Range } from '../../../common/core/range.js';
 import { localize } from '../../../../nls.js';
-export class OneReference {
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+class OneReference {
     constructor(isProviderFirst, parent, link, _rangeCallback) {
         this.isProviderFirst = isProviderFirst;
         this.parent = parent;
@@ -32,14 +33,14 @@ export class OneReference {
     get ariaMessage() {
         const preview = this.parent.getPreview(this)?.preview(this.range);
         if (!preview) {
-            return localize(1082, "in {0} on line {1} at column {2}", basename(this.uri), this.range.startLineNumber, this.range.startColumn);
+            return localize(1087, "in {0} on line {1} at column {2}", basename(this.uri), this.range.startLineNumber, this.range.startColumn);
         }
         else {
-            return localize(1083, "{0} in {1} on line {2} at column {3}", preview.value, basename(this.uri), this.range.startLineNumber, this.range.startColumn);
+            return localize(1088, "{0} in {1} on line {2} at column {3}", preview.value, basename(this.uri), this.range.startLineNumber, this.range.startColumn);
         }
     }
 }
-export class FilePreview {
+class FilePreview {
     constructor(_modelReference) {
         this._modelReference = _modelReference;
     }
@@ -64,7 +65,7 @@ export class FilePreview {
         };
     }
 }
-export class FileReferences {
+class FileReferences {
     constructor(parent, uri) {
         this.parent = parent;
         this.uri = uri;
@@ -81,10 +82,10 @@ export class FileReferences {
     get ariaMessage() {
         const len = this.children.length;
         if (len === 1) {
-            return localize(1084, "1 symbol in {0}, full path {1}", basename(this.uri), this.uri.fsPath);
+            return localize(1089, "1 symbol in {0}, full path {1}", basename(this.uri), this.uri.fsPath);
         }
         else {
-            return localize(1085, "{0} symbols in {1}, full path {2}", len, basename(this.uri), this.uri.fsPath);
+            return localize(1090, "{0} symbols in {1}, full path {2}", len, basename(this.uri), this.uri.fsPath);
         }
     }
     async resolve(textModelResolverService) {
@@ -106,7 +107,7 @@ export class FileReferences {
         return this;
     }
 }
-export class ReferencesModel {
+class ReferencesModel {
     constructor(links, title) {
         this.groups = [];
         this.references = [];
@@ -148,16 +149,16 @@ export class ReferencesModel {
     }
     get ariaMessage() {
         if (this.isEmpty) {
-            return localize(1086, "No results found");
+            return localize(1091, "No results found");
         }
         else if (this.references.length === 1) {
-            return localize(1087, "Found 1 symbol in {0}", this.references[0].uri.fsPath);
+            return localize(1092, "Found 1 symbol in {0}", this.references[0].uri.fsPath);
         }
         else if (this.groups.length === 1) {
-            return localize(1088, "Found {0} symbols in {1}", this.references.length, this.groups[0].uri.fsPath);
+            return localize(1093, "Found {0} symbols in {1}", this.references.length, this.groups[0].uri.fsPath);
         }
         else {
-            return localize(1089, "Found {0} symbols in {1} files", this.references.length, this.groups.length);
+            return localize(1094, "Found {0} symbols in {1} files", this.references.length, this.groups.length);
         }
     }
     nextOrPreviousReference(reference, next) {
@@ -189,7 +190,7 @@ export class ReferencesModel {
         const nearest = this.references.map((ref, idx) => {
             return {
                 idx,
-                prefixLen: strings.commonPrefixLength(ref.uri.toString(), resource.toString()),
+                prefixLen: commonPrefixLength(ref.uri.toString(), resource.toString()),
                 offsetDist: Math.abs(ref.range.startLineNumber - position.lineNumber) * 100 + Math.abs(ref.range.startColumn - position.column)
             };
         }).sort((a, b) => {
@@ -236,4 +237,5 @@ export class ReferencesModel {
         return extUri.compare(a.uri, b.uri) || Range.compareRangesUsingStarts(a.range, b.range);
     }
 }
-//# sourceMappingURL=referencesModel.js.map
+
+export { FilePreview, FileReferences, OneReference, ReferencesModel };

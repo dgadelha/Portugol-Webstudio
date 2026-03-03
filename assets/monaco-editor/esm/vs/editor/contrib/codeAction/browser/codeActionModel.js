@@ -1,7 +1,3 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { createCancelablePromise, TimeoutTimer } from '../../../../base/common/async.js';
 import { isCancellationError } from '../../../../base/common/errors.js';
 import { Emitter } from '../../../../base/common/event.js';
@@ -13,10 +9,15 @@ import { Progress } from '../../../../platform/progress/common/progress.js';
 import { ShowLightbulbIconMode } from '../../../common/config/editorOptions.js';
 import { Position } from '../../../common/core/position.js';
 import { Selection } from '../../../common/core/selection.js';
-import { CodeActionKind, CodeActionTriggerSource } from '../common/types.js';
+import { CodeActionTriggerSource, CodeActionKind } from '../common/types.js';
 import { getCodeActions } from './codeAction.js';
-export const SUPPORTED_CODE_ACTIONS = new RawContextKey('supportedCodeAction', '');
-export const APPLY_FIX_ALL_COMMAND_ID = '_typescript.applyFixAllCodeAction';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+const SUPPORTED_CODE_ACTIONS = new RawContextKey('supportedCodeAction', '');
+const APPLY_FIX_ALL_COMMAND_ID = '_typescript.applyFixAllCodeAction';
 class CodeActionOracle extends Disposable {
     constructor(_editor, _markerService, _signalChange, _delay = 250) {
         super();
@@ -92,7 +93,7 @@ class CodeActionOracle extends Disposable {
         return selection;
     }
 }
-export var CodeActionsState;
+var CodeActionsState;
 (function (CodeActionsState) {
     CodeActionsState.Empty = { type: 0 /* Type.Empty */ };
     class Triggered {
@@ -123,7 +124,7 @@ const emptyCodeActionSet = Object.freeze({
     hasAIFix: false,
     allAIFixes: false,
 });
-export class CodeActionModel extends Disposable {
+class CodeActionModel extends Disposable {
     constructor(_editor, _registry, _markerService, contextKeyService, _progressService, _configurationService) {
         super();
         this._editor = _editor;
@@ -329,4 +330,5 @@ export class CodeActionModel extends Disposable {
         }
     }
 }
-//# sourceMappingURL=codeActionModel.js.map
+
+export { APPLY_FIX_ALL_COMMAND_ID, CodeActionModel, CodeActionsState, SUPPORTED_CODE_ACTIONS };

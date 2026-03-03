@@ -1,26 +1,28 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
 import { AsyncIterableProducer } from '../../../../../base/common/async.js';
 import { Range } from '../../../../common/core/range.js';
 import { ColorDetector } from '../colorDetector.js';
 import { ColorPickerWidget } from '../colorPickerWidget.js';
 import { RenderedHoverParts } from '../../../hover/browser/hoverTypes.js';
 import { IThemeService } from '../../../../../platform/theme/common/themeService.js';
+import { localize } from '../../../../../nls.js';
 import { createColorHover, updateColorPresentations, updateEditorModel } from '../colorPickerParticipantUtils.js';
 import { Dimension } from '../../../../../base/browser/dom.js';
 import { DisposableStore } from '../../../../../base/common/lifecycle.js';
-export class ColorHover {
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+class ColorHover {
     constructor(owner, range, model, provider) {
         this.owner = owner;
         this.range = range;
@@ -125,6 +127,9 @@ let HoverColorPickerParticipant = class HoverColorPickerParticipant {
         };
         return new RenderedHoverParts([renderedHoverPart]);
     }
+    getAccessibleContent(hoverPart) {
+        return localize(887, 'There is a color picker here.');
+    }
     handleResize() {
         this._colorPicker?.layout();
     }
@@ -142,5 +147,5 @@ let HoverColorPickerParticipant = class HoverColorPickerParticipant {
 HoverColorPickerParticipant = __decorate([
     __param(1, IThemeService)
 ], HoverColorPickerParticipant);
-export { HoverColorPickerParticipant };
-//# sourceMappingURL=hoverColorPickerParticipant.js.map
+
+export { ColorHover, HoverColorPickerParticipant };

@@ -1,11 +1,12 @@
+import { ArrayQueue } from '../../../../../base/common/arrays.js';
+import { TextEditInfo } from './beforeEditPositionMapper.js';
+import { sumLengths, lengthAdd, lengthDiffNonNegative, lengthIsZero, lengthEquals, lengthZero, lengthToObj } from './length.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { ArrayQueue } from '../../../../../base/common/arrays.js';
-import { TextEditInfo } from './beforeEditPositionMapper.js';
-import { lengthAdd, lengthDiffNonNegative, lengthEquals, lengthIsZero, lengthToObj, lengthZero, sumLengths } from './length.js';
-export function combineTextEditInfos(textEditInfoFirst, textEditInfoSecond) {
+function combineTextEditInfos(textEditInfoFirst, textEditInfoSecond) {
     if (textEditInfoFirst.length === 0) {
         return textEditInfoSecond;
     }
@@ -119,4 +120,5 @@ function toLengthMapping(textEditInfos) {
     }
     return result;
 }
-//# sourceMappingURL=combineTextEditInfos.js.map
+
+export { combineTextEditInfos };

@@ -1,17 +1,19 @@
+import { DisposableStore, toDisposable } from '../common/lifecycle.js';
+import '../common/observableInternal/index.js';
+import { isFirefox } from './browser.js';
+import { getWindows, sharedMutationObserver } from './dom.js';
+import { mainWindow } from './window.js';
+import { autorun } from '../common/observableInternal/reactions/autorun.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { DisposableStore, toDisposable } from '../common/lifecycle.js';
-import { autorun } from '../common/observable.js';
-import { isFirefox } from './browser.js';
-import { getWindows, sharedMutationObserver } from './dom.js';
-import { mainWindow } from './window.js';
 const globalStylesheets = new Map();
 /**
  * A version of createStyleSheet which has a unified API to initialize/set the style content.
  */
-export function createStyleSheet2() {
+function createStyleSheet2() {
     return new WrappedStyleElement();
 }
 class WrappedStyleElement {
@@ -38,7 +40,7 @@ class WrappedStyleElement {
         }
     }
 }
-export function createStyleSheet(container = mainWindow.document.head, beforeAppend, disposableStore) {
+function createStyleSheet(container = mainWindow.document.head, beforeAppend, disposableStore) {
     const style = document.createElement('style');
     style.type = 'text/css';
     style.media = 'screen';
@@ -98,7 +100,7 @@ function getDynamicStyleSheetRules(style) {
     }
     return [];
 }
-export function createCSSRule(selector, cssText, style = getSharedStyleSheet()) {
+function createCSSRule(selector, cssText, style = getSharedStyleSheet()) {
     if (!style || !cssText) {
         return;
     }
@@ -108,7 +110,7 @@ export function createCSSRule(selector, cssText, style = getSharedStyleSheet()) 
         createCSSRule(selector, cssText, clonedGlobalStylesheet);
     }
 }
-export function removeCSSRulesContainingSelector(ruleName, style = getSharedStyleSheet()) {
+function removeCSSRulesContainingSelector(ruleName, style = getSharedStyleSheet()) {
     if (!style) {
         return;
     }
@@ -131,7 +133,7 @@ export function removeCSSRulesContainingSelector(ruleName, style = getSharedStyl
 function isCSSStyleRule(rule) {
     return typeof rule.selectorText === 'string';
 }
-export function createStyleSheetFromObservable(css) {
+function createStyleSheetFromObservable(css) {
     const store = new DisposableStore();
     const w = store.add(createStyleSheet2());
     store.add(autorun(reader => {
@@ -139,4 +141,5 @@ export function createStyleSheetFromObservable(css) {
     }));
     return store;
 }
-//# sourceMappingURL=domStylesheets.js.map
+
+export { createCSSRule, createStyleSheet, createStyleSheet2, createStyleSheetFromObservable, removeCSSRulesContainingSelector };

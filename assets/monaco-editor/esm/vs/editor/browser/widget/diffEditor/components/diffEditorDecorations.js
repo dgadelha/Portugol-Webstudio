@@ -1,14 +1,16 @@
+import { Disposable } from '../../../../../base/common/lifecycle.js';
+import '../../../../../base/common/observableInternal/index.js';
+import { allowsTrueInlineDiffRendering } from './diffEditorViewZones/diffEditorViewZones.js';
+import { MovedBlocksLinesFeature } from '../features/movedBlocksLinesFeature.js';
+import { diffLineDeleteDecorationBackgroundWithIndicator, diffLineDeleteDecorationBackground, diffLineAddDecorationBackgroundWithIndicator, diffLineAddDecorationBackground, diffWholeLineDeleteDecoration, diffWholeLineAddDecoration, diffDeleteDecorationEmpty, diffDeleteDecoration, diffAddDecorationEmpty, diffAddDecoration } from '../registrations.contribution.js';
+import { applyObservableDecorations } from '../utils.js';
+import { derived } from '../../../../../base/common/observableInternal/observables/derived.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { Disposable } from '../../../../../base/common/lifecycle.js';
-import { derived } from '../../../../../base/common/observable.js';
-import { allowsTrueInlineDiffRendering } from './diffEditorViewZones/diffEditorViewZones.js';
-import { MovedBlocksLinesFeature } from '../features/movedBlocksLinesFeature.js';
-import { diffAddDecoration, diffAddDecorationEmpty, diffDeleteDecoration, diffDeleteDecorationEmpty, diffLineAddDecorationBackground, diffLineAddDecorationBackgroundWithIndicator, diffLineDeleteDecorationBackground, diffLineDeleteDecorationBackgroundWithIndicator, diffWholeLineAddDecoration, diffWholeLineDeleteDecoration } from '../registrations.contribution.js';
-import { applyObservableDecorations } from '../utils.js';
-export class DiffEditorDecorations extends Disposable {
+class DiffEditorDecorations extends Disposable {
     constructor(_editors, _diffModel, _options, widget) {
         super();
         this._editors = _editors;
@@ -109,4 +111,5 @@ export class DiffEditorDecorations extends Disposable {
         this._register(applyObservableDecorations(this._editors.modified, this._decorations.map(d => d?.modifiedDecorations || [])));
     }
 }
-//# sourceMappingURL=diffEditorDecorations.js.map
+
+export { DiffEditorDecorations };

@@ -1,13 +1,4 @@
-/*!-----------------------------------------------------------------------------
- * Copyright (c) Microsoft Corporation. All rights reserved.
- * Version: 0.54.0(7c2310116c57517348bbd868a21139f32454be22)
- * Released under the MIT license
- * https://github.com/microsoft/monaco-editor/blob/main/LICENSE.txt
- *-----------------------------------------------------------------------------*/
-
-
-// src/basic-languages/scss/scss.ts
-var conf = {
+const conf = {
   wordPattern: /(#?-?\d*\.\d\w*%?)|([@$#!.:]?[\w-?]+%?)|[@#!.]/g,
   comments: {
     blockComment: ["/*", "*/"],
@@ -39,7 +30,7 @@ var conf = {
     }
   }
 };
-var language = {
+const language = {
   defaultToken: "",
   tokenPostfix: ".scss",
   ws: "[ 	\n\r\f]*",
@@ -264,7 +255,5 @@ var language = {
     ]
   }
 };
-export {
-  conf,
-  language
-};
+
+export { conf, language };

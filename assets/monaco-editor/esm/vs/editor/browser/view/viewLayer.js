@@ -1,12 +1,13 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { createFastDomNode } from '../../../base/browser/fastDomNode.js';
 import { createTrustedTypesPolicy } from '../../../base/browser/trustedTypes.js';
 import { BugIndicatingError } from '../../../base/common/errors.js';
 import { StringBuilder } from '../../common/core/stringBuilder.js';
-export class RenderedLinesCollection {
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+class RenderedLinesCollection {
     constructor(_lineFactory) {
         this._lineFactory = _lineFactory;
         this._set(1, []);
@@ -176,7 +177,7 @@ export class RenderedLinesCollection {
         return notifiedSomeone;
     }
 }
-export class VisibleLinesCollection {
+class VisibleLinesCollection {
     constructor(_viewContext, _lineFactory) {
         this._viewContext = _viewContext;
         this._lineFactory = _lineFactory;
@@ -408,7 +409,7 @@ class ViewLayerRenderer {
             if (wasInvalid[i]) {
                 const source = hugeDomNode.firstChild;
                 const lineDomNode = line.getDomNode();
-                lineDomNode.parentNode.replaceChild(source, lineDomNode);
+                lineDomNode.replaceWith(source);
                 line.setDomNode(source);
             }
         }
@@ -473,4 +474,5 @@ class ViewLayerRenderer {
         return this._viewContext.viewLayout.getLineHeightForLineNumber(lineNumber);
     }
 }
-//# sourceMappingURL=viewLayer.js.map
+
+export { RenderedLinesCollection, VisibleLinesCollection };

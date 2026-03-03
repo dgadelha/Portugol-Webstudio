@@ -1,9 +1,10 @@
+import { singleLetterHash } from '../../../base/common/strings.js';
+import { LineHeightsManager } from './lineHeights.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import * as strings from '../../../base/common/strings.js';
-import { LineHeightsManager } from './lineHeights.js';
 class PendingChanges {
     constructor() {
         this._hasPending = false;
@@ -37,7 +38,7 @@ class PendingChanges {
         linesLayout._commitPendingChanges(inserts, changes, removes);
     }
 }
-export class EditorWhitespace {
+class EditorWhitespace {
     constructor(id, afterLineNumber, ordinal, height, minWidth) {
         this.id = id;
         this.afterLineNumber = afterLineNumber;
@@ -53,10 +54,10 @@ export class EditorWhitespace {
  * These objects are basically either text (lines) or spaces between those lines (whitespaces).
  * This provides commodity operations for working with lines that contain whitespace that pushes lines lower (vertically).
  */
-export class LinesLayout {
+class LinesLayout {
     static { this.INSTANCE_COUNT = 0; }
     constructor(lineCount, defaultLineHeight, paddingTop, paddingBottom, customLineHeightData) {
-        this._instanceId = strings.singleLetterHash(++LinesLayout.INSTANCE_COUNT);
+        this._instanceId = singleLetterHash(++LinesLayout.INSTANCE_COUNT);
         this._pendingChanges = new PendingChanges();
         this._lastWhitespaceId = 0;
         this._arr = [];
@@ -760,4 +761,5 @@ export class LinesLayout {
         return this._arr[index].height;
     }
 }
-//# sourceMappingURL=linesLayout.js.map
+
+export { EditorWhitespace, LinesLayout };

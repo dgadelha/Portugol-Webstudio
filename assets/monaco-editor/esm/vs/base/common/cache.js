@@ -1,11 +1,11 @@
-export function identity(t) {
+function identity(t) {
     return t;
 }
 /**
  * Uses a LRU cache to make a given parametrized function cached.
  * Caches just the last key/value.
 */
-export class LRUCachedFunction {
+class LRUCachedFunction {
     constructor(arg1, arg2) {
         this.lastCache = undefined;
         this.lastArgKey = undefined;
@@ -30,7 +30,7 @@ export class LRUCachedFunction {
 /**
  * Uses an unbounded cache to memoize the results of the given function.
 */
-export class CachedFunction {
+class CachedFunction {
     get cachedValues() {
         return this._map;
     }
@@ -57,4 +57,5 @@ export class CachedFunction {
         return value;
     }
 }
-//# sourceMappingURL=cache.js.map
+
+export { CachedFunction, LRUCachedFunction, identity };

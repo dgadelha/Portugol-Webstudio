@@ -1,13 +1,4 @@
-/*!-----------------------------------------------------------------------------
- * Copyright (c) Microsoft Corporation. All rights reserved.
- * Version: 0.54.0(7c2310116c57517348bbd868a21139f32454be22)
- * Released under the MIT license
- * https://github.com/microsoft/monaco-editor/blob/main/LICENSE.txt
- *-----------------------------------------------------------------------------*/
-
-
-// src/basic-languages/qsharp/qsharp.ts
-var conf = {
+const conf = {
   comments: {
     lineComment: "//"
   },
@@ -29,7 +20,7 @@ var conf = {
     { open: '"', close: '"' }
   ]
 };
-var language = {
+const language = {
   // Set defaultToken to invalid to see what you do not tokenize yet
   keywords: [
     "namespace",
@@ -305,7 +296,5 @@ var language = {
     ]
   }
 };
-export {
-  conf,
-  language
-};
+
+export { conf, language };

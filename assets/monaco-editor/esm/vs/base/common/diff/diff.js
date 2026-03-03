@@ -1,10 +1,11 @@
+import { DiffChange } from './diffChange.js';
+import { stringHash } from '../hash.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { DiffChange } from './diffChange.js';
-import { stringHash } from '../hash.js';
-export class StringDiffSequence {
+class StringDiffSequence {
     constructor(source) {
         this.source = source;
     }
@@ -17,7 +18,7 @@ export class StringDiffSequence {
         return characters;
     }
 }
-export function stringDiff(original, modified, pretty) {
+function stringDiff(original, modified, pretty) {
     return new LcsDiff(new StringDiffSequence(original), new StringDiffSequence(modified)).ComputeDiff(pretty).changes;
 }
 //
@@ -143,7 +144,7 @@ class DiffChangeHelper {
  * An implementation of the difference algorithm described in
  * "An O(ND) Difference Algorithm and its variations" by Eugene W. Myers
  */
-export class LcsDiff {
+class LcsDiff {
     /**
      * Constructs the DiffFinder
      */
@@ -897,50 +898,5 @@ export class LcsDiff {
         }
     }
 }
-/**
- * Precomputed equality array for character codes.
- */
-const precomputedEqualityArray = new Uint32Array(0x10000);
-/**
- * Computes the Levenshtein distance for strings of length <= 32.
- * @param firstString - The first string.
- * @param secondString - The second string.
- * @returns The Levenshtein distance.
- */
-const computeLevenshteinDistanceForShortStrings = (firstString, secondString) => {
-    const firstStringLength = firstString.length;
-    const secondStringLength = secondString.length;
-    const lastBitMask = 1 << (firstStringLength - 1);
-    let positiveVector = -1;
-    let negativeVector = 0;
-    let distance = firstStringLength;
-    let index = firstStringLength;
-    // Initialize precomputedEqualityArray for firstString
-    while (index--) {
-        precomputedEqualityArray[firstString.charCodeAt(index)] |= 1 << index;
-    }
-    // Process each character of secondString
-    for (index = 0; index < secondStringLength; index++) {
-        let equalityMask = precomputedEqualityArray[secondString.charCodeAt(index)];
-        const combinedVector = equalityMask | negativeVector;
-        equalityMask |= ((equalityMask & positiveVector) + positiveVector) ^ positiveVector;
-        negativeVector |= ~(equalityMask | positiveVector);
-        positiveVector &= equalityMask;
-        if (negativeVector & lastBitMask) {
-            distance++;
-        }
-        if (positiveVector & lastBitMask) {
-            distance--;
-        }
-        negativeVector = (negativeVector << 1) | 1;
-        positiveVector = (positiveVector << 1) | ~(combinedVector | negativeVector);
-        negativeVector &= combinedVector;
-    }
-    // Reset precomputedEqualityArray
-    index = firstStringLength;
-    while (index--) {
-        precomputedEqualityArray[firstString.charCodeAt(index)] = 0;
-    }
-    return distance;
-};
-//# sourceMappingURL=diff.js.map
+
+export { LcsDiff, StringDiffSequence, stringDiff };

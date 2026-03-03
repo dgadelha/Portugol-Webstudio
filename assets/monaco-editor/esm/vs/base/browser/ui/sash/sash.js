@@ -1,29 +1,30 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-import { $, addDisposableListener, append, EventHelper, getWindow, isHTMLElement } from '../../dom.js';
+import { getWindow, append, $, addDisposableListener, EventHelper, isHTMLElement } from '../../dom.js';
 import { createStyleSheet } from '../../domStylesheets.js';
 import { DomEmitter } from '../../event.js';
 import { EventType, Gesture } from '../../touch.js';
 import { Delayer } from '../../../common/async.js';
 import { memoize } from '../../../common/decorators.js';
 import { Emitter } from '../../../common/event.js';
-import { Disposable, DisposableStore, toDisposable } from '../../../common/lifecycle.js';
+import { DisposableStore, Disposable, toDisposable } from '../../../common/lifecycle.js';
 import { isMacintosh } from '../../../common/platform.js';
 import './sash.css';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
 /**
  * Allow the sashes to be visible at runtime.
  * @remark Use for development purposes only.
  */
 const DEBUG = false;
-export var OrthogonalEdge;
+var OrthogonalEdge;
 (function (OrthogonalEdge) {
     OrthogonalEdge["North"] = "north";
     OrthogonalEdge["South"] = "south";
@@ -110,7 +111,7 @@ const PointerEventsDisabledCssClass = 'pointer-events-disabled';
  * - Configurable hover size
  * - Linked sash support, for 2x2 corner sashes
  */
-export class Sash extends Disposable {
+class Sash extends Disposable {
     get state() { return this._state; }
     get orthogonalStartSash() { return this._orthogonalStartSash; }
     get orthogonalEndSash() { return this._orthogonalEndSash; }
@@ -283,21 +284,26 @@ export class Sash extends Disposable {
     onPointerStart(event, pointerEventFactory) {
         EventHelper.stop(event);
         let isMultisashResize = false;
+        // eslint-disable-next-line local/code-no-any-casts
         if (!event.__orthogonalSashEvent) {
             const orthogonalSash = this.getOrthogonalSash(event);
             if (orthogonalSash) {
                 isMultisashResize = true;
+                // eslint-disable-next-line local/code-no-any-casts
                 event.__orthogonalSashEvent = true;
                 orthogonalSash.onPointerStart(event, new OrthogonalPointerEventFactory(pointerEventFactory));
             }
         }
+        // eslint-disable-next-line local/code-no-any-casts
         if (this.linkedSash && !event.__linkedSashEvent) {
+            // eslint-disable-next-line local/code-no-any-casts
             event.__linkedSashEvent = true;
             this.linkedSash.onPointerStart(event, new OrthogonalPointerEventFactory(pointerEventFactory));
         }
         if (!this.state) {
             return;
         }
+        // eslint-disable-next-line no-restricted-syntax
         const iframes = this.el.ownerDocument.getElementsByTagName('iframe');
         for (const iframe of iframes) {
             iframe.classList.add(PointerEventsDisabledCssClass); // disable mouse events on iframes as long as we drag the sash
@@ -441,4 +447,5 @@ export class Sash extends Disposable {
         this.el.remove();
     }
 }
-//# sourceMappingURL=sash.js.map
+
+export { OrthogonalEdge, Sash };

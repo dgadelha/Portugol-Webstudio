@@ -1,13 +1,24 @@
+import { Range } from '../../../common/core/range.js';
+import { OverviewRulerLane } from '../../../common/model.js';
+import { ModelDecorationOptions } from '../../../common/model/textModel.js';
+import '../../../../platform/theme/common/colorUtils.js';
+import '../../../../platform/theme/common/colors/baseColors.js';
+import '../../../../platform/theme/common/colors/chartsColors.js';
+import { overviewRulerFindMatchForeground } from '../../../../platform/theme/common/colors/editorColors.js';
+import '../../../../platform/theme/common/colors/inputColors.js';
+import '../../../../platform/theme/common/colors/listColors.js';
+import '../../../../platform/theme/common/colors/menuColors.js';
+import { minimapFindMatch } from '../../../../platform/theme/common/colors/minimapColors.js';
+import '../../../../platform/theme/common/colors/miscColors.js';
+import '../../../../platform/theme/common/colors/quickpickColors.js';
+import '../../../../platform/theme/common/colors/searchColors.js';
+import { themeColorFromId } from '../../../../platform/theme/common/themeService.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { Range } from '../../../common/core/range.js';
-import { OverviewRulerLane } from '../../../common/model.js';
-import { ModelDecorationOptions } from '../../../common/model/textModel.js';
-import { minimapFindMatch, overviewRulerFindMatchForeground } from '../../../../platform/theme/common/colorRegistry.js';
-import { themeColorFromId } from '../../../../platform/theme/common/themeService.js';
-export class FindDecorations {
+class FindDecorations {
     constructor(editor) {
         this._editor = editor;
         this._decorations = [];
@@ -296,4 +307,5 @@ export class FindDecorations {
         isWholeLine: true
     }); }
 }
-//# sourceMappingURL=findDecorations.js.map
+
+export { FindDecorations };

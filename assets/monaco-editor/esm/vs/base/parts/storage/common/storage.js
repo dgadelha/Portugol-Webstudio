@@ -1,13 +1,14 @@
+import { ThrottledDelayer } from '../../../common/async.js';
+import { PauseableEmitter, Event } from '../../../common/event.js';
+import { Disposable } from '../../../common/lifecycle.js';
+import { stringify } from '../../../common/marshalling.js';
+import { isUndefinedOrNull, isObject } from '../../../common/types.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { ThrottledDelayer } from '../../../common/async.js';
-import { Event, PauseableEmitter } from '../../../common/event.js';
-import { Disposable } from '../../../common/lifecycle.js';
-import { stringify } from '../../../common/marshalling.js';
-import { isObject, isUndefinedOrNull } from '../../../common/types.js';
-export var StorageHint;
+var StorageHint;
 (function (StorageHint) {
     // A hint to the storage that the storage
     // does not exist on disk yet. This allows
@@ -18,13 +19,13 @@ export var StorageHint;
     // is backed by an in-memory storage.
     StorageHint[StorageHint["STORAGE_IN_MEMORY"] = 1] = "STORAGE_IN_MEMORY";
 })(StorageHint || (StorageHint = {}));
-export var StorageState;
+var StorageState;
 (function (StorageState) {
     StorageState[StorageState["None"] = 0] = "None";
     StorageState[StorageState["Initialized"] = 1] = "Initialized";
     StorageState[StorageState["Closed"] = 2] = "Closed";
 })(StorageState || (StorageState = {}));
-export class Storage extends Disposable {
+class Storage extends Disposable {
     static { this.DEFAULT_FLUSH_DELAY = 100; }
     constructor(database, options = Object.create(null)) {
         super();
@@ -185,7 +186,7 @@ export class Storage extends Disposable {
         return new Promise(resolve => this.whenFlushedCallbacks.push(resolve));
     }
 }
-export class InMemoryStorageDatabase {
+class InMemoryStorageDatabase {
     constructor() {
         this.onDidChangeItemsExternal = Event.None;
         this.items = new Map();
@@ -195,4 +196,5 @@ export class InMemoryStorageDatabase {
         request.delete?.forEach(key => this.items.delete(key));
     }
 }
-//# sourceMappingURL=storage.js.map
+
+export { InMemoryStorageDatabase, Storage, StorageHint, StorageState };

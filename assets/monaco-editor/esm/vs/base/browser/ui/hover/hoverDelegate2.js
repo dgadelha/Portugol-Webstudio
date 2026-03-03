@@ -1,8 +1,9 @@
+import { Disposable } from '../../../common/lifecycle.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { Disposable } from '../../../common/lifecycle.js';
 let baseHoverDelegate = {
     showInstantHover: () => undefined,
     showDelayedHover: () => undefined,
@@ -21,7 +22,7 @@ let baseHoverDelegate = {
 /**
  * Sets the hover delegate for use **only in the `base/` layer**.
  */
-export function setBaseLayerHoverDelegate(hoverDelegate) {
+function setBaseLayerHoverDelegate(hoverDelegate) {
     baseHoverDelegate = hoverDelegate;
 }
 /**
@@ -31,7 +32,8 @@ export function setBaseLayerHoverDelegate(hoverDelegate) {
  * the standard dependency injection mechanism by injecting a global hover service at start up. The
  * only reason this should be used is if `IHoverService` is not available.
  */
-export function getBaseLayerHoverDelegate() {
+function getBaseLayerHoverDelegate() {
     return baseHoverDelegate;
 }
-//# sourceMappingURL=hoverDelegate2.js.map
+
+export { getBaseLayerHoverDelegate, setBaseLayerHoverDelegate };

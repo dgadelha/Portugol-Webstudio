@@ -1,17 +1,4 @@
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-import * as dom from '../../../base/browser/dom.js';
+import { setVisibility, getWindow } from '../../../base/browser/dom.js';
 import { KeybindingLabel } from '../../../base/browser/ui/keybindingLabel/keybindingLabel.js';
 import { List } from '../../../base/browser/ui/list/listWidget.js';
 import { CancellationTokenSource } from '../../../base/common/cancellation.js';
@@ -24,10 +11,30 @@ import { localize } from '../../../nls.js';
 import { IContextViewService } from '../../contextview/browser/contextView.js';
 import { IKeybindingService } from '../../keybinding/common/keybinding.js';
 import { defaultListStyles } from '../../theme/browser/defaultStyles.js';
-import { asCssVariable } from '../../theme/common/colorRegistry.js';
+import { asCssVariable } from '../../theme/common/colorUtils.js';
+import '../../theme/common/colors/baseColors.js';
+import '../../theme/common/colors/chartsColors.js';
+import '../../theme/common/colors/editorColors.js';
+import '../../theme/common/colors/inputColors.js';
+import '../../theme/common/colors/listColors.js';
+import '../../theme/common/colors/menuColors.js';
+import '../../theme/common/colors/minimapColors.js';
+import '../../theme/common/colors/miscColors.js';
+import '../../theme/common/colors/quickpickColors.js';
+import '../../theme/common/colors/searchColors.js';
 import { ILayoutService } from '../../layout/browser/layoutService.js';
-export const acceptSelectedActionCommand = 'acceptSelectedCodeAction';
-export const previewSelectedActionCommand = 'previewSelectedCodeAction';
+
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+const acceptSelectedActionCommand = 'acceptSelectedCodeAction';
+const previewSelectedActionCommand = 'previewSelectedCodeAction';
 class HeaderRenderer {
     get templateId() { return "header" /* ActionListItemKind.Header */; }
     renderTemplate(container) {
@@ -92,7 +99,7 @@ let ActionItemRenderer = class ActionItemRenderer {
         if (!element.item || !element.label) {
             return;
         }
-        dom.setVisibility(!element.hideIcon, data.icon);
+        setVisibility(!element.hideIcon, data.icon);
         data.text.textContent = stripNewlines(element.label);
         // if there is a keybinding, prioritize over description for now
         if (element.keybinding) {
@@ -119,10 +126,10 @@ let ActionItemRenderer = class ActionItemRenderer {
         }
         else if (actionTitle && previewTitle) {
             if (this._supportsPreview && element.canPreview) {
-                data.container.title = localize(1638, "{0} to Apply, {1} to Preview", actionTitle, previewTitle);
+                data.container.title = localize(1653, "{0} to Apply, {1} to Preview", actionTitle, previewTitle);
             }
             else {
-                data.container.title = localize(1639, "{0} to Apply", actionTitle);
+                data.container.title = localize(1654, "{0} to Apply", actionTitle);
             }
         }
         else {
@@ -191,13 +198,13 @@ let ActionList = class ActionList extends Disposable {
                             label = label + ', ' + stripNewlines(element.description);
                         }
                         if (element.disabled) {
-                            label = localize(1640, "{0}, Disabled Reason: {1}", label, element.disabled);
+                            label = localize(1655, "{0}, Disabled Reason: {1}", label, element.disabled);
                         }
                         return label;
                     }
                     return null;
                 },
-                getWidgetAriaLabel: () => localize(1641, "Action Widget"),
+                getWidgetAriaLabel: () => localize(1656, "Action Widget"),
                 getRole: (e) => {
                     switch (e.kind) {
                         case "action" /* ActionListItemKind.Action */:
@@ -246,6 +253,7 @@ let ActionList = class ActionList extends Disposable {
         else {
             // For finding width dynamically (not using resize observer)
             const itemWidths = this._allMenuItems.map((_, index) => {
+                // eslint-disable-next-line no-restricted-syntax
                 const element = this.domNode.ownerDocument.getElementById(this._list.getElementID(index));
                 if (element) {
                     element.style.width = 'auto';
@@ -259,7 +267,7 @@ let ActionList = class ActionList extends Disposable {
             maxWidth = Math.max(...itemWidths, minWidth);
         }
         const maxVhPrecentage = 0.7;
-        const height = Math.min(heightWithSeparators, this._layoutService.getContainer(dom.getWindow(this.domNode)).clientHeight * maxVhPrecentage);
+        const height = Math.min(heightWithSeparators, this._layoutService.getContainer(getWindow(this.domNode)).clientHeight * maxVhPrecentage);
         this._list.layout(height, maxWidth);
         this.domNode.style.height = `${height}px`;
         this._list.domFocus();
@@ -329,8 +337,8 @@ ActionList = __decorate([
     __param(6, IKeybindingService),
     __param(7, ILayoutService)
 ], ActionList);
-export { ActionList };
 function stripNewlines(str) {
     return str.replace(/\r\n|\r|\n/g, ' ');
 }
-//# sourceMappingURL=actionList.js.map
+
+export { ActionList, acceptSelectedActionCommand, previewSelectedActionCommand };

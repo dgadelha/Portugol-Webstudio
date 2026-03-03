@@ -1,18 +1,17 @@
+import '../../nls.js';
+import { getNLSLanguage } from '../../nls.messages.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import * as nls from '../../nls.js';
-export const LANGUAGE_DEFAULT = 'en';
+const LANGUAGE_DEFAULT = 'en';
 let _isWindows = false;
 let _isMacintosh = false;
 let _isLinux = false;
-let _isLinuxSnap = false;
 let _isNative = false;
 let _isWeb = false;
-let _isElectron = false;
 let _isIOS = false;
-let _isCI = false;
 let _isMobile = false;
 let _locale = undefined;
 let _language = LANGUAGE_DEFAULT;
@@ -36,9 +35,8 @@ if (typeof nodeProcess === 'object') {
     _isWindows = (nodeProcess.platform === 'win32');
     _isMacintosh = (nodeProcess.platform === 'darwin');
     _isLinux = (nodeProcess.platform === 'linux');
-    _isLinuxSnap = _isLinux && !!nodeProcess.env['SNAP'] && !!nodeProcess.env['SNAP_REVISION'];
-    _isElectron = isElectronProcess;
-    _isCI = !!nodeProcess.env['CI'] || !!nodeProcess.env['BUILD_ARTIFACTSTAGINGDIRECTORY'] || !!nodeProcess.env['GITHUB_WORKSPACE'];
+    _isLinux && !!nodeProcess.env['SNAP'] && !!nodeProcess.env['SNAP_REVISION'];
+    !!nodeProcess.env['CI'] || !!nodeProcess.env['BUILD_ARTIFACTSTAGINGDIRECTORY'] || !!nodeProcess.env['GITHUB_WORKSPACE'];
     _locale = LANGUAGE_DEFAULT;
     _language = LANGUAGE_DEFAULT;
     const rawNlsConfig = nodeProcess.env['VSCODE_NLS_CONFIG'];
@@ -64,7 +62,7 @@ else if (typeof navigator === 'object' && !isElectronRenderer) {
     _isLinux = _userAgent.indexOf('Linux') >= 0;
     _isMobile = _userAgent?.indexOf('Mobi') >= 0;
     _isWeb = true;
-    _language = nls.getNLSLanguage() || LANGUAGE_DEFAULT;
+    _language = getNLSLanguage() || LANGUAGE_DEFAULT;
     _locale = navigator.language.toLowerCase();
     _platformLocale = _locale;
 }
@@ -82,32 +80,31 @@ else if (_isWindows) {
 else if (_isLinux) {
     _platform = 2 /* Platform.Linux */;
 }
-export const isWindows = _isWindows;
-export const isMacintosh = _isMacintosh;
-export const isLinux = _isLinux;
-export const isNative = _isNative;
-export const isElectron = _isElectron;
-export const isWeb = _isWeb;
-export const isWebWorker = (_isWeb && typeof $globalThis.importScripts === 'function');
-export const webWorkerOrigin = isWebWorker ? $globalThis.origin : undefined;
-export const isIOS = _isIOS;
-export const isMobile = _isMobile;
-export const platform = _platform;
-export const userAgent = _userAgent;
+const isWindows = _isWindows;
+const isMacintosh = _isMacintosh;
+const isLinux = _isLinux;
+const isNative = _isNative;
+const isWeb = _isWeb;
+const isWebWorker = (_isWeb && typeof $globalThis.importScripts === 'function');
+const webWorkerOrigin = isWebWorker ? $globalThis.origin : undefined;
+const isIOS = _isIOS;
+const isMobile = _isMobile;
+const platform = _platform;
+const userAgent = _userAgent;
 /**
  * The language used for the user interface. The format of
  * the string is all lower case (e.g. zh-tw for Traditional
  * Chinese or de for German)
  */
-export const language = _language;
-export const setTimeout0IsFaster = (typeof $globalThis.postMessage === 'function' && !$globalThis.importScripts);
+const language = _language;
+const setTimeout0IsFaster = (typeof $globalThis.postMessage === 'function' && !$globalThis.importScripts);
 /**
  * See https://html.spec.whatwg.org/multipage/timers-and-user-prompts.html#:~:text=than%204%2C%20then-,set%20timeout%20to%204,-.
  *
  * Works similarly to `setTimeout(0)` but doesn't suffer from the 4ms artificial delay
  * that browsers set when the nesting level is > 5.
  */
-export const setTimeout0 = (() => {
+const setTimeout0 = (() => {
     if (setTimeout0IsFaster) {
         const pending = [];
         $globalThis.addEventListener('message', (e) => {
@@ -134,10 +131,10 @@ export const setTimeout0 = (() => {
     }
     return (callback) => setTimeout(callback);
 })();
-export const OS = (_isMacintosh || _isIOS ? 2 /* OperatingSystem.Macintosh */ : (_isWindows ? 1 /* OperatingSystem.Windows */ : 3 /* OperatingSystem.Linux */));
+const OS = (_isMacintosh || _isIOS ? 2 /* OperatingSystem.Macintosh */ : (_isWindows ? 1 /* OperatingSystem.Windows */ : 3 /* OperatingSystem.Linux */));
 let _isLittleEndian = true;
 let _isLittleEndianComputed = false;
-export function isLittleEndian() {
+function isLittleEndian() {
     if (!_isLittleEndianComputed) {
         _isLittleEndianComputed = true;
         const test = new Uint8Array(2);
@@ -148,9 +145,10 @@ export function isLittleEndian() {
     }
     return _isLittleEndian;
 }
-export const isChrome = !!(userAgent && userAgent.indexOf('Chrome') >= 0);
-export const isFirefox = !!(userAgent && userAgent.indexOf('Firefox') >= 0);
-export const isSafari = !!(!isChrome && (userAgent && userAgent.indexOf('Safari') >= 0));
-export const isEdge = !!(userAgent && userAgent.indexOf('Edg/') >= 0);
-export const isAndroid = !!(userAgent && userAgent.indexOf('Android') >= 0);
-//# sourceMappingURL=platform.js.map
+const isChrome = !!(userAgent && userAgent.indexOf('Chrome') >= 0);
+const isFirefox = !!(userAgent && userAgent.indexOf('Firefox') >= 0);
+const isSafari = !!(!isChrome && (userAgent && userAgent.indexOf('Safari') >= 0));
+const isEdge = !!(userAgent && userAgent.indexOf('Edg/') >= 0);
+const isAndroid = !!(userAgent && userAgent.indexOf('Android') >= 0);
+
+export { LANGUAGE_DEFAULT, OS, isAndroid, isChrome, isEdge, isFirefox, isIOS, isLinux, isLittleEndian, isMacintosh, isMobile, isNative, isSafari, isWeb, isWebWorker, isWindows, language, platform, setTimeout0, setTimeout0IsFaster, userAgent, webWorkerOrigin };

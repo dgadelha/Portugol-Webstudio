@@ -1,26 +1,9 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
 import { n } from '../../../../../../../base/browser/dom.js';
 import { ActionBar } from '../../../../../../../base/browser/ui/actionbar/actionbar.js';
 import { renderIcon } from '../../../../../../../base/browser/ui/iconLabel/iconLabels.js';
 import { KeybindingLabel } from '../../../../../../../base/browser/ui/keybindingLabel/keybindingLabel.js';
 import { Codicon } from '../../../../../../../base/common/codicons.js';
-import { autorun, constObservable, derived, observableFromEvent, observableValue } from '../../../../../../../base/common/observable.js';
+import '../../../../../../../base/common/observableInternal/index.js';
 import { OS } from '../../../../../../../base/common/platform.js';
 import { ThemeIcon } from '../../../../../../../base/common/themables.js';
 import { localize } from '../../../../../../../nls.js';
@@ -29,8 +12,41 @@ import { IContextKeyService } from '../../../../../../../platform/contextkey/com
 import { nativeHoverDelegate } from '../../../../../../../platform/hover/browser/hover.js';
 import { IKeybindingService } from '../../../../../../../platform/keybinding/common/keybinding.js';
 import { defaultKeybindingLabelStyles } from '../../../../../../../platform/theme/browser/defaultStyles.js';
-import { asCssVariable, descriptionForeground, editorActionListForeground, editorHoverBorder } from '../../../../../../../platform/theme/common/colorRegistry.js';
-import { hideInlineCompletionId, inlineSuggestCommitId, toggleShowCollapsedId } from '../../../controller/commandIds.js';
+import { asCssVariable } from '../../../../../../../platform/theme/common/colorUtils.js';
+import { descriptionForeground } from '../../../../../../../platform/theme/common/colors/baseColors.js';
+import '../../../../../../../platform/theme/common/colors/chartsColors.js';
+import { editorHoverBorder } from '../../../../../../../platform/theme/common/colors/editorColors.js';
+import '../../../../../../../platform/theme/common/colors/inputColors.js';
+import { editorActionListForeground } from '../../../../../../../platform/theme/common/colors/listColors.js';
+import '../../../../../../../platform/theme/common/colors/menuColors.js';
+import '../../../../../../../platform/theme/common/colors/minimapColors.js';
+import '../../../../../../../platform/theme/common/colors/miscColors.js';
+import '../../../../../../../platform/theme/common/colors/quickpickColors.js';
+import '../../../../../../../platform/theme/common/colors/searchColors.js';
+import { inlineSuggestCommitId, hideInlineCompletionId, toggleShowCollapsedId } from '../../../controller/commandIds.js';
+import { observableValue } from '../../../../../../../base/common/observableInternal/observables/observableValue.js';
+import { constObservable } from '../../../../../../../base/common/observableInternal/observables/constObservable.js';
+import { observableFromEvent } from '../../../../../../../base/common/observableInternal/observables/observableFromEvent.js';
+import { derived } from '../../../../../../../base/common/observableInternal/observables/derived.js';
+import { autorun } from '../../../../../../../base/common/observableInternal/reactions/autorun.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 let GutterIndicatorMenuContent = class GutterIndicatorMenuContent {
     constructor(_model, _close, _editorObs, _contextKeyService, _keybindingService, _commandService) {
         this._model = _model;
@@ -62,13 +78,13 @@ let GutterIndicatorMenuContent = class GutterIndicatorMenuContent {
         const title = header(this._model.displayName);
         const gotoAndAccept = option(createOptionArgs({
             id: 'gotoAndAccept',
-            title: `${localize(1203, "Go To")} / ${localize(1204, "Accept")}`,
+            title: `${localize(1212, "Go To")} / ${localize(1213, "Accept")}`,
             icon: Codicon.check,
             commandId: inlineSuggestCommitId
         }));
         const reject = option(createOptionArgs({
             id: 'reject',
-            title: localize(1205, "Reject"),
+            title: localize(1214, "Reject"),
             icon: Codicon.close,
             commandId: hideInlineCompletionId
         }));
@@ -82,19 +98,25 @@ let GutterIndicatorMenuContent = class GutterIndicatorMenuContent {
         const toggleCollapsedMode = this._inlineEditsShowCollapsed.map(showCollapsed => showCollapsed ?
             option(createOptionArgs({
                 id: 'showExpanded',
-                title: localize(1206, "Show Expanded"),
+                title: localize(1215, "Show Expanded"),
                 icon: Codicon.expandAll,
                 commandId: toggleShowCollapsedId
             }))
             : option(createOptionArgs({
                 id: 'showCollapsed',
-                title: localize(1207, "Show Collapsed"),
+                title: localize(1216, "Show Collapsed"),
                 icon: Codicon.collapseAll,
                 commandId: toggleShowCollapsedId
             })));
+        const snooze = option(createOptionArgs({
+            id: 'snooze',
+            title: localize(1217, "Snooze"),
+            icon: Codicon.bellSlash,
+            commandId: 'editor.action.inlineSuggest.snooze'
+        }));
         const settings = option(createOptionArgs({
             id: 'settings',
-            title: localize(1208, "Settings"),
+            title: localize(1218, "Settings"),
             icon: Codicon.gear,
             commandId: 'workbench.action.openSettings',
             commandArgs: ['@tag:nextEditSuggestions']
@@ -114,6 +136,7 @@ let GutterIndicatorMenuContent = class GutterIndicatorMenuContent {
             reject,
             toggleCollapsedMode,
             extensionCommands.length ? separator() : undefined,
+            snooze,
             settings,
             ...extensionCommands,
             actionBarFooter ? separator() : undefined,
@@ -132,7 +155,6 @@ GutterIndicatorMenuContent = __decorate([
     __param(4, IKeybindingService),
     __param(5, ICommandService)
 ], GutterIndicatorMenuContent);
-export { GutterIndicatorMenuContent };
 function hoverContent(content) {
     return n.div({
         class: 'content',
@@ -226,4 +248,5 @@ function separator() {
         }
     }));
 }
-//# sourceMappingURL=gutterIndicatorMenu.js.map
+
+export { GutterIndicatorMenuContent };

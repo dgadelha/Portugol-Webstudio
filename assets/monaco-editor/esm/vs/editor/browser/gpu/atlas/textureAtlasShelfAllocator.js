@@ -1,14 +1,15 @@
+import { BugIndicatingError } from '../../../../base/common/errors.js';
+import { ensureNonNullable } from '../gpuUtils.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { BugIndicatingError } from '../../../../base/common/errors.js';
-import { ensureNonNullable } from '../gpuUtils.js';
 /**
  * The shelf allocator is a simple allocator that places glyphs in rows, starting a new row when the
  * current row is full. Due to its simplicity, it can waste space but it is very fast.
  */
-export class TextureAtlasShelfAllocator {
+class TextureAtlasShelfAllocator {
     constructor(_canvas, _textureIndex) {
         this._canvas = _canvas;
         this._textureIndex = _textureIndex;
@@ -124,4 +125,5 @@ export class TextureAtlasShelfAllocator {
         ].join('\n');
     }
 }
-//# sourceMappingURL=textureAtlasShelfAllocator.js.map
+
+export { TextureAtlasShelfAllocator };

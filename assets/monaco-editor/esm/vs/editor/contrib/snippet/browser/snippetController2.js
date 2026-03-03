@@ -1,30 +1,32 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-var SnippetController2_1;
 import { DisposableStore } from '../../../../base/common/lifecycle.js';
 import { assertType } from '../../../../base/common/types.js';
-import { EditorCommand, registerEditorCommand, registerEditorContribution } from '../../../browser/editorExtensions.js';
+import { registerEditorContribution, EditorCommand, registerEditorCommand } from '../../../browser/editorExtensions.js';
 import { Position } from '../../../common/core/position.js';
 import { EditorContextKeys } from '../../../common/editorContextKeys.js';
 import { ILanguageConfigurationService } from '../../../common/languages/languageConfigurationRegistry.js';
 import { ILanguageFeaturesService } from '../../../common/services/languageFeatures.js';
 import { showSimpleSuggestions } from '../../suggest/browser/suggest.js';
 import { localize } from '../../../../nls.js';
-import { ContextKeyExpr, IContextKeyService, RawContextKey } from '../../../../platform/contextkey/common/contextkey.js';
+import { RawContextKey, IContextKeyService, ContextKeyExpr } from '../../../../platform/contextkey/common/contextkey.js';
 import { ILogService } from '../../../../platform/log/common/log.js';
 import { SnippetSession } from './snippetSession.js';
-import { observableValue } from '../../../../base/common/observable.js';
+import '../../../../base/common/observableInternal/index.js';
+import { observableValue } from '../../../../base/common/observableInternal/observables/observableValue.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var SnippetController2_1;
 const _defaultOptions = {
     overwriteBefore: 0,
     overwriteAfter: 0,
@@ -40,9 +42,9 @@ let SnippetController2 = class SnippetController2 {
     static get(editor) {
         return editor.getContribution(SnippetController2_1.ID);
     }
-    static { this.InSnippetMode = new RawContextKey('inSnippetMode', false, localize(1387, "Whether the editor in current in snippet mode")); }
-    static { this.HasNextTabstop = new RawContextKey('hasNextTabstop', false, localize(1388, "Whether there is a next tab stop when in snippet mode")); }
-    static { this.HasPrevTabstop = new RawContextKey('hasPrevTabstop', false, localize(1389, "Whether there is a previous tab stop when in snippet mode")); }
+    static { this.InSnippetMode = new RawContextKey('inSnippetMode', false, localize(1402, "Whether the editor in current in snippet mode")); }
+    static { this.HasNextTabstop = new RawContextKey('hasNextTabstop', false, localize(1403, "Whether there is a next tab stop when in snippet mode")); }
+    static { this.HasPrevTabstop = new RawContextKey('hasPrevTabstop', false, localize(1404, "Whether there is a previous tab stop when in snippet mode")); }
     constructor(_editor, _logService, _languageFeaturesService, contextKeyService, _languageConfigurationService) {
         this._editor = _editor;
         this._logService = _logService;
@@ -128,7 +130,7 @@ let SnippetController2 = class SnippetController2 {
                             sortText: 'a'.repeat(i + 1),
                             range: activeChoice.range,
                             filterText: isAnyOfOptions ? `${word}_${option.value}` : undefined,
-                            command: { id: 'jumpToNextSnippetPlaceholder', title: localize(1390, 'Go to next placeholder...') }
+                            command: { id: 'jumpToNextSnippetPlaceholder', title: localize(1405, 'Go to next placeholder...') }
                         });
                     }
                     return { suggestions };
@@ -248,7 +250,6 @@ SnippetController2 = SnippetController2_1 = __decorate([
     __param(3, IContextKeyService),
     __param(4, ILanguageConfigurationService)
 ], SnippetController2);
-export { SnippetController2 };
 registerEditorContribution(SnippetController2.ID, SnippetController2, 4 /* EditorContributionInstantiation.Lazy */);
 const CommandCtor = EditorCommand.bindToContribution(SnippetController2.get);
 registerEditorCommand(new CommandCtor({
@@ -292,4 +293,5 @@ registerEditorCommand(new CommandCtor({
     // 	primary: KeyCode.Enter,
     // }
 }));
-//# sourceMappingURL=snippetController2.js.map
+
+export { SnippetController2 };

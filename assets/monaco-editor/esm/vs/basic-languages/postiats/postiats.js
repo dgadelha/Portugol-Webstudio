@@ -1,13 +1,4 @@
-/*!-----------------------------------------------------------------------------
- * Copyright (c) Microsoft Corporation. All rights reserved.
- * Version: 0.54.0(7c2310116c57517348bbd868a21139f32454be22)
- * Released under the MIT license
- * https://github.com/microsoft/monaco-editor/blob/main/LICENSE.txt
- *-----------------------------------------------------------------------------*/
-
-
-// src/basic-languages/postiats/postiats.ts
-var conf = {
+const conf = {
   comments: {
     lineComment: "//",
     blockComment: ["(*", "*)"]
@@ -25,7 +16,7 @@ var conf = {
     { open: "(", close: ")", notIn: ["string", "comment"] }
   ]
 };
-var language = {
+const language = {
   tokenPostfix: ".pats",
   // TODO: staload and dynload are followed by a special kind of string literals
   // with {$IDENTIFER} variables, and it also may make sense to highlight
@@ -911,7 +902,5 @@ var language = {
     ]
   }
 };
-export {
-  conf,
-  language
-};
+
+export { conf, language };

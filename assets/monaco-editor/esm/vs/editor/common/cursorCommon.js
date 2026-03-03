@@ -1,7 +1,3 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { Position } from './core/position.js';
 import { Range } from './core/range.js';
 import { Selection } from './core/selection.js';
@@ -9,10 +5,15 @@ import { createScopedLineTokens } from './languages/supports.js';
 import { CursorColumns } from './core/cursorColumns.js';
 import { normalizeIndentation } from './core/misc/indentation.js';
 import { InputMode } from './inputMode.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
 const autoCloseAlways = () => true;
 const autoCloseNever = () => false;
 const autoCloseBeforeWhitespace = (chr) => (chr === ' ' || chr === '\t');
-export class CursorConfiguration {
+class CursorConfiguration {
     static shouldRecreate(e) {
         return (e.hasChanged(165 /* EditorOption.layoutInfo */)
             || e.hasChanged(148 /* EditorOption.wordSeparators */)
@@ -151,7 +152,7 @@ export class CursorConfiguration {
         return result;
     }
 }
-export class CursorState {
+class CursorState {
     static fromModelState(modelState) {
         return new PartialModelCursorState(modelState);
     }
@@ -179,13 +180,13 @@ export class CursorState {
         return (this.viewState.equals(other.viewState) && this.modelState.equals(other.modelState));
     }
 }
-export class PartialModelCursorState {
+class PartialModelCursorState {
     constructor(modelState) {
         this.modelState = modelState;
         this.viewState = null;
     }
 }
-export class PartialViewCursorState {
+class PartialViewCursorState {
     constructor(viewState) {
         this.modelState = null;
         this.viewState = viewState;
@@ -194,7 +195,7 @@ export class PartialViewCursorState {
 /**
  * Represents the cursor state on either the model or on the view model.
  */
-export class SingleCursorState {
+class SingleCursorState {
     constructor(selectionStart, selectionStartKind, selectionStartLeftoverVisibleColumns, position, leftoverVisibleColumns) {
         this.selectionStart = selectionStart;
         this.selectionStartKind = selectionStartKind;
@@ -233,7 +234,7 @@ export class SingleCursorState {
         }
     }
 }
-export class EditOperationResult {
+class EditOperationResult {
     constructor(type, commands, opts) {
         this._editOperationResultBrand = undefined;
         this.type = type;
@@ -242,7 +243,8 @@ export class EditOperationResult {
         this.shouldPushStackElementAfter = opts.shouldPushStackElementAfter;
     }
 }
-export function isQuote(ch) {
+function isQuote(ch) {
     return (ch === '\'' || ch === '"' || ch === '`');
 }
-//# sourceMappingURL=cursorCommon.js.map
+
+export { CursorConfiguration, CursorState, EditOperationResult, PartialModelCursorState, PartialViewCursorState, SingleCursorState, isQuote };

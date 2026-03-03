@@ -1,10 +1,11 @@
+import './marginDecorations.css';
+import { DedupOverlay, DecorationToRender } from '../glyphMargin/glyphMargin.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import './marginDecorations.css';
-import { DecorationToRender, DedupOverlay } from '../glyphMargin/glyphMargin.js';
-export class MarginViewLineDecorationsOverlay extends DedupOverlay {
+class MarginViewLineDecorationsOverlay extends DedupOverlay {
     constructor(context) {
         super();
         this._context = context;
@@ -79,4 +80,5 @@ export class MarginViewLineDecorationsOverlay extends DedupOverlay {
         return this._renderResult[lineNumber - startLineNumber];
     }
 }
-//# sourceMappingURL=marginDecorations.js.map
+
+export { MarginViewLineDecorationsOverlay };

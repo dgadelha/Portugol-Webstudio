@@ -1,10 +1,11 @@
+import { getWindowId, onDidUnregisterWindow } from './dom.js';
+import { Event, Emitter } from '../common/event.js';
+import { markAsSingleton, Disposable } from '../common/lifecycle.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { getWindowId, onDidUnregisterWindow } from './dom.js';
-import { Emitter, Event } from '../common/event.js';
-import { Disposable, markAsSingleton } from '../common/lifecycle.js';
 /**
  * See https://developer.mozilla.org/en-US/docs/Web/API/Window/devicePixelRatio#monitoring_screen_resolution_or_zoom_level_changes
  */
@@ -82,5 +83,6 @@ class PixelRatioMonitorFacade {
  * a cache key when storing font measurements. Fonts might render differently depending on resolution
  * and any measurements need to be discarded for example when a window is moved from a monitor to another.
  */
-export const PixelRatio = new PixelRatioMonitorFacade();
-//# sourceMappingURL=pixelRatio.js.map
+const PixelRatio = new PixelRatioMonitorFacade();
+
+export { PixelRatio };

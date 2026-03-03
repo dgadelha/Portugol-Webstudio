@@ -1,15 +1,16 @@
+import { registerEditorAction, EditorAction } from '../../../browser/editorExtensions.js';
+import { EditorZoom } from '../../../common/config/editorZoom.js';
+import { localize2 } from '../../../../nls.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { EditorAction, registerEditorAction } from '../../../browser/editorExtensions.js';
-import { EditorZoom } from '../../../common/config/editorZoom.js';
-import * as nls from '../../../../nls.js';
 class EditorFontZoomIn extends EditorAction {
     constructor() {
         super({
             id: 'editor.action.fontZoomIn',
-            label: nls.localize2(1006, "Increase Editor Font Size"),
+            label: localize2(1011, "Increase Editor Font Size"),
             precondition: undefined
         });
     }
@@ -21,7 +22,7 @@ class EditorFontZoomOut extends EditorAction {
     constructor() {
         super({
             id: 'editor.action.fontZoomOut',
-            label: nls.localize2(1007, "Decrease Editor Font Size"),
+            label: localize2(1012, "Decrease Editor Font Size"),
             precondition: undefined
         });
     }
@@ -33,7 +34,7 @@ class EditorFontZoomReset extends EditorAction {
     constructor() {
         super({
             id: 'editor.action.fontZoomReset',
-            label: nls.localize2(1008, "Reset Editor Font Size"),
+            label: localize2(1013, "Reset Editor Font Size"),
             precondition: undefined
         });
     }
@@ -44,4 +45,3 @@ class EditorFontZoomReset extends EditorAction {
 registerEditorAction(EditorFontZoomIn);
 registerEditorAction(EditorFontZoomOut);
 registerEditorAction(EditorFontZoomReset);
-//# sourceMappingURL=fontZoom.js.map

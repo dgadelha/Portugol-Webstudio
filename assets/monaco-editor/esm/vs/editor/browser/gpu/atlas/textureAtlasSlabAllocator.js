@@ -1,11 +1,12 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { getActiveWindow } from '../../../../base/browser/dom.js';
 import { BugIndicatingError } from '../../../../base/common/errors.js';
 import { NKeyMap } from '../../../../base/common/map.js';
 import { ensureNonNullable } from '../gpuUtils.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
 /**
  * The slab allocator is a more complex allocator that places glyphs in square slabs of a fixed
  * size. Slabs are defined by a small range of glyphs sizes they can house, this places like-sized
@@ -15,7 +16,7 @@ import { ensureNonNullable } from '../gpuUtils.js';
  * glyphs they include. This space is used to place very thin or short glyphs, which would otherwise
  * waste a lot of space in their own slab.
  */
-export class TextureAtlasSlabAllocator {
+class TextureAtlasSlabAllocator {
     constructor(_canvas, _textureIndex, options) {
         this._canvas = _canvas;
         this._textureIndex = _textureIndex;
@@ -241,7 +242,6 @@ export class TextureAtlasSlabAllocator {
         ctx.fillRect(0, 0, w, h);
         let slabEntryPixels = 0;
         let usedPixels = 0;
-        let slabEdgePixels = 0;
         let restrictedPixels = 0;
         const slabW = 64 << (Math.floor(getActiveWindow().devicePixelRatio) - 1);
         const slabH = slabW;
@@ -261,8 +261,7 @@ export class TextureAtlasSlabAllocator {
             }
             const entriesPerRow = Math.floor(slabW / slab.entryW);
             const entriesPerCol = Math.floor(slabH / slab.entryH);
-            const thisSlabPixels = slab.entryW * entriesPerRow * slab.entryH * entriesPerCol;
-            slabEdgePixels += (slabW * slabH) - thisSlabPixels;
+            slab.entryW * entriesPerRow * slab.entryH * entriesPerCol;
         }
         // Draw glyphs
         for (const g of this._allocatedGlyphs) {
@@ -343,4 +342,5 @@ function addEntryToMapArray(map, key, entry) {
     }
     list.push(entry);
 }
-//# sourceMappingURL=textureAtlasSlabAllocator.js.map
+
+export { TextureAtlasSlabAllocator };

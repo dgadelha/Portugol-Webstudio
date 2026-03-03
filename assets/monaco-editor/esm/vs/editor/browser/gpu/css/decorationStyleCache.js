@@ -1,9 +1,10 @@
+import { NKeyMap } from '../../../../base/common/map.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { NKeyMap } from '../../../../base/common/map.js';
-export class DecorationStyleCache {
+class DecorationStyleCache {
     constructor() {
         this._nextId = 1;
         this._cacheById = new Map();
@@ -35,4 +36,5 @@ export class DecorationStyleCache {
         return this._cacheById.get(id);
     }
 }
-//# sourceMappingURL=decorationStyleCache.js.map
+
+export { DecorationStyleCache };

@@ -1,4 +1,4 @@
-export function gotoNextSibling(newCursor, oldCursor) {
+function gotoNextSibling(newCursor, oldCursor) {
     const n = newCursor.gotoNextSibling();
     const o = oldCursor.gotoNextSibling();
     if (n !== o) {
@@ -6,7 +6,7 @@ export function gotoNextSibling(newCursor, oldCursor) {
     }
     return n && o;
 }
-export function gotoParent(newCursor, oldCursor) {
+function gotoParent(newCursor, oldCursor) {
     const n = newCursor.gotoParent();
     const o = oldCursor.gotoParent();
     if (n !== o) {
@@ -14,7 +14,7 @@ export function gotoParent(newCursor, oldCursor) {
     }
     return n && o;
 }
-export function gotoNthChild(newCursor, oldCursor, index) {
+function gotoNthChild(newCursor, oldCursor, index) {
     const n = newCursor.gotoFirstChild();
     const o = oldCursor.gotoFirstChild();
     if (n !== o) {
@@ -35,7 +35,7 @@ export function gotoNthChild(newCursor, oldCursor, index) {
     }
     return n && o;
 }
-export function nextSiblingOrParentSibling(newCursor, oldCursor) {
+function nextSiblingOrParentSibling(newCursor, oldCursor) {
     do {
         if (newCursor.currentNode.nextSibling) {
             return gotoNextSibling(newCursor, oldCursor);
@@ -46,7 +46,7 @@ export function nextSiblingOrParentSibling(newCursor, oldCursor) {
     } while (newCursor.currentNode.nextSibling || newCursor.currentNode.parent);
     return false;
 }
-export function getClosestPreviousNodes(cursor, tree) {
+function getClosestPreviousNodes(cursor, tree) {
     // Go up parents until the end of the parent is before the start of the current.
     const findPrev = tree.walk();
     findPrev.resetTo(cursor);
@@ -71,4 +71,5 @@ export function getClosestPreviousNodes(cursor, tree) {
         return undefined;
     }
 }
-//# sourceMappingURL=cursorUtils.js.map
+
+export { getClosestPreviousNodes, gotoNextSibling, gotoNthChild, gotoParent, nextSiblingOrParentSibling };

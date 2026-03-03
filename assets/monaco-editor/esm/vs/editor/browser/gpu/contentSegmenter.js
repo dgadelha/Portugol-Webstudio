@@ -1,9 +1,10 @@
+import { safeIntl } from '../../../base/common/date.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { safeIntl } from '../../../base/common/date.js';
-export function createContentSegmenter(lineData, options) {
+function createContentSegmenter(lineData, options) {
     if (lineData.isBasicASCII && options.useMonospaceOptimizations) {
         return new AsciiContentSegmenter(lineData);
     }
@@ -47,4 +48,5 @@ class GraphemeContentSegmenter {
         return this._segments[index]?.segment;
     }
 }
-//# sourceMappingURL=contentSegmenter.js.map
+
+export { createContentSegmenter };

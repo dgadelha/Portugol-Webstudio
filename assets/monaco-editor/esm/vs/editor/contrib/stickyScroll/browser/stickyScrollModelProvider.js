@@ -1,28 +1,29 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
 import { Disposable, DisposableStore, MutableDisposable } from '../../../../base/common/lifecycle.js';
 import { ILanguageFeaturesService } from '../../../common/services/languageFeatures.js';
-import { OutlineElement, OutlineGroup, OutlineModel } from '../../documentSymbols/browser/outlineModel.js';
-import { createCancelablePromise, Delayer } from '../../../../base/common/async.js';
+import { OutlineModel, OutlineGroup, OutlineElement } from '../../documentSymbols/browser/outlineModel.js';
+import { Delayer, createCancelablePromise } from '../../../../base/common/async.js';
 import { FoldingController, RangesLimitReporter } from '../../folding/browser/folding.js';
 import { SyntaxRangeProvider } from '../../folding/browser/syntaxRangeProvider.js';
 import { IndentRangeProvider } from '../../folding/browser/indentRangeProvider.js';
 import { ILanguageConfigurationService } from '../../../common/languages/languageConfigurationRegistry.js';
 import { onUnexpectedError } from '../../../../base/common/errors.js';
-import { StickyElement, StickyModel, StickyRange } from './stickyScrollElement.js';
+import { StickyModel, StickyRange, StickyElement } from './stickyScrollElement.js';
 import { Iterable } from '../../../../base/common/iterator.js';
 import { IInstantiationService } from '../../../../platform/instantiation/common/instantiation.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 var ModelProvider;
 (function (ModelProvider) {
     ModelProvider["OUTLINE_MODEL"] = "outlineModel";
@@ -103,7 +104,6 @@ StickyModelProvider = __decorate([
     __param(2, IInstantiationService),
     __param(3, ILanguageFeaturesService)
 ], StickyModelProvider);
-export { StickyModelProvider };
 class StickyModelCandidateProvider extends Disposable {
     constructor(_editor) {
         super();
@@ -334,4 +334,5 @@ let StickyModelFromCandidateSyntaxFoldingProvider = class StickyModelFromCandida
 StickyModelFromCandidateSyntaxFoldingProvider = __decorate([
     __param(2, ILanguageFeaturesService)
 ], StickyModelFromCandidateSyntaxFoldingProvider);
-//# sourceMappingURL=stickyScrollModelProvider.js.map
+
+export { StickyModelProvider };

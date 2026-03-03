@@ -1,23 +1,9 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-var SuggestModel_1;
 import { TimeoutTimer } from '../../../../base/common/async.js';
 import { CancellationTokenSource } from '../../../../base/common/cancellation.js';
 import { onUnexpectedError } from '../../../../base/common/errors.js';
 import { Emitter } from '../../../../base/common/event.js';
 import { DisposableStore, dispose } from '../../../../base/common/lifecycle.js';
-import { getLeadingWhitespace, isHighSurrogate, isLowSurrogate } from '../../../../base/common/strings.js';
+import { getLeadingWhitespace, isLowSurrogate, isHighSurrogate } from '../../../../base/common/strings.js';
 import { Selection } from '../../../common/core/selection.js';
 import { IEditorWorkerService } from '../../../common/services/editorWorker.js';
 import { WordDistance } from './wordDistance.js';
@@ -27,14 +13,29 @@ import { IContextKeyService } from '../../../../platform/contextkey/common/conte
 import { ILogService } from '../../../../platform/log/common/log.js';
 import { ITelemetryService } from '../../../../platform/telemetry/common/telemetry.js';
 import { CompletionModel } from './completionModel.js';
-import { CompletionOptions, getSnippetSuggestSupport, provideSuggestionItems, QuickSuggestionsOptions } from './suggest.js';
+import { QuickSuggestionsOptions, CompletionOptions, provideSuggestionItems } from './suggest.js';
 import { ILanguageFeaturesService } from '../../../common/services/languageFeatures.js';
 import { FuzzyScoreOptions } from '../../../../base/common/filters.js';
 import { assertType } from '../../../../base/common/types.js';
 import { InlineCompletionContextKeys } from '../../inlineCompletions/browser/controller/inlineCompletionContextKeys.js';
 import { SnippetController2 } from '../../snippet/browser/snippetController2.js';
 import { IEnvironmentService } from '../../../../platform/environment/common/environment.js';
-export class LineContext {
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var SuggestModel_1;
+class LineContext {
     static shouldAutoTrigger(editor) {
         if (!editor.hasModel()) {
             return false;
@@ -168,10 +169,6 @@ let SuggestModel = SuggestModel_1 = class SuggestModel {
                 let set = supportsByTriggerCharacter.get(ch);
                 if (!set) {
                     set = new Set();
-                    const suggestSupport = getSnippetSuggestSupport();
-                    if (suggestSupport) {
-                        set.add(suggestSupport);
-                    }
                     supportsByTriggerCharacter.set(ch, set);
                 }
                 set.add(support);
@@ -666,5 +663,5 @@ SuggestModel = SuggestModel_1 = __decorate([
     __param(7, ILanguageFeaturesService),
     __param(8, IEnvironmentService)
 ], SuggestModel);
-export { SuggestModel };
-//# sourceMappingURL=suggestModel.js.map
+
+export { LineContext, SuggestModel };

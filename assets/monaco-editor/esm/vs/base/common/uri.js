@@ -1,9 +1,10 @@
+import { win32, posix } from './path.js';
+import { isWindows } from './platform.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import * as paths from './path.js';
-import { isWindows } from './platform.js';
 const _schemePattern = /^\w[\w\d+.-]*$/;
 const _singleSlashStart = /^\//;
 const _doubleSlashStart = /^\/\//;
@@ -84,7 +85,7 @@ const _regexp = /^(([^:/?#]+?):)?(\/\/([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?/;
  *       urn:example:animal:ferret:nose
  * ```
  */
-export class URI {
+class URI {
     static isUri(thing) {
         if (thing instanceof URI) {
             return true;
@@ -282,10 +283,10 @@ export class URI {
         }
         let newPath;
         if (isWindows && uri.scheme === 'file') {
-            newPath = URI.file(paths.win32.join(uriToFsPath(uri, true), ...pathFragment)).path;
+            newPath = URI.file(win32.join(uriToFsPath(uri, true), ...pathFragment)).path;
         }
         else {
-            newPath = paths.posix.join(uri.path, ...pathFragment);
+            newPath = posix.join(uri.path, ...pathFragment);
         }
         return uri.with({ path: newPath });
     }
@@ -481,7 +482,7 @@ function encodeURIComponentMinimal(path) {
 /**
  * Compute `fsPath` for the given uri
  */
-export function uriToFsPath(uri, keepDriveLetterCasing) {
+function uriToFsPath(uri, keepDriveLetterCasing) {
     let value;
     if (uri.authority && uri.path.length > 1 && uri.scheme === 'file') {
         // unc path: file://shares/c$/far/boo
@@ -601,4 +602,5 @@ function percentDecode(str) {
     }
     return str.replace(_rEncodedAsHex, (match) => decodeURIComponentGraceful(match));
 }
-//# sourceMappingURL=uri.js.map
+
+export { URI, uriToFsPath };

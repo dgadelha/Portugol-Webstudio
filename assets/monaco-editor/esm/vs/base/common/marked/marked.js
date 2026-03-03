@@ -145,10 +145,7 @@ function rtrim(str, c, invert) {
     // Step left until we fail to match the invert condition.
     while (suffLen < l) {
         const currChar = str.charAt(l - suffLen - 1);
-        if (currChar === c && !invert) {
-            suffLen++;
-        }
-        else if (currChar !== c && invert) {
+        if (currChar === c && true) {
             suffLen++;
         }
         else {
@@ -2469,14 +2466,13 @@ marked.lexer = _Lexer.lex;
 marked.Tokenizer = _Tokenizer;
 marked.Hooks = _Hooks;
 marked.parse = marked;
-const options = marked.options;
-const setOptions = marked.setOptions;
-const use = marked.use;
-const walkTokens = marked.walkTokens;
-const parseInline = marked.parseInline;
+marked.options;
+marked.setOptions;
+marked.use;
+marked.walkTokens;
+marked.parseInline;
 const parse = marked;
-const parser = _Parser.parse;
+_Parser.parse;
 const lexer = _Lexer.lex;
 
-export { _Hooks as Hooks, _Lexer as Lexer, Marked, _Parser as Parser, _Renderer as Renderer, _TextRenderer as TextRenderer, _Tokenizer as Tokenizer, _defaults as defaults, _getDefaults as getDefaults, lexer, marked, options, parse, parseInline, parser, setOptions, use, walkTokens };
-//# sourceMappingURL=marked.esm.js.map
+export { _Hooks as Hooks, _Lexer as Lexer, Marked, _Parser as Parser, _Renderer as Renderer, _TextRenderer as TextRenderer, _Tokenizer as Tokenizer, _defaults as defaults, _getDefaults as getDefaults, lexer, marked, parse };

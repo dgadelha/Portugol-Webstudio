@@ -1,10 +1,16 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-import { DecreaseHoverVerbosityLevel, GoToBottomHoverAction, GoToTopHoverAction, HideContentHoverAction, IncreaseHoverVerbosityLevel, PageDownHoverAction, PageUpHoverAction, ScrollDownHoverAction, ScrollLeftHoverAction, ScrollRightHoverAction, ScrollUpHoverAction, ShowDefinitionPreviewHoverAction, ShowOrFocusHoverAction } from './hoverActions.js';
-import { registerEditorAction, registerEditorContribution } from '../../../browser/editorExtensions.js';
-import { editorHoverBorder } from '../../../../platform/theme/common/colorRegistry.js';
+import { ShowOrFocusHoverAction, ShowDefinitionPreviewHoverAction, HideContentHoverAction, ScrollUpHoverAction, ScrollDownHoverAction, ScrollLeftHoverAction, ScrollRightHoverAction, PageUpHoverAction, PageDownHoverAction, GoToTopHoverAction, GoToBottomHoverAction, IncreaseHoverVerbosityLevel, DecreaseHoverVerbosityLevel } from './hoverActions.js';
+import { registerEditorContribution, registerEditorAction } from '../../../browser/editorExtensions.js';
+import '../../../../platform/theme/common/colorUtils.js';
+import '../../../../platform/theme/common/colors/baseColors.js';
+import '../../../../platform/theme/common/colors/chartsColors.js';
+import { editorHoverBorder } from '../../../../platform/theme/common/colors/editorColors.js';
+import '../../../../platform/theme/common/colors/inputColors.js';
+import '../../../../platform/theme/common/colors/listColors.js';
+import '../../../../platform/theme/common/colors/menuColors.js';
+import '../../../../platform/theme/common/colors/minimapColors.js';
+import '../../../../platform/theme/common/colors/miscColors.js';
+import '../../../../platform/theme/common/colors/quickpickColors.js';
+import '../../../../platform/theme/common/colors/searchColors.js';
 import { registerThemingParticipant } from '../../../../platform/theme/common/themeService.js';
 import { HoverParticipantRegistry } from './hoverTypes.js';
 import { MarkdownHoverParticipant } from './markdownHoverParticipant.js';
@@ -13,7 +19,12 @@ import { ContentHoverController } from './contentHoverController.js';
 import { GlyphHoverController } from './glyphHoverController.js';
 import './hover.css';
 import { AccessibleViewRegistry } from '../../../../platform/accessibility/browser/accessibleViewRegistry.js';
-import { ExtHoverAccessibleView, HoverAccessibilityHelp, HoverAccessibleView } from './hoverAccessibleViews.js';
+import { HoverAccessibleView, HoverAccessibilityHelp, ExtHoverAccessibleView } from './hoverAccessibleViews.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
 registerEditorContribution(ContentHoverController.ID, ContentHoverController, 2 /* EditorContributionInstantiation.BeforeFirstInteraction */);
 registerEditorContribution(GlyphHoverController.ID, GlyphHoverController, 2 /* EditorContributionInstantiation.BeforeFirstInteraction */);
 registerEditorAction(ShowOrFocusHoverAction);
@@ -43,4 +54,3 @@ registerThemingParticipant((theme, collector) => {
 AccessibleViewRegistry.register(new HoverAccessibleView());
 AccessibleViewRegistry.register(new HoverAccessibilityHelp());
 AccessibleViewRegistry.register(new ExtHoverAccessibleView());
-//# sourceMappingURL=hoverContribution.js.map

@@ -21,24 +21,15 @@ class KeyCodeStrMap {
 const uiMap = new KeyCodeStrMap();
 const userSettingsUSMap = new KeyCodeStrMap();
 const userSettingsGeneralMap = new KeyCodeStrMap();
-export const EVENT_KEY_CODE_MAP = new Array(230);
-export const NATIVE_WINDOWS_KEY_CODE_TO_KEY_CODE = {};
-const scanCodeIntToStr = [];
+const EVENT_KEY_CODE_MAP = new Array(230);
 const scanCodeStrToInt = Object.create(null);
 const scanCodeLowerCaseStrToInt = Object.create(null);
 /**
  * -1 if a ScanCode => KeyCode mapping depends on kb layout.
  */
-export const IMMUTABLE_CODE_TO_KEY_CODE = [];
-/**
- * -1 if a KeyCode => ScanCode mapping depends on kb layout.
- */
-export const IMMUTABLE_KEY_CODE_TO_CODE = [];
+const IMMUTABLE_CODE_TO_KEY_CODE = [];
 for (let i = 0; i <= 193 /* ScanCode.MAX_VALUE */; i++) {
     IMMUTABLE_CODE_TO_KEY_CODE[i] = -1 /* KeyCode.DependsOnKbLayout */;
-}
-for (let i = 0; i <= 132 /* KeyCode.MAX_VALUE */; i++) {
-    IMMUTABLE_KEY_CODE_TO_CODE[i] = -1 /* ScanCode.DependsOnKbLayout */;
 }
 (function () {
     // See https://msdn.microsoft.com/en-us/library/windows/desktop/dd375731(v=vs.85).aspx
@@ -284,19 +275,10 @@ for (let i = 0; i <= 132 /* KeyCode.MAX_VALUE */; i++) {
         const [immutable, scanCode, scanCodeStr, keyCode, keyCodeStr, eventKeyCode, vkey, usUserSettingsLabel, generalUserSettingsLabel] = mapping;
         if (!seenScanCode[scanCode]) {
             seenScanCode[scanCode] = true;
-            scanCodeIntToStr[scanCode] = scanCodeStr;
             scanCodeStrToInt[scanCodeStr] = scanCode;
             scanCodeLowerCaseStrToInt[scanCodeStr.toLowerCase()] = scanCode;
             if (immutable) {
                 IMMUTABLE_CODE_TO_KEY_CODE[scanCode] = keyCode;
-                if ((keyCode !== 0 /* KeyCode.Unknown */)
-                    && (keyCode !== 3 /* KeyCode.Enter */)
-                    && (keyCode !== 5 /* KeyCode.Ctrl */)
-                    && (keyCode !== 4 /* KeyCode.Shift */)
-                    && (keyCode !== 6 /* KeyCode.Alt */)
-                    && (keyCode !== 57 /* KeyCode.Meta */)) {
-                    IMMUTABLE_KEY_CODE_TO_CODE[keyCode] = scanCode;
-                }
             }
         }
         if (!seenKeyCode[keyCode]) {
@@ -311,14 +293,9 @@ for (let i = 0; i <= 132 /* KeyCode.MAX_VALUE */; i++) {
         if (eventKeyCode) {
             EVENT_KEY_CODE_MAP[eventKeyCode] = keyCode;
         }
-        if (vkey) {
-            NATIVE_WINDOWS_KEY_CODE_TO_KEY_CODE[vkey] = keyCode;
-        }
     }
-    // Manually added due to the exclusion above (due to duplication with NumpadEnter)
-    IMMUTABLE_KEY_CODE_TO_CODE[3 /* KeyCode.Enter */] = 46 /* ScanCode.Enter */;
 })();
-export var KeyCodeUtils;
+var KeyCodeUtils;
 (function (KeyCodeUtils) {
     function toString(keyCode) {
         return uiMap.keyCodeToStr(keyCode);
@@ -366,8 +343,9 @@ export var KeyCodeUtils;
     }
     KeyCodeUtils.toElectronAccelerator = toElectronAccelerator;
 })(KeyCodeUtils || (KeyCodeUtils = {}));
-export function KeyChord(firstPart, secondPart) {
+function KeyChord(firstPart, secondPart) {
     const chordPart = ((secondPart & 0x0000FFFF) << 16) >>> 0;
     return (firstPart | chordPart) >>> 0;
 }
-//# sourceMappingURL=keyCodes.js.map
+
+export { EVENT_KEY_CODE_MAP, IMMUTABLE_CODE_TO_KEY_CODE, KeyChord, KeyCodeUtils };

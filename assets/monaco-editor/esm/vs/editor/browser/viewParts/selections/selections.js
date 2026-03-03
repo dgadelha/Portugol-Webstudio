@@ -1,11 +1,22 @@
+import './selections.css';
+import { DynamicViewOverlay } from '../../view/dynamicViewOverlay.js';
+import '../../../../platform/theme/common/colorUtils.js';
+import '../../../../platform/theme/common/colors/baseColors.js';
+import '../../../../platform/theme/common/colors/chartsColors.js';
+import { editorSelectionForeground } from '../../../../platform/theme/common/colors/editorColors.js';
+import '../../../../platform/theme/common/colors/inputColors.js';
+import '../../../../platform/theme/common/colors/listColors.js';
+import '../../../../platform/theme/common/colors/menuColors.js';
+import '../../../../platform/theme/common/colors/minimapColors.js';
+import '../../../../platform/theme/common/colors/miscColors.js';
+import '../../../../platform/theme/common/colors/quickpickColors.js';
+import '../../../../platform/theme/common/colors/searchColors.js';
+import { registerThemingParticipant } from '../../../../platform/theme/common/themeService.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import './selections.css';
-import { DynamicViewOverlay } from '../../view/dynamicViewOverlay.js';
-import { editorSelectionForeground } from '../../../../platform/theme/common/colorRegistry.js';
-import { registerThemingParticipant } from '../../../../platform/theme/common/themeService.js';
 class HorizontalRangeWithStyle {
     constructor(other) {
         this.left = other.left;
@@ -29,7 +40,7 @@ function toStyled(item) {
 /**
  * This view part displays selected text to the user. Every line has its own selection overlay.
  */
-export class SelectionsOverlay extends DynamicViewOverlay {
+class SelectionsOverlay extends DynamicViewOverlay {
     static { this.SELECTION_CLASS_NAME = 'selected-text'; }
     static { this.SELECTION_TOP_LEFT = 'top-left-radius'; }
     static { this.SELECTION_BOTTOM_LEFT = 'bottom-left-radius'; }
@@ -323,4 +334,5 @@ registerThemingParticipant((theme, collector) => {
 function abs(n) {
     return n < 0 ? -n : n;
 }
-//# sourceMappingURL=selections.js.map
+
+export { SelectionsOverlay };

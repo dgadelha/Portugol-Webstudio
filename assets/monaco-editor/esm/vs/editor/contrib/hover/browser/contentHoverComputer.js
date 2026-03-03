@@ -1,10 +1,11 @@
+import { coalesce } from '../../../../base/common/arrays.js';
+import { AsyncIterableProducer } from '../../../../base/common/async.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { coalesce } from '../../../../base/common/arrays.js';
-import { AsyncIterableProducer } from '../../../../base/common/async.js';
-export class ContentHoverComputer {
+class ContentHoverComputer {
     constructor(_editor, _participants) {
         this._editor = _editor;
         this._participants = _participants;
@@ -66,4 +67,5 @@ export class ContentHoverComputer {
         return coalesce(result);
     }
 }
-//# sourceMappingURL=contentHoverComputer.js.map
+
+export { ContentHoverComputer };

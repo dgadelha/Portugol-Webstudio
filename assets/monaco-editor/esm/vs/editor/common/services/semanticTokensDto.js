@@ -1,9 +1,10 @@
+import { VSBuffer } from '../../../base/common/buffer.js';
+import { isLittleEndian } from '../../../base/common/platform.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { VSBuffer } from '../../../base/common/buffer.js';
-import * as platform from '../../../base/common/platform.js';
 function reverseEndianness(arr) {
     for (let i = 0, len = arr.length; i < len; i += 4) {
         // flip bytes 0<->3 and 1<->2
@@ -19,13 +20,13 @@ function reverseEndianness(arr) {
 }
 function toLittleEndianBuffer(arr) {
     const uint8Arr = new Uint8Array(arr.buffer, arr.byteOffset, arr.length * 4);
-    if (!platform.isLittleEndian()) {
+    if (!isLittleEndian()) {
         // the byte order must be changed
         reverseEndianness(uint8Arr);
     }
     return VSBuffer.wrap(uint8Arr);
 }
-export function encodeSemanticTokensDto(semanticTokens) {
+function encodeSemanticTokensDto(semanticTokens) {
     const dest = new Uint32Array(encodeSemanticTokensDtoSize(semanticTokens));
     let offset = 0;
     dest[offset++] = semanticTokens.id;
@@ -55,17 +56,17 @@ export function encodeSemanticTokensDto(semanticTokens) {
 }
 function encodeSemanticTokensDtoSize(semanticTokens) {
     let result = 0;
-    result += (+1 // id
+    result += (1 // id
         + 1 // type
     );
     if (semanticTokens.type === 'full') {
-        result += (+1 // data length
+        result += (1 // data length
             + semanticTokens.data.length);
     }
     else {
-        result += (+1 // delta count
+        result += (1 // delta count
         );
-        result += (+1 // start
+        result += (1 // start
             + 1 // deleteCount
             + 1 // data length
         ) * semanticTokens.deltas.length;
@@ -77,4 +78,5 @@ function encodeSemanticTokensDtoSize(semanticTokens) {
     }
     return result;
 }
-//# sourceMappingURL=semanticTokensDto.js.map
+
+export { encodeSemanticTokensDto };

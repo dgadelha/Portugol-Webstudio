@@ -1,16 +1,3 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
 import { timeout } from '../../../base/common/async.js';
 import { Disposable } from '../../../base/common/lifecycle.js';
 import { logOnceWebWorkerWarning } from '../../../base/common/worker/webWorker.js';
@@ -26,12 +13,26 @@ import { StopWatch } from '../../../base/common/stopwatch.js';
 import { canceled } from '../../../base/common/errors.js';
 import { ILanguageFeaturesService } from '../../common/services/languageFeatures.js';
 import { MovedText } from '../../common/diff/linesDiffComputer.js';
-import { DetailedLineRangeMapping, RangeMapping, LineRangeMapping } from '../../common/diff/rangeMapping.js';
+import { LineRangeMapping, DetailedLineRangeMapping, RangeMapping } from '../../common/diff/rangeMapping.js';
 import { LineRange } from '../../common/core/ranges/lineRange.js';
 import { mainWindow } from '../../../base/browser/window.js';
 import { WindowIntervalTimer } from '../../../base/browser/dom.js';
 import { WorkerTextModelSyncClient } from '../../common/services/textModelSync/textModelSync.impl.js';
 import { EditorWorkerHost } from '../../common/services/editorWorkerHost.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 /**
  * Stop the worker if it was not needed for 5 min.
  */
@@ -156,7 +157,6 @@ EditorWorkerService = __decorate([
     __param(4, ILanguageConfigurationService),
     __param(5, ILanguageFeaturesService)
 ], EditorWorkerService);
-export { EditorWorkerService };
 class WordBasedCompletionItemProvider {
     constructor(workerManager, configurationService, modelService, languageConfigurationService, logService) {
         this.languageConfigurationService = languageConfigurationService;
@@ -362,5 +362,5 @@ let EditorWorkerClient = class EditorWorkerClient extends Disposable {
 EditorWorkerClient = __decorate([
     __param(2, IModelService)
 ], EditorWorkerClient);
-export { EditorWorkerClient };
-//# sourceMappingURL=editorWorkerService.js.map
+
+export { EditorWorkerClient, EditorWorkerService };

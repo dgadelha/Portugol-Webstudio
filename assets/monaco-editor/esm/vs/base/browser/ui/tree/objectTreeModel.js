@@ -1,11 +1,12 @@
+import { IndexTreeModel } from './indexTreeModel.js';
+import { ObjectTreeElementCollapseState, TreeError } from './tree.js';
+import { Iterable } from '../../../common/iterator.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { IndexTreeModel } from './indexTreeModel.js';
-import { ObjectTreeElementCollapseState, TreeError } from './tree.js';
-import { Iterable } from '../../../common/iterator.js';
-export class ObjectTreeModel {
+class ObjectTreeModel {
     constructor(user, options = {}) {
         this.user = user;
         this.rootRef = null;
@@ -120,6 +121,26 @@ export class ObjectTreeModel {
         const location = this.getElementLocation(element);
         this.model.rerender(location);
     }
+    resort(element = null, recursive = true) {
+        if (!this.sorter) {
+            return;
+        }
+        const location = this.getElementLocation(element);
+        const node = this.model.getNode(location);
+        this._setChildren(location, this.resortChildren(node, recursive), {});
+    }
+    resortChildren(node, recursive, first = true) {
+        let childrenNodes = [...node.children];
+        if (recursive || first) {
+            childrenNodes = childrenNodes.sort(this.sorter.compare.bind(this.sorter));
+        }
+        return Iterable.map(childrenNodes, node => ({
+            element: node.element,
+            collapsible: node.collapsible,
+            collapsed: node.collapsed,
+            children: this.resortChildren(node, recursive, false)
+        }));
+    }
     getFirstElementChild(ref = null) {
         const location = this.getElementLocation(ref);
         return this.model.getFirstElementChild(location);
@@ -195,4 +216,5 @@ export class ObjectTreeModel {
         return this.model.getNodeLocation(node);
     }
 }
-//# sourceMappingURL=objectTreeModel.js.map
+
+export { ObjectTreeModel };

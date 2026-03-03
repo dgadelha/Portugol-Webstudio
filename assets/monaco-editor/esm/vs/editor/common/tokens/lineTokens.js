@@ -1,11 +1,12 @@
+import { TokenMetadata } from '../encodedTokenAttributes.js';
+import { OffsetRange } from '../core/ranges/offsetRange.js';
+import { onUnexpectedError } from '../../../base/common/errors.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { TokenMetadata } from '../encodedTokenAttributes.js';
-import { OffsetRange } from '../core/ranges/offsetRange.js';
-import { onUnexpectedError } from '../../../base/common/errors.js';
-export class LineTokens {
+class LineTokens {
     static createEmpty(lineContent, decoder) {
         const defaultMetadata = LineTokens.defaultTokenMetadata;
         const tokens = new Uint32Array(2);
@@ -307,7 +308,7 @@ class SliceLineTokens {
         }
     }
 }
-export function getStandardTokenTypeAtPosition(model, position) {
+function getStandardTokenTypeAtPosition(model, position) {
     const lineNumber = position.lineNumber;
     if (!model.tokenization.isCheapToTokenize(lineNumber)) {
         return undefined;
@@ -326,7 +327,7 @@ export function getStandardTokenTypeAtPosition(model, position) {
  *
  * TODO: Make this class more efficient (e.g. by using a Int32Array).
 */
-export class TokenArray {
+class TokenArray {
     static fromLineTokens(lineTokens) {
         const tokenInfo = [];
         for (let i = 0; i < lineTokens.getCount(); i++) {
@@ -380,7 +381,7 @@ export class TokenArray {
         return TokenArray.create(result);
     }
 }
-export class TokenInfo {
+class TokenInfo {
     constructor(length, metadata) {
         this.length = length;
         this.metadata = metadata;
@@ -389,7 +390,7 @@ export class TokenInfo {
 /**
  * TODO: Make this class more efficient (e.g. by using a Int32Array).
 */
-export class TokenArrayBuilder {
+class TokenArrayBuilder {
     constructor() {
         this._tokens = [];
     }
@@ -400,4 +401,5 @@ export class TokenArrayBuilder {
         return TokenArray.create(this._tokens);
     }
 }
-//# sourceMappingURL=lineTokens.js.map
+
+export { LineTokens, TokenArray, TokenArrayBuilder, TokenInfo, getStandardTokenTypeAtPosition };

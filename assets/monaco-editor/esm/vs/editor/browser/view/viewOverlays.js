@@ -1,12 +1,13 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { createFastDomNode } from '../../../base/browser/fastDomNode.js';
 import { applyFontInfo } from '../config/domFontInfo.js';
 import { VisibleLinesCollection } from './viewLayer.js';
 import { ViewPart } from './viewPart.js';
-export class ViewOverlays extends ViewPart {
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+class ViewOverlays extends ViewPart {
     constructor(context) {
         super(context);
         this._dynamicOverlays = [];
@@ -97,7 +98,7 @@ export class ViewOverlays extends ViewPart {
         this._visibleLines.renderLines(ctx.viewportData);
     }
 }
-export class ViewOverlayLine {
+class ViewOverlayLine {
     constructor(dynamicOverlays) {
         this._dynamicOverlays = dynamicOverlays;
         this._domNode = null;
@@ -148,7 +149,7 @@ export class ViewOverlayLine {
         }
     }
 }
-export class ContentViewOverlays extends ViewOverlays {
+class ContentViewOverlays extends ViewOverlays {
     constructor(context) {
         super(context);
         const options = this._context.configuration.options;
@@ -172,7 +173,7 @@ export class ContentViewOverlays extends ViewOverlays {
         this.domNode.setWidth(Math.max(ctx.scrollWidth, this._contentWidth));
     }
 }
-export class MarginViewOverlays extends ViewOverlays {
+class MarginViewOverlays extends ViewOverlays {
     constructor(context) {
         super(context);
         const options = this._context.configuration.options;
@@ -199,4 +200,5 @@ export class MarginViewOverlays extends ViewOverlays {
         this.domNode.setWidth(this._contentLeft);
     }
 }
-//# sourceMappingURL=viewOverlays.js.map
+
+export { ContentViewOverlays, MarginViewOverlays, ViewOverlayLine, ViewOverlays };

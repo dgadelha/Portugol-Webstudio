@@ -5,7 +5,7 @@
 /**
  * A position in the editor.
  */
-export class Position {
+class Position {
     constructor(lineNumber, column) {
         this.lineNumber = lineNumber;
         this.column = column;
@@ -127,7 +127,7 @@ export class Position {
      * Test if `obj` is an `IPosition`.
      */
     static isIPosition(obj) {
-        return (obj
+        return (!!obj
             && (typeof obj.lineNumber === 'number')
             && (typeof obj.column === 'number'));
     }
@@ -138,4 +138,5 @@ export class Position {
         };
     }
 }
-//# sourceMappingURL=position.js.map
+
+export { Position };

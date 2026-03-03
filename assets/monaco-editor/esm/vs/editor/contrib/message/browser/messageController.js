@@ -1,34 +1,35 @@
+import { renderMarkdown } from '../../../../base/browser/markdownRenderer.js';
+import { alert } from '../../../../base/browser/ui/aria/aria.js';
+import { Event } from '../../../../base/common/event.js';
+import { isMarkdownString } from '../../../../base/common/htmlContent.js';
+import { MutableDisposable, DisposableStore } from '../../../../base/common/lifecycle.js';
+import './messageController.css';
+import { EditorCommand, registerEditorCommand, registerEditorContribution } from '../../../browser/editorExtensions.js';
+import { Range } from '../../../common/core/range.js';
+import { openLinkFromMarkdown } from '../../../../platform/markdown/browser/markdownRenderer.js';
+import { localize } from '../../../../nls.js';
+import { RawContextKey, IContextKeyService } from '../../../../platform/contextkey/common/contextkey.js';
+import { IOpenerService } from '../../../../platform/opener/common/opener.js';
+import { isAncestor, getActiveElement, addDisposableListener, EventType } from '../../../../base/browser/dom.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __param = (this && this.__param) || function (paramIndex, decorator) {
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 var MessageController_1;
-import { renderMarkdown } from '../../../../base/browser/markdownRenderer.js';
-import { alert } from '../../../../base/browser/ui/aria/aria.js';
-import { Event } from '../../../../base/common/event.js';
-import { isMarkdownString } from '../../../../base/common/htmlContent.js';
-import { DisposableStore, MutableDisposable } from '../../../../base/common/lifecycle.js';
-import './messageController.css';
-import { EditorCommand, registerEditorCommand, registerEditorContribution } from '../../../browser/editorExtensions.js';
-import { Range } from '../../../common/core/range.js';
-import { openLinkFromMarkdown } from '../../../browser/widget/markdownRenderer/browser/markdownRenderer.js';
-import * as nls from '../../../../nls.js';
-import { IContextKeyService, RawContextKey } from '../../../../platform/contextkey/common/contextkey.js';
-import { IOpenerService } from '../../../../platform/opener/common/opener.js';
-import * as dom from '../../../../base/browser/dom.js';
 let MessageController = class MessageController {
     static { MessageController_1 = this; }
     static { this.ID = 'editor.contrib.messageController'; }
-    static { this.MESSAGE_VISIBLE = new RawContextKey('messageVisible', false, nls.localize(1277, 'Whether the editor is currently showing an inline message')); }
+    static { this.MESSAGE_VISIBLE = new RawContextKey('messageVisible', false, localize(1287, 'Whether the editor is currently showing an inline message')); }
     static get(editor) {
         return editor.getContribution(MessageController_1.ID);
     }
@@ -67,7 +68,7 @@ let MessageController = class MessageController {
             if (this._mouseOverMessage) {
                 return; // override when mouse over message
             }
-            if (this._messageWidget.value && dom.isAncestor(dom.getActiveElement(), this._messageWidget.value.getDomNode())) {
+            if (this._messageWidget.value && isAncestor(getActiveElement(), this._messageWidget.value.getDomNode())) {
                 return; // override when focus is inside the message
             }
             this.closeMessage();
@@ -75,8 +76,8 @@ let MessageController = class MessageController {
         this._messageListeners.add(this._editor.onDidChangeCursorPosition(() => this.closeMessage()));
         this._messageListeners.add(this._editor.onDidDispose(() => this.closeMessage()));
         this._messageListeners.add(this._editor.onDidChangeModel(() => this.closeMessage()));
-        this._messageListeners.add(dom.addDisposableListener(this._messageWidget.value.getDomNode(), dom.EventType.MOUSE_ENTER, () => this._mouseOverMessage = true, true));
-        this._messageListeners.add(dom.addDisposableListener(this._messageWidget.value.getDomNode(), dom.EventType.MOUSE_LEAVE, () => this._mouseOverMessage = false, true));
+        this._messageListeners.add(addDisposableListener(this._messageWidget.value.getDomNode(), EventType.MOUSE_ENTER, () => this._mouseOverMessage = true, true));
+        this._messageListeners.add(addDisposableListener(this._messageWidget.value.getDomNode(), EventType.MOUSE_LEAVE, () => this._mouseOverMessage = false, true));
         // close on mouse move
         let bounds;
         this._messageListeners.add(this._editor.onMouseMove(e => {
@@ -106,7 +107,6 @@ MessageController = MessageController_1 = __decorate([
     __param(1, IContextKeyService),
     __param(2, IOpenerService)
 ], MessageController);
-export { MessageController };
 const MessageCommand = EditorCommand.bindToContribution(MessageController.get);
 registerEditorCommand(new MessageCommand({
     id: 'leaveEditorMessage',
@@ -182,4 +182,5 @@ class MessageWidget {
     }
 }
 registerEditorContribution(MessageController.ID, MessageController, 4 /* EditorContributionInstantiation.Lazy */);
-//# sourceMappingURL=messageController.js.map
+
+export { MessageController };

@@ -1,11 +1,12 @@
+import { LinkedList } from '../../../../base/common/linkedList.js';
+import { Position } from '../../../common/core/position.js';
+import { Range } from '../../../common/core/range.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { LinkedList } from '../../../../base/common/linkedList.js';
-import { Position } from '../../../common/core/position.js';
-import { Range } from '../../../common/core/range.js';
-export class BracketSelectionRangeProvider {
+class BracketSelectionRangeProvider {
     async provideSelectionRanges(model, positions) {
         const result = [];
         for (const position of positions) {
@@ -144,4 +145,5 @@ export class BracketSelectionRangeProvider {
         }
     }
 }
-//# sourceMappingURL=bracketSelections.js.map
+
+export { BracketSelectionRangeProvider };

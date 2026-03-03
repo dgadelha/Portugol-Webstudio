@@ -1,19 +1,20 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { Emitter } from '../../../../../base/common/event.js';
 import { Disposable } from '../../../../../base/common/lifecycle.js';
 import { BracketInfo, BracketPairWithMinIndentationInfo } from '../../../textModelBracketPairs.js';
 import { TextEditInfo } from './beforeEditPositionMapper.js';
 import { LanguageAgnosticBracketTokens } from './brackets.js';
-import { lengthAdd, lengthGreaterThanEqual, lengthLessThan, lengthLessThanEqual, lengthsToRange, lengthZero, positionToLength, toLength } from './length.js';
+import { toLength, lengthZero, positionToLength, lengthsToRange, lengthAdd, lengthLessThanEqual, lengthGreaterThanEqual, lengthLessThan } from './length.js';
 import { parseDocument } from './parser.js';
 import { DenseKeyProvider } from './smallImmutableSet.js';
 import { FastTokenizer, TextBufferTokenizer } from './tokenizer.js';
 import { CallbackIterable } from '../../../../../base/common/arrays.js';
 import { combineTextEditInfos } from './combineTextEditInfos.js';
-export class BracketPairsTree extends Disposable {
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+class BracketPairsTree extends Disposable {
     didLanguageChange(languageId) {
         return this.brackets.didLanguageChange(languageId);
     }
@@ -92,9 +93,7 @@ export class BracketPairsTree extends Disposable {
      * @pure (only if isPure = true)
     */
     parseDocumentFromTextBuffer(edits, previousAst, immutable) {
-        // Is much faster if `isPure = false`.
-        const isPure = false;
-        const previousAstClone = isPure ? previousAst?.deepClone() : previousAst;
+        const previousAstClone = previousAst;
         const tokenizer = new TextBufferTokenizer(this.textModel, this.brackets);
         const result = parseDocument(tokenizer, edits, previousAstClone, immutable);
         return result;
@@ -340,4 +339,5 @@ function collectBracketPairs(node, nodeOffsetStart, nodeOffsetEnd, startOffset, 
     }
     return shouldContinue;
 }
-//# sourceMappingURL=bracketPairsTree.js.map
+
+export { BracketPairsTree };

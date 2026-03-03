@@ -1,29 +1,40 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-import * as dom from '../../../base/browser/dom.js';
-import * as domStylesheetsJs from '../../../base/browser/domStylesheets.js';
+import { isInShadowDOM } from '../../../base/browser/dom.js';
+import { createStyleSheet } from '../../../base/browser/domStylesheets.js';
 import { addMatchMediaChangeListener } from '../../../base/browser/browser.js';
 import { Color } from '../../../base/common/color.js';
 import { Emitter } from '../../../base/common/event.js';
 import { TokenizationRegistry } from '../../common/languages.js';
 import { TokenMetadata } from '../../common/encodedTokenAttributes.js';
-import { TokenTheme, generateTokensCSSForColorMap } from '../../common/languages/supports/tokenization.js';
-import { hc_black, hc_light, vs, vs_dark } from '../common/themes.js';
+import { generateTokensCSSForColorMap, TokenTheme } from '../../common/languages/supports/tokenization.js';
+import { hc_light, hc_black, vs_dark, vs } from '../common/themes.js';
 import { Registry } from '../../../platform/registry/common/platform.js';
-import { asCssVariableName, Extensions } from '../../../platform/theme/common/colorRegistry.js';
-import { Extensions as ThemingExtensions } from '../../../platform/theme/common/themeService.js';
+import { Extensions, asCssVariableName } from '../../../platform/theme/common/colorUtils.js';
+import '../../../platform/theme/common/colors/baseColors.js';
+import '../../../platform/theme/common/colors/chartsColors.js';
+import '../../../platform/theme/common/colors/editorColors.js';
+import '../../../platform/theme/common/colors/inputColors.js';
+import '../../../platform/theme/common/colors/listColors.js';
+import '../../../platform/theme/common/colors/menuColors.js';
+import '../../../platform/theme/common/colors/minimapColors.js';
+import '../../../platform/theme/common/colors/miscColors.js';
+import '../../../platform/theme/common/colors/quickpickColors.js';
+import '../../../platform/theme/common/colors/searchColors.js';
+import { Extensions as Extensions$1 } from '../../../platform/theme/common/themeService.js';
 import { Disposable } from '../../../base/common/lifecycle.js';
-import { ColorScheme, isDark, isHighContrast } from '../../../platform/theme/common/theme.js';
-import { getIconsStyleSheet, UnthemedProductIconTheme } from '../../../platform/theme/browser/iconsStyleSheet.js';
+import { isHighContrast, isDark, ColorScheme } from '../../../platform/theme/common/theme.js';
+import { UnthemedProductIconTheme, getIconsStyleSheet } from '../../../platform/theme/browser/iconsStyleSheet.js';
 import { mainWindow } from '../../../base/browser/window.js';
-export const VS_LIGHT_THEME_NAME = 'vs';
-export const VS_DARK_THEME_NAME = 'vs-dark';
-export const HC_BLACK_THEME_NAME = 'hc-black';
-export const HC_LIGHT_THEME_NAME = 'hc-light';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+const VS_LIGHT_THEME_NAME = 'vs';
+const VS_DARK_THEME_NAME = 'vs-dark';
+const HC_BLACK_THEME_NAME = 'hc-black';
+const HC_LIGHT_THEME_NAME = 'hc-light';
 const colorRegistry = Registry.as(Extensions.ColorContribution);
-const themingRegistry = Registry.as(ThemingExtensions.ThemingContribution);
+const themingRegistry = Registry.as(Extensions$1.ThemingContribution);
 class StandaloneTheme {
     constructor(name, standaloneThemeData) {
         this.semanticHighlighting = false;
@@ -175,7 +186,7 @@ function newBuiltInTheme(builtinTheme) {
     const themeData = getBuiltinRules(builtinTheme);
     return new StandaloneTheme(builtinTheme, themeData);
 }
-export class StandaloneThemeService extends Disposable {
+class StandaloneThemeService extends Disposable {
     constructor() {
         super();
         this._onColorThemeChange = this._register(new Emitter());
@@ -209,14 +220,14 @@ export class StandaloneThemeService extends Disposable {
         });
     }
     registerEditorContainer(domNode) {
-        if (dom.isInShadowDOM(domNode)) {
+        if (isInShadowDOM(domNode)) {
             return this._registerShadowDomContainer(domNode);
         }
         return this._registerRegularEditorContainer();
     }
     _registerRegularEditorContainer() {
         if (!this._globalStyleElement) {
-            this._globalStyleElement = domStylesheetsJs.createStyleSheet(undefined, style => {
+            this._globalStyleElement = createStyleSheet(undefined, style => {
                 style.className = 'monaco-colors';
                 style.textContent = this._allCSS;
             });
@@ -225,7 +236,7 @@ export class StandaloneThemeService extends Disposable {
         return Disposable.None;
     }
     _registerShadowDomContainer(domNode) {
-        const styleElement = domStylesheetsJs.createStyleSheet(domNode, style => {
+        const styleElement = createStyleSheet(domNode, style => {
             style.className = 'monaco-colors';
             style.textContent = this._allCSS;
         });
@@ -352,4 +363,5 @@ export class StandaloneThemeService extends Disposable {
         return this._builtInProductIconTheme;
     }
 }
-//# sourceMappingURL=standaloneThemeService.js.map
+
+export { HC_BLACK_THEME_NAME, HC_LIGHT_THEME_NAME, StandaloneThemeService, VS_DARK_THEME_NAME, VS_LIGHT_THEME_NAME };

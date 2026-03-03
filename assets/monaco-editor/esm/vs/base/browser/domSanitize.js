@@ -1,15 +1,15 @@
+import { Schemas } from '../common/network.js';
+import { reset } from './dom.js';
+import purify from './dompurify/dompurify.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { Schemas } from '../common/network.js';
-import { reset } from './dom.js';
-// eslint-disable-next-line no-restricted-imports
-import dompurify from './dompurify/dompurify.js';
 /**
  * List of safe, non-input html tags.
  */
-export const basicMarkupHtmlTags = Object.freeze([
+const basicMarkupHtmlTags = Object.freeze([
     'a',
     'abbr',
     'b',
@@ -78,7 +78,7 @@ export const basicMarkupHtmlTags = Object.freeze([
     'video',
     'wbr',
 ]);
-export const defaultAllowedAttrs = Object.freeze([
+const defaultAllowedAttrs = Object.freeze([
     'href',
     'target',
     'src',
@@ -124,7 +124,7 @@ function validateLink(value, allowedProtocols) {
  * attributes are valid.
  */
 function hookDomPurifyHrefAndSrcSanitizer(allowedLinkProtocols, allowedMediaProtocols) {
-    dompurify.addHook('afterSanitizeAttributes', (node) => {
+    purify.addHook('afterSanitizeAttributes', (node) => {
         // check all href/src attributes for validity
         for (const attr of ['href', 'src']) {
             if (node.hasAttribute(attr)) {
@@ -157,7 +157,7 @@ const defaultDomPurifyConfig = Object.freeze({
  *
  * @returns A sanitized string of html.
  */
-export function sanitizeHtml(untrusted, config) {
+function sanitizeHtml(untrusted, config) {
     return doSanitizeHtml(untrusted, config, 'trusted');
 }
 function doSanitizeHtml(untrusted, config, outputType) {
@@ -210,10 +210,10 @@ function doSanitizeHtml(untrusted, config, outputType) {
             allowRelativePaths: config?.allowRelativeMediaPaths ?? false
         });
         if (config?.replaceWithPlaintext) {
-            dompurify.addHook('uponSanitizeElement', replaceWithPlainTextHook);
+            purify.addHook('uponSanitizeElement', replaceWithPlainTextHook);
         }
         if (allowedAttrPredicates.size) {
-            dompurify.addHook('uponSanitizeAttribute', (node, e) => {
+            purify.addHook('uponSanitizeAttribute', (node, e) => {
                 const predicate = allowedAttrPredicates.get(e.attrName);
                 if (predicate) {
                     const result = predicate.shouldKeep(node, e);
@@ -231,48 +231,53 @@ function doSanitizeHtml(untrusted, config, outputType) {
             });
         }
         if (outputType === 'dom') {
-            return dompurify.sanitize(untrusted, {
+            return purify.sanitize(untrusted, {
                 ...resolvedConfig,
                 RETURN_DOM_FRAGMENT: true
             });
         }
         else {
-            return dompurify.sanitize(untrusted, {
+            return purify.sanitize(untrusted, {
                 ...resolvedConfig,
                 RETURN_TRUSTED_TYPE: true
-            });
+            }); // Cast from lib TrustedHTML to global TrustedHTML
         }
     }
     finally {
-        dompurify.removeAllHooks();
+        purify.removeAllHooks();
     }
 }
 const selfClosingTags = ['area', 'base', 'br', 'col', 'command', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'meta', 'param', 'source', 'track', 'wbr'];
-function replaceWithPlainTextHook(element, data, _config) {
+const replaceWithPlainTextHook = (node, data, _config) => {
     if (!data.allowedTags[data.tagName] && data.tagName !== 'body') {
-        const replacement = convertTagToPlaintext(element);
-        if (element.nodeType === Node.COMMENT_NODE) {
-            // Workaround for https://github.com/cure53/DOMPurify/issues/1005
-            // The comment will be deleted in the next phase. However if we try to remove it now, it will cause
-            // an exception. Instead we insert the text node before the comment.
-            element.parentElement?.insertBefore(replacement, element);
-        }
-        else {
-            element.parentElement?.replaceChild(replacement, element);
+        const replacement = convertTagToPlaintext(node);
+        if (replacement) {
+            if (node.nodeType === Node.COMMENT_NODE) {
+                // Workaround for https://github.com/cure53/DOMPurify/issues/1005
+                // The comment will be deleted in the next phase. However if we try to remove it now, it will cause
+                // an exception. Instead we insert the text node before the comment.
+                node.parentElement?.insertBefore(replacement, node);
+            }
+            else {
+                node.parentElement?.replaceChild(replacement, node);
+            }
         }
     }
-}
-export function convertTagToPlaintext(element) {
+};
+function convertTagToPlaintext(node) {
+    if (!node.ownerDocument) {
+        return;
+    }
     let startTagText;
     let endTagText;
-    if (element.nodeType === Node.COMMENT_NODE) {
-        startTagText = `<!--${element.textContent}-->`;
+    if (node.nodeType === Node.COMMENT_NODE) {
+        startTagText = `<!--${node.textContent}-->`;
     }
-    else {
-        const tagName = element.tagName.toLowerCase();
+    else if (node instanceof Element) {
+        const tagName = node.tagName.toLowerCase();
         const isSelfClosing = selfClosingTags.includes(tagName);
-        const attrString = element.attributes.length ?
-            ' ' + Array.from(element.attributes)
+        const attrString = node.attributes.length ?
+            ' ' + Array.from(node.attributes)
                 .map(attr => `${attr.name}="${attr.value}"`)
                 .join(' ')
             : '';
@@ -281,13 +286,16 @@ export function convertTagToPlaintext(element) {
             endTagText = `</${tagName}>`;
         }
     }
-    const fragment = document.createDocumentFragment();
-    const textNode = element.ownerDocument.createTextNode(startTagText);
-    fragment.appendChild(textNode);
-    while (element.firstChild) {
-        fragment.appendChild(element.firstChild);
+    else {
+        return;
     }
-    const endTagTextNode = endTagText ? element.ownerDocument.createTextNode(endTagText) : undefined;
+    const fragment = document.createDocumentFragment();
+    const textNode = node.ownerDocument.createTextNode(startTagText);
+    fragment.appendChild(textNode);
+    while (node.firstChild) {
+        fragment.appendChild(node.firstChild);
+    }
+    const endTagTextNode = endTagText ? node.ownerDocument.createTextNode(endTagText) : undefined;
     if (endTagTextNode) {
         fragment.appendChild(endTagTextNode);
     }
@@ -296,8 +304,9 @@ export function convertTagToPlaintext(element) {
 /**
  * Sanitizes the given `value` and reset the given `node` with it.
  */
-export function safeSetInnerHtml(node, untrusted, config) {
+function safeSetInnerHtml(node, untrusted, config) {
     const fragment = doSanitizeHtml(untrusted, config, 'dom');
     reset(node, fragment);
 }
-//# sourceMappingURL=domSanitize.js.map
+
+export { basicMarkupHtmlTags, convertTagToPlaintext, defaultAllowedAttrs, safeSetInnerHtml, sanitizeHtml };

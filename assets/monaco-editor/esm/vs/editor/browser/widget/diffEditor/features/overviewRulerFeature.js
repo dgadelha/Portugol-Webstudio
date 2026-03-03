@@ -1,27 +1,42 @@
+import { h, addStandardDisposableListener, EventType, addDisposableListener } from '../../../../../base/browser/dom.js';
+import { createFastDomNode } from '../../../../../base/browser/fastDomNode.js';
+import { ScrollbarState } from '../../../../../base/browser/ui/scrollbar/scrollbarState.js';
+import { Disposable } from '../../../../../base/common/lifecycle.js';
+import '../../../../../base/common/observableInternal/index.js';
+import { appendRemoveOnDispose } from '../utils.js';
+import { Position } from '../../../../common/core/position.js';
+import { OverviewRulerZone } from '../../../../common/viewModel/overviewZoneManager.js';
+import '../../../../../platform/theme/common/colorUtils.js';
+import '../../../../../platform/theme/common/colors/baseColors.js';
+import '../../../../../platform/theme/common/colors/chartsColors.js';
+import { diffOverviewRulerInserted, defaultInsertColor, diffInserted, diffOverviewRulerRemoved, defaultRemoveColor, diffRemoved } from '../../../../../platform/theme/common/colors/editorColors.js';
+import '../../../../../platform/theme/common/colors/inputColors.js';
+import '../../../../../platform/theme/common/colors/listColors.js';
+import '../../../../../platform/theme/common/colors/menuColors.js';
+import '../../../../../platform/theme/common/colors/minimapColors.js';
+import '../../../../../platform/theme/common/colors/miscColors.js';
+import '../../../../../platform/theme/common/colors/quickpickColors.js';
+import '../../../../../platform/theme/common/colors/searchColors.js';
+import { IThemeService } from '../../../../../platform/theme/common/themeService.js';
+import { observableFromEvent } from '../../../../../base/common/observableInternal/observables/observableFromEvent.js';
+import { derived } from '../../../../../base/common/observableInternal/observables/derived.js';
+import { autorunWithStore, autorun } from '../../../../../base/common/observableInternal/reactions/autorun.js';
+import { observableSignalFromEvent } from '../../../../../base/common/observableInternal/observables/observableSignalFromEvent.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __param = (this && this.__param) || function (paramIndex, decorator) {
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 var OverviewRulerFeature_1;
-import { EventType, addDisposableListener, addStandardDisposableListener, h } from '../../../../../base/browser/dom.js';
-import { createFastDomNode } from '../../../../../base/browser/fastDomNode.js';
-import { ScrollbarState } from '../../../../../base/browser/ui/scrollbar/scrollbarState.js';
-import { Disposable } from '../../../../../base/common/lifecycle.js';
-import { autorun, autorunWithStore, derived, observableFromEvent, observableSignalFromEvent } from '../../../../../base/common/observable.js';
-import { appendRemoveOnDispose } from '../utils.js';
-import { Position } from '../../../../common/core/position.js';
-import { OverviewRulerZone } from '../../../../common/viewModel/overviewZoneManager.js';
-import { defaultInsertColor, defaultRemoveColor, diffInserted, diffOverviewRulerInserted, diffOverviewRulerRemoved, diffRemoved } from '../../../../../platform/theme/common/colorRegistry.js';
-import { IThemeService } from '../../../../../platform/theme/common/themeService.js';
 let OverviewRulerFeature = class OverviewRulerFeature extends Disposable {
     static { OverviewRulerFeature_1 = this; }
     static { this.ONE_OVERVIEW_WIDTH = 15; }
@@ -149,5 +164,5 @@ let OverviewRulerFeature = class OverviewRulerFeature extends Disposable {
 OverviewRulerFeature = OverviewRulerFeature_1 = __decorate([
     __param(6, IThemeService)
 ], OverviewRulerFeature);
+
 export { OverviewRulerFeature };
-//# sourceMappingURL=overviewRulerFeature.js.map

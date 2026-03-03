@@ -1,7 +1,3 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { compareBy } from '../../../../base/common/arrays.js';
 import { assertFn, checkAdjacentItems } from '../../../../base/common/assert.js';
 import { BugIndicatingError } from '../../../../base/common/errors.js';
@@ -10,7 +6,12 @@ import { Position } from '../position.js';
 import { Range } from '../range.js';
 import { TextLength } from '../text/textLength.js';
 import { StringText } from '../text/abstractText.js';
-export class TextEdit {
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+class TextEdit {
     static fromStringEdit(edit, initialState) {
         const edits = edit.replacements.map(e => TextReplacement.fromStringReplacement(e, initialState));
         return new TextEdit(edits);
@@ -182,7 +183,7 @@ export class TextEdit {
         }).join('\n');
     }
 }
-export class TextReplacement {
+class TextReplacement {
     static joinReplacements(replacements, initialValue) {
         if (replacements.length === 0) {
             throw new BugIndicatingError();
@@ -264,4 +265,5 @@ function rangeFromPositions(start, end) {
     }
     return new Range(start.lineNumber, start.column, end.lineNumber, end.column);
 }
-//# sourceMappingURL=textEdit.js.map
+
+export { TextEdit, TextReplacement };

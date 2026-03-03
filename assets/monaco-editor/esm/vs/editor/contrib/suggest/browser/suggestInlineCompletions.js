@@ -1,38 +1,39 @@
+import { CancellationToken } from '../../../../base/common/cancellation.js';
+import { FuzzyScore } from '../../../../base/common/filters.js';
+import { Iterable } from '../../../../base/common/iterator.js';
+import { RefCountedDisposable, Disposable } from '../../../../base/common/lifecycle.js';
+import { ICodeEditorService } from '../../../browser/services/codeEditorService.js';
+import { Range } from '../../../common/core/range.js';
+import { registerEditorFeature } from '../../../common/editorFeatures.js';
+import { ILanguageFeaturesService } from '../../../common/services/languageFeatures.js';
+import { LineContext, CompletionModel } from './completionModel.js';
+import { QuickSuggestionsOptions, provideSuggestionItems, CompletionOptions } from './suggest.js';
+import { ISuggestMemoryService } from './suggestMemory.js';
+import { SuggestModel } from './suggestModel.js';
+import { WordDistance } from './wordDistance.js';
+import { IClipboardService } from '../../../../platform/clipboard/common/clipboardService.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __param = (this && this.__param) || function (paramIndex, decorator) {
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { CancellationToken } from '../../../../base/common/cancellation.js';
-import { FuzzyScore } from '../../../../base/common/filters.js';
-import { Iterable } from '../../../../base/common/iterator.js';
-import { Disposable, RefCountedDisposable } from '../../../../base/common/lifecycle.js';
-import { ICodeEditorService } from '../../../browser/services/codeEditorService.js';
-import { Range } from '../../../common/core/range.js';
-import { registerEditorFeature } from '../../../common/editorFeatures.js';
-import { ILanguageFeaturesService } from '../../../common/services/languageFeatures.js';
-import { CompletionModel, LineContext } from './completionModel.js';
-import { CompletionOptions, provideSuggestionItems, QuickSuggestionsOptions } from './suggest.js';
-import { ISuggestMemoryService } from './suggestMemory.js';
-import { SuggestModel } from './suggestModel.js';
-import { WordDistance } from './wordDistance.js';
-import { IClipboardService } from '../../../../platform/clipboard/common/clipboardService.js';
 class SuggestInlineCompletion {
-    constructor(range, insertText, filterText, additionalTextEdits, command, action, completion) {
+    constructor(range, insertText, filterText, additionalTextEdits, command, gutterMenuLinkAction, completion) {
         this.range = range;
         this.insertText = insertText;
         this.filterText = filterText;
         this.additionalTextEdits = additionalTextEdits;
         this.command = command;
-        this.action = action;
+        this.gutterMenuLinkAction = gutterMenuLinkAction;
         this.completion = completion;
     }
 }
@@ -187,6 +188,6 @@ SuggestInlineCompletions = __decorate([
     __param(2, ISuggestMemoryService),
     __param(3, ICodeEditorService)
 ], SuggestInlineCompletions);
-export { SuggestInlineCompletions };
 registerEditorFeature(SuggestInlineCompletions);
-//# sourceMappingURL=suggestInlineCompletions.js.map
+
+export { SuggestInlineCompletions };

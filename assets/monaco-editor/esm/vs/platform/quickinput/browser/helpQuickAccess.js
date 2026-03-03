@@ -1,23 +1,24 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-var HelpQuickAccessProvider_1;
 import { localize } from '../../../nls.js';
 import { Registry } from '../../registry/common/platform.js';
 import { DisposableStore } from '../../../base/common/lifecycle.js';
 import { IKeybindingService } from '../../keybinding/common/keybinding.js';
 import { Extensions } from '../common/quickAccess.js';
 import { IQuickInputService } from '../common/quickInput.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var HelpQuickAccessProvider_1;
 let HelpQuickAccessProvider = class HelpQuickAccessProvider {
     static { HelpQuickAccessProvider_1 = this; }
     static { this.PREFIX = '?'; }
@@ -62,7 +63,7 @@ let HelpQuickAccessProvider = class HelpQuickAccessProvider {
                 prefix,
                 label,
                 keybinding: helpEntry.commandId ? this.keybindingService.lookupKeybinding(helpEntry.commandId) : undefined,
-                ariaLabel: localize(1730, "{0}, {1}", label, helpEntry.description),
+                ariaLabel: localize(1747, "{0}, {1}", label, helpEntry.description),
                 description: helpEntry.description
             };
         });
@@ -72,5 +73,5 @@ HelpQuickAccessProvider = HelpQuickAccessProvider_1 = __decorate([
     __param(0, IQuickInputService),
     __param(1, IKeybindingService)
 ], HelpQuickAccessProvider);
+
 export { HelpQuickAccessProvider };
-//# sourceMappingURL=helpQuickAccess.js.map

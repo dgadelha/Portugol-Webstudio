@@ -1,11 +1,12 @@
+import { lastNonWhitespaceIndex } from '../../../../base/common/strings.js';
+import { EditOperation } from '../../../common/core/editOperation.js';
+import { Position } from '../../../common/core/position.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import * as strings from '../../../../base/common/strings.js';
-import { EditOperation } from '../../../common/core/editOperation.js';
-import { Position } from '../../../common/core/position.js';
-export class InsertFinalNewLineCommand {
+class InsertFinalNewLineCommand {
     constructor(selection) {
         this._selection = selection;
         this._selectionId = null;
@@ -25,13 +26,14 @@ export class InsertFinalNewLineCommand {
  * Generate edit operations for inserting a final new line if needed.
  * Returns undefined if no edit is needed.
  */
-export function insertFinalNewLine(model) {
+function insertFinalNewLine(model) {
     const lineCount = model.getLineCount();
     const lastLine = model.getLineContent(lineCount);
-    const lastLineIsEmptyOrWhitespace = strings.lastNonWhitespaceIndex(lastLine) === -1;
+    const lastLineIsEmptyOrWhitespace = lastNonWhitespaceIndex(lastLine) === -1;
     if (!lineCount || lastLineIsEmptyOrWhitespace) {
         return;
     }
     return EditOperation.insert(new Position(lineCount, model.getLineMaxColumn(lineCount)), model.getEOL());
 }
-//# sourceMappingURL=insertFinalNewLineCommand.js.map
+
+export { InsertFinalNewLineCommand, insertFinalNewLine };

@@ -1,17 +1,18 @@
+import { addDisposableListener } from '../../../../base/browser/dom.js';
+import { createFastDomNode } from '../../../../base/browser/fastDomNode.js';
+import { SmoothScrollableElement } from '../../../../base/browser/ui/scrollbar/scrollableElement.js';
+import { ViewPart, PartFingerprints } from '../../view/viewPart.js';
+import { getThemeTypeSelector } from '../../../../platform/theme/common/themeService.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import * as dom from '../../../../base/browser/dom.js';
-import { createFastDomNode } from '../../../../base/browser/fastDomNode.js';
-import { SmoothScrollableElement } from '../../../../base/browser/ui/scrollbar/scrollableElement.js';
-import { PartFingerprints, ViewPart } from '../../view/viewPart.js';
-import { getThemeTypeSelector } from '../../../../platform/theme/common/themeService.js';
 /**
  * The editor scrollbar built on VS Code's scrollable element that sits beside
  * the minimap.
  */
-export class EditorScrollbar extends ViewPart {
+class EditorScrollbar extends ViewPart {
     constructor(context, linesContent, viewDomNode, overflowGuardDomNode) {
         super(context);
         const options = this._context.configuration.options;
@@ -52,7 +53,7 @@ export class EditorScrollbar extends ViewPart {
         // changing the .scrollTop of this.linesContent
         const onBrowserDesperateReveal = (domNode, lookAtScrollTop, lookAtScrollLeft) => {
             const newScrollPosition = {};
-            if (lookAtScrollTop) {
+            {
                 const deltaTop = domNode.scrollTop;
                 if (deltaTop) {
                     newScrollPosition.scrollTop = this._context.viewLayout.getCurrentScrollTop() + deltaTop;
@@ -69,10 +70,10 @@ export class EditorScrollbar extends ViewPart {
             this._context.viewModel.viewLayout.setScrollPosition(newScrollPosition, 1 /* ScrollType.Immediate */);
         };
         // I've seen this happen both on the view dom node & on the lines content dom node.
-        this._register(dom.addDisposableListener(viewDomNode.domNode, 'scroll', (e) => onBrowserDesperateReveal(viewDomNode.domNode, true, true)));
-        this._register(dom.addDisposableListener(linesContent.domNode, 'scroll', (e) => onBrowserDesperateReveal(linesContent.domNode, true, false)));
-        this._register(dom.addDisposableListener(overflowGuardDomNode.domNode, 'scroll', (e) => onBrowserDesperateReveal(overflowGuardDomNode.domNode, true, false)));
-        this._register(dom.addDisposableListener(this.scrollbarDomNode.domNode, 'scroll', (e) => onBrowserDesperateReveal(this.scrollbarDomNode.domNode, true, false)));
+        this._register(addDisposableListener(viewDomNode.domNode, 'scroll', (e) => onBrowserDesperateReveal(viewDomNode.domNode, true, true)));
+        this._register(addDisposableListener(linesContent.domNode, 'scroll', (e) => onBrowserDesperateReveal(linesContent.domNode, true, false)));
+        this._register(addDisposableListener(overflowGuardDomNode.domNode, 'scroll', (e) => onBrowserDesperateReveal(overflowGuardDomNode.domNode, true, false)));
+        this._register(addDisposableListener(this.scrollbarDomNode.domNode, 'scroll', (e) => onBrowserDesperateReveal(this.scrollbarDomNode.domNode, true, false)));
     }
     dispose() {
         super.dispose();
@@ -146,4 +147,5 @@ export class EditorScrollbar extends ViewPart {
         this.scrollbar.renderNow();
     }
 }
-//# sourceMappingURL=editorScrollbar.js.map
+
+export { EditorScrollbar };

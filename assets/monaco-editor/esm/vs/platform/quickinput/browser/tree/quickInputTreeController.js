@@ -1,17 +1,4 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-import * as dom from '../../../../base/browser/dom.js';
+import { append, $ as $$1 } from '../../../../base/browser/dom.js';
 import { RenderIndentGuides } from '../../../../base/browser/ui/tree/abstractTree.js';
 import { Emitter } from '../../../../base/common/event.js';
 import { Disposable } from '../../../../base/common/lifecycle.js';
@@ -22,7 +9,22 @@ import { getParentNodeState } from './quickInputTree.js';
 import { QuickTreeAccessibilityProvider } from './quickInputTreeAccessibilityProvider.js';
 import { QuickInputTreeFilter } from './quickInputTreeFilter.js';
 import { QuickInputTreeRenderer } from './quickInputTreeRenderer.js';
-const $ = dom.$;
+import { QuickInputTreeSorter } from './quickInputTreeSorter.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+const $ = $$1;
 let QuickInputTreeController = class QuickInputTreeController extends Disposable {
     constructor(container, hoverDelegate, instantiationService) {
         super();
@@ -41,9 +43,10 @@ let QuickInputTreeController = class QuickInputTreeController extends Disposable
          * Event that is fired when a non-pickable item is clicked, indicating acceptance.
          */
         this.onDidAccept = this._onDidAccept.event;
-        this._container = dom.append(container, $('.quick-input-tree'));
+        this._container = append(container, $('.quick-input-tree'));
         this._renderer = this._register(this.instantiationService.createInstance(QuickInputTreeRenderer, hoverDelegate, this._onDidTriggerButton, this.onDidChangeCheckboxState));
         this._filter = this.instantiationService.createInstance(QuickInputTreeFilter);
+        this._sorter = this._register(new QuickInputTreeSorter());
         this._tree = this._register(this.instantiationService.createInstance((WorkbenchObjectTree), 'QuickInputTree', this._container, new QuickInputTreeDelegate(), [this._renderer], {
             accessibilityProvider: new QuickTreeAccessibilityProvider(this.onDidChangeCheckboxState),
             horizontalScrolling: false,
@@ -55,32 +58,7 @@ let QuickInputTreeController = class QuickInputTreeController extends Disposable
             expandOnDoubleClick: true,
             expandOnlyOnTwistieClick: true,
             disableExpandOnSpacebar: true,
-            sorter: {
-                compare: (a, b) => {
-                    if (a.label < b.label) {
-                        return -1;
-                    }
-                    else if (a.label > b.label) {
-                        return 1;
-                    }
-                    // use description to break ties
-                    if (a.description && b.description) {
-                        if (a.description < b.description) {
-                            return -1;
-                        }
-                        else if (a.description > b.description) {
-                            return 1;
-                        }
-                    }
-                    else if (a.description) {
-                        return -1;
-                    }
-                    else if (b.description) {
-                        return 1;
-                    }
-                    return 0;
-                }
-            },
+            sorter: this._sorter,
             filter: this._filter
         }));
         this.registerOnOpenListener();
@@ -94,8 +72,24 @@ let QuickInputTreeController = class QuickInputTreeController extends Disposable
     set displayed(value) {
         this._container.style.display = value ? '' : 'none';
     }
+    get sortByLabel() {
+        return this._sorter.sortByLabel;
+    }
+    set sortByLabel(value) {
+        this._sorter.sortByLabel = value;
+        this._tree.resort(null, true);
+    }
     getActiveDescendant() {
         return this._tree.getHTMLElement().getAttribute('aria-activedescendant');
+    }
+    updateFilterOptions(options) {
+        if (options.matchOnLabel !== undefined) {
+            this._filter.matchOnLabel = options.matchOnLabel;
+        }
+        if (options.matchOnDescription !== undefined) {
+            this._filter.matchOnDescription = options.matchOnDescription;
+        }
+        this._tree.refilter();
     }
     layout(maxHeight) {
         this._tree.getHTMLElement().style.maxHeight = maxHeight ? `${
@@ -183,5 +177,5 @@ let QuickInputTreeController = class QuickInputTreeController extends Disposable
 QuickInputTreeController = __decorate([
     __param(2, IInstantiationService)
 ], QuickInputTreeController);
+
 export { QuickInputTreeController };
-//# sourceMappingURL=quickInputTreeController.js.map

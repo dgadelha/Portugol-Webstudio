@@ -1,21 +1,22 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import './indentGuides.css';
 import { DynamicViewOverlay } from '../../view/dynamicViewOverlay.js';
-import { editorBracketHighlightingForeground1, editorBracketHighlightingForeground2, editorBracketHighlightingForeground3, editorBracketHighlightingForeground4, editorBracketHighlightingForeground5, editorBracketHighlightingForeground6, editorBracketPairGuideActiveBackground1, editorBracketPairGuideActiveBackground2, editorBracketPairGuideActiveBackground3, editorBracketPairGuideActiveBackground4, editorBracketPairGuideActiveBackground5, editorBracketPairGuideActiveBackground6, editorBracketPairGuideBackground1, editorBracketPairGuideBackground2, editorBracketPairGuideBackground3, editorBracketPairGuideBackground4, editorBracketPairGuideBackground5, editorBracketPairGuideBackground6, editorIndentGuide1, editorIndentGuide2, editorIndentGuide3, editorIndentGuide4, editorIndentGuide5, editorIndentGuide6, editorActiveIndentGuide1, editorActiveIndentGuide2, editorActiveIndentGuide3, editorActiveIndentGuide4, editorActiveIndentGuide5, editorActiveIndentGuide6 } from '../../../common/core/editorColorRegistry.js';
+import { editorBracketPairGuideActiveBackground1, editorBracketPairGuideBackground1, editorBracketHighlightingForeground1, editorBracketPairGuideActiveBackground2, editorBracketPairGuideBackground2, editorBracketHighlightingForeground2, editorBracketPairGuideActiveBackground3, editorBracketPairGuideBackground3, editorBracketHighlightingForeground3, editorBracketPairGuideActiveBackground4, editorBracketPairGuideBackground4, editorBracketHighlightingForeground4, editorBracketPairGuideActiveBackground5, editorBracketPairGuideBackground5, editorBracketHighlightingForeground5, editorBracketPairGuideActiveBackground6, editorBracketPairGuideBackground6, editorBracketHighlightingForeground6, editorActiveIndentGuide1, editorIndentGuide1, editorActiveIndentGuide2, editorIndentGuide2, editorActiveIndentGuide3, editorIndentGuide3, editorActiveIndentGuide4, editorIndentGuide4, editorActiveIndentGuide5, editorIndentGuide5, editorActiveIndentGuide6, editorIndentGuide6 } from '../../../common/core/editorColorRegistry.js';
 import { registerThemingParticipant } from '../../../../platform/theme/common/themeService.js';
 import { Position } from '../../../common/core/position.js';
 import { ArrayQueue } from '../../../../base/common/arrays.js';
 import { isDefined } from '../../../../base/common/types.js';
 import { BracketPairGuidesClassNames } from '../../../common/model/guidesTextModelPart.js';
-import { IndentGuide, HorizontalGuidesState } from '../../../common/textModelGuides.js';
+import { HorizontalGuidesState, IndentGuide } from '../../../common/textModelGuides.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
 /**
  * Indent guides are vertical lines that help identify the indentation level of
  * the code.
  */
-export class IndentGuidesOverlay extends DynamicViewOverlay {
+class IndentGuidesOverlay extends DynamicViewOverlay {
     constructor(context) {
         super();
         this._context = context;
@@ -249,4 +250,5 @@ registerThemingParticipant((theme, collector) => {
         collector.addRule(`.monaco-editor .lines-content .core-guide-indent.indent-active { box-shadow: 1px 0 0 0 var(--indent-color-active) inset; }`);
     }
 });
-//# sourceMappingURL=indentGuides.js.map
+
+export { IndentGuidesOverlay };

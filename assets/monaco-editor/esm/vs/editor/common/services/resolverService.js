@@ -1,3 +1,5 @@
 import { createDecorator } from '../../../platform/instantiation/common/instantiation.js';
-export const ITextModelService = createDecorator('textModelService');
-//# sourceMappingURL=resolverService.js.map
+
+const ITextModelService = createDecorator('textModelService');
+
+export { ITextModelService };

@@ -1,16 +1,17 @@
+import { IntervalTimer, TimeoutTimer } from '../../../base/common/async.js';
+import { illegalState } from '../../../base/common/errors.js';
+import { Event, Emitter } from '../../../base/common/event.js';
+import { IME } from '../../../base/common/ime.js';
+import { Disposable } from '../../../base/common/lifecycle.js';
+import { localize } from '../../../nls.js';
+import { NoMatchingKb } from './keybindingResolver.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { IntervalTimer, TimeoutTimer } from '../../../base/common/async.js';
-import { illegalState } from '../../../base/common/errors.js';
-import { Emitter, Event } from '../../../base/common/event.js';
-import { IME } from '../../../base/common/ime.js';
-import { Disposable } from '../../../base/common/lifecycle.js';
-import * as nls from '../../../nls.js';
-import { NoMatchingKb } from './keybindingResolver.js';
 const HIGH_FREQ_COMMANDS = /^(cursor|delete|undo|redo|tab|editor\.action\.clipboard)/;
-export class AbstractKeybindingService extends Disposable {
+class AbstractKeybindingService extends Disposable {
     get onDidUpdateKeybindings() {
         return this._onDidUpdateKeybindings ? this._onDidUpdateKeybindings.event : Event.None; // Sinon stubbing walks properties on prototype
     }
@@ -95,11 +96,11 @@ export class AbstractKeybindingService extends Disposable {
                 throw illegalState('impossible');
             case 1:
                 // TODO@ulugbekna: revise this message and the one below (at least, fix terminology)
-                this._currentChordStatusMessage = this._notificationService.status(nls.localize(1684, "({0}) was pressed. Waiting for second key of chord...", keypressLabel));
+                this._currentChordStatusMessage = this._notificationService.status(localize(1701, "({0}) was pressed. Waiting for second key of chord...", keypressLabel));
                 break;
             default: {
                 const fullKeypressLabel = this._currentChords.map(({ label }) => label).join(', ');
-                this._currentChordStatusMessage = this._notificationService.status(nls.localize(1685, "({0}) was pressed. Waiting for next key of chord...", fullKeypressLabel));
+                this._currentChordStatusMessage = this._notificationService.status(localize(1702, "({0}) was pressed. Waiting for next key of chord...", fullKeypressLabel));
             }
         }
         this._scheduleLeaveChordMode();
@@ -198,7 +199,7 @@ export class AbstractKeybindingService extends Disposable {
                 if (this.inChordMode) {
                     const currentChordsLabel = this._currentChords.map(({ label }) => label).join(', ');
                     this._log(`+ Leaving multi-chord mode: Nothing bound to "${currentChordsLabel}, ${keypressLabel}".`);
-                    this._notificationService.status(nls.localize(1686, "The key combination ({0}, {1}) is not a command.", currentChordsLabel, keypressLabel), { hideAfter: 10 * 1000 /* 10s */ });
+                    this._notificationService.status(localize(1703, "The key combination ({0}, {1}) is not a command.", currentChordsLabel, keypressLabel), { hideAfter: 10 * 1000 /* 10s */ });
                     this._leaveChordMode();
                     shouldPreventDefault = true;
                 }
@@ -217,7 +218,7 @@ export class AbstractKeybindingService extends Disposable {
                     if (this.inChordMode) {
                         const currentChordsLabel = this._currentChords.map(({ label }) => label).join(', ');
                         this._log(`+ Leaving chord mode: Nothing bound to "${currentChordsLabel}, ${keypressLabel}".`);
-                        this._notificationService.status(nls.localize(1687, "The key combination ({0}, {1}) is not a command.", currentChordsLabel, keypressLabel), { hideAfter: 10 * 1000 /* 10s */ });
+                        this._notificationService.status(localize(1704, "The key combination ({0}, {1}) is not a command.", currentChordsLabel, keypressLabel), { hideAfter: 10 * 1000 /* 10s */ });
                         this._leaveChordMode();
                         shouldPreventDefault = true;
                     }
@@ -281,4 +282,5 @@ class KeybindingModifierSet {
         }
     }
 }
-//# sourceMappingURL=abstractKeybindingService.js.map
+
+export { AbstractKeybindingService };

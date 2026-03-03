@@ -1,19 +1,6 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
 import { createStyleSheetFromObservable } from '../../../../../base/browser/domStylesheets.js';
 import { Disposable } from '../../../../../base/common/lifecycle.js';
-import { derived, mapObservableArrayCached, derivedDisposable, constObservable, derivedObservableWithCache } from '../../../../../base/common/observable.js';
+import '../../../../../base/common/observableInternal/index.js';
 import { IInstantiationService } from '../../../../../platform/instantiation/common/instantiation.js';
 import { observableCodeEditor } from '../../../../browser/observableCodeEditor.js';
 import { InlineCompletionsHintsWidget } from '../hintsWidget/inlineCompletionsHintsWidget.js';
@@ -21,6 +8,23 @@ import { convertItemsToStableObservables } from '../utils.js';
 import { GhostTextView } from './ghostText/ghostTextView.js';
 import { InlineCompletionViewKind } from './inlineEdits/inlineEditsViewInterface.js';
 import { InlineEditsViewAndDiffProducer } from './inlineEdits/inlineEditsViewProducer.js';
+import { derived, derivedDisposable } from '../../../../../base/common/observableInternal/observables/derived.js';
+import { mapObservableArrayCached, derivedObservableWithCache } from '../../../../../base/common/observableInternal/utils/utils.js';
+import { constObservable } from '../../../../../base/common/observableInternal/observables/constObservable.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 let InlineCompletionsView = class InlineCompletionsView extends Disposable {
     constructor(_editor, _model, _focusIsInMenu, _instantiationService) {
         super();
@@ -78,5 +82,5 @@ let InlineCompletionsView = class InlineCompletionsView extends Disposable {
 InlineCompletionsView = __decorate([
     __param(3, IInstantiationService)
 ], InlineCompletionsView);
+
 export { InlineCompletionsView };
-//# sourceMappingURL=inlineCompletionsView.js.map

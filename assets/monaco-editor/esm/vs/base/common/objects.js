@@ -1,9 +1,10 @@
+import { isUndefinedOrNull, isObject, isTypedArray } from './types.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { isTypedArray, isObject, isUndefinedOrNull } from './types.js';
-export function deepClone(obj) {
+function deepClone(obj) {
     if (!obj || typeof obj !== 'object') {
         return obj;
     }
@@ -16,7 +17,7 @@ export function deepClone(obj) {
     });
     return result;
 }
-export function deepFreeze(obj) {
+function deepFreeze(obj) {
     if (!obj || typeof obj !== 'object') {
         return obj;
     }
@@ -36,7 +37,7 @@ export function deepFreeze(obj) {
     return obj;
 }
 const _hasOwnProperty = Object.prototype.hasOwnProperty;
-export function cloneAndChange(obj, changer) {
+function cloneAndChange(obj, changer) {
     return _cloneAndChange(obj, changer, new Set());
 }
 function _cloneAndChange(obj, changer, seen) {
@@ -74,7 +75,7 @@ function _cloneAndChange(obj, changer, seen) {
  * Copies all properties of source into destination. The optional parameter "overwrite" allows to control
  * if existing properties on the destination should be overwritten or not. Defaults to true (overwrite).
  */
-export function mixin(destination, source, overwrite = true) {
+function mixin(destination, source, overwrite = true) {
     if (!isObject(destination)) {
         return source;
     }
@@ -97,7 +98,7 @@ export function mixin(destination, source, overwrite = true) {
     }
     return destination;
 }
-export function equals(one, other) {
+function equals(one, other) {
     if (one === other) {
         return true;
     }
@@ -147,4 +148,5 @@ export function equals(one, other) {
     }
     return true;
 }
-//# sourceMappingURL=objects.js.map
+
+export { cloneAndChange, deepClone, deepFreeze, equals, mixin };

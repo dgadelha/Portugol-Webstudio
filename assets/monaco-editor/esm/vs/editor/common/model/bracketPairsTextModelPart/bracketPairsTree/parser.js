@@ -1,17 +1,18 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-import { InvalidBracketAstNode, ListAstNode, PairAstNode, TextAstNode } from './ast.js';
+import { ListAstNode, TextAstNode, PairAstNode, InvalidBracketAstNode } from './ast.js';
 import { BeforeEditPositionMapper } from './beforeEditPositionMapper.js';
 import { SmallImmutableSet } from './smallImmutableSet.js';
 import { lengthIsZero, lengthLessThan } from './length.js';
 import { concat23Trees, concat23TreesOfSameHeight } from './concat23Trees.js';
 import { NodeReader } from './nodeReader.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
 /**
  * Non incrementally built ASTs are immutable.
 */
-export function parseDocument(tokenizer, edits, oldNode, createImmutableLists) {
+function parseDocument(tokenizer, edits, oldNode, createImmutableLists) {
     const parser = new Parser(tokenizer, edits, oldNode, createImmutableLists);
     return parser.parseDocument();
 }
@@ -116,4 +117,5 @@ class Parser {
         }
     }
 }
-//# sourceMappingURL=parser.js.map
+
+export { parseDocument };

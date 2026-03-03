@@ -1,9 +1,10 @@
+import { $ } from '../../dom.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { $ } from '../../dom.js';
-export class RowCache {
+class RowCache {
     constructor(renderers) {
         this.renderers = renderers;
         this.cache = new Map();
@@ -105,4 +106,5 @@ export class RowCache {
         return renderer;
     }
 }
-//# sourceMappingURL=rowCache.js.map
+
+export { RowCache };

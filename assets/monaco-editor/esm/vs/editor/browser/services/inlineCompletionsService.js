@@ -1,30 +1,31 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-import { WindowIntervalTimer } from '../../../base/browser/dom.js';
+import { TimeoutTimer } from '../../../base/common/async.js';
 import { BugIndicatingError } from '../../../base/common/errors.js';
 import { Emitter } from '../../../base/common/event.js';
 import { Disposable } from '../../../base/common/lifecycle.js';
 import { localize, localize2 } from '../../../nls.js';
 import { Action2 } from '../../../platform/actions/common/actions.js';
-import { ContextKeyExpr, IContextKeyService, RawContextKey } from '../../../platform/contextkey/common/contextkey.js';
+import { RawContextKey, IContextKeyService, ContextKeyExpr } from '../../../platform/contextkey/common/contextkey.js';
 import { registerSingleton } from '../../../platform/instantiation/common/extensions.js';
 import { createDecorator } from '../../../platform/instantiation/common/instantiation.js';
 import { IQuickInputService } from '../../../platform/quickinput/common/quickInput.js';
 import { IStorageService } from '../../../platform/storage/common/storage.js';
 import { ITelemetryService } from '../../../platform/telemetry/common/telemetry.js';
-export const IInlineCompletionsService = createDecorator('IInlineCompletionsService');
-const InlineCompletionsSnoozing = new RawContextKey('inlineCompletions.snoozed', false, localize(76, "Whether inline completions are currently snoozed"));
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+const IInlineCompletionsService = createDecorator('IInlineCompletionsService');
+const InlineCompletionsSnoozing = new RawContextKey('inlineCompletions.snoozed', false, localize(79, "Whether inline completions are currently snoozed"));
 let InlineCompletionsService = class InlineCompletionsService extends Disposable {
     get snoozeTimeLeft() {
         if (this._snoozeTimeEnd === undefined) {
@@ -40,7 +41,7 @@ let InlineCompletionsService = class InlineCompletionsService extends Disposable
         this.onDidChangeIsSnoozing = this._onDidChangeIsSnoozing.event; // 5 minutes
         this._snoozeTimeEnd = undefined;
         this._recentCompletionIds = [];
-        this._timer = this._register(new WindowIntervalTimer());
+        this._timer = this._register(new TimeoutTimer());
         const inlineCompletionsSnoozing = InlineCompletionsSnoozing.bindTo(this._contextKeyService);
         this._register(this.onDidChangeIsSnoozing(() => inlineCompletionsSnoozing.set(this.isSnoozing())));
     }
@@ -101,17 +102,16 @@ InlineCompletionsService = __decorate([
     __param(0, IContextKeyService),
     __param(1, ITelemetryService)
 ], InlineCompletionsService);
-export { InlineCompletionsService };
 registerSingleton(IInlineCompletionsService, InlineCompletionsService, 1 /* InstantiationType.Delayed */);
 const snoozeInlineSuggestId = 'editor.action.inlineSuggest.snooze';
 const cancelSnoozeInlineSuggestId = 'editor.action.inlineSuggest.cancelSnooze';
 const LAST_SNOOZE_DURATION_KEY = 'inlineCompletions.lastSnoozeDuration';
-export class SnoozeInlineCompletion extends Action2 {
+class SnoozeInlineCompletion extends Action2 {
     static { this.ID = snoozeInlineSuggestId; }
     constructor() {
         super({
             id: SnoozeInlineCompletion.ID,
-            title: localize2(78, "Snooze Inline Suggestions"),
+            title: localize2(81, "Snooze Inline Suggestions"),
             precondition: ContextKeyExpr.true(),
             f1: true,
         });
@@ -120,15 +120,15 @@ export class SnoozeInlineCompletion extends Action2 {
         const quickInputService = accessor.get(IQuickInputService);
         const inlineCompletionsService = accessor.get(IInlineCompletionsService);
         const storageService = accessor.get(IStorageService);
-        let durationMinutes;
+        let durationMs;
         if (args.length > 0 && typeof args[0] === 'number') {
-            durationMinutes = args[0];
+            durationMs = args[0] * 60_000;
         }
-        if (!durationMinutes) {
-            durationMinutes = await this.getDurationFromUser(quickInputService, storageService);
+        if (!durationMs) {
+            durationMs = await this.getDurationFromUser(quickInputService, storageService);
         }
-        if (durationMinutes) {
-            inlineCompletionsService.setSnoozeDuration(durationMinutes);
+        if (durationMs) {
+            inlineCompletionsService.setSnoozeDuration(durationMs);
         }
     }
     async getDurationFromUser(quickInputService, storageService) {
@@ -142,7 +142,7 @@ export class SnoozeInlineCompletion extends Action2 {
             { label: '60 minutes', id: '60', value: 3_600_000 }
         ];
         const picked = await quickInputService.pick(items, {
-            placeHolder: localize(77, "Select snooze duration for Code completions and NES"),
+            placeHolder: localize(80, "Select snooze duration for Inline Suggestions"),
             activeItem: items.find(item => item.value === lastSelectedDuration),
         });
         if (picked) {
@@ -152,12 +152,12 @@ export class SnoozeInlineCompletion extends Action2 {
         return undefined;
     }
 }
-export class CancelSnoozeInlineCompletion extends Action2 {
+class CancelSnoozeInlineCompletion extends Action2 {
     static { this.ID = cancelSnoozeInlineSuggestId; }
     constructor() {
         super({
             id: CancelSnoozeInlineCompletion.ID,
-            title: localize2(79, "Cancel Snooze Inline Suggestions"),
+            title: localize2(82, "Cancel Snooze Inline Suggestions"),
             precondition: InlineCompletionsSnoozing,
             f1: true,
         });
@@ -166,4 +166,5 @@ export class CancelSnoozeInlineCompletion extends Action2 {
         accessor.get(IInlineCompletionsService).cancelSnooze();
     }
 }
-//# sourceMappingURL=inlineCompletionsService.js.map
+
+export { CancelSnoozeInlineCompletion, IInlineCompletionsService, InlineCompletionsService, SnoozeInlineCompletion };

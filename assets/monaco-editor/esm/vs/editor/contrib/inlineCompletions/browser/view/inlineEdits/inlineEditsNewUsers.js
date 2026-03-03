@@ -1,22 +1,27 @@
+import { timeout } from '../../../../../../base/common/async.js';
+import { BugIndicatingError } from '../../../../../../base/common/errors.js';
+import { Disposable, MutableDisposable, DisposableStore } from '../../../../../../base/common/lifecycle.js';
+import '../../../../../../base/common/observableInternal/index.js';
+import { IConfigurationService } from '../../../../../../platform/configuration/common/configuration.js';
+import { IStorageService } from '../../../../../../platform/storage/common/storage.js';
+import { runOnChangeWithCancellationToken, runOnChange } from '../../../../../../base/common/observableInternal/utils/runOnChange.js';
+import { observableValue } from '../../../../../../base/common/observableInternal/observables/observableValue.js';
+import { derived } from '../../../../../../base/common/observableInternal/observables/derived.js';
+import { autorun, autorunWithStore } from '../../../../../../base/common/observableInternal/reactions/autorun.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __param = (this && this.__param) || function (paramIndex, decorator) {
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { timeout } from '../../../../../../base/common/async.js';
-import { BugIndicatingError } from '../../../../../../base/common/errors.js';
-import { Disposable, DisposableStore, MutableDisposable } from '../../../../../../base/common/lifecycle.js';
-import { autorun, autorunWithStore, derived, observableValue, runOnChange, runOnChangeWithCancellationToken } from '../../../../../../base/common/observable.js';
-import { IConfigurationService } from '../../../../../../platform/configuration/common/configuration.js';
-import { IStorageService } from '../../../../../../platform/storage/common/storage.js';
 var UserKind;
 (function (UserKind) {
     UserKind["FirstTime"] = "firstTime";
@@ -165,5 +170,5 @@ InlineEditsOnboardingExperience = __decorate([
     __param(4, IStorageService),
     __param(5, IConfigurationService)
 ], InlineEditsOnboardingExperience);
+
 export { InlineEditsOnboardingExperience };
-//# sourceMappingURL=inlineEditsNewUsers.js.map

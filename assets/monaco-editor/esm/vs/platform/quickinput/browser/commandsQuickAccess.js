@@ -1,20 +1,6 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-var AbstractCommandsQuickAccessProvider_1, CommandsHistory_1;
 import { toErrorMessage } from '../../../base/common/errorMessage.js';
 import { isCancellationError } from '../../../base/common/errors.js';
-import { matchesContiguousSubString, matchesPrefix, matchesWords, or } from '../../../base/common/filters.js';
+import { or, matchesContiguousSubString, matchesWords, matchesPrefix } from '../../../base/common/filters.js';
 import { createSingleCallFunction } from '../../../base/common/functional.js';
 import { Disposable } from '../../../base/common/lifecycle.js';
 import { LRUCache } from '../../../base/common/map.js';
@@ -27,8 +13,25 @@ import { IInstantiationService } from '../../instantiation/common/instantiation.
 import { IKeybindingService } from '../../keybinding/common/keybinding.js';
 import { ILogService } from '../../log/common/log.js';
 import { PickerQuickAccessProvider } from './pickerQuickAccess.js';
-import { IStorageService, WillSaveStateReason } from '../../storage/common/storage.js';
+import { WillSaveStateReason, IStorageService } from '../../storage/common/storage.js';
 import { ITelemetryService } from '../../telemetry/common/telemetry.js';
+import { removeAccents } from '../../../base/common/normalization.js';
+import { Categories } from '../../action/common/actionCommonCategories.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var AbstractCommandsQuickAccessProvider_1, CommandsHistory_1;
 let AbstractCommandsQuickAccessProvider = class AbstractCommandsQuickAccessProvider extends PickerQuickAccessProvider {
     static { AbstractCommandsQuickAccessProvider_1 = this; }
     static { this.PREFIX = '>'; }
@@ -61,11 +64,17 @@ let AbstractCommandsQuickAccessProvider = class AbstractCommandsQuickAccessProvi
                 .filter(score => score.score > AbstractCommandsQuickAccessProvider_1.TFIDF_THRESHOLD)
                 .slice(0, AbstractCommandsQuickAccessProvider_1.TFIDF_MAX_RESULTS);
         });
+        const noAccentsFilter = this.normalizeForFiltering(filter);
         // Filter
         const filteredCommandPicks = [];
         for (const commandPick of allCommandPicks) {
-            const labelHighlights = AbstractCommandsQuickAccessProvider_1.WORD_FILTER(filter, commandPick.label) ?? undefined;
-            const aliasHighlights = commandPick.commandAlias ? AbstractCommandsQuickAccessProvider_1.WORD_FILTER(filter, commandPick.commandAlias) ?? undefined : undefined;
+            commandPick.labelNoAccents ??= this.normalizeForFiltering(commandPick.label);
+            const labelHighlights = AbstractCommandsQuickAccessProvider_1.WORD_FILTER(noAccentsFilter, commandPick.labelNoAccents) ?? undefined;
+            let aliasHighlights;
+            if (commandPick.commandAlias) {
+                commandPick.aliasNoAccents ??= this.normalizeForFiltering(commandPick.commandAlias);
+                aliasHighlights = AbstractCommandsQuickAccessProvider_1.WORD_FILTER(noAccentsFilter, commandPick.aliasNoAccents) ?? undefined;
+            }
             // Add if matching in label or alias
             if (labelHighlights || aliasHighlights) {
                 commandPick.highlights = {
@@ -143,6 +152,15 @@ let AbstractCommandsQuickAccessProvider = class AbstractCommandsQuickAccessProvi
                     return 1; // other command was suggested so it wins over the command
                 }
             }
+            // if one is Developer and the other isn't, put non-Developer first
+            const isDeveloperA = commandPickA.commandCategory === Categories.Developer.value;
+            const isDeveloperB = commandPickB.commandCategory === Categories.Developer.value;
+            if (isDeveloperA && !isDeveloperB) {
+                return 1;
+            }
+            if (!isDeveloperA && isDeveloperB) {
+                return -1;
+            }
             // both commands were never used, so we sort by name
             return commandPickA.label.localeCompare(commandPickB.label);
         });
@@ -154,22 +172,22 @@ let AbstractCommandsQuickAccessProvider = class AbstractCommandsQuickAccessProvi
             const commandPick = filteredCommandPicks[i];
             // Separator: recently used
             if (i === 0 && this.commandsHistory.peek(commandPick.commandId)) {
-                commandPicks.push({ type: 'separator', label: localize(1723, "recently used") });
+                commandPicks.push({ type: 'separator', label: localize(1740, "recently used") });
                 addOtherSeparator = true;
             }
             if (addSuggestedSeparator && commandPick.tfIdfScore !== undefined) {
-                commandPicks.push({ type: 'separator', label: localize(1724, "similar commands") });
+                commandPicks.push({ type: 'separator', label: localize(1741, "similar commands") });
                 addSuggestedSeparator = false;
             }
             // Separator: commonly used
             if (addCommonlyUsedSeparator && commandPick.tfIdfScore === undefined && !this.commandsHistory.peek(commandPick.commandId) && this.options.suggestedCommandIds?.has(commandPick.commandId)) {
-                commandPicks.push({ type: 'separator', label: localize(1725, "commonly used") });
+                commandPicks.push({ type: 'separator', label: localize(1742, "commonly used") });
                 addOtherSeparator = true;
                 addCommonlyUsedSeparator = false;
             }
             // Separator: other commands
             if (addOtherSeparator && commandPick.tfIdfScore === undefined && !this.commandsHistory.peek(commandPick.commandId) && !this.options.suggestedCommandIds?.has(commandPick.commandId)) {
-                commandPicks.push({ type: 'separator', label: localize(1726, "other commands") });
+                commandPicks.push({ type: 'separator', label: localize(1743, "other commands") });
                 addOtherSeparator = false;
             }
             // Command
@@ -189,7 +207,7 @@ let AbstractCommandsQuickAccessProvider = class AbstractCommandsQuickAccessProvi
                 // Basically, if we haven't already added a separator, we add one before the additional picks so long
                 // as one hasn't been added to the start of the array.
                 if (addSuggestedSeparator && commandPicks[0]?.type !== 'separator') {
-                    commandPicks.unshift({ type: 'separator', label: localize(1727, "similar commands") });
+                    commandPicks.unshift({ type: 'separator', label: localize(1744, "similar commands") });
                 }
                 return commandPicks;
             })()
@@ -201,7 +219,7 @@ let AbstractCommandsQuickAccessProvider = class AbstractCommandsQuickAccessProvi
         }
         const keybinding = this.keybindingService.lookupKeybinding(commandPick.commandId);
         const ariaLabel = keybinding ?
-            localize(1728, "{0}, {1}", commandPick.label, keybinding.getAriaLabel()) :
+            localize(1745, "{0}, {1}", commandPick.label, keybinding.getAriaLabel()) :
             commandPick.label;
         return {
             ...commandPick,
@@ -224,7 +242,7 @@ let AbstractCommandsQuickAccessProvider = class AbstractCommandsQuickAccessProvi
                 }
                 catch (error) {
                     if (!isCancellationError(error)) {
-                        this.dialogService.error(localize(1729, "Command '{0}' resulted in an error", commandPick.label), toErrorMessage(error));
+                        this.dialogService.error(localize(1746, "Command '{0}' resulted in an error", commandPick.label), toErrorMessage(error));
                     }
                 }
             }
@@ -242,6 +260,23 @@ let AbstractCommandsQuickAccessProvider = class AbstractCommandsQuickAccessProvi
         }
         return chunk;
     }
+    /**
+     * Normalizes a string for filtering by removing accents, but only if
+     * the result has the same length, otherwise returns the original string.
+     */
+    normalizeForFiltering(value) {
+        const withoutAccents = removeAccents(value);
+        if (withoutAccents.length !== value.length) {
+            this.telemetryService.publicLog2('QuickAccess:FilterLengthMismatch', {
+                originalLength: value.length,
+                normalizedLength: withoutAccents.length
+            });
+            return value;
+        }
+        else {
+            return withoutAccents;
+        }
+    }
 };
 AbstractCommandsQuickAccessProvider = AbstractCommandsQuickAccessProvider_1 = __decorate([
     __param(1, IInstantiationService),
@@ -250,7 +285,6 @@ AbstractCommandsQuickAccessProvider = AbstractCommandsQuickAccessProvider_1 = __
     __param(4, ITelemetryService),
     __param(5, IDialogService)
 ], AbstractCommandsQuickAccessProvider);
-export { AbstractCommandsQuickAccessProvider };
 let CommandsHistory = class CommandsHistory extends Disposable {
     static { CommandsHistory_1 = this; }
     static { this.DEFAULT_COMMANDS_HISTORY_LENGTH = 50; }
@@ -350,5 +384,5 @@ CommandsHistory = CommandsHistory_1 = __decorate([
     __param(1, IConfigurationService),
     __param(2, ILogService)
 ], CommandsHistory);
-export { CommandsHistory };
-//# sourceMappingURL=commandsQuickAccess.js.map
+
+export { AbstractCommandsQuickAccessProvider, CommandsHistory };

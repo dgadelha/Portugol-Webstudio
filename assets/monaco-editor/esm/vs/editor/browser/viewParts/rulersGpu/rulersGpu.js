@@ -1,16 +1,18 @@
+import { ViewPart } from '../../view/viewPart.js';
+import { Color } from '../../../../base/common/color.js';
+import { editorRuler } from '../../../common/core/editorColorRegistry.js';
+import '../../../../base/common/observableInternal/index.js';
+import { autorun } from '../../../../base/common/observableInternal/reactions/autorun.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { ViewPart } from '../../view/viewPart.js';
-import { Color } from '../../../../base/common/color.js';
-import { editorRuler } from '../../../common/core/editorColorRegistry.js';
-import { autorun } from '../../../../base/common/observable.js';
 /**
  * Rulers are vertical lines that appear at certain columns in the editor. There can be >= 0 rulers
  * at a time.
  */
-export class RulersGpu extends ViewPart {
+class RulersGpu extends ViewPart {
     constructor(context, _viewGpuContext) {
         super(context);
         this._viewGpuContext = _viewGpuContext;
@@ -60,4 +62,5 @@ export class RulersGpu extends ViewPart {
         }
     }
 }
-//# sourceMappingURL=rulersGpu.js.map
+
+export { RulersGpu };

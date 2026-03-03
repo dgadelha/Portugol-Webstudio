@@ -1,33 +1,20 @@
+import { isMacintosh, isWindows } from '../../../base/common/platform.js';
+import { EditorZoom } from './editorZoom.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import * as platform from '../../../base/common/platform.js';
-import { EditorFontVariations, EDITOR_FONT_DEFAULTS } from './editorOptions.js';
-import { EditorZoom } from './editorZoom.js';
 /**
  * Determined from empirical observations.
  * @internal
  */
-export const GOLDEN_LINE_HEIGHT_RATIO = platform.isMacintosh ? 1.5 : 1.35;
+const GOLDEN_LINE_HEIGHT_RATIO = isMacintosh ? 1.5 : 1.35;
 /**
  * @internal
  */
-export const MINIMUM_LINE_HEIGHT = 8;
-export class BareFontInfo {
-    /**
-     * @internal
-     */
-    static createFromValidatedSettings(options, pixelRatio, ignoreEditorZoom) {
-        const fontFamily = options.get(58 /* EditorOption.fontFamily */);
-        const fontWeight = options.get(62 /* EditorOption.fontWeight */);
-        const fontSize = options.get(61 /* EditorOption.fontSize */);
-        const fontFeatureSettings = options.get(60 /* EditorOption.fontLigatures */);
-        const fontVariationSettings = options.get(63 /* EditorOption.fontVariations */);
-        const lineHeight = options.get(75 /* EditorOption.lineHeight */);
-        const letterSpacing = options.get(72 /* EditorOption.letterSpacing */);
-        return BareFontInfo._create(fontFamily, fontWeight, fontSize, fontFeatureSettings, fontVariationSettings, lineHeight, letterSpacing, pixelRatio, ignoreEditorZoom);
-    }
+const MINIMUM_LINE_HEIGHT = 8;
+class BareFontInfo {
     /**
      * @internal
      */
@@ -47,9 +34,9 @@ export class BareFontInfo {
         const editorZoomLevelMultiplier = 1 + (ignoreEditorZoom ? 0 : EditorZoom.getZoomLevel() * 0.1);
         fontSize *= editorZoomLevelMultiplier;
         lineHeight *= editorZoomLevelMultiplier;
-        if (fontVariationSettings === EditorFontVariations.TRANSLATE) {
+        if (fontVariationSettings === FONT_VARIATION_TRANSLATE) {
             if (fontWeight === 'normal' || fontWeight === 'bold') {
-                fontVariationSettings = EditorFontVariations.OFF;
+                fontVariationSettings = FONT_VARIATION_OFF;
             }
             else {
                 const fontWeightAsNumber = parseInt(fontWeight, 10);
@@ -94,7 +81,7 @@ export class BareFontInfo {
     getMassagedFontFamily() {
         const fallbackFontFamily = EDITOR_FONT_DEFAULTS.fontFamily;
         const fontFamily = BareFontInfo._wrapInQuotes(this.fontFamily);
-        if (fallbackFontFamily && this.fontFamily !== fallbackFontFamily) {
+        if (this.fontFamily !== fallbackFontFamily) {
             return `${fontFamily}, ${fallbackFontFamily}`;
         }
         return fontFamily;
@@ -112,8 +99,8 @@ export class BareFontInfo {
     }
 }
 // change this whenever `FontInfo` members are changed
-export const SERIALIZED_FONT_INFO_VERSION = 2;
-export class FontInfo extends BareFontInfo {
+const SERIALIZED_FONT_INFO_VERSION = 2;
+class FontInfo extends BareFontInfo {
     /**
      * @internal
      */
@@ -151,4 +138,35 @@ export class FontInfo extends BareFontInfo {
             && this.maxDigitWidth === other.maxDigitWidth);
     }
 }
-//# sourceMappingURL=fontInfo.js.map
+/**
+ * @internal
+ */
+const FONT_VARIATION_OFF = 'normal';
+/**
+ * @internal
+ */
+const FONT_VARIATION_TRANSLATE = 'translate';
+/**
+ * @internal
+ */
+const DEFAULT_WINDOWS_FONT_FAMILY = 'Consolas, \'Courier New\', monospace';
+/**
+ * @internal
+ */
+const DEFAULT_MAC_FONT_FAMILY = 'Menlo, Monaco, \'Courier New\', monospace';
+/**
+ * @internal
+ */
+const DEFAULT_LINUX_FONT_FAMILY = '\'Droid Sans Mono\', \'monospace\', monospace';
+/**
+ * @internal
+ */
+const EDITOR_FONT_DEFAULTS = {
+    fontFamily: (isMacintosh ? DEFAULT_MAC_FONT_FAMILY : (isWindows ? DEFAULT_WINDOWS_FONT_FAMILY : DEFAULT_LINUX_FONT_FAMILY)),
+    fontWeight: 'normal',
+    fontSize: (isMacintosh ? 12 : 14),
+    lineHeight: 0,
+    letterSpacing: 0,
+};
+
+export { BareFontInfo, DEFAULT_LINUX_FONT_FAMILY, DEFAULT_MAC_FONT_FAMILY, DEFAULT_WINDOWS_FONT_FAMILY, EDITOR_FONT_DEFAULTS, FONT_VARIATION_OFF, FONT_VARIATION_TRANSLATE, FontInfo, GOLDEN_LINE_HEIGHT_RATIO, MINIMUM_LINE_HEIGHT, SERIALIZED_FONT_INFO_VERSION };

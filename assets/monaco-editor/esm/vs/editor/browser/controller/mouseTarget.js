@@ -1,17 +1,18 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { PageCoordinates } from '../editorDom.js';
 import { PartFingerprints } from '../view/viewPart.js';
 import { ViewLine } from '../viewParts/viewLines/viewLine.js';
 import { Position } from '../../common/core/position.js';
-import { Range as EditorRange } from '../../common/core/range.js';
+import { Range } from '../../common/core/range.js';
 import { CursorColumns } from '../../common/core/cursorColumns.js';
-import * as dom from '../../../base/browser/dom.js';
+import { getWindow, getShadowRoot } from '../../../base/browser/dom.js';
 import { AtomicTabMoveOperations } from '../../common/cursor/cursorAtomicMoveOperations.js';
 import { TextDirection } from '../../common/model.js';
 import { Lazy } from '../../../base/common/lazy.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
 class UnknownHitTestResult {
     constructor(hitTarget = null) {
         this.hitTarget = hitTarget;
@@ -38,16 +39,16 @@ var HitTestResult;
     }
     HitTestResult.createFromDOMInfo = createFromDOMInfo;
 })(HitTestResult || (HitTestResult = {}));
-export class PointerHandlerLastRenderData {
+class PointerHandlerLastRenderData {
     constructor(lastViewCursorsRenderData, lastTextareaPosition) {
         this.lastViewCursorsRenderData = lastViewCursorsRenderData;
         this.lastTextareaPosition = lastTextareaPosition;
     }
 }
-export class MouseTarget {
+class MouseTarget {
     static _deduceRage(position, range = null) {
         if (!range && position) {
-            return new EditorRange(position.lineNumber, position.column, position.lineNumber, position.column);
+            return new Range(position.lineNumber, position.column, position.lineNumber, position.column);
         }
         return range ?? null;
     }
@@ -173,7 +174,7 @@ class ElementPath {
             && path[0] === 5 /* PartFingerprint.OverflowingOverlayWidgets */);
     }
 }
-export class HitTestContext {
+class HitTestContext {
     constructor(context, viewHelper, lastRenderData) {
         this.viewModel = context.viewModel;
         const options = context.configuration.options;
@@ -235,14 +236,14 @@ export class HitTestContext {
             const lineNumber = this._context.viewModel.getLineCount();
             const maxLineColumn = this._context.viewModel.getLineMaxColumn(lineNumber);
             return {
-                range: new EditorRange(lineNumber, maxLineColumn, lineNumber, maxLineColumn),
+                range: new Range(lineNumber, maxLineColumn, lineNumber, maxLineColumn),
                 isAfterLines: true
             };
         }
         const lineNumber = this._context.viewLayout.getLineNumberAtVerticalOffset(mouseVerticalOffset);
         const maxLineColumn = this._context.viewModel.getLineMaxColumn(lineNumber);
         return {
-            range: new EditorRange(lineNumber, 1, lineNumber, maxLineColumn),
+            range: new Range(lineNumber, 1, lineNumber, maxLineColumn),
             isAfterLines: false
         };
     }
@@ -360,7 +361,8 @@ class HitTestRequest extends BareHitTestRequest {
         return MouseTarget.createMargin(type, this.target, this._getMouseColumn(position), position, range, detail);
     }
     fulfillViewZone(type, position, detail) {
-        return MouseTarget.createViewZone(type, this.target, this._getMouseColumn(position), position, detail);
+        // Always return the usual mouse column for a view zone.
+        return MouseTarget.createViewZone(type, this.target, this._getMouseColumn(), position, detail);
     }
     fulfillContentText(position, range, detail) {
         return MouseTarget.createContentText(this.target, this._getMouseColumn(position), position, range, detail);
@@ -385,7 +387,7 @@ function createEmptyContentDataInLines(horizontalDistanceToText) {
         horizontalDistanceToText: horizontalDistanceToText
     };
 }
-export class MouseTargetFactory {
+class MouseTargetFactory {
     constructor(context, viewHelper) {
         this._context = context;
         this._viewHelper = viewHelper;
@@ -412,7 +414,7 @@ export class MouseTargetFactory {
                 // Snap to the nearest soft tab boundary if atomic soft tabs are enabled.
                 if (ctx.stickyTabStops && r.position !== null) {
                     const position = MouseTargetFactory._snapToSoftTabBoundary(r.position, ctx.viewModel);
-                    const range = EditorRange.fromPositions(position, position).plusRange(r.range);
+                    const range = Range.fromPositions(position, position).plusRange(r.range);
                     return request.fulfillContentText(position, range, r.detail);
                 }
             }
@@ -626,7 +628,7 @@ export class MouseTargetFactory {
                         injectedText: null,
                         mightBeForeignElement: false
                     };
-                    return request.fulfillContentText(position, EditorRange.fromPositions(position, position), detail);
+                    return request.fulfillContentText(position, Range.fromPositions(position, position), detail);
                 }
             }
         }
@@ -720,7 +722,7 @@ export class MouseTargetFactory {
             }
         }
         points.sort((a, b) => a.offset - b.offset);
-        const mouseCoordinates = request.pos.toClientCoordinates(dom.getWindow(ctx.viewDomNode));
+        const mouseCoordinates = request.pos.toClientCoordinates(getWindow(ctx.viewDomNode));
         const spanNodeClientRect = spanNode.getBoundingClientRect();
         const mouseIsOverSpanNode = (spanNodeClientRect.left <= mouseCoordinates.clientX && mouseCoordinates.clientX <= spanNodeClientRect.right);
         let rng = null;
@@ -728,7 +730,7 @@ export class MouseTargetFactory {
             const prev = points[i - 1];
             const curr = points[i];
             if (prev.offset <= request.mouseContentHorizontalOffset && request.mouseContentHorizontalOffset <= curr.offset) {
-                rng = new EditorRange(lineNumber, prev.column, lineNumber, curr.column);
+                rng = new Range(lineNumber, prev.column, lineNumber, curr.column);
                 // See https://github.com/microsoft/vscode/issues/152819
                 // Due to the use of zwj, the browser's hit test result is skewed towards the left
                 // Here we try to correct that if the mouse horizontal offset is closer to the right than the left
@@ -763,26 +765,29 @@ export class MouseTargetFactory {
                 adjustedPageY = request.editorPos.y + request.editorPos.height - 1;
             }
             const adjustedPage = new PageCoordinates(request.pos.x, adjustedPageY);
-            const r = this._actualDoHitTestWithCaretRangeFromPoint(ctx, adjustedPage.toClientCoordinates(dom.getWindow(ctx.viewDomNode)));
+            const r = this._actualDoHitTestWithCaretRangeFromPoint(ctx, adjustedPage.toClientCoordinates(getWindow(ctx.viewDomNode)));
             if (r.type === 1 /* HitTestResultType.Content */) {
                 return r;
             }
         }
         // Also try to hit test without the adjustment (for the edge cases that we are near the top or bottom)
-        return this._actualDoHitTestWithCaretRangeFromPoint(ctx, request.pos.toClientCoordinates(dom.getWindow(ctx.viewDomNode)));
+        return this._actualDoHitTestWithCaretRangeFromPoint(ctx, request.pos.toClientCoordinates(getWindow(ctx.viewDomNode)));
     }
     static _actualDoHitTestWithCaretRangeFromPoint(ctx, coords) {
-        const shadowRoot = dom.getShadowRoot(ctx.viewDomNode);
+        const shadowRoot = getShadowRoot(ctx.viewDomNode);
         let range;
         if (shadowRoot) {
+            // eslint-disable-next-line local/code-no-any-casts, @typescript-eslint/no-explicit-any
             if (typeof shadowRoot.caretRangeFromPoint === 'undefined') {
                 range = shadowCaretRangeFromPoint(shadowRoot, coords.clientX, coords.clientY);
             }
             else {
+                // eslint-disable-next-line local/code-no-any-casts, @typescript-eslint/no-explicit-any
                 range = shadowRoot.caretRangeFromPoint(coords.clientX, coords.clientY);
             }
         }
         else {
+            // eslint-disable-next-line local/code-no-any-casts, @typescript-eslint/no-explicit-any
             range = ctx.viewDomNode.ownerDocument.caretRangeFromPoint(coords.clientX, coords.clientY);
         }
         if (!range || !range.startContainer) {
@@ -821,6 +826,7 @@ export class MouseTargetFactory {
      * Most probably Gecko
      */
     static _doHitTestWithCaretPositionFromPoint(ctx, coords) {
+        // eslint-disable-next-line local/code-no-any-casts, @typescript-eslint/no-explicit-any
         const hitResult = ctx.viewDomNode.ownerDocument.caretPositionFromPoint(coords.clientX, coords.clientY);
         if (hitResult.offsetNode.nodeType === hitResult.offsetNode.TEXT_NODE) {
             // offsetNode is expected to be the token text
@@ -867,11 +873,13 @@ export class MouseTargetFactory {
     }
     static doHitTest(ctx, request) {
         let result = new UnknownHitTestResult();
+        // eslint-disable-next-line local/code-no-any-casts, @typescript-eslint/no-explicit-any
         if (typeof ctx.viewDomNode.ownerDocument.caretRangeFromPoint === 'function') {
             result = this._doHitTestWithCaretRangeFromPoint(ctx, request);
+            // eslint-disable-next-line local/code-no-any-casts, @typescript-eslint/no-explicit-any
         }
         else if (ctx.viewDomNode.ownerDocument.caretPositionFromPoint) {
-            result = this._doHitTestWithCaretPositionFromPoint(ctx, request.pos.toClientCoordinates(dom.getWindow(ctx.viewDomNode)));
+            result = this._doHitTestWithCaretPositionFromPoint(ctx, request.pos.toClientCoordinates(getWindow(ctx.viewDomNode)));
         }
         if (result.type === 1 /* HitTestResultType.Content */) {
             const injectedText = ctx.viewModel.getInjectedTextAt(result.position);
@@ -886,6 +894,7 @@ export class MouseTargetFactory {
 function shadowCaretRangeFromPoint(shadowRoot, x, y) {
     const range = document.createRange();
     // Get the element under the point
+    // eslint-disable-next-line local/code-no-any-casts, @typescript-eslint/no-explicit-any
     let el = shadowRoot.elementFromPoint(x, y);
     // When el is not null, it may be div.monaco-mouse-cursor-text Element, which has not childNodes, we don't need to handle it.
     if (el?.hasChildNodes()) {
@@ -898,7 +907,7 @@ function shadowCaretRangeFromPoint(shadowRoot, x, y) {
         // Grab its rect
         const rect = el.getBoundingClientRect();
         // And its font (the computed shorthand font property might be empty, see #3217)
-        const elWindow = dom.getWindow(el);
+        const elWindow = getWindow(el);
         const fontStyle = elWindow.getComputedStyle(el, null).getPropertyValue('font-style');
         const fontVariant = elWindow.getComputedStyle(el, null).getPropertyValue('font-variant');
         const fontWeight = elWindow.getComputedStyle(el, null).getPropertyValue('font-weight');
@@ -965,4 +974,5 @@ class CharWidthReader {
         return width;
     }
 }
-//# sourceMappingURL=mouseTarget.js.map
+
+export { HitTestContext, MouseTarget, MouseTargetFactory, PointerHandlerLastRenderData };

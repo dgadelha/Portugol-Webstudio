@@ -1,22 +1,31 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { equalsIfDefined, itemsEquals } from '../../base/common/equals.js';
 import { Disposable, DisposableStore, toDisposable } from '../../base/common/lifecycle.js';
-import { DebugLocation, TransactionImpl, autorun, autorunOpts, derived, derivedOpts, derivedWithSetter, observableFromEvent, observableSignal, observableValue, observableValueOpts } from '../../base/common/observable.js';
+import '../../base/common/observableInternal/index.js';
 import { LineRange } from '../common/core/ranges/lineRange.js';
 import { OffsetRange } from '../common/core/ranges/offsetRange.js';
 import { Position } from '../common/core/position.js';
 import { Selection } from '../common/core/selection.js';
 import { Point } from '../common/core/2d/point.js';
+import { TransactionImpl } from '../../base/common/observableInternal/transaction.js';
+import { derivedOpts, derivedWithSetter, derived } from '../../base/common/observableInternal/observables/derived.js';
+import { observableValue } from '../../base/common/observableInternal/observables/observableValue.js';
+import { observableFromEvent } from '../../base/common/observableInternal/observables/observableFromEvent.js';
+import { observableValueOpts } from '../../base/common/observableInternal/observables/observableValueOpts.js';
+import { observableSignal } from '../../base/common/observableInternal/observables/observableSignal.js';
+import { DebugLocation } from '../../base/common/observableInternal/debugLocation.js';
+import { autorunOpts, autorun } from '../../base/common/observableInternal/reactions/autorun.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
 /**
  * Returns a facade for the code editor that provides observables for various states/events.
 */
-export function observableCodeEditor(editor) {
+function observableCodeEditor(editor) {
     return ObservableCodeEditor.get(editor);
 }
-export class ObservableCodeEditor extends Disposable {
+class ObservableCodeEditor extends Disposable {
     static { this._map = new Map(); }
     /**
      * Make sure that editor is not disposed yet!
@@ -360,4 +369,5 @@ export class ObservableCodeEditor extends Disposable {
         });
     }
 }
-//# sourceMappingURL=observableCodeEditor.js.map
+
+export { ObservableCodeEditor, observableCodeEditor };

@@ -1,19 +1,5 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-var CodeActionController_1;
 import { getDomNodePagePosition } from '../../../../base/browser/dom.js';
-import * as aria from '../../../../base/browser/ui/aria/aria.js';
+import { status } from '../../../../base/browser/ui/aria/aria.js';
 import { onUnexpectedError } from '../../../../base/common/errors.js';
 import { HierarchicalKind } from '../../../../base/common/hierarchicalKind.js';
 import { Lazy } from '../../../../base/common/lazy.js';
@@ -26,19 +12,44 @@ import { IContextKeyService } from '../../../../platform/contextkey/common/conte
 import { IInstantiationService } from '../../../../platform/instantiation/common/instantiation.js';
 import { IMarkerService } from '../../../../platform/markers/common/markers.js';
 import { IEditorProgressService } from '../../../../platform/progress/common/progress.js';
-import { editorFindMatchHighlight, editorFindMatchHighlightBorder } from '../../../../platform/theme/common/colorRegistry.js';
+import '../../../../platform/theme/common/colorUtils.js';
+import '../../../../platform/theme/common/colors/baseColors.js';
+import '../../../../platform/theme/common/colors/chartsColors.js';
+import { editorFindMatchHighlight, editorFindMatchHighlightBorder } from '../../../../platform/theme/common/colors/editorColors.js';
+import '../../../../platform/theme/common/colors/inputColors.js';
+import '../../../../platform/theme/common/colors/listColors.js';
+import '../../../../platform/theme/common/colors/menuColors.js';
+import '../../../../platform/theme/common/colors/minimapColors.js';
+import '../../../../platform/theme/common/colors/miscColors.js';
+import '../../../../platform/theme/common/colors/quickpickColors.js';
+import '../../../../platform/theme/common/colors/searchColors.js';
 import { isHighContrast } from '../../../../platform/theme/common/theme.js';
 import { registerThemingParticipant } from '../../../../platform/theme/common/themeService.js';
 import { Position } from '../../../common/core/position.js';
 import { ModelDecorationOptions } from '../../../common/model/textModel.js';
 import { ILanguageFeaturesService } from '../../../common/services/languageFeatures.js';
 import { MessageController } from '../../message/browser/messageController.js';
-import { CodeActionKind, CodeActionTriggerSource } from '../common/types.js';
+import { CodeActionTriggerSource, CodeActionKind } from '../common/types.js';
 import { ApplyCodeActionReason, applyCodeAction } from './codeAction.js';
 import { CodeActionKeybindingResolver } from './codeActionKeybindingResolver.js';
 import { toMenuItems } from './codeActionMenu.js';
 import { CodeActionModel } from './codeActionModel.js';
 import { LightBulbWidget } from './lightBulbWidget.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var CodeActionController_1;
 const DECORATION_CLASS_NAME = 'quickfix-edit-highlight';
 let CodeActionController = class CodeActionController extends Disposable {
     static { CodeActionController_1 = this; }
@@ -78,7 +89,7 @@ let CodeActionController = class CodeActionController extends Disposable {
             const actionItem = actions.validActions[0];
             const command = actionItem.action.command;
             if (command && command.id === 'inlineChat.start') {
-                if (command.arguments && command.arguments.length >= 1) {
+                if (command.arguments && command.arguments.length >= 1 && command.arguments[0]) {
                     command.arguments[0] = { ...command.arguments[0], autoSend: false };
                 }
             }
@@ -267,7 +278,7 @@ let CodeActionController = class CodeActionController extends Disposable {
                         const diagnostic = diagnostics[0];
                         if (diagnostic.startLineNumber && diagnostic.startColumn) {
                             const selectionText = this._editor.getModel()?.getWordAtPosition({ lineNumber: diagnostic.startLineNumber, column: diagnostic.startColumn })?.word;
-                            aria.status(localize(859, "Context: {0} at line {1} and column {2}.", selectionText, diagnostic.startLineNumber, diagnostic.startColumn));
+                            status(localize(863, "Context: {0} at line {1} and column {2}.", selectionText, diagnostic.startLineNumber, diagnostic.startColumn));
                         }
                     }
                 }
@@ -310,7 +321,7 @@ let CodeActionController = class CodeActionController extends Disposable {
         if (options.includeDisabledActions && actions.validActions.length > 0 && actions.allActions.length !== actions.validActions.length) {
             resultActions.push(this._showDisabled ? {
                 id: 'hideMoreActions',
-                label: localize(860, 'Hide Disabled'),
+                label: localize(864, 'Hide Disabled'),
                 enabled: true,
                 tooltip: '',
                 class: undefined,
@@ -320,7 +331,7 @@ let CodeActionController = class CodeActionController extends Disposable {
                 }
             } : {
                 id: 'showMoreActions',
-                label: localize(861, 'Show Disabled'),
+                label: localize(865, 'Show Disabled'),
                 enabled: true,
                 tooltip: '',
                 class: undefined,
@@ -345,7 +356,6 @@ CodeActionController = CodeActionController_1 = __decorate([
     __param(9, IInstantiationService),
     __param(10, IEditorProgressService)
 ], CodeActionController);
-export { CodeActionController };
 registerThemingParticipant((theme, collector) => {
     const addBackgroundColorRule = (selector, color) => {
         if (color) {
@@ -358,4 +368,5 @@ registerThemingParticipant((theme, collector) => {
         collector.addRule(`.monaco-editor .quickfix-edit-highlight { border: 1px ${isHighContrast(theme.type) ? 'dotted' : 'solid'} ${findMatchHighlightBorder}; box-sizing: border-box; }`);
     }
 });
-//# sourceMappingURL=codeActionController.js.map
+
+export { CodeActionController };

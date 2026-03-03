@@ -1,13 +1,14 @@
+import { arrayInsert } from '../../../base/common/arrays.js';
+import { LineTokens } from './lineTokens.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import * as arrays from '../../../base/common/arrays.js';
-import { LineTokens } from './lineTokens.js';
 /**
  * Represents sparse tokens in a text model.
  */
-export class SparseTokensStore {
+class SparseTokensStore {
     constructor(languageIdCodec) {
         this._pieces = [];
         this._isComplete = false;
@@ -89,7 +90,7 @@ export class SparseTokensStore {
         }
         insertPosition = insertPosition || { index: this._pieces.length };
         if (pieces.length > 0) {
-            this._pieces = arrays.arrayInsert(this._pieces, insertPosition.index, pieces);
+            this._pieces = arrayInsert(this._pieces, insertPosition.index, pieces);
         }
         // console.log(`I HAVE ${this._pieces.length} pieces`);
         // console.log(`${this._pieces.map(p => p.toString()).join('\n')}`);
@@ -194,9 +195,16 @@ export class SparseTokensStore {
         return low;
     }
     acceptEdit(range, eolCount, firstLineLength, lastLineLength, firstCharCode) {
-        for (const piece of this._pieces) {
+        for (let i = 0; i < this._pieces.length; i++) {
+            const piece = this._pieces[i];
             piece.acceptEdit(range, eolCount, firstLineLength, lastLineLength, firstCharCode);
+            if (piece.isEmpty()) {
+                // Remove empty pieces
+                this._pieces.splice(i, 1);
+                i--;
+            }
         }
     }
 }
-//# sourceMappingURL=sparseTokensStore.js.map
+
+export { SparseTokensStore };

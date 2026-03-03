@@ -1,10 +1,11 @@
+import { equals } from '../../base/common/arrays.js';
+import { isBasicASCII, containsRTL } from '../../base/common/strings.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import * as arrays from '../../base/common/arrays.js';
-import * as strings from '../../base/common/strings.js';
-export class Viewport {
+class Viewport {
     constructor(top, left, width, height) {
         this._viewportBrand = undefined;
         this.top = top | 0;
@@ -13,13 +14,13 @@ export class Viewport {
         this.height = height | 0;
     }
 }
-export class MinimapLinesRenderingData {
+class MinimapLinesRenderingData {
     constructor(tabSize, data) {
         this.tabSize = tabSize;
         this.data = data;
     }
 }
-export class ViewLineData {
+class ViewLineData {
     constructor(content, continuesWithWrappedLine, minColumn, maxColumn, startVisibleColumn, tokens, inlineDecorations) {
         this._viewLineDataBrand = undefined;
         this.content = content;
@@ -31,7 +32,7 @@ export class ViewLineData {
         this.inlineDecorations = inlineDecorations;
     }
 }
-export class ViewLineRenderingData {
+class ViewLineRenderingData {
     constructor(minColumn, maxColumn, content, continuesWithWrappedLine, mightContainRTL, mightContainNonBasicASCII, tokens, inlineDecorations, tabSize, startVisibleColumn, textDirection, hasVariableFonts) {
         this.minColumn = minColumn;
         this.maxColumn = maxColumn;
@@ -48,25 +49,18 @@ export class ViewLineRenderingData {
     }
     static isBasicASCII(lineContent, mightContainNonBasicASCII) {
         if (mightContainNonBasicASCII) {
-            return strings.isBasicASCII(lineContent);
+            return isBasicASCII(lineContent);
         }
         return true;
     }
     static containsRTL(lineContent, isBasicASCII, mightContainRTL) {
         if (!isBasicASCII && mightContainRTL) {
-            return strings.containsRTL(lineContent);
+            return containsRTL(lineContent);
         }
         return false;
     }
 }
-export class ViewModelDecoration {
-    constructor(range, options) {
-        this._viewModelDecorationBrand = undefined;
-        this.range = range;
-        this.options = options;
-    }
-}
-export class OverviewRulerDecorationsGroup {
+class OverviewRulerDecorationsGroup {
     constructor(color, zIndex, 
     /**
      * Decorations are encoded in a number array using the following scheme:
@@ -94,10 +88,11 @@ export class OverviewRulerDecorationsGroup {
     static equals(a, b) {
         return (a.color === b.color
             && a.zIndex === b.zIndex
-            && arrays.equals(a.data, b.data));
+            && equals(a.data, b.data));
     }
     static equalsArr(a, b) {
-        return arrays.equals(a, b, OverviewRulerDecorationsGroup.equals);
+        return equals(a, b, OverviewRulerDecorationsGroup.equals);
     }
 }
-//# sourceMappingURL=viewModel.js.map
+
+export { MinimapLinesRenderingData, OverviewRulerDecorationsGroup, ViewLineData, ViewLineRenderingData, Viewport };

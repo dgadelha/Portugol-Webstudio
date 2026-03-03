@@ -1,4 +1,4 @@
-export const Mimes = Object.freeze({
+const Mimes = Object.freeze({
     text: 'text/plain',
     binary: 'application/octet-stream',
     unknown: 'application/unknown',
@@ -7,4 +7,5 @@ export const Mimes = Object.freeze({
     uriList: 'text/uri-list',
     html: 'text/html',
 });
-//# sourceMappingURL=mime.js.map
+
+export { Mimes };

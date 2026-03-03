@@ -1,34 +1,78 @@
-import '../../editor/editor.api.js';
-/*!-----------------------------------------------------------------------------
- * Copyright (c) Microsoft Corporation. All rights reserved.
- * Version: 0.54.0(7c2310116c57517348bbd868a21139f32454be22)
- * Released under the MIT license
- * https://github.com/microsoft/monaco-editor/blob/main/LICENSE.txt
- *-----------------------------------------------------------------------------*/
+import { typescriptVersion as typescriptVersion$1 } from './lib/typescriptServicesMetadata.js';
+import '../../editor/browser/coreCommands.js';
+import '../../editor/browser/widget/codeEditor/codeEditorWidget.js';
+import '../../editor/browser/widget/diffEditor/diffEditor.contribution.js';
+import '../../editor/contrib/anchorSelect/browser/anchorSelect.js';
+import '../../editor/contrib/bracketMatching/browser/bracketMatching.js';
+import '../../editor/contrib/caretOperations/browser/caretOperations.js';
+import '../../editor/contrib/caretOperations/browser/transpose.js';
+import '../../editor/contrib/clipboard/browser/clipboard.js';
+import '../../editor/contrib/codeAction/browser/codeActionContributions.js';
+import '../../editor/contrib/codelens/browser/codelensController.js';
+import '../../editor/contrib/colorPicker/browser/colorPickerContribution.js';
+import '../../editor/contrib/comment/browser/comment.js';
+import '../../editor/contrib/contextmenu/browser/contextmenu.js';
+import '../../editor/contrib/cursorUndo/browser/cursorUndo.js';
+import '../../editor/contrib/dnd/browser/dnd.js';
+import '../../editor/contrib/dropOrPasteInto/browser/copyPasteContribution.js';
+import '../../editor/contrib/dropOrPasteInto/browser/dropIntoEditorContribution.js';
+import '../../editor/contrib/find/browser/findController.js';
+import '../../editor/contrib/folding/browser/folding.js';
+import '../../editor/contrib/fontZoom/browser/fontZoom.js';
+import '../../editor/contrib/format/browser/formatActions.js';
+import '../../editor/contrib/documentSymbols/browser/documentSymbols.js';
+import '../../editor/contrib/inlineCompletions/browser/inlineCompletions.contribution.js';
+import '../../editor/contrib/inlineProgress/browser/inlineProgress.js';
+import '../../editor/contrib/gotoSymbol/browser/goToCommands.js';
+import '../../editor/contrib/gotoSymbol/browser/link/goToDefinitionAtPosition.js';
+import '../../editor/contrib/gotoError/browser/gotoError.js';
+import '../../editor/contrib/gpu/browser/gpuActions.js';
+import '../../editor/contrib/hover/browser/hoverContribution.js';
+import '../../editor/contrib/indentation/browser/indentation.js';
+import '../../editor/contrib/inlayHints/browser/inlayHintsContribution.js';
+import '../../editor/contrib/inPlaceReplace/browser/inPlaceReplace.js';
+import '../../editor/contrib/insertFinalNewLine/browser/insertFinalNewLine.js';
+import '../../editor/contrib/lineSelection/browser/lineSelection.js';
+import '../../editor/contrib/linesOperations/browser/linesOperations.js';
+import '../../editor/contrib/linkedEditing/browser/linkedEditing.js';
+import '../../editor/contrib/links/browser/links.js';
+import '../../editor/contrib/longLinesHelper/browser/longLinesHelper.js';
+import '../../editor/contrib/middleScroll/browser/middleScroll.contribution.js';
+import '../../editor/contrib/multicursor/browser/multicursor.js';
+import '../../editor/contrib/parameterHints/browser/parameterHints.js';
+import '../../editor/contrib/placeholderText/browser/placeholderText.contribution.js';
+import '../../editor/contrib/rename/browser/rename.js';
+import '../../editor/contrib/sectionHeaders/browser/sectionHeaders.js';
+import '../../editor/contrib/semanticTokens/browser/documentSemanticTokens.js';
+import '../../editor/contrib/semanticTokens/browser/viewportSemanticTokens.js';
+import '../../editor/contrib/smartSelect/browser/smartSelect.js';
+import '../../editor/contrib/snippet/browser/snippetController2.js';
+import '../../editor/contrib/stickyScroll/browser/stickyScrollContribution.js';
+import '../../editor/contrib/suggest/browser/suggestController.js';
+import '../../editor/contrib/suggest/browser/suggestInlineCompletions.js';
+import '../../editor/contrib/tokenization/browser/tokenization.js';
+import '../../editor/contrib/toggleTabFocusMode/browser/toggleTabFocusMode.js';
+import '../../editor/contrib/unicodeHighlighter/browser/unicodeHighlighter.js';
+import '../../editor/contrib/unusualLineTerminators/browser/unusualLineTerminators.js';
+import '../../editor/contrib/wordHighlighter/browser/wordHighlighter.js';
+import '../../editor/contrib/wordOperations/browser/wordOperations.js';
+import '../../editor/contrib/wordPartOperations/browser/wordPartOperations.js';
+import '../../editor/contrib/readOnlyMessage/browser/contribution.js';
+import '../../editor/contrib/diffEditorBreadcrumbs/browser/contribution.js';
+import '../../editor/contrib/floatingMenu/browser/floatingMenu.contribution.js';
+import '../../editor/common/standaloneStrings.js';
+import '../../base/browser/ui/codicons/codicon/codicon.css';
+import '../../base/browser/ui/codicons/codicon/codicon-modifiers.css';
+import '../../editor/standalone/browser/iPadShowKeyboard/iPadShowKeyboard.js';
+import '../../editor/standalone/browser/inspectTokens/inspectTokens.js';
+import '../../editor/standalone/browser/quickAccess/standaloneHelpQuickAccess.js';
+import '../../editor/standalone/browser/quickAccess/standaloneGotoLineQuickAccess.js';
+import '../../editor/standalone/browser/quickAccess/standaloneGotoSymbolQuickAccess.js';
+import '../../editor/standalone/browser/quickAccess/standaloneCommandsQuickAccess.js';
+import '../../editor/standalone/browser/referenceSearch/standaloneReferenceSearch.js';
+import '../../editor/standalone/browser/toggleHighContrast/toggleHighContrast.js';
+import { languages, Emitter } from '../../editor/editor.api2.js';
 
-var __defProp = Object.defineProperty;
-var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
-var __getOwnPropNames = Object.getOwnPropertyNames;
-var __hasOwnProp = Object.prototype.hasOwnProperty;
-var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
-      if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
-  }
-  return to;
-};
-var __reExport = (target, mod, secondTarget) => (__copyProps(target, mod, "default"), secondTarget && __copyProps(secondTarget, mod, "default"));
-
-// src/language/typescript/lib/typescriptServicesMetadata.ts
-var typescriptVersion = "5.4.5";
-
-// src/fillers/monaco-editor-core.ts
-var monaco_editor_core_exports = {};
-__reExport(monaco_editor_core_exports, monaco_editor_core_star);
-import * as monaco_editor_core_star from "../../editor/editor.api.js";
-
-// src/language/typescript/monaco.contribution.ts
 var ModuleKind = /* @__PURE__ */ ((ModuleKind2) => {
   ModuleKind2[ModuleKind2["None"] = 0] = "None";
   ModuleKind2[ModuleKind2["CommonJS"] = 1] = "CommonJS";
@@ -72,10 +116,10 @@ var ModuleResolutionKind = /* @__PURE__ */ ((ModuleResolutionKind2) => {
   ModuleResolutionKind2[ModuleResolutionKind2["NodeJs"] = 2] = "NodeJs";
   return ModuleResolutionKind2;
 })(ModuleResolutionKind || {});
-var LanguageServiceDefaultsImpl = class {
+class LanguageServiceDefaultsImpl {
   constructor(compilerOptions, diagnosticsOptions, workerOptions, inlayHintsOptions, modeConfiguration) {
-    this._onDidChange = new monaco_editor_core_exports.Emitter();
-    this._onDidExtraLibsChange = new monaco_editor_core_exports.Emitter();
+    this._onDidChange = new Emitter();
+    this._onDidExtraLibsChange = new Emitter();
     this._extraLibs = /* @__PURE__ */ Object.create(null);
     this._removedExtraLibs = /* @__PURE__ */ Object.create(null);
     this._eagerModelSync = false;
@@ -208,9 +252,9 @@ var LanguageServiceDefaultsImpl = class {
     this._modeConfiguration = modeConfiguration || /* @__PURE__ */ Object.create(null);
     this._onDidChange.fire(void 0);
   }
-};
-var typescriptVersion2 = typescriptVersion;
-var modeConfigurationDefault = {
+}
+const typescriptVersion = typescriptVersion$1;
+const modeConfigurationDefault = {
   completionItems: true,
   hovers: true,
   documentSymbols: true,
@@ -225,62 +269,34 @@ var modeConfigurationDefault = {
   codeActions: true,
   inlayHints: true
 };
-var typescriptDefaults = new LanguageServiceDefaultsImpl(
+const typescriptDefaults = new LanguageServiceDefaultsImpl(
   { allowNonTsExtensions: true, target: 99 /* Latest */ },
   { noSemanticValidation: false, noSyntaxValidation: false, onlyVisible: false },
   {},
   {},
   modeConfigurationDefault
 );
-var javascriptDefaults = new LanguageServiceDefaultsImpl(
+const javascriptDefaults = new LanguageServiceDefaultsImpl(
   { allowNonTsExtensions: true, allowJs: true, target: 99 /* Latest */ },
   { noSemanticValidation: true, noSyntaxValidation: false, onlyVisible: false },
   {},
   {},
   modeConfigurationDefault
 );
-var getTypeScriptWorker = () => {
+const getTypeScriptWorker = () => {
   return getMode().then((mode) => mode.getTypeScriptWorker());
 };
-var getJavaScriptWorker = () => {
+const getJavaScriptWorker = () => {
   return getMode().then((mode) => mode.getJavaScriptWorker());
 };
-monaco_editor_core_exports.languages.typescript = {
-  ModuleKind,
-  JsxEmit,
-  NewLineKind,
-  ScriptTarget,
-  ModuleResolutionKind,
-  typescriptVersion: typescriptVersion2,
-  typescriptDefaults,
-  javascriptDefaults,
-  getTypeScriptWorker,
-  getJavaScriptWorker
-};
 function getMode() {
-  if (false) {
-    return new Promise((resolve, reject) => {
-      __require(["vs/language/typescript/tsMode"], resolve, reject);
-    });
-  } else {
-    return import("./tsMode.js");
-  }
+  return import('./tsMode.js');
 }
-monaco_editor_core_exports.languages.onLanguage("typescript", () => {
+languages.onLanguage("typescript", () => {
   return getMode().then((mode) => mode.setupTypeScript(typescriptDefaults));
 });
-monaco_editor_core_exports.languages.onLanguage("javascript", () => {
+languages.onLanguage("javascript", () => {
   return getMode().then((mode) => mode.setupJavaScript(javascriptDefaults));
 });
-export {
-  JsxEmit,
-  ModuleKind,
-  ModuleResolutionKind,
-  NewLineKind,
-  ScriptTarget,
-  getJavaScriptWorker,
-  getTypeScriptWorker,
-  javascriptDefaults,
-  typescriptDefaults,
-  typescriptVersion2 as typescriptVersion
-};
+
+export { JsxEmit, ModuleKind, ModuleResolutionKind, NewLineKind, ScriptTarget, getJavaScriptWorker, getTypeScriptWorker, javascriptDefaults, typescriptDefaults, typescriptVersion };

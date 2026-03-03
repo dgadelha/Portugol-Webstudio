@@ -1,25 +1,11 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-var GhostTextView_1;
 import { createTrustedTypesPolicy } from '../../../../../../base/browser/trustedTypes.js';
-import { renderIcon } from '../../../../../../base/browser/ui/iconLabel/iconLabels.js';
-import { Codicon } from '../../../../../../base/common/codicons.js';
+import '../../../../../../base/browser/ui/iconLabel/iconLabels.js';
+import '../../../../../../base/common/codicons.js';
 import { Emitter, Event } from '../../../../../../base/common/event.js';
 import { createHotClass } from '../../../../../../base/common/hotReloadHelpers.js';
-import { Disposable, DisposableStore, MutableDisposable, toDisposable } from '../../../../../../base/common/lifecycle.js';
-import { autorun, autorunWithStore, constObservable, derived, observableSignalFromEvent, observableValue } from '../../../../../../base/common/observable.js';
-import * as strings from '../../../../../../base/common/strings.js';
+import { Disposable, toDisposable, MutableDisposable, DisposableStore } from '../../../../../../base/common/lifecycle.js';
+import '../../../../../../base/common/observableInternal/index.js';
+import { containsRTL, isBasicASCII } from '../../../../../../base/common/strings.js';
 import { applyFontInfo } from '../../../../../browser/config/domFontInfo.js';
 import { observableCodeEditor } from '../../../../../browser/observableCodeEditor.js';
 import { EditorFontLigatures } from '../../../../../common/config/editorOptions.js';
@@ -31,21 +17,37 @@ import { ILanguageService } from '../../../../../common/languages/language.js';
 import { InjectedTextCursorStops } from '../../../../../common/model.js';
 import { LineTokens } from '../../../../../common/tokens/lineTokens.js';
 import { LineDecoration } from '../../../../../common/viewLayout/lineDecorations.js';
-import { RenderLineInput, renderViewLine } from '../../../../../common/viewLayout/viewLineRenderer.js';
+import { renderViewLine, RenderLineInput } from '../../../../../common/viewLayout/viewLineRenderer.js';
 import { GhostTextReplacement } from '../../model/ghostText.js';
 import { RangeSingleLine } from '../../../../../common/core/ranges/rangeSingleLine.js';
 import { ColumnRange } from '../../../../../common/core/ranges/columnRange.js';
-import { addDisposableListener, getWindow, isHTMLElement, n } from '../../../../../../base/browser/dom.js';
+import { addDisposableListener, getWindow, isHTMLElement } from '../../../../../../base/browser/dom.js';
 import './ghostTextView.css';
 import { StandardMouseEvent } from '../../../../../../base/browser/mouseEvent.js';
 import { CodeEditorWidget } from '../../../../../browser/widget/codeEditor/codeEditorWidget.js';
 import { TokenWithTextArray } from '../../../../../common/tokens/tokenWithTextArray.js';
 import { sum } from '../../../../../../base/common/arrays.js';
-const USE_SQUIGGLES_FOR_WARNING = true;
+import { observableValue } from '../../../../../../base/common/observableInternal/observables/observableValue.js';
+import { derived } from '../../../../../../base/common/observableInternal/observables/derived.js';
+import { autorunWithStore, autorun } from '../../../../../../base/common/observableInternal/reactions/autorun.js';
+import { observableSignalFromEvent } from '../../../../../../base/common/observableInternal/observables/observableSignalFromEvent.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 const GHOST_TEXT_CLASS_NAME = 'ghost-text';
 let GhostTextView = class GhostTextView extends Disposable {
-    static { GhostTextView_1 = this; }
-    static { this.hot = createHotClass(GhostTextView_1); }
+    static { this.hot = createHotClass(this); }
     constructor(_editor, _model, _options, _shouldKeepCursorStable, _isClickable, _languageService) {
         super();
         this._editor = _editor;
@@ -75,7 +77,7 @@ let GhostTextView = class GhostTextView extends Disposable {
             if (this._useSyntaxHighlighting.read(reader)) {
                 extraClasses.push('syntax-highlighted');
             }
-            if (USE_SQUIGGLES_FOR_WARNING && this._warningState.read(reader)) {
+            if (this._warningState.read(reader)) {
                 extraClasses.push('warning');
             }
             const extraClassNames = extraClasses.map(c => ` ${c}`).join('');
@@ -217,50 +219,13 @@ let GhostTextView = class GhostTextView extends Disposable {
             }));
         }
         this._register(autorunWithStore((reader, store) => {
-            if (USE_SQUIGGLES_FOR_WARNING) {
+            {
                 return;
             }
-            const state = this._warningState.read(reader);
-            if (!state) {
-                return;
-            }
-            const lineHeight = this._editorObs.getOption(75 /* EditorOption.lineHeight */);
-            store.add(this._editorObs.createContentWidget({
-                position: constObservable({
-                    position: new Position(state.lineNumber, Number.MAX_SAFE_INTEGER),
-                    preference: [0 /* ContentWidgetPositionPreference.EXACT */],
-                    positionAffinity: 1 /* PositionAffinity.Right */,
-                }),
-                allowEditorOverflow: false,
-                domNode: n.div({
-                    class: 'ghost-text-view-warning-widget',
-                    style: {
-                        width: lineHeight,
-                        height: lineHeight,
-                        marginLeft: 4,
-                        color: 'orange',
-                    },
-                    ref: (dom) => {
-                        dom.ghostTextViewWarningWidgetData = { range: Range.fromPositions(state.position) };
-                    }
-                }, [
-                    n.div({
-                        class: 'ghost-text-view-warning-widget-icon',
-                        style: {
-                            width: '100%',
-                            height: '100%',
-                            display: 'flex',
-                            alignContent: 'center',
-                            alignItems: 'center',
-                        }
-                    }, [
-                        renderIcon((state.icon && 'id' in state.icon) ? state.icon : Codicon.warning),
-                    ])
-                ]).keepUpdated(store).element,
-            }));
         }));
     }
     static getWarningWidgetContext(domNode) {
+        // eslint-disable-next-line local/code-no-any-casts
         const data = domNode.ghostTextViewWarningWidgetData;
         if (data) {
             return data;
@@ -274,10 +239,9 @@ let GhostTextView = class GhostTextView extends Disposable {
         return this._additionalLinesWidget.viewZoneId === viewZoneId;
     }
 };
-GhostTextView = GhostTextView_1 = __decorate([
+GhostTextView = __decorate([
     __param(5, ILanguageService)
 ], GhostTextView);
-export { GhostTextView };
 class GhostTextAttachedData {
     constructor(owner) {
         this.owner = owner;
@@ -334,7 +298,7 @@ function computeGhostTextViewData(ghostText, textModel, ghostTextClassName) {
         additionalLinesOriginalSuffix,
     };
 }
-export class AdditionalLinesWidget extends Disposable {
+class AdditionalLinesWidget extends Disposable {
     get viewZoneId() { return this._viewZoneInfo?.viewZoneId; }
     get viewZoneHeight() { return this._viewZoneHeight; }
     constructor(_editor, _lines, _shouldKeepCursorStable, _isClickable) {
@@ -469,9 +433,9 @@ function renderLines(domNode, tabSize, lines, opts, isClickable) {
         sb.appendString(String(i * lineHeight));
         sb.appendString('px;width:1000000px;">');
         const line = lineTokens.getLineContent();
-        const isBasicASCII = strings.isBasicASCII(line);
-        const containsRTL = strings.containsRTL(line);
-        renderViewLine(new RenderLineInput((fontInfo.isMonospace && !disableMonospaceOptimizations), fontInfo.canUseHalfwidthRightwardsArrow, line, false, isBasicASCII, containsRTL, 0, lineTokens, lineData.decorations, tabSize, 0, fontInfo.spaceWidth, fontInfo.middotWidth, fontInfo.wsmiddotWidth, stopRenderingLineAfter, renderWhitespace, renderControlCharacters, fontLigatures !== EditorFontLigatures.OFF, null, null, 0), sb);
+        const isBasicASCII$1 = isBasicASCII(line);
+        const containsRTL$1 = containsRTL(line);
+        renderViewLine(new RenderLineInput((fontInfo.isMonospace && !disableMonospaceOptimizations), fontInfo.canUseHalfwidthRightwardsArrow, line, false, isBasicASCII$1, containsRTL$1, 0, lineTokens, lineData.decorations, tabSize, 0, fontInfo.spaceWidth, fontInfo.middotWidth, fontInfo.wsmiddotWidth, stopRenderingLineAfter, renderWhitespace, renderControlCharacters, fontLigatures !== EditorFontLigatures.OFF, null, null, 0), sb);
         sb.appendString('</div>');
     }
     sb.appendString('</div>');
@@ -480,5 +444,6 @@ function renderLines(domNode, tabSize, lines, opts, isClickable) {
     const trustedhtml = ttPolicy ? ttPolicy.createHTML(html) : html;
     domNode.innerHTML = trustedhtml;
 }
-export const ttPolicy = createTrustedTypesPolicy('editorGhostText', { createHTML: value => value });
-//# sourceMappingURL=ghostTextView.js.map
+const ttPolicy = createTrustedTypesPolicy('editorGhostText', { createHTML: value => value });
+
+export { AdditionalLinesWidget, GhostTextView, ttPolicy };

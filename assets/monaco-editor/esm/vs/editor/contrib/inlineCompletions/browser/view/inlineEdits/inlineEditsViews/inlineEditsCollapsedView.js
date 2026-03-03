@@ -1,27 +1,26 @@
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { n } from '../../../../../../../base/browser/dom.js';
 import { Emitter } from '../../../../../../../base/common/event.js';
 import { Disposable } from '../../../../../../../base/common/lifecycle.js';
-import { constObservable, derived } from '../../../../../../../base/common/observable.js';
+import '../../../../../../../base/common/observableInternal/index.js';
 import { IAccessibilityService } from '../../../../../../../platform/accessibility/common/accessibility.js';
 import { asCssVariable } from '../../../../../../../platform/theme/common/colorUtils.js';
 import { observableCodeEditor } from '../../../../../../browser/observableCodeEditor.js';
 import { Point } from '../../../../../../common/core/2d/point.js';
 import { singleTextRemoveCommonPrefix } from '../../../model/singleTextEditHelpers.js';
 import { inlineEditIndicatorPrimaryBorder } from '../theme.js';
-import { getEditorValidOverlayRect, PathBuilder, rectToProps } from '../utils/utils.js';
+import { rectToProps, getEditorValidOverlayRect, PathBuilder } from '../utils/utils.js';
+import { constObservable } from '../../../../../../../base/common/observableInternal/observables/constObservable.js';
+import { derived } from '../../../../../../../base/common/observableInternal/observables/derived.js';
+
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 let InlineEditsCollapsedView = class InlineEditsCollapsedView extends Disposable {
     constructor(_editor, _edit, _accessibilityService) {
         super();
@@ -129,5 +128,5 @@ let InlineEditsCollapsedView = class InlineEditsCollapsedView extends Disposable
 InlineEditsCollapsedView = __decorate([
     __param(2, IAccessibilityService)
 ], InlineEditsCollapsedView);
+
 export { InlineEditsCollapsedView };
-//# sourceMappingURL=inlineEditsCollapsedView.js.map

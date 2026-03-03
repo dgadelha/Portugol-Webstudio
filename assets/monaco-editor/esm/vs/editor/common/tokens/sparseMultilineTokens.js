@@ -1,15 +1,16 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { Position } from '../core/position.js';
 import { Range } from '../core/range.js';
 import { countEOL } from '../core/misc/eolCounter.js';
 import { RateLimiter } from './common.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
 /**
  * Represents sparse tokens over a contiguous range of lines.
  */
-export class SparseMultilineTokens {
+class SparseMultilineTokens {
     static create(startLineNumber, tokens) {
         return new SparseMultilineTokens(startLineNumber, new SparseMultilineTokensStorage(tokens));
     }
@@ -234,6 +235,10 @@ class SparseMultilineTokensStorage {
                     tokens[destOffset + 1] = tokenStartCharacter;
                     tokens[destOffset + 2] = tokenEndCharacter;
                     tokens[destOffset + 3] = tokenMetadata;
+                }
+                else if (firstDeltaLine !== 0) {
+                    // must adjust the delta line in place
+                    tokens[srcOffset] = tokenDeltaLine - firstDeltaLine;
                 }
                 newTokenCount++;
             }
@@ -522,7 +527,7 @@ class SparseMultilineTokensStorage {
         }
     }
 }
-export class SparseLineTokens {
+class SparseLineTokens {
     constructor(tokens) {
         this._tokens = tokens;
     }
@@ -539,4 +544,5 @@ export class SparseLineTokens {
         return this._tokens[4 * tokenIndex + 3];
     }
 }
-//# sourceMappingURL=sparseMultilineTokens.js.map
+
+export { SparseLineTokens, SparseMultilineTokens };

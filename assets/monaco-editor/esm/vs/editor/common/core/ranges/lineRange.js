@@ -1,16 +1,17 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { BugIndicatingError } from '../../../../base/common/errors.js';
 import { OffsetRange } from './offsetRange.js';
 import { Range } from '../range.js';
 import { findFirstIdxMonotonousOrArrLen, findLastIdxMonotonous, findLastMonotonous } from '../../../../base/common/arraysFind.js';
 import { compareBy, numberComparator } from '../../../../base/common/arrays.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
 /**
  * A range of lines (1-based).
  */
-export class LineRange {
+class LineRange {
     static ofLength(startLineNumber, length) {
         return new LineRange(startLineNumber, startLineNumber + length);
     }
@@ -157,7 +158,7 @@ export class LineRange {
         return new LineRange(this.startLineNumber - marginTop, this.endLineNumberExclusive + marginBottom);
     }
 }
-export class LineRangeSet {
+class LineRangeSet {
     constructor(
     /**
      * Sorted by start line number.
@@ -307,4 +308,5 @@ export class LineRangeSet {
         return new LineRangeSet(this._normalizedRanges.map(r => r.delta(value)));
     }
 }
-//# sourceMappingURL=lineRange.js.map
+
+export { LineRange, LineRangeSet };

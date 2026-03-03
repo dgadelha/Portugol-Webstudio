@@ -1,16 +1,3 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
 import { CancellationToken } from '../../../base/common/cancellation.js';
 import { Emitter } from '../../../base/common/event.js';
 import { IContextKeyService, RawContextKey } from '../../contextkey/common/contextkey.js';
@@ -18,13 +5,37 @@ import { IInstantiationService } from '../../instantiation/common/instantiation.
 import { ILayoutService } from '../../layout/browser/layoutService.js';
 import { IOpenerService } from '../../opener/common/opener.js';
 import { QuickAccessController } from './quickAccess.js';
-import { defaultButtonStyles, defaultCountBadgeStyles, defaultInputBoxStyles, defaultKeybindingLabelStyles, defaultProgressBarStyles, defaultToggleStyles, getListStyles } from '../../theme/browser/defaultStyles.js';
-import { activeContrastBorder, asCssVariable, pickerGroupBorder, pickerGroupForeground, quickInputBackground, quickInputForeground, quickInputListFocusBackground, quickInputListFocusForeground, quickInputListFocusIconForeground, quickInputTitleBackground, widgetBorder, widgetShadow } from '../../theme/common/colorRegistry.js';
+import { getListStyles, defaultKeybindingLabelStyles, defaultProgressBarStyles, defaultButtonStyles, defaultCountBadgeStyles, defaultToggleStyles, defaultInputBoxStyles } from '../../theme/browser/defaultStyles.js';
+import { asCssVariable } from '../../theme/common/colorUtils.js';
+import { activeContrastBorder } from '../../theme/common/colors/baseColors.js';
+import '../../theme/common/colors/chartsColors.js';
+import { widgetShadow, widgetBorder } from '../../theme/common/colors/editorColors.js';
+import '../../theme/common/colors/inputColors.js';
+import '../../theme/common/colors/listColors.js';
+import '../../theme/common/colors/menuColors.js';
+import '../../theme/common/colors/minimapColors.js';
+import '../../theme/common/colors/miscColors.js';
+import { pickerGroupForeground, pickerGroupBorder, quickInputBackground, quickInputListFocusBackground, quickInputListFocusIconForeground, quickInputListFocusForeground, quickInputTitleBackground, quickInputForeground } from '../../theme/common/colors/quickpickColors.js';
+import '../../theme/common/colors/searchColors.js';
 import { IThemeService, Themable } from '../../theme/common/themeService.js';
 import { QuickInputHoverDelegate } from './quickInput.js';
 import { QuickInputController } from './quickInputController.js';
 import { IConfigurationService } from '../../configuration/common/configuration.js';
 import { getWindow } from '../../../base/browser/dom.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 let QuickInputService = class QuickInputService extends Themable {
     get controller() {
         if (!this._controller) {
@@ -182,5 +193,5 @@ QuickInputService = __decorate([
     __param(3, ILayoutService),
     __param(4, IConfigurationService)
 ], QuickInputService);
+
 export { QuickInputService };
-//# sourceMappingURL=quickInputService.js.map

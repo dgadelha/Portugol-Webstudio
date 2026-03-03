@@ -20,7 +20,7 @@ function getParentWindowIfSameOrigin(w) {
     }
     return w.parent;
 }
-export class IframeUtils {
+class IframeUtils {
     /**
      * Returns a chain of embedded windows with the same origin (which can be accessed programmatically).
      * Having a chain of length 1 might mean that the current execution environment is running outside of an iframe or inside an iframe embedded in a window with a different origin.
@@ -83,4 +83,5 @@ export class IframeUtils {
         };
     }
 }
-//# sourceMappingURL=iframe.js.map
+
+export { IframeUtils };

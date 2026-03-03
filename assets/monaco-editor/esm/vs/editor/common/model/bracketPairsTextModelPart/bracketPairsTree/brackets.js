@@ -1,13 +1,14 @@
+import { escapeRegExpCharacters } from '../../../../../base/common/strings.js';
+import { BracketAstNode } from './ast.js';
+import { toLength } from './length.js';
+import { SmallImmutableSet, identityKeyProvider } from './smallImmutableSet.js';
+import { Token } from './tokenizer.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { escapeRegExpCharacters } from '../../../../../base/common/strings.js';
-import { BracketAstNode } from './ast.js';
-import { toLength } from './length.js';
-import { identityKeyProvider, SmallImmutableSet } from './smallImmutableSet.js';
-import { Token } from './tokenizer.js';
-export class BracketTokens {
+class BracketTokens {
     static createFromLanguage(configuration, denseKeyProvider) {
         function getId(bracketInfo) {
             return denseKeyProvider.getKey(`${bracketInfo.languageId}:::${bracketInfo.bracketText}`);
@@ -84,7 +85,7 @@ function prepareBracketForRegExp(str) {
     }
     return escaped;
 }
-export class LanguageAgnosticBracketTokens {
+class LanguageAgnosticBracketTokens {
     constructor(denseKeyProvider, getLanguageConfiguration) {
         this.denseKeyProvider = denseKeyProvider;
         this.getLanguageConfiguration = getLanguageConfiguration;
@@ -103,4 +104,5 @@ export class LanguageAgnosticBracketTokens {
         return singleLanguageBracketTokens;
     }
 }
-//# sourceMappingURL=brackets.js.map
+
+export { BracketTokens, LanguageAgnosticBracketTokens };

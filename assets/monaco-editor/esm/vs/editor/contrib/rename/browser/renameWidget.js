@@ -1,23 +1,10 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-import * as dom from '../../../../base/browser/dom.js';
+import { getClientArea, getDomNodePagePosition, getTotalHeight, getTotalWidth, addDisposableListener, EventType, clearNode } from '../../../../base/browser/dom.js';
 import { StandardKeyboardEvent } from '../../../../base/browser/keyboardEvent.js';
-import * as aria from '../../../../base/browser/ui/aria/aria.js';
+import { status } from '../../../../base/browser/ui/aria/aria.js';
 import { getBaseLayerHoverDelegate } from '../../../../base/browser/ui/hover/hoverDelegate2.js';
 import { renderIcon } from '../../../../base/browser/ui/iconLabel/iconLabels.js';
 import { List } from '../../../../base/browser/ui/list/listWidget.js';
-import * as arrays from '../../../../base/common/arrays.js';
+import { distinct } from '../../../../base/common/arrays.js';
 import { DeferredPromise, raceCancellation } from '../../../../base/common/async.js';
 import { CancellationTokenSource } from '../../../../base/common/cancellation.js';
 import { Codicon } from '../../../../base/common/codicons.js';
@@ -26,21 +13,43 @@ import { DisposableStore, toDisposable } from '../../../../base/common/lifecycle
 import { StopWatch } from '../../../../base/common/stopwatch.js';
 import { assertType, isDefined } from '../../../../base/common/types.js';
 import './renameWidget.css';
-import * as domFontInfo from '../../../browser/config/domFontInfo.js';
+import { applyFontInfo } from '../../../browser/config/domFontInfo.js';
 import { Position } from '../../../common/core/position.js';
 import { Range } from '../../../common/core/range.js';
-import { NewSymbolNameTag, NewSymbolNameTriggerKind } from '../../../common/languages.js';
-import * as nls from '../../../../nls.js';
-import { IContextKeyService, RawContextKey } from '../../../../platform/contextkey/common/contextkey.js';
+import { NewSymbolNameTriggerKind, NewSymbolNameTag } from '../../../common/languages.js';
+import { localize } from '../../../../nls.js';
+import { RawContextKey, IContextKeyService } from '../../../../platform/contextkey/common/contextkey.js';
 import { IKeybindingService } from '../../../../platform/keybinding/common/keybinding.js';
 import { ILogService } from '../../../../platform/log/common/log.js';
 import { getListStyles } from '../../../../platform/theme/browser/defaultStyles.js';
-import { editorWidgetBackground, inputBackground, inputBorder, inputForeground, quickInputListFocusBackground, quickInputListFocusForeground, widgetBorder, widgetShadow } from '../../../../platform/theme/common/colorRegistry.js';
+import '../../../../platform/theme/common/colorUtils.js';
+import '../../../../platform/theme/common/colors/baseColors.js';
+import '../../../../platform/theme/common/colors/chartsColors.js';
+import { widgetShadow, widgetBorder, editorWidgetBackground } from '../../../../platform/theme/common/colors/editorColors.js';
+import { inputForeground, inputBorder, inputBackground } from '../../../../platform/theme/common/colors/inputColors.js';
+import '../../../../platform/theme/common/colors/listColors.js';
+import '../../../../platform/theme/common/colors/menuColors.js';
+import '../../../../platform/theme/common/colors/minimapColors.js';
+import '../../../../platform/theme/common/colors/miscColors.js';
+import { quickInputListFocusBackground, quickInputListFocusForeground } from '../../../../platform/theme/common/colors/quickpickColors.js';
+import '../../../../platform/theme/common/colors/searchColors.js';
 import { IThemeService } from '../../../../platform/theme/common/themeService.js';
-/** for debugging */
-const _sticky = false;
-export const CONTEXT_RENAME_INPUT_VISIBLE = new RawContextKey('renameInputVisible', false, nls.localize(1376, "Whether the rename input widget is visible"));
-export const CONTEXT_RENAME_INPUT_FOCUSED = new RawContextKey('renameInputFocused', false, nls.localize(1377, "Whether the rename input widget is focused"));
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+const CONTEXT_RENAME_INPUT_VISIBLE = new RawContextKey('renameInputVisible', false, localize(1391, "Whether the rename input widget is visible"));
+new RawContextKey('renameInputFocused', false, localize(1392, "Whether the rename input widget is focused"));
 let RenameWidget = class RenameWidget {
     constructor(_editor, _acceptKeybindings, _themeService, _keybindingService, contextKeyService, _logService) {
         this._editor = _editor;
@@ -146,8 +155,8 @@ let RenameWidget = class RenameWidget {
         ) {
             return null;
         }
-        const bodyBox = dom.getClientArea(this.getDomNode().ownerDocument.body);
-        const editorBox = dom.getDomNodePagePosition(this._editor.getDomNode());
+        const bodyBox = getClientArea(this.getDomNode().ownerDocument.body);
+        const editorBox = getDomNodePagePosition(this._editor.getDomNode());
         const cursorBoxTop = this._getTopForPosition();
         this._nPxAvailableAbove = cursorBoxTop + editorBox.top;
         this._nPxAvailableBelow = bodyBox.height - this._nPxAvailableAbove;
@@ -163,7 +172,7 @@ let RenameWidget = class RenameWidget {
     }
     beforeRender() {
         const [accept, preview] = this._acceptKeybindings;
-        this._label.innerText = nls.localize(1378, "{0} to Rename, {1} to Preview", this._keybindingService.lookupKeybinding(accept)?.getLabel(), this._keybindingService.lookupKeybinding(preview)?.getLabel());
+        this._label.innerText = localize(1393, "{0} to Rename, {1} to Preview", this._keybindingService.lookupKeybinding(accept)?.getLabel(), this._keybindingService.lookupKeybinding(preview)?.getLabel());
         this._domNode.style.minWidth = `200px`; // to prevent from widening when candidates come in
         return null;
     }
@@ -183,8 +192,8 @@ let RenameWidget = class RenameWidget {
         assertType(this._renameCandidateListView);
         assertType(this._nPxAvailableAbove !== undefined);
         assertType(this._nPxAvailableBelow !== undefined);
-        const inputBoxHeight = dom.getTotalHeight(this._inputWithButton.domNode);
-        const labelHeight = dom.getTotalHeight(this._label);
+        const inputBoxHeight = getTotalHeight(this._inputWithButton.domNode);
+        const labelHeight = getTotalHeight(this._label);
         let totalHeightAvailable;
         if (position === 2 /* ContentWidgetPositionPreference.BELOW */) {
             totalHeightAvailable = this._nPxAvailableBelow;
@@ -194,7 +203,7 @@ let RenameWidget = class RenameWidget {
         }
         this._renameCandidateListView.layout({
             height: totalHeightAvailable - labelHeight - inputBoxHeight,
-            width: dom.getTotalWidth(this._inputWithButton.domNode),
+            width: getTotalWidth(this._inputWithButton.domNode),
         });
     }
     acceptInput(wantsPreview) {
@@ -231,8 +240,8 @@ let RenameWidget = class RenameWidget {
             this._inputWithButton.button.style.display = 'flex';
             this._requestRenameCandidatesOnce = requestRenameCandidates;
             this._requestRenameCandidates(currentName, false);
-            disposeOnDone.add(dom.addDisposableListener(this._inputWithButton.button, 'click', () => this._requestRenameCandidates(currentName, true)));
-            disposeOnDone.add(dom.addDisposableListener(this._inputWithButton.button, dom.EventType.KEY_DOWN, (e) => {
+            disposeOnDone.add(addDisposableListener(this._inputWithButton.button, 'click', () => this._requestRenameCandidates(currentName, true)));
+            disposeOnDone.add(addDisposableListener(this._inputWithButton.button, EventType.KEY_DOWN, (e) => {
                 const keyEvent = new StandardKeyboardEvent(e);
                 if (keyEvent.equals(3 /* KeyCode.Enter */) || keyEvent.equals(10 /* KeyCode.Space */)) {
                     keyEvent.stopPropagation();
@@ -313,7 +322,7 @@ let RenameWidget = class RenameWidget {
             });
         };
         disposeOnDone.add(cts.token.onCancellationRequested(() => this.cancelInput(true, 'cts.token.onCancellationRequested')));
-        if (!_sticky) {
+        {
             disposeOnDone.add(this._editor.onDidBlurEditorWidget(() => this.cancelInput(!this._domNode?.ownerDocument.hasFocus(), 'editor.onDidBlurEditorWidget')));
         }
         this._show();
@@ -383,7 +392,7 @@ let RenameWidget = class RenameWidget {
             : []);
         trace(`received updateRenameCandidates results - total (unfiltered) ${newNames.length} candidates.`);
         // deduplicate and filter out the current value
-        const distinctNames = arrays.distinct(newNames, v => v.newSymbolName);
+        const distinctNames = distinct(newNames, v => v.newSymbolName);
         trace(`distinct candidates - ${distinctNames.length} candidates.`);
         const validDistinctNames = distinctNames.filter(({ newSymbolName }) => newSymbolName.trim().length > 0 && newSymbolName !== this._inputWithButton.input.value && newSymbolName !== currentName && !this._candidates.has(newSymbolName));
         trace(`valid distinct candidates - ${newNames.length} candidates.`);
@@ -427,7 +436,6 @@ RenameWidget = __decorate([
     __param(4, IContextKeyService),
     __param(5, ILogService)
 ], RenameWidget);
-export { RenameWidget };
 class RenameCandidateListView {
     // FIXME@ulugbekna: rewrite using event emitters
     constructor(parent, opts) {
@@ -477,7 +485,7 @@ class RenameCandidateListView {
         // adjust list container layout
         this._listContainer.style.height = `${height}px`;
         this._listContainer.style.width = `${width}px`;
-        aria.status(nls.localize(1379, "Received {0} rename suggestions", candidates.length));
+        status(localize(1394, "Received {0} rename suggestions", candidates.length));
     }
     clearCandidates() {
         this._listContainer.style.height = '0px';
@@ -619,39 +627,36 @@ class InputWithButton {
             this._inputNode.className = 'rename-input';
             this._inputNode.type = 'text';
             this._inputNode.style.border = 'none';
-            this._inputNode.setAttribute('aria-label', nls.localize(1380, "Rename input. Type new name and press Enter to commit."));
+            this._inputNode.setAttribute('aria-label', localize(1395, "Rename input. Type new name and press Enter to commit."));
             this._domNode.appendChild(this._inputNode);
             this._buttonNode = document.createElement('div');
             this._buttonNode.className = 'rename-suggestions-button';
             this._buttonNode.setAttribute('tabindex', '0');
-            this._buttonGenHoverText = nls.localize(1381, "Generate new name suggestions");
-            this._buttonCancelHoverText = nls.localize(1382, "Cancel");
+            this._buttonGenHoverText = localize(1396, "Generate New Name Suggestions");
+            this._buttonCancelHoverText = localize(1397, "Cancel");
             this._buttonHoverContent = this._buttonGenHoverText;
             this._disposables.add(getBaseLayerHoverDelegate().setupDelayedHover(this._buttonNode, () => ({
                 content: this._buttonHoverContent,
-                appearance: {
-                    showPointer: true,
-                    compact: true,
-                }
+                style: 1 /* HoverStyle.Pointer */,
             })));
             this._domNode.appendChild(this._buttonNode);
             // notify if selection changes to cancel request to rename-suggestion providers
-            this._disposables.add(dom.addDisposableListener(this.input, dom.EventType.INPUT, () => this._onDidInputChange.fire()));
-            this._disposables.add(dom.addDisposableListener(this.input, dom.EventType.KEY_DOWN, (e) => {
+            this._disposables.add(addDisposableListener(this.input, EventType.INPUT, () => this._onDidInputChange.fire()));
+            this._disposables.add(addDisposableListener(this.input, EventType.KEY_DOWN, (e) => {
                 const keyEvent = new StandardKeyboardEvent(e);
                 if (keyEvent.keyCode === 15 /* KeyCode.LeftArrow */ || keyEvent.keyCode === 17 /* KeyCode.RightArrow */) {
                     this._onDidInputChange.fire();
                 }
             }));
-            this._disposables.add(dom.addDisposableListener(this.input, dom.EventType.CLICK, () => this._onDidInputChange.fire()));
+            this._disposables.add(addDisposableListener(this.input, EventType.CLICK, () => this._onDidInputChange.fire()));
             // focus "container" border instead of input box
-            this._disposables.add(dom.addDisposableListener(this.input, dom.EventType.FOCUS, () => {
+            this._disposables.add(addDisposableListener(this.input, EventType.FOCUS, () => {
                 this.domNode.style.outlineWidth = '1px';
                 this.domNode.style.outlineStyle = 'solid';
                 this.domNode.style.outlineOffset = '-1px';
                 this.domNode.style.outlineColor = 'var(--vscode-focusBorder)';
             }));
-            this._disposables.add(dom.addDisposableListener(this.input, dom.EventType.BLUR, () => {
+            this._disposables.add(addDisposableListener(this.input, EventType.BLUR, () => {
                 this.domNode.style.outline = 'none';
             }));
         }
@@ -671,7 +676,7 @@ class InputWithButton {
     setSparkleButton() {
         this._buttonState = 'sparkle';
         this._sparkleIcon ??= renderIcon(Codicon.sparkle);
-        dom.clearNode(this.button);
+        clearNode(this.button);
         this.button.appendChild(this._sparkleIcon);
         this.button.setAttribute('aria-label', 'Generating new name suggestions');
         this._buttonHoverContent = this._buttonGenHoverText;
@@ -680,7 +685,7 @@ class InputWithButton {
     setStopButton() {
         this._buttonState = 'stop';
         this._stopIcon ??= renderIcon(Codicon.stopCircle);
-        dom.clearNode(this.button);
+        clearNode(this.button);
         this.button.appendChild(this._stopIcon);
         this.button.setAttribute('aria-label', 'Cancel generating new name suggestions');
         this._buttonHoverContent = this._buttonCancelHoverText;
@@ -710,7 +715,7 @@ class RenameCandidateView {
         this._icon.style.display = `none`;
         iconContainer.appendChild(this._icon);
         this._label = document.createElement('div');
-        domFontInfo.applyFontInfo(this._label, fontInfo);
+        applyFontInfo(this._label, fontInfo);
         this._domNode.appendChild(this._label);
         parent.appendChild(this._domNode);
     }
@@ -732,4 +737,5 @@ class RenameCandidateView {
     dispose() {
     }
 }
-//# sourceMappingURL=renameWidget.js.map
+
+export { CONTEXT_RENAME_INPUT_VISIBLE, RenameWidget };

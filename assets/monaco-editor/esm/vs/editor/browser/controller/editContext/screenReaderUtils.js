@@ -1,10 +1,11 @@
+import { Range } from '../../../common/core/range.js';
+import { localize } from '../../../../nls.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { Range } from '../../../common/core/range.js';
-import * as nls from '../../../../nls.js';
-export class SimplePagedScreenReaderStrategy {
+class SimplePagedScreenReaderStrategy {
     _getPageOfLine(lineNumber, linesPerPage) {
         return Math.floor((lineNumber - 1) / linesPerPage);
     }
@@ -71,21 +72,21 @@ export class SimplePagedScreenReaderStrategy {
         };
     }
 }
-export function ariaLabelForScreenReaderContent(options, keybindingService) {
+function ariaLabelForScreenReaderContent(options, keybindingService) {
     const accessibilitySupport = options.get(2 /* EditorOption.accessibilitySupport */);
     if (accessibilitySupport === 1 /* AccessibilitySupport.Disabled */) {
         const toggleKeybindingLabel = keybindingService.lookupKeybinding('editor.action.toggleScreenReaderAccessibilityMode')?.getAriaLabel();
         const runCommandKeybindingLabel = keybindingService.lookupKeybinding('workbench.action.showCommands')?.getAriaLabel();
         const keybindingEditorKeybindingLabel = keybindingService.lookupKeybinding('workbench.action.openGlobalKeybindings')?.getAriaLabel();
-        const editorNotAccessibleMessage = nls.localize(56, "The editor is not accessible at this time.");
+        const editorNotAccessibleMessage = localize(61, "The editor is not accessible at this time.");
         if (toggleKeybindingLabel) {
-            return nls.localize(57, "{0} To enable screen reader optimized mode, use {1}", editorNotAccessibleMessage, toggleKeybindingLabel);
+            return localize(62, "{0} To enable screen reader optimized mode, use {1}", editorNotAccessibleMessage, toggleKeybindingLabel);
         }
         else if (runCommandKeybindingLabel) {
-            return nls.localize(58, "{0} To enable screen reader optimized mode, open the quick pick with {1} and run the command Toggle Screen Reader Accessibility Mode, which is currently not triggerable via keyboard.", editorNotAccessibleMessage, runCommandKeybindingLabel);
+            return localize(63, "{0} To enable screen reader optimized mode, open the quick pick with {1} and run the command Toggle Screen Reader Accessibility Mode, which is currently not triggerable via keyboard.", editorNotAccessibleMessage, runCommandKeybindingLabel);
         }
         else if (keybindingEditorKeybindingLabel) {
-            return nls.localize(59, "{0} Please assign a keybinding for the command Toggle Screen Reader Accessibility Mode by accessing the keybindings editor with {1} and run it.", editorNotAccessibleMessage, keybindingEditorKeybindingLabel);
+            return localize(64, "{0} Please assign a keybinding for the command Toggle Screen Reader Accessibility Mode by accessing the keybindings editor with {1} and run it.", editorNotAccessibleMessage, keybindingEditorKeybindingLabel);
         }
         else {
             // SOS
@@ -94,7 +95,7 @@ export function ariaLabelForScreenReaderContent(options, keybindingService) {
     }
     return options.get(8 /* EditorOption.ariaLabel */);
 }
-export function newlinecount(text) {
+function newlinecount(text) {
     let result = 0;
     let startIndex = -1;
     do {
@@ -106,4 +107,5 @@ export function newlinecount(text) {
     } while (true);
     return result;
 }
-//# sourceMappingURL=screenReaderUtils.js.map
+
+export { SimplePagedScreenReaderStrategy, ariaLabelForScreenReaderContent, newlinecount };

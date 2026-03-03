@@ -1,42 +1,43 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-import * as browser from '../../../../base/browser/browser.js';
-import { getActiveDocument, getActiveWindow } from '../../../../base/browser/dom.js';
-import * as platform from '../../../../base/common/platform.js';
+import { isFirefox } from '../../../../base/browser/browser.js';
+import { getActiveWindow, getActiveDocument } from '../../../../base/browser/dom.js';
+import { isNative, isWeb } from '../../../../base/common/platform.js';
 import { StopWatch } from '../../../../base/common/stopwatch.js';
-import * as nls from '../../../../nls.js';
+import { localize, localize2 } from '../../../../nls.js';
 import { MenuId, MenuRegistry } from '../../../../platform/actions/common/actions.js';
 import { IClipboardService } from '../../../../platform/clipboard/common/clipboardService.js';
 import { ContextKeyExpr } from '../../../../platform/contextkey/common/contextkey.js';
 import { ILogService } from '../../../../platform/log/common/log.js';
 import { IProductService } from '../../../../platform/product/common/productService.js';
 import { ITelemetryService } from '../../../../platform/telemetry/common/telemetry.js';
-import { CopyOptions, InMemoryClipboardMetadataManager } from '../../../browser/controller/editContext/clipboardUtils.js';
+import { InMemoryClipboardMetadataManager, CopyOptions } from '../../../browser/controller/editContext/clipboardUtils.js';
 import { NativeEditContextRegistry } from '../../../browser/controller/editContext/native/nativeEditContextRegistry.js';
-import { EditorAction, MultiCommand, registerEditorAction } from '../../../browser/editorExtensions.js';
+import { MultiCommand, registerEditorAction, EditorAction } from '../../../browser/editorExtensions.js';
 import { ICodeEditorService } from '../../../browser/services/codeEditorService.js';
 import { EditorContextKeys } from '../../../common/editorContextKeys.js';
 import { CopyPasteController } from '../../dropOrPasteInto/browser/copyPasteController.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
 const CLIPBOARD_CONTEXT_MENU_GROUP = '9_cutcopypaste';
-const supportsCut = (platform.isNative || document.queryCommandSupported('cut'));
-const supportsCopy = (platform.isNative || document.queryCommandSupported('copy'));
+const supportsCut = (isNative || document.queryCommandSupported('cut'));
+const supportsCopy = (isNative || document.queryCommandSupported('copy'));
 // Firefox only supports navigator.clipboard.readText() in browser extensions.
 // See https://developer.mozilla.org/en-US/docs/Web/API/Clipboard/readText#Browser_compatibility
 // When loading over http, navigator.clipboard can be undefined. See https://github.com/microsoft/monaco-editor/issues/2313
-const supportsPaste = (typeof navigator.clipboard === 'undefined' || browser.isFirefox) ? document.queryCommandSupported('paste') : true;
+const supportsPaste = (typeof navigator.clipboard === 'undefined' || isFirefox) ? document.queryCommandSupported('paste') : true;
 function registerCommand(command) {
     command.register();
     return command;
 }
-export const CutAction = supportsCut ? registerCommand(new MultiCommand({
+const CutAction = supportsCut ? registerCommand(new MultiCommand({
     id: 'editor.action.clipboardCutAction',
     precondition: undefined,
     kbOpts: (
     // Do not bind cut keybindings in the browser,
     // since browsers do that for us and it avoids security prompts
-    platform.isNative ? {
+    isNative ? {
         primary: 2048 /* KeyMod.CtrlCmd */ | 54 /* KeyCode.KeyX */,
         win: { primary: 2048 /* KeyMod.CtrlCmd */ | 54 /* KeyCode.KeyX */, secondary: [1024 /* KeyMod.Shift */ | 20 /* KeyCode.Delete */] },
         weight: 100 /* KeybindingWeight.EditorContrib */
@@ -44,34 +45,34 @@ export const CutAction = supportsCut ? registerCommand(new MultiCommand({
     menuOpts: [{
             menuId: MenuId.MenubarEditMenu,
             group: '2_ccp',
-            title: nls.localize(809, "Cu&&t"),
+            title: localize(813, "Cu&&t"),
             order: 1
         }, {
             menuId: MenuId.EditorContext,
             group: CLIPBOARD_CONTEXT_MENU_GROUP,
-            title: nls.localize(810, "Cut"),
+            title: localize(814, "Cut"),
             when: EditorContextKeys.writable,
             order: 1,
         }, {
             menuId: MenuId.CommandPalette,
             group: '',
-            title: nls.localize(811, "Cut"),
+            title: localize(815, "Cut"),
             order: 1
         }, {
             menuId: MenuId.SimpleEditorContext,
             group: CLIPBOARD_CONTEXT_MENU_GROUP,
-            title: nls.localize(812, "Cut"),
+            title: localize(816, "Cut"),
             when: EditorContextKeys.writable,
             order: 1,
         }]
 })) : undefined;
-export const CopyAction = supportsCopy ? registerCommand(new MultiCommand({
+const CopyAction = supportsCopy ? registerCommand(new MultiCommand({
     id: 'editor.action.clipboardCopyAction',
     precondition: undefined,
     kbOpts: (
     // Do not bind copy keybindings in the browser,
     // since browsers do that for us and it avoids security prompts
-    platform.isNative ? {
+    isNative ? {
         primary: 2048 /* KeyMod.CtrlCmd */ | 33 /* KeyCode.KeyC */,
         win: { primary: 2048 /* KeyMod.CtrlCmd */ | 33 /* KeyCode.KeyC */, secondary: [2048 /* KeyMod.CtrlCmd */ | 19 /* KeyCode.Insert */] },
         weight: 100 /* KeybindingWeight.EditorContrib */
@@ -79,36 +80,36 @@ export const CopyAction = supportsCopy ? registerCommand(new MultiCommand({
     menuOpts: [{
             menuId: MenuId.MenubarEditMenu,
             group: '2_ccp',
-            title: nls.localize(813, "&&Copy"),
+            title: localize(817, "&&Copy"),
             order: 2
         }, {
             menuId: MenuId.EditorContext,
             group: CLIPBOARD_CONTEXT_MENU_GROUP,
-            title: nls.localize(814, "Copy"),
+            title: localize(818, "Copy"),
             order: 2,
         }, {
             menuId: MenuId.CommandPalette,
             group: '',
-            title: nls.localize(815, "Copy"),
+            title: localize(819, "Copy"),
             order: 1
         }, {
             menuId: MenuId.SimpleEditorContext,
             group: CLIPBOARD_CONTEXT_MENU_GROUP,
-            title: nls.localize(816, "Copy"),
+            title: localize(820, "Copy"),
             order: 2,
         }]
 })) : undefined;
-MenuRegistry.appendMenuItem(MenuId.MenubarEditMenu, { submenu: MenuId.MenubarCopy, title: nls.localize2(821, "Copy As"), group: '2_ccp', order: 3 });
-MenuRegistry.appendMenuItem(MenuId.EditorContext, { submenu: MenuId.EditorContextCopy, title: nls.localize2(822, "Copy As"), group: CLIPBOARD_CONTEXT_MENU_GROUP, order: 3 });
-MenuRegistry.appendMenuItem(MenuId.EditorContext, { submenu: MenuId.EditorContextShare, title: nls.localize2(823, "Share"), group: '11_share', order: -1, when: ContextKeyExpr.and(ContextKeyExpr.notEquals('resourceScheme', 'output'), EditorContextKeys.editorTextFocus) });
-MenuRegistry.appendMenuItem(MenuId.ExplorerContext, { submenu: MenuId.ExplorerContextShare, title: nls.localize2(824, "Share"), group: '11_share', order: -1 });
-export const PasteAction = supportsPaste ? registerCommand(new MultiCommand({
+MenuRegistry.appendMenuItem(MenuId.MenubarEditMenu, { submenu: MenuId.MenubarCopy, title: localize2(825, "Copy As"), group: '2_ccp', order: 3 });
+MenuRegistry.appendMenuItem(MenuId.EditorContext, { submenu: MenuId.EditorContextCopy, title: localize2(826, "Copy As"), group: CLIPBOARD_CONTEXT_MENU_GROUP, order: 3 });
+MenuRegistry.appendMenuItem(MenuId.EditorContext, { submenu: MenuId.EditorContextShare, title: localize2(827, "Share"), group: '11_share', order: -1, when: ContextKeyExpr.and(ContextKeyExpr.notEquals('resourceScheme', 'output'), EditorContextKeys.editorTextFocus) });
+MenuRegistry.appendMenuItem(MenuId.ExplorerContext, { submenu: MenuId.ExplorerContextShare, title: localize2(828, "Share"), group: '11_share', order: -1 });
+const PasteAction = supportsPaste ? registerCommand(new MultiCommand({
     id: 'editor.action.clipboardPasteAction',
     precondition: undefined,
     kbOpts: (
     // Do not bind paste keybindings in the browser,
     // since browsers do that for us and it avoids security prompts
-    platform.isNative ? {
+    isNative ? {
         primary: 2048 /* KeyMod.CtrlCmd */ | 52 /* KeyCode.KeyV */,
         win: { primary: 2048 /* KeyMod.CtrlCmd */ | 52 /* KeyCode.KeyV */, secondary: [1024 /* KeyMod.Shift */ | 19 /* KeyCode.Insert */] },
         linux: { primary: 2048 /* KeyMod.CtrlCmd */ | 52 /* KeyCode.KeyV */, secondary: [1024 /* KeyMod.Shift */ | 19 /* KeyCode.Insert */] },
@@ -117,23 +118,23 @@ export const PasteAction = supportsPaste ? registerCommand(new MultiCommand({
     menuOpts: [{
             menuId: MenuId.MenubarEditMenu,
             group: '2_ccp',
-            title: nls.localize(817, "&&Paste"),
+            title: localize(821, "&&Paste"),
             order: 4
         }, {
             menuId: MenuId.EditorContext,
             group: CLIPBOARD_CONTEXT_MENU_GROUP,
-            title: nls.localize(818, "Paste"),
+            title: localize(822, "Paste"),
             when: EditorContextKeys.writable,
             order: 4,
         }, {
             menuId: MenuId.CommandPalette,
             group: '',
-            title: nls.localize(819, "Paste"),
+            title: localize(823, "Paste"),
             order: 1
         }, {
             menuId: MenuId.SimpleEditorContext,
             group: CLIPBOARD_CONTEXT_MENU_GROUP,
-            title: nls.localize(820, "Paste"),
+            title: localize(824, "Paste"),
             when: EditorContextKeys.writable,
             order: 4,
         }]
@@ -142,7 +143,7 @@ class ExecCommandCopyWithSyntaxHighlightingAction extends EditorAction {
     constructor() {
         super({
             id: 'editor.action.clipboardCopyWithSyntaxHighlightingAction',
-            label: nls.localize2(825, "Copy with Syntax Highlighting"),
+            label: localize2(829, "Copy with Syntax Highlighting"),
             precondition: undefined,
             kbOpts: {
                 kbExpr: EditorContextKeys.textInputFocus,
@@ -263,7 +264,7 @@ if (PasteAction) {
             else {
                 logService.trace('registerExecCommandImpl (triggerPaste undefined)');
             }
-            if (platform.isWeb) {
+            if (isWeb) {
                 logService.trace('registerExecCommandImpl (Paste handling on web)');
                 // Use the clipboard service if document.execCommand('paste') was not successful
                 return (async () => {
@@ -303,4 +304,5 @@ if (PasteAction) {
 if (supportsCopy) {
     registerEditorAction(ExecCommandCopyWithSyntaxHighlightingAction);
 }
-//# sourceMappingURL=clipboard.js.map
+
+export { CopyAction, CutAction, PasteAction };

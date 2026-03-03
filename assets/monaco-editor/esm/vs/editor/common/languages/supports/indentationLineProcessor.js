@@ -1,16 +1,17 @@
+import { getLeadingWhitespace } from '../../../../base/common/strings.js';
+import { createScopedLineTokens } from '../supports.js';
+import { LineTokens } from '../../tokens/lineTokens.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import * as strings from '../../../../base/common/strings.js';
-import { createScopedLineTokens } from '../supports.js';
-import { LineTokens } from '../../tokens/lineTokens.js';
 /**
  * This class is a wrapper class around {@link IndentRulesSupport}.
  * It processes the lines by removing the language configuration brackets from the regex, string and comment tokens.
  * It then calls into the {@link IndentRulesSupport} to validate the indentation conditions.
  */
-export class ProcessedIndentRulesSupport {
+class ProcessedIndentRulesSupport {
     constructor(model, indentRulesSupport, languageConfigurationService) {
         this._indentRulesSupport = indentRulesSupport;
         this._indentationLineProcessor = new IndentationLineProcessor(model, languageConfigurationService);
@@ -51,7 +52,7 @@ export class ProcessedIndentRulesSupport {
  * - The processed text after the given range and on the same end line
  * - The processed text on the previous line
  */
-export class IndentationContextProcessor {
+class IndentationContextProcessor {
     constructor(model, languageConfigurationService) {
         this.model = model;
         this.indentationLineProcessor = new IndentationLineProcessor(model, languageConfigurationService);
@@ -141,7 +142,7 @@ class IndentationLineProcessor {
      */
     getProcessedLine(lineNumber, newIndentation) {
         const replaceIndentation = (line, newIndentation) => {
-            const currentIndentation = strings.getLeadingWhitespace(line);
+            const currentIndentation = getLeadingWhitespace(line);
             const adjustedLine = newIndentation + line.substring(currentIndentation.length);
             return adjustedLine;
         };
@@ -179,7 +180,7 @@ class IndentationLineProcessor {
         return processedLineTokens;
     }
 }
-export function isLanguageDifferentFromLineStart(model, position) {
+function isLanguageDifferentFromLineStart(model, position) {
     model.tokenization.forceTokenization(position.lineNumber);
     const lineTokens = model.tokenization.getLineTokens(position.lineNumber);
     const scopedLineTokens = createScopedLineTokens(lineTokens, position.column - 1);
@@ -188,4 +189,5 @@ export function isLanguageDifferentFromLineStart(model, position) {
     const languageIsDifferentFromLineStart = !doesScopeStartAtOffsetZero && !isScopedLanguageEqualToFirstLanguageOnLine;
     return languageIsDifferentFromLineStart;
 }
-//# sourceMappingURL=indentationLineProcessor.js.map
+
+export { IndentationContextProcessor, ProcessedIndentRulesSupport, isLanguageDifferentFromLineStart };

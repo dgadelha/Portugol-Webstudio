@@ -1,14 +1,15 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-import * as strings from '../../../base/common/strings.js';
+import { isLowerAsciiLetter, isAsciiDigit, isUpperAsciiLetter, lastNonWhitespaceIndex } from '../../../base/common/strings.js';
 import { SingleCursorState } from '../cursorCommon.js';
 import { DeleteOperations } from './cursorDeleteOperations.js';
 import { getMapForWordSeparators } from '../core/wordCharacterClassifier.js';
 import { Position } from '../core/position.js';
 import { Range } from '../core/range.js';
-export class WordOperations {
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+class WordOperations {
     static _createWord(lineContent, wordType, nextCharClass, start, end) {
         // console.log('WORD ==> ' + start + ' => ' + end + ':::: <<<' + lineContent.substring(start, end) + '>>>');
         return { start: start, end: end, wordType: wordType, nextCharClass: nextCharClass };
@@ -187,15 +188,15 @@ export class WordOperations {
                 // kebab-case-variables
                 return new Position(lineNumber, column);
             }
-            if ((strings.isLowerAsciiLetter(left) || strings.isAsciiDigit(left)) && strings.isUpperAsciiLetter(right)) {
+            if ((isLowerAsciiLetter(left) || isAsciiDigit(left)) && isUpperAsciiLetter(right)) {
                 // camelCaseVariables
                 return new Position(lineNumber, column);
             }
-            if (strings.isUpperAsciiLetter(left) && strings.isUpperAsciiLetter(right)) {
+            if (isUpperAsciiLetter(left) && isUpperAsciiLetter(right)) {
                 // thisIsACamelCaseWithOneLetterWords
                 if (column + 1 < maxColumn) {
                     const rightRight = lineContent.charCodeAt(column);
-                    if (strings.isLowerAsciiLetter(rightRight) || strings.isAsciiDigit(rightRight)) {
+                    if (isLowerAsciiLetter(rightRight) || isAsciiDigit(rightRight)) {
                         return new Position(lineNumber, column);
                     }
                 }
@@ -281,15 +282,15 @@ export class WordOperations {
                 // kebab-case-variables
                 return new Position(lineNumber, column);
             }
-            if ((strings.isLowerAsciiLetter(left) || strings.isAsciiDigit(left)) && strings.isUpperAsciiLetter(right)) {
+            if ((isLowerAsciiLetter(left) || isAsciiDigit(left)) && isUpperAsciiLetter(right)) {
                 // camelCaseVariables
                 return new Position(lineNumber, column);
             }
-            if (strings.isUpperAsciiLetter(left) && strings.isUpperAsciiLetter(right)) {
+            if (isUpperAsciiLetter(left) && isUpperAsciiLetter(right)) {
                 // thisIsACamelCaseWithOneLetterWords
                 if (column + 1 < maxColumn) {
                     const rightRight = lineContent.charCodeAt(column);
-                    if (strings.isLowerAsciiLetter(rightRight) || strings.isAsciiDigit(rightRight)) {
+                    if (isLowerAsciiLetter(rightRight) || isAsciiDigit(rightRight)) {
                         return new Position(lineNumber, column);
                     }
                 }
@@ -300,7 +301,7 @@ export class WordOperations {
     static _deleteWordLeftWhitespace(model, position) {
         const lineContent = model.getLineContent(position.lineNumber);
         const startIndex = position.column - 2;
-        const lastNonWhitespace = strings.lastNonWhitespaceIndex(lineContent, startIndex);
+        const lastNonWhitespace = lastNonWhitespaceIndex(lineContent, startIndex);
         if (lastNonWhitespace + 1 < startIndex) {
             return new Range(position.lineNumber, lastNonWhitespace + 2, position.lineNumber, position.column);
         }
@@ -601,12 +602,22 @@ export class WordOperations {
             let startColumn;
             let endColumn;
             if (prevWord && prevWord.wordType === 1 /* WordType.Regular */ && prevWord.start <= position.column - 1 && position.column - 1 <= prevWord.end) {
-                // isTouchingPrevWord
+                // isTouchingPrevWord (Regular word)
+                startColumn = prevWord.start + 1;
+                endColumn = prevWord.end + 1;
+            }
+            else if (prevWord && prevWord.wordType === 2 /* WordType.Separator */ && prevWord.start <= position.column - 1 && position.column - 1 < prevWord.end) {
+                // isTouchingPrevWord (Separator word) - stricter check, don't include end boundary
                 startColumn = prevWord.start + 1;
                 endColumn = prevWord.end + 1;
             }
             else if (nextWord && nextWord.wordType === 1 /* WordType.Regular */ && nextWord.start <= position.column - 1 && position.column - 1 <= nextWord.end) {
-                // isTouchingNextWord
+                // isTouchingNextWord (Regular word)
+                startColumn = nextWord.start + 1;
+                endColumn = nextWord.end + 1;
+            }
+            else if (nextWord && nextWord.wordType === 2 /* WordType.Separator */ && nextWord.start <= position.column - 1 && position.column - 1 < nextWord.end) {
+                // isTouchingNextWord (Separator word) - stricter check, don't include end boundary
                 startColumn = nextWord.start + 1;
                 endColumn = nextWord.end + 1;
             }
@@ -629,12 +640,12 @@ export class WordOperations {
         let startColumn;
         let endColumn;
         if (prevWord && prevWord.wordType === 1 /* WordType.Regular */ && prevWord.start < position.column - 1 && position.column - 1 < prevWord.end) {
-            // isInsidePrevWord
+            // isInsidePrevWord (Regular word)
             startColumn = prevWord.start + 1;
             endColumn = prevWord.end + 1;
         }
         else if (nextWord && nextWord.wordType === 1 /* WordType.Regular */ && nextWord.start < position.column - 1 && position.column - 1 < nextWord.end) {
-            // isInsideNextWord
+            // isInsideNextWord (Regular word)
             startColumn = nextWord.start + 1;
             endColumn = nextWord.end + 1;
         }
@@ -664,7 +675,7 @@ export class WordOperations {
         return cursor.move(true, lineNumber, column, 0);
     }
 }
-export class WordPartOperations extends WordOperations {
+class WordPartOperations extends WordOperations {
     static deleteWordPartLeft(ctx) {
         const candidates = enforceDefined([
             WordOperations.deleteWordLeft(ctx, 0 /* WordNavigationType.WordStart */),
@@ -705,4 +716,5 @@ export class WordPartOperations extends WordOperations {
 function enforceDefined(arr) {
     return arr.filter(el => Boolean(el));
 }
-//# sourceMappingURL=cursorWordOperations.js.map
+
+export { WordOperations, WordPartOperations };

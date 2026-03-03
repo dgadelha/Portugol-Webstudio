@@ -1,37 +1,38 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-var LinkDetector_1;
-import { createCancelablePromise, RunOnceScheduler } from '../../../../base/common/async.js';
+import { RunOnceScheduler, createCancelablePromise } from '../../../../base/common/async.js';
 import { CancellationToken } from '../../../../base/common/cancellation.js';
 import { onUnexpectedError } from '../../../../base/common/errors.js';
 import { MarkdownString } from '../../../../base/common/htmlContent.js';
 import { Disposable } from '../../../../base/common/lifecycle.js';
 import { Schemas } from '../../../../base/common/network.js';
-import * as platform from '../../../../base/common/platform.js';
-import * as resources from '../../../../base/common/resources.js';
+import { isMacintosh } from '../../../../base/common/platform.js';
+import { originalFSPath, joinPath } from '../../../../base/common/resources.js';
 import { StopWatch } from '../../../../base/common/stopwatch.js';
 import { URI } from '../../../../base/common/uri.js';
 import './links.css';
-import { EditorAction, registerEditorAction, registerEditorContribution } from '../../../browser/editorExtensions.js';
+import { registerEditorContribution, registerEditorAction, EditorAction } from '../../../browser/editorExtensions.js';
 import { ModelDecorationOptions } from '../../../common/model/textModel.js';
 import { ILanguageFeatureDebounceService } from '../../../common/services/languageFeatureDebounce.js';
 import { ILanguageFeaturesService } from '../../../common/services/languageFeatures.js';
 import { ClickLinkGesture } from '../../gotoSymbol/browser/link/clickLinkGesture.js';
 import { getLinks } from './getLinks.js';
-import * as nls from '../../../../nls.js';
+import { localize, localize2 } from '../../../../nls.js';
 import { INotificationService } from '../../../../platform/notification/common/notification.js';
 import { IOpenerService } from '../../../../platform/opener/common/opener.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var LinkDetector_1;
 let LinkDetector = class LinkDetector extends Disposable {
     static { LinkDetector_1 = this; }
     static { this.ID = 'editor.linkDetector'; }
@@ -201,7 +202,7 @@ let LinkDetector = class LinkDetector extends Disposable {
                 if (modelUri.scheme === Schemas.file && uri.startsWith(`${Schemas.file}:`)) {
                     const parsedUri = URI.parse(uri);
                     if (parsedUri.scheme === Schemas.file) {
-                        const fsPath = resources.originalFSPath(parsedUri);
+                        const fsPath = originalFSPath(parsedUri);
                         let relativePath = null;
                         if (fsPath.startsWith('/./') || fsPath.startsWith('\\.\\')) {
                             relativePath = `.${fsPath.substr(1)}`;
@@ -210,7 +211,7 @@ let LinkDetector = class LinkDetector extends Disposable {
                             relativePath = `.${fsPath.substr(2)}`;
                         }
                         if (relativePath) {
-                            uri = resources.joinPath(modelUri, relativePath);
+                            uri = joinPath(modelUri, relativePath);
                         }
                     }
                 }
@@ -220,10 +221,10 @@ let LinkDetector = class LinkDetector extends Disposable {
             const messageOrError = err instanceof Error ? err.message : err;
             // different error cases
             if (messageOrError === 'invalid') {
-                this.notificationService.warn(nls.localize(1267, 'Failed to open this link because it is not well-formed: {0}', link.url.toString()));
+                this.notificationService.warn(localize(1277, 'Failed to open this link because it is not well-formed: {0}', link.url.toString()));
             }
             else if (messageOrError === 'missing') {
-                this.notificationService.warn(nls.localize(1268, 'Failed to open this link because its target is missing.'));
+                this.notificationService.warn(localize(1278, 'Failed to open this link because its target is missing.'));
             }
             else {
                 onUnexpectedError(err);
@@ -274,7 +275,6 @@ LinkDetector = LinkDetector_1 = __decorate([
     __param(3, ILanguageFeaturesService),
     __param(4, ILanguageFeatureDebounceService)
 ], LinkDetector);
-export { LinkDetector };
 const decoration = {
     general: ModelDecorationOptions.register({
         description: 'detected-link',
@@ -317,15 +317,15 @@ function getHoverMessage(link, useMetaKey) {
     const label = link.tooltip
         ? link.tooltip
         : executeCmd
-            ? nls.localize(1269, 'Execute command')
-            : nls.localize(1270, 'Follow link');
+            ? localize(1279, 'Execute command')
+            : localize(1280, 'Follow link');
     const kb = useMetaKey
-        ? platform.isMacintosh
-            ? nls.localize(1271, "cmd + click")
-            : nls.localize(1272, "ctrl + click")
-        : platform.isMacintosh
-            ? nls.localize(1273, "option + click")
-            : nls.localize(1274, "alt + click");
+        ? isMacintosh
+            ? localize(1281, "cmd + click")
+            : localize(1282, "ctrl + click")
+        : isMacintosh
+            ? localize(1283, "option + click")
+            : localize(1284, "alt + click");
     if (link.url) {
         let nativeLabel = '';
         if (/^command:/i.test(link.url.toString())) {
@@ -333,7 +333,7 @@ function getHoverMessage(link, useMetaKey) {
             const match = link.url.toString().match(/^command:([^?#]+)/);
             if (match) {
                 const commandId = match[1];
-                nativeLabel = nls.localize(1275, "Execute command {0}", commandId);
+                nativeLabel = localize(1285, "Execute command {0}", commandId);
             }
         }
         const hoverMessage = new MarkdownString('', true)
@@ -349,7 +349,7 @@ class OpenLinkAction extends EditorAction {
     constructor() {
         super({
             id: 'editor.action.openLink',
-            label: nls.localize2(1276, "Open Link"),
+            label: localize2(1286, "Open Link"),
             precondition: undefined
         });
     }
@@ -372,4 +372,5 @@ class OpenLinkAction extends EditorAction {
 }
 registerEditorContribution(LinkDetector.ID, LinkDetector, 1 /* EditorContributionInstantiation.AfterFirstRender */);
 registerEditorAction(OpenLinkAction);
-//# sourceMappingURL=links.js.map
+
+export { LinkDetector };

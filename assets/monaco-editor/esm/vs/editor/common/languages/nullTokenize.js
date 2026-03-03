@@ -1,9 +1,10 @@
+import { EncodedTokenizationResult, TokenizationResult, Token } from '../languages.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { Token, TokenizationResult, EncodedTokenizationResult } from '../languages.js';
-export const NullState = new class {
+const NullState = new class {
     clone() {
         return this;
     }
@@ -11,10 +12,10 @@ export const NullState = new class {
         return (this === other);
     }
 };
-export function nullTokenize(languageId, state) {
+function nullTokenize(languageId, state) {
     return new TokenizationResult([new Token(0, '', languageId)], state);
 }
-export function nullTokenizeEncoded(languageId, state) {
+function nullTokenizeEncoded(languageId, state) {
     const tokens = new Uint32Array(2);
     tokens[0] = 0;
     tokens[1] = ((languageId << 0 /* MetadataConsts.LANGUAGEID_OFFSET */)
@@ -24,4 +25,5 @@ export function nullTokenizeEncoded(languageId, state) {
         | (2 /* ColorId.DefaultBackground */ << 24 /* MetadataConsts.BACKGROUND_OFFSET */)) >>> 0;
     return new EncodedTokenizationResult(tokens, state === null ? NullState : state);
 }
-//# sourceMappingURL=nullTokenize.js.map
+
+export { NullState, nullTokenize, nullTokenizeEncoded };

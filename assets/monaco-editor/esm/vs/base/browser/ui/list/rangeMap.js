@@ -1,13 +1,14 @@
+import { Range } from '../../../common/range.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { Range } from '../../../common/range.js';
 /**
  * Returns the intersection between a ranged group and a range.
  * Returns `[]` if the intersection is empty.
  */
-export function groupIntersect(range, groups) {
+function groupIntersect(range, groups) {
     const result = [];
     for (const r of groups) {
         if (range.start >= r.range.end) {
@@ -30,7 +31,7 @@ export function groupIntersect(range, groups) {
 /**
  * Shifts a range by that `much`.
  */
-export function shift({ start, end }, much) {
+function shift({ start, end }, much) {
     return { start: start + much, end: end + much };
 }
 /**
@@ -39,7 +40,7 @@ export function shift({ start, end }, much) {
  * Consolidation is the process of merging consecutive ranged groups
  * that share the same `size`.
  */
-export function consolidate(groups) {
+function consolidate(groups) {
     const result = [];
     let previousGroup = null;
     for (const group of groups) {
@@ -62,7 +63,7 @@ export function consolidate(groups) {
 function concat(...groups) {
     return consolidate(groups.reduce((r, g) => r.concat(g), []));
 }
-export class RangeMap {
+class RangeMap {
     get paddingTop() {
         return this._paddingTop;
     }
@@ -156,4 +157,5 @@ export class RangeMap {
         return -1;
     }
 }
-//# sourceMappingURL=rangeMap.js.map
+
+export { RangeMap, consolidate, groupIntersect, shift };

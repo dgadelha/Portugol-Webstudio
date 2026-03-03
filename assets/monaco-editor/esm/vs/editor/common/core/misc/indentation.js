@@ -1,9 +1,10 @@
+import { firstNonWhitespaceIndex } from '../../../../base/common/strings.js';
+import { CursorColumns } from '../cursorColumns.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import * as strings from '../../../../base/common/strings.js';
-import { CursorColumns } from '../cursorColumns.js';
 function _normalizeIndentationFromWhitespace(str, indentSize, insertSpaces) {
     let spacesCnt = 0;
     for (let i = 0; i < str.length; i++) {
@@ -27,11 +28,12 @@ function _normalizeIndentationFromWhitespace(str, indentSize, insertSpaces) {
     }
     return result;
 }
-export function normalizeIndentation(str, indentSize, insertSpaces) {
-    let firstNonWhitespaceIndex = strings.firstNonWhitespaceIndex(str);
-    if (firstNonWhitespaceIndex === -1) {
-        firstNonWhitespaceIndex = str.length;
+function normalizeIndentation(str, indentSize, insertSpaces) {
+    let firstNonWhitespaceIndex$1 = firstNonWhitespaceIndex(str);
+    if (firstNonWhitespaceIndex$1 === -1) {
+        firstNonWhitespaceIndex$1 = str.length;
     }
-    return _normalizeIndentationFromWhitespace(str.substring(0, firstNonWhitespaceIndex), indentSize, insertSpaces) + str.substring(firstNonWhitespaceIndex);
+    return _normalizeIndentationFromWhitespace(str.substring(0, firstNonWhitespaceIndex$1), indentSize, insertSpaces) + str.substring(firstNonWhitespaceIndex$1);
 }
-//# sourceMappingURL=indentation.js.map
+
+export { normalizeIndentation };

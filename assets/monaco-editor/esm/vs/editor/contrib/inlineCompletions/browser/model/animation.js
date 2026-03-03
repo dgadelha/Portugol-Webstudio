@@ -1,10 +1,13 @@
+import { getActiveWindow } from '../../../../../base/browser/dom.js';
+import '../../../../../base/common/observableInternal/index.js';
+import { observableSignal } from '../../../../../base/common/observableInternal/observables/observableSignal.js';
+import { observableValue } from '../../../../../base/common/observableInternal/observables/observableValue.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { getActiveWindow } from '../../../../../base/browser/dom.js';
-import { observableValue, observableSignal } from '../../../../../base/common/observable.js';
-export class AnimatedValue {
+class AnimatedValue {
     constructor(startValue, endValue, durationMs, _interpolationFunction = easeOutExpo) {
         this.startValue = startValue;
         this.endValue = endValue;
@@ -27,15 +30,15 @@ export class AnimatedValue {
         return value;
     }
 }
-export function easeOutExpo(passedTime, start, length, totalDuration) {
+function easeOutExpo(passedTime, start, length, totalDuration) {
     return passedTime === totalDuration
         ? start + length
         : length * (-Math.pow(2, -10 * passedTime / totalDuration) + 1) + start;
 }
-export function easeOutCubic(passedTime, start, length, totalDuration) {
+function easeOutCubic(passedTime, start, length, totalDuration) {
     return length * ((passedTime = passedTime / totalDuration - 1) * passedTime * passedTime + 1) + start;
 }
-export class ObservableAnimatedValue {
+class ObservableAnimatedValue {
     constructor(initialValue) {
         this._value = observableValue(this, initialValue);
     }
@@ -47,7 +50,7 @@ export class ObservableAnimatedValue {
         return value.getValue();
     }
 }
-export class AnimationFrameScheduler {
+class AnimationFrameScheduler {
     constructor() {
         this._counter = observableSignal(this);
         this._isScheduled = false;
@@ -67,4 +70,5 @@ export class AnimationFrameScheduler {
         this._counter.trigger(undefined);
     }
 }
-//# sourceMappingURL=animation.js.map
+
+export { AnimatedValue, AnimationFrameScheduler, ObservableAnimatedValue, easeOutCubic, easeOutExpo };

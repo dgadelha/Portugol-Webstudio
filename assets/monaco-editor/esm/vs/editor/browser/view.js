@@ -1,17 +1,4 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-import * as dom from '../../base/browser/dom.js';
+import { runAtThisOrScheduleAtNextAnimationFrame, getWindow, trackFocus } from '../../base/browser/dom.js';
 import { createFastDomNode } from '../../base/browser/fastDomNode.js';
 import { inputLatency } from '../../base/browser/performance.js';
 import { BugIndicatingError, onUnexpectedError } from '../../base/common/errors.js';
@@ -61,6 +48,20 @@ import { NativeEditContext } from './controller/editContext/native/nativeEditCon
 import { RulersGpu } from './viewParts/rulersGpu/rulersGpu.js';
 import { GpuMarkOverlay } from './viewParts/gpuMark/gpuMark.js';
 import { Emitter } from '../../base/common/event.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 let View = class View extends ViewEventHandler {
     constructor(editorContainer, ownerID, commandDelegate, configuration, colorTheme, model, userInputEvents, overflowWidgetsDomNode, _instantiationService) {
         super();
@@ -375,7 +376,7 @@ let View = class View extends ViewEventHandler {
             }
             const rendering = this._createCoordinatedRendering();
             this._renderAnimationFrame = EditorRenderingCoordinator.INSTANCE.scheduleCoordinatedRendering({
-                window: dom.getWindow(this.domNode?.domNode),
+                window: getWindow(this.domNode?.domNode),
                 prepareRenderText: () => {
                     if (this._store.isDisposed) {
                         throw new BugIndicatingError();
@@ -600,7 +601,6 @@ let View = class View extends ViewEventHandler {
 View = __decorate([
     __param(8, IInstantiationService)
 ], View);
-export { View };
 function safeInvokeNoArg(func) {
     try {
         return func();
@@ -642,7 +642,7 @@ class EditorRenderingCoordinator {
                 this._animationFrameRunners.delete(window);
                 this._onRenderScheduled();
             };
-            this._animationFrameRunners.set(window, dom.runAtThisOrScheduleAtNextAnimationFrame(window, runner, 100));
+            this._animationFrameRunners.set(window, runAtThisOrScheduleAtNextAnimationFrame(window, runner, 100));
         }
     }
     _onRenderScheduled() {
@@ -683,7 +683,7 @@ class CodeEditorWidgetFocusTracker extends Disposable {
         this.onChange = this._onChange.event;
         this._hadFocus = undefined;
         this._hasDomElementFocus = false;
-        this._domFocusTracker = this._register(dom.trackFocus(domElement));
+        this._domFocusTracker = this._register(trackFocus(domElement));
         this._overflowWidgetsDomNodeHasFocus = false;
         this._register(this._domFocusTracker.onDidFocus(() => {
             this._hasDomElementFocus = true;
@@ -694,7 +694,7 @@ class CodeEditorWidgetFocusTracker extends Disposable {
             this._update();
         }));
         if (overflowWidgetsDomNode) {
-            this._overflowWidgetsDomNode = this._register(dom.trackFocus(overflowWidgetsDomNode));
+            this._overflowWidgetsDomNode = this._register(trackFocus(overflowWidgetsDomNode));
             this._register(this._overflowWidgetsDomNode.onDidFocus(() => {
                 this._overflowWidgetsDomNodeHasFocus = true;
                 this._update();
@@ -716,4 +716,5 @@ class CodeEditorWidgetFocusTracker extends Disposable {
         return this._hadFocus ?? false;
     }
 }
-//# sourceMappingURL=view.js.map
+
+export { View };

@@ -1,18 +1,4 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-var LightBulbWidget_1;
-import * as dom from '../../../../base/browser/dom.js';
+import { $, addStandardDisposableGenericMouseDownListener, addDisposableListener, getDomNodePagePosition } from '../../../../base/browser/dom.js';
 import { Gesture } from '../../../../base/browser/touch.js';
 import { Codicon } from '../../../../base/common/codicons.js';
 import { Emitter, Event } from '../../../../base/common/event.js';
@@ -23,15 +9,30 @@ import { GlyphMarginLane } from '../../../common/model.js';
 import { ModelDecorationOptions } from '../../../common/model/textModel.js';
 import { computeIndentLevel } from '../../../common/model/utils.js';
 import { autoFixCommandId, quickFixCommandId } from './codeAction.js';
-import * as nls from '../../../../nls.js';
+import { localize } from '../../../../nls.js';
 import { IKeybindingService } from '../../../../platform/keybinding/common/keybinding.js';
 import { registerIcon } from '../../../../platform/theme/common/iconRegistry.js';
 import { Range } from '../../../common/core/range.js';
-const GUTTER_LIGHTBULB_ICON = registerIcon('gutter-lightbulb', Codicon.lightBulb, nls.localize(870, 'Icon which spawns code actions menu from the gutter when there is no space in the editor.'));
-const GUTTER_LIGHTBULB_AUTO_FIX_ICON = registerIcon('gutter-lightbulb-auto-fix', Codicon.lightbulbAutofix, nls.localize(871, 'Icon which spawns code actions menu from the gutter when there is no space in the editor and a quick fix is available.'));
-const GUTTER_LIGHTBULB_AIFIX_ICON = registerIcon('gutter-lightbulb-sparkle', Codicon.lightbulbSparkle, nls.localize(872, 'Icon which spawns code actions menu from the gutter when there is no space in the editor and an AI fix is available.'));
-const GUTTER_LIGHTBULB_AIFIX_AUTO_FIX_ICON = registerIcon('gutter-lightbulb-aifix-auto-fix', Codicon.lightbulbSparkleAutofix, nls.localize(873, 'Icon which spawns code actions menu from the gutter when there is no space in the editor and an AI fix and a quick fix is available.'));
-const GUTTER_SPARKLE_FILLED_ICON = registerIcon('gutter-lightbulb-sparkle-filled', Codicon.sparkleFilled, nls.localize(874, 'Icon which spawns code actions menu from the gutter when there is no space in the editor and an AI fix and a quick fix is available.'));
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var LightBulbWidget_1;
+const GUTTER_LIGHTBULB_ICON = registerIcon('gutter-lightbulb', Codicon.lightBulb, localize(874, 'Icon which spawns code actions menu from the gutter when there is no space in the editor.'));
+const GUTTER_LIGHTBULB_AUTO_FIX_ICON = registerIcon('gutter-lightbulb-auto-fix', Codicon.lightbulbAutofix, localize(875, 'Icon which spawns code actions menu from the gutter when there is no space in the editor and a quick fix is available.'));
+const GUTTER_LIGHTBULB_AIFIX_ICON = registerIcon('gutter-lightbulb-sparkle', Codicon.lightbulbSparkle, localize(876, 'Icon which spawns code actions menu from the gutter when there is no space in the editor and an AI fix is available.'));
+const GUTTER_LIGHTBULB_AIFIX_AUTO_FIX_ICON = registerIcon('gutter-lightbulb-aifix-auto-fix', Codicon.lightbulbSparkleAutofix, localize(877, 'Icon which spawns code actions menu from the gutter when there is no space in the editor and an AI fix and a quick fix is available.'));
+const GUTTER_SPARKLE_FILLED_ICON = registerIcon('gutter-lightbulb-sparkle-filled', Codicon.sparkleFilled, localize(878, 'Icon which spawns code actions menu from the gutter when there is no space in the editor and an AI fix and a quick fix is available.'));
 var LightBulbState;
 (function (LightBulbState) {
     LightBulbState.Hidden = { type: 0 /* Type.Hidden */ };
@@ -73,7 +74,7 @@ let LightBulbWidget = class LightBulbWidget extends Disposable {
             'codicon-' + GUTTER_SPARKLE_FILLED_ICON.id
         ];
         this.gutterDecoration = LightBulbWidget_1.GUTTER_DECORATION;
-        this._domNode = dom.$('div.lightBulbWidget');
+        this._domNode = $('div.lightBulbWidget');
         this._domNode.role = 'listbox';
         this._register(Gesture.ignoreTarget(this._domNode));
         this._editor.addContentWidget(this);
@@ -87,7 +88,7 @@ let LightBulbWidget = class LightBulbWidget extends Disposable {
                 this.gutterHide();
             }
         }));
-        this._register(dom.addStandardDisposableGenericMouseDownListener(this._domNode, e => {
+        this._register(addStandardDisposableGenericMouseDownListener(this._domNode, e => {
             if (this.state.type !== 1 /* LightBulbState.Type.Showing */) {
                 return;
             }
@@ -96,7 +97,7 @@ let LightBulbWidget = class LightBulbWidget extends Disposable {
             e.preventDefault();
             // a bit of extra work to make sure the menu
             // doesn't cover the line-text
-            const { top, height } = dom.getDomNodePagePosition(this._domNode);
+            const { top, height } = getDomNodePagePosition(this._domNode);
             const lineHeight = this._editor.getOption(75 /* EditorOption.lineHeight */);
             let pad = Math.floor(lineHeight / 3);
             if (this.state.widgetPosition.position !== null && this.state.widgetPosition.position.lineNumber < this.state.editorPosition.lineNumber) {
@@ -109,7 +110,7 @@ let LightBulbWidget = class LightBulbWidget extends Disposable {
                 trigger: this.state.trigger,
             });
         }));
-        this._register(dom.addDisposableListener(this._domNode, 'mouseenter', (e) => {
+        this._register(addDisposableListener(this._domNode, 'mouseenter', (e) => {
             if ((e.buttons & 1) !== 1) {
                 return;
             }
@@ -133,7 +134,7 @@ let LightBulbWidget = class LightBulbWidget extends Disposable {
             this._editor.focus();
             // a bit of extra work to make sure the menu
             // doesn't cover the line-text
-            const { top, height } = dom.getDomNodePagePosition(e.target.element);
+            const { top, height } = getDomNodePagePosition(e.target.element);
             const lineHeight = this._editor.getOption(75 /* EditorOption.lineHeight */);
             let pad = Math.floor(lineHeight / 3);
             if (this.gutterState.widgetPosition.position !== null && this.gutterState.widgetPosition.position.lineNumber < this.gutterState.editorPosition.lineNumber) {
@@ -403,16 +404,16 @@ let LightBulbWidget = class LightBulbWidget extends Disposable {
             return;
         }
         if (autoRun) {
-            this.title = nls.localize(875, "Run: {0}", this.state.actions.validActions[0].action.title);
+            this.title = localize(879, "Run: {0}", this.state.actions.validActions[0].action.title);
         }
         else if (autoFix && this._preferredKbLabel) {
-            this.title = nls.localize(876, "Show Code Actions. Preferred Quick Fix Available ({0})", this._preferredKbLabel);
+            this.title = localize(880, "Show Code Actions. Preferred Quick Fix Available ({0})", this._preferredKbLabel);
         }
         else if (!autoFix && this._quickFixKbLabel) {
-            this.title = nls.localize(877, "Show Code Actions ({0})", this._quickFixKbLabel);
+            this.title = localize(881, "Show Code Actions ({0})", this._quickFixKbLabel);
         }
         else if (!autoFix) {
-            this.title = nls.localize(878, "Show Code Actions");
+            this.title = localize(882, "Show Code Actions");
         }
     }
     set title(value) {
@@ -422,5 +423,5 @@ let LightBulbWidget = class LightBulbWidget extends Disposable {
 LightBulbWidget = LightBulbWidget_1 = __decorate([
     __param(1, IKeybindingService)
 ], LightBulbWidget);
+
 export { LightBulbWidget };
-//# sourceMappingURL=lightBulbWidget.js.map

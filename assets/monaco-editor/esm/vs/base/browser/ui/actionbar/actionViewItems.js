@@ -1,21 +1,22 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { isFirefox } from '../../browser.js';
 import { DataTransfers } from '../../dnd.js';
-import { addDisposableListener, EventHelper, EventType } from '../../dom.js';
-import { EventType as TouchEventType, Gesture } from '../../touch.js';
+import { addDisposableListener, EventType, EventHelper } from '../../dom.js';
+import { Gesture, EventType as EventType$1 } from '../../touch.js';
 import { getDefaultHoverDelegate } from '../hover/hoverDelegateFactory.js';
 import { SelectBox } from '../selectBox/selectBox.js';
 import { Action, ActionRunner, Separator } from '../../../common/actions.js';
 import { Disposable } from '../../../common/lifecycle.js';
-import * as platform from '../../../common/platform.js';
-import * as types from '../../../common/types.js';
+import { isMacintosh } from '../../../common/platform.js';
+import { isUndefinedOrNull, assertType } from '../../../common/types.js';
 import './actionbar.css';
-import * as nls from '../../../../nls.js';
+import { localize } from '../../../../nls.js';
 import { getBaseLayerHoverDelegate } from '../hover/hoverDelegate2.js';
-export class BaseActionViewItem extends Disposable {
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+class BaseActionViewItem extends Disposable {
     get action() {
         return this._action;
     }
@@ -79,7 +80,7 @@ export class BaseActionViewItem extends Disposable {
                 this._register(addDisposableListener(container, EventType.DRAG_START, e => e.dataTransfer?.setData(DataTransfers.TEXT, this._action.label)));
             }
         }
-        this._register(addDisposableListener(element, TouchEventType.Tap, e => this.onClick(e, true))); // Preserve focus on tap #125470
+        this._register(addDisposableListener(element, EventType$1.Tap, e => this.onClick(e, true))); // Preserve focus on tap #125470
         this._register(addDisposableListener(element, EventType.MOUSE_DOWN, e => {
             if (!enableDragging) {
                 EventHelper.stop(e, true); // do not run when dragging is on because that would disable it
@@ -88,7 +89,7 @@ export class BaseActionViewItem extends Disposable {
                 element.classList.add('active');
             }
         }));
-        if (platform.isMacintosh) {
+        if (isMacintosh) {
             // macOS: allow to trigger the button when holding Ctrl+key and pressing the
             // main mouse button. This is for scenarios where e.g. some interaction forces
             // the Ctrl+key to be pressed and hold but the user still wants to interact
@@ -118,7 +119,7 @@ export class BaseActionViewItem extends Disposable {
     }
     onClick(event, preserveFocus = false) {
         EventHelper.stop(event, true);
-        const context = types.isUndefinedOrNull(this._context) ? this.options?.useEventAsContext ? event : { preserveFocus } : this._context;
+        const context = isUndefinedOrNull(this._context) ? this.options?.useEventAsContext ? event : { preserveFocus } : this._context;
         this.actionRunner.run(this._action, context);
     }
     // Only set the tabIndex on the element once it is about to get focused
@@ -195,7 +196,7 @@ export class BaseActionViewItem extends Disposable {
         super.dispose();
     }
 }
-export class ActionViewItem extends BaseActionViewItem {
+class ActionViewItem extends BaseActionViewItem {
     constructor(context, action, options) {
         options = {
             ...options,
@@ -208,7 +209,7 @@ export class ActionViewItem extends BaseActionViewItem {
     }
     render(container) {
         super.render(container);
-        types.assertType(this.element);
+        assertType(this.element);
         const label = document.createElement('a');
         label.classList.add('action-label');
         label.setAttribute('role', this.getDefaultAriaRole());
@@ -273,7 +274,7 @@ export class ActionViewItem extends BaseActionViewItem {
         else if (this.action.label) {
             title = this.action.label;
             if (this.options.keybinding) {
-                title = nls.localize(0, "{0} ({1})", title, this.options.keybinding);
+                title = localize(0, "{0} ({1})", title, this.options.keybinding);
             }
         }
         return title ?? undefined;
@@ -338,7 +339,7 @@ export class ActionViewItem extends BaseActionViewItem {
         }
     }
 }
-export class SelectActionViewItem extends BaseActionViewItem {
+class SelectActionViewItem extends BaseActionViewItem {
     constructor(ctx, action, options, selected, contextViewProvider, styles, selectBoxOptions) {
         super(ctx, action);
         this.selectBox = new SelectBox(options, selected, contextViewProvider, styles, selectBoxOptions);
@@ -371,4 +372,5 @@ export class SelectActionViewItem extends BaseActionViewItem {
         this.selectBox.render(container);
     }
 }
-//# sourceMappingURL=actionViewItems.js.map
+
+export { ActionViewItem, BaseActionViewItem, SelectActionViewItem };

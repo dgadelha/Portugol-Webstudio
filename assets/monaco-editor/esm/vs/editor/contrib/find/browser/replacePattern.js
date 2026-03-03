@@ -1,8 +1,9 @@
+import { buildReplaceStringWithCasePreserved } from '../../../../base/common/search.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { buildReplaceStringWithCasePreserved } from '../../../../base/common/search.js';
 /**
  * Assigned when the replace pattern is entirely static.
  */
@@ -21,7 +22,7 @@ class DynamicPiecesReplacePattern {
         this.kind = 1 /* ReplacePatternKind.DynamicPieces */;
     }
 }
-export class ReplacePattern {
+class ReplacePattern {
     static fromStaticValue(value) {
         return new ReplacePattern([ReplacePiece.staticValue(value)]);
     }
@@ -115,7 +116,7 @@ export class ReplacePattern {
 /**
  * A replace piece can either be a static string or an index to a specific match.
  */
-export class ReplacePiece {
+class ReplacePiece {
     static staticValue(value) {
         return new ReplacePiece(value, -1, null);
     }
@@ -187,7 +188,7 @@ class ReplacePieceBuilder {
  *
  * Also see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace#Specifying_a_string_as_a_parameter
  */
-export function parseReplaceString(replaceString) {
+function parseReplaceString(replaceString) {
     if (!replaceString || replaceString.length === 0) {
         return new ReplacePattern(null);
     }
@@ -284,4 +285,5 @@ export function parseReplaceString(replaceString) {
     }
     return result.finalize();
 }
-//# sourceMappingURL=replacePattern.js.map
+
+export { ReplacePattern, ReplacePiece, parseReplaceString };

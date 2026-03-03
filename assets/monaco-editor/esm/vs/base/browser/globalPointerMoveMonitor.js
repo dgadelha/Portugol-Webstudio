@@ -1,10 +1,11 @@
+import { getWindow, addDisposableListener, EventType } from './dom.js';
+import { DisposableStore, toDisposable } from '../common/lifecycle.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import * as dom from './dom.js';
-import { DisposableStore, toDisposable } from '../common/lifecycle.js';
-export class GlobalPointerMoveMonitor {
+class GlobalPointerMoveMonitor {
     constructor() {
         this._hooks = new DisposableStore();
         this._pointerMoveCallback = null;
@@ -64,9 +65,9 @@ export class GlobalPointerMoveMonitor {
             //     DOMException: Failed to execute 'setPointerCapture' on 'Element':
             //     No active pointer with the given id is found.
             // In case of failure, we bind the listeners on the window
-            eventSource = dom.getWindow(initialElement);
+            eventSource = getWindow(initialElement);
         }
-        this._hooks.add(dom.addDisposableListener(eventSource, dom.EventType.POINTER_MOVE, (e) => {
+        this._hooks.add(addDisposableListener(eventSource, EventType.POINTER_MOVE, (e) => {
             if (e.buttons !== initialButtons) {
                 // Buttons state has changed in the meantime
                 this.stopMonitoring(true);
@@ -75,7 +76,8 @@ export class GlobalPointerMoveMonitor {
             e.preventDefault();
             this._pointerMoveCallback(e);
         }));
-        this._hooks.add(dom.addDisposableListener(eventSource, dom.EventType.POINTER_UP, (e) => this.stopMonitoring(true)));
+        this._hooks.add(addDisposableListener(eventSource, EventType.POINTER_UP, (e) => this.stopMonitoring(true)));
     }
 }
-//# sourceMappingURL=globalPointerMoveMonitor.js.map
+
+export { GlobalPointerMoveMonitor };

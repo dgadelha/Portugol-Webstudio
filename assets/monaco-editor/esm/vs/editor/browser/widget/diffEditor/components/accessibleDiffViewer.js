@@ -1,24 +1,11 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-import { addDisposableListener, addStandardDisposableListener, reset } from '../../../../../base/browser/dom.js';
+import { reset, addStandardDisposableListener, addDisposableListener } from '../../../../../base/browser/dom.js';
 import { createTrustedTypesPolicy } from '../../../../../base/browser/trustedTypes.js';
 import { ActionBar } from '../../../../../base/browser/ui/actionbar/actionbar.js';
 import { DomScrollableElement } from '../../../../../base/browser/ui/scrollbar/scrollableElement.js';
-import { forEachAdjacent, groupAdjacentBy } from '../../../../../base/common/arrays.js';
+import { groupAdjacentBy, forEachAdjacent } from '../../../../../base/common/arrays.js';
 import { Codicon } from '../../../../../base/common/codicons.js';
 import { Disposable, toDisposable } from '../../../../../base/common/lifecycle.js';
-import { autorun, autorunWithStore, derived, observableValue, subtransaction, transaction } from '../../../../../base/common/observable.js';
+import '../../../../../base/common/observableInternal/index.js';
 import { ThemeIcon } from '../../../../../base/common/themables.js';
 import { applyFontInfo } from '../../../config/domFontInfo.js';
 import { applyStyle } from '../utils.js';
@@ -30,7 +17,7 @@ import { Range } from '../../../../common/core/range.js';
 import { LineRangeMapping } from '../../../../common/diff/rangeMapping.js';
 import { ILanguageService } from '../../../../common/languages/language.js';
 import { LineTokens } from '../../../../common/tokens/lineTokens.js';
-import { RenderLineInput, renderViewLine2 } from '../../../../common/viewLayout/viewLineRenderer.js';
+import { renderViewLine2, RenderLineInput } from '../../../../common/viewLayout/viewLineRenderer.js';
 import { ViewLineRenderingData } from '../../../../common/viewModel.js';
 import { localize } from '../../../../../nls.js';
 import { AccessibilitySignal, IAccessibilitySignalService } from '../../../../../platform/accessibilitySignal/browser/accessibilitySignalService.js';
@@ -38,9 +25,27 @@ import { IInstantiationService } from '../../../../../platform/instantiation/com
 import { registerIcon } from '../../../../../platform/theme/common/iconRegistry.js';
 import './accessibleDiffViewer.css';
 import { toAction } from '../../../../../base/common/actions.js';
-const accessibleDiffViewerInsertIcon = registerIcon('diff-review-insert', Codicon.add, localize(94, 'Icon for \'Insert\' in accessible diff viewer.'));
-const accessibleDiffViewerRemoveIcon = registerIcon('diff-review-remove', Codicon.remove, localize(95, 'Icon for \'Remove\' in accessible diff viewer.'));
-const accessibleDiffViewerCloseIcon = registerIcon('diff-review-close', Codicon.close, localize(96, 'Icon for \'Close\' in accessible diff viewer.'));
+import { transaction, subtransaction } from '../../../../../base/common/observableInternal/transaction.js';
+import { derived } from '../../../../../base/common/observableInternal/observables/derived.js';
+import { observableValue } from '../../../../../base/common/observableInternal/observables/observableValue.js';
+import { autorun, autorunWithStore } from '../../../../../base/common/observableInternal/reactions/autorun.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+const accessibleDiffViewerInsertIcon = registerIcon('diff-review-insert', Codicon.add, localize(97, 'Icon for \'Insert\' in accessible diff viewer.'));
+const accessibleDiffViewerRemoveIcon = registerIcon('diff-review-remove', Codicon.remove, localize(98, 'Icon for \'Remove\' in accessible diff viewer.'));
+const accessibleDiffViewerCloseIcon = registerIcon('diff-review-close', Codicon.close, localize(99, 'Icon for \'Close\' in accessible diff viewer.'));
 let AccessibleDiffViewer = class AccessibleDiffViewer extends Disposable {
     static { this._ttPolicy = createTrustedTypesPolicy('diffReview', { createHTML: value => value }); }
     constructor(_parentNode, _visible, _setVisible, _canClose, _width, _height, _diffs, _models, _instantiationService) {
@@ -89,7 +94,6 @@ let AccessibleDiffViewer = class AccessibleDiffViewer extends Disposable {
 AccessibleDiffViewer = __decorate([
     __param(8, IInstantiationService)
 ], AccessibleDiffViewer);
-export { AccessibleDiffViewer };
 let ViewModel = class ViewModel extends Disposable {
     constructor(_diffs, _models, _setVisible, canClose, _accessibilitySignalService) {
         super();
@@ -298,7 +302,7 @@ let View = class View extends Disposable {
             if (this._model.canClose.read(reader)) {
                 this._actionBar.push(toAction({
                     id: 'diffreview.close',
-                    label: localize(97, "Close"),
+                    label: localize(100, "Close"),
                     class: 'close-diff-review ' + ThemeIcon.asClassName(accessibleDiffViewerCloseIcon),
                     enabled: true,
                     run: async () => _model.close()
@@ -357,7 +361,7 @@ let View = class View extends Disposable {
         const container = document.createElement('div');
         container.className = 'diff-review-table';
         container.setAttribute('role', 'list');
-        container.setAttribute('aria-label', localize(98, 'Accessible Diff Viewer. Use arrow up and down to navigate.'));
+        container.setAttribute('aria-label', localize(101, 'Accessible Diff Viewer. Use arrow up and down to navigate.'));
         applyFontInfo(container, modifiedOptions.get(59 /* EditorOption.fontInfo */));
         reset(this._content, container);
         const originalModel = this._models.getOriginalModel();
@@ -381,12 +385,12 @@ let View = class View extends Disposable {
                 const r = group.range;
                 const diffIndex = this._model.currentGroupIndex.get();
                 const diffsLength = this._model.groups.get().length;
-                const getAriaLines = (lines) => lines === 0 ? localize(99, "no lines changed")
-                    : lines === 1 ? localize(100, "1 line changed")
-                        : localize(101, "{0} lines changed", lines);
+                const getAriaLines = (lines) => lines === 0 ? localize(102, "no lines changed")
+                    : lines === 1 ? localize(103, "1 line changed")
+                        : localize(104, "{0} lines changed", lines);
                 const originalChangedLinesCntAria = getAriaLines(r.original.length);
                 const modifiedChangedLinesCntAria = getAriaLines(r.modified.length);
-                header.setAttribute('aria-label', localize(102, "Difference {0} of {1}: original line {2}, {3}, modified line {4}, {5}", (diffIndex + 1), diffsLength, r.original.startLineNumber, originalChangedLinesCntAria, r.modified.startLineNumber, modifiedChangedLinesCntAria));
+                header.setAttribute('aria-label', localize(105, "Difference {0} of {1}: original line {2}, {3}, modified line {4}, {5}", (diffIndex + 1), diffsLength, r.original.startLineNumber, originalChangedLinesCntAria, r.modified.startLineNumber, modifiedChangedLinesCntAria));
 
 
 
@@ -506,23 +510,23 @@ let View = class View extends Disposable {
             lineContent = originalModel.getLineContent(item.originalLineNumber);
         }
         if (lineContent.length === 0) {
-            lineContent = localize(103, "blank");
+            lineContent = localize(106, "blank");
         }
         let ariaLabel = '';
         switch (item.type) {
             case LineType.Unchanged:
                 if (item.originalLineNumber === item.modifiedLineNumber) {
-                    ariaLabel = localize(104, "{0} unchanged line {1}", lineContent, item.originalLineNumber);
+                    ariaLabel = localize(107, "{0} unchanged line {1}", lineContent, item.originalLineNumber);
                 }
                 else {
-                    ariaLabel = localize(105, "{0} original line {1} modified line {2}", lineContent, item.originalLineNumber, item.modifiedLineNumber);
+                    ariaLabel = localize(108, "{0} original line {1} modified line {2}", lineContent, item.originalLineNumber, item.modifiedLineNumber);
                 }
                 break;
             case LineType.Added:
-                ariaLabel = localize(106, "+ {0} modified line {1}", lineContent, item.modifiedLineNumber);
+                ariaLabel = localize(109, "+ {0} modified line {1}", lineContent, item.modifiedLineNumber);
                 break;
             case LineType.Deleted:
-                ariaLabel = localize(107, "- {0} original line {1}", lineContent, item.originalLineNumber);
+                ariaLabel = localize(110, "- {0} original line {1}", lineContent, item.originalLineNumber);
                 break;
         }
         row.setAttribute('aria-label', ariaLabel);
@@ -542,7 +546,7 @@ let View = class View extends Disposable {
 View = __decorate([
     __param(5, ILanguageService)
 ], View);
-export class AccessibleDiffViewerModelFromEditors {
+class AccessibleDiffViewerModelFromEditors {
     constructor(editors) {
         this.editors = editors;
     }
@@ -580,4 +584,5 @@ export class AccessibleDiffViewerModelFromEditors {
         return this.editors.modified.getPosition() ?? undefined;
     }
 }
-//# sourceMappingURL=accessibleDiffViewer.js.map
+
+export { AccessibleDiffViewer, AccessibleDiffViewerModelFromEditors };

@@ -1,29 +1,30 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-import * as dom from '../../../base/browser/dom.js';
+import { windowOpenNoOpener } from '../../../base/browser/dom.js';
 import { mainWindow } from '../../../base/browser/window.js';
 import { CancellationToken } from '../../../base/common/cancellation.js';
 import { LinkedList } from '../../../base/common/linkedList.js';
 import { ResourceMap } from '../../../base/common/map.js';
 import { parse } from '../../../base/common/marshalling.js';
-import { matchesScheme, matchesSomeScheme, Schemas } from '../../../base/common/network.js';
+import { matchesScheme, Schemas, matchesSomeScheme } from '../../../base/common/network.js';
 import { normalizePath } from '../../../base/common/resources.js';
 import { URI } from '../../../base/common/uri.js';
 import { ICodeEditorService } from './codeEditorService.js';
 import { ICommandService } from '../../../platform/commands/common/commands.js';
 import { EditorOpenSource } from '../../../platform/editor/common/editor.js';
 import { extractSelection } from '../../../platform/opener/common/opener.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 let CommandOpener = class CommandOpener {
     constructor(_commandService) {
         this._commandService = _commandService;
@@ -113,7 +114,7 @@ let OpenerService = class OpenerService {
                 // safe to be set as HREF to prevent a blank window
                 // from opening.
                 if (matchesSomeScheme(href, Schemas.http, Schemas.https)) {
-                    dom.windowOpenNoOpener(href);
+                    windowOpenNoOpener(href);
                 }
                 else {
                     mainWindow.location.href = href;
@@ -217,5 +218,5 @@ OpenerService = __decorate([
     __param(0, ICodeEditorService),
     __param(1, ICommandService)
 ], OpenerService);
+
 export { OpenerService };
-//# sourceMappingURL=openerService.js.map

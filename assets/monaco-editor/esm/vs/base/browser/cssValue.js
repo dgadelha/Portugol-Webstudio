@@ -1,8 +1,9 @@
 import { FileAccess } from '../common/network.js';
+
 function asFragment(raw) {
     return raw;
 }
-export function asCssValueWithDefault(cssPropertyValue, dflt) {
+function asCssValueWithDefault(cssPropertyValue, dflt) {
     if (cssPropertyValue !== undefined) {
         const variableMatch = cssPropertyValue.match(/^\s*var\((.+)\)$/);
         if (variableMatch) {
@@ -16,26 +17,26 @@ export function asCssValueWithDefault(cssPropertyValue, dflt) {
     }
     return dflt;
 }
-export function identValue(value) {
+function identValue(value) {
     const out = value.replaceAll(/[^_\-a-z0-9]/gi, '');
     if (out !== value) {
         console.warn(`CSS ident value ${value} modified to ${out} to be safe for CSS`);
     }
     return asFragment(out);
 }
-export function stringValue(value) {
+function stringValue(value) {
     return asFragment(`'${value.replaceAll(/'/g, '\\000027')}'`);
 }
 /**
  * returns url('...')
  */
-export function asCSSUrl(uri) {
+function asCSSUrl(uri) {
     if (!uri) {
         return asFragment(`url('')`);
     }
     return inline `url('${asFragment(CSS.escape(FileAccess.uriToBrowserUri(uri).toString(true)))}')`;
 }
-export function className(value, escapingExpected = false) {
+function className(value, escapingExpected = false) {
     const out = CSS.escape(value);
     if (!escapingExpected && out !== value) {
         console.warn(`CSS class name ${value} modified to ${out} to be safe for CSS`);
@@ -47,13 +48,13 @@ export function className(value, escapingExpected = false) {
  *
  * All expressions in the template must be css safe values.
  */
-export function inline(strings, ...values) {
+function inline(strings, ...values) {
     return asFragment(strings.reduce((result, str, i) => {
         const value = values[i] || '';
         return result + str + value;
     }, ''));
 }
-export class Builder {
+class Builder {
     constructor() {
         this._parts = [];
     }
@@ -64,4 +65,5 @@ export class Builder {
         return asFragment(this._parts.join(joiner));
     }
 }
-//# sourceMappingURL=cssValue.js.map
+
+export { Builder, asCSSUrl, asCssValueWithDefault, className, identValue, inline, stringValue };

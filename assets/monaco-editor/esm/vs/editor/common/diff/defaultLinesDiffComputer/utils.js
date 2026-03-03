@@ -2,7 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-export class Array2D {
+class Array2D {
     constructor(width, height) {
         this.width = width;
         this.height = height;
@@ -16,10 +16,10 @@ export class Array2D {
         this.array[x + y * this.width] = value;
     }
 }
-export function isSpace(charCode) {
+function isSpace(charCode) {
     return charCode === 32 /* CharCode.Space */ || charCode === 9 /* CharCode.Tab */;
 }
-export class LineRangeFragment {
+class LineRangeFragment {
     static { this.chrKeys = new Map(); }
     static getKey(chr) {
         let key = this.chrKeys.get(chr);
@@ -58,4 +58,5 @@ export class LineRangeFragment {
         return 1 - (sumDifferences / (this.totalCount + other.totalCount));
     }
 }
-//# sourceMappingURL=utils.js.map
+
+export { Array2D, LineRangeFragment, isSpace };

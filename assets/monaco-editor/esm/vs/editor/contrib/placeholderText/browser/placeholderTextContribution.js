@@ -1,16 +1,21 @@
+import { h } from '../../../../base/browser/dom.js';
+import { structuralEquals } from '../../../../base/common/equals.js';
+import { Disposable } from '../../../../base/common/lifecycle.js';
+import '../../../../base/common/observableInternal/index.js';
+import { observableCodeEditor } from '../../../browser/observableCodeEditor.js';
+import { derivedOpts, derived } from '../../../../base/common/observableInternal/observables/derived.js';
+import { autorun } from '../../../../base/common/observableInternal/reactions/autorun.js';
+import { constObservable } from '../../../../base/common/observableInternal/observables/constObservable.js';
+import { derivedObservableWithCache } from '../../../../base/common/observableInternal/utils/utils.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { h } from '../../../../base/browser/dom.js';
-import { structuralEquals } from '../../../../base/common/equals.js';
-import { Disposable } from '../../../../base/common/lifecycle.js';
-import { autorun, constObservable, derivedObservableWithCache, derivedOpts, derived } from '../../../../base/common/observable.js';
-import { observableCodeEditor } from '../../../browser/observableCodeEditor.js';
 /**
  * Use the editor option to set the placeholder text.
 */
-export class PlaceholderTextContribution extends Disposable {
+class PlaceholderTextContribution extends Disposable {
     static { this.ID = 'editor.contrib.placeholderText'; }
     constructor(_editor) {
         super();
@@ -68,4 +73,5 @@ function isOrWasTrue(owner, fn) {
         return fn(reader);
     });
 }
-//# sourceMappingURL=placeholderTextContribution.js.map
+
+export { PlaceholderTextContribution };

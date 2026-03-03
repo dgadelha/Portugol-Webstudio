@@ -1,104 +1,170 @@
-/*!-----------------------------------------------------------------------------
- * Copyright (c) Microsoft Corporation. All rights reserved.
- * Version: 0.54.0(7c2310116c57517348bbd868a21139f32454be22)
- * Released under the MIT license
- * https://github.com/microsoft/monaco-editor/blob/main/LICENSE.txt
- *-----------------------------------------------------------------------------*/
+import * as monaco_contribution from '../language/css/monaco.contribution.js';
+import * as monaco_contribution$1 from '../language/html/monaco.contribution.js';
+import * as monaco_contribution$2 from '../language/json/monaco.contribution.js';
+import * as monaco_contribution$3 from '../language/typescript/monaco.contribution.js';
+import '../basic-languages/abap/abap.contribution.js';
+import '../basic-languages/apex/apex.contribution.js';
+import '../basic-languages/azcli/azcli.contribution.js';
+import '../basic-languages/bat/bat.contribution.js';
+import '../basic-languages/bicep/bicep.contribution.js';
+import '../basic-languages/cameligo/cameligo.contribution.js';
+import '../basic-languages/clojure/clojure.contribution.js';
+import '../basic-languages/coffee/coffee.contribution.js';
+import '../basic-languages/cpp/cpp.contribution.js';
+import '../basic-languages/csharp/csharp.contribution.js';
+import '../basic-languages/csp/csp.contribution.js';
+import '../basic-languages/css/css.contribution.js';
+import '../basic-languages/cypher/cypher.contribution.js';
+import '../basic-languages/dart/dart.contribution.js';
+import '../basic-languages/dockerfile/dockerfile.contribution.js';
+import '../basic-languages/ecl/ecl.contribution.js';
+import '../basic-languages/elixir/elixir.contribution.js';
+import '../basic-languages/flow9/flow9.contribution.js';
+import '../basic-languages/fsharp/fsharp.contribution.js';
+import '../basic-languages/freemarker2/freemarker2.contribution.js';
+import '../basic-languages/go/go.contribution.js';
+import '../basic-languages/graphql/graphql.contribution.js';
+import '../basic-languages/handlebars/handlebars.contribution.js';
+import '../basic-languages/hcl/hcl.contribution.js';
+import '../basic-languages/html/html.contribution.js';
+import '../basic-languages/ini/ini.contribution.js';
+import '../basic-languages/java/java.contribution.js';
+import '../basic-languages/javascript/javascript.contribution.js';
+import '../basic-languages/julia/julia.contribution.js';
+import '../basic-languages/kotlin/kotlin.contribution.js';
+import '../basic-languages/less/less.contribution.js';
+import '../basic-languages/lexon/lexon.contribution.js';
+import '../basic-languages/lua/lua.contribution.js';
+import '../basic-languages/liquid/liquid.contribution.js';
+import '../basic-languages/m3/m3.contribution.js';
+import '../basic-languages/markdown/markdown.contribution.js';
+import '../basic-languages/mdx/mdx.contribution.js';
+import '../basic-languages/mips/mips.contribution.js';
+import '../basic-languages/msdax/msdax.contribution.js';
+import '../basic-languages/mysql/mysql.contribution.js';
+import '../basic-languages/objective-c/objective-c.contribution.js';
+import '../basic-languages/pascal/pascal.contribution.js';
+import '../basic-languages/pascaligo/pascaligo.contribution.js';
+import '../basic-languages/perl/perl.contribution.js';
+import '../basic-languages/pgsql/pgsql.contribution.js';
+import '../basic-languages/php/php.contribution.js';
+import '../basic-languages/pla/pla.contribution.js';
+import '../basic-languages/postiats/postiats.contribution.js';
+import '../basic-languages/powerquery/powerquery.contribution.js';
+import '../basic-languages/powershell/powershell.contribution.js';
+import '../basic-languages/protobuf/protobuf.contribution.js';
+import '../basic-languages/pug/pug.contribution.js';
+import '../basic-languages/python/python.contribution.js';
+import '../basic-languages/qsharp/qsharp.contribution.js';
+import '../basic-languages/r/r.contribution.js';
+import '../basic-languages/razor/razor.contribution.js';
+import '../basic-languages/redis/redis.contribution.js';
+import '../basic-languages/redshift/redshift.contribution.js';
+import '../basic-languages/restructuredtext/restructuredtext.contribution.js';
+import '../basic-languages/ruby/ruby.contribution.js';
+import '../basic-languages/rust/rust.contribution.js';
+import '../basic-languages/sb/sb.contribution.js';
+import '../basic-languages/scala/scala.contribution.js';
+import '../basic-languages/scheme/scheme.contribution.js';
+import '../basic-languages/scss/scss.contribution.js';
+import '../basic-languages/shell/shell.contribution.js';
+import '../basic-languages/solidity/solidity.contribution.js';
+import '../basic-languages/sophia/sophia.contribution.js';
+import '../basic-languages/sparql/sparql.contribution.js';
+import '../basic-languages/sql/sql.contribution.js';
+import '../basic-languages/st/st.contribution.js';
+import '../basic-languages/swift/swift.contribution.js';
+import '../basic-languages/systemverilog/systemverilog.contribution.js';
+import '../basic-languages/tcl/tcl.contribution.js';
+import '../basic-languages/twig/twig.contribution.js';
+import '../basic-languages/typescript/typescript.contribution.js';
+import '../basic-languages/typespec/typespec.contribution.js';
+import '../basic-languages/vb/vb.contribution.js';
+import '../basic-languages/wgsl/wgsl.contribution.js';
+import '../basic-languages/xml/xml.contribution.js';
+import '../basic-languages/yaml/yaml.contribution.js';
+import * as index from '../../external/monaco-lsp-client/out/index.js';
+export { index as lsp };
+import './browser/coreCommands.js';
+import './browser/widget/codeEditor/codeEditorWidget.js';
+import './browser/widget/diffEditor/diffEditor.contribution.js';
+import './contrib/anchorSelect/browser/anchorSelect.js';
+import './contrib/bracketMatching/browser/bracketMatching.js';
+import './contrib/caretOperations/browser/caretOperations.js';
+import './contrib/caretOperations/browser/transpose.js';
+import './contrib/clipboard/browser/clipboard.js';
+import './contrib/codeAction/browser/codeActionContributions.js';
+import './contrib/codelens/browser/codelensController.js';
+import './contrib/colorPicker/browser/colorPickerContribution.js';
+import './contrib/comment/browser/comment.js';
+import './contrib/contextmenu/browser/contextmenu.js';
+import './contrib/cursorUndo/browser/cursorUndo.js';
+import './contrib/dnd/browser/dnd.js';
+import './contrib/dropOrPasteInto/browser/copyPasteContribution.js';
+import './contrib/dropOrPasteInto/browser/dropIntoEditorContribution.js';
+import './contrib/find/browser/findController.js';
+import './contrib/folding/browser/folding.js';
+import './contrib/fontZoom/browser/fontZoom.js';
+import './contrib/format/browser/formatActions.js';
+import './contrib/documentSymbols/browser/documentSymbols.js';
+import './contrib/inlineCompletions/browser/inlineCompletions.contribution.js';
+import './contrib/inlineProgress/browser/inlineProgress.js';
+import './contrib/gotoSymbol/browser/goToCommands.js';
+import './contrib/gotoSymbol/browser/link/goToDefinitionAtPosition.js';
+import './contrib/gotoError/browser/gotoError.js';
+import './contrib/gpu/browser/gpuActions.js';
+import './contrib/hover/browser/hoverContribution.js';
+import './contrib/indentation/browser/indentation.js';
+import './contrib/inlayHints/browser/inlayHintsContribution.js';
+import './contrib/inPlaceReplace/browser/inPlaceReplace.js';
+import './contrib/insertFinalNewLine/browser/insertFinalNewLine.js';
+import './contrib/lineSelection/browser/lineSelection.js';
+import './contrib/linesOperations/browser/linesOperations.js';
+import './contrib/linkedEditing/browser/linkedEditing.js';
+import './contrib/links/browser/links.js';
+import './contrib/longLinesHelper/browser/longLinesHelper.js';
+import './contrib/middleScroll/browser/middleScroll.contribution.js';
+import './contrib/multicursor/browser/multicursor.js';
+import './contrib/parameterHints/browser/parameterHints.js';
+import './contrib/placeholderText/browser/placeholderText.contribution.js';
+import './contrib/rename/browser/rename.js';
+import './contrib/sectionHeaders/browser/sectionHeaders.js';
+import './contrib/semanticTokens/browser/documentSemanticTokens.js';
+import './contrib/semanticTokens/browser/viewportSemanticTokens.js';
+import './contrib/smartSelect/browser/smartSelect.js';
+import './contrib/snippet/browser/snippetController2.js';
+import './contrib/stickyScroll/browser/stickyScrollContribution.js';
+import './contrib/suggest/browser/suggestController.js';
+import './contrib/suggest/browser/suggestInlineCompletions.js';
+import './contrib/tokenization/browser/tokenization.js';
+import './contrib/toggleTabFocusMode/browser/toggleTabFocusMode.js';
+import './contrib/unicodeHighlighter/browser/unicodeHighlighter.js';
+import './contrib/unusualLineTerminators/browser/unusualLineTerminators.js';
+import './contrib/wordHighlighter/browser/wordHighlighter.js';
+import './contrib/wordOperations/browser/wordOperations.js';
+import './contrib/wordPartOperations/browser/wordPartOperations.js';
+import './contrib/readOnlyMessage/browser/contribution.js';
+import './contrib/diffEditorBreadcrumbs/browser/contribution.js';
+import './contrib/floatingMenu/browser/floatingMenu.contribution.js';
+import './common/standaloneStrings.js';
+import '../base/browser/ui/codicons/codicon/codicon.css';
+import '../base/browser/ui/codicons/codicon/codicon-modifiers.css';
+import './standalone/browser/iPadShowKeyboard/iPadShowKeyboard.js';
+import './standalone/browser/inspectTokens/inspectTokens.js';
+import './standalone/browser/quickAccess/standaloneHelpQuickAccess.js';
+import './standalone/browser/quickAccess/standaloneGotoLineQuickAccess.js';
+import './standalone/browser/quickAccess/standaloneGotoSymbolQuickAccess.js';
+import './standalone/browser/quickAccess/standaloneCommandsQuickAccess.js';
+import './standalone/browser/referenceSearch/standaloneReferenceSearch.js';
+import './standalone/browser/toggleHighContrast/toggleHighContrast.js';
+export { CancellationTokenSource, Emitter, KeyCode, KeyMod, MarkerSeverity, MarkerTag, Position, Range, Selection, SelectionDirection, Token, Uri, editor, languages } from './editor.api2.js';
+export { createWebWorker } from '../common/workers.js';
+import { getGlobalMonaco } from './internal/initialize.js';
 
-var __defProp = Object.defineProperty;
-var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
-var __getOwnPropNames = Object.getOwnPropertyNames;
-var __hasOwnProp = Object.prototype.hasOwnProperty;
-var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
-      if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
-  }
-  return to;
-};
-var __reExport = (target, mod, secondTarget) => (__copyProps(target, mod, "default"), secondTarget && __copyProps(secondTarget, mod, "default"));
+const monacoApi = getGlobalMonaco();
+monacoApi.languages.css = monaco_contribution;
+monacoApi.languages.html = monaco_contribution$1;
+monacoApi.languages.typescript = monaco_contribution$3;
+monacoApi.languages.json = monaco_contribution$2;
 
-// src/fillers/monaco-editor-core.ts
-var monaco_editor_core_exports = {};
-__reExport(monaco_editor_core_exports, monaco_editor_core_star);
-import * as monaco_editor_core_star from "./edcore.main.js";
-
-// src/common/workers.ts
-function createTrustedTypesPolicy(policyName, policyOptions) {
-  const monacoEnvironment = globalThis.MonacoEnvironment;
-  if (monacoEnvironment?.createTrustedTypesPolicy) {
-    try {
-      return monacoEnvironment.createTrustedTypesPolicy(policyName, policyOptions);
-    } catch (err) {
-      console.error(err);
-      return void 0;
-    }
-  }
-  try {
-    return globalThis.trustedTypes?.createPolicy(policyName, policyOptions);
-  } catch (err) {
-    console.error(err);
-    return void 0;
-  }
-}
-var ttPolicy;
-if (typeof self === "object" && self.constructor && self.constructor.name === "DedicatedWorkerGlobalScope" && globalThis.workerttPolicy !== void 0) {
-  ttPolicy = globalThis.workerttPolicy;
-} else {
-  ttPolicy = createTrustedTypesPolicy("defaultWorkerFactory", {
-    createScriptURL: (value) => value
-  });
-}
-function getWorker(descriptor) {
-  const label = descriptor.label;
-  const monacoEnvironment = globalThis.MonacoEnvironment;
-  if (monacoEnvironment) {
-    if (typeof monacoEnvironment.getWorker === "function") {
-      return monacoEnvironment.getWorker("workerMain.js", label);
-    }
-    if (typeof monacoEnvironment.getWorkerUrl === "function") {
-      const workerUrl = monacoEnvironment.getWorkerUrl("workerMain.js", label);
-      return new Worker(
-        ttPolicy ? ttPolicy.createScriptURL(workerUrl) : workerUrl,
-        { name: label, type: "module" }
-      );
-    }
-  }
-  throw new Error(
-    `You must define a function MonacoEnvironment.getWorkerUrl or MonacoEnvironment.getWorker`
-  );
-}
-function createWebWorker(opts) {
-  const worker = Promise.resolve(
-    getWorker({
-      label: opts.label ?? "monaco-editor-worker",
-      moduleId: opts.moduleId
-    })
-  ).then((w) => {
-    w.postMessage("ignore");
-    w.postMessage(opts.createData);
-    return w;
-  });
-  return monaco_editor_core_exports.editor.createWebWorker({
-    worker,
-    host: opts.host,
-    keepIdleModels: opts.keepIdleModels
-  });
-}
-
-// src/editor/editor.main.ts
-import "../basic-languages/monaco.contribution.js";
-import "../language/css/monaco.contribution.js";
-import "../language/html/monaco.contribution.js";
-import "../language/json/monaco.contribution.js";
-import "../language/typescript/monaco.contribution.js";
-import * as monaco from "./edcore.main.js";
-export * from "./edcore.main.js";
-var existingCreateWebWorker = monaco.editor.createWebWorker;
-monaco.editor.createWebWorker = function(options) {
-  if (options.worker === void 0) {
-    return createWebWorker(options);
-  }
-  return existingCreateWebWorker(options);
-};
+export { monaco_contribution as css, monaco_contribution$1 as html, monaco_contribution$2 as json, monaco_contribution$3 as typescript };

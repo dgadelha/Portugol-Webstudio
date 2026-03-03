@@ -1,10 +1,11 @@
+import { assertNever } from '../../base/common/assert.js';
+import { Position } from './core/position.js';
+import { InjectedTextCursorStops } from './model.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { assertNever } from '../../base/common/assert.js';
-import { Position } from './core/position.js';
-import { InjectedTextCursorStops } from './model.js';
 /**
  * *input*:
  * ```
@@ -30,7 +31,7 @@ import { InjectedTextCursorStops } from './model.js';
  *    xxxxxx[ii]xxxx
  * ```
  */
-export class ModelLineProjectionData {
+class ModelLineProjectionData {
     constructor(injectionOffsets, 
     /**
      * `injectionOptions.length` must equal `injectionOffsets.length`
@@ -229,7 +230,7 @@ export class ModelLineProjectionData {
             }
             return result;
         }
-        assertNever(affinity);
+        assertNever();
     }
     getInjectedText(outputLineIndex, outputOffset) {
         const offset = this.outputPositionToOffsetInInputWithInjections(outputLineIndex, outputOffset);
@@ -280,12 +281,7 @@ function hasLeftCursorStop(cursorStop) {
     }
     return cursorStop === InjectedTextCursorStops.Left || cursorStop === InjectedTextCursorStops.Both;
 }
-export class InjectedText {
-    constructor(options) {
-        this.options = options;
-    }
-}
-export class OutputPosition {
+class OutputPosition {
     constructor(outputLineIndex, outputOffset) {
         this.outputLineIndex = outputLineIndex;
         this.outputOffset = outputOffset;
@@ -297,4 +293,5 @@ export class OutputPosition {
         return new Position(baseLineNumber + this.outputLineIndex, this.outputOffset + 1);
     }
 }
-//# sourceMappingURL=modelLineProjectionData.js.map
+
+export { ModelLineProjectionData, OutputPosition };

@@ -1,8 +1,9 @@
-import { createMatches as createFuzzyMatches, fuzzyScore } from './filters.js';
+import { fuzzyScore, createMatches } from './filters.js';
 import { sep } from './path.js';
 import { isWindows } from './platform.js';
+
 const NO_SCORE2 = [undefined, []];
-export function scoreFuzzy2(target, query, patternStart = 0, wordStart = 0) {
+function scoreFuzzy2(target, query, patternStart = 0, wordStart = 0) {
     // Score: multiple inputs
     const preparedQuery = query;
     if (preparedQuery.values && preparedQuery.values.length > 1) {
@@ -33,9 +34,8 @@ function doScoreFuzzy2Single(target, query, patternStart, wordStart) {
     if (!score) {
         return NO_SCORE2;
     }
-    return [score[0], createFuzzyMatches(score)];
+    return [score[0], createMatches(score)];
 }
-const NO_ITEM_SCORE = Object.freeze({ score: 0 });
 function normalizeMatches(matches) {
     // sort matches by start to be able to normalize
     const sortedMatches = matches.sort((matchA, matchB) => {
@@ -81,7 +81,7 @@ function queryExpectsExactMatch(query) {
  * and allowing to score on multiple pieces separated by whitespace character.
  */
 const MULTIPLE_QUERY_VALUES_SEPARATOR = ' ';
-export function prepareQuery(original) {
+function prepareQuery(original) {
     if (typeof original !== 'string') {
         original = '';
     }
@@ -132,11 +132,12 @@ function normalizeQuery(original) {
         normalizedLowercase: normalized.toLowerCase()
     };
 }
-export function pieceToQuery(arg1) {
+function pieceToQuery(arg1) {
     if (Array.isArray(arg1)) {
         return prepareQuery(arg1.map(piece => piece.original).join(MULTIPLE_QUERY_VALUES_SEPARATOR));
     }
     return prepareQuery(arg1.original);
 }
 //#endregion
-//# sourceMappingURL=fuzzyScorer.js.map
+
+export { pieceToQuery, prepareQuery, scoreFuzzy2 };

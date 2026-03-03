@@ -1,19 +1,20 @@
+import { localize } from '../../../nls.js';
+import { onUnexpectedError } from '../../../base/common/errors.js';
+import { Selection } from '../core/selection.js';
+import { URI } from '../../../base/common/uri.js';
+import { compressConsecutiveTextChanges, TextChange } from '../core/textChange.js';
+import { writeUInt32BE, readUInt32BE, writeUInt8, readUInt8 } from '../../../base/common/buffer.js';
+import { basename } from '../../../base/common/resources.js';
+import { EditSources } from '../textModelEditSource.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import * as nls from '../../../nls.js';
-import { onUnexpectedError } from '../../../base/common/errors.js';
-import { Selection } from '../core/selection.js';
-import { URI } from '../../../base/common/uri.js';
-import { TextChange, compressConsecutiveTextChanges } from '../core/textChange.js';
-import * as buffer from '../../../base/common/buffer.js';
-import { basename } from '../../../base/common/resources.js';
-import { EditSources } from '../textModelEditSource.js';
 function uriGetComparisonKey(resource) {
     return resource.toString();
 }
-export class SingleModelEditStackData {
+class SingleModelEditStackData {
     static create(model, beforeCursorState) {
         const alternativeVersionId = model.getAlternativeVersionId();
         const eol = getModelEOL(model);
@@ -40,40 +41,40 @@ export class SingleModelEditStackData {
         return 4 + 4 * 4 * (selections ? selections.length : 0);
     }
     static _writeSelections(b, selections, offset) {
-        buffer.writeUInt32BE(b, (selections ? selections.length : 0), offset);
+        writeUInt32BE(b, (selections ? selections.length : 0), offset);
         offset += 4;
         if (selections) {
             for (const selection of selections) {
-                buffer.writeUInt32BE(b, selection.selectionStartLineNumber, offset);
+                writeUInt32BE(b, selection.selectionStartLineNumber, offset);
                 offset += 4;
-                buffer.writeUInt32BE(b, selection.selectionStartColumn, offset);
+                writeUInt32BE(b, selection.selectionStartColumn, offset);
                 offset += 4;
-                buffer.writeUInt32BE(b, selection.positionLineNumber, offset);
+                writeUInt32BE(b, selection.positionLineNumber, offset);
                 offset += 4;
-                buffer.writeUInt32BE(b, selection.positionColumn, offset);
+                writeUInt32BE(b, selection.positionColumn, offset);
                 offset += 4;
             }
         }
         return offset;
     }
     static _readSelections(b, offset, dest) {
-        const count = buffer.readUInt32BE(b, offset);
+        const count = readUInt32BE(b, offset);
         offset += 4;
         for (let i = 0; i < count; i++) {
-            const selectionStartLineNumber = buffer.readUInt32BE(b, offset);
+            const selectionStartLineNumber = readUInt32BE(b, offset);
             offset += 4;
-            const selectionStartColumn = buffer.readUInt32BE(b, offset);
+            const selectionStartColumn = readUInt32BE(b, offset);
             offset += 4;
-            const positionLineNumber = buffer.readUInt32BE(b, offset);
+            const positionLineNumber = readUInt32BE(b, offset);
             offset += 4;
-            const positionColumn = buffer.readUInt32BE(b, offset);
+            const positionColumn = readUInt32BE(b, offset);
             offset += 4;
             dest.push(new Selection(selectionStartLineNumber, selectionStartColumn, positionLineNumber, positionColumn));
         }
         return offset;
     }
     serialize() {
-        let necessarySize = (+4 // beforeVersionId
+        let necessarySize = (4 // beforeVersionId
             + 4 // afterVersionId
             + 1 // beforeEOL
             + 1 // afterEOL
@@ -86,17 +87,17 @@ export class SingleModelEditStackData {
         }
         const b = new Uint8Array(necessarySize);
         let offset = 0;
-        buffer.writeUInt32BE(b, this.beforeVersionId, offset);
+        writeUInt32BE(b, this.beforeVersionId, offset);
         offset += 4;
-        buffer.writeUInt32BE(b, this.afterVersionId, offset);
+        writeUInt32BE(b, this.afterVersionId, offset);
         offset += 4;
-        buffer.writeUInt8(b, this.beforeEOL, offset);
+        writeUInt8(b, this.beforeEOL, offset);
         offset += 1;
-        buffer.writeUInt8(b, this.afterEOL, offset);
+        writeUInt8(b, this.afterEOL, offset);
         offset += 1;
         offset = SingleModelEditStackData._writeSelections(b, this.beforeCursorState, offset);
         offset = SingleModelEditStackData._writeSelections(b, this.afterCursorState, offset);
-        buffer.writeUInt32BE(b, this.changes.length, offset);
+        writeUInt32BE(b, this.changes.length, offset);
         offset += 4;
         for (const change of this.changes) {
             offset = change.write(b, offset);
@@ -106,19 +107,19 @@ export class SingleModelEditStackData {
     static deserialize(source) {
         const b = new Uint8Array(source);
         let offset = 0;
-        const beforeVersionId = buffer.readUInt32BE(b, offset);
+        const beforeVersionId = readUInt32BE(b, offset);
         offset += 4;
-        const afterVersionId = buffer.readUInt32BE(b, offset);
+        const afterVersionId = readUInt32BE(b, offset);
         offset += 4;
-        const beforeEOL = buffer.readUInt8(b, offset);
+        const beforeEOL = readUInt8(b, offset);
         offset += 1;
-        const afterEOL = buffer.readUInt8(b, offset);
+        const afterEOL = readUInt8(b, offset);
         offset += 1;
         const beforeCursorState = [];
         offset = SingleModelEditStackData._readSelections(b, offset, beforeCursorState);
         const afterCursorState = [];
         offset = SingleModelEditStackData._readSelections(b, offset, afterCursorState);
-        const changeCount = buffer.readUInt32BE(b, offset);
+        const changeCount = readUInt32BE(b, offset);
         offset += 4;
         const changes = [];
         for (let i = 0; i < changeCount; i++) {
@@ -127,7 +128,7 @@ export class SingleModelEditStackData {
         return new SingleModelEditStackData(beforeVersionId, afterVersionId, beforeEOL, afterEOL, beforeCursorState, afterCursorState, changes);
     }
 }
-export class SingleModelEditStackElement {
+class SingleModelEditStackElement {
     get type() {
         return 0 /* UndoRedoElementType.Resource */;
     }
@@ -201,7 +202,7 @@ export class SingleModelEditStackElement {
         return this._data.byteLength + 168 /*heap overhead*/;
     }
 }
-export class MultiModelEditStackElement {
+class MultiModelEditStackElement {
     get resources() {
         return this._editStackElementsArr.map(editStackElement => editStackElement.resource);
     }
@@ -294,13 +295,13 @@ function getModelEOL(model) {
         return 1 /* EndOfLineSequence.CRLF */;
     }
 }
-export function isEditStackElement(element) {
+function isEditStackElement(element) {
     if (!element) {
         return false;
     }
     return ((element instanceof SingleModelEditStackElement) || (element instanceof MultiModelEditStackElement));
 }
-export class EditStack {
+class EditStack {
     constructor(model, undoRedoService) {
         this._model = model;
         this._undoRedoService = undoRedoService;
@@ -325,7 +326,7 @@ export class EditStack {
         if (isEditStackElement(lastElement) && lastElement.canAppend(this._model)) {
             return lastElement;
         }
-        const newElement = new SingleModelEditStackElement(nls.localize(781, "Typing"), 'undoredo.textBufferEdit', this._model, beforeCursorState);
+        const newElement = new SingleModelEditStackElement(localize(785, "Typing"), 'undoredo.textBufferEdit', this._model, beforeCursorState);
         this._undoRedoService.pushElement(newElement, group);
         return newElement;
     }
@@ -358,4 +359,5 @@ export class EditStack {
         }
     }
 }
-//# sourceMappingURL=editStack.js.map
+
+export { EditStack, MultiModelEditStackElement, SingleModelEditStackData, SingleModelEditStackElement, isEditStackElement };

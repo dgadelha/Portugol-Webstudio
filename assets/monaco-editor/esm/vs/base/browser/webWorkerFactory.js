@@ -1,7 +1,3 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { createTrustedTypesPolicy } from './trustedTypes.js';
 import { onUnexpectedError } from '../common/errors.js';
 import { COI } from '../common/network.js';
@@ -9,13 +5,22 @@ import { URI } from '../common/uri.js';
 import { WebWorkerClient } from '../common/worker/webWorker.js';
 import { Disposable, toDisposable } from '../common/lifecycle.js';
 import { coalesce } from '../common/arrays.js';
-import { getNLSLanguage, getNLSMessages } from '../../nls.js';
+import '../../nls.js';
 import { Emitter } from '../common/event.js';
+import { getMonacoEnvironment } from './browser.js';
+import { getNLSMessages, getNLSLanguage } from '../../nls.messages.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
 // Reuse the trusted types policy defined from worker bootstrap
 // when available.
 // Refs https://github.com/microsoft/vscode/issues/222193
 let ttPolicy;
+// eslint-disable-next-line local/code-no-any-casts
 if (typeof self === 'object' && self.constructor && self.constructor.name === 'DedicatedWorkerGlobalScope' && globalThis.workerttPolicy !== undefined) {
+    // eslint-disable-next-line local/code-no-any-casts
     ttPolicy = globalThis.workerttPolicy;
 }
 else {
@@ -23,7 +28,8 @@ else {
 }
 function getWorker(descriptor, id) {
     const label = descriptor.label || 'anonymous' + id;
-    const monacoEnvironment = globalThis.MonacoEnvironment;
+    // Option for hosts to overwrite the worker script (used in the standalone editor)
+    const monacoEnvironment = getMonacoEnvironment();
     if (monacoEnvironment) {
         if (typeof monacoEnvironment.getWorker === 'function') {
             return monacoEnvironment.getWorker('workerMain.js', label);
@@ -42,10 +48,7 @@ function getWorker(descriptor, id) {
     throw new Error(`You must define a function MonacoEnvironment.getWorkerUrl or MonacoEnvironment.getWorker`);
 }
 function getWorkerBootstrapUrl(label, workerScriptUrl) {
-    if (/^((http:)|(https:)|(file:))/.test(workerScriptUrl) && workerScriptUrl.substring(0, globalThis.origin.length) !== globalThis.origin) {
-        // this is the cross-origin case
-        // i.e. the webpage is running at a different origin than where the scripts are loaded from
-    }
+    if (/^((http:)|(https:)|(file:))/.test(workerScriptUrl) && workerScriptUrl.substring(0, globalThis.origin.length) !== globalThis.origin) ;
     else {
         const start = workerScriptUrl.lastIndexOf('?');
         const end = workerScriptUrl.lastIndexOf('#', start);
@@ -154,14 +157,15 @@ class WebWorker extends Disposable {
         });
     }
 }
-export class WebWorkerDescriptor {
+class WebWorkerDescriptor {
     constructor(esmModuleLocation, label) {
         this.esmModuleLocation = esmModuleLocation;
         this.label = label;
     }
 }
-export function createWebWorker(arg0, arg1) {
+function createWebWorker(arg0, arg1) {
     const workerDescriptorOrWorker = (URI.isUri(arg0) ? new WebWorkerDescriptor(arg0, arg1) : arg0);
     return new WebWorkerClient(new WebWorker(workerDescriptorOrWorker));
 }
-//# sourceMappingURL=webWorkerFactory.js.map
+
+export { WebWorkerDescriptor, createWebWorker };

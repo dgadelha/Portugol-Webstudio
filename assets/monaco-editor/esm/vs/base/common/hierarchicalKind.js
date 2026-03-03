@@ -2,7 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-export class HierarchicalKind {
+class HierarchicalKind {
     static { this.sep = '.'; }
     static { this.None = new HierarchicalKind('@@none@@'); } // Special kind that matches nothing
     static { this.Empty = new HierarchicalKind(''); }
@@ -22,4 +22,5 @@ export class HierarchicalKind {
         return new HierarchicalKind((this.value ? [this.value, ...parts] : parts).join(HierarchicalKind.sep));
     }
 }
-//# sourceMappingURL=hierarchicalKind.js.map
+
+export { HierarchicalKind };

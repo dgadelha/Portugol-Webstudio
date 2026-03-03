@@ -1,17 +1,18 @@
+import { addStandardDisposableListener } from './dom.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import * as DOM from './dom.js';
-export function renderText(text, _options, target) {
+function renderText(text, _options, target) {
     const element = target ?? document.createElement('div');
     element.textContent = text;
     return element;
 }
-export function renderFormattedText(formattedText, options, target) {
+function renderFormattedText(formattedText, options, target) {
     const element = target ?? document.createElement('div');
     element.textContent = '';
-    _renderFormattedText(element, parseFormattedText(formattedText, !!options?.renderCodeSegments), options?.actionHandler, options?.renderCodeSegments);
+    _renderFormattedText(element, parseFormattedText(formattedText), options?.actionHandler, options?.renderCodeSegments);
     return element;
 }
 class StringStream {
@@ -50,7 +51,7 @@ function _renderFormattedText(element, treeNode, actionHandler, renderCodeSegmen
     }
     else if (treeNode.type === 5 /* FormatType.Action */ && actionHandler) {
         const a = document.createElement('a');
-        actionHandler.disposables.add(DOM.addStandardDisposableListener(a, 'click', (event) => {
+        actionHandler.disposables.add(addStandardDisposableListener(a, 'click', (event) => {
             actionHandler.callback(String(treeNode.index), event);
         }));
         child = a;
@@ -81,16 +82,16 @@ function parseFormattedText(content, parseCodeSegments) {
     const stream = new StringStream(content);
     while (!stream.eos()) {
         let next = stream.next();
-        const isEscapedFormatType = (next === '\\' && formatTagType(stream.peek(), parseCodeSegments) !== 0 /* FormatType.Invalid */);
+        const isEscapedFormatType = (next === '\\' && formatTagType(stream.peek()) !== 0 /* FormatType.Invalid */);
         if (isEscapedFormatType) {
             next = stream.next(); // unread the backslash if it escapes a format tag type
         }
-        if (!isEscapedFormatType && isFormatTag(next, parseCodeSegments) && next === stream.peek()) {
+        if (!isEscapedFormatType && isFormatTag(next) && next === stream.peek()) {
             stream.advance();
             if (current.type === 2 /* FormatType.Text */) {
                 current = stack.pop();
             }
-            const type = formatTagType(next, parseCodeSegments);
+            const type = formatTagType(next);
             if (current.type === type || (current.type === 5 /* FormatType.Action */ && type === 6 /* FormatType.ActionClose */)) {
                 current = stack.pop();
             }
@@ -134,13 +135,10 @@ function parseFormattedText(content, parseCodeSegments) {
     if (current.type === 2 /* FormatType.Text */) {
         current = stack.pop();
     }
-    if (stack.length) {
-        // incorrectly formatted string literal
-    }
     return root;
 }
 function isFormatTag(char, supportCodeSegments) {
-    return formatTagType(char, supportCodeSegments) !== 0 /* FormatType.Invalid */;
+    return formatTagType(char) !== 0 /* FormatType.Invalid */;
 }
 function formatTagType(char, supportCodeSegments) {
     switch (char) {
@@ -153,9 +151,10 @@ function formatTagType(char, supportCodeSegments) {
         case ']':
             return 6 /* FormatType.ActionClose */;
         case '`':
-            return supportCodeSegments ? 7 /* FormatType.Code */ : 0 /* FormatType.Invalid */;
+            return 0 /* FormatType.Invalid */;
         default:
             return 0 /* FormatType.Invalid */;
     }
 }
-//# sourceMappingURL=formattedTextRenderer.js.map
+
+export { renderFormattedText, renderText };

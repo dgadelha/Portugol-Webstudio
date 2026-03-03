@@ -1,12 +1,13 @@
+import { ConvenientObservable } from './baseObservable.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { ConvenientObservable } from './baseObservable.js';
 /**
  * Represents an efficient observable whose value never changes.
  */
-export function constObservable(value) {
+function constObservable(value) {
     return new ConstObservable(value);
 }
 class ConstObservable extends ConvenientObservable {
@@ -30,4 +31,5 @@ class ConstObservable extends ConvenientObservable {
         return `Const: ${this.value}`;
     }
 }
-//# sourceMappingURL=constObservable.js.map
+
+export { constObservable };

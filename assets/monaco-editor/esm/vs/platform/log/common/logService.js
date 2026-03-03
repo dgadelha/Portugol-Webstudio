@@ -1,10 +1,11 @@
+import { Disposable } from '../../../base/common/lifecycle.js';
+import { MultiplexLogger } from './log.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { Disposable } from '../../../base/common/lifecycle.js';
-import { MultiplexLogger } from './log.js';
-export class LogService extends Disposable {
+class LogService extends Disposable {
     constructor(primaryLogger, otherLoggers = []) {
         super();
         this.logger = new MultiplexLogger([primaryLogger, ...otherLoggers]);
@@ -35,4 +36,5 @@ export class LogService extends Disposable {
         this.logger.error(message, ...args);
     }
 }
-//# sourceMappingURL=logService.js.map
+
+export { LogService };

@@ -1,14 +1,15 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-import { createCancelablePromise, Delayer } from '../../../../base/common/async.js';
+import { Delayer, createCancelablePromise } from '../../../../base/common/async.js';
 import { onUnexpectedError } from '../../../../base/common/errors.js';
 import { Emitter } from '../../../../base/common/event.js';
 import { Disposable, MutableDisposable } from '../../../../base/common/lifecycle.js';
 import { CharacterSet } from '../../../common/core/characterClassifier.js';
-import * as languages from '../../../common/languages.js';
+import { SignatureHelpTriggerKind } from '../../../common/languages.js';
 import { provideSignatureHelp } from './provideSignatureHelp.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
 var ParameterHintState;
 (function (ParameterHintState) {
     ParameterHintState.Default = { type: 0 /* Type.Default */ };
@@ -28,7 +29,7 @@ var ParameterHintState;
     }
     ParameterHintState.Active = Active;
 })(ParameterHintState || (ParameterHintState = {}));
-export class ParameterHintsModel extends Disposable {
+class ParameterHintsModel extends Disposable {
     static { this.DEFAULT_DELAY = 120; } // ms
     constructor(editor, providers, delay = ParameterHintsModel.DEFAULT_DELAY) {
         super();
@@ -211,7 +212,7 @@ export class ParameterHintsModel extends Disposable {
         const triggerCharCode = text.charCodeAt(lastCharIndex);
         if (this.triggerChars.has(triggerCharCode) || this.isTriggered && this.retriggerChars.has(triggerCharCode)) {
             this.trigger({
-                triggerKind: languages.SignatureHelpTriggerKind.TriggerCharacter,
+                triggerKind: SignatureHelpTriggerKind.TriggerCharacter,
                 triggerCharacter: text.charAt(lastCharIndex),
             });
         }
@@ -221,12 +222,12 @@ export class ParameterHintsModel extends Disposable {
             this.cancel();
         }
         else if (this.isTriggered) {
-            this.trigger({ triggerKind: languages.SignatureHelpTriggerKind.ContentChange });
+            this.trigger({ triggerKind: SignatureHelpTriggerKind.ContentChange });
         }
     }
     onModelContentChange() {
         if (this.isTriggered) {
-            this.trigger({ triggerKind: languages.SignatureHelpTriggerKind.ContentChange });
+            this.trigger({ triggerKind: SignatureHelpTriggerKind.ContentChange });
         }
     }
     onEditorConfigurationChange() {
@@ -242,15 +243,16 @@ export class ParameterHintsModel extends Disposable {
 }
 function mergeTriggerContexts(previous, current) {
     switch (current.triggerKind) {
-        case languages.SignatureHelpTriggerKind.Invoke:
+        case SignatureHelpTriggerKind.Invoke:
             // Invoke overrides previous triggers.
             return current;
-        case languages.SignatureHelpTriggerKind.ContentChange:
+        case SignatureHelpTriggerKind.ContentChange:
             // Ignore content changes triggers
             return previous;
-        case languages.SignatureHelpTriggerKind.TriggerCharacter:
+        case SignatureHelpTriggerKind.TriggerCharacter:
         default:
             return current;
     }
 }
-//# sourceMappingURL=parameterHintsModel.js.map
+
+export { ParameterHintsModel };

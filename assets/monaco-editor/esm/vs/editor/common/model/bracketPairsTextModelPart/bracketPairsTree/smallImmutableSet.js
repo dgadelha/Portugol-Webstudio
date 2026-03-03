@@ -7,7 +7,8 @@ const emptyArr = [];
  * Represents an immutable set that works best for a small number of elements (less than 32).
  * It uses bits to encode element membership efficiently.
 */
-export class SmallImmutableSet {
+class SmallImmutableSet {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     static { this.cache = new Array(129); }
     static create(items, additionalItems) {
         if (items <= 128 && additionalItems.length === 0) {
@@ -21,6 +22,7 @@ export class SmallImmutableSet {
         }
         return new SmallImmutableSet(items, additionalItems);
     }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     static { this.empty = SmallImmutableSet.create(0, emptyArr); }
     static getEmpty() {
         return this.empty;
@@ -81,7 +83,7 @@ export class SmallImmutableSet {
         return false;
     }
 }
-export const identityKeyProvider = {
+const identityKeyProvider = {
     getKey(value) {
         return value;
     }
@@ -89,7 +91,7 @@ export const identityKeyProvider = {
 /**
  * Assigns values a unique incrementing key.
 */
-export class DenseKeyProvider {
+class DenseKeyProvider {
     constructor() {
         this.items = new Map();
     }
@@ -102,4 +104,5 @@ export class DenseKeyProvider {
         return existing;
     }
 }
-//# sourceMappingURL=smallImmutableSet.js.map
+
+export { DenseKeyProvider, SmallImmutableSet, identityKeyProvider };

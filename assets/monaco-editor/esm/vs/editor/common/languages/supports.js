@@ -2,7 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-export function createScopedLineTokens(context, offset) {
+function createScopedLineTokens(context, offset) {
     const tokenCount = context.getCount();
     const tokenIndex = context.findTokenIndexAtOffset(offset);
     const desiredLanguageId = context.getLanguageId(tokenIndex);
@@ -16,7 +16,7 @@ export function createScopedLineTokens(context, offset) {
     }
     return new ScopedLineTokens(context, desiredLanguageId, firstTokenIndex, lastTokenIndex + 1, context.getStartOffset(firstTokenIndex), context.getEndOffset(lastTokenIndex));
 }
-export class ScopedLineTokens {
+class ScopedLineTokens {
     constructor(actual, languageId, firstTokenIndex, lastTokenIndex, firstCharOffset, lastCharOffset) {
         this._scopedLineTokensBrand = undefined;
         this._actual = actual;
@@ -51,7 +51,8 @@ export class ScopedLineTokens {
         return this._actual.sliceAndInflate(this.firstCharOffset, this._lastCharOffset, 0);
     }
 }
-export function ignoreBracketsInToken(standardTokenType) {
+function ignoreBracketsInToken(standardTokenType) {
     return (standardTokenType & 3 /* IgnoreBracketsInTokens.value */) !== 0;
 }
-//# sourceMappingURL=supports.js.map
+
+export { ScopedLineTokens, createScopedLineTokens, ignoreBracketsInToken };

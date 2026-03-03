@@ -1,13 +1,4 @@
-/*!-----------------------------------------------------------------------------
- * Copyright (c) Microsoft Corporation. All rights reserved.
- * Version: 0.54.0(7c2310116c57517348bbd868a21139f32454be22)
- * Released under the MIT license
- * https://github.com/microsoft/monaco-editor/blob/main/LICENSE.txt
- *-----------------------------------------------------------------------------*/
-
-
-// src/basic-languages/lexon/lexon.ts
-var conf = {
+const conf = {
   comments: {
     lineComment: "COMMENT"
     // blockComment: ['COMMENT', '.'],
@@ -36,7 +27,7 @@ var conf = {
     }
   }
 };
-var language = {
+const language = {
   // Set defaultToken to invalid to see what you do not tokenize yet
   // defaultToken: 'invalid',
   tokenPostfix: ".lexon",
@@ -161,7 +152,5 @@ var language = {
     whitespace: [[/[ \t\r\n]+/, "white"]]
   }
 };
-export {
-  conf,
-  language
-};
+
+export { conf, language };

@@ -1,16 +1,17 @@
+import { Codicon } from './codicons.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { Codicon } from './codicons.js';
-export var ThemeColor;
+var ThemeColor;
 (function (ThemeColor) {
     function isThemeColor(obj) {
         return !!obj && typeof obj === 'object' && typeof obj.id === 'string';
     }
     ThemeColor.isThemeColor = isThemeColor;
 })(ThemeColor || (ThemeColor = {}));
-export var ThemeIcon;
+var ThemeIcon;
 (function (ThemeIcon) {
     ThemeIcon.iconNameSegment = '[A-Za-z0-9]+';
     ThemeIcon.iconNameExpression = '[A-Za-z0-9-]+';
@@ -80,5 +81,20 @@ export var ThemeIcon;
         return ti1.id === ti2.id && ti1.color?.id === ti2.color?.id;
     }
     ThemeIcon.isEqual = isEqual;
+    /**
+     * Returns whether specified icon is defined and has 'file' ID.
+     */
+    function isFile(icon) {
+        return icon?.id === Codicon.file.id;
+    }
+    ThemeIcon.isFile = isFile;
+    /**
+     * Returns whether specified icon is defined and has 'folder' ID.
+     */
+    function isFolder(icon) {
+        return icon?.id === Codicon.folder.id;
+    }
+    ThemeIcon.isFolder = isFolder;
 })(ThemeIcon || (ThemeIcon = {}));
-//# sourceMappingURL=themables.js.map
+
+export { ThemeColor, ThemeIcon };

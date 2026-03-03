@@ -1,11 +1,12 @@
+import { illegalArgument } from '../../../base/common/errors.js';
+import { UILabelProvider, AriaLabelProvider, ElectronAcceleratorLabelProvider, UserSettingsLabelProvider } from '../../../base/common/keybindingLabels.js';
+import { ResolvedKeybinding, ResolvedChord } from '../../../base/common/keybindings.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { illegalArgument } from '../../../base/common/errors.js';
-import { AriaLabelProvider, ElectronAcceleratorLabelProvider, UILabelProvider, UserSettingsLabelProvider } from '../../../base/common/keybindingLabels.js';
-import { ResolvedKeybinding, ResolvedChord } from '../../../base/common/keybindings.js';
-export class BaseResolvedKeybinding extends ResolvedKeybinding {
+class BaseResolvedKeybinding extends ResolvedKeybinding {
     constructor(os, chords) {
         super();
         if (chords.length === 0) {
@@ -51,4 +52,5 @@ export class BaseResolvedKeybinding extends ResolvedKeybinding {
         return this._chords.map((keybinding) => this._getSingleModifierChordDispatch(keybinding));
     }
 }
-//# sourceMappingURL=baseResolvedKeybinding.js.map
+
+export { BaseResolvedKeybinding };

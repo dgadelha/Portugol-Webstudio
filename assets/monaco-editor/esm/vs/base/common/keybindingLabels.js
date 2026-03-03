@@ -1,9 +1,10 @@
+import { localize } from '../../nls.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import * as nls from '../../nls.js';
-export class ModifierLabelProvider {
+class ModifierLabelProvider {
     constructor(mac, windows, linux = windows) {
         this.modifierLabels = [null]; // index 0 will never me accessed.
         this.modifierLabels[2 /* OperatingSystem.Macintosh */] = mac;
@@ -30,52 +31,52 @@ export class ModifierLabelProvider {
 /**
  * A label provider that prints modifiers in a suitable format for displaying in the UI.
  */
-export const UILabelProvider = new ModifierLabelProvider({
+const UILabelProvider = new ModifierLabelProvider({
     ctrlKey: '\u2303',
     shiftKey: '⇧',
     altKey: '⌥',
     metaKey: '⌘',
     separator: '',
 }, {
-    ctrlKey: nls.localize(35, "Ctrl"),
-    shiftKey: nls.localize(36, "Shift"),
-    altKey: nls.localize(37, "Alt"),
-    metaKey: nls.localize(38, "Windows"),
+    ctrlKey: localize(35, "Ctrl"),
+    shiftKey: localize(36, "Shift"),
+    altKey: localize(37, "Alt"),
+    metaKey: localize(38, "Windows"),
     separator: '+',
 }, {
-    ctrlKey: nls.localize(39, "Ctrl"),
-    shiftKey: nls.localize(40, "Shift"),
-    altKey: nls.localize(41, "Alt"),
-    metaKey: nls.localize(42, "Super"),
+    ctrlKey: localize(39, "Ctrl"),
+    shiftKey: localize(40, "Shift"),
+    altKey: localize(41, "Alt"),
+    metaKey: localize(42, "Super"),
     separator: '+',
 });
 /**
  * A label provider that prints modifiers in a suitable format for ARIA.
  */
-export const AriaLabelProvider = new ModifierLabelProvider({
-    ctrlKey: nls.localize(43, "Control"),
-    shiftKey: nls.localize(44, "Shift"),
-    altKey: nls.localize(45, "Option"),
-    metaKey: nls.localize(46, "Command"),
+const AriaLabelProvider = new ModifierLabelProvider({
+    ctrlKey: localize(43, "Control"),
+    shiftKey: localize(44, "Shift"),
+    altKey: localize(45, "Option"),
+    metaKey: localize(46, "Command"),
     separator: '+',
 }, {
-    ctrlKey: nls.localize(47, "Control"),
-    shiftKey: nls.localize(48, "Shift"),
-    altKey: nls.localize(49, "Alt"),
-    metaKey: nls.localize(50, "Windows"),
+    ctrlKey: localize(47, "Control"),
+    shiftKey: localize(48, "Shift"),
+    altKey: localize(49, "Alt"),
+    metaKey: localize(50, "Windows"),
     separator: '+',
 }, {
-    ctrlKey: nls.localize(51, "Control"),
-    shiftKey: nls.localize(52, "Shift"),
-    altKey: nls.localize(53, "Alt"),
-    metaKey: nls.localize(54, "Super"),
+    ctrlKey: localize(51, "Control"),
+    shiftKey: localize(52, "Shift"),
+    altKey: localize(53, "Alt"),
+    metaKey: localize(54, "Super"),
     separator: '+',
 });
 /**
  * A label provider that prints modifiers in a suitable format for Electron Accelerators.
  * See https://github.com/electron/electron/blob/master/docs/api/accelerator.md
  */
-export const ElectronAcceleratorLabelProvider = new ModifierLabelProvider({
+const ElectronAcceleratorLabelProvider = new ModifierLabelProvider({
     ctrlKey: 'Ctrl',
     shiftKey: 'Shift',
     altKey: 'Alt',
@@ -91,7 +92,7 @@ export const ElectronAcceleratorLabelProvider = new ModifierLabelProvider({
 /**
  * A label provider that prints modifiers in a suitable format for user settings.
  */
-export const UserSettingsLabelProvider = new ModifierLabelProvider({
+const UserSettingsLabelProvider = new ModifierLabelProvider({
     ctrlKey: 'ctrl',
     shiftKey: 'shift',
     altKey: 'alt',
@@ -134,4 +135,5 @@ function _simpleAsString(modifiers, key, labels) {
     }
     return result.join(labels.separator);
 }
-//# sourceMappingURL=keybindingLabels.js.map
+
+export { AriaLabelProvider, ElectronAcceleratorLabelProvider, ModifierLabelProvider, UILabelProvider, UserSettingsLabelProvider };

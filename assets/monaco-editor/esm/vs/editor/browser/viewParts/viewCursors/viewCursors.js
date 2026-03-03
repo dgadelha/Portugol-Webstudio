@@ -1,22 +1,23 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import './viewCursors.css';
 import { createFastDomNode } from '../../../../base/browser/fastDomNode.js';
 import { TimeoutTimer } from '../../../../base/common/async.js';
 import { ViewPart } from '../../view/viewPart.js';
 import { ViewCursor, CursorPlurality } from './viewCursor.js';
 import { TextEditorCursorStyle } from '../../../common/config/editorOptions.js';
-import { editorCursorBackground, editorCursorForeground, editorMultiCursorPrimaryForeground, editorMultiCursorPrimaryBackground, editorMultiCursorSecondaryForeground, editorMultiCursorSecondaryBackground } from '../../../common/core/editorColorRegistry.js';
+import { editorCursorBackground, editorCursorForeground, editorMultiCursorPrimaryBackground, editorMultiCursorPrimaryForeground, editorMultiCursorSecondaryBackground, editorMultiCursorSecondaryForeground } from '../../../common/core/editorColorRegistry.js';
 import { registerThemingParticipant } from '../../../../platform/theme/common/themeService.js';
 import { isHighContrast } from '../../../../platform/theme/common/theme.js';
 import { WindowIntervalTimer, getWindow } from '../../../../base/browser/dom.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
 /**
  * View cursors is a view part responsible for rendering the primary cursor and
  * any secondary cursors that are currently active.
  */
-export class ViewCursors extends ViewPart {
+class ViewCursors extends ViewPart {
     static { this.BLINK_INTERVAL = 500; }
     constructor(context) {
         super(context);
@@ -334,4 +335,5 @@ registerThemingParticipant((theme, collector) => {
         }
     }
 });
-//# sourceMappingURL=viewCursors.js.map
+
+export { ViewCursors };

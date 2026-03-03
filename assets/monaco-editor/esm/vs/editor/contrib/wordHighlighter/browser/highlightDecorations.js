@@ -1,23 +1,34 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import './highlightDecorations.css';
 import { OverviewRulerLane } from '../../../common/model.js';
 import { ModelDecorationOptions } from '../../../common/model/textModel.js';
 import { DocumentHighlightKind } from '../../../common/languages.js';
-import * as nls from '../../../../nls.js';
-import { activeContrastBorder, editorSelectionHighlight, minimapSelectionOccurrenceHighlight, overviewRulerSelectionHighlightForeground, registerColor } from '../../../../platform/theme/common/colorRegistry.js';
-import { registerThemingParticipant, themeColorFromId } from '../../../../platform/theme/common/themeService.js';
-const wordHighlightBackground = registerColor('editor.wordHighlightBackground', { dark: '#575757B8', light: '#57575740', hcDark: null, hcLight: null }, nls.localize(1548, 'Background color of a symbol during read-access, like reading a variable. The color must not be opaque so as not to hide underlying decorations.'), true);
-registerColor('editor.wordHighlightStrongBackground', { dark: '#004972B8', light: '#0e639c40', hcDark: null, hcLight: null }, nls.localize(1549, 'Background color of a symbol during write-access, like writing to a variable. The color must not be opaque so as not to hide underlying decorations.'), true);
-registerColor('editor.wordHighlightTextBackground', wordHighlightBackground, nls.localize(1550, 'Background color of a textual occurrence for a symbol. The color must not be opaque so as not to hide underlying decorations.'), true);
-const wordHighlightBorder = registerColor('editor.wordHighlightBorder', { light: null, dark: null, hcDark: activeContrastBorder, hcLight: activeContrastBorder }, nls.localize(1551, 'Border color of a symbol during read-access, like reading a variable.'));
-registerColor('editor.wordHighlightStrongBorder', { light: null, dark: null, hcDark: activeContrastBorder, hcLight: activeContrastBorder }, nls.localize(1552, 'Border color of a symbol during write-access, like writing to a variable.'));
-registerColor('editor.wordHighlightTextBorder', wordHighlightBorder, nls.localize(1553, "Border color of a textual occurrence for a symbol."));
-const overviewRulerWordHighlightForeground = registerColor('editorOverviewRuler.wordHighlightForeground', '#A0A0A0CC', nls.localize(1554, 'Overview ruler marker color for symbol highlights. The color must not be opaque so as not to hide underlying decorations.'), true);
-const overviewRulerWordHighlightStrongForeground = registerColor('editorOverviewRuler.wordHighlightStrongForeground', '#C0A0C0CC', nls.localize(1555, 'Overview ruler marker color for write-access symbol highlights. The color must not be opaque so as not to hide underlying decorations.'), true);
-const overviewRulerWordHighlightTextForeground = registerColor('editorOverviewRuler.wordHighlightTextForeground', overviewRulerSelectionHighlightForeground, nls.localize(1556, 'Overview ruler marker color of a textual occurrence for a symbol. The color must not be opaque so as not to hide underlying decorations.'), true);
+import { localize } from '../../../../nls.js';
+import { registerColor } from '../../../../platform/theme/common/colorUtils.js';
+import { activeContrastBorder } from '../../../../platform/theme/common/colors/baseColors.js';
+import '../../../../platform/theme/common/colors/chartsColors.js';
+import { overviewRulerSelectionHighlightForeground, editorSelectionHighlight } from '../../../../platform/theme/common/colors/editorColors.js';
+import '../../../../platform/theme/common/colors/inputColors.js';
+import '../../../../platform/theme/common/colors/listColors.js';
+import '../../../../platform/theme/common/colors/menuColors.js';
+import { minimapSelectionOccurrenceHighlight } from '../../../../platform/theme/common/colors/minimapColors.js';
+import '../../../../platform/theme/common/colors/miscColors.js';
+import '../../../../platform/theme/common/colors/quickpickColors.js';
+import '../../../../platform/theme/common/colors/searchColors.js';
+import { themeColorFromId, registerThemingParticipant } from '../../../../platform/theme/common/themeService.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+const wordHighlightBackground = registerColor('editor.wordHighlightBackground', { dark: '#575757B8', light: '#57575740', hcDark: null, hcLight: null }, localize(1563, 'Background color of a symbol during read-access, like reading a variable. The color must not be opaque so as not to hide underlying decorations.'), true);
+registerColor('editor.wordHighlightStrongBackground', { dark: '#004972B8', light: '#0e639c40', hcDark: null, hcLight: null }, localize(1564, 'Background color of a symbol during write-access, like writing to a variable. The color must not be opaque so as not to hide underlying decorations.'), true);
+registerColor('editor.wordHighlightTextBackground', wordHighlightBackground, localize(1565, 'Background color of a textual occurrence for a symbol. The color must not be opaque so as not to hide underlying decorations.'), true);
+const wordHighlightBorder = registerColor('editor.wordHighlightBorder', { light: null, dark: null, hcDark: activeContrastBorder, hcLight: activeContrastBorder }, localize(1566, 'Border color of a symbol during read-access, like reading a variable.'));
+registerColor('editor.wordHighlightStrongBorder', { light: null, dark: null, hcDark: activeContrastBorder, hcLight: activeContrastBorder }, localize(1567, 'Border color of a symbol during write-access, like writing to a variable.'));
+registerColor('editor.wordHighlightTextBorder', wordHighlightBorder, localize(1568, "Border color of a textual occurrence for a symbol."));
+const overviewRulerWordHighlightForeground = registerColor('editorOverviewRuler.wordHighlightForeground', '#A0A0A0CC', localize(1569, 'Overview ruler marker color for symbol highlights. The color must not be opaque so as not to hide underlying decorations.'), true);
+const overviewRulerWordHighlightStrongForeground = registerColor('editorOverviewRuler.wordHighlightStrongForeground', '#C0A0C0CC', localize(1570, 'Overview ruler marker color for write-access symbol highlights. The color must not be opaque so as not to hide underlying decorations.'), true);
+const overviewRulerWordHighlightTextForeground = registerColor('editorOverviewRuler.wordHighlightTextForeground', overviewRulerSelectionHighlightForeground, localize(1571, 'Overview ruler marker color of a textual occurrence for a symbol. The color must not be opaque so as not to hide underlying decorations.'), true);
 const _WRITE_OPTIONS = ModelDecorationOptions.register({
     description: 'word-highlight-strong',
     stickiness: 1 /* TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges */,
@@ -75,7 +86,7 @@ const _REGULAR_OPTIONS = ModelDecorationOptions.register({
         position: 1 /* MinimapPosition.Inline */
     },
 });
-export function getHighlightDecorationOptions(kind) {
+function getHighlightDecorationOptions(kind) {
     if (kind === DocumentHighlightKind.Write) {
         return _WRITE_OPTIONS;
     }
@@ -86,7 +97,7 @@ export function getHighlightDecorationOptions(kind) {
         return _REGULAR_OPTIONS;
     }
 }
-export function getSelectionHighlightDecorationOptions(hasSemanticHighlights) {
+function getSelectionHighlightDecorationOptions(hasSemanticHighlights) {
     // Show in overviewRuler only if model has no semantic highlighting
     return (hasSemanticHighlights ? _SELECTION_HIGHLIGHT_OPTIONS_NO_OVERVIEW : _SELECTION_HIGHLIGHT_OPTIONS);
 }
@@ -96,4 +107,5 @@ registerThemingParticipant((theme, collector) => {
         collector.addRule(`.monaco-editor .selectionHighlight { background-color: ${selectionHighlight.transparent(0.5)}; }`);
     }
 });
-//# sourceMappingURL=highlightDecorations.js.map
+
+export { getHighlightDecorationOptions, getSelectionHighlightDecorationOptions };

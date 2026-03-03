@@ -1,15 +1,16 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { CallbackIterable, compareBy } from '../../../../base/common/arrays.js';
 import { Emitter } from '../../../../base/common/event.js';
-import { Disposable, DisposableStore, MutableDisposable } from '../../../../base/common/lifecycle.js';
+import { Disposable, MutableDisposable, DisposableStore } from '../../../../base/common/lifecycle.js';
 import { Range } from '../../core/range.js';
 import { ignoreBracketsInToken } from '../../languages/supports.js';
 import { BracketsUtils } from '../../languages/supports/richEditBrackets.js';
 import { BracketPairsTree } from './bracketPairsTree/bracketPairsTree.js';
-export class BracketPairsTextModelPart extends Disposable {
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+class BracketPairsTextModelPart extends Disposable {
     get canBuildAST() {
         const maxSupportedDocumentLength = /* max lines */ 50_000 * /* average column count */ 100;
         return this.textModel.getValueLength() <= maxSupportedDocumentLength;
@@ -712,4 +713,5 @@ function stripBracketSearchCanceled(result) {
     }
     return result;
 }
-//# sourceMappingURL=bracketPairsImpl.js.map
+
+export { BracketPairsTextModelPart };

@@ -1,9 +1,10 @@
+import { applyFontInfo } from './domFontInfo.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { applyFontInfo } from './domFontInfo.js';
-export class CharWidthRequest {
+class CharWidthRequest {
     constructor(chr, type) {
         this.chr = chr;
         this.type = type;
@@ -95,8 +96,9 @@ class DomCharWidthReader {
         }
     }
 }
-export function readCharWidths(targetWindow, bareFontInfo, requests) {
+function readCharWidths(targetWindow, bareFontInfo, requests) {
     const reader = new DomCharWidthReader(bareFontInfo, requests);
     reader.read(targetWindow);
 }
-//# sourceMappingURL=charWidthReader.js.map
+
+export { CharWidthRequest, readCharWidths };

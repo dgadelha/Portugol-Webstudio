@@ -1,18 +1,4 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-var FileReferencesRenderer_1;
-import * as dom from '../../../../../base/browser/dom.js';
+import { append, $ } from '../../../../../base/browser/dom.js';
 import { CountBadge } from '../../../../../base/browser/ui/countBadge/countBadge.js';
 import { HighlightedLabel } from '../../../../../base/browser/ui/highlightedlabel/highlightedLabel.js';
 import { IconLabel } from '../../../../../base/browser/ui/iconLabel/iconLabel.js';
@@ -25,7 +11,22 @@ import { IInstantiationService } from '../../../../../platform/instantiation/com
 import { IKeybindingService } from '../../../../../platform/keybinding/common/keybinding.js';
 import { ILabelService } from '../../../../../platform/label/common/label.js';
 import { defaultCountBadgeStyles } from '../../../../../platform/theme/browser/defaultStyles.js';
-import { FileReferences, OneReference, ReferencesModel } from '../referencesModel.js';
+import { ReferencesModel, FileReferences, OneReference } from '../referencesModel.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var FileReferencesRenderer_1;
 let DataSource = class DataSource {
     constructor(_resolverService) {
         this._resolverService = _resolverService;
@@ -59,9 +60,8 @@ let DataSource = class DataSource {
 DataSource = __decorate([
     __param(0, ITextModelService)
 ], DataSource);
-export { DataSource };
 //#endregion
-export class Delegate {
+class Delegate {
     getHeight() {
         return 23;
     }
@@ -92,8 +92,7 @@ let StringRepresentationProvider = class StringRepresentationProvider {
 StringRepresentationProvider = __decorate([
     __param(0, IKeybindingService)
 ], StringRepresentationProvider);
-export { StringRepresentationProvider };
-export class IdentityProvider {
+class IdentityProvider {
     getId(element) {
         return element instanceof OneReference ? element.id : element.uri;
     }
@@ -106,7 +105,7 @@ let FileReferencesTemplate = class FileReferencesTemplate extends Disposable {
         const parent = document.createElement('div');
         parent.classList.add('reference-file');
         this.file = this._register(new IconLabel(parent, { supportHighlights: true }));
-        this.badge = this._register(new CountBadge(dom.append(parent, dom.$('.count')), {}, defaultCountBadgeStyles));
+        this.badge = this._register(new CountBadge(append(parent, $('.count')), {}, defaultCountBadgeStyles));
         container.appendChild(parent);
     }
     set(element, matches) {
@@ -115,10 +114,10 @@ let FileReferencesTemplate = class FileReferencesTemplate extends Disposable {
         const len = element.children.length;
         this.badge.setCount(len);
         if (len > 1) {
-            this.badge.setTitleFormat(localize(1076, "{0} references", len));
+            this.badge.setTitleFormat(localize(1081, "{0} references", len));
         }
         else {
-            this.badge.setTitleFormat(localize(1077, "{0} reference", len));
+            this.badge.setTitleFormat(localize(1082, "{0} reference", len));
         }
     }
 };
@@ -145,7 +144,6 @@ let FileReferencesRenderer = class FileReferencesRenderer {
 FileReferencesRenderer = FileReferencesRenderer_1 = __decorate([
     __param(0, IInstantiationService)
 ], FileReferencesRenderer);
-export { FileReferencesRenderer };
 //#endregion
 //#region render: Reference
 class OneReferenceTemplate extends Disposable {
@@ -174,7 +172,7 @@ class OneReferenceTemplate extends Disposable {
         }
     }
 }
-export class OneReferenceRenderer {
+class OneReferenceRenderer {
     constructor() {
         this.templateId = OneReferenceRenderer.id;
     }
@@ -190,12 +188,13 @@ export class OneReferenceRenderer {
     }
 }
 //#endregion
-export class AccessibilityProvider {
+class AccessibilityProvider {
     getWidgetAriaLabel() {
-        return localize(1078, "References");
+        return localize(1083, "References");
     }
     getAriaLabel(element) {
         return element.ariaMessage;
     }
 }
-//# sourceMappingURL=referencesTree.js.map
+
+export { AccessibilityProvider, DataSource, Delegate, FileReferencesRenderer, IdentityProvider, OneReferenceRenderer, StringRepresentationProvider };

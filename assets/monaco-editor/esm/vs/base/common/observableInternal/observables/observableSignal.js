@@ -1,12 +1,13 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { transaction } from '../transaction.js';
 import { DebugNameData } from '../debugName.js';
 import { BaseObservable } from './baseObservable.js';
 import { DebugLocation } from '../debugLocation.js';
-export function observableSignal(debugNameOrOwner, debugLocation = DebugLocation.ofCaller()) {
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+function observableSignal(debugNameOrOwner, debugLocation = DebugLocation.ofCaller()) {
     if (typeof debugNameOrOwner === 'string') {
         return new ObservableSignal(debugNameOrOwner, undefined, debugLocation);
     }
@@ -42,4 +43,5 @@ class ObservableSignal extends BaseObservable {
         // NO OP
     }
 }
-//# sourceMappingURL=observableSignal.js.map
+
+export { observableSignal };

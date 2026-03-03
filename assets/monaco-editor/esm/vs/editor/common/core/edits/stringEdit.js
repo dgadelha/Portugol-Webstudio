@@ -1,11 +1,13 @@
+import { commonPrefixLength, commonSuffixLength } from '../../../../base/common/strings.js';
+import { OffsetRange } from '../ranges/offsetRange.js';
+import { BaseEdit, BaseReplacement } from './edit.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { commonPrefixLength, commonSuffixLength } from '../../../../base/common/strings.js';
-import { OffsetRange } from '../ranges/offsetRange.js';
-import { BaseEdit, BaseReplacement } from './edit.js';
-export class BaseStringEdit extends BaseEdit {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+class BaseStringEdit extends BaseEdit {
     apply(base) {
         const resultText = [];
         let pos = 0;
@@ -18,7 +20,8 @@ export class BaseStringEdit extends BaseEdit {
         return resultText.join('');
     }
 }
-export class BaseStringReplacement extends BaseReplacement {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+class BaseStringReplacement extends BaseReplacement {
     constructor(range, newText) {
         super(range);
         this.newText = newText;
@@ -69,7 +72,7 @@ export class BaseStringReplacement extends BaseReplacement {
  * Represents a set of replacements to a string.
  * All these replacements are applied at once.
 */
-export class StringEdit extends BaseStringEdit {
+class StringEdit extends BaseStringEdit {
     static { this.empty = new StringEdit([]); }
     static compose(edits) {
         if (edits.length === 0) {
@@ -88,7 +91,7 @@ export class StringEdit extends BaseStringEdit {
         return new StringEdit(replacements);
     }
 }
-export class StringReplacement extends BaseStringReplacement {
+class StringReplacement extends BaseStringReplacement {
     static insert(offset, text) {
         return new StringReplacement(OffsetRange.emptyAt(offset), text);
     }
@@ -105,7 +108,7 @@ export class StringReplacement extends BaseStringReplacement {
         return new StringReplacement(range, rangeInReplacement ? rangeInReplacement.substring(this.newText) : this.newText);
     }
 }
-export function applyEditsToRanges(sortedRanges, edit) {
+function applyEditsToRanges(sortedRanges, edit) {
     sortedRanges = sortedRanges.slice();
     // treat edits as deletion of the replace range and then as insertion that extends the first range
     const result = [];
@@ -158,4 +161,5 @@ export function applyEditsToRanges(sortedRanges, edit) {
     }
     return result;
 }
-//# sourceMappingURL=stringEdit.js.map
+
+export { BaseStringEdit, BaseStringReplacement, StringEdit, StringReplacement, applyEditsToRanges };

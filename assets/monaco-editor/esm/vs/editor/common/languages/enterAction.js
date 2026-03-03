@@ -1,11 +1,12 @@
+import { IndentAction } from './languageConfiguration.js';
+import { getIndentationAtPosition } from './languageConfigurationRegistry.js';
+import { IndentationContextProcessor } from './supports/indentationLineProcessor.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { IndentAction } from './languageConfiguration.js';
-import { getIndentationAtPosition } from './languageConfigurationRegistry.js';
-import { IndentationContextProcessor } from './supports/indentationLineProcessor.js';
-export function getEnterAction(autoIndent, model, range, languageConfigurationService) {
+function getEnterAction(autoIndent, model, range, languageConfigurationService) {
     model.tokenization.forceTokenization(range.startLineNumber);
     const languageId = model.getLanguageIdAtPosition(range.startLineNumber, range.startColumn);
     const richEditSupport = languageConfigurationService.getLanguageConfiguration(languageId);
@@ -48,4 +49,5 @@ export function getEnterAction(autoIndent, model, range, languageConfigurationSe
         indentation: indentation
     };
 }
-//# sourceMappingURL=enterAction.js.map
+
+export { getEnterAction };

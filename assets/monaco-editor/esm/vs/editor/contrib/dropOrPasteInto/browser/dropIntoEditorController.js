@@ -1,17 +1,3 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-var DropIntoEditorController_1;
 import { coalesce } from '../../../../base/common/arrays.js';
 import { createCancelablePromise, raceCancellation } from '../../../../base/common/async.js';
 import { VSDataTransfer } from '../../../../base/common/dataTransfer.js';
@@ -32,9 +18,24 @@ import { EditorStateCancellationTokenSource } from '../../editorState/browser/ed
 import { InlineProgressManager } from '../../inlineProgress/browser/inlineProgress.js';
 import { sortEditsByYieldTo } from './edit.js';
 import { PostEditWidgetManager } from './postEditWidget.js';
-export const dropAsPreferenceConfig = 'editor.dropIntoEditor.preferences';
-export const changeDropTypeCommandId = 'editor.changeDropType';
-export const dropWidgetVisibleCtx = new RawContextKey('dropWidgetVisible', false, localize(929, "Whether the drop widget is showing"));
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var DropIntoEditorController_1;
+const dropAsPreferenceConfig = 'editor.dropIntoEditor.preferences';
+const changeDropTypeCommandId = 'editor.changeDropType';
+const dropWidgetVisibleCtx = new RawContextKey('dropWidgetVisible', false, localize(934, "Whether the drop widget is showing"));
 let DropIntoEditorController = class DropIntoEditorController extends Disposable {
     static { DropIntoEditorController_1 = this; }
     static { this.ID = 'editor.contrib.dropIntoEditorController'; }
@@ -48,7 +49,7 @@ let DropIntoEditorController = class DropIntoEditorController extends Disposable
         this._treeViewsDragAndDropService = _treeViewsDragAndDropService;
         this.treeItemsTransfer = LocalSelectionTransfer.getInstance();
         this._dropProgressManager = this._register(instantiationService.createInstance(InlineProgressManager, 'dropIntoEditor', editor));
-        this._postDropWidgetManager = this._register(instantiationService.createInstance(PostEditWidgetManager, 'dropIntoEditor', editor, dropWidgetVisibleCtx, { id: changeDropTypeCommandId, label: localize(930, "Show drop options...") }, () => DropIntoEditorController_1._configureDefaultAction ? [DropIntoEditorController_1._configureDefaultAction] : []));
+        this._postDropWidgetManager = this._register(instantiationService.createInstance(PostEditWidgetManager, 'dropIntoEditor', editor, dropWidgetVisibleCtx, { id: changeDropTypeCommandId, label: localize(935, "Show drop options...") }, () => DropIntoEditorController_1._configureDefaultAction ? [DropIntoEditorController_1._configureDefaultAction] : []));
         this._register(editor.onDropIntoEditor(e => this.onDropIntoEditor(editor, e.position, e.event)));
     }
     clearWidgets() {
@@ -103,7 +104,7 @@ let DropIntoEditorController = class DropIntoEditorController extends Disposable
                 }
             }
         });
-        this._dropProgressManager.showWhile(position, localize(931, "Running drop handlers. Click to cancel"), p, { cancel: () => p.cancel() });
+        this._dropProgressManager.showWhile(position, localize(936, "Running drop handlers. Click to cancel"), p, { cancel: () => p.cancel() });
         DropIntoEditorController_1._currentDropOperation = p;
     }
     async getDropEdits(providers, model, position, dataTransfer, token) {
@@ -168,5 +169,5 @@ DropIntoEditorController = DropIntoEditorController_1 = __decorate([
     __param(3, ILanguageFeaturesService),
     __param(4, ITreeViewsDnDService)
 ], DropIntoEditorController);
-export { DropIntoEditorController };
-//# sourceMappingURL=dropIntoEditorController.js.map
+
+export { DropIntoEditorController, changeDropTypeCommandId, dropAsPreferenceConfig, dropWidgetVisibleCtx };

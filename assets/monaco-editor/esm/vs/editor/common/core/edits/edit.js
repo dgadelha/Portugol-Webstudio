@@ -1,6 +1,8 @@
 import { BugIndicatingError } from '../../../../base/common/errors.js';
 import { OffsetRange } from '../ranges/offsetRange.js';
-export class BaseEdit {
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+class BaseEdit {
     constructor(replacements) {
         this.replacements = replacements;
         let lastEndEx = -1;
@@ -153,7 +155,7 @@ export class BaseEdit {
         return this.replacements.length === 0;
     }
 }
-export class BaseReplacement {
+class BaseReplacement {
     constructor(
     /**
      * The range to be replaced.
@@ -177,4 +179,5 @@ export class BaseReplacement {
         return new OffsetRange(this.replaceRange.start, this.replaceRange.start + this.getNewLength());
     }
 }
-//# sourceMappingURL=edit.js.map
+
+export { BaseEdit, BaseReplacement };

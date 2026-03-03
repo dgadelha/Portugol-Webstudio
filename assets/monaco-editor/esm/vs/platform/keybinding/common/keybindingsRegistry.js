@@ -1,13 +1,14 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { decodeKeybinding } from '../../../base/common/keybindings.js';
 import { OS } from '../../../base/common/platform.js';
 import { CommandsRegistry } from '../../commands/common/commands.js';
 import { Registry } from '../../registry/common/platform.js';
-import { combinedDisposable, DisposableStore, toDisposable } from '../../../base/common/lifecycle.js';
+import { DisposableStore, combinedDisposable, toDisposable } from '../../../base/common/lifecycle.js';
 import { LinkedList } from '../../../base/common/linkedList.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
 /**
  * Stores all built-in and extension-provided keybindings (but not ones that user defines themselves)
  */
@@ -86,9 +87,9 @@ class KeybindingsRegistryImpl {
         return this._cachedMergedKeybindings.slice(0);
     }
 }
-export const KeybindingsRegistry = new KeybindingsRegistryImpl();
+const KeybindingsRegistry = new KeybindingsRegistryImpl();
 // Define extension point ids
-export const Extensions = {
+const Extensions = {
     EditorModes: 'platform.keybindingsRegistry'
 };
 Registry.add(Extensions.EditorModes, KeybindingsRegistry);
@@ -106,4 +107,5 @@ function sorter(a, b) {
     }
     return a.weight2 - b.weight2;
 }
-//# sourceMappingURL=keybindingsRegistry.js.map
+
+export { Extensions, KeybindingsRegistry };

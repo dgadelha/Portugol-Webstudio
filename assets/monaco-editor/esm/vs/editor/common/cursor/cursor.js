@@ -1,23 +1,24 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { onUnexpectedError } from '../../../base/common/errors.js';
-import * as strings from '../../../base/common/strings.js';
+import { nextCharLength, commonPrefixLength, commonSuffixLength } from '../../../base/common/strings.js';
 import { CursorCollection } from './cursorCollection.js';
 import { CursorState, EditOperationResult } from '../cursorCommon.js';
 import { CursorContext } from './cursorContext.js';
 import { DeleteOperations } from './cursorDeleteOperations.js';
-import { CompositionOutcome, TypeOperations } from './cursorTypeOperations.js';
+import { TypeOperations, CompositionOutcome } from './cursorTypeOperations.js';
 import { BaseTypeWithAutoClosingCommand } from './cursorTypeEditOperations.js';
 import { Range } from '../core/range.js';
 import { Selection } from '../core/selection.js';
 import { ModelInjectedTextChangedEvent } from '../textModelEvents.js';
-import { ViewCursorStateChangedEvent, ViewRevealRangeRequestEvent } from '../viewEvents.js';
-import { dispose, Disposable } from '../../../base/common/lifecycle.js';
+import { ViewRevealRangeRequestEvent, ViewCursorStateChangedEvent } from '../viewEvents.js';
+import { Disposable, dispose } from '../../../base/common/lifecycle.js';
 import { CursorStateChangedEvent } from '../viewModelEventDispatcher.js';
 import { EditSources } from '../textModelEditSource.js';
-export class CursorsController extends Disposable {
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+class CursorsController extends Disposable {
     constructor(model, viewModel, coordinatesConverter, cursorConfig) {
         super();
         this._model = model;
@@ -452,7 +453,7 @@ export class CursorsController extends Disposable {
                 const len = text.length;
                 let offset = 0;
                 while (offset < len) {
-                    const charLength = strings.nextCharLength(text, offset);
+                    const charLength = nextCharLength(text, offset);
                     const chr = text.substr(offset, charLength);
                     // Here we must interpret each typed character individually
                     this._executeEditOperation(TypeOperations.typeWithInterceptors(!!this._compositionState, this._prevEditOperationType, this.context.cursorConfig, this._model, this.getSelections(), this.getAutoClosedCharacters(), chr), reason);
@@ -595,7 +596,7 @@ class AutoClosedAction {
         return true;
     }
 }
-export class CommandExecutor {
+class CommandExecutor {
     static executeCommands(model, selectionsBefore, commands, editReason = EditSources.unknown({ name: 'executeCommands' })) {
         const ctx = {
             model: model,
@@ -884,8 +885,8 @@ class CompositionState {
         return result;
     }
     static _deduceOutcome(original, current) {
-        const commonPrefix = Math.min(original.startSelectionOffset, current.startSelectionOffset, strings.commonPrefixLength(original.text, current.text));
-        const commonSuffix = Math.min(original.text.length - original.endSelectionOffset, current.text.length - current.endSelectionOffset, strings.commonSuffixLength(original.text, current.text));
+        const commonPrefix = Math.min(original.startSelectionOffset, current.startSelectionOffset, commonPrefixLength(original.text, current.text));
+        const commonSuffix = Math.min(original.text.length - original.endSelectionOffset, current.text.length - current.endSelectionOffset, commonSuffixLength(original.text, current.text));
         const deletedText = original.text.substring(commonPrefix, original.text.length - commonSuffix);
         const insertedTextStartOffset = commonPrefix;
         const insertedTextEndOffset = current.text.length - commonSuffix;
@@ -894,4 +895,5 @@ class CompositionState {
         return new CompositionOutcome(deletedText, original.startSelectionOffset - commonPrefix, original.endSelectionOffset - commonPrefix, insertedText, current.startSelectionOffset - commonPrefix, current.endSelectionOffset - commonPrefix, insertedTextRange);
     }
 }
-//# sourceMappingURL=cursor.js.map
+
+export { CommandExecutor, CursorsController };

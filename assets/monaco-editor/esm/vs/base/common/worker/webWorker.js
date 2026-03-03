@@ -1,16 +1,17 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { onUnexpectedError, transformErrorForSerialization } from '../errors.js';
 import { Emitter } from '../event.js';
 import { Disposable } from '../lifecycle.js';
 import { isWeb } from '../platform.js';
-import * as strings from '../strings.js';
+import { isUpperAsciiLetter } from '../strings.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
 const DEFAULT_CHANNEL = 'default';
 const INITIALIZE = '$initialize';
 let webWorkerWarningLogged = false;
-export function logOnceWebWorkerWarning(err) {
+function logOnceWebWorkerWarning(err) {
     if (!isWeb) {
         // running tests
         return;
@@ -77,7 +78,7 @@ class WebWorkerProtocol {
     setWorkerId(workerId) {
         this._workerId = workerId;
     }
-    sendMessage(channel, method, args) {
+    async sendMessage(channel, method, args) {
         const req = String(++this._lastSentReq);
         return new Promise((resolve, reject) => {
             this._pendingReplies[req] = {
@@ -160,10 +161,11 @@ class WebWorkerProtocol {
         if (replyMessage.err) {
             let err = replyMessage.err;
             if (replyMessage.err.$isError) {
-                err = new Error();
-                err.name = replyMessage.err.name;
-                err.message = replyMessage.err.message;
-                err.stack = replyMessage.err.stack;
+                const newErr = new Error();
+                newErr.name = replyMessage.err.name;
+                newErr.message = replyMessage.err.message;
+                newErr.stack = replyMessage.err.stack;
+                err = newErr;
             }
             reply.reject(err);
             return;
@@ -209,8 +211,9 @@ class WebWorkerProtocol {
         const transfer = [];
         if (msg.type === 0 /* MessageType.Request */) {
             for (let i = 0; i < msg.args.length; i++) {
-                if (msg.args[i] instanceof ArrayBuffer) {
-                    transfer.push(msg.args[i]);
+                const arg = msg.args[i];
+                if (arg instanceof ArrayBuffer) {
+                    transfer.push(arg);
                 }
             }
         }
@@ -225,7 +228,7 @@ class WebWorkerProtocol {
 /**
  * Main thread side
  */
-export class WebWorkerClient extends Disposable {
+class WebWorkerClient extends Disposable {
     constructor(worker) {
         super();
         this._localChannels = new Map();
@@ -252,7 +255,7 @@ export class WebWorkerClient extends Disposable {
         // Send initialize message
         this._onModuleLoaded = this._protocol.sendMessage(DEFAULT_CHANNEL, INITIALIZE, [
             this._worker.getId(),
-        ]);
+        ]).then(() => { });
         this.proxy = this._protocol.createProxyToRemoteChannel(DEFAULT_CHANNEL, async () => { await this._onModuleLoaded; });
         this._onModuleLoaded.catch((e) => {
             this._onError('Worker failed to load ', e);
@@ -263,11 +266,12 @@ export class WebWorkerClient extends Disposable {
         if (!channel) {
             return Promise.reject(new Error(`Missing channel ${channelName} on main thread`));
         }
-        if (typeof channel[method] !== 'function') {
+        const fn = channel[method];
+        if (typeof fn !== 'function') {
             return Promise.reject(new Error(`Missing method ${method} on main thread channel ${channelName}`));
         }
         try {
-            return Promise.resolve(channel[method].apply(channel, args));
+            return Promise.resolve(fn.apply(channel, args));
         }
         catch (e) {
             return Promise.reject(e);
@@ -279,7 +283,11 @@ export class WebWorkerClient extends Disposable {
             throw new Error(`Missing channel ${channelName} on main thread`);
         }
         if (propertyIsDynamicEvent(eventName)) {
-            const event = channel[eventName].call(channel, arg);
+            const fn = channel[eventName];
+            if (typeof fn !== 'function') {
+                throw new Error(`Missing dynamic event ${eventName} on main thread channel ${channelName}.`);
+            }
+            const event = fn.call(channel, arg);
             if (typeof event !== 'function') {
                 throw new Error(`Missing dynamic event ${eventName} on main thread channel ${channelName}.`);
             }
@@ -304,16 +312,16 @@ export class WebWorkerClient extends Disposable {
 }
 function propertyIsEvent(name) {
     // Assume a property is an event if it has a form of "onSomething"
-    return name[0] === 'o' && name[1] === 'n' && strings.isUpperAsciiLetter(name.charCodeAt(2));
+    return name[0] === 'o' && name[1] === 'n' && isUpperAsciiLetter(name.charCodeAt(2));
 }
 function propertyIsDynamicEvent(name) {
     // Assume a property is a dynamic event (a method that returns an event) if it has a form of "onDynamicSomething"
-    return /^onDynamic/.test(name) && strings.isUpperAsciiLetter(name.charCodeAt(9));
+    return /^onDynamic/.test(name) && isUpperAsciiLetter(name.charCodeAt(9));
 }
 /**
  * Worker side
  */
-export class WebWorkerServer {
+class WebWorkerServer {
     constructor(postMessage, requestHandlerFactory) {
         this._localChannels = new Map();
         this._remoteChannels = new Map();
@@ -337,11 +345,12 @@ export class WebWorkerServer {
         if (!requestHandler) {
             return Promise.reject(new Error(`Missing channel ${channel} on worker thread`));
         }
-        if (typeof requestHandler[method] !== 'function') {
+        const fn = requestHandler[method];
+        if (typeof fn !== 'function') {
             return Promise.reject(new Error(`Missing method ${method} on worker thread channel ${channel}`));
         }
         try {
-            return Promise.resolve(requestHandler[method].apply(requestHandler, args));
+            return Promise.resolve(fn.apply(requestHandler, args));
         }
         catch (e) {
             return Promise.reject(e);
@@ -353,7 +362,11 @@ export class WebWorkerServer {
             throw new Error(`Missing channel ${channel} on worker thread`);
         }
         if (propertyIsDynamicEvent(eventName)) {
-            const event = requestHandler[eventName].call(requestHandler, arg);
+            const fn = requestHandler[eventName];
+            if (typeof fn !== 'function') {
+                throw new Error(`Missing dynamic event ${eventName} on request handler.`);
+            }
+            const event = fn.call(requestHandler, arg);
             if (typeof event !== 'function') {
                 throw new Error(`Missing dynamic event ${eventName} on request handler.`);
             }
@@ -379,4 +392,5 @@ export class WebWorkerServer {
         this._protocol.setWorkerId(workerId);
     }
 }
-//# sourceMappingURL=webWorker.js.map
+
+export { WebWorkerClient, WebWorkerServer, logOnceWebWorkerWarning };

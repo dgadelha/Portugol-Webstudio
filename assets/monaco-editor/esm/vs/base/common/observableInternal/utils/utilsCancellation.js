@@ -1,10 +1,12 @@
+import { CancellationError } from '../../errors.js';
+import '../../cancellation.js';
+import { autorun } from '../reactions/autorun.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { CancellationError } from '../commonFacade/cancellation.js';
-import { autorun } from '../reactions/autorun.js';
-export function waitForState(observable, predicate, isError, cancellationToken) {
+function waitForState(observable, predicate, isError, cancellationToken) {
     if (!predicate) {
         predicate = state => state !== null && state !== undefined;
     }
@@ -57,4 +59,5 @@ export function waitForState(observable, predicate, isError, cancellationToken) 
         }
     });
 }
-//# sourceMappingURL=utilsCancellation.js.map
+
+export { waitForState };

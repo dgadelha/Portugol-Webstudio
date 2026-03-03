@@ -1,11 +1,14 @@
+import { cancelOnDispose } from '../../cancellation.js';
+import '../../arrays.js';
+import '../../event.js';
+import { DisposableStore } from '../../lifecycle.js';
+import { autorunWithStoreHandleChanges } from '../reactions/autorun.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { cancelOnDispose } from '../commonFacade/cancellation.js';
-import { DisposableStore } from '../commonFacade/deps.js';
-import { autorunWithStoreHandleChanges } from '../reactions/autorun.js';
-export function runOnChange(observable, cb) {
+function runOnChange(observable, cb) {
     let _previousValue;
     let _firstRun = true;
     return autorunWithStoreHandleChanges({
@@ -36,7 +39,7 @@ export function runOnChange(observable, cb) {
         }
     });
 }
-export function runOnChangeWithStore(observable, cb) {
+function runOnChangeWithStore(observable, cb) {
     const store = new DisposableStore();
     const disposable = runOnChange(observable, (value, previousValue, deltas) => {
         store.clear();
@@ -49,9 +52,10 @@ export function runOnChangeWithStore(observable, cb) {
         }
     };
 }
-export function runOnChangeWithCancellationToken(observable, cb) {
+function runOnChangeWithCancellationToken(observable, cb) {
     return runOnChangeWithStore(observable, (value, previousValue, deltas, store) => {
         cb(value, previousValue, deltas, cancelOnDispose(store));
     });
 }
-//# sourceMappingURL=runOnChange.js.map
+
+export { runOnChange, runOnChangeWithCancellationToken, runOnChangeWithStore };

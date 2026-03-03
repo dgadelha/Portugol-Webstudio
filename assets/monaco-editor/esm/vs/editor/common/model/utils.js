@@ -7,7 +7,7 @@
  *  - -1 => the line consists of whitespace
  *  - otherwise => the indent level is returned value
  */
-export function computeIndentLevel(line, tabSize) {
+function computeIndentLevel(line, tabSize) {
     let indent = 0;
     let i = 0;
     const len = line.length;
@@ -29,4 +29,5 @@ export function computeIndentLevel(line, tabSize) {
     }
     return indent;
 }
-//# sourceMappingURL=utils.js.map
+
+export { computeIndentLevel };

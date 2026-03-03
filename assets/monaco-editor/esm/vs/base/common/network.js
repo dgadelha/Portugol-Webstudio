@@ -1,13 +1,14 @@
+import { onUnexpectedError } from './errors.js';
+import { isWeb, isNative, webWorkerOrigin } from './platform.js';
+import { equalsIgnoreCase, startsWithIgnoreCase } from './strings.js';
+import { URI } from './uri.js';
+import { posix } from './path.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import * as errors from './errors.js';
-import * as platform from './platform.js';
-import { equalsIgnoreCase, startsWithIgnoreCase } from './strings.js';
-import { URI } from './uri.js';
-import * as paths from './path.js';
-export var Schemas;
+var Schemas;
 (function (Schemas) {
     /**
      * A schema that is used for models that exist in memory
@@ -60,8 +61,8 @@ export var Schemas;
     Schemas.vscodeChatEditor = 'vscode-chat-editor';
     /** Scheme used for the chat input part */
     Schemas.vscodeChatInput = 'chatSessionInput';
-    /** Scheme for chat session content */
-    Schemas.vscodeChatSession = 'vscode-chat-session';
+    /** Scheme used for local chat session content */
+    Schemas.vscodeLocalChatSession = 'vscode-chat-session';
     /**
      * Scheme used internally for webviews that aren't linked to a resource (i.e. not custom editors)
      */
@@ -112,8 +113,12 @@ export var Schemas;
      */
     Schemas.chatEditingSnapshotScheme = 'chat-editing-snapshot-text-model';
     Schemas.chatEditingModel = 'chat-editing-text-model';
+    /**
+     * Used for rendering multidiffs in copilot agent sessions
+     */
+    Schemas.copilotPr = 'copilot-pr';
 })(Schemas || (Schemas = {}));
-export function matchesScheme(target, scheme) {
+function matchesScheme(target, scheme) {
     if (URI.isUri(target)) {
         return equalsIgnoreCase(target.scheme, scheme);
     }
@@ -121,10 +126,10 @@ export function matchesScheme(target, scheme) {
         return startsWithIgnoreCase(target, scheme + ':');
     }
 }
-export function matchesSomeScheme(target, ...schemes) {
+function matchesSomeScheme(target, ...schemes) {
     return schemes.some(scheme => matchesScheme(target, scheme));
 }
-export const connectionTokenQueryName = 'tkn';
+const connectionTokenQueryName = 'tkn';
 class RemoteAuthoritiesImpl {
     constructor() {
         this._hosts = Object.create(null);
@@ -138,7 +143,7 @@ class RemoteAuthoritiesImpl {
         this._preferredWebSchema = schema;
     }
     get _remoteResourcesPath() {
-        return paths.posix.join(this._serverRootPath, Schemas.vscodeRemoteResource);
+        return posix.join(this._serverRootPath, Schemas.vscodeRemoteResource);
     }
     rewrite(uri) {
         if (this._delegate) {
@@ -146,7 +151,7 @@ class RemoteAuthoritiesImpl {
                 return this._delegate(uri);
             }
             catch (err) {
-                errors.onUnexpectedError(err);
+                onUnexpectedError(err);
                 return uri;
             }
         }
@@ -162,15 +167,15 @@ class RemoteAuthoritiesImpl {
             query += `&${connectionTokenQueryName}=${encodeURIComponent(connectionToken)}`;
         }
         return URI.from({
-            scheme: platform.isWeb ? this._preferredWebSchema : Schemas.vscodeRemoteResource,
+            scheme: isWeb ? this._preferredWebSchema : Schemas.vscodeRemoteResource,
             authority: `${host}:${port}`,
             path: this._remoteResourcesPath,
             query
         });
     }
 }
-export const RemoteAuthorities = new RemoteAuthoritiesImpl();
-export const VSCODE_AUTHORITY = 'vscode-app';
+const RemoteAuthorities = new RemoteAuthoritiesImpl();
+const VSCODE_AUTHORITY = 'vscode-app';
 class FileAccessImpl {
     static { this.FALLBACK_AUTHORITY = VSCODE_AUTHORITY; }
     /**
@@ -190,9 +195,9 @@ class FileAccessImpl {
         uri.scheme === Schemas.file &&
             (
             // ...and we run in native environments
-            platform.isNative ||
+            isNative ||
                 // ...or web worker extensions on desktop
-                (platform.webWorkerOrigin === `${Schemas.vscodeFileResource}://${FileAccessImpl.FALLBACK_AUTHORITY}`))) {
+                (webWorkerOrigin === `${Schemas.vscodeFileResource}://${FileAccessImpl.FALLBACK_AUTHORITY}`))) {
             return uri.with({
                 scheme: Schemas.vscodeFileResource,
                 // We need to provide an authority here so that it can serve
@@ -207,14 +212,8 @@ class FileAccessImpl {
         return uri;
     }
 }
-export const FileAccess = new FileAccessImpl();
-export const CacheControlheaders = Object.freeze({
-    'Cache-Control': 'no-cache, no-store'
-});
-export const DocumentPolicyheaders = Object.freeze({
-    'Document-Policy': 'include-js-call-stacks-in-crash-reports'
-});
-export var COI;
+const FileAccess = new FileAccessImpl();
+var COI;
 (function (COI) {
     const coiHeaders = new Map([
         ['1', { 'Cross-Origin-Opener-Policy': 'same-origin' }],
@@ -249,6 +248,7 @@ export var COI;
      * isn't enabled the current context
      */
     function addSearchParam(urlOrSearch, coop, coep) {
+        // eslint-disable-next-line local/code-no-any-casts
         if (!globalThis.crossOriginIsolated) {
             // depends on the current context being COI
             return;
@@ -263,4 +263,5 @@ export var COI;
     }
     COI.addSearchParam = addSearchParam;
 })(COI || (COI = {}));
-//# sourceMappingURL=network.js.map
+
+export { COI, FileAccess, RemoteAuthorities, Schemas, VSCODE_AUTHORITY, connectionTokenQueryName, matchesScheme, matchesSomeScheme };

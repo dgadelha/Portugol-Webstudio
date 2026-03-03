@@ -1,9 +1,5 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { findFirstIdxMonotonousOrArrLen } from '../../../../base/common/arraysFind.js';
-import { RunOnceScheduler, TimeoutTimer } from '../../../../base/common/async.js';
+import { TimeoutTimer, RunOnceScheduler } from '../../../../base/common/async.js';
 import { DisposableStore, dispose } from '../../../../base/common/lifecycle.js';
 import { ReplaceCommand, ReplaceCommandThatPreservesSelection } from '../../../common/commands/replaceCommand.js';
 import { Position } from '../../../common/core/position.js';
@@ -14,32 +10,37 @@ import { FindDecorations } from './findDecorations.js';
 import { ReplaceAllCommand } from './replaceAllCommand.js';
 import { parseReplaceString, ReplacePattern } from './replacePattern.js';
 import { RawContextKey } from '../../../../platform/contextkey/common/contextkey.js';
-export const CONTEXT_FIND_WIDGET_VISIBLE = new RawContextKey('findWidgetVisible', false);
-export const CONTEXT_FIND_WIDGET_NOT_VISIBLE = CONTEXT_FIND_WIDGET_VISIBLE.toNegated();
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+const CONTEXT_FIND_WIDGET_VISIBLE = new RawContextKey('findWidgetVisible', false);
+CONTEXT_FIND_WIDGET_VISIBLE.toNegated();
 // Keep ContextKey use of 'Focussed' to not break when clauses
-export const CONTEXT_FIND_INPUT_FOCUSED = new RawContextKey('findInputFocussed', false);
-export const CONTEXT_REPLACE_INPUT_FOCUSED = new RawContextKey('replaceInputFocussed', false);
-export const ToggleCaseSensitiveKeybinding = {
+const CONTEXT_FIND_INPUT_FOCUSED = new RawContextKey('findInputFocussed', false);
+const CONTEXT_REPLACE_INPUT_FOCUSED = new RawContextKey('replaceInputFocussed', false);
+const ToggleCaseSensitiveKeybinding = {
     primary: 512 /* KeyMod.Alt */ | 33 /* KeyCode.KeyC */,
     mac: { primary: 2048 /* KeyMod.CtrlCmd */ | 512 /* KeyMod.Alt */ | 33 /* KeyCode.KeyC */ }
 };
-export const ToggleWholeWordKeybinding = {
+const ToggleWholeWordKeybinding = {
     primary: 512 /* KeyMod.Alt */ | 53 /* KeyCode.KeyW */,
     mac: { primary: 2048 /* KeyMod.CtrlCmd */ | 512 /* KeyMod.Alt */ | 53 /* KeyCode.KeyW */ }
 };
-export const ToggleRegexKeybinding = {
+const ToggleRegexKeybinding = {
     primary: 512 /* KeyMod.Alt */ | 48 /* KeyCode.KeyR */,
     mac: { primary: 2048 /* KeyMod.CtrlCmd */ | 512 /* KeyMod.Alt */ | 48 /* KeyCode.KeyR */ }
 };
-export const ToggleSearchScopeKeybinding = {
+const ToggleSearchScopeKeybinding = {
     primary: 512 /* KeyMod.Alt */ | 42 /* KeyCode.KeyL */,
     mac: { primary: 2048 /* KeyMod.CtrlCmd */ | 512 /* KeyMod.Alt */ | 42 /* KeyCode.KeyL */ }
 };
-export const TogglePreserveCaseKeybinding = {
+const TogglePreserveCaseKeybinding = {
     primary: 512 /* KeyMod.Alt */ | 46 /* KeyCode.KeyP */,
     mac: { primary: 2048 /* KeyMod.CtrlCmd */ | 512 /* KeyMod.Alt */ | 46 /* KeyCode.KeyP */ }
 };
-export const FIND_IDS = {
+const FIND_IDS = {
     StartFindAction: 'actions.find',
     StartFindWithSelection: 'actions.findWithSelection',
     StartFindWithArgs: 'editor.actions.findWithArgs',
@@ -59,9 +60,9 @@ export const FIND_IDS = {
     ReplaceAllAction: 'editor.action.replaceAll',
     SelectAllMatchesAction: 'editor.action.selectAllMatches'
 };
-export const MATCHES_LIMIT = 19999;
+const MATCHES_LIMIT = 19999;
 const RESEARCH_DELAY = 240;
-export class FindModelBoundToEditorModel {
+class FindModelBoundToEditorModel {
     constructor(editor, state) {
         this._toDispose = new DisposableStore();
         this._editor = editor;
@@ -440,6 +441,7 @@ export class FindModelBoundToEditorModel {
         const preserveCase = this._state.preserveCase;
         if (replacePattern.hasReplacementPatterns || preserveCase) {
             resultText = modelText.replace(searchRegex, function () {
+                // eslint-disable-next-line local/code-no-any-casts
                 return replacePattern.buildReplaceString(arguments, preserveCase);
             });
         }
@@ -491,4 +493,5 @@ export class FindModelBoundToEditorModel {
         }
     }
 }
-//# sourceMappingURL=findModel.js.map
+
+export { CONTEXT_FIND_INPUT_FOCUSED, CONTEXT_FIND_WIDGET_VISIBLE, CONTEXT_REPLACE_INPUT_FOCUSED, FIND_IDS, FindModelBoundToEditorModel, MATCHES_LIMIT, ToggleCaseSensitiveKeybinding, TogglePreserveCaseKeybinding, ToggleRegexKeybinding, ToggleSearchScopeKeybinding, ToggleWholeWordKeybinding };

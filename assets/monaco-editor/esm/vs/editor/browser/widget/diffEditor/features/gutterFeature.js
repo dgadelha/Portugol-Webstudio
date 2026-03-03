@@ -1,25 +1,12 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-import { EventType, addDisposableListener, h } from '../../../../../base/browser/dom.js';
+import { h, addDisposableListener, EventType } from '../../../../../base/browser/dom.js';
 import { Disposable } from '../../../../../base/common/lifecycle.js';
-import { autorun, autorunWithStore, derived, derivedDisposable, derivedWithSetter, observableFromEvent, observableValue } from '../../../../../base/common/observable.js';
+import '../../../../../base/common/observableInternal/index.js';
 import { MenuWorkbenchToolBar } from '../../../../../platform/actions/browser/toolbar.js';
 import { IMenuService, MenuId } from '../../../../../platform/actions/common/actions.js';
 import { IContextKeyService } from '../../../../../platform/contextkey/common/contextkey.js';
 import { WorkbenchHoverDelegate } from '../../../../../platform/hover/browser/hover.js';
 import { IInstantiationService } from '../../../../../platform/instantiation/common/instantiation.js';
-import { LineRange, LineRangeSet } from '../../../../common/core/ranges/lineRange.js';
+import { LineRangeSet, LineRange } from '../../../../common/core/ranges/lineRange.js';
 import { OffsetRange } from '../../../../common/core/ranges/offsetRange.js';
 import { Range } from '../../../../common/core/range.js';
 import { TextEdit } from '../../../../common/core/edits/textEdit.js';
@@ -27,8 +14,26 @@ import { DetailedLineRangeMapping } from '../../../../common/diff/rangeMapping.j
 import { TextModelText } from '../../../../common/model/textModelText.js';
 import { ActionRunnerWithContext } from '../../multiDiffEditor/utils.js';
 import { DiffEditorSash } from '../components/diffEditorSash.js';
-import { appendRemoveOnDispose, applyStyle, prependRemoveOnDispose } from '../utils.js';
+import { prependRemoveOnDispose, applyStyle, appendRemoveOnDispose } from '../utils.js';
 import { EditorGutter } from '../utils/editorGutter.js';
+import { derived, derivedDisposable, derivedWithSetter } from '../../../../../base/common/observableInternal/observables/derived.js';
+import { observableFromEvent } from '../../../../../base/common/observableInternal/observables/observableFromEvent.js';
+import { observableValue } from '../../../../../base/common/observableInternal/observables/observableValue.js';
+import { autorun, autorunWithStore } from '../../../../../base/common/observableInternal/reactions/autorun.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 const emptyArr = [];
 const width = 35;
 let DiffEditorGutter = class DiffEditorGutter extends Disposable {
@@ -140,7 +145,6 @@ DiffEditorGutter = __decorate([
     __param(7, IContextKeyService),
     __param(8, IMenuService)
 ], DiffEditorGutter);
-export { DiffEditorGutter };
 class DiffGutterItem {
     constructor(mapping, showAlways, menuId, rangeOverride, originalUri, modifiedUri) {
         this.mapping = mapping;
@@ -230,4 +234,5 @@ let DiffToolBar = class DiffToolBar extends Disposable {
 DiffToolBar = __decorate([
     __param(3, IInstantiationService)
 ], DiffToolBar);
-//# sourceMappingURL=gutterFeature.js.map
+
+export { DiffEditorGutter };

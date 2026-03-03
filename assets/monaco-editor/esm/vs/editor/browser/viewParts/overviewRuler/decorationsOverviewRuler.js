@@ -1,15 +1,16 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { createFastDomNode } from '../../../../base/browser/fastDomNode.js';
 import { Color } from '../../../../base/common/color.js';
 import { ViewPart } from '../../view/viewPart.js';
 import { Position } from '../../../common/core/position.js';
 import { TokenizationRegistry } from '../../../common/languages.js';
-import { editorCursorForeground, editorOverviewRulerBorder, editorOverviewRulerBackground, editorMultiCursorSecondaryForeground, editorMultiCursorPrimaryForeground } from '../../../common/core/editorColorRegistry.js';
+import { editorOverviewRulerBorder, editorCursorForeground, editorMultiCursorPrimaryForeground, editorMultiCursorSecondaryForeground, editorOverviewRulerBackground } from '../../../common/core/editorColorRegistry.js';
 import { OverviewRulerDecorationsGroup } from '../../../common/viewModel.js';
 import { equals } from '../../../../base/common/arrays.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
 class Settings {
     constructor(config, theme) {
         const options = config.options;
@@ -164,7 +165,7 @@ class Settings {
             && this.canvasHeight === other.canvasHeight);
     }
 }
-export class DecorationsOverviewRuler extends ViewPart {
+class DecorationsOverviewRuler extends ViewPart {
     constructor(context) {
         super(context);
         this._actualShouldRender = 0 /* ShouldRenderValue.NotNeeded */;
@@ -411,4 +412,5 @@ export class DecorationsOverviewRuler extends ViewPart {
         }
     }
 }
-//# sourceMappingURL=decorationsOverviewRuler.js.map
+
+export { DecorationsOverviewRuler };

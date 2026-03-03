@@ -2,9 +2,8 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-export const diffEditorDefaultOptions = {
+const diffEditorDefaultOptions = {
     enableSplitViewResizing: true,
-    splitViewDefaultRatio: 0.5,
     renderSideBySide: true,
     renderMarginRevertIcon: true,
     renderGutterMenu: true,
@@ -35,4 +34,5 @@ export const diffEditorDefaultOptions = {
     useInlineViewWhenSpaceIsLimited: true,
     compactMode: false,
 };
-//# sourceMappingURL=diffEditor.js.map
+
+export { diffEditorDefaultOptions };

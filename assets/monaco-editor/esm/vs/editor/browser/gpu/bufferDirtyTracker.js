@@ -5,7 +5,7 @@
 /**
  * A simple tracker for dirty regions in a buffer.
  */
-export class BufferDirtyTracker {
+class BufferDirtyTracker {
     get dataOffset() {
         return this._startIndex;
     }
@@ -41,4 +41,5 @@ export class BufferDirtyTracker {
         this._endIndex = undefined;
     }
 }
-//# sourceMappingURL=bufferDirtyTracker.js.map
+
+export { BufferDirtyTracker };

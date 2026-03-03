@@ -1,11 +1,12 @@
+import { isChrome, isFirefox, isSafari } from './browser.js';
+import { IframeUtils } from './iframe.js';
+import { isMacintosh, isWindows } from '../common/platform.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import * as browser from './browser.js';
-import { IframeUtils } from './iframe.js';
-import * as platform from '../common/platform.js';
-export class StandardMouseEvent {
+class StandardMouseEvent {
     constructor(targetWindow, e) {
         this.timestamp = Date.now();
         this.browserEvent = e;
@@ -44,14 +45,15 @@ export class StandardMouseEvent {
         this.browserEvent.stopPropagation();
     }
 }
-export class StandardWheelEvent {
+class StandardWheelEvent {
     constructor(e, deltaX = 0, deltaY = 0) {
         this.browserEvent = e || null;
+        // eslint-disable-next-line local/code-no-any-casts
         this.target = e ? (e.target || e.targetNode || e.srcElement) : null;
         this.deltaY = deltaY;
         this.deltaX = deltaX;
         let shouldFactorDPR = false;
-        if (browser.isChrome) {
+        if (isChrome) {
             // Chrome version >= 123 contains the fix to factor devicePixelRatio into the wheel event.
             // See https://chromium.googlesource.com/chromium/src.git/+/be51b448441ff0c9d1f17e0f25c4bf1ab3f11f61
             const chromeVersionMatch = navigator.userAgent.match(/Chrome\/(\d+)/);
@@ -60,7 +62,9 @@ export class StandardWheelEvent {
         }
         if (e) {
             // Old (deprecated) wheel events
+            // eslint-disable-next-line local/code-no-any-casts
             const e1 = e;
+            // eslint-disable-next-line local/code-no-any-casts
             const e2 = e;
             const devicePixelRatio = e.view?.devicePixelRatio || 1;
             // vertical delta scroll
@@ -82,7 +86,7 @@ export class StandardWheelEvent {
                 const ev = e;
                 if (ev.deltaMode === ev.DOM_DELTA_LINE) {
                     // the deltas are expressed in lines
-                    if (browser.isFirefox && !platform.isMacintosh) {
+                    if (isFirefox && !isMacintosh) {
                         this.deltaY = -e.deltaY / 3;
                     }
                     else {
@@ -95,7 +99,7 @@ export class StandardWheelEvent {
             }
             // horizontal delta scroll
             if (typeof e1.wheelDeltaX !== 'undefined') {
-                if (browser.isSafari && platform.isWindows) {
+                if (isSafari && isWindows) {
                     this.deltaX = -(e1.wheelDeltaX / 120);
                 }
                 else if (shouldFactorDPR) {
@@ -115,7 +119,7 @@ export class StandardWheelEvent {
                 const ev = e;
                 if (ev.deltaMode === ev.DOM_DELTA_LINE) {
                     // the deltas are expressed in lines
-                    if (browser.isFirefox && !platform.isMacintosh) {
+                    if (isFirefox && !isMacintosh) {
                         this.deltaX = -e.deltaX / 3;
                     }
                     else {
@@ -145,4 +149,5 @@ export class StandardWheelEvent {
         this.browserEvent?.stopPropagation();
     }
 }
-//# sourceMappingURL=mouseEvent.js.map
+
+export { StandardMouseEvent, StandardWheelEvent };

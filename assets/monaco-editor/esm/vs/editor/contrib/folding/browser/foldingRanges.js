@@ -2,13 +2,13 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-export const foldSourceAbbr = {
+const foldSourceAbbr = {
     [0 /* FoldSource.provider */]: ' ',
     [1 /* FoldSource.userDefined */]: 'u',
     [2 /* FoldSource.recovered */]: 'r',
 };
-export const MAX_FOLDING_REGIONS = 0xFFFF;
-export const MAX_LINE_NUMBER = 0xFFFFFF;
+const MAX_FOLDING_REGIONS = 0xFFFF;
+const MAX_LINE_NUMBER = 0xFFFFFF;
 const MASK_INDENT = 0xFF000000;
 class BitField {
     constructor(size) {
@@ -32,7 +32,7 @@ class BitField {
         }
     }
 }
-export class FoldingRegions {
+class FoldingRegions {
     constructor(startIndexes, endIndexes, types) {
         if (startIndexes.length !== endIndexes.length || startIndexes.length > MAX_FOLDING_REGIONS) {
             throw new Error('invalid startIndexes or endIndexes size');
@@ -323,7 +323,7 @@ export class FoldingRegions {
         return resultRanges;
     }
 }
-export class FoldingRegion {
+class FoldingRegion {
     constructor(ranges, index) {
         this.ranges = ranges;
         this.index = index;
@@ -350,4 +350,5 @@ export class FoldingRegion {
         return this.startLineNumber <= lineNumber && lineNumber <= this.endLineNumber;
     }
 }
-//# sourceMappingURL=foldingRanges.js.map
+
+export { FoldingRegion, FoldingRegions, MAX_FOLDING_REGIONS, MAX_LINE_NUMBER, foldSourceAbbr };

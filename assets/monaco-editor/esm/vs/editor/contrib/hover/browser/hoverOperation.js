@@ -1,12 +1,13 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { createCancelableAsyncIterableProducer, RunOnceScheduler } from '../../../../base/common/async.js';
 import { onUnexpectedError } from '../../../../base/common/errors.js';
 import { Emitter } from '../../../../base/common/event.js';
 import { Disposable } from '../../../../base/common/lifecycle.js';
-export class HoverResult {
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+class HoverResult {
     constructor(value, isComplete, hasLoadingMessage, options) {
         this.value = value;
         this.isComplete = isComplete;
@@ -24,7 +25,7 @@ export class HoverResult {
  *   - if there are sync or async results, they are rendered.
  * - at 900ms, if the async computation hasn't finished, a "Loading..." result is added.
  */
-export class HoverOperation extends Disposable {
+class HoverOperation extends Disposable {
     constructor(_editor, _computer) {
         super();
         this._editor = _editor;
@@ -163,4 +164,5 @@ class Debouncer extends Disposable {
         this._scheduler.cancel();
     }
 }
-//# sourceMappingURL=hoverOperation.js.map
+
+export { HoverOperation, HoverResult };

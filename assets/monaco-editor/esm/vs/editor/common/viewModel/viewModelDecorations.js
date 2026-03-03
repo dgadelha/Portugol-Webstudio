@@ -1,13 +1,14 @@
+import { Position } from '../core/position.js';
+import { Range } from '../core/range.js';
+import { filterValidationDecorations, filterFontDecorations } from '../config/editorOptions.js';
+import { ViewModelDecoration, isModelDecorationVisible } from './viewModelDecoration.js';
+import { InlineDecoration } from './inlineDecorations.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { Position } from '../core/position.js';
-import { Range } from '../core/range.js';
-import { filterFontDecorations, filterValidationDecorations } from '../config/editorOptions.js';
-import { isModelDecorationVisible, ViewModelDecoration } from './viewModelDecoration.js';
-import { InlineDecoration } from './inlineDecorations.js';
-export class ViewModelDecorations {
+class ViewModelDecorations {
     constructor(editorId, model, configuration, linesCollection, coordinatesConverter) {
         this.editorId = editorId;
         this.model = model;
@@ -127,4 +128,5 @@ export class ViewModelDecorations {
         };
     }
 }
-//# sourceMappingURL=viewModelDecorations.js.map
+
+export { ViewModelDecorations };

@@ -1,16 +1,17 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import './currentLineHighlight.css';
 import { DynamicViewOverlay } from '../../view/dynamicViewOverlay.js';
 import { editorLineHighlight, editorLineHighlightBorder } from '../../../common/core/editorColorRegistry.js';
-import * as arrays from '../../../../base/common/arrays.js';
+import { equals } from '../../../../base/common/arrays.js';
 import { registerThemingParticipant } from '../../../../platform/theme/common/themeService.js';
 import { Selection } from '../../../common/core/selection.js';
 import { isHighContrast } from '../../../../platform/theme/common/theme.js';
 import { Position } from '../../../common/core/position.js';
-export class AbstractLineHighlightOverlay extends DynamicViewOverlay {
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+class AbstractLineHighlightOverlay extends DynamicViewOverlay {
     constructor(context) {
         super();
         this._context = context;
@@ -40,7 +41,7 @@ export class AbstractLineHighlightOverlay extends DynamicViewOverlay {
         }
         const cursorsLineNumbers = Array.from(lineNumbers);
         cursorsLineNumbers.sort((a, b) => a - b);
-        if (!arrays.equals(this._cursorLineNumbers, cursorsLineNumbers)) {
+        if (!equals(this._cursorLineNumbers, cursorsLineNumbers)) {
             this._cursorLineNumbers = cursorsLineNumbers;
             hasChanged = true;
         }
@@ -155,7 +156,7 @@ export class AbstractLineHighlightOverlay extends DynamicViewOverlay {
 /**
  * Emphasizes the current line by drawing a border around it.
  */
-export class CurrentLineHighlightOverlay extends AbstractLineHighlightOverlay {
+class CurrentLineHighlightOverlay extends AbstractLineHighlightOverlay {
     _renderOne(ctx, exact) {
         const className = 'current-line' + (this._shouldRenderInMargin() ? ' current-line-both' : '') + (exact ? ' current-line-exact' : '');
         return `<div class="${className}" style="width:${Math.max(ctx.scrollWidth, this._contentWidth)}px;"></div>`;
@@ -170,7 +171,7 @@ export class CurrentLineHighlightOverlay extends AbstractLineHighlightOverlay {
 /**
  * Emphasizes the current line margin/gutter by drawing a border around it.
  */
-export class CurrentLineMarginHighlightOverlay extends AbstractLineHighlightOverlay {
+class CurrentLineMarginHighlightOverlay extends AbstractLineHighlightOverlay {
     _renderOne(ctx, exact) {
         const className = 'current-line' + (this._shouldRenderInMargin() ? ' current-line-margin' : '') + (this._shouldRenderOther() ? ' current-line-margin-both' : '') + (this._shouldRenderInMargin() && exact ? ' current-line-exact-margin' : '');
         return `<div class="${className}" style="width:${this._contentLeft}px"></div>`;
@@ -200,4 +201,5 @@ registerThemingParticipant((theme, collector) => {
         }
     }
 });
-//# sourceMappingURL=currentLineHighlight.js.map
+
+export { AbstractLineHighlightOverlay, CurrentLineHighlightOverlay, CurrentLineMarginHighlightOverlay };

@@ -1,10 +1,11 @@
+import { binarySearch2 } from '../../../base/common/arrays.js';
+import { intersection } from '../../../base/common/collections.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { binarySearch2 } from '../../../base/common/arrays.js';
-import { intersection } from '../../../base/common/collections.js';
-export class CustomLine {
+class CustomLine {
     constructor(decorationId, index, lineNumber, specialHeight, prefixSum) {
         this.decorationId = decorationId;
         this.index = index;
@@ -41,7 +42,7 @@ export class CustomLine {
  * Clients can modify line heights by adding or removing custom line height decorations,
  * which are tracked by their unique decoration IDs.
  */
-export class LineHeightsManager {
+class LineHeightsManager {
     constructor(defaultLineHeight, customLineHeightData) {
         this._decorationIDToCustomLine = new ArrayMap();
         this._orderedCustomLines = [];
@@ -365,4 +366,5 @@ class ArrayMap {
         this._map.delete(key);
     }
 }
-//# sourceMappingURL=lineHeights.js.map
+
+export { CustomLine, LineHeightsManager };

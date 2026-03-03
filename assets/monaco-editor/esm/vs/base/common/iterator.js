@@ -1,9 +1,10 @@
+import { isIterable } from './types.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { isIterable } from './types.js';
-export var Iterable;
+var Iterable;
 (function (Iterable) {
     function is(thing) {
         return !!thing && typeof thing === 'object' && typeof thing[Symbol.iterator] === 'function';
@@ -181,4 +182,5 @@ export var Iterable;
     }
     Iterable.asyncToArrayFlat = asyncToArrayFlat;
 })(Iterable || (Iterable = {}));
-//# sourceMappingURL=iterator.js.map
+
+export { Iterable };

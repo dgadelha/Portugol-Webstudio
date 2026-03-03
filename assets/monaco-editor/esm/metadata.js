@@ -2,101 +2,192 @@
 exports.features = [
   {
     "label": "anchorSelect",
-    "entry": "vs/editor/contrib/anchorSelect/browser/anchorSelect"
+    "entry": [
+      "vs/editor/contrib/anchorSelect/browser/anchorSelect",
+      "vs/editor/contrib/anchorSelect/browser/anchorSelect"
+    ]
   },
   {
     "label": "bracketMatching",
-    "entry": "vs/editor/contrib/bracketMatching/browser/bracketMatching"
+    "entry": [
+      "vs/editor/contrib/bracketMatching/browser/bracketMatching",
+      "vs/editor/contrib/bracketMatching/browser/bracketMatching"
+    ]
   },
   {
     "label": "browser",
-    "entry": "vs/editor/browser/coreCommands"
+    "entry": [
+      "vs/editor/browser/coreCommands",
+      "vs/editor/browser/coreCommands"
+    ]
   },
   {
     "label": "caretOperations",
     "entry": [
       "vs/editor/contrib/caretOperations/browser/caretOperations",
+      "vs/editor/contrib/caretOperations/browser/caretOperations"
+    ]
+  },
+  {
+    "label": "caretOperations",
+    "entry": [
+      "vs/editor/contrib/caretOperations/browser/transpose",
       "vs/editor/contrib/caretOperations/browser/transpose"
     ]
   },
   {
     "label": "clipboard",
-    "entry": "vs/editor/contrib/clipboard/browser/clipboard"
+    "entry": [
+      "vs/editor/contrib/clipboard/browser/clipboard",
+      "vs/editor/contrib/clipboard/browser/clipboard"
+    ]
   },
   {
     "label": "codeAction",
-    "entry": "vs/editor/contrib/codeAction/browser/codeActionContributions"
+    "entry": [
+      "vs/editor/contrib/codeAction/browser/codeActionContributions",
+      "vs/editor/contrib/codeAction/browser/codeActionContributions"
+    ]
   },
   {
     "label": "codeEditor",
-    "entry": "vs/editor/browser/widget/codeEditor/codeEditorWidget"
+    "entry": [
+      "vs/editor/browser/widget/codeEditor/codeEditorWidget",
+      "vs/editor/browser/widget/codeEditor/codeEditorWidget"
+    ]
   },
   {
     "label": "codelens",
-    "entry": "vs/editor/contrib/codelens/browser/codelensController"
+    "entry": [
+      "vs/editor/contrib/codelens/browser/codelensController",
+      "vs/editor/contrib/codelens/browser/codelensController"
+    ]
+  },
+  {
+    "label": "codicon",
+    "entry": [
+      "vs/base/browser/ui/codicons/codicon/codicon-modifiers.css",
+      "vs/base/browser/ui/codicons/codicon/codicon-modifiers.css"
+    ]
+  },
+  {
+    "label": "codicon",
+    "entry": [
+      "vs/base/browser/ui/codicons/codicon/codicon.css",
+      "vs/base/browser/ui/codicons/codicon/codicon.css"
+    ]
   },
   {
     "label": "colorPicker",
-    "entry": "vs/editor/contrib/colorPicker/browser/colorPickerContribution"
+    "entry": [
+      "vs/editor/contrib/colorPicker/browser/colorPickerContribution",
+      "vs/editor/contrib/colorPicker/browser/colorPickerContribution"
+    ]
   },
   {
     "label": "comment",
-    "entry": "vs/editor/contrib/comment/browser/comment"
+    "entry": [
+      "vs/editor/contrib/comment/browser/comment",
+      "vs/editor/contrib/comment/browser/comment"
+    ]
   },
   {
     "label": "contextmenu",
-    "entry": "vs/editor/contrib/contextmenu/browser/contextmenu"
+    "entry": [
+      "vs/editor/contrib/contextmenu/browser/contextmenu",
+      "vs/editor/contrib/contextmenu/browser/contextmenu"
+    ]
   },
   {
     "label": "cursorUndo",
-    "entry": "vs/editor/contrib/cursorUndo/browser/cursorUndo"
+    "entry": [
+      "vs/editor/contrib/cursorUndo/browser/cursorUndo",
+      "vs/editor/contrib/cursorUndo/browser/cursorUndo"
+    ]
   },
   {
     "label": "diffEditor",
-    "entry": "vs/editor/browser/widget/diffEditor/diffEditor.contribution"
+    "entry": [
+      "vs/editor/browser/widget/diffEditor/diffEditor.contribution",
+      "vs/editor/browser/widget/diffEditor/diffEditor.contribution"
+    ]
   },
   {
     "label": "diffEditorBreadcrumbs",
-    "entry": "vs/editor/contrib/diffEditorBreadcrumbs/browser/contribution"
+    "entry": [
+      "vs/editor/contrib/diffEditorBreadcrumbs/browser/contribution",
+      "vs/editor/contrib/diffEditorBreadcrumbs/browser/contribution"
+    ]
   },
   {
     "label": "dnd",
-    "entry": "vs/editor/contrib/dnd/browser/dnd"
+    "entry": [
+      "vs/editor/contrib/dnd/browser/dnd",
+      "vs/editor/contrib/dnd/browser/dnd"
+    ]
   },
   {
     "label": "documentSymbols",
-    "entry": "vs/editor/contrib/documentSymbols/browser/documentSymbols"
+    "entry": [
+      "vs/editor/contrib/documentSymbols/browser/documentSymbols",
+      "vs/editor/contrib/documentSymbols/browser/documentSymbols"
+    ]
   },
   {
     "label": "dropOrPasteInto",
     "entry": [
       "vs/editor/contrib/dropOrPasteInto/browser/copyPasteContribution",
+      "vs/editor/contrib/dropOrPasteInto/browser/copyPasteContribution"
+    ]
+  },
+  {
+    "label": "dropOrPasteInto",
+    "entry": [
+      "vs/editor/contrib/dropOrPasteInto/browser/dropIntoEditorContribution",
       "vs/editor/contrib/dropOrPasteInto/browser/dropIntoEditorContribution"
     ]
   },
   {
     "label": "find",
-    "entry": "vs/editor/contrib/find/browser/findController"
+    "entry": [
+      "vs/editor/contrib/find/browser/findController",
+      "vs/editor/contrib/find/browser/findController"
+    ]
   },
   {
     "label": "floatingMenu",
-    "entry": "vs/editor/contrib/floatingMenu/browser/floatingMenu.contribution"
+    "entry": [
+      "vs/editor/contrib/floatingMenu/browser/floatingMenu.contribution",
+      "vs/editor/contrib/floatingMenu/browser/floatingMenu.contribution"
+    ]
   },
   {
     "label": "folding",
-    "entry": "vs/editor/contrib/folding/browser/folding"
+    "entry": [
+      "vs/editor/contrib/folding/browser/folding",
+      "vs/editor/contrib/folding/browser/folding"
+    ]
   },
   {
     "label": "fontZoom",
-    "entry": "vs/editor/contrib/fontZoom/browser/fontZoom"
+    "entry": [
+      "vs/editor/contrib/fontZoom/browser/fontZoom",
+      "vs/editor/contrib/fontZoom/browser/fontZoom"
+    ]
   },
   {
     "label": "format",
-    "entry": "vs/editor/contrib/format/browser/formatActions"
+    "entry": [
+      "vs/editor/contrib/format/browser/formatActions",
+      "vs/editor/contrib/format/browser/formatActions"
+    ]
   },
   {
     "label": "gotoError",
-    "entry": "vs/editor/contrib/gotoError/browser/gotoError"
+    "entry": [
+      "vs/editor/contrib/gotoError/browser/gotoError",
+      "vs/editor/contrib/gotoError/browser/gotoError"
+    ]
   },
   {
     "label": "gotoLine",
@@ -106,16 +197,29 @@ exports.features = [
     "label": "gotoSymbol",
     "entry": [
       "vs/editor/contrib/gotoSymbol/browser/goToCommands",
+      "vs/editor/contrib/gotoSymbol/browser/goToCommands"
+    ]
+  },
+  {
+    "label": "gotoSymbol",
+    "entry": [
+      "vs/editor/contrib/gotoSymbol/browser/link/goToDefinitionAtPosition",
       "vs/editor/contrib/gotoSymbol/browser/link/goToDefinitionAtPosition"
     ]
   },
   {
     "label": "gpu",
-    "entry": "vs/editor/contrib/gpu/browser/gpuActions"
+    "entry": [
+      "vs/editor/contrib/gpu/browser/gpuActions",
+      "vs/editor/contrib/gpu/browser/gpuActions"
+    ]
   },
   {
     "label": "hover",
-    "entry": "vs/editor/contrib/hover/browser/hoverContribution"
+    "entry": [
+      "vs/editor/contrib/hover/browser/hoverContribution",
+      "vs/editor/contrib/hover/browser/hoverContribution"
+    ]
   },
   {
     "label": "iPadShowKeyboard",
@@ -123,67 +227,119 @@ exports.features = [
   },
   {
     "label": "inPlaceReplace",
-    "entry": "vs/editor/contrib/inPlaceReplace/browser/inPlaceReplace"
+    "entry": [
+      "vs/editor/contrib/inPlaceReplace/browser/inPlaceReplace",
+      "vs/editor/contrib/inPlaceReplace/browser/inPlaceReplace"
+    ]
   },
   {
     "label": "indentation",
-    "entry": "vs/editor/contrib/indentation/browser/indentation"
+    "entry": [
+      "vs/editor/contrib/indentation/browser/indentation",
+      "vs/editor/contrib/indentation/browser/indentation"
+    ]
   },
   {
     "label": "inlayHints",
-    "entry": "vs/editor/contrib/inlayHints/browser/inlayHintsContribution"
+    "entry": [
+      "vs/editor/contrib/inlayHints/browser/inlayHintsContribution",
+      "vs/editor/contrib/inlayHints/browser/inlayHintsContribution"
+    ]
   },
   {
     "label": "inlineCompletions",
-    "entry": "vs/editor/contrib/inlineCompletions/browser/inlineCompletions.contribution"
+    "entry": [
+      "vs/editor/contrib/inlineCompletions/browser/inlineCompletions.contribution",
+      "vs/editor/contrib/inlineCompletions/browser/inlineCompletions.contribution"
+    ]
   },
   {
     "label": "inlineProgress",
-    "entry": "vs/editor/contrib/inlineProgress/browser/inlineProgress"
+    "entry": [
+      "vs/editor/contrib/inlineProgress/browser/inlineProgress",
+      "vs/editor/contrib/inlineProgress/browser/inlineProgress"
+    ]
   },
   {
     "label": "insertFinalNewLine",
-    "entry": "vs/editor/contrib/insertFinalNewLine/browser/insertFinalNewLine"
+    "entry": [
+      "vs/editor/contrib/insertFinalNewLine/browser/insertFinalNewLine",
+      "vs/editor/contrib/insertFinalNewLine/browser/insertFinalNewLine"
+    ]
   },
   {
     "label": "inspectTokens",
     "entry": "vs/editor/standalone/browser/inspectTokens/inspectTokens"
   },
   {
+    "label": "internal",
+    "entry": [
+      "vs/editor/internal/initialize",
+      "vs/editor/internal/initialize"
+    ]
+  },
+  {
     "label": "lineSelection",
-    "entry": "vs/editor/contrib/lineSelection/browser/lineSelection"
+    "entry": [
+      "vs/editor/contrib/lineSelection/browser/lineSelection",
+      "vs/editor/contrib/lineSelection/browser/lineSelection"
+    ]
   },
   {
     "label": "linesOperations",
-    "entry": "vs/editor/contrib/linesOperations/browser/linesOperations"
+    "entry": [
+      "vs/editor/contrib/linesOperations/browser/linesOperations",
+      "vs/editor/contrib/linesOperations/browser/linesOperations"
+    ]
   },
   {
     "label": "linkedEditing",
-    "entry": "vs/editor/contrib/linkedEditing/browser/linkedEditing"
+    "entry": [
+      "vs/editor/contrib/linkedEditing/browser/linkedEditing",
+      "vs/editor/contrib/linkedEditing/browser/linkedEditing"
+    ]
   },
   {
     "label": "links",
-    "entry": "vs/editor/contrib/links/browser/links"
+    "entry": [
+      "vs/editor/contrib/links/browser/links",
+      "vs/editor/contrib/links/browser/links"
+    ]
   },
   {
     "label": "longLinesHelper",
-    "entry": "vs/editor/contrib/longLinesHelper/browser/longLinesHelper"
+    "entry": [
+      "vs/editor/contrib/longLinesHelper/browser/longLinesHelper",
+      "vs/editor/contrib/longLinesHelper/browser/longLinesHelper"
+    ]
   },
   {
     "label": "middleScroll",
-    "entry": "vs/editor/contrib/middleScroll/browser/middleScroll.contribution"
+    "entry": [
+      "vs/editor/contrib/middleScroll/browser/middleScroll.contribution",
+      "vs/editor/contrib/middleScroll/browser/middleScroll.contribution"
+    ]
   },
   {
     "label": "multicursor",
-    "entry": "vs/editor/contrib/multicursor/browser/multicursor"
+    "entry": [
+      "vs/editor/contrib/multicursor/browser/multicursor",
+      "vs/editor/contrib/multicursor/browser/multicursor"
+    ]
   },
   {
     "label": "parameterHints",
-    "entry": "vs/editor/contrib/parameterHints/browser/parameterHints"
+    "entry": [
+      "vs/editor/contrib/parameterHints/browser/parameterHints",
+      "vs/editor/contrib/parameterHints/browser/parameterHints"
+    ]
   },
   {
     "label": "placeholderText",
-    "entry": "vs/editor/contrib/placeholderText/browser/placeholderText.contribution"
+    "entry": [
+      "vs/editor/contrib/placeholderText/browser/placeholderText.contribution",
+      "vs/editor/contrib/placeholderText/browser/placeholderText.contribution"
+    ]
   },
   {
     "label": "quickCommand",
@@ -199,7 +355,10 @@ exports.features = [
   },
   {
     "label": "readOnlyMessage",
-    "entry": "vs/editor/contrib/readOnlyMessage/browser/contribution"
+    "entry": [
+      "vs/editor/contrib/readOnlyMessage/browser/contribution",
+      "vs/editor/contrib/readOnlyMessage/browser/contribution"
+    ]
   },
   {
     "label": "referenceSearch",
@@ -207,35 +366,64 @@ exports.features = [
   },
   {
     "label": "rename",
-    "entry": "vs/editor/contrib/rename/browser/rename"
+    "entry": [
+      "vs/editor/contrib/rename/browser/rename",
+      "vs/editor/contrib/rename/browser/rename"
+    ]
   },
   {
     "label": "sectionHeaders",
-    "entry": "vs/editor/contrib/sectionHeaders/browser/sectionHeaders"
+    "entry": [
+      "vs/editor/contrib/sectionHeaders/browser/sectionHeaders",
+      "vs/editor/contrib/sectionHeaders/browser/sectionHeaders"
+    ]
   },
   {
     "label": "semanticTokens",
     "entry": [
       "vs/editor/contrib/semanticTokens/browser/documentSemanticTokens",
+      "vs/editor/contrib/semanticTokens/browser/documentSemanticTokens"
+    ]
+  },
+  {
+    "label": "semanticTokens",
+    "entry": [
+      "vs/editor/contrib/semanticTokens/browser/viewportSemanticTokens",
       "vs/editor/contrib/semanticTokens/browser/viewportSemanticTokens"
     ]
   },
   {
     "label": "smartSelect",
-    "entry": "vs/editor/contrib/smartSelect/browser/smartSelect"
+    "entry": [
+      "vs/editor/contrib/smartSelect/browser/smartSelect",
+      "vs/editor/contrib/smartSelect/browser/smartSelect"
+    ]
   },
   {
     "label": "snippet",
-    "entry": "vs/editor/contrib/snippet/browser/snippetController2"
+    "entry": [
+      "vs/editor/contrib/snippet/browser/snippetController2",
+      "vs/editor/contrib/snippet/browser/snippetController2"
+    ]
   },
   {
     "label": "stickyScroll",
-    "entry": "vs/editor/contrib/stickyScroll/browser/stickyScrollContribution"
+    "entry": [
+      "vs/editor/contrib/stickyScroll/browser/stickyScrollContribution",
+      "vs/editor/contrib/stickyScroll/browser/stickyScrollContribution"
+    ]
   },
   {
     "label": "suggest",
     "entry": [
       "vs/editor/contrib/suggest/browser/suggestController",
+      "vs/editor/contrib/suggest/browser/suggestController"
+    ]
+  },
+  {
+    "label": "suggest",
+    "entry": [
+      "vs/editor/contrib/suggest/browser/suggestInlineCompletions",
       "vs/editor/contrib/suggest/browser/suggestInlineCompletions"
     ]
   },
@@ -245,31 +433,52 @@ exports.features = [
   },
   {
     "label": "toggleTabFocusMode",
-    "entry": "vs/editor/contrib/toggleTabFocusMode/browser/toggleTabFocusMode"
+    "entry": [
+      "vs/editor/contrib/toggleTabFocusMode/browser/toggleTabFocusMode",
+      "vs/editor/contrib/toggleTabFocusMode/browser/toggleTabFocusMode"
+    ]
   },
   {
     "label": "tokenization",
-    "entry": "vs/editor/contrib/tokenization/browser/tokenization"
+    "entry": [
+      "vs/editor/contrib/tokenization/browser/tokenization",
+      "vs/editor/contrib/tokenization/browser/tokenization"
+    ]
   },
   {
     "label": "unicodeHighlighter",
-    "entry": "vs/editor/contrib/unicodeHighlighter/browser/unicodeHighlighter"
+    "entry": [
+      "vs/editor/contrib/unicodeHighlighter/browser/unicodeHighlighter",
+      "vs/editor/contrib/unicodeHighlighter/browser/unicodeHighlighter"
+    ]
   },
   {
     "label": "unusualLineTerminators",
-    "entry": "vs/editor/contrib/unusualLineTerminators/browser/unusualLineTerminators"
+    "entry": [
+      "vs/editor/contrib/unusualLineTerminators/browser/unusualLineTerminators",
+      "vs/editor/contrib/unusualLineTerminators/browser/unusualLineTerminators"
+    ]
   },
   {
     "label": "wordHighlighter",
-    "entry": "vs/editor/contrib/wordHighlighter/browser/wordHighlighter"
+    "entry": [
+      "vs/editor/contrib/wordHighlighter/browser/wordHighlighter",
+      "vs/editor/contrib/wordHighlighter/browser/wordHighlighter"
+    ]
   },
   {
     "label": "wordOperations",
-    "entry": "vs/editor/contrib/wordOperations/browser/wordOperations"
+    "entry": [
+      "vs/editor/contrib/wordOperations/browser/wordOperations",
+      "vs/editor/contrib/wordOperations/browser/wordOperations"
+    ]
   },
   {
     "label": "wordPartOperations",
-    "entry": "vs/editor/contrib/wordPartOperations/browser/wordPartOperations"
+    "entry": [
+      "vs/editor/contrib/wordPartOperations/browser/wordPartOperations",
+      "vs/editor/contrib/wordPartOperations/browser/wordPartOperations"
+    ]
   }
 ];
 exports.languages = [

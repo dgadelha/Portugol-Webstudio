@@ -1,35 +1,48 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-import { $, getWindow, n } from '../../../../../../../base/browser/dom.js';
+import { n, getWindow, $ } from '../../../../../../../base/browser/dom.js';
 import { StandardMouseEvent } from '../../../../../../../base/browser/mouseEvent.js';
 import { Emitter } from '../../../../../../../base/common/event.js';
 import { Disposable, toDisposable } from '../../../../../../../base/common/lifecycle.js';
-import { autorunDelta, constObservable, derived } from '../../../../../../../base/common/observable.js';
-import { editorBackground, scrollbarShadow } from '../../../../../../../platform/theme/common/colorRegistry.js';
+import '../../../../../../../base/common/observableInternal/index.js';
 import { asCssVariable } from '../../../../../../../platform/theme/common/colorUtils.js';
+import '../../../../../../../platform/theme/common/colors/baseColors.js';
+import '../../../../../../../platform/theme/common/colors/chartsColors.js';
+import { editorBackground } from '../../../../../../../platform/theme/common/colors/editorColors.js';
+import '../../../../../../../platform/theme/common/colors/inputColors.js';
+import '../../../../../../../platform/theme/common/colors/listColors.js';
+import '../../../../../../../platform/theme/common/colors/menuColors.js';
+import '../../../../../../../platform/theme/common/colors/minimapColors.js';
+import { scrollbarShadow } from '../../../../../../../platform/theme/common/colors/miscColors.js';
+import '../../../../../../../platform/theme/common/colors/quickpickColors.js';
+import '../../../../../../../platform/theme/common/colors/searchColors.js';
 import { IThemeService } from '../../../../../../../platform/theme/common/themeService.js';
 import { EditorMouseEvent } from '../../../../../../browser/editorDom.js';
-import { LineSource, renderLines, RenderOptions } from '../../../../../../browser/widget/diffEditor/components/diffEditorViewZones/renderLines.js';
+import { renderLines, RenderOptions, LineSource } from '../../../../../../browser/widget/diffEditor/components/diffEditorViewZones/renderLines.js';
 import { Point } from '../../../../../../common/core/2d/point.js';
 import { Rect } from '../../../../../../common/core/2d/rect.js';
 import { Range } from '../../../../../../common/core/range.js';
 import { OffsetRange } from '../../../../../../common/core/ranges/offsetRange.js';
 import { ILanguageService } from '../../../../../../common/languages/language.js';
-import { LineTokens, TokenArray } from '../../../../../../common/tokens/lineTokens.js';
+import { TokenArray, LineTokens } from '../../../../../../common/tokens/lineTokens.js';
 import { InlineDecoration } from '../../../../../../common/viewModel/inlineDecorations.js';
-import { getEditorBlendedColor, getModifiedBorderColor, getOriginalBorderColor, modifiedChangedLineBackgroundColor, originalBackgroundColor } from '../theme.js';
-import { getEditorValidOverlayRect, getPrefixTrim, mapOutFalsy, rectToProps } from '../utils/utils.js';
+import { getModifiedBorderColor, getOriginalBorderColor, getEditorBlendedColor, originalBackgroundColor, modifiedChangedLineBackgroundColor } from '../theme.js';
+import { getPrefixTrim, mapOutFalsy, rectToProps, getEditorValidOverlayRect } from '../utils/utils.js';
+import { autorunDelta } from '../../../../../../../base/common/observableInternal/reactions/autorun.js';
+import { derived } from '../../../../../../../base/common/observableInternal/observables/derived.js';
+import { constObservable } from '../../../../../../../base/common/observableInternal/observables/constObservable.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 let InlineEditsLineReplacementView = class InlineEditsLineReplacementView extends Disposable {
     constructor(_editor, _edit, _isInDiffEditor, _tabAction, _languageService, _themeService) {
         super();
@@ -41,7 +54,7 @@ let InlineEditsLineReplacementView = class InlineEditsLineReplacementView extend
         this._themeService = _themeService;
         this._onDidClick = this._register(new Emitter());
         this.onDidClick = this._onDidClick.event;
-        this._maxPrefixTrim = this._edit.map(e => e ? getPrefixTrim(e.replacements.flatMap(r => [r.originalRange, r.modifiedRange]), e.originalRange, e.modifiedLines, this._editor.editor) : undefined);
+        this._maxPrefixTrim = this._edit.map((e, reader) => e ? getPrefixTrim(e.replacements.flatMap(r => [r.originalRange, r.modifiedRange]), e.originalRange, e.modifiedLines, this._editor.editor, reader) : undefined);
         this._modifiedLineElements = derived(this, reader => {
             const lines = [];
             let requiredWidth = 0;
@@ -300,7 +313,6 @@ InlineEditsLineReplacementView = __decorate([
     __param(4, ILanguageService),
     __param(5, IThemeService)
 ], InlineEditsLineReplacementView);
-export { InlineEditsLineReplacementView };
 function rangesToBubbleRanges(ranges) {
     const result = [];
     while (ranges.length) {
@@ -313,4 +325,5 @@ function rangesToBubbleRanges(ranges) {
     }
     return result;
 }
-//# sourceMappingURL=inlineEditsLineReplacementView.js.map
+
+export { InlineEditsLineReplacementView };

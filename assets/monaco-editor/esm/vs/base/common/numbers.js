@@ -1,7 +1,7 @@
-export function clamp(value, min, max) {
+function clamp(value, min, max) {
     return Math.min(Math.max(value, min), max);
 }
-export class MovingAverage {
+class MovingAverage {
     constructor() {
         this._n = 1;
         this._val = 0;
@@ -15,7 +15,7 @@ export class MovingAverage {
         return this._val;
     }
 }
-export class SlidingWindowAverage {
+class SlidingWindowAverage {
     constructor(size) {
         this._n = 0;
         this._val = 0;
@@ -41,4 +41,5 @@ export class SlidingWindowAverage {
         return this._val;
     }
 }
-//# sourceMappingURL=numbers.js.map
+
+export { MovingAverage, SlidingWindowAverage, clamp };

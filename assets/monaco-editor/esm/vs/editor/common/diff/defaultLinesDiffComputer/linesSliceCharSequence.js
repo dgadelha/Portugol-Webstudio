@@ -1,13 +1,14 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { findLastIdxMonotonous, findLastMonotonous, findFirstMonotonous } from '../../../../base/common/arraysFind.js';
 import { OffsetRange } from '../../core/ranges/offsetRange.js';
 import { Position } from '../../core/position.js';
 import { Range } from '../../core/range.js';
 import { isSpace } from './utils.js';
-export class LinesSliceCharSequence {
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+class LinesSliceCharSequence {
     constructor(lines, range, considerWhitespaceChanges) {
         this.lines = lines;
         this.range = range;
@@ -200,4 +201,5 @@ function getCategory(charCode) {
         return 4 /* CharBoundaryCategory.Other */;
     }
 }
-//# sourceMappingURL=linesSliceCharSequence.js.map
+
+export { LinesSliceCharSequence };

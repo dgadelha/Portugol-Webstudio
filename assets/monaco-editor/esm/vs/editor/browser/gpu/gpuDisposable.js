@@ -1,9 +1,10 @@
+import { isFunction } from '../../../base/common/types.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { isFunction } from '../../../base/common/types.js';
-export var GPULifecycle;
+var GPULifecycle;
 (function (GPULifecycle) {
     async function requestDevice(fallback) {
         try {
@@ -43,4 +44,5 @@ function wrapDestroyableInDisposable(value) {
         dispose: () => value.destroy()
     };
 }
-//# sourceMappingURL=gpuDisposable.js.map
+
+export { GPULifecycle };

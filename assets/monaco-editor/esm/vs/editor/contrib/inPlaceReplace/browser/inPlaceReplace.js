@@ -1,29 +1,30 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-var InPlaceReplaceController_1;
 import { createCancelablePromise, timeout } from '../../../../base/common/async.js';
 import { onUnexpectedError } from '../../../../base/common/errors.js';
 import { EditorState } from '../../editorState/browser/editorState.js';
-import { EditorAction, registerEditorAction, registerEditorContribution } from '../../../browser/editorExtensions.js';
+import { registerEditorContribution, registerEditorAction, EditorAction } from '../../../browser/editorExtensions.js';
 import { Range } from '../../../common/core/range.js';
 import { Selection } from '../../../common/core/selection.js';
 import { EditorContextKeys } from '../../../common/editorContextKeys.js';
 import { ModelDecorationOptions } from '../../../common/model/textModel.js';
 import { IEditorWorkerService } from '../../../common/services/editorWorker.js';
-import * as nls from '../../../../nls.js';
+import { localize2 } from '../../../../nls.js';
 import { InPlaceReplaceCommand } from './inPlaceReplaceCommand.js';
 import './inPlaceReplace.css';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var InPlaceReplaceController_1;
 let InPlaceReplaceController = class InPlaceReplaceController {
     static { InPlaceReplaceController_1 = this; }
     static { this.ID = 'editor.contrib.inPlaceReplaceController'; }
@@ -107,7 +108,7 @@ class InPlaceReplaceUp extends EditorAction {
     constructor() {
         super({
             id: 'editor.action.inPlaceReplace.up',
-            label: nls.localize2(1230, "Replace with Previous Value"),
+            label: localize2(1240, "Replace with Previous Value"),
             precondition: EditorContextKeys.writable,
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
@@ -128,7 +129,7 @@ class InPlaceReplaceDown extends EditorAction {
     constructor() {
         super({
             id: 'editor.action.inPlaceReplace.down',
-            label: nls.localize2(1231, "Replace with Next Value"),
+            label: localize2(1241, "Replace with Next Value"),
             precondition: EditorContextKeys.writable,
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
@@ -148,4 +149,3 @@ class InPlaceReplaceDown extends EditorAction {
 registerEditorContribution(InPlaceReplaceController.ID, InPlaceReplaceController, 4 /* EditorContributionInstantiation.Lazy */);
 registerEditorAction(InPlaceReplaceUp);
 registerEditorAction(InPlaceReplaceDown);
-//# sourceMappingURL=inPlaceReplace.js.map

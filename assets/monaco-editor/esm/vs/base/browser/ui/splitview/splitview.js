@@ -1,19 +1,20 @@
+import { append, $, scheduleAtNextAnimationFrame, getWindow, addDisposableListener } from '../../dom.js';
+import { DomEmitter } from '../../event.js';
+import { Sash } from '../sash/sash.js';
+import { SmoothScrollableElement } from '../scrollbar/scrollableElement.js';
+import { range, pushToStart, pushToEnd } from '../../../common/arrays.js';
+import { Color } from '../../../common/color.js';
+import { Emitter, Event } from '../../../common/event.js';
+import { Disposable, combinedDisposable, toDisposable, dispose } from '../../../common/lifecycle.js';
+import { clamp } from '../../../common/numbers.js';
+import { Scrollable } from '../../../common/scrollable.js';
+import { isUndefined } from '../../../common/types.js';
+import './splitview.css';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { $, addDisposableListener, append, getWindow, scheduleAtNextAnimationFrame } from '../../dom.js';
-import { DomEmitter } from '../../event.js';
-import { Sash } from '../sash/sash.js';
-import { SmoothScrollableElement } from '../scrollbar/scrollableElement.js';
-import { pushToEnd, pushToStart, range } from '../../../common/arrays.js';
-import { Color } from '../../../common/color.js';
-import { Emitter, Event } from '../../../common/event.js';
-import { combinedDisposable, Disposable, dispose, toDisposable } from '../../../common/lifecycle.js';
-import { clamp } from '../../../common/numbers.js';
-import { Scrollable } from '../../../common/scrollable.js';
-import * as types from '../../../common/types.js';
-import './splitview.css';
 const defaultStyles = {
     separatorBorder: Color.transparent
 };
@@ -104,7 +105,7 @@ var State;
     State[State["Idle"] = 0] = "Idle";
     State[State["Busy"] = 1] = "Busy";
 })(State || (State = {}));
-export var Sizing;
+var Sizing;
 (function (Sizing) {
     /**
      * When adding or removing views, distribute the delta space among
@@ -157,7 +158,7 @@ export var Sizing;
  * - View swap/move support
  * - Alt key modifier behavior, macOS style
  */
-export class SplitView extends Disposable {
+class SplitView extends Disposable {
     get orthogonalStartSash() { return this._orthogonalStartSash; }
     get orthogonalEndSash() { return this._orthogonalEndSash; }
     get startSnappingEnabled() { return this._startSnappingEnabled; }
@@ -271,7 +272,7 @@ export class SplitView extends Disposable {
         if (options.descriptor) {
             this.size = options.descriptor.size;
             options.descriptor.views.forEach((viewDescriptor, index) => {
-                const sizing = types.isUndefined(viewDescriptor.visible) || viewDescriptor.visible ? viewDescriptor.size : { type: 'invisible', cachedVisibleSize: viewDescriptor.size };
+                const sizing = isUndefined(viewDescriptor.visible) || viewDescriptor.visible ? viewDescriptor.size : { type: 'invisible', cachedVisibleSize: viewDescriptor.size };
                 const view = viewDescriptor.view;
                 this.doAddView(view, sizing, index, true);
             });
@@ -824,4 +825,5 @@ export class SplitView extends Disposable {
         super.dispose();
     }
 }
-//# sourceMappingURL=splitview.js.map
+
+export { Sizing, SplitView };

@@ -1,17 +1,4 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-import * as dom from '../../../base/browser/dom.js';
+import { reset, isMouseEvent, addDisposableListener, EventType, isHTMLElement } from '../../../base/browser/dom.js';
 import { StandardKeyboardEvent } from '../../../base/browser/keyboardEvent.js';
 import { Toggle } from '../../../base/browser/ui/toggle/toggle.js';
 import { equals } from '../../../base/common/arrays.js';
@@ -24,29 +11,42 @@ import Severity from '../../../base/common/severity.js';
 import { ThemeIcon } from '../../../base/common/themables.js';
 import './media/quickInput.css';
 import { localize } from '../../../nls.js';
-import { ItemActivation, NO_KEY_MODS, QuickInputButtonLocation, QuickInputHideReason, QuickPickFocus } from '../common/quickInput.js';
+import { QuickInputButtonLocation, QuickInputHideReason, ItemActivation, NO_KEY_MODS, QuickPickFocus } from '../common/quickInput.js';
 import { quickInputButtonToAction, renderQuickInputDescription } from './quickInputUtils.js';
 import { IConfigurationService } from '../../configuration/common/configuration.js';
 import { IHoverService, WorkbenchHoverDelegate } from '../../hover/browser/hover.js';
-import { ContextKeyExpr, RawContextKey } from '../../contextkey/common/contextkey.js';
-import { observableValue } from '../../../base/common/observable.js';
-export const inQuickInputContextKeyValue = 'inQuickInput';
-export const InQuickInputContextKey = new RawContextKey(inQuickInputContextKeyValue, false, localize(1731, "Whether keyboard focus is inside the quick input control"));
-export const inQuickInputContext = ContextKeyExpr.has(inQuickInputContextKeyValue);
-export const quickInputAlignmentContextKeyValue = 'quickInputAlignment';
-export const QuickInputAlignmentContextKey = new RawContextKey(quickInputAlignmentContextKeyValue, 'top', localize(1732, "The alignment of the quick input"));
-export const quickInputTypeContextKeyValue = 'quickInputType';
-export const QuickInputTypeContextKey = new RawContextKey(quickInputTypeContextKeyValue, undefined, localize(1733, "The type of the currently visible quick input"));
-export const endOfQuickInputBoxContextKeyValue = 'cursorAtEndOfQuickInputBox';
-export const EndOfQuickInputBoxContextKey = new RawContextKey(endOfQuickInputBoxContextKeyValue, false, localize(1734, "Whether the cursor in the quick input is at the end of the input box"));
-export const endOfQuickInputBoxContext = ContextKeyExpr.has(endOfQuickInputBoxContextKeyValue);
-export const backButton = {
-    iconClass: ThemeIcon.asClassName(Codicon.quickInputBack),
-    tooltip: localize(1735, "Back"),
-    handle: -1 // TODO
+import { RawContextKey, ContextKeyExpr } from '../../contextkey/common/contextkey.js';
+import '../../../base/common/observableInternal/index.js';
+import { observableValue } from '../../../base/common/observableInternal/observables/observableValue.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-export class QuickInput extends Disposable {
-    static { this.noPromptMessage = localize(1736, "Press 'Enter' to confirm your input or 'Escape' to cancel"); }
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+const inQuickInputContextKeyValue = 'inQuickInput';
+const InQuickInputContextKey = new RawContextKey(inQuickInputContextKeyValue, false, localize(1748, "Whether keyboard focus is inside the quick input control"));
+const inQuickInputContext = ContextKeyExpr.has(inQuickInputContextKeyValue);
+const quickInputAlignmentContextKeyValue = 'quickInputAlignment';
+const QuickInputAlignmentContextKey = new RawContextKey(quickInputAlignmentContextKeyValue, 'top', localize(1749, "The alignment of the quick input"));
+const quickInputTypeContextKeyValue = 'quickInputType';
+const QuickInputTypeContextKey = new RawContextKey(quickInputTypeContextKeyValue, undefined, localize(1750, "The type of the currently visible quick input"));
+const endOfQuickInputBoxContextKeyValue = 'cursorAtEndOfQuickInputBox';
+const EndOfQuickInputBoxContextKey = new RawContextKey(endOfQuickInputBoxContextKeyValue, false, localize(1751, "Whether the cursor in the quick input is at the end of the input box"));
+const endOfQuickInputBoxContext = ContextKeyExpr.has(endOfQuickInputBoxContextKeyValue);
+const backButton = {
+    iconClass: ThemeIcon.asClassName(Codicon.quickInputBack),
+    tooltip: localize(1752, "Back")};
+class QuickInput extends Disposable {
+    static { this.noPromptMessage = localize(1753, "Press 'Enter' to confirm your input or 'Escape' to cancel"); }
     constructor(ui) {
         super();
         this.ui = ui;
@@ -236,10 +236,10 @@ export class QuickInput extends Disposable {
         if (this._widgetUpdated) {
             this._widgetUpdated = false;
             if (this._widget) {
-                dom.reset(this.ui.widget, this._widget);
+                reset(this.ui.widget, this._widget);
             }
             else {
-                dom.reset(this.ui.widget);
+                reset(this.ui.widget);
             }
         }
         if (this.busy && !this.busyDelay) {
@@ -247,11 +247,13 @@ export class QuickInput extends Disposable {
             this.busyDelay.setIfNotSet(() => {
                 if (this.visible) {
                     this.ui.progressBar.infinite();
+                    this.ui.progressBar.getContainer().removeAttribute('aria-hidden');
                 }
             }, 800);
         }
         if (!this.busy && this.busyDelay) {
             this.ui.progressBar.stop();
+            this.ui.progressBar.getContainer().setAttribute('aria-hidden', 'true');
             this.busyDelay.cancel();
             this.busyDelay = undefined;
         }
@@ -277,6 +279,10 @@ export class QuickInput extends Disposable {
             // it requires a HTMLElement on its interface
             const concreteToggles = this.toggles?.filter(opts => opts instanceof Toggle) ?? [];
             this.ui.inputBox.toggles = concreteToggles;
+            // Adjust count badge position based on number of toggles (each toggle is ~22px wide)
+            const toggleOffset = concreteToggles.length * 22;
+            this.ui.countContainer.style.right = toggleOffset > 0 ? `${4 + toggleOffset}px` : '4px';
+            this.ui.visibleCountContainer.style.right = toggleOffset > 0 ? `${4 + toggleOffset}px` : '4px';
         }
         this.ui.ignoreFocusOut = this.ignoreFocusOut;
         this.ui.setEnabled(this.enabled);
@@ -284,13 +290,15 @@ export class QuickInput extends Disposable {
         const validationMessage = this.validationMessage || this.noValidationMessage;
         if (this._lastValidationMessage !== validationMessage) {
             this._lastValidationMessage = validationMessage;
-            dom.reset(this.ui.message);
-            renderQuickInputDescription(validationMessage, this.ui.message, {
-                callback: (content) => {
-                    this.ui.linkOpenerDelegate(content);
-                },
-                disposables: this.visibleDisposables,
-            });
+            reset(this.ui.message);
+            if (validationMessage) {
+                renderQuickInputDescription(validationMessage, this.ui.message, {
+                    callback: (content) => {
+                        this.ui.linkOpenerDelegate(content);
+                    },
+                    disposables: this.visibleDisposables,
+                });
+            }
         }
         if (this._lastSeverity !== this.severity) {
             this._lastSeverity = this.severity;
@@ -314,7 +322,7 @@ export class QuickInput extends Disposable {
     }
     getSteps() {
         if (this.step && this.totalSteps) {
-            return localize(1737, "{0}/{1}", this.step, this.totalSteps);
+            return localize(1754, "{0}/{1}", this.step, this.totalSteps);
         }
         if (this.step) {
             return String(this.step);
@@ -343,9 +351,10 @@ export class QuickInput extends Disposable {
         super.dispose();
     }
 }
-export class QuickPick extends QuickInput {
-    constructor() {
-        super(...arguments);
+class QuickPick extends QuickInput {
+    static { this.DEFAULT_ARIA_LABEL = localize(1755, "Type to narrow down results."); }
+    constructor(ui) {
+        super(ui);
         this._value = '';
         this.onDidChangeValueEmitter = this._register(new Emitter());
         this.onWillAcceptEmitter = this._register(new Emitter());
@@ -385,8 +394,8 @@ export class QuickPick extends QuickInput {
         this.onDidChangeSelection = this.onDidChangeSelectionEmitter.event;
         this.onDidTriggerItemButton = this.onDidTriggerItemButtonEmitter.event;
         this.onDidTriggerSeparatorButton = this.onDidTriggerSeparatorButtonEmitter.event;
+        this.noValidationMessage = undefined;
     }
-    static { this.DEFAULT_ARIA_LABEL = localize(1738, "Type to narrow down results."); }
     get quickNavigate() {
         return this._quickNavigate;
     }
@@ -427,6 +436,13 @@ export class QuickPick extends QuickInput {
     }
     set placeholder(placeholder) {
         this._placeholder = placeholder;
+        this.update();
+    }
+    get prompt() {
+        return this.noValidationMessage;
+    }
+    set prompt(prompt) {
+        this.noValidationMessage = prompt;
         this.update();
     }
     get items() {
@@ -570,7 +586,7 @@ export class QuickPick extends QuickInput {
         this.update();
     }
     get okLabel() {
-        return this._okLabel ?? localize(1739, "OK");
+        return this._okLabel ?? localize(1756, "OK");
     }
     set okLabel(okLabel) {
         this._okLabel = okLabel;
@@ -638,7 +654,7 @@ export class QuickPick extends QuickInput {
                 this._selectedItems = selectedItems;
                 this.onDidChangeSelectionEmitter.fire(selectedItems);
                 if (selectedItems.length) {
-                    this.handleAccept(dom.isMouseEvent(event) && event.button === 1 /* mouse middle click */);
+                    this.handleAccept(isMouseEvent(event) && event.button === 1 /* mouse middle click */);
                 }
             }));
             this.visibleDisposables.add(this.ui.list.onChangedCheckedElements(checkedItems => {
@@ -668,7 +684,7 @@ export class QuickPick extends QuickInput {
         }
     }
     registerQuickNavigation() {
-        return dom.addDisposableListener(this.ui.container, dom.EventType.KEY_UP, e => {
+        return addDisposableListener(this.ui.container, EventType.KEY_UP, e => {
             if (this.canSelectMany || !this._quickNavigate) {
                 return;
             }
@@ -729,7 +745,7 @@ export class QuickPick extends QuickInput {
             count: this.canSelectMany && !this._hideCountBadge,
             ok: this.ok === 'default' ? this.canSelectMany : this.ok,
             list: true,
-            message: !!this.validationMessage,
+            message: !!this.validationMessage || !!this.prompt,
             customButton: this.customButton
         };
         this.ui.setVisibilities(visibilities);
@@ -851,14 +867,14 @@ export class QuickPick extends QuickInput {
         if (inBackground && !this._canAcceptInBackground) {
             return; // needs to be enabled
         }
-        if (this.activeItems[0]) {
+        if (this.activeItems[0] && !this._canSelectMany) {
             this._selectedItems = [this.activeItems[0]];
             this.onDidChangeSelectionEmitter.fire(this.selectedItems);
         }
         this.handleAccept(inBackground ?? false);
     }
 }
-export class InputBox extends QuickInput {
+class InputBox extends QuickInput {
     constructor() {
         super(...arguments);
         this._value = '';
@@ -916,7 +932,7 @@ export class InputBox extends QuickInput {
     set prompt(prompt) {
         this._prompt = prompt;
         this.noValidationMessage = prompt
-            ? localize(1740, "{0} (Press 'Enter' to confirm or 'Escape' to cancel)", prompt)
+            ? localize(1757, "{0} (Press 'Enter' to confirm or 'Escape' to cancel)", prompt)
             : QuickInput.noPromptMessage;
         this.update();
     }
@@ -986,7 +1002,7 @@ let QuickInputHoverDelegate = class QuickInputHoverDelegate extends WorkbenchHov
     }
     getOverrideOptions(options) {
         // Only show the hover hint if the content is of a decent size
-        const showHoverHint = (dom.isHTMLElement(options.content)
+        const showHoverHint = (isHTMLElement(options.content)
             ? options.content.textContent ?? ''
             : typeof options.content === 'string'
                 ? options.content
@@ -1006,5 +1022,5 @@ QuickInputHoverDelegate = __decorate([
     __param(0, IConfigurationService),
     __param(1, IHoverService)
 ], QuickInputHoverDelegate);
-export { QuickInputHoverDelegate };
-//# sourceMappingURL=quickInput.js.map
+
+export { EndOfQuickInputBoxContextKey, InQuickInputContextKey, InputBox, QuickInput, QuickInputAlignmentContextKey, QuickInputHoverDelegate, QuickInputTypeContextKey, QuickPick, backButton, endOfQuickInputBoxContext, endOfQuickInputBoxContextKeyValue, inQuickInputContext, inQuickInputContextKeyValue, quickInputAlignmentContextKeyValue, quickInputTypeContextKeyValue };

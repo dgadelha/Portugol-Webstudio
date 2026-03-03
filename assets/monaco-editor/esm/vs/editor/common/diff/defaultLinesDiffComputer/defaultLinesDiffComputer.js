@@ -1,7 +1,3 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { equals } from '../../../../base/common/arrays.js';
 import { assertFn } from '../../../../base/common/assert.js';
 import { LineRange } from '../../core/ranges/lineRange.js';
@@ -9,15 +5,20 @@ import { OffsetRange } from '../../core/ranges/offsetRange.js';
 import { Range } from '../../core/range.js';
 import { ArrayText } from '../../core/text/abstractText.js';
 import { LinesDiff, MovedText } from '../linesDiffComputer.js';
-import { DetailedLineRangeMapping, LineRangeMapping, lineRangeMappingFromRangeMappings, RangeMapping } from '../rangeMapping.js';
-import { DateTimeout, InfiniteTimeout, SequenceDiff } from './algorithms/diffAlgorithm.js';
+import { DetailedLineRangeMapping, RangeMapping, lineRangeMappingFromRangeMappings, LineRangeMapping } from '../rangeMapping.js';
+import { InfiniteTimeout, DateTimeout, SequenceDiff } from './algorithms/diffAlgorithm.js';
 import { DynamicProgrammingDiffing } from './algorithms/dynamicProgrammingDiffing.js';
 import { MyersDiffAlgorithm } from './algorithms/myersDiffAlgorithm.js';
 import { computeMovedLines } from './computeMovedLines.js';
-import { extendDiffsToEntireWordIfAppropriate, optimizeSequenceDiffs, removeShortMatches, removeVeryShortMatchingLinesBetweenDiffs, removeVeryShortMatchingTextBetweenLongDiffs } from './heuristicSequenceOptimizations.js';
+import { optimizeSequenceDiffs, removeVeryShortMatchingLinesBetweenDiffs, extendDiffsToEntireWordIfAppropriate, removeShortMatches, removeVeryShortMatchingTextBetweenLongDiffs } from './heuristicSequenceOptimizations.js';
 import { LineSequence } from './lineSequence.js';
 import { LinesSliceCharSequence } from './linesSliceCharSequence.js';
-export class DefaultLinesDiffComputer {
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+class DefaultLinesDiffComputer {
     constructor() {
         this.dynamicProgrammingDiffing = new DynamicProgrammingDiffing();
         this.myersDiffingAlgorithm = new MyersDiffAlgorithm();
@@ -164,37 +165,15 @@ export class DefaultLinesDiffComputer {
         const diffResult = slice1.length + slice2.length < 500
             ? this.dynamicProgrammingDiffing.compute(slice1, slice2, timeout)
             : this.myersDiffingAlgorithm.compute(slice1, slice2, timeout);
-        const check = false;
         let diffs = diffResult.diffs;
-        if (check) {
-            SequenceDiff.assertSorted(diffs);
-        }
         diffs = optimizeSequenceDiffs(slice1, slice2, diffs);
-        if (check) {
-            SequenceDiff.assertSorted(diffs);
-        }
         diffs = extendDiffsToEntireWordIfAppropriate(slice1, slice2, diffs, (seq, idx) => seq.findWordContaining(idx));
-        if (check) {
-            SequenceDiff.assertSorted(diffs);
-        }
         if (options.extendToSubwords) {
             diffs = extendDiffsToEntireWordIfAppropriate(slice1, slice2, diffs, (seq, idx) => seq.findSubWordContaining(idx), true);
-            if (check) {
-                SequenceDiff.assertSorted(diffs);
-            }
         }
         diffs = removeShortMatches(slice1, slice2, diffs);
-        if (check) {
-            SequenceDiff.assertSorted(diffs);
-        }
         diffs = removeVeryShortMatchingTextBetweenLongDiffs(slice1, slice2, diffs);
-        if (check) {
-            SequenceDiff.assertSorted(diffs);
-        }
         const result = diffs.map((d) => new RangeMapping(slice1.translateRange(d.seq1Range), slice2.translateRange(d.seq2Range)));
-        if (check) {
-            RangeMapping.assertSorted(result);
-        }
         // Assert: result applied on original should be the same as diff applied to original
         return {
             mappings: result,
@@ -205,4 +184,5 @@ export class DefaultLinesDiffComputer {
 function toLineRangeMapping(sequenceDiff) {
     return new LineRangeMapping(new LineRange(sequenceDiff.seq1Range.start + 1, sequenceDiff.seq1Range.endExclusive + 1), new LineRange(sequenceDiff.seq2Range.start + 1, sequenceDiff.seq2Range.endExclusive + 1));
 }
-//# sourceMappingURL=defaultLinesDiffComputer.js.map
+
+export { DefaultLinesDiffComputer };

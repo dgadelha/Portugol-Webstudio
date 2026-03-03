@@ -5,7 +5,7 @@
 /**
  * Represents a column range in a single line.
 */
-export class RangeSingleLine {
+class RangeSingleLine {
     constructor(
     /** 1-based */
     lineNumber, columnRange) {
@@ -13,4 +13,5 @@ export class RangeSingleLine {
         this.columnRange = columnRange;
     }
 }
-//# sourceMappingURL=rangeSingleLine.js.map
+
+export { RangeSingleLine };

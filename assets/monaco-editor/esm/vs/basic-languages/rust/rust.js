@@ -1,13 +1,4 @@
-/*!-----------------------------------------------------------------------------
- * Copyright (c) Microsoft Corporation. All rights reserved.
- * Version: 0.54.0(7c2310116c57517348bbd868a21139f32454be22)
- * Released under the MIT license
- * https://github.com/microsoft/monaco-editor/blob/main/LICENSE.txt
- *-----------------------------------------------------------------------------*/
-
-
-// src/basic-languages/rust/rust.ts
-var conf = {
+const conf = {
   comments: {
     lineComment: "//",
     blockComment: ["/*", "*/"]
@@ -37,7 +28,7 @@ var conf = {
     }
   }
 };
-var language = {
+const language = {
   tokenPostfix: ".rust",
   defaultToken: "invalid",
   keywords: [
@@ -347,7 +338,5 @@ var language = {
     ]
   }
 };
-export {
-  conf,
-  language
-};
+
+export { conf, language };

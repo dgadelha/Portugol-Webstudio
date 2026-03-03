@@ -1,10 +1,11 @@
+import { BugIndicatingError } from '../../../base/common/errors.js';
+import { toDisposable } from '../../../base/common/lifecycle.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { BugIndicatingError } from '../../../base/common/errors.js';
-import { toDisposable } from '../../../base/common/lifecycle.js';
-export const quadVertices = new Float32Array([
+const quadVertices = new Float32Array([
     1, 0,
     1, 1,
     0, 1,
@@ -12,14 +13,14 @@ export const quadVertices = new Float32Array([
     0, 1,
     1, 0,
 ]);
-export function ensureNonNullable(value) {
+function ensureNonNullable(value) {
     if (!value) {
         throw new Error(`Value "${value}" cannot be null`);
     }
     return value;
 }
 // TODO: Move capabilities into ElementSizeObserver?
-export function observeDevicePixelDimensions(element, parentWindow, callback) {
+function observeDevicePixelDimensions(element, parentWindow, callback) {
     // Observe any resizes to the element and extract the actual pixel size of the element if the
     // devicePixelContentBoxSize API is supported. This allows correcting rounding errors when
     // converting between CSS pixels and device pixels which causes blurry rendering when device
@@ -43,6 +44,7 @@ export function observeDevicePixelDimensions(element, parentWindow, callback) {
         }
     });
     try {
+        // eslint-disable-next-line local/code-no-any-casts, @typescript-eslint/no-explicit-any
         observer.observe(element, { box: ['device-pixel-content-box'] });
     }
     catch {
@@ -52,4 +54,5 @@ export function observeDevicePixelDimensions(element, parentWindow, callback) {
     }
     return toDisposable(() => observer?.disconnect());
 }
-//# sourceMappingURL=gpuUtils.js.map
+
+export { ensureNonNullable, observeDevicePixelDimensions, quadVertices };

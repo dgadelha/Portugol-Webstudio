@@ -1,19 +1,20 @@
+import { IntervalTimer } from '../../../../base/common/async.js';
+import { Disposable, dispose, DisposableStore, toDisposable } from '../../../../base/common/lifecycle.js';
+import { URI } from '../../../../base/common/uri.js';
+import { Position } from '../../core/position.js';
+import { Range } from '../../core/range.js';
+import { getWordAtText, ensureValidWordDefinition } from '../../core/wordHelper.js';
+import { MirrorTextModel } from '../../model/mirrorTextModel.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { IntervalTimer } from '../../../../base/common/async.js';
-import { Disposable, DisposableStore, dispose, toDisposable } from '../../../../base/common/lifecycle.js';
-import { URI } from '../../../../base/common/uri.js';
-import { Position } from '../../core/position.js';
-import { Range } from '../../core/range.js';
-import { ensureValidWordDefinition, getWordAtText } from '../../core/wordHelper.js';
-import { MirrorTextModel as BaseMirrorModel } from '../../model/mirrorTextModel.js';
 /**
  * Stop syncing a model to the worker if it was not needed for 1 min.
  */
-export const STOP_SYNC_MODEL_DELTA_TIME_MS = 60 * 1000;
-export class WorkerTextModelSyncClient extends Disposable {
+const STOP_SYNC_MODEL_DELTA_TIME_MS = 60 * 1000;
+class WorkerTextModelSyncClient extends Disposable {
     constructor(proxy, modelService, keepIdleModels = false) {
         super();
         this._syncedModels = Object.create(null);
@@ -92,7 +93,7 @@ export class WorkerTextModelSyncClient extends Disposable {
         dispose(toDispose);
     }
 }
-export class WorkerTextModelSyncServer {
+class WorkerTextModelSyncServer {
     constructor() {
         this._models = Object.create(null);
     }
@@ -121,7 +122,7 @@ export class WorkerTextModelSyncServer {
         delete this._models[uri];
     }
 }
-export class MirrorModel extends BaseMirrorModel {
+class MirrorModel extends MirrorTextModel {
     get uri() {
         return this._uri;
     }
@@ -302,4 +303,5 @@ export class MirrorModel extends BaseMirrorModel {
         }
     }
 }
-//# sourceMappingURL=textModelSync.impl.js.map
+
+export { MirrorModel, STOP_SYNC_MODEL_DELTA_TIME_MS, WorkerTextModelSyncClient, WorkerTextModelSyncServer };

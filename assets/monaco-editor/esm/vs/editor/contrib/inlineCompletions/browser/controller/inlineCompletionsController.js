@@ -1,28 +1,14 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-var InlineCompletionsController_1;
 import { alert } from '../../../../../base/browser/ui/aria/aria.js';
 import { timeout } from '../../../../../base/common/async.js';
 import { cancelOnDispose } from '../../../../../base/common/cancellation.js';
 import { createHotClass } from '../../../../../base/common/hotReloadHelpers.js';
 import { Disposable, toDisposable } from '../../../../../base/common/lifecycle.js';
-import { autorun, derived, derivedDisposable, derivedObservableWithCache, observableFromEvent, observableSignal, observableValue, runOnChange, runOnChangeWithStore, transaction, waitForState } from '../../../../../base/common/observable.js';
+import '../../../../../base/common/observableInternal/index.js';
 import { isEqual } from '../../../../../base/common/resources.js';
 import { isUndefined } from '../../../../../base/common/types.js';
 import { localize } from '../../../../../nls.js';
 import { IAccessibilityService } from '../../../../../platform/accessibility/common/accessibility.js';
-import { AccessibilitySignal, IAccessibilitySignalService } from '../../../../../platform/accessibilitySignal/browser/accessibilitySignalService.js';
+import { IAccessibilitySignalService, AccessibilitySignal } from '../../../../../platform/accessibilitySignal/browser/accessibilitySignalService.js';
 import { ICommandService } from '../../../../../platform/commands/common/commands.js';
 import { IConfigurationService } from '../../../../../platform/configuration/common/configuration.js';
 import { IContextKeyService } from '../../../../../platform/contextkey/common/contextkey.js';
@@ -31,10 +17,13 @@ import { IKeybindingService } from '../../../../../platform/keybinding/common/ke
 import { hotClassGetOriginalInstance } from '../../../../../platform/observable/common/wrapInHotClass.js';
 import { CoreEditingCommands } from '../../../../browser/coreCommands.js';
 import { observableCodeEditor } from '../../../../browser/observableCodeEditor.js';
+import { TriggerInlineEditCommandsRegistry } from '../../../../browser/triggerInlineEditCommandsRegistry.js';
 import { getOuterEditor } from '../../../../browser/widget/codeEditor/embeddedCodeEditorWidget.js';
 import { Position } from '../../../../common/core/position.js';
 import { ILanguageFeatureDebounceService } from '../../../../common/services/languageFeatureDebounce.js';
 import { ILanguageFeaturesService } from '../../../../common/services/languageFeatures.js';
+import { FIND_IDS } from '../../../find/browser/findModel.js';
+import { InsertLineAfterAction, InsertLineBeforeAction } from '../../../linesOperations/browser/linesOperations.js';
 import { InlineSuggestionHintsContentWidget } from '../hintsWidget/inlineCompletionsHintsWidget.js';
 import { TextModelChangeRecorder } from '../model/changeRecorder.js';
 import { InlineCompletionsModel } from '../model/inlineCompletionsModel.js';
@@ -43,10 +32,34 @@ import { ObservableContextKeyService } from '../utils.js';
 import { InlineCompletionsView } from '../view/inlineCompletionsView.js';
 import { inlineSuggestCommitId } from './commandIds.js';
 import { InlineCompletionContextKeys } from './inlineCompletionContextKeys.js';
+import { runOnChange, runOnChangeWithStore } from '../../../../../base/common/observableInternal/utils/runOnChange.js';
+import { derived, derivedDisposable } from '../../../../../base/common/observableInternal/observables/derived.js';
+import { observableFromEvent } from '../../../../../base/common/observableInternal/observables/observableFromEvent.js';
+import { observableValue } from '../../../../../base/common/observableInternal/observables/observableValue.js';
+import { observableSignal } from '../../../../../base/common/observableInternal/observables/observableSignal.js';
+import { autorun } from '../../../../../base/common/observableInternal/reactions/autorun.js';
+import { transaction } from '../../../../../base/common/observableInternal/transaction.js';
+import { derivedObservableWithCache } from '../../../../../base/common/observableInternal/utils/utils.js';
+import { waitForState } from '../../../../../base/common/observableInternal/utils/utilsCancellation.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var InlineCompletionsController_1;
 let InlineCompletionsController = class InlineCompletionsController extends Disposable {
     static { InlineCompletionsController_1 = this; }
     static { this._instances = new Set(); }
-    static { this.hot = createHotClass(InlineCompletionsController_1); }
+    static { this.hot = createHotClass(this); }
     static { this.ID = 'editor.contrib.inlineCompletionsController'; }
     /**
      * Find the controller in the focused editor or in the outer editor (if applicable)
@@ -178,16 +191,20 @@ let InlineCompletionsController = class InlineCompletionsController extends Disp
                 this.model.get()?.trigger();
             }
         }));
+        // These commands don't trigger onDidType.
+        const triggerCommands = new Set([
+            CoreEditingCommands.Tab.id,
+            CoreEditingCommands.DeleteLeft.id,
+            CoreEditingCommands.DeleteRight.id,
+            inlineSuggestCommitId,
+            'acceptSelectedSuggestion',
+            InsertLineAfterAction.ID,
+            InsertLineBeforeAction.ID,
+            FIND_IDS.NextMatchFindAction,
+            ...TriggerInlineEditCommandsRegistry.getRegisteredCommands(),
+        ]);
         this._register(this._commandService.onDidExecuteCommand((e) => {
-            // These commands don't trigger onDidType.
-            const commands = new Set([
-                CoreEditingCommands.Tab.id,
-                CoreEditingCommands.DeleteLeft.id,
-                CoreEditingCommands.DeleteRight.id,
-                inlineSuggestCommitId,
-                'acceptSelectedSuggestion',
-            ]);
-            if (commands.has(e.commandId) && editor.hasTextFocus() && this._enabled.get()) {
+            if (triggerCommands.has(e.commandId) && editor.hasTextFocus() && this._enabled.get()) {
                 let noDelay = false;
                 if (e.commandId === inlineSuggestCommitId) {
                     noDelay = true;
@@ -358,7 +375,7 @@ let InlineCompletionsController = class InlineCompletionsController extends Disp
         const accessibleViewKeybinding = this._keybindingService.lookupKeybinding('editor.action.accessibleView');
         let hint;
         if (!accessibleViewShowing && accessibleViewKeybinding && this.editor.getOption(169 /* EditorOption.inlineCompletionsAccessibilityVerbose */)) {
-            hint = localize(1196, "Inspect this in the accessible view ({0})", accessibleViewKeybinding.getAriaLabel());
+            hint = localize(1204, "Inspect this in the accessible view ({0})", accessibleViewKeybinding.getAriaLabel());
         }
         alert(hint ? content + ', ' + hint : content);
     }
@@ -406,5 +423,5 @@ InlineCompletionsController = InlineCompletionsController_1 = __decorate([
     __param(8, IKeybindingService),
     __param(9, IAccessibilityService)
 ], InlineCompletionsController);
+
 export { InlineCompletionsController };
-//# sourceMappingURL=inlineCompletionsController.js.map

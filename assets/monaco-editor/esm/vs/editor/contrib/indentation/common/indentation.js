@@ -1,14 +1,15 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-import * as strings from '../../../../base/common/strings.js';
+import { getLeadingWhitespace } from '../../../../base/common/strings.js';
 import { ShiftCommand } from '../../../common/commands/shiftCommand.js';
 import { EditOperation } from '../../../common/core/editOperation.js';
 import { normalizeIndentation } from '../../../common/core/misc/indentation.js';
 import { Selection } from '../../../common/core/selection.js';
 import { ProcessedIndentRulesSupport } from '../../../common/languages/supports/indentationLineProcessor.js';
-export function getReindentEditOperations(model, languageConfigurationService, startLineNumber, endLineNumber) {
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+function getReindentEditOperations(model, languageConfigurationService, startLineNumber, endLineNumber) {
     if (model.getLineCount() === 1 && model.getLineMaxColumn(1) === 1) {
         // Model is empty
         return [];
@@ -43,7 +44,7 @@ export function getReindentEditOperations(model, languageConfigurationService, s
     // Calculate indentation for the first line
     // If there is no passed-in indentation, we use the indentation of the first line as base.
     const currentLineText = model.getLineContent(startLineNumber);
-    let globalIndent = strings.getLeadingWhitespace(currentLineText);
+    let globalIndent = getLeadingWhitespace(currentLineText);
     // idealIndentForNextLine doesn't equal globalIndent when there is a line matching `indentNextLinePattern`.
     let idealIndentForNextLine = globalIndent;
     if (processedIndentRulesSupport.shouldIncrease(startLineNumber)) {
@@ -60,7 +61,7 @@ export function getReindentEditOperations(model, languageConfigurationService, s
             continue;
         }
         const text = model.getLineContent(lineNumber);
-        const oldIndentation = strings.getLeadingWhitespace(text);
+        const oldIndentation = getLeadingWhitespace(text);
         const currentIdealIndent = idealIndentForNextLine;
         if (processedIndentRulesSupport.shouldDecrease(lineNumber, currentIdealIndent)) {
             idealIndentForNextLine = unshiftIndent(idealIndentForNextLine);
@@ -95,4 +96,5 @@ function doesLineStartWithString(model, lineNumber) {
     const lineTokens = model.tokenization.getLineTokens(lineNumber);
     return lineTokens.getStandardTokenType(0) === 2 /* StandardTokenType.String */;
 }
-//# sourceMappingURL=indentation.js.map
+
+export { getReindentEditOperations };

@@ -1,12 +1,13 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { commonPrefixLength } from '../../../../../base/common/strings.js';
 import { Range } from '../../../../common/core/range.js';
 import { TextLength } from '../../../../common/core/text/textLength.js';
 import { TextReplacement } from '../../../../common/core/edits/textEdit.js';
-export function singleTextRemoveCommonPrefix(edit, model, validModelRange) {
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+function singleTextRemoveCommonPrefix(edit, model, validModelRange) {
     const modelRange = validModelRange ? edit.range.intersectRanges(validModelRange) : edit.range;
     if (!modelRange) {
         return edit;
@@ -19,7 +20,7 @@ export function singleTextRemoveCommonPrefix(edit, model, validModelRange) {
     const range = Range.fromPositions(start, edit.range.getEndPosition());
     return new TextReplacement(range, text);
 }
-export function singleTextEditAugments(edit, base) {
+function singleTextEditAugments(edit, base) {
     // The augmented completion must replace the base range, but can replace even more
     return edit.text.startsWith(base.text) && rangeExtends(edit.range, base.range);
 }
@@ -27,4 +28,5 @@ function rangeExtends(extendingRange, rangeToExtend) {
     return rangeToExtend.getStartPosition().equals(extendingRange.getStartPosition())
         && rangeToExtend.getEndPosition().isBeforeOrEqual(extendingRange.getEndPosition());
 }
-//# sourceMappingURL=singleTextEditHelpers.js.map
+
+export { singleTextEditAugments, singleTextRemoveCommonPrefix };

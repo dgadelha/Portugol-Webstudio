@@ -1,10 +1,11 @@
+import { Iterable } from '../../../base/common/iterator.js';
+import { LinkedList } from '../../../base/common/linkedList.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { Iterable } from '../../../base/common/iterator.js';
-import { LinkedList } from '../../../base/common/linkedList.js';
-export const USUAL_WORD_SEPARATORS = '`~!@#$%^&*()-=+[{]}\\|;:\'",.<>/?';
+const USUAL_WORD_SEPARATORS = '`~!@#$%^&*()-=+[{]}\\|;:\'",.<>/?';
 /**
  * Create a word definition regular expression based on default word separators.
  * Optionally provide allowed separators that should be included in words.
@@ -24,8 +25,8 @@ function createWordRegExp(allowInWords = '') {
     return new RegExp(source, 'g');
 }
 // catches numbers (including floating numbers) in the first group, and alphanum in the second
-export const DEFAULT_WORD_REGEXP = createWordRegExp();
-export function ensureValidWordDefinition(wordDefinition) {
+const DEFAULT_WORD_REGEXP = createWordRegExp();
+function ensureValidWordDefinition(wordDefinition) {
     let result = DEFAULT_WORD_REGEXP;
     if (wordDefinition && (wordDefinition instanceof RegExp)) {
         if (!wordDefinition.global) {
@@ -54,7 +55,7 @@ _defaultConfig.unshift({
     windowSize: 15,
     timeBudget: 150
 });
-export function getWordAtText(column, wordDefinition, text, textOffset, config) {
+function getWordAtText(column, wordDefinition, text, textOffset, config) {
     // Ensure the regex has the 'g' flag, otherwise this will loop forever
     wordDefinition = ensureValidWordDefinition(wordDefinition);
     if (!config) {
@@ -122,4 +123,5 @@ function _findRegexMatchEnclosingPosition(wordDefinition, text, pos, stopPos) {
     }
     return null;
 }
-//# sourceMappingURL=wordHelper.js.map
+
+export { DEFAULT_WORD_REGEXP, USUAL_WORD_SEPARATORS, ensureValidWordDefinition, getWordAtText };

@@ -1,19 +1,20 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-import * as arrays from '../../../base/common/arrays.js';
+import { ArrayQueue } from '../../../base/common/arrays.js';
 import { Position } from '../core/position.js';
 import { Range } from '../core/range.js';
 import { IndentGuide, IndentGuideHorizontalLine } from '../textModelGuides.js';
 import { ModelDecorationOptions } from '../model/textModel.js';
 import { LineInjectedText } from '../textModelEvents.js';
-import * as viewEvents from '../viewEvents.js';
+import { ViewLinesDeletedEvent, ViewLinesInsertedEvent, ViewLinesChangedEvent } from '../viewEvents.js';
 import { createModelLineProjection } from './modelLineProjection.js';
 import { ConstantTimePrefixSumComputer } from '../model/prefixSumComputer.js';
 import { ViewLineData } from '../viewModel.js';
 import { IdentityCoordinatesConverter } from '../coordinatesConverter.js';
-export class ViewModelLinesFromProjectedModel {
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+class ViewModelLinesFromProjectedModel {
     constructor(editorId, model, domLineBreaksComputerFactory, monospaceLineBreaksComputerFactory, fontInfo, tabSize, wrappingStrategy, wrappingColumn, wrappingIndent, wordBreak, wrapOnEscapedLineFeeds) {
         this._editorId = editorId;
         this.model = model;
@@ -44,7 +45,7 @@ export class ViewModelLinesFromProjectedModel {
         const injectedTextDecorations = this.model.getInjectedTextDecorations(this._editorId);
         const lineCount = linesContent.length;
         const lineBreaksComputer = this.createLineBreaksComputer();
-        const injectedTextQueue = new arrays.ArrayQueue(LineInjectedText.fromDecorations(injectedTextDecorations));
+        const injectedTextQueue = new ArrayQueue(LineInjectedText.fromDecorations(injectedTextDecorations));
         for (let i = 0; i < lineCount; i++) {
             const lineInjectedText = injectedTextQueue.takeWhile(t => t.lineNumber === i + 1);
             lineBreaksComputer.addRequest(linesContent[i], lineInjectedText, previousLineBreaks ? previousLineBreaks[i] : null);
@@ -203,7 +204,7 @@ export class ViewModelLinesFromProjectedModel {
         const outputToLineNumber = this.projectedModelLineLineCounts.getPrefixSum(toLineNumber);
         this.modelLineProjections.splice(fromLineNumber - 1, toLineNumber - fromLineNumber + 1);
         this.projectedModelLineLineCounts.removeValues(fromLineNumber - 1, toLineNumber - fromLineNumber + 1);
-        return new viewEvents.ViewLinesDeletedEvent(outputFromLineNumber, outputToLineNumber);
+        return new ViewLinesDeletedEvent(outputFromLineNumber, outputToLineNumber);
     }
     onModelLinesInserted(versionId, fromLineNumber, _toLineNumber, lineBreaks) {
         if (!versionId || versionId <= this._validModelVersionId) {
@@ -230,7 +231,7 @@ export class ViewModelLinesFromProjectedModel {
                 .concat(insertLines)
                 .concat(this.modelLineProjections.slice(fromLineNumber - 1));
         this.projectedModelLineLineCounts.insertValues(fromLineNumber - 1, insertPrefixSumValues);
-        return new viewEvents.ViewLinesInsertedEvent(outputFromLineNumber, outputFromLineNumber + totalOutputLineCount - 1);
+        return new ViewLinesInsertedEvent(outputFromLineNumber, outputFromLineNumber + totalOutputLineCount - 1);
     }
     onModelLineChanged(versionId, lineNumber, lineBreakData) {
         if (versionId !== null && versionId <= this._validModelVersionId) {
@@ -270,9 +271,9 @@ export class ViewModelLinesFromProjectedModel {
             changeTo = changeFrom + newOutputLineCount - 1;
         }
         this.projectedModelLineLineCounts.setValue(lineIndex, newOutputLineCount);
-        const viewLinesChangedEvent = (changeFrom <= changeTo ? new viewEvents.ViewLinesChangedEvent(changeFrom, changeTo - changeFrom + 1) : null);
-        const viewLinesInsertedEvent = (insertFrom <= insertTo ? new viewEvents.ViewLinesInsertedEvent(insertFrom, insertTo) : null);
-        const viewLinesDeletedEvent = (deleteFrom <= deleteTo ? new viewEvents.ViewLinesDeletedEvent(deleteFrom, deleteTo) : null);
+        const viewLinesChangedEvent = (changeFrom <= changeTo ? new ViewLinesChangedEvent(changeFrom, changeTo - changeFrom + 1) : null);
+        const viewLinesInsertedEvent = (insertFrom <= insertTo ? new ViewLinesInsertedEvent(insertFrom, insertTo) : null);
+        const viewLinesDeletedEvent = (deleteFrom <= deleteTo ? new ViewLinesDeletedEvent(deleteFrom, deleteTo) : null);
         return [lineMappingChanged, viewLinesChangedEvent, viewLinesInsertedEvent, viewLinesDeletedEvent];
     }
     acceptVersionId(versionId) {
@@ -825,7 +826,7 @@ class CoordinatesConverter {
         return this._lines.getViewLineNumberOfModelPosition(modelLineNumber, modelColumn);
     }
 }
-export class ViewModelLinesFromModelAsIs {
+class ViewModelLinesFromModelAsIs {
     constructor(model) {
         this.model = model;
     }
@@ -860,13 +861,13 @@ export class ViewModelLinesFromModelAsIs {
     onModelFlushed() {
     }
     onModelLinesDeleted(_versionId, fromLineNumber, toLineNumber) {
-        return new viewEvents.ViewLinesDeletedEvent(fromLineNumber, toLineNumber);
+        return new ViewLinesDeletedEvent(fromLineNumber, toLineNumber);
     }
     onModelLinesInserted(_versionId, fromLineNumber, toLineNumber, lineBreaks) {
-        return new viewEvents.ViewLinesInsertedEvent(fromLineNumber, toLineNumber);
+        return new ViewLinesInsertedEvent(fromLineNumber, toLineNumber);
     }
     onModelLineChanged(_versionId, lineNumber, lineBreakData) {
-        return [false, new viewEvents.ViewLinesChangedEvent(lineNumber, 1), null, null];
+        return [false, new ViewLinesChangedEvent(lineNumber, 1), null, null];
     }
     acceptVersionId(_versionId) {
     }
@@ -933,4 +934,5 @@ export class ViewModelLinesFromModelAsIs {
         return null;
     }
 }
-//# sourceMappingURL=viewModelLines.js.map
+
+export { ViewModelLinesFromModelAsIs, ViewModelLinesFromProjectedModel };

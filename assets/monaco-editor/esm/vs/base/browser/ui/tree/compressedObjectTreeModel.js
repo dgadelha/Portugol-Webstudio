@@ -1,13 +1,14 @@
+import { getVisibleState, isFilterResult } from './indexTreeModel.js';
+import { ObjectTreeModel } from './objectTreeModel.js';
+import { WeakMapper, TreeError } from './tree.js';
+import { equals } from '../../../common/arrays.js';
+import { Event } from '../../../common/event.js';
+import { Iterable } from '../../../common/iterator.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { getVisibleState, isFilterResult } from './indexTreeModel.js';
-import { ObjectTreeModel } from './objectTreeModel.js';
-import { TreeError, WeakMapper } from './tree.js';
-import { equals } from '../../../common/arrays.js';
-import { Event } from '../../../common/event.js';
-import { Iterable } from '../../../common/iterator.js';
 function noCompress(element) {
     const elements = [element.element];
     const incompressible = element.incompressible || false;
@@ -19,7 +20,7 @@ function noCompress(element) {
     };
 }
 // Exported only for test reasons, do not use directly
-export function compress(element) {
+function compress(element) {
     const elements = [element.element];
     const incompressible = element.incompressible || false;
     let childrenIterator;
@@ -67,7 +68,7 @@ function _decompress(element, index = 0) {
     };
 }
 // Exported only for test reasons, do not use directly
-export function decompress(element) {
+function decompress(element) {
     return _decompress(element, 0);
 }
 function splice(treeElement, element, children) {
@@ -82,7 +83,7 @@ const wrapIdentityProvider = (base) => ({
     }
 });
 // Exported only for test reasons, do not use directly
-export class CompressedObjectTreeModel {
+class CompressedObjectTreeModel {
     get onDidSpliceRenderedNodes() { return this.model.onDidSpliceRenderedNodes; }
     get onDidSpliceModel() { return this.model.onDidSpliceModel; }
     get onDidChangeCollapseState() { return this.model.onDidChangeCollapseState; }
@@ -232,6 +233,10 @@ export class CompressedObjectTreeModel {
     refilter() {
         this.model.refilter();
     }
+    resort(location = null, recursive = true) {
+        const compressedNode = this.getCompressedNode(location);
+        this.model.resort(compressedNode, recursive);
+    }
     getCompressedNode(element) {
         if (element === null) {
             return null;
@@ -243,7 +248,7 @@ export class CompressedObjectTreeModel {
         return node;
     }
 }
-export const DefaultElementMapper = elements => elements[elements.length - 1];
+const DefaultElementMapper = elements => elements[elements.length - 1];
 class CompressedTreeNodeWrapper {
     get element() { return this.node.element === null ? null : this.unwrapper(this.node.element); }
     get children() { return this.node.children.map(node => new CompressedTreeNodeWrapper(this.unwrapper, node)); }
@@ -284,7 +289,7 @@ function mapOptions(compressedNodeUnwrapper, options) {
         }
     };
 }
-export class CompressibleObjectTreeModel {
+class CompressibleObjectTreeModel {
     get onDidSpliceModel() {
         return Event.map(this.model.onDidSpliceModel, ({ insertedNodes, deletedNodes }) => ({
             insertedNodes: insertedNodes.map(node => this.nodeMapper.map(node)),
@@ -369,8 +374,12 @@ export class CompressibleObjectTreeModel {
     refilter() {
         return this.model.refilter();
     }
+    resort(element = null, recursive = true) {
+        return this.model.resort(element, recursive);
+    }
     getCompressedTreeNode(location = null) {
         return this.model.getNode(location);
     }
 }
-//# sourceMappingURL=compressedObjectTreeModel.js.map
+
+export { CompressedObjectTreeModel, CompressibleObjectTreeModel, DefaultElementMapper, compress, decompress };

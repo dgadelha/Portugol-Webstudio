@@ -1,11 +1,12 @@
+import { sep, posix } from './path.js';
+import { isWindows } from './platform.js';
+import { startsWithIgnoreCase } from './strings.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { posix, sep } from './path.js';
-import { isWindows } from './platform.js';
-import { startsWithIgnoreCase } from './strings.js';
-export function isPathSeparator(code) {
+function isPathSeparator(code) {
     return code === 47 /* CharCode.Slash */ || code === 92 /* CharCode.Backslash */;
 }
 /**
@@ -13,7 +14,7 @@ export function isPathSeparator(code) {
  * This should only be done for OS paths from Windows (or user provided paths potentially from Windows).
  * Using it on a Linux or MaxOS path might change it.
  */
-export function toSlashes(osPath) {
+function toSlashes(osPath) {
     return osPath.replace(/[\\/]/g, posix.sep);
 }
 /**
@@ -23,7 +24,7 @@ export function toSlashes(osPath) {
  * This should only be done for OS paths from Windows (or user provided paths potentially from Windows).
  * Using it on a Linux or MaxOS path might change it.
  */
-export function toPosixPath(osPath) {
+function toPosixPath(osPath) {
     if (osPath.indexOf('/') === -1) {
         osPath = toSlashes(osPath);
     }
@@ -37,7 +38,7 @@ export function toPosixPath(osPath) {
  * `getRoot('files:///files/path') === files:///`,
  * or `getRoot('\\server\shares\path') === \\server\shares\`
  */
-export function getRoot(path, sep = posix.sep) {
+function getRoot(path, sep = posix.sep) {
     if (!path) {
         return '';
     }
@@ -104,7 +105,7 @@ export function getRoot(path, sep = posix.sep) {
  * you are in a context without services, consider to pass down the `extUri` from the
  * outside, or use `extUriBiasedIgnorePathCase` if you know what you are doing.
  */
-export function isEqualOrParent(base, parentCandidate, ignoreCase, separator = sep) {
+function isEqualOrParent(base, parentCandidate, ignoreCase, separator = sep) {
     if (base === parentCandidate) {
         return true;
     }
@@ -133,13 +134,14 @@ export function isEqualOrParent(base, parentCandidate, ignoreCase, separator = s
     }
     return base.indexOf(parentCandidate) === 0;
 }
-export function isWindowsDriveLetter(char0) {
+function isWindowsDriveLetter(char0) {
     return char0 >= 65 /* CharCode.A */ && char0 <= 90 /* CharCode.Z */ || char0 >= 97 /* CharCode.a */ && char0 <= 122 /* CharCode.z */;
 }
-export function hasDriveLetter(path, isWindowsOS = isWindows) {
+function hasDriveLetter(path, isWindowsOS = isWindows) {
     if (isWindowsOS) {
         return isWindowsDriveLetter(path.charCodeAt(0)) && path.charCodeAt(1) === 58 /* CharCode.Colon */;
     }
     return false;
 }
-//# sourceMappingURL=extpath.js.map
+
+export { getRoot, hasDriveLetter, isEqualOrParent, isPathSeparator, isWindowsDriveLetter, toPosixPath, toSlashes };

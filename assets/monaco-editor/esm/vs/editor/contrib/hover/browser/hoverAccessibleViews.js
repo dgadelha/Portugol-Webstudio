@@ -1,7 +1,8 @@
-export class HoverAccessibleView {
+class HoverAccessibleView {
 }
-export class HoverAccessibilityHelp {
+class HoverAccessibilityHelp {
 }
-export class ExtHoverAccessibleView {
+class ExtHoverAccessibleView {
 }
-//# sourceMappingURL=hoverAccessibleViews.js.map
+
+export { ExtHoverAccessibleView, HoverAccessibilityHelp, HoverAccessibleView };

@@ -1,11 +1,12 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { Emitter } from '../../base/common/event.js';
 import { toDisposable } from '../../base/common/lifecycle.js';
 import { shouldSynchronizeModel } from './model.js';
 import { score } from './languageSelector.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
 function isExclusive(selector) {
     if (typeof selector === 'string') {
         return false;
@@ -33,7 +34,7 @@ class MatchCandidate {
             && this.recursive === other.recursive;
     }
 }
-export class LanguageFeatureRegistry {
+class LanguageFeatureRegistry {
     get onDidChange() { return this._onDidChange.event; }
     constructor(_notebookInfoResolver) {
         this._notebookInfoResolver = _notebookInfoResolver;
@@ -175,4 +176,5 @@ function isBuiltinSelector(selector) {
     }
     return Boolean(selector.isBuiltin);
 }
-//# sourceMappingURL=languageFeatureRegistry.js.map
+
+export { LanguageFeatureRegistry };

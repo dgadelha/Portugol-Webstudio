@@ -1,16 +1,17 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-import { $, append, clearNode } from '../../dom.js';
+import { append, $, clearNode } from '../../dom.js';
 import { createStyleSheet } from '../../domStylesheets.js';
 import { getBaseLayerHoverDelegate } from '../hover/hoverDelegate2.js';
 import { getDefaultHoverDelegate } from '../hover/hoverDelegateFactory.js';
 import { List, unthemedListStyles } from '../list/listWidget.js';
 import { SplitView } from '../splitview/splitview.js';
-import { Emitter, Event } from '../../../common/event.js';
-import { Disposable, DisposableStore } from '../../../common/lifecycle.js';
+import { Event, Emitter } from '../../../common/event.js';
+import { DisposableStore, Disposable } from '../../../common/lifecycle.js';
 import './table.css';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
 class TableListRenderer {
     static { this.TemplateId = 'row'; }
     constructor(columns, renderers, getColumnSize) {
@@ -100,7 +101,7 @@ class ColumnHeader extends Disposable {
         this._onDidLayout.fire([this.index, size]);
     }
 }
-export class Table {
+class Table {
     static { this.InstanceCount = 0; }
     get onDidChangeFocus() { return this.list.onDidChangeFocus; }
     get onDidChangeSelection() { return this.list.onDidChangeSelection; }
@@ -176,4 +177,5 @@ export class Table {
         this.disposables.dispose();
     }
 }
-//# sourceMappingURL=tableWidget.js.map
+
+export { Table };

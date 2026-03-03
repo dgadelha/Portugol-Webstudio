@@ -1,11 +1,12 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { Emitter } from '../../../../base/common/event.js';
 import { Disposable } from '../../../../base/common/lifecycle.js';
 import { Range } from '../../../common/core/range.js';
 import { MATCHES_LIMIT } from './findModel.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
 function effectiveOptionValue(override, value) {
     if (override === 1 /* FindOptionOverride.True */) {
         return true;
@@ -15,7 +16,7 @@ function effectiveOptionValue(override, value) {
     }
     return value;
 }
-export class FindReplaceState extends Disposable {
+class FindReplaceState extends Disposable {
     get searchString() { return this._searchString; }
     get replaceString() { return this._replaceString; }
     get isRevealed() { return this._isRevealed; }
@@ -239,4 +240,5 @@ export class FindReplaceState extends Disposable {
         return this._loop || (this.matchesCount >= MATCHES_LIMIT);
     }
 }
-//# sourceMappingURL=findState.js.map
+
+export { FindReplaceState };

@@ -1,10 +1,11 @@
+import { LineTokens } from './lineTokens.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { LineTokens } from './lineTokens.js';
-export const EMPTY_LINE_TOKENS = (new Uint32Array(0)).buffer;
-export class ContiguousTokensEditing {
+const EMPTY_LINE_TOKENS = (new Uint32Array(0)).buffer;
+class ContiguousTokensEditing {
     static deleteBeginning(lineTokens, toChIndex) {
         if (lineTokens === null || lineTokens === EMPTY_LINE_TOKENS) {
             return lineTokens;
@@ -115,7 +116,7 @@ export class ContiguousTokensEditing {
         return lineTokens;
     }
 }
-export function toUint32Array(arr) {
+function toUint32Array(arr) {
     if (arr instanceof Uint32Array) {
         return arr;
     }
@@ -123,4 +124,5 @@ export function toUint32Array(arr) {
         return new Uint32Array(arr);
     }
 }
-//# sourceMappingURL=contiguousTokensEditing.js.map
+
+export { ContiguousTokensEditing, EMPTY_LINE_TOKENS, toUint32Array };

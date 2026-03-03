@@ -1,13 +1,14 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { StandardWheelEvent } from '../../mouseEvent.js';
 import { AbstractScrollbar } from './abstractScrollbar.js';
 import { ARROW_IMG_SIZE } from './scrollbarArrow.js';
 import { ScrollbarState } from './scrollbarState.js';
 import { Codicon } from '../../../common/codicons.js';
-export class HorizontalScrollbar extends AbstractScrollbar {
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+class HorizontalScrollbar extends AbstractScrollbar {
     constructor(scrollable, options, host) {
         const scrollDimensions = scrollable.getScrollDimensions();
         const scrollPosition = scrollable.getCurrentScrollPosition();
@@ -86,4 +87,5 @@ export class HorizontalScrollbar extends AbstractScrollbar {
         this._scrollByPage = options.scrollByPage;
     }
 }
-//# sourceMappingURL=horizontalScrollbar.js.map
+
+export { HorizontalScrollbar };

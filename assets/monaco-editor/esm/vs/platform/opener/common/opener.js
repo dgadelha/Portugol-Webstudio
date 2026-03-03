@@ -1,9 +1,10 @@
+import { createDecorator } from '../../instantiation/common/instantiation.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { createDecorator } from '../../instantiation/common/instantiation.js';
-export const IOpenerService = createDecorator('openerService');
+const IOpenerService = createDecorator('openerService');
 /**
  * Encodes selection into the `URI`.
  *
@@ -11,7 +12,7 @@ export const IOpenerService = createDecorator('openerService');
  * again from the original `URI` before passing the `URI` into any
  * component that is not aware of selections.
  */
-export function withSelection(uri, selection) {
+function withSelection(uri, selection) {
     return uri.with({ fragment: `${selection.startLineNumber},${selection.startColumn}${selection.endLineNumber ? `-${selection.endLineNumber}${selection.endColumn ? `,${selection.endColumn}` : ''}` : ''}` });
 }
 /**
@@ -24,7 +25,7 @@ export function withSelection(uri, selection) {
  * file:///some/file.js#73,84-83,52
  * file:///some/file.js#L73,84-L83,52
  */
-export function extractSelection(uri) {
+function extractSelection(uri) {
     let selection = undefined;
     const match = /^L?(\d+)(?:,(\d+))?(-L?(\d+)(?:,(\d+))?)?/.exec(uri.fragment);
     if (match) {
@@ -38,4 +39,5 @@ export function extractSelection(uri) {
     }
     return { selection, uri };
 }
-//# sourceMappingURL=opener.js.map
+
+export { IOpenerService, extractSelection, withSelection };

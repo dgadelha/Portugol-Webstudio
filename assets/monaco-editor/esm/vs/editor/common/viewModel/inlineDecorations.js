@@ -1,16 +1,17 @@
+import { Range } from '../core/range.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { Range } from '../core/range.js';
-export class InlineDecoration {
+class InlineDecoration {
     constructor(range, inlineClassName, type) {
         this.range = range;
         this.inlineClassName = inlineClassName;
         this.type = type;
     }
 }
-export class SingleLineInlineDecoration {
+class SingleLineInlineDecoration {
     constructor(startOffset, endOffset, inlineClassName, inlineClassNameAffectsLetterSpacing) {
         this.startOffset = startOffset;
         this.endOffset = endOffset;
@@ -21,4 +22,5 @@ export class SingleLineInlineDecoration {
         return new InlineDecoration(new Range(lineNumber, this.startOffset + 1, lineNumber, this.endOffset + 1), this.inlineClassName, this.inlineClassNameAffectsLetterSpacing ? 3 /* InlineDecorationType.RegularAffectingLetterSpacing */ : 0 /* InlineDecorationType.Regular */);
     }
 }
-//# sourceMappingURL=inlineDecorations.js.map
+
+export { InlineDecoration, SingleLineInlineDecoration };

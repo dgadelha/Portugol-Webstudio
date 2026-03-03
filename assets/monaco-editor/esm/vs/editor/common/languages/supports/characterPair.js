@@ -1,9 +1,10 @@
+import { StandardAutoClosingPairConditional } from '../languageConfiguration.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { StandardAutoClosingPairConditional } from '../languageConfiguration.js';
-export class CharacterPairSupport {
+class CharacterPairSupport {
     static { this.DEFAULT_AUTOCLOSE_BEFORE_LANGUAGE_DEFINED_QUOTES = ';:.,=}])> \n\t'; }
     static { this.DEFAULT_AUTOCLOSE_BEFORE_LANGUAGE_DEFINED_BRACKETS = '\'"`;:.,=}])> \n\t'; }
     constructor(config) {
@@ -35,4 +36,5 @@ export class CharacterPairSupport {
         return this._surroundingPairs;
     }
 }
-//# sourceMappingURL=characterPair.js.map
+
+export { CharacterPairSupport };

@@ -1,23 +1,26 @@
+import '../../arrays.js';
+import '../../event.js';
+import { toDisposable, DisposableStore } from '../../lifecycle.js';
+import { DebugNameData } from '../debugName.js';
+import { AutorunObserver } from './autorunImpl.js';
+import { DebugLocation } from '../debugLocation.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { DisposableStore, toDisposable } from '../commonFacade/deps.js';
-import { DebugNameData } from '../debugName.js';
-import { AutorunObserver } from './autorunImpl.js';
-import { DebugLocation } from '../debugLocation.js';
 /**
  * Runs immediately and whenever a transaction ends and an observed observable changed.
  * {@link fn} should start with a JS Doc using `@description` to name the autorun.
  */
-export function autorun(fn, debugLocation = DebugLocation.ofCaller()) {
+function autorun(fn, debugLocation = DebugLocation.ofCaller()) {
     return new AutorunObserver(new DebugNameData(undefined, undefined, fn), fn, undefined, debugLocation);
 }
 /**
  * Runs immediately and whenever a transaction ends and an observed observable changed.
  * {@link fn} should start with a JS Doc using `@description` to name the autorun.
  */
-export function autorunOpts(options, fn, debugLocation = DebugLocation.ofCaller()) {
+function autorunOpts(options, fn, debugLocation = DebugLocation.ofCaller()) {
     return new AutorunObserver(new DebugNameData(options.owner, options.debugName, options.debugReferenceFn ?? fn), fn, undefined, debugLocation);
 }
 /**
@@ -31,13 +34,13 @@ export function autorunOpts(options, fn, debugLocation = DebugLocation.ofCaller(
  *
  * @see autorun
  */
-export function autorunHandleChanges(options, fn, debugLocation = DebugLocation.ofCaller()) {
+function autorunHandleChanges(options, fn, debugLocation = DebugLocation.ofCaller()) {
     return new AutorunObserver(new DebugNameData(options.owner, options.debugName, options.debugReferenceFn ?? fn), fn, options.changeTracker, debugLocation);
 }
 /**
  * @see autorunHandleChanges (but with a disposable store that is cleared before the next run or on dispose)
  */
-export function autorunWithStoreHandleChanges(options, fn) {
+function autorunWithStoreHandleChanges(options, fn) {
     const store = new DisposableStore();
     const disposable = autorunHandleChanges({
         owner: options.owner,
@@ -58,7 +61,7 @@ export function autorunWithStoreHandleChanges(options, fn) {
  *
  * @deprecated Use `autorun(reader => { reader.store.add(...) })` instead!
  */
-export function autorunWithStore(fn) {
+function autorunWithStore(fn) {
     const store = new DisposableStore();
     const disposable = autorunOpts({
         owner: undefined,
@@ -73,7 +76,7 @@ export function autorunWithStore(fn) {
         store.dispose();
     });
 }
-export function autorunDelta(observable, handler) {
+function autorunDelta(observable, handler) {
     let _lastValue;
     return autorunOpts({ debugReferenceFn: handler }, (reader) => {
         const newValue = observable.read(reader);
@@ -82,4 +85,5 @@ export function autorunDelta(observable, handler) {
         handler({ lastValue, newValue });
     });
 }
-//# sourceMappingURL=autorun.js.map
+
+export { autorun, autorunDelta, autorunHandleChanges, autorunOpts, autorunWithStore, autorunWithStoreHandleChanges };

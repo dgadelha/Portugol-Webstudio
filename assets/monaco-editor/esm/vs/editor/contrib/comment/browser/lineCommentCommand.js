@@ -1,14 +1,15 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-import * as strings from '../../../../base/common/strings.js';
+import { firstNonWhitespaceIndex } from '../../../../base/common/strings.js';
 import { EditOperation } from '../../../common/core/editOperation.js';
 import { Position } from '../../../common/core/position.js';
 import { Range } from '../../../common/core/range.js';
 import { Selection } from '../../../common/core/selection.js';
 import { BlockCommentCommand } from './blockCommentCommand.js';
-export class LineCommentCommand {
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+class LineCommentCommand {
     constructor(languageConfigurationService, selection, indentSize, type, insertSpace, ignoreEmptyLines, ignoreFirstLine) {
         this.languageConfigurationService = languageConfigurationService;
         this._selection = selection;
@@ -72,7 +73,7 @@ export class LineCommentCommand {
                 continue;
             }
             const lineContent = model.getLineContent(lineNumber);
-            const lineContentStartOffset = strings.firstNonWhitespaceIndex(lineContent);
+            const lineContentStartOffset = firstNonWhitespaceIndex(lineContent);
             if (lineContentStartOffset === -1) {
                 // Empty or whitespace only line
                 lineData.ignore = ignoreEmptyLines;
@@ -88,9 +89,7 @@ export class LineCommentCommand {
                     // Every line so far has been a line comment, but this one is not
                     shouldRemoveComments = false;
                 }
-                else if (type === 1 /* Type.ForceAdd */) {
-                    // Will not happen
-                }
+                else if (type === 1 /* Type.ForceAdd */) ;
                 else {
                     lineData.ignore = true;
                 }
@@ -206,12 +205,12 @@ export class LineCommentCommand {
         if (!ops) {
             if (s.isEmpty()) {
                 const lineContent = model.getLineContent(s.startLineNumber);
-                let firstNonWhitespaceIndex = strings.firstNonWhitespaceIndex(lineContent);
-                if (firstNonWhitespaceIndex === -1) {
+                let firstNonWhitespaceIndex$1 = firstNonWhitespaceIndex(lineContent);
+                if (firstNonWhitespaceIndex$1 === -1) {
                     // Line is empty or contains only whitespace
-                    firstNonWhitespaceIndex = lineContent.length;
+                    firstNonWhitespaceIndex$1 = lineContent.length;
                 }
-                ops = BlockCommentCommand._createAddBlockCommentOperations(new Range(s.startLineNumber, firstNonWhitespaceIndex + 1, s.startLineNumber, lineContent.length + 1), startToken, endToken, this._insertSpace);
+                ops = BlockCommentCommand._createAddBlockCommentOperations(new Range(s.startLineNumber, firstNonWhitespaceIndex$1 + 1, s.startLineNumber, lineContent.length + 1), startToken, endToken, this._insertSpace);
             }
             else {
                 ops = BlockCommentCommand._createAddBlockCommentOperations(new Range(s.startLineNumber, model.getLineFirstNonWhitespaceColumn(s.startLineNumber), s.endLineNumber, model.getLineMaxColumn(s.endLineNumber)), startToken, endToken, this._insertSpace);
@@ -325,4 +324,5 @@ export class LineCommentCommand {
         }
     }
 }
-//# sourceMappingURL=lineCommentCommand.js.map
+
+export { LineCommentCommand };

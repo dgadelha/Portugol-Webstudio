@@ -2,7 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-export class EditorTheme {
+class EditorTheme {
     get type() {
         return this._theme.type;
     }
@@ -19,4 +19,5 @@ export class EditorTheme {
         return this._theme.getColor(color);
     }
 }
-//# sourceMappingURL=editorTheme.js.map
+
+export { EditorTheme };

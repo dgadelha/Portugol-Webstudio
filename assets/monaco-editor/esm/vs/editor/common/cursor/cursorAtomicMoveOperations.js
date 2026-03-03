@@ -1,9 +1,10 @@
+import { CursorColumns } from '../core/cursorColumns.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { CursorColumns } from '../core/cursorColumns.js';
-export class AtomicTabMoveOperations {
+class AtomicTabMoveOperations {
     /**
      * Get the visible column at the position. If we get to a non-whitespace character first
      * or past the end of string then return -1.
@@ -140,4 +141,5 @@ export class AtomicTabMoveOperations {
         return -1;
     }
 }
-//# sourceMappingURL=cursorAtomicMoveOperations.js.map
+
+export { AtomicTabMoveOperations };

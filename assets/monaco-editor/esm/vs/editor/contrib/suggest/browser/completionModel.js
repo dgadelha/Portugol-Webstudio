@@ -1,11 +1,12 @@
+import { quickSelect } from '../../../../base/common/arrays.js';
+import { FuzzyScoreOptions, fuzzyScore, fuzzyScoreGracefulAggressive, FuzzyScore, anyScore } from '../../../../base/common/filters.js';
+import { compareIgnoreCase } from '../../../../base/common/strings.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { quickSelect } from '../../../../base/common/arrays.js';
-import { anyScore, fuzzyScore, FuzzyScore, fuzzyScoreGracefulAggressive, FuzzyScoreOptions } from '../../../../base/common/filters.js';
-import { compareIgnoreCase } from '../../../../base/common/strings.js';
-export class LineContext {
+class LineContext {
     constructor(leadingLineContent, characterCountDelta) {
         this.leadingLineContent = leadingLineContent;
         this.characterCountDelta = characterCountDelta;
@@ -14,7 +15,7 @@ export class LineContext {
 /**
  * Sorted, filtered completion view model
  * */
-export class CompletionModel {
+class CompletionModel {
     constructor(items, column, lineContext, wordDistance, options, snippetSuggestions, fuzzyScoreOptions = FuzzyScoreOptions.default, clipboardText = undefined) {
         this.clipboardText = clipboardText;
         this._snippetCompareFn = CompletionModel._compareCompletionItems;
@@ -222,4 +223,5 @@ export class CompletionModel {
         return CompletionModel._compareCompletionItems(a, b);
     }
 }
-//# sourceMappingURL=completionModel.js.map
+
+export { CompletionModel, LineContext };

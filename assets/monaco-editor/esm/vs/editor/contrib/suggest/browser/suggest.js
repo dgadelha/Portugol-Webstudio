@@ -1,9 +1,5 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { CancellationToken } from '../../../../base/common/cancellation.js';
-import { CancellationError, isCancellationError, onUnexpectedExternalError } from '../../../../base/common/errors.js';
+import { onUnexpectedExternalError, CancellationError, isCancellationError } from '../../../../base/common/errors.js';
 import { FuzzyScore } from '../../../../base/common/filters.js';
 import { DisposableStore, isDisposable } from '../../../../base/common/lifecycle.js';
 import { StopWatch } from '../../../../base/common/stopwatch.js';
@@ -19,19 +15,24 @@ import { CommandsRegistry } from '../../../../platform/commands/common/commands.
 import { RawContextKey } from '../../../../platform/contextkey/common/contextkey.js';
 import { ILanguageFeaturesService } from '../../../common/services/languageFeatures.js';
 import { historyNavigationVisible } from '../../../../platform/history/browser/contextScopedHistoryWidget.js';
-export const Context = {
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+const Context = {
     Visible: historyNavigationVisible,
-    HasFocusedSuggestion: new RawContextKey('suggestWidgetHasFocusedSuggestion', false, localize(1440, "Whether any suggestion is focused")),
-    DetailsVisible: new RawContextKey('suggestWidgetDetailsVisible', false, localize(1441, "Whether suggestion details are visible")),
-    MultipleSuggestions: new RawContextKey('suggestWidgetMultipleSuggestions', false, localize(1442, "Whether there are multiple suggestions to pick from")),
-    MakesTextEdit: new RawContextKey('suggestionMakesTextEdit', true, localize(1443, "Whether inserting the current suggestion yields in a change or has everything already been typed")),
-    AcceptSuggestionsOnEnter: new RawContextKey('acceptSuggestionOnEnter', true, localize(1444, "Whether suggestions are inserted when pressing Enter")),
-    HasInsertAndReplaceRange: new RawContextKey('suggestionHasInsertAndReplaceRange', false, localize(1445, "Whether the current suggestion has insert and replace behaviour")),
-    InsertMode: new RawContextKey('suggestionInsertMode', undefined, { type: 'string', description: localize(1446, "Whether the default behaviour is to insert or replace") }),
-    CanResolve: new RawContextKey('suggestionCanResolve', false, localize(1447, "Whether the current suggestion supports to resolve further details")),
+    HasFocusedSuggestion: new RawContextKey('suggestWidgetHasFocusedSuggestion', false, localize(1455, "Whether any suggestion is focused")),
+    DetailsVisible: new RawContextKey('suggestWidgetDetailsVisible', false, localize(1456, "Whether suggestion details are visible")),
+    MultipleSuggestions: new RawContextKey('suggestWidgetMultipleSuggestions', false, localize(1457, "Whether there are multiple suggestions to pick from")),
+    MakesTextEdit: new RawContextKey('suggestionMakesTextEdit', true, localize(1458, "Whether inserting the current suggestion yields in a change or has everything already been typed")),
+    AcceptSuggestionsOnEnter: new RawContextKey('acceptSuggestionOnEnter', true, localize(1459, "Whether suggestions are inserted when pressing Enter")),
+    HasInsertAndReplaceRange: new RawContextKey('suggestionHasInsertAndReplaceRange', false, localize(1460, "Whether the current suggestion has insert and replace behaviour")),
+    InsertMode: new RawContextKey('suggestionInsertMode', undefined, { type: 'string', description: localize(1461, "Whether the default behaviour is to insert or replace") }),
+    CanResolve: new RawContextKey('suggestionCanResolve', false, localize(1462, "Whether the current suggestion supports to resolve further details")),
 };
-export const suggestWidgetStatusbarMenu = new MenuId('suggestWidgetStatusBar');
-export class CompletionItem {
+const suggestWidgetStatusbarMenu = new MenuId('suggestWidgetStatusBar');
+class CompletionItem {
     constructor(position, completion, container, provider) {
         this.position = position;
         this.completion = completion;
@@ -108,7 +109,7 @@ export class CompletionItem {
         return this._resolveCache;
     }
 }
-export class CompletionOptions {
+class CompletionOptions {
     static { this.default = new CompletionOptions(); }
     constructor(snippetSortOrder = 2 /* SnippetSortOrder.Bottom */, kindFilter = new Set(), providerFilter = new Set(), providerItemsToReuse = new Map(), showDeprecated = true) {
         this.snippetSortOrder = snippetSortOrder;
@@ -118,11 +119,7 @@ export class CompletionOptions {
         this.showDeprecated = showDeprecated;
     }
 }
-let _snippetSuggestSupport;
-export function getSnippetSuggestSupport() {
-    return _snippetSuggestSupport;
-}
-export class CompletionItemModel {
+class CompletionItemModel {
     constructor(items, needsClipboard, durations, disposable) {
         this.items = items;
         this.needsClipboard = needsClipboard;
@@ -130,7 +127,7 @@ export class CompletionItemModel {
         this.disposable = disposable;
     }
 }
-export async function provideSuggestionItems(registry, model, position, options = CompletionOptions.default, context = { triggerKind: 0 /* languages.CompletionTriggerKind.Invoke */ }, token = CancellationToken.None) {
+async function provideSuggestionItems(registry, model, position, options = CompletionOptions.default, context = { triggerKind: 0 /* languages.CompletionTriggerKind.Invoke */ }, token = CancellationToken.None) {
     const sw = new StopWatch();
     position = position.clone();
     const word = model.getWordAtPosition(position);
@@ -177,21 +174,9 @@ export async function provideSuggestionItems(registry, model, position, options 
     // ask for snippets in parallel to asking "real" providers. Only do something if configured to
     // do so - no snippet filter, no special-providers-only request
     const snippetCompletions = (async () => {
-        if (!_snippetSuggestSupport || options.kindFilter.has(28 /* languages.CompletionItemKind.Snippet */)) {
+        {
             return;
         }
-        // we have items from a previous session that we can reuse
-        const reuseItems = options.providerItemsToReuse.get(_snippetSuggestSupport);
-        if (reuseItems) {
-            reuseItems.forEach(item => result.push(item));
-            return;
-        }
-        if (options.providerFilter.size > 0 && !options.providerFilter.has(_snippetSuggestSupport)) {
-            return;
-        }
-        const sw = new StopWatch();
-        const list = await _snippetSuggestSupport.provideCompletionItems(model, position, context, token);
-        onCompletionList(_snippetSuggestSupport, list, sw);
     })();
     // add suggestions from contributed providers - providers are ordered in groups of
     // equal score and once a group produces a result the process stops
@@ -277,7 +262,7 @@ const _snippetComparators = new Map();
 _snippetComparators.set(0 /* SnippetSortOrder.Top */, snippetUpComparator);
 _snippetComparators.set(2 /* SnippetSortOrder.Bottom */, snippetDownComparator);
 _snippetComparators.set(1 /* SnippetSortOrder.Inline */, defaultComparator);
-export function getSuggestionComparator(snippetConfig) {
+function getSuggestionComparator(snippetConfig) {
     return _snippetComparators.get(snippetConfig);
 }
 CommandsRegistry.registerCommand('_executeCompletionItemProvider', async (accessor, ...args) => {
@@ -315,10 +300,10 @@ CommandsRegistry.registerCommand('_executeCompletionItemProvider', async (access
         ref.dispose();
     }
 });
-export function showSimpleSuggestions(editor, provider) {
+function showSimpleSuggestions(editor, provider) {
     editor.getContribution('editor.contrib.suggestController')?.triggerSuggest(new Set().add(provider), undefined, true);
 }
-export class QuickSuggestionsOptions {
+class QuickSuggestionsOptions {
     static isAllOff(config) {
         return config.other === 'off' && config.comments === 'off' && config.strings === 'off';
     }
@@ -333,4 +318,5 @@ export class QuickSuggestionsOptions {
         }
     }
 }
-//# sourceMappingURL=suggest.js.map
+
+export { CompletionItem, CompletionItemModel, CompletionOptions, Context, QuickSuggestionsOptions, getSuggestionComparator, provideSuggestionItems, showSimpleSuggestions, suggestWidgetStatusbarMenu };

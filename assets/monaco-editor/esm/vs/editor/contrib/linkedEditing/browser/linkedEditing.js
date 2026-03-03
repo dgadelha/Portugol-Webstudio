@@ -1,41 +1,52 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-var LinkedEditingContribution_1;
-import * as arrays from '../../../../base/common/arrays.js';
+import { isNonEmptyArray } from '../../../../base/common/arrays.js';
 import { Delayer, first } from '../../../../base/common/async.js';
-import { CancellationToken, CancellationTokenSource } from '../../../../base/common/cancellation.js';
+import { CancellationTokenSource, CancellationToken } from '../../../../base/common/cancellation.js';
 import { Color } from '../../../../base/common/color.js';
 import { isCancellationError, onUnexpectedError, onUnexpectedExternalError } from '../../../../base/common/errors.js';
 import { Event } from '../../../../base/common/event.js';
 import { Disposable, DisposableStore } from '../../../../base/common/lifecycle.js';
-import * as strings from '../../../../base/common/strings.js';
+import { commonPrefixLength, commonSuffixLength } from '../../../../base/common/strings.js';
 import { URI } from '../../../../base/common/uri.js';
-import { EditorAction, EditorCommand, registerEditorAction, registerEditorCommand, registerEditorContribution, registerModelAndPositionCommand } from '../../../browser/editorExtensions.js';
+import { EditorCommand, registerEditorCommand, registerModelAndPositionCommand, registerEditorContribution, registerEditorAction, EditorAction } from '../../../browser/editorExtensions.js';
 import { ICodeEditorService } from '../../../browser/services/codeEditorService.js';
 import { Position } from '../../../common/core/position.js';
 import { Range } from '../../../common/core/range.js';
 import { EditorContextKeys } from '../../../common/editorContextKeys.js';
 import { ModelDecorationOptions } from '../../../common/model/textModel.js';
 import { ILanguageConfigurationService } from '../../../common/languages/languageConfigurationRegistry.js';
-import * as nls from '../../../../nls.js';
-import { ContextKeyExpr, IContextKeyService, RawContextKey } from '../../../../platform/contextkey/common/contextkey.js';
+import { localize, localize2 } from '../../../../nls.js';
+import { RawContextKey, IContextKeyService, ContextKeyExpr } from '../../../../platform/contextkey/common/contextkey.js';
 import { ILanguageFeaturesService } from '../../../common/services/languageFeatures.js';
-import { registerColor } from '../../../../platform/theme/common/colorRegistry.js';
+import { registerColor } from '../../../../platform/theme/common/colorUtils.js';
+import '../../../../platform/theme/common/colors/baseColors.js';
+import '../../../../platform/theme/common/colors/chartsColors.js';
+import '../../../../platform/theme/common/colors/editorColors.js';
+import '../../../../platform/theme/common/colors/inputColors.js';
+import '../../../../platform/theme/common/colors/listColors.js';
+import '../../../../platform/theme/common/colors/menuColors.js';
+import '../../../../platform/theme/common/colors/minimapColors.js';
+import '../../../../platform/theme/common/colors/miscColors.js';
+import '../../../../platform/theme/common/colors/quickpickColors.js';
+import '../../../../platform/theme/common/colors/searchColors.js';
 import { ILanguageFeatureDebounceService } from '../../../common/services/languageFeatureDebounce.js';
 import { StopWatch } from '../../../../base/common/stopwatch.js';
 import './linkedEditing.css';
-export const CONTEXT_ONTYPE_RENAME_INPUT_VISIBLE = new RawContextKey('LinkedEditingInputVisible', false);
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var LinkedEditingContribution_1;
+const CONTEXT_ONTYPE_RENAME_INPUT_VISIBLE = new RawContextKey('LinkedEditingInputVisible', false);
 const DECORATION_CLASS_NAME = 'linked-editing-decoration';
 let LinkedEditingContribution = class LinkedEditingContribution extends Disposable {
     static { LinkedEditingContribution_1 = this; }
@@ -160,14 +171,14 @@ let LinkedEditingContribution = class LinkedEditingContribution extends Disposab
                 let newValue = referenceValue;
                 let rangeStartColumn = mirrorRange.startColumn;
                 let rangeEndColumn = mirrorRange.endColumn;
-                const commonPrefixLength = strings.commonPrefixLength(oldValue, newValue);
-                rangeStartColumn += commonPrefixLength;
-                oldValue = oldValue.substr(commonPrefixLength);
-                newValue = newValue.substr(commonPrefixLength);
-                const commonSuffixLength = strings.commonSuffixLength(oldValue, newValue);
-                rangeEndColumn -= commonSuffixLength;
-                oldValue = oldValue.substr(0, oldValue.length - commonSuffixLength);
-                newValue = newValue.substr(0, newValue.length - commonSuffixLength);
+                const commonPrefixLength$1 = commonPrefixLength(oldValue, newValue);
+                rangeStartColumn += commonPrefixLength$1;
+                oldValue = oldValue.substr(commonPrefixLength$1);
+                newValue = newValue.substr(commonPrefixLength$1);
+                const commonSuffixLength$1 = commonSuffixLength(oldValue, newValue);
+                rangeEndColumn -= commonSuffixLength$1;
+                oldValue = oldValue.substr(0, oldValue.length - commonSuffixLength$1);
+                newValue = newValue.substr(0, newValue.length - commonSuffixLength$1);
                 if (rangeStartColumn !== rangeEndColumn || newValue.length !== 0) {
                     edits.push({
                         range: new Range(mirrorRange.startLineNumber, rangeStartColumn, mirrorRange.endLineNumber, rangeEndColumn),
@@ -294,12 +305,11 @@ LinkedEditingContribution = LinkedEditingContribution_1 = __decorate([
     __param(3, ILanguageConfigurationService),
     __param(4, ILanguageFeatureDebounceService)
 ], LinkedEditingContribution);
-export { LinkedEditingContribution };
-export class LinkedEditingAction extends EditorAction {
+class LinkedEditingAction extends EditorAction {
     constructor() {
         super({
             id: 'editor.action.linkedEditing',
-            label: nls.localize2(1266, "Start Linked Editing"),
+            label: localize2(1276, "Start Linked Editing"),
             precondition: ContextKeyExpr.and(EditorContextKeys.writable, EditorContextKeys.hasRenameProvider),
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
@@ -358,13 +368,14 @@ function getLinkedEditingRanges(providers, model, position, token) {
             onUnexpectedExternalError(e);
             return undefined;
         }
-    }), result => !!result && arrays.isNonEmptyArray(result?.ranges));
+    }), result => !!result && isNonEmptyArray(result?.ranges));
 }
-export const editorLinkedEditingBackground = registerColor('editor.linkedEditingBackground', { dark: Color.fromHex('#f00').transparent(0.3), light: Color.fromHex('#f00').transparent(0.3), hcDark: Color.fromHex('#f00').transparent(0.3), hcLight: Color.white }, nls.localize(1265, 'Background color when the editor auto renames on type.'));
+registerColor('editor.linkedEditingBackground', { dark: Color.fromHex('#f00').transparent(0.3), light: Color.fromHex('#f00').transparent(0.3), hcDark: Color.fromHex('#f00').transparent(0.3), hcLight: Color.white }, localize(1275, 'Background color when the editor auto renames on type.'));
 registerModelAndPositionCommand('_executeLinkedEditingProvider', (_accessor, model, position) => {
     const { linkedEditingRangeProvider } = _accessor.get(ILanguageFeaturesService);
     return getLinkedEditingRanges(linkedEditingRangeProvider, model, position, CancellationToken.None);
 });
 registerEditorContribution(LinkedEditingContribution.ID, LinkedEditingContribution, 1 /* EditorContributionInstantiation.AfterFirstRender */);
 registerEditorAction(LinkedEditingAction);
-//# sourceMappingURL=linkedEditing.js.map
+
+export { CONTEXT_ONTYPE_RENAME_INPUT_VISIBLE, LinkedEditingAction, LinkedEditingContribution };

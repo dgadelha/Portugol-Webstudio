@@ -1,8 +1,4 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-import * as dom from '../../../../base/browser/dom.js';
+import { addDisposableListener, EventType } from '../../../../base/browser/dom.js';
 import { createTrustedTypesPolicy } from '../../../../base/browser/trustedTypes.js';
 import { equals } from '../../../../base/common/arrays.js';
 import { Disposable, DisposableStore } from '../../../../base/common/lifecycle.js';
@@ -16,7 +12,12 @@ import { LineDecoration } from '../../../common/viewLayout/lineDecorations.js';
 import { RenderLineInput, renderViewLine } from '../../../common/viewLayout/viewLineRenderer.js';
 import { foldingCollapsedIcon, foldingExpandedIcon } from '../../folding/browser/foldingDecorations.js';
 import { Emitter } from '../../../../base/common/event.js';
-export class StickyScrollWidgetState {
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+class StickyScrollWidgetState {
     constructor(startLineNumbers, endLineNumbers, lastLineRelativePosition, showEndForLine = null) {
         this.startLineNumbers = startLineNumbers;
         this.endLineNumbers = endLineNumbers;
@@ -39,11 +40,11 @@ const STICKY_INDEX_ATTR = 'data-sticky-line-index';
 const STICKY_IS_LINE_ATTR = 'data-sticky-is-line';
 const STICKY_IS_LINE_NUMBER_ATTR = 'data-sticky-is-line-number';
 const STICKY_IS_FOLDING_ICON_ATTR = 'data-sticky-is-folding-icon';
-export class StickyScrollWidget extends Disposable {
+class StickyScrollWidget extends Disposable {
     get height() { return this._height; }
     constructor(editor) {
         super();
-        this._foldingIconStore = new DisposableStore();
+        this._foldingIconStore = this._register(new DisposableStore());
         this._rootDomNode = document.createElement('div');
         this._lineNumbersDomNode = document.createElement('div');
         this._linesDomNodeScrollable = document.createElement('div');
@@ -92,7 +93,6 @@ export class StickyScrollWidget extends Disposable {
             updateScrollLeftPosition();
             this._updateWidgetWidth();
         }));
-        this._register(this._foldingIconStore);
         updateScrollLeftPosition();
         this._register(this._editor.onDidLayoutChange((e) => {
             this._updateWidgetWidth();
@@ -242,11 +242,12 @@ export class StickyScrollWidget extends Disposable {
         if (showFoldingControls !== 'mouseover') {
             return;
         }
-        this._foldingIconStore.add(dom.addDisposableListener(this._lineNumbersDomNode, dom.EventType.MOUSE_ENTER, () => {
+        this._foldingIconStore.clear();
+        this._foldingIconStore.add(addDisposableListener(this._lineNumbersDomNode, EventType.MOUSE_ENTER, () => {
             this._isOnGlyphMargin = true;
             this._setFoldingIconsVisibility(true);
         }));
-        this._foldingIconStore.add(dom.addDisposableListener(this._lineNumbersDomNode, dom.EventType.MOUSE_LEAVE, () => {
+        this._foldingIconStore.add(addDisposableListener(this._lineNumbersDomNode, EventType.MOUSE_LEAVE, () => {
             this._isOnGlyphMargin = false;
             this._useFoldingOpacityTransition(true);
             this._setFoldingIconsVisibility(false);
@@ -469,4 +470,5 @@ class StickyFoldingIcon {
         this.domNode.style.opacity = visible ? '1' : '0';
     }
 }
-//# sourceMappingURL=stickyScrollWidget.js.map
+
+export { StickyScrollWidget, StickyScrollWidgetState };

@@ -1,10 +1,6 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { Emitter } from '../../../../../../../base/common/event.js';
 import { Disposable } from '../../../../../../../base/common/lifecycle.js';
-import { autorunWithStore, derived, observableFromEvent } from '../../../../../../../base/common/observable.js';
+import '../../../../../../../base/common/observableInternal/index.js';
 import { observableCodeEditor } from '../../../../../../browser/observableCodeEditor.js';
 import { rangeIsSingleLine } from '../../../../../../browser/widget/diffEditor/components/diffEditorViewZones/diffEditorViewZones.js';
 import { OffsetRange } from '../../../../../../common/core/ranges/offsetRange.js';
@@ -12,7 +8,15 @@ import { Range } from '../../../../../../common/core/range.js';
 import { InjectedTextCursorStops } from '../../../../../../common/model.js';
 import { ModelDecorationOptions } from '../../../../../../common/model/textModel.js';
 import { classNames } from '../utils/utils.js';
-export class OriginalEditorInlineDiffView extends Disposable {
+import { derived } from '../../../../../../../base/common/observableInternal/observables/derived.js';
+import { autorunWithStore } from '../../../../../../../base/common/observableInternal/reactions/autorun.js';
+import { observableFromEvent } from '../../../../../../../base/common/observableInternal/observables/observableFromEvent.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+class OriginalEditorInlineDiffView extends Disposable {
     constructor(_originalEditor, _state, _modifiedTextModel) {
         super();
         this._originalEditor = _originalEditor;
@@ -207,4 +211,5 @@ let i = 0;
 function modelTokenizationFinished(model) {
     return observableFromEvent(model.onDidChangeTokens, () => i++);
 }
-//# sourceMappingURL=originalEditorInlineDiffView.js.map
+
+export { OriginalEditorInlineDiffView };

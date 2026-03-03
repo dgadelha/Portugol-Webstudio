@@ -1,11 +1,12 @@
+import { forEachWithNeighbors } from '../../../../base/common/arrays.js';
+import { OffsetRange } from '../../core/ranges/offsetRange.js';
+import { SequenceDiff, OffsetPair } from './algorithms/diffAlgorithm.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { forEachWithNeighbors } from '../../../../base/common/arrays.js';
-import { OffsetRange } from '../../core/ranges/offsetRange.js';
-import { OffsetPair, SequenceDiff } from './algorithms/diffAlgorithm.js';
-export function optimizeSequenceDiffs(sequence1, sequence2, sequenceDiffs) {
+function optimizeSequenceDiffs(sequence1, sequence2, sequenceDiffs) {
     let result = sequenceDiffs;
     result = joinSequenceDiffsByShifting(sequence1, sequence2, result);
     // Sometimes, calling this function twice improves the result.
@@ -153,7 +154,7 @@ function shiftDiffToBetterPosition(diff, sequence1, sequence2, seq1ValidRange, s
     }
     return diff.delta(bestDelta);
 }
-export function removeShortMatches(sequence1, sequence2, sequenceDiffs) {
+function removeShortMatches(sequence1, sequence2, sequenceDiffs) {
     const result = [];
     for (const s of sequenceDiffs) {
         const last = result[result.length - 1];
@@ -170,7 +171,7 @@ export function removeShortMatches(sequence1, sequence2, sequenceDiffs) {
     }
     return result;
 }
-export function extendDiffsToEntireWordIfAppropriate(sequence1, sequence2, sequenceDiffs, findParent, force = false) {
+function extendDiffsToEntireWordIfAppropriate(sequence1, sequence2, sequenceDiffs, findParent, force = false) {
     const equalMappings = SequenceDiff.invert(sequenceDiffs, sequence1.length);
     const additional = [];
     let lastPoint = new OffsetPair(0, 0);
@@ -249,7 +250,7 @@ function mergeSequenceDiffs(sequenceDiffs1, sequenceDiffs2) {
     }
     return result;
 }
-export function removeVeryShortMatchingLinesBetweenDiffs(sequence1, _sequence2, sequenceDiffs) {
+function removeVeryShortMatchingLinesBetweenDiffs(sequence1, _sequence2, sequenceDiffs) {
     let diffs = sequenceDiffs;
     if (diffs.length === 0) {
         return diffs;
@@ -287,7 +288,7 @@ export function removeVeryShortMatchingLinesBetweenDiffs(sequence1, _sequence2, 
     } while (counter++ < 10 && shouldRepeat);
     return diffs;
 }
-export function removeVeryShortMatchingTextBetweenLongDiffs(sequence1, sequence2, sequenceDiffs) {
+function removeVeryShortMatchingTextBetweenLongDiffs(sequence1, sequence2, sequenceDiffs) {
     let diffs = sequenceDiffs;
     if (diffs.length === 0) {
         return diffs;
@@ -369,4 +370,5 @@ export function removeVeryShortMatchingTextBetweenLongDiffs(sequence1, sequence2
     });
     return newDiffs;
 }
-//# sourceMappingURL=heuristicSequenceOptimizations.js.map
+
+export { extendDiffsToEntireWordIfAppropriate, optimizeSequenceDiffs, removeShortMatches, removeVeryShortMatchingLinesBetweenDiffs, removeVeryShortMatchingTextBetweenLongDiffs };

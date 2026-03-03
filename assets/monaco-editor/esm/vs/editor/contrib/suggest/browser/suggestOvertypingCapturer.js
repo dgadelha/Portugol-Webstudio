@@ -1,9 +1,10 @@
+import { DisposableStore } from '../../../../base/common/lifecycle.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { DisposableStore } from '../../../../base/common/lifecycle.js';
-export class OvertypingCapturer {
+class OvertypingCapturer {
     static { this._maxSelectionLength = 51200; }
     constructor(editor, suggestModel) {
         this._disposables = new DisposableStore();
@@ -57,4 +58,5 @@ export class OvertypingCapturer {
         this._disposables.dispose();
     }
 }
-//# sourceMappingURL=suggestOvertypingCapturer.js.map
+
+export { OvertypingCapturer };

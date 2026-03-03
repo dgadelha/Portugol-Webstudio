@@ -1,15 +1,16 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { equals } from '../../../../../base/common/arrays.js';
 import { splitLines } from '../../../../../base/common/strings.js';
 import { Position } from '../../../../common/core/position.js';
 import { Range } from '../../../../common/core/range.js';
-import { TextReplacement, TextEdit } from '../../../../common/core/edits/textEdit.js';
+import { TextEdit, TextReplacement } from '../../../../common/core/edits/textEdit.js';
 import { LineDecoration } from '../../../../common/viewLayout/lineDecorations.js';
 import { assertFn, checkAdjacentItems } from '../../../../../base/common/assert.js';
-export class GhostText {
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+class GhostText {
     constructor(lineNumber, parts) {
         this.lineNumber = lineNumber;
         this.parts = parts;
@@ -38,7 +39,7 @@ export class GhostText {
         return 1 + this.parts.reduce((r, p) => r + p.lines.length - 1, 0);
     }
 }
-export class GhostTextPart {
+class GhostTextPart {
     constructor(column, text, 
     /**
      * Indicates if this part is a preview of an inline suggestion when a suggestion is previewed.
@@ -60,7 +61,7 @@ export class GhostTextPart {
                 LineDecoration.equalsArr(line.lineDecorations, other.lines[index].lineDecorations));
     }
 }
-export class GhostTextReplacement {
+class GhostTextReplacement {
     constructor(lineNumber, columnRange, text, additionalReservedLineCount = 0) {
         this.lineNumber = lineNumber;
         this.columnRange = columnRange;
@@ -88,10 +89,10 @@ export class GhostTextReplacement {
             this.additionalReservedLineCount === other.additionalReservedLineCount;
     }
 }
-export function ghostTextsOrReplacementsEqual(a, b) {
+function ghostTextsOrReplacementsEqual(a, b) {
     return equals(a, b, ghostTextOrReplacementEquals);
 }
-export function ghostTextOrReplacementEquals(a, b) {
+function ghostTextOrReplacementEquals(a, b) {
     if (a === b) {
         return true;
     }
@@ -106,4 +107,5 @@ export function ghostTextOrReplacementEquals(a, b) {
     }
     return false;
 }
-//# sourceMappingURL=ghostText.js.map
+
+export { GhostText, GhostTextPart, GhostTextReplacement, ghostTextOrReplacementEquals, ghostTextsOrReplacementsEqual };

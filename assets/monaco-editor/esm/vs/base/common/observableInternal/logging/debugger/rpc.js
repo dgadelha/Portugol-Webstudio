@@ -2,7 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-export class SimpleTypedRpcConnection {
+class SimpleTypedRpcConnection {
     static createClient(channelFactory, getHandler) {
         return new SimpleTypedRpcConnection(channelFactory, getHandler);
     }
@@ -49,7 +49,9 @@ export class SimpleTypedRpcConnection {
                 };
             }
         });
+        // eslint-disable-next-line local/code-no-any-casts
         this.api = { notifications: notifications, requests: requests };
     }
 }
-//# sourceMappingURL=rpc.js.map
+
+export { SimpleTypedRpcConnection };

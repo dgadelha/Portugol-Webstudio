@@ -15,7 +15,7 @@ function countMapFrom(values) {
  * Each document is identified by a key, and the score for each document is computed
  * by taking the max score over all the chunks in the document.
  */
-export class TfIdfCalculator {
+class TfIdfCalculator {
     constructor() {
         /**
          * Total number of chunks
@@ -161,7 +161,7 @@ export class TfIdfCalculator {
  * @param scores array of scores from {@link TfIdfCalculator.calculateScores}
  * @returns normalized scores
  */
-export function normalizeTfIdfScores(scores) {
+function normalizeTfIdfScores(scores) {
     // copy of scores
     const result = scores.slice(0);
     // sort descending
@@ -175,4 +175,5 @@ export function normalizeTfIdfScores(scores) {
     }
     return result;
 }
-//# sourceMappingURL=tfIdf.js.map
+
+export { TfIdfCalculator, normalizeTfIdfScores };

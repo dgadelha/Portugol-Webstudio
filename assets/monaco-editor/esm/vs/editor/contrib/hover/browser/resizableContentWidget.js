@@ -1,15 +1,16 @@
+import { ResizableHTMLElement } from '../../../../base/browser/ui/resizable/resizable.js';
+import { Disposable } from '../../../../base/common/lifecycle.js';
+import { Position } from '../../../common/core/position.js';
+import { Dimension, getDomNodePagePosition, getClientArea } from '../../../../base/browser/dom.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { ResizableHTMLElement } from '../../../../base/browser/ui/resizable/resizable.js';
-import { Disposable } from '../../../../base/common/lifecycle.js';
-import { Position } from '../../../common/core/position.js';
-import * as dom from '../../../../base/browser/dom.js';
 const TOP_HEIGHT = 30;
 const BOTTOM_HEIGHT = 24;
-export class ResizableContentWidget extends Disposable {
-    constructor(_editor, minimumSize = new dom.Dimension(10, 10)) {
+class ResizableContentWidget extends Disposable {
+    constructor(_editor, minimumSize = new Dimension(10, 10)) {
         super();
         this._editor = _editor;
         this.allowEditorOverflow = true;
@@ -18,11 +19,11 @@ export class ResizableContentWidget extends Disposable {
         this._contentPosition = null;
         this._isResizing = false;
         this._resizableNode.domNode.style.position = 'absolute';
-        this._resizableNode.minSize = dom.Dimension.lift(minimumSize);
+        this._resizableNode.minSize = Dimension.lift(minimumSize);
         this._resizableNode.layout(minimumSize.height, minimumSize.width);
         this._resizableNode.enableSashes(true, true, true, true);
         this._register(this._resizableNode.onDidResize(e => {
-            this._resize(new dom.Dimension(e.dimension.width, e.dimension.height));
+            this._resize(new Dimension(e.dimension.width, e.dimension.height));
             if (e.done) {
                 this._isResizing = false;
             }
@@ -49,7 +50,7 @@ export class ResizableContentWidget extends Disposable {
         if (!editorDomNode || !mouseBox) {
             return;
         }
-        const editorBox = dom.getDomNodePagePosition(editorDomNode);
+        const editorBox = getDomNodePagePosition(editorDomNode);
         return editorBox.top + mouseBox.top - TOP_HEIGHT;
     }
     _availableVerticalSpaceBelow(position) {
@@ -58,8 +59,8 @@ export class ResizableContentWidget extends Disposable {
         if (!editorDomNode || !mouseBox) {
             return;
         }
-        const editorBox = dom.getDomNodePagePosition(editorDomNode);
-        const bodyBox = dom.getClientArea(editorDomNode.ownerDocument.body);
+        const editorBox = getDomNodePagePosition(editorDomNode);
+        const bodyBox = getClientArea(editorDomNode.ownerDocument.body);
         const mouseBottom = editorBox.top + mouseBox.top + mouseBox.height;
         return bodyBox.height - mouseBottom - BOTTOM_HEIGHT;
     }
@@ -87,4 +88,5 @@ export class ResizableContentWidget extends Disposable {
         this._resizableNode.layout(dimension.height, dimension.width);
     }
 }
-//# sourceMappingURL=resizableContentWidget.js.map
+
+export { ResizableContentWidget };

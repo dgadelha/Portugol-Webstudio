@@ -1,47 +1,34 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
 import './standaloneCodeEditorService.js';
 import './standaloneLayoutService.js';
 import '../../../platform/undoRedo/common/undoRedoService.js';
 import '../../common/services/languageFeatureDebounce.js';
 import '../../common/services/semanticTokensStylingService.js';
 import '../../common/services/languageFeaturesService.js';
-import '../../browser/services/hoverService/hoverService.js';
+import '../../../platform/hover/browser/hoverService.js';
 import '../../browser/services/inlineCompletionsService.js';
-import * as strings from '../../../base/common/strings.js';
-import * as dom from '../../../base/browser/dom.js';
+import { format } from '../../../base/common/strings.js';
+import { addDisposableListener, EventType } from '../../../base/browser/dom.js';
 import { StandardKeyboardEvent } from '../../../base/browser/keyboardEvent.js';
 import { Emitter } from '../../../base/common/event.js';
-import { KeyCodeChord, decodeKeybinding } from '../../../base/common/keybindings.js';
-import { ImmortalReference, toDisposable, DisposableStore, Disposable, combinedDisposable } from '../../../base/common/lifecycle.js';
+import { decodeKeybinding, KeyCodeChord } from '../../../base/common/keybindings.js';
+import { ImmortalReference, combinedDisposable, toDisposable, DisposableStore, Disposable } from '../../../base/common/lifecycle.js';
 import { OS, isLinux, isMacintosh } from '../../../base/common/platform.js';
 import Severity from '../../../base/common/severity.js';
 import { URI } from '../../../base/common/uri.js';
-import { IBulkEditService, ResourceEdit, ResourceTextEdit } from '../../browser/services/bulkEditService.js';
-import { isDiffEditorConfigurationKey, isEditorConfigurationKey } from '../../common/config/editorConfigurationSchema.js';
+import { ResourceEdit, ResourceTextEdit, IBulkEditService } from '../../browser/services/bulkEditService.js';
+import { isEditorConfigurationKey, isDiffEditorConfigurationKey } from '../../common/config/editorConfigurationSchema.js';
 import { EditOperation } from '../../common/core/editOperation.js';
-import { Position as Pos } from '../../common/core/position.js';
+import { Position } from '../../common/core/position.js';
 import { Range } from '../../common/core/range.js';
 import { IModelService } from '../../common/services/model.js';
 import { ITextModelService } from '../../common/services/resolverService.js';
 import { ITextResourceConfigurationService, ITextResourcePropertiesService } from '../../common/services/textResourceConfiguration.js';
-import { CommandsRegistry, ICommandService } from '../../../platform/commands/common/commands.js';
+import { ICommandService, CommandsRegistry } from '../../../platform/commands/common/commands.js';
 import { IConfigurationService } from '../../../platform/configuration/common/configuration.js';
 import { Configuration, ConfigurationModel, ConfigurationChangeEvent } from '../../../platform/configuration/common/configurationModels.js';
 import { IContextKeyService } from '../../../platform/contextkey/common/contextkey.js';
 import { IDialogService } from '../../../platform/dialogs/common/dialogs.js';
-import { createDecorator, IInstantiationService } from '../../../platform/instantiation/common/instantiation.js';
+import { IInstantiationService, createDecorator } from '../../../platform/instantiation/common/instantiation.js';
 import { AbstractKeybindingService } from '../../../platform/keybinding/common/abstractKeybindingService.js';
 import { IKeybindingService } from '../../../platform/keybinding/common/keybinding.js';
 import { KeybindingResolver } from '../../../platform/keybinding/common/keybindingResolver.js';
@@ -50,16 +37,16 @@ import { ResolvedKeybindingItem } from '../../../platform/keybinding/common/reso
 import { USLayoutResolvedKeybinding } from '../../../platform/keybinding/common/usLayoutResolvedKeybinding.js';
 import { ILabelService } from '../../../platform/label/common/label.js';
 import { INotificationService, NoOpNotification } from '../../../platform/notification/common/notification.js';
-import { IEditorProgressService, IProgressService } from '../../../platform/progress/common/progress.js';
+import { IProgressService, IEditorProgressService } from '../../../platform/progress/common/progress.js';
 import { ITelemetryService } from '../../../platform/telemetry/common/telemetry.js';
-import { IWorkspaceContextService, WorkspaceFolder, STANDALONE_EDITOR_WORKSPACE_ID } from '../../../platform/workspace/common/workspace.js';
+import { WorkspaceFolder, STANDALONE_EDITOR_WORKSPACE_ID, IWorkspaceContextService } from '../../../platform/workspace/common/workspace.js';
 import { ILayoutService } from '../../../platform/layout/browser/layoutService.js';
 import { StandaloneServicesNLS } from '../../common/standaloneStrings.js';
 import { basename } from '../../../base/common/resources.js';
 import { ICodeEditorService } from '../../browser/services/codeEditorService.js';
-import { ConsoleLogger, ILoggerService, ILogService, NullLoggerService } from '../../../platform/log/common/log.js';
+import { ILogService, NullLoggerService, ILoggerService, ConsoleLogger } from '../../../platform/log/common/log.js';
 import { IWorkspaceTrustManagementService } from '../../../platform/workspace/common/workspaceTrust.js';
-import { IContextMenuService, IContextViewService } from '../../../platform/contextview/browser/contextView.js';
+import { IContextViewService, IContextMenuService } from '../../../platform/contextview/browser/contextView.js';
 import { ContextViewService } from '../../../platform/contextview/browser/contextViewService.js';
 import { LanguageService } from '../../common/services/languageService.js';
 import { ContextMenuService } from '../../../platform/contextview/browser/contextMenuService.js';
@@ -84,12 +71,12 @@ import { ContextKeyService } from '../../../platform/contextkey/browser/contextK
 import { SyncDescriptor } from '../../../platform/instantiation/common/descriptors.js';
 import { InstantiationService } from '../../../platform/instantiation/common/instantiationService.js';
 import { ServiceCollection } from '../../../platform/instantiation/common/serviceCollection.js';
-import { IListService, ListService } from '../../../platform/list/browser/listService.js';
+import { ListService, IListService } from '../../../platform/list/browser/listService.js';
 import { IMarkerService } from '../../../platform/markers/common/markers.js';
 import { MarkerService } from '../../../platform/markers/common/markerService.js';
 import { IOpenerService } from '../../../platform/opener/common/opener.js';
 import { IQuickInputService } from '../../../platform/quickinput/common/quickInput.js';
-import { IStorageService, InMemoryStorageService } from '../../../platform/storage/common/storage.js';
+import { InMemoryStorageService, IStorageService } from '../../../platform/storage/common/storage.js';
 import { DefaultConfiguration } from '../../../platform/configuration/common/configurations.js';
 import { IAccessibilitySignalService } from '../../../platform/accessibilitySignal/browser/accessibilitySignalService.js';
 import { ILanguageFeaturesService } from '../../common/services/languageFeatures.js';
@@ -102,7 +89,21 @@ import { mainWindow } from '../../../base/browser/window.js';
 import { ResourceMap } from '../../../base/common/map.js';
 import { ITreeSitterLibraryService } from '../../common/services/treeSitter/treeSitterLibraryService.js';
 import { StandaloneTreeSitterLibraryService } from './standaloneTreeSitterLibraryService.js';
-import { IDataChannelService, NullDataChannelService } from '../../../platform/dataChannel/common/dataChannel.js';
+import { NullDataChannelService, IDataChannelService } from '../../../platform/dataChannel/common/dataChannel.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 class SimpleModel {
     constructor(model) {
         this.disposed = false;
@@ -189,7 +190,7 @@ class StandaloneDialogService {
         await this.prompt({ type: Severity.Error, message, detail });
     }
 }
-export class StandaloneNotificationService {
+class StandaloneNotificationService {
     static { this.NO_OP = new NoOpNotification(); }
     info(message) {
         return this.notify({ severity: Severity.Info, message });
@@ -247,7 +248,6 @@ let StandaloneCommandService = class StandaloneCommandService {
 StandaloneCommandService = __decorate([
     __param(0, IInstantiationService)
 ], StandaloneCommandService);
-export { StandaloneCommandService };
 let StandaloneKeybindingService = class StandaloneKeybindingService extends AbstractKeybindingService {
     constructor(contextKeyService, commandService, telemetryService, notificationService, logService, codeEditorService) {
         super(contextKeyService, commandService, telemetryService, notificationService, logService);
@@ -257,7 +257,7 @@ let StandaloneKeybindingService = class StandaloneKeybindingService extends Abst
         const addContainer = (domNode) => {
             const disposables = new DisposableStore();
             // for standard keybindings
-            disposables.add(dom.addDisposableListener(domNode, dom.EventType.KEY_DOWN, (e) => {
+            disposables.add(addDisposableListener(domNode, EventType.KEY_DOWN, (e) => {
                 const keyEvent = new StandardKeyboardEvent(e);
                 const shouldPreventDefault = this._dispatch(keyEvent, keyEvent.target);
                 if (shouldPreventDefault) {
@@ -266,7 +266,7 @@ let StandaloneKeybindingService = class StandaloneKeybindingService extends Abst
                 }
             }));
             // for single modifier chord keybindings (e.g. shift shift)
-            disposables.add(dom.addDisposableListener(domNode, dom.EventType.KEY_UP, (e) => {
+            disposables.add(addDisposableListener(domNode, EventType.KEY_UP, (e) => {
                 const keyEvent = new StandardKeyboardEvent(e);
                 const shouldPreventDefault = this._singleModifierDispatch(keyEvent, keyEvent.target);
                 if (shouldPreventDefault) {
@@ -390,7 +390,6 @@ StandaloneKeybindingService = __decorate([
     __param(4, ILogService),
     __param(5, ICodeEditorService)
 ], StandaloneKeybindingService);
-export { StandaloneKeybindingService };
 class DomNodeListeners extends Disposable {
     constructor(domNode, disposables) {
         super();
@@ -399,7 +398,7 @@ class DomNodeListeners extends Disposable {
     }
 }
 function isConfigurationOverrides(thing) {
-    return thing
+    return !!thing
         && typeof thing === 'object'
         && (!thing.overrideIdentifier || typeof thing.overrideIdentifier === 'string')
         && (!thing.resource || thing.resource instanceof URI);
@@ -446,7 +445,6 @@ let StandaloneConfigurationService = class StandaloneConfigurationService {
 StandaloneConfigurationService = __decorate([
     __param(0, ILogService)
 ], StandaloneConfigurationService);
-export { StandaloneConfigurationService };
 let StandaloneResourceConfigurationService = class StandaloneResourceConfigurationService {
     constructor(configurationService, modelService, languageService) {
         this.configurationService = configurationService;
@@ -458,7 +456,7 @@ let StandaloneResourceConfigurationService = class StandaloneResourceConfigurati
         });
     }
     getValue(resource, arg2, arg3) {
-        const position = Pos.isIPosition(arg2) ? arg2 : null;
+        const position = Position.isIPosition(arg2) ? arg2 : null;
         const section = position ? (typeof arg3 === 'string' ? arg3 : undefined) : (typeof arg2 === 'string' ? arg2 : undefined);
         const language = resource ? this.getLanguage(resource, position) : undefined;
         if (typeof section === 'undefined') {
@@ -516,7 +514,7 @@ class StandaloneWorkspaceContextService {
         return resource && resource.scheme === StandaloneWorkspaceContextService.SCHEME ? this.workspace.folders[0] : null;
     }
 }
-export function updateConfigurationService(configurationService, source, isDiffEditor) {
+function updateConfigurationService(configurationService, source, isDiffEditor) {
     if (!source) {
         return;
     }
@@ -575,7 +573,7 @@ let StandaloneBulkEditService = class StandaloneBulkEditService {
             totalEdits += edits.length;
         }
         return {
-            ariaSummary: strings.format(StandaloneServicesNLS.bulkEditServiceSummary, totalEdits, totalFiles),
+            ariaSummary: format(StandaloneServicesNLS.bulkEditServiceSummary, totalEdits, totalFiles),
             isApplied: totalEdits > 0
         };
     }
@@ -707,7 +705,7 @@ registerSingleton(IDataChannelService, NullDataChannelService, 0 /* Instantiatio
  * We don't want to eagerly instantiate services because embedders get a one time chance
  * to override services when they create the first editor.
  */
-export var StandaloneServices;
+var StandaloneServices;
 (function (StandaloneServices) {
     const serviceCollection = new ServiceCollection();
     for (const [id, descriptor] of getSingletonServiceDescriptors()) {
@@ -785,4 +783,5 @@ export var StandaloneServices;
     }
     StandaloneServices.withServices = withServices;
 })(StandaloneServices || (StandaloneServices = {}));
-//# sourceMappingURL=standaloneServices.js.map
+
+export { StandaloneCommandService, StandaloneConfigurationService, StandaloneKeybindingService, StandaloneNotificationService, StandaloneServices, updateConfigurationService };

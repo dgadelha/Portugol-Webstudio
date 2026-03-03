@@ -1,17 +1,4 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-import * as objects from '../../../../base/common/objects.js';
+import { mixin } from '../../../../base/common/objects.js';
 import { ICodeEditorService } from '../../services/codeEditorService.js';
 import { CodeEditorWidget } from './codeEditorWidget.js';
 import { ILanguageConfigurationService } from '../../../common/languages/languageConfigurationRegistry.js';
@@ -22,6 +9,20 @@ import { IContextKeyService } from '../../../../platform/contextkey/common/conte
 import { IInstantiationService } from '../../../../platform/instantiation/common/instantiation.js';
 import { INotificationService } from '../../../../platform/notification/common/notification.js';
 import { IThemeService } from '../../../../platform/theme/common/themeService.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 let EmbeddedCodeEditorWidget = class EmbeddedCodeEditorWidget extends CodeEditorWidget {
     constructor(domElement, options, codeEditorWidgetOptions, parentEditor, instantiationService, codeEditorService, commandService, contextKeyService, themeService, notificationService, accessibilityService, languageConfigurationService, languageFeaturesService) {
         super(domElement, { ...parentEditor.getRawOptions(), overflowWidgetsDomNode: parentEditor.getOverflowWidgetsDomNode() }, codeEditorWidgetOptions, instantiationService, codeEditorService, commandService, contextKeyService, themeService, notificationService, accessibilityService, languageConfigurationService, languageFeaturesService);
@@ -39,7 +40,7 @@ let EmbeddedCodeEditorWidget = class EmbeddedCodeEditorWidget extends CodeEditor
         super.updateOptions(this._overwriteOptions);
     }
     updateOptions(newOptions) {
-        objects.mixin(this._overwriteOptions, newOptions, true);
+        mixin(this._overwriteOptions, newOptions, true);
         super.updateOptions(this._overwriteOptions);
     }
 };
@@ -54,12 +55,12 @@ EmbeddedCodeEditorWidget = __decorate([
     __param(11, ILanguageConfigurationService),
     __param(12, ILanguageFeaturesService)
 ], EmbeddedCodeEditorWidget);
-export { EmbeddedCodeEditorWidget };
-export function getOuterEditor(accessor) {
+function getOuterEditor(accessor) {
     const editor = accessor.get(ICodeEditorService).getFocusedCodeEditor();
     if (editor instanceof EmbeddedCodeEditorWidget) {
         return editor.getParentEditor();
     }
     return editor;
 }
-//# sourceMappingURL=embeddedCodeEditorWidget.js.map
+
+export { EmbeddedCodeEditorWidget, getOuterEditor };

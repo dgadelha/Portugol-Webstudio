@@ -1,25 +1,36 @@
+import { Codicon } from '../../../../base/common/codicons.js';
+import { ModelDecorationOptions } from '../../../common/model/textModel.js';
+import { localize } from '../../../../nls.js';
+import { registerColor, transparent } from '../../../../platform/theme/common/colorUtils.js';
+import { iconForeground } from '../../../../platform/theme/common/colors/baseColors.js';
+import '../../../../platform/theme/common/colors/chartsColors.js';
+import { editorSelectionBackground } from '../../../../platform/theme/common/colors/editorColors.js';
+import '../../../../platform/theme/common/colors/inputColors.js';
+import '../../../../platform/theme/common/colors/listColors.js';
+import '../../../../platform/theme/common/colors/menuColors.js';
+import '../../../../platform/theme/common/colors/minimapColors.js';
+import '../../../../platform/theme/common/colors/miscColors.js';
+import '../../../../platform/theme/common/colors/quickpickColors.js';
+import '../../../../platform/theme/common/colors/searchColors.js';
+import { registerIcon } from '../../../../platform/theme/common/iconRegistry.js';
+import { themeColorFromId } from '../../../../platform/theme/common/themeService.js';
+import { ThemeIcon } from '../../../../base/common/themables.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { Codicon } from '../../../../base/common/codicons.js';
-import { ModelDecorationOptions } from '../../../common/model/textModel.js';
-import { localize } from '../../../../nls.js';
-import { editorSelectionBackground, iconForeground, registerColor, transparent } from '../../../../platform/theme/common/colorRegistry.js';
-import { registerIcon } from '../../../../platform/theme/common/iconRegistry.js';
-import { themeColorFromId } from '../../../../platform/theme/common/themeService.js';
-import { ThemeIcon } from '../../../../base/common/themables.js';
-const foldBackground = registerColor('editor.foldBackground', { light: transparent(editorSelectionBackground, 0.3), dark: transparent(editorSelectionBackground, 0.3), hcDark: null, hcLight: null }, localize(997, "Background color behind folded ranges. The color must not be opaque so as not to hide underlying decorations."), true);
-registerColor('editor.foldPlaceholderForeground', { light: '#808080', dark: '#808080', hcDark: null, hcLight: null }, localize(998, "Color of the collapsed text after the first line of a folded range."));
-registerColor('editorGutter.foldingControlForeground', iconForeground, localize(999, 'Color of the folding control in the editor gutter.'));
-export const foldingExpandedIcon = registerIcon('folding-expanded', Codicon.chevronDown, localize(1000, 'Icon for expanded ranges in the editor glyph margin.'));
-export const foldingCollapsedIcon = registerIcon('folding-collapsed', Codicon.chevronRight, localize(1001, 'Icon for collapsed ranges in the editor glyph margin.'));
-export const foldingManualCollapsedIcon = registerIcon('folding-manual-collapsed', foldingCollapsedIcon, localize(1002, 'Icon for manually collapsed ranges in the editor glyph margin.'));
-export const foldingManualExpandedIcon = registerIcon('folding-manual-expanded', foldingExpandedIcon, localize(1003, 'Icon for manually expanded ranges in the editor glyph margin.'));
+const foldBackground = registerColor('editor.foldBackground', { light: transparent(editorSelectionBackground, 0.3), dark: transparent(editorSelectionBackground, 0.3), hcDark: null, hcLight: null }, localize(1002, "Background color behind folded ranges. The color must not be opaque so as not to hide underlying decorations."), true);
+registerColor('editor.foldPlaceholderForeground', { light: '#808080', dark: '#808080', hcDark: null, hcLight: null }, localize(1003, "Color of the collapsed text after the first line of a folded range."));
+registerColor('editorGutter.foldingControlForeground', iconForeground, localize(1004, 'Color of the folding control in the editor gutter.'));
+const foldingExpandedIcon = registerIcon('folding-expanded', Codicon.chevronDown, localize(1005, 'Icon for expanded ranges in the editor glyph margin.'));
+const foldingCollapsedIcon = registerIcon('folding-collapsed', Codicon.chevronRight, localize(1006, 'Icon for collapsed ranges in the editor glyph margin.'));
+const foldingManualCollapsedIcon = registerIcon('folding-manual-collapsed', foldingCollapsedIcon, localize(1007, 'Icon for manually collapsed ranges in the editor glyph margin.'));
+const foldingManualExpandedIcon = registerIcon('folding-manual-expanded', foldingExpandedIcon, localize(1008, 'Icon for manually expanded ranges in the editor glyph margin.'));
 const foldedBackgroundMinimap = { color: themeColorFromId(foldBackground), position: 1 /* MinimapPosition.Inline */ };
-const collapsed = localize(1004, "Click to expand the range.");
-const expanded = localize(1005, "Click to collapse the range.");
-export class FoldingDecorationProvider {
+const collapsed = localize(1009, "Click to expand the range.");
+const expanded = localize(1010, "Click to collapse the range.");
+class FoldingDecorationProvider {
     static { this.COLLAPSED_VISUAL_DECORATION = ModelDecorationOptions.register({
         description: 'folding-collapsed-visual-decoration',
         stickiness: 0 /* TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges */,
@@ -143,4 +154,5 @@ export class FoldingDecorationProvider {
         this.editor.removeDecorations(decorationIds);
     }
 }
-//# sourceMappingURL=foldingDecorations.js.map
+
+export { FoldingDecorationProvider, foldingCollapsedIcon, foldingExpandedIcon, foldingManualCollapsedIcon, foldingManualExpandedIcon };

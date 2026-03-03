@@ -1,18 +1,4 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-var ColorDetector_1;
-import { createCancelablePromise, TimeoutTimer } from '../../../../base/common/async.js';
+import { TimeoutTimer, createCancelablePromise } from '../../../../base/common/async.js';
 import { RGBA } from '../../../../base/common/color.js';
 import { onUnexpectedError } from '../../../../base/common/errors.js';
 import { Emitter } from '../../../../base/common/event.js';
@@ -26,7 +12,22 @@ import { ILanguageFeatureDebounceService } from '../../../common/services/langua
 import { ILanguageFeaturesService } from '../../../common/services/languageFeatures.js';
 import { getColors } from './color.js';
 import { IConfigurationService } from '../../../../platform/configuration/common/configuration.js';
-export const ColorDecorationInjectedTextMarker = Object.create({});
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var ColorDetector_1;
+const ColorDecorationInjectedTextMarker = Object.create({});
 let ColorDetector = class ColorDetector extends Disposable {
     static { ColorDetector_1 = this; }
     static { this.ID = 'editor.contrib.colorDetector'; }
@@ -80,6 +81,7 @@ let ColorDetector = class ColorDetector extends Disposable {
         // handle deprecated settings. [languageId].colorDecorators.enable
         const deprecatedConfig = this._configurationService.getValue(languageId);
         if (deprecatedConfig && typeof deprecatedConfig === 'object') {
+            // eslint-disable-next-line local/code-no-any-casts
             const colorDecorators = deprecatedConfig['colorDecorators']; // deprecatedConfig.valueOf('.colorDecorators.enable');
             if (colorDecorators && colorDecorators['enable'] !== undefined && !colorDecorators['enable']) {
                 return colorDecorators['enable'];
@@ -224,8 +226,7 @@ ColorDetector = ColorDetector_1 = __decorate([
     __param(2, ILanguageFeaturesService),
     __param(3, ILanguageFeatureDebounceService)
 ], ColorDetector);
-export { ColorDetector };
-export class DecoratorLimitReporter extends Disposable {
+class DecoratorLimitReporter extends Disposable {
     constructor() {
         super(...arguments);
         this._onDidChange = this._register(new Emitter());
@@ -240,4 +241,5 @@ export class DecoratorLimitReporter extends Disposable {
         }
     }
 }
-//# sourceMappingURL=colorDetector.js.map
+
+export { ColorDecorationInjectedTextMarker, ColorDetector, DecoratorLimitReporter };

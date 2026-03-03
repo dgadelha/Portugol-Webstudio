@@ -1,15 +1,16 @@
+import { ListAstNode } from './ast.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { ListAstNode } from './ast.js';
 /**
  * Concatenates a list of (2,3) AstNode's into a single (2,3) AstNode.
  * This mutates the items of the input array!
  * If all items have the same height, this method has runtime O(items.length).
  * Otherwise, it has runtime O(items.length * max(log(items.length), items.max(i => i.height))).
 */
-export function concat23Trees(items) {
+function concat23Trees(items) {
     if (items.length === 0) {
         return null;
     }
@@ -57,7 +58,7 @@ export function concat23Trees(items) {
     const result = concat(first, second);
     return result;
 }
-export function concat23TreesOfSameHeight(items, createImmutableLists = false) {
+function concat23TreesOfSameHeight(items, createImmutableLists = false) {
     if (items.length === 0) {
         return null;
     }
@@ -187,4 +188,5 @@ function prepend(list, nodeToAppend) {
         return list;
     }
 }
-//# sourceMappingURL=concat23Trees.js.map
+
+export { concat23Trees, concat23TreesOfSameHeight };

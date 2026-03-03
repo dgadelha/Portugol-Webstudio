@@ -1,21 +1,8 @@
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { h } from '../../../../base/browser/dom.js';
 import { Button } from '../../../../base/browser/ui/button/button.js';
 import { Codicon } from '../../../../base/common/codicons.js';
 import { Disposable, DisposableStore } from '../../../../base/common/lifecycle.js';
-import { autorun, derived, globalTransaction, observableValue } from '../../../../base/common/observable.js';
+import '../../../../base/common/observableInternal/index.js';
 import { createActionViewItem } from '../../../../platform/actions/browser/menuEntryActionViewItem.js';
 import { MenuWorkbenchToolBar } from '../../../../platform/actions/browser/toolbar.js';
 import { MenuId } from '../../../../platform/actions/common/actions.js';
@@ -25,7 +12,21 @@ import { ServiceCollection } from '../../../../platform/instantiation/common/ser
 import { observableCodeEditor } from '../../observableCodeEditor.js';
 import { DiffEditorWidget } from '../diffEditor/diffEditorWidget.js';
 import { ActionRunnerWithContext } from './utils.js';
-export class TemplateData {
+import { globalTransaction } from '../../../../base/common/observableInternal/transaction.js';
+import { observableValue } from '../../../../base/common/observableInternal/observables/observableValue.js';
+import { derived } from '../../../../base/common/observableInternal/observables/derived.js';
+import { autorun } from '../../../../base/common/observableInternal/reactions/autorun.js';
+
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+class TemplateData {
     constructor(viewModel, deltaScrollVertical) {
         this.viewModel = viewModel;
         this.deltaScrollVertical = deltaScrollVertical;
@@ -67,8 +68,10 @@ let DiffEditorItemTemplate = class DiffEditorItemTemplate extends Disposable {
                 h('div.header-content', [
                     h('div.collapse-button@collapseButton'),
                     h('div.file-path', [
+                        // eslint-disable-next-line local/code-no-any-casts, @typescript-eslint/no-explicit-any
                         h('div.title.modified.show-file-icons@primaryPath', []),
                         h('div.status.deleted@status', ['R']),
+                        // eslint-disable-next-line local/code-no-any-casts, @typescript-eslint/no-explicit-any
                         h('div.title.original.show-file-icons@secondaryPath', []),
                     ]),
                     h('div.actions@actions'),
@@ -80,6 +83,7 @@ let DiffEditorItemTemplate = class DiffEditorItemTemplate extends Disposable {
         ]);
         this.editor = this._register(this._instantiationService.createInstance(DiffEditorWidget, this._elements.editor, {
             overflowWidgetsDomNode: this._overflowWidgetsDomNode,
+            fixedOverflowWidgets: true
         }, {}));
         this.isModifedFocused = observableCodeEditor(this.editor.getModifiedEditor()).isFocused;
         this.isOriginalFocused = observableCodeEditor(this.editor.getOriginalEditor()).isFocused;
@@ -139,7 +143,7 @@ let DiffEditorItemTemplate = class DiffEditorItemTemplate extends Disposable {
         this._contextKeyService = this._register(_parentContextKeyService.createScoped(this._elements.actions));
         const instantiationService = this._register(this._instantiationService.createChild(new ServiceCollection([IContextKeyService, this._contextKeyService])));
         this._register(instantiationService.createInstance(MenuWorkbenchToolBar, this._elements.actions, MenuId.MultiDiffEditorFileToolbar, {
-            actionRunner: this._register(new ActionRunnerWithContext(() => (this._viewModel.get()?.modifiedUri))),
+            actionRunner: this._register(new ActionRunnerWithContext(() => (this._viewModel.get()?.modifiedUri ?? this._viewModel.get()?.originalUri))),
             menuOptions: {
                 shouldForwardArgs: true,
             },
@@ -264,5 +268,5 @@ DiffEditorItemTemplate = __decorate([
     __param(3, IInstantiationService),
     __param(4, IContextKeyService)
 ], DiffEditorItemTemplate);
-export { DiffEditorItemTemplate };
-//# sourceMappingURL=diffEditorItemTemplate.js.map
+
+export { DiffEditorItemTemplate, TemplateData };

@@ -1,15 +1,16 @@
+import { createFastDomNode } from '../../../../base/browser/fastDomNode.js';
+import { OverviewZoneManager } from '../../../common/viewModel/overviewZoneManager.js';
+import { ViewEventHandler } from '../../../common/viewEventHandler.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { createFastDomNode } from '../../../../base/browser/fastDomNode.js';
-import { OverviewZoneManager } from '../../../common/viewModel/overviewZoneManager.js';
-import { ViewEventHandler } from '../../../common/viewEventHandler.js';
 /**
  * The overview ruler appears underneath the editor scroll bar and shows things
  * like the cursor, various decorations, etc.
  */
-export class OverviewRuler extends ViewEventHandler {
+class OverviewRuler extends ViewEventHandler {
     constructor(context, cssClassName) {
         super();
         this._context = context;
@@ -129,4 +130,5 @@ export class OverviewRuler extends ViewEventHandler {
         ctx.fillRect(0, currentFrom, width, currentTo - currentFrom);
     }
 }
-//# sourceMappingURL=overviewRuler.js.map
+
+export { OverviewRuler };

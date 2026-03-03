@@ -1,13 +1,14 @@
+import { onUnexpectedExternalError } from '../../../../base/common/errors.js';
+import { DisposableStore } from '../../../../base/common/lifecycle.js';
+import { MAX_LINE_NUMBER, FoldingRegions } from './foldingRanges.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { onUnexpectedExternalError } from '../../../../base/common/errors.js';
-import { DisposableStore } from '../../../../base/common/lifecycle.js';
-import { FoldingRegions, MAX_LINE_NUMBER } from './foldingRanges.js';
 const foldingContext = {};
 const ID_SYNTAX_PROVIDER = 'syntax';
-export class SyntaxRangeProvider {
+class SyntaxRangeProvider {
     constructor(editorModel, providers, handleFoldingRangesChange, foldingRangesLimit, fallbackRangeProvider // used when all providers return null
     ) {
         this.editorModel = editorModel;
@@ -132,7 +133,7 @@ class RangesCollector {
         }
     }
 }
-export function sanitizeRanges(rangeData, foldingRangesLimit) {
+function sanitizeRanges(rangeData, foldingRangesLimit) {
     const sorted = rangeData.sort((d1, d2) => {
         let diff = d1.start - d2.start;
         if (diff === 0) {
@@ -172,4 +173,5 @@ export function sanitizeRanges(rangeData, foldingRangesLimit) {
     }
     return collector.toIndentRanges();
 }
-//# sourceMappingURL=syntaxRangeProvider.js.map
+
+export { SyntaxRangeProvider, sanitizeRanges };

@@ -1,13 +1,14 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { Emitter } from '../../../base/common/event.js';
 import { Disposable } from '../../../base/common/lifecycle.js';
 import { Scrollable } from '../../../base/common/scrollable.js';
 import { LinesLayout } from './linesLayout.js';
 import { Viewport } from '../viewModel.js';
 import { ContentSizeChangedEvent } from '../viewModelEventDispatcher.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
 const SMOOTH_SCROLLING_TIME = 125;
 class EditorScrollDimensions {
     constructor(width, contentWidth, height, contentHeight) {
@@ -100,7 +101,7 @@ class EditorScrollable extends Disposable {
         return this._scrollable.hasPendingScrollAnimation();
     }
 }
-export class ViewLayout extends Disposable {
+class ViewLayout extends Disposable {
     constructor(configuration, lineCount, customLineHeightData, scheduleAtNextAnimationFrame) {
         super();
         this._configuration = configuration;
@@ -363,4 +364,5 @@ export class ViewLayout extends Disposable {
         });
     }
 }
-//# sourceMappingURL=viewLayout.js.map
+
+export { ViewLayout };

@@ -1,4 +1,4 @@
-export var EditorOpenSource;
+var EditorOpenSource;
 (function (EditorOpenSource) {
     /**
      * Default: the editor is opening via a programmatic call
@@ -11,4 +11,5 @@ export var EditorOpenSource;
      */
     EditorOpenSource[EditorOpenSource["USER"] = 1] = "USER";
 })(EditorOpenSource || (EditorOpenSource = {}));
-//# sourceMappingURL=editor.js.map
+
+export { EditorOpenSource };

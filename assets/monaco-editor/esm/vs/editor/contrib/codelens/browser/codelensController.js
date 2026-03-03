@@ -1,32 +1,33 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-import { createCancelablePromise, disposableTimeout, RunOnceScheduler } from '../../../../base/common/async.js';
+import { RunOnceScheduler, disposableTimeout, createCancelablePromise } from '../../../../base/common/async.js';
 import { onUnexpectedError, onUnexpectedExternalError } from '../../../../base/common/errors.js';
 import { DisposableStore, toDisposable } from '../../../../base/common/lifecycle.js';
 import { StableEditorScrollState } from '../../../browser/stableEditorScroll.js';
-import { EditorAction, registerEditorAction, registerEditorContribution } from '../../../browser/editorExtensions.js';
-import { EDITOR_FONT_DEFAULTS } from '../../../common/config/editorOptions.js';
+import { registerEditorContribution, registerEditorAction, EditorAction } from '../../../browser/editorExtensions.js';
+import { EDITOR_FONT_DEFAULTS } from '../../../common/config/fontInfo.js';
 import { EditorContextKeys } from '../../../common/editorContextKeys.js';
 import { getCodeLensModel } from './codelens.js';
 import { ICodeLensCache } from './codeLensCache.js';
 import { CodeLensHelper, CodeLensWidget } from './codelensWidget.js';
-import { localize, localize2 } from '../../../../nls.js';
+import { localize2, localize } from '../../../../nls.js';
 import { ICommandService } from '../../../../platform/commands/common/commands.js';
 import { INotificationService } from '../../../../platform/notification/common/notification.js';
 import { IQuickInputService } from '../../../../platform/quickinput/common/quickInput.js';
 import { ILanguageFeatureDebounceService } from '../../../common/services/languageFeatureDebounce.js';
 import { ILanguageFeaturesService } from '../../../common/services/languageFeatures.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 let CodeLensContribution = class CodeLensContribution {
     static { this.ID = 'css.editor.codeLens'; }
     constructor(_editor, _languageFeaturesService, debounceService, _commandService, _notificationService, _codeLensCache) {
@@ -397,14 +398,13 @@ CodeLensContribution = __decorate([
     __param(4, INotificationService),
     __param(5, ICodeLensCache)
 ], CodeLensContribution);
-export { CodeLensContribution };
 registerEditorContribution(CodeLensContribution.ID, CodeLensContribution, 1 /* EditorContributionInstantiation.AfterFirstRender */);
 registerEditorAction(class ShowLensesInCurrentLine extends EditorAction {
     constructor() {
         super({
             id: 'codelens.showLensesInCurrentLine',
             precondition: EditorContextKeys.hasCodeLensProvider,
-            label: localize2(880, "Show CodeLens Commands for Current Line"),
+            label: localize2(884, "Show CodeLens Commands for Current Line"),
         });
     }
     async run(accessor, editor) {
@@ -439,7 +439,7 @@ registerEditorAction(class ShowLensesInCurrentLine extends EditorAction {
         }
         const item = await quickInputService.pick(items, {
             canPickMany: false,
-            placeHolder: localize(879, "Select a command")
+            placeHolder: localize(883, "Select a command")
         });
         if (!item) {
             // Nothing picked
@@ -465,4 +465,5 @@ registerEditorAction(class ShowLensesInCurrentLine extends EditorAction {
         }
     }
 });
-//# sourceMappingURL=codelensController.js.map
+
+export { CodeLensContribution };

@@ -1,10 +1,10 @@
+import { commonPrefixLength, commonSuffixLength } from '../../../../../base/common/strings.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { commonPrefixLength, commonSuffixLength } from '../../../../../base/common/strings.js';
-export const _debugComposition = false;
-export class TextAreaState {
+class TextAreaState {
     static { this.EMPTY = new TextAreaState('', 0, 0, null, undefined); }
     constructor(value, 
     /** the offset where selection starts inside `value` */
@@ -53,9 +53,6 @@ export class TextAreaState {
         return selectionsEqual && valuesEqual;
     }
     writeToTextArea(reason, textArea, select) {
-        if (_debugComposition) {
-            console.log(`writeToTextArea ${reason}: ${this.toString()}`);
-        }
         textArea.setValue(reason, this.value);
         if (select) {
             textArea.setSelectionRange(reason, this.selectionStart, this.selectionEnd);
@@ -95,29 +92,17 @@ export class TextAreaState {
                 positionDelta: 0
             };
         }
-        if (_debugComposition) {
-            console.log('------------------------deduceInput');
-            console.log(`PREVIOUS STATE: ${previousState.toString()}`);
-            console.log(`CURRENT STATE: ${currentState.toString()}`);
-        }
         const prefixLength = Math.min(commonPrefixLength(previousState.value, currentState.value), previousState.selectionStart, currentState.selectionStart);
         const suffixLength = Math.min(commonSuffixLength(previousState.value, currentState.value), previousState.value.length - previousState.selectionEnd, currentState.value.length - currentState.selectionEnd);
-        const previousValue = previousState.value.substring(prefixLength, previousState.value.length - suffixLength);
+        previousState.value.substring(prefixLength, previousState.value.length - suffixLength);
         const currentValue = currentState.value.substring(prefixLength, currentState.value.length - suffixLength);
         const previousSelectionStart = previousState.selectionStart - prefixLength;
         const previousSelectionEnd = previousState.selectionEnd - prefixLength;
         const currentSelectionStart = currentState.selectionStart - prefixLength;
         const currentSelectionEnd = currentState.selectionEnd - prefixLength;
-        if (_debugComposition) {
-            console.log(`AFTER DIFFING PREVIOUS STATE: <${previousValue}>, selectionStart: ${previousSelectionStart}, selectionEnd: ${previousSelectionEnd}`);
-            console.log(`AFTER DIFFING CURRENT STATE: <${currentValue}>, selectionStart: ${currentSelectionStart}, selectionEnd: ${currentSelectionEnd}`);
-        }
         if (currentSelectionStart === currentSelectionEnd) {
             // no current selection
             const replacePreviousCharacters = (previousState.selectionStart - prefixLength);
-            if (_debugComposition) {
-                console.log(`REMOVE PREVIOUS: ${replacePreviousCharacters} chars`);
-            }
             return {
                 text: currentValue,
                 replacePrevCharCnt: replacePreviousCharacters,
@@ -144,11 +129,6 @@ export class TextAreaState {
                 positionDelta: 0
             };
         }
-        if (_debugComposition) {
-            console.log('------------------------deduceAndroidCompositionInput');
-            console.log(`PREVIOUS STATE: ${previousState.toString()}`);
-            console.log(`CURRENT STATE: ${currentState.toString()}`);
-        }
         if (previousState.value === currentState.value) {
             return {
                 text: '',
@@ -161,14 +141,10 @@ export class TextAreaState {
         const suffixLength = Math.min(commonSuffixLength(previousState.value, currentState.value), previousState.value.length - previousState.selectionEnd);
         const previousValue = previousState.value.substring(prefixLength, previousState.value.length - suffixLength);
         const currentValue = currentState.value.substring(prefixLength, currentState.value.length - suffixLength);
-        const previousSelectionStart = previousState.selectionStart - prefixLength;
+        previousState.selectionStart - prefixLength;
         const previousSelectionEnd = previousState.selectionEnd - prefixLength;
-        const currentSelectionStart = currentState.selectionStart - prefixLength;
+        currentState.selectionStart - prefixLength;
         const currentSelectionEnd = currentState.selectionEnd - prefixLength;
-        if (_debugComposition) {
-            console.log(`AFTER DIFFING PREVIOUS STATE: <${previousValue}>, selectionStart: ${previousSelectionStart}, selectionEnd: ${previousSelectionEnd}`);
-            console.log(`AFTER DIFFING CURRENT STATE: <${currentValue}>, selectionStart: ${currentSelectionStart}, selectionEnd: ${currentSelectionEnd}`);
-        }
         return {
             text: currentValue,
             replacePrevCharCnt: previousSelectionEnd,
@@ -180,4 +156,5 @@ export class TextAreaState {
         return new TextAreaState(screenReaderContentState.value, screenReaderContentState.selectionStart, screenReaderContentState.selectionEnd, screenReaderContentState.selection, screenReaderContentState.newlineCountBeforeSelection);
     }
 }
-//# sourceMappingURL=textAreaEditContextState.js.map
+
+export { TextAreaState };

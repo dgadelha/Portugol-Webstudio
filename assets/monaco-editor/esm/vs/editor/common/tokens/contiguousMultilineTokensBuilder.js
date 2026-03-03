@@ -1,5 +1,6 @@
 import { ContiguousMultilineTokens } from './contiguousMultilineTokens.js';
-export class ContiguousMultilineTokensBuilder {
+
+class ContiguousMultilineTokensBuilder {
     constructor() {
         this._tokens = [];
     }
@@ -18,4 +19,5 @@ export class ContiguousMultilineTokensBuilder {
         return this._tokens;
     }
 }
-//# sourceMappingURL=contiguousMultilineTokensBuilder.js.map
+
+export { ContiguousMultilineTokensBuilder };

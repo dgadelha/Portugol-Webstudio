@@ -1,26 +1,27 @@
+import { EditorAction, EditorAction2 } from '../../../../browser/editorExtensions.js';
+import { localize2, localize } from '../../../../../nls.js';
+import { EditorContextKeys } from '../../../../common/editorContextKeys.js';
+import { MenuId } from '../../../../../platform/actions/common/actions.js';
+import { StandaloneColorPickerController } from './standaloneColorPickerController.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { EditorAction, EditorAction2 } from '../../../../browser/editorExtensions.js';
-import { localize, localize2 } from '../../../../../nls.js';
-import { EditorContextKeys } from '../../../../common/editorContextKeys.js';
-import { MenuId } from '../../../../../platform/actions/common/actions.js';
-import { StandaloneColorPickerController } from './standaloneColorPickerController.js';
-export class ShowOrFocusStandaloneColorPicker extends EditorAction2 {
+class ShowOrFocusStandaloneColorPicker extends EditorAction2 {
     constructor() {
         super({
             id: 'editor.action.showOrFocusStandaloneColorPicker',
             title: {
-                ...localize2(884, "Show or Focus Standalone Color Picker"),
-                mnemonicTitle: localize(883, "&&Show or Focus Standalone Color Picker"),
+                ...localize2(889, "Show or Focus Standalone Color Picker"),
+                mnemonicTitle: localize(888, "&&Show or Focus Standalone Color Picker"),
             },
             precondition: undefined,
             menu: [
                 { id: MenuId.CommandPalette },
             ],
             metadata: {
-                description: localize2(885, "Show or focus a standalone color picker which uses the default color provider. It displays hex/rgb/hsl colors."),
+                description: localize2(890, "Show or focus a standalone color picker which uses the default color provider. It displays hex/rgb/hsl colors."),
             }
         });
     }
@@ -28,11 +29,11 @@ export class ShowOrFocusStandaloneColorPicker extends EditorAction2 {
         StandaloneColorPickerController.get(editor)?.showOrFocus();
     }
 }
-export class HideStandaloneColorPicker extends EditorAction {
+class HideStandaloneColorPicker extends EditorAction {
     constructor() {
         super({
             id: 'editor.action.hideColorPicker',
-            label: localize2(886, "Hide the Color Picker"),
+            label: localize2(891, "Hide the Color Picker"),
 
 
 
@@ -44,7 +45,7 @@ export class HideStandaloneColorPicker extends EditorAction {
                 weight: 100 /* KeybindingWeight.EditorContrib */
             },
             metadata: {
-                description: localize2(887, "Hide the standalone color picker."),
+                description: localize2(892, "Hide the standalone color picker."),
             }
         });
     }
@@ -52,11 +53,11 @@ export class HideStandaloneColorPicker extends EditorAction {
         StandaloneColorPickerController.get(editor)?.hide();
     }
 }
-export class InsertColorWithStandaloneColorPicker extends EditorAction {
+class InsertColorWithStandaloneColorPicker extends EditorAction {
     constructor() {
         super({
             id: 'editor.action.insertColorWithStandaloneColorPicker',
-            label: localize2(888, "Insert Color with Standalone Color Picker"),
+            label: localize2(893, "Insert Color with Standalone Color Picker"),
 
 
 
@@ -68,7 +69,7 @@ export class InsertColorWithStandaloneColorPicker extends EditorAction {
                 weight: 100 /* KeybindingWeight.EditorContrib */
             },
             metadata: {
-                description: localize2(889, "Insert hex/rgb/hsl colors with the focused standalone color picker."),
+                description: localize2(894, "Insert hex/rgb/hsl colors with the focused standalone color picker."),
             }
         });
     }
@@ -76,4 +77,5 @@ export class InsertColorWithStandaloneColorPicker extends EditorAction {
         StandaloneColorPickerController.get(editor)?.insertColor();
     }
 }
-//# sourceMappingURL=standaloneColorPickerActions.js.map
+
+export { HideStandaloneColorPicker, InsertColorWithStandaloneColorPicker, ShowOrFocusStandaloneColorPicker };

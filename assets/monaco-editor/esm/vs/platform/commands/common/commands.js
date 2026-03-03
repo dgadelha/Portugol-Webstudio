@@ -1,15 +1,16 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { Emitter } from '../../../base/common/event.js';
 import { Iterable } from '../../../base/common/iterator.js';
 import { markAsSingleton, toDisposable } from '../../../base/common/lifecycle.js';
 import { LinkedList } from '../../../base/common/linkedList.js';
 import { validateConstraints } from '../../../base/common/types.js';
 import { createDecorator } from '../../instantiation/common/instantiation.js';
-export const ICommandService = createDecorator('commandService');
-export const CommandsRegistry = new class {
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+const ICommandService = createDecorator('commandService');
+const CommandsRegistry = new class {
     constructor() {
         this._commands = new Map();
         this._onDidRegisterCommand = new Emitter();
@@ -78,4 +79,5 @@ export const CommandsRegistry = new class {
     }
 };
 CommandsRegistry.registerCommand('noop', () => { });
-//# sourceMappingURL=commands.js.map
+
+export { CommandsRegistry, ICommandService };

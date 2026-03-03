@@ -1,7 +1,3 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { getWindowId } from '../../../base/browser/dom.js';
 import { PixelRatio } from '../../../base/browser/pixelRatio.js';
 import { Emitter } from '../../../base/common/event.js';
@@ -9,7 +5,12 @@ import { Disposable } from '../../../base/common/lifecycle.js';
 import { CharWidthRequest, readCharWidths } from './charWidthReader.js';
 import { EditorFontLigatures } from '../../common/config/editorOptions.js';
 import { FontInfo } from '../../common/config/fontInfo.js';
-export class FontMeasurementsImpl extends Disposable {
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+class FontMeasurementsImpl extends Disposable {
     constructor() {
         super(...arguments);
         this._cache = new Map();
@@ -139,7 +140,7 @@ export class FontMeasurementsImpl extends Disposable {
         const referenceWidth = monospace[0].width;
         for (let i = 1, len = monospace.length; isMonospace && i < len; i++) {
             const diff = referenceWidth - monospace[i].width;
-            if (diff < -0.001 || diff > 0.001) {
+            if (diff < -1e-3 || diff > 0.001) {
                 isMonospace = false;
                 break;
             }
@@ -200,5 +201,6 @@ class FontMeasurementsCache {
         return Object.keys(this._keys).map(id => this._values[id]);
     }
 }
-export const FontMeasurements = new FontMeasurementsImpl();
-//# sourceMappingURL=fontMeasurements.js.map
+const FontMeasurements = new FontMeasurementsImpl();
+
+export { FontMeasurements, FontMeasurementsImpl };

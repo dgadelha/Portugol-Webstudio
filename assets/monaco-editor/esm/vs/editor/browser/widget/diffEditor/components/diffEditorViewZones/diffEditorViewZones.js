@@ -1,29 +1,16 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-import { $, addDisposableListener } from '../../../../../../base/browser/dom.js';
+import { addDisposableListener, $ } from '../../../../../../base/browser/dom.js';
 import { ArrayQueue } from '../../../../../../base/common/arrays.js';
 import { RunOnceScheduler } from '../../../../../../base/common/async.js';
 import { Codicon } from '../../../../../../base/common/codicons.js';
 import { Disposable, DisposableStore } from '../../../../../../base/common/lifecycle.js';
-import { autorun, derived, observableFromEvent, observableValue } from '../../../../../../base/common/observable.js';
+import '../../../../../../base/common/observableInternal/index.js';
 import { ThemeIcon } from '../../../../../../base/common/themables.js';
 import { assertReturnsDefined } from '../../../../../../base/common/types.js';
 import { applyFontInfo } from '../../../../config/domFontInfo.js';
 import { diffDeleteDecoration, diffRemoveIcon } from '../../registrations.contribution.js';
 import { DiffMapping } from '../../diffEditorViewModel.js';
 import { InlineDiffDeletedCodeMargin } from './inlineDiffDeletedCodeMargin.js';
-import { LineSource, RenderOptions, renderLines } from './renderLines.js';
+import { RenderOptions, LineSource, renderLines } from './renderLines.js';
 import { animatedObservable, joinCombine } from '../../utils.js';
 import { LineRange } from '../../../../../common/core/ranges/lineRange.js';
 import { Position } from '../../../../../common/core/position.js';
@@ -31,6 +18,24 @@ import { IClipboardService } from '../../../../../../platform/clipboard/common/c
 import { IContextMenuService } from '../../../../../../platform/contextview/browser/contextView.js';
 import { Range } from '../../../../../common/core/range.js';
 import { InlineDecoration } from '../../../../../common/viewModel/inlineDecorations.js';
+import { observableFromEvent } from '../../../../../../base/common/observableInternal/observables/observableFromEvent.js';
+import { observableValue } from '../../../../../../base/common/observableInternal/observables/observableValue.js';
+import { derived } from '../../../../../../base/common/observableInternal/observables/derived.js';
+import { autorun } from '../../../../../../base/common/observableInternal/reactions/autorun.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 /**
  * Ensures both editors have the same height by aligning unchanged lines.
  * In inline view mode, inserts viewzones to show deleted code from the original text model in the modified code editor.
@@ -162,7 +167,7 @@ let DiffEditorViewZones = class DiffEditorViewZones extends Disposable {
                     if (!a.originalRange.isEmpty) {
                         originalModelTokenizationCompleted.read(reader); // Update view-zones once tokenization completes
                         const deletedCodeDomNode = document.createElement('div');
-                        deletedCodeDomNode.classList.add('view-lines', 'line-delete', 'monaco-mouse-cursor-text');
+                        deletedCodeDomNode.classList.add('view-lines', 'line-delete', 'line-delete-selectable', 'monaco-mouse-cursor-text');
                         const originalModel = this._editors.original.getModel();
                         // `a.originalRange` can be out of bound when the diff has not been updated yet.
                         // In this case, we do an early return.
@@ -188,7 +193,7 @@ let DiffEditorViewZones = class DiffEditorViewZones extends Disposable {
                             }
                         }
                         let zoneId = undefined;
-                        alignmentViewZonesDisposables.add(new InlineDiffDeletedCodeMargin(() => assertReturnsDefined(zoneId), marginDomNode, this._editors.modified, a.diff, this._diffEditorWidget, result.viewLineCounts, this._editors.original.getModel(), this._contextMenuService, this._clipboardService));
+                        alignmentViewZonesDisposables.add(new InlineDiffDeletedCodeMargin(() => assertReturnsDefined(zoneId), marginDomNode, deletedCodeDomNode, this._editors.modified, a.diff, this._diffEditorWidget, result, this._editors.original.getModel(), this._contextMenuService, this._clipboardService));
                         for (let i = 0; i < result.viewLineCounts.length; i++) {
                             const count = result.viewLineCounts[i];
                             // Account for wrapped lines in the (collapsed) original editor (which doesn't wrap lines).
@@ -210,7 +215,7 @@ let DiffEditorViewZones = class DiffEditorViewZones extends Disposable {
                             marginDomNode,
                             setZoneId(id) { zoneId = id; },
                             showInHiddenAreas: true,
-                            suppressMouseDown: true,
+                            suppressMouseDown: false,
                         });
                     }
                     const marginDomNode = document.createElement('div');
@@ -371,7 +376,6 @@ DiffEditorViewZones = __decorate([
     __param(8, IClipboardService),
     __param(9, IContextMenuService)
 ], DiffEditorViewZones);
-export { DiffEditorViewZones };
 function computeRangeAlignment(originalEditor, modifiedEditor, diffs, originalEditorAlignmentViewZones, modifiedEditorAlignmentViewZones, innerHunkAlignment) {
     const originalLineHeightOverrides = new ArrayQueue(getAdditionalLineHeights(originalEditor, originalEditorAlignmentViewZones));
     const modifiedLineHeightOverrides = new ArrayQueue(getAdditionalLineHeights(modifiedEditor, modifiedEditorAlignmentViewZones));
@@ -507,14 +511,15 @@ function getAdditionalLineHeights(editor, viewZonesToIgnore) {
     const result = joinCombine(viewZoneHeights, wrappingZoneHeights, v => v.lineNumber, (v1, v2) => ({ lineNumber: v1.lineNumber, heightInPx: v1.heightInPx + v2.heightInPx }));
     return result;
 }
-export function allowsTrueInlineDiffRendering(mapping) {
+function allowsTrueInlineDiffRendering(mapping) {
     if (!mapping.innerChanges) {
         return false;
     }
     return mapping.innerChanges.every(c => (rangeIsSingleLine(c.modifiedRange) && rangeIsSingleLine(c.originalRange))
         || c.originalRange.equalsRange(new Range(1, 1, 1, 1)));
 }
-export function rangeIsSingleLine(range) {
+function rangeIsSingleLine(range) {
     return range.startLineNumber === range.endLineNumber;
 }
-//# sourceMappingURL=diffEditorViewZones.js.map
+
+export { DiffEditorViewZones, allowsTrueInlineDiffRendering, rangeIsSingleLine };

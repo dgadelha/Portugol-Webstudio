@@ -1,17 +1,13 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-import * as nls from '../../nls.js';
+import { localize } from '../../nls.js';
 import { isFirefox } from '../../base/browser/browser.js';
-import * as types from '../../base/common/types.js';
+import { isObject, isString, isUndefined, isNumber, isBoolean } from '../../base/common/types.js';
 import { status } from '../../base/browser/ui/aria/aria.js';
-import { Command, EditorCommand, registerEditorCommand, UndoCommand, RedoCommand, SelectAllCommand } from './editorExtensions.js';
+import { registerEditorCommand, SelectAllCommand, UndoCommand, RedoCommand, EditorCommand, Command } from './editorExtensions.js';
 import { ICodeEditorService } from './services/codeEditorService.js';
 import { ColumnSelection } from '../common/cursor/cursorColumnSelection.js';
 import { CursorState } from '../common/cursorCommon.js';
 import { DeleteOperations } from '../common/cursor/cursorDeleteOperations.js';
-import { CursorMove as CursorMove_, CursorMoveCommands } from '../common/cursor/cursorMoveCommands.js';
+import { CursorMoveCommands, CursorMove } from '../common/cursor/cursorMoveCommands.js';
 import { TypeOperations } from '../common/cursor/cursorTypeOperations.js';
 import { Position } from '../common/core/position.js';
 import { Range } from '../common/core/range.js';
@@ -20,8 +16,13 @@ import { ContextKeyExpr } from '../../platform/contextkey/common/contextkey.js';
 import { KeybindingsRegistry } from '../../platform/keybinding/common/keybindingsRegistry.js';
 import { getActiveElement, isEditableElement } from '../../base/browser/dom.js';
 import { EnterOperation } from '../common/cursor/cursorTypeEditOperations.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
 const CORE_WEIGHT = 0 /* KeybindingWeight.EditorCore */;
-export class CoreEditorCommand extends EditorCommand {
+class CoreEditorCommand extends EditorCommand {
     runEditorCommand(accessor, editor, args) {
         const viewModel = editor._getViewModel();
         if (!viewModel) {
@@ -31,23 +32,23 @@ export class CoreEditorCommand extends EditorCommand {
         this.runCoreEditorCommand(viewModel, args || {});
     }
 }
-export var EditorScroll_;
+var EditorScroll_;
 (function (EditorScroll_) {
     const isEditorScrollArgs = function (arg) {
-        if (!types.isObject(arg)) {
+        if (!isObject(arg)) {
             return false;
         }
         const scrollArg = arg;
-        if (!types.isString(scrollArg.to)) {
+        if (!isString(scrollArg.to)) {
             return false;
         }
-        if (!types.isUndefined(scrollArg.by) && !types.isString(scrollArg.by)) {
+        if (!isUndefined(scrollArg.by) && !isString(scrollArg.by)) {
             return false;
         }
-        if (!types.isUndefined(scrollArg.value) && !types.isNumber(scrollArg.value)) {
+        if (!isUndefined(scrollArg.value) && !isNumber(scrollArg.value)) {
             return false;
         }
-        if (!types.isUndefined(scrollArg.revealCursor) && !types.isBoolean(scrollArg.revealCursor)) {
+        if (!isUndefined(scrollArg.revealCursor) && !isBoolean(scrollArg.revealCursor)) {
             return false;
         }
         return true;
@@ -168,17 +169,17 @@ export var EditorScroll_;
     }
     EditorScroll_.parse = parse;
 })(EditorScroll_ || (EditorScroll_ = {}));
-export var RevealLine_;
+var RevealLine_;
 (function (RevealLine_) {
     const isRevealLineArgs = function (arg) {
-        if (!types.isObject(arg)) {
+        if (!isObject(arg)) {
             return false;
         }
         const reveaLineArg = arg;
-        if (!types.isNumber(reveaLineArg.lineNumber) && !types.isString(reveaLineArg.lineNumber)) {
+        if (!isNumber(reveaLineArg.lineNumber) && !isString(reveaLineArg.lineNumber)) {
             return false;
         }
-        if (!types.isUndefined(reveaLineArg.at) && !types.isString(reveaLineArg.at)) {
+        if (!isUndefined(reveaLineArg.at) && !isString(reveaLineArg.at)) {
             return false;
         }
         return true;
@@ -261,7 +262,7 @@ class EditorOrNativeTextInputCommand {
         return true;
     }
 }
-export var CoreNavigationCommands;
+var CoreNavigationCommands;
 (function (CoreNavigationCommands) {
     class BaseMoveToCommand extends CoreEditorCommand {
         constructor(opts) {
@@ -435,11 +436,11 @@ export var CoreNavigationCommands;
             super({
                 id: 'cursorMove',
                 precondition: undefined,
-                metadata: CursorMove_.metadata
+                metadata: CursorMove.metadata
             });
         }
         runCoreEditorCommand(viewModel, args) {
-            const parsed = CursorMove_.parse(args);
+            const parsed = CursorMove.parse(args);
             if (!parsed) {
                 // illegal arguments
                 return;
@@ -447,9 +448,11 @@ export var CoreNavigationCommands;
             this._runCursorMove(viewModel, args.source, parsed);
         }
         _runCursorMove(viewModel, source, args) {
+            // If noHistory is true, use PROGRAMMATIC source to prevent adding to navigation history
+            const effectiveSource = args.noHistory ? "api" /* TextEditorSelectionSource.PROGRAMMATIC */ : source;
             viewModel.model.pushStackElement();
-            viewModel.setCursorStates(source, 3 /* CursorChangeReason.Explicit */, CursorMoveImpl._move(viewModel, viewModel.getCursorStates(), args));
-            viewModel.revealAllCursors(source, true);
+            viewModel.setCursorStates(effectiveSource, 3 /* CursorChangeReason.Explicit */, CursorMoveImpl._move(viewModel, viewModel.getCursorStates(), args));
+            viewModel.revealAllCursors(effectiveSource, true);
         }
         static _move(viewModel, cursors, args) {
             const inSelectionMode = args.select;
@@ -858,7 +861,7 @@ export var CoreNavigationCommands;
                         type: 'object',
                         properties: {
                             'sticky': {
-                                description: nls.localize(61, "Stick to the end even when going to longer lines"),
+                                description: localize(66, "Stick to the end even when going to longer lines"),
                                 type: 'boolean',
                                 default: false
                             }
@@ -886,7 +889,7 @@ export var CoreNavigationCommands;
                         type: 'object',
                         properties: {
                             'sticky': {
-                                description: nls.localize(62, "Stick to the end even when going to longer lines"),
+                                description: localize(67, "Stick to the end even when going to longer lines"),
                                 type: 'boolean',
                                 default: false
                             }
@@ -1434,7 +1437,7 @@ export var CoreNavigationCommands;
                 viewModel.getPrimaryCursorState()
             ]);
             viewModel.revealAllCursors(args.source, true);
-            status(nls.localize(63, "Removed secondary cursors"));
+            status(localize(68, "Removed secondary cursors"));
         }
     });
     CoreNavigationCommands.RevealLine = registerEditorCommand(new class extends CoreEditorCommand {
@@ -1468,8 +1471,6 @@ export var CoreNavigationCommands;
                         break;
                     case RevealLine_.RawAtArgument.Bottom:
                         revealAt = 4 /* VerticalRevealType.Bottom */;
-                        break;
-                    default:
                         break;
                 }
             }
@@ -1540,7 +1541,7 @@ function registerCommand(command) {
     command.register();
     return command;
 }
-export var CoreEditingCommands;
+var CoreEditingCommands;
 (function (CoreEditingCommands) {
     class CoreEditingCommand extends EditorCommand {
         runEditorCommand(accessor, editor, args) {
@@ -1726,4 +1727,5 @@ registerOverwritableCommand("compositionStart" /* Handler.CompositionStart */);
 registerOverwritableCommand("compositionEnd" /* Handler.CompositionEnd */);
 registerOverwritableCommand("paste" /* Handler.Paste */);
 registerOverwritableCommand("cut" /* Handler.Cut */);
-//# sourceMappingURL=coreCommands.js.map
+
+export { CoreEditingCommands, CoreEditorCommand, CoreNavigationCommands, EditorScroll_, RevealLine_ };

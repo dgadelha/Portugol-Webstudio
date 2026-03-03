@@ -2,7 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-export class IdentityCoordinatesConverter {
+class IdentityCoordinatesConverter {
     constructor(model) {
         this._model = model;
     }
@@ -47,4 +47,5 @@ export class IdentityCoordinatesConverter {
         return modelLineNumber;
     }
 }
-//# sourceMappingURL=coordinatesConverter.js.map
+
+export { IdentityCoordinatesConverter };

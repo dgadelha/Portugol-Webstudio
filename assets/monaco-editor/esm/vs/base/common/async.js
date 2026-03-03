@@ -1,13 +1,14 @@
+import { CancellationTokenSource } from './cancellation.js';
+import { BugIndicatingError, CancellationError } from './errors.js';
+import { toDisposable, isDisposable } from './lifecycle.js';
+import { setTimeout0 } from './platform.js';
+import { MicrotaskDelay } from './symbols.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { CancellationTokenSource } from './cancellation.js';
-import { BugIndicatingError, CancellationError } from './errors.js';
-import { isDisposable, toDisposable } from './lifecycle.js';
-import { setTimeout0 } from './platform.js';
-import { MicrotaskDelay } from './symbols.js';
-export function isThenable(obj) {
+function isThenable(obj) {
     return !!obj && typeof obj.then === 'function';
 }
 /**
@@ -20,7 +21,7 @@ export function isThenable(obj) {
  * @param callback A function that accepts a cancellation token and returns a promise
  * @returns A promise that can be cancelled
  */
-export function createCancelablePromise(callback) {
+function createCancelablePromise(callback) {
     const source = new CancellationTokenSource();
     const thenable = callback(source.token);
     let isCancelled = false;
@@ -63,7 +64,7 @@ export function createCancelablePromise(callback) {
         }
     };
 }
-export function raceCancellation(promise, token, defaultValue) {
+function raceCancellation(promise, token, defaultValue) {
     return new Promise((resolve, reject) => {
         const ref = token.onCancellationRequested(() => {
             ref.dispose();
@@ -76,7 +77,7 @@ export function raceCancellation(promise, token, defaultValue) {
  * Returns a promise that rejects with an {@CancellationError} as soon as the passed token is cancelled.
  * @see {@link raceCancellation}
  */
-export function raceCancellationError(promise, token) {
+function raceCancellationError(promise, token) {
     return new Promise((resolve, reject) => {
         const ref = token.onCancellationRequested(() => {
             ref.dispose();
@@ -111,15 +112,15 @@ export function raceCancellationError(promise, token) {
  * 			throttler.queue(deliver);
  * 		}
  */
-export class Throttler {
+class Throttler {
     constructor() {
-        this.isDisposed = false;
         this.activePromise = null;
         this.queuedPromise = null;
         this.queuedPromiseFactory = null;
+        this.cancellationTokenSource = new CancellationTokenSource();
     }
     queue(promiseFactory) {
-        if (this.isDisposed) {
+        if (this.cancellationTokenSource.token.isCancellationRequested) {
             return Promise.reject(new Error('Throttler is disposed'));
         }
         if (this.activePromise) {
@@ -127,7 +128,7 @@ export class Throttler {
             if (!this.queuedPromise) {
                 const onComplete = () => {
                     this.queuedPromise = null;
-                    if (this.isDisposed) {
+                    if (this.cancellationTokenSource.token.isCancellationRequested) {
                         return;
                     }
                     const result = this.queue(this.queuedPromiseFactory);
@@ -142,7 +143,7 @@ export class Throttler {
                 this.queuedPromise.then(resolve, reject);
             });
         }
-        this.activePromise = promiseFactory();
+        this.activePromise = promiseFactory(this.cancellationTokenSource.token);
         return new Promise((resolve, reject) => {
             this.activePromise.then((result) => {
                 this.activePromise = null;
@@ -154,7 +155,7 @@ export class Throttler {
         });
     }
     dispose() {
-        this.isDisposed = true;
+        this.cancellationTokenSource.cancel();
     }
 }
 const timeoutDeferred = (timeout, fn) => {
@@ -207,7 +208,7 @@ const microtaskDeferred = (fn) => {
  * 			delayer.trigger(() => { return makeTheTrip(); });
  * 		}
  */
-export class Delayer {
+class Delayer {
     constructor(defaultDelay) {
         this.defaultDelay = defaultDelay;
         this.deferred = null;
@@ -268,7 +269,7 @@ export class Delayer {
  * and can only be delivered once he is back. Once he is back the mail man will
  * do one more trip to deliver the letters that have accumulated while he was out.
  */
-export class ThrottledDelayer {
+class ThrottledDelayer {
     constructor(defaultDelay) {
         this.delayer = new Delayer(defaultDelay);
         this.throttler = new Throttler();
@@ -284,7 +285,7 @@ export class ThrottledDelayer {
         this.throttler.dispose();
     }
 }
-export function timeout(millis, token) {
+function timeout(millis, token) {
     if (!token) {
         return createCancelablePromise(token => timeout(millis, token));
     }
@@ -317,7 +318,7 @@ export function timeout(millis, token) {
  *   timeoutDisposable.dispose();
  * }
  */
-export function disposableTimeout(handler, timeout = 0, store) {
+function disposableTimeout(handler, timeout = 0, store) {
     const timer = setTimeout(() => {
         handler();
         if (store) {
@@ -331,7 +332,7 @@ export function disposableTimeout(handler, timeout = 0, store) {
     store?.add(disposable);
     return disposable;
 }
-export function first(promiseFactories, shouldStop = t => !!t, defaultValue = null) {
+function first(promiseFactories, shouldStop = t => !!t, defaultValue = null) {
     let index = 0;
     const len = promiseFactories.length;
     const loop = () => {
@@ -352,7 +353,7 @@ export function first(promiseFactories, shouldStop = t => !!t, defaultValue = nu
 /**
  * Processes tasks in the order they were scheduled.
 */
-export class TaskQueue {
+class TaskQueue {
     constructor() {
         this._runningTask = undefined;
         this._pendingTasks = [];
@@ -412,7 +413,7 @@ export class TaskQueue {
         }
     }
 }
-export class TimeoutTimer {
+class TimeoutTimer {
     constructor(runner, timeout) {
         this._isDisposed = false;
         this._token = undefined;
@@ -454,7 +455,7 @@ export class TimeoutTimer {
         }, timeout);
     }
 }
-export class IntervalTimer {
+class IntervalTimer {
     constructor() {
         this.disposable = undefined;
         this.isDisposed = false;
@@ -481,7 +482,7 @@ export class IntervalTimer {
         this.isDisposed = true;
     }
 }
-export class RunOnceScheduler {
+class RunOnceScheduler {
     constructor(runner, delay) {
         this.timeoutToken = undefined;
         this.runner = runner;
@@ -554,8 +555,8 @@ export class RunOnceScheduler {
  * **Note** that there is `dom.ts#runWhenWindowIdle` which is better suited when running inside a browser
  * context
  */
-export let runWhenGlobalIdle;
-export let _runWhenIdle;
+let runWhenGlobalIdle;
+let _runWhenIdle;
 (function () {
     const safeGlobal = globalThis;
     if (typeof safeGlobal.requestIdleCallback !== 'function' || typeof safeGlobal.cancelIdleCallback !== 'function') {
@@ -601,7 +602,7 @@ export let _runWhenIdle;
     }
     runWhenGlobalIdle = (runner, timeout) => _runWhenIdle(globalThis, runner, timeout);
 })();
-export class AbstractIdleValue {
+class AbstractIdleValue {
     constructor(targetWindow, executor) {
         this._didRun = false;
         this._executor = () => {
@@ -640,7 +641,7 @@ export class AbstractIdleValue {
  * **Note** that there is `dom.ts#WindowIdleValue` which is better suited when running inside a browser
  * context
  */
-export class GlobalIdleValue extends AbstractIdleValue {
+class GlobalIdleValue extends AbstractIdleValue {
     constructor(executor) {
         super(globalThis, executor);
     }
@@ -648,7 +649,7 @@ export class GlobalIdleValue extends AbstractIdleValue {
 /**
  * Creates a promise whose resolution or rejection can be controlled imperatively.
  */
-export class DeferredPromise {
+class DeferredPromise {
     get isRejected() {
         return this.outcome?.outcome === 1 /* DeferredOutcome.Rejected */;
     }
@@ -687,7 +688,7 @@ export class DeferredPromise {
 }
 //#endregion
 //#region Promises
-export var Promises;
+var Promises;
 (function (Promises) {
     /**
      * A drop-in replacement for `Promise.all` with the only difference
@@ -733,7 +734,7 @@ export var Promises;
     }
     Promises.withAsyncBody = withAsyncBody;
 })(Promises || (Promises = {}));
-export function createCancelableAsyncIterableProducer(callback) {
+function createCancelableAsyncIterableProducer(callback) {
     const source = new CancellationTokenSource();
     const innerIterable = callback(source.token);
     return new CancelableAsyncIterableProducer(source, async (emitter) => {
@@ -820,7 +821,7 @@ class ProducerConsumer {
  * Important difference to AsyncIterableObject:
  * If it is iterated two times, the second iterator will not see the values emitted by the first iterator.
  */
-export class AsyncIterableProducer {
+class AsyncIterableProducer {
     constructor(executor, _onReturn) {
         this._onReturn = _onReturn;
         this._producerConsumer = new ProducerConsumer();
@@ -924,7 +925,7 @@ export class AsyncIterableProducer {
         return this._iterator;
     }
 }
-export class CancelableAsyncIterableProducer extends AsyncIterableProducer {
+class CancelableAsyncIterableProducer extends AsyncIterableProducer {
     constructor(_source, executor) {
         super(executor);
         this._source = _source;
@@ -933,6 +934,5 @@ export class CancelableAsyncIterableProducer extends AsyncIterableProducer {
         this._source.cancel();
     }
 }
-//#endregion
-export const AsyncReaderEndOfStream = Symbol('AsyncReaderEndOfStream');
-//# sourceMappingURL=async.js.map
+
+export { AbstractIdleValue, AsyncIterableProducer, CancelableAsyncIterableProducer, DeferredPromise, Delayer, GlobalIdleValue, IntervalTimer, Promises, RunOnceScheduler, TaskQueue, ThrottledDelayer, Throttler, TimeoutTimer, _runWhenIdle, createCancelableAsyncIterableProducer, createCancelablePromise, disposableTimeout, first, isThenable, raceCancellation, raceCancellationError, runWhenGlobalIdle, timeout };

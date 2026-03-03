@@ -1,26 +1,27 @@
+import { equals } from './arrays.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import * as arrays from './arrays.js';
 /**
  * Compares two items for equality using strict equality.
 */
-export const strictEquals = (a, b) => a === b;
+const strictEquals = (a, b) => a === b;
 /**
  * Checks if the items of two arrays are equal.
  * By default, strict equality is used to compare elements, but a custom equality comparer can be provided.
  */
-export function itemsEquals(itemEquals = strictEquals) {
-    return (a, b) => arrays.equals(a, b, itemEquals);
+function itemsEquals(itemEquals = strictEquals) {
+    return (a, b) => equals(a, b, itemEquals);
 }
 /**
  * Uses `item.equals(other)` to determine equality.
  */
-export function itemEquals() {
+function itemEquals() {
     return (a, b) => a.equals(b);
 }
-export function equalsIfDefined(equalsOrV1, v2, equals) {
+function equalsIfDefined(equalsOrV1, v2, equals) {
     if (equals !== undefined) {
         const v1 = equalsOrV1;
         if (v1 === undefined || v1 === null || v2 === undefined || v2 === null) {
@@ -41,7 +42,7 @@ export function equalsIfDefined(equalsOrV1, v2, equals) {
 /**
  * Drills into arrays (items ordered) and objects (keys unordered) and uses strict equality on everything else.
 */
-export function structuralEquals(a, b) {
+function structuralEquals(a, b) {
     if (a === b) {
         return true;
     }
@@ -79,5 +80,5 @@ export function structuralEquals(a, b) {
     }
     return false;
 }
-const objIds = new WeakMap();
-//# sourceMappingURL=equals.js.map
+
+export { equalsIfDefined, itemEquals, itemsEquals, strictEquals, structuralEquals };

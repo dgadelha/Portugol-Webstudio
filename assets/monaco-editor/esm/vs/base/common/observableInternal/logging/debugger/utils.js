@@ -2,7 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-export class Throttler {
+class Throttler {
     constructor() {
         this._timeout = undefined;
     }
@@ -20,7 +20,7 @@ export class Throttler {
         }
     }
 }
-export function deepAssign(target, source) {
+function deepAssign(target, source) {
     for (const key in source) {
         if (!!target[key] && typeof target[key] === 'object' && !!source[key] && typeof source[key] === 'object') {
             deepAssign(target[key], source[key]);
@@ -30,7 +30,7 @@ export function deepAssign(target, source) {
         }
     }
 }
-export function deepAssignDeleteNulls(target, source) {
+function deepAssignDeleteNulls(target, source) {
     for (const key in source) {
         if (source[key] === null) {
             delete target[key];
@@ -43,4 +43,5 @@ export function deepAssignDeleteNulls(target, source) {
         }
     }
 }
-//# sourceMappingURL=utils.js.map
+
+export { Throttler, deepAssign, deepAssignDeleteNulls };

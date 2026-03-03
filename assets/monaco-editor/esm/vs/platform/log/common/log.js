@@ -7,9 +7,10 @@ import { isString } from '../../../base/common/types.js';
 import { URI } from '../../../base/common/uri.js';
 import { RawContextKey } from '../../contextkey/common/contextkey.js';
 import { createDecorator } from '../../instantiation/common/instantiation.js';
-export const ILogService = createDecorator('logService');
-export const ILoggerService = createDecorator('loggerService');
-export var LogLevel;
+
+const ILogService = createDecorator('logService');
+const ILoggerService = createDecorator('loggerService');
+var LogLevel;
 (function (LogLevel) {
     LogLevel[LogLevel["Off"] = 0] = "Off";
     LogLevel[LogLevel["Trace"] = 1] = "Trace";
@@ -18,11 +19,11 @@ export var LogLevel;
     LogLevel[LogLevel["Warning"] = 4] = "Warning";
     LogLevel[LogLevel["Error"] = 5] = "Error";
 })(LogLevel || (LogLevel = {}));
-export const DEFAULT_LOG_LEVEL = LogLevel.Info;
-export function canLog(loggerLevel, messageLevel) {
+const DEFAULT_LOG_LEVEL = LogLevel.Info;
+function canLog(loggerLevel, messageLevel) {
     return loggerLevel !== LogLevel.Off && loggerLevel <= messageLevel;
 }
-export class AbstractLogger extends Disposable {
+class AbstractLogger extends Disposable {
     constructor() {
         super(...arguments);
         this.level = DEFAULT_LOG_LEVEL;
@@ -48,7 +49,7 @@ export class AbstractLogger extends Disposable {
         return this.checkLogLevel(level);
     }
 }
-export class ConsoleLogger extends AbstractLogger {
+class ConsoleLogger extends AbstractLogger {
     constructor(logLevel = DEFAULT_LOG_LEVEL, useColors = true) {
         super();
         this.useColors = useColors;
@@ -105,7 +106,7 @@ export class ConsoleLogger extends AbstractLogger {
         }
     }
 }
-export class MultiplexLogger extends AbstractLogger {
+class MultiplexLogger extends AbstractLogger {
     constructor(loggers) {
         super();
         this.loggers = loggers;
@@ -151,7 +152,7 @@ export class MultiplexLogger extends AbstractLogger {
         super.dispose();
     }
 }
-export class AbstractLoggerService extends Disposable {
+class AbstractLoggerService extends Disposable {
     constructor(logLevel, logsHome, loggerResources) {
         super();
         this.logLevel = logLevel;
@@ -233,7 +234,7 @@ export class AbstractLoggerService extends Disposable {
         super.dispose();
     }
 }
-export class NullLogger {
+class NullLogger {
     constructor() {
         this.onDidChangeLogLevel = new Emitter().event;
     }
@@ -246,7 +247,7 @@ export class NullLogger {
     error(message, ...args) { }
     dispose() { }
 }
-export class NullLoggerService extends AbstractLoggerService {
+class NullLoggerService extends AbstractLoggerService {
     constructor() {
         super(LogLevel.Off, URI.parse('log:///log'));
     }
@@ -254,7 +255,7 @@ export class NullLoggerService extends AbstractLoggerService {
         return new NullLogger();
     }
 }
-export function LogLevelToString(logLevel) {
+function LogLevelToString(logLevel) {
     switch (logLevel) {
         case LogLevel.Trace: return 'trace';
         case LogLevel.Debug: return 'debug';
@@ -265,5 +266,6 @@ export function LogLevelToString(logLevel) {
     }
 }
 // Contexts
-export const CONTEXT_LOG_LEVEL = new RawContextKey('logLevel', LogLevelToString(LogLevel.Info));
-//# sourceMappingURL=log.js.map
+new RawContextKey('logLevel', LogLevelToString(LogLevel.Info));
+
+export { AbstractLogger, AbstractLoggerService, ConsoleLogger, DEFAULT_LOG_LEVEL, ILogService, ILoggerService, LogLevel, LogLevelToString, MultiplexLogger, NullLogger, NullLoggerService, canLog };

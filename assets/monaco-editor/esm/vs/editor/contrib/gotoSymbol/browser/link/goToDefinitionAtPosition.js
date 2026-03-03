@@ -1,17 +1,3 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-var GotoDefinitionAtPositionEditorContribution_1;
 import { createCancelablePromise } from '../../../../../base/common/async.js';
 import { onUnexpectedError } from '../../../../../base/common/errors.js';
 import { MarkdownString } from '../../../../../base/common/htmlContent.js';
@@ -24,12 +10,27 @@ import { ILanguageService } from '../../../../common/languages/language.js';
 import { ITextModelService } from '../../../../common/services/resolverService.js';
 import { ClickLinkGesture } from './clickLinkGesture.js';
 import { PeekContext } from '../../../peekView/browser/peekView.js';
-import * as nls from '../../../../../nls.js';
+import { localize } from '../../../../../nls.js';
 import { IContextKeyService } from '../../../../../platform/contextkey/common/contextkey.js';
 import { DefinitionAction } from '../goToCommands.js';
 import { getDefinitionsAtPosition } from '../goToSymbol.js';
 import { ILanguageFeaturesService } from '../../../../common/services/languageFeatures.js';
 import { ModelDecorationInjectedTextOptions } from '../../../../common/model/textModel.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var GotoDefinitionAtPositionEditorContribution_1;
 let GotoDefinitionAtPositionEditorContribution = class GotoDefinitionAtPositionEditorContribution {
     static { GotoDefinitionAtPositionEditorContribution_1 = this; }
     static { this.ID = 'editor.contrib.gotodefinitionatposition'; }
@@ -150,7 +151,7 @@ let GotoDefinitionAtPositionEditorContribution = class GotoDefinitionAtPositionE
                     combinedRange = Range.plusRange(combinedRange, originSelectionRange);
                 }
             }
-            this.addDecoration(combinedRange, new MarkdownString().appendText(nls.localize(1072, "Click to show {0} definitions.", results.length)));
+            this.addDecoration(combinedRange, new MarkdownString().appendText(localize(1077, "Click to show {0} definitions.", results.length)));
         }
         else {
             // Single result
@@ -239,7 +240,7 @@ let GotoDefinitionAtPositionEditorContribution = class GotoDefinitionAtPositionE
         }
         return getDefinitionsAtPosition(this.languageFeaturesService.definitionProvider, model, position, false, token);
     }
-    gotoDefinition(position, openToSide) {
+    async gotoDefinition(position, openToSide) {
         this.editor.setPosition(position);
         return this.editor.invokeWithinContext((accessor) => {
             const canPeek = !openToSide && this.editor.getOption(101 /* EditorOption.definitionLinkOpensInPeek */) && !this.isInPeekEditor(accessor);
@@ -261,6 +262,6 @@ GotoDefinitionAtPositionEditorContribution = GotoDefinitionAtPositionEditorContr
     __param(2, ILanguageService),
     __param(3, ILanguageFeaturesService)
 ], GotoDefinitionAtPositionEditorContribution);
-export { GotoDefinitionAtPositionEditorContribution };
 registerEditorContribution(GotoDefinitionAtPositionEditorContribution.ID, GotoDefinitionAtPositionEditorContribution, 2 /* EditorContributionInstantiation.BeforeFirstInteraction */);
-//# sourceMappingURL=goToDefinitionAtPosition.js.map
+
+export { GotoDefinitionAtPositionEditorContribution };

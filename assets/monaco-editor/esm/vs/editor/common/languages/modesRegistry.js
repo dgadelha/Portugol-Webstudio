@@ -1,18 +1,19 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-import * as nls from '../../../nls.js';
+import { localize } from '../../../nls.js';
 import { Emitter } from '../../../base/common/event.js';
 import { Registry } from '../../../platform/registry/common/platform.js';
 import { Disposable } from '../../../base/common/lifecycle.js';
 import { Mimes } from '../../../base/common/mime.js';
-import { Extensions as ConfigurationExtensions } from '../../../platform/configuration/common/configurationRegistry.js';
+import { Extensions as Extensions$1 } from '../../../platform/configuration/common/configurationRegistry.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
 // Define extension point ids
-export const Extensions = {
+const Extensions = {
     ModesRegistry: 'editor.modesRegistry'
 };
-export class EditorModesRegistry extends Disposable {
+class EditorModesRegistry extends Disposable {
     constructor() {
         super();
         this._onDidChangeLanguages = this._register(new Emitter());
@@ -37,17 +38,17 @@ export class EditorModesRegistry extends Disposable {
         return this._languages;
     }
 }
-export const ModesRegistry = new EditorModesRegistry();
+const ModesRegistry = new EditorModesRegistry();
 Registry.add(Extensions.ModesRegistry, ModesRegistry);
-export const PLAINTEXT_LANGUAGE_ID = 'plaintext';
-export const PLAINTEXT_EXTENSION = '.txt';
+const PLAINTEXT_LANGUAGE_ID = 'plaintext';
+const PLAINTEXT_EXTENSION = '.txt';
 ModesRegistry.registerLanguage({
     id: PLAINTEXT_LANGUAGE_ID,
     extensions: [PLAINTEXT_EXTENSION],
-    aliases: [nls.localize(780, "Plain Text"), 'text'],
+    aliases: [localize(784, "Plain Text"), 'text'],
     mimetypes: [Mimes.text]
 });
-Registry.as(ConfigurationExtensions.Configuration)
+Registry.as(Extensions$1.Configuration)
     .registerDefaultConfigurations([{
         overrides: {
             '[plaintext]': {
@@ -70,4 +71,5 @@ Registry.as(ConfigurationExtensions.Configuration)
             }
         }
     }]);
-//# sourceMappingURL=modesRegistry.js.map
+
+export { EditorModesRegistry, Extensions, ModesRegistry, PLAINTEXT_EXTENSION, PLAINTEXT_LANGUAGE_ID };

@@ -1,11 +1,15 @@
+import { Sash } from '../../../../../base/browser/ui/sash/sash.js';
+import { Disposable } from '../../../../../base/common/lifecycle.js';
+import '../../../../../base/common/observableInternal/index.js';
+import { derivedWithSetter } from '../../../../../base/common/observableInternal/observables/derived.js';
+import { observableValue } from '../../../../../base/common/observableInternal/observables/observableValue.js';
+import { autorun } from '../../../../../base/common/observableInternal/reactions/autorun.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { Sash } from '../../../../../base/browser/ui/sash/sash.js';
-import { Disposable } from '../../../../../base/common/lifecycle.js';
-import { autorun, derivedWithSetter, observableValue } from '../../../../../base/common/observable.js';
-export class SashLayout {
+class SashLayout {
     resetSash() {
         this._sashRatio.set(undefined, undefined);
     }
@@ -39,7 +43,7 @@ export class SashLayout {
         return sashLeft;
     }
 }
-export class DiffEditorSash extends Disposable {
+class DiffEditorSash extends Disposable {
     constructor(_domNode, _dimensions, _enabled, _boundarySashes, sashLeft, _resetSash) {
         super();
         this._domNode = _domNode;
@@ -78,4 +82,5 @@ export class DiffEditorSash extends Disposable {
         }));
     }
 }
-//# sourceMappingURL=diffEditorSash.js.map
+
+export { DiffEditorSash, SashLayout };

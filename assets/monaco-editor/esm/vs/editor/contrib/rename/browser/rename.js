@@ -1,27 +1,13 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-var RenameController_1;
 import { alert } from '../../../../base/browser/ui/aria/aria.js';
 import { raceCancellation } from '../../../../base/common/async.js';
-import { CancellationToken, CancellationTokenSource } from '../../../../base/common/cancellation.js';
+import { CancellationTokenSource, CancellationToken } from '../../../../base/common/cancellation.js';
 import { CancellationError, onUnexpectedError } from '../../../../base/common/errors.js';
 import { isMarkdownString } from '../../../../base/common/htmlContent.js';
 import { DisposableStore } from '../../../../base/common/lifecycle.js';
 import { assertType } from '../../../../base/common/types.js';
 import { URI } from '../../../../base/common/uri.js';
-import * as nls from '../../../../nls.js';
-import { Action2, registerAction2 } from '../../../../platform/actions/common/actions.js';
+import { localize, localize2 } from '../../../../nls.js';
+import { registerAction2, Action2 } from '../../../../platform/actions/common/actions.js';
 import { Extensions } from '../../../../platform/configuration/common/configurationRegistry.js';
 import { ContextKeyExpr } from '../../../../platform/contextkey/common/contextkey.js';
 import { IInstantiationService } from '../../../../platform/instantiation/common/instantiation.js';
@@ -29,7 +15,7 @@ import { ILogService } from '../../../../platform/log/common/log.js';
 import { INotificationService } from '../../../../platform/notification/common/notification.js';
 import { IEditorProgressService } from '../../../../platform/progress/common/progress.js';
 import { Registry } from '../../../../platform/registry/common/platform.js';
-import { EditorAction, EditorCommand, registerEditorAction, registerEditorCommand, registerEditorContribution, registerModelAndPositionCommand } from '../../../browser/editorExtensions.js';
+import { registerEditorContribution, registerEditorAction, EditorCommand, registerEditorCommand, registerModelAndPositionCommand, EditorAction } from '../../../browser/editorExtensions.js';
 import { IBulkEditService } from '../../../browser/services/bulkEditService.js';
 import { ICodeEditorService } from '../../../browser/services/codeEditorService.js';
 import { Position } from '../../../common/core/position.js';
@@ -41,7 +27,22 @@ import { ITextResourceConfigurationService } from '../../../common/services/text
 import { EditSources } from '../../../common/textModelEditSource.js';
 import { EditorStateCancellationTokenSource } from '../../editorState/browser/editorState.js';
 import { MessageController } from '../../message/browser/messageController.js';
-import { CONTEXT_RENAME_INPUT_VISIBLE, RenameWidget } from './renameWidget.js';
+import { RenameWidget, CONTEXT_RENAME_INPUT_VISIBLE } from './renameWidget.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var RenameController_1;
 class RenameSkeleton {
     constructor(model, position, registry) {
         this.model = model;
@@ -99,7 +100,7 @@ class RenameSkeleton {
         }
         const result = await provider.provideRenameEdits(this.model, this.position, newName, token);
         if (!result) {
-            return this._provideRenameEdits(newName, i + 1, rejects.concat(nls.localize(1365, "No result.")), token);
+            return this._provideRenameEdits(newName, i + 1, rejects.concat(localize(1380, "No result.")), token);
         }
         else if (result.rejectReason) {
             return this._provideRenameEdits(newName, i + 1, rejects.concat(result.rejectReason), token);
@@ -107,7 +108,7 @@ class RenameSkeleton {
         return result;
     }
 }
-export async function rename(registry, model, position, newName) {
+async function rename(registry, model, position, newName) {
     const skeleton = new RenameSkeleton(model, position, registry);
     const loc = await skeleton.resolveRenameLocation(CancellationToken.None);
     if (loc?.rejectReason) {
@@ -172,7 +173,7 @@ let RenameController = class RenameController {
             else {
                 trace('resolve rename location failed', e instanceof Error ? e : JSON.stringify(e, null, '\t'));
                 if (typeof e === 'string' || isMarkdownString(e)) {
-                    MessageController.get(this.editor)?.showMessage(e || nls.localize(1366, "An unknown error occurred while resolving rename location"), position);
+                    MessageController.get(this.editor)?.showMessage(e || localize(1381, "An unknown error occurred while resolving rename location"), position);
                 }
             }
             return undefined;
@@ -240,24 +241,24 @@ let RenameController = class RenameController {
             this._bulkEditService.apply(renameResult, {
                 editor: this.editor,
                 showPreview: inputFieldResult.wantsPreview,
-                label: nls.localize(1367, "Renaming '{0}' to '{1}'", loc?.text, inputFieldResult.newName),
+                label: localize(1382, "Renaming '{0}' to '{1}'", loc?.text, inputFieldResult.newName),
                 code: 'undoredo.rename',
-                quotableLabel: nls.localize(1368, "Renaming {0} to {1}", loc?.text, inputFieldResult.newName),
+                quotableLabel: localize(1383, "Renaming {0} to {1}", loc?.text, inputFieldResult.newName),
                 respectAutoSaveConfig: true,
                 reason: EditSources.rename(),
             }).then(result => {
                 trace('edits applied');
                 if (result.ariaSummary) {
-                    alert(nls.localize(1369, "Successfully renamed '{0}' to '{1}'. Summary: {2}", loc.text, inputFieldResult.newName, result.ariaSummary));
+                    alert(localize(1384, "Successfully renamed '{0}' to '{1}'. Summary: {2}", loc.text, inputFieldResult.newName, result.ariaSummary));
                 }
             }).catch(err => {
                 trace(`error when applying edits ${JSON.stringify(err, null, '\t')}`);
-                this._notificationService.error(nls.localize(1370, "Rename failed to apply edits"));
+                this._notificationService.error(localize(1385, "Rename failed to apply edits"));
                 this._logService.error(err);
             });
         }, err => {
             trace('error when providing rename edits', JSON.stringify(err, null, '\t'));
-            this._notificationService.error(nls.localize(1371, "Rename failed to compute edits"));
+            this._notificationService.error(localize(1386, "Rename failed to compute edits"));
             this._logService.error(err);
         }).finally(() => {
             cts2.dispose();
@@ -289,11 +290,11 @@ RenameController = RenameController_1 = __decorate([
     __param(7, ILanguageFeaturesService)
 ], RenameController);
 // ---- action implementation
-export class RenameAction extends EditorAction {
+class RenameAction extends EditorAction {
     constructor() {
         super({
             id: 'editor.action.rename',
-            label: nls.localize2(1373, "Rename Symbol"),
+            label: localize2(1388, "Rename Symbol"),
             precondition: ContextKeyExpr.and(EditorContextKeys.writable, EditorContextKeys.hasRenameProvider),
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
@@ -303,7 +304,8 @@ export class RenameAction extends EditorAction {
             contextMenuOpts: {
                 group: '1_modification',
                 order: 1.1
-            }
+            },
+            canTriggerInlineEdits: true,
         });
     }
     runCommand(accessor, args) {
@@ -373,7 +375,7 @@ registerAction2(class FocusNextRenameSuggestion extends Action2 {
         super({
             id: 'focusNextRenameSuggestion',
             title: {
-                ...nls.localize2(1374, "Focus Next Rename Suggestion"),
+                ...localize2(1389, "Focus Next Rename Suggestion"),
             },
             precondition: CONTEXT_RENAME_INPUT_VISIBLE,
             keybinding: [
@@ -401,7 +403,7 @@ registerAction2(class FocusPreviousRenameSuggestion extends Action2 {
         super({
             id: 'focusPreviousRenameSuggestion',
             title: {
-                ...nls.localize2(1375, "Focus Previous Rename Suggestion"),
+                ...localize2(1390, "Focus Previous Rename Suggestion"),
             },
             precondition: CONTEXT_RENAME_INPUT_VISIBLE,
             keybinding: [
@@ -446,10 +448,11 @@ Registry.as(Extensions.Configuration).registerConfiguration({
     properties: {
         'editor.rename.enablePreview': {
             scope: 6 /* ConfigurationScope.LANGUAGE_OVERRIDABLE */,
-            description: nls.localize(1372, "Enable/disable the ability to preview changes before renaming"),
+            description: localize(1387, "Enable/disable the ability to preview changes before renaming"),
             default: true,
             type: 'boolean'
         }
     }
 });
-//# sourceMappingURL=rename.js.map
+
+export { RenameAction, rename };

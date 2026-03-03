@@ -1,23 +1,10 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-import { getWindow, h, scheduleAtNextAnimationFrame } from '../../../../base/browser/dom.js';
+import { h, scheduleAtNextAnimationFrame, getWindow } from '../../../../base/browser/dom.js';
 import { SmoothScrollableElement } from '../../../../base/browser/ui/scrollbar/scrollableElement.js';
 import { compareBy, numberComparator } from '../../../../base/common/arrays.js';
 import { findFirstMax } from '../../../../base/common/arraysFind.js';
 import { BugIndicatingError } from '../../../../base/common/errors.js';
 import { Disposable, toDisposable } from '../../../../base/common/lifecycle.js';
-import { autorun, autorunWithStore, derived, disposableObservableValue, globalTransaction, observableFromEvent, observableValue, transaction } from '../../../../base/common/observable.js';
+import '../../../../base/common/observableInternal/index.js';
 import { Scrollable } from '../../../../base/common/scrollable.js';
 import { localize } from '../../../../nls.js';
 import { IContextKeyService } from '../../../../platform/contextkey/common/contextkey.js';
@@ -30,6 +17,25 @@ import { ObservableElementSizeObserver } from '../diffEditor/utils.js';
 import { DiffEditorItemTemplate, TemplateData } from './diffEditorItemTemplate.js';
 import { ObjectPool } from './objectPool.js';
 import './style.css';
+import { observableFromEvent } from '../../../../base/common/observableInternal/observables/observableFromEvent.js';
+import { derived } from '../../../../base/common/observableInternal/observables/derived.js';
+import { transaction, globalTransaction } from '../../../../base/common/observableInternal/transaction.js';
+import { autorunWithStore, autorun } from '../../../../base/common/observableInternal/reactions/autorun.js';
+import { disposableObservableValue, observableValue } from '../../../../base/common/observableInternal/observables/observableValue.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 let MultiDiffEditorWidgetImpl = class MultiDiffEditorWidgetImpl extends Disposable {
     constructor(_element, _dimension, _viewModel, _workbenchUIElementFactory, _parentContextKeyService, _parentInstantiationService) {
         super();
@@ -104,6 +110,7 @@ let MultiDiffEditorWidgetImpl = class MultiDiffEditorWidgetImpl extends Disposab
         });
         this._contextKeyService = this._register(this._parentContextKeyService.createScoped(this._element));
         this._instantiationService = this._register(this._parentInstantiationService.createChild(new ServiceCollection([IContextKeyService, this._contextKeyService])));
+        this._contextKeyService.createKey(EditorContextKeys.inMultiDiffEditor.key, true);
         this._lastDocStates = {};
         this._register(autorunWithStore((reader, store) => {
             const viewModel = this._viewModel.read(reader);
@@ -135,8 +142,8 @@ let MultiDiffEditorWidgetImpl = class MultiDiffEditorWidgetImpl extends Disposab
             }
             const vm = this._viewModel.read(reader);
             return (!vm || vm.isLoading.read(reader))
-                ? localize(142, 'Loading...')
-                : localize(143, 'No Changed Files');
+                ? localize(145, 'Loading...')
+                : localize(146, 'No Changed Files');
         });
         this._register(autorun((reader) => {
             const message = placeholderMessage.read(reader);
@@ -169,12 +176,109 @@ let MultiDiffEditorWidgetImpl = class MultiDiffEditorWidgetImpl extends Disposab
         this._register(toDisposable(() => {
             _element.replaceChildren();
         }));
+        // Automatically select the first change in the first file when items are loaded
+        this._register(autorun(reader => {
+            /** @description Initialize first change */
+            const viewModel = this._viewModel.read(reader);
+            if (!viewModel) {
+                return;
+            }
+            // Only initialize when loading is complete
+            if (!viewModel.isLoading.read(reader)) {
+                const items = viewModel.items.read(reader);
+                if (items.length === 0) {
+                    return;
+                }
+                // Only initialize if there's no active item yet
+                const activeDiffItem = viewModel.activeDiffItem.read(reader);
+                if (activeDiffItem) {
+                    return;
+                }
+                // Navigate to the first change using the existing navigation logic
+                this.goToNextChange();
+            }
+        }));
         this._register(this._register(autorun(reader => {
             /** @description Render all */
             globalTransaction(tx => {
                 this.render(reader);
             });
         })));
+    }
+    reveal(resource, options) {
+        const viewItems = this._viewItems.get();
+        const index = viewItems.findIndex((item) => item.viewModel.originalUri?.toString() === resource.original?.toString()
+            && item.viewModel.modifiedUri?.toString() === resource.modified?.toString());
+        if (index === -1) {
+            throw new BugIndicatingError('Resource not found in diff editor');
+        }
+        const viewItem = viewItems[index];
+        this._viewModel.get().activeDiffItem.setCache(viewItem.viewModel, undefined);
+        let scrollTop = 0;
+        for (let i = 0; i < index; i++) {
+            scrollTop += viewItems[i].contentHeight.get() + this._spaceBetweenPx;
+        }
+        this._scrollableElement.setScrollPosition({ scrollTop });
+        const diffEditor = viewItem.template.get()?.editor;
+        const editor = 'original' in resource ? diffEditor?.getOriginalEditor() : diffEditor?.getModifiedEditor();
+        if (editor && options?.range) {
+            editor.revealRangeInCenter(options.range);
+            highlightRange(editor, options.range);
+        }
+    }
+    goToNextChange() {
+        this._navigateToChange('next');
+    }
+    _navigateToChange(direction) {
+        const viewItems = this._viewItems.get();
+        if (viewItems.length === 0) {
+            return;
+        }
+        const activeViewModel = this._viewModel.get()?.activeDiffItem.get();
+        const currentIndex = activeViewModel ? viewItems.findIndex(v => v.viewModel === activeViewModel) : -1;
+        // Start with first file if no active item
+        if (currentIndex === -1) {
+            this._goToFile(0, 'first');
+            return;
+        }
+        // Try current file first - expand if collapsed
+        const currentItem = viewItems[currentIndex];
+        if (currentItem.viewModel.collapsed.get()) {
+            currentItem.viewModel.collapsed.set(false, undefined);
+        }
+        const editor = currentItem.template.get()?.editor;
+        if (editor?.getDiffComputationResult()?.changes2?.length) {
+            const pos = editor.getModifiedEditor().getPosition()?.lineNumber || 1;
+            const changes = editor.getDiffComputationResult().changes2;
+            const hasNext = direction === 'next' ? changes.some(c => c.modified.startLineNumber > pos) : changes.some(c => c.modified.endLineNumberExclusive <= pos);
+            if (hasNext) {
+                editor.goToDiff(direction);
+                return;
+            }
+        }
+        // Move to next/previous file
+        const nextIndex = (currentIndex + (direction === 'next' ? 1 : -1) + viewItems.length) % viewItems.length;
+        this._goToFile(nextIndex, direction === 'next' ? 'first' : 'last');
+    }
+    _goToFile(index, position) {
+        const item = this._viewItems.get()[index];
+        if (item.viewModel.collapsed.get()) {
+            item.viewModel.collapsed.set(false, undefined);
+        }
+        this.reveal({ original: item.viewModel.originalUri, modified: item.viewModel.modifiedUri });
+        const editor = item.template.get()?.editor;
+        if (editor?.getDiffComputationResult()?.changes2?.length) {
+            if (position === 'first') {
+                editor.revealFirstDiff();
+            }
+            else {
+                const lastChange = editor.getDiffComputationResult().changes2.at(-1);
+                const modifiedEditor = editor.getModifiedEditor();
+                modifiedEditor.setPosition({ lineNumber: lastChange.modified.startLineNumber, column: 1 });
+                modifiedEditor.revealLineInCenter(lastChange.modified.startLineNumber);
+            }
+        }
+        editor?.focus();
     }
     render(reader) {
         const scrollTop = this.scrollTop.read(reader);
@@ -212,7 +316,15 @@ MultiDiffEditorWidgetImpl = __decorate([
     __param(4, IContextKeyService),
     __param(5, IInstantiationService)
 ], MultiDiffEditorWidgetImpl);
-export { MultiDiffEditorWidgetImpl };
+function highlightRange(targetEditor, range) {
+    const modelNow = targetEditor.getModel();
+    const decorations = targetEditor.createDecorationsCollection([{ range, options: { description: 'symbol-navigate-action-highlight', className: 'symbolHighlight' } }]);
+    setTimeout(() => {
+        if (targetEditor.getModel() === modelNow) {
+            decorations.clear();
+        }
+    }, 350);
+}
 class VirtualizedViewItem extends Disposable {
     constructor(viewModel, _objectPool, _scrollLeft, _deltaScrollVertical) {
         super();
@@ -311,4 +423,5 @@ class VirtualizedViewItem extends Disposable {
         ref.object.render(verticalSpace, width, offset, viewPort);
     }
 }
-//# sourceMappingURL=multiDiffEditorWidgetImpl.js.map
+
+export { MultiDiffEditorWidgetImpl };

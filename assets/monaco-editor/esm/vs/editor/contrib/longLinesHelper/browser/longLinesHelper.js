@@ -1,9 +1,10 @@
+import { Disposable } from '../../../../base/common/lifecycle.js';
+import { registerEditorContribution } from '../../../browser/editorExtensions.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { Disposable } from '../../../../base/common/lifecycle.js';
-import { registerEditorContribution } from '../../../browser/editorExtensions.js';
 class LongLinesHelper extends Disposable {
     static { this.ID = 'editor.contrib.longLinesHelper'; }
     constructor(_editor) {
@@ -20,4 +21,3 @@ class LongLinesHelper extends Disposable {
     }
 }
 registerEditorContribution(LongLinesHelper.ID, LongLinesHelper, 2 /* EditorContributionInstantiation.BeforeFirstInteraction */);
-//# sourceMappingURL=longLinesHelper.js.map

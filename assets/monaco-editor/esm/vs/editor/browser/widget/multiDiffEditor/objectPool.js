@@ -1,4 +1,4 @@
-export class ObjectPool {
+class ObjectPool {
     constructor(_create) {
         this._create = _create;
         this._unused = new Set();
@@ -43,4 +43,5 @@ export class ObjectPool {
         this._unused.clear();
     }
 }
-//# sourceMappingURL=objectPool.js.map
+
+export { ObjectPool };

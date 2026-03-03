@@ -1,11 +1,12 @@
+import { Emitter } from '../../../../base/common/event.js';
+import { FoldingRegions } from './foldingRanges.js';
+import { hash } from '../../../../base/common/hash.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { Emitter } from '../../../../base/common/event.js';
-import { FoldingRegions } from './foldingRanges.js';
-import { hash } from '../../../../base/common/hash.js';
-export class FoldingModel {
+class FoldingModel {
     get regions() { return this._regions; }
     get textModel() { return this._textModel; }
     constructor(textModel, decorationProvider) {
@@ -251,7 +252,7 @@ export class FoldingModel {
  * @param levels The number of levels. Use 1 to only impact the regions at the location, use Number.MAX_VALUE for all levels.
  * @param lineNumbers the location of the regions to collapse or expand, or if not set, all regions in the model.
  */
-export function toggleCollapseState(foldingModel, levels, lineNumbers) {
+function toggleCollapseState(foldingModel, levels, lineNumbers) {
     const toToggle = [];
     for (const lineNumber of lineNumbers) {
         const region = foldingModel.getRegionAtLine(lineNumber);
@@ -272,7 +273,7 @@ export function toggleCollapseState(foldingModel, levels, lineNumbers) {
  * @param levels The number of levels. Use 1 to only impact the regions at the location, use Number.MAX_VALUE for all levels.
  * @param lineNumbers the location of the regions to collapse or expand, or if not set, all regions in the model.
  */
-export function setCollapseStateLevelsDown(foldingModel, doCollapse, levels = Number.MAX_VALUE, lineNumbers) {
+function setCollapseStateLevelsDown(foldingModel, doCollapse, levels = Number.MAX_VALUE, lineNumbers) {
     const toToggle = [];
     if (lineNumbers && lineNumbers.length > 0) {
         for (const lineNumber of lineNumbers) {
@@ -300,7 +301,7 @@ export function setCollapseStateLevelsDown(foldingModel, doCollapse, levels = Nu
  * @param levels The number of levels. Use 1 to only impact the regions at the location, use Number.MAX_VALUE for all levels.
  * @param lineNumbers the location of the regions to collapse or expand.
  */
-export function setCollapseStateLevelsUp(foldingModel, doCollapse, levels, lineNumbers) {
+function setCollapseStateLevelsUp(foldingModel, doCollapse, levels, lineNumbers) {
     const toToggle = [];
     for (const lineNumber of lineNumbers) {
         const regions = foldingModel.getAllRegionsAtLine(lineNumber, (region, level) => region.isCollapsed !== doCollapse && level <= levels);
@@ -313,7 +314,7 @@ export function setCollapseStateLevelsUp(foldingModel, doCollapse, levels, lineN
  * @param doCollapse Whether to collapse or expand
  * @param lineNumbers the location of the regions to collapse or expand.
  */
-export function setCollapseStateUp(foldingModel, doCollapse, lineNumbers) {
+function setCollapseStateUp(foldingModel, doCollapse, lineNumbers) {
     const toToggle = [];
     for (const lineNumber of lineNumbers) {
         const regions = foldingModel.getAllRegionsAtLine(lineNumber, (region) => region.isCollapsed !== doCollapse);
@@ -328,7 +329,7 @@ export function setCollapseStateUp(foldingModel, doCollapse, lineNumbers) {
  * @param foldLevel level. Level == 1 is the top level
  * @param doCollapse Whether to collapse or expand
 */
-export function setCollapseStateAtLevel(foldingModel, foldLevel, doCollapse, blockedLineNumbers) {
+function setCollapseStateAtLevel(foldingModel, foldLevel, doCollapse, blockedLineNumbers) {
     const filter = (region, level) => level === foldLevel && region.isCollapsed !== doCollapse && !blockedLineNumbers.some(line => region.containsLine(line));
     const toToggle = foldingModel.getRegionsInside(null, filter);
     foldingModel.toggleCollapseState(toToggle);
@@ -338,7 +339,7 @@ export function setCollapseStateAtLevel(foldingModel, foldLevel, doCollapse, blo
  * @param doCollapse Whether to collapse or expand
  * @param blockedLineNumbers the location of regions to not collapse or expand
  */
-export function setCollapseStateForRest(foldingModel, doCollapse, blockedLineNumbers) {
+function setCollapseStateForRest(foldingModel, doCollapse, blockedLineNumbers) {
     const filteredRegions = [];
     for (const lineNumber of blockedLineNumbers) {
         const regions = foldingModel.getAllRegionsAtLine(lineNumber, undefined);
@@ -354,7 +355,7 @@ export function setCollapseStateForRest(foldingModel, doCollapse, blockedLineNum
  * Folds all regions for which the lines start with a given regex
  * @param foldingModel the folding model
  */
-export function setCollapseStateForMatchingLines(foldingModel, regExp, doCollapse) {
+function setCollapseStateForMatchingLines(foldingModel, regExp, doCollapse) {
     const editorModel = foldingModel.textModel;
     const regions = foldingModel.regions;
     const toToggle = [];
@@ -372,7 +373,7 @@ export function setCollapseStateForMatchingLines(foldingModel, regExp, doCollaps
  * Folds all regions of the given type
  * @param foldingModel the folding model
  */
-export function setCollapseStateForType(foldingModel, type, doCollapse) {
+function setCollapseStateForType(foldingModel, type, doCollapse) {
     const regions = foldingModel.regions;
     const toToggle = [];
     for (let i = regions.length - 1; i >= 0; i--) {
@@ -389,7 +390,7 @@ export function setCollapseStateForType(foldingModel, type, doCollapse) {
  *
  * @return Parent fold start line
  */
-export function getParentFoldLine(lineNumber, foldingModel) {
+function getParentFoldLine(lineNumber, foldingModel) {
     let startLineNumber = null;
     const foldingRegion = foldingModel.getRegionAtLine(lineNumber);
     if (foldingRegion !== null) {
@@ -414,7 +415,7 @@ export function getParentFoldLine(lineNumber, foldingModel) {
  *
  * @return Previous fold start line
  */
-export function getPreviousFoldLine(lineNumber, foldingModel) {
+function getPreviousFoldLine(lineNumber, foldingModel) {
     let foldingRegion = foldingModel.getRegionAtLine(lineNumber);
     // If on the folding range start line, go to previous sibling.
     if (foldingRegion !== null && foldingRegion.startLineNumber === lineNumber) {
@@ -474,7 +475,7 @@ export function getPreviousFoldLine(lineNumber, foldingModel) {
  *
  * @return Next fold start line
  */
-export function getNextFoldLine(lineNumber, foldingModel) {
+function getNextFoldLine(lineNumber, foldingModel) {
     let foldingRegion = foldingModel.getRegionAtLine(lineNumber);
     // If on the folding range start line, go to next sibling.
     if (foldingRegion !== null && foldingRegion.startLineNumber === lineNumber) {
@@ -527,4 +528,5 @@ export function getNextFoldLine(lineNumber, foldingModel) {
     }
     return null;
 }
-//# sourceMappingURL=foldingModel.js.map
+
+export { FoldingModel, getNextFoldLine, getParentFoldLine, getPreviousFoldLine, setCollapseStateAtLevel, setCollapseStateForMatchingLines, setCollapseStateForRest, setCollapseStateForType, setCollapseStateLevelsDown, setCollapseStateLevelsUp, setCollapseStateUp, toggleCollapseState };

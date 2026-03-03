@@ -1,12 +1,13 @@
+import { isHighSurrogate, isLowSurrogate, firstNonWhitespaceIndex, isFullWidthCharacter } from '../../../base/common/strings.js';
+import { CharacterClassifier } from '../core/characterClassifier.js';
+import { LineInjectedText } from '../textModelEvents.js';
+import { ModelLineProjectionData } from '../modelLineProjectionData.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import * as strings from '../../../base/common/strings.js';
-import { CharacterClassifier } from '../core/characterClassifier.js';
-import { LineInjectedText } from '../textModelEvents.js';
-import { ModelLineProjectionData } from '../modelLineProjectionData.js';
-export class MonospaceLineBreaksComputerFactory {
+class MonospaceLineBreaksComputerFactory {
     static create(options) {
         return new MonospaceLineBreaksComputerFactory(options.get(151 /* EditorOption.wordWrapBreakBeforeCharacters */), options.get(150 /* EditorOption.wordWrapBreakAfterCharacters */));
     }
@@ -29,11 +30,13 @@ export class MonospaceLineBreaksComputerFactory {
                 for (let i = 0, len = requests.length; i < len; i++) {
                     const injectedText = injectedTexts[i];
                     const previousLineBreakData = previousBreakingData[i];
-                    if (previousLineBreakData && !previousLineBreakData.injectionOptions && !injectedText && !wrapOnEscapedLineFeeds) {
-                        result[i] = createLineBreaksFromPreviousLineBreaks(this.classifier, previousLineBreakData, requests[i], tabSize, wrappingColumn, columnsForFullWidthChar, wrappingIndent, wordBreak);
+                    const lineText = requests[i];
+                    const isLineFeedWrappingEnabled = wrapOnEscapedLineFeeds && lineText.includes('"') && lineText.includes('\\n');
+                    if (previousLineBreakData && !previousLineBreakData.injectionOptions && !injectedText && !isLineFeedWrappingEnabled) {
+                        result[i] = createLineBreaksFromPreviousLineBreaks(this.classifier, previousLineBreakData, lineText, tabSize, wrappingColumn, columnsForFullWidthChar, wrappingIndent, wordBreak);
                     }
                     else {
-                        result[i] = createLineBreaks(this.classifier, requests[i], injectedText, tabSize, wrappingColumn, columnsForFullWidthChar, wrappingIndent, wordBreak, wrapOnEscapedLineFeeds);
+                        result[i] = createLineBreaks(this.classifier, lineText, injectedText, tabSize, wrappingColumn, columnsForFullWidthChar, wrappingIndent, wordBreak, isLineFeedWrappingEnabled);
                     }
                 }
                 arrPool1.length = 0;
@@ -128,7 +131,7 @@ function createLineBreaksFromPreviousLineBreaks(classifier, previousBreakingData
                 const charCode = lineText.charCodeAt(i);
                 let charCodeClass;
                 let charWidth;
-                if (strings.isHighSurrogate(charCode)) {
+                if (isHighSurrogate(charCode)) {
                     // A surrogate pair must always be considered as a single unit, so it is never to be broken
                     i++;
                     charCodeClass = 0 /* CharacterClass.NONE */;
@@ -192,7 +195,7 @@ function createLineBreaksFromPreviousLineBreaks(classifier, previousBreakingData
                 }
                 let prevCharCodeClass;
                 let prevCharWidth;
-                if (strings.isLowSurrogate(prevCharCode)) {
+                if (isLowSurrogate(prevCharCode)) {
                     // A surrogate pair must always be considered as a single unit, so it is never to be broken
                     i--;
                     prevCharCodeClass = 0 /* CharacterClass.NONE */;
@@ -200,7 +203,7 @@ function createLineBreaksFromPreviousLineBreaks(classifier, previousBreakingData
                 }
                 else {
                     prevCharCodeClass = classifier.get(prevCharCode);
-                    prevCharWidth = (strings.isFullWidthCharacter(prevCharCode) ? columnsForFullWidthChar : 1);
+                    prevCharWidth = (isFullWidthCharacter(prevCharCode) ? columnsForFullWidthChar : 1);
                 }
                 if (visibleColumn <= breakingColumn) {
                     if (forcedBreakOffset === 0) {
@@ -226,7 +229,7 @@ function createLineBreaksFromPreviousLineBreaks(classifier, previousBreakingData
                 if (remainingWidthOfNextLine <= tabSize) {
                     const charCodeAtForcedBreakOffset = lineText.charCodeAt(forcedBreakOffset);
                     let charWidth;
-                    if (strings.isHighSurrogate(charCodeAtForcedBreakOffset)) {
+                    if (isHighSurrogate(charCodeAtForcedBreakOffset)) {
                         // A surrogate pair must always be considered as a single unit, so it is never to be broken
                         charWidth = 2;
                     }
@@ -253,7 +256,7 @@ function createLineBreaksFromPreviousLineBreaks(classifier, previousBreakingData
         if (breakOffset <= lastBreakingOffset) {
             // Make sure that we are advancing (at least one character)
             const charCode = lineText.charCodeAt(lastBreakingOffset);
-            if (strings.isHighSurrogate(charCode)) {
+            if (isHighSurrogate(charCode)) {
                 // A surrogate pair must always be considered as a single unit, so it is never to be broken
                 breakOffset = lastBreakingOffset + 2;
                 breakOffsetVisibleColumn = lastBreakingOffsetVisibleColumn + 2;
@@ -337,7 +340,7 @@ function createLineBreaks(classifier, _lineText, injectedTexts, tabSize, firstLi
     let prevCharCodeClass = classifier.get(prevCharCode);
     let visibleColumn = computeCharWidth(prevCharCode, 0, tabSize, columnsForFullWidthChar);
     let startOffset = 1;
-    if (strings.isHighSurrogate(prevCharCode)) {
+    if (isHighSurrogate(prevCharCode)) {
         // A surrogate pair must always be considered as a single unit, so it is never to be broken
         visibleColumn += 1;
         prevCharCode = lineText.charCodeAt(1);
@@ -349,7 +352,8 @@ function createLineBreaks(classifier, _lineText, injectedTexts, tabSize, firstLi
         const charCode = lineText.charCodeAt(i);
         let charCodeClass;
         let charWidth;
-        if (strings.isHighSurrogate(charCode)) {
+        let wrapEscapedLineFeed = false;
+        if (isHighSurrogate(charCode)) {
             // A surrogate pair must always be considered as a single unit, so it is never to be broken
             i++;
             charCodeClass = 0 /* CharacterClass.NONE */;
@@ -359,17 +363,19 @@ function createLineBreaks(classifier, _lineText, injectedTexts, tabSize, firstLi
             charCodeClass = classifier.get(charCode);
             charWidth = computeCharWidth(charCode, visibleColumn, tabSize, columnsForFullWidthChar);
         }
-        if (canBreak(prevCharCode, prevCharCodeClass, charCode, charCodeClass, isKeepAll)) {
+        // literal \n shall trigger a softwrap
+        if (wrapOnEscapedLineFeeds && isEscapedLineBreakAtPosition(lineText, i)) {
+            breakOffset = charStartOffset;
+            breakOffsetVisibleColumn = visibleColumn;
+            wrapEscapedLineFeed = true;
+        }
+        else if (canBreak(prevCharCode, prevCharCodeClass, charCode, charCodeClass, isKeepAll)) {
             breakOffset = charStartOffset;
             breakOffsetVisibleColumn = visibleColumn;
         }
         visibleColumn += charWidth;
-        // literal \n shall trigger a softwrap
-        if (wrapOnEscapedLineFeeds && isEscapedLineBreakAtPosition(lineText, i)) {
-            visibleColumn += breakingColumn;
-        }
         // check if adding character at `i` will go over the breaking column
-        if (visibleColumn > breakingColumn) {
+        if (visibleColumn > breakingColumn || wrapEscapedLineFeed) {
             // We need to break at least before character at `i`:
             if (breakOffset === 0 || visibleColumn - breakOffsetVisibleColumn > wrappedLineBreakColumn) {
                 // Cannot break at `breakOffset`, must break at `i`
@@ -397,7 +403,7 @@ function computeCharWidth(charCode, visibleColumn, tabSize, columnsForFullWidthC
     if (charCode === 9 /* CharCode.Tab */) {
         return (tabSize - (visibleColumn % tabSize));
     }
-    if (strings.isFullWidthCharacter(charCode)) {
+    if (isFullWidthCharacter(charCode)) {
         return columnsForFullWidthChar;
     }
     if (charCode < 32) {
@@ -414,11 +420,19 @@ function tabCharacterWidth(visibleColumn, tabSize) {
  * This handles the wrapOnEscapedLineFeeds feature which allows \n sequences in strings to trigger wrapping.
  */
 function isEscapedLineBreakAtPosition(lineText, i) {
-    return (i >= 2
-        && (i < 3 || lineText.charAt(i - 3) !== '\\')
-        && lineText.charAt(i - 2) === '\\'
-        && lineText.charAt(i - 1) === 'n'
-        && lineText.includes('"'));
+    if (i >= 2 && lineText.charAt(i - 1) === 'n') {
+        // Check if there's an odd number of backslashes
+        let escapeCount = 0;
+        for (let j = i - 2; j >= 0; j--) {
+            if (lineText.charAt(j) === '\\') {
+                escapeCount++;
+            }
+            else {
+                return escapeCount % 2 === 1;
+            }
+        }
+    }
+    return false;
 }
 /**
  * Kinsoku Shori : Don't break after a leading character, like an open bracket
@@ -434,10 +448,10 @@ function canBreak(prevCharCode, prevCharCodeClass, charCode, charCodeClass, isKe
 function computeWrappedTextIndentLength(lineText, tabSize, firstLineBreakColumn, columnsForFullWidthChar, wrappingIndent) {
     let wrappedTextIndentLength = 0;
     if (wrappingIndent !== 0 /* WrappingIndent.None */) {
-        const firstNonWhitespaceIndex = strings.firstNonWhitespaceIndex(lineText);
-        if (firstNonWhitespaceIndex !== -1) {
+        const firstNonWhitespaceIndex$1 = firstNonWhitespaceIndex(lineText);
+        if (firstNonWhitespaceIndex$1 !== -1) {
             // Track existing indent
-            for (let i = 0; i < firstNonWhitespaceIndex; i++) {
+            for (let i = 0; i < firstNonWhitespaceIndex$1; i++) {
                 const charWidth = (lineText.charCodeAt(i) === 9 /* CharCode.Tab */ ? tabCharacterWidth(wrappedTextIndentLength, tabSize) : 1);
                 wrappedTextIndentLength += charWidth;
             }
@@ -455,4 +469,5 @@ function computeWrappedTextIndentLength(lineText, tabSize, firstLineBreakColumn,
     }
     return wrappedTextIndentLength;
 }
-//# sourceMappingURL=monospaceLineBreaksComputer.js.map
+
+export { MonospaceLineBreaksComputerFactory };

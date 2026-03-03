@@ -1,9 +1,10 @@
+import { Selection } from '../../../common/core/selection.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { Selection } from '../../../common/core/selection.js';
-export class InPlaceReplaceCommand {
+class InPlaceReplaceCommand {
     constructor(editRange, originalSelection, text) {
         this._editRange = editRange;
         this._originalSelection = originalSelection;
@@ -22,4 +23,5 @@ export class InPlaceReplaceCommand {
         return new Selection(srcRange.endLineNumber, Math.min(this._originalSelection.positionColumn, srcRange.endColumn), srcRange.endLineNumber, Math.min(this._originalSelection.positionColumn, srcRange.endColumn));
     }
 }
-//# sourceMappingURL=inPlaceReplaceCommand.js.map
+
+export { InPlaceReplaceCommand };

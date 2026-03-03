@@ -1,17 +1,3 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-var SuggestMemoryService_1;
 import { RunOnceScheduler } from '../../../../base/common/async.js';
 import { DisposableStore } from '../../../../base/common/lifecycle.js';
 import { LRUCache } from '../../../../base/common/map.js';
@@ -20,8 +6,23 @@ import { CompletionItemKinds } from '../../../common/languages.js';
 import { IConfigurationService } from '../../../../platform/configuration/common/configuration.js';
 import { registerSingleton } from '../../../../platform/instantiation/common/extensions.js';
 import { createDecorator } from '../../../../platform/instantiation/common/instantiation.js';
-import { IStorageService, WillSaveStateReason } from '../../../../platform/storage/common/storage.js';
-export class Memory {
+import { WillSaveStateReason, IStorageService } from '../../../../platform/storage/common/storage.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var SuggestMemoryService_1;
+class Memory {
     constructor(name) {
         this.name = name;
     }
@@ -44,7 +45,7 @@ export class Memory {
         return 0;
     }
 }
-export class NoMemory extends Memory {
+class NoMemory extends Memory {
     constructor() {
         super('first');
     }
@@ -58,7 +59,7 @@ export class NoMemory extends Memory {
         //
     }
 }
-export class LRUMemory extends Memory {
+class LRUMemory extends Memory {
     constructor() {
         super('recentlyUsed');
         this._cache = new LRUCache(300, 0.66);
@@ -124,7 +125,7 @@ export class LRUMemory extends Memory {
         this._seq = this._cache.size;
     }
 }
-export class PrefixMemory extends Memory {
+class PrefixMemory extends Memory {
     constructor() {
         super('recentlyUsedByPrefix');
         this._trie = TernarySearchTree.forStrings();
@@ -247,7 +248,7 @@ SuggestMemoryService = SuggestMemoryService_1 = __decorate([
     __param(0, IStorageService),
     __param(1, IConfigurationService)
 ], SuggestMemoryService);
-export { SuggestMemoryService };
-export const ISuggestMemoryService = createDecorator('ISuggestMemories');
+const ISuggestMemoryService = createDecorator('ISuggestMemories');
 registerSingleton(ISuggestMemoryService, SuggestMemoryService, 1 /* InstantiationType.Delayed */);
-//# sourceMappingURL=suggestMemory.js.map
+
+export { ISuggestMemoryService, LRUMemory, Memory, NoMemory, PrefixMemory, SuggestMemoryService };

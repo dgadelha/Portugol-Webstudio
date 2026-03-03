@@ -1,8 +1,9 @@
+import { onUnexpectedError, BugIndicatingError } from './errors.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { BugIndicatingError, onUnexpectedError } from './errors.js';
 /**
  * Throws an error with the provided message if the provided value does not evaluate to a true Javascript value.
  *
@@ -17,12 +18,12 @@ import { BugIndicatingError, onUnexpectedError } from './errors.js';
  * There is no tooling for generating such an import statement.
  * Thus, the `assert(...)` function should be used instead.
  */
-export function ok(value, message) {
+function ok(value, message) {
     if (!value) {
         throw new Error(message ? `Assertion failed (${message})` : 'Assertion Failed');
     }
 }
-export function assertNever(value, message = 'Unreachable') {
+function assertNever(value, message = 'Unreachable') {
     throw new Error(message);
 }
 /**
@@ -33,7 +34,7 @@ export function assertNever(value, message = 'Unreachable') {
  * @param condition The condition to assert.
  * @param messageOrError An error message or error object to throw if condition is `falsy`.
  */
-export function assert(condition, messageOrError = 'unexpected state') {
+function assert(condition, messageOrError = 'unexpected state') {
     if (!condition) {
         // if error instance is provided, use it, otherwise create a new one
         const errorToThrow = typeof messageOrError === 'string'
@@ -45,7 +46,7 @@ export function assert(condition, messageOrError = 'unexpected state') {
 /**
  * Like assert, but doesn't throw.
  */
-export function softAssert(condition, message = 'Soft Assertion Failed') {
+function softAssert(condition, message = 'Soft Assertion Failed') {
     if (!condition) {
         onUnexpectedError(new BugIndicatingError(message));
     }
@@ -53,7 +54,7 @@ export function softAssert(condition, message = 'Soft Assertion Failed') {
 /**
  * condition must be side-effect free!
  */
-export function assertFn(condition) {
+function assertFn(condition) {
     if (!condition()) {
         // eslint-disable-next-line no-debugger
         debugger;
@@ -62,7 +63,7 @@ export function assertFn(condition) {
         onUnexpectedError(new BugIndicatingError('Assertion Failed'));
     }
 }
-export function checkAdjacentItems(items, predicate) {
+function checkAdjacentItems(items, predicate) {
     let i = 0;
     while (i < items.length - 1) {
         const a = items[i];
@@ -74,4 +75,5 @@ export function checkAdjacentItems(items, predicate) {
     }
     return true;
 }
-//# sourceMappingURL=assert.js.map
+
+export { assert, assertFn, assertNever, checkAdjacentItems, ok, softAssert };

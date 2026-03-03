@@ -1,14 +1,15 @@
+import { $, getActiveDocument } from '../../../../base/browser/dom.js';
+import { Disposable, toDisposable } from '../../../../base/common/lifecycle.js';
+import './media/decorationCssRuleExtractor.css';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { $, getActiveDocument } from '../../../../base/browser/dom.js';
-import { Disposable, toDisposable } from '../../../../base/common/lifecycle.js';
-import './media/decorationCssRuleExtractor.css';
 /**
  * Extracts CSS rules that would be applied to certain decoration classes.
  */
-export class DecorationCssRuleExtractor extends Disposable {
+class DecorationCssRuleExtractor extends Disposable {
     constructor() {
         super();
         this._ruleCache = new Map();
@@ -68,4 +69,5 @@ export class DecorationCssRuleExtractor extends Disposable {
         return rules;
     }
 }
-//# sourceMappingURL=decorationCssRuleExtractor.js.map
+
+export { DecorationCssRuleExtractor };

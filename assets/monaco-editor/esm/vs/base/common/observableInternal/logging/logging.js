@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 let globalObservableLogger;
-export function addLogger(logger) {
+function addLogger(logger) {
     if (!globalObservableLogger) {
         globalObservableLogger = logger;
     }
@@ -14,12 +14,8 @@ export function addLogger(logger) {
         globalObservableLogger = new ComposedLogger([globalObservableLogger, logger]);
     }
 }
-export function getLogger() {
+function getLogger() {
     return globalObservableLogger;
-}
-let globalObservableLoggerFn = undefined;
-export function setLogObservableFn(fn) {
-    globalObservableLoggerFn = fn;
 }
 class ComposedLogger {
     constructor(loggers) {
@@ -86,4 +82,5 @@ class ComposedLogger {
         }
     }
 }
-//# sourceMappingURL=logging.js.map
+
+export { addLogger, getLogger };

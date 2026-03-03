@@ -1,13 +1,14 @@
+import { Event, Emitter } from './event.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { Emitter, Event } from './event.js';
 const shortcutEvent = Object.freeze(function (callback, context) {
     const handle = setTimeout(callback.bind(context), 0);
     return { dispose() { clearTimeout(handle); } };
 });
-export var CancellationToken;
+var CancellationToken;
 (function (CancellationToken) {
     function isCancellationToken(thing) {
         if (thing === CancellationToken.None || thing === CancellationToken.Cancelled) {
@@ -65,7 +66,7 @@ class MutableToken {
         }
     }
 }
-export class CancellationTokenSource {
+class CancellationTokenSource {
     constructor(parent) {
         this._token = undefined;
         this._parentListener = undefined;
@@ -106,9 +107,10 @@ export class CancellationTokenSource {
         }
     }
 }
-export function cancelOnDispose(store) {
+function cancelOnDispose(store) {
     const source = new CancellationTokenSource();
     store.add({ dispose() { source.cancel(); } });
     return source.token;
 }
-//# sourceMappingURL=cancellation.js.map
+
+export { CancellationToken, CancellationTokenSource, cancelOnDispose };

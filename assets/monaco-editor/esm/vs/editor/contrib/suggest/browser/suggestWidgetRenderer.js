@@ -1,17 +1,4 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-import { $, append, hide, show } from '../../../../base/browser/dom.js';
+import { append, $, show, hide } from '../../../../base/browser/dom.js';
 import { IconLabel } from '../../../../base/browser/ui/iconLabel/iconLabel.js';
 import { Codicon } from '../../../../base/common/codicons.js';
 import { ThemeIcon } from '../../../../base/common/themables.js';
@@ -23,12 +10,26 @@ import { CompletionItemKinds } from '../../../common/languages.js';
 import { getIconClasses } from '../../../common/services/getIconClasses.js';
 import { IModelService } from '../../../common/services/model.js';
 import { ILanguageService } from '../../../common/languages/language.js';
-import * as nls from '../../../../nls.js';
+import { localize } from '../../../../nls.js';
 import { FileKind } from '../../../../platform/files/common/files.js';
 import { registerIcon } from '../../../../platform/theme/common/iconRegistry.js';
 import { IThemeService } from '../../../../platform/theme/common/themeService.js';
 import { canExpandCompletionItem } from './suggestWidgetDetails.js';
-const suggestMoreInfoIcon = registerIcon('suggest-more-info', Codicon.chevronRight, nls.localize(1477, 'Icon for more information in the suggest widget.'));
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+const suggestMoreInfoIcon = registerIcon('suggest-more-info', Codicon.chevronRight, localize(1492, 'Icon for more information in the suggest widget.'));
 const _completionItemColor = new class ColorExtractor {
     static { this._regexRelaxed = /(#([\da-fA-F]{3}){1,2}|(rgb|hsl)a\(\s*(\d{1,3}%?\s*,\s*){3}(1|0?\.\d+)\)|(rgb|hsl)\(\s*\d{1,3}%?(\s*,\s*\d{1,3}%?){2}\s*\))/; }
     static { this._regexStrict = new RegExp(`^${ColorExtractor._regexRelaxed.source}$`, 'i'); }
@@ -84,7 +85,7 @@ let ItemRenderer = class ItemRenderer {
         const qualifierLabel = append(left, $('span.qualifier-label'));
         const detailsLabel = append(right, $('span.details-label'));
         const readMore = append(right, $('span.readMore' + ThemeIcon.asCSSSelector(suggestMoreInfoIcon)));
-        readMore.title = nls.localize(1478, "Read More");
+        readMore.title = localize(1493, "Read More");
         const configureFont = () => {
             const options = this._editor.getOptions();
             const fontInfo = options.get(59 /* EditorOption.fontInfo */);
@@ -200,8 +201,8 @@ ItemRenderer = __decorate([
     __param(2, ILanguageService),
     __param(3, IThemeService)
 ], ItemRenderer);
-export { ItemRenderer };
 function stripNewLines(str) {
     return str.replace(/\r\n|\r|\n/g, '');
 }
-//# sourceMappingURL=suggestWidgetRenderer.js.map
+
+export { ItemRenderer };

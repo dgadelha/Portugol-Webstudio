@@ -1,11 +1,12 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { MinimapCharRenderer } from './minimapCharRenderer.js';
 import { allCharCodes } from './minimapCharSheet.js';
 import { prebakedMiniMaps } from './minimapPreBaked.js';
 import { toUint8 } from '../../../../base/common/uint.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
 /**
  * Creates character renderers. It takes a 'scale' that determines how large
  * characters should be drawn. Using this, it draws data into a canvas and
@@ -13,7 +14,7 @@ import { toUint8 } from '../../../../base/common/uint.js';
  * This makes rendering more efficient, rather than drawing a full (tiny)
  * font, or downsampling in real-time.
  */
-export class MinimapCharRendererFactory {
+class MinimapCharRendererFactory {
     /**
      * Creates a new character renderer factory with the given scale.
      */
@@ -131,4 +132,5 @@ export class MinimapCharRendererFactory {
         return result;
     }
 }
-//# sourceMappingURL=minimapCharRendererFactory.js.map
+
+export { MinimapCharRendererFactory };

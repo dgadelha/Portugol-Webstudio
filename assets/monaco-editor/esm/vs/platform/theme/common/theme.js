@@ -5,24 +5,25 @@
 /**
  * Color scheme used by the OS and by color themes.
  */
-export var ColorScheme;
+var ColorScheme;
 (function (ColorScheme) {
     ColorScheme["DARK"] = "dark";
     ColorScheme["LIGHT"] = "light";
     ColorScheme["HIGH_CONTRAST_DARK"] = "hcDark";
     ColorScheme["HIGH_CONTRAST_LIGHT"] = "hcLight";
 })(ColorScheme || (ColorScheme = {}));
-export var ThemeTypeSelector;
+var ThemeTypeSelector;
 (function (ThemeTypeSelector) {
     ThemeTypeSelector["VS"] = "vs";
     ThemeTypeSelector["VS_DARK"] = "vs-dark";
     ThemeTypeSelector["HC_BLACK"] = "hc-black";
     ThemeTypeSelector["HC_LIGHT"] = "hc-light";
 })(ThemeTypeSelector || (ThemeTypeSelector = {}));
-export function isHighContrast(scheme) {
+function isHighContrast(scheme) {
     return scheme === ColorScheme.HIGH_CONTRAST_DARK || scheme === ColorScheme.HIGH_CONTRAST_LIGHT;
 }
-export function isDark(scheme) {
+function isDark(scheme) {
     return scheme === ColorScheme.DARK || scheme === ColorScheme.HIGH_CONTRAST_DARK;
 }
-//# sourceMappingURL=theme.js.map
+
+export { ColorScheme, ThemeTypeSelector, isDark, isHighContrast };

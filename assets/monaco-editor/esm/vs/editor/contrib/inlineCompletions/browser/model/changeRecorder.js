@@ -1,22 +1,25 @@
+import { Disposable } from '../../../../../base/common/lifecycle.js';
+import '../../../../../base/common/observableInternal/index.js';
+import { IInstantiationService } from '../../../../../platform/instantiation/common/instantiation.js';
+import { ILoggerService, canLog, LogLevel } from '../../../../../platform/log/common/log.js';
+import { CodeEditorWidget } from '../../../../browser/widget/codeEditor/codeEditorWidget.js';
+import { StructuredLogger } from '../structuredLogger.js';
+import { observableFromEvent } from '../../../../../base/common/observableInternal/observables/observableFromEvent.js';
+import { autorun } from '../../../../../base/common/observableInternal/reactions/autorun.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __param = (this && this.__param) || function (paramIndex, decorator) {
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { Disposable } from '../../../../../base/common/lifecycle.js';
-import { autorun, observableFromEvent } from '../../../../../base/common/observable.js';
-import { IInstantiationService } from '../../../../../platform/instantiation/common/instantiation.js';
-import { canLog, ILoggerService, LogLevel } from '../../../../../platform/log/common/log.js';
-import { CodeEditorWidget } from '../../../../browser/widget/codeEditor/codeEditorWidget.js';
-import { StructuredLogger } from '../structuredLogger.js';
 let TextModelChangeRecorder = class TextModelChangeRecorder extends Disposable {
     constructor(_editor, _instantiationService, _loggerService) {
         super();
@@ -71,5 +74,5 @@ TextModelChangeRecorder = __decorate([
     __param(1, IInstantiationService),
     __param(2, ILoggerService)
 ], TextModelChangeRecorder);
+
 export { TextModelChangeRecorder };
-//# sourceMappingURL=changeRecorder.js.map

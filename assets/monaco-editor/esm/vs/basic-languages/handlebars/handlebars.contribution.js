@@ -1,25 +1,9 @@
-/*!-----------------------------------------------------------------------------
- * Copyright (c) Microsoft Corporation. All rights reserved.
- * Version: 0.54.0(7c2310116c57517348bbd868a21139f32454be22)
- * Released under the MIT license
- * https://github.com/microsoft/monaco-editor/blob/main/LICENSE.txt
- *-----------------------------------------------------------------------------*/
+import { registerLanguage } from '../_.contribution.js';
 
-
-// src/basic-languages/handlebars/handlebars.contribution.ts
-import { registerLanguage } from "../_.contribution.js";
 registerLanguage({
   id: "handlebars",
   extensions: [".handlebars", ".hbs"],
   aliases: ["Handlebars", "handlebars", "hbs"],
   mimetypes: ["text/x-handlebars-template"],
-  loader: () => {
-    if (false) {
-      return new Promise((resolve, reject) => {
-        __require(["vs/basic-languages/handlebars/handlebars"], resolve, reject);
-      });
-    } else {
-      return import("./handlebars.js");
-    }
-  }
+  loader: () => import('./handlebars.js')
 });

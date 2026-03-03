@@ -1,19 +1,20 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 import { AbstractTree } from './abstractTree.js';
 import { CompressibleObjectTreeModel } from './compressedObjectTreeModel.js';
 import { ObjectTreeModel } from './objectTreeModel.js';
 import { memoize } from '../../../common/decorators.js';
 import { Iterable } from '../../../common/iterator.js';
-export class ObjectTree extends AbstractTree {
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+class ObjectTree extends AbstractTree {
     get onDidChangeCollapseState() { return this.model.onDidChangeCollapseState; }
     constructor(user, container, delegate, renderers, options = {}) {
         super(user, container, delegate, renderers, options);
@@ -28,6 +29,9 @@ export class ObjectTree extends AbstractTree {
             return;
         }
         this.model.rerender(element);
+    }
+    resort(element, recursive = true) {
+        this.model.resort(element, recursive);
     }
     hasElement(element) {
         return this.model.has(element);
@@ -173,7 +177,7 @@ function asObjectTreeOptions(compressedTreeNodeProvider, options) {
         }
     };
 }
-export class CompressibleObjectTree extends ObjectTree {
+class CompressibleObjectTree extends ObjectTree {
     constructor(user, container, delegate, renderers, options = {}) {
         const compressedTreeNodeProvider = () => this;
         const stickyScrollDelegate = new CompressibleStickyScrollDelegate(() => this.model);
@@ -196,4 +200,5 @@ export class CompressibleObjectTree extends ObjectTree {
         return this.model.getCompressedTreeNode(element);
     }
 }
-//# sourceMappingURL=objectTree.js.map
+
+export { CompressibleObjectTree, ObjectTree };

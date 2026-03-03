@@ -1,31 +1,24 @@
+import { DebugLocation } from '../debugLocation.js';
+import { getFunctionName } from '../debugName.js';
+import { getLogger } from '../logging/logging.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { DebugLocation } from '../debugLocation.js';
-import { getFunctionName } from '../debugName.js';
-import { getLogger } from '../logging/logging.js';
 let _derived;
 /**
  * @internal
  * This is to allow splitting files.
 */
-export function _setDerivedOpts(derived) {
+function _setDerivedOpts(derived) {
     _derived = derived;
 }
 let _recomputeInitiallyAndOnChange;
-export function _setRecomputeInitiallyAndOnChange(recomputeInitiallyAndOnChange) {
+function _setRecomputeInitiallyAndOnChange(recomputeInitiallyAndOnChange) {
     _recomputeInitiallyAndOnChange = recomputeInitiallyAndOnChange;
 }
-let _keepObserved;
-export function _setKeepObserved(keepObserved) {
-    _keepObserved = keepObserved;
-}
-let _debugGetDependencyGraph;
-export function _setDebugGetDependencyGraph(debugGetDependencyGraph) {
-    _debugGetDependencyGraph = debugGetDependencyGraph;
-}
-export class ConvenientObservable {
+class ConvenientObservable {
     get TChange() { return null; }
     reportChanges() {
         this.get();
@@ -78,7 +71,7 @@ export class ConvenientObservable {
         return this;
     }
 }
-export class BaseObservable extends ConvenientObservable {
+class BaseObservable extends ConvenientObservable {
     constructor(debugLocation) {
         super();
         this._observers = new Set();
@@ -109,4 +102,5 @@ export class BaseObservable extends ConvenientObservable {
         return this._observers;
     }
 }
-//# sourceMappingURL=baseObservable.js.map
+
+export { BaseObservable, ConvenientObservable, _setDerivedOpts, _setRecomputeInitiallyAndOnChange };

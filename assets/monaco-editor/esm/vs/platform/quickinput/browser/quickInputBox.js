@@ -1,21 +1,22 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-import * as dom from '../../../base/browser/dom.js';
+import { append, $ as $$1 } from '../../../base/browser/dom.js';
 import { FindInput } from '../../../base/browser/ui/findinput/findInput.js';
 import { Disposable } from '../../../base/common/lifecycle.js';
 import Severity from '../../../base/common/severity.js';
 import './media/quickInput.css';
-const $ = dom.$;
-export class QuickInputBox extends Disposable {
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+const $ = $$1;
+class QuickInputBox extends Disposable {
     constructor(parent, inputBoxStyles, toggleStyles) {
         super();
         this.parent = parent;
         this.onDidChange = (handler) => {
             return this.findInput.onDidChange(handler);
         };
-        this.container = dom.append(this.parent, $('.quick-input-box'));
+        this.container = append(this.parent, $('.quick-input-box'));
         this.findInput = this._register(new FindInput(this.container, undefined, { label: '', inputBoxStyles, toggleStyles }));
         const input = this.findInput.inputBox.inputElement;
         input.role = 'textbox';
@@ -99,4 +100,5 @@ export class QuickInputBox extends Disposable {
         this.findInput.inputBox.layout();
     }
 }
-//# sourceMappingURL=quickInputBox.js.map
+
+export { QuickInputBox };

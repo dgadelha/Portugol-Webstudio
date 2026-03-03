@@ -1,6 +1,7 @@
 import { assert } from './assert.js';
-import { compare, compareIgnoreCase, compareSubstring, compareSubstringIgnoreCase } from './strings.js';
-export class StringIterator {
+import { compareIgnoreCase, compare, compareSubstring, compareSubstringIgnoreCase } from './strings.js';
+
+class StringIterator {
     constructor() {
         this._value = '';
         this._pos = 0;
@@ -26,7 +27,7 @@ export class StringIterator {
         return this._value[this._pos];
     }
 }
-export class ConfigKeysIterator {
+class ConfigKeysIterator {
     constructor(_caseSensitive = true) {
         this._caseSensitive = _caseSensitive;
     }
@@ -68,7 +69,7 @@ export class ConfigKeysIterator {
         return this._value.substring(this._from, this._to);
     }
 }
-export class PathIterator {
+class PathIterator {
     constructor(_splitOnBackslash = true, _caseSensitive = true) {
         this._splitOnBackslash = _splitOnBackslash;
         this._caseSensitive = _caseSensitive;
@@ -118,7 +119,7 @@ export class PathIterator {
         return this._value.substring(this._from, this._to);
     }
 }
-export class UriIterator {
+class UriIterator {
     constructor(_ignorePathCasing, _ignoreQueryAndFragment) {
         this._ignorePathCasing = _ignorePathCasing;
         this._ignoreQueryAndFragment = _ignoreQueryAndFragment;
@@ -249,7 +250,7 @@ class TernarySearchTreeNode {
         return this.right?.height ?? 0;
     }
 }
-export class TernarySearchTree {
+class TernarySearchTree {
     static forUris(ignorePathCasing = () => false, ignoreQueryAndFragment = () => false) {
         return new TernarySearchTree(new UriIterator(ignorePathCasing, ignoreQueryAndFragment));
     }
@@ -669,4 +670,5 @@ export class TernarySearchTree {
         }
     }
 }
-//# sourceMappingURL=ternarySearchTree.js.map
+
+export { ConfigKeysIterator, PathIterator, StringIterator, TernarySearchTree, UriIterator };

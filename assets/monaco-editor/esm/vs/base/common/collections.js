@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 var _a;
-export function groupByMap(data, groupFn) {
+function groupByMap(data, groupFn) {
     const result = new Map();
     for (const element of data) {
         const key = groupFn(element);
@@ -16,7 +16,7 @@ export function groupByMap(data, groupFn) {
     }
     return result;
 }
-export function diffSets(before, after) {
+function diffSets(before, after) {
     const removed = [];
     const added = [];
     for (const element of before) {
@@ -38,7 +38,7 @@ export function diffSets(before, after) {
  * @param setB - The second iterable.
  * @returns A new set containing the elements that are in both `setA` and `setB`.
  */
-export function intersection(setA, setB) {
+function intersection(setA, setB) {
     const result = new Set();
     for (const elem of setB) {
         if (setA.has(elem)) {
@@ -47,7 +47,7 @@ export function intersection(setA, setB) {
     }
     return result;
 }
-export class SetWithKey {
+class SetWithKey {
     static { _a = Symbol.toStringTag; }
     constructor(values, toKey) {
         this.toKey = toKey;
@@ -94,4 +94,5 @@ export class SetWithKey {
         return this.values();
     }
 }
-//# sourceMappingURL=collections.js.map
+
+export { SetWithKey, diffSets, groupByMap, intersection };

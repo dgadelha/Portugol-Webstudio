@@ -1,7 +1,3 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { createSingleCallFunction } from '../../../../base/common/functional.js';
 import { DisposableStore, MutableDisposable, toDisposable } from '../../../../base/common/lifecycle.js';
 import { getCodeEditor, isDiffEditor } from '../../../browser/editorBrowser.js';
@@ -9,12 +5,17 @@ import { OverviewRulerLane } from '../../../common/model.js';
 import { overviewRulerRangeHighlight } from '../../../common/core/editorColorRegistry.js';
 import { themeColorFromId } from '../../../../platform/theme/common/themeService.js';
 import { status } from '../../../../base/browser/ui/aria/aria.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
 /**
  * A reusable quick access provider for the editor with support
  * for adding decorations for navigating in the currently active file
  * (for example "Go to line", "Go to symbol").
  */
-export class AbstractEditorNavigationQuickAccessProvider {
+class AbstractEditorNavigationQuickAccessProvider {
     constructor(options) {
         this.options = options;
         //#endregion
@@ -147,4 +148,5 @@ export class AbstractEditorNavigationQuickAccessProvider {
         }
     }
 }
-//# sourceMappingURL=editorNavigationQuickAccess.js.map
+
+export { AbstractEditorNavigationQuickAccessProvider };

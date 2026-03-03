@@ -1,13 +1,20 @@
+import { h, reset } from '../../../../../base/browser/dom.js';
+import { Disposable, toDisposable } from '../../../../../base/common/lifecycle.js';
+import '../../../../../base/common/observableInternal/index.js';
+import { LineRange } from '../../../../common/core/ranges/lineRange.js';
+import { OffsetRange } from '../../../../common/core/ranges/offsetRange.js';
+import { observableFromEvent } from '../../../../../base/common/observableInternal/observables/observableFromEvent.js';
+import { observableSignalFromEvent } from '../../../../../base/common/observableInternal/observables/observableSignalFromEvent.js';
+import { observableSignal } from '../../../../../base/common/observableInternal/observables/observableSignal.js';
+import { transaction } from '../../../../../base/common/observableInternal/transaction.js';
+import { autorun } from '../../../../../base/common/observableInternal/reactions/autorun.js';
+import { observableValue } from '../../../../../base/common/observableInternal/observables/observableValue.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { h, reset } from '../../../../../base/browser/dom.js';
-import { Disposable, toDisposable } from '../../../../../base/common/lifecycle.js';
-import { autorun, observableFromEvent, observableSignal, observableSignalFromEvent, observableValue, transaction } from '../../../../../base/common/observable.js';
-import { LineRange } from '../../../../common/core/ranges/lineRange.js';
-import { OffsetRange } from '../../../../common/core/ranges/offsetRange.js';
-export class EditorGutter extends Disposable {
+class EditorGutter extends Disposable {
     constructor(_editor, _domNode, itemProvider) {
         super();
         this._editor = _editor;
@@ -106,4 +113,5 @@ class ManagedGutterItemView {
         this.domNode = domNode;
     }
 }
-//# sourceMappingURL=editorGutter.js.map
+
+export { EditorGutter };

@@ -1,38 +1,16 @@
+import { onUnexpectedError } from './errors.js';
+import { createSingleCallFunction } from './functional.js';
+import { Disposable, combinedDisposable, DisposableStore, toDisposable } from './lifecycle.js';
+import { LinkedList } from './linkedList.js';
+import { StopWatch } from './stopwatch.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { onUnexpectedError } from './errors.js';
-import { createSingleCallFunction } from './functional.js';
-import { combinedDisposable, Disposable, DisposableStore, toDisposable } from './lifecycle.js';
-import { LinkedList } from './linkedList.js';
-import { StopWatch } from './stopwatch.js';
-// -----------------------------------------------------------------------------------------------------------------------
-// Uncomment the next line to print warnings whenever an emitter with listeners is disposed. That is a sign of code smell.
-// -----------------------------------------------------------------------------------------------------------------------
-const _enableDisposeWithListenerWarning = false;
-// -----------------------------------------------------------------------------------------------------------------------
-// Uncomment the next line to print warnings whenever a snapshotted event is used repeatedly without cleanup.
-// See https://github.com/microsoft/vscode/issues/142851
-// -----------------------------------------------------------------------------------------------------------------------
-const _enableSnapshotPotentialLeakWarning = false;
-export var Event;
+var Event;
 (function (Event) {
     Event.None = () => Disposable.None;
-    function _addLeakageTraceLogic(options) {
-        if (_enableSnapshotPotentialLeakWarning) {
-            const { onDidAddListener: origListenerDidAdd } = options;
-            const stack = Stacktrace.create();
-            let count = 0;
-            options.onDidAddListener = () => {
-                if (++count === 2) {
-                    console.warn('snapshotted emitter LIKELY used public and SHOULD HAVE BEEN created with DisposableStore. snapshotted here');
-                    stack.print();
-                }
-                origListenerDidAdd?.();
-            };
-        }
-    }
     /**
      * Given an event, returns another event which debounces calls and defers the listeners to a later task via a shared
      * `setTimeout`. The event is converted into a signal (`Event<void>`) to avoid additional object creation as a
@@ -163,9 +141,6 @@ export var Event;
                 listener?.dispose();
             }
         };
-        if (!disposable) {
-            _addLeakageTraceLogic(options);
-        }
         const emitter = new Emitter(options);
         disposable?.add(emitter);
         return emitter.event;
@@ -232,9 +207,6 @@ export var Event;
                 subscription.dispose();
             }
         };
-        if (!disposable) {
-            _addLeakageTraceLogic(options);
-        }
         const emitter = new Emitter(options);
         disposable?.add(emitter);
         return emitter.event;
@@ -534,9 +506,6 @@ export var Event;
                     _observable.removeObserver(this);
                 }
             };
-            if (!store) {
-                _addLeakageTraceLogic(options);
-            }
             this.emitter = new Emitter(options);
             if (store) {
                 store.add(this.emitter);
@@ -620,7 +589,7 @@ export var Event;
     }
     Event.fromObservableLight = fromObservableLight;
 })(Event || (Event = {}));
-export class EventProfiling {
+class EventProfiling {
     static { this.all = new Set(); }
     static { this._idPool = 0; }
     constructor(name) {
@@ -712,7 +681,7 @@ class Stacktrace {
     }
 }
 // error that is logged when going over the configured listener threshold
-export class ListenerLeakError extends Error {
+class ListenerLeakError extends Error {
     constructor(message, stack) {
         super(message);
         this.name = 'ListenerLeakError';
@@ -721,7 +690,7 @@ export class ListenerLeakError extends Error {
 }
 // SEVERE error that is logged when having gone way over the configured listener
 // threshold so that the emitter refuses to accept more listeners
-export class ListenerRefusalError extends Error {
+class ListenerRefusalError extends Error {
     constructor(message, stack) {
         super(message);
         this.name = 'ListenerRefusalError';
@@ -734,19 +703,6 @@ class UniqueContainer {
     }
 }
 const compactionThreshold = 2;
-const forEachListener = (listeners, fn) => {
-    if (listeners instanceof UniqueContainer) {
-        fn(listeners);
-    }
-    else {
-        for (let i = 0; i < listeners.length; i++) {
-            const l = listeners[i];
-            if (l) {
-                fn(l);
-            }
-        }
-    }
-};
 /**
  * The Emitter can be used to expose an Event to the public
  * to fire it from the insides.
@@ -768,11 +724,11 @@ const forEachListener = (listeners, fn) => {
         }
     }
  */
-export class Emitter {
+class Emitter {
     constructor(options) {
         this._size = 0;
         this._options = options;
-        this._leakageMon = (_globalLeakWarningThreshold > 0 || this._options?.leakWarningThreshold)
+        this._leakageMon = (this._options?.leakWarningThreshold)
             ? new LeakageMonitor(options?.onListenerError ?? onUnexpectedError, this._options?.leakWarningThreshold ?? _globalLeakWarningThreshold) :
             undefined;
         this._perfMon = this._options?._profName ? new EventProfiling(this._options._profName) : undefined;
@@ -794,12 +750,6 @@ export class Emitter {
                 this._deliveryQueue.reset();
             }
             if (this._listeners) {
-                if (_enableDisposeWithListenerWarning) {
-                    const listeners = this._listeners;
-                    queueMicrotask(() => {
-                        forEachListener(listeners, l => l.stack?.print());
-                    });
-                }
                 this._listeners = undefined;
                 this._size = 0;
             }
@@ -831,14 +781,10 @@ export class Emitter {
             }
             const contained = new UniqueContainer(callback);
             let removeMonitor;
-            let stack;
             if (this._leakageMon && this._size >= Math.ceil(this._leakageMon.threshold * 0.2)) {
                 // check and record this emitter for potential leakage
                 contained.stack = Stacktrace.create();
                 removeMonitor = this._leakageMon.check(contained.stack, this._size + 1);
-            }
-            if (_enableDisposeWithListenerWarning) {
-                contained.stack = stack ?? Stacktrace.create();
             }
             if (!this._listeners) {
                 this._options?.onWillAddFirstListener?.(this);
@@ -942,9 +888,7 @@ export class Emitter {
             this._perfMon?.stop(); // last fire() will have starting perfmon, stop it before starting the next dispatch
         }
         this._perfMon?.start(this._size);
-        if (!this._listeners) {
-            // no-op
-        }
+        if (!this._listeners) ;
         else if (this._listeners instanceof UniqueContainer) {
             this._deliver(this._listeners, event);
         }
@@ -959,7 +903,7 @@ export class Emitter {
         return this._size > 0;
     }
 }
-export const createEventDeliveryQueue = () => new EventDeliveryQueuePrivate();
+const createEventDeliveryQueue = () => new EventDeliveryQueuePrivate();
 class EventDeliveryQueuePrivate {
     constructor() {
         /**
@@ -983,7 +927,7 @@ class EventDeliveryQueuePrivate {
         this.value = undefined;
     }
 }
-export class PauseableEmitter extends Emitter {
+class PauseableEmitter extends Emitter {
     constructor(options) {
         super(options);
         this._isPaused = 0;
@@ -1024,7 +968,7 @@ export class PauseableEmitter extends Emitter {
         }
     }
 }
-export class DebounceEmitter extends PauseableEmitter {
+class DebounceEmitter extends PauseableEmitter {
     constructor(options) {
         super(options);
         this._delay = options.delay ?? 100;
@@ -1044,7 +988,7 @@ export class DebounceEmitter extends PauseableEmitter {
  * An emitter which queue all events and then process them at the
  * end of the event loop.
  */
-export class MicrotaskEmitter extends Emitter {
+class MicrotaskEmitter extends Emitter {
     constructor(options) {
         super(options);
         this._queuedEvents = [];
@@ -1091,7 +1035,7 @@ export class MicrotaskEmitter extends Emitter {
  * });
  * ```
  */
-export class EventMultiplexer {
+class EventMultiplexer {
     constructor() {
         this.hasListeners = false;
         this.events = [];
@@ -1161,7 +1105,7 @@ export class EventMultiplexer {
  * // event will only be fired at this point
  * ```
  */
-export class EventBufferer {
+class EventBufferer {
     constructor() {
         this.data = [];
     }
@@ -1220,7 +1164,7 @@ export class EventBufferer {
  * events from that input event through its own `event` property. The `input`
  * can be changed at any point in time.
  */
-export class Relay {
+class Relay {
     constructor() {
         this.listening = false;
         this.inputEvent = Event.None;
@@ -1249,4 +1193,5 @@ export class Relay {
         this.emitter.dispose();
     }
 }
-//# sourceMappingURL=event.js.map
+
+export { DebounceEmitter, Emitter, Event, EventBufferer, EventMultiplexer, EventProfiling, ListenerLeakError, ListenerRefusalError, MicrotaskEmitter, PauseableEmitter, Relay, createEventDeliveryQueue };

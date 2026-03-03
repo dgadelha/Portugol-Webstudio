@@ -2,14 +2,14 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-export function getParentNodeState(parentChildren) {
+function getParentNodeState(parentChildren) {
     let containsChecks = false;
     let containsUnchecks = false;
-    let containsPartial = false;
+    let containsMixed = false;
     for (const element of parentChildren) {
         switch (element.element?.checked) {
-            case 'partial':
-                containsPartial = true;
+            case 'mixed':
+                containsMixed = true;
                 break;
             case true:
                 containsChecks = true;
@@ -18,19 +18,20 @@ export function getParentNodeState(parentChildren) {
                 containsUnchecks = true;
                 break;
         }
-        if (containsChecks && containsUnchecks && containsPartial) {
+        if (containsChecks && containsUnchecks && containsMixed) {
             break;
         }
     }
     const newState = containsUnchecks
-        ? containsPartial
-            ? 'partial'
+        ? containsMixed
+            ? 'mixed'
             : containsChecks
-                ? 'partial'
+                ? 'mixed'
                 : false
-        : containsPartial
-            ? 'partial'
+        : containsMixed
+            ? 'mixed'
             : containsChecks;
     return newState;
 }
-//# sourceMappingURL=quickInputTree.js.map
+
+export { getParentNodeState };

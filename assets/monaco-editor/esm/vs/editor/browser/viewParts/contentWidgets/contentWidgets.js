@@ -1,16 +1,17 @@
+import { getDomNodePagePosition, getClientArea } from '../../../../base/browser/dom.js';
+import { createFastDomNode } from '../../../../base/browser/fastDomNode.js';
+import { ViewPart, PartFingerprints } from '../../view/viewPart.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import * as dom from '../../../../base/browser/dom.js';
-import { createFastDomNode } from '../../../../base/browser/fastDomNode.js';
-import { PartFingerprints, ViewPart } from '../../view/viewPart.js';
 /**
  * This view part is responsible for rendering the content widgets, which are
  * used for rendering elements that are associated to an editor position,
  * such as suggestions or the parameter hints.
  */
-export class ViewContentWidgets extends ViewPart {
+class ViewContentWidgets extends ViewPart {
     constructor(context, viewDomNode) {
         super(context);
         this._viewDomNode = viewDomNode;
@@ -253,12 +254,12 @@ class Widget {
     _layoutBoxInPage(anchor, width, height, ctx) {
         const aboveTop = anchor.top - height;
         const belowTop = anchor.top + anchor.height;
-        const domNodePosition = dom.getDomNodePagePosition(this._viewDomNode.domNode);
+        const domNodePosition = getDomNodePagePosition(this._viewDomNode.domNode);
         const elDocument = this._viewDomNode.domNode.ownerDocument;
         const elWindow = elDocument.defaultView;
         const absoluteAboveTop = domNodePosition.top + aboveTop - (elWindow?.scrollY ?? 0);
         const absoluteBelowTop = domNodePosition.top + belowTop - (elWindow?.scrollY ?? 0);
-        const windowSize = dom.getClientArea(elDocument.body);
+        const windowSize = getClientArea(elDocument.body);
         const [left, absoluteAboveLeft] = this._layoutHorizontalSegmentInPage(windowSize, domNodePosition, anchor.left - ctx.scrollLeft + this._contentLeft, width);
         // Leave some clearance to the top/bottom
         const TOP_PADDING = 22;
@@ -429,7 +430,7 @@ class Widget {
                 if (this._renderData?.kind === 'offViewport' && this._renderData.preserveFocus) {
                     // widget wants to be shown, but it is outside of the viewport and it
                     // has focus which we need to preserve
-                    this.domNode.setTop(-1000);
+                    this.domNode.setTop(-1e3);
                 }
                 else {
                     this.domNode.setVisibility('hidden');
@@ -480,6 +481,7 @@ class AnchorCoordinate {
         this._anchorCoordinateBrand = undefined;
     }
 }
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function safeInvoke(fn, thisArg, ...args) {
     try {
         return fn.call(thisArg, ...args);
@@ -489,4 +491,5 @@ function safeInvoke(fn, thisArg, ...args) {
         return null;
     }
 }
-//# sourceMappingURL=contentWidgets.js.map
+
+export { ViewContentWidgets };

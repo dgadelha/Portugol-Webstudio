@@ -1,22 +1,21 @@
+import { IThemeService } from '../../../platform/theme/common/themeService.js';
+import { ILogService } from '../../../platform/log/common/log.js';
+import { SparseMultilineTokens } from '../tokens/sparseMultilineTokens.js';
+import { ILanguageService } from '../languages/language.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __param = (this && this.__param) || function (paramIndex, decorator) {
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { TokenMetadata } from '../encodedTokenAttributes.js';
-import { IThemeService } from '../../../platform/theme/common/themeService.js';
-import { ILogService, LogLevel } from '../../../platform/log/common/log.js';
-import { SparseMultilineTokens } from '../tokens/sparseMultilineTokens.js';
-import { ILanguageService } from '../languages/language.js';
-const ENABLE_TRACE = false;
 let SemanticTokensProviderStyling = class SemanticTokensProviderStyling {
     constructor(_legend, _themeService, _languageService, _logService) {
         this._legend = _legend;
@@ -34,9 +33,6 @@ let SemanticTokensProviderStyling = class SemanticTokensProviderStyling {
         let metadata;
         if (entry) {
             metadata = entry.metadata;
-            if (ENABLE_TRACE && this._logService.getLevel() === LogLevel.Trace) {
-                this._logService.trace(`SemanticTokensProviderStyling [CACHED] ${tokenTypeIndex} / ${tokenModifierSet}: foreground ${TokenMetadata.getForeground(metadata)}, fontStyle ${TokenMetadata.getFontStyle(metadata).toString(2)}`);
-            }
         }
         else {
             let tokenType = this._legend.tokenTypes[tokenTypeIndex];
@@ -48,10 +44,6 @@ let SemanticTokensProviderStyling = class SemanticTokensProviderStyling {
                         tokenModifiers.push(this._legend.tokenModifiers[modifierIndex]);
                     }
                     modifierSet = modifierSet >> 1;
-                }
-                if (ENABLE_TRACE && modifierSet > 0 && this._logService.getLevel() === LogLevel.Trace) {
-                    this._logService.trace(`SemanticTokensProviderStyling: unknown token modifier index: ${tokenModifierSet.toString(2)} for legend: ${JSON.stringify(this._legend.tokenModifiers)}`);
-                    tokenModifiers.push('not-in-legend');
                 }
                 const tokenStyle = this._themeService.getColorTheme().getTokenStyleMetadata(tokenType, tokenModifiers, languageId);
                 if (typeof tokenStyle === 'undefined') {
@@ -86,16 +78,10 @@ let SemanticTokensProviderStyling = class SemanticTokensProviderStyling {
                 }
             }
             else {
-                if (ENABLE_TRACE && this._logService.getLevel() === LogLevel.Trace) {
-                    this._logService.trace(`SemanticTokensProviderStyling: unknown token type index: ${tokenTypeIndex} for legend: ${JSON.stringify(this._legend.tokenTypes)}`);
-                }
                 metadata = 2147483647 /* SemanticTokensProviderStylingConstants.NO_STYLING */;
                 tokenType = 'not-in-legend';
             }
             this._hashTable.add(tokenTypeIndex, tokenModifierSet, encodedLanguageId, metadata);
-            if (ENABLE_TRACE && this._logService.getLevel() === LogLevel.Trace) {
-                this._logService.trace(`SemanticTokensProviderStyling ${tokenTypeIndex} (${tokenType}) / ${tokenModifierSet} (${tokenModifiers.join(' ')}): foreground ${TokenMetadata.getForeground(metadata)}, fontStyle ${TokenMetadata.getFontStyle(metadata).toString(2)}`);
-            }
         }
         return metadata;
     }
@@ -123,8 +109,7 @@ SemanticTokensProviderStyling = __decorate([
     __param(2, ILanguageService),
     __param(3, ILogService)
 ], SemanticTokensProviderStyling);
-export { SemanticTokensProviderStyling };
-export function toMultilineTokens2(tokens, styling, languageId) {
+function toMultilineTokens2(tokens, styling, languageId) {
     const srcData = tokens.data;
     const tokenCount = (tokens.data.length / 5) | 0;
     const tokensPerArea = Math.max(Math.ceil(tokenCount / 1024 /* SemanticColoringConstants.DesiredMaxAreas */), 400 /* SemanticColoringConstants.DesiredTokensPerArea */);
@@ -274,4 +259,5 @@ class HashTable {
         this._elements[hash] = element;
     }
 }
-//# sourceMappingURL=semanticTokensProviderStyling.js.map
+
+export { SemanticTokensProviderStyling, toMultilineTokens2 };

@@ -1,48 +1,49 @@
+import { escapeRegExpCharacters } from '../../../../base/common/strings.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { escapeRegExpCharacters } from '../../../../base/common/strings.js';
-export function isFuzzyActionArr(what) {
+function isFuzzyActionArr(what) {
     return (Array.isArray(what));
 }
-export function isFuzzyAction(what) {
+function isFuzzyAction(what) {
     return !isFuzzyActionArr(what);
 }
-export function isString(what) {
+function isString(what) {
     return (typeof what === 'string');
 }
-export function isIAction(what) {
+function isIAction(what) {
     return !isString(what);
 }
 // Small helper functions
 /**
  * Is a string null, undefined, or empty?
  */
-export function empty(s) {
+function empty(s) {
     return (s ? false : true);
 }
 /**
  * Puts a string to lower case if 'ignoreCase' is set.
  */
-export function fixCase(lexer, str) {
+function fixCase(lexer, str) {
     return (lexer.ignoreCase && str ? str.toLowerCase() : str);
 }
 /**
  * Ensures there are no bad characters in a CSS token class.
  */
-export function sanitize(s) {
+function sanitize(s) {
     return s.replace(/[&<>'"_]/g, '-'); // used on all output token CSS classes
 }
 // Logging
 /**
  * Logs a message.
  */
-export function log(lexer, msg) {
+function log(lexer, msg) {
     console.log(`${lexer.languageId}: ${msg}`);
 }
 // Throwing errors
-export function createError(lexer, msg) {
+function createError(lexer, msg) {
     return new Error(`${lexer.languageId}: ${msg}`);
 }
 // Helper functions for rule finding and substitution
@@ -55,7 +56,7 @@ export function createError(lexer, msg) {
  *
  * See documentation for more info
  */
-export function substituteMatches(lexer, str, id, matches, state) {
+function substituteMatches(lexer, str, id, matches, state) {
     const re = /\$((\$)|(#)|(\d\d?)|[sS](\d\d?)|@(\w+))/g;
     let stateMatches = null;
     return str.replace(re, function (full, sub, dollar, hash, n, s, attr, ofs, total) {
@@ -86,7 +87,7 @@ export function substituteMatches(lexer, str, id, matches, state) {
  * 		$Sn => n'th part of state
  *
  */
-export function substituteMatchesRe(lexer, str, state) {
+function substituteMatchesRe(lexer, str, state) {
     const re = /\$[sS](\d\d?)/g;
     let stateMatches = null;
     return str.replace(re, function (full, s) {
@@ -103,7 +104,7 @@ export function substituteMatchesRe(lexer, str, state) {
 /**
  * Find the tokenizer rules for a specific state (i.e. next action)
  */
-export function findRules(lexer, inState) {
+function findRules(lexer, inState) {
     let state = inState;
     while (state && state.length > 0) {
         const rules = lexer.tokenizer[state];
@@ -125,7 +126,7 @@ export function findRules(lexer, inState) {
  * This is used during compilation where we may know the defined states
  * but not yet whether the corresponding rules are correct.
  */
-export function stateExists(lexer, inState) {
+function stateExists(lexer, inState) {
     let state = inState;
     while (state && state.length > 0) {
         const exist = lexer.stateNames[state];
@@ -142,4 +143,5 @@ export function stateExists(lexer, inState) {
     }
     return false;
 }
-//# sourceMappingURL=monarchCommon.js.map
+
+export { createError, empty, findRules, fixCase, isFuzzyAction, isFuzzyActionArr, isIAction, isString, log, sanitize, stateExists, substituteMatches, substituteMatchesRe };

@@ -1,16 +1,3 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
 import { equals } from '../../../../base/common/arrays.js';
 import { CancellationTokenSource } from '../../../../base/common/cancellation.js';
 import { onUnexpectedExternalError } from '../../../../base/common/errors.js';
@@ -24,7 +11,21 @@ import { registerSingleton } from '../../../../platform/instantiation/common/ext
 import { IModelService } from '../../../common/services/model.js';
 import { DisposableStore } from '../../../../base/common/lifecycle.js';
 import { ILanguageFeaturesService } from '../../../common/services/languageFeatures.js';
-export class TreeElement {
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+class TreeElement {
     remove() {
         this.parent?.children.delete(this.id);
     }
@@ -51,7 +52,7 @@ export class TreeElement {
         return element.children.size === 0;
     }
 }
-export class OutlineElement extends TreeElement {
+class OutlineElement extends TreeElement {
     constructor(id, parent, symbol) {
         super();
         this.id = id;
@@ -60,7 +61,7 @@ export class OutlineElement extends TreeElement {
         this.children = new Map();
     }
 }
-export class OutlineGroup extends TreeElement {
+class OutlineGroup extends TreeElement {
     constructor(id, parent, label, order) {
         super();
         this.id = id;
@@ -70,7 +71,7 @@ export class OutlineGroup extends TreeElement {
         this.children = new Map();
     }
 }
-export class OutlineModel extends TreeElement {
+class OutlineModel extends TreeElement {
     static create(registry, textModel, token) {
         const cts = new CancellationTokenSource(token);
         const result = new OutlineModel(textModel.uri);
@@ -195,7 +196,7 @@ export class OutlineModel extends TreeElement {
         }
     }
 }
-export const IOutlineModelService = createDecorator('IOutlineModelService');
+const IOutlineModelService = createDecorator('IOutlineModelService');
 let OutlineModelService = class OutlineModelService {
     constructor(_languageFeaturesService, debounces, modelService) {
         this._languageFeaturesService = _languageFeaturesService;
@@ -259,6 +260,6 @@ OutlineModelService = __decorate([
     __param(1, ILanguageFeatureDebounceService),
     __param(2, IModelService)
 ], OutlineModelService);
-export { OutlineModelService };
 registerSingleton(IOutlineModelService, OutlineModelService, 1 /* InstantiationType.Delayed */);
-//# sourceMappingURL=outlineModel.js.map
+
+export { IOutlineModelService, OutlineElement, OutlineGroup, OutlineModel, OutlineModelService, TreeElement };

@@ -1,17 +1,18 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { GlobalPointerMoveMonitor } from '../../globalPointerMoveMonitor.js';
 import { Widget } from '../widget.js';
 import { TimeoutTimer } from '../../../common/async.js';
 import { ThemeIcon } from '../../../common/themables.js';
-import * as dom from '../../dom.js';
+import { addStandardDisposableListener, EventType, WindowIntervalTimer, getWindow } from '../../dom.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
 /**
  * The arrow image size.
  */
-export const ARROW_IMG_SIZE = 11;
-export class ScrollbarArrow extends Widget {
+const ARROW_IMG_SIZE = 11;
+class ScrollbarArrow extends Widget {
     constructor(opts) {
         super();
         this._onActivate = opts.onActivate;
@@ -51,9 +52,9 @@ export class ScrollbarArrow extends Widget {
             this.domNode.style.right = opts.right + 'px';
         }
         this._pointerMoveMonitor = this._register(new GlobalPointerMoveMonitor());
-        this._register(dom.addStandardDisposableListener(this.bgDomNode, dom.EventType.POINTER_DOWN, (e) => this._arrowPointerDown(e)));
-        this._register(dom.addStandardDisposableListener(this.domNode, dom.EventType.POINTER_DOWN, (e) => this._arrowPointerDown(e)));
-        this._pointerdownRepeatTimer = this._register(new dom.WindowIntervalTimer());
+        this._register(addStandardDisposableListener(this.bgDomNode, EventType.POINTER_DOWN, (e) => this._arrowPointerDown(e)));
+        this._register(addStandardDisposableListener(this.domNode, EventType.POINTER_DOWN, (e) => this._arrowPointerDown(e)));
+        this._pointerdownRepeatTimer = this._register(new WindowIntervalTimer());
         this._pointerdownScheduleRepeatTimer = this._register(new TimeoutTimer());
     }
     _arrowPointerDown(e) {
@@ -61,7 +62,7 @@ export class ScrollbarArrow extends Widget {
             return;
         }
         const scheduleRepeater = () => {
-            this._pointerdownRepeatTimer.cancelAndSet(() => this._onActivate(), 1000 / 24, dom.getWindow(e));
+            this._pointerdownRepeatTimer.cancelAndSet(() => this._onActivate(), 1000 / 24, getWindow(e));
         };
         this._onActivate();
         this._pointerdownRepeatTimer.cancel();
@@ -73,4 +74,5 @@ export class ScrollbarArrow extends Widget {
         e.preventDefault();
     }
 }
-//# sourceMappingURL=scrollbarArrow.js.map
+
+export { ARROW_IMG_SIZE, ScrollbarArrow };

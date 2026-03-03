@@ -1,21 +1,26 @@
+import '../../../../base/common/observableInternal/index.js';
+import { IAccessibilityService } from '../../../../platform/accessibility/common/accessibility.js';
+import { diffEditorDefaultOptions } from '../../../common/config/diffEditor.js';
+import { boolean, clampedInt, stringSet, clampedFloat } from '../../../common/config/editorOptions.js';
+import { allowsTrueInlineDiffRendering } from './components/diffEditorViewZones/diffEditorViewZones.js';
+import { derivedConstOnceDefined } from '../../../../base/common/observableInternal/experimental/utils.js';
+import { observableValue } from '../../../../base/common/observableInternal/observables/observableValue.js';
+import { observableFromEvent } from '../../../../base/common/observableInternal/observables/observableFromEvent.js';
+import { derived } from '../../../../base/common/observableInternal/observables/derived.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __param = (this && this.__param) || function (paramIndex, decorator) {
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { derived, derivedConstOnceDefined, observableFromEvent, observableValue } from '../../../../base/common/observable.js';
-import { IAccessibilityService } from '../../../../platform/accessibility/common/accessibility.js';
-import { diffEditorDefaultOptions } from '../../../common/config/diffEditor.js';
-import { clampedFloat, clampedInt, boolean as validateBooleanOption, stringSet as validateStringSetOption } from '../../../common/config/editorOptions.js';
-import { allowsTrueInlineDiffRendering } from './components/diffEditorViewZones/diffEditorViewZones.js';
 let DiffEditorOptions = class DiffEditorOptions {
     get editorOptions() { return this._options; }
     constructor(options, _accessibilityService) {
@@ -98,7 +103,6 @@ let DiffEditorOptions = class DiffEditorOptions {
 DiffEditorOptions = __decorate([
     __param(1, IAccessibilityService)
 ], DiffEditorOptions);
-export { DiffEditorOptions };
 function isSimpleDiff(diff, supportsTrueDiffRendering) {
     return diff.mappings.every(m => isInsertion(m.lineRangeMapping) || isDeletion(m.lineRangeMapping) || (supportsTrueDiffRendering && allowsTrueInlineDiffRendering(m.lineRangeMapping)));
 }
@@ -110,37 +114,39 @@ function isDeletion(mapping) {
 }
 function validateDiffEditorOptions(options, defaults) {
     return {
-        enableSplitViewResizing: validateBooleanOption(options.enableSplitViewResizing, defaults.enableSplitViewResizing),
+        enableSplitViewResizing: boolean(options.enableSplitViewResizing, defaults.enableSplitViewResizing),
         splitViewDefaultRatio: clampedFloat(options.splitViewDefaultRatio, 0.5, 0.1, 0.9),
-        renderSideBySide: validateBooleanOption(options.renderSideBySide, defaults.renderSideBySide),
-        renderMarginRevertIcon: validateBooleanOption(options.renderMarginRevertIcon, defaults.renderMarginRevertIcon),
+        renderSideBySide: boolean(options.renderSideBySide, defaults.renderSideBySide),
+        renderMarginRevertIcon: boolean(options.renderMarginRevertIcon, defaults.renderMarginRevertIcon),
         maxComputationTime: clampedInt(options.maxComputationTime, defaults.maxComputationTime, 0, 1073741824 /* Constants.MAX_SAFE_SMALL_INTEGER */),
         maxFileSize: clampedInt(options.maxFileSize, defaults.maxFileSize, 0, 1073741824 /* Constants.MAX_SAFE_SMALL_INTEGER */),
-        ignoreTrimWhitespace: validateBooleanOption(options.ignoreTrimWhitespace, defaults.ignoreTrimWhitespace),
-        renderIndicators: validateBooleanOption(options.renderIndicators, defaults.renderIndicators),
-        originalEditable: validateBooleanOption(options.originalEditable, defaults.originalEditable),
-        diffCodeLens: validateBooleanOption(options.diffCodeLens, defaults.diffCodeLens),
-        renderOverviewRuler: validateBooleanOption(options.renderOverviewRuler, defaults.renderOverviewRuler),
-        diffWordWrap: validateStringSetOption(options.diffWordWrap, defaults.diffWordWrap, ['off', 'on', 'inherit']),
-        diffAlgorithm: validateStringSetOption(options.diffAlgorithm, defaults.diffAlgorithm, ['legacy', 'advanced'], { 'smart': 'legacy', 'experimental': 'advanced' }),
-        accessibilityVerbose: validateBooleanOption(options.accessibilityVerbose, defaults.accessibilityVerbose),
+        ignoreTrimWhitespace: boolean(options.ignoreTrimWhitespace, defaults.ignoreTrimWhitespace),
+        renderIndicators: boolean(options.renderIndicators, defaults.renderIndicators),
+        originalEditable: boolean(options.originalEditable, defaults.originalEditable),
+        diffCodeLens: boolean(options.diffCodeLens, defaults.diffCodeLens),
+        renderOverviewRuler: boolean(options.renderOverviewRuler, defaults.renderOverviewRuler),
+        diffWordWrap: stringSet(options.diffWordWrap, defaults.diffWordWrap, ['off', 'on', 'inherit']),
+        diffAlgorithm: stringSet(options.diffAlgorithm, defaults.diffAlgorithm, ['legacy', 'advanced'], { 'smart': 'legacy', 'experimental': 'advanced' }),
+        accessibilityVerbose: boolean(options.accessibilityVerbose, defaults.accessibilityVerbose),
         experimental: {
-            showMoves: validateBooleanOption(options.experimental?.showMoves, defaults.experimental.showMoves),
-            showEmptyDecorations: validateBooleanOption(options.experimental?.showEmptyDecorations, defaults.experimental.showEmptyDecorations),
-            useTrueInlineView: validateBooleanOption(options.experimental?.useTrueInlineView, defaults.experimental.useTrueInlineView),
+            showMoves: boolean(options.experimental?.showMoves, defaults.experimental.showMoves),
+            showEmptyDecorations: boolean(options.experimental?.showEmptyDecorations, defaults.experimental.showEmptyDecorations),
+            useTrueInlineView: boolean(options.experimental?.useTrueInlineView, defaults.experimental.useTrueInlineView),
         },
         hideUnchangedRegions: {
-            enabled: validateBooleanOption(options.hideUnchangedRegions?.enabled ?? options.experimental?.collapseUnchangedRegions, defaults.hideUnchangedRegions.enabled),
+            // eslint-disable-next-line local/code-no-any-casts, @typescript-eslint/no-explicit-any
+            enabled: boolean(options.hideUnchangedRegions?.enabled ?? options.experimental?.collapseUnchangedRegions, defaults.hideUnchangedRegions.enabled),
             contextLineCount: clampedInt(options.hideUnchangedRegions?.contextLineCount, defaults.hideUnchangedRegions.contextLineCount, 0, 1073741824 /* Constants.MAX_SAFE_SMALL_INTEGER */),
             minimumLineCount: clampedInt(options.hideUnchangedRegions?.minimumLineCount, defaults.hideUnchangedRegions.minimumLineCount, 0, 1073741824 /* Constants.MAX_SAFE_SMALL_INTEGER */),
             revealLineCount: clampedInt(options.hideUnchangedRegions?.revealLineCount, defaults.hideUnchangedRegions.revealLineCount, 0, 1073741824 /* Constants.MAX_SAFE_SMALL_INTEGER */),
         },
-        isInEmbeddedEditor: validateBooleanOption(options.isInEmbeddedEditor, defaults.isInEmbeddedEditor),
-        onlyShowAccessibleDiffViewer: validateBooleanOption(options.onlyShowAccessibleDiffViewer, defaults.onlyShowAccessibleDiffViewer),
+        isInEmbeddedEditor: boolean(options.isInEmbeddedEditor, defaults.isInEmbeddedEditor),
+        onlyShowAccessibleDiffViewer: boolean(options.onlyShowAccessibleDiffViewer, defaults.onlyShowAccessibleDiffViewer),
         renderSideBySideInlineBreakpoint: clampedInt(options.renderSideBySideInlineBreakpoint, defaults.renderSideBySideInlineBreakpoint, 0, 1073741824 /* Constants.MAX_SAFE_SMALL_INTEGER */),
-        useInlineViewWhenSpaceIsLimited: validateBooleanOption(options.useInlineViewWhenSpaceIsLimited, defaults.useInlineViewWhenSpaceIsLimited),
-        renderGutterMenu: validateBooleanOption(options.renderGutterMenu, defaults.renderGutterMenu),
-        compactMode: validateBooleanOption(options.compactMode, defaults.compactMode),
+        useInlineViewWhenSpaceIsLimited: boolean(options.useInlineViewWhenSpaceIsLimited, defaults.useInlineViewWhenSpaceIsLimited),
+        renderGutterMenu: boolean(options.renderGutterMenu, defaults.renderGutterMenu),
+        compactMode: boolean(options.compactMode, defaults.compactMode),
     };
 }
-//# sourceMappingURL=diffEditorOptions.js.map
+
+export { DiffEditorOptions };

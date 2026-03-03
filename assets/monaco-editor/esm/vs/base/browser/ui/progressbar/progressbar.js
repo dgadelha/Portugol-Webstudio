@@ -1,11 +1,12 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { show } from '../../dom.js';
 import { RunOnceScheduler } from '../../../common/async.js';
 import { Disposable, MutableDisposable } from '../../../common/lifecycle.js';
 import './progressbar.css';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
 const CSS_DONE = 'done';
 const CSS_ACTIVE = 'active';
 const CSS_INFINITE = 'infinite';
@@ -14,7 +15,7 @@ const CSS_DISCRETE = 'discrete';
 /**
  * A progress bar with support for infinite or discrete progress.
  */
-export class ProgressBar extends Disposable {
+class ProgressBar extends Disposable {
     /**
      * After a certain time of showing the progress bar, switch
      * to long-running mode and throttle animations to reduce
@@ -100,4 +101,5 @@ export class ProgressBar extends Disposable {
         return this.element;
     }
 }
-//# sourceMappingURL=progressbar.js.map
+
+export { ProgressBar };

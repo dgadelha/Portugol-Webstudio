@@ -1,12 +1,13 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import './decorations.css';
 import { DynamicViewOverlay } from '../../view/dynamicViewOverlay.js';
 import { HorizontalRange } from '../../view/renderingContext.js';
 import { Range } from '../../../common/core/range.js';
-export class DecorationsOverlay extends DynamicViewOverlay {
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+class DecorationsOverlay extends DynamicViewOverlay {
     constructor(context) {
         super();
         this._context = context;
@@ -191,4 +192,5 @@ export class DecorationsOverlay extends DynamicViewOverlay {
         return this._renderResult[lineIndex];
     }
 }
-//# sourceMappingURL=decorations.js.map
+
+export { DecorationsOverlay };

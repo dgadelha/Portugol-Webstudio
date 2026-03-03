@@ -1,18 +1,4 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-var ContentHoverController_1;
-import { DECREASE_HOVER_VERBOSITY_ACTION_ID, INCREASE_HOVER_VERBOSITY_ACTION_ID, SHOW_OR_FOCUS_HOVER_ACTION_ID } from './hoverActionIds.js';
+import { SHOW_OR_FOCUS_HOVER_ACTION_ID, INCREASE_HOVER_VERBOSITY_ACTION_ID, DECREASE_HOVER_VERBOSITY_ACTION_ID } from './hoverActionIds.js';
 import { Disposable, DisposableStore } from '../../../../base/common/lifecycle.js';
 import { IInstantiationService } from '../../../../platform/instantiation/common/instantiation.js';
 import { InlineSuggestionHintsContentWidget } from '../../inlineCompletions/browser/hintsWidget/inlineCompletionsHintsWidget.js';
@@ -24,8 +10,21 @@ import './hover.css';
 import { Emitter } from '../../../../base/common/event.js';
 import { isOnColorDecorator } from '../../colorPicker/browser/hoverColorPicker/hoverColorPicker.js';
 import { IContextMenuService } from '../../../../platform/contextview/browser/contextView.js';
-// sticky hover widget which doesn't disappear on focus out and such
-const _sticky = false;
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var ContentHoverController_1;
 let ContentHoverController = class ContentHoverController extends Disposable {
     static { ContentHoverController_1 = this; }
     static { this.ID = 'editor.contrib.contentHover'; }
@@ -138,9 +137,6 @@ let ContentHoverController = class ContentHoverController extends Disposable {
         if (shouldKeepHoverWidgetVisible) {
             return;
         }
-        if (_sticky) {
-            return;
-        }
         this.hideContentHover();
     }
     _shouldKeepCurrentHover(mouseEvent) {
@@ -212,9 +208,6 @@ let ContentHoverController = class ContentHoverController extends Disposable {
                 return;
             }
         }
-        if (_sticky) {
-            return;
-        }
         this.hideContentHover();
     }
     _onKeyDown(e) {
@@ -254,9 +247,6 @@ let ContentHoverController = class ContentHoverController extends Disposable {
             || e.keyCode === 4 /* KeyCode.Shift */;
     }
     hideContentHover() {
-        if (_sticky) {
-            return;
-        }
         if (InlineSuggestionHintsContentWidget.dropDownVisible) {
             return;
         }
@@ -326,5 +316,5 @@ ContentHoverController = ContentHoverController_1 = __decorate([
     __param(2, IInstantiationService),
     __param(3, IKeybindingService)
 ], ContentHoverController);
+
 export { ContentHoverController };
-//# sourceMappingURL=contentHoverController.js.map

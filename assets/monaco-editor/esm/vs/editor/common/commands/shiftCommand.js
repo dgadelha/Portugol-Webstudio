@@ -1,23 +1,24 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-var ShiftCommand_1;
-import * as strings from '../../../base/common/strings.js';
+import { firstNonWhitespaceIndex } from '../../../base/common/strings.js';
 import { CursorColumns } from '../core/cursorColumns.js';
 import { Range } from '../core/range.js';
 import { Selection } from '../core/selection.js';
 import { getEnterAction } from '../languages/enterAction.js';
 import { ILanguageConfigurationService } from '../languages/languageConfigurationRegistry.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var ShiftCommand_1;
 const repeatCache = Object.create(null);
 function cachedStringRepeat(str, count) {
     if (count <= 0) {
@@ -101,7 +102,7 @@ let ShiftCommand = ShiftCommand_1 = class ShiftCommand {
             for (let lineNumber = startLine; lineNumber <= endLine; lineNumber++, previousLineExtraSpaces = extraSpaces) {
                 extraSpaces = 0;
                 const lineText = model.getLineContent(lineNumber);
-                let indentationEndIndex = strings.firstNonWhitespaceIndex(lineText);
+                let indentationEndIndex = firstNonWhitespaceIndex(lineText);
                 if (this._opts.isUnshift && (lineText.length === 0 || indentationEndIndex === 0)) {
                     // empty line or line with no leading whitespace => nothing to do
                     continue;
@@ -173,7 +174,7 @@ let ShiftCommand = ShiftCommand_1 = class ShiftCommand {
             const oneIndent = (insertSpaces ? cachedStringRepeat(' ', indentSize) : '\t');
             for (let lineNumber = startLine; lineNumber <= endLine; lineNumber++) {
                 const lineText = model.getLineContent(lineNumber);
-                let indentationEndIndex = strings.firstNonWhitespaceIndex(lineText);
+                let indentationEndIndex = firstNonWhitespaceIndex(lineText);
                 if (this._opts.isUnshift && (lineText.length === 0 || indentationEndIndex === 0)) {
                     // empty line or line with no leading whitespace => nothing to do
                     continue;
@@ -236,5 +237,5 @@ let ShiftCommand = ShiftCommand_1 = class ShiftCommand {
 ShiftCommand = ShiftCommand_1 = __decorate([
     __param(2, ILanguageConfigurationService)
 ], ShiftCommand);
+
 export { ShiftCommand };
-//# sourceMappingURL=shiftCommand.js.map

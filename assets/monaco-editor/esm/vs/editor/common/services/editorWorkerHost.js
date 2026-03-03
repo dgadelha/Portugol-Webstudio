@@ -2,7 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-export class EditorWorkerHost {
+class EditorWorkerHost {
     static { this.CHANNEL_NAME = 'editorWorkerHost'; }
     static getChannel(workerServer) {
         return workerServer.getChannel(EditorWorkerHost.CHANNEL_NAME);
@@ -11,4 +11,5 @@ export class EditorWorkerHost {
         workerClient.setChannel(EditorWorkerHost.CHANNEL_NAME, obj);
     }
 }
-//# sourceMappingURL=editorWorkerHost.js.map
+
+export { EditorWorkerHost };

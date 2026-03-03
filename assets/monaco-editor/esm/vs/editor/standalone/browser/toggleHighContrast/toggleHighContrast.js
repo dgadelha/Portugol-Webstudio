@@ -1,12 +1,13 @@
+import { registerEditorAction, EditorAction } from '../../../browser/editorExtensions.js';
+import { IStandaloneThemeService } from '../../common/standaloneTheme.js';
+import { ToggleHighContrastNLS } from '../../../common/standaloneStrings.js';
+import { isHighContrast, isDark } from '../../../../platform/theme/common/theme.js';
+import { VS_DARK_THEME_NAME, VS_LIGHT_THEME_NAME, HC_BLACK_THEME_NAME, HC_LIGHT_THEME_NAME } from '../standaloneThemeService.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { EditorAction, registerEditorAction } from '../../../browser/editorExtensions.js';
-import { IStandaloneThemeService } from '../../common/standaloneTheme.js';
-import { ToggleHighContrastNLS } from '../../../common/standaloneStrings.js';
-import { isDark, isHighContrast } from '../../../../platform/theme/common/theme.js';
-import { HC_BLACK_THEME_NAME, HC_LIGHT_THEME_NAME, VS_DARK_THEME_NAME, VS_LIGHT_THEME_NAME } from '../standaloneThemeService.js';
 class ToggleHighContrast extends EditorAction {
     constructor() {
         super({
@@ -32,4 +33,3 @@ class ToggleHighContrast extends EditorAction {
     }
 }
 registerEditorAction(ToggleHighContrast);
-//# sourceMappingURL=toggleHighContrast.js.map

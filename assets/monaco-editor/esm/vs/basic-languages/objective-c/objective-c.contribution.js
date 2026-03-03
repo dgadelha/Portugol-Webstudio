@@ -1,24 +1,8 @@
-/*!-----------------------------------------------------------------------------
- * Copyright (c) Microsoft Corporation. All rights reserved.
- * Version: 0.54.0(7c2310116c57517348bbd868a21139f32454be22)
- * Released under the MIT license
- * https://github.com/microsoft/monaco-editor/blob/main/LICENSE.txt
- *-----------------------------------------------------------------------------*/
+import { registerLanguage } from '../_.contribution.js';
 
-
-// src/basic-languages/objective-c/objective-c.contribution.ts
-import { registerLanguage } from "../_.contribution.js";
 registerLanguage({
   id: "objective-c",
   extensions: [".m"],
   aliases: ["Objective-C"],
-  loader: () => {
-    if (false) {
-      return new Promise((resolve, reject) => {
-        __require(["vs/basic-languages/objective-c/objective-c"], resolve, reject);
-      });
-    } else {
-      return import("./objective-c.js");
-    }
-  }
+  loader: () => import('./objective-c.js')
 });

@@ -1,11 +1,12 @@
+import { SingleCursorState } from '../cursorCommon.js';
+import { Position } from '../core/position.js';
+import { Range } from '../core/range.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { SingleCursorState } from '../cursorCommon.js';
-import { Position } from '../core/position.js';
-import { Range } from '../core/range.js';
-export class ColumnSelection {
+class ColumnSelection {
     static columnSelect(config, model, fromLineNumber, fromVisibleColumn, toLineNumber, toVisibleColumn) {
         const lineCount = Math.abs(toLineNumber - fromLineNumber) + 1;
         const reversed = (fromLineNumber > toLineNumber);
@@ -88,4 +89,5 @@ export class ColumnSelection {
         return this.columnSelect(config, model, prevColumnSelectData.fromViewLineNumber, prevColumnSelectData.fromViewVisualColumn, toViewLineNumber, prevColumnSelectData.toViewVisualColumn);
     }
 }
-//# sourceMappingURL=cursorColumnSelection.js.map
+
+export { ColumnSelection };

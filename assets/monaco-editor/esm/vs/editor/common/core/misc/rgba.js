@@ -6,7 +6,7 @@
  * A very VM friendly rgba datastructure.
  * Please don't touch unless you take a look at the IR.
  */
-export class RGBA8 {
+class RGBA8 {
     static { this.Empty = new RGBA8(0, 0, 0, 0); }
     constructor(r, g, b, a) {
         this._rgba8Brand = undefined;
@@ -31,4 +31,5 @@ export class RGBA8 {
         return c | 0;
     }
 }
-//# sourceMappingURL=rgba.js.map
+
+export { RGBA8 };

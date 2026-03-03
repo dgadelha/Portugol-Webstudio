@@ -2,7 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-export var Range;
+var Range;
 (function (Range) {
     /**
      * Returns the intersection between two ranges as a range itself.
@@ -42,4 +42,5 @@ export var Range;
     }
     Range.relativeComplement = relativeComplement;
 })(Range || (Range = {}));
-//# sourceMappingURL=range.js.map
+
+export { Range };

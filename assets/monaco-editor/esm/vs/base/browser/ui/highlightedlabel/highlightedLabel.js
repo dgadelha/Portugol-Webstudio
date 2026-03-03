@@ -1,18 +1,19 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-import * as dom from '../../dom.js';
+import { append, $, reset } from '../../dom.js';
 import { getBaseLayerHoverDelegate } from '../hover/hoverDelegate2.js';
 import { getDefaultHoverDelegate } from '../hover/hoverDelegateFactory.js';
 import { renderLabelWithIcons } from '../iconLabel/iconLabels.js';
 import { Disposable } from '../../../common/lifecycle.js';
-import * as objects from '../../../common/objects.js';
+import { equals } from '../../../common/objects.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
 /**
  * A widget which can render a label with substring highlights, often
  * originating from a filter function like the fuzzy matcher.
  */
-export class HighlightedLabel extends Disposable {
+class HighlightedLabel extends Disposable {
     /**
      * Create a new {@link HighlightedLabel}.
      *
@@ -25,8 +26,7 @@ export class HighlightedLabel extends Disposable {
         this.title = '';
         this.highlights = [];
         this.didEverRender = false;
-        this.supportIcons = options?.supportIcons ?? false;
-        this.domNode = dom.append(container, dom.$('span.monaco-highlighted-label'));
+        this.domNode = append(container, $('span.monaco-highlighted-label'));
     }
     /**
      * The label's DOM node.
@@ -43,7 +43,7 @@ export class HighlightedLabel extends Disposable {
      * @param escapeNewLines Whether to escape new lines.
      * @returns
      */
-    set(text, highlights = [], title = '', escapeNewLines) {
+    set(text, highlights = [], title = '', escapeNewLines, supportIcons) {
         if (!text) {
             text = '';
         }
@@ -51,15 +51,15 @@ export class HighlightedLabel extends Disposable {
             // adjusts highlights inplace
             text = HighlightedLabel.escapeNewLines(text, highlights);
         }
-        if (this.didEverRender && this.text === text && this.title === title && objects.equals(this.highlights, highlights)) {
+        if (this.didEverRender && this.text === text && this.title === title && equals(this.highlights, highlights)) {
             return;
         }
         this.text = text;
         this.title = title;
         this.highlights = highlights;
-        this.render();
+        this.render(supportIcons);
     }
-    render() {
+    render(supportIcons) {
         const children = [];
         let pos = 0;
         for (const highlight of this.highlights) {
@@ -68,7 +68,7 @@ export class HighlightedLabel extends Disposable {
             }
             if (pos < highlight.start) {
                 const substring = this.text.substring(pos, highlight.start);
-                if (this.supportIcons) {
+                if (supportIcons) {
                     children.push(...renderLabelWithIcons(substring));
                 }
                 else {
@@ -77,7 +77,7 @@ export class HighlightedLabel extends Disposable {
                 pos = highlight.start;
             }
             const substring = this.text.substring(pos, highlight.end);
-            const element = dom.$('span.highlight', undefined, ...this.supportIcons ? renderLabelWithIcons(substring) : [substring]);
+            const element = $('span.highlight', undefined, ...supportIcons ? renderLabelWithIcons(substring) : [substring]);
             if (highlight.extraClasses) {
                 element.classList.add(...highlight.extraClasses);
             }
@@ -86,14 +86,14 @@ export class HighlightedLabel extends Disposable {
         }
         if (pos < this.text.length) {
             const substring = this.text.substring(pos);
-            if (this.supportIcons) {
+            if (supportIcons) {
                 children.push(...renderLabelWithIcons(substring));
             }
             else {
                 children.push(substring);
             }
         }
-        dom.reset(this.domNode, ...children);
+        reset(this.domNode, ...children);
         if (!this.customHover && this.title !== '') {
             const hoverDelegate = this.options?.hoverDelegate ?? getDefaultHoverDelegate('mouse');
             this.customHover = this._register(getBaseLayerHoverDelegate().setupManagedHover(hoverDelegate, this.domNode, this.title));
@@ -125,4 +125,5 @@ export class HighlightedLabel extends Disposable {
         });
     }
 }
-//# sourceMappingURL=highlightedLabel.js.map
+
+export { HighlightedLabel };

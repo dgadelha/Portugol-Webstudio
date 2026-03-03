@@ -2,7 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-export var DebugLocation;
+var DebugLocation;
 (function (DebugLocation) {
     let enabled = false;
     function enable() {
@@ -13,6 +13,7 @@ export var DebugLocation;
         if (!enabled) {
             return undefined;
         }
+        // eslint-disable-next-line local/code-no-any-casts
         const Err = Error; // For the monaco editor checks, which don't have the nodejs types.
         const l = Err.stackTraceLimit;
         Err.stackTraceLimit = 3;
@@ -61,4 +62,5 @@ function parseLine(stackLine) {
     }
     return undefined;
 }
-//# sourceMappingURL=debugLocation.js.map
+
+export { DebugLocation };

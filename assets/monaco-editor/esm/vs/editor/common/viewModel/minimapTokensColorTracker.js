@@ -1,12 +1,13 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import { Emitter } from '../../../base/common/event.js';
 import { Disposable, markAsSingleton } from '../../../base/common/lifecycle.js';
 import { RGBA8 } from '../core/misc/rgba.js';
 import { TokenizationRegistry } from '../languages.js';
-export class MinimapTokensColorTracker extends Disposable {
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+class MinimapTokensColorTracker extends Disposable {
     static { this._INSTANCE = null; }
     static getInstance() {
         if (!this._INSTANCE) {
@@ -53,4 +54,5 @@ export class MinimapTokensColorTracker extends Disposable {
         return this._backgroundIsLight;
     }
 }
-//# sourceMappingURL=minimapTokensColorTracker.js.map
+
+export { MinimapTokensColorTracker };

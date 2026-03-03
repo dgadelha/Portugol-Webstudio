@@ -1,17 +1,4 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-import * as dom from '../../../../base/browser/dom.js';
+import { addStandardDisposableListener } from '../../../../base/browser/dom.js';
 import { Disposable, MutableDisposable } from '../../../../base/common/lifecycle.js';
 import { TokenizationRegistry } from '../../../common/languages.js';
 import { HoverOperation } from './hoverOperation.js';
@@ -25,13 +12,29 @@ import { Emitter } from '../../../../base/common/event.js';
 import { RenderedContentHover } from './contentHoverRendered.js';
 import { isMousePositionWithinElement } from './hoverUtils.js';
 import { IHoverService } from '../../../../platform/hover/browser/hover.js';
+import { IClipboardService } from '../../../../platform/clipboard/common/clipboardService.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 let ContentHoverWidgetWrapper = class ContentHoverWidgetWrapper extends Disposable {
-    constructor(_editor, _instantiationService, _keybindingService, _hoverService) {
+    constructor(_editor, _instantiationService, _keybindingService, _hoverService, _clipboardService) {
         super();
         this._editor = _editor;
         this._instantiationService = _instantiationService;
         this._keybindingService = _keybindingService;
         this._hoverService = _hoverService;
+        this._clipboardService = _clipboardService;
         this._currentResult = null;
         this._renderedContentHover = this._register(new MutableDisposable());
         this._onContentsChanged = this._register(new Emitter());
@@ -65,12 +68,12 @@ let ContentHoverWidgetWrapper = class ContentHoverWidgetWrapper extends Disposab
             this._withResult(new ContentHoverResult(messages, result.isComplete, result.options));
         }));
         const contentHoverWidgetNode = this._contentHoverWidget.getDomNode();
-        this._register(dom.addStandardDisposableListener(contentHoverWidgetNode, 'keydown', (e) => {
+        this._register(addStandardDisposableListener(contentHoverWidgetNode, 'keydown', (e) => {
             if (e.equals(9 /* KeyCode.Escape */)) {
                 this.hide();
             }
         }));
-        this._register(dom.addStandardDisposableListener(contentHoverWidgetNode, 'mouseleave', (e) => {
+        this._register(addStandardDisposableListener(contentHoverWidgetNode, 'mouseleave', (e) => {
             this._onMouseLeave(e);
         }));
         this._register(TokenizationRegistry.onDidChange(() => {
@@ -197,7 +200,7 @@ let ContentHoverWidgetWrapper = class ContentHoverWidgetWrapper extends Disposab
     }
     _showHover(hoverResult) {
         const context = this._getHoverContext();
-        this._renderedContentHover.value = new RenderedContentHover(this._editor, hoverResult, this._participants, context, this._keybindingService, this._hoverService);
+        this._renderedContentHover.value = new RenderedContentHover(this._editor, hoverResult, this._participants, context, this._keybindingService, this._hoverService, this._clipboardService);
         if (this._renderedContentHover.value.domNodeHasChildren) {
             this._contentHoverWidget.show(this._renderedContentHover.value);
         }
@@ -352,7 +355,8 @@ let ContentHoverWidgetWrapper = class ContentHoverWidgetWrapper extends Disposab
 ContentHoverWidgetWrapper = __decorate([
     __param(1, IInstantiationService),
     __param(2, IKeybindingService),
-    __param(3, IHoverService)
+    __param(3, IHoverService),
+    __param(4, IClipboardService)
 ], ContentHoverWidgetWrapper);
+
 export { ContentHoverWidgetWrapper };
-//# sourceMappingURL=contentHoverWidgetWrapper.js.map

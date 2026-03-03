@@ -1,23 +1,24 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import '../colorPicker.css';
-import * as dom from '../../../../../base/browser/dom.js';
+import { $ as $$1, append } from '../../../../../base/browser/dom.js';
 import { Color, HSVA } from '../../../../../base/common/color.js';
 import { Disposable } from '../../../../../base/common/lifecycle.js';
 import { SaturationBox } from './colorPickerSaturationBox.js';
 import { InsertButton } from './colorPickerInsertButton.js';
-import { HueStrip, OpacityStrip } from './colorPickerStrip.js';
-const $ = dom.$;
-export class ColorPickerBody extends Disposable {
+import { OpacityStrip, HueStrip } from './colorPickerStrip.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+const $ = $$1;
+class ColorPickerBody extends Disposable {
     constructor(container, model, pixelRatio, type) {
         super();
         this.model = model;
         this.pixelRatio = pixelRatio;
         this._insertButton = null;
         this._domNode = $('.colorpicker-body');
-        dom.append(container, this._domNode);
+        append(container, this._domNode);
         this._saturationBox = new SaturationBox(this._domNode, this.model, this.pixelRatio);
         this._register(this._saturationBox);
         this._register(this._saturationBox.onDidChange(this.onDidSaturationValueChange, this));
@@ -66,4 +67,5 @@ export class ColorPickerBody extends Disposable {
         this._hueStrip.layout();
     }
 }
-//# sourceMappingURL=colorPickerBody.js.map
+
+export { ColorPickerBody };

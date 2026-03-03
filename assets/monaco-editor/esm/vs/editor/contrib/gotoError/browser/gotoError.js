@@ -1,31 +1,32 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-var MarkerController_1;
 import { Codicon } from '../../../../base/common/codicons.js';
 import { DisposableStore } from '../../../../base/common/lifecycle.js';
-import { EditorAction, EditorCommand, registerEditorAction, registerEditorCommand, registerEditorContribution } from '../../../browser/editorExtensions.js';
+import { registerEditorContribution, registerEditorAction, EditorCommand, registerEditorCommand, EditorAction } from '../../../browser/editorExtensions.js';
 import { ICodeEditorService } from '../../../browser/services/codeEditorService.js';
 import { Position } from '../../../common/core/position.js';
 import { Range } from '../../../common/core/range.js';
 import { EditorContextKeys } from '../../../common/editorContextKeys.js';
 import { IMarkerNavigationService } from './markerNavigationService.js';
-import * as nls from '../../../../nls.js';
+import { localize2, localize } from '../../../../nls.js';
 import { MenuId } from '../../../../platform/actions/common/actions.js';
-import { IContextKeyService, RawContextKey } from '../../../../platform/contextkey/common/contextkey.js';
+import { RawContextKey, IContextKeyService } from '../../../../platform/contextkey/common/contextkey.js';
 import { IInstantiationService } from '../../../../platform/instantiation/common/instantiation.js';
 import { registerIcon } from '../../../../platform/theme/common/iconRegistry.js';
 import { MarkerNavigationWidget } from './gotoErrorWidget.js';
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var MarkerController_1;
 let MarkerController = class MarkerController {
     static { MarkerController_1 = this; }
     static { this.ID = 'editor.contrib.markerController'; }
@@ -151,7 +152,6 @@ MarkerController = MarkerController_1 = __decorate([
     __param(3, ICodeEditorService),
     __param(4, IInstantiationService)
 ], MarkerController);
-export { MarkerController };
 class MarkerNavigationAction extends EditorAction {
     constructor(_next, _multiFile, opts) {
         super(opts);
@@ -164,9 +164,9 @@ class MarkerNavigationAction extends EditorAction {
         }
     }
 }
-export class NextMarkerAction extends MarkerNavigationAction {
+class NextMarkerAction extends MarkerNavigationAction {
     static { this.ID = 'editor.action.marker.next'; }
-    static { this.LABEL = nls.localize2(1015, "Go to Next Problem (Error, Warning, Info)"); }
+    static { this.LABEL = localize2(1020, "Go to Next Problem (Error, Warning, Info)"); }
     constructor() {
         super(true, false, {
             id: NextMarkerAction.ID,
@@ -180,7 +180,7 @@ export class NextMarkerAction extends MarkerNavigationAction {
             menuOpts: {
                 menuId: MarkerNavigationWidget.TitleMenu,
                 title: NextMarkerAction.LABEL.value,
-                icon: registerIcon('marker-navigation-next', Codicon.arrowDown, nls.localize(1011, 'Icon for goto next marker.')),
+                icon: registerIcon('marker-navigation-next', Codicon.arrowDown, localize(1016, 'Icon for goto next marker.')),
                 group: 'navigation',
                 order: 1
             }
@@ -189,7 +189,7 @@ export class NextMarkerAction extends MarkerNavigationAction {
 }
 class PrevMarkerAction extends MarkerNavigationAction {
     static { this.ID = 'editor.action.marker.prev'; }
-    static { this.LABEL = nls.localize2(1016, "Go to Previous Problem (Error, Warning, Info)"); }
+    static { this.LABEL = localize2(1021, "Go to Previous Problem (Error, Warning, Info)"); }
     constructor() {
         super(false, false, {
             id: PrevMarkerAction.ID,
@@ -203,7 +203,7 @@ class PrevMarkerAction extends MarkerNavigationAction {
             menuOpts: {
                 menuId: MarkerNavigationWidget.TitleMenu,
                 title: PrevMarkerAction.LABEL.value,
-                icon: registerIcon('marker-navigation-previous', Codicon.arrowUp, nls.localize(1012, 'Icon for goto previous marker.')),
+                icon: registerIcon('marker-navigation-previous', Codicon.arrowUp, localize(1017, 'Icon for goto previous marker.')),
                 group: 'navigation',
                 order: 2
             }
@@ -214,7 +214,7 @@ class NextMarkerInFilesAction extends MarkerNavigationAction {
     constructor() {
         super(true, true, {
             id: 'editor.action.marker.nextInFiles',
-            label: nls.localize2(1017, "Go to Next Problem in Files (Error, Warning, Info)"),
+            label: localize2(1022, "Go to Next Problem in Files (Error, Warning, Info)"),
             precondition: undefined,
             kbOpts: {
                 kbExpr: EditorContextKeys.focus,
@@ -223,7 +223,7 @@ class NextMarkerInFilesAction extends MarkerNavigationAction {
             },
             menuOpts: {
                 menuId: MenuId.MenubarGoMenu,
-                title: nls.localize(1013, "Next &&Problem"),
+                title: localize(1018, "Next &&Problem"),
                 group: '6_problem_nav',
                 order: 1
             }
@@ -234,7 +234,7 @@ class PrevMarkerInFilesAction extends MarkerNavigationAction {
     constructor() {
         super(false, true, {
             id: 'editor.action.marker.prevInFiles',
-            label: nls.localize2(1018, "Go to Previous Problem in Files (Error, Warning, Info)"),
+            label: localize2(1023, "Go to Previous Problem in Files (Error, Warning, Info)"),
             precondition: undefined,
             kbOpts: {
                 kbExpr: EditorContextKeys.focus,
@@ -243,7 +243,7 @@ class PrevMarkerInFilesAction extends MarkerNavigationAction {
             },
             menuOpts: {
                 menuId: MenuId.MenubarGoMenu,
-                title: nls.localize(1014, "Previous &&Problem"),
+                title: localize(1019, "Previous &&Problem"),
                 group: '6_problem_nav',
                 order: 2
             }
@@ -268,4 +268,5 @@ registerEditorCommand(new MarkerCommand({
         secondary: [1024 /* KeyMod.Shift */ | 9 /* KeyCode.Escape */]
     }
 }));
-//# sourceMappingURL=gotoError.js.map
+
+export { MarkerController, NextMarkerAction };

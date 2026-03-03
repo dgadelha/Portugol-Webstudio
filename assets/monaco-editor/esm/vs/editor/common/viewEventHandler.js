@@ -1,9 +1,10 @@
+import { Disposable } from '../../base/common/lifecycle.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { Disposable } from '../../base/common/lifecycle.js';
-export class ViewEventHandler extends Disposable {
+class ViewEventHandler extends Disposable {
     constructor() {
         super();
         this._shouldRender = true;
@@ -181,4 +182,5 @@ export class ViewEventHandler extends Disposable {
         }
     }
 }
-//# sourceMappingURL=viewEventHandler.js.map
+
+export { ViewEventHandler };

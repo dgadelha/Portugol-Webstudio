@@ -2,7 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-export const AccessibleViewRegistry = new class AccessibleViewRegistry {
+const AccessibleViewRegistry = new class AccessibleViewRegistry {
     constructor() {
         this._implementations = [];
     }
@@ -21,4 +21,5 @@ export const AccessibleViewRegistry = new class AccessibleViewRegistry {
         return this._implementations;
     }
 };
-//# sourceMappingURL=accessibleViewRegistry.js.map
+
+export { AccessibleViewRegistry };

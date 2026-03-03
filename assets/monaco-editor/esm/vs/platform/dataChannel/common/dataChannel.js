@@ -1,10 +1,12 @@
 import { createDecorator } from '../../instantiation/common/instantiation.js';
-export const IDataChannelService = createDecorator('dataChannelService');
-export class NullDataChannelService {
+
+const IDataChannelService = createDecorator('dataChannelService');
+class NullDataChannelService {
     getDataChannel(_channelId) {
         return {
             sendData: () => { },
         };
     }
 }
-//# sourceMappingURL=dataChannel.js.map
+
+export { IDataChannelService, NullDataChannelService };

@@ -1,25 +1,29 @@
+import { Emitter } from '../../../../../base/common/event.js';
+import { toDisposable } from '../../../../../base/common/lifecycle.js';
+import { LineTokens } from '../../../tokens/lineTokens.js';
+import { AbstractSyntaxTokenBackend } from '../abstractSyntaxTokenBackend.js';
+import '../../../../../base/common/observableInternal/index.js';
+import { TreeSitterTree } from './treeSitterTree.js';
+import { IInstantiationService } from '../../../../../platform/instantiation/common/instantiation.js';
+import { TreeSitterTokenizationImpl } from './treeSitterTokenizationImpl.js';
+import { ITreeSitterLibraryService } from '../../../services/treeSitter/treeSitterLibraryService.js';
+import { ObservablePromise } from '../../../../../base/common/observableInternal/utils/promise.js';
+import { derived } from '../../../../../base/common/observableInternal/observables/derived.js';
+import { autorun } from '../../../../../base/common/observableInternal/reactions/autorun.js';
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __param = (this && this.__param) || function (paramIndex, decorator) {
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { Emitter } from '../../../../../base/common/event.js';
-import { toDisposable } from '../../../../../base/common/lifecycle.js';
-import { LineTokens } from '../../../tokens/lineTokens.js';
-import { AbstractSyntaxTokenBackend } from '../abstractSyntaxTokenBackend.js';
-import { autorun, derived, ObservablePromise } from '../../../../../base/common/observable.js';
-import { TreeSitterTree } from './treeSitterTree.js';
-import { IInstantiationService } from '../../../../../platform/instantiation/common/instantiation.js';
-import { TreeSitterTokenizationImpl } from './treeSitterTokenizationImpl.js';
-import { ITreeSitterLibraryService } from '../../../services/treeSitter/treeSitterLibraryService.js';
 let TreeSitterSyntaxTokenBackend = class TreeSitterSyntaxTokenBackend extends AbstractSyntaxTokenBackend {
     constructor(_languageIdObs, languageIdCodec, textModel, visibleLineRanges, _treeSitterLibraryService, _instantiationService) {
         super(languageIdCodec, textModel);
@@ -40,7 +44,7 @@ let TreeSitterSyntaxTokenBackend = class TreeSitterSyntaxTokenBackend extends Ab
                 return undefined;
             }
             const currentLanguage = this._languageIdObs.read(reader);
-            const treeSitterLang = this._treeSitterLibraryService.getLanguage(currentLanguage, reader);
+            const treeSitterLang = this._treeSitterLibraryService.getLanguage(currentLanguage, false, reader);
             if (!treeSitterLang) {
                 return undefined;
             }
@@ -159,5 +163,5 @@ TreeSitterSyntaxTokenBackend = __decorate([
     __param(4, ITreeSitterLibraryService),
     __param(5, IInstantiationService)
 ], TreeSitterSyntaxTokenBackend);
+
 export { TreeSitterSyntaxTokenBackend };
-//# sourceMappingURL=treeSitterSyntaxTokenBackend.js.map
