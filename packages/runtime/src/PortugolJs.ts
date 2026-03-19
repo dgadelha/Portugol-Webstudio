@@ -919,6 +919,19 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
         if (mtrx.OP_ATRIBUICAO() && init) {
           sb.append(this.PAD(), `${scopeStr}.variables["${mtrx.ID().getText()}"] = new PortugolVar(`);
           sb.append(`"matriz", `, this.visit(init)?.trim(), `)`, `\n`);
+
+          const rows = mtrx.linhaMatriz();
+          const cols = mtrx.colunaMatriz();
+
+          if (rows || cols) {
+            sb.append(this.PAD(), `runtime.checkMatrixSize(`);
+            sb.append(`${scopeStr}.variables["${mtrx.ID().getText()}"], `);
+            sb.append(rows ? `${this.visit(rows.tamanhoArray().expressao())?.trim()}.value` : `0`);
+            sb.append(`, `);
+            sb.append(cols ? `${this.visit(cols.tamanhoArray().expressao())?.trim()}.value` : `0`);
+            sb.append(`, "${mtrx.ID().getText()}"`);
+            sb.append(`)`, `\n`);
+          }
         } else {
           sb.append(this.PAD(), `${scopeStr}.variables["${mtrx.ID().getText()}"] = new PortugolVar(`);
           sb.append(`"matriz", `);
@@ -988,6 +1001,16 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
         if (arr.OP_ATRIBUICAO() && init) {
           sb.append(this.PAD(), `${scopeStr}.variables["${arr.ID().getText()}"] = `);
           sb.append(this.visit(init)?.trim(), `\n`);
+
+          const tam = arr.tamanhoArray();
+
+          if (tam) {
+            sb.append(this.PAD(), `runtime.checkArraySize(`);
+            sb.append(`${scopeStr}.variables["${arr.ID().getText()}"], `);
+            sb.append(`${this.visit(tam.expressao())?.trim()}.value, `);
+            sb.append(`"${arr.ID().getText()}"`);
+            sb.append(`)`, `\n`);
+          }
         } else {
           sb.append(this.PAD(), `${scopeStr}.variables["${arr.ID().getText()}"] = new PortugolVar(`);
           sb.append(`"vetor", `);
@@ -1051,7 +1074,6 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     sb.append(this.DEBUG(`visitDeclaracaoVariavel`, ctx));
 
     throw new Error("Not implemented");
-
     return sb.toString();
   }
 
