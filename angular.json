@@ -54,8 +54,8 @@
             "assets": [
               {
                 "glob": "**/*",
-                "input": "node_modules/monaco-editor",
-                "output": "assets/monaco-editor/"
+                "input": "node_modules/monaco-editor/min/vs",
+                "output": "assets/monaco-editor/min/vs/"
               },
               {
                 "glob": "**/*",
