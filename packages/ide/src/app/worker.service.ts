@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { PortugolCodeError } from "@portugol-webstudio/antlr";
+import { PortugolCodeDiagnostic } from "@portugol-webstudio/antlr";
 
 @Injectable({ providedIn: "root" })
 export class WorkerService {
@@ -11,8 +11,8 @@ export class WorkerService {
   }
 
   async checkCode(code: string): Promise<{
-    errors: PortugolCodeError[];
-    parseErrors: PortugolCodeError[];
+    diagnostics: PortugolCodeDiagnostic[];
+    parseErrors: PortugolCodeDiagnostic[];
   }> {
     if (!this.worker) {
       this.init();
@@ -37,8 +37,8 @@ export class WorkerService {
 
   async transpileCode(code: string): Promise<{
     js: string;
-    errors: PortugolCodeError[];
-    parseErrors: PortugolCodeError[];
+    diagnostics: PortugolCodeDiagnostic[];
+    parseErrors: PortugolCodeDiagnostic[];
     times: { parse: number; check: number; transpile: number };
   }> {
     if (!this.worker) {

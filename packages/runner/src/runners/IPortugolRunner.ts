@@ -1,4 +1,4 @@
-import { PortugolCodeError } from "@portugol-webstudio/antlr";
+import { PortugolCodeDiagnostic } from "@portugol-webstudio/antlr";
 import { Observable, Subject } from "rxjs";
 
 export type PortugolEvent =
@@ -6,7 +6,7 @@ export type PortugolEvent =
   | { type: "clear" }
   | { type: "stdIn" }
   | { type: "error"; error: Error }
-  | { type: "parseError"; errors: PortugolCodeError[] }
+  | { type: "parseError"; errors: PortugolCodeDiagnostic[] }
   | { type: "finish"; stopped: boolean; time: number }
   | { type: "message"; message: PortugolMessage };
 

@@ -1,4 +1,4 @@
-import { PortugolCodeError } from "@portugol-webstudio/antlr";
+import { PortugolCodeDiagnostic, PortugolDiagnosticSeverity } from "@portugol-webstudio/antlr";
 
 import {
   ResultadoCompatibilidade,
@@ -23,7 +23,7 @@ import {
   SeCmd,
 } from "../nodes/index.js";
 
-export function* checarUsoEscopo(arquivo: Arquivo): Generator<PortugolCodeError> {
+export function* checarUsoEscopo(arquivo: Arquivo): Generator<PortugolCodeDiagnostic> {
   const escopo = new Escopo();
 
   function* varrerNós(nós: Node[]) {
@@ -32,7 +32,7 @@ export function* checarUsoEscopo(arquivo: Arquivo): Generator<PortugolCodeError>
     }
   }
 
-  function* varrerNó(nó: Node): Generator<PortugolCodeError> {
+  function* varrerNó(nó: Node): Generator<PortugolCodeDiagnostic> {
     switch (nó.constructor) {
       case DeclaraçãoCmd:
       case Parâmetro: {
@@ -57,7 +57,11 @@ export function* checarUsoEscopo(arquivo: Arquivo): Generator<PortugolCodeError>
         }
 
         if (!escopo.hasVariável(ref.nome)) {
-          yield PortugolCodeError.fromContext(ref.ctx, `Variável não declarada: ${ref.nome}`);
+          yield PortugolCodeDiagnostic.fromContext(
+            ref.ctx,
+            `Variável não declarada: ${ref.nome}`,
+            PortugolDiagnosticSeverity.Error,
+          );
         }
 
         break;
@@ -80,9 +84,10 @@ export function* checarUsoEscopo(arquivo: Arquivo): Generator<PortugolCodeError>
             const tret = resolverResultadoExpressão(attr.expressão, escopo);
 
             if (TabelaCompatibilidadeAtribuição[svar.primitivo][tret] === ResultadoCompatibilidade.INCOMPATÍVEL) {
-              yield PortugolCodeError.fromContext(
+              yield PortugolCodeDiagnostic.fromContext(
                 attr.ctx,
                 `Não é possível atribuir um valor do tipo '${tret}' a uma variável do tipo '${svar.primitivo}'`,
+                PortugolDiagnosticSeverity.Error,
               );
             }
           } catch (error) {
@@ -92,7 +97,7 @@ export function* checarUsoEscopo(arquivo: Arquivo): Generator<PortugolCodeError>
               break;
             }
 
-            yield PortugolCodeError.fromContext(attr.ctx, message);
+            yield PortugolCodeDiagnostic.fromContext(attr.ctx, message, PortugolDiagnosticSeverity.Error);
           }
         }
 
@@ -143,9 +148,10 @@ export function* checarUsoEscopo(arquivo: Arquivo): Generator<PortugolCodeError>
               TabelaCompatibilidadeRetornoFunção[escopo.função.primitivo][tret] ===
               ResultadoCompatibilidade.INCOMPATÍVEL
             ) {
-              yield PortugolCodeError.fromContext(
+              yield PortugolCodeDiagnostic.fromContext(
                 ret.ctx,
                 `Não é possível retornar um valor do tipo '${tret}' em uma função que retorna '${escopo.função.primitivo}'`,
+                PortugolDiagnosticSeverity.Error,
               );
             }
           } catch (error) {
@@ -155,7 +161,7 @@ export function* checarUsoEscopo(arquivo: Arquivo): Generator<PortugolCodeError>
               break;
             }
 
-            yield PortugolCodeError.fromContext(ret.ctx, message);
+            yield PortugolCodeDiagnostic.fromContext(ret.ctx, message, PortugolDiagnosticSeverity.Error);
           }
         }
 

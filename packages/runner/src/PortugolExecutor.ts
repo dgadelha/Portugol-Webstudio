@@ -1,5 +1,5 @@
-import { PortugolCodeError, PortugolErrorListener } from "@portugol-webstudio/antlr";
-import { PortugolErrorChecker } from "@portugol-webstudio/parser";
+import { PortugolCodeDiagnostic, PortugolErrorListener } from "@portugol-webstudio/antlr";
+import { PortugolCodeChecker } from "@portugol-webstudio/parser";
 import { PortugolJs } from "@portugol-webstudio/runtime";
 import { Subject, Subscription } from "rxjs";
 
@@ -49,8 +49,8 @@ export class PortugolExecutor {
   errorListener = new PortugolErrorListener();
 
   run(code: string) {
-    let errors: PortugolCodeError[] = [];
-    let parseErrors: PortugolCodeError[] = [];
+    let diagnostics: PortugolCodeDiagnostic[] = [];
+    let parseErrors: PortugolCodeDiagnostic[] = [];
     let js = "";
     let checkStart = 0;
     let checkEnd = 0;
@@ -59,9 +59,9 @@ export class PortugolExecutor {
 
     try {
       checkStart = performance.now();
-      const checkResult = PortugolErrorChecker.checkCode(code);
+      const checkResult = PortugolCodeChecker.checkCode(code);
 
-      errors = checkResult.errors;
+      diagnostics = checkResult.diagnostics;
       parseErrors = checkResult.parseErrors;
 
       checkEnd = performance.now();
@@ -74,7 +74,7 @@ export class PortugolExecutor {
     this.runTranspiled({
       code,
       js,
-      errors,
+      diagnostics,
       parseErrors,
       times: {
         check: checkEnd - checkStart,
@@ -88,14 +88,14 @@ export class PortugolExecutor {
   runTranspiled({
     code,
     js,
-    errors,
+    diagnostics,
     parseErrors,
     times,
   }: {
     code: string;
     js: string;
-    errors: PortugolCodeError[];
-    parseErrors: PortugolCodeError[];
+    diagnostics: PortugolCodeDiagnostic[];
+    parseErrors: PortugolCodeDiagnostic[];
     times: { check: number; transpile: number };
   }) {
     try {
@@ -105,7 +105,7 @@ export class PortugolExecutor {
         throw new Error("Parse errors");
       }
 
-      if (errors.length > 0) {
+      if (diagnostics.length > 0) {
         const argueAboutAlgolIfNeeded = () => {
           if (
             ["fimalgoritmo", "fimenquanto", "fimpara", "fimse", "fimfuncao"].some(keyword => code.includes(keyword))
@@ -126,8 +126,8 @@ export class PortugolExecutor {
 
         argueAboutAlgolIfNeeded();
 
-        this.stdOut += `⛔ O seu código possui ${errors.length} erro${errors.length > 1 ? "s" : ""} de compilação:\n`;
-        this.stdOut += errors
+        this.stdOut += `⛔ O seu código possui ${diagnostics.length} erro${diagnostics.length > 1 ? "s" : ""} de compilação:\n`;
+        this.stdOut += diagnostics
           .map(error => `   - ${error.message} (linha ${error.startLine}, posição ${error.startCol})\n`)
           .join("");
 

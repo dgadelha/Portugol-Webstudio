@@ -12,8 +12,15 @@ import {
   Token,
 } from "antlr4ng";
 
-export class PortugolCodeError extends Error {
+export enum PortugolDiagnosticSeverity {
+  Error = 0,
+  Warning = 1,
+  Information = 2,
+}
+
+export class PortugolCodeDiagnostic extends Error {
   constructor(
+    public readonly severity: PortugolDiagnosticSeverity,
     public readonly message: string,
     public readonly context: ParseTree,
     public readonly startLine: number,
@@ -24,7 +31,11 @@ export class PortugolCodeError extends Error {
     super(message);
   }
 
-  static fromContext(ctx: ParseTree, message: string) {
+  static fromContext(
+    ctx: ParseTree,
+    message: string,
+    severity: PortugolDiagnosticSeverity = PortugolDiagnosticSeverity.Error,
+  ) {
     let possibleContext = ctx;
 
     if (
@@ -40,7 +51,7 @@ export class PortugolCodeError extends Error {
     }
 
     if (!possibleContext) {
-      return new PortugolCodeError(message, ctx, 1, 0, 9999, 0);
+      return new PortugolCodeDiagnostic(severity, message, ctx, 1, 0, 9999, 0);
     }
 
     if (
@@ -59,10 +70,11 @@ export class PortugolCodeError extends Error {
           endCol += ctx.getText().length - 1;
         }
 
-        return new PortugolCodeError(message, ctx, startLine, startCol, endLine, endCol);
+        return new PortugolCodeDiagnostic(severity, message, ctx, startLine, startCol, endLine, endCol);
       }
 
-      return new PortugolCodeError(
+      return new PortugolCodeDiagnostic(
+        severity,
         message,
         ctx,
         Math.max(startLine - 1, 1),
@@ -78,20 +90,20 @@ export class PortugolCodeError extends Error {
       if (possibleSymbol && Object.hasOwn(possibleSymbol, "column") && Object.hasOwn(possibleSymbol, "line")) {
         const { line, column } = possibleSymbol as unknown as Token;
 
-        return new PortugolCodeError(message, ctx, line, column, line, column + ctx.getText().length);
+        return new PortugolCodeDiagnostic(severity, message, ctx, line, column, line, column + ctx.getText().length);
       }
     }
 
     if (Object.hasOwn(ctx, "getText") && typeof ctx.getText === "function") {
-      return new PortugolCodeError(message, ctx, 1, 1, 1, 2 + ctx.getText().length);
+      return new PortugolCodeDiagnostic(severity, message, ctx, 1, 1, 1, 2 + ctx.getText().length);
     }
 
-    return new PortugolCodeError(message, ctx, 1, 0, 9999, 0);
+    return new PortugolCodeDiagnostic(severity, message, ctx, 1, 0, 9999, 0);
   }
 }
 
 export class PortugolErrorListener implements ANTLRErrorListener {
-  private errors: PortugolCodeError[] = [];
+  private errors: PortugolCodeDiagnostic[] = [];
 
   syntaxError<S extends Token, T extends ATNSimulator>(
     _recognizer: Recognizer<T>,
@@ -102,7 +114,7 @@ export class PortugolErrorListener implements ANTLRErrorListener {
     e: RecognitionException | null,
   ) {
     this.errors.push(
-      PortugolCodeError.fromContext(e?.ctx || offendingSymbol || (null as any), "Código incompleto ou inválido"),
+      PortugolCodeDiagnostic.fromContext(e?.ctx || offendingSymbol || (null as any), "Código incompleto ou inválido"),
     );
   }
 
