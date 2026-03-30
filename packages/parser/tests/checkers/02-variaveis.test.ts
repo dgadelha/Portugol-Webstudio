@@ -49,6 +49,22 @@ describe("Checker: Variáveis", () => {
       expect(check.diagnostics).toMatchInlineSnapshot(`[]`);
     });
 
+    test("Atribuição através da função leia", () => {
+      const code = portugol`
+        programa {
+          funcao inicio() {
+            inteiro x
+            leia(x)
+            escreva(x)
+          }
+        }
+      `;
+
+      const check = PortugolCodeChecker.checkCode(code);
+
+      expect(check.diagnostics).toMatchInlineSnapshot(`[]`);
+    });
+
     test("Atribuição após declaração", () => {
       const code = portugol`
         programa {
@@ -343,6 +359,125 @@ describe("Checker: Variáveis", () => {
     });
   });
 
+  describe("Casos de alerta", () => {
+    test("Variável declarada mas nunca utilizada", () => {
+      const code = portugol`
+        programa {
+          funcao inicio() {
+            inteiro x
+          }
+        }
+      `;
+
+      const check = PortugolCodeChecker.checkCode(code);
+
+      expect(check.diagnostics).toMatchInlineSnapshot(`
+        [
+          3:12/3:12 W: A variável 'x' é declarada, mas não é utilizada,
+        ]
+      `);
+    });
+
+    test("Variável atribuída mas nunca lida", () => {
+      const code = portugol`
+        programa {
+          funcao inicio() {
+            inteiro x = 10
+          }
+        }
+      `;
+
+      const check = PortugolCodeChecker.checkCode(code);
+
+      expect(check.diagnostics).toMatchInlineSnapshot(`
+        [
+          3:12/3:16 W: A variável 'x' é atribuída, mas nunca é lida,
+        ]
+      `);
+    });
+
+    test("Variável lida sem ter sido atribuída", () => {
+      const code = portugol`
+        programa {
+          funcao inicio() {
+            inteiro x
+            escreva(x)
+          }
+        }
+      `;
+
+      const check = PortugolCodeChecker.checkCode(code);
+
+      expect(check.diagnostics).toMatchInlineSnapshot(`
+        [
+          3:12/3:12 W: A variável 'x' é lida, mas nunca recebe um valor,
+        ]
+      `);
+    });
+
+    test("Parâmetro de função não utilizado", () => {
+      const code = portugol`
+        programa {
+          funcao inicio() {
+            teste(10)
+          }
+
+          funcao teste(inteiro param) {
+            escreva("teste")
+          }
+        }
+      `;
+
+      const check = PortugolCodeChecker.checkCode(code);
+
+      expect(check.diagnostics).toMatchInlineSnapshot(`
+        [
+          6:15/6:23 W: A variável 'param' é atribuída, mas nunca é lida,
+        ]
+      `);
+    });
+
+    test("Variável global não utilizada", () => {
+      const code = portugol`
+        programa {
+          inteiro global
+
+          funcao inicio() {
+            escreva("teste")
+          }
+        }
+      `;
+
+      const check = PortugolCodeChecker.checkCode(code);
+
+      expect(check.diagnostics).toMatchInlineSnapshot(`
+        [
+          2:10/2:15 W: A variável 'global' é declarada, mas não é utilizada,
+        ]
+      `);
+    });
+
+    test("Variável em escopo aninhado não utilizada", () => {
+      const code = portugol`
+        programa {
+          funcao inicio() {
+            se (verdadeiro) {
+              inteiro x = 10
+            }
+          }
+        }
+      `;
+
+      const check = PortugolCodeChecker.checkCode(code);
+
+      expect(check.diagnostics).toMatchInlineSnapshot(`
+        [
+          4:14/4:18 W: A variável 'x' é atribuída, mas nunca é lida,
+        ]
+      `);
+    });
+  });
+
   describe("Casos de erro", () => {
     test("Variável não declarada", () => {
       const code = portugol`
@@ -378,6 +513,247 @@ describe("Checker: Variáveis", () => {
         [
           3:12/3:12 E: Variável não declarada: x,
           4:12/4:12 W: A variável 'x' é declarada, mas não é utilizada,
+        ]
+      `);
+    });
+
+    test("Redeclaração de variável no mesmo escopo", () => {
+      const code = portugol`
+        programa {
+          funcao inicio() {
+            inteiro x = 10
+            inteiro x = 20
+            escreva(x)
+          }
+        }
+      `;
+
+      const check = PortugolCodeChecker.checkCode(code);
+
+      expect(check.diagnostics).toMatchInlineSnapshot(`
+        [
+          4:12/4:16 E: Redeclaração de variável 'x' no mesmo escopo,
+        ]
+      `);
+    });
+
+    test("Atribuição de tipo incompatível", () => {
+      const code = portugol`
+        programa {
+          funcao inicio() {
+            inteiro x
+            x = "texto"
+            escreva(x)
+          }
+        }
+      `;
+
+      const check = PortugolCodeChecker.checkCode(code);
+
+      expect(check.diagnostics).toMatchInlineSnapshot(`
+        [
+          4:4/4:8 E: Não é possível atribuir um valor do tipo 'cadeia' a uma variável do tipo 'inteiro',
+        ]
+      `);
+    });
+
+    test("Função não declarada", () => {
+      const code = portugol`
+        programa {
+          funcao inicio() {
+            teste()
+          }
+        }
+      `;
+
+      const check = PortugolCodeChecker.checkCode(code);
+
+      expect(check.diagnostics).toMatchInlineSnapshot(`
+        [
+          3:4/3:10 E: Função não declarada: teste,
+        ]
+      `);
+    });
+
+    test("Redeclaração de função", () => {
+      const code = portugol`
+        programa {
+          funcao inteiro teste() {
+            retorne 1
+          }
+
+          funcao inteiro teste() {
+            retorne 2
+          }
+
+          funcao inicio() {
+            escreva(teste())
+          }
+        }
+      `;
+
+      const check = PortugolCodeChecker.checkCode(code);
+
+      expect(check.diagnostics).toMatchInlineSnapshot(`
+        [
+          6:2/8:2 E: Redeclaração de função 'teste',
+        ]
+      `);
+    });
+
+    test("Chamada de função sem argumentos", () => {
+      const code = portugol`
+        programa {
+          funcao inteiro soma(inteiro a, inteiro b) {
+            retorne a + b
+          }
+
+          funcao inicio() {
+            escreva(soma())
+          }
+        }
+      `;
+
+      const check = PortugolCodeChecker.checkCode(code);
+
+      expect(check.diagnostics).toMatchInlineSnapshot(`
+        [
+          7:12/7:17 E: A função 'soma' deve receber argumentos,
+          7:12/7:17 E: 1º argumento 'a' do tipo 'inteiro' ausente na chamada da função 'soma',
+          7:12/7:17 E: 2º argumento 'b' do tipo 'inteiro' ausente na chamada da função 'soma',
+        ]
+      `);
+    });
+
+    test("Chamada de função com argumentos insuficientes", () => {
+      const code = portugol`
+        programa {
+          funcao inteiro soma(inteiro a, inteiro b) {
+            retorne a + b
+          }
+
+          funcao inicio() {
+            escreva(soma(10))
+          }
+        }
+      `;
+
+      const check = PortugolCodeChecker.checkCode(code);
+
+      expect(check.diagnostics).toMatchInlineSnapshot(`
+        [
+          7:12/7:19 E: A função 'soma' espera receber 2 argumentos, mas recebeu 1,
+          7:12/7:19 E: 2º argumento 'b' do tipo 'inteiro' ausente na chamada da função 'soma',
+        ]
+      `);
+    });
+
+    test("Chamada de função com argumentos em excesso", () => {
+      const code = portugol`
+        programa {
+          funcao inteiro soma(inteiro a, inteiro b) {
+            retorne a + b
+          }
+
+          funcao inicio() {
+            escreva(soma(10, 20, 30))
+          }
+        }
+      `;
+
+      const check = PortugolCodeChecker.checkCode(code);
+
+      expect(check.diagnostics).toMatchInlineSnapshot(`
+        [
+          7:12/7:27 E: A função 'soma' espera receber 2 argumentos, mas recebeu 3,
+        ]
+      `);
+    });
+
+    test("Chamada de função com argumentos quando não esperados", () => {
+      const code = portugol`
+        programa {
+          funcao inteiro teste() {
+            retorne 2
+          }
+
+          funcao inicio() {
+            escreva(teste(3))
+          }
+        }
+      `;
+
+      const check = PortugolCodeChecker.checkCode(code);
+
+      expect(check.diagnostics).toMatchInlineSnapshot(`
+        [
+          7:12/7:19 E: A função 'teste' não deve receber argumentos,
+        ]
+      `);
+    });
+
+    test("Chamada de função com tipo de argumento incompatível", () => {
+      const code = portugol`
+        programa {
+          funcao inteiro dobro(inteiro x) {
+            retorne x * 2
+          }
+
+          funcao inicio() {
+            escreva(dobro("texto"))
+          }
+        }
+      `;
+
+      const check = PortugolCodeChecker.checkCode(code);
+
+      expect(check.diagnostics).toMatchInlineSnapshot(`
+        [
+          7:18/7:24 E: Não é possível passar um valor do tipo 'cadeia' para o parâmetro 'x' do tipo 'inteiro' na função 'dobro',
+        ]
+      `);
+    });
+
+    test("Retorno de tipo incompatível", () => {
+      const code = portugol`
+        programa {
+          funcao inteiro teste() {
+            retorne "texto"
+          }
+
+          funcao inicio() {
+            escreva(teste())
+          }
+        }
+      `;
+
+      const check = PortugolCodeChecker.checkCode(code);
+
+      expect(check.diagnostics).toMatchInlineSnapshot(`
+        [
+          3:4/3:12 E: Não é possível retornar um valor do tipo 'cadeia' em uma função que retorna 'inteiro',
+        ]
+      `);
+    });
+
+    test("Redeclaração de parâmetro em função", () => {
+      const code = portugol`
+        programa {
+          funcao inteiro teste(inteiro x, inteiro x) {
+            retorne x
+          }
+
+          funcao inicio() {
+            escreva(teste(1, 2))
+          }
+        }
+      `;
+
+      const check = PortugolCodeChecker.checkCode(code);
+
+      expect(check.diagnostics).toMatchInlineSnapshot(`
+        [
+          2:34/2:42 E: Redeclaração de parâmetro 'x' na função 'teste',
         ]
       `);
     });
