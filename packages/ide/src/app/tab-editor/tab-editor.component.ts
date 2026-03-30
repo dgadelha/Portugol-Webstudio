@@ -1,7 +1,8 @@
 import { Component, ElementRef, Input, OnDestroy, OnInit, TemplateRef, inject, output, viewChild } from "@angular/core";
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { MatSnackBar } from "@angular/material/snack-bar";
-import type { PortugolCodeError } from "@portugol-webstudio/antlr";
+import type { IPortugolCodeDiagnostic } from "@portugol-webstudio/antlr";
+import { PortugolDiagnosticSeverity } from "@portugol-webstudio/antlr";
 import { PortugolExecutor, PortugolMessage, PortugolWebWorkersRunner } from "@portugol-webstudio/runner";
 import { captureException, setExtra } from "@sentry/angular";
 import { saveAs } from "file-saver";
@@ -144,7 +145,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
           }
 
           case "parseError": {
-            this.setEditorErrors(event.errors);
+            this.setEditorDiagnostics(event.errors);
             break;
           }
 
@@ -238,7 +239,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     }
 
     if (result) {
-      this.setEditorErrors([]);
+      this.setEditorDiagnostics([]);
       this.executor.runTranspiled({ ...result, code });
     }
   }
@@ -466,7 +467,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
       )
       .subscribe({
         next: result => {
-          this.setEditorErrors(result.errors.concat(result.parseErrors));
+          this.setEditorDiagnostics(result.diagnostics.concat(result.parseErrors));
         },
         error(err) {
           console.error(err);
@@ -519,21 +520,27 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     this.snack.dismiss();
   }
 
-  setEditorErrors(errors: PortugolCodeError[]) {
+  setEditorDiagnostics(diagnostics: IPortugolCodeDiagnostic[]) {
     const model = this.codeEditor?.getModel();
 
     if (model) {
+      const severityMap: Record<PortugolDiagnosticSeverity, monaco.MarkerSeverity> = {
+        [PortugolDiagnosticSeverity.Error]: monaco.MarkerSeverity.Error,
+        [PortugolDiagnosticSeverity.Warning]: monaco.MarkerSeverity.Warning,
+        [PortugolDiagnosticSeverity.Information]: monaco.MarkerSeverity.Info,
+      };
+
       monaco.editor.setModelMarkers(
         model,
         "owner",
-        errors.map(error => {
+        diagnostics.map(error => {
           return {
             startLineNumber: error.startLine,
             startColumn: error.startCol + 1,
             endLineNumber: error.endLine,
             endColumn: error.endCol + 2,
             message: error.message,
-            severity: monaco.MarkerSeverity.Error,
+            severity: severityMap[error.severity] ?? monaco.MarkerSeverity.Error,
           };
         }),
       );

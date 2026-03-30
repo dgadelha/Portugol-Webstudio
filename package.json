@@ -36,7 +36,8 @@
     "build:runtime": "lerna run build --scope=@portugol-webstudio/runtime",
     "test:parser": "lerna run test --scope=@portugol-webstudio/parser",
     "release": "lerna run release",
-    "postinstall": "patch-package"
+    "postinstall": "patch-package",
+    "test": "lerna run test"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.3",

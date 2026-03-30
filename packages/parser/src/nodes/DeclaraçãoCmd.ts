@@ -36,7 +36,7 @@ export class DeclaraçãoCmd extends Comando<DeclaracaoContext> {
           primitivo: this.tipo.primitivo,
         };
 
-        this.expressão = child.inicialização;
+        this.expressão = child.valor;
       } else if (child instanceof DeclaraçãoMatrizExpr) {
         this.nome = child.nome;
         this.tipo = {
@@ -45,6 +45,8 @@ export class DeclaraçãoCmd extends Comando<DeclaracaoContext> {
           colunas: child.colunas,
           primitivo: this.tipo.primitivo,
         };
+
+        this.expressão = child.valor;
       } else if (child instanceof DeclaraçãoVariávelExpr) {
         this.nome = child.nome;
         this.expressão = child.valor;

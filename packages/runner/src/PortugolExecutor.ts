@@ -1,5 +1,5 @@
-import { PortugolCodeError, PortugolErrorListener } from "@portugol-webstudio/antlr";
-import { PortugolErrorChecker } from "@portugol-webstudio/parser";
+import { IPortugolCodeDiagnostic, PortugolDiagnosticSeverity, PortugolErrorListener } from "@portugol-webstudio/antlr";
+import { PortugolCodeChecker } from "@portugol-webstudio/parser";
 import { PortugolJs } from "@portugol-webstudio/runtime";
 import { Subject, Subscription } from "rxjs";
 
@@ -49,8 +49,8 @@ export class PortugolExecutor {
   errorListener = new PortugolErrorListener();
 
   run(code: string) {
-    let errors: PortugolCodeError[] = [];
-    let parseErrors: PortugolCodeError[] = [];
+    let diagnostics: IPortugolCodeDiagnostic[] = [];
+    let parseErrors: IPortugolCodeDiagnostic[] = [];
     let js = "";
     let checkStart = 0;
     let checkEnd = 0;
@@ -59,9 +59,9 @@ export class PortugolExecutor {
 
     try {
       checkStart = performance.now();
-      const checkResult = PortugolErrorChecker.checkCode(code);
+      const checkResult = PortugolCodeChecker.checkCode(code);
 
-      errors = checkResult.errors;
+      diagnostics = checkResult.diagnostics;
       parseErrors = checkResult.parseErrors;
 
       checkEnd = performance.now();
@@ -74,7 +74,7 @@ export class PortugolExecutor {
     this.runTranspiled({
       code,
       js,
-      errors,
+      diagnostics,
       parseErrors,
       times: {
         check: checkEnd - checkStart,
@@ -88,14 +88,14 @@ export class PortugolExecutor {
   runTranspiled({
     code,
     js,
-    errors,
+    diagnostics,
     parseErrors,
     times,
   }: {
     code: string;
     js: string;
-    errors: PortugolCodeError[];
-    parseErrors: PortugolCodeError[];
+    diagnostics: IPortugolCodeDiagnostic[];
+    parseErrors: IPortugolCodeDiagnostic[];
     times: { check: number; transpile: number };
   }) {
     try {
@@ -104,6 +104,8 @@ export class PortugolExecutor {
       if (parseErrors.length > 0) {
         throw new Error("Parse errors");
       }
+
+      const errors = diagnostics.filter(d => d.severity === PortugolDiagnosticSeverity.Error);
 
       if (errors.length > 0) {
         const argueAboutAlgolIfNeeded = () => {

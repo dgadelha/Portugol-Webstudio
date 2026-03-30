@@ -1,20 +1,21 @@
 import { DeclaracaoMatrizContext } from "@portugol-webstudio/antlr";
 
+import { invariant } from "../helpers/nodes.js";
+import { ExpressãoMatemática } from "../index.js";
 import { Expressão } from "./Expressão.js";
 import { InicializaçãoMatrizExpr } from "./InicializaçãoMatrizExpr.js";
 import { InteiroExpr } from "./InteiroExpr.js";
 import { Node } from "./Node.js";
 import { ReferênciaVarExpr } from "./ReferênciaVarExpr.js";
-import { invariant } from "../helpers/nodes.js";
 
 export class DeclaraçãoMatrizExpr extends Expressão<DeclaracaoMatrizContext> {
   nome = this.ctx.ID().getText();
-  linhas?: InteiroExpr | ReferênciaVarExpr;
-  colunas?: InteiroExpr | ReferênciaVarExpr;
+  linhas?: InteiroExpr | ReferênciaVarExpr | ExpressãoMatemática;
+  colunas?: InteiroExpr | ReferênciaVarExpr | ExpressãoMatemática;
   valor?: Expressão;
 
   addChild(child: Node) {
-    if (child instanceof InteiroExpr || child instanceof ReferênciaVarExpr) {
+    if (child instanceof InteiroExpr || child instanceof ReferênciaVarExpr || child instanceof ExpressãoMatemática) {
       if (!this.linhas) {
         this.linhas = child;
       } else if (this.colunas) {

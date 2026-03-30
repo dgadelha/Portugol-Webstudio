@@ -1,14 +1,16 @@
-import { PortugolErrorChecker } from "@portugol-webstudio/parser";
+import { PortugolCodeChecker } from "@portugol-webstudio/parser";
 import { PortugolJs } from "@portugol-webstudio/runtime";
 
 function mapError(error) {
   if (typeof error !== "object" || error === null) {
     return {
+      severity: 0,
       message: String(error),
     };
   }
 
   return {
+    severity: error.severity,
     message: error.message,
     startLine: error.startLine,
     startCol: error.startCol,
@@ -21,13 +23,13 @@ function mapError(error) {
  * @param {string} code
  */
 function checkCode(code) {
-  let errors = [];
+  let diagnostics = [];
   let parseErrors = [];
 
   try {
-    const result = PortugolErrorChecker.checkCode(code);
+    const result = PortugolCodeChecker.checkCode(code);
 
-    errors = result.errors;
+    diagnostics = result.diagnostics;
     parseErrors = result.parseErrors;
   } catch (error) {
     console.log("check error", error);
@@ -35,7 +37,7 @@ function checkCode(code) {
   }
 
   return {
-    errors: errors.map(error => mapError(error)),
+    diagnostics: diagnostics.map(error => mapError(error)),
     parseErrors: parseErrors.map(error => mapError(error)),
   };
 }
@@ -48,16 +50,16 @@ function transpileCode(code) {
    * @type {string | null}
    */
   let js = "";
-  let errors = [];
+  let diagnostics = [];
   let parseErrors = [];
   let checkTime = 0;
   let transpileTime = 0;
 
   try {
     const checkStart = performance.now();
-    const checkResult = PortugolErrorChecker.checkCode(code);
+    const checkResult = PortugolCodeChecker.checkCode(code);
 
-    errors = checkResult.errors;
+    diagnostics = checkResult.diagnostics;
     parseErrors = checkResult.parseErrors;
 
     const checkEnd = performance.now();
@@ -75,7 +77,7 @@ function transpileCode(code) {
 
   return {
     js,
-    errors: errors.map(error => mapError(error)),
+    diagnostics: diagnostics.map(error => mapError(error)),
     parseErrors: parseErrors.map(error => mapError(error)),
     times: {
       check: checkTime,

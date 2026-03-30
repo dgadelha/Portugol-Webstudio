@@ -32,13 +32,16 @@
   ],
   "scripts": {
     "build": "tsc",
-    "build:w": "tsc -w"
+    "build:w": "tsc -w",
+    "test": "vitest"
   },
   "dependencies": {
     "@portugol-webstudio/antlr": "*",
     "antlr4ng": "^3.0.16"
   },
   "devDependencies": {
-    "typescript": "~5.9.3"
+    "@vitest/coverage-v8": "^4.1.2",
+    "typescript": "~5.9.3",
+    "vitest": "^4.1.2"
   }
 }
