@@ -11,7 +11,6 @@ export default defineConfig(
   prettier,
   {
     files: ["**/*.html"],
-    // @ts-expect-error - Configuração válida, tipos desatualizados
     extends: [...angular.configs.templateAll, ...angular.configs.templateAccessibility],
     rules: {
       "@angular-eslint/template/i18n": "off",
@@ -25,7 +24,7 @@ export default defineConfig(
     processor: angular.processInlineTemplates,
     languageOptions: {
       parserOptions: {
-        project: true,
+        project: ["tsconfig.json", "tsconfig.spec.json"],
         tsconfigDirName: import.meta.dirname,
       },
     },
