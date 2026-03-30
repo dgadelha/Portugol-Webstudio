@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { PortugolCodeChecker } from "../../src/PortugolCodeChecker.js";
+import { PortugolCodeChecker } from "../../src";
 import { portugol } from "../helpers/code";
 
 describe("Checker: Estrutura básica", () => {

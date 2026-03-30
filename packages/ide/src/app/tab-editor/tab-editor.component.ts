@@ -540,7 +540,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
             endLineNumber: error.endLine,
             endColumn: error.endCol + 2,
             message: error.message,
-            severity: severityMap[error.severity],
+            severity: severityMap[error.severity] ?? monaco.MarkerSeverity.Error,
           };
         }),
       );
