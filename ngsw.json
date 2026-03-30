@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1773959255444,
+  "timestamp": 1774903958263,
   "index": "/index.html",
   "assetGroups": [
     {
@@ -13,7 +13,7 @@
       "urls": [
         "/favicon.ico",
         "/index.html",
-        "/main-W4KWOGQ6.js",
+        "/main-WXNYC52Y.js",
         "/manifest.webmanifest",
         "/polyfills-K6DZOUHF.js",
         "/styles-QC2QFB3U.css"
@@ -1066,8 +1066,8 @@
     "/assets/monaco-editor/min/vs/workers-DcJshg-q.js": "e0aeb27559f0057307306e9819cccc2a87bff35a",
     "/assets/monaco-editor/min/vs/xml-CdsdnY8S.js": "bfaff80833b046ff5567336580d2a7bf23b56655",
     "/assets/monaco-editor/min/vs/yaml-DYGvmE88.js": "757aa74104b326b44b43cd159687d2ae2fcadcbd",
-    "/assets/portugol-worker/worker.js": "5aec0b0b1f7c43cd252ea6b99498857ee67ecb6a",
-    "/assets/portugol-worker/worker.js.map": "c51deeecaf3c0083302081b4b51f06fbf62a740c",
+    "/assets/portugol-worker/worker.js": "be3c4c2e2c7657b1c7cb349834348bf242866356",
+    "/assets/portugol-worker/worker.js.map": "6ca24ccd2231bc6a1a0d9dfea1cf3cb2b1ad31c7",
     "/assets/recursos/ajuda/estilos/SyntaxHighlighter.css": "4162675b3b4d2354973021572bfd4685deb6712d",
     "/assets/recursos/ajuda/estilos/ajuda.css": "9e6ad574f9fa6c48d6f856756016eac3c1a5686b",
     "/assets/recursos/ajuda/estilos/index.css": "df28a87aa49702297859fb7900c44f8250da8786",
@@ -1746,8 +1746,8 @@
     "/assets/recursos/exercicios/exercicio60.pex": "6082892362c640c5b7c9e63b12d6594dab32128d",
     "/assets/recursos/exercicios/schema.xsd": "cd13152ea836b1eed121a6972a619f595ac5d46c",
     "/favicon.ico": "a3dadb5b6906874517b9a2bc021bb3f154290edd",
-    "/index.html": "87b748d36a11e9aed09f5972250a7038bf680ee1",
-    "/main-W4KWOGQ6.js": "b63171485ef761b72e4c7e45c80c98588afedb9c",
+    "/index.html": "a6572cd3799804c8c1a5d1f3ee09e3701be5845c",
+    "/main-WXNYC52Y.js": "520fd104c78eff53782a544a85068ec1f15b44cc",
     "/manifest.webmanifest": "bbfd674042155ddb102be018a75422fd949cb37f",
     "/polyfills-K6DZOUHF.js": "edbf82eb9fc2f8431b72a2d101cafd15703b6a74",
     "/styles-QC2QFB3U.css": "5c0829c2263a5e01d41e1598e0bfcb2939b2a80e"
