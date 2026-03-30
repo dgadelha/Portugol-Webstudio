@@ -18,7 +18,16 @@ export enum PortugolDiagnosticSeverity {
   Information = 2,
 }
 
-export class PortugolCodeDiagnostic extends Error {
+export interface IPortugolCodeDiagnostic {
+  severity: PortugolDiagnosticSeverity;
+  message: string;
+  startLine: number;
+  startCol: number;
+  endLine: number;
+  endCol: number;
+}
+
+export class PortugolCodeDiagnostic extends Error implements IPortugolCodeDiagnostic {
   constructor(
     public readonly severity: PortugolDiagnosticSeverity,
     public readonly message: string,

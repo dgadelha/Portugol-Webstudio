@@ -1,4 +1,4 @@
-import { PortugolCodeDiagnostic, PortugolDiagnosticSeverity, PortugolErrorListener } from "@portugol-webstudio/antlr";
+import { IPortugolCodeDiagnostic, PortugolDiagnosticSeverity, PortugolErrorListener } from "@portugol-webstudio/antlr";
 import { PortugolCodeChecker } from "@portugol-webstudio/parser";
 import { PortugolJs } from "@portugol-webstudio/runtime";
 import { Subject, Subscription } from "rxjs";
@@ -49,8 +49,8 @@ export class PortugolExecutor {
   errorListener = new PortugolErrorListener();
 
   run(code: string) {
-    let diagnostics: PortugolCodeDiagnostic[] = [];
-    let parseErrors: PortugolCodeDiagnostic[] = [];
+    let diagnostics: IPortugolCodeDiagnostic[] = [];
+    let parseErrors: IPortugolCodeDiagnostic[] = [];
     let js = "";
     let checkStart = 0;
     let checkEnd = 0;
@@ -94,8 +94,8 @@ export class PortugolExecutor {
   }: {
     code: string;
     js: string;
-    diagnostics: PortugolCodeDiagnostic[];
-    parseErrors: PortugolCodeDiagnostic[];
+    diagnostics: IPortugolCodeDiagnostic[];
+    parseErrors: IPortugolCodeDiagnostic[];
     times: { check: number; transpile: number };
   }) {
     try {

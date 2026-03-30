@@ -1,7 +1,7 @@
 import { Component, ElementRef, Input, OnDestroy, OnInit, TemplateRef, inject, output, viewChild } from "@angular/core";
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { MatSnackBar } from "@angular/material/snack-bar";
-import type { PortugolCodeDiagnostic } from "@portugol-webstudio/antlr";
+import type { IPortugolCodeDiagnostic } from "@portugol-webstudio/antlr";
 import { PortugolDiagnosticSeverity } from "@portugol-webstudio/antlr";
 import { PortugolExecutor, PortugolMessage, PortugolWebWorkersRunner } from "@portugol-webstudio/runner";
 import { captureException, setExtra } from "@sentry/angular";
@@ -520,7 +520,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     this.snack.dismiss();
   }
 
-  setEditorDiagnostics(diagnostics: PortugolCodeDiagnostic[]) {
+  setEditorDiagnostics(diagnostics: IPortugolCodeDiagnostic[]) {
     const model = this.codeEditor?.getModel();
 
     if (model) {
