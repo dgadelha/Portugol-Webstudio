@@ -1,6 +1,6 @@
 import { TerminalNode } from "antlr4ng";
 
-import { InteiroExpr, ReferênciaVarExpr } from "../nodes/index.js";
+import { ExpressãoMatemática, InteiroExpr, ReferênciaVarExpr } from "../nodes/index.js";
 
 export enum TipoPrimitivo {
   INTEIRO = "inteiro",
@@ -14,8 +14,12 @@ export enum TipoPrimitivo {
 export type Tipo = { primitivo: TipoPrimitivo } & (
   | {}
   | ({ dimensão: "vetor" | "matriz"; primitivo: TipoPrimitivo } & (
-      | { dimensão: "vetor"; tamanho?: InteiroExpr | ReferênciaVarExpr }
-      | { dimensão: "matriz"; linhas?: InteiroExpr | ReferênciaVarExpr; colunas?: InteiroExpr | ReferênciaVarExpr }
+      | { dimensão: "vetor"; tamanho?: InteiroExpr | ReferênciaVarExpr | ExpressãoMatemática }
+      | {
+          dimensão: "matriz";
+          linhas?: InteiroExpr | ReferênciaVarExpr | ExpressãoMatemática;
+          colunas?: InteiroExpr | ReferênciaVarExpr | ExpressãoMatemática;
+        }
     ))
 );
 
