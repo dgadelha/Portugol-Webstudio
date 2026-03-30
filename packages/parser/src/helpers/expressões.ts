@@ -168,7 +168,7 @@ export function resolverResultadoExpressão(expressão: Expressão | undefined, 
         throw new Error(`Variável não declarada: ${ref.nome}`);
       }
 
-      return svar.primitivo;
+      return svar.tipo.primitivo;
     }
 
     case ReferênciaArrayExpr:
@@ -180,7 +180,7 @@ export function resolverResultadoExpressão(expressão: Expressão | undefined, 
         throw new Error(`Variável não declarada: ${refarr.variável.nome}`);
       }
 
-      return vararr.primitivo;
+      return vararr.tipo.primitivo;
     }
 
     case OperaçãoIgualdadeExpr:
@@ -274,7 +274,7 @@ export function resolverResultadoExpressão(expressão: Expressão | undefined, 
         throw new Error(`Função não declarada: ${chamada.nome}`);
       }
 
-      return fun.primitivo;
+      return fun.retorno ? fun.retorno.primitivo : TipoPrimitivo.VAZIO;
     }
 
     default: {

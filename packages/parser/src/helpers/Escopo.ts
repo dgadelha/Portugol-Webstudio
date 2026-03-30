@@ -1,8 +1,34 @@
+import type { Node } from "../nodes/Node.js";
+import { Parâmetro } from "../nodes/Parâmetro.js";
 import { Tipo, TipoPrimitivo } from "./Tipo.js";
 
+interface IVariável {
+  nome: string;
+  tipo: Tipo;
+  declaração?: Node;
+  leitura: Node[];
+  escrita: Node[];
+}
+
+interface IParâmetro {
+  nome: string;
+  tipo?: Tipo;
+  referência: boolean;
+  declaração?: Parâmetro;
+  leitura: Node[];
+}
+
+interface IFunção {
+  nome: string;
+  parâmetros: IParâmetro[] | undefined /* undefined age como 'any' */;
+  retorno: Tipo | undefined /* undefined age como 'any' */;
+  declaração?: Node;
+  chamadas: Node[];
+}
+
 interface IEscopo {
-  variáveis: Map<string, Tipo>;
-  funções: Map<string, Tipo>;
+  variáveis: Map<string, IVariável>;
+  funções: Map<string, IFunção>;
   função?: Tipo;
 }
 
@@ -12,10 +38,45 @@ export class Escopo {
   constructor(
     inicial: IEscopo = {
       variáveis: new Map(),
-      funções: new Map([
-        ["escreva", { primitivo: TipoPrimitivo.VAZIO }],
-        ["leia", { primitivo: TipoPrimitivo.CADEIA }],
-        ["limpa", { primitivo: TipoPrimitivo.VAZIO }],
+      funções: new Map<string, IFunção>([
+        [
+          "escreva",
+          {
+            nome: "escreva",
+            parâmetros: undefined,
+            retorno: { primitivo: TipoPrimitivo.VAZIO },
+            declaração: undefined,
+            chamadas: [],
+          },
+        ],
+        [
+          "leia",
+          {
+            nome: "leia",
+            retorno: undefined,
+            parâmetros: [
+              {
+                nome: "variável",
+                tipo: undefined,
+                referência: true,
+                declaração: undefined,
+                leitura: [],
+              },
+            ],
+            declaração: undefined,
+            chamadas: [],
+          },
+        ],
+        [
+          "limpa",
+          {
+            nome: "limpa",
+            parâmetros: [],
+            retorno: { primitivo: TipoPrimitivo.VAZIO },
+            declaração: undefined,
+            chamadas: [],
+          },
+        ],
       ]),
     },
   ) {
@@ -63,8 +124,8 @@ export class Escopo {
   }
 
   hasVariável(nome: string) {
-    for (const escopo of this.pilha) {
-      if (escopo.variáveis.has(nome)) {
+    for (let i = this.pilha.length - 1; i >= 0; i--) {
+      if (this.pilha[i].variáveis.has(nome)) {
         return true;
       }
     }
@@ -73,8 +134,8 @@ export class Escopo {
   }
 
   hasFunção(nome: string) {
-    for (const escopo of this.pilha) {
-      if (escopo.funções.has(nome)) {
+    for (let i = this.pilha.length - 1; i >= 0; i--) {
+      if (this.pilha[i].funções.has(nome)) {
         return true;
       }
     }
@@ -83,9 +144,9 @@ export class Escopo {
   }
 
   getVariável(nome: string) {
-    for (const escopo of this.pilha) {
-      if (escopo.variáveis.has(nome)) {
-        return escopo.variáveis.get(nome);
+    for (let i = this.pilha.length - 1; i >= 0; i--) {
+      if (this.pilha[i].variáveis.has(nome)) {
+        return this.pilha[i].variáveis.get(nome);
       }
     }
 
@@ -93,9 +154,9 @@ export class Escopo {
   }
 
   getFunção(nome: string) {
-    for (const escopo of this.pilha) {
-      if (escopo.funções.has(nome)) {
-        return escopo.funções.get(nome);
+    for (let i = this.pilha.length - 1; i >= 0; i--) {
+      if (this.pilha[i].funções.has(nome)) {
+        return this.pilha[i].funções.get(nome);
       }
     }
 
