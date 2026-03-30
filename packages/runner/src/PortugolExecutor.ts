@@ -1,4 +1,4 @@
-import { PortugolCodeDiagnostic, PortugolErrorListener } from "@portugol-webstudio/antlr";
+import { PortugolCodeDiagnostic, PortugolDiagnosticSeverity, PortugolErrorListener } from "@portugol-webstudio/antlr";
 import { PortugolCodeChecker } from "@portugol-webstudio/parser";
 import { PortugolJs } from "@portugol-webstudio/runtime";
 import { Subject, Subscription } from "rxjs";
@@ -105,7 +105,9 @@ export class PortugolExecutor {
         throw new Error("Parse errors");
       }
 
-      if (diagnostics.length > 0) {
+      const errors = diagnostics.filter(d => d.severity === PortugolDiagnosticSeverity.Error);
+
+      if (errors.length > 0) {
         const argueAboutAlgolIfNeeded = () => {
           if (
             ["fimalgoritmo", "fimenquanto", "fimpara", "fimse", "fimfuncao"].some(keyword => code.includes(keyword))
@@ -126,8 +128,8 @@ export class PortugolExecutor {
 
         argueAboutAlgolIfNeeded();
 
-        this.stdOut += `⛔ O seu código possui ${diagnostics.length} erro${diagnostics.length > 1 ? "s" : ""} de compilação:\n`;
-        this.stdOut += diagnostics
+        this.stdOut += `⛔ O seu código possui ${errors.length} erro${errors.length > 1 ? "s" : ""} de compilação:\n`;
+        this.stdOut += errors
           .map(error => `   - ${error.message} (linha ${error.startLine}, posição ${error.startCol})\n`)
           .join("");
 

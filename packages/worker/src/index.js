@@ -4,6 +4,7 @@ import { PortugolJs } from "@portugol-webstudio/runtime";
 function mapError(error) {
   if (typeof error !== "object" || error === null) {
     return {
+      severity: 0,
       message: String(error),
     };
   }

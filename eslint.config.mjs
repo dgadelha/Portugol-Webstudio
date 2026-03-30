@@ -64,6 +64,7 @@ export default defineConfig(
     ignores: [
       "node_modules/",
       ".angular/",
+      "packages/**/coverage/",
       "packages/**/lib/",
       "packages/**/dist/",
       "packages/**/node_modules/",
