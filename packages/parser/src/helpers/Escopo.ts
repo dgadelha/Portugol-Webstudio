@@ -1,5 +1,4 @@
-import type { Node } from "../nodes/Node.js";
-import { Parâmetro } from "../nodes/Parâmetro.js";
+import type { Função, Node, Parâmetro } from "../nodes/index.js";
 import { Tipo, TipoPrimitivo } from "./Tipo.js";
 
 interface IVariável {
@@ -29,7 +28,7 @@ interface IFunção {
 interface IEscopo {
   variáveis: Map<string, IVariável>;
   funções: Map<string, IFunção>;
-  função?: Tipo;
+  função?: Função;
 }
 
 export class Escopo {
@@ -115,12 +114,12 @@ export class Escopo {
     return this.atual.funções;
   }
 
-  get função(): Tipo | undefined {
+  get função(): Função | undefined {
     return this.atual.função;
   }
 
-  set função(tipo: Tipo | undefined) {
-    this.atual.função = tipo;
+  set função(função: Função | undefined) {
+    this.atual.função = função;
   }
 
   hasVariável(nome: string) {

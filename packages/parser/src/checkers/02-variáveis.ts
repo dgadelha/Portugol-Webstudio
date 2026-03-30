@@ -123,7 +123,7 @@ export function* checarUsoEscopo(arquivo: Arquivo): Generator<PortugolCodeDiagno
         const func = nó as Função;
 
         escopo.push();
-        escopo.função = func.retorno;
+        escopo.função = func;
 
         for (const param of func.parâmetros) {
           if (escopo.variáveis.has(param.nome)) {
@@ -307,12 +307,12 @@ export function* checarUsoEscopo(arquivo: Arquivo): Generator<PortugolCodeDiagno
             const resultado = resolverResultadoExpressão(ret.expressão, escopo);
 
             if (
-              TabelaCompatibilidadeRetornoFunção[escopo.função.primitivo][resultado] ===
+              TabelaCompatibilidadeRetornoFunção[escopo.função.retorno.primitivo][resultado] ===
               ResultadoCompatibilidade.INCOMPATÍVEL
             ) {
               yield PortugolCodeDiagnostic.fromContext(
                 ret.ctx,
-                `Não é possível retornar um valor do tipo '${resultado}' em uma função que retorna '${escopo.função.primitivo}'`,
+                `Não é possível retornar um valor do tipo '${resultado}' em uma função que retorna '${escopo.função.retorno.primitivo}'`,
                 PortugolDiagnosticSeverity.Error,
               );
             }
