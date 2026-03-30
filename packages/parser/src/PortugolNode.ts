@@ -1,7 +1,7 @@
 import { ArquivoContext, PortugolVisitor } from "@portugol-webstudio/antlr";
-import { ParseTree, AbstractParseTreeVisitor } from "antlr4ng";
+import { AbstractParseTreeVisitor, ParseTree } from "antlr4ng";
 
-import { Node, Arquivo, ContextNodeObj, UnhandledNode, Bypass } from "./nodes/index.js";
+import { Arquivo, Bypass, ContextNodeObj, Node, UnhandledNode } from "./nodes/index.js";
 
 export interface Empty {}
 
@@ -39,8 +39,8 @@ export class PortugolNode extends AbstractParseTreeVisitor<Empty> implements Por
     if (obj instanceof Bypass) {
       this.visitChildrenFromParent(ctx, parent);
     } else {
-      parent.addChild(obj);
       this.visitChildrenFromParent(ctx, obj);
+      parent.addChild(obj);
     }
   }
 
