@@ -143,6 +143,12 @@ section.info {
   background-color: #2559b3;
 }
 
+hr {
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  margin: 1rem 0;
+}
+
 footer {
   position: absolute;
   bottom: 10px;
