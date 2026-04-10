@@ -60,12 +60,12 @@
       <as-split-area class="d-flex" [size]="60">
         @if (current) {
           <div id="content">
-            <h3>{{ current?.name }}</h3>
-            <p>{{ current?.description }}</p>
+            <h3>{{ current.name }}</h3>
+            <p>{{ current.description }}</p>
 
             <ngx-monaco-editor [options]="editorOptions" [(ngModel)]="exampleCode" (init)="editor = $event" />
 
-            <button mat-raised-button color="primary" type="button" (click)="openExample(current!)">Abrir</button>
+            <button mat-raised-button color="primary" type="button" (click)="openExample(current)">Abrir</button>
           </div>
         } @else {
           <div id="empty">

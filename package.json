@@ -40,17 +40,17 @@
     "test": "lerna run test"
   },
   "devDependencies": {
-    "@eslint/js": "^9.39.3",
-    "angular-eslint": "^21.2.0",
-    "eslint": "^9.39.3",
+    "@eslint/js": "^10.0.1",
+    "angular-eslint": "^21.3.1",
+    "eslint": "^10.2.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.5",
-    "eslint-plugin-unicorn": "^63.0.0",
-    "lerna": "^9.0.5",
+    "eslint-plugin-unicorn": "^64.0.0",
+    "lerna": "^9.0.7",
     "patch-package": "^8.0.1",
-    "sherif": "^1.10.0",
+    "sherif": "^1.11.1",
     "typescript": "~5.9.3",
-    "typescript-eslint": "^8.56.1"
+    "typescript-eslint": "^8.58.1"
   },
   "overrides": {
     "@nx/devkit": {
