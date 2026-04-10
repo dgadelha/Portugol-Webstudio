@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import { IPortugolCodeDiagnostic } from "@portugol-webstudio/antlr";
+import { WORKER_FILE_NAME } from "@portugol-webstudio/worker/lib/worker-manifest";
 
 @Injectable({ providedIn: "root" })
 export class WorkerService {
@@ -7,7 +8,7 @@ export class WorkerService {
   busy = false;
 
   init() {
-    this.worker = new Worker("assets/portugol-worker/worker.js");
+    this.worker = new Worker(`assets/portugol-worker/${WORKER_FILE_NAME}`);
   }
 
   async checkCode(code: string): Promise<{

@@ -1,6 +1,9 @@
 /* eslint-disable */
 const path = require("path");
+const fs = require("fs");
 const TerserPlugin = require("terser-webpack-plugin");
+
+const isCI = process.env.CI === "true" || process.env.GITHUB_ACTIONS === "true";
 
 /** @type {import("webpack").Configuration} */
 module.exports = {
@@ -8,7 +11,8 @@ module.exports = {
   entry: "./src/index.js",
   devtool: "source-map",
   output: {
-    filename: "worker.js",
+    clean: true,
+    filename: isCI ? "worker.[contenthash].js" : "worker.js",
     path: path.resolve(__dirname, "lib"),
   },
   module: {
@@ -30,4 +34,17 @@ module.exports = {
       }),
     ],
   },
+  plugins: [
+    {
+      apply: compiler => {
+        compiler.hooks.done.tap("GenerateWorkerManifest", stats => {
+          const assets = stats.toJson().assetsByChunkName;
+          const workerFileName = assets?.main[0];
+
+          const fileContent = `export const WORKER_FILE_NAME = '${workerFileName}';\n`;
+          fs.writeFileSync(path.resolve(__dirname, "lib/worker-manifest.ts"), fileContent);
+        });
+      },
+    },
+  ],
 };
