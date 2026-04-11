@@ -1,10 +1,10 @@
 import { DeclaracaoFuncaoContext } from "@portugol-webstudio/antlr";
 
+import { Tipo, parseTipoPrimitivo } from "../helpers/Tipo.js";
 import { Comando } from "./Comando.js";
 import { Expressão } from "./Expressão.js";
 import { Node } from "./Node.js";
 import { Parâmetro } from "./Parâmetro.js";
-import { Tipo, parseTipoPrimitivo } from "../helpers/Tipo.js";
 
 export class Função extends Node<DeclaracaoFuncaoContext> {
   nome = this.ctx.ID().getText();
@@ -18,7 +18,6 @@ export class Função extends Node<DeclaracaoFuncaoContext> {
     } else if (child instanceof Expressão || child instanceof Comando) {
       this.instruções.push(child);
     } else {
-      console.log(child);
       this.unexpectedChild(child);
     }
 

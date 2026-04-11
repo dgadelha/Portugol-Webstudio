@@ -22,7 +22,8 @@
     "access": "public"
   },
   "homepage": "https://github.com/dgadelha/Portugol-Webstudio#readme",
-  "main": "lib/index.js",
+  "main": "lib/entrypoints/node.js",
+  "browser": "lib/entrypoints/browser.js",
   "typings": "lib/index.d.ts",
   "directories": {
     "lib": "lib"
@@ -32,7 +33,8 @@
   ],
   "scripts": {
     "build": "tsc",
-    "build:w": "tsc -w"
+    "build:w": "tsc -w",
+    "test": "vitest"
   },
   "dependencies": {
     "@portugol-webstudio/antlr": "*",
@@ -42,6 +44,8 @@
     "rxjs": "~7.8.2"
   },
   "devDependencies": {
-    "typescript": "~5.9.3"
+    "@types/node": "^25.6.0",
+    "typescript": "~5.9.3",
+    "vitest": "^4.1.4"
   }
 }

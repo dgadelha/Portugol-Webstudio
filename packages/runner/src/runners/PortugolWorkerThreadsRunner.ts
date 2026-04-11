@@ -1,9 +1,11 @@
+import { Worker } from "node:worker_threads";
+
 import { PortugolJsRuntime } from "@portugol-webstudio/runtime";
 import { Subject, Subscription } from "rxjs";
 
 import { IPortugolRunner, PortugolEvent, PortugolMessage } from "./IPortugolRunner.js";
 
-export class PortugolWebWorkersRunner extends IPortugolRunner {
+export class PortugolWorkerThreadsRunner extends IPortugolRunner {
   private worker: Worker;
 
   stdIn = new Subject<string>();
@@ -25,12 +27,17 @@ export class PortugolWebWorkersRunner extends IPortugolRunner {
     super(byteCode);
 
     const runCode = /* javascript */ `
+      const { parentPort } = require("node:worker_threads");
+      var self = self || globalThis;
+
+      ${PortugolJsRuntime}
+
       const exec = ${this.byteCode};
 
-      self.addEventListener("message", async (message) => {
+      parentPort.once("message", async (data) => {
         try {
-          if (message.data.type === "start") {
-            self.postMessage({ type: "started" });
+          if (data.type === "start") {
+            parentPort.postMessage({ type: "started" });
 
             await exec({
               functions: {
@@ -41,23 +48,21 @@ export class PortugolWebWorkersRunner extends IPortugolRunner {
                 },
 
                 limpa: async () => {
-                  self.postMessage({ type: "clear" });
+                  parentPort.postMessage({ type: "clear" });
                 },
 
                 leia: async (...args) => {
                   for (const arg of args) {
-                    const controller = new AbortController();
-                    const signal = controller.signal;
-
                     const result = await new Promise((resolve) => {
-                      self.addEventListener("message", (message) => {
-                        if (message.data.type === "stdIn") {
-                          controller.abort();
-                          resolve(message.data.content);
+                      const handler = (message) => {
+                        if (message.type === "stdIn") {
+                          parentPort.off("message", handler);
+                          resolve(message.content);
                         }
-                      }, { signal });
+                      };
 
-                      self.postMessage({ type: "stdIn" });
+                      parentPort.on("message", handler);
+                      parentPort.postMessage({ type: "stdIn" });
                     });
 
                     if (arg.type === "inteiro") {
@@ -102,88 +107,88 @@ export class PortugolWebWorkersRunner extends IPortugolRunner {
                     }
                   }
 
-                  self.postMessage({ type: "stdOut", content: str });
+                  parentPort.postMessage({ type: "stdOut", content: str });
                 },
               },
             });
           }
         } catch (error) {
-          self.postMessage({ type: "error", error: {
+          parentPort.postMessage({ type: "error", error: {
             message: error.message,
             stack: error.stack,
           }});
         } finally {
-          self.postMessage({ type: "finish" });
+          parentPort.postMessage({ type: "finish" });
         }
-      }, { once: true });
+      });
     `;
 
-    this.worker = new Worker(
-      URL.createObjectURL(
-        new Blob([PortugolJsRuntime, runCode], {
-          type: "text/javascript",
-        }),
-      ),
+    this.worker = new Worker(runCode, { eval: true });
+
+    this.worker.on(
+      "message",
+      (data: {
+        type: string;
+        content?: string;
+        error?: { message: string; stack?: string };
+        message?: PortugolMessage;
+      }) => {
+        switch (data.type) {
+          case "stdOut": {
+            this.stdOut$.next(data.content!);
+            break;
+          }
+
+          case "stdIn": {
+            this.waitingForInput = true;
+            this.waitingForInput$.next(this.waitingForInput);
+
+            this._run.next({ type: "stdIn" });
+            break;
+          }
+
+          case "error": {
+            const error = new Error(data.error!.message);
+
+            error.stack = data.error!.stack;
+
+            this._run.next({ type: "error", error });
+            this.destroy();
+            break;
+          }
+
+          case "clear": {
+            this._run.next({ type: "clear" });
+            break;
+          }
+
+          case "finish": {
+            this.destroy();
+            break;
+          }
+
+          case "started": {
+            break;
+          }
+
+          case "message": {
+            this._run.next({
+              type: "message",
+              message: data.message!,
+            });
+
+            break;
+          }
+
+          default: {
+            throw new Error(`Unknown message type: ${data.type}`);
+          }
+        }
+      },
     );
 
-    this.worker.addEventListener("message", (message: MessageEvent) => {
-      switch (message.data.type) {
-        case "stdOut": {
-          this.stdOut$.next(message.data.content);
-          break;
-        }
-
-        case "stdIn": {
-          this.waitingForInput = true;
-          this.waitingForInput$.next(this.waitingForInput);
-
-          this._run.next({ type: "stdIn" });
-          break;
-        }
-
-        case "error": {
-          const error = new Error(message.data.error.message);
-
-          error.stack = message.data.error.stack;
-
-          this._run.next({ type: "error", error });
-          this.destroy();
-          break;
-        }
-
-        case "clear": {
-          this._run.next({ type: "clear" });
-          break;
-        }
-
-        case "finish": {
-          this.destroy();
-          break;
-        }
-
-        case "started": {
-          break;
-        }
-
-        case "message": {
-          this._run.next({
-            type: "message",
-            message: message.data.message,
-          });
-
-          break;
-        }
-
-        default: {
-          throw new Error(`Unknown message type: ${message.data.type}`);
-        }
-      }
-    });
-
-    this.worker.addEventListener("error", err => {
-      const error = err.error ?? new Error(err.message);
-
-      this._run.next({ type: "error", error });
+    this.worker.on("error", (err: Error) => {
+      this._run.next({ type: "error", error: err });
       this.destroy();
     });
 
@@ -209,7 +214,7 @@ export class PortugolWebWorkersRunner extends IPortugolRunner {
   }
 
   destroy(stopped = false) {
-    this.worker.terminate();
+    void this.worker.terminate();
 
     this._run.next({
       type: "finish",
@@ -239,21 +244,15 @@ export class PortugolWebWorkersRunner extends IPortugolRunner {
     });
   }
 
-  replyMessage(message: PortugolMessage, result: unknown, transferable?: Transferable[]) {
+  replyMessage(message: PortugolMessage, result: unknown) {
     if (!Object.hasOwn(message, "id")) {
       throw new Error("Não é possível responder uma mensagem sem identificador!");
     }
 
-    const replyMessage = {
+    this.worker.postMessage({
       type: "message-reply",
       id: message.id,
       result,
-    };
-
-    if (transferable) {
-      this.worker.postMessage(replyMessage, transferable);
-    } else {
-      this.worker.postMessage(replyMessage);
-    }
+    });
   }
 }

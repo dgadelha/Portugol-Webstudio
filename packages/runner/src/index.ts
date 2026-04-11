@@ -1,3 +1,2 @@
-export * from "./PortugolExecutor.js";
-export * from "./runners/PortugolWebWorkersRunner.js";
-export * from "./runners/IPortugolRunner.js";
+export * from "./entrypoints/browser.js";
+export * from "./entrypoints/node.js";
