@@ -1,7 +1,24 @@
-import { AdicaoSubtracaoContext, ArquivoContext, MultiplicacaoDivisaoModuloContext, PortugolParser, PortugolVisitor } from "@portugol-webstudio/antlr";
+import {
+  AdicaoSubtracaoContext,
+  ArquivoContext,
+  MultiplicacaoDivisaoModuloContext,
+  PortugolParser,
+  PortugolVisitor,
+} from "@portugol-webstudio/antlr";
 import { AbstractParseTreeVisitor, ParseTree } from "antlr4ng";
 
-import { Arquivo, Bypass, ContextNodeObj, DivisãoExpr, MultiplicaçãoExpr, MóduloExpr, Node, SomaExpr, SubtraçãoExpr, UnhandledNode } from "./nodes/index.js";
+import {
+  Arquivo,
+  Bypass,
+  ContextNodeObj,
+  DivisãoExpr,
+  MultiplicaçãoExpr,
+  MóduloExpr,
+  Node,
+  SomaExpr,
+  SubtraçãoExpr,
+  UnhandledNode,
+} from "./nodes/index.js";
 
 export interface Empty {}
 
@@ -47,21 +64,26 @@ export class PortugolNode extends AbstractParseTreeVisitor<Empty> implements Por
   private resolveCompositeCtor(ctx: ParseTree): (new (ctx: any) => Node) | undefined {
     if (ctx instanceof MultiplicacaoDivisaoModuloContext) {
       switch (ctx._op?.type) {
-        case PortugolParser.OP_MULTIPLICACAO:
+        case PortugolParser.OP_MULTIPLICACAO: {
           return MultiplicaçãoExpr;
-        case PortugolParser.OP_DIVISAO:
+        }
+        case PortugolParser.OP_DIVISAO: {
           return DivisãoExpr;
-        case PortugolParser.OP_MOD:
+        }
+        case PortugolParser.OP_MOD: {
           return MóduloExpr;
+        }
       }
     }
 
     if (ctx instanceof AdicaoSubtracaoContext) {
       switch (ctx._op?.type) {
-        case PortugolParser.OP_ADICAO:
+        case PortugolParser.OP_ADICAO: {
           return SomaExpr;
-        case PortugolParser.OP_SUBTRACAO:
+        }
+        case PortugolParser.OP_SUBTRACAO: {
           return SubtraçãoExpr;
+        }
       }
     }
 
