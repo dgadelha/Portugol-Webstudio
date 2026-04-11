@@ -1,5 +1,5 @@
 import {
-  AdicaoContext,
+  AdicaoSubtracaoContext,
   ArquivoContext,
   AtribuicaoCompostaContext,
   AtribuicaoCompostaDivisaoContext,
@@ -20,7 +20,6 @@ import {
   DeclaracaoVariavelContext,
   DecrementoUnarioPosfixadoContext,
   DecrementoUnarioPrefixadoContext,
-  DivisaoContext,
   EnquantoContext,
   EscolhaContext,
   EscopoBibliotecaContext,
@@ -42,8 +41,7 @@ import {
   ListaParametrosContext,
   MaisUnarioContext,
   MenosUnarioContext,
-  ModuloContext,
-  MultiplicacaoContext,
+  MultiplicacaoDivisaoModuloContext,
   NegacaoBitwiseContext,
   NegacaoContext,
   NumeroInteiroContext,
@@ -67,6 +65,7 @@ import {
   ParametroFuncaoContext,
   ParametroMatrizContext,
   PareContext,
+  PortugolParser,
   PortugolVisitor,
   ReferenciaArrayContext,
   ReferenciaMatrizContext,
@@ -75,7 +74,6 @@ import {
   SeContext,
   SenaoContext,
   StringContext,
-  SubtracaoContext,
   TamanhoArrayContext,
   ValorLogicoContext,
 } from "@portugol-webstudio/antlr";
@@ -409,32 +407,33 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
 
   visitOperacaoMatematica(
     ctx:
-      | MultiplicacaoContext
-      | DivisaoContext
-      | ModuloContext
-      | AdicaoContext
-      | SubtracaoContext
+      | MultiplicacaoDivisaoModuloContext
+      | AdicaoSubtracaoContext
       | OperacaoShiftLeftContext
       | OperacaoShiftRightContext,
   ) {
     const sb = new StringBuilder();
 
     const op =
-      ctx instanceof MultiplicacaoContext
-        ? "*"
-        : ctx instanceof DivisaoContext
-          ? "/"
-          : ctx instanceof ModuloContext
-            ? "%"
-            : ctx instanceof AdicaoContext
-              ? "+"
-              : ctx instanceof SubtracaoContext
-                ? "-"
-                : ctx instanceof OperacaoShiftLeftContext
-                  ? "<<"
-                  : ctx instanceof OperacaoShiftRightContext
-                    ? ">>"
-                    : "?";
+      ctx instanceof MultiplicacaoDivisaoModuloContext
+        ? ctx._op?.type === PortugolParser.OP_MULTIPLICACAO
+          ? "*"
+          : ctx._op?.type === PortugolParser.OP_DIVISAO
+            ? "/"
+            : ctx._op?.type === PortugolParser.OP_MOD
+              ? "%"
+              : "?"
+        : ctx instanceof AdicaoSubtracaoContext
+          ? ctx._op?.type === PortugolParser.OP_ADICAO
+            ? "+"
+            : ctx._op?.type === PortugolParser.OP_SUBTRACAO
+              ? "-"
+              : "?"
+          : ctx instanceof OperacaoShiftLeftContext
+            ? "<<"
+            : ctx instanceof OperacaoShiftRightContext
+              ? ">>"
+              : "?";
 
     sb.append(this.PAD(), `runtime.mathOperation("${op}", [`, `\n`);
 
@@ -495,46 +494,19 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     return sb.toString();
   }
 
-  visitMultiplicacao(ctx: MultiplicacaoContext) {
+  visitMultiplicacaoDivisaoModulo(ctx: MultiplicacaoDivisaoModuloContext) {
     const sb = new StringBuilder();
 
-    sb.append(this.DEBUG(`visitMultiplicacao`, ctx));
+    sb.append(this.DEBUG(`visitMultiplicacaoDivisaoModulo`, ctx));
     sb.append(this.visitOperacaoMatematica(ctx));
 
     return sb.toString();
   }
 
-  visitDivisao(ctx: DivisaoContext) {
+  visitAdicaoSubtracao(ctx: AdicaoSubtracaoContext) {
     const sb = new StringBuilder();
 
-    sb.append(this.DEBUG(`visitDivisao`, ctx));
-    sb.append(this.visitOperacaoMatematica(ctx));
-
-    return sb.toString();
-  }
-
-  visitModulo(ctx: ModuloContext) {
-    const sb = new StringBuilder();
-
-    sb.append(this.DEBUG(`visitModulo`, ctx));
-    sb.append(this.visitOperacaoMatematica(ctx));
-
-    return sb.toString();
-  }
-
-  visitAdicao(ctx: AdicaoContext) {
-    const sb = new StringBuilder();
-
-    sb.append(this.DEBUG(`visitAdicao`, ctx));
-    sb.append(this.visitOperacaoMatematica(ctx));
-
-    return sb.toString();
-  }
-
-  visitSubtracao(ctx: SubtracaoContext) {
-    const sb = new StringBuilder();
-
-    sb.append(this.DEBUG(`visitSubtracao`, ctx));
+    sb.append(this.DEBUG(`visitAdicaoSubtracao`, ctx));
     sb.append(this.visitOperacaoMatematica(ctx));
 
     return sb.toString();
