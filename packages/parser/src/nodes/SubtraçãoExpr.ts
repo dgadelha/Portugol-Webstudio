@@ -1,5 +1,5 @@
-import { SubtracaoContext } from "@portugol-webstudio/antlr";
+import { AdicaoSubtracaoContext } from "@portugol-webstudio/antlr";
 
 import { ExpressãoMatemática } from "./ExpressãoMatemática.js";
 
-export class SubtraçãoExpr extends ExpressãoMatemática<SubtracaoContext> {}
+export class SubtraçãoExpr extends ExpressãoMatemática<AdicaoSubtracaoContext> {}

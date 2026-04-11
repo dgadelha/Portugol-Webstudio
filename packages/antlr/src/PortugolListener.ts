@@ -58,11 +58,8 @@ import { ValorLogicoContext } from "./PortugolParser.js";
 import { CaracterContext } from "./PortugolParser.js";
 import { StringContext } from "./PortugolParser.js";
 import { ExpressaoEntreParentesesContext } from "./PortugolParser.js";
-import { MultiplicacaoContext } from "./PortugolParser.js";
-import { DivisaoContext } from "./PortugolParser.js";
-import { ModuloContext } from "./PortugolParser.js";
-import { AdicaoContext } from "./PortugolParser.js";
-import { SubtracaoContext } from "./PortugolParser.js";
+import { MultiplicacaoDivisaoModuloContext } from "./PortugolParser.js";
+import { AdicaoSubtracaoContext } from "./PortugolParser.js";
 import { OperacaoIgualdadeContext } from "./PortugolParser.js";
 import { OperacaoDiferencaContext } from "./PortugolParser.js";
 import { OperacaoMaiorContext } from "./PortugolParser.js";
@@ -690,65 +687,29 @@ export class PortugolListener implements ParseTreeListener {
      */
     exitExpressaoEntreParenteses?: (ctx: ExpressaoEntreParentesesContext) => void;
     /**
-     * Enter a parse tree produced by the `multiplicacao`
+     * Enter a parse tree produced by the `multiplicacaoDivisaoModulo`
      * labeled alternative in `PortugolParser.expressao`.
      * @param ctx the parse tree
      */
-    enterMultiplicacao?: (ctx: MultiplicacaoContext) => void;
+    enterMultiplicacaoDivisaoModulo?: (ctx: MultiplicacaoDivisaoModuloContext) => void;
     /**
-     * Exit a parse tree produced by the `multiplicacao`
+     * Exit a parse tree produced by the `multiplicacaoDivisaoModulo`
      * labeled alternative in `PortugolParser.expressao`.
      * @param ctx the parse tree
      */
-    exitMultiplicacao?: (ctx: MultiplicacaoContext) => void;
+    exitMultiplicacaoDivisaoModulo?: (ctx: MultiplicacaoDivisaoModuloContext) => void;
     /**
-     * Enter a parse tree produced by the `divisao`
+     * Enter a parse tree produced by the `adicaoSubtracao`
      * labeled alternative in `PortugolParser.expressao`.
      * @param ctx the parse tree
      */
-    enterDivisao?: (ctx: DivisaoContext) => void;
+    enterAdicaoSubtracao?: (ctx: AdicaoSubtracaoContext) => void;
     /**
-     * Exit a parse tree produced by the `divisao`
+     * Exit a parse tree produced by the `adicaoSubtracao`
      * labeled alternative in `PortugolParser.expressao`.
      * @param ctx the parse tree
      */
-    exitDivisao?: (ctx: DivisaoContext) => void;
-    /**
-     * Enter a parse tree produced by the `modulo`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     */
-    enterModulo?: (ctx: ModuloContext) => void;
-    /**
-     * Exit a parse tree produced by the `modulo`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     */
-    exitModulo?: (ctx: ModuloContext) => void;
-    /**
-     * Enter a parse tree produced by the `adicao`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     */
-    enterAdicao?: (ctx: AdicaoContext) => void;
-    /**
-     * Exit a parse tree produced by the `adicao`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     */
-    exitAdicao?: (ctx: AdicaoContext) => void;
-    /**
-     * Enter a parse tree produced by the `subtracao`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     */
-    enterSubtracao?: (ctx: SubtracaoContext) => void;
-    /**
-     * Exit a parse tree produced by the `subtracao`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     */
-    exitSubtracao?: (ctx: SubtracaoContext) => void;
+    exitAdicaoSubtracao?: (ctx: AdicaoSubtracaoContext) => void;
     /**
      * Enter a parse tree produced by the `operacaoIgualdade`
      * labeled alternative in `PortugolParser.expressao`.

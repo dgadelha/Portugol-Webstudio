@@ -1,83 +1,81 @@
 import {
-  AdicaoContext,
-  ArquivoContext,
-  AtribuicaoCompostaContext,
-  AtribuicaoCompostaDivisaoContext,
-  AtribuicaoCompostaMultiplicacaoContext,
-  AtribuicaoCompostaSomaContext,
-  AtribuicaoCompostaSubtracaoContext,
-  AtribuicaoContext,
-  CaracterContext,
-  CasoContext,
-  ChamadaFuncaoContext,
-  ColunaMatrizContext,
-  ComandoContext,
-  CondicaoContext,
-  DeclaracaoArrayContext,
-  DeclaracaoContext,
-  DeclaracaoFuncaoContext,
-  DeclaracaoMatrizContext,
-  DeclaracaoVariavelContext,
-  DecrementoUnarioPosfixadoContext,
-  DecrementoUnarioPrefixadoContext,
-  DivisaoContext,
-  EnquantoContext,
-  EscolhaContext,
-  EscopoBibliotecaContext,
-  ExpressaoContext,
-  ExpressaoEntreParentesesContext,
-  FacaEnquantoContext,
-  InclusaoBibliotecaContext,
-  IncrementoParaContext,
-  IncrementoUnarioPosfixadoContext,
-  IncrementoUnarioPrefixadoContext,
-  IndiceArrayContext,
-  InicializacaoArrayContext,
-  InicializacaoMatrizContext,
-  InicializacaoParaContext,
-  LinhaMatrizContext,
-  ListaComandosContext,
-  ListaDeclaracoesContext,
-  ListaExpressoesContext,
-  ListaParametrosContext,
-  MaisUnarioContext,
-  MenosUnarioContext,
-  ModuloContext,
-  MultiplicacaoContext,
-  NegacaoBitwiseContext,
-  NegacaoContext,
-  NumeroInteiroContext,
-  NumeroRealContext,
-  OperacaoAndBitwiseContext,
-  OperacaoDiferencaContext,
-  OperacaoELogicoContext,
-  OperacaoIgualdadeContext,
-  OperacaoMaiorContext,
-  OperacaoMaiorIgualContext,
-  OperacaoMenorContext,
-  OperacaoMenorIgualContext,
-  OperacaoOrBitwiseContext,
-  OperacaoOuLogicoContext,
-  OperacaoShiftLeftContext,
-  OperacaoShiftRightContext,
-  OperacaoXorContext,
-  ParaContext,
-  ParametroArrayContext,
-  ParametroContext,
-  ParametroFuncaoContext,
-  ParametroMatrizContext,
-  PareContext,
-  PortugolVisitor,
-  ReferenciaArrayContext,
-  ReferenciaMatrizContext,
-  ReferenciaParaVariavelContext,
-  RetorneContext,
-  SeContext,
-  SenaoContext,
-  StringContext,
-  SubtracaoContext,
-  TamanhoArrayContext,
-  ValorLogicoContext,
+    AdicaoSubtracaoContext,
+    ArquivoContext,
+    AtribuicaoCompostaContext,
+    AtribuicaoCompostaDivisaoContext,
+    AtribuicaoCompostaMultiplicacaoContext,
+    AtribuicaoCompostaSomaContext,
+    AtribuicaoCompostaSubtracaoContext,
+    AtribuicaoContext,
+    CaracterContext,
+    CasoContext,
+    ChamadaFuncaoContext,
+    ColunaMatrizContext,
+    ComandoContext,
+    CondicaoContext,
+    DeclaracaoArrayContext,
+    DeclaracaoContext,
+    DeclaracaoFuncaoContext,
+    DeclaracaoMatrizContext,
+    DeclaracaoVariavelContext,
+    DecrementoUnarioPosfixadoContext,
+    DecrementoUnarioPrefixadoContext,
+    EnquantoContext,
+    EscolhaContext,
+    EscopoBibliotecaContext,
+    ExpressaoContext,
+    ExpressaoEntreParentesesContext,
+    FacaEnquantoContext,
+    InclusaoBibliotecaContext,
+    IncrementoParaContext,
+    IncrementoUnarioPosfixadoContext,
+    IncrementoUnarioPrefixadoContext,
+    IndiceArrayContext,
+    InicializacaoArrayContext,
+    InicializacaoMatrizContext,
+    InicializacaoParaContext,
+    LinhaMatrizContext,
+    ListaComandosContext,
+    ListaDeclaracoesContext,
+    ListaExpressoesContext,
+    ListaParametrosContext,
+    MaisUnarioContext,
+    MenosUnarioContext,
+    MultiplicacaoDivisaoModuloContext,
+    NegacaoBitwiseContext,
+    NegacaoContext,
+    NumeroInteiroContext,
+    NumeroRealContext,
+    OperacaoAndBitwiseContext,
+    OperacaoDiferencaContext,
+    OperacaoELogicoContext,
+    OperacaoIgualdadeContext,
+    OperacaoMaiorContext,
+    OperacaoMaiorIgualContext,
+    OperacaoMenorContext,
+    OperacaoMenorIgualContext,
+    OperacaoOrBitwiseContext,
+    OperacaoOuLogicoContext,
+    OperacaoShiftLeftContext,
+    OperacaoShiftRightContext,
+    OperacaoXorContext,
+    ParaContext,
+    ParametroArrayContext,
+    ParametroContext,
+    ParametroFuncaoContext,
+    ParametroMatrizContext,
+    PareContext,
+    PortugolParser,
+    PortugolVisitor,
+    ReferenciaArrayContext,
+    ReferenciaMatrizContext,
+    ReferenciaParaVariavelContext,
+    RetorneContext,
+    SeContext,
+    SenaoContext,
+    StringContext,
+    TamanhoArrayContext,
+    ValorLogicoContext,
 } from "@portugol-webstudio/antlr";
 import { captureException } from "@sentry/core";
 import { AbstractParseTreeVisitor, ParserRuleContext } from "antlr4ng";
@@ -409,32 +407,29 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
 
   visitOperacaoMatematica(
     ctx:
-      | MultiplicacaoContext
-      | DivisaoContext
-      | ModuloContext
-      | AdicaoContext
-      | SubtracaoContext
+      | MultiplicacaoDivisaoModuloContext
+      | AdicaoSubtracaoContext
       | OperacaoShiftLeftContext
       | OperacaoShiftRightContext,
   ) {
     const sb = new StringBuilder();
 
     const op =
-      ctx instanceof MultiplicacaoContext
-        ? "*"
-        : ctx instanceof DivisaoContext
-          ? "/"
-          : ctx instanceof ModuloContext
-            ? "%"
-            : ctx instanceof AdicaoContext
-              ? "+"
-              : ctx instanceof SubtracaoContext
-                ? "-"
-                : ctx instanceof OperacaoShiftLeftContext
-                  ? "<<"
-                  : ctx instanceof OperacaoShiftRightContext
-                    ? ">>"
-                    : "?";
+      ctx instanceof MultiplicacaoDivisaoModuloContext
+        ? ctx._op?.type === PortugolParser.OP_MULTIPLICACAO
+          ? "*"
+          : ctx._op?.type === PortugolParser.OP_DIVISAO
+            ? "/"
+            : "%"
+        : ctx instanceof AdicaoSubtracaoContext
+          ? ctx._op?.type === PortugolParser.OP_ADICAO
+            ? "+"
+            : "-"
+          : ctx instanceof OperacaoShiftLeftContext
+            ? "<<"
+            : ctx instanceof OperacaoShiftRightContext
+              ? ">>"
+              : "?";
 
     sb.append(this.PAD(), `runtime.mathOperation("${op}", [`, `\n`);
 
@@ -495,46 +490,19 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     return sb.toString();
   }
 
-  visitMultiplicacao(ctx: MultiplicacaoContext) {
+  visitMultiplicacaoDivisaoModulo(ctx: MultiplicacaoDivisaoModuloContext) {
     const sb = new StringBuilder();
 
-    sb.append(this.DEBUG(`visitMultiplicacao`, ctx));
+    sb.append(this.DEBUG(`visitMultiplicacaoDivisaoModulo`, ctx));
     sb.append(this.visitOperacaoMatematica(ctx));
 
     return sb.toString();
   }
 
-  visitDivisao(ctx: DivisaoContext) {
+  visitAdicaoSubtracao(ctx: AdicaoSubtracaoContext) {
     const sb = new StringBuilder();
 
-    sb.append(this.DEBUG(`visitDivisao`, ctx));
-    sb.append(this.visitOperacaoMatematica(ctx));
-
-    return sb.toString();
-  }
-
-  visitModulo(ctx: ModuloContext) {
-    const sb = new StringBuilder();
-
-    sb.append(this.DEBUG(`visitModulo`, ctx));
-    sb.append(this.visitOperacaoMatematica(ctx));
-
-    return sb.toString();
-  }
-
-  visitAdicao(ctx: AdicaoContext) {
-    const sb = new StringBuilder();
-
-    sb.append(this.DEBUG(`visitAdicao`, ctx));
-    sb.append(this.visitOperacaoMatematica(ctx));
-
-    return sb.toString();
-  }
-
-  visitSubtracao(ctx: SubtracaoContext) {
-    const sb = new StringBuilder();
-
-    sb.append(this.DEBUG(`visitSubtracao`, ctx));
+    sb.append(this.DEBUG(`visitAdicaoSubtracao`, ctx));
     sb.append(this.visitOperacaoMatematica(ctx));
 
     return sb.toString();
