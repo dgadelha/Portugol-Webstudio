@@ -606,7 +606,7 @@ ${error.stack}`;
      * Create a new `Request` based on the specified URL and `RequestInit` options, preserving only
      * metadata that are known to be safe.
      *
-     * Currently, only headers are preserved.
+     * Currently, only headers and redirect policy are preserved.
      *
      * NOTE:
      *   Things like credential inclusion are intentionally omitted to avoid issues with opaque
@@ -617,7 +617,10 @@ ${error.stack}`;
      *   https://github.com/angular/angular/issues/41931#issuecomment-1227601347
      */
     newRequestWithMetadata(url, options) {
-      return this.adapter.newRequest(url, { headers: options.headers });
+      return this.adapter.newRequest(url, {
+        headers: options.headers,
+        redirect: options.redirect
+      });
     }
     /**
      * Construct a cache-busting URL for a given URL.
@@ -1285,7 +1288,7 @@ ${error.stack}`;
   };
 
   // packages/service-worker/worker/src/debug.js
-  var SW_VERSION = "21.2.0";
+  var SW_VERSION = "21.2.8";
   var DEBUG_LOG_BUFFER_SIZE = 100;
   var DebugHandler = class {
     constructor(driver, adapter2) {

@@ -1,1 +1,1 @@
-export const WORKER_FILE_NAME = 'worker.9d3c07082f86b75839d5.js';
+export const WORKER_FILE_NAME = 'worker.be4cfcf0bf9efb506a3d.js';
