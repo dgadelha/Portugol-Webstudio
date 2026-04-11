@@ -420,11 +420,15 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
           ? "*"
           : ctx._op?.type === PortugolParser.OP_DIVISAO
             ? "/"
-            : "%"
+            : ctx._op?.type === PortugolParser.OP_MOD
+              ? "%"
+              : "?"
         : ctx instanceof AdicaoSubtracaoContext
           ? ctx._op?.type === PortugolParser.OP_ADICAO
             ? "+"
-            : "-"
+            : ctx._op?.type === PortugolParser.OP_SUBTRACAO
+              ? "-"
+              : "?"
           : ctx instanceof OperacaoShiftLeftContext
             ? "<<"
             : ctx instanceof OperacaoShiftRightContext
