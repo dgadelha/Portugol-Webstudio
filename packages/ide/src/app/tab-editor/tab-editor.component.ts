@@ -10,6 +10,7 @@ import { encode } from "iconv-lite";
 import { ShortcutInput } from "ng-keyboard-shortcuts";
 import { GoogleAnalyticsService } from "ngx-google-analytics";
 import { Subscription, combineLatest, debounceTime, fromEventPattern, mergeMap } from "rxjs";
+import { PortugolKeyboard } from "../../keyboard";
 import { GraphicsRenderer, IGraphicsRendererComponent } from "../../renderer";
 import { IExtendedWindowApi } from "../../types";
 import { DialogRendererComponent } from "../dialog-renderer/dialog-renderer.component";
@@ -60,6 +61,8 @@ export class TabEditorComponent implements OnInit, OnDestroy {
 
   graphicsRenderer = new GraphicsRenderer(this.executor);
   graphicsRendererModal: MatDialogRef<DialogRendererComponent> | null = null;
+
+  pKeyboard = new PortugolKeyboard(this.executor);
 
   codeEditor?: monaco.editor.IStandaloneCodeEditor;
 
@@ -259,6 +262,9 @@ export class TabEditorComponent implements OnInit, OnDestroy {
   async handlePortugolMessage(message: PortugolMessage) {
     if (message.type.startsWith("graphics.")) {
       await this.graphicsRenderer.handleRendererMessage(message);
+    }
+    if (message.type.startsWith("keyboard.")) {
+      await this.pKeyboard.handleKeyboardMessage(message);
     }
   }
 

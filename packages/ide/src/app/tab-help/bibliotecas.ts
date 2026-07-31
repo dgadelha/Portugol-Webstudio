@@ -69,7 +69,7 @@ function getFunctionSource(func: (typeof bibliotecas)[0]["funções"][0]) {
     .join("\n");
 }
 
-const bibliotecasWebstudio = new Set(["Calendario", "Graficos", "Matematica", "Texto", "Tipos", "Util"]);
+const bibliotecasWebstudio = new Set(["Calendario", "Graficos", "Matematica", "Teclado", "Texto", "Tipos", "Util"]);
 
 // Código temporário até a Ajuda inteira ser em markdown também
 export const libsTree: TreeItem = {
