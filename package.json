@@ -57,8 +57,5 @@
       "minimatch": "^10.2.3"
     },
     "tmp": "^0.2.5"
-  },
-  "dependencies": {
-    "node": "^26.5.0"
   }
 }
