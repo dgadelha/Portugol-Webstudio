@@ -1,6 +1,7 @@
 import Calendario from "./Calendario.js";
 import Graficos from "./Graficos.js";
 import Matematica from "./Matematica.js";
+import Teclado from "./Teclado.js";
 import Texto from "./Texto.js";
 import Tipos from "./Tipos.js";
 import Util from "./Util.js";
@@ -12,4 +13,5 @@ export const portugolLibs = /* javascript */ `{
   Texto: ${Texto},
   Tipos: ${Tipos},
   Util: ${Util},
+  Teclado: ${Teclado}
 }`;
