@@ -4,7 +4,7 @@ export default /* javascript */ `{
   },
 
   aguarde(intervalo) {
-    self.runtime.expectType("aguarde", "intervalo", intervalo, "inteiro", "real");
+    self.runtime.expectType("aguarde", "intervalo", intervalo, "inteiro");
 
     return new Promise(resolve => setTimeout(() => resolve(new PortugolVar("vazio")), intervalo.value));
   },
@@ -14,8 +14,8 @@ export default /* javascript */ `{
   },
 
   sorteia(minimo, maximo) {
-    self.runtime.expectType("sorteia", "minimo", minimo, "inteiro", "real");
-    self.runtime.expectType("sorteia", "maximo", maximo, "inteiro", "real");
+    self.runtime.expectType("sorteia", "minimo", minimo, "inteiro");
+    self.runtime.expectType("sorteia", "maximo", maximo, "inteiro");
 
     if (minimo.value > maximo.value) {
       throw new Error("O valor mínimo (" + minimo.value + ") é maior do que o valor máximo (" + maximo.value + ")");
@@ -23,7 +23,7 @@ export default /* javascript */ `{
       throw new Error("Os valores mínimo e máximo são iguais: " + minimo.value);
     }
 
-    return new PortugolVar("inteiro", Math.floor(Math.random() * (maximo.value - minimo.value + 1)) + minimo.value);
+    return new PortugolVar("inteiro", minimo.value + Math.floor(Math.random() * (maximo.value + 1 - minimo.value)));
   },
 
   numero_linhas(matriz) {

@@ -35,9 +35,10 @@
     "build:runner": "lerna run build --scope=@portugol-webstudio/runner",
     "build:runtime": "lerna run build --scope=@portugol-webstudio/runtime",
     "test:parser": "lerna run test --scope=@portugol-webstudio/parser",
+    "test:runner": "lerna run test --scope=@portugol-webstudio/runner",
     "release": "lerna run release",
     "postinstall": "patch-package",
-    "test": "lerna run test"
+    "test": "vitest"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

@@ -68,10 +68,10 @@ import { OperacaoMenorIgualContext } from "./PortugolParser.js";
 import { OperacaoMaiorIgualContext } from "./PortugolParser.js";
 import { OperacaoELogicoContext } from "./PortugolParser.js";
 import { OperacaoOuLogicoContext } from "./PortugolParser.js";
-import { OperacaoXorContext } from "./PortugolParser.js";
 import { OperacaoShiftLeftContext } from "./PortugolParser.js";
 import { OperacaoShiftRightContext } from "./PortugolParser.js";
 import { OperacaoAndBitwiseContext } from "./PortugolParser.js";
+import { OperacaoXorContext } from "./PortugolParser.js";
 import { OperacaoOrBitwiseContext } from "./PortugolParser.js";
 import { ListaExpressoesContext } from "./PortugolParser.js";
 import { EscopoBibliotecaContext } from "./PortugolParser.js";
@@ -807,18 +807,6 @@ export class PortugolListener implements ParseTreeListener {
      */
     exitOperacaoOuLogico?: (ctx: OperacaoOuLogicoContext) => void;
     /**
-     * Enter a parse tree produced by the `operacaoXor`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     */
-    enterOperacaoXor?: (ctx: OperacaoXorContext) => void;
-    /**
-     * Exit a parse tree produced by the `operacaoXor`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     */
-    exitOperacaoXor?: (ctx: OperacaoXorContext) => void;
-    /**
      * Enter a parse tree produced by the `operacaoShiftLeft`
      * labeled alternative in `PortugolParser.expressao`.
      * @param ctx the parse tree
@@ -854,6 +842,18 @@ export class PortugolListener implements ParseTreeListener {
      * @param ctx the parse tree
      */
     exitOperacaoAndBitwise?: (ctx: OperacaoAndBitwiseContext) => void;
+    /**
+     * Enter a parse tree produced by the `operacaoXor`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     */
+    enterOperacaoXor?: (ctx: OperacaoXorContext) => void;
+    /**
+     * Exit a parse tree produced by the `operacaoXor`
+     * labeled alternative in `PortugolParser.expressao`.
+     * @param ctx the parse tree
+     */
+    exitOperacaoXor?: (ctx: OperacaoXorContext) => void;
     /**
      * Enter a parse tree produced by the `operacaoOrBitwise`
      * labeled alternative in `PortugolParser.expressao`.

@@ -2277,56 +2277,56 @@ export class PortugolParser extends antlr.Parser {
                         break;
                     case 11:
                         {
-                        localContext = new OperacaoXorContext(new ExpressaoContext(parentContext, parentState));
+                        localContext = new OperacaoShiftLeftContext(new ExpressaoContext(parentContext, parentState));
                         this.pushNewRecursionContext(localContext, _startState, PortugolParser.RULE_expressao);
                         this.state = 466;
                         if (!(this.precpred(this.context, 12))) {
                             throw this.createFailedPredicateException("this.precpred(this.context, 12)");
                         }
                         this.state = 467;
-                        this.match(PortugolParser.OP_XOR);
+                        this.match(PortugolParser.OP_SHIFT_LEFT);
                         this.state = 468;
                         this.expressao(13);
                         }
                         break;
                     case 12:
                         {
-                        localContext = new OperacaoShiftLeftContext(new ExpressaoContext(parentContext, parentState));
+                        localContext = new OperacaoShiftRightContext(new ExpressaoContext(parentContext, parentState));
                         this.pushNewRecursionContext(localContext, _startState, PortugolParser.RULE_expressao);
                         this.state = 469;
                         if (!(this.precpred(this.context, 11))) {
                             throw this.createFailedPredicateException("this.precpred(this.context, 11)");
                         }
                         this.state = 470;
-                        this.match(PortugolParser.OP_SHIFT_LEFT);
+                        this.match(PortugolParser.OP_SHIFT_RIGHT);
                         this.state = 471;
                         this.expressao(12);
                         }
                         break;
                     case 13:
                         {
-                        localContext = new OperacaoShiftRightContext(new ExpressaoContext(parentContext, parentState));
+                        localContext = new OperacaoAndBitwiseContext(new ExpressaoContext(parentContext, parentState));
                         this.pushNewRecursionContext(localContext, _startState, PortugolParser.RULE_expressao);
                         this.state = 472;
                         if (!(this.precpred(this.context, 10))) {
                             throw this.createFailedPredicateException("this.precpred(this.context, 10)");
                         }
                         this.state = 473;
-                        this.match(PortugolParser.OP_SHIFT_RIGHT);
+                        this.match(PortugolParser.E_COMERCIAL);
                         this.state = 474;
                         this.expressao(11);
                         }
                         break;
                     case 14:
                         {
-                        localContext = new OperacaoAndBitwiseContext(new ExpressaoContext(parentContext, parentState));
+                        localContext = new OperacaoXorContext(new ExpressaoContext(parentContext, parentState));
                         this.pushNewRecursionContext(localContext, _startState, PortugolParser.RULE_expressao);
                         this.state = 475;
                         if (!(this.precpred(this.context, 9))) {
                             throw this.createFailedPredicateException("this.precpred(this.context, 9)");
                         }
                         this.state = 476;
-                        this.match(PortugolParser.E_COMERCIAL);
+                        this.match(PortugolParser.OP_XOR);
                         this.state = 477;
                         this.expressao(10);
                         }
@@ -2692,9 +2692,9 @@ export class PortugolParser extends antlr.Parser {
         17,457,458,10,15,0,0,458,459,5,37,0,0,459,482,3,70,35,16,460,461,
         10,14,0,0,461,462,5,24,0,0,462,482,3,70,35,15,463,464,10,13,0,0,
         464,465,5,25,0,0,465,482,3,70,35,14,466,467,10,12,0,0,467,468,5,
-        42,0,0,468,482,3,70,35,13,469,470,10,11,0,0,470,471,5,40,0,0,471,
-        482,3,70,35,12,472,473,10,10,0,0,473,474,5,41,0,0,474,482,3,70,35,
-        11,475,476,10,9,0,0,476,477,5,46,0,0,477,482,3,70,35,10,478,479,
+        40,0,0,468,482,3,70,35,13,469,470,10,11,0,0,470,471,5,41,0,0,471,
+        482,3,70,35,12,472,473,10,10,0,0,473,474,5,46,0,0,474,482,3,70,35,
+        11,475,476,10,9,0,0,476,477,5,42,0,0,477,482,3,70,35,10,478,479,
         10,8,0,0,479,480,5,43,0,0,480,482,3,70,35,9,481,436,1,0,0,0,481,
         439,1,0,0,0,481,442,1,0,0,0,481,445,1,0,0,0,481,448,1,0,0,0,481,
         451,1,0,0,0,481,454,1,0,0,0,481,457,1,0,0,0,481,460,1,0,0,0,481,
@@ -5270,41 +5270,6 @@ export class OperacaoOuLogicoContext extends ExpressaoContext {
         }
     }
 }
-export class OperacaoXorContext extends ExpressaoContext {
-    public constructor(ctx: ExpressaoContext) {
-        super(ctx.parent, ctx.invokingState);
-        super.copyFrom(ctx);
-    }
-    public expressao(): ExpressaoContext[];
-    public expressao(i: number): ExpressaoContext | null;
-    public expressao(i?: number): ExpressaoContext[] | ExpressaoContext | null {
-        if (i === undefined) {
-            return this.getRuleContexts(ExpressaoContext);
-        }
-
-        return this.getRuleContext(i, ExpressaoContext);
-    }
-    public OP_XOR(): antlr.TerminalNode {
-        return this.getToken(PortugolParser.OP_XOR, 0)!;
-    }
-    public override enterRule(listener: PortugolListener): void {
-        if(listener.enterOperacaoXor) {
-             listener.enterOperacaoXor(this);
-        }
-    }
-    public override exitRule(listener: PortugolListener): void {
-        if(listener.exitOperacaoXor) {
-             listener.exitOperacaoXor(this);
-        }
-    }
-    public override accept<Result>(visitor: PortugolVisitor<Result>): Result | null {
-        if (visitor.visitOperacaoXor) {
-            return visitor.visitOperacaoXor(this);
-        } else {
-            return visitor.visitChildren(this);
-        }
-    }
-}
 export class OperacaoShiftLeftContext extends ExpressaoContext {
     public constructor(ctx: ExpressaoContext) {
         super(ctx.parent, ctx.invokingState);
@@ -5405,6 +5370,41 @@ export class OperacaoAndBitwiseContext extends ExpressaoContext {
     public override accept<Result>(visitor: PortugolVisitor<Result>): Result | null {
         if (visitor.visitOperacaoAndBitwise) {
             return visitor.visitOperacaoAndBitwise(this);
+        } else {
+            return visitor.visitChildren(this);
+        }
+    }
+}
+export class OperacaoXorContext extends ExpressaoContext {
+    public constructor(ctx: ExpressaoContext) {
+        super(ctx.parent, ctx.invokingState);
+        super.copyFrom(ctx);
+    }
+    public expressao(): ExpressaoContext[];
+    public expressao(i: number): ExpressaoContext | null;
+    public expressao(i?: number): ExpressaoContext[] | ExpressaoContext | null {
+        if (i === undefined) {
+            return this.getRuleContexts(ExpressaoContext);
+        }
+
+        return this.getRuleContext(i, ExpressaoContext);
+    }
+    public OP_XOR(): antlr.TerminalNode {
+        return this.getToken(PortugolParser.OP_XOR, 0)!;
+    }
+    public override enterRule(listener: PortugolListener): void {
+        if(listener.enterOperacaoXor) {
+             listener.enterOperacaoXor(this);
+        }
+    }
+    public override exitRule(listener: PortugolListener): void {
+        if(listener.exitOperacaoXor) {
+             listener.exitOperacaoXor(this);
+        }
+    }
+    public override accept<Result>(visitor: PortugolVisitor<Result>): Result | null {
+        if (visitor.visitOperacaoXor) {
+            return visitor.visitOperacaoXor(this);
         } else {
             return visitor.visitChildren(this);
         }

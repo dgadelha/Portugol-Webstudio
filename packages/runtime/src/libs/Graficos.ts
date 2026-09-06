@@ -53,6 +53,14 @@ export default /* javascript */ `{
     });
   },
 
+  async ocultar_borda_janela() {
+    self.runtime.assertGraphicsContext();
+
+    await self.runtime.postMessageAndWaitForResponse({
+      type: "graphics.hideWindowBorder",
+    });
+  },
+
   async exibir_borda_janela() {
     self.runtime.assertGraphicsContext();
 
@@ -72,7 +80,7 @@ export default /* javascript */ `{
   async restaurar_janela() {
     self.runtime.assertGraphicsContext();
 
-    await self.runtime.waitForResponse({
+    await self.runtime.postMessageAndWaitForResponse({
       type: "graphics.restoreWindow",
     });
   },
@@ -178,15 +186,19 @@ export default /* javascript */ `{
     self.runtime.expectType("criar_cor", "g", g, "inteiro");
     self.runtime.expectType("criar_cor", "b", b, "inteiro");
 
-    if (r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255) {
+    const vermelho = r.getValue();
+    const verde = g.getValue();
+    const azul = b.getValue();
+
+    if (vermelho < 0 || vermelho > 255 || verde < 0 || verde > 255 || azul < 0 || azul > 255) {
       throw new Error("Erro ao criar a cor, os valor dos tons deve estar entre 0 e 255");
     }
 
     const alpha = 255;
     const value = ((alpha & 0xFF) << 24) |
-      ((r.getValue() & 0xFF) << 16) |
-      ((g.getValue() & 0xFF) << 8) |
-      ((b.getValue() & 0xFF) << 0);
+      ((vermelho & 0xFF) << 16) |
+      ((verde & 0xFF) << 8) |
+      ((azul & 0xFF) << 0);
 
     return new PortugolVar("inteiro", value, true);
   },
@@ -211,7 +223,7 @@ export default /* javascript */ `{
       case 0: return new PortugolVar("inteiro", (color >> 16) & 0xFF, true);
       case 1: return new PortugolVar("inteiro", (color >> 8) & 0xFF, true);
       case 2: return new PortugolVar("inteiro", color & 0xFF, true);
-      default: throw new Error("O canal informado (" + channel + ") é inválido, o canal deve ser um dos seguintes valores: 0 (R); 1 (G); 2 (B)");
+      default: return new PortugolVar("inteiro", 0, true);
     }
   },
 
@@ -230,8 +242,13 @@ export default /* javascript */ `{
   },
 
   definir_opacidade(opacidade) {
-    self.runtime.expectType("definir_opacidade", "opacidade", opacidade, "inteiro", "real");
+    self.runtime.expectType("definir_opacidade", "opacidade", opacidade, "inteiro");
     self.runtime.assertGraphicsContext();
+
+    if (opacidade.getValue() < 0 || opacidade.getValue() > 255) {
+      throw new Error("O valor da opacidade deve esta entre 0 e 255");
+    }
+
     self.graphics.setWorkingOpacity(opacidade.getValue());
   },
 
@@ -357,6 +374,12 @@ export default /* javascript */ `{
     self.runtime.expectType("carregar_imagem", "caminho", caminho, "cadeia");
     self.runtime.unimplementedMethod("carregar_imagem", "Graficos");
     return new PortugolVar("inteiro", 0, true);
+  },
+
+  salvar_imagem(endereco, caminho) {
+    self.runtime.expectType("salvar_imagem", "endereco", endereco, "inteiro");
+    self.runtime.expectType("salvar_imagem", "caminho", caminho, "cadeia");
+    self.runtime.unimplementedMethod("salvar_imagem", "Graficos");
   },
 
   liberar_imagem(endereco) {

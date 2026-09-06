@@ -1,12 +1,15 @@
+// Mesmas expressões regulares usadas pela biblioteca Tipos do Portugol Studio.
+// Elas são aplicadas com Matcher.find(), o que equivale ao RegExp.test() do JS,
+// e são sensíveis à caixa — inclusive PADRAO_LOGICO.
 const PADRAO_INTEIRO_NOTACAO_HEXADECIMAL = /^(0x|0X)?(\d|[a-f]|[A-F])+$/;
 const PADRAO_INTEIRO_NOTACAO_BINARIA = /^(0b|0B)?[01]+$/;
 const PADRAO_INTEIRO_NOTACAO_DECIMAL = /^-?\d+$/;
 const PADRAO_REAL = /^-?\d+\.\d+$/;
-const PADRAO_LOGICO = /^verdadeiro|falso$/i;
+const PADRAO_LOGICO = /^verdadeiro|falso$/;
 
 export default /* javascript */ `{
   cadeia_e_inteiro(cad, base) {
-    self.runtime.expectType("cadeia_e_inteiro", "cad", cad, "cadeia", "caracter");
+    self.runtime.expectType("cadeia_e_inteiro", "cad", cad, "cadeia");
     self.runtime.expectType("cadeia_e_inteiro", "base", base, "inteiro");
 
     switch (base.value) {
@@ -19,25 +22,25 @@ export default /* javascript */ `{
   },
 
   cadeia_e_real(cad) {
-    self.runtime.expectType("cadeia_e_real", "cad", cad, "cadeia", "caracter");
+    self.runtime.expectType("cadeia_e_real", "cad", cad, "cadeia");
 
     return new PortugolVar("logico", ${PADRAO_REAL}.test(cad.value));
   },
 
   cadeia_e_logico(cad) {
-    self.runtime.expectType("cadeia_e_logico", "cad", cad, "cadeia", "caracter");
+    self.runtime.expectType("cadeia_e_logico", "cad", cad, "cadeia");
 
     return new PortugolVar("logico", ${PADRAO_LOGICO}.test(cad.value));
   },
 
   cadeia_e_caracter(cad) {
-    self.runtime.expectType("cadeia_e_caracter", "cad", cad, "cadeia", "caracter");
+    self.runtime.expectType("cadeia_e_caracter", "cad", cad, "cadeia");
 
     return new PortugolVar("logico", cad.value.length === 1);
   },
 
   cadeia_para_caracter(valor) {
-    self.runtime.expectType("cadeia_para_caracter", "valor", valor, "cadeia", "caracter");
+    self.runtime.expectType("cadeia_para_caracter", "valor", valor, "cadeia");
 
     if (valor.value.length === 1) {
       return new PortugolVar("caracter", valor.value.charAt(0));
@@ -47,24 +50,26 @@ export default /* javascript */ `{
   },
 
   cadeia_para_inteiro(valor, base) {
-    self.runtime.expectType("cadeia_para_inteiro", "valor", valor, "cadeia", "caracter");
+    self.runtime.expectType("cadeia_para_inteiro", "valor", valor, "cadeia");
     self.runtime.expectType("cadeia_para_inteiro", "base", base, "inteiro");
 
     if (base.value === 2 || base.value === 10 || base.value === 16) {
-      switch (base.value) {
-        case 16:
-          valor.value = valor.value.replace(/^0x/i, "");
-          break;
+      // O String.replaceFirst() do Java remove apenas a primeira ocorrência,
+      // em qualquer posição da cadeia — o mesmo que o String.replace() do JS
+      let texto = valor.value;
 
-        case 2:
-          valor.value = valor.value.replace(/^0b/i, "");
-          break;
+      if (base.value === 16) {
+        texto = texto.replace("0X", "").replace("0x", "");
       }
 
-      const inteiro = parseInt(valor.value, base.value);
+      if (base.value === 2) {
+        texto = texto.replace("0B", "").replace("0b", "");
+      }
 
-      if (isNaN(inteiro)) {
-        throw new Error("o valor '" + valor.value + "' não é um número inteiro válido");
+      const inteiro = PortugolVar.parseInteger(texto, base.value);
+
+      if (inteiro === null) {
+        throw new Error("o valor '" + texto + "' não é um número inteiro válido");
       }
 
       return new PortugolVar("inteiro", inteiro);
@@ -74,11 +79,11 @@ export default /* javascript */ `{
   },
 
   cadeia_para_real(valor) {
-    self.runtime.expectType("cadeia_para_real", "valor", valor, "cadeia", "caracter");
+    self.runtime.expectType("cadeia_para_real", "valor", valor, "cadeia");
 
-    const real = parseFloat(valor.value);
+    const real = PortugolVar.parseReal(valor.value);
 
-    if (isNaN(real)) {
+    if (real === null) {
       throw new Error("o valor '" + valor.value + "' não é um número real válido");
     }
 
@@ -86,7 +91,7 @@ export default /* javascript */ `{
   },
 
   cadeia_para_logico(valor) {
-    self.runtime.expectType("cadeia_para_logico", "valor", valor, "cadeia", "caracter");
+    self.runtime.expectType("cadeia_para_logico", "valor", valor, "cadeia");
 
     switch (valor.value) {
       case "verdadeiro": return new PortugolVar("logico", true);
@@ -106,14 +111,8 @@ export default /* javascript */ `{
     self.runtime.expectType("inteiro_para_cadeia", "valor", valor, "inteiro");
     self.runtime.expectType("inteiro_para_cadeia", "base", base, "inteiro");
 
-    if (isNaN(valor.value) || isNaN(valor.value >>> 0)) {
-      throw new Error("o valor '" + valor.value + "' não é um número inteiro válido");
-    }
-
-    switch (base.value) {
-      case 2: return new PortugolVar("cadeia", (valor.value >>> 0).toString(2).padStart(32, "0"));
-      case 10: return new PortugolVar("cadeia", valor.value.toString());
-      case 16: return new PortugolVar("cadeia", "0x" + (valor.value >>> 0).toString(16).toUpperCase().padStart(8, "0"));
+    if (base.value === 2 || base.value === 10 || base.value === 16) {
+      return new PortugolVar("cadeia", PortugolVar.intToString(valor.value, base.value));
     }
 
     throw new Error("A base informada (" + base.value + ") é inválida, a base deve ser um dos seguintes valores: 2; 10; 16");
@@ -148,7 +147,8 @@ export default /* javascript */ `{
   caracter_e_inteiro(car) {
     self.runtime.expectType("caracter_e_inteiro", "car", car, "caracter");
 
-    return new PortugolVar("logico", ${PADRAO_INTEIRO_NOTACAO_HEXADECIMAL}.test(car.value));
+    // O Portugol Studio delega para cadeia_e_inteiro(car, 10), ou seja, decimal
+    return new PortugolVar("logico", ${PADRAO_INTEIRO_NOTACAO_DECIMAL}.test(car.value));
   },
 
   caracter_e_logico(car) {
@@ -166,13 +166,14 @@ export default /* javascript */ `{
   caracter_para_inteiro(valor) {
     self.runtime.expectType("caracter_para_inteiro", "valor", valor, "caracter");
 
-    const num = parseInt(valor.value, 10);
+    // O Portugol Studio delega para cadeia_para_inteiro(caracter_para_cadeia(valor), 10)
+    const inteiro = PortugolVar.parseInteger(valor.value, 10);
 
-    if (isNaN(num)) {
+    if (inteiro === null) {
       throw new Error("o valor '" + valor.value + "' não é um número inteiro válido");
     }
 
-    return new PortugolVar("inteiro", num);
+    return new PortugolVar("inteiro", inteiro);
   },
 
   caracter_para_logico(valor) {
@@ -205,14 +206,14 @@ export default /* javascript */ `{
   },
 
   real_para_cadeia(valor) {
-    self.runtime.expectType("real_para_cadeia", "valor", valor, "real");
+    self.runtime.expectType("real_para_cadeia", "valor", valor, "inteiro", "real");
 
-    return new PortugolVar("cadeia", valor.value.toString());
+    return new PortugolVar("cadeia", PortugolVar.realToString(valor.value));
   },
 
   real_para_inteiro(valor) {
-    self.runtime.expectType("real_para_inteiro", "valor", valor, "real");
+    self.runtime.expectType("real_para_inteiro", "valor", valor, "inteiro", "real");
 
-    return new PortugolVar("inteiro", Math.trunc(valor.value));
+    return new PortugolVar("inteiro", PortugolVar.realToInt(valor.value));
   },
 }`;

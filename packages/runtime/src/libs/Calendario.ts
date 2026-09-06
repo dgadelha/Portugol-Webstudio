@@ -36,21 +36,13 @@ export default /* javascript */ `{
     return new PortugolVar("inteiro", new Date().getFullYear());
   },
 
-  hora_atual(formato_12h = new PortugolVar("logico", false)) {
+  hora_atual(formato_12h) {
     self.runtime.expectType("hora_atual", "formato_12h", formato_12h, "logico");
 
-    const date = new Date();
-    let hour = date.getHours();
+    const hora = new Date().getHours();
 
-    if (formato_12h.value) {
-      if (hour > 12) {
-        hour -= 12;
-      } else if (hour === 0) {
-        hour = 12;
-      }
-    }
-
-    return new PortugolVar("inteiro", hour);
+    // O Calendar.HOUR do Java conta de 0 a 11, tanto de madrugada quanto à tarde
+    return new PortugolVar("inteiro", formato_12h.value ? hora % 12 : hora);
   },
 
   minuto_atual() {
@@ -74,7 +66,7 @@ export default /* javascript */ `{
       throw new Error("'" + numero_dia.value + "' não corresponde a um dia da semana válido.");
     }
 
-    const dias = ["Domingo", "Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado"];
+    const dias = ["Domingo", "Segunda-Feira", "Terça-Feira", "Quarta-Feira", "Quinta-Feira", "Sexta-Feira", "Sabado"];
     let dia = dias[numero_dia.value - 1];
 
     if (caixa_alta.value) {
@@ -95,7 +87,7 @@ export default /* javascript */ `{
       throw new Error("'" + numero_dia.value + "' não corresponde a um dia da semana válido.");
     }
 
-    const dias = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
+    const dias = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sabado"];
     let dia = dias[numero_dia.value - 1];
 
     if (caixa_alta.value) {
