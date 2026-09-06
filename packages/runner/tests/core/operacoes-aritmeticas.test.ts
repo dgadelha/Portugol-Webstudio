@@ -53,7 +53,7 @@ describe("Operações Aritméticas", () => {
             escreva(2.5 + 3.5)
           `,
         ),
-      ).resolves.toBe("6");
+      ).resolves.toBe("6.0");
     });
 
     test("Subtração de reais", async () => {
@@ -73,7 +73,7 @@ describe("Operações Aritméticas", () => {
             escreva(2.5 * 4.0)
           `,
         ),
-      ).resolves.toBe("10");
+      ).resolves.toBe("10.0");
     });
 
     test("Divisão de reais", async () => {
@@ -98,7 +98,7 @@ describe("Operações Aritméticas", () => {
             escreva(soma, " ", sub, " ", mult, " ", div)
           `,
         ),
-      ).resolves.toBe("8 2 15 1.6666666666666667");
+      ).resolves.toBe("8.0 2.0 15.0 1.6666666666666667");
     });
 
     test("Operações com leitura de valores", async () => {
@@ -112,7 +112,7 @@ describe("Operações Aritméticas", () => {
           `,
           ["10", "4"],
         ),
-      ).resolves.toBe("14 6 40 2.5");
+      ).resolves.toBe("14.0 6.0 40.0 2.5");
     });
   });
 
@@ -175,7 +175,7 @@ describe("Operações Aritméticas", () => {
             escreva(resultado)
           `,
         ),
-      ).resolves.toBe("13");
+      ).resolves.toBe("13.0");
     });
 
     test("Parênteses alteram prioridade", async () => {
@@ -186,7 +186,7 @@ describe("Operações Aritméticas", () => {
             escreva(resultado)
           `,
         ),
-      ).resolves.toBe("18");
+      ).resolves.toBe("18.0");
     });
 
     test("Divisão antes da soma", async () => {
@@ -219,7 +219,7 @@ describe("Operações Aritméticas", () => {
             escreva(resultado)
           `,
         ),
-      ).resolves.toBe("8");
+      ).resolves.toBe("8.0");
     });
 
     test("Módulo antes da soma", async () => {
@@ -250,7 +250,7 @@ describe("Operações Aritméticas", () => {
             escreva(resultado)
           `,
         ),
-      ).resolves.toBe("8");
+      ).resolves.toBe("8.0");
     });
 
     test("Soma e subtração têm mesma prioridade (esquerda para direita)", async () => {
@@ -267,11 +267,11 @@ describe("Operações Aritméticas", () => {
       await expect(
         runPortugolCode(
           portugolInicio`
-            real resultado = 2.0 + 3.0 * 4.0 - 10.0 / 5.0 + 7.0 % 3.0
+            real resultado = 2.0 + 3.0 * 4.0 - 10.0 / 5.0 + 7 % 3
             escreva(resultado)
           `,
         ),
-      ).resolves.toBe("13");
+      ).resolves.toBe("13.0");
     });
 
     test("Parênteses forçam soma antes de multiplicação", async () => {
@@ -292,7 +292,7 @@ describe("Operações Aritméticas", () => {
             escreva(resultado)
           `,
         ),
-      ).resolves.toBe("3");
+      ).resolves.toBe("3.0");
     });
 
     test("Parênteses múltiplos níveis", async () => {
@@ -303,7 +303,7 @@ describe("Operações Aritméticas", () => {
             escreva(resultado)
           `,
         ),
-      ).resolves.toBe("3");
+      ).resolves.toBe("3.0");
     });
   });
 
@@ -379,7 +379,7 @@ describe("Operações Aritméticas", () => {
             escreva(x)
           `,
         ),
-      ).resolves.toBe("5");
+      ).resolves.toBe("5.0");
     });
   });
 
@@ -392,7 +392,7 @@ describe("Operações Aritméticas", () => {
             escreva(resultado)
           `,
         ),
-      ).resolves.toBe("28");
+      ).resolves.toBe("28.0");
     });
 
     test("Negação unária", async () => {

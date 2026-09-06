@@ -81,6 +81,11 @@ export class GraphicsRenderer extends EventTarget {
         break;
       }
 
+      case "graphics.hideWindowBorder": {
+        this.executor.replyMessage(message, null);
+        break;
+      }
+
       case "graphics.minimizeWindow": {
         this.executor.replyMessage(message, null);
         break;

@@ -14,6 +14,7 @@ class PortugolRuntime {
       libAliases: {},
     };
 
+    this.objetos = new PortugolCacheObjetos();
     this.libs = ${portugolLibs};
   }
 
@@ -133,7 +134,15 @@ class PortugolRuntime {
     }
 
     switch (type) {
+      // Valores que já são números passam direto: NaN e Infinito são resultados
+      // legítimos aqui, e só a conversão a partir de texto pode falhar
       case "inteiro": {
+        // A conversão de real para inteiro segue o corte do Java, igual ao
+        // usado por Tipos.real_para_inteiro
+        if (typeof value === "number") {
+          return PortugolVar.realToInt(value);
+        }
+
         const result = parseInt(value, 10);
 
         if (isNaN(result)) {
@@ -144,6 +153,10 @@ class PortugolRuntime {
       }
 
       case "real": {
+        if (typeof value === "number") {
+          return value;
+        }
+
         const result = parseFloat(value);
 
         if (isNaN(result)) {
@@ -170,17 +183,65 @@ class PortugolRuntime {
   concat(args) {
     this.DEBUG("concat.preinit", { args });
 
-    let result = args.shift().clone();
+    let result = "";
 
-    while (args.length) {
-      let arg = args.shift().clone();
-      this.DEBUG("concat.ongoing", { arg, result });
-
-      result.value += arg.stringValue();
+    for (const arg of args) {
+      result += arg.concatValue();
     }
 
     this.DEBUG("concat.finish", { result });
-    return new PortugolVar("cadeia", result.value);
+    return new PortugolVar("cadeia", result);
+  }
+
+  // O Portugol Studio aceita apenas 'verdadeiro' e 'falso' para o tipo lógico;
+  // aqui a lista é maior para não penalizar quem digita na IDE
+  readValue(type, text) {
+    switch (type) {
+      case "inteiro": {
+        const parsed = PortugolVar.parseInteger32(text);
+
+        if (parsed === null) {
+          throw new Error("O valor digitado não é inteiro!");
+        }
+
+        return new PortugolVar("inteiro", parsed);
+      }
+
+      case "real": {
+        const parsed = PortugolVar.parseReal(text);
+
+        if (parsed === null) {
+          throw new Error("O valor digitado não é real!" + (text.includes(",") ? " (Dica: utilize '.' ao invés de ',')" : ""));
+        }
+
+        return new PortugolVar("real", parsed);
+      }
+
+      case "logico": {
+        const normalized = text.toLowerCase();
+
+        if (!/^(sim|nao|não|true|false|verdadeiro|falso|s|y|n|0|1)$/.test(normalized)) {
+          throw new Error("O valor digitado não é lógico! (Dica: os valores possíveis para o tipo lógico são: 'verdadeiro', 'falso', 'sim', 'nao', 'não', 'true', 'false', 's', 'y', 'n', '0', '1')");
+        }
+
+        return new PortugolVar("logico", ["sim", "true", "verdadeiro", "s", "y", "1"].includes(normalized));
+      }
+
+      case "caracter": {
+        if (text === "") {
+          throw new Error("O valor digitado não é um caracter!");
+        }
+
+        return new PortugolVar("caracter", text.charAt(0));
+      }
+
+      default:
+        return new PortugolVar(type, text);
+    }
+  }
+
+  isNumeric(type) {
+    return type === "inteiro" || type === "real";
   }
 
   mathOperation(op, args) {
@@ -188,17 +249,37 @@ class PortugolRuntime {
 
     let result = args.shift().clone();
 
-    if (op === "+" && ["cadeia", "caracter"].includes(result.type)) {
-      return self.runtime.concat([result, ...args]);
-    }
-
     this.DEBUG("mathOperation.init", { op, args, result });
+
+    const isAddition = op === "+";
 
     while (args.length) {
       let arg = args.shift().clone();
       this.DEBUG("mathOperation.ongoing", { arg, result });
 
-      if (!["real", "inteiro"].includes(arg.type)) {
+      if (isAddition && (result.type === "cadeia" || arg.type === "cadeia")) {
+        return this.concat([result, arg, ...args]);
+      }
+
+      // Entre dois caracteres o '+' soma os códigos, como o char do Java
+      if (isAddition && result.type === "caracter" && arg.type === "caracter") {
+        result.value = result.value.charCodeAt(0) + arg.value.charCodeAt(0);
+        result.type = "inteiro";
+        continue;
+      }
+
+      // Somado a um número, o 'caracter' também vira o seu código, dos dois lados
+      if (isAddition && result.type === "caracter" && this.isNumeric(arg.type)) {
+        result.value = result.value.charCodeAt(0);
+        result.type = "inteiro";
+      }
+
+      if (isAddition && arg.type === "caracter" && this.isNumeric(result.type)) {
+        arg.value = arg.value.charCodeAt(0);
+        arg.type = "inteiro";
+      }
+
+      if (!this.isNumeric(result.type) || !this.isNumeric(arg.type)) {
         const mathOpDesc = {
           "+": ["somar", "à"],
           "-": ["subtrair", "de"],
@@ -212,6 +293,8 @@ class PortugolRuntime {
         throw new Error("Tipos incompatíveis! Não é possível " + verb + " uma expressão do tipo '" + result.type + "' (" + result.toString() + ") " + preposition + " uma expressão do tipo '" + arg.type + "' (" + arg.toString() + ").");
       }
 
+      const bothIntegers = result.type === "inteiro" && arg.type === "inteiro";
+
       switch (op) {
         case "+":
           result.value += arg.value;
@@ -222,19 +305,41 @@ class PortugolRuntime {
           break;
 
         case "*":
-          result.value *= arg.value;
+          // O Math.imul() multiplica em 32 bits sem perder precisão no caminho,
+          // como a multiplicação entre inteiros do Java
+          result.value = bothIntegers ? Math.imul(result.value, arg.value) : result.value * arg.value;
           break;
 
         case "/":
-          result.value /= arg.value;
+          if (bothIntegers) {
+            if (arg.value === 0) {
+              throw new Error("Foi efetuada uma divisão por zero.");
+            }
+
+            result.value = Math.trunc(result.value / arg.value);
+          } else {
+            result.value /= arg.value;
+          }
+
           break;
 
         case "%":
+          if (bothIntegers && arg.value === 0) {
+            throw new Error("Foi efetuada uma divisão por zero.");
+          }
+
           result.value %= arg.value;
           break;
 
         default:
           throw new Error("Operação matemática inválida: " + op);
+      }
+
+      if (bothIntegers) {
+        // O 'inteiro' do Portugol tem 32 bits e transborda como o int do Java
+        result.value |= 0;
+      } else {
+        result.type = "real";
       }
     }
 
@@ -307,7 +412,8 @@ class PortugolRuntime {
         break;
 
       case "-":
-        result.value = -item.value;
+        // O tipo 'inteiro' tem 32 bits, então -(-2147483648) volta a ser negativo
+        result.value = item.type === "inteiro" ? -item.value | 0 : -item.value;
         break;
 
       case "!":
@@ -326,17 +432,15 @@ class PortugolRuntime {
     return result;
   }
 
-  assumeMathType(...args) {
-    let type = "inteiro";
-
-    for (let arg of args) {
-      if (arg.type == "real") {
-        type = "real";
-        break;
-      }
+  // O Portugol Studio compila 'a == b' entre cadeias como
+  // ((a != null) ? a : "").equals(b), o que torna a comparação assimétrica
+  // quando um dos lados é uma cadeia nula
+  equals(a, b) {
+    if (a.type === "cadeia" || b.type === "cadeia") {
+      return (a.value ?? "") === b.value;
     }
 
-    return type;
+    return a.value === b.value;
   }
 
   expectType(fn, param, obj, ...types) {
@@ -385,10 +489,32 @@ class PortugolRuntime {
     }
 
     for (let i = 0; i < args.length; i++) {
-      if (args[i].type != params[i].type) {
+      // Um 'inteiro' é convertido automaticamente quando o parâmetro é 'real',
+      // mas não em parâmetro por referência, que é vinculado sem conversão
+      const compatible =
+        args[i].type === params[i].type ||
+        (!params[i].reference && params[i].type === "real" && args[i].type === "inteiro");
+
+      if (!compatible) {
         throw new Error("Tipos incompatíveis! O " + (i + 1) + "º parâmetro da função '" + this.currentFunction + "', '" + params[i].name + "', espera uma expressão do tipo '" + params[i].type + "', mas foi passada uma expressão do tipo '" + args[i].type + "'.");
       }
     }
+  }
+
+  paramValue(type, arg) {
+    if (arg.type === type) {
+      return arg.clone();
+    }
+
+    return new PortugolVar(type, this.coerceToType(type, arg.value, arg.type));
+  }
+
+  returnValue(type, value) {
+    if (!type || type === "vazio" || !value || value.type === type) {
+      return value;
+    }
+
+    return new PortugolVar(type, this.coerceToType(type, value.value, value.type));
   }
 
   assertGraphicsContext() {

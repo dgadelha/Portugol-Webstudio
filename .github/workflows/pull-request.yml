@@ -27,8 +27,12 @@ jobs:
         run: npm run lint
 
   test:
-    name: Test
+    name: Test (${{ matrix.shard }}/3)
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3]
     steps:
       - name: Checkout 🛎️
         uses: actions/checkout@v5
@@ -38,11 +42,23 @@ jobs:
         with:
           node-version: lts/*
 
+      - name: Setup Java ☕
+        uses: actions/setup-java@v5
+        with:
+          distribution: microsoft
+          java-version: 25
+
       - name: Install dependencies 🔧
         run: npm ci --include=dev
 
       - name: Build code 🚚
         run: npm run build
 
+      - name: Cache Portugol Console ☕
+        uses: actions/cache@v6
+        with:
+          path: packages/runner/tests/assets
+          key: portugol-console-${{ hashFiles('packages/runner/tests/setup.sh') }}
+
       - name: Run tests 🧪
-        run: npm test -- -- -- --coverage
+        run: npm test -- --shard=${{ matrix.shard }}/3

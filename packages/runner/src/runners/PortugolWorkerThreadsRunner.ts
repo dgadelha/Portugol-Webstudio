@@ -65,28 +65,7 @@ export class PortugolWorkerThreadsRunner extends IPortugolRunner {
                       parentPort.postMessage({ type: "stdIn" });
                     });
 
-                    if (arg.type === "inteiro") {
-                      if (!/^[-+]?[0-9]+$/.test(result)) {
-                        throw new Error("O valor digitado não é inteiro!");
-                      }
-
-                      self.runtime.assign([arg, new PortugolVar("inteiro", parseInt(result, 10))]);
-                    } else if (arg.type === "real") {
-                      if (!/^[-+]?[0-9]+(\\.[0-9]+)?$/.test(result)) {
-                        throw new Error("O valor digitado não é real!" + (result.includes(",") ? " (Dica: utilize '.' ao invés de ',')" : ""));
-                      }
-
-                      self.runtime.assign([arg, new PortugolVar("real", parseFloat(result))]);
-                    } else if (arg.type === "logico") {
-                      if (!/^(sim|nao|não|true|false|verdadeiro|falso|s|y|n|0|1)$/i.test(result)) {
-                        throw new Error("O valor digitado não é lógico! (Dica: os valores possíveis para o tipo lógico são: 'verdadeiro', 'falso', 'sim', 'nao', 'não', 'true', 'false', 's', 'y', 'n', '0', '1')");
-                      }
-
-                      self.runtime.assign([arg, new PortugolVar("logico", result.toLowerCase() === "sim" || result.toLowerCase() === "true" || result.toLowerCase() === "verdadeiro" || result.toLowerCase() === "y" || result.toLowerCase() === "1")]);
-                    } else {
-                      // Tipos: cadeia ou caracter
-                      self.runtime.assign([arg, new PortugolVar(arg.type, result)]);
-                    }
+                    self.runtime.assign([arg, self.runtime.readValue(arg.type, result)]);
                   }
                 },
 
@@ -96,11 +75,7 @@ export class PortugolWorkerThreadsRunner extends IPortugolRunner {
                   for (const arg of args) {
                     if (typeof arg === "object") {
                       if (typeof arg.value !== "undefined") {
-                        if (arg.type === "logico") {
-                          str += arg.value ? "verdadeiro" : "falso";
-                        } else {
-                          str += String(arg.value);
-                        }
+                        str += arg.stringValue();
                       }
                     } else {
                       throw new Error("Argumento inválido");
