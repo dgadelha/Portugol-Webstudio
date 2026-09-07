@@ -1,6 +1,15 @@
 import { NestedTreeControl } from "@angular/cdk/tree";
 import { HttpClient } from "@angular/common/http";
-import { AfterViewInit, Component, inject, NgZone, OnDestroy, OnInit, output } from "@angular/core";
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  NgZone,
+  OnDestroy,
+  OnInit,
+  output,
+} from "@angular/core";
 import { MatTreeNestedDataSource } from "@angular/material/tree";
 import { DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
 import { GoogleAnalyticsService } from "ngx-google-analytics";
@@ -21,6 +30,7 @@ type PortugolWindow = Window & {
   standalone: false,
   templateUrl: "./tab-help.component.html",
   styleUrl: "./tab-help.component.scss",
+  changeDetection: ChangeDetectionStrategy.Eager,
 })
 export class TabHelpComponent implements OnInit, OnDestroy, AfterViewInit {
   private http = inject(HttpClient);
@@ -30,8 +40,8 @@ export class TabHelpComponent implements OnInit, OnDestroy, AfterViewInit {
   private responsive = inject(ResponsiveService);
   private themeService = inject(ThemeService);
 
-  _responsive$?: Subscription;
-  _theme$?: Subscription;
+  #responsive$?: Subscription;
+  #theme$?: Subscription;
 
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   treeControl = new NestedTreeControl<TreeItem>(node => node.children);
@@ -45,6 +55,7 @@ export class TabHelpComponent implements OnInit, OnDestroy, AfterViewInit {
   readonly newTab = output<{ name: string; contents: string }>();
 
   ngOnInit() {
+    // eslint-disable-next-line unicorn/no-global-object-property-assignment
     (window as unknown as PortugolWindow).portugol = {
       abrirExemplo: (contents: string, name: string) => {
         this.ngZone.run(() => {
@@ -67,19 +78,20 @@ export class TabHelpComponent implements OnInit, OnDestroy, AfterViewInit {
       },
     });
 
-    this._theme$ = this.themeService.theme$.subscribe(theme => {
+    this.#theme$ = this.themeService.theme$.subscribe(theme => {
       this.isLightTheme = theme === "light";
     });
   }
 
   ngAfterViewInit() {
-    this._responsive$ = this.responsive.isBelowMd().subscribe(isBelowMd => {
+    this.#responsive$ = this.responsive.isBelowMd().subscribe(isBelowMd => {
       this.isBelowMd = isBelowMd.matches;
     });
   }
 
   ngOnDestroy() {
-    this._responsive$?.unsubscribe();
+    this.#responsive$?.unsubscribe();
+    this.#theme$?.unsubscribe();
   }
 
   hasChildren(_: number, item: TreeItem) {

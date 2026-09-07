@@ -19,6 +19,7 @@ interface TreeItem {
 }
 
 // @ts-expect-error
+// eslint-disable-next-line unicorn/no-global-object-property-assignment
 globalThis.Tree = {
   create(data: { data: PortugolAjudaItem[] }) {
     const items: TreeItem[] = [];

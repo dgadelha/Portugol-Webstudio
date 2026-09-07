@@ -1,5 +1,5 @@
 import { DragDropModule } from "@angular/cdk/drag-drop";
-import { Component, ElementRef, inject, Input, viewChild } from "@angular/core";
+import { ChangeDetectionStrategy, Component, ElementRef, inject, Input, viewChild } from "@angular/core";
 import { MatButtonModule } from "@angular/material/button";
 import { MatDialogClose, MatDialogContent, MatDialogRef, MatDialogTitle } from "@angular/material/dialog";
 import { AngularSvgIconModule } from "angular-svg-icon";
@@ -11,12 +11,14 @@ import { IGraphicsRendererComponent } from "../../renderer";
   standalone: true,
   templateUrl: "./dialog-renderer.component.html",
   styleUrl: "./dialog-renderer.component.scss",
+  changeDetection: ChangeDetectionStrategy.Eager,
 })
 export class DialogRendererComponent implements IGraphicsRendererComponent {
+  private dialogRef = inject(MatDialogRef<DialogRendererComponent>);
+
   @Input()
   title = "";
 
-  private dialogRef = inject(MatDialogRef<DialogRendererComponent>);
   readonly canvas = viewChild<ElementRef<HTMLCanvasElement>>("canvas");
 
   getCanvas(): Promise<OffscreenCanvas> {

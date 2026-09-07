@@ -79,25 +79,31 @@ export const libsTree: TreeItem = {
   source: "Selecione um item na árvore à esquerda para visualizar sua documentação",
   children: bibliotecas
     .filter(lib => bibliotecasWebstudio.has(lib.nome))
-    .map(lib => ({
-      id: lib.nome,
-      text: lib.nome,
-      kind: "markdown",
-      source: `# Biblioteca ${lib.nome}\n\n` + `**Descrição:** ${lib.descrição}`,
-      children: lib.constantes
-        .map<TreeItem>(constante => ({
-          id: `${lib.nome}_${constante.nome}`,
-          text: constante.nome,
-          kind: "markdown",
-          source: `# Biblioteca ${lib.nome}\n\n` + getConstantSource(constante),
-        }))
-        .concat(
-          lib.funções.map<TreeItem>(função => ({
-            id: `${lib.nome}_${função.nome}`,
-            text: função.nome,
-            kind: "markdown",
-            source: `# Biblioteca ${lib.nome}\n\n` + getFunctionSource(função),
-          })),
-        ),
-    })),
+    .map(lib => {
+      return {
+        id: lib.nome,
+        text: lib.nome,
+        kind: "markdown",
+        source: `# Biblioteca ${lib.nome}\n\n**Descrição:** ${lib.descrição}`,
+        children: lib.constantes
+          .map<TreeItem>(constante => {
+            return {
+              id: `${lib.nome}_${constante.nome}`,
+              text: constante.nome,
+              kind: "markdown",
+              source: `# Biblioteca ${lib.nome}\n\n` + getConstantSource(constante),
+            };
+          })
+          .concat(
+            lib.funções.map<TreeItem>(função => {
+              return {
+                id: `${lib.nome}_${função.nome}`,
+                text: função.nome,
+                kind: "markdown",
+                source: `# Biblioteca ${lib.nome}\n\n` + getFunctionSource(função),
+              };
+            }),
+          ),
+      };
+    }),
 };

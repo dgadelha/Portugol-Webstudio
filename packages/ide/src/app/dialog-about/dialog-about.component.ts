@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { ChangeDetectionStrategy, Component } from "@angular/core";
 import { MatButtonModule } from "@angular/material/button";
 import { MatDialogClose, MatDialogContent } from "@angular/material/dialog";
 import { MatIconModule } from "@angular/material/icon";
@@ -18,5 +18,6 @@ import { NgxGoogleAnalyticsModule } from "ngx-google-analytics";
   standalone: true,
   templateUrl: "./dialog-about.component.html",
   styleUrl: "./dialog-about.component.scss",
+  changeDetection: ChangeDetectionStrategy.Eager,
 })
 export class DialogAboutComponent {}

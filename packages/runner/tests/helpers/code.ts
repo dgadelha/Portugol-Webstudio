@@ -35,5 +35,5 @@ export function portugol(strings: TemplateStringsArray, ...values: any[]): strin
 
 export function portugolInicio(strings: TemplateStringsArray, ...values: any[]): string {
   const code = portugol(strings, ...values);
-  return `programa {\n  funcao inicio() {\n    ${code.split("\n").join("\n    ")}\n  }\n}\n`;
+  return `programa {\n  funcao inicio() {\n    ${code.replaceAll("\n", "\n    ")}\n  }\n}\n`;
 }

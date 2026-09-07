@@ -1,9 +1,9 @@
-import { inject, Injectable } from "@angular/core";
+import { inject, Service } from "@angular/core";
 import { LocalStorageService } from "ngx-webstorage";
 import { map, startWith } from "rxjs";
 import { defaultFontSize } from "../settings";
 
-@Injectable({ providedIn: "root" })
+@Service()
 export class SettingsService {
   private localStorageSvc = inject(LocalStorageService);
 

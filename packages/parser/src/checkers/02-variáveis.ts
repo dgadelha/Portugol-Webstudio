@@ -465,13 +465,15 @@ export function* checarUsoEscopo(arquivo: Arquivo): Generator<PortugolCodeDiagno
 
     escopo.funções.set(func.nome, {
       nome: func.nome,
-      parâmetros: func.parâmetros.map(par => ({
-        nome: par.nome,
-        tipo: par.tipo,
-        referência: par.referência,
-        declaração: par,
-        leitura: [],
-      })),
+      parâmetros: func.parâmetros.map(par => {
+        return {
+          nome: par.nome,
+          tipo: par.tipo,
+          referência: par.referência,
+          declaração: par,
+          leitura: [],
+        };
+      }),
       retorno: func.retorno,
       declaração: func,
       chamadas: [],

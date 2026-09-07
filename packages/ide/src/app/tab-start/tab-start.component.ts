@@ -1,4 +1,4 @@
-import { Component, inject, output, OutputRefSubscription } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, output, OutputRefSubscription } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { GoogleAnalyticsService } from "ngx-google-analytics";
 import { Subscription } from "rxjs";
@@ -13,8 +13,13 @@ import { FileService } from "../file.service";
   standalone: false,
   templateUrl: "./tab-start.component.html",
   styleUrl: "./tab-start.component.scss",
+  changeDetection: ChangeDetectionStrategy.Eager,
 })
 export class TabStartComponent {
+  private dialog = inject(MatDialog);
+  private fileService = inject(FileService);
+  public gaService = inject(GoogleAnalyticsService);
+
   readonly newTab = output<{ name: string; contents: string } | undefined>();
   readonly help = output();
   readonly settings = output();
@@ -23,10 +28,6 @@ export class TabStartComponent {
   private _dialogRef$?: Subscription;
 
   public logo: string;
-
-  public gaService = inject(GoogleAnalyticsService);
-  private dialog = inject(MatDialog);
-  private fileService = inject(FileService);
 
   constructor() {
     const currentMonth = new Date().getMonth() + 1;

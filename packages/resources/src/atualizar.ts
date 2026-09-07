@@ -12,7 +12,7 @@ import { patchHtmlFiles, patchPortugolFiles } from "./helpers/patch.js";
 
 import "./ajuda.js";
 
-export async function configurarRecursos() {
+async function configurarRecursos() {
   const assetsPath = "Portugol-Studio-master/ide/src/main/assets/";
   const tempDir = path.join(baseDir, "..", "recursos.temp/");
   const psZip = path.join(baseDir, "..", "Portugol-Studio.zip");

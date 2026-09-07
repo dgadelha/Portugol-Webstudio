@@ -31,7 +31,9 @@ platformBrowser()
   .bootstrapModule(AppModule)
   .then(() => {
     try {
-      /** @see https://stackoverflow.com/a/51059335 */
+      /**
+       *@see https://stackoverflow.com/a/51059335
+       */
       if ("serviceWorker" in navigator && environment.production) {
         void navigator.serviceWorker.register("/ngsw-worker.js");
       }

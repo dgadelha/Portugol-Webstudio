@@ -201,7 +201,7 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     const inicio = ctx.start;
     const fim = ctx.stop;
 
-    if (!inicio?.inputStream || !fim) {
+    if (!fim || !inicio?.inputStream) {
       return null;
     }
 
@@ -503,10 +503,7 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
 
   visitOperacaoMatematica(
     ctx:
-      | MultiplicacaoDivisaoModuloContext
-      | AdicaoSubtracaoContext
-      | OperacaoShiftLeftContext
-      | OperacaoShiftRightContext,
+      MultiplicacaoDivisaoModuloContext | AdicaoSubtracaoContext | OperacaoShiftLeftContext | OperacaoShiftRightContext,
   ) {
     const sb = new StringBuilder();
 
@@ -992,7 +989,7 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
       if (varb) {
         const expr = varb.expressao();
 
-        if (varb.OP_ATRIBUICAO() && expr) {
+        if (expr && varb.OP_ATRIBUICAO()) {
           sb.append(this.PAD(), `${scopeStr}.variables["${varb.ID().getText()}"] = new PortugolVar(`);
           sb.append(`"${ctx.TIPO().getText()}"`, `, undefined)`, `\n`);
 
@@ -1019,8 +1016,9 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
       if (mtrx) {
         const init = mtrx.inicializacaoMatriz();
 
-        if (mtrx.OP_ATRIBUICAO() && init) {
-          sb.append(this.PAD(), `${scopeStr}.variables["${mtrx.ID().getText()}"] = new PortugolVar(`);
+        sb.append(this.PAD(), `${scopeStr}.variables["${mtrx.ID().getText()}"] = new PortugolVar(`);
+
+        if (init && mtrx.OP_ATRIBUICAO()) {
           sb.append(`"matriz", `, this.visit(init)?.trim(), `)`, `\n`);
 
           const rows = mtrx.linhaMatriz();
@@ -1036,7 +1034,6 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
             sb.append(`)`, `\n`);
           }
         } else {
-          sb.append(this.PAD(), `${scopeStr}.variables["${mtrx.ID().getText()}"] = new PortugolVar(`);
           sb.append(`"matriz", `);
 
           const rows = mtrx.linhaMatriz();
@@ -1101,7 +1098,7 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
       if (arr) {
         const init = arr.inicializacaoArray();
 
-        if (arr.OP_ATRIBUICAO() && init) {
+        if (init && arr.OP_ATRIBUICAO()) {
           sb.append(this.PAD(), `${scopeStr}.variables["${arr.ID().getText()}"] = `);
           sb.append(this.visit(init)?.trim(), `\n`);
 
@@ -1204,10 +1201,12 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     this.pad++;
 
     for (const child of ctx.children) {
-      if (child instanceof InicializacaoArrayContext) {
-        sb.append(this.visit(child));
-        sb.append(this.PAD(), `,`, `\n`);
+      if (!(child instanceof InicializacaoArrayContext)) {
+        continue;
       }
+
+      sb.append(this.visit(child));
+      sb.append(this.PAD(), `,`, `\n`);
     }
 
     this.pad--;

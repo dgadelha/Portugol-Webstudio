@@ -1,8 +1,8 @@
-import { inject, Injectable } from "@angular/core";
+import { inject, Service } from "@angular/core";
 import { MonacoEditorLoaderService } from "@materia-ui/ngx-monaco-editor";
 import { filter, take } from "rxjs/operators";
 
-@Injectable({ providedIn: "root" })
+@Service()
 export class MonacoService {
   private monacoLoaderService = inject(MonacoEditorLoaderService);
 
@@ -232,7 +232,7 @@ export class MonacoService {
                 { include: "common" },
               ],
             },
-          } as monaco.languages.IMonarchLanguage);
+          } satisfies monaco.languages.IMonarchLanguage);
 
           monaco.editor.defineTheme("portugol-dark", {
             base: "vs-dark",

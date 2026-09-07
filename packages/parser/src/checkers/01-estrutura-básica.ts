@@ -36,7 +36,7 @@ export function* checarFunçãoInício(arquivo: Arquivo): Generator<PortugolCode
 export function* checarFunçõesComRetorno(arquivo: Arquivo) {
   for (const func of arquivo.funções) {
     if (func.retorno.primitivo !== TipoPrimitivo.VAZIO) {
-      if (!getAllChildrenFromNode(func).some(instrução => instrução instanceof RetorneCmd)) {
+      if (getAllChildrenFromNode(func).every(instrução => !(instrução instanceof RetorneCmd))) {
         yield PortugolCodeDiagnostic.fromContext(
           func.ctx,
           `A função '${func.nome}' deve retornar um valor`,

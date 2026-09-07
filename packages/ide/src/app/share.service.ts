@@ -1,7 +1,7 @@
-import { inject, Injectable } from "@angular/core";
+import { inject, Service } from "@angular/core";
 import { getBlob, ref, Storage, uploadString } from "@angular/fire/storage";
 
-@Injectable({ providedIn: "root" })
+@Service()
 export class ShareService {
   storage = inject(Storage);
 

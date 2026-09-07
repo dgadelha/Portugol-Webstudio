@@ -20,7 +20,7 @@
     "url": "https://github.com/dgadelha/Portugol-Webstudio/issues"
   },
   "homepage": "https://github.com/dgadelha/Portugol-Webstudio#readme",
-  "packageManager": "npm@11.11.0+sha512.f36811c4aae1fde639527368ae44c571d050006a608d67a191f195a801a52637a312d259186254aa3a3799b05335b7390539cf28656d18f0591a1125ba35f973",
+  "packageManager": "npm@11.19.1+sha512.cedb312b1b7f92421a02cfb68b4194e88f8346651dacd6acc5364a25ef5309d4a32b19616a1ff8aff865e7280c0fa5c0835a99f5cd93368991e2a80ec9da75d2",
   "workspaces": [
     "packages/*"
   ],
@@ -42,21 +42,43 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "angular-eslint": "^21.3.1",
-    "eslint": "^10.2.0",
+    "angular-eslint": "^22.2.0",
+    "eslint": "^10.10.0",
     "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-prettier": "^5.5.5",
-    "eslint-plugin-unicorn": "^64.0.0",
-    "lerna": "^9.0.7",
+    "eslint-plugin-prettier": "^5.5.6",
+    "eslint-plugin-unicorn": "^74.0.0",
+    "lerna": "^10.0.1",
     "patch-package": "^8.0.1",
-    "sherif": "^1.11.1",
-    "typescript": "~5.9.3",
-    "typescript-eslint": "^8.58.1"
+    "sherif": "^1.13.0",
+    "typescript": "~6.0.3",
+    "typescript-eslint": "^8.69.0"
   },
   "overrides": {
+    "@angular/build": "^22.1.5",
+    "@angular/common": "^22.1.5",
+    "@angular/core": "^22.1.5",
+    "@angular/platform-browser": "^22.1.5",
+    "@angular/fire": {
+      "typescript": "$typescript"
+    },
     "@nx/devkit": {
       "minimatch": "^10.2.3"
     },
-    "tmp": "^0.2.5"
+    "@sentry/angular": {
+      "@angular/router": "^22.1.5"
+    },
+    "tmp": "^0.2.5",
+    "vitest": "^5.0.0"
+  },
+  "allowScripts": {
+    "@firebase/util@1.15.3": true,
+    "@parcel/watcher@2.6.0": true,
+    "@swc/core@1.16.2": true,
+    "esbuild@0.28.2": true,
+    "fsevents@2.3.3": true,
+    "lmdb@3.5.6": true,
+    "msgpackr-extract@3.0.4": true,
+    "nx@23.2.0": true,
+    "protobufjs@7.6.6": true
   }
 }

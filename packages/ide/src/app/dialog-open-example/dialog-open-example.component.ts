@@ -1,6 +1,6 @@
 import { NestedTreeControl } from "@angular/cdk/tree";
 import { HttpClient } from "@angular/common/http";
-import { AfterViewInit, Component, inject, OnDestroy, OnInit, output } from "@angular/core";
+import { AfterViewInit, ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit, output } from "@angular/core";
 import { MatTreeNestedDataSource } from "@angular/material/tree";
 import { retry, Subscription } from "rxjs";
 
@@ -25,16 +25,17 @@ export interface ExampleItem {
   standalone: false,
   templateUrl: "./dialog-open-example.component.html",
   styleUrl: "./dialog-open-example.component.scss",
+  changeDetection: ChangeDetectionStrategy.Eager,
 })
 export class DialogOpenExampleComponent implements OnInit, OnDestroy, AfterViewInit {
+  private http = inject(HttpClient);
+  private responsive = inject(ResponsiveService);
+  private themeService = inject(ThemeService);
+
   private _loadSubscription$?: Subscription;
   private _responsive$?: Subscription;
   private _data$?: Subscription;
   private _theme$?: Subscription;
-
-  private http = inject(HttpClient);
-  private responsive = inject(ResponsiveService);
-  private themeService = inject(ThemeService);
 
   readonly exampleOpened = output<{ title: string; code: string }>();
 

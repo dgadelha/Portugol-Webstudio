@@ -1,0 +1,15 @@
+diff --git a/node_modules/ngx-markdown/fesm2022/ngx-markdown.mjs b/node_modules/ngx-markdown/fesm2022/ngx-markdown.mjs
+index 8c76aa6..02ac26e 100644
+--- a/node_modules/ngx-markdown/fesm2022/ngx-markdown.mjs
++++ b/node_modules/ngx-markdown/fesm2022/ngx-markdown.mjs
+@@ -249,9 +249,7 @@ class MarkdownService {
+             return renderer;
+         }
+         // Hide the optional peer specifier from Vite import-analysis (see #681).
+-        this.markedKatex ??= await import(/* @vite-ignore */ 'marked-katex-extension')
+-            .then((module) => module.default)
+-            .catch(() => null);
++        this.markedKatex ??= null;
+         if (!this.markedKatex) {
+             throw new Error(errorKatexExtensionNotLoaded);
+         }

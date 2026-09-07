@@ -1,8 +1,8 @@
-import { Injectable } from "@angular/core";
+import { Service } from "@angular/core";
 import { decode } from "iconv-lite";
 import { detect } from "jschardet";
 
-@Injectable({ providedIn: "root" })
+@Service()
 export class FileService {
   async getContents(file: File) {
     const buffer = await file.arrayBuffer();
@@ -21,6 +21,6 @@ export class FileService {
       confidence,
     });
 
-    return decode(array as any, encoding || "utf8", { stripBOM: true });
+    return decode(array, encoding || "utf8", { stripBOM: true });
   }
 }

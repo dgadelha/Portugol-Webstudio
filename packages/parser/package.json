@@ -40,8 +40,8 @@
     "antlr4ng": "^3.0.16"
   },
   "devDependencies": {
-    "@vitest/coverage-v8": "^4.1.4",
-    "typescript": "~5.9.3",
-    "vitest": "^4.1.4"
+    "@vitest/coverage-v8": "^5.0.0",
+    "typescript": "~6.0.3",
+    "vitest": "^5.0.0"
   }
 }

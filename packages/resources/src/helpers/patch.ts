@@ -2,7 +2,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 
 import iconv from "iconv-lite";
-import readdirp from "readdirp";
+import readDirectory from "readdirp";
 
 import { baseDir, baseHtmlPath } from "../config.js";
 
@@ -59,11 +59,12 @@ async function patchHtmlFile(data: Buffer) {
 
 export async function patchHtmlFiles() {
   const topicosDir = path.join(baseDir, "ajuda", "topicos");
-
-  for await (const file of readdirp(topicosDir, {
+  const files = readDirectory(topicosDir, {
     type: "files",
     fileFilter: path => path.basename.endsWith(".html"),
-  })) {
+  });
+
+  for await (const file of files) {
     console.log(`-> Ajustando ${file.path}`);
     const fileName = path.join(topicosDir, file.path);
     const data = await fs.readFile(fileName);
@@ -73,10 +74,12 @@ export async function patchHtmlFiles() {
 }
 
 export async function patchPortugolFiles() {
-  for await (const file of readdirp(baseDir, {
+  const files = readDirectory(baseDir, {
     type: "files",
     fileFilter: path => path.basename.endsWith(".por"),
-  })) {
+  });
+
+  for await (const file of files) {
     console.log(`-> Ajustando ${file.path}`);
     const fileName = path.join(baseDir, file.path);
     let data = iconv.decode(await fs.readFile(fileName), "ISO-8859-1");

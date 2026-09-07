@@ -1,16 +1,16 @@
-import { inject, Injectable } from "@angular/core";
+import { inject, Service } from "@angular/core";
 import { SwUpdate } from "@angular/service-worker";
 import { CreateHotToastRef, HotToastService } from "@ngxpert/hot-toast";
 import { interval } from "rxjs";
 import { NewVersionAvailableComponent } from "./new-version-available/new-version-available.component";
 
-@Injectable({ providedIn: "root" })
+@Service()
 export class PwaService {
-  loadingToast?: CreateHotToastRef<unknown>;
-  versionReadyToast?: CreateHotToastRef<unknown>;
-
   private swUpdate = inject(SwUpdate);
   private toast = inject(HotToastService);
+
+  loadingToast?: CreateHotToastRef<unknown>;
+  versionReadyToast?: CreateHotToastRef<unknown>;
 
   constructor() {
     if (!this.swUpdate.isEnabled) {

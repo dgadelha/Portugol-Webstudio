@@ -1,11 +1,11 @@
 import { BreakpointObserver, BreakpointState } from "@angular/cdk/layout";
-import { inject, Injectable } from "@angular/core";
+import { inject, Service } from "@angular/core";
 import { Observable } from "rxjs";
 
 /**
  * @ref https://stackoverflow.com/a/68947419
  */
-@Injectable({ providedIn: "root" })
+@Service()
 export class ResponsiveService {
   private observer = inject(BreakpointObserver);
 

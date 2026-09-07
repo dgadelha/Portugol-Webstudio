@@ -86,8 +86,8 @@ function transpileCode(code) {
   };
 }
 
-self.addEventListener("message", function onmessage(e) {
-  const { action, id, code } = e.data;
+self.addEventListener("message", function onmessage(event) {
+  const { action, id, code } = event.data;
   let result;
 
   switch (action) {

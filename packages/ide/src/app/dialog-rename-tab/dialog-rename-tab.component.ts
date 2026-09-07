@@ -1,4 +1,4 @@
-import { Component, inject, model } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, model } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
 import {
@@ -31,6 +31,7 @@ interface DialogData {
   standalone: true,
   templateUrl: "./dialog-rename-tab.component.html",
   styleUrl: "./dialog-rename-tab.component.scss",
+  changeDetection: ChangeDetectionStrategy.Eager,
 })
 export class DialogRenameTabComponent {
   readonly dialogRef = inject(MatDialogRef<DialogRenameTabComponent>);

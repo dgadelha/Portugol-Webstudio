@@ -1,4 +1,4 @@
-import { Component, inject } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
 import { MatDialogClose, MatDialogContent, MatDialogTitle } from "@angular/material/dialog";
@@ -27,6 +27,7 @@ import { defaultFontSize } from "../../settings";
   standalone: true,
   templateUrl: "./dialog-settings.component.html",
   styleUrl: "./dialog-settings.component.scss",
+  changeDetection: ChangeDetectionStrategy.Eager,
 })
 export class DialogSettingsComponent {
   private localStorageService = inject(LocalStorageService);

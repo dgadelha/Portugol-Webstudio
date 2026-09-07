@@ -2,9 +2,7 @@ import { PortugolCodeDiagnostic, PortugolDiagnosticSeverity } from "@portugol-we
 import { expect } from "vitest";
 
 expect.addSnapshotSerializer({
-  test(value) {
-    return value instanceof PortugolCodeDiagnostic;
-  },
+  test: value => value instanceof PortugolCodeDiagnostic,
 
   serialize(value: PortugolCodeDiagnostic) {
     const severityMap: Record<PortugolDiagnosticSeverity, string> = {

@@ -16,8 +16,8 @@ class NoMoreInputsError extends Error {
 }
 
 class InputsRemainingError extends Error {
-  constructor(remainingInputs: string[]) {
-    super(`There are still ${remainingInputs.length} input(s) remaining`);
+  constructor(remainingInputs: string[], options: ErrorOptions = {}) {
+    super(`There are still ${remainingInputs.length} input(s) remaining`, options);
     this.name = "InputsRemainingError";
   }
 }
@@ -83,7 +83,7 @@ async function runCodeInPortugolCli(code: string, inputs: string[] = []) {
     // na saída de erro. Apenas os erros impedem o programa de executar.
     const compileErrors = stdErr
       .split("\n")
-      .filter(line => line.trim().startsWith("ERRO:"))
+      .filter(line => line.trimStart().startsWith("ERRO:"))
       .join("\n");
 
     if (compileErrors !== "") {

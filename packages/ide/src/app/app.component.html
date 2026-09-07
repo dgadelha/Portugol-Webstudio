@@ -50,6 +50,8 @@
                   focusable="false"
                 />
               }
+
+              @default never;
             }
           </span>
 
@@ -95,6 +97,8 @@
         @case ("help") {
           <app-tab-help (newTab)="addTab($event?.name, $event?.contents)" />
         }
+
+        @default never;
       }
     </mat-tab>
   }

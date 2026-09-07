@@ -1,7 +1,7 @@
 /* eslint-disable */
 const path = require("path");
 const fs = require("fs");
-const TerserPlugin = require("terser-webpack-plugin");
+const MinimizerPlugin = require("minimizer-webpack-plugin");
 
 const isCI = process.env.CI === "true" || process.env.GITHUB_ACTIONS === "true";
 
@@ -26,8 +26,8 @@ module.exports = {
   optimization: {
     minimize: true,
     minimizer: [
-      new TerserPlugin({
-        terserOptions: {
+      new MinimizerPlugin({
+        minimizerOptions: {
           keep_classnames: true,
           keep_fnames: true,
         },

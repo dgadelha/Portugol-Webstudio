@@ -1,8 +1,8 @@
-import { Injectable } from "@angular/core";
+import { Service } from "@angular/core";
 import { IPortugolCodeDiagnostic } from "@portugol-webstudio/antlr";
 import { WORKER_FILE_NAME } from "@portugol-webstudio/worker/lib/worker-manifest";
 
-@Injectable({ providedIn: "root" })
+@Service()
 export class WorkerService {
   worker?: Worker;
   busy = false;

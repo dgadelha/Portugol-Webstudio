@@ -1,0 +1,13 @@
+diff --git a/node_modules/patch-package/dist/makePatch.js b/node_modules/patch-package/dist/makePatch.js
+index a240b7e..0dd0acf 100644
+--- a/node_modules/patch-package/dist/makePatch.js
++++ b/node_modules/patch-package/dist/makePatch.js
+@@ -137,7 +137,7 @@ function makePatch({ packagePathSpecifier, appPath, packageManager, includePaths
+             try {
+                 // try first without ignoring scripts in case they are required
+                 // this works in 99.99% of cases
+-                spawnSafe_1.spawnSafeSync(`npm`, ["i", "--force"], {
++                spawnSafe_1.spawnSafeSync(`npm`, ["i", "--force", "--allow-remote=all"], {
+                     cwd: tmpRepoNpmRoot,
+                     logStdErrOnError: false,
+                     stdio: "ignore",

@@ -1,4 +1,15 @@
-import { Component, ElementRef, Input, OnDestroy, OnInit, TemplateRef, inject, output, viewChild } from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  Input,
+  OnDestroy,
+  OnInit,
+  TemplateRef,
+  inject,
+  output,
+  viewChild,
+} from "@angular/core";
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import type { IPortugolCodeDiagnostic } from "@portugol-webstudio/antlr";
@@ -25,14 +36,9 @@ import { WorkerService } from "../worker.service";
   standalone: false,
   templateUrl: "./tab-editor.component.html",
   styleUrl: "./tab-editor.component.scss",
+  changeDetection: ChangeDetectionStrategy.Eager,
 })
 export class TabEditorComponent implements OnInit, OnDestroy {
-  private _code$?: Subscription;
-  private _stdOut$?: Subscription;
-  private _events$?: Subscription;
-  private _theme$?: Subscription;
-  private _settings$?: Subscription;
-
   private gaService = inject(GoogleAnalyticsService);
   private snack = inject(MatSnackBar);
   private worker = inject(WorkerService);
@@ -41,6 +47,12 @@ export class TabEditorComponent implements OnInit, OnDestroy {
   private themeService = inject(ThemeService);
   private settingsService = inject(SettingsService);
   private dialog = inject(MatDialog);
+
+  private _code$?: Subscription;
+  private _stdOut$?: Subscription;
+  private _events$?: Subscription;
+  private _theme$?: Subscription;
+  private _settings$?: Subscription;
 
   @Input()
   title?: string;

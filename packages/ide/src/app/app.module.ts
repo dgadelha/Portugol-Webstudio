@@ -29,7 +29,7 @@ import { AngularSplitModule } from "angular-split";
 import { AngularSvgIconModule } from "angular-svg-icon";
 import { KeyboardShortcutsModule } from "ng-keyboard-shortcuts";
 import { NgxGoogleAnalyticsModule } from "ngx-google-analytics";
-import { MarkdownModule } from "ngx-markdown";
+import { MarkdownComponent, provideMarkdown } from "ngx-markdown";
 import { provideNgxWebstorage, withNgxWebstorageConfig } from "ngx-webstorage";
 
 import { environment } from "../environments/environment";
@@ -50,8 +50,8 @@ import { ThemeService } from "./theme.service";
     AngularSplitModule,
     MonacoEditorModule,
     KeyboardShortcutsModule.forRoot(),
+    MarkdownComponent,
     NgxGoogleAnalyticsModule.forRoot("G-ZKM28VG4G5"),
-    MarkdownModule.forRoot(),
     AngularSvgIconModule.forRoot(),
     MatSnackBarModule,
     MatRippleModule,
@@ -85,6 +85,7 @@ import { ThemeService } from "./theme.service";
       inject(ThemeService);
       inject(PwaService);
     }),
+    provideMarkdown(),
     MonacoService,
     PwaService,
     {
