@@ -606,21 +606,45 @@ ${error.stack}`;
      * Create a new `Request` based on the specified URL and `RequestInit` options, preserving only
      * metadata that are known to be safe.
      *
-     * Currently, only headers and redirect policy are preserved.
+     * Currently, headers, referrer, referrer policy, redirect policy, an explicit
+     * `credentials: 'omit'`, and the HTTP cache mode are preserved. On cross-origin redirects,
+     * sensitive headers are removed. This includes `Authorization`, as required by the Fetch redirect
+     * algorithm, and forbidden request headers that could contain credentials.
      *
      * NOTE:
-     *   Things like credential inclusion are intentionally omitted to avoid issues with opaque
-     *   responses.
-     *
+     *   `credentials: 'same-origin'` and `credentials: 'include'` are intentionally not preserved.
+     *   Forwarding `'include'` could leak cookies to cross-origin asset hosts, and forwarding
+     *   `'same-origin'` matches the default `fetch()` behavior so there is nothing to preserve.
+     *   Requests with `cache: 'only-if-cached'` and `mode !== 'same-origin'` are short-circuited
+     *   earlier in `Driver.onFetch()` (they are a known Chrome DevTools quirk), so no special
+     *   handling for that combination is needed here.
      * TODO(gkalpak):
      *   Investigate preserving more metadata. See, also, discussion on preserving `mode`:
-     *   https://github.com/angular/angular/issues/41931#issuecomment-1227601347
+     *   https://github.com/angular/angular/issues/41931#issuecomment-1227601347.
      */
     newRequestWithMetadata(url, options) {
-      return this.adapter.newRequest(url, {
-        headers: options.headers,
+      let headers = options.headers;
+      const parsedUrl = this.adapter.parseUrl(url, this.adapter.origin);
+      const hasHeaders = headers.keys().next().done !== true;
+      if (hasHeaders && parsedUrl.origin !== this.adapter.origin) {
+        headers = this.adapter.newHeaders(options.headers);
+        headers.delete("Authorization");
+        headers.delete("Proxy-Authorization");
+        headers.delete("Cookie");
+      }
+      const init = {
+        headers,
+        referrer: options.referrer,
+        referrerPolicy: options.referrerPolicy,
         redirect: options.redirect
-      });
+      };
+      if (options.credentials === "omit") {
+        init.credentials = "omit";
+      }
+      if (options.cache !== void 0) {
+        init.cache = options.cache;
+      }
+      return this.adapter.newRequest(url, init);
     }
     /**
      * Construct a cache-busting URL for a given URL.
@@ -1288,7 +1312,7 @@ ${error.stack}`;
   };
 
   // packages/service-worker/worker/src/debug.js
-  var SW_VERSION = "21.2.8";
+  var SW_VERSION = "22.1.5";
   var DEBUG_LOG_BUFFER_SIZE = 100;
   var DebugHandler = class {
     constructor(driver, adapter2) {
@@ -1566,11 +1590,7 @@ ${msgIdle}`, { headers: this.adapter.newHeaders({ "Content-Type": "text/plain" }
       this.scope.addEventListener("push", (event) => this.onPush(event));
       this.scope.addEventListener("notificationclick", (event) => this.onClick(event));
       this.scope.addEventListener("notificationclose", (event) => this.onClose(event));
-      this.scope.addEventListener("pushsubscriptionchange", (event) => (
-        // This is a bug in TypeScript, where they removed `PushSubscriptionChangeEvent`
-        // based on the incorrect assumption that browsers don't support it.
-        this.onPushSubscriptionChange(event)
-      ));
+      this.scope.addEventListener("pushsubscriptionchange", (event) => this.onPushSubscriptionChange(event));
       this.scope.addEventListener("messageerror", (event) => this.onMessageError(event));
       this.scope.addEventListener("unhandledrejection", (event) => this.onUnhandledRejection(event));
       this.debugger = new DebugHandler(this, this.adapter);
@@ -1687,7 +1707,7 @@ ${msgIdle}`, { headers: this.adapter.newHeaders({ "Content-Type": "text/plain" }
       }
       const desc = data.notification;
       let options = {};
-      NOTIFICATION_OPTION_NAMES.filter((name) => desc.hasOwnProperty(name)).forEach((name) => options[name] = desc[name]);
+      NOTIFICATION_OPTION_NAMES.filter((name) => Object.hasOwn(desc, name)).forEach((name) => options[name] = desc[name]);
       await this.scope.registration.showNotification(desc["title"], options);
     }
     async handleClick(notification, action) {
@@ -1853,7 +1873,7 @@ ${msgIdle}`, { headers: this.adapter.newHeaders({ "Content-Type": "text/plain" }
           table.read("assignments"),
           table.read("latest")
         ]);
-        if (!this.versions.has(latest.latest) && !manifests.hasOwnProperty(latest.latest)) {
+        if (!this.versions.has(latest.latest) && !Object.hasOwn(manifests, latest.latest)) {
           this.debugger.log(`Missing manifest for latest version hash ${latest.latest}`, "initialize: read from DB");
           throw new Error(`Missing manifest for latest hash ${latest.latest}`);
         }
