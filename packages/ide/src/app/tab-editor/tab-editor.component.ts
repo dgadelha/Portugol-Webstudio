@@ -92,11 +92,13 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     wordWrap: "on",
     language: "plaintext",
     tabSize: 2,
+    guides: { indentation: false },
   };
 
   generatedCodeEditorOptions: monaco.editor.IStandaloneEditorConstructionOptions = {
     ...this.stdOutEditorOptions,
     language: "swift",
+    guides: { indentation: true },
   };
 
   sharing = false;
