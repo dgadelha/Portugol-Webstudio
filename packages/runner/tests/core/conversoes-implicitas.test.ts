@@ -13,6 +13,10 @@ const AUXILIARES = portugol`
     retorne a + b
   }
 
+  funcao real divideComoReal(inteiro a, inteiro b) {
+    retorne a / b
+  }
+
   funcao real recebeReal(real n) {
     retorne n
   }
@@ -146,6 +150,115 @@ describe("Conversões Implícitas", () => {
           ["8"],
         ),
       ).resolves.toBe("8.0");
+    });
+  });
+
+  // A conversão de 'inteiro' para 'real' acontece depois da operação, então uma
+  // divisão entre dois inteiros trunca mesmo quando o destino é real, como no
+  // Java gerado pelo Portugol Studio (issue #443)
+  describe("Divisão inteira antes da conversão", () => {
+    test("Trunca na declaração e na atribuição", async () => {
+      await expect(
+        runPortugolCode(
+          programa(portugol`
+            real r = 7 / 2
+            real s
+            s = 600 / 100
+            real t = 1 / 2
+            escreva(r, "|", s, "|", t)
+          `),
+        ),
+      ).resolves.toBe("3.0|6.0|0.0");
+    });
+
+    test("Trunca no retorno e no parâmetro", async () => {
+      await expect(
+        runPortugolCode(
+          programa(portugol`
+            escreva(divideComoReal(7, 2), "|", recebeReal(7 / 2), "|")
+            imprimeReal(7 / 2)
+          `),
+        ),
+      ).resolves.toBe("3.0|3.0|3.0");
+    });
+
+    test("Trunca em elementos de vetor e matriz", async () => {
+      await expect(
+        runPortugolCode(
+          programa(portugol`
+            real v[2]
+            real m[2][2]
+            v[0] = 7 / 2
+            m[0][0] = 7 / 2
+            escreva(v[0], "|", m[0][0])
+          `),
+        ),
+      ).resolves.toBe("3.0|3.0");
+    });
+
+    test("Trunca antes de continuar a expressão", async () => {
+      await expect(
+        runPortugolCode(
+          programa(portugol`
+            inteiro acertos = 7, total = 20
+            real porcentagem = acertos / total * 100
+            real media = (7 + 8 + 10) / 3
+            escreva(porcentagem, "|", media, "|", 10 / 4 * 4.0)
+          `),
+        ),
+      ).resolves.toBe("0.0|8.0|8.0");
+    });
+
+    test("Trunca na atribuição composta apenas entre inteiros", async () => {
+      await expect(
+        runPortugolCode(
+          programa(portugol`
+            inteiro i = 10
+            real r = 10
+            inteiro j = 10
+            i /= 3
+            r /= 3
+            j /= 3.0
+            escreva(i, "|", r, "|", j)
+          `),
+        ),
+      ).resolves.toBe("3|3.3333333333333335|3");
+    });
+
+    test("Não trunca quando um dos operandos é real", async () => {
+      await expect(
+        runPortugolCode(
+          programa(portugol`
+            real r = 7 / 2.0
+            real s = 7.0 / 2
+            escreva(r, "|", s, "|", 1 / 2.0)
+          `),
+        ),
+      ).resolves.toBe("3.5|3.5|0.5");
+    });
+
+    test("O inteiro já convertido para real divide sem truncar", async () => {
+      await expect(
+        runPortugolCode(
+          programa(portugol`
+            real v = 7
+            real w
+            w = 7
+            escreva(v / 2, "|", w / 2, "|", recebeReal(7) / 2)
+          `),
+        ),
+      ).resolves.toBe("3.5|3.5|3.5");
+    });
+
+    test("O real que recebeu uma divisão truncada continua real", async () => {
+      await expect(
+        runPortugolCode(
+          programa(portugol`
+            real r = 7 / 2
+            escreva(r, "|", r / 2, "|", r + 0.5)
+          `),
+        ),
+      ).resolves.toBe("3.0|1.5|3.5");
     });
   });
 });

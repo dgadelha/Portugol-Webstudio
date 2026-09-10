@@ -197,6 +197,26 @@ describe("Biblioteca: Util", () => {
       ).resolves.toBe("11");
     });
 
+    // O sorteio devolve um 'inteiro', então dividi-lo por outro inteiro trunca
+    // antes de o resultado virar 'real' (issue #443)
+    test("A divisão do sorteio por um inteiro trunca antes de virar real", async () => {
+      await expect(
+        runPortugolCode(
+          portugol`
+            programa {
+              inclua biblioteca Util
+
+              funcao inicio() {
+                real truncado = Util.sorteia(0, 600) / 1000
+                real exato = Util.sorteia(0, 600) / 1000.0
+                escreva(truncado, "|", exato >= 0.0 e exato <= 0.6)
+              }
+            }
+          `,
+        ),
+      ).resolves.toBe("0.0|verdadeiro");
+    });
+
     test("Mínimo maior que o máximo interrompe o programa", async () => {
       await expect(
         runPortugolCode(
