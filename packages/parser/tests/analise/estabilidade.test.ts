@@ -59,7 +59,8 @@ describe("PortugolCodeChecker não guarda estado entre chamadas", () => {
     }
   });
 
-  test("os exemplos oficiais dão o mesmo resultado em qualquer ordem", () => {
+  // São 60 análises de programas reais: passa do timeout padrão de 5s num runner de CI.
+  test("os exemplos oficiais dão o mesmo resultado em qualquer ordem", { timeout: 30_000 }, () => {
     const arquivos = globSync("**/*.por", { cwd: EXEMPLOS }).slice(0, 30);
     const ler = (arquivo: string) => readFileSync(path.join(EXEMPLOS, arquivo), "utf8");
 
