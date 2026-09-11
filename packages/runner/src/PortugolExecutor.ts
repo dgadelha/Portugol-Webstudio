@@ -120,7 +120,9 @@ export class PortugolExecutor {
         this.stdOut$.next(this.stdOut);
         this.#printTimes(times);
         this.reset(false);
-        this.events.next({ type: "parseError", errors: parseErrors });
+        // Todos os erros que barraram a execução, não só os sintáticos: quem ouve precisa
+        // saber por que o programa não rodou.
+        this.events.next({ type: "parseError", errors });
 
         return;
       }

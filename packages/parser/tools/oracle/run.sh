@@ -95,7 +95,9 @@ case "${1:-}" in
     ;;
 
   "")
-    executar - | grep -v "^### " || true
+    # `sed` em vez de `grep -v`: o grep sai 1 quando não sobra linha, e o `|| true` que
+    # isso exigia também engolia uma falha do java (pipefail).
+    executar - | sed '/^### /d'
     ;;
 
   *)

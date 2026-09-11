@@ -5,6 +5,7 @@ import { PortugolDiagnosticSeverity } from "@portugol-webstudio/antlr";
 import { describe, expect, test } from "vitest";
 
 import { PortugolCodeChecker } from "../../src";
+import { EXEMPLOS, temCorpus } from "../helpers/corpus.js";
 
 /**
  * A IDE mostra no editor os diagnósticos da mesma checagem que autoriza a execução, então
@@ -12,8 +13,6 @@ import { PortugolCodeChecker } from "../../src";
  * pior, deixaria de marcar em código inválido. Já aconteceu: `analisar()` desempilhava o
  * escopo global e a segunda chamada no mesmo analisador perdia todos os globais.
  */
-const EXEMPLOS = path.resolve(import.meta.dirname, "../../../resources/assets/exemplos");
-
 const VÁLIDO = `programa {\n  funcao inicio() {\n    escreva("ok")\n  }\n}`;
 const COM_ERRO = `programa {\n  funcao inicio() {\n    inteiro a = b\n  }\n}`;
 const COM_AVISO = `programa {\n  funcao inicio() {\n    inteiro a = 1.5\n    escreva(a)\n  }\n}`;
@@ -60,7 +59,7 @@ describe("PortugolCodeChecker não guarda estado entre chamadas", () => {
   });
 
   // São 60 análises de programas reais: passa do timeout padrão de 5s num runner de CI.
-  test("os exemplos oficiais dão o mesmo resultado em qualquer ordem", { timeout: 30_000 }, () => {
+  test.skipIf(!temCorpus)("os exemplos oficiais dão o mesmo resultado em qualquer ordem", { timeout: 30_000 }, () => {
     const arquivos = globSync("**/*.por", { cwd: EXEMPLOS }).slice(0, 30);
     const ler = (arquivo: string) => readFileSync(path.join(EXEMPLOS, arquivo), "utf8");
 
