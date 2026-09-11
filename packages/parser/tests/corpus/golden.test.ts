@@ -43,7 +43,8 @@ if (!temOráculo) {
 }
 
 describe.skipIf(!temOráculo)("Fixture do Portugol Studio", () => {
-  test("o golden ainda é o que o analisador do Portugol Studio devolve", () => {
+  // Sobe uma JVM e analisa os 119 exemplos: passa do timeout padrão de 5s num runner de CI.
+  test("o golden ainda é o que o analisador do Portugol Studio devolve", { timeout: 30_000 }, () => {
     const atual = execFileSync(RUN, ["--golden", "-"], { encoding: "utf8", maxBuffer: 32 * 1024 * 1024 });
 
     expect(atual).toBe(readFileSync(GOLDEN, "utf8"));
