@@ -1,15 +1,34 @@
 import {
   DecrementoUnarioPosfixadoContext,
+  DecrementoUnarioPrefixadoContext,
   IncrementoUnarioPosfixadoContext,
   IncrementoUnarioPrefixadoContext,
-  ReferenciaParaVariavelContext,
 } from "@portugol-webstudio/antlr";
+import { Token } from "antlr4ng";
 
 import { Expressão } from "./Expressão.js";
-import { ReferênciaVarExpr } from "./ReferênciaVarExpr.js";
+import { Node } from "./Node.js";
+import { ÍndiceArrayExpr } from "./ÍndiceArrayExpr.js";
 
 export class ExpressãoUnária<
-  T extends DecrementoUnarioPosfixadoContext | IncrementoUnarioPrefixadoContext | IncrementoUnarioPosfixadoContext,
+  T extends
+    | DecrementoUnarioPosfixadoContext
+    | DecrementoUnarioPrefixadoContext
+    | IncrementoUnarioPrefixadoContext
+    | IncrementoUnarioPosfixadoContext,
 > extends Expressão<T> {
-  variável = new ReferênciaVarExpr(this.ctx as unknown as ReferenciaParaVariavelContext);
+  nome = this.ctx.ID().getText();
+  nomeToken: Token = this.ctx.ID().symbol;
+
+  índices: ÍndiceArrayExpr[] = [];
+
+  addChild(child: Node) {
+    if (child instanceof ÍndiceArrayExpr) {
+      this.índices.push(child);
+    } else {
+      this.unexpectedChild(child);
+    }
+
+    this.children.push(child);
+  }
 }

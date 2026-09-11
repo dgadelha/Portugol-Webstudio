@@ -11,6 +11,8 @@ expect.addSnapshotSerializer({
       [PortugolDiagnosticSeverity.Information]: "I",
     };
 
-    return `${value.startLine}:${value.startCol}/${value.endLine}:${value.endCol} ${severityMap[value.severity]}: ${value.message}`;
+    const code = value.code ? ` [${value.code}]` : "";
+
+    return `${value.startLine}:${value.startCol}/${value.endLine}:${value.endCol} ${severityMap[value.severity]}${code}: ${value.message}`;
   },
 });

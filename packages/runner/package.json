@@ -34,6 +34,7 @@
   "scripts": {
     "build": "tsc",
     "build:w": "tsc -w",
+    "typecheck": "tsc -p tsconfig.spec.json --noEmit",
     "test:setup": "./tests/setup.sh",
     "pretest": "npm run test:setup",
     "test": "vitest"

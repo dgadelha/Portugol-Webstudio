@@ -2,6 +2,9 @@ name: Pull Request CI
 permissions:
   contents: read
 on: pull_request
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   lint:
     name: Build and Lint
@@ -14,6 +17,7 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: lts/*
+          cache: npm
 
       - name: Install dependencies 🔧
         run: npm ci --include=dev
@@ -25,6 +29,12 @@ jobs:
 
       - name: Lint 🚨
         run: npm run lint
+
+      - name: Typecheck 🔍
+        run: npm run typecheck
+
+      - name: Format 💅
+        run: npm run format:check
 
   test:
     name: Test (${{ matrix.shard }}/3)
@@ -41,6 +51,7 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: lts/*
+          cache: npm
 
       - name: Setup Java ☕
         uses: actions/setup-java@v5
@@ -54,11 +65,14 @@ jobs:
       - name: Build code 🚚
         run: npm run build
 
-      - name: Cache Portugol Console ☕
+      - name: Cache Portugol Studio JARs ☕
         uses: actions/cache@v6
         with:
           path: packages/runner/tests/assets
-          key: portugol-console-${{ hashFiles('packages/runner/tests/setup.sh') }}
+          key: portugol-studio-${{ hashFiles('packages/runner/tests/setup.sh') }}
+
+      - name: Download Portugol Studio JARs ☕
+        run: npm run test:setup -w @portugol-webstudio/runner
 
       - name: Run tests 🧪
         run: npm test -- --shard=${{ matrix.shard }}/3

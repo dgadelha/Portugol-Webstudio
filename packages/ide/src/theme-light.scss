@@ -19,7 +19,7 @@ $theme-colors: (
   "primary": $primary,
   "secondary": $secondary,
   "blue": $blue,
-  "red": $red
+  "red": $red,
 ) !default;
 
 /////////////////////
@@ -33,7 +33,7 @@ $foreground-300: #545454 !default;
 $theme-text-colors: (
   "100": $foreground-100,
   "200": $foreground-200,
-  "300": $foreground-300
+  "300": $foreground-300,
 ) !default;
 
 $body-color: #000 !default;
@@ -49,7 +49,7 @@ $background-300: #e0e0e0 !default;
 $theme-background-colors: (
   "100": $background-100,
   "200": $background-200,
-  "300": $background-300
+  "300": $background-300,
 ) !default;
 
 $body-bg: $background-100 !default;
@@ -129,5 +129,5 @@ $theme: (
   "$font-family": $font-family,
   "$body-bg": $body-bg,
   "$body-color": $body-color,
-  "$border-color": $border-color
+  "$border-color": $border-color,
 );

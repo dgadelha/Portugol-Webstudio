@@ -16,6 +16,7 @@ function mapError(error) {
     startCol: error.startCol,
     endLine: error.endLine,
     endCol: error.endCol,
+    code: error.code,
   };
 }
 

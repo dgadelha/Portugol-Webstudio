@@ -78,7 +78,8 @@
       }
     }
 
-    &.tab-action, &.tab-item {
+    &.tab-action,
+    &.tab-item {
       padding-right: 0;
 
       &:not(.mdc-tab--active) {

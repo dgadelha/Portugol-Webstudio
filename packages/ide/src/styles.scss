@@ -97,7 +97,8 @@ markdown {
     border-left: 0.25rem solid var(--pws-color-secondary);
   }
 
-  a, a:visited {
+  a,
+  a:visited {
     color: var(--pws-color-secondary);
     text-decoration: none;
 

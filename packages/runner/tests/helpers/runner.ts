@@ -3,7 +3,7 @@ import { PortugolJs } from "@portugol-webstudio/runtime";
 import childp from "node:child_process";
 import { randomUUID } from "node:crypto";
 import { once } from "node:events";
-import { existsSync } from "node:fs";
+import { globSync } from "node:fs";
 import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { PortugolWorkerThreadsRunner } from "../../src";
@@ -23,11 +23,13 @@ class InputsRemainingError extends Error {
 }
 
 const assetsDir = path.join(import.meta.dirname, "..", "assets");
-const portugolConsoleJar = path.join(assetsDir, "portugol-console-2.7.5.jar");
-const temPortugolCli = existsSync(portugolConsoleJar);
+const portugolConsoleJar = globSync("portugol-console-*.jar", { cwd: assetsDir })
+  .filter(jar => !jar.endsWith("-sources.jar"))
+  .map(jar => path.join(assetsDir, jar))[0];
+const temPortugolCli = portugolConsoleJar !== undefined;
 
 if (!temPortugolCli) {
-  const aviso = `Portugol Console não encontrado em ${portugolConsoleJar}. Execute tests/setup.sh para comparar a saída com a do Portugol Studio.`;
+  const aviso = `Portugol Console não encontrado em ${assetsDir}. Execute tests/setup.sh para comparar a saída com a do Portugol Studio.`;
 
   if (process.env.CI) {
     throw new Error(aviso);

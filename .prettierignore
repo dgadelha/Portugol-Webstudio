@@ -1,0 +1,16 @@
+# Espelha os `ignores` do eslint.config.mjs, mais o que o git já ignora.
+node_modules/
+.angular/
+packages/**/coverage/
+packages/**/lib/
+packages/**/dist/
+packages/**/node_modules/
+package-lock.json
+
+# Arquivos gerados:
+packages/antlr/src/Portugol*.ts
+packages/parser/src/bibliotecas/*.gerado.ts
+packages/parser/tests/fixtures/
+packages/resources/assets/
+packages/resources/recursos.temp/
+packages/ide/src/index.html

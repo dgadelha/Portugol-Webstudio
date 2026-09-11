@@ -1,4 +1,5 @@
 import { bibliotecas } from "@portugol-recursos/bibliotecas";
+import { BIBLIOTECAS_IMPLEMENTADAS } from "@portugol-webstudio/parser";
 import { TreeItem } from "./types";
 
 const dimensãoMap = {
@@ -69,7 +70,7 @@ function getFunctionSource(func: (typeof bibliotecas)[0]["funções"][0]) {
     .join("\n");
 }
 
-const bibliotecasWebstudio = new Set(["Calendario", "Graficos", "Matematica", "Objetos", "Texto", "Tipos", "Util"]);
+const bibliotecasWebstudio = new Set<string>(BIBLIOTECAS_IMPLEMENTADAS);
 
 // Código temporário até a Ajuda inteira ser em markdown também
 export const libsTree: TreeItem = {

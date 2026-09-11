@@ -26,8 +26,11 @@
   ],
   "scripts": {
     "lint": "sherif && npm run eslint:check",
-    "eslint:fix": "eslint --fix 'packages/**/*.{ts,js,html}'",
-    "eslint:check": "eslint 'packages/**/*.{ts,js,html}'",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "eslint:fix": "eslint --fix 'packages/**/*.{ts,js,mjs,html}'",
+    "eslint:check": "eslint 'packages/**/*.{ts,js,mjs,html}'",
+    "typecheck": "lerna run typecheck",
     "start": "lerna run start --scope=@portugol-webstudio/ide",
     "build": "lerna run build",
     "build:w": "lerna run --parallel build:w",

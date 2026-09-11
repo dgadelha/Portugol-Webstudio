@@ -25,25 +25,47 @@ export interface IPortugolCodeDiagnostic {
   startCol: number;
   endLine: number;
   endCol: number;
+  code?: string;
 }
+
+/**
+ * O token isolado é para quando o diagnóstico aponta exatamente o nome de um símbolo.
+ */
+export type PortugolDiagnosticContext = ParseTree | Token;
 
 export class PortugolCodeDiagnostic extends Error implements IPortugolCodeDiagnostic {
   constructor(
     public readonly severity: PortugolDiagnosticSeverity,
     public readonly message: string,
-    public readonly context: ParseTree,
+    public readonly context: PortugolDiagnosticContext,
     public readonly startLine: number,
     public readonly startCol: number,
     public readonly endLine: number,
     public readonly endCol: number,
+    public readonly code?: string,
   ) {
     super(message);
+  }
+
+  static fromTokens(
+    start: Token,
+    stop: Token,
+    message: string,
+    severity: PortugolDiagnosticSeverity = PortugolDiagnosticSeverity.Error,
+    code?: string,
+  ) {
+    // `endCol` é a coluna (base 0) do último caractere, *inclusive*: é o que a IDE assume ao
+    // converter para o intervalo do Monaco, que é exclusivo e base 1 (`endCol + 2`).
+    const endCol = stop.column + Math.max((stop.text ?? "").length, 1) - 1;
+
+    return new PortugolCodeDiagnostic(severity, message, start, start.line, start.column, stop.line, endCol, code);
   }
 
   static fromContext(
     ctx: ParseTree,
     message: string,
     severity: PortugolDiagnosticSeverity = PortugolDiagnosticSeverity.Error,
+    code?: string,
   ) {
     let possibleContext = ctx;
 
@@ -60,7 +82,7 @@ export class PortugolCodeDiagnostic extends Error implements IPortugolCodeDiagno
     }
 
     if (!possibleContext) {
-      return new PortugolCodeDiagnostic(severity, message, ctx, 1, 0, 9999, 0);
+      return new PortugolCodeDiagnostic(severity, message, ctx, 1, 0, 9999, 0, code);
     }
 
     if (
@@ -79,7 +101,7 @@ export class PortugolCodeDiagnostic extends Error implements IPortugolCodeDiagno
           endCol += ctx.getText().length - 1;
         }
 
-        return new PortugolCodeDiagnostic(severity, message, ctx, startLine, startCol, endLine, endCol);
+        return new PortugolCodeDiagnostic(severity, message, ctx, startLine, startCol, endLine, endCol, code);
       }
 
       return new PortugolCodeDiagnostic(
@@ -89,7 +111,8 @@ export class PortugolCodeDiagnostic extends Error implements IPortugolCodeDiagno
         Math.max(startLine - 1, 1),
         startCol,
         startLine,
-        startCol + ctx.getText().length,
+        startCol + Math.max(ctx.getText().length, 1) - 1,
+        code,
       );
     }
 
@@ -99,15 +122,24 @@ export class PortugolCodeDiagnostic extends Error implements IPortugolCodeDiagno
       if (possibleSymbol && Object.hasOwn(possibleSymbol, "column") && Object.hasOwn(possibleSymbol, "line")) {
         const { line, column } = possibleSymbol as unknown as Token;
 
-        return new PortugolCodeDiagnostic(severity, message, ctx, line, column, line, column + ctx.getText().length);
+        return new PortugolCodeDiagnostic(
+          severity,
+          message,
+          ctx,
+          line,
+          column,
+          line,
+          column + ctx.getText().length,
+          code,
+        );
       }
     }
 
     if (Object.hasOwn(ctx, "getText") && typeof ctx.getText === "function") {
-      return new PortugolCodeDiagnostic(severity, message, ctx, 1, 1, 1, 2 + ctx.getText().length);
+      return new PortugolCodeDiagnostic(severity, message, ctx, 1, 1, 1, 2 + ctx.getText().length, code);
     }
 
-    return new PortugolCodeDiagnostic(severity, message, ctx, 1, 0, 9999, 0);
+    return new PortugolCodeDiagnostic(severity, message, ctx, 1, 0, 9999, 0, code);
   }
 }
 

@@ -26,7 +26,8 @@
     "start": "ng serve",
     "release": "ng build",
     "watch": "ng build --watch --configuration development",
-    "lint": "ng lint"
+    "lint": "ng lint",
+    "typecheck": "tsc -p tsconfig.spec.json --noEmit"
   },
   "dependencies": {
     "@angular/animations": "^22.1.5",
@@ -43,7 +44,7 @@
     "@materia-ui/ngx-monaco-editor": "^6.0.0",
     "@mdi/svg": "^7.4.47",
     "@ngxpert/hot-toast": "^7.0.0",
-    "@portugol-recursos/bibliotecas": "^0.0.0-dev.6",
+    "@portugol-recursos/bibliotecas": "^0.0.0-dev.8",
     "@portugol-webstudio/antlr": "*",
     "@portugol-webstudio/parser": "*",
     "@portugol-webstudio/resources": "*",

@@ -72,7 +72,6 @@ export class PortugolExecutor {
     } catch {}
 
     this.runTranspiled({
-      code,
       js,
       diagnostics,
       parseErrors,
@@ -86,13 +85,11 @@ export class PortugolExecutor {
   #printTimes(_times: { check: number; transpile: number; execution?: number }) {}
 
   runTranspiled({
-    code,
     js,
     diagnostics,
     parseErrors,
     times,
   }: {
-    code: string;
     js: string;
     diagnostics: IPortugolCodeDiagnostic[];
     parseErrors: IPortugolCodeDiagnostic[];
@@ -101,45 +98,31 @@ export class PortugolExecutor {
     try {
       this.reset();
 
-      if (parseErrors.length > 0) {
-        throw new Error("Parse errors");
-      }
-
-      const errors = diagnostics.filter(d => d.severity === PortugolDiagnosticSeverity.Error);
+      /**
+       * Como o Portugol Studio: código com erro de compilação não executa. Os erros vão para
+       * a saída porque nem todo cliente do runner tem um editor que os mostre. Erro de
+       * sintaxe vem primeiro: se o arquivo nem analisou, o resto é consequência.
+       */
+      const errors = [
+        ...parseErrors,
+        ...diagnostics.filter(diagnostic => diagnostic.severity === PortugolDiagnosticSeverity.Error),
+      ];
 
       if (errors.length > 0) {
-        const argueAboutAlgolIfNeeded = () => {
-          if (
-            ["fimalgoritmo", "fimenquanto", "fimpara", "fimse", "fimfuncao"].some(keyword => code.includes(keyword))
-          ) {
-            this.stdOut += `\n`;
-            this.stdOut += `╔═════════════════════════════════════╗\n`;
-            this.stdOut += `║               ATENÇÃO               ║\n`;
-            this.stdOut += `║                                     ║\n`;
-            this.stdOut += `║ Foi detectado que o seu código está ║\n`;
-            this.stdOut += `║ usando o Portugol no formato Algol. ║\n`;
-            this.stdOut += `║ O Portugol Webstudio dá suporte ao  ║\n`;
-            this.stdOut += `║ Portugol no formato definido pela   ║\n`;
-            this.stdOut += `║ UNIVALI. Por favor, leia mais sobre ║\n`;
-            this.stdOut += `║ na seção Ajuda.                     ║\n`;
-            this.stdOut += `╚═════════════════════════════════════╝\n\n`;
-          }
-        };
+        const plural = errors.length > 1 ? "s" : "";
 
-        argueAboutAlgolIfNeeded();
+        this.stdOut += `⛔ O seu código possui ${errors.length} erro${plural} de compilação e não foi executado:\n\n`;
 
-        this.stdOut += `⛔ O seu código possui ${errors.length} erro${errors.length > 1 ? "s" : ""} de compilação:\n`;
         this.stdOut += errors
-          .map(error => `   - ${error.message} (linha ${error.startLine}, posição ${error.startCol})\n`)
+          .map(error => `ERRO: ${error.message} (linha ${error.startLine}, coluna ${error.startCol})\n`)
           .join("");
 
-        this.stdOut +=
-          "\n⚠️ Estamos aprimorando a detecção de erros. Seu código será executado mesmo com erros, mas se não forem corrigidos, a execução pode exibir mensagens de erro em inglês ou sem explicação.\n";
-
-        argueAboutAlgolIfNeeded();
-
-        this.stdOut += "- O seu programa irá iniciar abaixo -\n";
         this.stdOut$.next(this.stdOut);
+        this.#printTimes(times);
+        this.reset(false);
+        this.events.next({ type: "parseError", errors: parseErrors });
+
+        return;
       }
 
       // @ts-expect-error

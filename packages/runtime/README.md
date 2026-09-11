@@ -30,6 +30,8 @@ const jsCode = new PortugolJs().visit(tree);
 
 Exemplo de código transpilado pelo código acima:
 
+<!-- Saída literal do transpilador: formatar apagaria os parênteses que a tornam uma expressão. -->
+<!-- prettier-ignore -->
 ```javascript
 (async (initScope) => {
   const runtime = new PortugolRuntime(initScope);

@@ -62,6 +62,18 @@ export default defineConfig(
     },
   },
   {
+    // As ferramentas do parser são .mjs tipados por JSDoc; só o tsconfig.spec.json do
+    // pacote liga `allowJs`, sem o qual os testes não resolvem o que importam delas.
+    files: ["packages/parser/**/*.ts"],
+    languageOptions: {
+      parserOptions: {
+        project: ["packages/parser/tsconfig.spec.json"],
+        // @ts-expect-error - esm
+        tsconfigDirName: import.meta.dirname,
+      },
+    },
+  },
+  {
     ignores: [
       "node_modules/",
       ".angular/",
@@ -71,6 +83,7 @@ export default defineConfig(
       "packages/**/node_modules/",
       // Arquivos gerados:
       "packages/antlr/src/Portugol*.ts",
+      "packages/parser/src/bibliotecas/*.gerado.ts",
       "packages/resources/assets/",
       "packages/resources/recursos.temp/",
       "packages/ide/src/index.html",
