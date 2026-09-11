@@ -1,0 +1,7 @@
+{
+  "extends": "../tsconfig.spec.json",
+  "compilerOptions": {
+    "noEmit": true
+  },
+  "include": ["**/*.mjs"]
+}

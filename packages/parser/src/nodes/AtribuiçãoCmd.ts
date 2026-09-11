@@ -1,30 +1,24 @@
 import { ParseTree } from "antlr4ng";
 
-import { invariant } from "../helpers/nodes.js";
 import { Comando } from "./Comando.js";
 import { Expressão } from "./Expressão.js";
 import { Node } from "./Node.js";
-import { ReferênciaArrayExpr } from "./ReferênciaArrayExpr.js";
-import { ReferênciaMatrizExpr } from "./ReferênciaMatrizExpr.js";
-import { ReferênciaVarExpr } from "./ReferênciaVarExpr.js";
 
 export class AtribuiçãoCmd<T extends ParseTree = ParseTree> extends Comando<T> {
-  variável!: ReferênciaVarExpr | ReferênciaArrayExpr | ReferênciaMatrizExpr;
-  expressão!: Expressão;
+  esquerda!: Expressão;
+  direita!: Expressão;
 
   addChild(child: Node) {
-    super.addChild(child);
+    if (child instanceof Expressão) {
+      if (this.esquerda) {
+        if (this.direita) {
+          this.unexpectedChild(child);
+        }
 
-    if (
-      (child instanceof ReferênciaVarExpr ||
-        child instanceof ReferênciaArrayExpr ||
-        child instanceof ReferênciaMatrizExpr) &&
-      !this.variável
-    ) {
-      this.variável = child;
-    } else if (child instanceof Expressão) {
-      invariant(!this.expressão, child.ctx, "Expressão já definida");
-      this.expressão = child;
+        this.direita = child;
+      } else {
+        this.esquerda = child;
+      }
     } else {
       this.unexpectedChild(child);
     }

@@ -8,12 +8,15 @@ import { Node } from "./Node.js";
 
 export class CasoCmd extends Comando<CasoContext> {
   condição!: Expressão;
+  contrário: boolean;
   instruções: Array<Expressão | Comando> = [];
 
   constructor(public ctx: CasoContext) {
     super(ctx);
 
     const contrárioCtx = ctx.CONTRARIO();
+
+    this.contrário = Boolean(contrárioCtx);
 
     if (contrárioCtx) {
       this.condição = new CasoContrárioExpr(contrárioCtx);

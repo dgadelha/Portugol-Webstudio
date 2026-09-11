@@ -33,13 +33,16 @@
   "scripts": {
     "build": "tsc",
     "build:w": "tsc -w",
+    "typecheck": "tsc -p tsconfig.spec.json --noEmit",
     "test": "vitest"
   },
   "dependencies": {
+    "@portugol-recursos/bibliotecas": "^0.0.0-dev.8",
     "@portugol-webstudio/antlr": "*",
     "antlr4ng": "^3.0.16"
   },
   "devDependencies": {
+    "@types/node": "^26.4.1",
     "@vitest/coverage-v8": "^5.0.0",
     "typescript": "~6.0.3",
     "vitest": "^5.0.0"

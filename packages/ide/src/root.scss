@@ -7,7 +7,7 @@
 
 $theme-modes: (
   "light": theme-light.$theme,
-  "dark": theme-dark.$theme
+  "dark": theme-dark.$theme,
 );
 
 @each $key, $theme in $theme-modes {

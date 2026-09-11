@@ -1,30 +1,47 @@
 #!/bin/sh
 set -e
 
-DIR=$(dirname "$0")
-JAR="$DIR/assets/portugol-console-2.7.5.jar"
+# Baixa os dois programas de referência do Portugol Studio, que vêm no mesmo arquivo
+# (https://github.com/portugol-webstudio/Portugol-Studio): o portugol-console, com cuja
+# saída a suíte deste pacote compara a do nosso runtime, e o portugol-analisador, usado
+# pelo oracle do packages/parser (tools/oracle/run.sh).
+#
+# Para atualizar a referência, mude estas duas linhas: a versão dos jars vem no tar.
+RELEASE="2026-09-07"
+ARQUIVO="portugol.tar"
 
-if [ -f "$JAR" ]; then
+DIR=$(dirname "$0")
+# O `-sources.jar` vem no mesmo tar e ordena *antes* do jar real (`-` < `.`), então sem o
+# filtro qualquer busca por nome acha só o de fontes.
+existe_jar() {
+  ls "$DIR"/assets/portugol-"$1"-*.jar 2> /dev/null | grep -qv -- '-sources\.jar$'
+}
+
+if existe_jar console; then
   echo "Portugol Console JAR already exists in assets. Skipping download."
   exit 0
 fi
 
-echo "Downloading Portugol Console JAR..."
+echo "Downloading Portugol Studio JARs..."
 
 mkdir -p "$DIR/assets"
 
-# Uma falha de rede não deve impedir a suíte de rodar: sem o JAR os testes
-# apenas deixam de comparar com o Portugol Studio
-if ! curl -fL -o "$DIR/assets/console.tar" "https://github.com/portugol-webstudio/Portugol-Studio/releases/download/2026-04-24/console.tar"; then
-  echo "Could not download the Portugol Console JAR. Tests will run without comparing to Portugol Studio." >&2
-  rm -f "$DIR/assets/console.tar"
+# Uma falha de rede não deve impedir a suíte de rodar: sem o JAR os testes apenas deixam
+# de comparar com o Portugol Studio.
+if ! curl -fL -o "$DIR/assets/$ARQUIVO" "https://github.com/portugol-webstudio/Portugol-Studio/releases/download/$RELEASE/$ARQUIVO"; then
+  echo "Could not download the Portugol Studio JARs. Tests will run without comparing to Portugol Studio." >&2
+  rm -f "$DIR/assets/$ARQUIVO"
   exit 0
 fi
 
-tar -xf "$DIR/assets/console.tar" -C "$DIR/assets"
-rm "$DIR/assets/console.tar"
+tar -xf "$DIR/assets/$ARQUIVO" -C "$DIR/assets"
+rm "$DIR/assets/$ARQUIVO"
 
-if [ ! -f "$JAR" ]; then
-  echo "Portugol Console JAR not found after extraction: $JAR" >&2
+if ! existe_jar console; then
+  echo "Portugol Console JAR not found after extracting $ARQUIVO" >&2
   exit 1
+fi
+
+if ! existe_jar analisador; then
+  echo "Warning: portugol-analisador-*.jar was not included in this release. The parser oracle will not work." >&2
 fi

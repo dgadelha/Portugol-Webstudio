@@ -2,6 +2,11 @@ import { ParseTree } from "antlr4ng";
 
 import { ParseError } from "../helpers/ParseError.js";
 
+/**
+ * `abstract new` para as tabelas poderem casar também as classes-base (`ExpressãoMatemática`).
+ */
+export type Construtor = abstract new (...args: any[]) => Node;
+
 export abstract class Node<T extends ParseTree = ParseTree> {
   children: Node[] = [];
 

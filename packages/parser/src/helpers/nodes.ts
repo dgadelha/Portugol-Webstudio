@@ -1,7 +1,6 @@
 import { ParseTree } from "antlr4ng";
 
 import { ParseError } from "./ParseError.js";
-import { Node } from "../nodes/index.js";
 
 export function getAllChildrenFromContext(ctx: ParseTree | null) {
   if (!ctx) {
@@ -17,10 +16,6 @@ export function getAllChildrenFromContext(ctx: ParseTree | null) {
   }
 
   return children;
-}
-
-export function getAllChildrenFromNode(node: Node): Node[] {
-  return node.children.flatMap(child => [child, ...getAllChildrenFromNode(child)]);
 }
 
 export function invariant(condition: any, ctx: ParseTree, message?: string): asserts condition {

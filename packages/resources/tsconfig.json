@@ -2,7 +2,7 @@
   "extends": "../../tsconfig.json",
   "ts-node": {
     "rootDir": "./src",
-    "swc": true,
+    "swc": true
   },
   "files": ["src/atualizar.ts"]
 }
