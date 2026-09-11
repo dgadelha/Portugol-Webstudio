@@ -6,6 +6,7 @@ import { describe, expect, test } from "vitest";
 
 import { éDoWebstudio, PortugolCodeChecker } from "../../src";
 import { lerGolden, linhasDeErro } from "../../tools/golden.mjs";
+import { EXEMPLOS, temCorpus } from "../helpers/corpus.js";
 
 /**
  * Compara a nossa análise dos 119 exemplos oficiais com a do Portugol Studio, gravada em
@@ -18,29 +19,29 @@ import { lerGolden, linhasDeErro } from "../../tools/golden.mjs";
  * `ErroSimboloNaoInicializado` do Portugol Studio embute um exemplo sorteado e não é
  * determinístico.
  */
-const RAIZ = path.resolve(import.meta.dirname, "../../../..");
-const EXEMPLOS = path.join(RAIZ, "packages/resources/assets/exemplos");
 
 const golden = lerGolden();
 
-const resultados = [...golden].map(([arquivo, entradas]) => {
-  const resultado = PortugolCodeChecker.checkCode(readFileSync(path.join(EXEMPLOS, arquivo), "utf8"), {
-    avisosDeUso: false,
-  });
+const resultados = temCorpus
+  ? [...golden].map(([arquivo, entradas]) => {
+      const resultado = PortugolCodeChecker.checkCode(readFileSync(path.join(EXEMPLOS, arquivo), "utf8"), {
+        avisosDeUso: false,
+      });
 
-  return {
-    arquivo,
-    resultado,
-    linhasPs: linhasDeErro(entradas),
-    erros: resultado.diagnostics.filter(diagnóstico => {
-      // Os códigos do Webstudio ficam fora do diferencial de propósito: o Portugol
-      // Studio aceita o programa, o nosso runtime não sabe executá-lo.
-      return diagnóstico.severity === PortugolDiagnosticSeverity.Error && !éDoWebstudio(diagnóstico.code);
-    }),
-  };
-});
+      return {
+        arquivo,
+        resultado,
+        linhasPs: linhasDeErro(entradas),
+        erros: resultado.diagnostics.filter(diagnóstico => {
+          // Os códigos do Webstudio ficam fora do diferencial de propósito: o Portugol
+          // Studio aceita o programa, o nosso runtime não sabe executá-lo.
+          return diagnóstico.severity === PortugolDiagnosticSeverity.Error && !éDoWebstudio(diagnóstico.code);
+        }),
+      };
+    })
+  : [];
 
-describe("Corpus dos exemplos oficiais", () => {
+describe.skipIf(!temCorpus)("Corpus dos exemplos oficiais", () => {
   test("o golden cobre exatamente os exemplos que existem no disco", () => {
     expect(golden.size).toBe(119);
     expect(globSync("**/*.por", { cwd: EXEMPLOS })).toHaveLength(119);

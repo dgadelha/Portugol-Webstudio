@@ -5,6 +5,8 @@ import process from "node:process";
 
 import { describe, expect, test } from "vitest";
 
+import { temCorpus } from "../helpers/corpus.js";
+
 /**
  * O golden é um cache da resposta do Java: `diferencial.test.ts` roda contra ele sem
  * precisar de JVM. Esta guarda confere que o cache continua batendo com o analisador de
@@ -28,7 +30,7 @@ function temJava() {
 
 const temAnalisador = globSync("portugol-analisador-*.jar", { cwd: ASSETS }).some(jar => !jar.endsWith("-sources.jar"));
 
-const temOráculo = temAnalisador && temJava();
+const temOráculo = temCorpus && temAnalisador && temJava();
 
 if (!temOráculo) {
   const aviso = `Oracle indisponível (precisa de java no PATH e de portugol-analisador-*.jar em ${ASSETS}). Execute tests/setup.sh do runner.`;

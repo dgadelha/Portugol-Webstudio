@@ -11,14 +11,23 @@ RELEASE="2026-09-07"
 ARQUIVO="portugol.tar"
 
 DIR=$(dirname "$0")
+MARCA="$DIR/assets/.release"
+
 # O `-sources.jar` vem no mesmo tar e ordena *antes* do jar real (`-` < `.`), então sem o
 # filtro qualquer busca por nome acha só o de fontes.
 existe_jar() {
   ls "$DIR"/assets/portugol-"$1"-*.jar 2> /dev/null | grep -qv -- '-sources\.jar$'
 }
 
-if existe_jar console; then
-  echo "Portugol Console JAR already exists in assets. Skipping download."
+# O marcador diz de qual release os assets vieram. Sem ele, um checkout com os JARs de um
+# release anterior — ou de quando o tar só trazia o console — ficaria na versão velha para
+# sempre, porque o nome dos JARs casa com o curinga de qualquer jeito.
+atualizado() {
+  [ -f "$MARCA" ] && [ "$(cat "$MARCA")" = "$RELEASE" ] && existe_jar console && [ -d "$DIR/assets/lib" ]
+}
+
+if atualizado; then
+  echo "Portugol Studio JARs from $RELEASE already exist in assets. Skipping download."
   exit 0
 fi
 
@@ -34,6 +43,9 @@ if ! curl -fL -o "$DIR/assets/$ARQUIVO" "https://github.com/portugol-webstudio/P
   exit 0
 fi
 
+# Sai o do release anterior: os JARs são versionados no nome, então conviveriam.
+rm -rf "$DIR"/assets/portugol-*.jar "$DIR/assets/lib" "$MARCA"
+
 tar -xf "$DIR/assets/$ARQUIVO" -C "$DIR/assets"
 rm "$DIR/assets/$ARQUIVO"
 
@@ -45,3 +57,5 @@ fi
 if ! existe_jar analisador; then
   echo "Warning: portugol-analisador-*.jar was not included in this release. The parser oracle will not work." >&2
 fi
+
+echo "$RELEASE" > "$MARCA"

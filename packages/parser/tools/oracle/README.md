@@ -70,9 +70,9 @@ node packages/parser/tools/corpus.mjs --diferencial # compara com o golden
 
 `--diferencial` usa `tests/fixtures/portugol-studio.golden.txt` (não precisa de Java) e reporta
 **falso positivo** — erro nosso numa linha em que o Portugol Studio não acusa nada — e falso
-negativo. Falso positivo é o que importa: o `PortugolExecutor` lista os erros de compilação antes
-de rodar (e roda assim mesmo — só `parseErrors` impede a execução), então um erro a mais faz o
-aluno ver um problema inventado num programa que funciona.
+negativo. Falso positivo é o que importa: como no Portugol Studio, o `PortugolExecutor` recusa
+executar um programa com erro de compilação e lista os erros na saída — então um erro inventado
+nosso impede de rodar um programa que funciona.
 
 ### `--bibliotecas`
 
