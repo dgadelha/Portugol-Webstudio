@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1789095074291,
+  "timestamp": 1789430232315,
   "index": "/index.html",
   "assetGroups": [
     {
@@ -13,7 +13,7 @@
       "urls": [
         "/favicon.ico",
         "/index.html",
-        "/main-WEWLFT4U.js",
+        "/main-VU6HUHT4.js",
         "/manifest.webmanifest",
         "/polyfills-QWJLBG44.js",
         "/styles-HLDNFH32.css"
@@ -79,8 +79,8 @@
         "/assets/mdi/share-variant-outline.svg",
         "/assets/mdi/square-rounded-outline.svg",
         "/assets/portugol-worker/worker-manifest.ts",
-        "/assets/portugol-worker/worker.7da5ab34ef48be7f1d70.js",
-        "/assets/portugol-worker/worker.7da5ab34ef48be7f1d70.js.map",
+        "/assets/portugol-worker/worker.a6c8c30d1ec1ae377365.js",
+        "/assets/portugol-worker/worker.a6c8c30d1ec1ae377365.js.map",
         "/assets/recursos/ajuda/estilos/SyntaxHighlighter.css",
         "/assets/recursos/ajuda/estilos/ajuda.css",
         "/assets/recursos/ajuda/estilos/index.css",
@@ -1127,9 +1127,9 @@
     "/assets/monaco-editor/min/vs/workers-BBttULjf.js": "ed24759e71b8eaa7188d435003c340dcc578f95f",
     "/assets/monaco-editor/min/vs/xml-cZjNDqDT.js": "731fc04735d2b5a7a4302922f30e31ea42fd839a",
     "/assets/monaco-editor/min/vs/yaml-A1fOIdH6.js": "b280672e4719e11080277d8d902de7e66cea69b6",
-    "/assets/portugol-worker/worker-manifest.ts": "574257e4e3d1143fec7fdfc444ac62d938dad6b3",
-    "/assets/portugol-worker/worker.7da5ab34ef48be7f1d70.js": "3e9d9f06c6d704f178c8bedbfd8572636d5aaf30",
-    "/assets/portugol-worker/worker.7da5ab34ef48be7f1d70.js.map": "12357e911c7fe2ba334a0b80b9f2934c19250e8c",
+    "/assets/portugol-worker/worker-manifest.ts": "3fe8e090ac0d44aa132965555931e99b2aa008f1",
+    "/assets/portugol-worker/worker.a6c8c30d1ec1ae377365.js": "3f71d327948b50c6758294866bb0d5bfda94788e",
+    "/assets/portugol-worker/worker.a6c8c30d1ec1ae377365.js.map": "03cb1944bc4c017955e911c887afa8cb0cffed1b",
     "/assets/recursos/ajuda/estilos/SyntaxHighlighter.css": "4162675b3b4d2354973021572bfd4685deb6712d",
     "/assets/recursos/ajuda/estilos/ajuda.css": "9e6ad574f9fa6c48d6f856756016eac3c1a5686b",
     "/assets/recursos/ajuda/estilos/index.css": "df28a87aa49702297859fb7900c44f8250da8786",
@@ -1808,8 +1808,8 @@
     "/assets/recursos/exercicios/exercicio60.pex": "6082892362c640c5b7c9e63b12d6594dab32128d",
     "/assets/recursos/exercicios/schema.xsd": "cd13152ea836b1eed121a6972a619f595ac5d46c",
     "/favicon.ico": "a3dadb5b6906874517b9a2bc021bb3f154290edd",
-    "/index.html": "a298a0d37d436ca0a78a2d7ae331c7c87bd1e968",
-    "/main-WEWLFT4U.js": "af3762f5ec1840e452014a0a1bad7ee3607fab65",
+    "/index.html": "d71598cef783e959223da7d30d645c025dcfcddf",
+    "/main-VU6HUHT4.js": "ac7ebfeb192b60826354de5c3b4851d7f88ba8d1",
     "/manifest.webmanifest": "bbfd674042155ddb102be018a75422fd949cb37f",
     "/polyfills-QWJLBG44.js": "33f7dd4398dd098623aa482402f748d27f996df0",
     "/styles-HLDNFH32.css": "91f0a1f9c4ee9c76f9879d078f2aa1507762b6b2"
