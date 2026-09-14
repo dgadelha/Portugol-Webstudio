@@ -92,6 +92,8 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
 
   private currentReturnType: string | null = null;
 
+  private alvo = false;
+
   /**
    * O Portugol Studio traduz `x++` para o texto `x = x + 1` e deixa o compilador
    * Java reanalisar a expressão inteira. Como a atribuição é o operator de menor
@@ -257,6 +259,49 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     return sb.toString();
   }
 
+  /**
+   * O acesso à variável em si, sem a cópia do valor: é o que a atribuição
+   * precisa para conseguir alterá-la.
+   */
+  private acesso(ctx: ReferenciaParaVariavelContext | ReferenciaArrayContext | ReferenciaMatrizContext) {
+    const libScope = ctx.escopoBiblioteca()?.ID();
+
+    if (libScope) {
+      return `runtime.libs[runtime.globalScope.libAliases["${libScope.getText()}"]]["${ctx.ID().getText()}"]`;
+    }
+
+    return `scope.variables["${ctx.ID().getText()}"]`;
+  }
+
+  /**
+   * Ler uma variável numa expressão devolve o valor que ela tinha naquele
+   * instante, como no Java, e não um vínculo com a variável — daí a cópia do
+   * runtime.value() em volta de toda referência que não seja alvo de atribuição.
+   */
+  private leitura(): [string, string] {
+    const alvo = this.alvo;
+
+    // A marca vale apenas para a referência mais externa: os índices que vêm
+    // dentro dela são expressões comuns e continuam sendo lidos por valor
+    this.alvo = false;
+
+    return alvo ? ["", ""] : ["runtime.value(", ")"];
+  }
+
+  /**
+   * Marca a referência que vem a seguir como alvo de uma atribuição, e não como
+   * uma leitura.
+   */
+  private visitAlvo(ctx: ParserRuleContext) {
+    this.alvo = true;
+
+    try {
+      return this.visit(ctx);
+    } finally {
+      this.alvo = false;
+    }
+  }
+
   private static parseExpression(texto: string) {
     try {
       const lexer = new PortugolLexer(CharStream.fromString(texto));
@@ -279,6 +324,7 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
       return null;
     }
   }
+
   DEBUG(fn: string, _ctx: unknown) {
     if (!this.debug) {
       return ``;
@@ -347,10 +393,10 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
 
   visitReferenciaArray(ctx: ReferenciaArrayContext) {
     const sb = new StringBuilder();
+    const [abre, fecha] = this.leitura();
 
     sb.append(this.DEBUG(`visitReferenciaArray`, ctx));
-    sb.append(this.visitReferenciaParaVariavel(ctx).trimEnd());
-    sb.append(`.value[\n`);
+    sb.append(this.PAD(), abre, this.acesso(ctx), `.value[`, `\n`);
 
     this.pad++;
 
@@ -358,17 +404,17 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
 
     this.pad--;
 
-    sb.append(this.PAD(), `]`, `\n`);
+    sb.append(this.PAD(), `]`, fecha, `\n`);
 
     return sb.toString();
   }
 
   visitReferenciaMatriz(ctx: ReferenciaMatrizContext) {
     const sb = new StringBuilder();
+    const [abre, fecha] = this.leitura();
 
     sb.append(this.DEBUG(`visitReferenciaMatriz`, ctx));
-    sb.append(this.visitReferenciaParaVariavel(ctx).trimEnd());
-    sb.append(`.value`, `\n`);
+    sb.append(this.PAD(), abre, this.acesso(ctx), `.value`, `\n`);
 
     for (const idx of ctx.indiceArray()) {
       this.pad++;
@@ -388,7 +434,7 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
 
     sb.pop();
     sb.pop();
-    sb.append(`]`, `\n`);
+    sb.append(`]`, fecha, `\n`);
 
     return sb.toString();
   }
@@ -816,20 +862,10 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
 
   visitReferenciaParaVariavel(ctx: ReferenciaParaVariavelContext) {
     const sb = new StringBuilder();
+    const [abre, fecha] = this.leitura();
 
     sb.append(this.DEBUG(`visitReferenciaParaVariavel`, ctx));
-
-    const libScope = ctx.escopoBiblioteca()?.ID();
-
-    if (libScope) {
-      sb.append(
-        this.PAD(),
-        `runtime.libs[runtime.globalScope.libAliases["${libScope}"]]["${ctx.ID().getText()}"]`,
-        `\n`,
-      );
-    } else {
-      sb.append(this.PAD(), `scope.variables["${ctx.ID().getText()}"]`, `\n`);
-    }
+    sb.append(this.PAD(), abre, this.acesso(ctx), fecha, `\n`);
 
     return sb.toString();
   }
@@ -1369,7 +1405,9 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
       sb.append(
         this.PAD(),
         `scope.variables["${param.ID().getText()}"] = ` +
-          (byReference ? `args[${i}];` : `runtime.paramValue("${param.TIPO().getText()}", args[${i}]);`),
+          (byReference
+            ? `runtime.reference(args[${i}]);`
+            : `runtime.paramValue("${param.TIPO().getText()}", args[${i}]);`),
         `\n`,
       );
     }
@@ -1441,8 +1479,8 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
 
     const exprs = ctx.expressao();
 
-    for (const expr of exprs) {
-      const exprResult = this.visit(expr);
+    for (let i = 0; i < exprs.length; i++) {
+      const exprResult = i === 0 ? this.visitAlvo(exprs[i]) : this.visit(exprs[i]);
 
       sb.append(exprResult?.trimEnd(), ",", `\n`);
     }
@@ -1477,7 +1515,7 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     const first = exprs.shift();
 
     if (first) {
-      sb.append(super.visit(first)?.trimEnd(), `,\n`);
+      sb.append(this.visitAlvo(first)?.trimEnd(), `,\n`);
       sb.append(this.PAD(), `runtime.mathOperation("`, op, `", [`, `\n`);
 
       this.pad++;

@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { portugolInicio } from "../helpers/code";
+import { portugol, portugolInicio } from "../helpers/code";
 import { runPortugolCode } from "../helpers/runner";
 
 describe("Controle de Fluxo", () => {
@@ -389,6 +389,28 @@ describe("Controle de Fluxo", () => {
           `,
         ),
       ).resolves.toBe("20|3.0|portugol");
+    });
+
+    test("O valor lido de uma constante não é constante", async () => {
+      await expect(
+        runPortugolCode(
+          portugol`
+            programa {
+              funcao inicio() {
+                const inteiro K = 7
+                inteiro v[3] = {K, K, K}
+                v[0] = 0
+                escreva(usa(K), "|", K, "|", v[0], v[1], v[2])
+              }
+
+              funcao inteiro usa(inteiro n) {
+                n = n + 1
+                retorne n
+              }
+            }
+          `,
+        ),
+      ).resolves.toBe("8|7|077");
     });
   });
 });

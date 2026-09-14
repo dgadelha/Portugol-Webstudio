@@ -65,7 +65,7 @@ export class PortugolWorkerThreadsRunner extends IPortugolRunner {
                       parentPort.postMessage({ type: "stdIn" });
                     });
 
-                    self.runtime.assign([arg, self.runtime.readValue(arg.type, result)]);
+                    self.runtime.assign([self.runtime.reference(arg), self.runtime.readValue(arg.type, result)]);
                   }
                 },
 

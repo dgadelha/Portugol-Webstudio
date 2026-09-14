@@ -31,6 +31,35 @@ class PortugolRuntime {
     };
   }
 
+  // Ler uma variável no Java copia o valor: a expressão fica com o valor que ela
+  // tinha naquele instante. Sem a cópia, tudo o que já foi lido continuaria
+  // preso à variável e mudaria junto com ela — em 'escreva(r, ++r)' os dois
+  // argumentos sairiam com o valor incrementado.
+  value(variable) {
+    // Vetores e matrizes viram arrays do Java, que são referências: quem lê um
+    // deles fica com o mesmo array, e não com uma cópia dos elementos
+    if (!(variable instanceof PortugolVar) || Array.isArray(variable.value)) {
+      return variable;
+    }
+
+    // Ser constante é da variável, e não do valor: quem lê uma constante fica com
+    // um valor comum, que pode ser alterado onde quer que ele vá parar — um
+    // elemento de vetor, um parâmetro por valor...
+    const copy = new PortugolVar(variable.type, variable.value);
+
+    // O vínculo com a variável de origem sobrevive na cópia para que um
+    // parâmetro por referência ainda alcance a variável de quem chamou
+    copy.origin = variable;
+
+    return copy;
+  }
+
+  // A variável de onde o valor foi lido, ou ele mesmo quando não veio de uma
+  // variável — o resultado de uma conta, um literal...
+  reference(value) {
+    return value?.origin ?? value;
+  }
+
   _raw(variable) {
     if (typeof variable === "object") {
       if (variable.hasOwnProperty("_value")) {

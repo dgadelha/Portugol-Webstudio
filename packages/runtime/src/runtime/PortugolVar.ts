@@ -17,6 +17,9 @@ class PortugolVar {
     this.type = type;
     this.value = value;
     this.isConstant = isConstant;
+
+    // A variável de onde este valor foi lido, vide PortugolRuntime.value()
+    this.origin = null;
   }
 
   clone() {
