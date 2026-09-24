@@ -2,11 +2,12 @@ import {
   ChangeDetectionStrategy,
   Component,
   ElementRef,
-  Input,
   OnDestroy,
   OnInit,
   TemplateRef,
+  computed,
   inject,
+  input,
   output,
   viewChild,
 } from "@angular/core";
@@ -29,6 +30,7 @@ import { SettingsService } from "../settings.service";
 import { ShareService } from "../share.service";
 import { ThemeService } from "../theme.service";
 import { WorkerService } from "../worker.service";
+import { WorkspaceService } from "../workspace.service";
 
 @Component({
   selector: "app-tab-editor",
@@ -47,6 +49,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
   private themeService = inject(ThemeService);
   private settingsService = inject(SettingsService);
   private dialog = inject(MatDialog);
+  private workspace = inject(WorkspaceService);
 
   private _code$?: Subscription;
   private _stdOut$?: Subscription;
@@ -54,13 +57,20 @@ export class TabEditorComponent implements OnInit, OnDestroy {
   private _theme$?: Subscription;
   private _settings$?: Subscription;
 
-  @Input()
-  title?: string;
+  /**
+   * A aba que este editor mostra; o conteúdo dela vive no estado da aplicação.
+   */
+  readonly tabId = input.required<string>();
 
-  @Input()
-  code?: string;
+  private readonly title = computed(() => this.workspace.titleOf(this.tabId()));
 
-  readonly titleChange = output<string>();
+  /**
+   * Cópia local do código, que é o que o Monaco edita. O estado é a fonte da
+   * verdade, mas reenviar cada tecla de volta para o editor recriaria o
+   * conteúdo e jogaria o cursor para o início, então só escrevemos para fora.
+   */
+  code = "";
+
   readonly help = output();
   readonly settings = output();
 
@@ -133,7 +143,8 @@ export class TabEditorComponent implements OnInit, OnDestroy {
   ];
 
   ngOnInit() {
-    this.code ||= `programa {\n  funcao inicio() {\n    \n  }\n}\n`;
+    // O estado já entrega a aba pronta, inclusive o esqueleto de um programa novo.
+    this.code = this.workspace.contentsOf(this.tabId());
 
     this._stdOut$ = this.executor.stdOut$.subscribe(() => {
       this.stdOutEditorCursorEnd();
@@ -230,13 +241,15 @@ export class TabEditorComponent implements OnInit, OnDestroy {
 
     this.transpiling = true;
 
-    const code = this.code ?? "";
     let result;
 
     try {
-      result = await this.worker.transpileCode(code);
+      result = await this.worker.transpileCode(this.code);
     } catch (error) {
-      captureException(error, { tags: { transpile: true }, extra: { code } });
+      captureException(error, {
+        tags: { transpile: true },
+        extra: { code: this.code },
+      });
 
       alert(
         "Ocorreu um erro ao transpilar o código, possivelmente o seu navegador não suporta Web Workers. Por favor, tente novamente em outro navegador. Caso o erro persista, acesse https://github.com/dgadelha/Portugol-Webstudio/issues/new/choose",
@@ -303,25 +316,29 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     const file = files[0];
     const contents = await this.fileService.getContents(file);
 
-    this.title = file.name;
-    this.titleChange.emit(file.name);
+    this.workspace.renameTab(this.tabId(), file.name);
+    this.onCodeChange(contents);
+  }
+
+  onCodeChange(contents: string) {
     this.code = contents;
+    this.workspace.setContents(this.tabId(), contents);
   }
 
   private prepareFile(as: "text" | "binary", compat = false) {
     const blob = (() => {
       if (compat) {
-        return new Blob([Uint8Array.from(encode(this.code ?? "", "ISO-8859-1"))], {
+        return new Blob([Uint8Array.from(encode(this.code, "ISO-8859-1"))], {
           type: `${as === "binary" ? "application/octet-stream" : "text/plain"}; charset=ISO-8859-1`,
         });
       }
 
-      return new Blob([this.code ?? ""], {
+      return new Blob([this.code], {
         type: as === "binary" ? "application/octet-stream" : "text/plain",
       });
     })();
 
-    let fileName = this.title || "Sem título";
+    let fileName = this.title();
 
     if (!fileName.endsWith(".por")) {
       fileName += ".por";
@@ -474,7 +491,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     this._code$ = fromEventPattern(editor.onDidChangeModelContent)
       .pipe(
         debounceTime(500),
-        mergeMap(async () => this.worker.checkCode(this.code ?? "")),
+        mergeMap(async () => this.worker.checkCode(this.code)),
       )
       .subscribe({
         next: result => {

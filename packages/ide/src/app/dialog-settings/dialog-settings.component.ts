@@ -8,7 +8,7 @@ import { MatSlideToggleModule } from "@angular/material/slide-toggle";
 import { MatSliderModule } from "@angular/material/slider";
 import { AngularSvgIconModule } from "angular-svg-icon";
 import { LocalStorage, LocalStorageService } from "ngx-webstorage";
-import { defaultFontSize } from "../../settings";
+import { defaultFontSize, SettingsKey } from "../../settings";
 
 @Component({
   selector: "app-dialog-settings",
@@ -32,16 +32,21 @@ import { defaultFontSize } from "../../settings";
 export class DialogSettingsComponent {
   private localStorageService = inject(LocalStorageService);
 
-  @LocalStorage("theme", "auto")
+  @LocalStorage(SettingsKey.Theme, "auto")
   theme!: "light" | "dark" | "auto";
 
-  @LocalStorage("editorFontSize", defaultFontSize)
+  @LocalStorage(SettingsKey.EditorFontSize, defaultFontSize)
   editorFontSize!: number;
 
-  @LocalStorage("editorWordWrap", false)
+  @LocalStorage(SettingsKey.EditorWordWrap, false)
   editorWordWrap!: boolean;
 
   resetDefaults() {
-    this.localStorageService.clear();
+    // `clear()` do ngx-webstorage apaga o `localStorage` inteiro, inclusive o
+    // código que o usuário está editando: aqui só as configurações voltam ao
+    // padrão.
+    for (const key of Object.values(SettingsKey)) {
+      this.localStorageService.clear(key);
+    }
   }
 }

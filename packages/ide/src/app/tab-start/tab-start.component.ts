@@ -6,6 +6,7 @@ import { Subscription } from "rxjs";
 import { DialogAboutComponent } from "../dialog-about/dialog-about.component";
 import { DialogOpenExampleComponent } from "../dialog-open-example/dialog-open-example.component";
 import { FileService } from "../file.service";
+import { WorkspaceService } from "../workspace.service";
 
 @Component({
   selector: "app-tab-start",
@@ -18,7 +19,13 @@ import { FileService } from "../file.service";
 export class TabStartComponent {
   private dialog = inject(MatDialog);
   private fileService = inject(FileService);
+  private workspace = inject(WorkspaceService);
   public gaService = inject(GoogleAnalyticsService);
+
+  /**
+   * Código de janelas fechadas que esta sessão não adotou automaticamente.
+   */
+  readonly recoverable = this.workspace.recoverable;
 
   readonly newTab = output<{ name: string; contents: string } | undefined>();
   readonly help = output();
@@ -46,6 +53,18 @@ export class TabStartComponent {
     } else {
       this.logo = "assets/logo/default.svg";
     }
+  }
+
+  recoverWorkspace(workspaceId: string) {
+    const recovered = this.workspace.recover(workspaceId);
+
+    this.gaService.event("workspace_recover", "Aba Inicial", "Recuperar código de uma sessão anterior", recovered);
+  }
+
+  discardWorkspace(workspaceId: string) {
+    this.workspace.discard(workspaceId);
+
+    this.gaService.event("workspace_discard", "Aba Inicial", "Descartar código de uma sessão anterior");
   }
 
   async openFile(event: Event) {

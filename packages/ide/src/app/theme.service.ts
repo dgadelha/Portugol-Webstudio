@@ -2,6 +2,7 @@ import { DOCUMENT } from "@angular/common";
 import { ApplicationRef, inject, Service } from "@angular/core";
 import { LocalStorageService } from "ngx-webstorage";
 import { Observable, of, startWith, switchMap } from "rxjs";
+import { SettingsKey } from "../settings";
 import { BrowserThemeService } from "./browser-theme.service";
 
 export type Theme = "light" | "dark";
@@ -14,8 +15,8 @@ export class ThemeService {
   ref = inject(ApplicationRef);
   document = inject(DOCUMENT);
 
-  theme$ = this.localStorageSvc.observe("theme").pipe(
-    startWith(this.localStorageSvc.retrieve("theme") || "auto"),
+  theme$ = this.localStorageSvc.observe(SettingsKey.Theme).pipe(
+    startWith(this.localStorageSvc.retrieve(SettingsKey.Theme) || "auto"),
     switchMap<string, Observable<Theme>>(pref => {
       if (pref === "light" || pref === "dark") {
         return of(pref);

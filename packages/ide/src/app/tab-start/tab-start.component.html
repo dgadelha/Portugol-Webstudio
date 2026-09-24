@@ -82,8 +82,43 @@
   </button>
 </nav>
 
+@if (recoverable().length > 0) {
+  <section class="recovery">
+    <h4>
+      <svg-icon src="assets/mdi/file-restore-outline.svg" aria-hidden="true" focusable="false" />
+      Código de sessões anteriores
+    </h4>
+
+    <p>Encontramos código que ficou aberto quando o Portugol Webstudio foi fechado:</p>
+
+    <ul>
+      @for (workspace of recoverable(); track workspace.id) {
+        <li>
+          <span class="recovery-tabs">{{ workspace.tabTitles.join(", ") }}</span>
+          <span class="recovery-date">{{ workspace.updatedAt | date: "dd/MM/yyyy HH:mm" }}</span>
+
+          <span class="recovery-actions">
+            <button type="button" mat-stroked-button (click)="recoverWorkspace(workspace.id)">Restaurar</button>
+            <button type="button" mat-button (click)="discardWorkspace(workspace.id)">Descartar</button>
+          </span>
+        </li>
+      }
+    </ul>
+  </section>
+}
+
 <section class="info">
   <h4><svg-icon src="assets/mdi/newspaper.svg" aria-hidden="true" focusable="false" />Novidades</h4>
+  <p><strong>24/09/2026:</strong> O código agora é salvo automaticamente no navegador enquanto você digita:</p>
+  <ul>
+    <li>
+      Se a aba do navegador for fechada sem querer, basta abrir o Portugol Webstudio de novo: as abas voltam como
+      estavam
+    </li>
+    <li>Cada janela do navegador tem as suas próprias abas, sem uma sobrescrever o código da outra</li>
+    <li>O código de outras janelas que foram fechadas pode ser restaurado ou descartado aqui na página inicial</li>
+    <li>O código fica guardado só neste navegador: para levá-lo a outro computador, continue salvando o arquivo</li>
+  </ul>
   <p>
     <strong>24/09/2026:</strong> <code>Texto.substituir</code> agora copia o texto substituto exatamente como escrito,
     sem interpretar <code>$</code> como um caractere especial, como no Portugol Studio. Contribuição de

@@ -1,5 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from "@angular/core";
-import { FormControl } from "@angular/forms";
+import { ChangeDetectionStrategy, Component, computed, inject, OnDestroy, OnInit } from "@angular/core";
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { ShortcutInput } from "ng-keyboard-shortcuts";
@@ -9,13 +8,8 @@ import { DialogConfirmCloseTabComponent } from "./dialog-confirm-close-tab/dialo
 import { DialogRenameTabComponent } from "./dialog-rename-tab/dialog-rename-tab.component";
 import { DialogSettingsComponent } from "./dialog-settings/dialog-settings.component";
 import { ShareService } from "./share.service";
-
-interface Tab {
-  id: number;
-  title: string;
-  contents?: string;
-  type: "editor" | "help";
-}
+import { WorkspaceService } from "./workspace.service";
+import { isMeaningfulCode, Tab } from "./workspace.types";
 
 @Component({
   selector: "app-root",
@@ -30,21 +24,35 @@ export class AppComponent implements OnInit, OnDestroy {
   private snack = inject(MatSnackBar);
   private dialog = inject(MatDialog);
   private shareService = inject(ShareService);
+  private workspace = inject(WorkspaceService);
 
   renameDialogRef?: MatDialogRef<DialogRenameTabComponent>;
   renameDialogSubscription?: Subscription;
   closeDialogRef?: MatDialogRef<DialogConfirmCloseTabComponent>;
   closeDialogSubscription?: Subscription;
-  selected = new FormControl(0);
-  tabs: Tab[] = [];
-  tabIndex = 1;
+
+  readonly tabs = this.workspace.tabs;
+
+  /**
+   * A aba inicial ocupa a posição 0, então as abas do usuário começam em 1.
+   */
+  readonly selectedIndex = computed(() => {
+    const activeTabId = this.workspace.activeTabId();
+    const position = this.workspace.tabs().findIndex(tab => tab.id === activeTabId);
+
+    return position === -1 ? 0 : position + 1;
+  });
 
   shortcuts: ShortcutInput[] = [
     {
       key: "ctrl + q",
       preventDefault: true,
       command: () => {
-        this.closeTab(this.tabs[this.selected.value ?? 0]);
+        const tab = this.workspace.activeTab();
+
+        if (tab) {
+          this.closeTab(tab);
+        }
       },
     },
     {
@@ -57,6 +65,29 @@ export class AppComponent implements OnInit, OnDestroy {
   ];
 
   ngOnInit() {
+    if (this.workspace.restoredFromPreviousSession()) {
+      this.snack.open("Recuperamos o código que você estava editando.", "OK", { duration: 8000 });
+
+      this.gaService.event(
+        "workspace_restored",
+        "Interface",
+        "Código recuperado de uma sessão anterior",
+        this.workspace.tabs().length,
+      );
+    } else if (!this.workspace.persistenceAvailable) {
+      this.snack.open(
+        "Seu navegador não está salvando o código automaticamente. Baixe o arquivo antes de fechar a aba.",
+        "OK",
+        { duration: 15_000 },
+      );
+
+      this.gaService.event(
+        "workspace_storage_unavailable",
+        "Interface",
+        "Não foi possível salvar o código no navegador",
+      );
+    }
+
     void (async () => {
       if (window.location.hash.startsWith("#share=")) {
         this.snack.open("Carregando código compartilhado…", undefined, { duration: -1 });
@@ -68,6 +99,10 @@ export class AppComponent implements OnInit, OnDestroy {
           this.addTab(`Código compartilhado (#${hash})`, data);
           this.snack.dismiss();
           this.gaService.event("load_shared_code_success", "Interface", "Código compartilhado carregado");
+
+          // O código agora vive na área de trabalho: manter o `#share=` faria
+          // cada recarregamento abrir uma cópia nova da mesma aba.
+          window.history.replaceState(null, "", window.location.pathname + window.location.search);
         } else {
           this.snack.dismiss();
           this.snack.open("Erro ao carregar código compartilhado", "FECHAR", { duration: 10_000 });
@@ -82,40 +117,41 @@ export class AppComponent implements OnInit, OnDestroy {
     this.closeDialogSubscription?.unsubscribe();
   }
 
-  addTab(title?: string, contents?: string) {
-    this.tabs.push({
-      id: this.tabIndex++,
-      title: title || "Sem título",
-      contents,
-      type: "editor",
-    });
+  selectTab(index: number) {
+    const tabs = this.workspace.tabs();
 
-    this.selected.setValue(this.tabs.length);
-    this.gaService.event("new_tab_top", "Editor", "Nova aba", this.tabs.length);
+    this.workspace.setActiveTab(index >= 1 && index <= tabs.length ? tabs[index - 1].id : null);
+  }
+
+  addTab(title?: string, contents?: string) {
+    this.workspace.addTab(title, contents);
+    this.gaService.event("new_tab_top", "Editor", "Nova aba", this.workspace.tabs().length);
   }
 
   closeTab(tab: Tab) {
     const confirmClose = () => {
-      this.tabs.splice(this.tabs.indexOf(tab), 1);
-      this.selected.setValue(0);
-      this.gaService.event("close_tab", "Interface", "Fechar aba", this.tabs.length);
+      this.workspace.closeTab(tab.id);
+      this.gaService.event("close_tab", "Interface", "Fechar aba", this.workspace.tabs().length);
     };
 
-    if (tab.type === "editor") {
-      this.closeDialogRef = this.dialog.open(DialogConfirmCloseTabComponent, {
-        data: { title: tab.title },
-      });
-
-      this.closeDialogRef.afterClosed().subscribe(result => {
-        if (result) {
-          confirmClose();
-        }
-
-        this.closeDialogSubscription?.unsubscribe();
-      });
-    } else {
+    // Só vale interromper quem tem algo a perder: aba de ajuda e aba intocada
+    // fecham direto.
+    if (tab.type !== "editor" || !isMeaningfulCode(tab.contents)) {
       confirmClose();
+      return;
     }
+
+    this.closeDialogRef = this.dialog.open(DialogConfirmCloseTabComponent, {
+      data: { title: tab.title },
+    });
+
+    this.closeDialogSubscription = this.closeDialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        confirmClose();
+      }
+
+      this.closeDialogSubscription?.unsubscribe();
+    });
   }
 
   changeTabTitle(tab: Tab) {
@@ -131,7 +167,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
     this.renameDialogSubscription = this.renameDialogRef.afterClosed().subscribe(result => {
       if (result) {
-        tab.title = result;
+        this.workspace.renameTab(tab.id, result);
       }
 
       this.renameDialogSubscription?.unsubscribe();
@@ -139,20 +175,12 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   upsertHelpTab() {
-    const tabPos = this.tabs.findIndex(t => t.type === "help");
+    const { created } = this.workspace.upsertHelpTab();
 
-    if (tabPos === -1) {
-      this.tabs.push({
-        id: this.tabIndex++,
-        title: "Ajuda",
-        type: "help",
-      });
-
+    if (created) {
       this.gaService.event("help_tab_open", "Interface", "Nova aba de ajuda");
-      this.selected.setValue(this.tabs.length);
     } else {
       this.gaService.event("help_tab_select", "Interface", "Selecionar aba de ajuda já aberta");
-      this.selected.setValue(tabPos + 1);
     }
   }
 

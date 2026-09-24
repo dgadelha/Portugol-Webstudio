@@ -190,7 +190,12 @@
     <as-split-area [size]="80">
       <as-split direction="horizontal">
         <as-split-area [size]="100">
-          <ngx-monaco-editor [options]="codeEditorOptions" [(ngModel)]="code" (init)="onEditorInit($event)" />
+          <ngx-monaco-editor
+            [options]="codeEditorOptions"
+            [ngModel]="code"
+            (ngModelChange)="onCodeChange($event)"
+            (init)="onEditorInit($event)"
+          />
         </as-split-area>
 
         <as-split-area [size]="0">

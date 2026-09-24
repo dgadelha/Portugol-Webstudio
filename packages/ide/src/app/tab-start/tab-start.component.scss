@@ -139,6 +139,44 @@ section.alert {
   background: #8c2626;
 }
 
+section.recovery {
+  background-color: #1f6f5c;
+
+  ul {
+    padding-left: 0;
+  }
+
+  li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    list-style: none;
+    padding: 0.5rem 0;
+
+    + li {
+      border-top: 1px solid rgb(255 255 255 / 20%);
+    }
+  }
+
+  .recovery-tabs {
+    flex: 1 1 12rem;
+    font-weight: bold;
+    overflow-wrap: anywhere;
+  }
+
+  .recovery-date {
+    font-size: 0.8rem;
+    opacity: 0.85;
+  }
+
+  .recovery-actions {
+    display: flex;
+    gap: 0.25rem;
+    margin-left: auto;
+  }
+}
+
 section.info {
   background-color: #2559b3;
 }

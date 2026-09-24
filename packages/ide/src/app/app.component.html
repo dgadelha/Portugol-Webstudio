@@ -8,8 +8,8 @@
   animationDuration="0"
   mat-stretch-tabs="false"
   mat-align-tabs="start"
-  [selectedIndex]="selected.value"
-  (selectedIndexChange)="selected.setValue($event)"
+  [selectedIndex]="selectedIndex()"
+  (selectedIndexChange)="selectTab($event)"
 >
   <mat-tab labelClass="tab-home">
     <ng-template mat-tab-label>
@@ -32,7 +32,7 @@
     />
   </mat-tab>
 
-  @for (tab of tabs; track tab.id) {
+  @for (tab of tabs(); track tab.id) {
     <mat-tab [labelClass]="`tab-item tab-${tab.type}`">
       <ng-template mat-tab-label>
         <span>
@@ -86,12 +86,7 @@
 
       @switch (tab.type) {
         @case ("editor") {
-          <app-tab-editor
-            [code]="tab.contents"
-            [(title)]="tab.title"
-            (help)="upsertHelpTab()"
-            (settings)="openSettingsModal()"
-          />
+          <app-tab-editor [tabId]="tab.id" (help)="upsertHelpTab()" (settings)="openSettingsModal()" />
         }
 
         @case ("help") {

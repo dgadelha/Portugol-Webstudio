@@ -1,18 +1,18 @@
 import { inject, Service } from "@angular/core";
 import { LocalStorageService } from "ngx-webstorage";
 import { map, startWith } from "rxjs";
-import { defaultFontSize } from "../settings";
+import { defaultFontSize, SettingsKey } from "../settings";
 
 @Service()
 export class SettingsService {
   private localStorageSvc = inject(LocalStorageService);
 
-  editorFontSize = this.localStorageSvc.observe("editorFontSize").pipe(
-    startWith(this.localStorageSvc.retrieve("editorFontSize")),
+  editorFontSize = this.localStorageSvc.observe(SettingsKey.EditorFontSize).pipe(
+    startWith(this.localStorageSvc.retrieve(SettingsKey.EditorFontSize)),
     map(value => Number.parseInt(value, 10) || defaultFontSize),
   );
 
   editorWordWrap = this.localStorageSvc
-    .observe("editorWordWrap")
-    .pipe(startWith(this.localStorageSvc.retrieve("editorWordWrap")), map(Boolean));
+    .observe(SettingsKey.EditorWordWrap)
+    .pipe(startWith(this.localStorageSvc.retrieve(SettingsKey.EditorWordWrap)), map(Boolean));
 }
