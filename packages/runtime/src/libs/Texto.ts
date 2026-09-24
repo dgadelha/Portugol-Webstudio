@@ -22,7 +22,7 @@ export default /* javascript */ `{
     self.runtime.expectType("substituir", "texto_pesquisa", texto_pesquisa, "cadeia");
     self.runtime.expectType("substituir", "texto_substituto", texto_substituto, "cadeia");
 
-    return new PortugolVar("cadeia", cad.value.replaceAll(texto_pesquisa.value, texto_substituto.value));
+    return new PortugolVar("cadeia", cad.value.replaceAll(texto_pesquisa.value, () => texto_substituto.value));
   },
 
   preencher_a_esquerda(car, tamanho, cad) {
