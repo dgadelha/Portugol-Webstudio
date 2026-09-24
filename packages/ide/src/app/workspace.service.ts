@@ -8,6 +8,7 @@ import {
   RecoverableWorkspace,
   StoredWorkspaceMeta,
   Tab,
+  TabType,
   WORKSPACE_SCHEMA_VERSION,
 } from "./workspace.types";
 
@@ -113,7 +114,18 @@ export class WorkspaceService {
    * A ajuda é uma aba só: se já existe, apenas a traz para frente.
    */
   upsertHelpTab() {
-    const existing = untracked(this.tabs).find(tab => tab.type === "help");
+    return this.upsertSingleTab("help", "Ajuda");
+  }
+
+  /**
+   * O histórico de atualizações também é uma aba só.
+   */
+  upsertChangelogTab() {
+    return this.upsertSingleTab("changelog", "Histórico de atualizações");
+  }
+
+  private upsertSingleTab(type: Exclude<TabType, "editor">, title: string) {
+    const existing = untracked(this.tabs).find(tab => tab.type === type);
 
     if (existing) {
       this.activeTabId.set(existing.id);
@@ -122,8 +134,8 @@ export class WorkspaceService {
 
     const tab: Tab = {
       id: randomId(),
-      title: "Ajuda",
-      type: "help",
+      title,
+      type,
       contents: "",
     };
 

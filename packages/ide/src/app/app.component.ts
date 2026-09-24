@@ -184,6 +184,16 @@ export class AppComponent implements OnInit, OnDestroy {
     }
   }
 
+  upsertChangelogTab() {
+    const { created } = this.workspace.upsertChangelogTab();
+
+    if (created) {
+      this.gaService.event("changelog_tab_open", "Interface", "Nova aba de novidades");
+    } else {
+      this.gaService.event("changelog_tab_select", "Interface", "Selecionar aba de novidades já aberta");
+    }
+  }
+
   openSettingsModal() {
     this.gaService.event("open_settings_modal", "Interface", "Abrir modal de configurações");
     this.dialog.open(DialogSettingsComponent);

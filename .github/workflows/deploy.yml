@@ -5,6 +5,9 @@ on:
   push:
     branches:
       - main
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -16,6 +19,19 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: lts/*
+
+      - name: Date the beta changelog 📅
+        run: |
+          node .github/scripts/date-beta-changelog.mjs
+
+          if git diff --quiet CHANGELOG.md; then
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -am "Atualizar data do changelog"
+          git push origin HEAD:main
 
       - name: Install dependencies 🔧
         run: npm ci --include=dev
@@ -47,3 +63,26 @@ jobs:
           environment: production
           sourcemaps: packages/ide/dist/browser
           inject: false
+
+  sync-beta:
+    needs: build-and-deploy
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v5
+        with:
+          ref: beta
+          fetch-depth: 0
+
+      - name: Merge main into beta 🔄
+        run: |
+          if git merge-base --is-ancestor origin/main HEAD; then
+            echo "beta already contains main"
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git merge --no-edit origin/main
+          git push origin HEAD:beta

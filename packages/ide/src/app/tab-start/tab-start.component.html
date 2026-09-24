@@ -1,4 +1,10 @@
-<svg-icon svgClass="logo w-100" svgAriaLabel="Logomarca do Portugol Webstudio" [src]="logo" />
+<div class="logo logo-with-badge">
+  <svg-icon svgClass="w-100" svgAriaLabel="Logomarca do Portugol Webstudio" [src]="logo" />
+
+  @if (isBeta) {
+    <span class="beta-badge">Beta</span>
+  }
+</div>
 
 <nav>
   <button mat-ripple type="button" aria-labelledby="button-new-file-label" (click)="newTab.emit(undefined)">
@@ -109,81 +115,37 @@
 
 <section class="info">
   <h4><svg-icon src="assets/mdi/newspaper.svg" aria-hidden="true" focusable="false" />Novidades</h4>
-  <p><strong>24/09/2026:</strong> O código agora é salvo automaticamente no navegador enquanto você digita:</p>
-  <ul>
-    <li>
-      Se a aba do navegador for fechada sem querer, basta abrir o Portugol Webstudio de novo: as abas voltam como
-      estavam
-    </li>
-    <li>Cada janela do navegador tem as suas próprias abas, sem uma sobrescrever o código da outra</li>
-    <li>O código de outras janelas que foram fechadas pode ser restaurado ou descartado aqui na página inicial</li>
-    <li>O código fica guardado só neste navegador: para levá-lo a outro computador, continue salvando o arquivo</li>
-  </ul>
-  <p>
-    <strong>24/09/2026:</strong> <code>Texto.substituir</code> agora copia o texto substituto exatamente como escrito,
-    sem interpretar <code>$</code> como um caractere especial, como no Portugol Studio. Contribuição de
-    <a href="https://github.com/kwy404" target="_blank" rel="external noreferrer noopener nofollow">&#64;kwy404</a>.
-    <a
-      href="https://github.com/dgadelha/Portugol-Webstudio/pull/446"
-      target="_blank"
-      rel="external noreferrer noopener nofollow"
-    >
-      Mais detalhes
-    </a>
-  </p>
-  <p>
-    <strong>14/09/2026:</strong> Correção de acesso a variáveis e leitura de valores durante a execução do código.
-    <a
-      href="https://github.com/dgadelha/Portugol-Webstudio/issues/432"
-      target="_blank"
-      rel="external noreferrer noopener nofollow"
-    >
-      Mais detalhes
-    </a>
-  </p>
-  <p><strong>10/09/2026:</strong> A verificação de erros foi reescrita para seguir a do Portugol Studio:</p>
-  <ul>
-    <li>As mensagens, posições e códigos de erro agora são os mesmos do Portugol Studio</li>
-    <li>
-      Um programa com erro <strong>não é mais executado</strong>: os erros aparecem no console, como no Portugol Studio
-    </li>
-    <li>Novos avisos de variável não utilizada, variável global ocultada e conversão de valor</li>
-    <li>O editor avisa quando o programa usa uma biblioteca que o Webstudio ainda não executa</li>
-    <li>Ao executar, o editor passa a marcar os erros do código que rodou, em vez de limpar as marcações</li>
-  </ul>
-
-  <p>
-    <strong>06/09/2026:</strong> Grande atualização de compatibilidade com o Portugol Studio. Alguns programas podem ter
-    resultados diferentes de antes:
-  </p>
-  <ul>
-    <li>Números reais aparecem com casa decimal: <code>escreva(1.0)</code> imprime <code>1.0</code></li>
-    <li>A divisão entre inteiros descarta as casas decimais: <code>7 / 2</code> dá <code>3</code></li>
-    <li>
-      Vetores e matrizes começam preenchidos (<code>0</code>, <code>0.0</code>, <code>falso</code>) e guardam alterações
-      feitas em funções
-    </li>
-    <li>
-      O comando <code>leia</code> aceita mais formatos de número, como <code>.5</code>, <code>5.</code> e
-      <code>1e3</code>
-    </li>
-    <li>
-      Correções nas bibliotecas <code>Matematica</code>, <code>Texto</code>, <code>Tipos</code> e
-      <code>Calendario</code>
-    </li>
-    <li>Nova biblioteca <code>Objetos</code>, para trabalhar com dados em JSON e XML</li>
-  </ul>
-  <p>
-    <a
-      href="https://github.com/dgadelha/Portugol-Webstudio/issues/new?template=bug.yml"
-      target="_blank"
-      rel="external noreferrer noopener nofollow"
-    >
-      Encontrou algum problema? Relate aqui
-    </a>
-  </p>
+  <markdown [data]="latestNews" />
+  <button type="button" class="news-more" (click)="openChangelog()">
+    Ver histórico de atualizações
+    <svg-icon src="assets/mdi/arrow-right.svg" aria-hidden="true" focusable="false" />
+  </button>
 </section>
 
 <footer>
-  <summary>Versão: <span matTooltip="%DATE%">%COMMIT_SHA%</span></summary>
+  <summary>
+    Versão: <span matTooltip="%DATE%">%COMMIT_SHA%</span>
+    <span class="separator" aria-hidden="true">·</span>
+    @if (isBeta) {
+      <a
+        href="https://portugol.dev/"
+        target="_blank"
+        rel="external noopener"
+        matTooltip="O código salvo no navegador fica separado em cada versão"
+        (click)="gaService.event('open_stable_version', 'Aba Inicial', 'Ir para a versão estável')"
+      >
+        Ir para a versão estável
+      </a>
+    } @else {
+      <a
+        href="https://beta.portugol.dev/"
+        target="_blank"
+        rel="external noopener"
+        matTooltip="Novidades antes de chegarem a todos. O código salvo no navegador fica separado em cada versão"
+        (click)="gaService.event('open_beta_version', 'Aba Inicial', 'Experimentar a versão beta')"
+      >
+        Experimentar a versão beta
+      </a>
+    }
+  </summary>
 </footer>

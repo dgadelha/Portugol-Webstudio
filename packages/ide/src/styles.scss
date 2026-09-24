@@ -66,6 +66,26 @@ svg-icon > svg {
   width: 100%;
 }
 
+// Selo das logomarcas fora do domínio de produção: fica no canto vazio abaixo de "Webstudio"
+.logo-with-badge {
+  position: relative;
+}
+
+.beta-badge {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  padding: 0.25rem 0.6rem;
+  border-radius: 0.25rem;
+  background-color: var(--pws-color-primary);
+  color: var(--pws-body-bg);
+  font-size: 0.8rem;
+  font-weight: bold;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+
 .logo-title[fill] {
   fill: var(--pws-body-color);
 }
@@ -105,6 +125,12 @@ markdown {
     &:hover {
       text-decoration: underline;
     }
+  }
+
+  hr {
+    margin: 1.25rem 0;
+    border: none;
+    border-top: 1px dashed rgba(var(--pws-body-color-rgb), 0.3);
   }
 
   ul {

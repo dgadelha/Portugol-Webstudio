@@ -1,0 +1,25 @@
+:host {
+  display: block;
+  height: 100%;
+  overflow: auto;
+  scrollbar-width: thin;
+}
+
+markdown {
+  display: block;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 1rem 1.5rem 2rem;
+  line-height: 1.5;
+
+  ::ng-deep h2 {
+    margin: 2rem 0 0.75rem;
+    padding-bottom: 0.25rem;
+    font-size: 1.1rem;
+    border-bottom: 1px solid var(--pws-border-color);
+  }
+
+  ::ng-deep li {
+    margin-bottom: 0.5rem;
+  }
+}

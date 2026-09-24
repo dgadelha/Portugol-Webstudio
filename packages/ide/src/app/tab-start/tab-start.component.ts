@@ -3,6 +3,8 @@ import { MatDialog } from "@angular/material/dialog";
 import { GoogleAnalyticsService } from "ngx-google-analytics";
 import { Subscription } from "rxjs";
 
+import { IS_BETA } from "../beta";
+import { LATEST_CHANGELOG_ENTRY } from "../changelog";
 import { DialogAboutComponent } from "../dialog-about/dialog-about.component";
 import { DialogOpenExampleComponent } from "../dialog-open-example/dialog-open-example.component";
 import { FileService } from "../file.service";
@@ -29,12 +31,17 @@ export class TabStartComponent {
 
   readonly newTab = output<{ name: string; contents: string } | undefined>();
   readonly help = output();
+  readonly changelog = output();
   readonly settings = output();
+
+  readonly latestNews = LATEST_CHANGELOG_ENTRY;
 
   private _dialogExample$?: OutputRefSubscription;
   private _dialogRef$?: Subscription;
 
   public logo: string;
+
+  readonly isBeta = IS_BETA;
 
   constructor() {
     const currentMonth = new Date().getMonth() + 1;
@@ -112,6 +119,11 @@ export class TabStartComponent {
     });
   }
 
+  openChangelog() {
+    this.gaService.event("open_changelog", "Aba Inicial", "Ver histórico de atualizações");
+    this.changelog.emit();
+  }
+
   openSettingsDialog() {
     this.gaService.event("open_settings_dialog", "Aba Inicial", "Abrir diálogo de Configurações");
     this.settings.emit();
@@ -119,8 +131,15 @@ export class TabStartComponent {
 
   openAboutDialog() {
     this.gaService.event("open_about_dialog", "Aba Inicial", "Abrir diálogo Sobre");
-    this.dialog.open(DialogAboutComponent, {
+    const ref = this.dialog.open<DialogAboutComponent, unknown, "changelog">(DialogAboutComponent, {
       maxHeight: "85vh",
+    });
+
+    // O diálogo fecha pedindo o histórico: a aba abre pelo mesmo caminho do botão da aba inicial
+    ref.afterClosed().subscribe(result => {
+      if (result === "changelog") {
+        this.changelog.emit();
+      }
     });
   }
 }

@@ -5,6 +5,8 @@ import { MatIconModule } from "@angular/material/icon";
 import { AngularSvgIconModule } from "angular-svg-icon";
 import { NgxGoogleAnalyticsModule } from "ngx-google-analytics";
 
+import { IS_BETA } from "../beta";
+
 @Component({
   selector: "app-dialog-about",
   imports: [
@@ -20,4 +22,6 @@ import { NgxGoogleAnalyticsModule } from "ngx-google-analytics";
   styleUrl: "./dialog-about.component.scss",
   changeDetection: ChangeDetectionStrategy.Eager,
 })
-export class DialogAboutComponent {}
+export class DialogAboutComponent {
+  readonly isBeta = IS_BETA;
+}

@@ -28,6 +28,7 @@
     <app-tab-start
       (newTab)="addTab($event?.name, $event?.contents)"
       (help)="upsertHelpTab()"
+      (changelog)="upsertChangelogTab()"
       (settings)="openSettingsModal()"
     />
   </mat-tab>
@@ -49,6 +50,10 @@
                   aria-hidden="true"
                   focusable="false"
                 />
+              }
+
+              @case ("changelog") {
+                <svg-icon src="assets/mdi/newspaper.svg" svgClass="text-blue" aria-hidden="true" focusable="false" />
               }
 
               @default never;
@@ -91,6 +96,10 @@
 
         @case ("help") {
           <app-tab-help (newTab)="addTab($event?.name, $event?.contents)" />
+        }
+
+        @case ("changelog") {
+          <app-tab-changelog />
         }
 
         @default never;

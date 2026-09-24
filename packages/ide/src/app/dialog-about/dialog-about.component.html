@@ -3,7 +3,13 @@
     <svg-icon src="assets/mdi/close.svg" aria-hidden="true" focusable="false" />
   </button>
 
-  <svg-icon src="assets/logo/default.svg" class="logo" alt="Logo do Portugol Studio" />
+  <div class="logo logo-with-badge">
+    <svg-icon src="assets/logo/default.svg" alt="Logo do Portugol Studio" />
+
+    @if (isBeta) {
+      <span class="beta-badge">Beta</span>
+    }
+  </div>
 
   <div class="app-about">
     O Portugol Webstudio é um ambiente de desenvolvimento integrado (IDE) online para a linguagem de programação
@@ -45,5 +51,17 @@
       <mat-icon><svg-icon src="assets/mdi/bug-outline.svg" /></mat-icon>
       Reportar um problema
     </a>
+
+    <button
+      type="button"
+      mat-stroked-button
+      gaEvent="about_changelog"
+      gaCategory="about_dialog"
+      gaLabel="Histórico de atualizações (diálogo Sobre)"
+      mat-dialog-close="changelog"
+    >
+      <mat-icon><svg-icon src="assets/mdi/history.svg" aria-hidden="true" focusable="false" /></mat-icon>
+      Histórico de atualizações
+    </button>
   </div>
 </mat-dialog-content>

@@ -29,7 +29,7 @@ import { AngularSplitModule } from "angular-split";
 import { AngularSvgIconModule } from "angular-svg-icon";
 import { KeyboardShortcutsModule } from "ng-keyboard-shortcuts";
 import { NgxGoogleAnalyticsModule } from "ngx-google-analytics";
-import { MarkdownComponent, provideMarkdown } from "ngx-markdown";
+import { MARKED_EXTENSIONS, MarkdownComponent, provideMarkdown } from "ngx-markdown";
 import { provideNgxWebstorage, withNgxWebstorageConfig } from "ngx-webstorage";
 
 import { environment } from "../environments/environment";
@@ -38,6 +38,7 @@ import { AppComponent } from "./app.component";
 import { DialogOpenExampleComponent } from "./dialog-open-example/dialog-open-example.component";
 import { MonacoService } from "./monaco.service";
 import { PwaService } from "./pwa.service";
+import { TabChangelogComponent } from "./tab-changelog/tab-changelog.component";
 import { TabEditorComponent } from "./tab-editor/tab-editor.component";
 import { TabHelpComponent } from "./tab-help/tab-help.component";
 import { TabStartComponent } from "./tab-start/tab-start.component";
@@ -70,7 +71,14 @@ import { ThemeService } from "./theme.service";
       registrationStrategy: "registerWhenStable:30000",
     }),
   ],
-  declarations: [AppComponent, TabEditorComponent, TabStartComponent, TabHelpComponent, DialogOpenExampleComponent],
+  declarations: [
+    AppComponent,
+    TabEditorComponent,
+    TabStartComponent,
+    TabHelpComponent,
+    TabChangelogComponent,
+    DialogOpenExampleComponent,
+  ],
   providers: [
     provideZoneChangeDetection(),
     provideFirebaseApp(() => initializeApp(environment.firebase)),
@@ -85,7 +93,25 @@ import { ThemeService } from "./theme.service";
       inject(ThemeService);
       inject(PwaService);
     }),
-    provideMarkdown(),
+    provideMarkdown({
+      markedExtensions: [
+        {
+          provide: MARKED_EXTENSIONS,
+          multi: true,
+          useValue: {
+            hooks: {
+              // Links externos abrem em outra aba do navegador, sem tirar o usuário do IDE
+              postprocess: (html: string) => {
+                return html.replaceAll(
+                  /<a href="(https?:\/\/)/g,
+                  '<a target="_blank" rel="external noreferrer noopener nofollow" href="$1',
+                );
+              },
+            },
+          },
+        },
+      ],
+    }),
     MonacoService,
     PwaService,
     {

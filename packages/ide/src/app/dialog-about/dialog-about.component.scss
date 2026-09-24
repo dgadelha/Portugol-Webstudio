@@ -16,9 +16,12 @@ mat-dialog-content {
 }
 
 .logo {
-  display: block;
   width: min(80%, 350px);
   padding: 0.5rem;
+
+  svg-icon {
+    display: block;
+  }
 }
 
 .made-with-love {

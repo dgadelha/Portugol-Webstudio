@@ -1,4 +1,4 @@
-export type TabType = "editor" | "help";
+export type TabType = "editor" | "help" | "changelog";
 
 /**
  * Aba como o resto da aplicação enxerga: o conteúdo faz parte do estado.

@@ -10,8 +10,13 @@
 }
 
 .logo {
+  width: 100%;
   max-width: 20rem;
   margin-bottom: 2rem;
+
+  svg-icon {
+    display: block;
+  }
 }
 
 nav {
@@ -179,6 +184,79 @@ section.recovery {
 
 section.info {
   background-color: #2559b3;
+
+  // O conteúdo vem do CHANGELOG.md: o `markdown` injeta o HTML sem o escopo do componente
+  ::ng-deep markdown {
+    padding: 0;
+
+    h2 {
+      margin: 0.5rem 0;
+      font-size: 0.95rem;
+    }
+
+    p,
+    li {
+      margin: 0.5rem 0;
+      line-height: 1.5;
+    }
+
+    li {
+      list-style-type: square;
+    }
+
+    ul {
+      margin: 0;
+      padding-left: 1.25rem;
+    }
+
+    hr {
+      margin: 0.75rem 0;
+      border: none;
+      border-top: 1px dashed rgb(255 255 255 / 35%);
+    }
+
+    a,
+    a:visited {
+      color: #fafafa;
+      text-decoration: underline;
+    }
+
+    code {
+      display: inline;
+      font-family: "Lato", sans-serif;
+      font-size: 0.85rem;
+      border-radius: 0.25rem;
+      background-color: #2d2d2d;
+      color: #fff;
+      padding: 0.25rem 0.5rem;
+      margin: 0 0.25rem;
+    }
+  }
+
+  .news-more {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    margin: 0.5rem 0 0.5rem auto;
+    padding: 0.25rem 0.5rem;
+    background: none;
+    border: none;
+    border-radius: 0.25rem;
+    color: #fafafa;
+    font: inherit;
+    font-weight: bold;
+    cursor: pointer;
+
+    &:hover,
+    &:focus-visible {
+      background-color: rgb(255 255 255 / 15%);
+    }
+
+    svg-icon {
+      width: 1.1rem;
+      height: 1.1rem;
+    }
+  }
 }
 
 footer {
@@ -197,6 +275,22 @@ footer {
       font-family: monospace;
       color: var(--pws-text-muted);
       text-transform: uppercase;
+    }
+
+    .separator {
+      margin: 0 0.25rem;
+      font-family: inherit;
+      color: inherit;
+    }
+
+    // Em bloco, o navegador descarta os espaços que a quebra de linha deixa no começo e no fim do texto do link
+    a {
+      display: inline-block;
+      color: var(--pws-text-muted);
+
+      &:hover {
+        color: var(--pws-body-color);
+      }
     }
   }
 }
