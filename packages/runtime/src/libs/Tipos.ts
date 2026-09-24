@@ -1,11 +1,12 @@
 // Mesmas expressões regulares usadas pela biblioteca Tipos do Portugol Studio.
 // Elas são aplicadas com Matcher.find(), o que equivale ao RegExp.test() do JS,
-// e são sensíveis à caixa — inclusive PADRAO_LOGICO.
-const PADRAO_INTEIRO_NOTACAO_HEXADECIMAL = /^(0x|0X)?(\d|[a-f]|[A-F])+$/;
-const PADRAO_INTEIRO_NOTACAO_BINARIA = /^(0b|0B)?[01]+$/;
-const PADRAO_INTEIRO_NOTACAO_DECIMAL = /^-?\d+$/;
-const PADRAO_REAL = /^-?\d+\.\d+$/;
-const PADRAO_LOGICO = /^verdadeiro|falso$/;
+// e são sensíveis à caixa — inclusive PADRAO_LOGICO. Só o $ muda: sem MULTILINE,
+// o do Java também casa antes de um terminador de linha no fim da cadeia.
+const PADRAO_INTEIRO_NOTACAO_HEXADECIMAL = /^(0x|0X)?(\d|[a-f]|[A-F])+(?=(\r\n|[\n\r\u{85}\u{2028}\u{2029}])?$)/u;
+const PADRAO_INTEIRO_NOTACAO_BINARIA = /^(0b|0B)?[01]+(?=(\r\n|[\n\r\u{85}\u{2028}\u{2029}])?$)/u;
+const PADRAO_INTEIRO_NOTACAO_DECIMAL = /^-?\d+(?=(\r\n|[\n\r\u{85}\u{2028}\u{2029}])?$)/u;
+const PADRAO_REAL = /^-?\d+\.\d+(?=(\r\n|[\n\r\u{85}\u{2028}\u{2029}])?$)/u;
+const PADRAO_LOGICO = /^verdadeiro|falso(?=(\r\n|[\n\r\u{85}\u{2028}\u{2029}])?$)/u;
 
 export default /* javascript */ `{
   cadeia_e_inteiro(cad, base) {
