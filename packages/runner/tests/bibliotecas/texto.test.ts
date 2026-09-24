@@ -136,6 +136,22 @@ describe("Biblioteca: Texto", () => {
       ).resolves.toBe("a-b-c|a*b");
     });
 
+    test("Trata o texto substituto literalmente", async () => {
+      await expect(
+        runPortugolCode(
+          portugol`
+            programa {
+              inclua biblioteca Texto
+
+              funcao inicio() {
+                escreva(Texto.substituir("a-b", "-", "$&"), "|", Texto.substituir("preço: X", "X", "R$$ 5"))
+              }
+            }
+          `,
+        ),
+      ).resolves.toBe("a$&b|preço: R$$ 5");
+    });
+
     test("Não sobrepõe ocorrências", async () => {
       await expect(
         runPortugolCode(
