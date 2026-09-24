@@ -85,6 +85,22 @@ describe("Biblioteca: Tipos", () => {
         ),
       ).resolves.toBe("antes ");
     });
+
+    test("Aceita um único terminador de linha no fim, como o $ do Java", async () => {
+      await expect(
+        runPortugolCode(
+          portugol`
+            programa {
+              inclua biblioteca Tipos
+
+              funcao inicio() {
+                escreva(Tipos.cadeia_e_inteiro("12\\n", 10), "|", Tipos.cadeia_e_real("1.5\\n"), "|", Tipos.cadeia_e_logico("falso\\n"), "|", Tipos.cadeia_e_inteiro("12\\n\\n", 10))
+              }
+            }
+          `,
+        ),
+      ).resolves.toBe("verdadeiro|verdadeiro|verdadeiro|falso");
+    });
   });
 
   describe("cadeia_e_real", () => {
