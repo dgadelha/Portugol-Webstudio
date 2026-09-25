@@ -1,6 +1,6 @@
 .content {
   display: flex;
-  height: min(520px, 90vh);
+  height: min(600px, 90vh);
   flex-direction: column;
   gap: 0;
   overflow: hidden;

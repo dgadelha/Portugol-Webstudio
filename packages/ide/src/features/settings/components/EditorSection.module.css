@@ -3,20 +3,16 @@
   gap: 1.5rem;
 }
 
-.fontSize {
+/* Tabulação e indentação lado a lado quando cabem. */
+.row {
   display: flex;
-  align-items: center;
-  gap: 0.75rem;
+  flex-wrap: wrap;
+  gap: 1.5rem 2.5rem;
 }
 
-.slider {
-  flex: 1;
-}
-
-.fontSizeValue {
-  width: 3rem;
-  justify-content: center;
-  font-family: var(--font-mono);
+.tabSize {
+  width: 2.5rem;
+  flex: none;
   font-variant-numeric: tabular-nums;
 }
 

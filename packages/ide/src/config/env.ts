@@ -5,6 +5,12 @@ export const IS_BETA = window.location.hostname !== "portugol.dev";
 
 export const IS_PRODUCTION = import.meta.env.PROD;
 
+/**
+ * Canal enviado ao Google Analytics em todos os eventos, para separar o tráfego de produção do beta
+ * e do desenvolvimento local.
+ */
+export const RELEASE_CHANNEL = IS_PRODUCTION ? (IS_BETA ? "beta" : "stable") : "local";
+
 export const BUILD_INFO = {
   commit: import.meta.env.VITE_COMMIT_SHA ?? "dev",
   date: import.meta.env.VITE_BUILD_DATE ?? "",

@@ -1,33 +1,90 @@
 import { memoryStorage, usableStorage } from "@/lib/browserStorage";
 
-export type ThemePreference = "auto" | "light" | "dark";
-
-export interface Settings {
-  theme: ThemePreference;
-  editorFontSize: number;
-  editorWordWrap: boolean;
-}
-
 // https://github.com/microsoft/vscode/blob/1fe7285a1162756215a684ee702b16d0ce42bdb4/src/vs/editor/common/config/fontInfo.ts#L240
 export const DEFAULT_FONT_SIZE = navigator.userAgent.includes("Macintosh") ? 12 : 14;
 
 export const FONT_SIZE_RANGE = { min: 6, max: 48 };
 
-export const DEFAULT_SETTINGS: Settings = {
-  theme: "auto",
-  editorFontSize: DEFAULT_FONT_SIZE,
-  editorWordWrap: false,
+interface Setting<T> {
+  default: T;
+  /**
+   * Converte o que está guardado — `null` quando a configuração nunca foi alterada — num valor
+   * válido, ou no padrão.
+   */
+  parse(value: unknown): T;
+}
+
+function boolean(defaultValue: boolean): Setting<boolean> {
+  return { default: defaultValue, parse: value => (typeof value === "boolean" ? value : defaultValue) };
+}
+
+/**
+ * Um inteiro entre `min` e `max`, inclusive. Fora da faixa — ou `NaN`, `Infinity`, `null` — vale o
+ * padrão.
+ */
+function integer<T extends number | null>(
+  defaultValue: T,
+  { min, max }: { min: number; max: number },
+): Setting<number | T> {
+  return {
+    default: defaultValue,
+    parse: value => {
+      const number = typeof value === "string" ? Number(value) : value;
+
+      return typeof number === "number" && Number.isSafeInteger(number) && number >= min && number <= max
+        ? number
+        : defaultValue;
+    },
+  };
+}
+
+function oneOf<const T extends string>(values: readonly T[], defaultValue: T): Setting<T> {
+  return {
+    default: defaultValue,
+    parse: value => values.find(option => option === value) ?? defaultValue,
+  };
+}
+
+/**
+ * Todas as configurações do IDE: o padrão e os valores aceitos de cada uma ficam só aqui.
+ */
+const SETTINGS = {
+  theme: oneOf(["auto", "light", "dark"], "auto"),
+  editorFontSize: integer(DEFAULT_FONT_SIZE, FONT_SIZE_RANGE),
+  editorWordWrap: boolean(false),
+  editorTabSize: integer(2, { min: 1, max: 8 }),
+  editorInsertSpaces: boolean(true),
+  editorLineNumbers: oneOf(["on", "relative", "off"], "on"),
+  editorMinimap: boolean(true),
+  editorBracketPairColorization: boolean(true),
+  editorIndentationGuides: boolean(true),
+  editorRenderWhitespace: oneOf(["none", "selection", "all"], "selection"),
+  editorAutoClosing: boolean(true),
+  editorCursorStyle: oneOf(["line", "block", "underline"], "line"),
+  // Sem valor, acompanha o tamanho da fonte do editor.
+  outputFontSize: integer(null, FONT_SIZE_RANGE),
+  outputClearOnRun: boolean(true),
+  outputAutoScroll: boolean(true),
 };
+
+type SettingValue<S> = S extends Setting<infer T> ? T : never;
+
+export type Settings = { [K in keyof typeof SETTINGS]: SettingValue<(typeof SETTINGS)[K]> };
+
+export type ThemePreference = Settings["theme"];
+export type EditorLineNumbers = Settings["editorLineNumbers"];
+export type EditorRenderWhitespace = Settings["editorRenderWhitespace"];
+export type EditorCursorStyle = Settings["editorCursorStyle"];
+
+const SETTING_NAMES = Object.keys(SETTINGS) as Array<keyof Settings>;
 
 /**
  * Mesmas chaves que a versão anterior do IDE gravava (prefixo `pws:`, em minúsculas e em JSON),
  * para que as preferências de quem já usa o site continuem valendo.
  */
-const STORAGE_KEYS: Record<keyof Settings, string> = {
-  theme: "pws:theme",
-  editorFontSize: "pws:editorfontsize",
-  editorWordWrap: "pws:editorwordwrap",
-};
+function storageKey(name: keyof Settings) {
+  return `pws:${name.toLowerCase()}`;
+}
 
 function parseStored(raw: string | null): unknown {
   if (raw === null) {
@@ -41,17 +98,6 @@ function parseStored(raw: string | null): unknown {
   }
 }
 
-function normalize(stored: Partial<Record<keyof Settings, unknown>>): Settings {
-  const theme = stored.theme === "light" || stored.theme === "dark" ? stored.theme : "auto";
-  const fontSize = Math.trunc(Number(stored.editorFontSize));
-
-  return {
-    theme,
-    editorFontSize: Number.isFinite(fontSize) && fontSize > 0 ? fontSize : DEFAULT_FONT_SIZE,
-    editorWordWrap: Boolean(stored.editorWordWrap),
-  };
-}
-
 /**
  * Preferências do usuário, com a mesma interface de `useSyncExternalStore`.
  * Mudanças feitas em outra aba do navegador chegam pelo evento `storage`.
@@ -62,11 +108,9 @@ class SettingsStore {
   private snapshot: Settings = this.read();
 
   private read(): Settings {
-    return normalize({
-      theme: parseStored(this.storage.getItem(STORAGE_KEYS.theme)),
-      editorFontSize: parseStored(this.storage.getItem(STORAGE_KEYS.editorFontSize)),
-      editorWordWrap: parseStored(this.storage.getItem(STORAGE_KEYS.editorWordWrap)),
-    });
+    return Object.fromEntries(
+      SETTING_NAMES.map(name => [name, SETTINGS[name].parse(parseStored(this.storage.getItem(storageKey(name))))]),
+    ) as Settings;
   }
 
   private refresh() {
@@ -78,7 +122,7 @@ class SettingsStore {
   }
 
   private readonly onStorage = (event: StorageEvent) => {
-    if (event.key === null || Object.values(STORAGE_KEYS).includes(event.key)) {
+    if (event.key === null || SETTING_NAMES.some(name => storageKey(name) === event.key)) {
       this.refresh();
     }
   };
@@ -103,7 +147,7 @@ class SettingsStore {
 
   set<K extends keyof Settings>(key: K, value: Settings[K]) {
     try {
-      this.storage.setItem(STORAGE_KEYS[key], JSON.stringify(value));
+      this.storage.setItem(storageKey(key), JSON.stringify(value));
     } catch (error) {
       console.warn("Failed to persist setting", key, error);
     }
@@ -115,9 +159,9 @@ class SettingsStore {
    * Só as configurações voltam ao padrão: o código em edição, no mesmo storage, fica intacto.
    */
   reset() {
-    for (const key of Object.values(STORAGE_KEYS)) {
+    for (const name of SETTING_NAMES) {
       try {
-        this.storage.removeItem(key);
+        this.storage.removeItem(storageKey(name));
       } catch {
         // A chave já é inacessível.
       }
@@ -125,6 +169,22 @@ class SettingsStore {
 
     this.refresh();
   }
+
+  /**
+   * Um nível de indentação, do jeito que o editor está configurado agora.
+   */
+  editorIndentation() {
+    const { editorInsertSpaces, editorTabSize } = this.snapshot;
+
+    return editorInsertSpaces ? " ".repeat(editorTabSize) : "\t";
+  }
 }
 
 export const settingsStore = new SettingsStore();
+
+/**
+ * Até ser alterado, o tamanho da fonte da saída acompanha o do editor.
+ */
+export function outputFontSize(settings: Settings) {
+  return settings.outputFontSize ?? settings.editorFontSize;
+}

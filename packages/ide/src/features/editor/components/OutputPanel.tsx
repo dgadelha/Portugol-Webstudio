@@ -96,7 +96,7 @@ export function OutputPanel({
       </div>
 
       <div className={styles.console}>
-        <OutputConsole output={output} onInput={onInput} onMount={onConsoleMount} />
+        <OutputConsole output={output} waitingForInput={waitingForInput} onInput={onInput} onMount={onConsoleMount} />
       </div>
     </div>
   );

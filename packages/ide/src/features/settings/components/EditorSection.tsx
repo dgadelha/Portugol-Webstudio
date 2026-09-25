@@ -1,73 +1,89 @@
-import { Minus, Plus } from "lucide-react";
-
-import { Badge } from "@/components/ui/Badge";
-import { Button } from "@/components/ui/Button";
 import { Separator } from "@/components/ui/Separator";
-import { Slider } from "@/components/ui/Slider";
 import { Switch } from "@/components/ui/Switch";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/ToggleGroup";
 
-import { DEFAULT_FONT_SIZE, FONT_SIZE_RANGE, settingsStore } from "../settingsStore";
+import {
+  DEFAULT_FONT_SIZE,
+  type EditorCursorStyle,
+  type EditorLineNumbers,
+  type EditorRenderWhitespace,
+  type Settings,
+  settingsStore,
+} from "../settingsStore";
 import { useSettings } from "../useSettings";
 import styles from "./EditorSection.module.css";
+import { FontSizeControl } from "./FontSizeControl";
 import { SettingField } from "./SettingField";
 
-export function EditorSection() {
-  const { editorFontSize, editorWordWrap } = useSettings();
+const TAB_SIZES = [2, 4, 8];
 
-  const setFontSize = (size: number) => {
-    settingsStore.set("editorFontSize", Math.min(FONT_SIZE_RANGE.max, Math.max(FONT_SIZE_RANGE.min, size)));
-  };
+const LINE_NUMBERS: Array<{ value: EditorLineNumbers; label: string }> = [
+  { value: "on", label: "Exibir" },
+  { value: "relative", label: "Relativos" },
+  { value: "off", label: "Ocultar" },
+];
+
+const RENDER_WHITESPACE: Array<{ value: EditorRenderWhitespace; label: string }> = [
+  { value: "none", label: "Nunca" },
+  { value: "selection", label: "Na seleção" },
+  { value: "all", label: "Sempre" },
+];
+
+const CURSOR_STYLES: Array<{ value: EditorCursorStyle; label: string }> = [
+  { value: "line", label: "Linha" },
+  { value: "block", label: "Bloco" },
+  { value: "underline", label: "Sublinhado" },
+];
+
+type BooleanSetting = {
+  [K in keyof Settings]: Settings[K] extends boolean ? K : never;
+}[keyof Settings];
+
+const SWITCHES: Array<{ key: BooleanSetting; id: string; label: string; description: string }> = [
+  {
+    key: "editorMinimap",
+    id: "setting-minimap",
+    label: "Minimapa",
+    description: "Miniatura do código ao lado da barra de rolagem.",
+  },
+  {
+    key: "editorIndentationGuides",
+    id: "setting-indentation-guides",
+    label: "Guias de indentação",
+    description: "Linhas verticais ligando o início e o fim de cada bloco.",
+  },
+  {
+    key: "editorBracketPairColorization",
+    id: "setting-bracket-pair-colorization",
+    label: "Colorir pares de chaves e parênteses",
+    description: "Cada nível de chaves e parênteses ganha uma cor.",
+  },
+  {
+    key: "editorAutoClosing",
+    id: "setting-auto-closing",
+    label: "Fechar chaves e aspas automaticamente",
+    description: "Ao abrir chaves, parênteses ou aspas, o fechamento já aparece.",
+  },
+];
+
+export function EditorSection() {
+  const settings = useSettings();
 
   return (
     <div className={styles.section}>
       <SettingField
         id="setting-font-size"
         label="Tamanho da fonte"
-        description={`Usado no editor e na saída. O padrão é ${DEFAULT_FONT_SIZE}px.`}
+        description={`Usado no editor e, até ser alterado na seção Saída, também na saída. O padrão é ${DEFAULT_FONT_SIZE}px.`}
       >
-        <div className={styles.fontSize}>
-          <Button
-            type="button"
-            variant="outline"
-            size="icon-sm"
-            aria-label="Diminuir fonte"
-            disabled={editorFontSize <= FONT_SIZE_RANGE.min}
-            onClick={() => {
-              setFontSize(editorFontSize - 1);
-            }}
-          >
-            <Minus />
-          </Button>
-          <Slider
-            aria-labelledby="setting-font-size"
-            className={styles.slider}
-            min={FONT_SIZE_RANGE.min}
-            max={FONT_SIZE_RANGE.max}
-            step={1}
-            value={[editorFontSize]}
-            onValueChange={([value]) => {
-              if (value !== undefined) setFontSize(value);
-            }}
-          />
-          <Button
-            type="button"
-            variant="outline"
-            size="icon-sm"
-            aria-label="Aumentar fonte"
-            disabled={editorFontSize >= FONT_SIZE_RANGE.max}
-            onClick={() => {
-              setFontSize(editorFontSize + 1);
-            }}
-          >
-            <Plus />
-          </Button>
-          <Badge variant="secondary" className={styles.fontSizeValue}>
-            {editorFontSize}px
-          </Badge>
-        </div>
+        <FontSizeControl
+          labelledBy="setting-font-size"
+          value={settings.editorFontSize}
+          onChange={size => {
+            settingsStore.set("editorFontSize", size);
+          }}
+        />
       </SettingField>
-
-      <Separator />
 
       <SettingField
         id="setting-word-wrap"
@@ -77,14 +93,121 @@ export function EditorSection() {
       >
         <Switch
           aria-labelledby="setting-word-wrap"
-          checked={editorWordWrap}
+          checked={settings.editorWordWrap}
           onCheckedChange={checked => {
             settingsStore.set("editorWordWrap", checked);
           }}
         />
       </SettingField>
 
-      <CodePreview fontSize={editorFontSize} wordWrap={editorWordWrap} />
+      <div className={styles.row}>
+        <SettingField id="setting-tab-size" label="Tamanho da tabulação">
+          <ToggleGroup
+            aria-labelledby="setting-tab-size"
+            value={String(settings.editorTabSize)}
+            onValueChange={value => {
+              settingsStore.set("editorTabSize", Number(value));
+            }}
+          >
+            {TAB_SIZES.map(size => (
+              <ToggleGroupItem key={size} value={String(size)} className={styles.tabSize}>
+                {size}
+              </ToggleGroupItem>
+            ))}
+          </ToggleGroup>
+        </SettingField>
+
+        <SettingField id="setting-insert-spaces" label="Indentar com">
+          <ToggleGroup
+            aria-labelledby="setting-insert-spaces"
+            value={String(settings.editorInsertSpaces)}
+            onValueChange={value => {
+              settingsStore.set("editorInsertSpaces", value === "true");
+            }}
+          >
+            <ToggleGroupItem value="true">Espaços</ToggleGroupItem>
+            <ToggleGroupItem value="false">Tabulações</ToggleGroupItem>
+          </ToggleGroup>
+        </SettingField>
+      </div>
+
+      <CodePreview
+        fontSize={settings.editorFontSize}
+        wordWrap={settings.editorWordWrap}
+        tabSize={settings.editorTabSize}
+      />
+
+      <Separator />
+
+      <SettingField
+        id="setting-line-numbers"
+        label="Números das linhas"
+        description="Relativos contam a partir da linha do cursor."
+      >
+        <ToggleGroup
+          aria-labelledby="setting-line-numbers"
+          value={settings.editorLineNumbers}
+          onValueChange={value => {
+            settingsStore.set("editorLineNumbers", value as EditorLineNumbers);
+          }}
+        >
+          {LINE_NUMBERS.map(option => (
+            <ToggleGroupItem key={option.value} value={option.value}>
+              {option.label}
+            </ToggleGroupItem>
+          ))}
+        </ToggleGroup>
+      </SettingField>
+
+      <SettingField
+        id="setting-render-whitespace"
+        label="Exibir espaços em branco"
+        description="Espaços aparecem como pontos e tabulações como setas."
+      >
+        <ToggleGroup
+          aria-labelledby="setting-render-whitespace"
+          value={settings.editorRenderWhitespace}
+          onValueChange={value => {
+            settingsStore.set("editorRenderWhitespace", value as EditorRenderWhitespace);
+          }}
+        >
+          {RENDER_WHITESPACE.map(option => (
+            <ToggleGroupItem key={option.value} value={option.value}>
+              {option.label}
+            </ToggleGroupItem>
+          ))}
+        </ToggleGroup>
+      </SettingField>
+
+      <SettingField id="setting-cursor-style" label="Estilo do cursor">
+        <ToggleGroup
+          aria-labelledby="setting-cursor-style"
+          value={settings.editorCursorStyle}
+          onValueChange={value => {
+            settingsStore.set("editorCursorStyle", value as EditorCursorStyle);
+          }}
+        >
+          {CURSOR_STYLES.map(option => (
+            <ToggleGroupItem key={option.value} value={option.value}>
+              {option.label}
+            </ToggleGroupItem>
+          ))}
+        </ToggleGroup>
+      </SettingField>
+
+      <Separator />
+
+      {SWITCHES.map(item => (
+        <SettingField key={item.key} id={item.id} label={item.label} description={item.description} layout="inline">
+          <Switch
+            aria-labelledby={item.id}
+            checked={settings[item.key]}
+            onCheckedChange={checked => {
+              settingsStore.set(item.key, checked);
+            }}
+          />
+        </SettingField>
+      ))}
     </div>
   );
 }
@@ -92,7 +215,7 @@ export function EditorSection() {
 /**
  * Prévia do editor com as preferências atuais.
  */
-function CodePreview({ fontSize, wordWrap }: { fontSize: number; wordWrap: boolean }) {
+function CodePreview({ fontSize, wordWrap, tabSize }: { fontSize: number; wordWrap: boolean; tabSize: number }) {
   const lines: Array<{ indent: number; parts: Array<[string, string?]> }> = [
     { indent: 0, parts: [["programa", styles.keyword], [" {"]] },
     {
@@ -117,7 +240,7 @@ function CodePreview({ fontSize, wordWrap }: { fontSize: number; wordWrap: boole
       <figcaption className={styles.previewCaption}>Prévia</figcaption>
       <pre className={styles.previewCode} style={{ fontSize, whiteSpace: wordWrap ? "pre-wrap" : "pre" }}>
         {lines.map((line, index) => (
-          <div key={index} style={{ paddingLeft: `${line.indent * 2}ch` }}>
+          <div key={index} style={{ paddingLeft: `${line.indent * tabSize}ch` }}>
             {line.parts.map(([text, className], partIndex) => (
               <span key={partIndex} className={className}>
                 {text}

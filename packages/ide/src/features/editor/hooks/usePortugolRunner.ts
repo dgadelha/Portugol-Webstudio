@@ -4,6 +4,7 @@ import { captureException, setExtra } from "@sentry/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { LINKS } from "@/config/env";
+import { useSettings } from "@/features/settings/useSettings";
 import { useLatest } from "@/hooks/useLatest";
 import { trackEvent } from "@/lib/analytics";
 import { portugolWorker } from "@/lib/portugolWorker";
@@ -37,6 +38,14 @@ export function usePortugolRunner(options: UsePortugolRunnerOptions = {}) {
 
   const optionsRef = useLatest(options);
   const transpilingRef = useRef(false);
+  const { outputClearOnRun } = useSettings();
+
+  useEffect(() => {
+    // Sem limpar, a saída de cada execução fica abaixo da anterior. O executor é um objeto do
+    // runner, mutável por natureza: não é estado do React.
+    // eslint-disable-next-line react-hooks/immutability
+    executor.clearStdOutOnRun = outputClearOnRun;
+  }, [executor, outputClearOnRun]);
 
   useEffect(() => {
     // Programas podem imprimir milhares de linhas por segundo: a saída vai para a tela no

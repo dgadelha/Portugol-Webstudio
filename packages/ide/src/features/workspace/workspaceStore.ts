@@ -1,7 +1,8 @@
+import { settingsStore } from "@/features/settings/settingsStore";
 import { randomId } from "@/lib/utils";
 
 import {
-  DEFAULT_CODE,
+  defaultCode,
   DEFAULT_TAB_TITLE,
   isMeaningfulCode,
   RecoverableWorkspace,
@@ -139,7 +140,7 @@ export class WorkspaceStore {
 
     // Aba sem origem começa com o esqueleto de um programa. Um arquivo aberto vazio continua
     // vazio: só a ausência de conteúdo vira o modelo.
-    this.contents.set(tab.id, contents ?? DEFAULT_CODE);
+    this.contents.set(tab.id, contents ?? defaultCode(settingsStore.editorIndentation()));
     this.setState({ tabs: [...this.state.tabs, tab], activeTabId: tab.id });
 
     return tab;

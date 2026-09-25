@@ -1,4 +1,4 @@
-import { GOOGLE_ANALYTICS_ID, IS_PRODUCTION } from "@/config/env";
+import { GOOGLE_ANALYTICS_ID, IS_PRODUCTION, RELEASE_CHANNEL } from "@/config/env";
 
 type Gtag = (...args: unknown[]) => void;
 
@@ -25,6 +25,8 @@ export function initAnalytics() {
   };
 
   window.gtag("js", new Date());
+  // Parâmetros do `set` acompanham todos os eventos, inclusive o `page_view` automático.
+  window.gtag("set", { app_channel: RELEASE_CHANNEL });
   window.gtag("config", GOOGLE_ANALYTICS_ID);
 
   const script = document.createElement("script");

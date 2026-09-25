@@ -217,6 +217,7 @@ export function EditorPane({ tabId, active }: EditorPaneProps) {
               <CodeEditor
                 path={`file:///${tabId}.por`}
                 language="portugol"
+                userSettings="code"
                 defaultValue={code()}
                 options={{ tabCompletion: "on" }}
                 onChange={value => {
