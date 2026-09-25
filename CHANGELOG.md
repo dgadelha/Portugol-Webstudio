@@ -17,6 +17,8 @@ As mudanças mais recentes do Portugol Webstudio aparecem primeiro.
 
 ## BETA
 
+## 24/09/2026
+
 `Objetos.criar_objeto_via_json` agora lê o objeto mesmo quando há outro texto depois dele, como no Portugol Studio. Antes, o resultado era um objeto vazio. Contribuição de [@kwy404](https://github.com/kwy404). [Mais detalhes](https://github.com/dgadelha/Portugol-Webstudio/pull/448)
 
 ---
@@ -32,7 +34,7 @@ O código agora é salvo automaticamente no navegador enquanto você digita:
 - O código de outras janelas que foram fechadas pode ser restaurado ou descartado aqui na página inicial
 - O código fica guardado só neste navegador: para levá-lo a outro computador, continue salvando o arquivo
 
-## 24/09/2026
+---
 
 `Texto.substituir` agora copia o texto substituto exatamente como escrito, sem interpretar `$` como um caractere especial, como no Portugol Studio. Contribuição de [@kwy404](https://github.com/kwy404). [Mais detalhes](https://github.com/dgadelha/Portugol-Webstudio/pull/446)
 
