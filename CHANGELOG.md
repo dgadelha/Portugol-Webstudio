@@ -17,6 +17,10 @@ As mudanças mais recentes do Portugol Webstudio aparecem primeiro.
 
 ## BETA
 
+`Objetos.criar_objeto_via_json` agora lê o objeto mesmo quando há outro texto depois dele, como no Portugol Studio. Antes, o resultado era um objeto vazio. Contribuição de [@kwy404](https://github.com/kwy404). [Mais detalhes](https://github.com/dgadelha/Portugol-Webstudio/pull/448)
+
+---
+
 O código agora é salvo automaticamente no navegador enquanto você digita:
 
 - Se a aba do navegador for fechada sem querer, basta abrir o Portugol Webstudio de novo: as abas voltam como estavam
