@@ -35,6 +35,12 @@ export class PortugolExecutor {
 
   stdOut = "";
   stdOut$ = new Subject<string>();
+
+  /**
+   * Com `false`, a saída de uma execução fica abaixo da anterior, separada por
+   * uma linha em branco, em vez de começar do zero.
+   */
+  clearStdOutOnRun = true;
   private _stdOut$?: Subscription;
 
   waitingForInput = false;
@@ -96,7 +102,11 @@ export class PortugolExecutor {
     times: { check: number; transpile: number };
   }) {
     try {
-      this.reset();
+      this.reset(this.clearStdOutOnRun);
+
+      if (this.stdOut.length > 0) {
+        this.stdOut += this.stdOut.endsWith("\n") ? "\n" : "\n\n";
+      }
 
       /**
        * Como o Portugol Studio: código com erro de compilação não executa. Os erros vão para

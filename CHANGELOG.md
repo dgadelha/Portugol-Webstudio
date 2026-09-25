@@ -17,6 +17,28 @@ As mudanças mais recentes do Portugol Webstudio aparecem primeiro.
 
 ## BETA
 
+Novas opções do editor em Configurações:
+
+- Tamanho da tabulação (2, 4 ou 8) e indentação com espaços ou tabulações, que o programa de uma aba nova também segue
+- Números das linhas: exibir, relativos à linha atual ou ocultar
+- Minimapa, cores nos pares de chaves e parênteses, e guias de indentação podem ser desligados
+- Espaços em branco podem ser exibidos como pontos: nunca, só no texto selecionado ou sempre
+- Fechamento automático de chaves, parênteses e aspas pode ser desligado
+- Estilo do cursor: linha, bloco ou sublinhado
+
+Novas opções da saída do programa em Configurações:
+
+- Tamanho da fonte próprio, que até ser alterado acompanha o do editor
+- As linhas longas agora sempre quebram, mesmo com a quebra de linha do editor desativada
+- A saída de cada execução pode ficar abaixo da anterior, em vez de ser apagada
+- A saída pode parar de rolar sozinha até o fim, exceto quando o programa espera o que você vai digitar
+
+## 24/09/2026
+
+Funções de biblioteca que esperam um número inteiro, como `Util.aguarde` e `Texto.obter_caracter`, agora aceitam um número real e descartam as casas decimais, como no Portugol Studio. Antes, o programa parava com um erro de tipos incompatíveis. Contribuição de [@kwy404](https://github.com/kwy404). [Mais detalhes](https://github.com/dgadelha/Portugol-Webstudio/pull/449)
+
+---
+
 `Objetos.criar_objeto_via_json` agora lê o objeto mesmo quando há outro texto depois dele, como no Portugol Studio. Antes, o resultado era um objeto vazio. Contribuição de [@kwy404](https://github.com/kwy404). [Mais detalhes](https://github.com/dgadelha/Portugol-Webstudio/pull/448)
 
 ---
@@ -32,7 +54,7 @@ O código agora é salvo automaticamente no navegador enquanto você digita:
 - O código de outras janelas que foram fechadas pode ser restaurado ou descartado aqui na página inicial
 - O código fica guardado só neste navegador: para levá-lo a outro computador, continue salvando o arquivo
 
-## 24/09/2026
+---
 
 `Texto.substituir` agora copia o texto substituto exatamente como escrito, sem interpretar `$` como um caractere especial, como no Portugol Studio. Contribuição de [@kwy404](https://github.com/kwy404). [Mais detalhes](https://github.com/dgadelha/Portugol-Webstudio/pull/446)
 
