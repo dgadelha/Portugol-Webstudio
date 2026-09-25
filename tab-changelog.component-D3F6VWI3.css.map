@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["packages/ide/src/app/tab-changelog/tab-changelog.component.scss"],
+  "sourcesContent": [":host {\n  display: block;\n  height: 100%;\n  overflow: auto;\n  scrollbar-width: thin;\n}\n\nmarkdown {\n  display: block;\n  max-width: 800px;\n  margin: 0 auto;\n  padding: 1rem 1.5rem 2rem;\n  line-height: 1.5;\n\n  ::ng-deep h2 {\n    margin: 2rem 0 0.75rem;\n    padding-bottom: 0.25rem;\n    font-size: 1.1rem;\n    border-bottom: 1px solid var(--pws-border-color);\n  }\n\n  ::ng-deep li {\n    margin-bottom: 0.5rem;\n  }\n}\n"],
+  "mappings": "AAAA,MACE,QAAA,MACA,OAAA,KACA,SAAA,KACA,gBAAA,KAGF,SACE,QAAA,MACA,UAAA,MATF,OAUE,EAAA,KAVF,QAWE,KAAA,OAAA,KACA,YAAA,IAEA,SAAA,UAAA,GAdF,OAeI,KAAA,EAAA,OACA,eAAA,OACA,UAAA,OACA,cAAA,IAAA,MAAA,IAAA,oBAGF,SAAA,UAAA,GACE,cAAA",
+  "names": []
+}

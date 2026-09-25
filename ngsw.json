@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1790287735738,
+  "timestamp": 1790298836137,
   "index": "/index.html",
   "assetGroups": [
     {
@@ -13,10 +13,10 @@
       "urls": [
         "/favicon.ico",
         "/index.html",
-        "/main-IAYXC3FC.js",
+        "/main-PWOUSN7K.js",
         "/manifest.webmanifest",
         "/polyfills-QWJLBG44.js",
-        "/styles-HLDNFH32.css"
+        "/styles-H4CMMR62.css"
       ],
       "patterns": []
     },
@@ -43,6 +43,7 @@
         "/assets/logo/pascoa.svg",
         "/assets/mdi/alert.svg",
         "/assets/mdi/angular.svg",
+        "/assets/mdi/arrow-right.svg",
         "/assets/mdi/book-open-page-variant-outline.svg",
         "/assets/mdi/bug-outline.svg",
         "/assets/mdi/chevron-down.svg",
@@ -61,12 +62,14 @@
         "/assets/mdi/file-document-outline.svg",
         "/assets/mdi/file-download-outline.svg",
         "/assets/mdi/file-plus-outline.svg",
+        "/assets/mdi/file-restore-outline.svg",
         "/assets/mdi/folder-open-outline.svg",
         "/assets/mdi/github.svg",
         "/assets/mdi/halloween.svg",
         "/assets/mdi/heart.svg",
         "/assets/mdi/help-circle-outline.svg",
         "/assets/mdi/help.svg",
+        "/assets/mdi/history.svg",
         "/assets/mdi/hub.svg",
         "/assets/mdi/information-outline.svg",
         "/assets/mdi/lightbulb-on-outline.svg",
@@ -78,6 +81,7 @@
         "/assets/mdi/rename-outline.svg",
         "/assets/mdi/share-variant-outline.svg",
         "/assets/mdi/square-rounded-outline.svg",
+        "/assets/mdi/store-outline.svg",
         "/assets/portugol-worker/worker-manifest.ts",
         "/assets/portugol-worker/worker.a6c8c30d1ec1ae377365.js",
         "/assets/portugol-worker/worker.a6c8c30d1ec1ae377365.js.map",
@@ -941,6 +945,7 @@
     "/assets/logo/pascoa.svg": "4740ae0cc73e0139444b02521012b5c6fa2893b8",
     "/assets/mdi/alert.svg": "ede61ad01494e0074915d523b0cd7af7a7cefe3b",
     "/assets/mdi/angular.svg": "741baa7fd866b084f02a45cf174db2e7e89f3434",
+    "/assets/mdi/arrow-right.svg": "3a56b88513776ae5f7ca0d1484754e6dab4fd6bc",
     "/assets/mdi/book-open-page-variant-outline.svg": "7580103a91d028b447dd5b6861ea6724b687a72e",
     "/assets/mdi/bug-outline.svg": "2cf1687947f12365016a1c9e788bcdd827beb0c9",
     "/assets/mdi/chevron-down.svg": "c6ce9793c0fdbc7010c7faa9ad9f861ac7d82f55",
@@ -959,12 +964,14 @@
     "/assets/mdi/file-document-outline.svg": "14d8a73fabc5402a09450f46e7368a1851a77cd8",
     "/assets/mdi/file-download-outline.svg": "fc1f4e5322f04178585b7d438b58eed4a519fba4",
     "/assets/mdi/file-plus-outline.svg": "d8c3d902b985c3563e61face6c78c63c035b72ac",
+    "/assets/mdi/file-restore-outline.svg": "05635f11de431fe1876d5063c9631ad4a1493dac",
     "/assets/mdi/folder-open-outline.svg": "1b6615aeb79bb4d64dc1941ab579f1a91b1a7440",
     "/assets/mdi/github.svg": "ad9d1e0a88cb812c0e799bdf33e060d74ab3e382",
     "/assets/mdi/halloween.svg": "d3316575108e16df2b81f707873c696d514dca5c",
     "/assets/mdi/heart.svg": "82501d6c2a783aa8cb89d91cb714754a53455494",
     "/assets/mdi/help-circle-outline.svg": "a102a953024aa47a3cc93a25fc6f8b421c4122ca",
     "/assets/mdi/help.svg": "6de93751d239bece7e990b9c367b3f522d376f27",
+    "/assets/mdi/history.svg": "33e8f5c30d8eb56d1930f78087702e7864adaa15",
     "/assets/mdi/hub.svg": "f7875bff8b3811a58ae55a15fb5def3631c5ffb4",
     "/assets/mdi/information-outline.svg": "a8b8d11c79f2706e3fcda137900d6aa8a5104e85",
     "/assets/mdi/lightbulb-on-outline.svg": "c9aff2e62bc3b2144c432dbd4945b9738f52f82f",
@@ -976,6 +983,7 @@
     "/assets/mdi/rename-outline.svg": "4da957f923fa4a76eb53b8400d727d329cc8dff3",
     "/assets/mdi/share-variant-outline.svg": "4aa0ea892a16e84dfbc851844bbf95e9972035ff",
     "/assets/mdi/square-rounded-outline.svg": "5307ba38c02ee3a98ee1c11621d6aa5bc94616a8",
+    "/assets/mdi/store-outline.svg": "db0816f6d976234664f389281d5c7b25962b46ca",
     "/assets/monaco-editor/min/vs/abap-D-t0cyap.js": "0a0eb5bc7810df5074a8104f0c5be6be0d33612d",
     "/assets/monaco-editor/min/vs/apex-CcIm7xu6.js": "b60739b81623ab48eb351cde8c2aa12aa89fff0d",
     "/assets/monaco-editor/min/vs/assets/css.worker-URu8fCFR.js": "30295f1ace652193d3119d9fa650d61d20d4345c",
@@ -1808,11 +1816,11 @@
     "/assets/recursos/exercicios/exercicio60.pex": "6082892362c640c5b7c9e63b12d6594dab32128d",
     "/assets/recursos/exercicios/schema.xsd": "cd13152ea836b1eed121a6972a619f595ac5d46c",
     "/favicon.ico": "a3dadb5b6906874517b9a2bc021bb3f154290edd",
-    "/index.html": "47b4985fb7d7777afeaee804a4183a3e02d3809e",
-    "/main-IAYXC3FC.js": "11f9ae6d0a2cb3e5d4a8f98f0441e02c3462e16b",
+    "/index.html": "306240b0d124cf70b603d04156b6edc236c27a68",
+    "/main-PWOUSN7K.js": "5f286f654b538afa7f2a4ce765b86fd917b921ba",
     "/manifest.webmanifest": "bbfd674042155ddb102be018a75422fd949cb37f",
     "/polyfills-QWJLBG44.js": "33f7dd4398dd098623aa482402f748d27f996df0",
-    "/styles-HLDNFH32.css": "91f0a1f9c4ee9c76f9879d078f2aa1507762b6b2"
+    "/styles-H4CMMR62.css": "12eeab28915da7ccd9efb985eca18c67cfd27836"
   },
   "navigationUrls": [
     {
