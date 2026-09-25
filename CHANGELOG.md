@@ -17,6 +17,10 @@ As mudanças mais recentes do Portugol Webstudio aparecem primeiro.
 
 ## BETA
 
+Uma barra invertida `\` sozinha dentro de um texto agora é apontada como erro, como no Portugol Studio, com a dica de escrever `\\` para mostrar a barra. Antes, o programa rodava e a barra sumia do que era escrito na tela, o que estragava desenhos como `/\_/\`. Contribuição de [@kwy404](https://github.com/kwy404). [Mais detalhes](https://github.com/dgadelha/Portugol-Webstudio/pull/451)
+
+---
+
 Novas opções do editor em Configurações:
 
 - Tamanho da tabulação (2, 4 ou 8) e indentação com espaços ou tabulações, que o programa de uma aba nova também segue

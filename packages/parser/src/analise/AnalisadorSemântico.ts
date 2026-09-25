@@ -26,6 +26,7 @@ import {
   erroBibliotecaNãoSuportada,
   erroBlocoInválido,
   erroConstanteNãoEncontradaNaBiblioteca,
+  erroEscapeÚnico,
   erroEscreverFunçãoSemRetorno,
   erroFunçãoInícioInexistente,
   erroFunçãoReservada,
@@ -140,6 +141,7 @@ import {
   SeCmd,
   SomaExpr,
   SubtraçãoExpr,
+  ÍndiceArrayExpr,
 } from "../nodes/index.js";
 import { blocoVálido } from "./blocoVálido.js";
 import { Memória } from "./Memória.js";
@@ -320,8 +322,39 @@ export class AnalisadorSemântico {
     // Os globais são conferidos no fim, quando já se sabe se alguma função os usou. Sem
     // desempilhar: a memória continua íntegra, e não é o fim da análise que a esvazia.
     this.relatarUso(this.memória.escopoGlobalAtual());
+    this.verificarEscapes(arquivo);
 
     return this.diagnósticos;
+  }
+
+  /**
+   * Espelha o `AnalisadorStringInvalida` do Portugol Studio: uma barra invertida numa cadeia
+   * só pode vir antes de t, n, b, r, f, aspas ou outra barra. Como o `VisitanteNulo` dele,
+   * não olha o operando do `nao` e do `~`, os índices e o incremento do `para`. Ele também
+   * pula os literais de vetor e matriz, mas ali é o javac que recusa o código gerado.
+   */
+  private verificarEscapes(nó: Node, pai?: Node) {
+    const ignorado = nó instanceof NegaçãoExpr || nó instanceof NegaçãoBitwiseExpr || nó instanceof ÍndiceArrayExpr;
+
+    if (ignorado || (pai instanceof ParaCmd && nó === pai.incremento)) {
+      return;
+    }
+
+    if (nó instanceof CadeiaExpr) {
+      let escape = false;
+
+      for (const caractere of nó.conteúdo) {
+        if (escape && !'tnbrf"\\'.includes(caractere)) {
+          this.registrar(erroEscapeÚnico(nó));
+        }
+
+        escape = !escape && caractere === "\\";
+      }
+    }
+
+    for (const filho of nó.children) {
+      this.verificarEscapes(filho, nó);
+    }
   }
 
   private registrar(diagnóstico: PortugolCodeDiagnostic) {

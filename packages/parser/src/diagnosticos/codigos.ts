@@ -70,6 +70,10 @@ export const CÓDIGOS = {
   INICIALIZACAO_ERRADA: "ErroSemantico.ErroInicializacaoErrada",
   PARA_SEM_EXPRESSAO_ATRIBUICAO: "ErroSemantico.ErroParaSemExpressaoAtribuicao",
   PARA_SEM_EXPRESSAO_COMPARACAO: "ErroSemantico.ErroParaSemExpressaoComparacao",
+  /**
+   * O Portugol Studio emite este erro como um `ErroSemiSintatico` anônimo, sem código.
+   */
+  ESCAPE_UNICO: "ErroSintatico.ErroEscapeUnico",
 
   // Específicos do Webstudio
   /**
