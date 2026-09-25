@@ -6,7 +6,7 @@ import { createPortal } from "react-dom";
 import { toast } from "sonner";
 
 import { CodeEditor } from "@/components/CodeEditor";
-import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/Resizable";
 import { useSidebarSlot } from "@/features/workspace/sidebarSlotContext";
 import { useTab, useWorkspaceStore } from "@/features/workspace/useWorkspace";
 import { useWorkspaceActions } from "@/features/workspace/workspaceActionsContext";
@@ -25,6 +25,7 @@ import { showShareToast } from "./lib/shareToast";
 import { useGraphicsWindow } from "./hooks/useGraphicsWindow";
 import { usePortugolRunner } from "./hooks/usePortugolRunner";
 import { applyDiagnostics } from "./lib/diagnostics";
+import styles from "./EditorPane.module.css";
 
 /**
  * Silêncio de digitação antes de checar o código de novo.
@@ -208,8 +209,8 @@ export function EditorPane({ tabId, active }: EditorPaneProps) {
   };
 
   return (
-    <div className="flex h-full flex-col">
-      <ResizablePanelGroup orientation="vertical" className="min-h-0 flex-1">
+    <div className={styles.pane}>
+      <ResizablePanelGroup orientation="vertical" className={styles.panels}>
         <ResizablePanel minSize="15%">
           <ResizablePanelGroup orientation="horizontal">
             <ResizablePanel minSize="25%">
@@ -226,7 +227,7 @@ export function EditorPane({ tabId, active }: EditorPaneProps) {
             </ResizablePanel>
 
             {/* Divisória invisível até o hover ou o arrasto. */}
-            <ResizableHandle className="bg-transparent" />
+            <ResizableHandle className={styles.hiddenHandle} />
 
             {/* Código JavaScript gerado: fechado, aparece ao arrastar a divisória da direita. */}
             <ResizablePanel defaultSize={0} collapsible collapsedSize={0} minSize="15%">
@@ -287,9 +288,9 @@ export function EditorPane({ tabId, active }: EditorPaneProps) {
 
 function GeneratedCodeView({ code }: { code: string }) {
   return (
-    <div className="flex h-full flex-col">
-      <div className="flex h-9 shrink-0 items-center border-b px-3 text-sm font-medium">JavaScript gerado</div>
-      <div className="min-h-0 flex-1">
+    <div className={styles.pane}>
+      <div className={styles.generatedHeader}>JavaScript gerado</div>
+      <div className={styles.fill}>
         {code ? (
           <CodeEditor
             language="javascript"
@@ -297,7 +298,7 @@ function GeneratedCodeView({ code }: { code: string }) {
             options={{ readOnly: true, lineNumbers: "off", minimap: { enabled: false } }}
           />
         ) : (
-          <p className="p-4 text-sm text-muted-foreground">Execute o programa para ver o código gerado.</p>
+          <p className={styles.generatedEmpty}>Execute o programa para ver o código gerado.</p>
         )}
       </div>
     </div>

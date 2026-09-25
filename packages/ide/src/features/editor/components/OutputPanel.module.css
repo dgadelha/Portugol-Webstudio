@@ -1,0 +1,84 @@
+.panel {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+}
+
+.header {
+  display: flex;
+  flex-shrink: 0;
+  cursor: pointer;
+  align-items: center;
+  gap: 0.5rem;
+  border-bottom-width: 1px;
+  padding-inline: 0.75rem;
+  user-select: none;
+}
+
+.headerIcon {
+  width: 1rem;
+  height: 1rem;
+  color: var(--muted-foreground);
+}
+
+.title {
+  font-size: var(--text-sm);
+  line-height: var(--text-sm--line-height);
+  font-weight: 500;
+}
+
+.actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.action {
+  color: var(--muted-foreground);
+}
+
+.chevron {
+  transition-property: transform, translate, scale, rotate;
+  transition-timing-function: var(--ease);
+  transition-duration: var(--duration);
+}
+
+.chevronOpen {
+  rotate: 180deg;
+}
+
+.console {
+  min-height: 0;
+  flex: 1;
+}
+
+.status {
+  gap: 0.375rem;
+}
+
+.waiting {
+  border-color: color-mix(in oklab, oklch(76.9% 0.188 70.08) 40%, transparent);
+  color: oklch(66.6% 0.179 58.318);
+}
+
+.waiting:where(:global(.dark) *) {
+  color: oklch(82.8% 0.189 84.429);
+}
+
+.running {
+  border-color: color-mix(in oklab, oklch(69.6% 0.17 162.48) 40%, transparent);
+  color: oklch(59.6% 0.145 163.225);
+}
+
+.running:where(:global(.dark) *) {
+  color: oklch(76.5% 0.177 163.223);
+}
+
+.dot {
+  width: 0.375rem;
+  height: 0.375rem;
+  animation: global(pulse) 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  border-radius: var(--radius-full);
+  background-color: currentcolor;
+}

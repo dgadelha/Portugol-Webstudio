@@ -3,6 +3,8 @@ import { type KeyboardEvent, type ReactNode, useState } from "react";
 
 import { cn } from "@/lib/utils";
 
+import styles from "./TreeView.module.css";
+
 export interface TreeNode {
   id: string;
   children?: TreeNode[];
@@ -26,7 +28,7 @@ interface TreeViewProps<T extends TreeNode> {
 }
 
 /**
- * Árvore no estilo dos menus da sidebar do shadcn. Navegável por teclado: Enter/Espaço
+ * Árvore no estilo dos menus da sidebar. Navegável por teclado: Enter/Espaço
  * selecionam, setas abrem e fecham pastas.
  */
 export function TreeView<T extends TreeNode>({
@@ -50,7 +52,7 @@ export function TreeView<T extends TreeNode>({
   };
 
   return (
-    <ul role="tree" aria-label={ariaLabel} className={cn("grid gap-0.5 text-sm", className)}>
+    <ul role="tree" aria-label={ariaLabel} className={cn(styles.tree, className)}>
       {nodes.map(node => (
         <TreeItem key={node.id} node={node} expanded={expanded} setExpanded={setNodeExpanded} {...props} />
       ))}
@@ -99,11 +101,7 @@ function TreeItem<T extends TreeNode>({ node, expanded, setExpanded, ...props }:
     <li role="treeitem" aria-expanded={hasChildren ? isExpanded : undefined} aria-selected={isSelected}>
       <div
         tabIndex={0}
-        className={cn(
-          "flex h-8 cursor-pointer items-center gap-1 rounded-md px-1.5 text-foreground/80 transition-colors outline-none select-none",
-          "hover:bg-accent hover:text-accent-foreground focus-visible:ring-2 focus-visible:ring-ring",
-          isSelected && "bg-accent font-medium text-accent-foreground",
-        )}
+        className={cn(styles.row, isSelected && styles.selected)}
         onClick={activate}
         onKeyDown={onKeyDown}
       >
@@ -112,23 +110,23 @@ function TreeItem<T extends TreeNode>({ node, expanded, setExpanded, ...props }:
             type="button"
             tabIndex={-1}
             aria-label={isExpanded ? "Recolher pasta" : "Expandir pasta"}
-            className="flex size-5 shrink-0 items-center justify-center rounded-sm text-muted-foreground hover:text-foreground"
+            className={styles.toggle}
             onClick={event => {
               event.stopPropagation();
               setExpanded(node.id, !isExpanded);
             }}
           >
-            <ChevronRight className={cn("size-4 transition-transform", isExpanded && "rotate-90")} />
+            <ChevronRight className={cn(styles.chevron, isExpanded && styles.expanded)} />
           </button>
         ) : (
-          <span className="size-5 shrink-0" aria-hidden="true" />
+          <span className={styles.spacer} aria-hidden="true" />
         )}
 
-        <span className="truncate">{getLabel(node)}</span>
+        <span className={styles.label}>{getLabel(node)}</span>
       </div>
 
       {hasChildren && isExpanded && (
-        <ul role="group" className="mt-0.5 ml-3.5 grid gap-0.5 border-l pl-1.5">
+        <ul role="group" className={styles.children}>
           {(node.children as T[]).map(child => (
             <TreeItem key={child.id} node={child} expanded={expanded} setExpanded={setExpanded} {...props} />
           ))}

@@ -1,0 +1,30 @@
+.field {
+  display: flex;
+  gap: 1rem;
+}
+
+.inline {
+  align-items: center;
+  justify-content: space-between;
+}
+
+.stacked {
+  flex-direction: column;
+}
+
+.text {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.label {
+  font-size: var(--text-sm);
+  line-height: 1;
+  font-weight: 500;
+}
+
+.description {
+  font-size: var(--text-sm);
+  line-height: var(--text-sm--line-height);
+  color: var(--muted-foreground);
+}

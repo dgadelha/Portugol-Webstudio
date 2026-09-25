@@ -1,13 +1,14 @@
 import { Minus, Plus } from "lucide-react";
 
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { Slider } from "@/components/ui/slider";
-import { Switch } from "@/components/ui/switch";
+import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
+import { Separator } from "@/components/ui/Separator";
+import { Slider } from "@/components/ui/Slider";
+import { Switch } from "@/components/ui/Switch";
 
 import { DEFAULT_FONT_SIZE, FONT_SIZE_RANGE, settingsStore } from "../settingsStore";
 import { useSettings } from "../useSettings";
+import styles from "./EditorSection.module.css";
 import { SettingField } from "./SettingField";
 
 export function EditorSection() {
@@ -18,13 +19,13 @@ export function EditorSection() {
   };
 
   return (
-    <div className="grid gap-6">
+    <div className={styles.section}>
       <SettingField
         id="setting-font-size"
         label="Tamanho da fonte"
         description={`Usado no editor e na saída. O padrão é ${DEFAULT_FONT_SIZE}px.`}
       >
-        <div className="flex items-center gap-3">
+        <div className={styles.fontSize}>
           <Button
             type="button"
             variant="outline"
@@ -39,7 +40,7 @@ export function EditorSection() {
           </Button>
           <Slider
             aria-labelledby="setting-font-size"
-            className="flex-1"
+            className={styles.slider}
             min={FONT_SIZE_RANGE.min}
             max={FONT_SIZE_RANGE.max}
             step={1}
@@ -60,7 +61,7 @@ export function EditorSection() {
           >
             <Plus />
           </Button>
-          <Badge variant="secondary" className="w-12 justify-center font-mono tabular-nums">
+          <Badge variant="secondary" className={styles.fontSizeValue}>
             {editorFontSize}px
           </Badge>
         </div>
@@ -93,25 +94,17 @@ export function EditorSection() {
  */
 function CodePreview({ fontSize, wordWrap }: { fontSize: number; wordWrap: boolean }) {
   const lines: Array<{ indent: number; parts: Array<[string, string?]> }> = [
-    { indent: 0, parts: [["programa", "text-sky-600 dark:text-sky-400"], [" {"]] },
+    { indent: 0, parts: [["programa", styles.keyword], [" {"]] },
     {
       indent: 1,
-      parts: [
-        ["funcao", "text-sky-600 dark:text-sky-400"],
-        [" "],
-        ["inicio", "text-amber-600 dark:text-amber-300"],
-        ["() {"],
-      ],
+      parts: [["funcao", styles.keyword], [" "], ["inicio", styles.function], ["() {"]],
     },
     {
       indent: 2,
       parts: [
-        ["escreva", "text-amber-600 dark:text-amber-300"],
+        ["escreva", styles.function],
         ["("],
-        [
-          '"Olá! Esta linha é comprida para mostrar como a quebra de linha funciona no editor."',
-          "text-orange-700 dark:text-orange-300",
-        ],
+        ['"Olá! Esta linha é comprida para mostrar como a quebra de linha funciona no editor."', styles.string],
         [")"],
       ],
     },
@@ -120,12 +113,9 @@ function CodePreview({ fontSize, wordWrap }: { fontSize: number; wordWrap: boole
   ];
 
   return (
-    <figure className="grid gap-2">
-      <figcaption className="text-xs font-medium text-muted-foreground">Prévia</figcaption>
-      <pre
-        className="overflow-x-auto rounded-lg border bg-muted/40 p-4 font-mono leading-relaxed"
-        style={{ fontSize, whiteSpace: wordWrap ? "pre-wrap" : "pre" }}
-      >
+    <figure className={styles.preview}>
+      <figcaption className={styles.previewCaption}>Prévia</figcaption>
+      <pre className={styles.previewCode} style={{ fontSize, whiteSpace: wordWrap ? "pre-wrap" : "pre" }}>
         {lines.map((line, index) => (
           <div key={index} style={{ paddingLeft: `${line.indent * 2}ch` }}>
             {line.parts.map(([text, className], partIndex) => (

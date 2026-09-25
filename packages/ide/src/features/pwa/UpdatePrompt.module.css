@@ -1,0 +1,20 @@
+.toast {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  gap: 0.5rem;
+  border-radius: var(--radius-lg);
+  border-width: 1px;
+  background-color: var(--popover);
+  padding: 1rem;
+  font-size: var(--text-sm);
+  line-height: var(--text-sm--line-height);
+  color: var(--popover-foreground);
+  box-shadow: var(--shadow-lg);
+}
+
+.actions {
+  margin-top: 0.25rem;
+  display: flex;
+  gap: 0.5rem;
+}

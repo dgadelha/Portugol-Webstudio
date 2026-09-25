@@ -1,7 +1,7 @@
 import type { ComponentProps, ReactNode } from "react";
 
-import { Button } from "@/components/ui/button";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { Button } from "@/components/ui/Button";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/Tooltip";
 
 interface IconButtonProps extends Omit<ComponentProps<typeof Button>, "children"> {
   /**

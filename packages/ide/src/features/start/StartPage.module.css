@@ -1,0 +1,89 @@
+.page {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.content {
+  margin-inline: auto;
+  display: flex;
+  width: 100%;
+  max-width: 28rem;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2rem;
+  padding: 3rem 1.5rem;
+}
+
+.logo {
+  margin-inline: auto;
+  margin-bottom: 1.5rem;
+  max-width: 16rem;
+}
+
+.actions {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.shortcut {
+  margin-left: auto;
+  background-color: color-mix(in oklab, var(--primary-foreground) 15%, transparent);
+  color: var(--primary-foreground);
+}
+
+.secondaryActions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.news {
+  margin-inline: auto;
+  display: flex;
+  max-width: 100%;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: var(--radius-full);
+  border-width: 1px;
+  padding: 0.25rem 0.75rem;
+  font-size: var(--text-xs);
+  line-height: var(--text-xs--line-height);
+  color: var(--muted-foreground);
+  transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke;
+  transition-timing-function: var(--ease);
+  transition-duration: var(--duration);
+}
+
+.newsLabel {
+  font-weight: 500;
+  color: var(--foreground);
+}
+
+.newsTitle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.newsArrow {
+  width: 0.75rem;
+  height: 0.75rem;
+  flex-shrink: 0;
+  transition-property: transform, translate, scale, rotate;
+  transition-timing-function: var(--ease);
+  transition-duration: var(--duration);
+}
+
+@media (hover: hover) {
+  .news:hover {
+    background-color: var(--accent);
+    color: var(--accent-foreground);
+  }
+
+  .news:hover .newsArrow {
+    translate: 0.125rem 0;
+  }
+}

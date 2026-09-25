@@ -2,9 +2,11 @@ import { Loader2 } from "lucide-react";
 import { lazy, type ReactNode, Suspense } from "react";
 
 import { StartPage } from "@/features/start/StartPage";
+import { cn } from "@/lib/utils";
 
 import type { Tab } from "../types";
 import { useActiveTabId, useTabs } from "../useWorkspace";
+import styles from "./TabPanels.module.css";
 
 // O editor (parser, runner), a ajuda (bibliotecas) e o histórico só são baixados quando uma aba
 // deles é aberta: a aba inicial carrega leve.
@@ -23,7 +25,7 @@ export function TabPanels() {
   const activeTabId = useActiveTabId();
 
   return (
-    <div className="relative min-h-0 flex-1">
+    <div className={styles.panels}>
       <TabPanel active={activeTabId === null}>
         <StartPage />
       </TabPanel>
@@ -41,7 +43,7 @@ export function TabPanels() {
 
 function TabPanel({ active, children }: { active: boolean; children: ReactNode }) {
   return (
-    <section hidden={!active} className="absolute inset-0 overflow-hidden">
+    <section hidden={!active} className={styles.panel}>
       {children}
     </section>
   );
@@ -49,8 +51,8 @@ function TabPanel({ active, children }: { active: boolean; children: ReactNode }
 
 function PanelLoading() {
   return (
-    <div className="flex h-full items-center justify-center">
-      <Loader2 className="size-6 animate-spin text-muted-foreground" aria-label="Carregando" />
+    <div className={styles.loading}>
+      <Loader2 className={cn(styles.spinner, "spin")} aria-label="Carregando" />
     </div>
   );
 }

@@ -2,7 +2,9 @@ import { useEffect, useRef } from "react";
 import { toast } from "sonner";
 import { useRegisterSW } from "virtual:pwa-register/react";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
+
+import styles from "./UpdatePrompt.module.css";
 
 /**
  * De quanto em quanto tempo procurar uma versão nova do IDE.
@@ -57,12 +59,12 @@ export function UpdatePrompt() {
 
     toast.custom(
       id => (
-        <div className="flex w-full flex-col gap-2 rounded-lg border bg-popover p-4 text-sm text-popover-foreground shadow-lg">
+        <div className={styles.toast}>
           <strong>Uma nova versão do Portugol Webstudio está disponível</strong>
           <p>Lembre-se de salvar os seus arquivos antes de atualizar.</p>
           <p>Quando estiver pronto, basta atualizar a página ou clicar no botão abaixo.</p>
 
-          <div className="mt-1 flex gap-2">
+          <div className={styles.actions}>
             <Button
               type="button"
               size="sm"

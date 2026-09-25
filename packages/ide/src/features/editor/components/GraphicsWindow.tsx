@@ -2,7 +2,9 @@ import { X } from "lucide-react";
 import { type PointerEvent, type Ref, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
+
+import styles from "./GraphicsWindow.module.css";
 
 interface GraphicsWindowProps {
   title: string;
@@ -46,24 +48,24 @@ export function GraphicsWindow({ title, canvasRef, onClose }: GraphicsWindowProp
     <div
       role="dialog"
       aria-label={title || "Janela gráfica"}
-      className="fixed top-1/2 left-1/2 z-50 flex max-h-[95vh] max-w-[95vw] flex-col overflow-hidden rounded-xl border bg-card text-card-foreground shadow-2xl"
+      className={styles.window}
       style={{ transform: `translate(calc(-50% + ${offset.x}px), calc(-50% + ${offset.y}px))` }}
     >
       <header
-        className="flex h-10 cursor-move touch-none items-center gap-2 border-b pr-1.5 pl-4 select-none"
+        className={styles.titleBar}
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
         onPointerCancel={onPointerUp}
       >
-        <span className="flex-1 truncate text-sm font-medium">{title}</span>
+        <span className={styles.title}>{title}</span>
         <Button type="button" variant="ghost" size="icon-xs" aria-label="Fechar janela" onClick={onClose}>
           <X />
         </Button>
       </header>
 
-      <div className="overflow-auto">
-        <canvas ref={canvasRef} className="block" />
+      <div className={styles.canvasArea}>
+        <canvas ref={canvasRef} className={styles.canvas} />
       </div>
     </div>,
     document.body,

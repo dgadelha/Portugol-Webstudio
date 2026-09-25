@@ -1,9 +1,6 @@
-@import "tailwindcss";
-@import "tw-animate-css";
+@layer base;
 
-@custom-variant dark (&:where(.dark, .dark *));
-
-/* Tema neutral padrão do shadcn/ui. */
+/* Paleta neutra: fundo, texto e superfícies em tons de cinza. */
 :root {
   --radius: 0.625rem;
   --background: oklch(1 0 0);
@@ -24,15 +21,8 @@
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
   --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
   --sidebar-accent: oklch(0.97 0 0);
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
@@ -48,6 +38,42 @@
   --code-brackets: #319331;
   --code-param: #000000;
   --code-value: #098658;
+
+  /* Tipografia, raios, sombras e transições compartilhados pelos componentes. */
+  --font-sans: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono Variable", ui-monospace, "SFMono-Regular", monospace;
+
+  --text-xs: 0.75rem;
+  --text-xs--line-height: calc(1 / 0.75);
+  --text-sm: 0.875rem;
+  --text-sm--line-height: calc(1.25 / 0.875);
+  --text-base: 1rem;
+  --text-base--line-height: calc(1.5 / 1);
+  --text-lg: 1.125rem;
+  --text-lg--line-height: calc(1.75 / 1.125);
+  --text-xl: 1.25rem;
+  --text-xl--line-height: calc(1.75 / 1.25);
+  --text-2xl: 1.5rem;
+  --text-2xl--line-height: calc(2 / 1.5);
+
+  --radius-xs: 0.125rem;
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-full: calc(infinity * 1px);
+
+  --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+
+  /* Anel de foco: 3px da cor `--ring` a 50%. */
+  --focus-ring: 0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent);
+
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --duration: 150ms;
 
   color-scheme: light;
 }
@@ -71,15 +97,8 @@
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
   --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
   --sidebar: oklch(0.205 0 0);
   --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
   --sidebar-accent: oklch(0.269 0 0);
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
@@ -97,151 +116,257 @@
   color-scheme: dark;
 }
 
-@theme inline {
-  --font-sans: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "Geist Mono Variable", ui-monospace, "SFMono-Regular", monospace;
-
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-brand: var(--brand);
-}
-
+/*
+ * Reset em camada própria: o CSS das bibliotecas (Monaco, Sonner), que não usa camadas, sempre
+ * vence estas regras.
+ */
 @layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    border: 0 solid;
+  }
+
+  html {
+    line-height: 1.5;
+    -webkit-text-size-adjust: 100%;
+    tab-size: 4;
+    font-family: var(--font-sans);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  hr {
+    height: 0;
+    color: inherit;
+    border-top-width: 1px;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-size: inherit;
+    font-weight: inherit;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: inherit;
+  }
+
+  abbr:where([title]) {
+    text-decoration: underline dotted;
+  }
+
+  b,
+  strong {
+    font-weight: bolder;
+  }
+
+  code,
+  kbd,
+  samp,
+  pre {
+    font-family: var(--font-mono);
+    font-size: 1em;
+  }
+
+  small {
+    font-size: 80%;
+  }
+
+  sub,
+  sup {
+    font-size: 75%;
+    line-height: 0;
+    position: relative;
+    vertical-align: baseline;
+  }
+
+  sub {
+    bottom: -0.25em;
+  }
+
+  sup {
+    top: -0.5em;
+  }
+
+  table {
+    text-indent: 0;
+    border-color: inherit;
+    border-collapse: collapse;
+  }
+
+  progress {
+    vertical-align: baseline;
+  }
+
+  summary {
+    display: list-item;
+  }
+
+  ol,
+  ul,
+  menu {
+    list-style: none;
+  }
+
+  img,
+  svg,
+  video,
+  canvas,
+  audio,
+  iframe,
+  embed,
+  object {
+    display: block;
+    vertical-align: middle;
+  }
+
+  img,
+  video {
+    max-width: 100%;
+    height: auto;
+  }
+
+  button,
+  input,
+  select,
+  optgroup,
+  textarea,
+  ::file-selector-button {
+    font: inherit;
+    font-feature-settings: inherit;
+    font-variation-settings: inherit;
+    letter-spacing: inherit;
+    color: inherit;
+    border-radius: 0;
+    background-color: transparent;
+    opacity: 1;
+  }
+
+  ::placeholder {
+    opacity: 1;
+    color: color-mix(in oklab, currentcolor 50%, transparent);
+  }
+
+  textarea {
+    resize: vertical;
+  }
+
+  ::-webkit-search-decoration {
+    -webkit-appearance: none;
+  }
+
+  ::-webkit-inner-spin-button,
+  ::-webkit-outer-spin-button {
+    height: auto;
+  }
+
+  button,
+  input:where([type="button"], [type="reset"], [type="submit"]),
+  ::file-selector-button {
+    appearance: button;
+  }
+
+  [hidden]:where(:not([hidden="until-found"])) {
+    display: none !important;
+  }
+
   * {
-    @apply border-border outline-ring/50;
+    border-color: var(--border);
+    outline-color: color-mix(in oklab, var(--ring) 50%, transparent);
   }
 
   html,
   body,
   #root {
-    @apply h-full w-full overflow-hidden;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
   }
 
   body {
-    @apply m-0 bg-background font-sans text-foreground antialiased;
+    background-color: var(--background);
+    font-family: var(--font-sans);
+    color: var(--foreground);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }
 
-@layer components {
-  /* Logomarcas embutidas: título e subtítulo acompanham o tema. */
-  .logo-title[fill] {
-    fill: var(--foreground);
+/* Texto só para leitores de tela. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/*
+ * Entrada e saída de popovers, diálogos e tooltips. Cada componente define o ponto de partida
+ * (`--enter-*`) ou de chegada (`--exit-*`): opacidade, escala e deslocamento.
+ */
+@keyframes enter {
+  from {
+    opacity: var(--enter-opacity, 1);
+    transform: translate3d(var(--enter-translate-x, 0), var(--enter-translate-y, 0), 0)
+      scale3d(var(--enter-scale, 1), var(--enter-scale, 1), var(--enter-scale, 1));
   }
+}
 
-  .logo-subtitle[fill] {
-    fill: var(--muted-foreground);
+@keyframes exit {
+  to {
+    opacity: var(--exit-opacity, 1);
+    transform: translate3d(var(--exit-translate-x, 0), var(--exit-translate-y, 0), 0)
+      scale3d(var(--exit-scale, 1), var(--exit-scale, 1), var(--exit-scale, 1));
   }
+}
 
-  .logo-subtitle[stroke] {
-    stroke: var(--muted-foreground);
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
   }
+}
 
-  .logo-icon[fill] {
-    fill: var(--brand);
+@keyframes pulse {
+  50% {
+    opacity: 0.5;
   }
+}
 
-  /* Texto vindo de Markdown (histórico de atualizações, documentação das bibliotecas). */
-  .markdown {
-    @apply text-sm leading-7;
+/* Ícone girando enquanto algo carrega. */
+.spin {
+  animation: spin 1s linear infinite;
+}
 
-    h1 {
-      @apply mt-2 mb-4 scroll-m-20 text-2xl font-semibold tracking-tight;
-    }
+/* Logomarcas embutidas: título e subtítulo acompanham o tema. */
+.logo-title[fill] {
+  fill: var(--foreground);
+}
 
-    h2 {
-      @apply mt-10 mb-3 scroll-m-20 border-b pb-2 text-xl font-semibold tracking-tight first:mt-0;
-    }
+.logo-subtitle[fill] {
+  fill: var(--muted-foreground);
+}
 
-    h3 {
-      @apply mt-6 mb-2 text-lg font-semibold tracking-tight;
-    }
+.logo-subtitle[stroke] {
+  stroke: var(--muted-foreground);
+}
 
-    p {
-      @apply leading-7 not-first:mt-4;
-    }
-
-    ul {
-      @apply my-4 ml-6 list-disc [&>li]:mt-2;
-    }
-
-    hr {
-      @apply my-6 border-dashed;
-    }
-
-    a {
-      @apply font-medium underline underline-offset-4;
-    }
-
-    strong {
-      @apply font-semibold;
-    }
-
-    code {
-      @apply relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-[0.8125rem] font-semibold;
-    }
-
-    .code {
-      @apply my-4 overflow-x-auto rounded-lg border bg-muted/50 p-4 font-mono text-[0.8125rem];
-    }
-
-    .code-keyword {
-      color: var(--code-keyword);
-    }
-
-    .code-const-name {
-      color: var(--code-const);
-    }
-
-    .code-func-name {
-      color: var(--code-func);
-    }
-
-    .code-keyword-brackets {
-      color: var(--code-brackets);
-    }
-
-    .code-param-name {
-      color: var(--code-param);
-    }
-
-    .code-value {
-      color: var(--code-value);
-    }
-  }
+.logo-icon[fill] {
+  fill: var(--brand);
 }
 
 /* As dicas do Monaco saem do fluxo para não serem cortadas pelos painéis redimensionáveis. */

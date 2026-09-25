@@ -11,6 +11,7 @@ import type { Tab, TabType } from "../types";
 import { useActiveTabId, useTabs } from "../useWorkspace";
 import { useTabRename } from "../tabRenameContext";
 import { useWorkspaceActions } from "../workspaceActionsContext";
+import styles from "./TabStrip.module.css";
 
 const TAB_ICONS: Record<TabType, LucideIcon> = {
   editor: FileCode2,
@@ -19,38 +20,26 @@ const TAB_ICONS: Record<TabType, LucideIcon> = {
 };
 
 /**
- * Cada aba é um botão separado, no estilo `outline` do shadcn; a ativa fica destacada com
+ * Cada aba é um botão separado, no estilo dos botões `outline`; a ativa fica destacada com
  * `accent`. O botão é um link para a rota da aba.
  */
-const tabClass = cn(
-  "group/tab relative inline-flex h-8 shrink-0 items-center gap-1.5 rounded-md border bg-background pr-1 pl-3 text-sm font-medium whitespace-nowrap shadow-xs",
-  "text-muted-foreground transition-[color,background-color,box-shadow] hover:bg-accent hover:text-accent-foreground",
-  "dark:border-input dark:bg-input/30 dark:hover:bg-input/50",
-  "data-[active=true]:bg-accent data-[active=true]:text-accent-foreground",
-  "dark:data-[active=true]:bg-input/60",
-  "has-focus-visible:ring-[3px] has-focus-visible:ring-ring/50",
-);
-
 export function TabStrip() {
   const tabs = useTabs();
   const activeTabId = useActiveTabId();
   const { openEditor } = useWorkspaceActions();
 
   return (
-    <div className="flex min-w-0 flex-1 items-center gap-1.5">
+    <div className={styles.strip}>
       {/* O espaço interno deixa o anel de foco caber: a rolagem horizontal recorta o que passa da borda. */}
-      <nav
-        aria-label="Abas abertas"
-        className="-mx-1.5 flex min-w-0 items-center gap-1.5 overflow-x-auto px-1.5 py-2 [scrollbar-width:none]"
-      >
+      <nav aria-label="Abas abertas" className={styles.tabs}>
         <Link
           to={PATHS.home}
           data-active={activeTabId === null}
           aria-current={activeTabId === null ? "page" : undefined}
           aria-label="Início"
-          className={cn(tabClass, "w-8 justify-center px-0 outline-none")}
+          className={cn(styles.tab, styles.home)}
         >
-          <House className="size-4" />
+          <House className={styles.homeIcon} />
         </Link>
 
         {tabs.map(tab => (
@@ -80,10 +69,10 @@ function TabStripItem({ tab, active }: { tab: Tab; active: boolean }) {
   const renaming = renamingTabId === tab.id;
 
   return (
-    <div data-active={active} className={cn(tabClass, renaming && "border-ring ring-[3px] ring-ring/50")}>
+    <div data-active={active} className={cn(styles.tab, renaming && styles.renaming)}>
       {renaming ? (
-        <span className="flex min-w-0 items-center gap-1.5">
-          <Icon className="size-4 shrink-0" />
+        <span className={styles.renameField}>
+          <Icon className={styles.icon} />
           <TabTitleInput title={tab.title} />
         </span>
       ) : (
@@ -91,7 +80,7 @@ function TabStripItem({ tab, active }: { tab: Tab; active: boolean }) {
           to={pathForTab(tab)}
           aria-current={active ? "page" : undefined}
           title={tab.type === "editor" ? "Clique duas vezes para renomear" : undefined}
-          className="flex max-w-48 min-w-0 items-center gap-1.5 outline-none"
+          className={styles.link}
           onDoubleClick={() => {
             requestRenameTab(tab);
           }}
@@ -103,23 +92,20 @@ function TabStripItem({ tab, active }: { tab: Tab; active: boolean }) {
             }
           }}
         >
-          <Icon className="size-4 shrink-0" />
-          <span className="truncate">{tab.title}</span>
+          <Icon className={styles.icon} />
+          <span className={styles.title}>{tab.title}</span>
         </Link>
       )}
 
       <button
         type="button"
         aria-label={`Fechar ${tab.title}`}
-        className={cn(
-          "flex size-6 items-center justify-center rounded-sm text-muted-foreground outline-none hover:bg-background/80 hover:text-foreground focus-visible:opacity-100",
-          !active && !renaming && "opacity-0 group-hover/tab:opacity-100",
-        )}
+        className={cn(styles.close, !active && !renaming && styles.closeOnHover)}
         onClick={() => {
           requestCloseTab(tab);
         }}
       >
-        <X className="size-3.5" />
+        <X className={styles.closeIcon} />
       </button>
     </div>
   );
@@ -147,7 +133,7 @@ function TabTitleInput({ title }: { title: string }) {
       autoFocus
       value={value}
       spellCheck={false}
-      className="field-sizing-content max-w-48 min-w-[3ch] bg-transparent p-0 text-sm font-medium text-foreground caret-foreground outline-none selection:bg-primary/25"
+      className={styles.titleInput}
       onFocus={event => {
         event.currentTarget.select();
       }}

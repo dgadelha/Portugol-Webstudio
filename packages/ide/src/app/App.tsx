@@ -1,8 +1,8 @@
 import * as Sentry from "@sentry/react";
 import { RouterProvider } from "react-router/dom";
 
-import { Toaster } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
+import { Toaster } from "@/components/ui/Sonner";
+import { TooltipProvider } from "@/components/ui/Tooltip";
 import { UpdatePrompt } from "@/features/pwa/UpdatePrompt";
 import { ThemeSync } from "@/features/settings/ThemeSync";
 

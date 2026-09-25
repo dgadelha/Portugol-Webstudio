@@ -1,6 +1,8 @@
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "@/components/ui/Badge";
 import { IS_BETA } from "@/config/env";
 import { cn } from "@/lib/utils";
+
+import styles from "./BrandLogo.module.css";
 
 /**
  * As logomarcas são embutidas no HTML (e não carregadas via `<img>`) para que as cores
@@ -41,17 +43,17 @@ interface BrandLogoProps {
 
 export function BrandLogo({ variant = "default", className }: BrandLogoProps) {
   return (
-    <div className={cn("relative w-full", className)}>
+    <div className={cn(styles.logo, className)}>
       <div
         role="img"
         aria-label="Logomarca do Portugol Webstudio"
-        className="[&>svg]:block [&>svg]:w-full"
+        className={styles.svg}
         dangerouslySetInnerHTML={{ __html: logoSource(variant) }}
       />
 
       {/* Selo fora do domínio de produção: fica no canto vazio abaixo de "Webstudio". */}
       {IS_BETA && (
-        <Badge variant="secondary" className="pointer-events-none absolute right-0 bottom-0 uppercase">
+        <Badge variant="secondary" className={styles.beta}>
           Beta
         </Badge>
       )}

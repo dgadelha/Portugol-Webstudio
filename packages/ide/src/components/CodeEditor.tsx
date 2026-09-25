@@ -3,6 +3,9 @@ import { Loader2 } from "lucide-react";
 
 import { useMonacoTheme, useSettings } from "@/features/settings/useSettings";
 import { registerPortugolLanguage } from "@/lib/monaco/portugolLanguage";
+import { cn } from "@/lib/utils";
+
+import styles from "./CodeEditor.module.css";
 
 interface CodeEditorProps extends EditorProps {
   /**
@@ -22,7 +25,7 @@ export function CodeEditor({ userSettings = true, options, beforeMount, ...props
   return (
     <Editor
       theme={theme}
-      loading={<Loader2 className="size-5 animate-spin text-muted-foreground" aria-label="Carregando editor" />}
+      loading={<Loader2 className={cn(styles.loading, "spin")} aria-label="Carregando editor" />}
       beforeMount={monaco => {
         registerPortugolLanguage(monaco);
         beforeMount?.(monaco);

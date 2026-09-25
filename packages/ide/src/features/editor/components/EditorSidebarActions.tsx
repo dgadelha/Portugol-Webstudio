@@ -20,24 +20,19 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/components/ui/DropdownMenu";
 import {
   SidebarGroup,
   SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar";
+} from "@/components/ui/Sidebar";
 import { trackEvent } from "@/lib/analytics";
 import { cn } from "@/lib/utils";
 import { hasSaveFilePicker } from "@/lib/files";
 
-/**
- * Com a sidebar recolhida, Executar e Parar dividem um mesmo fundo: uma pílula vertical da
- * largura dos ícones. Aberta, são botões comuns.
- */
-const groupedMenu =
-  "group-data-[collapsible=icon]:gap-0 group-data-[collapsible=icon]:rounded-lg group-data-[collapsible=icon]:bg-sidebar-accent/60";
+import styles from "./EditorSidebarActions.module.css";
 
 interface EditorSidebarActionsProps {
   running: boolean;
@@ -63,20 +58,16 @@ export function EditorSidebarActions(props: EditorSidebarActionsProps) {
     <>
       <SidebarGroup>
         <SidebarGroupLabel>Execução</SidebarGroupLabel>
-        <SidebarMenu className={groupedMenu}>
+        <SidebarMenu className={styles.runMenu}>
           <SidebarMenuItem>
             <SidebarMenuButton tooltip="Executar (Ctrl+Enter)" disabled={busy} onClick={props.onRun}>
-              <Play className={cn(!busy && "fill-current")} />
+              <Play className={cn(!busy && styles.filled)} />
               <span>Executar</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton tooltip="Parar" disabled={!busy} onClick={props.onStop}>
-              {props.transpiling ? (
-                <Loader2 className="animate-spin" />
-              ) : (
-                <Square className={cn(busy && "fill-current")} />
-              )}
+              {props.transpiling ? <Loader2 className="spin" /> : <Square className={cn(busy && styles.filled)} />}
               <span>Parar</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -103,7 +94,7 @@ export function EditorSidebarActions(props: EditorSidebarActionsProps) {
           </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton tooltip="Compartilhar" disabled={props.sharing} onClick={props.onShare}>
-              {props.sharing ? <Loader2 className="animate-spin" /> : <Share2 />}
+              {props.sharing ? <Loader2 className="spin" /> : <Share2 />}
               <span>Compartilhar</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -131,7 +122,7 @@ function SaveAsMenu({ onSaveWithPicker, onDownload, onOpenInNewTab }: EditorSide
         </SidebarMenuButton>
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent side="right" align="start" className="w-72">
+      <DropdownMenuContent side="right" align="start" className={styles.saveAsMenu}>
         <DropdownMenuLabel>Salvar como</DropdownMenuLabel>
 
         {hasSaveFilePicker && (
@@ -162,7 +153,7 @@ function SaveAsMenu({ onSaveWithPicker, onDownload, onOpenInNewTab }: EditorSide
             onDownload(true);
           }}
         >
-          <BrandMark className="h-4 w-4 justify-center" />
+          <BrandMark className={styles.brandMark} />
           Baixar para o Portugol Studio
         </DropdownMenuItem>
 

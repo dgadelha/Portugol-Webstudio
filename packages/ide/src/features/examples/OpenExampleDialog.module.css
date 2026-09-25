@@ -1,0 +1,135 @@
+.content {
+  display: flex;
+  height: min(85vh, 640px);
+  width: min(92vw, 960px);
+  flex-direction: column;
+  gap: 0;
+  overflow: hidden;
+  padding: 0;
+}
+
+@media (width >= 40rem) {
+  .content {
+    max-width: none;
+  }
+}
+
+.header {
+  border-bottom-width: 1px;
+  padding: 1rem 1.5rem;
+}
+
+.error {
+  margin: auto;
+  padding: 1.5rem;
+  font-size: var(--text-sm);
+  line-height: var(--text-sm--line-height);
+  color: var(--muted-foreground);
+}
+
+.browser {
+  display: grid;
+  min-height: 0;
+  flex: 1;
+}
+
+.list {
+  min-height: 0;
+  border-radius: 0;
+  border-bottom-width: 1px;
+}
+
+.items {
+  max-height: none;
+  flex: 1;
+}
+
+.previewArea {
+  display: none;
+  min-height: 0;
+}
+
+@media (width >= 48rem) {
+  .browser {
+    grid-template-columns: 320px 1fr;
+  }
+
+  .list {
+    border-right-width: 1px;
+    border-bottom-width: 0;
+  }
+
+  .previewArea {
+    display: flex;
+  }
+}
+
+.itemName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.itemPath {
+  margin-left: auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--text-xs);
+  line-height: var(--text-xs--line-height);
+  color: var(--muted-foreground);
+}
+
+.preview {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+}
+
+.previewHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  border-bottom-width: 1px;
+  padding: 1rem 1.5rem;
+}
+
+.previewText {
+  display: grid;
+  min-width: 0;
+  flex: 1;
+  gap: 0.25rem;
+}
+
+.previewTitle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+.previewDescription {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  font-size: var(--text-sm);
+  line-height: var(--text-sm--line-height);
+  color: var(--muted-foreground);
+}
+
+.previewCode {
+  min-height: 0;
+  flex: 1;
+}
+
+.skeleton {
+  display: grid;
+  gap: 0.5rem;
+  padding: 0.75rem;
+}
+
+.skeletonRow {
+  height: 1.75rem;
+}

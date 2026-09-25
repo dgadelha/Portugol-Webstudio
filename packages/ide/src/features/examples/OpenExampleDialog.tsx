@@ -2,10 +2,10 @@ import { FileCode2 } from "lucide-react";
 import { useMemo, useState } from "react";
 
 import { CodeEditor } from "@/components/CodeEditor";
-import { Button } from "@/components/ui/button";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/Button";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/Command";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/Dialog";
+import { Skeleton } from "@/components/ui/Skeleton";
 import { useAsync } from "@/hooks/useAsync";
 
 import {
@@ -15,6 +15,7 @@ import {
   flattenExamples,
   stripExampleHeader,
 } from "./examplesApi";
+import styles from "./OpenExampleDialog.module.css";
 
 interface OpenExampleDialogProps {
   open: boolean;
@@ -25,8 +26,8 @@ interface OpenExampleDialogProps {
 export function OpenExampleDialog({ open, onOpenChange, onOpenExample }: OpenExampleDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="flex h-[min(85vh,640px)] w-[min(92vw,960px)] flex-col gap-0 overflow-hidden p-0 sm:max-w-none">
-        <DialogHeader className="border-b px-6 py-4">
+      <DialogContent className={styles.content}>
+        <DialogHeader className={styles.header}>
           <DialogTitle>Exemplos</DialogTitle>
           <DialogDescription>Busque um exemplo e abra em uma nova aba para editar e executar.</DialogDescription>
         </DialogHeader>
@@ -47,23 +48,17 @@ function ExampleBrowser({ onOpenExample }: Pick<OpenExampleDialogProps, "onOpenE
 
   if (index.status === "error") {
     return (
-      <p className="m-auto p-6 text-sm text-muted-foreground">
-        Não foi possível carregar os exemplos. Verifique a conexão e tente novamente.
-      </p>
+      <p className={styles.error}>Não foi possível carregar os exemplos. Verifique a conexão e tente novamente.</p>
     );
   }
 
   const current = entries.find(entry => entry.item.id === highlighted) ?? entries[0] ?? null;
 
   return (
-    <div className="grid min-h-0 flex-1 md:grid-cols-[320px_1fr]">
-      <Command
-        value={current?.item.id ?? ""}
-        onValueChange={setHighlighted}
-        className="min-h-0 rounded-none border-b md:border-r md:border-b-0"
-      >
+    <div className={styles.browser}>
+      <Command value={current?.item.id ?? ""} onValueChange={setHighlighted} className={styles.list}>
         <CommandInput placeholder="Buscar exemplos…" />
-        <CommandList className="max-h-none flex-1">
+        <CommandList className={styles.items}>
           {index.status === "loading" ? (
             <ListSkeleton />
           ) : (
@@ -87,7 +82,7 @@ function ExampleBrowser({ onOpenExample }: Pick<OpenExampleDialogProps, "onOpenE
         </CommandList>
       </Command>
 
-      <div className="hidden min-h-0 md:flex">
+      <div className={styles.previewArea}>
         {current && <ExamplePreview key={current.item.id} entry={current} onOpenExample={onOpenExample} />}
       </div>
     </div>
@@ -112,10 +107,8 @@ function ExampleCommandItem({ entry, onOpen }: { entry: ExampleEntry; onOpen: ()
       onSelect={onOpen}
     >
       <FileCode2 />
-      <span className="truncate">{entry.item.name}</span>
-      {entry.path.length > 0 && (
-        <span className="ml-auto truncate text-xs text-muted-foreground">{entry.path.join(" › ")}</span>
-      )}
+      <span className={styles.itemName}>{entry.item.name}</span>
+      {entry.path.length > 0 && <span className={styles.itemPath}>{entry.path.join(" › ")}</span>}
     </CommandItem>
   );
 }
@@ -131,11 +124,11 @@ function ExamplePreview({
   const code = useAsync(signal => fetchExampleCode(entry.item, signal), [entry]);
 
   return (
-    <div className="flex min-w-0 flex-1 flex-col">
-      <div className="flex items-start gap-4 border-b px-6 py-4">
-        <div className="grid min-w-0 flex-1 gap-1">
-          <h3 className="truncate font-medium">{entry.item.name}</h3>
-          <p className="line-clamp-2 text-sm text-muted-foreground">
+    <div className={styles.preview}>
+      <div className={styles.previewHeader}>
+        <div className={styles.previewText}>
+          <h3 className={styles.previewTitle}>{entry.item.name}</h3>
+          <p className={styles.previewDescription}>
             {entry.item.description || [entry.category, ...entry.path].join(" › ")}
           </p>
         </div>
@@ -151,7 +144,7 @@ function ExamplePreview({
         </Button>
       </div>
 
-      <div className="min-h-0 flex-1">
+      <div className={styles.previewCode}>
         <CodeEditor
           language="portugol"
           userSettings={false}
@@ -165,9 +158,9 @@ function ExamplePreview({
 
 function ListSkeleton() {
   return (
-    <div className="grid gap-2 p-3">
+    <div className={styles.skeleton}>
       {Array.from({ length: 10 }, (_, index) => (
-        <Skeleton key={index} className="h-7" />
+        <Skeleton key={index} className={styles.skeletonRow} />
       ))}
     </div>
   );

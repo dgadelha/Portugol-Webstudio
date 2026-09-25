@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 
 import { settingsStore, type ThemePreference } from "../settingsStore";
 import { useSettings } from "../useSettings";
+import styles from "./AppearanceSection.module.css";
 import { SettingField } from "./SettingField";
 
 const THEMES: Array<{ value: ThemePreference; label: string }> = [
@@ -37,7 +38,7 @@ export function AppearanceSection() {
       label="Tema"
       description="Sistema acompanha o modo claro ou escuro do seu dispositivo."
     >
-      <div role="radiogroup" aria-labelledby="setting-theme" className="grid grid-cols-3 gap-3" onKeyDown={onKeyDown}>
+      <div role="radiogroup" aria-labelledby="setting-theme" className={styles.options} onKeyDown={onKeyDown}>
         {THEMES.map(option => {
           const selected = option.value === theme;
 
@@ -49,26 +50,20 @@ export function AppearanceSection() {
               aria-checked={selected}
               data-value={option.value}
               tabIndex={selected ? 0 : -1}
-              className="group grid gap-2 text-left outline-none"
+              className={styles.option}
               onClick={() => {
                 settingsStore.set("theme", option.value);
               }}
             >
-              <span
-                className={cn(
-                  "relative block overflow-hidden rounded-lg border-2 transition-colors",
-                  "group-focus-visible:ring-[3px] group-focus-visible:ring-ring/50",
-                  selected ? "border-primary" : "border-border group-hover:border-muted-foreground/40",
-                )}
-              >
+              <span className={styles.frame}>
                 <ThemePreview theme={option.value} />
                 {selected && (
-                  <span className="absolute top-1.5 right-1.5 flex size-5 items-center justify-center rounded-full bg-primary text-primary-foreground">
-                    <Check className="size-3" />
+                  <span className={styles.check}>
+                    <Check className={styles.checkIcon} />
                   </span>
                 )}
               </span>
-              <span className={cn("text-sm", selected ? "font-medium" : "text-muted-foreground")}>{option.label}</span>
+              <span className={styles.label}>{option.label}</span>
             </button>
           );
         })}
@@ -84,9 +79,9 @@ export function AppearanceSection() {
 function ThemePreview({ theme }: { theme: ThemePreference }) {
   if (theme === "auto") {
     return (
-      <span className="relative block">
+      <span className={styles.split}>
         <Mockup variant="light" />
-        <span className="absolute inset-0 [clip-path:inset(0_0_0_50%)]">
+        <span className={styles.splitDark}>
           <Mockup variant="dark" />
         </span>
       </span>
@@ -97,21 +92,19 @@ function ThemePreview({ theme }: { theme: ThemePreference }) {
 }
 
 function Mockup({ variant }: { variant: "light" | "dark" }) {
-  const dark = variant === "dark";
-
   return (
-    <span className={cn("flex aspect-[4/3] w-full gap-1.5 p-2", dark ? "bg-neutral-950" : "bg-white")}>
-      <span className={cn("w-3 rounded-sm", dark ? "bg-neutral-800" : "bg-neutral-100")} />
-      <span className="flex flex-1 flex-col gap-1.5">
-        <span className="flex gap-1">
-          <span className={cn("h-2.5 w-6 rounded-sm", dark ? "bg-neutral-700" : "bg-neutral-200")} />
-          <span className={cn("h-2.5 w-4 rounded-sm", dark ? "bg-neutral-800" : "bg-neutral-100")} />
+    <span data-variant={variant} className={styles.mockup}>
+      <span className={styles.mockupSidebar} />
+      <span className={styles.mockupMain}>
+        <span className={styles.mockupTabs}>
+          <span className={styles.mockupActiveTab} />
+          <span className={styles.mockupTab} />
         </span>
-        <span className={cn("flex flex-1 flex-col gap-1 rounded-sm p-1.5", dark ? "bg-neutral-900" : "bg-neutral-50")}>
-          <span className="h-1 w-3/4 rounded-full bg-sky-500/70" />
-          <span className="ml-2 h-1 w-1/2 rounded-full bg-amber-500/70" />
-          <span className={cn("ml-2 h-1 w-2/3 rounded-full", dark ? "bg-neutral-600" : "bg-neutral-300")} />
-          <span className="h-1 w-1/4 rounded-full bg-sky-500/70" />
+        <span className={styles.mockupEditor}>
+          <span className={cn(styles.line, styles.programLine)} />
+          <span className={cn(styles.line, styles.callLine)} />
+          <span className={cn(styles.line, styles.textLine)} />
+          <span className={cn(styles.line, styles.endLine)} />
         </span>
       </span>
     </span>

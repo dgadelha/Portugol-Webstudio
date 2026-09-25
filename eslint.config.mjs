@@ -90,8 +90,6 @@ export default defineConfig(
       "packages/parser/src/bibliotecas/*.gerado.ts",
       "packages/resources/assets/",
       "packages/resources/recursos.temp/",
-      // Componentes do shadcn/ui: gerados e atualizados pelo CLI (`npx shadcn add`).
-      "packages/ide/src/components/ui/",
     ],
   },
   {

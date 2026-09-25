@@ -1,0 +1,173 @@
+.strip {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+/* O espaço interno deixa o anel de foco caber: a rolagem horizontal recorta o que passa da borda. */
+.tabs {
+  margin-inline: -0.375rem;
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.375rem;
+  overflow-x: auto;
+  padding: 0.5rem 0.375rem;
+  scrollbar-width: none;
+}
+
+.tab {
+  position: relative;
+  display: inline-flex;
+  height: 2rem;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 0.375rem;
+  border-radius: var(--radius-md);
+  border-width: 1px;
+  background-color: var(--background);
+  padding-right: 0.25rem;
+  padding-left: 0.75rem;
+  font-size: var(--text-sm);
+  line-height: var(--text-sm--line-height);
+  font-weight: 500;
+  white-space: nowrap;
+  box-shadow: var(--shadow-xs);
+  color: var(--muted-foreground);
+  transition-property: color, background-color, box-shadow;
+  transition-timing-function: var(--ease);
+  transition-duration: var(--duration);
+}
+
+/* Aba "Início": só o ícone, num quadrado. */
+.home {
+  width: 2rem;
+  justify-content: center;
+  padding-inline: 0;
+  outline-style: none;
+}
+
+.renaming {
+  border-color: var(--ring);
+  box-shadow: var(--focus-ring), var(--shadow-xs);
+}
+
+@media (hover: hover) {
+  .tab:hover {
+    background-color: var(--accent);
+    color: var(--accent-foreground);
+  }
+}
+
+.tab:has(:focus-visible) {
+  box-shadow: var(--focus-ring), var(--shadow-xs);
+}
+
+.tab[data-active="true"] {
+  background-color: var(--accent);
+  color: var(--accent-foreground);
+}
+
+.tab:where(:global(.dark) *) {
+  border-color: var(--input);
+  background-color: color-mix(in oklab, var(--input) 30%, transparent);
+}
+
+@media (hover: hover) {
+  .tab:where(:global(.dark) *):hover {
+    background-color: color-mix(in oklab, var(--input) 50%, transparent);
+  }
+}
+
+.tab[data-active="true"]:where(:global(.dark) *) {
+  background-color: color-mix(in oklab, var(--input) 60%, transparent);
+}
+
+.homeIcon {
+  width: 1rem;
+  height: 1rem;
+}
+
+.icon {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+}
+
+.link {
+  display: flex;
+  max-width: 12rem;
+  min-width: 0;
+  align-items: center;
+  gap: 0.375rem;
+  outline-style: none;
+}
+
+.title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.renameField {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.titleInput {
+  field-sizing: content;
+  max-width: 12rem;
+  min-width: 3ch;
+  background-color: transparent;
+  padding: 0;
+  font-size: var(--text-sm);
+  line-height: var(--text-sm--line-height);
+  font-weight: 500;
+  color: var(--foreground);
+  caret-color: var(--foreground);
+  outline-style: none;
+}
+
+.titleInput::selection {
+  background-color: color-mix(in oklab, var(--primary) 25%, transparent);
+}
+
+.close {
+  display: flex;
+  width: 1.5rem;
+  height: 1.5rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  color: var(--muted-foreground);
+  outline-style: none;
+}
+
+/* Abas inativas só mostram o "x" no hover. */
+.closeOnHover {
+  opacity: 0;
+}
+
+.close:focus-visible {
+  opacity: 1;
+}
+
+@media (hover: hover) {
+  .close:hover {
+    background-color: color-mix(in oklab, var(--background) 80%, transparent);
+    color: var(--foreground);
+  }
+
+  .tab:hover .closeOnHover {
+    opacity: 1;
+  }
+}
+
+.closeIcon {
+  width: 0.875rem;
+  height: 0.875rem;
+}

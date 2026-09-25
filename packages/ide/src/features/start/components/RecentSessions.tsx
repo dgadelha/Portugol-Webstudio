@@ -1,9 +1,11 @@
 import { History } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import { useWorkspace, useWorkspaceStore } from "@/features/workspace/useWorkspace";
 import { useWorkspaceActions } from "@/features/workspace/workspaceActionsContext";
 import { trackEvent } from "@/lib/analytics";
+
+import styles from "./RecentSessions.module.css";
 
 const dateFormat = new Intl.DateTimeFormat("pt-BR", { dateStyle: "short", timeStyle: "short" });
 
@@ -20,25 +22,25 @@ export function RecentSessions() {
   }
 
   return (
-    <section aria-labelledby="recent-sessions-title" className="grid gap-2">
-      <h2 id="recent-sessions-title" className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
-        <History className="size-3.5" />
+    <section aria-labelledby="recent-sessions-title" className={styles.section}>
+      <h2 id="recent-sessions-title" className={styles.heading}>
+        <History className={styles.headingIcon} />
         Código de sessões anteriores
       </h2>
 
-      <ul className="divide-y rounded-lg border">
+      <ul className={styles.list}>
         {recoverable.map(workspace => (
-          <li key={workspace.id} className="flex items-center gap-3 px-3 py-2">
-            <div className="grid min-w-0 flex-1">
-              <span className="truncate text-sm font-medium">{workspace.tabTitles.join(", ")}</span>
-              <span className="text-xs text-muted-foreground">{dateFormat.format(workspace.updatedAt)}</span>
+          <li key={workspace.id} className={styles.item}>
+            <div className={styles.details}>
+              <span className={styles.titles}>{workspace.tabTitles.join(", ")}</span>
+              <span className={styles.date}>{dateFormat.format(workspace.updatedAt)}</span>
             </div>
 
             <Button
               type="button"
               size="xs"
               variant="ghost"
-              className="text-muted-foreground"
+              className={styles.discard}
               onClick={() => {
                 store.discard(workspace.id);
                 trackEvent("workspace_discard", "Aba Inicial", "Descartar código de uma sessão anterior");

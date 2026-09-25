@@ -1,0 +1,45 @@
+.error {
+  padding: 1.5rem;
+  font-size: var(--text-sm);
+  line-height: var(--text-sm--line-height);
+  color: var(--muted-foreground);
+}
+
+.topics {
+  display: flex;
+  flex-direction: column;
+}
+
+.topicsHeader {
+  display: flex;
+  height: 2.75rem;
+  flex-shrink: 0;
+  align-items: center;
+  border-bottom-width: 1px;
+  padding-inline: 1rem;
+}
+
+.topicsTitle {
+  font-size: var(--text-sm);
+  line-height: var(--text-sm--line-height);
+  font-weight: 500;
+}
+
+.topicsScroll {
+  min-height: 0;
+  flex: 1;
+}
+
+.tree {
+  padding: 0.5rem;
+}
+
+.skeleton {
+  display: grid;
+  gap: 0.5rem;
+  padding: 0.25rem;
+}
+
+.skeletonRow {
+  height: 1.5rem;
+}

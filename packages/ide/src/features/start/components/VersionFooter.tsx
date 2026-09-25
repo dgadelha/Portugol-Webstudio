@@ -1,15 +1,12 @@
 import { ArrowUpRight, Info } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { Button } from "@/components/ui/Button";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/Tooltip";
 import { BUILD_INFO, IS_BETA, LINKS } from "@/config/env";
 import { useAppDialogs } from "@/features/appDialogs/appDialogsContext";
 import { trackEvent } from "@/lib/analytics";
 
-/**
- * Botões do rodapé: transparentes, com fundo semitransparente só no hover.
- */
-const footerButton = "h-7 px-2 text-xs font-normal text-muted-foreground hover:bg-accent/50 hover:text-foreground";
+import styles from "./VersionFooter.module.css";
 
 /**
  * Versão do build, o atalho entre a versão estável e a beta, e o "Sobre".
@@ -31,17 +28,17 @@ export function VersionFooter() {
       };
 
   return (
-    <footer className="flex shrink-0 items-center justify-center gap-1 px-4 py-3">
+    <footer className={styles.footer}>
       <Tooltip>
         <TooltipTrigger asChild>
-          <span className="px-2 font-mono text-xs text-muted-foreground uppercase">{BUILD_INFO.commit}</span>
+          <span className={styles.commit}>{BUILD_INFO.commit}</span>
         </TooltipTrigger>
         {BUILD_INFO.date && <TooltipContent>{BUILD_INFO.date}</TooltipContent>}
       </Tooltip>
 
       <Tooltip>
         <TooltipTrigger asChild>
-          <Button asChild variant="ghost" size="xs" className={footerButton}>
+          <Button asChild variant="ghost" size="xs" className={styles.button}>
             <a
               href={other.href}
               target="_blank"
@@ -55,14 +52,14 @@ export function VersionFooter() {
             </a>
           </Button>
         </TooltipTrigger>
-        <TooltipContent className="max-w-64">{other.tooltip}</TooltipContent>
+        <TooltipContent className={styles.tooltip}>{other.tooltip}</TooltipContent>
       </Tooltip>
 
       <Button
         type="button"
         variant="ghost"
         size="xs"
-        className={footerButton}
+        className={styles.button}
         onClick={() => {
           trackEvent("open_about_dialog", "Aba Inicial", "Abrir diálogo Sobre");
           openAbout();

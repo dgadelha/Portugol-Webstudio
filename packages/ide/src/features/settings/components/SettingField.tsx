@@ -2,6 +2,8 @@ import type { ReactNode } from "react";
 
 import { cn } from "@/lib/utils";
 
+import styles from "./SettingField.module.css";
+
 interface SettingFieldProps {
   id: string;
   label: string;
@@ -15,12 +17,12 @@ interface SettingFieldProps {
 
 export function SettingField({ id, label, description, layout = "stacked", children }: SettingFieldProps) {
   return (
-    <div className={cn("flex gap-4", layout === "inline" ? "items-center justify-between" : "flex-col")}>
-      <div className="grid gap-1">
-        <span id={id} className="text-sm leading-none font-medium">
+    <div className={cn(styles.field, layout === "inline" ? styles.inline : styles.stacked)}>
+      <div className={styles.text}>
+        <span id={id} className={styles.label}>
           {label}
         </span>
-        {description && <p className="text-sm text-muted-foreground">{description}</p>}
+        {description && <p className={styles.description}>{description}</p>}
       </div>
       {children}
     </div>

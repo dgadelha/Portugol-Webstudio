@@ -1,0 +1,47 @@
+.window {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 50;
+  display: flex;
+  max-height: 95vh;
+  max-width: 95vw;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: var(--radius-xl);
+  border-width: 1px;
+  background-color: var(--card);
+  color: var(--card-foreground);
+  box-shadow: var(--shadow-2xl);
+}
+
+.titleBar {
+  display: flex;
+  height: 2.5rem;
+  cursor: move;
+  touch-action: none;
+  align-items: center;
+  gap: 0.5rem;
+  border-bottom-width: 1px;
+  padding-right: 0.375rem;
+  padding-left: 1rem;
+  user-select: none;
+}
+
+.title {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--text-sm);
+  line-height: var(--text-sm--line-height);
+  font-weight: 500;
+}
+
+.canvasArea {
+  overflow: auto;
+}
+
+.canvas {
+  display: block;
+}

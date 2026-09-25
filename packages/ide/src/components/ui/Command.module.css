@@ -1,0 +1,168 @@
+.command {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  background-color: var(--popover);
+  color: var(--popover-foreground);
+}
+
+.inputWrapper {
+  display: flex;
+  height: 2.25rem;
+  align-items: center;
+  gap: 0.5rem;
+  border-bottom-width: 1px;
+  padding-inline: 0.75rem;
+}
+
+.searchIcon {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+  opacity: 0.5;
+}
+
+.input {
+  display: flex;
+  height: 2.5rem;
+  width: 100%;
+  border-radius: var(--radius-md);
+  background-color: transparent;
+  padding-block: 0.75rem;
+  font-size: var(--text-sm);
+  line-height: var(--text-sm--line-height);
+  outline-style: none;
+}
+
+@media (forced-colors: active) {
+  .input {
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+  }
+}
+
+.input::placeholder {
+  color: var(--muted-foreground);
+}
+
+.input:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.list {
+  max-height: 300px;
+  scroll-padding-block: 0.25rem;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.empty {
+  padding-block: 1.5rem;
+  text-align: center;
+  font-size: var(--text-sm);
+  line-height: var(--text-sm--line-height);
+}
+
+.group {
+  overflow: hidden;
+  padding: 0.25rem;
+  color: var(--foreground);
+}
+
+.group [cmdk-group-heading] {
+  padding: 0.375rem 0.5rem;
+  font-size: var(--text-xs);
+  line-height: var(--text-xs--line-height);
+  font-weight: 500;
+  color: var(--muted-foreground);
+}
+
+.separator {
+  margin-inline: -0.25rem;
+  height: 1px;
+  background-color: var(--border);
+}
+
+.item {
+  position: relative;
+  display: flex;
+  cursor: default;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: var(--radius-sm);
+  padding: 0.375rem 0.5rem;
+  font-size: var(--text-sm);
+  line-height: var(--text-sm--line-height);
+  outline-style: none;
+  user-select: none;
+}
+
+@media (forced-colors: active) {
+  .item {
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+  }
+}
+
+.item[data-disabled="true"] {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.item[data-selected="true"] {
+  background-color: var(--accent);
+  color: var(--accent-foreground);
+}
+
+.item svg {
+  pointer-events: none;
+  flex-shrink: 0;
+}
+
+/* Ícones sem tamanho nem cor próprios. */
+.item :where(svg) {
+  width: 1rem;
+  height: 1rem;
+  color: var(--muted-foreground);
+}
+
+.shortcut {
+  margin-left: auto;
+  font-size: var(--text-xs);
+  line-height: var(--text-xs--line-height);
+  letter-spacing: 0.1em;
+  color: var(--muted-foreground);
+}
+
+/* Na paleta de comandos (Ctrl+K) os itens e o campo de busca são mais altos. */
+.dialogContent {
+  overflow: hidden;
+  padding: 0;
+}
+
+.dialogCommand .inputWrapper,
+.dialogCommand .input {
+  height: 3rem;
+}
+
+.dialogCommand [cmdk-group-heading] {
+  padding-inline: 0.5rem;
+  font-weight: 500;
+  color: var(--muted-foreground);
+}
+
+.dialogCommand [cmdk-group] {
+  padding-inline: 0.5rem;
+}
+
+.dialogCommand [cmdk-group]:not([hidden]) ~ [cmdk-group] {
+  padding-top: 0;
+}
+
+.dialogCommand [cmdk-item] {
+  padding: 0.75rem 0.5rem;
+}

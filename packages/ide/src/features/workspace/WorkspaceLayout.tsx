@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { Outlet } from "react-router";
 
-import { Separator } from "@/components/ui/separator";
-import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { Separator } from "@/components/ui/Separator";
+import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/Sidebar";
 import { useAppDialogs } from "@/features/appDialogs/appDialogsContext";
 import { AppDialogsProvider } from "@/features/appDialogs/AppDialogsProvider";
 import { useHotkeys } from "@/hooks/useHotkeys";
@@ -17,6 +17,7 @@ import { useSharedCodeLoader } from "./hooks/useSharedCodeLoader";
 import { useWorkspaceStore } from "./useWorkspace";
 import { WorkspaceActionsProvider } from "./WorkspaceActionsProvider";
 import { useWorkspaceActions } from "./workspaceActionsContext";
+import styles from "./WorkspaceLayout.module.css";
 
 /**
  * Rota raiz: sidebar, abas e painéis. As rotas filhas não desenham nada; elas só dizem qual
@@ -34,9 +35,9 @@ export function WorkspaceLayout() {
     <WorkspaceActionsProvider>
       <AppDialogsProvider>
         <SidebarSlotContext value={sidebarSlot}>
-          <SidebarProvider defaultOpen={false} className="h-svh">
+          <SidebarProvider defaultOpen={false} className={styles.provider}>
             <AppSidebar />
-            <SidebarInset className="min-w-0 overflow-hidden">
+            <SidebarInset className={styles.inset}>
               <Workspace />
             </SidebarInset>
           </SidebarProvider>
@@ -72,9 +73,9 @@ function Workspace() {
 
   return (
     <>
-      <header className="flex h-12 shrink-0 items-center gap-2 border-b px-3">
-        <SidebarTrigger className="-ml-1" />
-        <Separator orientation="vertical" className="mr-1 data-[orientation=vertical]:h-4" />
+      <header className={styles.header}>
+        <SidebarTrigger className={styles.trigger} />
+        <Separator orientation="vertical" className={styles.separator} />
         <TabStrip />
       </header>
 

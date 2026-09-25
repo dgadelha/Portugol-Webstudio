@@ -1,0 +1,24 @@
+.panels {
+  position: relative;
+  min-height: 0;
+  flex: 1;
+}
+
+.panel {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.loading {
+  display: flex;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+.spinner {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: var(--muted-foreground);
+}

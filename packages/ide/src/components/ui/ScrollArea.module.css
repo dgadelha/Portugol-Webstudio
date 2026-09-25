@@ -1,0 +1,46 @@
+.root {
+  position: relative;
+}
+
+.viewport {
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  transition-property: color, box-shadow;
+  transition-timing-function: var(--ease);
+  transition-duration: var(--duration);
+  outline-style: none;
+}
+
+.viewport:focus-visible {
+  box-shadow: var(--focus-ring);
+}
+
+.scrollbar {
+  display: flex;
+  touch-action: none;
+  padding: 1px;
+  transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke;
+  transition-timing-function: var(--ease);
+  transition-duration: var(--duration);
+  user-select: none;
+}
+
+.scrollbar[data-orientation="vertical"] {
+  height: 100%;
+  width: 0.625rem;
+  border-left: 1px solid transparent;
+}
+
+.scrollbar[data-orientation="horizontal"] {
+  height: 0.625rem;
+  flex-direction: column;
+  border-top: 1px solid transparent;
+}
+
+.thumb {
+  position: relative;
+  flex: 1;
+  border-radius: var(--radius-full);
+  background-color: var(--border);
+}

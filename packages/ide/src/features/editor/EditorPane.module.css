@@ -1,0 +1,38 @@
+.pane {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+}
+
+.panels {
+  min-height: 0;
+  flex: 1;
+}
+
+.hiddenHandle {
+  background-color: transparent;
+}
+
+.fill {
+  min-height: 0;
+  flex: 1;
+}
+
+.generatedHeader {
+  display: flex;
+  height: 2.25rem;
+  flex-shrink: 0;
+  align-items: center;
+  border-bottom-width: 1px;
+  padding-inline: 0.75rem;
+  font-size: var(--text-sm);
+  line-height: var(--text-sm--line-height);
+  font-weight: 500;
+}
+
+.generatedEmpty {
+  padding: 1rem;
+  font-size: var(--text-sm);
+  line-height: var(--text-sm--line-height);
+  color: var(--muted-foreground);
+}

@@ -22,7 +22,7 @@ import {
   CommandList,
   CommandSeparator,
   CommandShortcut,
-} from "@/components/ui/command";
+} from "@/components/ui/Command";
 import { useAppDialogs } from "@/features/appDialogs/appDialogsContext";
 import { settingsStore, type ThemePreference } from "@/features/settings/settingsStore";
 import { useTabs } from "@/features/workspace/useWorkspace";

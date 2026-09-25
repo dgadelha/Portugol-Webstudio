@@ -220,7 +220,7 @@ export function registerPortugolLanguage(monaco: Monaco) {
       { token: "string.escape", foreground: "D2BB85" },
       { token: "string.escape.invalid", foreground: "DF5953" },
     ],
-    // Fundos do tema neutral do shadcn, para o editor se fundir com a interface.
+    // Fundos da paleta neutra da interface, para o editor se fundir com ela.
     colors: {
       "editor.background": "#0a0a0a",
       "editorGutter.background": "#0a0a0a",

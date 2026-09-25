@@ -15,14 +15,14 @@ import {
 import { Link } from "react-router";
 
 import { BrandMark } from "@/components/BrandMark";
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "@/components/ui/Badge";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/components/ui/DropdownMenu";
 import {
   Sidebar,
   SidebarContent,
@@ -34,7 +34,7 @@ import {
   SidebarMenuAction,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar";
+} from "@/components/ui/Sidebar";
 import { IS_BETA, LINKS } from "@/config/env";
 import { useAppDialogs } from "@/features/appDialogs/appDialogsContext";
 import { trackEvent } from "@/lib/analytics";
@@ -43,6 +43,7 @@ import { PATHS, pathForTab } from "../tabPaths";
 import { useSidebarSlot } from "../sidebarSlotContext";
 import { useActiveTabId, useTabs, useWorkspace } from "../useWorkspace";
 import { useWorkspaceActions } from "../workspaceActionsContext";
+import styles from "./AppSidebar.module.css";
 
 /**
  * Sidebar contextual: numa aba de editor, mostra as ações do arquivo (o próprio editor as
@@ -53,21 +54,21 @@ export function AppSidebar() {
   const { setSlot } = useSidebarSlot();
 
   return (
-    <Sidebar collapsible="icon">
+    <Sidebar>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild tooltip="Início">
               <Link to={PATHS.home}>
-                <span className="flex aspect-square size-10 shrink-0 items-center justify-center rounded-lg border bg-background">
-                  <BrandMark className="h-5" />
+                <span className={styles.brandIcon}>
+                  <BrandMark className={styles.brandMark} />
                 </span>
-                <span className="grid flex-1 text-left leading-tight">
-                  <span className="truncate font-semibold">Portugol Webstudio</span>
-                  <span className="truncate text-xs text-muted-foreground">IDE online de Portugol</span>
+                <span className={styles.brandText}>
+                  <span className={styles.brandName}>Portugol Webstudio</span>
+                  <span className={styles.brandTagline}>IDE online de Portugol</span>
                 </span>
                 {IS_BETA && (
-                  <Badge variant="secondary" className="text-[0.65rem]">
+                  <Badge variant="secondary" className={styles.beta}>
                     Beta
                   </Badge>
                 )}
@@ -79,7 +80,7 @@ export function AppSidebar() {
 
       <SidebarContent>
         {editorActive ? (
-          <div ref={setSlot} className="contents" />
+          <div ref={setSlot} className={styles.slot} />
         ) : (
           <>
             <StartGroup />
@@ -146,10 +147,10 @@ function OpenFilesGroup() {
   const editors = tabs.filter(tab => tab.type === "editor");
 
   return (
-    <SidebarGroup className="group-data-[collapsible=icon]:hidden">
+    <SidebarGroup className={styles.openFiles}>
       <SidebarGroupLabel>Arquivos abertos</SidebarGroupLabel>
       <SidebarMenu>
-        {editors.length === 0 && <p className="px-2 py-1.5 text-xs text-muted-foreground">Nenhum arquivo aberto.</p>}
+        {editors.length === 0 && <p className={styles.empty}>Nenhum arquivo aberto.</p>}
 
         {editors.map(tab => (
           <SidebarMenuItem key={tab.id}>
@@ -162,11 +163,11 @@ function OpenFilesGroup() {
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <SidebarMenuAction showOnHover aria-label={`Ações de ${tab.title}`}>
+                <SidebarMenuAction aria-label={`Ações de ${tab.title}`}>
                   <MoreHorizontal />
                 </SidebarMenuAction>
               </DropdownMenuTrigger>
-              <DropdownMenuContent side="right" align="start" className="w-44">
+              <DropdownMenuContent side="right" align="start" className={styles.fileMenu}>
                 <DropdownMenuItem
                   onSelect={() => {
                     requestRenameTab(tab);
