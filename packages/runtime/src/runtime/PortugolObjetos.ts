@@ -239,6 +239,12 @@ class PortugolObjeto {
 
       const valor = PortugolObjeto.lerValorJson(leitor);
 
+      // O readValue() do Jackson para no fim do objeto e ignora o que vier
+      // depois dele, já que o FAIL_ON_TRAILING_TOKENS vem desligado
+      if (valor.tipo === "objeto") {
+        return valor.valor;
+      }
+
       PortugolObjeto.pularEspacos(leitor);
 
       if (leitor.pos !== texto.length) {
@@ -251,7 +257,7 @@ class PortugolObjeto {
         return new PortugolObjeto(null);
       }
 
-      return valor.tipo === "objeto" ? valor.valor : new PortugolObjeto();
+      return new PortugolObjeto();
     } catch {
       // O Jackson devolve um mapa vazio quando o conteúdo não pode ser lido
       return new PortugolObjeto();
