@@ -1,0 +1,255 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Tema neutral padrão do shadcn/ui. */
+:root {
+  --radius: 0.625rem;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+
+  /* A única cor de marca que sobrevive: o amarelo da lâmpada da logo. */
+  --brand: #e2ae02;
+
+  /* Realce de sintaxe da documentação das bibliotecas (mesmas cores do tema do Monaco). */
+  --code-keyword: #0000ff;
+  --code-const: #008080;
+  --code-func: #ad7f00;
+  --code-brackets: #319331;
+  --code-param: #000000;
+  --code-value: #098658;
+
+  color-scheme: light;
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.556 0 0);
+
+  --brand: #ffc200;
+
+  --code-keyword: #569cd6;
+  --code-const: #3dc9b0;
+  --code-func: #f5d7a9;
+  --code-brackets: #da70d6;
+  --code-param: #d4d4d4;
+  --code-value: #b5cea8;
+
+  color-scheme: dark;
+}
+
+@theme inline {
+  --font-sans: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono Variable", ui-monospace, "SFMono-Regular", monospace;
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-brand: var(--brand);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  html,
+  body,
+  #root {
+    @apply h-full w-full overflow-hidden;
+  }
+
+  body {
+    @apply m-0 bg-background font-sans text-foreground antialiased;
+  }
+}
+
+@layer components {
+  /* Logomarcas embutidas: título e subtítulo acompanham o tema. */
+  .logo-title[fill] {
+    fill: var(--foreground);
+  }
+
+  .logo-subtitle[fill] {
+    fill: var(--muted-foreground);
+  }
+
+  .logo-subtitle[stroke] {
+    stroke: var(--muted-foreground);
+  }
+
+  .logo-icon[fill] {
+    fill: var(--brand);
+  }
+
+  /* Texto vindo de Markdown (histórico de atualizações, documentação das bibliotecas). */
+  .markdown {
+    @apply text-sm leading-7;
+
+    h1 {
+      @apply mt-2 mb-4 scroll-m-20 text-2xl font-semibold tracking-tight;
+    }
+
+    h2 {
+      @apply mt-10 mb-3 scroll-m-20 border-b pb-2 text-xl font-semibold tracking-tight first:mt-0;
+    }
+
+    h3 {
+      @apply mt-6 mb-2 text-lg font-semibold tracking-tight;
+    }
+
+    p {
+      @apply leading-7 not-first:mt-4;
+    }
+
+    ul {
+      @apply my-4 ml-6 list-disc [&>li]:mt-2;
+    }
+
+    hr {
+      @apply my-6 border-dashed;
+    }
+
+    a {
+      @apply font-medium underline underline-offset-4;
+    }
+
+    strong {
+      @apply font-semibold;
+    }
+
+    code {
+      @apply relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-[0.8125rem] font-semibold;
+    }
+
+    .code {
+      @apply my-4 overflow-x-auto rounded-lg border bg-muted/50 p-4 font-mono text-[0.8125rem];
+    }
+
+    .code-keyword {
+      color: var(--code-keyword);
+    }
+
+    .code-const-name {
+      color: var(--code-const);
+    }
+
+    .code-func-name {
+      color: var(--code-func);
+    }
+
+    .code-keyword-brackets {
+      color: var(--code-brackets);
+    }
+
+    .code-param-name {
+      color: var(--code-param);
+    }
+
+    .code-value {
+      color: var(--code-value);
+    }
+  }
+}
+
+/* As dicas do Monaco saem do fluxo para não serem cortadas pelos painéis redimensionáveis. */
+.monaco-editor .monaco-hover {
+  position: fixed;
+  z-index: 9999;
+}
+
+.pws-output .monaco-editor-overlaymessage {
+  display: none !important;
+}
