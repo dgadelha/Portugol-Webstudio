@@ -1,18 +1,39 @@
 import { inject, Service } from "@angular/core";
 import { LocalStorageService } from "ngx-webstorage";
-import { map, startWith } from "rxjs";
-import { defaultFontSize, SettingsKey } from "../settings";
+import { combineLatest, map, Observable, startWith } from "rxjs";
+import { Setting, settings } from "../settings";
 
 @Service()
 export class SettingsService {
   private localStorageSvc = inject(LocalStorageService);
 
-  editorFontSize = this.localStorageSvc.observe(SettingsKey.EditorFontSize).pipe(
-    startWith(this.localStorageSvc.retrieve(SettingsKey.EditorFontSize)),
-    map(value => Number.parseInt(value, 10) || defaultFontSize),
-  );
+  /**
+   * O valor atual da configuração e, depois, cada mudança.
+   */
+  observe<T>(setting: Setting<T>): Observable<T> {
+    return this.localStorageSvc.observe(setting.key).pipe(
+      startWith(this.localStorageSvc.retrieve(setting.key)),
+      map(value => setting.parse(value)),
+    );
+  }
 
-  editorWordWrap = this.localStorageSvc
-    .observe(SettingsKey.EditorWordWrap)
-    .pipe(startWith(this.localStorageSvc.retrieve(SettingsKey.EditorWordWrap)), map(Boolean));
+  get<T>(setting: Setting<T>): T {
+    return setting.parse(this.localStorageSvc.retrieve(setting.key));
+  }
+
+  /**
+   * Até ser alterado, o tamanho da fonte da saída acompanha o do editor.
+   */
+  outputFontSize() {
+    return combineLatest([this.observe(settings.outputFontSize), this.observe(settings.editorFontSize)]).pipe(
+      map(([outputFontSize, editorFontSize]) => outputFontSize ?? editorFontSize),
+    );
+  }
+
+  /**
+   * Um nível de indentação, do jeito que o editor está configurado agora.
+   */
+  editorIndentation() {
+    return this.get(settings.editorInsertSpaces) ? " ".repeat(this.get(settings.editorTabSize)) : "\t";
+  }
 }

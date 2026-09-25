@@ -15,6 +15,21 @@ header {
   }
 }
 
+.toggle-group {
+  margin-top: 1rem;
+
+  // No tema M2, a opção escolhida só fica um cinza mais claro: aqui ela usa a
+  // cor principal, como o controle deslizante, os botões de opção e as chaves.
+  --mat-button-toggle-height: 36px;
+  --mat-button-toggle-shape: 0.25rem;
+  --mat-button-toggle-background-color: transparent;
+  --mat-button-toggle-text-color: var(--pws-text-200);
+  --mat-button-toggle-divider-color: var(--pws-border-color);
+  --mat-button-toggle-selected-state-background-color: var(--pws-color-primary);
+  --mat-button-toggle-selected-state-text-color: #000;
+  --mat-button-toggle-state-layer-color: var(--pws-color-primary);
+}
+
 mat-dialog-content {
   margin-top: 1rem;
 }
@@ -36,13 +51,22 @@ mat-dialog-content {
   border: 1px solid var(--pws-border-color);
 }
 
+// As colunas seguem a largura do diálogo, não a da janela.
+.preferences {
+  container-type: inline-size;
+}
+
 .preference-list {
   display: grid;
   grid-template-columns: 1fr;
   gap: 1rem;
 
-  @media (min-width: 768px) {
+  @container (min-width: 560px) {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  @container (min-width: 900px) {
+    grid-template-columns: repeat(3, 1fr);
   }
 
   .preference {

@@ -195,7 +195,10 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   openSettingsModal() {
-    this.gaService.event("open_settings_modal", "Interface", "Abrir modal de configurações");
-    this.dialog.open(DialogSettingsComponent);
+    // A aba Inicial e o editor já registram de onde o diálogo foi aberto.
+    this.dialog.open(DialogSettingsComponent, {
+      width: "min(92vw, 1100px)",
+      maxWidth: "92vw",
+    });
   }
 }

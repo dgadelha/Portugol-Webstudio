@@ -1,7 +1,8 @@
 import { computed, DestroyRef, effect, inject, NgZone, Service, signal, untracked } from "@angular/core";
+import { SettingsService } from "./settings.service";
 import { WorkspaceStorageService } from "./workspace-storage.service";
 import {
-  DEFAULT_CODE,
+  defaultCode,
   DEFAULT_TAB_TITLE,
   isMeaningfulCode,
   randomId,
@@ -47,6 +48,7 @@ const MAX_AGE = 30 /* dias */ * 24 * 60 * 60 * 1000;
 @Service()
 export class WorkspaceService {
   private readonly storage = inject(WorkspaceStorageService);
+  private readonly settings = inject(SettingsService);
   private readonly zone = inject(NgZone);
   private readonly lifetime = inject(DestroyRef);
 
@@ -101,7 +103,7 @@ export class WorkspaceService {
       type: "editor",
       // Aba sem origem começa com o esqueleto de um programa. Um arquivo aberto
       // vazio continua vazio: só a ausência de conteúdo vira o modelo.
-      contents: contents ?? DEFAULT_CODE,
+      contents: contents ?? defaultCode(this.settings.editorIndentation()),
     };
 
     this.tabs.update(tabs => [...tabs, tab]);

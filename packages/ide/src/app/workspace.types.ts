@@ -46,7 +46,12 @@ export interface RecoverableWorkspace {
 
 export const WORKSPACE_SCHEMA_VERSION = 1;
 
-export const DEFAULT_CODE = `programa {\n  funcao inicio() {\n    \n  }\n}\n`;
+/**
+ * Esqueleto de um programa novo, indentado com `indent` em cada nível.
+ */
+export function defaultCode(indent: string) {
+  return `programa {\n${indent}funcao inicio() {\n${indent.repeat(2)}\n${indent}}\n}\n`;
+}
 
 export const DEFAULT_TAB_TITLE = "Sem título";
 
@@ -55,9 +60,11 @@ export const DEFAULT_TAB_TITLE = "Sem título";
  * já vem preenchida.
  */
 export function isMeaningfulCode(contents: string) {
-  const trimmed = contents.trim();
+  // Sem os espaços, o esqueleto é o mesmo com qualquer indentação — inclusive
+  // o de uma aba criada antes de o tamanho da tabulação mudar.
+  const code = contents.replaceAll(/\s/g, "");
 
-  return trimmed.length > 0 && trimmed !== DEFAULT_CODE.trim();
+  return code.length > 0 && code !== defaultCode("").replaceAll(/\s/g, "");
 }
 
 export function randomId(): string {

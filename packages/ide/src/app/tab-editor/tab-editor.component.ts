@@ -26,6 +26,7 @@ import { GraphicsRenderer, IGraphicsRendererComponent } from "../../renderer";
 import { IExtendedWindowApi } from "../../types";
 import { DialogRendererComponent } from "../dialog-renderer/dialog-renderer.component";
 import { FileService } from "../file.service";
+import { settings } from "../../settings";
 import { SettingsService } from "../settings.service";
 import { ShareService } from "../share.service";
 import { ThemeService } from "../theme.service";
@@ -85,14 +86,23 @@ export class TabEditorComponent implements OnInit, OnDestroy {
 
   codeEditor?: monaco.editor.IStandaloneCodeEditor;
 
-  codeEditorOptions: monaco.editor.IStandaloneEditorConstructionOptions = {
+  // As cores dos pares são uma opção do modelo de texto, e o Monaco só repassa
+  // ao modelo as chaves registradas na configuração: `bracketPairColorization`
+  // não é uma delas, só `bracketPairColorization.enabled`.
+  codeEditorOptions: monaco.editor.IStandaloneEditorConstructionOptions & {
+    "bracketPairColorization.enabled"?: boolean;
+  } = {
     theme: "portugol-dark",
     language: "portugol",
     tabCompletion: "on",
-    tabSize: 2,
+    // Com a detecção, um arquivo já indentado ignoraria o tamanho da tabulação
+    // escolhido nas configurações.
+    detectIndentation: false,
   };
 
   stdOutEditor?: monaco.editor.IStandaloneCodeEditor;
+
+  outputAutoScroll = true;
 
   stdOutEditorOptions: monaco.editor.IStandaloneEditorConstructionOptions = {
     theme: "portugol-dark",
@@ -101,7 +111,8 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     minimap: { enabled: false },
     wordWrap: "on",
     language: "plaintext",
-    tabSize: 2,
+    // Sem `tabSize`: no Monaco ele vale para todos os editores da página, e um
+    // valor aqui sobrescreveria o das configurações no editor de código.
     guides: { indentation: false },
   };
 
@@ -147,8 +158,20 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     this.code = this.workspace.contentsOf(this.tabId());
 
     this._stdOut$ = this.executor.stdOut$.subscribe(() => {
-      this.stdOutEditorCursorEnd();
+      if (this.outputAutoScroll) {
+        this.stdOutEditorCursorEnd();
+      }
     });
+
+    // Mesmo sem rolar sozinha, a saída vai para o fim quando o programa espera
+    // uma entrada: é com o foco nela que o que se digita chega ao `leia`.
+    this._stdOut$.add(
+      this.executor.waitingForInput$.subscribe(waiting => {
+        if (waiting) {
+          this.stdOutEditorCursorEnd();
+        }
+      }),
+    );
 
     this._events$ = this.executor.events.subscribe({
       next: event => {
@@ -194,27 +217,74 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     });
 
     this._settings$ = combineLatest([
-      this.settingsService.editorFontSize,
-      this.settingsService.editorWordWrap,
-    ]).subscribe(([fontSize, wordWrap]) => {
-      this.codeEditorOptions = {
-        ...this.codeEditorOptions,
+      this.settingsService.observe(settings.editorFontSize),
+      this.settingsService.observe(settings.editorWordWrap),
+      this.settingsService.observe(settings.editorTabSize),
+      this.settingsService.observe(settings.editorInsertSpaces),
+      this.settingsService.observe(settings.editorLineNumbers),
+      this.settingsService.observe(settings.editorMinimap),
+      this.settingsService.observe(settings.editorBracketPairColorization),
+      this.settingsService.observe(settings.editorIndentationGuides),
+      this.settingsService.observe(settings.editorRenderWhitespace),
+      this.settingsService.observe(settings.editorAutoClosing),
+      this.settingsService.observe(settings.editorCursorStyle),
+    ]).subscribe(
+      ([
         fontSize,
-        wordWrap: wordWrap ? "on" : "off",
-      };
+        wordWrap,
+        tabSize,
+        insertSpaces,
+        lineNumbers,
+        minimap,
+        bracketPairColorization,
+        indentationGuides,
+        renderWhitespace,
+        autoClosing,
+        cursorStyle,
+      ]) => {
+        this.codeEditorOptions = {
+          ...this.codeEditorOptions,
+          fontSize,
+          wordWrap: wordWrap ? "on" : "off",
+          tabSize,
+          insertSpaces,
+          lineNumbers,
+          minimap: { enabled: minimap },
+          "bracketPairColorization.enabled": bracketPairColorization,
+          guides: { indentation: indentationGuides },
+          renderWhitespace,
+          autoClosingBrackets: autoClosing ? "languageDefined" : "never",
+          autoClosingQuotes: autoClosing ? "languageDefined" : "never",
+          cursorStyle,
+        };
 
-      this.stdOutEditorOptions = {
-        ...this.stdOutEditorOptions,
-        fontSize,
-        wordWrap: wordWrap ? "on" : "off",
-      };
+        this.generatedCodeEditorOptions = {
+          ...this.generatedCodeEditorOptions,
+          fontSize,
+          wordWrap: wordWrap ? "on" : "off",
+        };
+      },
+    );
 
-      this.generatedCodeEditorOptions = {
-        ...this.generatedCodeEditorOptions,
-        fontSize,
-        wordWrap: wordWrap ? "on" : "off",
-      };
-    });
+    // A saída sempre quebra as linhas: a configuração de quebra de linha é só
+    // do editor de código.
+    this._settings$.add(
+      this.settingsService.outputFontSize().subscribe(fontSize => {
+        this.stdOutEditorOptions = { ...this.stdOutEditorOptions, fontSize };
+      }),
+    );
+
+    this._settings$.add(
+      this.settingsService.observe(settings.outputClearOnRun).subscribe(clear => {
+        this.executor.clearStdOutOnRun = clear;
+      }),
+    );
+
+    this._settings$.add(
+      this.settingsService.observe(settings.outputAutoScroll).subscribe(autoScroll => {
+        this.outputAutoScroll = autoScroll;
+      }),
+    );
 
     this.graphicsRenderer.addEventListener("create", event => {
       const component = this.openRendererModal();
