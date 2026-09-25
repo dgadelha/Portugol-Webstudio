@@ -1,4 +1,4 @@
-import type { Monaco } from "@monaco-editor/react";
+import type { Monaco } from "@/lib/monaco/types";
 import { type IPortugolCodeDiagnostic, PortugolDiagnosticSeverity } from "@portugol-webstudio/antlr";
 import type { editor } from "monaco-editor";
 

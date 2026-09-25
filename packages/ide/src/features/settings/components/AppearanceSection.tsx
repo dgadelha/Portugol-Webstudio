@@ -27,12 +27,16 @@ export function AppearanceSection() {
       const next = THEMES[(index + step + THEMES.length) % THEMES.length];
 
       settingsStore.set("theme", next.value);
-      (event.currentTarget.querySelector(`[data-value="${next.value}"]`) as HTMLElement | null)?.focus();
+      event.currentTarget.querySelector<HTMLElement>(`[data-value="${CSS.escape(next.value)}"]`)?.focus();
     }
   };
 
   return (
-    <SettingField id="setting-theme" label="Tema" description="Sistema acompanha o modo claro ou escuro do seu dispositivo.">
+    <SettingField
+      id="setting-theme"
+      label="Tema"
+      description="Sistema acompanha o modo claro ou escuro do seu dispositivo."
+    >
       <div role="radiogroup" aria-labelledby="setting-theme" className="grid grid-cols-3 gap-3" onKeyDown={onKeyDown}>
         {THEMES.map(option => {
           const selected = option.value === theme;

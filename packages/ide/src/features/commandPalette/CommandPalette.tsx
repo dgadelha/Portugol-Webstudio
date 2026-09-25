@@ -51,10 +51,12 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
   /**
    * Fecha a paleta antes de agir: a ação pode abrir outro diálogo.
    */
-  const run = (action: () => void, label: string) => () => {
-    onOpenChange(false);
-    trackEvent("command_palette", "Interface", label);
-    action();
+  const run = (action: () => void, label: string) => {
+    return () => {
+      onOpenChange(false);
+      trackEvent("command_palette", "Interface", label);
+      action();
+    };
   };
 
   return (
@@ -81,7 +83,12 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
         </CommandGroup>
 
         <CommandGroup heading="Ir para">
-          <CommandItem value="Início" onSelect={run(() => workspace.goToTab(null), "Início")}>
+          <CommandItem
+            value="Início"
+            onSelect={run(() => {
+              workspace.goToTab(null);
+            }, "Início")}
+          >
             <House />
             Início
           </CommandItem>
@@ -91,7 +98,9 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
               <CommandItem
                 key={tab.id}
                 value={`aba ${tab.title} ${tab.id}`}
-                onSelect={run(() => workspace.goToTab(tab), "Trocar de aba")}
+                onSelect={run(() => {
+                  workspace.goToTab(tab);
+                }, "Trocar de aba")}
               >
                 <FileCode2 />
                 {tab.title}

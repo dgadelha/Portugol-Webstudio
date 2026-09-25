@@ -6,7 +6,13 @@ import { usePanelRef } from "react-resizable-panels";
  * Controla um painel recolhível que começa recolhido. Lembra o último tamanho aberto que o
  * usuário escolheu, para voltar a ele ao abrir de novo.
  */
-export function useCollapsiblePanel({ collapsedSize, defaultOpenSize }: { collapsedSize: number; defaultOpenSize: string }) {
+export function useCollapsiblePanel({
+  collapsedSize,
+  defaultOpenSize,
+}: {
+  collapsedSize: number;
+  defaultOpenSize: string;
+}) {
   const panelRef = usePanelRef();
   const [collapsed, setCollapsed] = useState(true);
   const lastOpenSize = useRef<number | null>(null);

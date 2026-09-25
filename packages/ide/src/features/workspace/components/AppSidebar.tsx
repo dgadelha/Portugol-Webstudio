@@ -49,9 +49,7 @@ import { useWorkspaceActions } from "../workspaceActionsContext";
  * coloca no slot); nas outras abas, a navegação do IDE.
  */
 export function AppSidebar() {
-  const editorActive = useWorkspace(
-    state => state.tabs.find(tab => tab.id === state.activeTabId)?.type === "editor",
-  );
+  const editorActive = useWorkspace(state => state.tabs.find(tab => tab.id === state.activeTabId)?.type === "editor");
   const { setSlot } = useSidebarSlot();
 
   return (
@@ -94,7 +92,6 @@ export function AppSidebar() {
       <SidebarFooter>
         <FooterMenu />
       </SidebarFooter>
-
     </Sidebar>
   );
 }

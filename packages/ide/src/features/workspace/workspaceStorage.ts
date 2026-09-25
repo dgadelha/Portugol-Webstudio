@@ -141,7 +141,9 @@ export class WorkspaceStorage {
   deleteWorkspace(workspaceId: string) {
     const prefix = `${NAMESPACE}:${workspaceId}:`;
 
-    for (const key of this.keys().filter(key => key.startsWith(prefix))) {
+    const workspaceKeys = this.keys().filter(key => key.startsWith(prefix));
+
+    for (const key of workspaceKeys) {
       this.remove(key);
     }
 

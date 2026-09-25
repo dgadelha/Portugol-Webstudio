@@ -1,6 +1,6 @@
 import eslint from "@eslint/js";
-import angular from "angular-eslint";
 import prettier from "eslint-plugin-prettier/recommended";
+import reactHooks from "eslint-plugin-react-hooks";
 import unicorn from "eslint-plugin-unicorn";
 import { defineConfig } from "eslint/config";
 import tseslint from "typescript-eslint";
@@ -10,18 +10,8 @@ export default defineConfig(
   unicorn.configs.all,
   prettier,
   {
-    files: ["**/*.html"],
-    extends: [...angular.configs.templateAll, ...angular.configs.templateAccessibility],
-    rules: {
-      "@angular-eslint/template/i18n": "off",
-      "@angular-eslint/template/cyclomatic-complexity": "warn",
-      "@angular-eslint/template/no-call-expression": "off",
-    },
-  },
-  {
-    files: ["**/*.ts"],
-    extends: [...tseslint.configs.strictTypeChecked, ...angular.configs.tsAll],
-    processor: angular.processInlineTemplates,
+    files: ["**/*.ts", "**/*.tsx"],
+    extends: [...tseslint.configs.strictTypeChecked],
     languageOptions: {
       parserOptions: {
         project: ["tsconfig.json", "tsconfig.spec.json"],
@@ -30,8 +20,6 @@ export default defineConfig(
       },
     },
     rules: {
-      "@angular-eslint/prefer-on-push-component-change-detection": "off",
-      "@angular-eslint/prefer-signals": "warn",
       "@typescript-eslint/ban-ts-comment": "off",
       "@typescript-eslint/consistent-type-imports": "off",
       "@typescript-eslint/naming-convention": "off",
@@ -74,9 +62,25 @@ export default defineConfig(
     },
   },
   {
+    // O IDE tem o próprio tsconfig (JSX, alias `@/`), e as regras dos hooks do React.
+    files: ["packages/ide/**/*.ts", "packages/ide/**/*.tsx"],
+    extends: [reactHooks.configs.flat["recommended-latest"]],
+    rules: {
+      // Briga com o prettier no idioma do React `lista.map(item => (<JSX />))`: o `--fix` fica
+      // alternando entre retorno implícito e explícito.
+      "unicorn/consistent-arrow-return-style": "off",
+    },
+    languageOptions: {
+      parserOptions: {
+        project: ["packages/ide/tsconfig.json"],
+        // @ts-expect-error - esm
+        tsconfigDirName: import.meta.dirname,
+      },
+    },
+  },
+  {
     ignores: [
       "node_modules/",
-      ".angular/",
       "packages/**/coverage/",
       "packages/**/lib/",
       "packages/**/dist/",
@@ -86,7 +90,8 @@ export default defineConfig(
       "packages/parser/src/bibliotecas/*.gerado.ts",
       "packages/resources/assets/",
       "packages/resources/recursos.temp/",
-      "packages/ide/src/index.html",
+      // Componentes do shadcn/ui: gerados e atualizados pelo CLI (`npx shadcn add`).
+      "packages/ide/src/components/ui/",
     ],
   },
   {

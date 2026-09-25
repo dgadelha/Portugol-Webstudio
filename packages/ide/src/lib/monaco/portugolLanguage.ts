@@ -1,4 +1,4 @@
-import type { Monaco } from "@monaco-editor/react";
+import type { Monaco } from "./types";
 import type { languages } from "monaco-editor";
 
 const autoClosingPairs: languages.IAutoClosingPairConditional[] = [

@@ -13,7 +13,10 @@ interface ParsedHotkey {
  * `"mod+s"`, `"mod+enter"`, `"f1"`… `mod` é Ctrl, ou Cmd no macOS.
  */
 function parseHotkey(combo: string): ParsedHotkey {
-  const parts = combo.toLowerCase().split("+").map(part => part.trim());
+  const parts = combo
+    .toLowerCase()
+    .split("+")
+    .map(part => part.trim());
 
   return {
     mod: parts.includes("mod"),

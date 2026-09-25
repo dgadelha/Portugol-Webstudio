@@ -98,8 +98,8 @@ export function WorkspaceActionsProvider({ children }: { children: ReactNode }) 
     return { actions, closeNow };
   }, [navigate, store]);
 
-  const rename = useMemo<TabRename>(
-    () => ({
+  const rename = useMemo<TabRename>(() => {
+    return {
       renamingTabId,
       finishRename: title => {
         const trimmed = title?.trim();
@@ -110,9 +110,8 @@ export function WorkspaceActionsProvider({ children }: { children: ReactNode }) 
 
         setRenamingTabId(null);
       },
-    }),
-    [renamingTabId, store],
-  );
+    };
+  }, [renamingTabId, store]);
 
   const onFilesSelected = async (event: ChangeEvent<HTMLInputElement>) => {
     const files = [...(event.target.files ?? [])];
@@ -136,7 +135,7 @@ export function WorkspaceActionsProvider({ children }: { children: ReactNode }) 
         type="file"
         hidden
         multiple
-        accept=".por,text/plain"
+        accept=".por, text/plain"
         onChange={event => void onFilesSelected(event)}
       />
 
@@ -150,7 +149,6 @@ export function WorkspaceActionsProvider({ children }: { children: ReactNode }) 
           closeNow(tab);
         }}
       />
-
     </WorkspaceActionsContext>
   );
 }

@@ -1,9 +1,9 @@
-import type { OnMount } from "@monaco-editor/react";
 import { ChevronUp, Eraser, SquareTerminal } from "lucide-react";
 
 import { IconButton } from "@/components/IconButton";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import type { EditorMount } from "@/lib/monaco/types";
 
 import { OutputConsole } from "./OutputConsole";
 
@@ -20,7 +20,7 @@ interface OutputPanelProps {
   onToggle: () => void;
   onInput: (key: string) => boolean;
   onClear: () => void;
-  onConsoleMount?: OnMount;
+  onConsoleMount?: EditorMount;
 }
 
 function RunStatus({ running, waitingForInput }: Pick<OutputPanelProps, "running" | "waitingForInput">) {

@@ -43,7 +43,7 @@ function parseStored(raw: string | null): unknown {
 
 function normalize(stored: Partial<Record<keyof Settings, unknown>>): Settings {
   const theme = stored.theme === "light" || stored.theme === "dark" ? stored.theme : "auto";
-  const fontSize = Number.parseInt(String(stored.editorFontSize), 10);
+  const fontSize = Math.trunc(Number(stored.editorFontSize));
 
   return {
     theme,

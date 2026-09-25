@@ -96,14 +96,22 @@ function CodePreview({ fontSize, wordWrap }: { fontSize: number; wordWrap: boole
     { indent: 0, parts: [["programa", "text-sky-600 dark:text-sky-400"], [" {"]] },
     {
       indent: 1,
-      parts: [["funcao", "text-sky-600 dark:text-sky-400"], [" "], ["inicio", "text-amber-600 dark:text-amber-300"], ["() {"]],
+      parts: [
+        ["funcao", "text-sky-600 dark:text-sky-400"],
+        [" "],
+        ["inicio", "text-amber-600 dark:text-amber-300"],
+        ["() {"],
+      ],
     },
     {
       indent: 2,
       parts: [
         ["escreva", "text-amber-600 dark:text-amber-300"],
         ["("],
-        ['"Olá! Esta linha é comprida para mostrar como a quebra de linha funciona no editor."', "text-orange-700 dark:text-orange-300"],
+        [
+          '"Olá! Esta linha é comprida para mostrar como a quebra de linha funciona no editor."',
+          "text-orange-700 dark:text-orange-300",
+        ],
         [")"],
       ],
     },

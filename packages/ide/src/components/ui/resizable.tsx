@@ -3,11 +3,11 @@ import { Group, Panel, Separator } from "react-resizable-panels";
 
 import { cn } from "@/lib/utils";
 
-function ResizablePanelGroup({ className, ...props }: React.ComponentProps<typeof Group>) {
+export function ResizablePanelGroup({ className, ...props }: React.ComponentProps<typeof Group>) {
   return <Group data-slot="resizable-panel-group" className={cn("flex h-full w-full", className)} {...props} />;
 }
 
-function ResizablePanel({ className, ...props }: React.ComponentProps<typeof Panel>) {
+export function ResizablePanel({ className, ...props }: React.ComponentProps<typeof Panel>) {
   return <Panel data-slot="resizable-panel" className={cn("overflow-hidden", className)} {...props} />;
 }
 
@@ -15,7 +15,7 @@ function ResizablePanel({ className, ...props }: React.ComponentProps<typeof Pan
  * Divisória de 1px, como a do shadcn; engrossa no hover e no arrasto. A área de arrasto é bem
  * maior que a linha.
  */
-function ResizableHandle({ className, ...props }: React.ComponentProps<typeof Separator>) {
+export function ResizableHandle({ className, ...props }: React.ComponentProps<typeof Separator>) {
   return (
     <Separator
       data-slot="resizable-handle"
@@ -34,5 +34,3 @@ function ResizableHandle({ className, ...props }: React.ComponentProps<typeof Se
     />
   );
 }
-
-export { ResizableHandle, ResizablePanel, ResizablePanelGroup };

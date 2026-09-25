@@ -167,9 +167,23 @@ export function usePortugolRunner(options: UsePortugolRunnerOptions = {}) {
   );
 
   const clearOutput = useCallback(() => {
+    // O executor é um objeto do runner, mutável por natureza: não é estado do React.
+    // eslint-disable-next-line react-hooks/immutability
     executor.stdOut = "";
     setOutput("");
   }, [executor]);
 
-  return { executor, running, waitingForInput, transpiling, clearOutput, busy: running || transpiling, output, byteCode, run, stop, sendInput };
+  return {
+    executor,
+    running,
+    waitingForInput,
+    transpiling,
+    clearOutput,
+    busy: running || transpiling,
+    output,
+    byteCode,
+    run,
+    stop,
+    sendInput,
+  };
 }

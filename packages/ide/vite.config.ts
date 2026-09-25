@@ -1,6 +1,5 @@
 import { copyFile } from "node:fs/promises";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
 
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
@@ -8,7 +7,7 @@ import { defineConfig, type Plugin } from "vite";
 import { VitePWA } from "vite-plugin-pwa";
 import { viteStaticCopy } from "vite-plugin-static-copy";
 
-const root = path.dirname(fileURLToPath(import.meta.url));
+const root = import.meta.dirname;
 const nodeModules = path.resolve(root, "../../node_modules");
 const outDir = path.resolve(root, "dist/browser");
 

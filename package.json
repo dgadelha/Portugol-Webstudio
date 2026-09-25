@@ -28,8 +28,8 @@
     "lint": "sherif && npm run eslint:check",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "eslint:fix": "eslint --fix 'packages/**/*.{ts,js,mjs,html}'",
-    "eslint:check": "eslint 'packages/**/*.{ts,js,mjs,html}'",
+    "eslint:fix": "eslint --fix 'packages/**/*.{ts,tsx,js,mjs}'",
+    "eslint:check": "eslint 'packages/**/*.{ts,tsx,js,mjs}'",
     "typecheck": "lerna run typecheck",
     "start": "lerna run start --scope=@portugol-webstudio/ide",
     "build": "lerna run build",
@@ -45,10 +45,10 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "angular-eslint": "^22.2.0",
     "eslint": "^10.10.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.6",
+    "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-unicorn": "^74.0.0",
     "lerna": "^10.0.1",
     "patch-package": "^8.0.1",
@@ -57,18 +57,8 @@
     "typescript-eslint": "^8.69.0"
   },
   "overrides": {
-    "@angular/build": "^22.1.5",
-    "@angular/common": "^22.1.5",
-    "@angular/core": "^22.1.5",
-    "@angular/platform-browser": "^22.1.5",
-    "@angular/fire": {
-      "typescript": "$typescript"
-    },
     "@nx/devkit": {
       "minimatch": "^10.2.3"
-    },
-    "@sentry/angular": {
-      "@angular/router": "^22.1.5"
     },
     "tmp": "^0.2.5",
     "vitest": "^5.0.0"

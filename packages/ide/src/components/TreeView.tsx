@@ -111,7 +111,7 @@ function TreeItem<T extends TreeNode>({ node, expanded, setExpanded, ...props }:
           <button
             type="button"
             tabIndex={-1}
-            aria-label={`${isExpanded ? "Recolher" : "Expandir"} ${String(getLabel(node))}`}
+            aria-label={isExpanded ? "Recolher pasta" : "Expandir pasta"}
             className="flex size-5 shrink-0 items-center justify-center rounded-sm text-muted-foreground hover:text-foreground"
             onClick={event => {
               event.stopPropagation();

@@ -97,18 +97,22 @@ export const librariesTopic: HelpTopic = {
         kind: "markdown",
         source: `${header}**Descrição:** ${lib.descrição}`,
         children: [
-          ...lib.constantes.map<HelpTopic>(constante => ({
-            id: `${lib.nome}_${constante.nome}`,
-            text: constante.nome,
-            kind: "markdown",
-            source: header + constantSource(constante),
-          })),
-          ...lib.funções.map<HelpTopic>(funcao => ({
-            id: `${lib.nome}_${funcao.nome}`,
-            text: funcao.nome,
-            kind: "markdown",
-            source: header + functionSource(funcao),
-          })),
+          ...lib.constantes.map<HelpTopic>(constante => {
+            return {
+              id: `${lib.nome}_${constante.nome}`,
+              text: constante.nome,
+              kind: "markdown",
+              source: header + constantSource(constante),
+            };
+          }),
+          ...lib.funções.map<HelpTopic>(funcao => {
+            return {
+              id: `${lib.nome}_${funcao.nome}`,
+              text: funcao.nome,
+              kind: "markdown",
+              source: header + functionSource(funcao),
+            };
+          }),
         ],
       };
     }),

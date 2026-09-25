@@ -6,7 +6,9 @@ export type AsyncState<T> =
   | { status: "error"; data?: undefined; error: unknown };
 
 /**
- * Executa uma tarefa assíncrona quando as dependências mudam, cancelando a anterior.
+ * Executa uma tarefa assíncrona quando o componente monta (ou as dependências mudam), cancelando
+ * a anterior. Para mostrar "carregando" de novo ao trocar de tarefa, remonte o componente com
+ * uma `key` diferente.
  */
 export function useAsync<T>(task: (signal: AbortSignal) => Promise<T>, deps: DependencyList): AsyncState<T> {
   const [state, setState] = useState<AsyncState<T>>({ status: "loading" });
@@ -14,16 +16,13 @@ export function useAsync<T>(task: (signal: AbortSignal) => Promise<T>, deps: Dep
   useEffect(() => {
     const controller = new AbortController();
 
-    setState({ status: "loading" });
-
-    task(controller.signal).then(
-      data => {
+    task(controller.signal)
+      .then(data => {
         if (!controller.signal.aborted) setState({ status: "success", data });
-      },
-      (error: unknown) => {
+      })
+      .catch((error: unknown) => {
         if (!controller.signal.aborted) setState({ status: "error", error });
-      },
-    );
+      });
 
     return () => {
       controller.abort();

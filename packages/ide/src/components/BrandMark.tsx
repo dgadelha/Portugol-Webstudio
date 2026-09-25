@@ -10,7 +10,6 @@ export function BrandMark({ className }: { className?: string }) {
     <span
       aria-hidden="true"
       className={cn("inline-flex text-brand [&_svg]:h-full [&_svg]:w-auto [&_svg]:fill-current", className)}
-      // eslint-disable-next-line react/no-danger -- SVG do próprio repositório
       dangerouslySetInnerHTML={{ __html: lightbulb }}
     />
   );

@@ -44,7 +44,6 @@ function ExampleBrowser({ onOpenExample }: Pick<OpenExampleDialogProps, "onOpenE
   const [highlighted, setHighlighted] = useState("");
 
   const groups = useMemo(() => groupByCategory(entries), [entries]);
-  const current = entries.find(entry => entry.item.id === highlighted) ?? entries[0] ?? null;
 
   if (index.status === "error") {
     return (
@@ -53,6 +52,8 @@ function ExampleBrowser({ onOpenExample }: Pick<OpenExampleDialogProps, "onOpenE
       </p>
     );
   }
+
+  const current = entries.find(entry => entry.item.id === highlighted) ?? entries[0] ?? null;
 
   return (
     <div className="grid min-h-0 flex-1 md:grid-cols-[320px_1fr]">
@@ -70,13 +71,15 @@ function ExampleBrowser({ onOpenExample }: Pick<OpenExampleDialogProps, "onOpenE
               <CommandEmpty>Nenhum exemplo encontrado.</CommandEmpty>
               {[...groups].map(([category, items]) => (
                 <CommandGroup key={category} heading={category}>
-                  {items.map(entry => (
-                    <ExampleCommandItem
-                      key={entry.item.id}
-                      entry={entry}
-                      onOpen={() => void openEntry(entry, onOpenExample)}
-                    />
-                  ))}
+                  {items.map(entry => {
+                    return (
+                      <ExampleCommandItem
+                        key={entry.item.id}
+                        entry={entry}
+                        onOpen={() => void openEntry(entry, onOpenExample)}
+                      />
+                    );
+                  })}
                 </CommandGroup>
               ))}
             </>
@@ -121,7 +124,10 @@ async function openEntry(entry: ExampleEntry, onOpenExample: OpenExampleDialogPr
   onOpenExample({ title: entry.item.name, code: await fetchExampleCode(entry.item) });
 }
 
-function ExamplePreview({ entry, onOpenExample }: { entry: ExampleEntry } & Pick<OpenExampleDialogProps, "onOpenExample">) {
+function ExamplePreview({
+  entry,
+  onOpenExample,
+}: { entry: ExampleEntry } & Pick<OpenExampleDialogProps, "onOpenExample">) {
   const code = useAsync(signal => fetchExampleCode(entry.item, signal), [entry]);
 
   return (

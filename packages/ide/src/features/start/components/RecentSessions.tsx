@@ -53,7 +53,12 @@ export function RecentSessions() {
               onClick={() => {
                 const restored = store.recover(workspace.id);
 
-                trackEvent("workspace_recover", "Aba Inicial", "Recuperar código de uma sessão anterior", restored.length);
+                trackEvent(
+                  "workspace_recover",
+                  "Aba Inicial",
+                  "Recuperar código de uma sessão anterior",
+                  restored.length,
+                );
                 if (restored[0]) goToTab(restored[0]);
               }}
             >

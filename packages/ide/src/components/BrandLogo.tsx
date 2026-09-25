@@ -46,7 +46,6 @@ export function BrandLogo({ variant = "default", className }: BrandLogoProps) {
         role="img"
         aria-label="Logomarca do Portugol Webstudio"
         className="[&>svg]:block [&>svg]:w-full"
-        // eslint-disable-next-line react/no-danger -- SVG do próprio repositório
         dangerouslySetInnerHTML={{ __html: logoSource(variant) }}
       />
 

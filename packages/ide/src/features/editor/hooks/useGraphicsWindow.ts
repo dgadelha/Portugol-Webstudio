@@ -60,10 +60,10 @@ export function useGraphicsWindow(executor: PortugolExecutor, onUserClose: () =>
       setWindowState({ title: "" });
     };
 
-    renderer.addEventListener("create", onCreate as EventListener);
+    renderer.addEventListener("create", onCreate);
 
     return () => {
-      renderer.removeEventListener("create", onCreate as EventListener);
+      renderer.removeEventListener("create", onCreate);
     };
   }, [renderer, close]);
 

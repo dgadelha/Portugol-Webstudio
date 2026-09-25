@@ -18,8 +18,8 @@ export function AppDialogsProvider({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState<OpenDialog>(null);
   const { openEditor, openChangelog } = useWorkspaceActions();
 
-  const dialogs = useMemo<AppDialogs>(
-    () => ({
+  const dialogs = useMemo<AppDialogs>(() => {
+    return {
       openSettings: () => {
         trackEvent("open_settings_modal", "Interface", "Abrir modal de configurações");
         setOpen("settings");
@@ -33,14 +33,15 @@ export function AppDialogsProvider({ children }: { children: ReactNode }) {
       openCommandPalette: () => {
         setOpen(current => (current === "commands" ? null : "commands"));
       },
-    }),
-    [],
-  );
+    };
+  }, []);
 
-  const closeWhenHidden = (dialog: Exclude<OpenDialog, null>) => (isOpen: boolean) => {
-    if (!isOpen) {
-      setOpen(current => (current === dialog ? null : current));
-    }
+  const closeWhenHidden = (dialog: Exclude<OpenDialog, null>) => {
+    return (isOpen: boolean) => {
+      if (!isOpen) {
+        setOpen(current => (current === dialog ? null : current));
+      }
+    };
   };
 
   return (

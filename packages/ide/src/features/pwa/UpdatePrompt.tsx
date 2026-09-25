@@ -18,10 +18,7 @@ const UPDATE_TOAST_ID = "pwa-update";
 export function UpdatePrompt() {
   const interval = useRef<ReturnType<typeof setInterval>>(undefined);
 
-  const {
-    needRefresh: [needRefresh, setNeedRefresh],
-    updateServiceWorker,
-  } = useRegisterSW({
+  const registration = useRegisterSW({
     onRegisteredSW(_url, registration) {
       if (!registration) {
         return;
@@ -44,7 +41,14 @@ export function UpdatePrompt() {
     },
   });
 
-  useEffect(() => () => clearInterval(interval.current), []);
+  const [needRefresh, setNeedRefresh] = registration.needRefresh;
+  const { updateServiceWorker } = registration;
+
+  useEffect(() => {
+    return () => {
+      clearInterval(interval.current);
+    };
+  }, []);
 
   useEffect(() => {
     if (!needRefresh) {

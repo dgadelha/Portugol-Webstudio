@@ -1,4 +1,4 @@
-import type { Monaco, OnMount } from "@monaco-editor/react";
+import type { EditorMount, Monaco } from "@/lib/monaco/types";
 import type { IPortugolCodeDiagnostic } from "@portugol-webstudio/antlr";
 import type { editor } from "monaco-editor";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -48,7 +48,7 @@ export function EditorPane({ tabId, active }: EditorPaneProps) {
 
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
   const monacoRef = useRef<Monaco | null>(null);
-  const liveCheckTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const liveCheckTimer = useRef<number | undefined>(undefined);
   const [sharing, setSharing] = useState(false);
   // A saída começa recolhida e só abre sozinha ao executar; fora isso vale o que o usuário escolher.
   const outputPanel = useCollapsiblePanel({ collapsedSize: OUTPUT_HEADER_HEIGHT, defaultOpenSize: "30%" });
@@ -65,7 +65,9 @@ export function EditorPane({ tabId, active }: EditorPaneProps) {
 
   const runner = usePortugolRunner({
     onDiagnostics: setDiagnostics,
-    onFinish: () => graphicsRef.current.dismiss(),
+    onFinish: () => {
+      graphicsRef.current.dismiss();
+    },
     onMessage: async message => {
       if (message.type.startsWith("graphics.")) {
         await graphicsRef.current.renderer.handleMessage(message);
@@ -78,12 +80,11 @@ export function EditorPane({ tabId, active }: EditorPaneProps) {
   // callbacks acima chegam a ela por esta referência.
   const graphicsRef = useLatest(graphics);
 
-  useEffect(
-    () => () => {
+  useEffect(() => {
+    return () => {
       clearTimeout(liveCheckTimer.current);
-    },
-    [],
-  );
+    };
+  }, []);
 
   // --- Ações -----------------------------------------------------------------------------
 
@@ -151,9 +152,15 @@ export function EditorPane({ tabId, active }: EditorPaneProps) {
 
   useHotkeys(
     {
-      f1: () => actionsRef.current.help(),
-      "mod+s": () => actionsRef.current.save(),
-      "mod+enter": () => actionsRef.current.run(),
+      f1: () => {
+        actionsRef.current.help();
+      },
+      "mod+s": () => {
+        actionsRef.current.save();
+      },
+      "mod+enter": () => {
+        actionsRef.current.run();
+      },
     },
     active,
   );
@@ -161,18 +168,24 @@ export function EditorPane({ tabId, active }: EditorPaneProps) {
   /**
    * Os mesmos atalhos dentro do Monaco, que captura o teclado quando está em foco.
    */
-  const registerEditorActions: OnMount = (instance, monaco) => {
+  const registerEditorActions: EditorMount = (instance, monaco) => {
     const bind = (id: string, label: string, keybinding: number, run: () => void) => {
       instance.addAction({ id, label, keybindings: [keybinding], run });
     };
 
-    bind("runCode", "Executar código", monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => actionsRef.current.run());
-    bind("saveFile", "Salvar arquivo", monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => actionsRef.current.save());
+    bind("runCode", "Executar código", monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => {
+      actionsRef.current.run();
+    });
+    bind("saveFile", "Salvar arquivo", monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
+      actionsRef.current.save();
+    });
     bind("openFile", "Abrir arquivo", monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyO, openFilesFromDisk);
-    bind("openHelp", "Ajuda", monaco.KeyCode.F1, () => actionsRef.current.help());
+    bind("openHelp", "Ajuda", monaco.KeyCode.F1, () => {
+      actionsRef.current.help();
+    });
   };
 
-  const onCodeEditorMount: OnMount = (instance, monaco) => {
+  const onCodeEditorMount: EditorMount = (instance, monaco) => {
     editorRef.current = instance;
     monacoRef.current = monaco;
     registerEditorActions(instance, monaco);
@@ -181,15 +194,15 @@ export function EditorPane({ tabId, active }: EditorPaneProps) {
     instance.onDidChangeModelContent(() => {
       clearTimeout(liveCheckTimer.current);
 
-      liveCheckTimer.current = setTimeout(() => {
-        portugolWorker.checkCode(code()).then(
-          result => {
+      liveCheckTimer.current = window.setTimeout(() => {
+        portugolWorker
+          .checkCode(code())
+          .then(result => {
             setDiagnostics([...result.diagnostics, ...result.parseErrors]);
-          },
-          (error: unknown) => {
+          })
+          .catch((error: unknown) => {
             console.error(error);
-          },
-        );
+          });
       }, LIVE_CHECK_DEBOUNCE);
     });
   };
