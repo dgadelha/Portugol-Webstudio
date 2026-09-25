@@ -35,6 +35,7 @@ import { provideNgxWebstorage, withNgxWebstorageConfig } from "ngx-webstorage";
 import { environment } from "../environments/environment";
 import { withNgxLocalStorageFallback } from "../helpers/local-storage";
 import { AppComponent } from "./app.component";
+import { RELEASE_CHANNEL } from "./beta";
 import { DialogOpenExampleComponent } from "./dialog-open-example/dialog-open-example.component";
 import { MonacoService } from "./monaco.service";
 import { PwaService } from "./pwa.service";
@@ -44,6 +45,8 @@ import { TabHelpComponent } from "./tab-help/tab-help.component";
 import { TabStartComponent } from "./tab-start/tab-start.component";
 import { ThemeService } from "./theme.service";
 
+const GA_TRACKING_CODE = "G-ZKM28VG4G5";
+
 @NgModule({
   imports: [
     BrowserModule,
@@ -52,7 +55,10 @@ import { ThemeService } from "./theme.service";
     MonacoEditorModule,
     KeyboardShortcutsModule.forRoot(),
     MarkdownComponent,
-    NgxGoogleAnalyticsModule.forRoot("G-ZKM28VG4G5"),
+    NgxGoogleAnalyticsModule.forRoot(GA_TRACKING_CODE, [
+      // Parâmetros do `config` acompanham todos os eventos, inclusive o `page_view` automático.
+      { command: "config", values: [GA_TRACKING_CODE, { app_channel: RELEASE_CHANNEL }] },
+    ]),
     AngularSvgIconModule.forRoot(),
     MatSnackBarModule,
     MatRippleModule,
