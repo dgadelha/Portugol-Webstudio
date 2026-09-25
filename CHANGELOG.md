@@ -1,6 +1,17 @@
 # Histórico de atualizações
 
-<!-- Mudanças que ainda estão só no beta ficam na seção `## BETA` do topo. Quando o beta chega na main, o deploy troca o título pela data do dia (se o dia já tiver uma seção, junta as duas separadas por `---`) e deixa uma seção `## BETA` vazia no lugar. -->
+<!--
+Obrigado por contribuir com o Portugol Webstudio!
+
+Para registrar a sua mudança:
+
+1. Escreva na seção `## BETA` logo abaixo, pensando em quem usa o IDE: estudantes e professores, sem jargão técnico.
+2. Se a seção `## BETA` já tiver outras mudanças, coloque a sua no topo dela e separe da anterior com uma linha `---`.
+3. Se quiser, termine com o seu usuário do GitHub e o link do PR, como nas outras entradas:
+   "Contribuição de [@usuario](https://github.com/usuario). [Mais detalhes](link do PR)"
+
+Não troque `BETA` por uma data: quando o beta chega na main, o deploy coloca a data do dia e deixa uma nova seção `## BETA` vazia no topo.
+-->
 
 As mudanças mais recentes do Portugol Webstudio aparecem primeiro.
 
