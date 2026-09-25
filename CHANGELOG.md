@@ -17,6 +17,10 @@ As mudanças mais recentes do Portugol Webstudio aparecem primeiro.
 
 ## BETA
 
+`Tipos.cadeia_e_inteiro`, `Tipos.cadeia_e_real` e `Tipos.cadeia_e_logico` agora aceitam um texto que termina com uma quebra de linha, como no Portugol Studio. Contribuição de [@kwy404](https://github.com/kwy404). [Mais detalhes](https://github.com/dgadelha/Portugol-Webstudio/pull/447)
+
+---
+
 O código agora é salvo automaticamente no navegador enquanto você digita:
 
 - Se a aba do navegador for fechada sem querer, basta abrir o Portugol Webstudio de novo: as abas voltam como estavam
