@@ -132,6 +132,22 @@ describe("Biblioteca: Objetos", () => {
       ).resolves.toBe('{\n  "a" : 1,\n  "b" : [ 1, 2 ]\n}|{\n  "a" : 2\n}');
     });
 
+    test("Ignora o que vem depois do objeto", async () => {
+      await expect(
+        runPortugolCode(
+          portugol`
+            programa {
+              inclua biblioteca Objetos
+
+              funcao inicio() {
+                escreva(Objetos.obter_json(Objetos.criar_objeto_via_json("{\\"a\\":1} x")), "|", Objetos.obter_json(Objetos.criar_objeto_via_json("{\\"a\\":1} 2")))
+              }
+            }
+          `,
+        ),
+      ).resolves.toBe('{\n  "a" : 1\n}|{\n  "a" : 1\n}');
+    });
+
     test("Devolve um objeto vazio para JSON inválido", async () => {
       await expect(
         runPortugolCode(

@@ -17,6 +17,10 @@ As mudanças mais recentes do Portugol Webstudio aparecem primeiro.
 
 ## BETA
 
+`Objetos.criar_objeto_via_json` agora lê o objeto mesmo quando há outro texto depois dele, como no Portugol Studio. Antes, o resultado era um objeto vazio. Contribuição de [@kwy404](https://github.com/kwy404). [Mais detalhes](https://github.com/dgadelha/Portugol-Webstudio/pull/448)
+
+---
+
 `Tipos.cadeia_e_inteiro`, `Tipos.cadeia_e_real` e `Tipos.cadeia_e_logico` agora aceitam um texto que termina com uma quebra de linha, como no Portugol Studio. Contribuição de [@kwy404](https://github.com/kwy404). [Mais detalhes](https://github.com/dgadelha/Portugol-Webstudio/pull/447)
 
 ---
