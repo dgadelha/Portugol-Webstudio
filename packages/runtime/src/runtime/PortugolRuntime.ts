@@ -473,6 +473,13 @@ class PortugolRuntime {
   }
 
   expectType(fn, param, obj, ...types) {
+    // O Portugol Studio trunca um 'real' passado a um parâmetro 'inteiro' da
+    // biblioteca, com o (int) do Java. O argumento é sempre uma cópia, vide value()
+    if (obj?.type === "real" && typeof obj.value === "number" && types.includes("inteiro") && !types.includes("real")) {
+      obj.type = "inteiro";
+      obj.value = PortugolVar.realToInt(obj.value);
+    }
+
     if (!obj || !types.includes(obj.type) || obj.value === undefined) {
       let multipleTypesPlural = types.length > 1 ? "s" : "";
       throw new Error("Tipos incompatíveis! O parâmetro '" + param + "' da função '" + fn + "' espera uma expressão do" + multipleTypesPlural + " tipo" + multipleTypesPlural + " " + types.map((c) => "'" + c + "'").join(" ou ") + (obj?.value === undefined ? " com valor" : "") + ", mas foi passada uma expressão do tipo '" + (obj?.type ?? "vazio") + "'" + (obj?.value === undefined ? " vazia" : ""));

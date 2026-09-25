@@ -94,6 +94,26 @@ describe("Conversões Implícitas", () => {
         ),
       ).resolves.toBe("7.0");
     });
+
+    test("Trunca o real passado para um parâmetro inteiro de biblioteca", async () => {
+      await expect(
+        runPortugolCode(
+          portugol`
+            programa {
+              inclua biblioteca Texto
+              inclua biblioteca Tipos
+              inclua biblioteca Util
+
+              funcao inicio() {
+                real x = 2.7
+                Util.aguarde(x)
+                escreva(Texto.obter_caracter("abcd", x), "|", Texto.extrair_subtexto("abcdef", 1.9, x * 2), "|", Tipos.inteiro_para_real(-x))
+              }
+            }
+          `,
+        ),
+      ).resolves.toBe("c|bcde|-2.0");
+    });
   });
 
   describe("Atribuição", () => {
