@@ -1,4 +1,7 @@
+import { PortugolCodeChecker } from "@portugol-webstudio/parser";
+import { PortugolJs } from "@portugol-webstudio/runtime";
 import { describe, expect, test } from "vitest";
+import { PortugolWorkerThreadsRunner } from "../../src";
 import { portugol } from "../helpers/code";
 import { runPortugolCode } from "../helpers/runner";
 
@@ -179,6 +182,32 @@ describe("Funções", () => {
           `),
         ),
       ).resolves.toBe("500500");
+    });
+
+    test("Interrompe a recursão sem fim com o estouro de pilha do Portugol Studio", async () => {
+      const código = portugol`
+        programa {
+          funcao inteiro semFim(inteiro n) {
+            retorne semFim(n + 1)
+          }
+
+          funcao inicio() {
+            escreva(semFim(0))
+          }
+        }
+      `;
+
+      const byteCode = new PortugolJs().visit(PortugolCodeChecker.checkCode(código).tree)!;
+      const runner = new PortugolWorkerThreadsRunner(byteCode);
+      const erro = await new Promise<Error>(resolve => {
+        runner.run().subscribe(event => {
+          if (event.type === "error") {
+            resolve(event.error);
+          }
+        });
+      });
+
+      expect(erro.message).toBe("Ocorreu um estouro de pilha de memória no programa.");
     });
   });
 

@@ -103,7 +103,19 @@ class PortugolRuntime {
 
     this.currentFunction = name;
 
-    const ret = await func(...args);
+    let ret;
+
+    try {
+      ret = await func(...args);
+    } catch (error) {
+      // O StackOverflowError do Java vira uma mensagem do Portugol Studio; aqui o
+      // estouro chega como RangeError (Chrome, Safari) ou InternalError (Firefox)
+      if ((error instanceof RangeError && error.message.includes("call stack")) || error?.name === "InternalError") {
+        throw new Error("Ocorreu um estouro de pilha de memória no programa.");
+      }
+
+      throw error;
+    }
 
     this.currentFunction = last;
 
