@@ -167,4 +167,24 @@ describe("Estrutura do programa", () => {
       ).toMatchInlineSnapshot(`[]`);
     });
   });
+
+  test("barra invertida sozinha numa cadeia", () => {
+    expect(
+      analisar(portugol`
+        programa {
+          funcao inicio() {
+            escreva(" /\\_/\\ ")
+            escreva("C:\\\\aluno\\t\\"ok\\"\\n")
+          }
+        }
+      `),
+    ).toMatchInlineSnapshot(`
+      [
+        3:12/3:20 E [ErroSintatico.ErroEscapeUnico]: Variáveis do tipo cadeias e caracter com o símbolo '\\' devem utiliza-lo como: '\\\\'.
+      Isso se deve ao símbolo '\\' ser utilizado em casos como '\\t' e '\\n' onde ele passa por uma reinterpretação do seu significado, se tornando uma tabulação e um pular linha respectivamente,
+        3:12/3:20 E [ErroSintatico.ErroEscapeUnico]: Variáveis do tipo cadeias e caracter com o símbolo '\\' devem utiliza-lo como: '\\\\'.
+      Isso se deve ao símbolo '\\' ser utilizado em casos como '\\t' e '\\n' onde ele passa por uma reinterpretação do seu significado, se tornando uma tabulação e um pular linha respectivamente,
+      ]
+    `);
+  });
 });
