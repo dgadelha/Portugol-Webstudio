@@ -17,6 +17,10 @@ As mudanças mais recentes do Portugol Webstudio aparecem primeiro.
 
 ## BETA
 
+Uma função que chama a si mesma sem uma condição de parada agora interrompe o programa com a mensagem "Ocorreu um estouro de pilha de memória no programa.", como no Portugol Studio. Antes, aparecia uma mensagem técnica em inglês, como "Maximum call stack size exceeded". Contribuição de [@kwy404](https://github.com/kwy404). [Mais detalhes](https://github.com/dgadelha/Portugol-Webstudio/pull/452)
+
+---
+
 Novas opções do editor em Configurações:
 
 - Tamanho da tabulação (2, 4 ou 8) e indentação com espaços ou tabulações, que o programa de uma aba nova também segue
