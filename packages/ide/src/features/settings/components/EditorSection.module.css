@@ -1,0 +1,63 @@
+.section {
+  display: grid;
+  gap: 1.5rem;
+}
+
+/* Tabulação e indentação lado a lado quando cabem. */
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem 2.5rem;
+}
+
+.tabSize {
+  width: 2.5rem;
+  flex: none;
+  font-variant-numeric: tabular-nums;
+}
+
+.preview {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.previewCaption {
+  font-size: var(--text-xs);
+  line-height: var(--text-xs--line-height);
+  font-weight: 500;
+  color: var(--muted-foreground);
+}
+
+.previewCode {
+  overflow-x: auto;
+  border-radius: var(--radius-lg);
+  border-width: 1px;
+  background-color: color-mix(in oklab, var(--muted) 40%, transparent);
+  padding: 1rem;
+  font-family: var(--font-mono);
+  line-height: 1.625;
+}
+
+.keyword {
+  color: oklch(58.8% 0.158 241.966);
+}
+
+.function {
+  color: oklch(66.6% 0.179 58.318);
+}
+
+.string {
+  color: oklch(55.3% 0.195 38.402);
+}
+
+.keyword:where(:global(.dark) *) {
+  color: oklch(74.6% 0.16 232.661);
+}
+
+.function:where(:global(.dark) *) {
+  color: oklch(87.9% 0.169 91.605);
+}
+
+.string:where(:global(.dark) *) {
+  color: oklch(83.7% 0.128 66.29);
+}

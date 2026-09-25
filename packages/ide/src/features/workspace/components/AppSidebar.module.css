@@ -1,0 +1,63 @@
+.brandIcon {
+  display: flex;
+  aspect-ratio: 1 / 1;
+  width: 2.5rem;
+  height: 2.5rem;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-lg);
+  border-width: 1px;
+  background-color: var(--background);
+}
+
+.brandMark {
+  height: 1.25rem;
+}
+
+.brandText {
+  display: grid;
+  flex: 1;
+  text-align: left;
+  line-height: 1.25;
+}
+
+.brandName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+.brandTagline {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--text-xs);
+  line-height: var(--text-xs--line-height);
+  color: var(--muted-foreground);
+}
+
+.beta {
+  font-size: 0.65rem;
+  line-height: inherit;
+}
+
+.slot {
+  display: contents;
+}
+
+[data-collapsible="icon"] .openFiles {
+  display: none;
+}
+
+.empty {
+  padding: 0.375rem 0.5rem;
+  font-size: var(--text-xs);
+  line-height: var(--text-xs--line-height);
+  color: var(--muted-foreground);
+}
+
+.fileMenu {
+  width: 11rem;
+}

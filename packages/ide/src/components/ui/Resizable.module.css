@@ -1,0 +1,62 @@
+.group {
+  display: flex;
+  height: 100%;
+  width: 100%;
+}
+
+.panel {
+  overflow: hidden;
+}
+
+.handle {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--border);
+  transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke;
+  transition-timing-function: var(--ease);
+  transition-duration: var(--duration);
+  outline-style: none;
+}
+
+.handle::after {
+  content: "";
+  position: absolute;
+}
+
+.handle[aria-orientation="horizontal"] {
+  height: 1px;
+  width: 100%;
+}
+
+.handle[aria-orientation="horizontal"]::after {
+  inset-inline: 0;
+  inset-block: -0.5rem;
+}
+
+.handle[aria-orientation="vertical"] {
+  height: 100%;
+  width: 1px;
+}
+
+.handle[aria-orientation="vertical"]::after {
+  inset-block: 0;
+  inset-inline: -0.5rem;
+}
+
+/* No hover e no arrasto a linha engrossa com uma sombra, sem mudar o layout dos painéis. */
+.handle:focus-visible,
+.handle[data-separator="active"] {
+  background-color: var(--ring);
+  box-shadow: 0 0 0 1px var(--ring);
+}
+
+@media (hover: hover) {
+  .handle:hover {
+    background-color: var(--ring);
+    box-shadow: 0 0 0 1px var(--ring);
+  }
+}

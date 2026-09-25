@@ -1,0 +1,40 @@
+.fallback {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 2rem;
+  text-align: center;
+}
+
+.icon {
+  width: 3rem;
+  height: 3rem;
+  color: var(--destructive);
+}
+
+.title {
+  font-size: var(--text-xl);
+  line-height: var(--text-xl--line-height);
+  font-weight: 700;
+}
+
+.message {
+  max-width: 32rem;
+  font-size: var(--text-sm);
+  line-height: var(--text-sm--line-height);
+  color: var(--muted-foreground);
+}
+
+.link {
+  text-decoration-line: underline;
+}
+
+.error {
+  max-width: 32rem;
+  font-size: var(--text-xs);
+  line-height: var(--text-xs--line-height);
+  color: var(--muted-foreground);
+}

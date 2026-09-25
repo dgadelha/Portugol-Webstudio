@@ -1,0 +1,178 @@
+.content {
+  gap: 1.5rem;
+}
+
+@media (width >= 40rem) {
+  .content {
+    max-width: 28rem;
+  }
+}
+
+.header {
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
+  text-align: left;
+}
+
+.mark {
+  display: flex;
+  width: 3.5rem;
+  height: 3.5rem;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-xl);
+  border-width: 1px;
+  background-color: color-mix(in oklab, var(--muted) 40%, transparent);
+}
+
+.brandMark {
+  height: 2rem;
+}
+
+.heading {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.version {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  line-height: var(--text-xs--line-height);
+  color: var(--muted-foreground);
+  text-transform: uppercase;
+}
+
+.description {
+  line-height: 1.625;
+}
+
+.links {
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  border-width: 1px;
+}
+
+.links > :not(:last-child) {
+  border-bottom-width: 1px;
+}
+
+.githubIcon {
+  width: 1rem;
+  height: 1rem;
+}
+
+.githubIcon:where(:global(.dark) *) {
+  filter: invert(100%);
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: var(--text-xs);
+  line-height: var(--text-xs--line-height);
+  color: var(--muted-foreground);
+}
+
+.madeIn {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.heart {
+  width: 0.75rem;
+  height: 0.75rem;
+  fill: currentcolor;
+}
+
+.flag {
+  height: 0.75rem;
+}
+
+.link {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.625rem 0.75rem;
+  text-align: left;
+  transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke;
+  transition-timing-function: var(--ease);
+  transition-duration: var(--duration);
+  outline-style: none;
+}
+
+.link:focus-visible {
+  background-color: color-mix(in oklab, var(--accent) 60%, transparent);
+}
+
+.linkIcon {
+  display: flex;
+  width: 2rem;
+  height: 2rem;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  border-width: 1px;
+  background-color: var(--background);
+}
+
+.linkIcon svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.linkText {
+  display: grid;
+  min-width: 0;
+  flex: 1;
+  gap: 0.125rem;
+}
+
+.linkTitle {
+  font-size: var(--text-sm);
+  line-height: var(--text-sm--line-height);
+  font-weight: 500;
+}
+
+.linkDescription {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--text-xs);
+  line-height: var(--text-xs--line-height);
+  color: var(--muted-foreground);
+}
+
+.linkArrow {
+  width: 1rem;
+  height: 1rem;
+  color: var(--muted-foreground);
+  transition-property: transform, translate, scale, rotate;
+  transition-timing-function: var(--ease);
+  transition-duration: var(--duration);
+}
+
+@media (hover: hover) {
+  .link:hover {
+    background-color: color-mix(in oklab, var(--accent) 60%, transparent);
+  }
+
+  .link:hover .external {
+    translate: 0.125rem -0.125rem;
+  }
+
+  .link:hover .internal {
+    translate: 0.125rem 0;
+  }
+}

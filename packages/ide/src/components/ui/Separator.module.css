@@ -1,0 +1,14 @@
+.separator {
+  flex-shrink: 0;
+  background-color: var(--border);
+}
+
+.separator[data-orientation="horizontal"] {
+  height: 1px;
+  width: 100%;
+}
+
+.separator[data-orientation="vertical"] {
+  height: 100%;
+  width: 1px;
+}

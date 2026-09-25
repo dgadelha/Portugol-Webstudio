@@ -1,0 +1,16 @@
+.control {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.slider {
+  flex: 1;
+}
+
+.value {
+  width: 3rem;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}

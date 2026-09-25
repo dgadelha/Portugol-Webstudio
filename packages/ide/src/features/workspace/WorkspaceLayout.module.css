@@ -1,0 +1,30 @@
+.provider {
+  height: 100svh;
+}
+
+.inset {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.header {
+  display: flex;
+  height: 3rem;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 0.5rem;
+  border-bottom-width: 1px;
+  padding-inline: 0.75rem;
+}
+
+.trigger {
+  margin-left: -0.25rem;
+}
+
+.separator {
+  margin-right: 0.25rem;
+}
+
+.separator[data-orientation="vertical"] {
+  height: 1rem;
+}

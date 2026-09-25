@@ -1,0 +1,10 @@
+.mark {
+  display: inline-flex;
+  color: var(--brand);
+}
+
+.mark svg {
+  height: 100%;
+  width: auto;
+  fill: currentcolor;
+}

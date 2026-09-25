@@ -1,0 +1,125 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background-color: oklab(0 0 0 / 0.5);
+}
+
+.overlay[data-state="open"] {
+  animation: global(enter) 150ms ease;
+  --enter-opacity: 0;
+}
+
+.overlay[data-state="closed"] {
+  animation: global(exit) 150ms ease;
+  --exit-opacity: 0;
+}
+
+.content {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 50;
+  display: grid;
+  width: 100%;
+  max-width: calc(100% - 2rem);
+  translate: -50% -50%;
+  gap: 1rem;
+  border-radius: var(--radius-lg);
+  border-width: 1px;
+  background-color: var(--background);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-lg);
+  transition-duration: 200ms;
+  outline-style: none;
+}
+
+.content[data-state="open"] {
+  animation: global(enter) 200ms ease;
+  --enter-opacity: 0;
+  --enter-scale: 0.95;
+}
+
+.content[data-state="closed"] {
+  animation: global(exit) 200ms ease;
+  --exit-opacity: 0;
+  --exit-scale: 0.95;
+}
+
+@media (width >= 40rem) {
+  .content {
+    max-width: 32rem;
+  }
+}
+
+.close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  border-radius: var(--radius-xs);
+  opacity: 0.7;
+  transition-property: opacity;
+  transition-timing-function: var(--ease);
+  transition-duration: var(--duration);
+}
+
+.close svg {
+  pointer-events: none;
+  flex-shrink: 0;
+  width: 1rem;
+  height: 1rem;
+}
+
+.close:focus {
+  box-shadow:
+    0 0 0 2px var(--background),
+    0 0 0 4px var(--ring);
+  outline-style: none;
+}
+
+@media (forced-colors: active) {
+  .close:focus {
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+  }
+}
+
+.close:disabled {
+  pointer-events: none;
+}
+
+.close[data-state="open"] {
+  background-color: var(--accent);
+  color: var(--muted-foreground);
+}
+
+@media (hover: hover) {
+  .close:hover {
+    opacity: 1;
+  }
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  text-align: center;
+}
+
+@media (width >= 40rem) {
+  .header {
+    text-align: left;
+  }
+}
+
+.title {
+  font-size: var(--text-lg);
+  line-height: 1;
+  font-weight: 600;
+}
+
+.description {
+  font-size: var(--text-sm);
+  line-height: var(--text-sm--line-height);
+  color: var(--muted-foreground);
+}

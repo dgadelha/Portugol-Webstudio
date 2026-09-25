@@ -1,0 +1,115 @@
+.content {
+  z-index: 50;
+  max-height: var(--radix-dropdown-menu-content-available-height);
+  min-width: 8rem;
+  transform-origin: var(--radix-dropdown-menu-content-transform-origin);
+  overflow-x: hidden;
+  overflow-y: auto;
+  border-radius: var(--radius-md);
+  border-width: 1px;
+  background-color: var(--popover);
+  padding: 0.25rem;
+  color: var(--popover-foreground);
+  box-shadow: var(--shadow-md);
+}
+
+.content[data-side="bottom"] {
+  --enter-translate-y: -0.5rem;
+}
+
+.content[data-side="left"] {
+  --enter-translate-x: 0.5rem;
+}
+
+.content[data-side="right"] {
+  --enter-translate-x: -0.5rem;
+}
+
+.content[data-side="top"] {
+  --enter-translate-y: 0.5rem;
+}
+
+.content[data-state="closed"] {
+  animation: global(exit) 150ms ease;
+  --exit-opacity: 0;
+  --exit-scale: 0.95;
+}
+
+.content[data-state="open"] {
+  animation: global(enter) 150ms ease;
+  --enter-opacity: 0;
+  --enter-scale: 0.95;
+}
+
+.item {
+  position: relative;
+  display: flex;
+  cursor: default;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: var(--radius-sm);
+  padding: 0.375rem 0.5rem;
+  font-size: var(--text-sm);
+  line-height: var(--text-sm--line-height);
+  outline-style: none;
+  user-select: none;
+}
+
+@media (forced-colors: active) {
+  .item {
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+  }
+}
+
+.item:focus {
+  background-color: var(--accent);
+  color: var(--accent-foreground);
+}
+
+.item[data-disabled] {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.item svg {
+  pointer-events: none;
+  flex-shrink: 0;
+}
+
+/* Ícones sem tamanho nem cor próprios. */
+.item :where(svg) {
+  width: 1rem;
+  height: 1rem;
+  color: var(--muted-foreground);
+}
+
+.destructive {
+  color: var(--destructive);
+}
+
+.destructive:focus {
+  background-color: color-mix(in oklab, var(--destructive) 10%, transparent);
+  color: var(--destructive);
+}
+
+.destructive:where(:global(.dark) *):focus {
+  background-color: color-mix(in oklab, var(--destructive) 20%, transparent);
+}
+
+.destructive > svg {
+  color: var(--destructive) !important;
+}
+
+.label {
+  padding: 0.375rem 0.5rem;
+  font-size: var(--text-sm);
+  line-height: var(--text-sm--line-height);
+  font-weight: 500;
+}
+
+.separator {
+  margin: 0.25rem -0.25rem;
+  height: 1px;
+  background-color: var(--border);
+}

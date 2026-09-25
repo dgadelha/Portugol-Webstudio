@@ -1,0 +1,39 @@
+.scroll {
+  height: 100%;
+}
+
+.markdown {
+  margin-inline: auto;
+  max-width: 48rem;
+  padding: 1.5rem;
+}
+
+.page {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+}
+
+.notice {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-bottom-width: 1px;
+  background-color: color-mix(in oklab, var(--muted) 50%, transparent);
+  padding: 0.5rem 1rem;
+  font-size: var(--text-xs);
+  line-height: var(--text-xs--line-height);
+  color: var(--muted-foreground);
+}
+
+.noticeIcon {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+}
+
+.frame {
+  display: block;
+  flex: 1;
+  border-width: 0;
+}

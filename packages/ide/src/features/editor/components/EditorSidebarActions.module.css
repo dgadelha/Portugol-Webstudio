@@ -1,0 +1,28 @@
+/*
+ * Com a sidebar recolhida, Executar e Parar dividem um mesmo fundo: uma pílula vertical da
+ * largura dos ícones. Aberta, são botões comuns.
+ */
+[data-collapsible="icon"] .runMenu {
+  gap: 0;
+  border-radius: var(--radius-lg);
+  background-color: color-mix(in oklab, var(--sidebar-accent) 60%, transparent);
+}
+
+.filled {
+  fill: currentcolor;
+}
+
+.saveAsMenu {
+  width: 18rem;
+}
+
+.brandMark {
+  width: 1rem;
+  height: 1rem;
+  justify-content: center;
+}
+
+.brandMark svg {
+  width: 1rem;
+  height: 1rem;
+}

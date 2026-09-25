@@ -1,0 +1,9 @@
+.scroll {
+  height: 100%;
+}
+
+.content {
+  margin-inline: auto;
+  max-width: 42rem;
+  padding: 2.5rem 1.5rem;
+}

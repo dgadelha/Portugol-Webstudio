@@ -1,0 +1,425 @@
+.wrapper {
+  display: flex;
+  min-height: 100svh;
+  width: 100%;
+}
+
+/* Desktop */
+
+.sidebar {
+  display: none;
+  color: var(--sidebar-foreground);
+}
+
+@media (width >= 48rem) {
+  .sidebar {
+    display: block;
+  }
+}
+
+.gap {
+  position: relative;
+  width: var(--sidebar-width);
+  background-color: transparent;
+  transition-property: width;
+  transition-timing-function: linear;
+  transition-duration: 200ms;
+}
+
+.container {
+  position: fixed;
+  inset-block: 0;
+  left: 0;
+  z-index: 10;
+  display: none;
+  height: 100svh;
+  width: var(--sidebar-width);
+  border-right-width: 1px;
+  transition-property: left, right, width;
+  transition-timing-function: linear;
+  transition-duration: 200ms;
+}
+
+@media (width >= 48rem) {
+  .container {
+    display: flex;
+  }
+}
+
+[data-collapsible="icon"] > .gap,
+[data-collapsible="icon"] > .container {
+  width: var(--sidebar-width-icon);
+}
+
+.inner {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  flex-direction: column;
+  background-color: var(--sidebar);
+}
+
+/* Celular: gaveta */
+
+.sheetOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background-color: oklab(0 0 0 / 0.5);
+}
+
+.sheetOverlay[data-state="open"] {
+  animation: global(enter) 150ms ease;
+  --enter-opacity: 0;
+}
+
+.sheetOverlay[data-state="closed"] {
+  animation: global(exit) 150ms ease;
+  --exit-opacity: 0;
+}
+
+.sheet {
+  position: fixed;
+  inset-block: 0;
+  left: 0;
+  z-index: 50;
+  display: flex;
+  height: 100%;
+  width: var(--sidebar-width);
+  flex-direction: column;
+  gap: 1rem;
+  border-right-width: 1px;
+  background-color: var(--sidebar);
+  padding: 0;
+  color: var(--sidebar-foreground);
+  box-shadow: var(--shadow-lg);
+  transition-property:
+    color,
+    background-color,
+    border-color,
+    outline-color,
+    text-decoration-color,
+    fill,
+    stroke,
+    opacity,
+    box-shadow,
+    transform,
+    translate,
+    scale,
+    rotate,
+    filter,
+    -webkit-backdrop-filter,
+    backdrop-filter,
+    display,
+    content-visibility,
+    overlay,
+    pointer-events;
+  transition-timing-function: var(--ease);
+  transition-duration: var(--duration);
+}
+
+.sheet[data-state="closed"] {
+  animation: global(exit) 300ms var(--ease);
+  transition-duration: 300ms;
+  --exit-translate-x: -100%;
+}
+
+.sheet[data-state="open"] {
+  animation: global(enter) 500ms var(--ease);
+  transition-duration: 500ms;
+  --enter-translate-x: -100%;
+}
+
+@media (width >= 40rem) {
+  .sheet {
+    max-width: 24rem;
+  }
+}
+
+/* Título e descrição só para leitores de tela. */
+.sheetHeader {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  padding: 1rem;
+}
+
+.sheetTitle {
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.sheetDescription {
+  font-size: var(--text-sm);
+  line-height: var(--text-sm--line-height);
+  color: var(--muted-foreground);
+}
+
+.sheetBody {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  flex-direction: column;
+}
+
+/* Partes */
+
+.trigger {
+  width: 1.75rem;
+  height: 1.75rem;
+}
+
+.inset {
+  position: relative;
+  display: flex;
+  width: 100%;
+  flex: 1;
+  flex-direction: column;
+  background-color: var(--background);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.5rem;
+}
+
+.content {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.5rem;
+  overflow: auto;
+}
+
+[data-collapsible="icon"] .content {
+  overflow: hidden;
+}
+
+.group {
+  position: relative;
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  flex-direction: column;
+  padding: 0.5rem;
+}
+
+.groupLabel {
+  display: flex;
+  height: 2rem;
+  flex-shrink: 0;
+  align-items: center;
+  border-radius: var(--radius-md);
+  padding-inline: 0.5rem;
+  font-size: var(--text-xs);
+  line-height: var(--text-xs--line-height);
+  font-weight: 500;
+  color: color-mix(in oklab, var(--sidebar-foreground) 70%, transparent);
+  outline-style: none;
+  transition-property: margin, opacity;
+  transition-timing-function: linear;
+  transition-duration: 200ms;
+}
+
+[data-collapsible="icon"] .groupLabel {
+  margin-top: -2rem;
+  opacity: 0;
+}
+
+.menu {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.menuItem {
+  position: relative;
+}
+
+.menuButton {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 0.5rem;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  padding: 0.5rem;
+  text-align: left;
+  font-size: var(--text-sm);
+  line-height: var(--text-sm--line-height);
+  outline-style: none;
+  transition-property: width, height, padding;
+  transition-timing-function: var(--ease);
+  transition-duration: var(--duration);
+}
+
+@media (forced-colors: active) {
+  .menuButton {
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+  }
+}
+
+.menuButton > svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.menuButton > span:last-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.menuButtonDefault {
+  height: 2.5rem;
+}
+
+.menuButtonLg {
+  height: 3rem;
+}
+
+.menuItem:has([data-sidebar="menu-action"]) > .menuButton {
+  padding-right: 2rem;
+}
+
+.menuButton:focus-visible {
+  box-shadow: 0 0 0 2px var(--sidebar-ring);
+}
+
+.menuButton:active,
+.menuButton[data-active="true"] {
+  background-color: var(--sidebar-accent);
+  color: var(--sidebar-accent-foreground);
+}
+
+.menuButton[data-active="true"] {
+  font-weight: 500;
+}
+
+.menuButton:disabled,
+.menuButton[aria-disabled="true"] {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+@media (hover: hover) {
+  .menuButton:hover {
+    background-color: var(--sidebar-accent);
+    color: var(--sidebar-accent-foreground);
+  }
+}
+
+/* Recolhida: só o ícone, centralizado num quadrado; o texto fica para leitores de tela. */
+[data-collapsible="icon"] .menuButton {
+  width: 2.5rem !important;
+  height: 2.5rem !important;
+  justify-content: center;
+  padding: 0 !important;
+}
+
+[data-collapsible="icon"] .menuButton > span:not(:first-child) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.menuAction {
+  position: absolute;
+  top: 0.375rem;
+  right: 0.25rem;
+  display: flex;
+  aspect-ratio: 1 / 1;
+  width: 1.25rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  padding: 0;
+  color: var(--sidebar-foreground);
+  outline-style: none;
+  transition-property: transform, translate, scale, rotate;
+  transition-timing-function: var(--ease);
+  transition-duration: var(--duration);
+}
+
+@media (forced-colors: active) {
+  .menuAction {
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+  }
+}
+
+.menuAction > svg {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+}
+
+/* Área de toque maior no celular. */
+.menuAction::after {
+  content: "";
+  position: absolute;
+  inset: -0.5rem;
+}
+
+.menuAction:focus-visible {
+  box-shadow: 0 0 0 2px var(--sidebar-ring);
+}
+
+.menuButton[data-active="true"] ~ .menuAction {
+  color: var(--sidebar-accent-foreground);
+}
+
+.menuItem:focus-within > .menuAction,
+.menuAction[data-state="open"] {
+  opacity: 1;
+}
+
+[data-collapsible="icon"] .menuAction {
+  display: none;
+}
+
+@media (hover: hover) {
+  .menuButton:hover ~ .menuAction,
+  .menuAction:hover {
+    color: var(--sidebar-accent-foreground);
+  }
+
+  .menuAction:hover {
+    background-color: var(--sidebar-accent);
+  }
+
+  .menuItem:hover > .menuAction {
+    opacity: 1;
+  }
+}
+
+@media (width >= 48rem) {
+  .menuAction {
+    opacity: 0;
+  }
+
+  .menuAction::after {
+    display: none;
+  }
+}
