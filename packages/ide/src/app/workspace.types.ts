@@ -50,6 +50,8 @@ export const DEFAULT_CODE = `programa {\n  funcao inicio() {\n    \n  }\n}\n`;
 
 export const DEFAULT_TAB_TITLE = "Sem título";
 
+let fallbackIdCounter = 0;
+
 /**
  * Código que vale a pena guardar: nem vazio, nem o esqueleto que toda aba nova
  * já vem preenchida.
@@ -61,5 +63,10 @@ export function isMeaningfulCode(contents: string) {
 }
 
 export function randomId(): string {
-  return globalThis.crypto?.randomUUID?.() ?? `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
+  if (globalThis.crypto?.randomUUID) {
+    return globalThis.crypto.randomUUID();
+  }
+
+  fallbackIdCounter += 1;
+  return `${Date.now().toString(36)}-${fallbackIdCounter.toString(36)}`;
 }
