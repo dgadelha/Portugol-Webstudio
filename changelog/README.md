@@ -8,7 +8,7 @@ Para registrar a sua mudança, rode:
 npm run changelog:entry
 ```
 
-O comando cria um arquivo com a data e a hora no nome, como `changelog/20260927181300.md`. Escreva nele o texto da mudança, pensando em quem usa a IDE (estudantes e professores), sem jargão técnico. Se quiser, termine com o seu usuário do GitHub e o link do PR, como nas outras entradas:
+O comando cria um arquivo com a data e a hora no nome, como `changelog/2026-09-27-18-13-00.md`. Escreva nele o texto da mudança, pensando em quem usa a IDE (estudantes e professores), sem jargão técnico. Se quiser, termine com o seu usuário do GitHub e o link do PR, como nas outras entradas:
 
 ```md
 Contribuição de [@usuario](https://github.com/usuario). [Mais detalhes](link do PR)
