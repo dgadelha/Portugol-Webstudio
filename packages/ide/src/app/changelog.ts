@@ -1,12 +1,12 @@
-import changelogSource from "../../../../CHANGELOG.md";
+import changelogSource from "./changelog.gerado.md";
 
 /**
  * Seções do `CHANGELOG.md` da raiz do repositório, embutido no build: funciona offline e não precisa de carregamento.
- * A seção `## BETA` só existe no build do beta, montada a partir de `changelog/` com o que ainda não chegou na main.
+ * O `changelog.gerado.md` é gerado antes do `start` e do `release` (ver `package.json`), com uma seção `## BETA` a
+ * mais para o que está em `changelog/` e ainda não chegou na main.
  */
 const sections = changelogSource
   .split(/^(?=## )/m)
-  .filter(section => !/^## BETA\s*$/.test(section))
   .map(section => section.replace(/^## BETA$/m, "## Em teste na versão beta"));
 
 export const CHANGELOG = sections.join("");

@@ -3,16 +3,19 @@
 // deploy.
 //
 //   node .github/scripts/changelog.mjs new       cria `changelog/<data e hora>.md` para o texto de uma mudança
-//   node .github/scripts/changelog.mjs beta      coloca as mudanças numa seção `## BETA` no topo, para o build do beta
-//                                                (sem commit: os arquivos continuam em `changelog/`)
+//   node .github/scripts/changelog.mjs beta <arquivo>
+//                                                grava em <arquivo> o CHANGELOG.md com as mudanças numa seção `## BETA`
+//                                                no topo, para o build da IDE. Sem mudanças pendentes, como na main
+//                                                depois do `release`, grava o CHANGELOG.md como está
 //   node .github/scripts/changelog.mjs release   junta as mudanças numa seção com a data de hoje (horário de Brasília)
 //                                                e apaga os arquivos. Se já existe uma seção com a data de hoje, as
 //                                                mudanças novas entram no topo dela
 import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
-const FILE = "CHANGELOG.md";
-const DIR = "changelog";
+const ROOT = path.resolve(import.meta.dirname, "../..");
+const FILE = path.join(ROOT, "CHANGELOG.md");
+const DIR = path.join(ROOT, "changelog");
 const BETA_HEADING = "## BETA\n";
 const SEPARATOR = "\n\n---\n\n";
 
@@ -73,8 +76,8 @@ function readChangelog() {
   return { sections, legacyBeta };
 }
 
-function writeChangelog(sections) {
-  writeFileSync(FILE, `${sections.join("").trimEnd()}\n`);
+function writeChangelog(sections, file = FILE) {
+  writeFileSync(file, `${sections.join("").trimEnd()}\n`);
 }
 
 function pendingChanges() {
@@ -103,20 +106,24 @@ function newEntry() {
 
   mkdirSync(DIR, { recursive: true });
   writeFileSync(file, TEMPLATE);
-  console.log(`Created ${file}`);
+  console.log(`Created ${path.relative(process.cwd(), file)}`);
 }
 
-function beta() {
-  const { sections, text, insertAt } = pendingChanges();
-
-  if (!text) {
-    console.log("No pending changelog entries");
-    return;
+function beta(output) {
+  if (!output) {
+    throw new Error("Missing the output file");
   }
 
-  console.log("Adding the pending changelog entries to a BETA section");
-  sections.splice(insertAt, 0, `${BETA_HEADING}\n${text}\n\n`);
-  writeChangelog(sections);
+  const { sections, text, insertAt } = pendingChanges();
+
+  if (text) {
+    console.log(`Writing ${output} with the pending changelog entries in a BETA section`);
+    sections.splice(insertAt, 0, `${BETA_HEADING}\n${text}\n\n`);
+  } else {
+    console.log(`Writing ${output} without pending changelog entries`);
+  }
+
+  writeChangelog(sections, output);
 }
 
 function release() {
@@ -154,4 +161,4 @@ if (!command) {
   process.exit(1);
 }
 
-command();
+command(process.argv[3]);

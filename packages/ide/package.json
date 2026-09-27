@@ -23,8 +23,12 @@
   },
   "homepage": "https://github.com/dgadelha/Portugol-Webstudio#readme",
   "scripts": {
+    "changelog": "node ../../.github/scripts/changelog.mjs beta src/app/changelog.gerado.md",
+    "prestart": "npm run changelog",
     "start": "ng serve",
+    "prerelease": "npm run changelog",
     "release": "ng build",
+    "prewatch": "npm run changelog",
     "watch": "ng build --watch --configuration development",
     "lint": "ng lint",
     "typecheck": "tsc -p tsconfig.spec.json --noEmit"
