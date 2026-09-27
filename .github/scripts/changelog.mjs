@@ -95,7 +95,7 @@ function pendingChanges() {
 
 function newEntry() {
   const { year, month, day, hour, minute, second } = nowInBrasília();
-  const file = path.join(DIR, `${year}${month}${day}${hour}${minute}${second}.md`);
+  const file = path.join(DIR, `${year}-${month}-${day}-${hour}-${minute}-${second}.md`);
 
   if (existsSync(file)) {
     throw new Error(`${file} already exists, try again in a second`);
