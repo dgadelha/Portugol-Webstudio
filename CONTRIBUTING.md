@@ -73,6 +73,6 @@ npm test
 
    Para corrigir a formatação automaticamente, use `npm run format`.
 
-2. Registre a sua mudança no [`CHANGELOG.md`](CHANGELOG.md): escreva na seção `## BETA` do topo, pensando em quem usa a IDE (estudantes e professores), sem jargão técnico. Se a seção já tiver outras mudanças, coloque a sua no topo dela e separe da anterior com uma linha `---`. Não troque `BETA` por uma data: isso é feito automaticamente quando a versão beta chega na versão estável.
+2. Registre a sua mudança com `npm run changelog:entry`, que cria um arquivo em [`changelog/`](changelog/README.md) para você escrever o texto, pensando em quem usa a IDE (estudantes e professores), sem jargão técnico. Não edite o `CHANGELOG.md`: quando a versão beta chega na versão estável, os arquivos de `changelog/` são juntados nele automaticamente.
 
 3. Abra o pull request para a branch **`beta`**. As mudanças passam primeiro pela versão beta ([beta.portugol.dev](https://beta.portugol.dev/)) antes de chegarem a todos em [portugol.dev](https://portugol.dev/).

@@ -3,35 +3,13 @@
 <!--
 Obrigado por contribuir com o Portugol Webstudio!
 
-Para registrar a sua mudança:
+Não edite este arquivo para registrar a sua mudança: crie um arquivo em `changelog/`, com `npm run changelog:entry`.
+Veja como em `changelog/README.md`.
 
-1. Escreva na seção `## BETA` logo abaixo, pensando em quem usa o IDE: estudantes e professores, sem jargão técnico.
-2. Se a seção `## BETA` já tiver outras mudanças, coloque a sua no topo dela e separe da anterior com uma linha `---`.
-3. Se quiser, termine com o seu usuário do GitHub e o link do PR, como nas outras entradas:
-   "Contribuição de [@usuario](https://github.com/usuario). [Mais detalhes](link do PR)"
-
-Não troque `BETA` por uma data: quando o beta chega na main, o deploy coloca a data do dia e deixa uma nova seção `## BETA` vazia no topo.
+Quando o beta chega na main, o deploy junta os arquivos de `changelog/` aqui, numa seção com a data do dia.
 -->
 
 As mudanças mais recentes do Portugol Webstudio aparecem primeiro.
-
-## BETA
-
-Novas opções do editor em Configurações:
-
-- Tamanho da tabulação (2, 4 ou 8) e indentação com espaços ou tabulações, que o programa de uma aba nova também segue
-- Números das linhas: exibir, relativos à linha atual ou ocultar
-- Minimapa, cores nos pares de chaves e parênteses, e guias de indentação podem ser desligados
-- Espaços em branco podem ser exibidos como pontos: nunca, só no texto selecionado ou sempre
-- Fechamento automático de chaves, parênteses e aspas pode ser desligado
-- Estilo do cursor: linha, bloco ou sublinhado
-
-Novas opções da saída do programa em Configurações:
-
-- Tamanho da fonte próprio, que até ser alterado acompanha o do editor
-- As linhas longas agora sempre quebram, mesmo com a quebra de linha do editor desativada
-- A saída de cada execução pode ficar abaixo da anterior, em vez de ser apagada
-- A saída pode parar de rolar sozinha até o fim, exceto quando o programa espera o que você vai digitar
 
 ## 24/09/2026
 
