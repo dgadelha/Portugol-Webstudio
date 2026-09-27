@@ -20,6 +20,9 @@ jobs:
       - name: Install dependencies 🔧
         run: npm ci --include=dev
 
+      - name: Add the pending changelog entries 📝
+        run: node .github/scripts/changelog.mjs beta
+
       - name: Build code 🚚
         run: npm run build
 

@@ -22,15 +22,16 @@ jobs:
 
       - name: Date the beta changelog 📅
         run: |
-          node .github/scripts/date-beta-changelog.mjs
+          node .github/scripts/changelog.mjs release
 
-          if git diff --quiet CHANGELOG.md; then
+          if [ -z "$(git status --porcelain -- CHANGELOG.md changelog)" ]; then
             exit 0
           fi
 
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -am "Atualizar data do changelog"
+          git add -A -- CHANGELOG.md changelog
+          git commit -m "Atualizar data do changelog"
           git push origin HEAD:main
 
       - name: Install dependencies 🔧

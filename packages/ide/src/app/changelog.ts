@@ -2,7 +2,7 @@ import changelogSource from "../../../../CHANGELOG.md";
 
 /**
  * Seções do `CHANGELOG.md` da raiz do repositório, embutido no build: funciona offline e não precisa de carregamento.
- * A seção `## BETA` guarda o que ainda não chegou na main e fica vazia no resto do tempo, quando não aparece.
+ * A seção `## BETA` só existe no build do beta, montada a partir de `changelog/` com o que ainda não chegou na main.
  */
 const sections = changelogSource
   .split(/^(?=## )/m)
