@@ -15,3 +15,5 @@ Contribuição de [@usuario](https://github.com/usuario). [Mais detalhes](link d
 ```
 
 Não precisa colocar título, data nem a linha `---` que separa as mudanças: isso é feito automaticamente. A versão beta ([beta.portugol.dev](https://beta.portugol.dev/)) mostra os arquivos desta pasta, e quando o beta chega na versão estável eles são juntados no `CHANGELOG.md`, numa seção com a data do dia, e apagados daqui.
+
+Para ver a sua mudança na IDE rodando localmente, reinicie o `npm start`: as mudanças desta pasta são lidas quando ele começa.

@@ -14,3 +14,4 @@ packages/parser/tests/fixtures/
 packages/resources/assets/
 packages/resources/recursos.temp/
 packages/ide/src/index.html
+packages/ide/src/app/changelog.gerado.md
