@@ -331,7 +331,8 @@ export class AnalisadorSemântico {
    * Espelha o `AnalisadorStringInvalida` do Portugol Studio: uma barra invertida numa cadeia
    * só pode vir antes de t, n, b, r, f, aspas ou outra barra. Como o `VisitanteNulo` dele,
    * não olha o operando do `nao` e do `~`, os índices e o incremento do `para`. Ele também
-   * pula os literais de vetor e matriz, mas ali é o javac que recusa o código gerado.
+   * pula os literais de vetor e matriz, mas por descuido do visitante (no de vetor, é o javac
+   * que acaba recusando o código gerado); aqui eles são verificados como qualquer cadeia.
    */
   private verificarEscapes(nó: Node, pai?: Node) {
     const ignorado = nó instanceof NegaçãoExpr || nó instanceof NegaçãoBitwiseExpr || nó instanceof ÍndiceArrayExpr;

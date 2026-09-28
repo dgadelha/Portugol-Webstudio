@@ -187,4 +187,28 @@ describe("Estrutura do programa", () => {
       ]
     `);
   });
+
+  test("barra invertida sozinha nos literais de vetor e matriz, e onde o Portugol Studio não olha", () => {
+    expect(
+      analisar(portugol`
+        programa {
+          funcao inicio() {
+            cadeia v[] = {"\\_"}
+            cadeia m[][] = {{"\\_"}}
+            escreva("\\'", "\\u0041")
+            logico l = nao ("C:\\pasta" == "")
+            para (inteiro i = ~tam("\\_"); i < tam(v[tam("\\_")]); i += tam("\\_")) {}
+          }
+          funcao inteiro tam(cadeia c) { retorne 0 }
+        }
+      `).map(diagnóstico => `${diagnóstico.startLine}: ${diagnóstico.code}`),
+    ).toMatchInlineSnapshot(`
+      [
+        "3: ErroSintatico.ErroEscapeUnico",
+        "4: ErroSintatico.ErroEscapeUnico",
+        "5: ErroSintatico.ErroEscapeUnico",
+        "5: ErroSintatico.ErroEscapeUnico",
+      ]
+    `);
+  });
 });
