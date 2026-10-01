@@ -167,4 +167,48 @@ describe("Estrutura do programa", () => {
       ).toMatchInlineSnapshot(`[]`);
     });
   });
+
+  test("barra invertida sozinha numa cadeia", () => {
+    expect(
+      analisar(portugol`
+        programa {
+          funcao inicio() {
+            escreva(" /\\_/\\ ")
+            escreva("C:\\\\aluno\\t\\"ok\\"\\n")
+          }
+        }
+      `),
+    ).toMatchInlineSnapshot(`
+      [
+        3:12/3:20 E [ErroSintatico.ErroEscapeUnico]: Variáveis do tipo cadeias e caracter com o símbolo '\\' devem utiliza-lo como: '\\\\'.
+      Isso se deve ao símbolo '\\' ser utilizado em casos como '\\t' e '\\n' onde ele passa por uma reinterpretação do seu significado, se tornando uma tabulação e um pular linha respectivamente,
+        3:12/3:20 E [ErroSintatico.ErroEscapeUnico]: Variáveis do tipo cadeias e caracter com o símbolo '\\' devem utiliza-lo como: '\\\\'.
+      Isso se deve ao símbolo '\\' ser utilizado em casos como '\\t' e '\\n' onde ele passa por uma reinterpretação do seu significado, se tornando uma tabulação e um pular linha respectivamente,
+      ]
+    `);
+  });
+
+  test("barra invertida sozinha nos literais de vetor e matriz, e onde o Portugol Studio não olha", () => {
+    expect(
+      analisar(portugol`
+        programa {
+          funcao inicio() {
+            cadeia v[] = {"\\_"}
+            cadeia m[][] = {{"\\_"}}
+            escreva("\\'", "\\u0041")
+            logico l = nao ("C:\\pasta" == "")
+            para (inteiro i = ~tam("\\_"); i < tam(v[tam("\\_")]); i += tam("\\_")) {}
+          }
+          funcao inteiro tam(cadeia c) { retorne 0 }
+        }
+      `).map(diagnóstico => `${diagnóstico.startLine}: ${diagnóstico.code}`),
+    ).toMatchInlineSnapshot(`
+      [
+        "3: ErroSintatico.ErroEscapeUnico",
+        "4: ErroSintatico.ErroEscapeUnico",
+        "5: ErroSintatico.ErroEscapeUnico",
+        "5: ErroSintatico.ErroEscapeUnico",
+      ]
+    `);
+  });
 });

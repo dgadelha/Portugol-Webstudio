@@ -58,6 +58,17 @@ describe("Literais", () => {
       ).resolves.toBe('[a\nb][a\tb][a\\b][a"b]');
     });
 
+    // Dentro do `nao` a análise não aponta a barra sozinha, como no Portugol Studio
+    test("Mantém a barra das sequências desconhecidas", async () => {
+      await expect(
+        runPortugolCode(
+          portugolInicio`
+            escreva("C:\\\\novo|", nao ("C:\\pasta" == "C:\\\\pasta"), "|", nao ("\\x" == "x"))
+          `,
+        ),
+      ).resolves.toBe("C:\\novo|falso|verdadeiro");
+    });
+
     test("Aceita acentuação", async () => {
       await expect(
         runPortugolCode(

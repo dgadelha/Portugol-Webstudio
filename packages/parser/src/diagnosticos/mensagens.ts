@@ -350,6 +350,14 @@ export function erroParaSemExpressãoComparação(origem: Origem): PortugolCodeD
   );
 }
 
+export function erroEscapeÚnico(origem: Origem): PortugolCodeDiagnostic {
+  return erro(
+    origem,
+    "Variáveis do tipo cadeias e caracter com o símbolo '\\' devem utiliza-lo como: '\\\\'.\nIsso se deve ao símbolo '\\' ser utilizado em casos como '\\t' e '\\n' onde ele passa por uma reinterpretação do seu significado, se tornando uma tabulação e um pular linha respectivamente",
+    CÓDIGOS.ESCAPE_UNICO,
+  );
+}
+
 export function erroPareForaDeLaço(origem: Origem): PortugolCodeDiagnostic {
   return erro(
     origem,

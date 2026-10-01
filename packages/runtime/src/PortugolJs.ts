@@ -83,6 +83,9 @@ import { AbstractParseTreeVisitor, CharStream, CommonTokenStream, ParserRuleCont
 
 import { StringBuilder } from "./utils/StringBuilder.js";
 
+// As sequências de escape que o Portugol Studio traduz numa cadeia. Nas demais, a barra fica
+const ESCAPES: Record<string, string> = { t: "\t", n: "\n", b: "\b", r: "\r", f: "\f", '"': '"', "'": "'", "\\": "\\" };
+
 export class PortugolJs extends AbstractParseTreeVisitor<string> implements PortugolVisitor<string> {
   static thrown: Record<string, boolean> = {};
 
@@ -918,8 +921,15 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
   visitString(ctx: StringContext) {
     const sb = new StringBuilder();
 
+    // Uma varredura só, da esquerda para a direita, para que "C:\\novo" não vire uma quebra de linha
+    const valor = ctx
+      .STRING()
+      .getText()
+      .slice(1, -1)
+      .replaceAll(/\\(.)/gsu, (sequência, caractere: string) => ESCAPES[caractere] ?? sequência);
+
     sb.append(this.DEBUG(`visitString`, ctx));
-    sb.append(this.PAD(), `new PortugolVar("cadeia", ${ctx.STRING().getText()})`, `\n`);
+    sb.append(this.PAD(), `new PortugolVar("cadeia", ${JSON.stringify(valor)})`, `\n`);
 
     return sb.toString();
   }
