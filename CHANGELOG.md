@@ -11,6 +11,10 @@ Quando o beta chega na main, o deploy junta os arquivos de `changelog/` aqui, nu
 
 As mudanças mais recentes do Portugol Webstudio aparecem primeiro.
 
+## 02/10/2026
+
+Uma barra invertida `\` sozinha dentro de um texto agora é apontada como erro, como no Portugol Studio, com a dica de escrever `\\` para mostrar a barra. Antes, a barra sumia do que era escrito na tela, o que estragava desenhos como `/\_/\`. Contribuição de [@kwy404](https://github.com/kwy404). [Mais detalhes](https://github.com/dgadelha/Portugol-Webstudio/pull/451)
+
 ## 28/09/2026
 
 Uma função que chama a si mesma sem parar agora mostra o erro de estouro de pilha do Portugol Studio, em vez de uma mensagem técnica em inglês. Contribuição de [@kwy404](https://github.com/kwy404). [Mais detalhes](https://github.com/dgadelha/Portugol-Webstudio/pull/452)
