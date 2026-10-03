@@ -1,14 +1,17 @@
 <div class="field inline">
   <div class="field-text">
     <span id="setting-tabs-confirm-close" class="field-label">Confirmar ao fechar</span>
-    <p class="field-description">
+    <p id="setting-tabs-confirm-close-descricao" class="field-description">
       Pergunta antes de fechar uma aba com código. Abas vazias ou só com o modelo inicial fecham direto.
     </p>
   </div>
 
-  <mat-slide-toggle
+  <input
+    type="checkbox"
+    role="switch"
+    class="switch"
     aria-labelledby="setting-tabs-confirm-close"
-    color="primary"
+    aria-describedby="setting-tabs-confirm-close-descricao"
     [(ngModel)]="interfaceConfirmCloseTab"
   />
 </div>
@@ -16,13 +19,20 @@
 <div class="field inline">
   <div class="field-text">
     <span id="setting-tabs-reopen" class="field-label">Reabrir as abas da última janela</span>
-    <p class="field-description">
+    <p id="setting-tabs-reopen-descricao" class="field-description">
       Uma janela nova começa com o código da última fechada. Desativado, ela começa vazia e esse código fica em "Código
       de sessões anteriores", na aba inicial, para restaurar quando quiser.
     </p>
   </div>
 
-  <mat-slide-toggle aria-labelledby="setting-tabs-reopen" color="primary" [(ngModel)]="interfaceReopenTabs" />
+  <input
+    type="checkbox"
+    role="switch"
+    class="switch"
+    aria-labelledby="setting-tabs-reopen"
+    aria-describedby="setting-tabs-reopen-descricao"
+    [(ngModel)]="interfaceReopenTabs"
+  />
 </div>
 
 <p class="field-note">

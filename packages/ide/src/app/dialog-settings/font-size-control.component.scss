@@ -4,44 +4,24 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
-
-  mat-slider {
-    flex-grow: 1;
-    min-width: 0;
-    margin: 0;
-  }
 }
 
-.font-size-step {
-  --mat-button-outlined-container-shape: 0.375rem;
-  --mat-button-outlined-outline-color: var(--pws-border-color);
-  --mat-button-outlined-label-text-color: var(--pws-body-color);
-  --mat-button-outlined-horizontal-padding: 0;
-
-  min-width: 2rem;
-  width: 2rem;
-  height: 2rem;
-  padding: 0;
-
-  svg-icon {
-    width: 1rem;
-    height: 1rem;
-  }
+.range {
+  flex-grow: 1;
+  min-width: 0;
 }
 
-.font-size-value {
-  display: flex;
-  justify-content: center;
+.step {
+  border: 1px solid var(--pws-border-control);
+}
+
+.value {
   flex-shrink: 0;
   width: 3rem;
   padding: 0.125rem 0;
-  border-radius: 0.375rem;
-  background-color: rgba(var(--pws-body-color-rgb), 0.1);
-  font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace;
-  font-size: 0.75rem;
-  font-variant-numeric: tabular-nums;
-}
-
-svg-icon {
-  display: flex;
+  border-radius: var(--pws-radius-sm);
+  background-color: var(--pws-bg-input);
+  font-family: var(--pws-font-mono);
+  font-size: var(--pws-text-sm);
+  text-align: center;
 }

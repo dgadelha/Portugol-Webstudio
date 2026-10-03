@@ -1,5 +1,5 @@
 <nav class="nav" aria-label="Seções das configurações">
-  <h2 class="title" mat-dialog-title>Configurações</h2>
+  <h2 id="dialogo-configuracoes-titulo" class="title">Configurações</h2>
 
   <div class="sections">
     @for (item of sections; track item.id) {
@@ -7,9 +7,10 @@
         type="button"
         class="section"
         [attr.aria-current]="item.id === section().id ? 'page' : null"
+        [attr.cdkFocusInitial]="item.id === section().id ? '' : null"
         (click)="sectionId.set(item.id)"
       >
-        <svg-icon aria-hidden="true" focusable="false" [src]="item.icon" />
+        <svg-icon aria-hidden="true" [src]="item.icon" />
         {{ item.label }}
       </button>
     }
@@ -21,8 +22,8 @@
     <h3>{{ section().label }}</h3>
     <p>{{ section().description }}</p>
 
-    <button class="close" type="button" mat-dialog-close mat-icon-button aria-label="Fechar diálogo">
-      <svg-icon src="assets/mdi/close.svg" aria-hidden="true" focusable="false" />
+    <button type="button" class="icon-btn close" aria-label="Fechar" appTooltip="Fechar" (click)="dialogRef.close()">
+      <svg-icon src="assets/mdi/close.svg" aria-hidden="true" />
     </button>
   </header>
 
@@ -32,12 +33,12 @@
 
   <footer class="footer">
     <span class="saved">
-      <svg-icon src="assets/mdi/check.svg" aria-hidden="true" focusable="false" />
+      <svg-icon src="assets/mdi/check.svg" aria-hidden="true" />
       <span>Salvo automaticamente</span>
     </span>
 
-    <button type="button" mat-button class="reset" (click)="resetDefaults()">
-      <svg-icon src="assets/mdi/restore.svg" aria-hidden="true" focusable="false" matButtonIcon />
+    <button type="button" class="btn btn-ghost btn-sm reset" (click)="resetDefaults()">
+      <svg-icon src="assets/mdi/restore.svg" aria-hidden="true" />
       Restaurar padrões
     </button>
   </footer>

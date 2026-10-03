@@ -1,11 +1,10 @@
-<header mat-dialog-title cdkDrag cdkDragHandle cdkDragRootElement=".cdk-overlay-pane">
-  <span>{{ title }}</span>
-  <s></s>
-  <button tabindex="-1" type="button" mat-dialog-close mat-icon-button aria-label="Fechar diálogo">
-    <svg-icon src="assets/mdi/close.svg" aria-hidden="true" focusable="false" />
+<header class="dialog-header" cdkDrag cdkDragHandle cdkDragRootElement=".cdk-overlay-pane">
+  <h2 [id]="data.titleId">{{ title() || "Gráficos" }}</h2>
+  <button type="button" class="icon-btn" aria-label="Fechar janela" appTooltip="Fechar janela" (click)="close()">
+    <svg-icon src="assets/mdi/close.svg" aria-hidden="true" />
   </button>
 </header>
 
-<mat-dialog-content class="renderer-content">
+<div class="renderer-content">
   <canvas #canvas></canvas>
-</mat-dialog-content>
+</div>

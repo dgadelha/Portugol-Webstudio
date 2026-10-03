@@ -17,7 +17,6 @@ const THEMES: Array<{ value: ThemePreference; label: string }> = [
 @Component({
   selector: "app-appearance-section",
   imports: [NgTemplateOutlet, AngularSvgIconModule],
-  standalone: true,
   templateUrl: "./appearance-section.component.html",
   styleUrls: ["./setting-field.scss", "./appearance-section.component.scss"],
   changeDetection: ChangeDetectionStrategy.Eager,

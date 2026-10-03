@@ -1,6 +1,5 @@
 :host {
-  display: flex;
-  height: 100%;
+  flex-direction: row;
   overflow: hidden;
 }
 
@@ -16,21 +15,13 @@ svg-icon {
   gap: 0.25rem;
   width: 14rem;
   padding: 0.75rem;
-  border-right: 1px solid var(--pws-border-color);
-  background-color: rgba(var(--pws-body-color-rgb), 0.02);
+  border-right: 1px solid var(--pws-border);
+  background-color: var(--pws-bg-chrome);
 }
 
-h2.title.mat-mdc-dialog-title {
-  margin: 0;
+.title {
   padding: 0.25rem 0.5rem 0.75rem;
-  font-size: 1rem;
-  font-weight: 600;
-  line-height: 1.5rem;
-  color: var(--pws-body-color);
-
-  &::before {
-    display: none;
-  }
+  font-size: var(--pws-text-lg);
 }
 
 .sections {
@@ -46,17 +37,14 @@ h2.title.mat-mdc-dialog-title {
   height: 2.25rem;
   padding: 0 0.625rem;
   border: 0;
-  border-radius: 0.375rem;
-  outline: none;
+  border-radius: var(--pws-radius-sm);
   background: transparent;
-  color: var(--pws-text-muted);
-  font: inherit;
-  font-size: 0.875rem;
+  color: var(--pws-fg-muted);
+  font-size: var(--pws-text-md);
   font-weight: 500;
-  cursor: pointer;
   transition:
-    color 0.15s,
-    background-color 0.15s;
+    color var(--pws-duration),
+    background-color var(--pws-duration);
 
   svg-icon {
     width: 1rem;
@@ -64,17 +52,14 @@ h2.title.mat-mdc-dialog-title {
   }
 
   &:hover {
-    background-color: rgba(var(--pws-body-color-rgb), 0.05);
-    color: var(--pws-body-color);
-  }
-
-  &:focus-visible {
-    box-shadow: 0 0 0 2px var(--pws-color-primary);
+    background-color: var(--pws-bg-hover);
+    color: var(--pws-fg);
   }
 
   &[aria-current="page"] {
-    background-color: rgba(var(--pws-body-color-rgb), 0.1);
-    color: var(--pws-body-color);
+    background-color: var(--pws-bg-active);
+    box-shadow: inset 2px 0 0 var(--pws-accent);
+    color: var(--pws-fg-strong);
   }
 }
 
@@ -89,19 +74,16 @@ h2.title.mat-mdc-dialog-title {
 .header {
   position: relative;
   padding: 1rem 3.5rem 1rem 1.5rem;
-  border-bottom: 1px solid var(--pws-border-color);
+  border-bottom: 1px solid var(--pws-border);
 
   h3 {
-    margin: 0;
-    font-size: 1rem;
-    font-weight: 600;
-    line-height: 1.5rem;
+    font-size: var(--pws-text-lg);
   }
 
   p {
-    margin: 0.125rem 0 0;
-    font-size: 0.875rem;
-    color: var(--pws-text-muted);
+    margin-top: 0.125rem;
+    color: var(--pws-fg-muted);
+    font-size: var(--pws-text-md);
   }
 
   .close {
@@ -122,7 +104,6 @@ h2.title.mat-mdc-dialog-title {
   min-height: 0;
   overflow-y: auto;
   padding: var(--settings-body-padding-top) var(--settings-body-padding-inline) 1.25rem;
-  scrollbar-width: thin;
 }
 
 .footer {
@@ -131,7 +112,7 @@ h2.title.mat-mdc-dialog-title {
   justify-content: space-between;
   gap: 1rem;
   padding: 0.75rem 1.5rem;
-  border-top: 1px solid var(--pws-border-color);
+  border-top: 1px solid var(--pws-border);
 }
 
 // Em telas estreitas, o aviso encurta e o botão continua numa linha só.
@@ -140,8 +121,8 @@ h2.title.mat-mdc-dialog-title {
   align-items: center;
   gap: 0.375rem;
   min-width: 0;
-  font-size: 0.75rem;
-  color: var(--pws-text-muted);
+  color: var(--pws-fg-muted);
+  font-size: var(--pws-text-sm);
 
   span {
     overflow: hidden;
@@ -157,23 +138,11 @@ h2.title.mat-mdc-dialog-title {
 
 // Discreto, como o aviso ao lado: só ganha destaque ao passar o mouse.
 .reset {
-  --mat-button-text-container-height: 32px;
-  --mat-button-text-horizontal-padding: 0.625rem;
-  --mat-button-text-label-text-size: 0.8125rem;
-  --mat-button-text-label-text-color: var(--pws-text-muted);
-  --mat-button-text-state-layer-color: var(--pws-body-color);
-
-  flex-shrink: 0;
-  white-space: nowrap;
-
-  &:hover {
-    --mat-button-text-label-text-color: var(--pws-body-color);
-  }
+  color: var(--pws-fg-muted);
 
   svg-icon {
-    width: 0.875rem;
-    height: 0.875rem;
-    margin-right: 0.375rem;
+    width: 14px;
+    height: 14px;
   }
 }
 
@@ -186,7 +155,7 @@ h2.title.mat-mdc-dialog-title {
   .nav {
     width: auto;
     border-right: 0;
-    border-bottom: 1px solid var(--pws-border-color);
+    border-bottom: 1px solid var(--pws-border);
   }
 
   .sections {

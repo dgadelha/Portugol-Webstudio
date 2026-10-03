@@ -15,7 +15,7 @@ hr {
   width: 100%;
   margin: 0;
   border: 0;
-  border-top: 1px solid var(--pws-border-color);
+  border-top: 1px solid var(--pws-border);
 }
 
 .field {
@@ -36,14 +36,14 @@ hr {
 }
 
 .field-label {
-  font-size: 0.875rem;
-  font-weight: 500;
-  line-height: 1;
+  color: var(--pws-fg-strong);
+  font-size: var(--pws-text-md);
+  font-weight: 600;
+  line-height: 1.2;
 }
 
 .field-description {
-  margin: 0;
-  font-size: 0.875rem;
-  line-height: 1.25rem;
-  color: var(--pws-text-muted);
+  color: var(--pws-fg-muted);
+  font-size: var(--pws-text-ui);
+  line-height: 1.45;
 }

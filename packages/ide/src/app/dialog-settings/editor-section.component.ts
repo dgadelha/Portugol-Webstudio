@@ -1,8 +1,6 @@
-import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, signal } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormsModule } from "@angular/forms";
-import { MatButtonToggleModule } from "@angular/material/button-toggle";
-import { MatSlideToggleModule } from "@angular/material/slide-toggle";
 import { MonacoEditorModule } from "@materia-ui/ngx-monaco-editor";
 import { LocalStorage } from "ngx-webstorage";
 import { combineLatest } from "rxjs";
@@ -34,11 +32,14 @@ const PREVIEW_CODE = `programa {
 
 @Component({
   selector: "app-editor-section",
-  imports: [FormsModule, MatButtonToggleModule, MatSlideToggleModule, MonacoEditorModule, FontSizeControlComponent],
-  standalone: true,
+  imports: [FormsModule, MonacoEditorModule, FontSizeControlComponent],
   templateUrl: "./editor-section.component.html",
   styleUrls: ["./setting-field.scss", "./editor-section.component.scss"],
   changeDetection: ChangeDetectionStrategy.Eager,
+  host: {
+    "(focusin)": "revealFocused($event)",
+    "[style.--preview-height.px]": "previewHeight()",
+  },
 })
 export class EditorSectionComponent {
   protected readonly settings = settings;
@@ -46,7 +47,7 @@ export class EditorSectionComponent {
 
   /**
    * Um editor de verdade, com as mesmas opções e o mesmo tema do editor de
-   * código. Dá para digitar nele, mas o texto não é salvo.
+   * código.
    */
   previewOptions: monaco.editor.IStandaloneEditorConstructionOptions = {
     language: "portugol",
@@ -56,9 +57,29 @@ export class EditorSectionComponent {
     scrollBeyondLastLine: false,
     overviewRulerLanes: 0,
     automaticLayout: true,
+    // Só leitura: assim o Tab sai da prévia, como em qualquer campo do
+    // diálogo, em vez de indentar o código e prender o foco.
+    readOnly: true,
+    // Espaço para a barra de rolagem horizontal não cobrir a última linha.
+    padding: { top: 4, bottom: 12 },
   };
 
   previewCode = "";
+
+  /**
+   * Altura da prévia: a do código inteiro, até 15rem (com fonte grande, o
+   * resto rola dentro dela).
+   */
+  readonly previewHeight = signal<number | null>(null);
+
+  onPreviewInit(editor: monaco.editor.IStandaloneCodeEditor) {
+    const update = () => {
+      this.previewHeight.set(Math.min(editor.getContentHeight(), 240));
+    };
+
+    editor.onDidContentSizeChange(update);
+    update();
+  }
 
   @LocalStorage(settings.editorFontSize.key, settings.editorFontSize.default)
   editorFontSize!: number;
@@ -108,6 +129,27 @@ export class EditorSectionComponent {
   @LocalStorage(settings.editorStickyScroll.key, settings.editorStickyScroll.default)
   editorStickyScroll!: boolean;
 
+  /**
+   * Com a prévia fixa no topo, um controle focado pelo teclado pode ficar
+   * escondido atrás dela: o navegador o considera visível e não rola. Aqui a
+   * área do diálogo rola até ele aparecer abaixo da prévia.
+   */
+  revealFocused(event: FocusEvent) {
+    const target = event.target as HTMLElement;
+    const preview = (event.currentTarget as HTMLElement).querySelector<HTMLElement>(".preview");
+
+    if (!preview || preview.contains(target) || getComputedStyle(preview).position !== "sticky") {
+      return;
+    }
+
+    const scroller = preview.closest<HTMLElement>(".body");
+    const hiddenBy = preview.getBoundingClientRect().bottom + 8 - target.getBoundingClientRect().top;
+
+    if (scroller && hiddenBy > 0) {
+      scroller.scrollTop -= hiddenBy;
+    }
+  }
+
   constructor() {
     const settingsService = inject(SettingsService);
     let previewIndentation: string | undefined;
@@ -125,8 +167,7 @@ export class EditorSectionComponent {
           theme: `portugol-${theme}`,
         };
 
-        // Só a indentação reescreve o código: as outras opções mantêm o que a
-        // pessoa digitou para experimentar.
+        // Só a indentação muda o texto da prévia.
         if (indentation !== previewIndentation) {
           previewIndentation = indentation;
           this.previewCode = PREVIEW_CODE.replaceAll("\t", indentation);

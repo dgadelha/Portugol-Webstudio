@@ -1,7 +1,7 @@
+import { DialogRef } from "@angular/cdk/dialog";
 import { HttpClient } from "@angular/common/http";
 import {
   afterNextRender,
-  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
   effect,
@@ -10,13 +10,16 @@ import {
   Injector,
   OnDestroy,
   OnInit,
-  output,
   signal,
   viewChild,
 } from "@angular/core";
+import { FormsModule } from "@angular/forms";
+import { MonacoEditorModule } from "@materia-ui/ngx-monaco-editor";
+import { AngularSvgIconModule } from "angular-svg-icon";
 import { map, retry, Subscription } from "rxjs";
 
 import { ResponsiveService } from "../responsive.service";
+import { TooltipDirective } from "../shared/tooltip.directive";
 import { ThemeService } from "../theme.service";
 import { converterExemplos, Exemplo } from "./exemplos";
 
@@ -47,54 +50,27 @@ interface ExampleGroup {
   entries: ExampleEntry[];
 }
 
-function normalize(text: string) {
-  return text
-    .normalize("NFD")
-    .replaceAll(/\p{Diacritic}/gu, "")
-    .toLowerCase();
-}
-
-function flattenExamples(items: ExampleItem[], parents: string[] = []): ExampleEntry[] {
-  return items.flatMap(item => {
-    if (item.children?.length) {
-      return flattenExamples(item.children, [...parents, item.name]);
-    }
-
-    if (!item.file) {
-      return [];
-    }
-
-    return [
-      {
-        item,
-        category: parents[0] ?? "Exemplos",
-        path: parents.slice(1),
-        searchText: normalize([item.name, ...parents, item.description ?? ""].join(" ")),
-      },
-    ];
-  });
-}
-
 @Component({
   selector: "app-dialog-open-example",
-  // eslint-disable-next-line @angular-eslint/prefer-standalone
-  standalone: false,
+  imports: [AngularSvgIconModule, FormsModule, MonacoEditorModule, TooltipDirective],
   templateUrl: "./dialog-open-example.component.html",
   styleUrl: "./dialog-open-example.component.scss",
   changeDetection: ChangeDetectionStrategy.Eager,
 })
-export class DialogOpenExampleComponent implements OnInit, OnDestroy, AfterViewInit {
+export class DialogOpenExampleComponent implements OnInit, OnDestroy {
   private http = inject(HttpClient);
   private responsive = inject(ResponsiveService);
   private themeService = inject(ThemeService);
   private injector = inject(Injector);
+  /**
+   * O diálogo fecha com o exemplo escolhido, e a janela o abre numa aba nova.
+   */
+  readonly dialogRef = inject<DialogRef<{ title: string; code: string }>>(DialogRef);
 
   private _loadSubscription$?: Subscription;
-  private _responsive$?: Subscription;
   private _data$?: Subscription;
   private _theme$?: Subscription;
 
-  readonly exampleOpened = output<{ title: string; code: string }>();
   private readonly description = viewChild<ElementRef<HTMLParagraphElement>>("description");
 
   // A descrição mostra só duas linhas; "Leia mais" aparece quando o texto não cabe nelas
@@ -113,8 +89,7 @@ export class DialogOpenExampleComponent implements OnInit, OnDestroy, AfterViewI
   current: ExampleItem | null = null;
   loading = true;
 
-  isBelowMd = false;
-
+  readonly isBelowMd = this.responsive.isBelowMd;
   rawExampleCode = "";
   rawExampleCodeId = "";
   exampleCode = "";
@@ -150,10 +125,10 @@ export class DialogOpenExampleComponent implements OnInit, OnDestroy, AfterViewI
       )
       .subscribe(data => {
         this.loading = false;
-        this.entries = flattenExamples(data);
+        this.entries = this.flattenExamples(data);
         this.search("");
 
-        if (!this.isBelowMd && this.filtered[0]) {
+        if (!this.isBelowMd() && this.filtered[0]) {
           this.loadItem(this.filtered[0].item);
         }
       });
@@ -163,14 +138,7 @@ export class DialogOpenExampleComponent implements OnInit, OnDestroy, AfterViewI
     });
   }
 
-  ngAfterViewInit() {
-    this._responsive$ = this.responsive.isBelowMd().subscribe(isBelowMd => {
-      this.isBelowMd = isBelowMd.matches;
-    });
-  }
-
   ngOnDestroy() {
-    this._responsive$?.unsubscribe();
     this._data$?.unsubscribe();
     this._theme$?.unsubscribe();
     this._loadSubscription$?.unsubscribe();
@@ -196,7 +164,7 @@ export class DialogOpenExampleComponent implements OnInit, OnDestroy, AfterViewI
   search(query: string) {
     this.query = query;
 
-    const terms = normalize(query).split(/\s+/).filter(Boolean);
+    const terms = this.normalize(query).split(/\s+/).filter(Boolean);
 
     this.filtered = this.entries.filter(entry => terms.every(term => entry.searchText.includes(term)));
     this.groups = [];
@@ -212,7 +180,7 @@ export class DialogOpenExampleComponent implements OnInit, OnDestroy, AfterViewI
     }
 
     // Mantém a prévia no primeiro resultado quando o exemplo aberto some da busca
-    if (!this.isBelowMd && this.filtered[0] && this.filtered.every(entry => entry.item.id !== this.current?.id)) {
+    if (!this.isBelowMd() && this.filtered[0] && this.filtered.every(entry => entry.item.id !== this.current?.id)) {
       this.loadItem(this.filtered[0].item);
     }
   }
@@ -250,7 +218,7 @@ export class DialogOpenExampleComponent implements OnInit, OnDestroy, AfterViewI
 
   onItemClick(item: ExampleItem) {
     // Em telas pequenas não há prévia, então o clique já abre o exemplo
-    if (this.isBelowMd) {
+    if (this.isBelowMd()) {
       this.current = item;
       this.openExample(item);
     } else {
@@ -288,7 +256,7 @@ export class DialogOpenExampleComponent implements OnInit, OnDestroy, AfterViewI
 
   openExample(item: ExampleItem) {
     if (this.rawExampleCode && this.rawExampleCodeId === item.id) {
-      this.exampleOpened.emit({ title: item.name, code: this.rawExampleCode });
+      this.dialogRef.close({ title: item.name, code: this.rawExampleCode });
       return;
     }
 
@@ -298,8 +266,36 @@ export class DialogOpenExampleComponent implements OnInit, OnDestroy, AfterViewI
       .get(`assets/recursos/exemplos/${item.file}`, { responseType: "text" })
       .subscribe(code => {
         if (this.current?.id === item.id) {
-          this.exampleOpened.emit({ title: item.name, code });
+          this.dialogRef.close({ title: item.name, code });
         }
       });
+  }
+
+  private normalize(text: string) {
+    return text
+      .normalize("NFD")
+      .replaceAll(/\p{Diacritic}/gu, "")
+      .toLowerCase();
+  }
+
+  private flattenExamples(items: ExampleItem[], parents: string[] = []): ExampleEntry[] {
+    return items.flatMap(item => {
+      if (item.children?.length) {
+        return this.flattenExamples(item.children, [...parents, item.name]);
+      }
+
+      if (!item.file) {
+        return [];
+      }
+
+      return [
+        {
+          item,
+          category: parents[0] ?? "Exemplos",
+          path: parents.slice(1),
+          searchText: this.normalize([item.name, ...parents, item.description ?? ""].join(" ")),
+        },
+      ];
+    });
   }
 }

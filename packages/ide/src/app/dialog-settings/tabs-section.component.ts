@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component } from "@angular/core";
 import { FormsModule } from "@angular/forms";
-import { MatSlideToggleModule } from "@angular/material/slide-toggle";
 import { AngularSvgIconModule } from "angular-svg-icon";
 import { LocalStorage } from "ngx-webstorage";
 import { settings } from "../../settings";
@@ -8,8 +7,7 @@ import { MAX_AGE_DAYS, MAX_RECOVERABLE } from "../workspace.service";
 
 @Component({
   selector: "app-tabs-section",
-  imports: [FormsModule, MatSlideToggleModule, AngularSvgIconModule],
-  standalone: true,
+  imports: [FormsModule, AngularSvgIconModule],
   templateUrl: "./tabs-section.component.html",
   styleUrls: ["./setting-field.scss", "./tabs-section.component.scss"],
   changeDetection: ChangeDetectionStrategy.Eager,

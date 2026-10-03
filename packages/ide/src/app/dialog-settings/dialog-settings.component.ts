@@ -1,21 +1,27 @@
+import { DIALOG_DATA, DialogRef } from "@angular/cdk/dialog";
 import { NgComponentOutlet } from "@angular/common";
 import { ChangeDetectionStrategy, Component, computed, inject, signal, Type } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { MatButtonModule } from "@angular/material/button";
-import { MatDialogClose, MatDialogTitle } from "@angular/material/dialog";
 import { AngularSvgIconModule } from "angular-svg-icon";
 import { GoogleAnalyticsService } from "ngx-google-analytics";
 import { LocalStorageService } from "ngx-webstorage";
 import { debounceTime, filter, map, merge } from "rxjs";
 import { settings } from "../../settings";
+import { TooltipDirective } from "../shared/tooltip.directive";
 import { AppearanceSectionComponent } from "./appearance-section.component";
 import { EditorSectionComponent } from "./editor-section.component";
 import { OutputSectionComponent } from "./output-section.component";
 import { TabsSectionComponent } from "./tabs-section.component";
 
-type SectionId = "appearance" | "editor" | "output" | "tabs";
+export type SettingsSectionId = "appearance" | "editor" | "output" | "tabs";
 
-const SECTIONS: Array<{ id: SectionId; label: string; description: string; icon: string; component: Type<unknown> }> = [
+const SECTIONS: Array<{
+  id: SettingsSectionId;
+  label: string;
+  description: string;
+  icon: string;
+  component: Type<unknown>;
+}> = [
   {
     id: "appearance",
     label: "Aparência",
@@ -52,8 +58,7 @@ const SECTIONS: Array<{ id: SectionId; label: string; description: string; icon:
  */
 @Component({
   selector: "app-dialog-settings",
-  imports: [NgComponentOutlet, MatButtonModule, MatDialogClose, MatDialogTitle, AngularSvgIconModule],
-  standalone: true,
+  imports: [NgComponentOutlet, AngularSvgIconModule, TooltipDirective],
   templateUrl: "./dialog-settings.component.html",
   styleUrl: "./dialog-settings.component.scss",
   changeDetection: ChangeDetectionStrategy.Eager,
@@ -61,9 +66,12 @@ const SECTIONS: Array<{ id: SectionId; label: string; description: string; icon:
 export class DialogSettingsComponent {
   private localStorageService = inject(LocalStorageService);
   private gaService = inject(GoogleAnalyticsService);
+  readonly dialogRef = inject(DialogRef);
+  private readonly data = inject<{ section?: SettingsSectionId } | undefined>(DIALOG_DATA, { optional: true });
 
   protected readonly sections = SECTIONS;
-  protected readonly sectionId = signal<SectionId>("appearance");
+
+  protected readonly sectionId = signal<SettingsSectionId>(this.data?.section ?? "appearance");
   protected readonly section = computed(() => SECTIONS.find(item => item.id === this.sectionId()) ?? SECTIONS[0]);
 
   constructor() {

@@ -18,21 +18,22 @@
 
   &[aria-checked="true"] {
     .theme-frame {
-      border-color: var(--pws-color-primary);
+      border-color: var(--pws-accent);
     }
 
     .theme-label {
       font-weight: 500;
-      color: var(--pws-body-color);
+      color: var(--pws-fg);
     }
   }
 
   &[aria-checked="false"]:hover .theme-frame {
-    border-color: rgba(var(--pws-text-muted-rgb), 0.5);
+    border-color: rgba(var(--pws-fg-muted-rgb), 0.5);
   }
 
   &:focus-visible .theme-frame {
-    box-shadow: 0 0 0 2px rgba(var(--pws-body-color-rgb), 0.5);
+    outline: 2px solid var(--pws-focus);
+    outline-offset: 2px;
   }
 }
 
@@ -40,8 +41,8 @@
   position: relative;
   display: block;
   overflow: hidden;
-  border: 2px solid var(--pws-border-color);
-  border-radius: 0.5rem;
+  border: 2px solid var(--pws-border);
+  border-radius: var(--pws-radius-lg);
   transition: border-color 0.15s;
 }
 
@@ -55,8 +56,8 @@
   width: 1.25rem;
   height: 1.25rem;
   border-radius: 50%;
-  background-color: var(--pws-color-primary);
-  color: #000;
+  background-color: var(--pws-accent);
+  color: var(--pws-on-accent);
 
   svg-icon {
     width: 0.75rem;
@@ -65,8 +66,8 @@
 }
 
 .theme-label {
-  font-size: 0.875rem;
-  color: var(--pws-text-muted);
+  font-size: var(--pws-text-md);
+  color: var(--pws-fg-muted);
 }
 
 // Miniatura do IDE: sempre nas cores do tema que representa, qualquer que seja o atual.
