@@ -1,26 +1,28 @@
-import { ChangeDetectionStrategy, Component, inject, output, OutputRefSubscription } from "@angular/core";
-import { MatDialog } from "@angular/material/dialog";
+import { DatePipe } from "@angular/common";
+import { ChangeDetectionStrategy, Component, ElementRef, inject, Injector, output } from "@angular/core";
+import { AngularSvgIconModule } from "angular-svg-icon";
 import { GoogleAnalyticsService } from "ngx-google-analytics";
-import { Subscription } from "rxjs";
+import { MarkdownComponent } from "ngx-markdown";
 
 import { IS_BETA } from "../beta";
 import { LATEST_CHANGELOG_ENTRY } from "../changelog";
 import { DialogAboutComponent } from "../dialog-about/dialog-about.component";
-import { DialogOpenExampleComponent } from "../dialog-open-example/dialog-open-example.component";
-import { FileService } from "../file.service";
+import { DialogService } from "../shared/dialog.service";
+import { ACTIVE_TAB_SELECTOR, focusAfterRender } from "../shared/focus";
+import { TooltipDirective } from "../shared/tooltip.directive";
 import { WorkspaceService } from "../workspace.service";
 
 @Component({
   selector: "app-tab-start",
-  // eslint-disable-next-line @angular-eslint/prefer-standalone
-  standalone: false,
+  imports: [AngularSvgIconModule, DatePipe, MarkdownComponent, TooltipDirective],
   templateUrl: "./tab-start.component.html",
   styleUrl: "./tab-start.component.scss",
   changeDetection: ChangeDetectionStrategy.Eager,
 })
 export class TabStartComponent {
-  private dialog = inject(MatDialog);
-  private fileService = inject(FileService);
+  private dialog = inject(DialogService);
+  private injector = inject(Injector);
+  private host = inject<ElementRef<HTMLElement>>(ElementRef);
   private workspace = inject(WorkspaceService);
   public gaService = inject(GoogleAnalyticsService);
 
@@ -30,14 +32,13 @@ export class TabStartComponent {
   readonly recoverable = this.workspace.recoverable;
 
   readonly newTab = output<{ name: string; contents: string } | undefined>();
+  readonly openFile = output();
+  readonly examples = output();
   readonly help = output();
   readonly changelog = output();
   readonly settings = output();
 
   readonly latestNews = LATEST_CHANGELOG_ENTRY;
-
-  private _dialogExample$?: OutputRefSubscription;
-  private _dialogRef$?: Subscription;
 
   public logo: string;
 
@@ -66,57 +67,26 @@ export class TabStartComponent {
     const recovered = this.workspace.recover(workspaceId);
 
     this.gaService.event("workspace_recover", "Aba Inicial", "Recuperar código de uma sessão anterior", recovered);
+
+    // O botão some com o cartão: o foco vai para a aba restaurada.
+    focusAfterRender(this.injector, () => document.querySelector<HTMLElement>(ACTIVE_TAB_SELECTOR));
   }
 
   discardWorkspace(workspaceId: string) {
     this.workspace.discard(workspaceId);
 
     this.gaService.event("workspace_discard", "Aba Inicial", "Descartar código de uma sessão anterior");
-  }
 
-  async openFile(event: Event) {
-    this.gaService.event("home_open_file", "Aba Inicial", "Abrir arquivo através da aba Inicial");
+    // O botão some da lista: o foco vai para a próxima sessão, ou para o
+    // primeiro atalho da página se não sobrou nenhuma. São duas buscas porque,
+    // numa só, o atalho viria antes da sessão, na ordem da página.
+    focusAfterRender(this.injector, () => {
+      const host = this.host.nativeElement;
 
-    const { files } = event.target as HTMLInputElement;
-
-    if (!files || files.length === 0) {
-      return;
-    }
-
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-      const contents = await this.fileService.getContents(file);
-
-      this.newTab.emit({
-        name: file.name,
-        contents,
-      });
-    }
-  }
-
-  openExamplesDialog() {
-    this.gaService.event("open_examples_dialog", "Aba Inicial", "Abrir diálogo de exemplos");
-
-    const ref = this.dialog.open(DialogOpenExampleComponent, {
-      width: "min(92vw, 960px)",
-      maxWidth: "none",
-      height: "min(85vh, 640px)",
-    });
-
-    this._dialogExample$ = ref.componentInstance.exampleOpened.subscribe(example => {
-      this.gaService.event("open_example", "Diálogo de Exemplos", `Abrir exemplo: ${example.title}`);
-
-      ref.close();
-
-      this.newTab.emit({
-        name: example.title,
-        contents: example.code,
-      });
-    });
-
-    this._dialogRef$ = ref.beforeClosed().subscribe(() => {
-      this._dialogRef$?.unsubscribe();
-      this._dialogExample$?.unsubscribe();
+      return (
+        host.querySelector<HTMLElement>(":scope .recovery button") ??
+        host.querySelector<HTMLElement>(":scope .tiles .tile")
+      );
     });
   }
 
@@ -132,12 +102,13 @@ export class TabStartComponent {
 
   openAboutDialog() {
     this.gaService.event("open_about_dialog", "Aba Inicial", "Abrir diálogo Sobre");
-    const ref = this.dialog.open<DialogAboutComponent, unknown, "changelog">(DialogAboutComponent, {
-      maxHeight: "85vh",
+    const ref = this.dialog.open<"changelog">(DialogAboutComponent, {
+      width: "min(92vw, 44rem)",
+      ariaLabelledBy: "dialogo-sobre-titulo",
     });
 
     // O diálogo fecha pedindo o histórico: a aba abre pelo mesmo caminho do botão da aba inicial
-    ref.afterClosed().subscribe(result => {
+    ref.closed.subscribe(result => {
       if (result === "changelog") {
         this.changelog.emit();
       }

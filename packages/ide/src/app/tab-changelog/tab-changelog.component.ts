@@ -1,14 +1,14 @@
 import { ChangeDetectionStrategy, Component } from "@angular/core";
+import { MarkdownComponent } from "ngx-markdown";
 
 import { CHANGELOG } from "../changelog";
 
 @Component({
   selector: "app-tab-changelog",
-  // eslint-disable-next-line @angular-eslint/prefer-standalone
-  standalone: false,
+  imports: [MarkdownComponent],
   templateUrl: "./tab-changelog.component.html",
   styleUrl: "./tab-changelog.component.scss",
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TabChangelogComponent {
   readonly changelog = CHANGELOG;

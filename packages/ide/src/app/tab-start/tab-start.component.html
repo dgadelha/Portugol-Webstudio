@@ -1,137 +1,156 @@
-<div class="logo logo-with-badge">
-  <svg-icon svgClass="w-100" svgAriaLabel="Logomarca do Portugol Webstudio" [src]="logo" />
+<div class="welcome">
+  <header class="welcome-header">
+    <div class="logo logo-with-badge">
+      <svg-icon svgClass="logo-svg" svgAriaLabel="Portugol Webstudio" [src]="logo" />
 
-  @if (isBeta) {
-    <span class="beta-badge">Beta</span>
-  }
-</div>
-
-<nav>
-  <button mat-ripple type="button" aria-labelledby="button-new-file-label" (click)="newTab.emit(undefined)">
-    <svg-icon src="assets/mdi/file-plus-outline.svg" svgClass="text-secondary" aria-hidden="true" focusable="false" />
-    <span id="button-new-file-label">Novo Arquivo</span>
-  </button>
-
-  <button mat-ripple type="button" aria-labelledby="button-open-file-label" (click)="fileInput.click()">
-    <svg-icon src="assets/mdi/folder-open-outline.svg" svgClass="text-primary" aria-hidden="true" focusable="false" />
-    <span id="button-open-file-label">Abrir Arquivo</span>
-    <input #fileInput type="file" hidden multiple accept=".por,text/plain" (change)="openFile($event)" />
-  </button>
-
-  <button mat-ripple type="button" aria-labelledby="button-open-example-label" (click)="openExamplesDialog()">
-    <svg-icon
-      src="assets/mdi/book-open-page-variant-outline.svg"
-      svgClass="text-primary"
-      aria-hidden="true"
-      focusable="false"
-    />
-
-    <span id="button-open-example-label">Abrir Exemplo</span>
-  </button>
-
-  <button mat-ripple type="button" aria-labelledby="button-help-label" (click)="help.emit()">
-    <svg-icon src="assets/mdi/help.svg" svgClass="text-blue" />
-    <span id="button-help-label">Ajuda</span>
-  </button>
-
-  <a
-    href="https://github.com/dgadelha/Portugol-Webstudio/discussions/categories/ideias-e-sugest%C3%B5es"
-    target="_blank"
-    rel="external noreferrer noopener nofollow"
-    mat-ripple
-    aria-labelledby="button-suggestions-label"
-    (click)="gaService.event('suggest_features', 'Aba Inicial', 'Enviar sugestões')"
-  >
-    <svg-icon
-      src="assets/mdi/lightbulb-on-outline.svg"
-      svgClass="text-secondary"
-      aria-hidden="true"
-      focusable="false"
-    />
-
-    <span id="button-suggestions-label">Sugestões</span>
-  </a>
-
-  <a
-    href="https://github.com/dgadelha/Portugol-Webstudio/discussions/categories/d%C3%BAvidas-perguntas"
-    target="_blank"
-    rel="external noreferrer noopener nofollow"
-    mat-ripple
-    aria-labelledby="button-ask-questions-label"
-    (click)="gaService.event('ask_questions', 'Aba Inicial', 'Enviar dúvidas')"
-  >
-    <svg-icon src="assets/mdi/comment-question-outline.svg" svgClass="text-blue" aria-hidden="true" focusable="false" />
-    <span id="button-ask-questions-label">Dúvidas e Perguntas</span>
-  </a>
-
-  <button
-    mat-ripple
-    class="with-badge-new"
-    type="button"
-    aria-labelledby="button-settings-label"
-    (click)="openSettingsDialog()"
-  >
-    <svg-icon src="assets/mdi/cog-outline.svg" svgClass="text-primary" aria-hidden="true" focusable="false" />
-    <span id="button-settings-label">Configurações</span>
-  </button>
-
-  <button
-    mat-ripple
-    class="with-badge-new"
-    type="button"
-    aria-labelledby="button-about-label"
-    (click)="openAboutDialog()"
-  >
-    <svg-icon src="assets/mdi/information-outline.svg" svgClass="text-blue" aria-hidden="true" focusable="false" />
-
-    <span id="button-about-label">Sobre</span>
-  </button>
-</nav>
-
-@if (recoverable().length > 0) {
-  <section class="recovery">
-    <h4>
-      <svg-icon src="assets/mdi/file-restore-outline.svg" aria-hidden="true" focusable="false" />
-      Código de sessões anteriores
-    </h4>
-
-    <p>Encontramos código que ficou aberto quando o Portugol Webstudio foi fechado:</p>
-
-    <ul>
-      @for (workspace of recoverable(); track workspace.id) {
-        <li>
-          <span class="recovery-tabs">{{ workspace.tabTitles.join(", ") }}</span>
-          <span class="recovery-date">{{ workspace.updatedAt | date: "dd/MM/yyyy HH:mm" }}</span>
-
-          <span class="recovery-actions">
-            <button type="button" mat-stroked-button (click)="recoverWorkspace(workspace.id)">Restaurar</button>
-            <button type="button" mat-button (click)="discardWorkspace(workspace.id)">Descartar</button>
-          </span>
-        </li>
+      @if (isBeta) {
+        <span class="beta-badge">Beta</span>
       }
+    </div>
+    <p class="tagline">Escreva, execute e aprenda Portugol direto no navegador.</p>
+  </header>
+
+  <nav class="actions" aria-label="Começar">
+    <ul class="tiles">
+      <li>
+        <button type="button" class="tile" (click)="newTab.emit(undefined)">
+          <svg-icon src="assets/mdi/file-plus-outline.svg" class="tile-icon icon-green" aria-hidden="true" />
+          <span class="tile-title">Novo arquivo</span>
+          <span class="tile-hint">Comece um programa do zero</span>
+        </button>
+      </li>
+      <li>
+        <button type="button" class="tile" (click)="openFile.emit()">
+          <svg-icon src="assets/mdi/folder-open-outline.svg" class="tile-icon icon-yellow" aria-hidden="true" />
+          <span class="tile-title">Abrir arquivo</span>
+          <span class="tile-hint">Um arquivo .por do seu computador</span>
+        </button>
+      </li>
+      <li>
+        <button type="button" class="tile tile-featured" (click)="examples.emit()">
+          <svg-icon
+            src="assets/mdi/book-open-page-variant-outline.svg"
+            class="tile-icon icon-yellow"
+            aria-hidden="true"
+          />
+          <span class="tile-title">Abrir exemplo</span>
+          <span class="tile-hint">Programas prontos para estudar e modificar</span>
+          <span class="badge badge-accent tile-badge">Recomendado para começar</span>
+        </button>
+      </li>
+      <li>
+        <button type="button" class="tile" (click)="help.emit()">
+          <svg-icon src="assets/mdi/help-circle-outline.svg" class="tile-icon icon-blue" aria-hidden="true" />
+          <span class="tile-title">Ajuda</span>
+          <span class="tile-hint">A linguagem e as bibliotecas do Portugol</span>
+        </button>
+      </li>
     </ul>
+
+    <ul class="tiles tiles-small">
+      <li>
+        <a
+          class="tile"
+          href="https://github.com/dgadelha/Portugol-Webstudio/discussions/categories/ideias-e-sugest%C3%B5es"
+          target="_blank"
+          rel="external noreferrer noopener nofollow"
+          (click)="gaService.event('suggest_features', 'Aba Inicial', 'Enviar sugestões')"
+        >
+          <svg-icon src="assets/mdi/lightbulb-on-outline.svg" class="tile-icon icon-green" aria-hidden="true" />
+          <span class="tile-title">Sugestões</span>
+          <span class="visually-hidden">(abre em outra aba)</span>
+        </a>
+      </li>
+      <li>
+        <a
+          class="tile"
+          href="https://github.com/dgadelha/Portugol-Webstudio/discussions/categories/d%C3%BAvidas-perguntas"
+          target="_blank"
+          rel="external noreferrer noopener nofollow"
+          (click)="gaService.event('ask_questions', 'Aba Inicial', 'Enviar dúvidas')"
+        >
+          <svg-icon src="assets/mdi/comment-question-outline.svg" class="tile-icon icon-blue" aria-hidden="true" />
+          <span class="tile-title">Dúvidas e perguntas</span>
+          <span class="visually-hidden">(abre em outra aba)</span>
+        </a>
+      </li>
+      <li>
+        <button type="button" class="tile" (click)="openSettingsDialog()">
+          <svg-icon src="assets/mdi/cog-outline.svg" class="tile-icon icon-yellow" aria-hidden="true" />
+          <span class="tile-title">Configurações</span>
+        </button>
+      </li>
+      <li>
+        <button type="button" class="tile" (click)="openAboutDialog()">
+          <svg-icon src="assets/mdi/information-outline.svg" class="tile-icon icon-blue" aria-hidden="true" />
+          <span class="tile-title">Sobre</span>
+        </button>
+      </li>
+    </ul>
+  </nav>
+
+  @if (recoverable().length > 0) {
+    <section class="card" aria-labelledby="inicio-recuperar">
+      <h2 id="inicio-recuperar">
+        <svg-icon src="assets/mdi/file-restore-outline.svg" class="icon-yellow" aria-hidden="true" />
+        Código de sessões anteriores
+      </h2>
+      <p class="hint">Este código ficou aberto quando o Portugol Webstudio foi fechado.</p>
+
+      <ul class="recovery">
+        @for (workspace of recoverable(); track workspace.id) {
+          @let titles = workspace.tabTitles.join(", ");
+          <li>
+            <div class="recovery-text">
+              <span class="recovery-tabs">{{ titles }}</span>
+              <span class="recovery-date">{{ workspace.updatedAt | date: "dd/MM/yyyy 'às' HH:mm" }}</span>
+            </div>
+
+            <span class="recovery-actions">
+              <button
+                type="button"
+                class="btn btn-sm"
+                [attr.aria-label]="`Restaurar ${titles}`"
+                (click)="recoverWorkspace(workspace.id)"
+              >
+                Restaurar
+              </button>
+              <button
+                type="button"
+                class="btn btn-ghost btn-sm"
+                [attr.aria-label]="`Descartar ${titles}`"
+                (click)="discardWorkspace(workspace.id)"
+              >
+                Descartar
+              </button>
+            </span>
+          </li>
+        }
+      </ul>
+    </section>
+  }
+
+  <section class="card news" aria-labelledby="inicio-novidades">
+    <h2 id="inicio-novidades">
+      <svg-icon src="assets/mdi/newspaper.svg" class="icon-blue" aria-hidden="true" />
+      Novidades
+    </h2>
+    <markdown [data]="latestNews" />
+    <button type="button" class="news-more" (click)="openChangelog()">
+      Ver o histórico de atualizações
+      <svg-icon src="assets/mdi/arrow-right.svg" aria-hidden="true" />
+    </button>
   </section>
-}
 
-<section class="info">
-  <h4><svg-icon src="assets/mdi/newspaper.svg" aria-hidden="true" focusable="false" />Novidades</h4>
-  <markdown [data]="latestNews" />
-  <button type="button" class="news-more" (click)="openChangelog()">
-    Ver histórico de atualizações
-    <svg-icon src="assets/mdi/arrow-right.svg" aria-hidden="true" focusable="false" />
-  </button>
-</section>
-
-<footer>
-  <summary>
-    Versão: <span matTooltip="%DATE%">%COMMIT_SHA%</span>
-    <span class="separator" aria-hidden="true">·</span>
+  <footer class="welcome-footer">
+    <span>Versão %COMMIT_SHA%, de %DATE%</span>
+    <span aria-hidden="true">·</span>
     @if (isBeta) {
       <a
         href="https://portugol.dev/"
         target="_blank"
         rel="external noopener"
-        matTooltip="O código salvo no navegador fica separado em cada versão"
+        appTooltip="O código salvo no navegador fica separado em cada versão"
         (click)="gaService.event('open_stable_version', 'Aba Inicial', 'Ir para a versão estável')"
       >
         Ir para a versão estável
@@ -141,11 +160,11 @@
         href="https://beta.portugol.dev/"
         target="_blank"
         rel="external noopener"
-        matTooltip="Novidades antes de chegarem a todos. O código salvo no navegador fica separado em cada versão"
+        appTooltip="Novidades antes de chegarem a todos. O código salvo no navegador fica separado em cada versão"
         (click)="gaService.event('open_beta_version', 'Aba Inicial', 'Experimentar a versão beta')"
       >
         Experimentar a versão beta
       </a>
     }
-  </summary>
-</footer>
+  </footer>
+</div>
