@@ -1,6 +1,6 @@
 import { inject, Service } from "@angular/core";
 import { LocalStorageService } from "ngx-webstorage";
-import { combineLatest, map, Observable, shareReplay, startWith } from "rxjs";
+import { combineLatest, defer, map, Observable, shareReplay, startWith } from "rxjs";
 import { Setting, settings } from "../settings";
 
 @Service()
@@ -11,10 +11,12 @@ export class SettingsService {
    * O valor atual da configuração e, depois, cada mudança.
    */
   observe<T>(setting: Setting<T>): Observable<T> {
-    return this.localStorageSvc.observe(setting.key).pipe(
-      startWith(this.localStorageSvc.retrieve(setting.key)),
-      map(value => setting.parse(value)),
-    );
+    // O valor inicial é lido a cada inscrição, não ao criar o fluxo: o
+    // `editorOptions$` compartilhado se reinscreve quando todos os editores
+    // fecham e um novo abre, e deve ver as configurações de agora.
+    return defer(() =>
+      this.localStorageSvc.observe(setting.key).pipe(startWith(this.localStorageSvc.retrieve(setting.key))),
+    ).pipe(map(value => setting.parse(value)));
   }
 
   get<T>(setting: Setting<T>): T {
