@@ -1,0 +1,361 @@
+// Controles da interface. Cada um é HTML comum com uma classe, em vez de um
+// componente: o comportamento e a acessibilidade vêm do próprio elemento
+// (`<button>`, `<input type="checkbox" role="switch">`, `<input type="radio">`,
+// `<input type="range">`).
+
+////////////
+// Botões //
+////////////
+
+.btn {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  height: 28px;
+  padding: 0 0.75rem;
+  border: 1px solid transparent;
+  border-radius: var(--pws-radius-sm);
+  background-color: var(--pws-bg-button);
+  color: var(--pws-fg);
+  font-size: var(--pws-text-ui);
+  font-weight: 500;
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    background-color var(--pws-duration),
+    color var(--pws-duration);
+
+  &:hover:not(:disabled) {
+    background-color: var(--pws-bg-active);
+    text-decoration: none;
+  }
+
+  &:focus-visible {
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+  }
+
+  svg-icon {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+.btn-primary {
+  background-color: var(--pws-accent);
+  color: var(--pws-on-accent);
+
+  &:hover:not(:disabled) {
+    background-color: var(--pws-accent-hover);
+    color: var(--pws-on-accent);
+  }
+}
+
+.btn-ghost {
+  background-color: transparent;
+
+  &:hover:not(:disabled) {
+    background-color: var(--pws-bg-hover);
+  }
+}
+
+.btn-sm {
+  height: 24px;
+  padding: 0 0.5rem;
+  font-size: var(--pws-text-sm);
+}
+
+// Botão só com ícone. O nome vem do `aria-label`, e a dica do `appTooltip`.
+.icon-btn {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--pws-radius-sm);
+  background: transparent;
+  color: var(--pws-fg-muted);
+  transition:
+    background-color var(--pws-duration),
+    color var(--pws-duration);
+
+  &:hover:not(:disabled) {
+    background-color: var(--pws-bg-hover);
+    color: var(--pws-fg);
+  }
+
+  &:disabled {
+    opacity: 0.4;
+  }
+
+  svg-icon {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+.icon-btn-sm {
+  width: 22px;
+  height: 22px;
+}
+
+///////////////////
+// Campo de texto //
+///////////////////
+
+.input {
+  width: 100%;
+  height: 28px;
+  padding: 0 0.5rem;
+  border: 1px solid var(--pws-border-control);
+  border-radius: var(--pws-radius-sm);
+  background-color: var(--pws-bg-input);
+  color: var(--pws-fg);
+  font-size: var(--pws-text-ui);
+
+  &::placeholder {
+    color: var(--pws-fg-muted);
+  }
+
+  &:focus {
+    border-color: var(--pws-focus);
+    outline: none;
+  }
+}
+
+//////////////////////////////////////////////////////////////
+// Chave: <input type="checkbox" role="switch" class="switch"> //
+//////////////////////////////////////////////////////////////
+
+// A bolinha é um gradiente no fundo, não um `::before`: o Firefox não desenha
+// pseudoelementos em `<input>`.
+.switch {
+  flex-shrink: 0;
+  width: 36px;
+  height: 20px;
+  margin: 0;
+  border: 1px solid var(--pws-border-control);
+  border-radius: 10px;
+  background-color: transparent;
+  background-image: radial-gradient(circle, var(--pws-fg-muted) 6px, transparent 6.5px);
+  background-position: left center;
+  background-repeat: no-repeat;
+  background-size: 18px 18px;
+  cursor: pointer;
+  transition:
+    background-color var(--pws-duration),
+    background-position var(--pws-duration),
+    border-color var(--pws-duration);
+  appearance: none;
+
+  &:checked {
+    border-color: var(--pws-accent);
+    background-color: var(--pws-accent);
+    background-image: radial-gradient(circle, var(--pws-on-accent) 6px, transparent 6.5px);
+    background-position: right center;
+  }
+
+  &:focus-visible {
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    cursor: default;
+    opacity: 0.5;
+  }
+
+  @media (forced-colors: active) {
+    border-color: CanvasText;
+    background-image: radial-gradient(circle, CanvasText 6px, transparent 6.5px);
+
+    &:checked {
+      background-color: Highlight;
+    }
+  }
+}
+
+/////////////////////////////////////////////////////////////////////
+// Opções lado a lado: <div class="segmented" role="radiogroup">     //
+//   <label><input type="radio" class="visually-hidden"><span>…</span></label> //
+/////////////////////////////////////////////////////////////////////
+
+// Os rádios de verdade dão as setas do teclado e o anúncio "1 de 3" de graça.
+.segmented {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-self: flex-start;
+  max-width: 100%;
+  border: 1px solid var(--pws-border-control);
+  border-radius: var(--pws-radius-sm);
+  overflow: hidden;
+
+  label {
+    position: relative;
+    display: flex;
+
+    + label {
+      border-left: 1px solid var(--pws-border-control);
+    }
+  }
+
+  span {
+    display: flex;
+    align-items: center;
+    min-width: 2.25rem;
+    height: 28px;
+    padding: 0 0.75rem;
+    color: var(--pws-fg);
+    font-size: var(--pws-text-ui);
+    justify-content: center;
+    cursor: pointer;
+    user-select: none;
+    transition:
+      background-color var(--pws-duration),
+      color var(--pws-duration);
+  }
+
+  input:hover + span {
+    background-color: var(--pws-bg-hover);
+  }
+
+  input:checked + span {
+    background-color: var(--pws-accent);
+    color: var(--pws-on-accent);
+    font-weight: 600;
+  }
+
+  // O contorno usa a cor do texto da opção: sobre o amarelo da escolhida, ele
+  // fica escuro e continua visível.
+  input:focus-visible + span {
+    outline: 2px solid currentColor;
+    outline-offset: -4px;
+  }
+
+  @media (forced-colors: active) {
+    input:checked + span {
+      background-color: Highlight;
+      color: HighlightText;
+      forced-color-adjust: none;
+    }
+  }
+}
+
+//////////////////////////////////////////////////
+// Controle deslizante: <input type="range" class="range"> //
+//////////////////////////////////////////////////
+
+.range {
+  width: 100%;
+  height: 20px;
+  margin: 0;
+  background: transparent;
+  cursor: pointer;
+  appearance: none;
+
+  &::-webkit-slider-runnable-track {
+    height: 4px;
+    border-radius: 2px;
+    background-color: var(--pws-border-control);
+  }
+
+  &::-webkit-slider-thumb {
+    width: 16px;
+    height: 16px;
+    margin-top: -6px;
+    border: 2px solid var(--pws-bg-editor);
+    border-radius: 50%;
+    background-color: var(--pws-accent);
+    appearance: none;
+  }
+
+  &::-moz-range-track {
+    height: 4px;
+    border-radius: 2px;
+    background-color: var(--pws-border-control);
+  }
+
+  &::-moz-range-progress {
+    height: 4px;
+    border-radius: 2px;
+    background-color: var(--pws-accent);
+  }
+
+  &::-moz-range-thumb {
+    width: 12px;
+    height: 12px;
+    border: 2px solid var(--pws-bg-editor);
+    border-radius: 50%;
+    background-color: var(--pws-accent);
+  }
+
+  &:focus-visible {
+    outline-offset: 2px;
+  }
+}
+
+///////////
+// Selos //
+///////////
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.0625rem 0.375rem;
+  border-radius: var(--pws-radius-sm);
+  background-color: var(--pws-bg-active);
+  color: var(--pws-fg);
+  font-size: var(--pws-text-xs);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.badge-accent {
+  background-color: var(--pws-accent);
+  color: var(--pws-on-accent);
+}
+
+// Atalhos de teclado, em qualquer lugar do IDE (dicas, rodapés): fonte
+// monoespaçada em maiúsculas, num selo discreto, como as teclas do VS Code.
+kbd {
+  display: inline-block;
+  padding: 0 0.3125rem;
+  border: 1px solid var(--pws-border-strong);
+  border-bottom-width: 2px;
+  border-radius: var(--pws-radius-sm);
+  background-color: var(--pws-bg-input);
+  color: var(--pws-fg-muted);
+  font-family: var(--pws-font-mono);
+  font-size: var(--pws-text-xs);
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+///////////////
+// Carregando //
+///////////////
+
+.spinner {
+  width: 24px;
+  height: 24px;
+  border: 2px solid rgba(var(--pws-fg-muted-rgb), 0.3);
+  border-top-color: var(--pws-accent);
+  border-radius: 50%;
+  animation: pws-spin 0.8s linear infinite;
+}
+
+@keyframes pws-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

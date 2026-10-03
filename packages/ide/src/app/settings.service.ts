@@ -1,6 +1,6 @@
 import { inject, Service } from "@angular/core";
 import { LocalStorageService } from "ngx-webstorage";
-import { combineLatest, map, Observable, startWith } from "rxjs";
+import { combineLatest, map, Observable, shareReplay, startWith } from "rxjs";
 import { Setting, settings } from "../settings";
 
 @Service()
@@ -33,8 +33,16 @@ export class SettingsService {
   /**
    * As opções do editor de código que vêm das configurações.
    */
-  editorOptions(): Observable<monaco.editor.IEditorOptions & monaco.editor.IGlobalEditorOptions> {
-    return combineLatest([
+  editorOptions() {
+    return this.editorOptions$;
+  }
+
+  /**
+   * Um só fluxo para todas as abas e a prévia das configurações: cada uma
+   * observaria as 15 chaves do armazenamento por conta própria.
+   */
+  private readonly editorOptions$: Observable<monaco.editor.IEditorOptions & monaco.editor.IGlobalEditorOptions> =
+    combineLatest([
       this.observe(settings.editorFontSize),
       this.observe(settings.editorWordWrap),
       this.observe(settings.editorTabSize),
@@ -71,7 +79,7 @@ export class SettingsService {
         ]) => {
           return {
             fontSize,
-            wordWrap: wordWrap ? "on" : "off",
+            wordWrap: wordWrap ? ("on" as const) : ("off" as const),
             tabSize,
             insertSpaces,
             lineNumbers,
@@ -79,8 +87,8 @@ export class SettingsService {
             "bracketPairColorization.enabled": bracketPairColorization,
             guides: { indentation: indentationGuides },
             renderWhitespace,
-            autoClosingBrackets: autoClosing ? "languageDefined" : "never",
-            autoClosingQuotes: autoClosing ? "languageDefined" : "never",
+            autoClosingBrackets: autoClosing ? ("languageDefined" as const) : ("never" as const),
+            autoClosingQuotes: autoClosing ? ("languageDefined" as const) : ("never" as const),
             cursorStyle,
             // Desativadas, as sugestões ainda aparecem com Ctrl + Espaço.
             quickSuggestions,
@@ -91,8 +99,8 @@ export class SettingsService {
           };
         },
       ),
+      shareReplay({ bufferSize: 1, refCount: true }),
     );
-  }
 
   /**
    * Um nível de indentação, do jeito que o editor está configurado agora.

@@ -1,0 +1,165 @@
+// Conteúdo em Markdown (novidades, histórico de atualizações e Ajuda). O
+// `ngx-markdown` injeta o HTML sem o escopo dos componentes, então os estilos
+// ficam aqui.
+markdown {
+  display: block;
+  color: var(--pws-fg);
+  font-size: var(--pws-text-md);
+  line-height: 1.6;
+
+  > :first-child {
+    margin-top: 0;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    margin: 1.5em 0 0.5em;
+  }
+
+  h1 {
+    padding-bottom: 0.3em;
+    border-bottom: 1px solid var(--pws-border);
+    font-size: 1.5rem;
+  }
+
+  h2 {
+    font-size: 1.25rem;
+  }
+
+  h3 {
+    font-size: 1.0625rem;
+  }
+
+  p,
+  ul,
+  ol,
+  table,
+  blockquote {
+    margin: 0 0 1em;
+  }
+
+  ul,
+  ol {
+    padding-left: 1.5rem;
+  }
+
+  li + li {
+    margin-top: 0.25em;
+  }
+
+  a {
+    color: var(--pws-info-fg);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  hr {
+    margin: 1.5rem 0;
+    border: 0;
+    border-top: 1px solid var(--pws-border);
+  }
+
+  blockquote {
+    padding: 0.25rem 1rem;
+    border-left: 3px solid var(--pws-accent);
+    color: var(--pws-fg-muted);
+  }
+
+  img {
+    max-width: 100%;
+  }
+
+  code {
+    padding: 0.1em 0.35em;
+    border-radius: var(--pws-radius-sm);
+    background-color: rgba(var(--pws-fg-muted-rgb), 0.15);
+    font-family: var(--pws-font-mono);
+    font-size: 0.9em;
+  }
+
+  pre code {
+    padding: 0;
+    background: none;
+  }
+
+  table {
+    border-collapse: collapse;
+
+    th,
+    td {
+      padding: 0.375rem 0.75rem;
+      border: 1px solid var(--pws-border-strong);
+      text-align: left;
+    }
+
+    th {
+      background-color: var(--pws-bg-chrome);
+    }
+  }
+
+  // Assinaturas das funções das bibliotecas (geradas em `bibliotecas.ts`), nas
+  // cores dos temas do editor.
+  .code {
+    display: block;
+    margin: 0 0 1em;
+    padding: 0.75rem 1rem;
+    overflow: auto;
+    border: 1px solid var(--pws-border);
+    border-radius: var(--pws-radius);
+    background-color: var(--pws-monaco-bg);
+    font-family: var(--pws-font-mono);
+    font-size: var(--pws-text-ui);
+
+    .code-keyword {
+      color: #569cd6;
+    }
+
+    .code-const-name {
+      color: #4ec9b0;
+    }
+
+    .code-func-name {
+      color: #dcdcaa;
+    }
+
+    .code-keyword-brackets {
+      color: #da70d6;
+    }
+
+    .code-param-name {
+      color: #9cdcfe;
+    }
+
+    .code-value {
+      color: #b5cea8;
+    }
+  }
+}
+
+[data-theme="light"] markdown .code {
+  .code-keyword {
+    color: #0000ff;
+  }
+
+  .code-const-name {
+    color: #267f99;
+  }
+
+  .code-func-name {
+    color: #795e26;
+  }
+
+  .code-keyword-brackets {
+    color: #319331;
+  }
+
+  .code-param-name {
+    color: #001080;
+  }
+
+  .code-value {
+    color: #098658;
+  }
+}
