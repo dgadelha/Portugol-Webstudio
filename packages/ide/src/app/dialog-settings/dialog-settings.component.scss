@@ -167,11 +167,37 @@ svg-icon {
   .section {
     flex-shrink: 0;
   }
+
+  // O fechar sobe para o canto do diálogo, ao lado do título, e não fica
+  // abaixo das seções, no cabeçalho da seção escolhida.
+  :host {
+    position: relative;
+  }
+
+  .title {
+    padding-right: 2.5rem;
+  }
+
+  .header {
+    position: static;
+    padding-right: 1.5rem;
+
+    .close {
+      top: 0.75rem;
+      right: 0.75rem;
+    }
+  }
 }
 
-// Em celulares, as quatro seções só cabem lado a lado sem os ícones.
+// Em celulares, as quatro seções só cabem lado a lado sem os ícones, e o
+// rodapé aperta o espaçamento para o aviso não ser cortado.
 @media (max-width: 479px) {
   .section svg-icon {
     display: none;
+  }
+
+  .footer {
+    gap: 0.5rem;
+    padding-inline: 1rem;
   }
 }

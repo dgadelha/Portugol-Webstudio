@@ -166,3 +166,15 @@ svg-icon {
     outline: 2px solid CanvasText;
   }
 }
+
+// O Safari do iPhone dá zoom na página ao focar um campo com texto menor que
+// 16px (a busca dos exemplos, o campo escondido do Monaco ao tocar no código).
+// O `-webkit-touch-callout` só existe no Safari do iOS: os outros navegadores
+// ficam como estão, e o zoom com os dedos continua funcionando.
+@supports (-webkit-touch-callout: none) {
+  input:not([type="checkbox"], [type="radio"], [type="range"]),
+  textarea,
+  select {
+    font-size: max(16px, 1em) !important;
+  }
+}

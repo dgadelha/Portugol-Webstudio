@@ -1,3 +1,5 @@
+@use "styles/mixins";
+
 :host {
   display: flex;
   flex-direction: column;
@@ -213,9 +215,15 @@ button.status-item:hover {
   flex-grow: 1;
 }
 
-// Em telas pequenas, a barra de status só mostra o essencial.
+// Em telas pequenas, a barra de status só mostra o essencial, e a aba Inicial
+// fica só com o ícone, para sobrar espaço às outras abas. O nome continua lá
+// para os leitores de tela.
 @media (max-width: 575px) {
   .status-item:not(:first-child, .status-running) {
     display: none;
+  }
+
+  #aba-inicio .tab-title {
+    @include mixins.visually-hidden;
   }
 }

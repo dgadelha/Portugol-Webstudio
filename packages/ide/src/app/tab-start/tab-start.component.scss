@@ -252,12 +252,23 @@
   margin-top: auto;
   color: var(--pws-fg-muted);
   font-size: var(--pws-text-sm);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.version {
+  border-radius: var(--pws-radius-sm);
+  cursor: default;
 }
 
 @media (max-width: 767px) {
   .welcome {
     gap: 1.5rem;
     padding: 1.5rem 1rem 1rem;
+  }
+
+  .logo {
+    width: min(100%, 14rem);
   }
 
   .tiles {
