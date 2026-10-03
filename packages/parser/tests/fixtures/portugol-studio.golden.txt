@@ -173,8 +173,6 @@ AVISO|20|28|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da express�
 ### entrada_saida/numero_digitado.por
 ### entrada_saida/ola_mundo.por
 ### entrada_saida/seu_nome.por
-### jogos/arkanoid.por
-ERRO|155|133||O nome do parâmetro da função não foi informado
 ### jogos/colisoes/ex1_colisao_ponto_retangulo.por
 ### jogos/colisoes/ex2_colisao_ponto_circulo.por
 ### jogos/colisoes/ex3_colisao_retangulos.por
@@ -183,20 +181,20 @@ ERRO|155|133||O nome do parâmetro da função não foi informado
 ### jogos/colisoes/ex6_colisao_todos.por
 ### jogos/corrida.por
 ### jogos/medieval.por
-AVISO|319|13|AvisoSemantico.AvisoVetorPodeSerVariavel|O Vetor formatos_suportados tem tamanho [1] e pode ser substituido por uma variável
-AVISO|348|54|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_elipse" será truncado
-AVISO|350|51|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
-AVISO|351|74|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_imagem" será truncado
-AVISO|352|76|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_imagem" será truncado
-AVISO|354|72|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_imagem" será truncado
+AVISO|321|13|AvisoSemantico.AvisoVetorPodeSerVariavel|O Vetor formatos_suportados tem tamanho [1] e pode ser substituido por uma variável
+AVISO|354|54|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_elipse" será truncado
+AVISO|356|51|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
+AVISO|357|74|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_imagem" será truncado
+AVISO|358|76|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_imagem" será truncado
+AVISO|360|72|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_imagem" será truncado
 ### jogos/moon_lander.por
 ### jogos/pong.por
 AVISO|87|57|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numero" da função "valor_absoluto" será automaticamente convertido de "inteiro" para "real"
 AVISO|87|28|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
 AVISO|164|20|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
-AVISO|224|95|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_texto" será truncado
+AVISO|224|103|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_texto" será truncado
 AVISO|226|33|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_texto" será truncado
-AVISO|227|97|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_texto" será truncado
+AVISO|227|85|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_texto" será truncado
 ### jogos/programe/criador_de_fases.por
 AVISO|201|31|AvisoSemantico.AvisoSimboloGlobalOcultado|A variável "nome_arquivo" está ocultando uma variável do escopo global.
 AVISO|267|31|AvisoSemantico.AvisoSimboloGlobalOcultado|A variável "nome_arquivo" está ocultando uma variável do escopo global.
@@ -378,11 +376,8 @@ AVISO|1521|67|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expres
 AVISO|1521|72|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "tamanho_y_objeto" da função "mouse_esta_sobre_objeto" será automaticamente convertido de "inteiro" para "real"
 ### jogos/serpente.por
 ### jogos/slide.por
-AVISO|75|112|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numero" da função "arredondar" será automaticamente convertido de "inteiro" para "real"
-AVISO|75|101|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "yi" da função "desenhar_porcao_imagem" será truncado
-### jogos/slide/slide.por
-AVISO|75|112|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numero" da função "arredondar" será automaticamente convertido de "inteiro" para "real"
-AVISO|75|101|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "yi" da função "desenhar_porcao_imagem" será truncado
+AVISO|98|112|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numero" da função "arredondar" será automaticamente convertido de "inteiro" para "real"
+AVISO|98|101|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "yi" da função "desenhar_porcao_imagem" será truncado
 ### jogos/theballsaga/theballsaga.por
 AVISO|197|28|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "tamanho" da função "definir_tamanho_texto" será automaticamente convertido de "inteiro" para "real"
 AVISO|198|21|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_texto" será truncado

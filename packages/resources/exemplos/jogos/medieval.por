@@ -53,7 +53,9 @@ programa {
   inteiro top_icon_margin = 200, left_icon_margin = 50
   inteiro temp
 
-  inteiro itens_carregaveis = 40
+  // Etapas da barra de carregamento: as 6 imagens iniciais, uma por imagem de cada
+  // categoria, e as 2 últimas (o botão de jogar e o som da câmera)
+  inteiro itens_carregaveis = 6 + numero_roupas + numero_armas + numero_fundos + numero_escudos + numero_faces + 2
 
   funcao desenhar_load(inteiro i) {
     g.definir_cor(0xCB4545)
@@ -318,7 +320,11 @@ programa {
       s.reproduzir_som(flash_mp3, falso)
       cadeia formatos_suportados[1] = {"Arquivos de imagem|png"}
       cadeia tempa = a.selecionar_arquivo(formatos_suportados, falso)
-      g.salvar_imagem(temp, tempa)
+
+      // Se a janela de seleção for cancelada, o caminho fica vazio e não há o que salvar
+      se (tempa != "") {
+        g.salvar_imagem(temp, tempa)
+      }
       g.liberar_imagem(temp)
       g.definir_cor(g.COR_PRETO)
       g.limpar()

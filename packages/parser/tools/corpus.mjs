@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 //
-// Roda o nosso analisador sobre os 119 exemplos oficiais
+// Roda o nosso analisador sobre os 117 exemplos oficiais
 // (packages/resources/exemplos/**/*.por) e imprime um resumo mais uma linha por
 // erro e por parseError.
 //
