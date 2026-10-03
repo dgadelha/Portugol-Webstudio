@@ -1,6 +1,15 @@
-:host {
-  --mat-dialog-with-actions-content-padding: 20px 24px 0 24px;
+form {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
 
-  display: block;
-  min-width: min(80vw, 300px);
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.field-label {
+  font-weight: 600;
 }

@@ -1,7 +1,7 @@
 <div class="field">
   <div class="field-text">
     <span id="setting-output-font-size" class="field-label">Tamanho da fonte</span>
-    <p class="field-description">
+    <p id="setting-output-font-size-descricao" class="field-description">
       @if (followsEditor) {
         Igual ao do editor, até ser alterado aqui.
       } @else {
@@ -12,13 +12,13 @@
 
   <app-font-size-control
     labelledBy="setting-output-font-size"
-    [value]="outputFontSize"
-    (valueChange)="outputFontSize = $event"
+    describedBy="setting-output-font-size-descricao"
+    [(value)]="outputFontSize"
   />
 
   @if (!followsEditor) {
-    <button type="button" mat-button class="follow-editor" (click)="followEditor()">
-      <svg-icon src="assets/mdi/restore.svg" aria-hidden="true" focusable="false" matButtonIcon />
+    <button type="button" class="btn btn-ghost btn-sm follow-editor" (click)="followEditor()">
+      <svg-icon src="assets/mdi/restore.svg" aria-hidden="true" />
       Usar o tamanho do editor
     </button>
   }
@@ -28,45 +28,92 @@
 
 <div class="field inline">
   <div class="field-text">
-    <span id="setting-output-clear-on-run" class="field-label">Limpar ao executar</span>
-    <p class="field-description">Desativado, a saída de cada execução fica abaixo da anterior.</p>
+    <span id="setting-output-start-collapsed" class="field-label">Começar com o painel recolhido</span>
+    <p id="setting-output-start-collapsed-descricao" class="field-description">
+      Uma aba de código nova mostra só o cabeçalho do painel, que abre sozinho ao executar. Desativado, o painel já
+      começa aberto.
+    </p>
   </div>
 
-  <mat-slide-toggle aria-labelledby="setting-output-clear-on-run" color="primary" [(ngModel)]="outputClearOnRun" />
+  <input
+    type="checkbox"
+    role="switch"
+    class="switch"
+    aria-labelledby="setting-output-start-collapsed"
+    aria-describedby="setting-output-start-collapsed-descricao"
+    [(ngModel)]="outputStartCollapsed"
+  />
+</div>
+
+<div class="field inline">
+  <div class="field-text">
+    <span id="setting-output-clear-on-run" class="field-label">Limpar ao executar</span>
+    <p id="setting-output-clear-on-run-descricao" class="field-description">
+      Desativado, a saída de cada execução fica abaixo da anterior.
+    </p>
+  </div>
+
+  <input
+    type="checkbox"
+    role="switch"
+    class="switch"
+    aria-labelledby="setting-output-clear-on-run"
+    aria-describedby="setting-output-clear-on-run-descricao"
+    [(ngModel)]="outputClearOnRun"
+  />
 </div>
 
 <div class="field inline">
   <div class="field-text">
     <span id="setting-output-auto-scroll" class="field-label">Rolar até o fim</span>
-    <p class="field-description">
+    <p id="setting-output-auto-scroll-descricao" class="field-description">
       Acompanha a saída conforme o programa escreve. Quando o programa espera uma entrada, a saída sempre vai para o
       fim.
     </p>
   </div>
 
-  <mat-slide-toggle aria-labelledby="setting-output-auto-scroll" color="primary" [(ngModel)]="outputAutoScroll" />
+  <input
+    type="checkbox"
+    role="switch"
+    class="switch"
+    aria-labelledby="setting-output-auto-scroll"
+    aria-describedby="setting-output-auto-scroll-descricao"
+    [(ngModel)]="outputAutoScroll"
+  />
 </div>
 
 <div class="field inline">
   <div class="field-text">
     <span id="setting-output-word-wrap" class="field-label">Quebra de linha</span>
-    <p class="field-description">
+    <p id="setting-output-word-wrap-descricao" class="field-description">
       Linhas longas continuam embaixo. Desativada, desenhos e tabelas feitos com texto não se desalinham.
     </p>
   </div>
 
-  <mat-slide-toggle aria-labelledby="setting-output-word-wrap" color="primary" [(ngModel)]="outputWordWrap" />
+  <input
+    type="checkbox"
+    role="switch"
+    class="switch"
+    aria-labelledby="setting-output-word-wrap"
+    aria-describedby="setting-output-word-wrap-descricao"
+    [(ngModel)]="outputWordWrap"
+  />
 </div>
 
 <div class="field inline">
   <div class="field-text">
     <span id="setting-output-show-execution-time" class="field-label">Mostrar o tempo de execução</span>
-    <p class="field-description">Ao fim de cada execução, a saída diz quantos milissegundos o programa levou.</p>
+    <p id="setting-output-show-execution-time-descricao" class="field-description">
+      Ao fim de cada execução, a saída diz quantos milissegundos o programa levou.
+    </p>
   </div>
 
-  <mat-slide-toggle
+  <input
+    type="checkbox"
+    role="switch"
+    class="switch"
     aria-labelledby="setting-output-show-execution-time"
-    color="primary"
+    aria-describedby="setting-output-show-execution-time-descricao"
     [(ngModel)]="outputShowExecutionTime"
   />
 </div>

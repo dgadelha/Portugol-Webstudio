@@ -1,14 +1,13 @@
-:host {
-  display: block;
-  min-width: min(80vw, 300px);
-  max-width: 420px;
+.dialog-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
-em {
-  word-break: break-all;
-  text-overflow: ellipsis;
+.tab-name {
+  word-break: break-word;
 }
 
-.danger-alert {
-  color: var(--pws-color-red);
+.warning {
+  color: var(--pws-danger-fg);
 }

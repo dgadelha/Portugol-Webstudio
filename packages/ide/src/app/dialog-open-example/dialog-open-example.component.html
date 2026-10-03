@@ -1,16 +1,18 @@
-<header>
-  <h2 mat-dialog-title>Exemplos</h2>
-  <p>Busque um exemplo e abra em uma nova aba para editar e executar.</p>
+<header class="dialog-header">
+  <div class="dialog-title">
+    <h2 id="dialogo-exemplos-titulo">Exemplos</h2>
+    <p>Busque um exemplo e abra em uma nova aba para editar e executar.</p>
+  </div>
 
-  <button class="close" mat-dialog-close mat-icon-button aria-label="Fechar diálogo" type="button">
-    <svg-icon src="assets/mdi/close.svg" aria-hidden="true" focusable="false" />
+  <button type="button" class="icon-btn" aria-label="Fechar" appTooltip="Fechar" (click)="dialogRef.close()">
+    <svg-icon src="assets/mdi/close.svg" aria-hidden="true" />
   </button>
 </header>
 
-<main>
+<div class="examples">
   <div class="list">
     <label class="search">
-      <svg-icon src="assets/mdi/magnify.svg" aria-hidden="true" focusable="false" />
+      <svg-icon src="assets/mdi/magnify.svg" aria-hidden="true" />
       <input
         type="search"
         placeholder="Buscar exemplos…"
@@ -25,9 +27,17 @@
       />
     </label>
 
-    <div id="example-list" class="items" role="listbox" aria-label="Exemplos">
+    <div
+      id="example-list"
+      class="items"
+      role="listbox"
+      tabindex="0"
+      aria-label="Exemplos"
+      [attr.aria-activedescendant]="current ? `example-${current.id}` : null"
+      (keydown)="onSearchKeydown($event)"
+    >
       @if (loading) {
-        <mat-spinner [diameter]="32" />
+        <div class="spinner" role="status" aria-label="Carregando exemplos"></div>
       } @else {
         @for (group of groups; track group.category) {
           <div class="group" role="group" [attr.aria-label]="group.category">
@@ -45,7 +55,7 @@
                 (dblclick)="openExample(entry.item)"
                 (keydown.enter)="openExample(entry.item)"
               >
-                <svg-icon src="assets/mdi/file-code-outline.svg" aria-hidden="true" focusable="false" />
+                <svg-icon src="assets/mdi/file-code-outline.svg" aria-hidden="true" />
                 <span class="item-name">{{ entry.item.name }}</span>
                 @if (entry.path.length) {
                   <span class="item-path">{{ entry.path.join(" › ") }}</span>
@@ -77,13 +87,19 @@
             {{ descriptionExpanded ? "Leia menos" : "Leia mais" }}
           </button>
         </div>
-
-        <button mat-flat-button color="primary" type="button" (click)="openExample(current)">Abrir</button>
       </div>
 
       <div class="preview-code">
         <ngx-monaco-editor [options]="editorOptions" [(ngModel)]="exampleCode" (init)="editor = $event" />
       </div>
+
+      <div class="preview-footer">
+        <span class="preview-hint"><kbd>Enter</kbd> abre o exemplo escolhido</span>
+        <button type="button" class="btn btn-primary open-button" (click)="openExample(current)">
+          <svg-icon src="assets/mdi/tab-plus.svg" aria-hidden="true" />
+          Abrir exemplo
+        </button>
+      </div>
     }
   </div>
-</main>
+</div>

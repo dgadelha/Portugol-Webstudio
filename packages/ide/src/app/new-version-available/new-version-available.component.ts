@@ -1,14 +1,11 @@
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
-import { MatButtonModule } from "@angular/material/button";
 import { HotToastRef } from "@ngxpert/hot-toast";
 
 @Component({
   selector: "app-new-version-available",
-  imports: [MatButtonModule],
-  standalone: true,
   templateUrl: "./new-version-available.component.html",
   styleUrl: "./new-version-available.component.scss",
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NewVersionAvailableComponent {
   public toastRef = inject(HotToastRef, { optional: true });

@@ -1,7 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { FormsModule } from "@angular/forms";
-import { MatButtonModule } from "@angular/material/button";
-import { MatSlideToggleModule } from "@angular/material/slide-toggle";
 import { AngularSvgIconModule } from "angular-svg-icon";
 import { LocalStorage, LocalStorageService } from "ngx-webstorage";
 import { settings } from "../../settings";
@@ -9,8 +7,7 @@ import { FontSizeControlComponent } from "./font-size-control.component";
 
 @Component({
   selector: "app-output-section",
-  imports: [FormsModule, MatButtonModule, MatSlideToggleModule, AngularSvgIconModule, FontSizeControlComponent],
-  standalone: true,
+  imports: [FormsModule, AngularSvgIconModule, FontSizeControlComponent],
   templateUrl: "./output-section.component.html",
   styleUrls: ["./setting-field.scss", "./output-section.component.scss"],
   changeDetection: ChangeDetectionStrategy.Eager,
@@ -47,6 +44,9 @@ export class OutputSectionComponent {
 
   @LocalStorage(settings.outputWordWrap.key, settings.outputWordWrap.default)
   outputWordWrap!: boolean;
+
+  @LocalStorage(settings.outputStartCollapsed.key, settings.outputStartCollapsed.default)
+  outputStartCollapsed!: boolean;
 
   @LocalStorage(settings.outputShowExecutionTime.key, settings.outputShowExecutionTime.default)
   outputShowExecutionTime!: boolean;

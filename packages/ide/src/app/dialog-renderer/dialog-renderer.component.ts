@@ -1,23 +1,34 @@
+import { DIALOG_DATA, DialogRef } from "@angular/cdk/dialog";
 import { DragDropModule } from "@angular/cdk/drag-drop";
-import { ChangeDetectionStrategy, Component, ElementRef, inject, Input, viewChild } from "@angular/core";
-import { MatButtonModule } from "@angular/material/button";
-import { MatDialogClose, MatDialogContent, MatDialogRef, MatDialogTitle } from "@angular/material/dialog";
+import { ChangeDetectionStrategy, Component, ElementRef, inject, signal, viewChild } from "@angular/core";
 import { AngularSvgIconModule } from "angular-svg-icon";
-import { IGraphicsRendererComponent } from "../../renderer";
 
+import { IGraphicsRendererComponent } from "../../renderer";
+import { TooltipDirective } from "../shared/tooltip.directive";
+
+interface DialogData {
+  /**
+   * `id` do título, que dá o nome acessível da janela.
+   */
+  titleId: string;
+}
+
+/**
+ * Janela da biblioteca Gráficos. Ela não escurece o resto da tela e pode ser
+ * arrastada pelo título.
+ */
 @Component({
   selector: "app-dialog-renderer",
-  imports: [MatButtonModule, MatDialogClose, MatDialogContent, MatDialogTitle, AngularSvgIconModule, DragDropModule],
-  standalone: true,
+  imports: [AngularSvgIconModule, DragDropModule, TooltipDirective],
   templateUrl: "./dialog-renderer.component.html",
   styleUrl: "./dialog-renderer.component.scss",
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DialogRendererComponent implements IGraphicsRendererComponent {
-  private dialogRef = inject(MatDialogRef<DialogRendererComponent>);
+  private readonly dialogRef = inject(DialogRef);
+  readonly data = inject<DialogData>(DIALOG_DATA);
 
-  @Input()
-  title = "";
+  readonly title = signal("");
 
   readonly canvas = viewChild<ElementRef<HTMLCanvasElement>>("canvas");
 
@@ -35,11 +46,11 @@ export class DialogRendererComponent implements IGraphicsRendererComponent {
   }
 
   setTitle(title: string) {
-    this.title = title;
+    this.title.set(title);
   }
 
   setSize(_width: number, _height: number) {
-    // Não precisa fazer nada
+    // O canvas se ajusta sozinho
   }
 
   close() {
