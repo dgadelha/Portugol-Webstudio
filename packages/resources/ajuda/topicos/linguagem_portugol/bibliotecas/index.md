@@ -19,13 +19,13 @@ g.iniciar_modo_grafico(verdadeiro)
 
 No Portugol, existem as seguintes bibliotecas:
 
-- Calendario
-- Graficos
-- Matematica
-- Objetos
-- Texto
-- Tipos
-- Util
+- [Calendario](../../../bibliotecas/Calendario.md)
+- [Graficos](../../../bibliotecas/Graficos.md)
+- [Matematica](../../../bibliotecas/Matematica.md)
+- [Objetos](../../../bibliotecas/Objetos.md)
+- [Texto](../../../bibliotecas/Texto.md)
+- [Tipos](../../../bibliotecas/Tipos.md)
+- [Util](../../../bibliotecas/Util.md)
 
 ```portugol exemplo title="Exemplo"
 programa {
