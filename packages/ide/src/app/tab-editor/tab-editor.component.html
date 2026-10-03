@@ -218,11 +218,13 @@
             <svg-icon src="assets/mdi/console.svg" aria-hidden="true" focusable="false" />
             <h2 id="output-title">Saída</h2>
 
-            @if (executor.waitingForInput) {
-              <span class="output-status waiting"><span class="dot"></span>Aguardando entrada</span>
-            } @else if (executor.running) {
-              <span class="output-status running"><span class="dot"></span>Executando</span>
-            }
+            <span class="output-status-region" role="status">
+              @if (executor.waitingForInput) {
+                <span class="output-status waiting"><span class="dot"></span>Aguardando entrada</span>
+              } @else if (executor.running) {
+                <span class="output-status running"><span class="dot"></span>Executando</span>
+              }
+            </span>
           </div>
 
           <button
