@@ -1,0 +1,27 @@
+<button
+  type="button"
+  mat-stroked-button
+  class="font-size-step"
+  aria-label="Diminuir fonte"
+  [disabled]="value() <= range.min"
+  (click)="change(value() - 1)"
+>
+  <svg-icon src="assets/mdi/minus.svg" aria-hidden="true" focusable="false" />
+</button>
+
+<mat-slider color="primary" step="1" [min]="range.min" [max]="range.max">
+  <input matSliderThumb [attr.aria-labelledby]="labelledBy()" [ngModel]="value()" (ngModelChange)="change($event)" />
+</mat-slider>
+
+<button
+  type="button"
+  mat-stroked-button
+  class="font-size-step"
+  aria-label="Aumentar fonte"
+  [disabled]="value() >= range.max"
+  (click)="change(value() + 1)"
+>
+  <svg-icon src="assets/mdi/plus.svg" aria-hidden="true" focusable="false" />
+</button>
+
+<span class="font-size-value">{{ value() }}px</span>

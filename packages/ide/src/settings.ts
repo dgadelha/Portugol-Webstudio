@@ -75,13 +75,25 @@ export const settings = {
   editorRenderWhitespace: oneOf("editorRenderWhitespace", ["none", "selection", "all"], "selection"),
   editorAutoClosing: boolean("editorAutoClosing", true),
   editorCursorStyle: oneOf("editorCursorStyle", ["line", "block", "underline"], "line"),
+  editorQuickSuggestions: boolean("editorQuickSuggestions", true),
+  // Desativado, os erros só aparecem ao executar.
+  editorLiveDiagnostics: boolean("editorLiveDiagnostics", true),
+  editorRenderLineHighlight: oneOf("editorRenderLineHighlight", ["none", "line", "all"], "line"),
+  editorFolding: boolean("editorFolding", true),
+  editorStickyScroll: boolean("editorStickyScroll", true),
   // Sem valor, acompanha o tamanho da fonte do editor.
   outputFontSize: integer("outputFontSize", null, fontSizeRange),
   outputClearOnRun: boolean("outputClearOnRun", true),
   outputAutoScroll: boolean("outputAutoScroll", true),
+  outputWordWrap: boolean("outputWordWrap", true),
+  outputShowExecutionTime: boolean("outputShowExecutionTime", true),
+  interfaceConfirmCloseTab: boolean("interfaceConfirmCloseTab", true),
+  // Numa janela nova, adota as abas da última janela fechada.
+  interfaceReopenTabs: boolean("interfaceReopenTabs", true),
 };
 
 export type ThemePreference = SettingValue<typeof settings.theme>;
 export type EditorLineNumbers = SettingValue<typeof settings.editorLineNumbers>;
 export type EditorRenderWhitespace = SettingValue<typeof settings.editorRenderWhitespace>;
 export type EditorCursorStyle = SettingValue<typeof settings.editorCursorStyle>;
+export type EditorRenderLineHighlight = SettingValue<typeof settings.editorRenderLineHighlight>;

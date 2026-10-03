@@ -43,6 +43,11 @@ export class PortugolExecutor {
   clearStdOutOnRun = true;
   private _stdOut$?: Subscription;
 
+  /**
+   * Com `false`, o aviso de fim da execução não diz quanto tempo ela levou.
+   */
+  showExecutionTime = true;
+
   waitingForInput = false;
   waitingForInput$ = new Subject<boolean>();
   private _waitingForInput$?: Subscription;
@@ -165,11 +170,10 @@ export class PortugolExecutor {
         next: event => {
           switch (event.type) {
             case "finish": {
-              if (event.stopped) {
-                this.stdOut += `\nO programa foi interrompido! Tempo de execução: ${event.time} milissegundos\n`;
-              } else {
-                this.stdOut += `\nPrograma finalizado. Tempo de execução: ${event.time} milissegundos\n`;
-              }
+              const message = event.stopped ? "O programa foi interrompido!" : "Programa finalizado.";
+              const time = this.showExecutionTime ? ` Tempo de execução: ${event.time} milissegundos` : "";
+
+              this.stdOut += `\n${message}${time}\n`;
 
               this.#printTimes({ ...times, execution: event.time });
               this.stdOut$.next(this.stdOut);

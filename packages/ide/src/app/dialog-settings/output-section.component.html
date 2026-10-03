@@ -1,0 +1,72 @@
+<div class="field">
+  <div class="field-text">
+    <span id="setting-output-font-size" class="field-label">Tamanho da fonte</span>
+    <p class="field-description">
+      @if (followsEditor) {
+        Igual ao do editor, até ser alterado aqui.
+      } @else {
+        Próprio da saída. O editor usa {{ editorFontSize }}px.
+      }
+    </p>
+  </div>
+
+  <app-font-size-control
+    labelledBy="setting-output-font-size"
+    [value]="outputFontSize"
+    (valueChange)="outputFontSize = $event"
+  />
+
+  @if (!followsEditor) {
+    <button type="button" mat-button class="follow-editor" (click)="followEditor()">
+      <svg-icon src="assets/mdi/restore.svg" aria-hidden="true" focusable="false" matButtonIcon />
+      Usar o tamanho do editor
+    </button>
+  }
+</div>
+
+<hr />
+
+<div class="field inline">
+  <div class="field-text">
+    <span id="setting-output-clear-on-run" class="field-label">Limpar ao executar</span>
+    <p class="field-description">Desativado, a saída de cada execução fica abaixo da anterior.</p>
+  </div>
+
+  <mat-slide-toggle aria-labelledby="setting-output-clear-on-run" color="primary" [(ngModel)]="outputClearOnRun" />
+</div>
+
+<div class="field inline">
+  <div class="field-text">
+    <span id="setting-output-auto-scroll" class="field-label">Rolar até o fim</span>
+    <p class="field-description">
+      Acompanha a saída conforme o programa escreve. Quando o programa espera uma entrada, a saída sempre vai para o
+      fim.
+    </p>
+  </div>
+
+  <mat-slide-toggle aria-labelledby="setting-output-auto-scroll" color="primary" [(ngModel)]="outputAutoScroll" />
+</div>
+
+<div class="field inline">
+  <div class="field-text">
+    <span id="setting-output-word-wrap" class="field-label">Quebra de linha</span>
+    <p class="field-description">
+      Linhas longas continuam embaixo. Desativada, desenhos e tabelas feitos com texto não se desalinham.
+    </p>
+  </div>
+
+  <mat-slide-toggle aria-labelledby="setting-output-word-wrap" color="primary" [(ngModel)]="outputWordWrap" />
+</div>
+
+<div class="field inline">
+  <div class="field-text">
+    <span id="setting-output-show-execution-time" class="field-label">Mostrar o tempo de execução</span>
+    <p class="field-description">Ao fim de cada execução, a saída diz quantos milissegundos o programa levou.</p>
+  </div>
+
+  <mat-slide-toggle
+    aria-labelledby="setting-output-show-execution-time"
+    color="primary"
+    [(ngModel)]="outputShowExecutionTime"
+  />
+</div>

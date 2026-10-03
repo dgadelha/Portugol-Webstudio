@@ -1,0 +1,59 @@
+<div class="field">
+  <div class="field-text">
+    <span id="setting-theme" class="field-label">Tema</span>
+    <p class="field-description">Sistema acompanha o modo claro ou escuro do seu dispositivo.</p>
+  </div>
+
+  <div role="radiogroup" aria-labelledby="setting-theme" class="themes">
+    @for (option of themes; track option.value) {
+      <button
+        type="button"
+        role="radio"
+        class="theme"
+        [attr.aria-checked]="option.value === theme"
+        [attr.data-value]="option.value"
+        [tabIndex]="option.value === theme ? 0 : -1"
+        (click)="theme = option.value"
+        (keydown)="onKeyDown($event)"
+      >
+        <span class="theme-frame">
+          @if (option.value === "auto") {
+            <span class="split">
+              <ng-container *ngTemplateOutlet="mockup; context: { $implicit: 'light' }" />
+              <span class="split-dark">
+                <ng-container *ngTemplateOutlet="mockup; context: { $implicit: 'dark' }" />
+              </span>
+            </span>
+          } @else {
+            <ng-container *ngTemplateOutlet="mockup; context: { $implicit: option.value }" />
+          }
+
+          @if (option.value === theme) {
+            <span class="theme-check">
+              <svg-icon src="assets/mdi/check.svg" aria-hidden="true" focusable="false" />
+            </span>
+          }
+        </span>
+        <span class="theme-label">{{ option.label }}</span>
+      </button>
+    }
+  </div>
+</div>
+
+<ng-template #mockup let-variant>
+  <span class="mockup" [attr.data-variant]="variant">
+    <span class="mockup-sidebar"></span>
+    <span class="mockup-main">
+      <span class="mockup-tabs">
+        <span class="mockup-active-tab"></span>
+        <span class="mockup-tab"></span>
+      </span>
+      <span class="mockup-editor">
+        <span class="line program-line"></span>
+        <span class="line call-line"></span>
+        <span class="line text-line"></span>
+        <span class="line end-line"></span>
+      </span>
+    </span>
+  </span>
+</ng-template>
