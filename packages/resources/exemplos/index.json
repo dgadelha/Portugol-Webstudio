@@ -472,12 +472,6 @@
             "arquivo": "bibliotecas/internet/robos.por",
             "descricao": "Este é um exemplo de utilização da biblioteca \"Internet\" que exibe um robô aleatório sempre que executado.",
             "imagem": "bibliotecas/internet/bolinha.png"
-          },
-          {
-            "nome": "Frase Gerada com Imagens Aleatórias de Letras",
-            "arquivo": "bibliotecas/internet/gerador_palavras.por",
-            "descricao": "Este é um exemplo de utilização da biblioteca \"Internet\" que gera uma imagem composta por imagens aleatórias de cada letra.",
-            "imagem": "bibliotecas/internet/ps.png"
           }
         ]
       },
