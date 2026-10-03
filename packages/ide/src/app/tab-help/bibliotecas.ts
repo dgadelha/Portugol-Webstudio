@@ -1,4 +1,4 @@
-import { bibliotecas } from "@portugol-recursos/bibliotecas";
+import { bibliotecas } from "@portugol-webstudio/resources/bibliotecas";
 import { BIBLIOTECAS_IMPLEMENTADAS } from "@portugol-webstudio/parser";
 import { TreeItem } from "./types";
 
@@ -76,7 +76,6 @@ const bibliotecasWebstudio = new Set<string>(BIBLIOTECAS_IMPLEMENTADAS);
 export const libsTree: TreeItem = {
   id: "libs",
   text: "Bibliotecas",
-  kind: "markdown",
   source: "Selecione um item na árvore à esquerda para visualizar sua documentação",
   children: bibliotecas
     .filter(lib => bibliotecasWebstudio.has(lib.nome))
@@ -84,14 +83,12 @@ export const libsTree: TreeItem = {
       return {
         id: lib.nome,
         text: lib.nome,
-        kind: "markdown",
         source: `# Biblioteca ${lib.nome}\n\n**Descrição:** ${lib.descrição}`,
         children: lib.constantes
           .map<TreeItem>(constante => {
             return {
               id: `${lib.nome}_${constante.nome}`,
               text: constante.nome,
-              kind: "markdown",
               source: `# Biblioteca ${lib.nome}\n\n` + getConstantSource(constante),
             };
           })
@@ -100,7 +97,6 @@ export const libsTree: TreeItem = {
               return {
                 id: `${lib.nome}_${função.nome}`,
                 text: função.nome,
-                kind: "markdown",
                 source: `# Biblioteca ${lib.nome}\n\n` + getFunctionSource(função),
               };
             }),

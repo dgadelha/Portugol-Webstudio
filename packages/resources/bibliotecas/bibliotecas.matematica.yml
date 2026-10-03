@@ -1,0 +1,167 @@
+# yaml-language-server: $schema=./bibliotecas.schema.json
+$schema: "./bibliotecas.schema.json"
+
+bibliotecas:
+  - nome: Matematica
+    descrição: Esta biblioteca contém uma série das funções matemáticas mais comuns
+    constantes:
+      - nome: PI
+        tipo:
+          primitivo: real
+        valor: 3.141592653589793
+        referência: https://pt.wikipedia.org/wiki/Pi
+        descrição: |
+          Constante matemática que representa a relação entre o perímetro de uma circunferência e seu diâmetro, em outras palavras: perimetro/diâmetro
+
+    funções:
+      - nome: potencia
+        descrição: Realiza uma exponenciação através da multiplicação da base por ela mesma tantas vezes quanto indicar o expoente
+        retorno:
+          tipo:
+            primitivo: real
+          descrição: A exponenciação da base pelo expoente
+        referência: https://pt.wikipedia.org/wiki/Exponencia%C3%A7%C3%A3o
+        parâmetros:
+          - nome: base
+            descrição: o número que será multiplicado
+            tipo:
+              primitivo: real
+          - nome: expoente
+            descrição: o número de vezes que a base será multiplicada
+            tipo:
+              primitivo: real
+
+      - nome: raiz
+        descrição: Realiza a radiciação (extrai a raiz) de um número por um determinado índice
+        retorno:
+          tipo:
+            primitivo: real
+          descrição: a raiz do número informado
+        referência: https://pt.wikipedia.org/wiki/Radicia%C3%A7%C3%A3o
+        parâmetros:
+          - nome: radicando
+            descrição: o número do qual será extraída a raíz
+            tipo:
+              primitivo: real
+          - nome: indice
+            descrição: indica o grau da radiciação. Quando o indice é 2 a raíz é quadrada, quando o indice é 3 a raíz é cúbica, e assim por diante
+            tipo:
+              primitivo: real
+
+      - nome: arredondar
+        descrição: Arredonda um número `real` para o número de casas decimais informadas. Quando o último dígito for maior ou igual a 5, o número será arredondado para cima, quando o último dígito for menor que 5, o número será arredondado para baixo
+        retorno:
+          tipo:
+            primitivo: real
+          descrição: o número arredondado
+        referência: https://pt.wikipedia.org/wiki/Arredondamento
+        parâmetros:
+          - nome: numero
+            descrição: o número que será arredondado
+            tipo:
+              primitivo: real
+          - nome: casas
+            descrição: o número de casas decimais após o arredondamento
+            tipo:
+              primitivo: inteiro
+
+      - nome: logaritmo
+        descrição: Calcula o logaritmo de um número para uma determinada base
+        retorno:
+          tipo:
+            primitivo: real
+          descrição: o logaritmo
+        referência: https://pt.wikipedia.org/wiki/Logaritmo
+        parâmetros:
+          - nome: numero
+            descrição: o número resultante da exponenciação
+            tipo:
+              primitivo: real
+          - nome: base
+            descrição: a base da exponenciação
+            tipo:
+              primitivo: real
+
+      - nome: seno
+        descrição: Calcula o seno do **ângulo** informado
+        retorno:
+          tipo:
+            primitivo: real
+          descrição: o seno do `ângulo` informado
+        referência: https://pt.wikipedia.org/wiki/Seno
+        parâmetros:
+          - nome: angulo
+            descrição: o ângulo para o qual será calculado o seno
+            tipo:
+              primitivo: real
+
+      - nome: cosseno
+        descrição: Calcula o cosseno do `ângulo` informado
+        retorno:
+          tipo:
+            primitivo: real
+          descrição: o cosseno do `ângulo` informado
+        referência: https://pt.wikipedia.org/wiki/Cosseno
+        parâmetros:
+          - nome: angulo
+            descrição: o ângulo para o qual será calculado o cosseno
+            tipo:
+              primitivo: real
+
+      - nome: tangente
+        descrição: Calcula a tangente do `ângulo` informado
+        retorno:
+          tipo:
+            primitivo: real
+          descrição: a tangente do `ângulo` informado
+        referência: https://pt.wikipedia.org/wiki/Tangente
+        parâmetros:
+          - nome: angulo
+            descrição: o ângulo para o qual será calculada a tangente
+            tipo:
+              primitivo: real
+
+      - nome: valor_absoluto
+        descrição: Calcula o valor absoluto do `número` informado
+        retorno:
+          tipo:
+            primitivo: real
+          descrição: o valor absoluto do `número` informado
+        referência: https://pt.wikipedia.org/wiki/Fun%C3%A7%C3%A3o_modular
+        parâmetros:
+          - nome: numero
+            descrição: o número para o qual será calculado o valor absoluto
+            tipo:
+              primitivo: real
+
+      - nome: maior_numero
+        descrição: Identifica o maior número entre os números informados
+        retorno:
+          tipo:
+            primitivo: real
+          descrição: o maior número
+        parâmetros:
+          - nome: numeroA
+            descrição: um número qualquer
+            tipo:
+              primitivo: real
+          - nome: numeroB
+            descrição: um número qualquer
+            tipo:
+              primitivo: real
+
+      - nome: menor_numero
+        descrição: Identifica o menor número entre os números informados
+        retorno:
+          tipo:
+            primitivo: real
+          descrição: o menor número
+        parâmetros:
+          - nome: numeroA
+            descrição: um número qualquer
+            tipo:
+              primitivo: real
+          - nome: numeroB
+            descrição: um número qualquer
+            tipo:
+              primitivo: real

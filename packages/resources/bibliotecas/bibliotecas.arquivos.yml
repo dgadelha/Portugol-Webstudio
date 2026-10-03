@@ -1,0 +1,249 @@
+# yaml-language-server: $schema=./bibliotecas.schema.json
+$schema: "./bibliotecas.schema.json"
+
+bibliotecas:
+  - nome: Arquivos
+    descrição: Esta biblioteca permite ler e escrever arquivos
+    constantes:
+      - nome: MODO_LEITURA
+        tipo:
+          primitivo: inteiro
+        valor: 0
+        descrição: indica à biblioteca que o arquivo deve ser aberto apenas para leitura
+      - nome: MODO_ESCRITA
+        tipo:
+          primitivo: inteiro
+        valor: 1
+        descrição: indica à biblioteca que o arquivo deve ser aberto apenas para escrita
+      - nome: MODO_ACRESCENTAR
+        tipo:
+          primitivo: inteiro
+        valor: 2
+        descrição: |
+          indica à biblioteca que o arquivo deve ser aberto apenas para escrita
+          que acrescenta ao final do arquivo
+
+    funções:
+      - nome: abrir_arquivo
+        descrição: |-
+          Abre um arquivo para leitura ou escrita. No modo leitura, caso o arquivo informado não exista, será gerado um erro. No modo escrita, caso o arquivo informado não exista, ele tentará ser criado, se a criação do arquivo falhar, então será gerado um erro.
+
+          **IMPORTANTE:** ao abrir o arquivo no modo de escrita, o conteúdo do arquivo é apagado para que o novo conteúdo seja escrito. Caso seja necessário manter o conteúdo atual do arquivo, deve-se armazená-lo em uma variável e depois escrevê-lo novamente no arquivo.
+        retorno:
+          tipo:
+            primitivo: inteiro
+          descrição: o endereço de memória onde o arquivo foi carregado
+        parâmetros:
+          - nome: caminho_arquivo
+            descrição: o nome do arquivo que se quer abrir
+            tipo:
+              primitivo: cadeia
+          - nome: modo_acesso
+            descrição: |
+              determina se o arquivo será aberto para leitura ou para escrita.
+              Constantes aceitas: MODO_LEITURA | MODO_ESCRITA | MODO_ACRESCENTAR
+            tipo:
+              primitivo: inteiro
+
+      - nome: fechar_arquivo
+        descrição: Fecha um arquivo aberto anteriormente
+        retorno:
+          tipo:
+            primitivo: vazio
+          descrição: ""
+        parâmetros:
+          - nome: endereco
+            descrição: o endereço de memória do arquivo
+            tipo:
+              primitivo: inteiro
+
+      - nome: fim_arquivo
+        descrição: |
+          Verifica se o arquivo chegou ao fim, isto é, se todas as linhas já
+          foram lidas. Esta função só é executada se o arquivo estiver aberto em modo
+          de leitura. Se o arquivo estiver em modo de escrita, será gerado um erro.
+        retorno:
+          tipo:
+            primitivo: logico
+          descrição: |
+            `verdadeiro` se o arquivo tiver chegado ao fim. Caso contrário
+            retorna `falso`
+        parâmetros:
+          - nome: endereco
+            descrição: o endereço de memória do arquivo
+            tipo:
+              primitivo: inteiro
+
+      - nome: ler_linha
+        descrição: |
+          Lê a próxima linha do arquivo. Esta função só é executada se o arquivo
+          estiver aberto em modo de leitura. Se o arquivo estiver em modo de escrita,
+          será gerado um erro.
+        retorno:
+          tipo:
+            primitivo: cadeia
+          descrição: Uma `cadeia` contendo o conteúdo da linha lida.
+        parâmetros:
+          - nome: endereco
+            descrição: o endereço de memória do arquivo
+            tipo:
+              primitivo: inteiro
+
+      - nome: escrever_linha
+        descrição: |
+          Escreve uma linha no arquivo. Esta função só é executada se o arquivo
+          estiver aberto em modo de escrita. Se o arquivo estiver em modo de leitura,
+          será gerado um erro.
+        retorno:
+          tipo:
+            primitivo: vazio
+        parâmetros:
+          - nome: linha
+            descrição: a linha a ser escrita no arquivo
+            tipo:
+              primitivo: cadeia
+          - nome: endereco
+            descrição: o endereço de memória do arquivo
+            tipo:
+              primitivo: inteiro
+
+      - nome: substituir_texto
+        descrição: |
+          Pesquisa por um determinado texto no arquivo e substitui todas as ocorrências por um texto alternativo
+        retorno:
+          tipo:
+            primitivo: vazio
+        parâmetros:
+          - nome: endereco
+            descrição: o endereço do arquivo
+            tipo:
+              primitivo: cadeia
+          - nome: texto_pesquisa
+            descrição: o texto que será pesquisado no arquivo
+            tipo:
+              primitivo: cadeia
+          - nome: texto_substituto
+            descrição: o texto pelo qual as ocorrências serão substituídas
+            tipo:
+              primitivo: cadeia
+          - nome: primeira_ocorrencia
+            descrição: |
+              confirma se substituirá apenas a primeira ocorrência no texto, caso contrário, substituirá todas
+            tipo:
+              primitivo: logico
+
+      - nome: arquivo_existe
+        descrição: Verifica se um determinado arquivo existe no sistema de arquivos
+        retorno:
+          tipo:
+            primitivo: logico
+          descrição: |
+            `verdadeiro` se o arquivo existir
+        parâmetros:
+          - nome: caminho_arquivo
+            descrição: o caminho do arquivo que se quer verificar
+            tipo:
+              primitivo: cadeia
+
+      - nome: apagar_arquivo
+        descrição: Remove um arquivo do sistema de arquivos
+        retorno:
+          tipo:
+            primitivo: vazio
+        parâmetros:
+          - nome: caminho_arquivo
+            descrição: o caminho do arquivo que se quer apagar
+            tipo:
+              primitivo: cadeia
+
+      - nome: selecionar_arquivo
+        descrição: |
+          Abre uma janela que permite ao usuário navegar nos diretórios do computador e selecionar um arquivo
+        retorno:
+          tipo:
+            primitivo: cadeia
+          descrição: |
+            O arquivo selecionado ou uma `cadeia` vazia caso o usuário tenha cancelado.
+        parâmetros:
+          - nome: formatos_suportados
+            descrição: |
+              Define os formatos de arquivos que poderão ser selecionados. Um formato de arquivo é formado por uma descrição e uma lista de extensões válidas.
+              A descrição deve estar separada da lista de extensões pelo caracter '|' e cada extensão deverá estar separada da outra pelo caracter ','. Ex.: 'Arquivos de texto|txt', 'Arquivos de imagem|png,jpg,jpeg,bmp'
+            tipo:
+              primitivo: cadeia
+              dimensão: vetor
+          - nome: aceitar_todos_arquivos
+            descrição: |
+              Quando `verdadeiro`, inclui automaticamente um formato que permite selecionar qualquer arquivo. Este formato também será incluído se nenhum outro formato for informado no parâmetro 'formatos_suportados'
+            tipo:
+              primitivo: logico
+
+      - nome: listar_pastas
+        descrição: |
+          Altera um vetor para que ele represente as pastas existentes em um
+          diretório
+        retorno:
+          tipo:
+            primitivo: vazio
+        parâmetros:
+          - nome: caminho_pai
+            descrição: Define o diretório cujas pastas serão listadas
+            tipo:
+              primitivo: cadeia
+          - nome: vetor_pastas
+            descrição: Vetor destino que contará com as pastas encontradas
+            tipo:
+              primitivo: cadeia
+              dimensão: vetor
+
+      - nome: listar_arquivos
+        descrição: |
+          Altera um vetor para que ele represente os arquivos existentes em um
+          diretório
+        retorno:
+          tipo:
+            primitivo: vazio
+        parâmetros:
+          - nome: caminho_pai
+            descrição: Define o diretório cujas pastas serão listadas
+            tipo:
+              primitivo: cadeia
+          - nome: vetor_arquivos
+            descrição: Vetor destino que contará com os arquivos encontrados
+            tipo:
+              primitivo: cadeia
+              dimensão: vetor
+
+      - nome: listar_arquivos_por_tipo
+        descrição: |
+          Altera um vetor para que ele represente os arquivos existentes em um
+          diretório
+        retorno:
+          tipo:
+            primitivo: vazio
+        parâmetros:
+          - nome: caminho_pai
+            descrição: Define o diretório cujas pastas serão listadas
+            tipo:
+              primitivo: cadeia
+          - nome: vetor_arquivos
+            descrição: Vetor destino que contará com os arquivos encontrados
+            tipo:
+              primitivo: cadeia
+              dimensão: vetor
+          - nome: vetor_tipos
+            descrição: Vetor destino que contará com os tipos de arquivos encontrados
+            tipo:
+              primitivo: cadeia
+              dimensão: vetor
+
+      - nome: criar_pasta
+        descrição: Cria pastas no caminho informado caso elas não existam
+        retorno:
+          tipo:
+            primitivo: vazio
+        parâmetros:
+          - nome: caminho
+            descrição: Caminho onde as pastas serão criadas
+            tipo:
+              primitivo: cadeia

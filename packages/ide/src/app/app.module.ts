@@ -41,6 +41,7 @@ import { MonacoService } from "./monaco.service";
 import { PwaService } from "./pwa.service";
 import { TabChangelogComponent } from "./tab-changelog/tab-changelog.component";
 import { TabEditorComponent } from "./tab-editor/tab-editor.component";
+import { markedPortugol } from "./tab-help/marked-portugol";
 import { TabHelpComponent } from "./tab-help/tab-help.component";
 import { TabStartComponent } from "./tab-start/tab-start.component";
 import { ThemeService } from "./theme.service";
@@ -115,6 +116,11 @@ const GA_TRACKING_CODE = "G-ZKM28VG4G5";
               },
             },
           },
+        },
+        {
+          provide: MARKED_EXTENSIONS,
+          multi: true,
+          useValue: markedPortugol,
         },
       ],
     }),

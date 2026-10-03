@@ -1,4 +1,4 @@
-import { bibliotecas as bibliotecasRecursos } from "@portugol-recursos/bibliotecas";
+import { bibliotecas as bibliotecasRecursos } from "@portugol-webstudio/resources/bibliotecas";
 
 import { TIPO_TODOS, type TipoOperando } from "../analise/TipoDado.js";
 import type { NomeBiblioteca } from "./suporte.gerado.js";
@@ -9,7 +9,7 @@ export type ConstanteBiblioteca = Biblioteca["constantes"][number];
 type TipoBiblioteca = FunçãoBiblioteca["retorno"]["tipo"];
 
 /**
- * O `@portugol-recursos/bibliotecas` escreve o curinga como `"*"`; as tabelas de
+ * O `@portugol-webstudio/resources/bibliotecas` escreve o curinga como `"*"`; as tabelas de
  * compatibilidade o indexam como `todos`.
  */
 export function tipoDaBiblioteca(tipo: TipoBiblioteca): TipoOperando {

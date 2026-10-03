@@ -62,8 +62,14 @@
               },
               {
                 "glob": "**/*",
-                "input": "node_modules/@portugol-webstudio/resources/assets",
-                "output": "assets/recursos/"
+                "input": "node_modules/@portugol-webstudio/resources/ajuda",
+                "output": "assets/recursos/ajuda/"
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/@portugol-webstudio/resources/exemplos",
+                "output": "assets/recursos/exemplos/",
+                "ignore": ["jogos/**", "musica/**"]
               },
               {
                 "glob": "**/*",

@@ -1,0 +1,231 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "bibliotecas": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "nome": {
+            "type": "string",
+            "description": "Nome da biblioteca (ex: Texto)"
+          },
+          "descrição": {
+            "type": "string",
+            "description": "Descrição da biblioteca"
+          },
+          "metadados": {
+            "description": "Metadados da biblioteca",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "constantes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "nome": {
+                  "type": "string",
+                  "description": "Nome da constante"
+                },
+                "valor": {
+                  "description": "Valor da constante"
+                },
+                "descrição": {
+                  "type": "string",
+                  "description": "Descrição da constante, suporta valor em markdown"
+                },
+                "tipo": {
+                  "type": "object",
+                  "properties": {
+                    "primitivo": {
+                      "type": "string",
+                      "enum": [
+                        "cadeia",
+                        "caracter",
+                        "inteiro",
+                        "logico",
+                        "real",
+                        "vazio",
+                        "*"
+                      ],
+                      "description": "Tipo primitivo"
+                    },
+                    "dimensão": {
+                      "description": "Dimensão do tipo, vazio caso escalar",
+                      "type": "string",
+                      "enum": [
+                        "vetor",
+                        "matriz"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "primitivo"
+                  ],
+                  "additionalProperties": false,
+                  "description": "Tipo da constante"
+                },
+                "referência": {
+                  "description": "Referência da função",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "nome",
+                "valor",
+                "descrição",
+                "tipo"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "funções": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "nome": {
+                  "type": "string",
+                  "description": "Nome da função"
+                },
+                "descrição": {
+                  "type": "string",
+                  "description": "Descrição da função, suporta valor em markdown"
+                },
+                "retorno": {
+                  "type": "object",
+                  "properties": {
+                    "tipo": {
+                      "type": "object",
+                      "properties": {
+                        "primitivo": {
+                          "type": "string",
+                          "enum": [
+                            "cadeia",
+                            "caracter",
+                            "inteiro",
+                            "logico",
+                            "real",
+                            "vazio",
+                            "*"
+                          ],
+                          "description": "Tipo primitivo"
+                        },
+                        "dimensão": {
+                          "description": "Dimensão do tipo, vazio caso escalar",
+                          "type": "string",
+                          "enum": [
+                            "vetor",
+                            "matriz"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "primitivo"
+                      ],
+                      "additionalProperties": false,
+                      "description": "Tipo de retorno da função"
+                    },
+                    "descrição": {
+                      "description": "Descrição do retorno da função, suporta valor em markdown",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "tipo"
+                  ],
+                  "additionalProperties": false
+                },
+                "parâmetros": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "nome": {
+                        "type": "string",
+                        "description": "Nome do parâmetro"
+                      },
+                      "tipo": {
+                        "type": "object",
+                        "properties": {
+                          "primitivo": {
+                            "type": "string",
+                            "enum": [
+                              "cadeia",
+                              "caracter",
+                              "inteiro",
+                              "logico",
+                              "real",
+                              "vazio",
+                              "*"
+                            ],
+                            "description": "Tipo primitivo"
+                          },
+                          "dimensão": {
+                            "description": "Dimensão do tipo, vazio caso escalar",
+                            "type": "string",
+                            "enum": [
+                              "vetor",
+                              "matriz"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "primitivo"
+                        ],
+                        "additionalProperties": false,
+                        "description": "Tipo do parâmetro"
+                      },
+                      "descrição": {
+                        "type": "string",
+                        "description": "Descrição do parâmetro, suporta valor em markdown"
+                      }
+                    },
+                    "required": [
+                      "nome",
+                      "tipo",
+                      "descrição"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "referência": {
+                  "description": "Referência da função",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "nome",
+                "descrição",
+                "retorno",
+                "parâmetros"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "nome",
+          "descrição",
+          "constantes",
+          "funções"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "bibliotecas"
+  ],
+  "additionalProperties": false
+}

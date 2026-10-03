@@ -1,0 +1,242 @@
+# yaml-language-server: $schema=./bibliotecas.schema.json
+$schema: "./bibliotecas.schema.json"
+
+bibliotecas:
+  - nome: Calendario
+    descrição: Esta biblioteca é utilizada para retornar a data e(ou) hora do computador
+    constantes:
+      - nome: DIA_DOMINGO
+        tipo:
+          primitivo: inteiro
+        valor: 1
+        descrição: constante que representa o 'Domingo'
+      - nome: DIA_SEGUNDA_FEIRA
+        tipo:
+          primitivo: inteiro
+        valor: 2
+        descrição: constante que representa a 'Segunda-Feira'
+      - nome: DIA_TERCA_FEIRA
+        tipo:
+          primitivo: inteiro
+        valor: 3
+        descrição: constante que representa a 'Terça-Feira'
+      - nome: DIA_QUARTA_FEIRA
+        tipo:
+          primitivo: inteiro
+        valor: 4
+        descrição: constante que representa a 'Quarta-Feira'
+      - nome: DIA_QUINTA_FEIRA
+        tipo:
+          primitivo: inteiro
+        valor: 5
+        descrição: constante que representa a 'Quinta-Feira'
+      - nome: DIA_SEXTA_FEIRA
+        tipo:
+          primitivo: inteiro
+        valor: 6
+        descrição: constante que representa a 'Sexta-Feira'
+      - nome: DIA_SABADO
+        tipo:
+          primitivo: inteiro
+        valor: 7
+        descrição: constante que representa o 'Sábado'
+      - nome: MES_JANEIRO
+        tipo:
+          primitivo: inteiro
+        valor: 1
+        descrição: constante que representa o mês de 'Janeiro'
+      - nome: MES_FEVEREIRO
+        tipo:
+          primitivo: inteiro
+        valor: 2
+        descrição: constante que representa o mês de 'Fevereiro'
+      - nome: MES_MARCO
+        tipo:
+          primitivo: inteiro
+        valor: 3
+        descrição: constante que representa o mês de 'Março'
+      - nome: MES_ABRIL
+        tipo:
+          primitivo: inteiro
+        valor: 4
+        descrição: constante que representa o mês de 'Abril'
+      - nome: MES_MAIO
+        tipo:
+          primitivo: inteiro
+        valor: 5
+        descrição: constante que representa o mês de 'Maio'
+      - nome: MES_JUNHO
+        tipo:
+          primitivo: inteiro
+        valor: 6
+        descrição: constante que representa o mês de 'Junho'
+      - nome: MES_JULHO
+        tipo:
+          primitivo: inteiro
+        valor: 7
+        descrição: constante que representa o mês de 'Julho'
+      - nome: MES_AGOSTO
+        tipo:
+          primitivo: inteiro
+        valor: 8
+        descrição: constante que representa o mês de 'Agosto'
+      - nome: MES_SETEMBRO
+        tipo:
+          primitivo: inteiro
+        valor: 9
+        descrição: constante que representa o mês de 'Setembro'
+      - nome: MES_OUTUBRO
+        tipo:
+          primitivo: inteiro
+        valor: 10
+        descrição: constante que representa o mês de 'Outubro'
+      - nome: MES_NOVEMBRO
+        tipo:
+          primitivo: inteiro
+        valor: 11
+        descrição: constante que representa o mês de 'Novembro'
+      - nome: MES_DEZEMBRO
+        tipo:
+          primitivo: inteiro
+        valor: 12
+        descrição: constante que representa o mês de 'Dezembro'
+
+    funções:
+      - nome: dia_mes_atual
+        descrição: Recupera o dia no mês atual do computador.
+        parâmetros: []
+        retorno:
+          tipo:
+            primitivo: inteiro
+          descrição: |
+            um `inteiro` com o dia no mês com dois dígitos, se forem menores que 10 apenas com um dígito. Ex: 26.
+
+      - nome: dia_semana_atual
+        descrição: Recupera o dia da semana de 1 a 7.
+        parâmetros: []
+        retorno:
+          tipo:
+            primitivo: inteiro
+          descrição: |
+            um `inteiro` com o dia da semana. Ex: 1, para Domingo.
+
+      - nome: mes_atual
+        descrição: Recupera o mês atual do computador de 1 a 12.
+        parâmetros: []
+        retorno:
+          tipo:
+            primitivo: inteiro
+          descrição: |
+            um `inteiro` com o mês com dois dígitos, se forem menores que 10 apenas com um dígito. Ex: 10.
+
+      - nome: ano_atual
+        descrição: Recupera o ano atual do computador.
+        parâmetros: []
+        retorno:
+          tipo:
+            primitivo: inteiro
+          descrição: |
+            um `inteiro` com o ano. Ex: 2012.
+
+      - nome: hora_atual
+        descrição: Recupera os dígitos da hora atual do computador.
+        parâmetros:
+          - nome: formato_12h
+            descrição: um lógico que se verdadeiro o retorno será no formato 12h se falso será em 24h
+            tipo:
+              primitivo: logico
+        retorno:
+          tipo:
+            primitivo: inteiro
+          descrição: |
+            um `inteiro` com a hora atual no formato 12h ou 24h com dois dígitos, se forem menores que 10 apenas com um dígito. Ex: 22 para 24h, se o parâmetro for falso ou 10 para 12h, se o parâmetro for verdadeiro.
+
+      - nome: minuto_atual
+        descrição: Recupera os dígitos do minuto atual do computador.
+        parâmetros: []
+        retorno:
+          tipo:
+            primitivo: inteiro
+          descrição: |
+            um `inteiro` com os minutos atuais com dois dígitos, se forem menores que 10 apenas com um dígito. Ex: 45.
+
+      - nome: segundo_atual
+        descrição: Recupera os dígitos dos segundos atuais do computador.
+        parâmetros: []
+        retorno:
+          tipo:
+            primitivo: inteiro
+          descrição: |
+            um `inteiro` com os segundos atuais com dois dígitos, se forem menores que 10 apenas com um dígito. Ex: 32.
+
+      - nome: milisegundo_atual
+        descrição: Recupera os dígitos dos milissegundos atuais do computador.
+        parâmetros: []
+        retorno:
+          tipo:
+            primitivo: inteiro
+          descrição: |
+            um `inteiro` com os milissegundos atuais, com um, dois ou três dígitos. Ex: 426.
+
+      - nome: dia_semana_completo
+        descrição: De acordo com o valor de 1 a 7 informado retornará um dia da semana completo.
+        parâmetros:
+          - nome: numero_dia
+            descrição: um `inteiro` referente a um dia da semana
+            tipo:
+              primitivo: inteiro
+          - nome: caixa_alta
+            descrição: lógico para retorno em caracteres maiúsculos
+            tipo:
+              primitivo: logico
+          - nome: caixa_baixa
+            descrição: lógico para retorno em caracteres minúsculos
+            tipo:
+              primitivo: logico
+        retorno:
+          tipo:
+            primitivo: cadeia
+          descrição: |
+            uma cadeia com o dia da semana completo. Ex: Segunda-Feira.
+
+      - nome: dia_semana_curto
+        descrição: De acordo com o valor de 1 a 7 informado retornará um dia da semana de forma curta.
+        parâmetros:
+          - nome: numero_dia
+            descrição: um `inteiro` referente a um dia da semana
+            tipo:
+              primitivo: inteiro
+          - nome: caixa_alta
+            descrição: lógico para retorno em caracteres maiúsculos
+            tipo:
+              primitivo: logico
+          - nome: caixa_baixa
+            descrição: lógico para retorno em caracteres minúsculos
+            tipo:
+              primitivo: logico
+        retorno:
+          tipo:
+            primitivo: cadeia
+          descrição: |
+            uma `cadeia` com o dia da semana de forma curta. Ex: Segunda, para Segunda-Feira.
+
+      - nome: dia_semana_abreviado
+        descrição: De acordo com o valor de 1 a 7 informado retornará um dia da semana abreviado.
+        parâmetros:
+          - nome: numero_dia
+            descrição: um `inteiro` referente a um dia da semana
+            tipo:
+              primitivo: inteiro
+          - nome: caixa_alta
+            descrição: lógico para retorno em caracteres maiúsculos
+            tipo:
+              primitivo: logico
+          - nome: caixa_baixa
+            descrição: lógico para retorno em caracteres minúsculos
+            tipo:
+              primitivo: logico
+        retorno:
+          tipo:
+            primitivo: cadeia
+          descrição: |
+            uma `cadeia` com o dia da semana abreviado. Ex: Seg, para Segunda-Feira.

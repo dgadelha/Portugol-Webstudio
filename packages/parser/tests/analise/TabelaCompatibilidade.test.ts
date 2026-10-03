@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 
-import { bibliotecas } from "@portugol-recursos/bibliotecas";
+import { bibliotecas } from "@portugol-webstudio/resources/bibliotecas";
 
 import {
   consultarCompatibilidade,

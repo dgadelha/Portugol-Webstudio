@@ -84,8 +84,7 @@ export default defineConfig(
       // Arquivos gerados:
       "packages/antlr/src/Portugol*.ts",
       "packages/parser/src/bibliotecas/*.gerado.ts",
-      "packages/resources/assets/",
-      "packages/resources/recursos.temp/",
+      "packages/resources/bibliotecas/index.d.ts",
       "packages/ide/src/index.html",
     ],
   },

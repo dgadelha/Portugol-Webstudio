@@ -1,0 +1,154 @@
+# yaml-language-server: $schema=./bibliotecas.schema.json
+$schema: "./bibliotecas.schema.json"
+
+bibliotecas:
+  - nome: Sons
+    descrição: Esta biblioteca contém funções que permitem reproduzir sons dentro de um programa. No momento, somente o formato MP3 é suportado.
+    constantes: []
+
+    funções:
+      - nome: carregar_som
+        descrição: Carrega um som na memória para ser reproduzido mais tarde
+        retorno:
+          tipo:
+            primitivo: inteiro
+          descrição: o endereço de memória no qual o som foi carregado
+        parâmetros:
+          - nome: caminho_som
+            descrição: o caminho para o arquivo de som no sistema de arquivos
+            tipo:
+              primitivo: cadeia
+
+      - nome: liberar_som
+        descrição: Libera a memória utilizada por um som que tenha sido previamente carregado. Se o som estiver sendo reproduzido, todas as reproduções deste som serão interrompidas
+        parâmetros:
+          - nome: endereco
+            descrição: o endereço de memória do som
+            tipo:
+              primitivo: inteiro
+        retorno:
+          tipo:
+            primitivo: vazio
+
+      - nome: reproduzir_som
+        descrição: Reproduz um som previamente carregado na memória. O som é reproduzido de forma assíncrona, ou seja, o som ficará reproduzindo no fundo, enquanto o programa executa as próximas instruções normalmente. Um mesmo som pode ser reproduzido várias vezes e pode se sobrepor a outros sons.
+        retorno:
+          tipo:
+            primitivo: inteiro
+          descrição: o endereço de memória da reprodução de som. Este endereço é utilizado quando se deseja interromper esta reprodução de som especificamente.
+        parâmetros:
+          - nome: endereco
+            descrição: o endereço de memória do som a ser reproduzido
+            tipo:
+              primitivo: inteiro
+          - nome: repetir
+            descrição: determina se o som deve ficar repetindo até ser manualmente interrompido
+            tipo:
+              primitivo: logico
+
+      - nome: pausar_som
+        descrição: Pausa uma reprodução específica de um som que está sendo executada no momento
+        parâmetros:
+          - nome: endereco
+            descrição: o endereço de memória da reprodução que se quer interromper
+            tipo:
+              primitivo: inteiro
+        retorno:
+          tipo:
+            primitivo: vazio
+
+      - nome: interromper_som
+        descrição: Interrompe uma reprodução específica de um som que está sendo executada no momento
+        parâmetros:
+          - nome: endereco
+            descrição: o endereço de memória da reprodução que se quer interromper
+            tipo:
+              primitivo: inteiro
+        retorno:
+          tipo:
+            primitivo: vazio
+
+      - nome: obter_tamanho_musica
+        descrição: Obtêm o tamanho da música em milisegundos
+        retorno:
+          tipo:
+            primitivo: inteiro
+          descrição: tempo total em milissegundos do som
+        parâmetros:
+          - nome: endereco
+            descrição: o endereço de memória da reprodução que se quer alterar o volume
+            tipo:
+              primitivo: inteiro
+
+      - nome: obter_posicao_atual_musica
+        descrição: Obtêm a posição atual da música em milisegundos
+        retorno:
+          tipo:
+            primitivo: inteiro
+          descrição: o tempo atual em milissegundos do som
+        parâmetros:
+          - nome: endereco
+            descrição: o endereço de memória da reprodução que se quer alterar o volume
+            tipo:
+              primitivo: inteiro
+
+      - nome: definir_posicao_atual_musica
+        descrição: Define a posição atual da música em milisegundos
+        parâmetros:
+          - nome: endereco
+            descrição: o endereço de memória da reprodução que se quer alterar o volume
+            tipo:
+              primitivo: inteiro
+          - nome: milissegundos
+            descrição: o tempo em milissegundos que deseja colocar a musica
+            tipo:
+              primitivo: inteiro
+        retorno:
+          tipo:
+            primitivo: vazio
+
+      - nome: definir_volume_reproducao
+        descrição: Define um novo volume para um som que já está sendo executado
+        parâmetros:
+          - nome: endereco
+            descrição: o endereço de memória da reprodução que se quer alterar o volume
+            tipo:
+              primitivo: inteiro
+          - nome: volume
+            descrição: o novo volume entre 0 e 100
+            tipo:
+              primitivo: inteiro
+        retorno:
+          tipo:
+            primitivo: vazio
+
+      - nome: definir_volume
+        descrição: Define o volume geral
+        parâmetros:
+          - nome: volume
+            descrição: O novo volume geral (entre 0 e 100)
+            tipo:
+              primitivo: inteiro
+        retorno:
+          tipo:
+            primitivo: vazio
+
+      - nome: obter_volume
+        descrição: Retorna o volume geral
+        parâmetros: []
+        retorno:
+          tipo:
+            primitivo: inteiro
+          descrição: Um valor do tipo inteiro entre 0 e 100 representando o volume geral atual.
+
+      - nome: obter_volume_reproducao
+        descrição: Retornar o volume de uma reprodução de som
+        retorno:
+          tipo:
+            primitivo: inteiro
+          descrição: Um valor do tipo inteiro entre 0 e 100 representando o volume atual da reprodução. Caso a reprodução não exista ou já tenha sido finalizada o valor -1 será retornado
+        parâmetros:
+          - nome: endereco
+            descrição: O endereço de memória da reprodução que se quer obter o volume
+            tipo:
+              primitivo: inteiro

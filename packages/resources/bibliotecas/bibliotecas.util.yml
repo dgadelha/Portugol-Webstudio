@@ -1,0 +1,90 @@
+# yaml-language-server: $schema=./bibliotecas.schema.json
+$schema: "./bibliotecas.schema.json"
+
+bibliotecas:
+  - nome: Util
+    descrição: Esta biblioteca contém diversas funções utilitárias
+    constantes: []
+
+    funções:
+      - nome: obter_diretorio_usuario
+        descrição: Obtém o caminho utilizado pelo Sistema Operacional como diretório do usuário atual
+        parâmetros: []
+        retorno:
+          tipo:
+            primitivo: cadeia
+          descrição: O diretório do usuário
+
+      - nome: numero_elementos
+        descrição: Descobre o número de elementos existentes em um vetor
+        retorno:
+          tipo:
+            primitivo: inteiro
+          descrição: O número de elementos existentes no vetor
+        parâmetros:
+          - nome: vetor
+            descrição: o vetor em questão
+            tipo:
+              primitivo: "*"
+              dimensão: vetor
+
+      - nome: numero_linhas
+        descrição: Descobre o número de linhas existentes em uma matriz
+        retorno:
+          tipo:
+            primitivo: inteiro
+          descrição: O número de linhas existentes na matriz
+        parâmetros:
+          - nome: matriz
+            descrição: a matriz em questão
+            tipo:
+              primitivo: "*"
+              dimensão: matriz
+
+      - nome: numero_colunas
+        descrição: Descobre o número de colunas existentes em uma matriz
+        retorno:
+          tipo:
+            primitivo: inteiro
+          descrição: O número de colunas existentes na matriz
+        parâmetros:
+          - nome: matriz
+            descrição: a matriz em questão
+            tipo:
+              primitivo: "*"
+              dimensão: matriz
+
+      - nome: sorteia
+        descrição: Sorteia um número aleatório entre os valores mínimo e máximo especificados
+        retorno:
+          tipo:
+            primitivo: inteiro
+          descrição: O número sorteado
+        parâmetros:
+          - nome: minimo
+            descrição: o menor número que pode ser sorteado
+            tipo:
+              primitivo: inteiro
+          - nome: maximo
+            descrição: o maior número que pode ser sorteado
+            tipo:
+              primitivo: inteiro
+
+      - nome: aguarde
+        descrição: Pausa a execução do programa durante o intervalo de tempo especificado
+        parâmetros:
+          - nome: intervalo
+            descrição: o intervalo de tempo (em milissegundos) durante o qual o programa ficará pausado
+            tipo:
+              primitivo: inteiro
+        retorno:
+          tipo:
+            primitivo: vazio
+
+      - nome: tempo_decorrido
+        descrição: Obtém o tempo decorrido (em milissegundos) desde que a biblioteca foi utilizada pela primeira vez
+        parâmetros: []
+        retorno:
+          tipo:
+            primitivo: inteiro
+          descrição: O tempo decorrido em milissegundos

@@ -1,6 +1,6 @@
 // ARQUIVO GERADO — não edite à mão.
 //
-// Cruza `@portugol-recursos/bibliotecas` (o que a linguagem tem) com
+// Cruza `@portugol-webstudio/resources/bibliotecas` (o que a linguagem tem) com
 // packages/runtime/src/libs (o que o runtime do Webstudio executa).
 // Regere com, a partir da raiz do repositório:
 //

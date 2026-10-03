@@ -2,10 +2,11 @@ import { NestedTreeControl } from "@angular/cdk/tree";
 import { HttpClient } from "@angular/common/http";
 import { AfterViewInit, ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit, output } from "@angular/core";
 import { MatTreeNestedDataSource } from "@angular/material/tree";
-import { retry, Subscription } from "rxjs";
+import { map, retry, Subscription } from "rxjs";
 
 import { ResponsiveService } from "../responsive.service";
 import { ThemeService } from "../theme.service";
+import { converterExemplos, Exemplo } from "./exemplos";
 
 export interface ExampleItem {
   id: string;
@@ -62,8 +63,11 @@ export class DialogOpenExampleComponent implements OnInit, OnDestroy, AfterViewI
 
   ngOnInit() {
     this._data$ = this.http
-      .get<ExampleItem[]>("assets/recursos/exemplos/index.json")
-      .pipe(retry())
+      .get<Exemplo[]>("assets/recursos/exemplos/index.json")
+      .pipe(
+        retry(),
+        map(exemplos => converterExemplos(exemplos)),
+      )
       .subscribe(data => {
         this.loading = false;
         this.dataSource.data = data;

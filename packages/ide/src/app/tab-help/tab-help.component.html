@@ -56,23 +56,8 @@
 
   <as-split-area>
     <div class="help-content">
-      @if (current) {
-        @switch (current.kind) {
-          @case ("markdown") {
-            <markdown [data]="current.source" />
-          }
-
-          @default {
-            @if (isLightTheme) {
-              <div class="light-theme-alert">
-                <svg-icon src="assets/mdi/emoticon-sad-outline.svg" svgAriaLabel="Ícone de rosto triste" />
-                Sentimos muito! O conteúdo da seção Ajuda ainda não está disponível no tema claro.
-              </div>
-            }
-
-            <iframe title="Conteúdo da Seção Ajuda" [src]="currentUrl"></iframe>
-          }
-        }
+      @if (markdown !== undefined) {
+        <markdown #conteudo [data]="markdown" (ready)="onContentReady()" />
       }
     </div>
   </as-split-area>

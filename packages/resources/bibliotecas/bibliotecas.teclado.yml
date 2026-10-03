@@ -1,0 +1,724 @@
+# yaml-language-server: $schema=./bibliotecas.schema.json
+$schema: "./bibliotecas.schema.json"
+
+bibliotecas:
+  - nome: Teclado
+    descrição: Esta biblioteca contém um conjunto de funções para manipular a entrada de dados através do teclado do computador. **IMPORTANTE:** Esta biblioteca não funciona no console de entrada e saída de dados do Portugol Studio, ela só funciona com a biblioteca Graficos, se o modo gráfico estiver iniciado.
+    constantes:
+      - nome: TECLA_ENTER
+        tipo:
+          primitivo: inteiro
+        valor: 10
+        descrição: Código numérico da tecla ENTER no teclado
+
+      - nome: TECLA_BACKSPACE
+        tipo:
+          primitivo: inteiro
+        valor: 8
+        descrição: Código numérico da tecla BACKSPACE no teclado
+
+      - nome: TECLA_TAB
+        tipo:
+          primitivo: inteiro
+        valor: 9
+        descrição: Código numérico da tecla TAB no teclado
+
+      - nome: TECLA_CANCELAR
+        tipo:
+          primitivo: inteiro
+        valor: 3
+        descrição: Código numérico da tecla CANCELAR no teclado
+
+      - nome: TECLA_LIMPAR
+        tipo:
+          primitivo: inteiro
+        valor: 12
+        descrição: Código numérico da tecla LIMPAR no teclado
+
+      - nome: TECLA_SHIFT
+        tipo:
+          primitivo: inteiro
+        valor: 16
+        descrição: Código numérico da tecla SHIFT no teclado
+
+      - nome: TECLA_CONTROL
+        tipo:
+          primitivo: inteiro
+        valor: 17
+        descrição: Código numérico da tecla CONTROL no teclado
+
+      - nome: TECLA_ALT
+        tipo:
+          primitivo: inteiro
+        valor: 18
+        descrição: Código numérico da tecla ALT no teclado
+
+      - nome: TECLA_PAUSE
+        tipo:
+          primitivo: inteiro
+        valor: 19
+        descrição: Código numérico da tecla PAUSE/BREAK no teclado
+
+      - nome: TECLA_CAPS_LOCK
+        tipo:
+          primitivo: inteiro
+        valor: 20
+        descrição: Código numérico da tecla CAPSLOCK no teclado
+
+      - nome: TECLA_ESC
+        tipo:
+          primitivo: inteiro
+        valor: 27
+        descrição: Código numérico da tecla ESC no teclado
+
+      - nome: TECLA_ESPACO
+        tipo:
+          primitivo: inteiro
+        valor: 32
+        descrição: Código numérico da tecla ESPAÇO no teclado
+
+      - nome: TECLA_PAGE_UP
+        tipo:
+          primitivo: inteiro
+        valor: 33
+        descrição: Código numérico da tecla PAGE UP no teclado
+
+      - nome: TECLA_PAGE_DOWN
+        tipo:
+          primitivo: inteiro
+        valor: 34
+        descrição: Código numérico da tecla PAGE DOWN no teclado
+
+      - nome: TECLA_END
+        tipo:
+          primitivo: inteiro
+        valor: 35
+        descrição: Código numérico da tecla END no teclado
+
+      - nome: TECLA_HOME
+        tipo:
+          primitivo: inteiro
+        valor: 36
+        descrição: Código numérico da tecla HOME no teclado
+
+      - nome: TECLA_SETA_ESQUERDA
+        tipo:
+          primitivo: inteiro
+        valor: 37
+        descrição: Código numérico da tecla SETA ESQUERDA no teclado
+
+      - nome: TECLA_SETA_ACIMA
+        tipo:
+          primitivo: inteiro
+        valor: 38
+        descrição: Código numérico da tecla SETA ACIMA no teclado
+
+      - nome: TECLA_SETA_DIREITA
+        tipo:
+          primitivo: inteiro
+        valor: 39
+        descrição: Código numérico da tecla SETA DIREITA no teclado
+
+      - nome: TECLA_SETA_ABAIXO
+        tipo:
+          primitivo: inteiro
+        valor: 40
+        descrição: Código numérico da tecla SETA ABAIXO no teclado
+
+      - nome: TECLA_VIRGULA
+        tipo:
+          primitivo: inteiro
+        valor: 44
+        descrição: Código numérico da tecla ',' no teclado
+
+      - nome: TECLA_MENOS
+        tipo:
+          primitivo: inteiro
+        valor: 45
+        descrição: Código numérico da tecla '-' no teclado
+
+      - nome: TECLA_PONTO_FINAL
+        tipo:
+          primitivo: inteiro
+        valor: 46
+        descrição: Código numérico da tecla '.' no teclado
+
+      - nome: TECLA_BARRA
+        tipo:
+          primitivo: inteiro
+        valor: 47
+        descrição: Código numérico da tecla '/' no teclado
+
+      - nome: TECLA_0
+        tipo:
+          primitivo: inteiro
+        valor: 48
+        descrição: Código numérico da tecla '0' no teclado
+
+      - nome: TECLA_1
+        tipo:
+          primitivo: inteiro
+        valor: 49
+        descrição: Código numérico da tecla '1' no teclado
+
+      - nome: TECLA_2
+        tipo:
+          primitivo: inteiro
+        valor: 50
+        descrição: Código numérico da tecla '2' no teclado
+
+      - nome: TECLA_3
+        tipo:
+          primitivo: inteiro
+        valor: 51
+        descrição: Código numérico da tecla '3' no teclado
+
+      - nome: TECLA_4
+        tipo:
+          primitivo: inteiro
+        valor: 52
+        descrição: Código numérico da tecla '4' no teclado
+
+      - nome: TECLA_5
+        tipo:
+          primitivo: inteiro
+        valor: 53
+        descrição: Código numérico da tecla '5' no teclado
+
+      - nome: TECLA_6
+        tipo:
+          primitivo: inteiro
+        valor: 54
+        descrição: Código numérico da tecla '6' no teclado
+
+      - nome: TECLA_7
+        tipo:
+          primitivo: inteiro
+        valor: 55
+        descrição: Código numérico da tecla '7' no teclado
+
+      - nome: TECLA_8
+        tipo:
+          primitivo: inteiro
+        valor: 56
+        descrição: Código numérico da tecla '8' no teclado
+
+      - nome: TECLA_9
+        tipo:
+          primitivo: inteiro
+        valor: 57
+        descrição: Código numérico da tecla '9' no teclado
+
+      - nome: TECLA_PONTO_VIRGULA
+        tipo:
+          primitivo: inteiro
+        valor: 59
+        descrição: Código numérico da tecla ';' no teclado
+
+      - nome: TECLA_IGUAL
+        tipo:
+          primitivo: inteiro
+        valor: 61
+        descrição: Código numérico da tecla '=' no teclado
+
+      - nome: TECLA_A
+        tipo:
+          primitivo: inteiro
+        valor: 65
+        descrição: Código numérico da tecla 'A' no teclado
+
+      - nome: TECLA_B
+        tipo:
+          primitivo: inteiro
+        valor: 66
+        descrição: Código numérico da tecla 'B' no teclado
+
+      - nome: TECLA_C
+        tipo:
+          primitivo: inteiro
+        valor: 67
+        descrição: Código numérico da tecla 'C' no teclado
+
+      - nome: TECLA_D
+        tipo:
+          primitivo: inteiro
+        valor: 68
+        descrição: Código numérico da tecla 'D' no teclado
+
+      - nome: TECLA_E
+        tipo:
+          primitivo: inteiro
+        valor: 69
+        descrição: Código numérico da tecla 'E' no teclado
+
+      - nome: TECLA_F
+        tipo:
+          primitivo: inteiro
+        valor: 70
+        descrição: Código numérico da tecla 'F' no teclado
+
+      - nome: TECLA_G
+        tipo:
+          primitivo: inteiro
+        valor: 71
+        descrição: Código numérico da tecla 'G' no teclado
+
+      - nome: TECLA_H
+        tipo:
+          primitivo: inteiro
+        valor: 72
+        descrição: Código numérico da tecla 'H' no teclado
+
+      - nome: TECLA_I
+        tipo:
+          primitivo: inteiro
+        valor: 73
+        descrição: Código numérico da tecla 'I' no teclado
+
+      - nome: TECLA_J
+        tipo:
+          primitivo: inteiro
+        valor: 74
+        descrição: Código numérico da tecla 'J' no teclado
+
+      - nome: TECLA_K
+        tipo:
+          primitivo: inteiro
+        valor: 75
+        descrição: Código numérico da tecla 'K' no teclado
+
+      - nome: TECLA_L
+        tipo:
+          primitivo: inteiro
+        valor: 76
+        descrição: Código numérico da tecla 'L' no teclado
+
+      - nome: TECLA_M
+        tipo:
+          primitivo: inteiro
+        valor: 77
+        descrição: Código numérico da tecla 'M' no teclado
+
+      - nome: TECLA_N
+        tipo:
+          primitivo: inteiro
+        valor: 78
+        descrição: Código numérico da tecla 'N' no teclado
+
+      - nome: TECLA_O
+        tipo:
+          primitivo: inteiro
+        valor: 79
+        descrição: Código numérico da tecla 'O' no teclado
+
+      - nome: TECLA_P
+        tipo:
+          primitivo: inteiro
+        valor: 80
+        descrição: Código numérico da tecla 'P' no teclado
+
+      - nome: TECLA_Q
+        tipo:
+          primitivo: inteiro
+        valor: 81
+        descrição: Código numérico da tecla 'Q' no teclado
+
+      - nome: TECLA_R
+        tipo:
+          primitivo: inteiro
+        valor: 82
+        descrição: Código numérico da tecla 'R' no teclado
+
+      - nome: TECLA_S
+        tipo:
+          primitivo: inteiro
+        valor: 83
+        descrição: Código numérico da tecla 'S' no teclado
+
+      - nome: TECLA_T
+        tipo:
+          primitivo: inteiro
+        valor: 84
+        descrição: Código numérico da tecla 'T' no teclado
+
+      - nome: TECLA_U
+        tipo:
+          primitivo: inteiro
+        valor: 85
+        descrição: Código numérico da tecla 'U' no teclado
+
+      - nome: TECLA_V
+        tipo:
+          primitivo: inteiro
+        valor: 86
+        descrição: Código numérico da tecla 'V' no teclado
+
+      - nome: TECLA_W
+        tipo:
+          primitivo: inteiro
+        valor: 87
+        descrição: Código numérico da tecla 'W' no teclado
+
+      - nome: TECLA_X
+        tipo:
+          primitivo: inteiro
+        valor: 88
+        descrição: Código numérico da tecla 'X' no teclado
+
+      - nome: TECLA_Y
+        tipo:
+          primitivo: inteiro
+        valor: 89
+        descrição: Código numérico da tecla 'Y' no teclado
+
+      - nome: TECLA_Z
+        tipo:
+          primitivo: inteiro
+        valor: 90
+        descrição: Código numérico da tecla 'Z' no teclado
+
+      - nome: TECLA_ABRE_COLCHETES
+        tipo:
+          primitivo: inteiro
+        valor: 91
+        descrição: Código numérico da tecla '[' no teclado
+
+      - nome: TECLA_BARRA_INVERTIDA
+        tipo:
+          primitivo: inteiro
+        valor: 92
+        descrição: Código numérico da tecla '\' no teclado
+
+      - nome: TECLA_FECHA_COLCHETES
+        tipo:
+          primitivo: inteiro
+        valor: 93
+        descrição: Código numérico da tecla ']' no teclado
+
+      - nome: TECLA_0_NUM
+        tipo:
+          primitivo: inteiro
+        valor: 96
+        descrição: Código numérico da tecla '0' no teclado numérico
+
+      - nome: TECLA_1_NUM
+        tipo:
+          primitivo: inteiro
+        valor: 97
+        descrição: Código numérico da tecla '1' no teclado numérico
+
+      - nome: TECLA_2_NUM
+        tipo:
+          primitivo: inteiro
+        valor: 98
+        descrição: Código numérico da tecla '2' no teclado numérico
+
+      - nome: TECLA_3_NUM
+        tipo:
+          primitivo: inteiro
+        valor: 99
+        descrição: Código numérico da tecla '3' no teclado numérico
+
+      - nome: TECLA_4_NUM
+        tipo:
+          primitivo: inteiro
+        valor: 100
+        descrição: Código numérico da tecla '4' no teclado numérico
+
+      - nome: TECLA_5_NUM
+        tipo:
+          primitivo: inteiro
+        valor: 101
+        descrição: Código numérico da tecla '5' no teclado numérico
+
+      - nome: TECLA_6_NUM
+        tipo:
+          primitivo: inteiro
+        valor: 102
+        descrição: Código numérico da tecla '6' no teclado numérico
+
+      - nome: TECLA_7_NUM
+        tipo:
+          primitivo: inteiro
+        valor: 103
+        descrição: Código numérico da tecla '7' no teclado numérico
+
+      - nome: TECLA_8_NUM
+        tipo:
+          primitivo: inteiro
+        valor: 104
+        descrição: Código numérico da tecla '8' no teclado numérico
+
+      - nome: TECLA_9_NUM
+        tipo:
+          primitivo: inteiro
+        valor: 105
+        descrição: Código numérico da tecla '9' no teclado numérico
+
+      - nome: TECLA_MULTIPLICACAO
+        tipo:
+          primitivo: inteiro
+        valor: 106
+        descrição: Código numérico da tecla '*' no teclado numérico
+
+      - nome: TECLA_ADICAO
+        tipo:
+          primitivo: inteiro
+        valor: 107
+        descrição: Código numérico da tecla '+' no teclado numérico
+
+      - nome: TECLA_NUM_SEPARADOR_DECIMAL
+        tipo:
+          primitivo: inteiro
+        valor: 108
+        descrição: Código numérico da tecla de separador decimal (',' ou '.') no teclado numérico
+
+      - nome: TECLA_SUBTRACAO
+        tipo:
+          primitivo: inteiro
+        valor: 109
+        descrição: Código numérico da tecla '-' no teclado numérico
+
+      - nome: TECLA_DECIMAL
+        tipo:
+          primitivo: inteiro
+        valor: 110
+        descrição: Código numérico da tecla DECIMAL no teclado
+
+      - nome: TECLA_DIVISAO
+        tipo:
+          primitivo: inteiro
+        valor: 111
+        descrição: Código numérico da tecla '/' no teclado numérico
+
+      - nome: TECLA_DELETAR
+        tipo:
+          primitivo: inteiro
+        valor: 127
+        descrição: Código numérico da tecla DELETE no teclado numérico
+
+      - nome: TECLA_NUM_LOCK
+        tipo:
+          primitivo: inteiro
+        valor: 144
+        descrição: Código numérico da tecla NUM LOCK no teclado numérico
+
+      - nome: TECLA_SCROLL_LOCK
+        tipo:
+          primitivo: inteiro
+        valor: 145
+        descrição: Código numérico da tecla SCROLL LOCK no teclado
+
+      - nome: TECLA_F1
+        tipo:
+          primitivo: inteiro
+        valor: 112
+        descrição: Código numérico da tecla 'F1' no teclado
+
+      - nome: TECLA_F2
+        tipo:
+          primitivo: inteiro
+        valor: 113
+        descrição: Código numérico da tecla 'F2' no teclado
+
+      - nome: TECLA_F3
+        tipo:
+          primitivo: inteiro
+        valor: 114
+        descrição: Código numérico da tecla 'F3' no teclado
+
+      - nome: TECLA_F4
+        tipo:
+          primitivo: inteiro
+        valor: 115
+        descrição: Código numérico da tecla 'F4' no teclado
+
+      - nome: TECLA_F5
+        tipo:
+          primitivo: inteiro
+        valor: 116
+        descrição: Código numérico da tecla 'F5' no teclado
+
+      - nome: TECLA_F6
+        tipo:
+          primitivo: inteiro
+        valor: 117
+        descrição: Código numérico da tecla 'F6' no teclado
+
+      - nome: TECLA_F7
+        tipo:
+          primitivo: inteiro
+        valor: 118
+        descrição: Código numérico da tecla 'F7' no teclado
+
+      - nome: TECLA_F8
+        tipo:
+          primitivo: inteiro
+        valor: 119
+        descrição: Código numérico da tecla 'F8' no teclado
+
+      - nome: TECLA_F9
+        tipo:
+          primitivo: inteiro
+        valor: 120
+        descrição: Código numérico da tecla 'F9' no teclado
+
+      - nome: TECLA_F10
+        tipo:
+          primitivo: inteiro
+        valor: 121
+        descrição: Código numérico da tecla 'F10' no teclado
+
+      - nome: TECLA_F11
+        tipo:
+          primitivo: inteiro
+        valor: 122
+        descrição: Código numérico da tecla 'F11' no teclado
+
+      - nome: TECLA_F12
+        tipo:
+          primitivo: inteiro
+        valor: 123
+        descrição: Código numérico da tecla 'F12' no teclado
+
+      - nome: TECLA_F13
+        tipo:
+          primitivo: inteiro
+        valor: 61440
+        descrição: Código numérico da tecla 'F13' no teclado
+
+      - nome: TECLA_F14
+        tipo:
+          primitivo: inteiro
+        valor: 61441
+        descrição: Código numérico da tecla 'F14' no teclado
+
+      - nome: TECLA_F15
+        tipo:
+          primitivo: inteiro
+        valor: 61442
+        descrição: Código numérico da tecla 'F15' no teclado
+
+      - nome: TECLA_F16
+        tipo:
+          primitivo: inteiro
+        valor: 61443
+        descrição: Código numérico da tecla 'F16' no teclado
+
+      - nome: TECLA_F17
+        tipo:
+          primitivo: inteiro
+        valor: 61444
+        descrição: Código numérico da tecla 'F17' no teclado
+
+      - nome: TECLA_F18
+        tipo:
+          primitivo: inteiro
+        valor: 61445
+        descrição: Código numérico da tecla 'F18' no teclado
+      - nome: TECLA_F19
+        tipo:
+          primitivo: inteiro
+        valor: 61446
+        descrição: Código numérico da tecla 'F19' no teclado
+
+      - nome: TECLA_F20
+        tipo:
+          primitivo: inteiro
+        valor: 61447
+        descrição: Código numérico da tecla 'F20' no teclado
+
+      - nome: TECLA_F21
+        tipo:
+          primitivo: inteiro
+        valor: 61448
+        descrição: Código numérico da tecla 'F21' no teclado
+
+      - nome: TECLA_F22
+        tipo:
+          primitivo: inteiro
+        valor: 61449
+        descrição: Código numérico da tecla 'F22' no teclado
+
+      - nome: TECLA_F23
+        tipo:
+          primitivo: inteiro
+        valor: 61450
+        descrição: Código numérico da tecla 'F23' no teclado
+
+      - nome: TECLA_F24
+        tipo:
+          primitivo: inteiro
+        valor: 61451
+        descrição: Código numérico da tecla 'F24' no teclado
+
+      - nome: TECLA_PRINTSCREEN
+        tipo:
+          primitivo: inteiro
+        valor: 154
+        descrição: Código numérico da tecla PRINT SCREEN no teclado
+
+      - nome: TECLA_INSERT
+        tipo:
+          primitivo: inteiro
+        valor: 155
+        descrição: Código numérico da tecla INSERT no teclado
+
+      - nome: TECLA_AJUDA
+        tipo:
+          primitivo: inteiro
+        valor: 156
+        descrição: Código numérico da tecla AJUDA no teclado
+
+      - nome: TECLA_WINDOWS
+        tipo:
+          primitivo: inteiro
+        valor: 524
+        descrição: Código numérico da tecla de acesso ao menu Iniciar no teclado
+
+      - nome: TECLA_MENU_CONTEXTO
+        tipo:
+          primitivo: inteiro
+        valor: 525
+        descrição: Código numérico da tecla MENU DE CONTEXTO no teclado
+
+    funções:
+      - nome: tecla_pressionada
+        descrição: Testa se uma determinada `tecla` está pressionada neste instante
+        retorno:
+          tipo:
+            primitivo: logico
+          descrição: o resultado do teste. `Verdadeiro` se a `tecla` estiver pressionada no momento do teste. Caso contrário, retorna `falso`
+        parâmetros:
+          - nome: tecla
+            descrição: o código da tecla que será testada
+            tipo:
+              primitivo: inteiro
+
+      - nome: alguma_tecla_pressionada
+        descrição: Testa se existe alguma tecla pressionada neste instante
+        parâmetros: []
+        retorno:
+          tipo:
+            primitivo: logico
+          descrição: o resultado do teste. `verdadeiro` se houver uma tecla pressionada no momento do teste. Caso contrário, retorna `falso`
+
+      - nome: ler_tecla
+        descrição: Aguarda até que uma tecla seja digitada, isto é, foi pressionada e depois solta, e captura o seu código
+        parâmetros: []
+        retorno:
+          tipo:
+            primitivo: inteiro
+          descrição: o código da tecla lida
+
+      - nome: caracter_tecla
+        descrição: Obtém o caracter correspondente a uma determinada `tecla`
+        retorno:
+          tipo:
+            primitivo: caracter
+          descrição: o caracter correspondente à tecla
+        parâmetros:
+          - nome: tecla
+            descrição: a tecla para a qual se quer obter o caracter
+            tipo:
+              primitivo: inteiro

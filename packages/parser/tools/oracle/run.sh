@@ -23,7 +23,7 @@ RAIZ="$(cd "$PARSER_DIR/../.." && pwd)"
 # PORTUGOL_ASSETS_DIR permite apontar para outra instalação do Portugol Studio.
 ASSETS_DIR="${PORTUGOL_ASSETS_DIR:-$RAIZ/packages/runner/tests/assets}"
 LIB_DIR="$ASSETS_DIR/lib"
-EXEMPLOS_DIR="$RAIZ/packages/resources/assets/exemplos"
+EXEMPLOS_DIR="$RAIZ/packages/resources/exemplos"
 GOLDEN="$PARSER_DIR/tests/fixtures/portugol-studio.golden.txt"
 
 if ! command -v java > /dev/null 2>&1; then
