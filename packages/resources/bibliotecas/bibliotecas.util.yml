@@ -3,63 +3,69 @@ $schema: "./bibliotecas.schema.json"
 
 bibliotecas:
   - nome: Util
-    descrição: Esta biblioteca contém diversas funções utilitárias
+    descrição: Esta biblioteca contém funções de uso geral, como sortear números, pausar o programa e contar os elementos de vetores e matrizes
     constantes: []
 
     funções:
       - nome: obter_diretorio_usuario
-        descrição: Obtém o caminho utilizado pelo Sistema Operacional como diretório do usuário atual
+        descrição: |
+          Obtém o caminho da pasta pessoal do usuário no sistema operacional.
+
+          No Portugol Webstudio, que funciona no navegador, sempre retorna `"/home"`.
         parâmetros: []
         retorno:
           tipo:
             primitivo: cadeia
-          descrição: O diretório do usuário
+          descrição: o caminho da pasta do usuário
 
       - nome: numero_elementos
-        descrição: Descobre o número de elementos existentes em um vetor
+        descrição: Conta o número de elementos de um vetor
         retorno:
           tipo:
             primitivo: inteiro
-          descrição: O número de elementos existentes no vetor
+          descrição: o número de elementos do vetor
         parâmetros:
           - nome: vetor
-            descrição: o vetor em questão
+            descrição: o vetor cujos elementos serão contados
             tipo:
               primitivo: "*"
               dimensão: vetor
 
       - nome: numero_linhas
-        descrição: Descobre o número de linhas existentes em uma matriz
+        descrição: Conta o número de linhas de uma matriz
         retorno:
           tipo:
             primitivo: inteiro
-          descrição: O número de linhas existentes na matriz
+          descrição: o número de linhas da matriz
         parâmetros:
           - nome: matriz
-            descrição: a matriz em questão
+            descrição: a matriz cujas linhas serão contadas
             tipo:
               primitivo: "*"
               dimensão: matriz
 
       - nome: numero_colunas
-        descrição: Descobre o número de colunas existentes em uma matriz
+        descrição: Conta o número de colunas de uma matriz
         retorno:
           tipo:
             primitivo: inteiro
-          descrição: O número de colunas existentes na matriz
+          descrição: o número de colunas da matriz
         parâmetros:
           - nome: matriz
-            descrição: a matriz em questão
+            descrição: a matriz cujas colunas serão contadas
             tipo:
               primitivo: "*"
               dimensão: matriz
 
       - nome: sorteia
-        descrição: Sorteia um número aleatório entre os valores mínimo e máximo especificados
+        descrição: |
+          Sorteia um número inteiro entre os valores mínimo e máximo, incluindo os dois.
+
+          Se o `minimo` for maior ou igual ao `maximo`, ocorre um erro de execução.
         retorno:
           tipo:
             primitivo: inteiro
-          descrição: O número sorteado
+          descrição: o número sorteado
         parâmetros:
           - nome: minimo
             descrição: o menor número que pode ser sorteado
@@ -71,10 +77,10 @@ bibliotecas:
               primitivo: inteiro
 
       - nome: aguarde
-        descrição: Pausa a execução do programa durante o intervalo de tempo especificado
+        descrição: Pausa a execução do programa pelo tempo informado
         parâmetros:
           - nome: intervalo
-            descrição: o intervalo de tempo (em milissegundos) durante o qual o programa ficará pausado
+            descrição: o tempo de pausa, em milissegundos (1000 milissegundos equivalem a 1 segundo)
             tipo:
               primitivo: inteiro
         retorno:
@@ -82,9 +88,9 @@ bibliotecas:
             primitivo: vazio
 
       - nome: tempo_decorrido
-        descrição: Obtém o tempo decorrido (em milissegundos) desde que a biblioteca foi utilizada pela primeira vez
+        descrição: Obtém o tempo que passou desde que a biblioteca foi incluída, no início do programa
         parâmetros: []
         retorno:
           tipo:
             primitivo: inteiro
-          descrição: O tempo decorrido em milissegundos
+          descrição: o tempo decorrido, em milissegundos

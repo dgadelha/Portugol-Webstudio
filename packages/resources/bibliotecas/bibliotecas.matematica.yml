@@ -3,7 +3,7 @@ $schema: "./bibliotecas.schema.json"
 
 bibliotecas:
   - nome: Matematica
-    descrição: Esta biblioteca contém uma série das funções matemáticas mais comuns
+    descrição: Esta biblioteca contém as funções matemáticas mais comuns, como potência, raiz, arredondamento e trigonometria
     constantes:
       - nome: PI
         tipo:
@@ -11,45 +11,49 @@ bibliotecas:
         valor: 3.141592653589793
         referência: https://pt.wikipedia.org/wiki/Pi
         descrição: |
-          Constante matemática que representa a relação entre o perímetro de uma circunferência e seu diâmetro, em outras palavras: perimetro/diâmetro
+          A constante matemática π (pi): a razão entre o perímetro de uma circunferência e o seu diâmetro
 
     funções:
       - nome: potencia
-        descrição: Realiza uma exponenciação através da multiplicação da base por ela mesma tantas vezes quanto indicar o expoente
+        descrição: Calcula a potência de um número, ou seja, a `base` elevada ao `expoente`
         retorno:
           tipo:
             primitivo: real
-          descrição: A exponenciação da base pelo expoente
+          descrição: a `base` elevada ao `expoente`
         referência: https://pt.wikipedia.org/wiki/Exponencia%C3%A7%C3%A3o
         parâmetros:
           - nome: base
-            descrição: o número que será multiplicado
+            descrição: o número que será elevado ao expoente
             tipo:
               primitivo: real
           - nome: expoente
-            descrição: o número de vezes que a base será multiplicada
+            descrição: |
+              o expoente, que pode ser negativo ou fracionário. Ex.: com expoente 2, a base é multiplicada por ela mesma.
             tipo:
               primitivo: real
 
       - nome: raiz
-        descrição: Realiza a radiciação (extrai a raiz) de um número por um determinado índice
+        descrição: Calcula a raiz de um número com o índice informado (quadrada, cúbica etc.)
         retorno:
           tipo:
             primitivo: real
-          descrição: a raiz do número informado
+          descrição: a raiz do `radicando` com o `indice` informado
         referência: https://pt.wikipedia.org/wiki/Radicia%C3%A7%C3%A3o
         parâmetros:
           - nome: radicando
-            descrição: o número do qual será extraída a raíz
+            descrição: o número do qual será extraída a raiz
             tipo:
               primitivo: real
           - nome: indice
-            descrição: indica o grau da radiciação. Quando o indice é 2 a raíz é quadrada, quando o indice é 3 a raíz é cúbica, e assim por diante
+            descrição: o índice da raiz. Com índice 2, calcula a raiz quadrada; com índice 3, a raiz cúbica; e assim por diante.
             tipo:
               primitivo: real
 
       - nome: arredondar
-        descrição: Arredonda um número `real` para o número de casas decimais informadas. Quando o último dígito for maior ou igual a 5, o número será arredondado para cima, quando o último dígito for menor que 5, o número será arredondado para baixo
+        descrição: |
+          Arredonda um número `real` para a quantidade de casas decimais informada.
+
+          Se o primeiro dígito descartado for 5 ou mais, o número é arredondado para cima; se for menor que 5, para baixo.
         retorno:
           tipo:
             primitivo: real
@@ -61,107 +65,107 @@ bibliotecas:
             tipo:
               primitivo: real
           - nome: casas
-            descrição: o número de casas decimais após o arredondamento
+            descrição: a quantidade de casas decimais que o resultado terá. Com 0, o número é arredondado para um valor inteiro.
             tipo:
               primitivo: inteiro
 
       - nome: logaritmo
-        descrição: Calcula o logaritmo de um número para uma determinada base
+        descrição: Calcula o logaritmo de um número na base informada
         retorno:
           tipo:
             primitivo: real
-          descrição: o logaritmo
+          descrição: o logaritmo de `numero` na `base` informada, ou seja, o expoente ao qual a `base` deve ser elevada para resultar em `numero`
         referência: https://pt.wikipedia.org/wiki/Logaritmo
         parâmetros:
           - nome: numero
-            descrição: o número resultante da exponenciação
+            descrição: o número do qual será calculado o logaritmo (o logaritmando)
             tipo:
               primitivo: real
           - nome: base
-            descrição: a base da exponenciação
+            descrição: a base do logaritmo
             tipo:
               primitivo: real
 
       - nome: seno
-        descrição: Calcula o seno do **ângulo** informado
+        descrição: Calcula o seno de um ângulo informado em radianos
         retorno:
           tipo:
             primitivo: real
-          descrição: o seno do `ângulo` informado
+          descrição: o seno do ângulo, entre -1 e 1
         referência: https://pt.wikipedia.org/wiki/Seno
         parâmetros:
           - nome: angulo
-            descrição: o ângulo para o qual será calculado o seno
+            descrição: o ângulo, em radianos. Para converter graus em radianos, multiplique por `PI` e divida por 180.
             tipo:
               primitivo: real
 
       - nome: cosseno
-        descrição: Calcula o cosseno do `ângulo` informado
+        descrição: Calcula o cosseno de um ângulo informado em radianos
         retorno:
           tipo:
             primitivo: real
-          descrição: o cosseno do `ângulo` informado
+          descrição: o cosseno do ângulo, entre -1 e 1
         referência: https://pt.wikipedia.org/wiki/Cosseno
         parâmetros:
           - nome: angulo
-            descrição: o ângulo para o qual será calculado o cosseno
+            descrição: o ângulo, em radianos. Para converter graus em radianos, multiplique por `PI` e divida por 180.
             tipo:
               primitivo: real
 
       - nome: tangente
-        descrição: Calcula a tangente do `ângulo` informado
+        descrição: Calcula a tangente de um ângulo informado em radianos
         retorno:
           tipo:
             primitivo: real
-          descrição: a tangente do `ângulo` informado
+          descrição: a tangente do ângulo
         referência: https://pt.wikipedia.org/wiki/Tangente
         parâmetros:
           - nome: angulo
-            descrição: o ângulo para o qual será calculada a tangente
+            descrição: o ângulo, em radianos. Para converter graus em radianos, multiplique por `PI` e divida por 180.
             tipo:
               primitivo: real
 
       - nome: valor_absoluto
-        descrição: Calcula o valor absoluto do `número` informado
+        descrição: Calcula o valor absoluto (módulo) de um número, ou seja, o número sem o sinal
         retorno:
           tipo:
             primitivo: real
-          descrição: o valor absoluto do `número` informado
+          descrição: o valor absoluto do número, que nunca é negativo
         referência: https://pt.wikipedia.org/wiki/Fun%C3%A7%C3%A3o_modular
         parâmetros:
           - nome: numero
-            descrição: o número para o qual será calculado o valor absoluto
+            descrição: o número do qual será calculado o valor absoluto
             tipo:
               primitivo: real
 
       - nome: maior_numero
-        descrição: Identifica o maior número entre os números informados
+        descrição: Retorna o maior entre dois números
         retorno:
           tipo:
             primitivo: real
-          descrição: o maior número
+          descrição: o maior dos dois números
         parâmetros:
           - nome: numeroA
-            descrição: um número qualquer
+            descrição: o primeiro número a ser comparado
             tipo:
               primitivo: real
           - nome: numeroB
-            descrição: um número qualquer
+            descrição: o segundo número a ser comparado
             tipo:
               primitivo: real
 
       - nome: menor_numero
-        descrição: Identifica o menor número entre os números informados
+        descrição: Retorna o menor entre dois números
         retorno:
           tipo:
             primitivo: real
-          descrição: o menor número
+          descrição: o menor dos dois números
         parâmetros:
           - nome: numeroA
-            descrição: um número qualquer
+            descrição: o primeiro número a ser comparado
             tipo:
               primitivo: real
           - nome: numeroB
-            descrição: um número qualquer
+            descrição: o segundo número a ser comparado
             tipo:
               primitivo: real
