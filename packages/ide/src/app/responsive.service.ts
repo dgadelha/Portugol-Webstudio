@@ -1,27 +1,35 @@
-import { BreakpointObserver, BreakpointState } from "@angular/cdk/layout";
-import { inject, Service } from "@angular/core";
-import { Observable } from "rxjs";
+import { BreakpointObserver } from "@angular/cdk/layout";
+import { inject, Service, Signal } from "@angular/core";
+import { toSignal } from "@angular/core/rxjs-interop";
+import { map } from "rxjs";
 
 /**
- * @ref https://stackoverflow.com/a/68947419
+ * Tamanhos e tipo de tela, como signals compartilhados. O valor inicial já é o
+ * da tela atual (`isMatched`), e ler um signal no template não dispara o
+ * NG0100, ao contrário de assinar o `BreakpointObserver` durante a renderização.
  */
 @Service()
 export class ResponsiveService {
   private observer = inject(BreakpointObserver);
 
-  isBelowSm(): Observable<BreakpointState> {
-    return this.observer.observe(["(max-width: 575px)"]);
-  }
+  /**
+   * Celulares em pé (até 575px).
+   */
+  readonly isBelowSm = this.query("(max-width: 575px)");
 
-  isBelowMd(): Observable<BreakpointState> {
-    return this.observer.observe(["(max-width: 767px)"]);
-  }
+  /**
+   * Celulares e tablets em pé (até 767px).
+   */
+  readonly isBelowMd = this.query("(max-width: 767px)");
 
-  isBelowLg(): Observable<BreakpointState> {
-    return this.observer.observe(["(max-width: 991px)"]);
-  }
+  /**
+   * Telas de toque, em que o teclado virtual não manda teclas legíveis ao Monaco.
+   */
+  readonly coarsePointer = this.query("(pointer: coarse)");
 
-  isBelowXl(): Observable<BreakpointState> {
-    return this.observer.observe(["(max-width: 1199px)"]);
+  private query(media: string): Signal<boolean> {
+    return toSignal(this.observer.observe(media).pipe(map(state => state.matches)), {
+      initialValue: this.observer.isMatched(media),
+    });
   }
 }

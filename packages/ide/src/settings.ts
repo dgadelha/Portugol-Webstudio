@@ -86,6 +86,8 @@ export const settings = {
   outputClearOnRun: boolean("outputClearOnRun", true),
   outputAutoScroll: boolean("outputAutoScroll", true),
   outputWordWrap: boolean("outputWordWrap", true),
+  // Desativado, uma aba de código nova já começa com o painel aberto.
+  outputStartCollapsed: boolean("outputStartCollapsed", true),
   outputShowExecutionTime: boolean("outputShowExecutionTime", true),
   interfaceConfirmCloseTab: boolean("interfaceConfirmCloseTab", true),
   // Numa janela nova, adota as abas da última janela fechada.

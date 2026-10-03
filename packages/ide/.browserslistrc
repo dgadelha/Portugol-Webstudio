@@ -1,17 +1,14 @@
-# This file is used by the build system to adjust CSS and JS output to support the specified browsers below.
-# For additional information regarding the format and rule options, please see:
-# https://github.com/browserslist/browserslist#queries
+# Navegadores em que o IDE precisa funcionar: os mesmos que o Angular 22
+# suporta ("Baseline widely available" em 2026-05-07), ou seja, Chrome e Edge
+# 119+, Firefox 119+ e Safari 17+.
+#
+# Isso cobre os celulares Android antigos que aparecem no Google Analytics: o
+# Chrome continua atualizando no Android 10 em diante, e o Android 8 e 9 param
+# no Chrome 138. O Windows 7 (Chrome 109, menos de 1% dos acessos) fica de fora.
+#
+# Antes de usar um recurso novo de CSS ou JavaScript, confira o suporte nessas
+# versões (por exemplo, `:has()` só chega no Firefox 121).
+#
+# Para ver a lista resultante: npx browserslist
 
-# For the full list of supported browsers by the Angular framework, please see:
-# https://angular.io/guide/browser-support
-
-# You can see what browsers were selected by your queries by running:
-#   npx browserslist
-
-last 1 Chrome version
-last 1 Firefox version
-last 2 Edge major versions
-last 2 Safari major versions
-last 2 iOS major versions
-Firefox ESR
-not IE 11 # Angular supports IE 11 only as an opt-in. To opt-in, remove the 'not' prefix on this line.
+baseline widely available on 2026-05-07

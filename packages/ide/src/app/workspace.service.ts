@@ -93,6 +93,34 @@ export class WorkspaceService {
 
   readonly activeTab = computed(() => this.tabs().find(tab => tab.id === this.activeTabId()) ?? null);
 
+  /**
+   * Aba recém-aberta que deve receber o foco assim que estiver pronta (uma aba
+   * de código só pode ser focada depois que o Monaco é criado).
+   */
+  private focusRequest: string | null = null;
+
+  /**
+   * Tópico da Ajuda pedido por um endereço `#ajuda=`; a aba de Ajuda o abre
+   * quando os tópicos carregarem.
+   */
+  readonly helpTopicRequest = signal<string | null>(null);
+
+  requestFocus(tabId: string) {
+    this.focusRequest = tabId;
+  }
+
+  /**
+   * Verdadeiro uma única vez, para a aba que pediu o foco.
+   */
+  consumeFocusRequest(tabId: string) {
+    if (this.focusRequest !== tabId) {
+      return false;
+    }
+
+    this.focusRequest = null;
+    return true;
+  }
+
   constructor() {
     this.bootstrap();
 

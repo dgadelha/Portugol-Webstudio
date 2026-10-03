@@ -1,0 +1,24 @@
+// Mixins compartilhados pelos estilos globais e pelos componentes. Este
+// arquivo não gera CSS por si: pode ser usado com `@use` em qualquer lugar.
+
+// Some da tela, mas continua lido por leitores de tela.
+@mixin visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+// Rótulo pequeno em maiúsculas, como os títulos das barras laterais do VS Code.
+@mixin section-label {
+  color: var(--pws-fg-muted);
+  font-size: var(--pws-text-xs);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
