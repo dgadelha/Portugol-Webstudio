@@ -210,7 +210,13 @@
   </div>
 </ng-template>
 
-<as-split #split direction="vertical" unit="pixel" (dragEnd)="onSplitDragEnd($event)">
+<as-split
+  #split
+  direction="vertical"
+  unit="pixel"
+  gutterAriaLabel="Altura do painel"
+  (dragEnd)="onSplitDragEnd($event)"
+>
   <as-split-area size="*">
     <as-split direction="horizontal" class="thin-split" [gutterSize]="1">
       <as-split-area [size]="100">
