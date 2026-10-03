@@ -391,7 +391,12 @@ export class TabHelpComponent implements OnInit, OnDestroy {
     }
 
     // O loader AMD do Monaco deixa `define` global, e os módulos UMD carregados pelo
-    // Mermaid (inclusive durante a renderização, como o `fastdom`) tentariam se registrar nele
+    // Mermaid (inclusive durante a renderização, como o `fastdom`) tentariam se registrar
+    // nele. Ele fica escondido enquanto o Mermaid trabalha, mas só depois de o Monaco
+    // terminar de carregar: com a Ajuda aberta ao recarregar a página, os arquivos do
+    // Monaco ainda estariam chegando, e sem o `define` o editor nunca carregaria.
+    await this.monacoService.ready;
+
     const global = globalThis as { define?: unknown };
     const define = global.define;
 
