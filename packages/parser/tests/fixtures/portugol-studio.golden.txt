@@ -121,7 +121,6 @@ AVISO|581|31|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da express
 AVISO|581|36|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y2" da função "desenhar_linha" será truncado
 ### bibliotecas/graficos/tela_cheia/teste_tela_cheia.por
 ### bibliotecas/graficos/varios.por
-### bibliotecas/internet/gerador_palavras.por
 ### bibliotecas/internet/obtertexto.por
 ### bibliotecas/internet/robos.por
 AVISO|20|28|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "tamanho" da função "definir_tamanho_texto" será automaticamente convertido de "inteiro" para "real"
