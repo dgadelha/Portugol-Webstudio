@@ -164,9 +164,14 @@ const BITWISE = tabela([
   /* T */ [_, _, _, _, _, _, _],
 ]);
 
+// Única divergência proposital do Java: lá, `caracter + caracter` resulta em `cadeia`,
+// mas o código gerado soma os códigos dos caracteres (o `char` do Java), então
+// `'C' + 'a'` vale 164 e `cadeia c = 'C' + 'a'` nem compila no Portugol Studio. Aqui a
+// soma é `inteiro`, como o runtime de fato calcula; para concatenar, basta haver uma
+// cadeia na expressão (`"" + 'C' + 'a'` resulta em "Ca").
 const SOMA = tabela([
   /* S */ [S, S, S, S, S, _, _],
-  /* K */ [S, S, _, _, _, _, _],
+  /* K */ [S, I, _, _, _, _, _],
   /* I */ [S, _, I, _, R, _, _],
   /* L */ [S, _, _, L, _, _, _],
   /* R */ [S, _, R, _, R, _, _],
