@@ -17,11 +17,12 @@ import type { IPortugolCodeDiagnostic } from "@portugol-webstudio/antlr";
 import { PortugolDiagnosticSeverity } from "@portugol-webstudio/antlr";
 import { PortugolExecutor, PortugolMessage, PortugolWebWorkersRunner } from "@portugol-webstudio/runner";
 import { captureException, setExtra } from "@sentry/angular";
+import { SplitGutterInteractionEvent } from "angular-split";
 import { saveAs } from "file-saver";
 import { encode } from "iconv-lite";
 import { ShortcutInput } from "ng-keyboard-shortcuts";
 import { GoogleAnalyticsService } from "ngx-google-analytics";
-import { Subscription, combineLatest, debounceTime, fromEventPattern, mergeMap } from "rxjs";
+import { EMPTY, Subscription, debounceTime, fromEventPattern, mergeMap, startWith, switchMap } from "rxjs";
 import { GraphicsRenderer, IGraphicsRendererComponent } from "../../renderer";
 import { IExtendedWindowApi } from "../../types";
 import { DialogRendererComponent } from "../dialog-renderer/dialog-renderer.component";
@@ -102,6 +103,40 @@ export class TabEditorComponent implements OnInit, OnDestroy {
 
   stdOutEditor?: monaco.editor.IStandaloneCodeEditor;
 
+  private readonly split = viewChild.required("split", { read: ElementRef<HTMLElement> });
+
+  /**
+   * Altura do cabeçalho da saída: é o que fica visível com o painel recolhido.
+   */
+  readonly outputHeaderHeight = 36;
+
+  /**
+   * Altura do painel da saída, em px. Começa recolhido e abre ao executar.
+   */
+  outputSize = this.outputHeaderHeight;
+
+  /**
+   * A última altura aberta que o usuário escolheu, para voltar a ela ao abrir
+   * de novo.
+   */
+  private lastOpenOutputSize: number | null = null;
+
+  /**
+   * Em telas de toque, o teclado virtual não manda para o editor da saída
+   * teclas que dê para ler (no Android, quase todas chegam como
+   * "Unidentified"), e acentos e o corretor nem passam por elas. Lá, a entrada
+   * do `leia` vai por um campo de texto comum.
+   */
+  readonly coarsePointer = window.matchMedia("(pointer: coarse)");
+
+  programInput = "";
+
+  private readonly programInputField = viewChild<ElementRef<HTMLInputElement>>("programInputField");
+
+  get outputCollapsed() {
+    return this.outputSize <= this.outputHeaderHeight + 1;
+  }
+
   outputAutoScroll = true;
 
   stdOutEditorOptions: monaco.editor.IStandaloneEditorConstructionOptions = {
@@ -111,6 +146,9 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     minimap: { enabled: false },
     wordWrap: "on",
     language: "plaintext",
+    // Na saída não se edita: a faixa da linha do cursor só pareceria uma caixa
+    // vazia em volta da primeira linha.
+    renderLineHighlight: "none",
     // Sem `tabSize`: no Monaco ele vale para todos os editores da página, e um
     // valor aqui sobrescreveria o das configurações no editor de código.
     guides: { indentation: false },
@@ -168,7 +206,14 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     this._stdOut$.add(
       this.executor.waitingForInput$.subscribe(waiting => {
         if (waiting) {
+          this.expandOutput();
+
           this.stdOutEditorCursorEnd();
+
+          if (this.coarsePointer.matches) {
+            // O campo só existe depois da próxima renderização.
+            setTimeout(() => this.programInputField()?.nativeElement.focus());
+          }
         }
       }),
     );
@@ -216,61 +261,33 @@ export class TabEditorComponent implements OnInit, OnDestroy {
       this.generatedCodeEditorOptions = { ...this.generatedCodeEditorOptions, theme: `portugol-${theme}` };
     });
 
-    this._settings$ = combineLatest([
-      this.settingsService.observe(settings.editorFontSize),
-      this.settingsService.observe(settings.editorWordWrap),
-      this.settingsService.observe(settings.editorTabSize),
-      this.settingsService.observe(settings.editorInsertSpaces),
-      this.settingsService.observe(settings.editorLineNumbers),
-      this.settingsService.observe(settings.editorMinimap),
-      this.settingsService.observe(settings.editorBracketPairColorization),
-      this.settingsService.observe(settings.editorIndentationGuides),
-      this.settingsService.observe(settings.editorRenderWhitespace),
-      this.settingsService.observe(settings.editorAutoClosing),
-      this.settingsService.observe(settings.editorCursorStyle),
-    ]).subscribe(
-      ([
-        fontSize,
-        wordWrap,
-        tabSize,
-        insertSpaces,
-        lineNumbers,
-        minimap,
-        bracketPairColorization,
-        indentationGuides,
-        renderWhitespace,
-        autoClosing,
-        cursorStyle,
-      ]) => {
-        this.codeEditorOptions = {
-          ...this.codeEditorOptions,
-          fontSize,
-          wordWrap: wordWrap ? "on" : "off",
-          tabSize,
-          insertSpaces,
-          lineNumbers,
-          minimap: { enabled: minimap },
-          "bracketPairColorization.enabled": bracketPairColorization,
-          guides: { indentation: indentationGuides },
-          renderWhitespace,
-          autoClosingBrackets: autoClosing ? "languageDefined" : "never",
-          autoClosingQuotes: autoClosing ? "languageDefined" : "never",
-          cursorStyle,
-        };
+    this._settings$ = this.settingsService.editorOptions().subscribe(options => {
+      this.codeEditorOptions = { ...this.codeEditorOptions, ...options };
 
-        this.generatedCodeEditorOptions = {
-          ...this.generatedCodeEditorOptions,
-          fontSize,
-          wordWrap: wordWrap ? "on" : "off",
-        };
-      },
-    );
+      this.generatedCodeEditorOptions = {
+        ...this.generatedCodeEditorOptions,
+        fontSize: options.fontSize,
+        wordWrap: options.wordWrap,
+      };
+    });
 
-    // A saída sempre quebra as linhas: a configuração de quebra de linha é só
-    // do editor de código.
     this._settings$.add(
       this.settingsService.outputFontSize().subscribe(fontSize => {
         this.stdOutEditorOptions = { ...this.stdOutEditorOptions, fontSize };
+      }),
+    );
+
+    // A quebra de linha da saída é uma configuração à parte da do editor de
+    // código: desenhos e tabelas feitos com texto só ficam certos sem ela.
+    this._settings$.add(
+      this.settingsService.observe(settings.outputWordWrap).subscribe(wordWrap => {
+        this.stdOutEditorOptions = { ...this.stdOutEditorOptions, wordWrap: wordWrap ? "on" : "off" };
+      }),
+    );
+
+    this._settings$.add(
+      this.settingsService.observe(settings.outputShowExecutionTime).subscribe(show => {
+        this.executor.showExecutionTime = show;
       }),
     );
 
@@ -307,6 +324,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
 
   async runCode() {
     this.gaService.event("editor_start_execution", "Editor", "Botão de Iniciar Execução");
+    this.expandOutput();
     setExtra("code", this.code);
 
     this.transpiling = true;
@@ -492,6 +510,55 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * O divisor guarda o tamanho arrastado só para ele: o valor fica espelhado
+   * aqui para recolher e abrir partirem do tamanho certo.
+   */
+  onSplitDragEnd({ sizes }: SplitGutterInteractionEvent) {
+    const size = sizes[1];
+
+    if (typeof size !== "number") {
+      return;
+    }
+
+    this.outputSize = size;
+
+    if (!this.outputCollapsed) {
+      this.lastOpenOutputSize = size;
+    }
+  }
+
+  expandOutput() {
+    if (this.outputCollapsed) {
+      this.outputSize = this.lastOpenOutputSize ?? Math.round(this.split().nativeElement.clientHeight * 0.3);
+    }
+  }
+
+  toggleOutput() {
+    if (this.outputCollapsed) {
+      this.expandOutput();
+    } else {
+      this.outputSize = this.outputHeaderHeight;
+    }
+  }
+
+  /**
+   * Manda a linha do campo como se cada letra tivesse sido digitada na saída,
+   * seguida do Enter.
+   */
+  sendProgramInput() {
+    for (const char of this.programInput) {
+      this.executor.stdIn.next(char);
+    }
+
+    this.executor.stdIn.next("\r");
+    this.programInput = "";
+  }
+
+  clearOutput() {
+    this.executor.stdOut = "";
+  }
+
   stdOutEditorCursorEnd() {
     if (!this.stdOutEditor) {
       return;
@@ -514,7 +581,11 @@ export class TabEditorComponent implements OnInit, OnDestroy {
         });
       }, 1);
 
-      editor.focus();
+      // Em telas de toque, o foco fica no campo de entrada: no editor, ele só
+      // abriria o teclado virtual à toa.
+      if (!this.coarsePointer.matches) {
+        editor.focus();
+      }
     }
   }
 
@@ -558,10 +629,36 @@ export class TabEditorComponent implements OnInit, OnDestroy {
 
     this._code$?.unsubscribe();
 
-    this._code$ = fromEventPattern(editor.onDidChangeModelContent)
+    // Sem a checagem ao vivo, os erros só aparecem ao executar. Ao ser religada,
+    // ela confere o código na hora, sem esperar a próxima tecla.
+    let initial = true;
+
+    this._code$ = this.settingsService
+      .observe(settings.editorLiveDiagnostics)
       .pipe(
-        debounceTime(500),
-        mergeMap(async () => this.worker.checkCode(this.code)),
+        switchMap(live => {
+          const changes = fromEventPattern(
+            handler => editor.onDidChangeModelContent(handler),
+            (_handler, listener: monaco.IDisposable) => {
+              listener.dispose();
+            },
+          );
+          const wasInitial = initial;
+
+          initial = false;
+
+          if (!live) {
+            this.setEditorDiagnostics([]);
+            return EMPTY;
+          }
+
+          // Dentro do `switchMap`, uma checagem em andamento ao desligar é
+          // descartada, e não marca erros depois da limpeza.
+          return (wasInitial ? changes : changes.pipe(startWith(null))).pipe(
+            debounceTime(500),
+            mergeMap(async () => this.worker.checkCode(this.code)),
+          );
+        }),
       )
       .subscribe({
         next: result => {
