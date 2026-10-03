@@ -143,7 +143,10 @@
   </section>
 
   <footer class="welcome-footer">
-    <span>Versão %COMMIT_SHA%, de %DATE%</span>
+    <span
+      >Versão:
+      <span class="version" tabindex="0" appTooltip="%DATE%" appTooltipPosition="above">%COMMIT_SHA%</span></span
+    >
     <span aria-hidden="true">·</span>
     @if (isBeta) {
       <a
