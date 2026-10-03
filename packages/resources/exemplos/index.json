@@ -80,7 +80,7 @@
       {
         "nome": "Vogal",
         "arquivo": "desvios_condicionais/vogal.por",
-        "descricao": "Este exemplo pede ao usuário que informe uma letra (tipo caracter). Logo após, verifica se a letra digitada é uma vogal ou uma consoante e exibe o resultado ao usuário."
+        "descricao": "Este exemplo pede ao usuário que informe uma letra (tipo caracter). Logo após, verifica se a letra digitada é uma vogal ou uma consoante e exibe o resultado ao usuário. Se o caractere digitado não for uma letra de A a Z, o programa avisa o usuário."
       },
       {
         "nome": "Médias",
@@ -115,12 +115,12 @@
       {
         "nome": "Tipo de Triângulo",
         "arquivo": "desvios_condicionais/tipo_triangulo.por",
-        "descricao": "Este exemplo pede ao usuário que informe o tamanho dos 3 lados de um triângulo. Logo após, compara os lados do triângulo e exibe ao usuário o tipo de triângulo informado:\n\na) equilátero: possui os 3 lados iguais;\nb) isósceles: possui apenas 2 lados iguais;\nc) escaleno: possui todos os lados diferentes."
+        "descricao": "Este exemplo pede ao usuário que informe o tamanho dos 3 lados de um triângulo. Logo após, compara os lados do triângulo e exibe ao usuário o tipo de triângulo informado, ou avisa se os lados informados não formam um triângulo:\n\na) equilátero: possui os 3 lados iguais;\nb) isósceles: possui apenas 2 lados iguais;\nc) escaleno: possui todos os lados diferentes."
       },
       {
         "nome": "Minicalculadora",
         "arquivo": "desvios_condicionais/mini_calculadora.por",
-        "descricao": "Este exemplo demonstra o uso do desvio condicional para criar uma minicalculadora. O programa pede ao usuário que informe dois números reais e a operação a ser executada entre estes números (soma, divisão, etc.). Por fim, é exibido o valor resultante da operação entre os dois números."
+        "descricao": "Este exemplo demonstra o uso do desvio condicional para criar uma minicalculadora. O programa pede ao usuário que informe dois números reais e a operação a ser executada entre estes números (soma, divisão, etc.). Por fim, é exibido o valor resultante da operação entre os dois números. O programa também avisa quando a operação informada não existe e quando há uma divisão por zero."
       },
       {
         "nome": "Escolha-Caso",
@@ -465,7 +465,7 @@
           {
             "nome": "Obter Texto de um Site",
             "arquivo": "bibliotecas/internet/obtertexto.por",
-            "descricao": "Este é um exemplo de utilização da biblioteca \"Internet\" que obtém o texto de um endereço web."
+            "descricao": "Este exemplo utiliza a biblioteca \"Internet\" para obter o conteúdo de uma página web e a biblioteca \"Texto\" para encontrar o título da página."
           },
           {
             "nome": "Robô Aleatório",

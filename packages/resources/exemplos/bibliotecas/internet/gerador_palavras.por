@@ -1,5 +1,5 @@
 programa {
-  inclua biblioteca Internet --> i
+  inclua biblioteca Internet --> web
   inclua biblioteca Texto --> txt
   inclua biblioteca Teclado --> t
   inclua biblioteca Graficos --> g
@@ -140,10 +140,10 @@ programa {
 
   funcao obter_links() {
     desenhar_carregando(1, "Acordando")
-    se (nao i.endereco_disponivel(urlsite)) {
+    se (nao web.endereco_disponivel(urlsite)) {
       erro_conexao(messagem_erro_conexao)
     }
-    html = i.obter_texto(urlsite)
+    html = web.obter_texto(urlsite)
     pos1 = txt.posicao_texto("<fieldset>", html, 0)
     pos1 = txt.posicao_texto("href", html, pos1)
     pos2 = txt.posicao_texto("</fieldset>", html, pos1)
@@ -172,8 +172,8 @@ programa {
 
   funcao obter_imagens() {
     para (inteiro i = 0; i < tampalavra; i++) {
-      se (i.endereco_disponivel(links2[i])) {
-        i.baixar_imagem(links2[i], diretorio_ps + i)
+      se (web.endereco_disponivel(links2[i])) {
+        web.baixar_imagem(links2[i], diretorio_ps + i)
         carregando++
         desenhar_carregando(carregando, "Baixando imagens " + (i + 1) + "/" + tampalavra)
       } senao {

@@ -42,6 +42,8 @@ programa {
     escreva("Agora digite uma das operações ( + - * / ): ")
     leia(operador)
 
+    limpa()
+
     /* Verifica qual foi a operação selecionada */
 
     se (operador == '+') {
@@ -49,12 +51,20 @@ programa {
     } senao se (operador == '-') {
       resultado = operando1 - operando2
     } senao se (operador == '/') {
+      // Não existe divisão por zero: o programa avisa o usuário e termina
+      se (operando2 == 0.0) {
+        escreva("Não é possível dividir por zero\n")
+        retorne
+      }
+
       resultado = operando1 / operando2
     } senao se (operador == '*') {
       resultado = operando1 * operando2
+    } senao {
+      // Qualquer outro caractere não é uma das operações da calculadora
+      escreva("A operação '", operador, "' não existe. Use uma destas: + - * /\n")
+      retorne
     }
-
-    limpa()
 
     escreva("Resultado:\n\n")
     escreva(operando1, " ", operador, " ", operando2, " = ", resultado)

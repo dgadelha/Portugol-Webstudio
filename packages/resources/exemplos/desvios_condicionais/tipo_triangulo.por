@@ -41,7 +41,11 @@ programa {
     escreva("Informe o terceiro lado do triângulo: ")
     leia(lado_c)
 
-    se (lado_a == lado_b e lado_a == lado_c) {
+    // Três medidas só formam um triângulo se cada lado for menor que a soma dos
+    // outros dois. Isso também descarta lados iguais a zero ou negativos
+    se (lado_a >= lado_b + lado_c ou lado_b >= lado_a + lado_c ou lado_c >= lado_a + lado_b) {
+      escreva("\nEstes lados não formam um triângulo\n")
+    } senao se (lado_a == lado_b e lado_a == lado_c) {
       // Se os três lados forem iguais, é equilátero
 
       escreva("\nEste triângulo é equilátero\n")
