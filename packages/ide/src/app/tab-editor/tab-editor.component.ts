@@ -325,6 +325,9 @@ export class TabEditorComponent implements OnInit, OnDestroy {
   async runCode() {
     this.gaService.event("editor_start_execution", "Editor", "Botão de Iniciar Execução");
     this.expandOutput();
+    // O que ficou no campo de toque de uma execução interrompida não pode
+    // virar a resposta do próximo `leia`.
+    this.programInput = "";
     setExtra("code", this.code);
 
     this.transpiling = true;
@@ -582,8 +585,9 @@ export class TabEditorComponent implements OnInit, OnDestroy {
       }, 1);
 
       // Em telas de toque, o foco fica no campo de entrada: no editor, ele só
-      // abriria o teclado virtual à toa.
-      if (!this.coarsePointer.matches) {
+      // abriria o teclado virtual à toa. Com a saída recolhida, o editor está
+      // escondido, e focá-lo tiraria o foco do que a pessoa estiver usando.
+      if (!this.coarsePointer.matches && !this.outputCollapsed) {
         editor.focus();
       }
     }
