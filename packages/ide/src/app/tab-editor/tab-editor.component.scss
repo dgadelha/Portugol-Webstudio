@@ -165,6 +165,12 @@
   }
 }
 
+// A região do estado (`role="status"`) existe sempre, vazia ou não: leitores
+// de tela só anunciam mudanças em live regions que já estavam na página.
+.output-status-region {
+  display: flex;
+}
+
 .output-status {
   display: inline-flex;
   align-items: center;
@@ -195,13 +201,15 @@
   }
 }
 
+// Tons mais escuros no tema claro: texto de 0,75rem precisa de contraste de
+// 4,5:1 sobre o fundo do editor.
 :host-context([data-theme="light"]) .output-status {
   &.waiting {
-    color: #d97706;
+    color: #b45309;
   }
 
   &.running {
-    color: #059669;
+    color: #047857;
   }
 }
 
