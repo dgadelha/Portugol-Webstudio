@@ -17,6 +17,7 @@ import {
 } from "@angular/core";
 import { AngularSplitModule } from "angular-split";
 import { AngularSvgIconModule } from "angular-svg-icon";
+import { HotToastService } from "@ngxpert/hot-toast";
 import { GoogleAnalyticsService } from "ngx-google-analytics";
 import { MarkdownComponent } from "ngx-markdown";
 import { Subscription } from "rxjs";
@@ -52,6 +53,7 @@ export class TabHelpComponent implements OnInit, OnDestroy {
   private settingsService = inject(SettingsService);
   private workspace = inject(WorkspaceService);
   private injector = inject(Injector);
+  private toast = inject(HotToastService);
 
   #theme$?: Subscription;
   #conteudo$?: Subscription;
@@ -369,6 +371,10 @@ export class TabHelpComponent implements OnInit, OnDestroy {
 
     this.#codigos.set(bloco, codigo);
 
+    if (!bloco.classList.contains("assinatura")) {
+      bloco.append(this.#criarBotaoCopiar(codigo));
+    }
+
     // Com a Ajuda aberta ao recarregar a página, o conteúdo chega antes do
     // Monaco: as cores esperam ele ficar pronto.
     void this.monacoService.ready.then(async () => {
@@ -394,6 +400,47 @@ export class TabHelpComponent implements OnInit, OnDestroy {
       });
 
       bloco.append(botao);
+    }
+  }
+
+  /**
+   * Botão de copiar no canto do bloco de código. O aviso de "copiado" chega
+   * também aos leitores de tela.
+   */
+  #criarBotaoCopiar(codigo: string) {
+    const botao = document.createElement("button");
+    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    const caminho = document.createElementNS("http://www.w3.org/2000/svg", "path");
+
+    // Ícone `content-copy` do MDI
+    caminho.setAttribute(
+      "d",
+      "M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z",
+    );
+    svg.setAttribute("viewBox", "0 0 24 24");
+    svg.setAttribute("aria-hidden", "true");
+    svg.append(caminho);
+
+    botao.type = "button";
+    botao.className = "copiar-codigo";
+    botao.title = "Copiar código";
+    botao.setAttribute("aria-label", "Copiar código");
+    botao.append(svg);
+    botao.addEventListener("click", () => {
+      void this.#copiar(codigo);
+    });
+
+    return botao;
+  }
+
+  async #copiar(codigo: string) {
+    this.gaService.event("help_copy_code", "Ajuda", this.current?.arquivo);
+
+    try {
+      await navigator.clipboard.writeText(codigo);
+      this.ngZone.run(() => this.toast.success("Código copiado.", { duration: 3000 }));
+    } catch {
+      this.ngZone.run(() => this.toast.error("Não foi possível copiar o código."));
     }
   }
 
