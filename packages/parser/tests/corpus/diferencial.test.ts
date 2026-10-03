@@ -9,7 +9,7 @@ import { lerGolden, linhasDeErro } from "../../tools/golden.mjs";
 import { EXEMPLOS, temCorpus } from "../helpers/corpus.js";
 
 /**
- * Compara a nossa análise dos 119 exemplos oficiais com a do Portugol Studio, gravada em
+ * Compara a nossa análise dos 117 exemplos oficiais com a do Portugol Studio, gravada em
  * `tests/fixtures/portugol-studio.golden.txt` (regere com
  * `packages/parser/tools/oracle/run.sh --golden`). O critério que não se negocia é zero
  * falso positivo: um erro nosso numa linha em que o Portugol Studio não vê erro bloqueia um
@@ -43,8 +43,8 @@ const resultados = temCorpus
 
 describe.skipIf(!temCorpus)("Corpus dos exemplos oficiais", () => {
   test("o golden cobre exatamente os exemplos que existem no disco", () => {
-    expect(golden.size).toBe(119);
-    expect(globSync("**/*.por", { cwd: EXEMPLOS })).toHaveLength(119);
+    expect(golden.size).toBe(117);
+    expect(globSync("**/*.por", { cwd: EXEMPLOS })).toHaveLength(117);
   });
 
   test("nenhum falso positivo", () => {
@@ -57,23 +57,14 @@ describe.skipIf(!temCorpus)("Corpus dos exemplos oficiais", () => {
     expect(falsos).toEqual([]);
   });
 
-  /**
-   * O `jogos/arkanoid.por` é um exemplo inacabado (fora do índice de exemplos), que o próprio
-   * Portugol Studio recusa no sintático: a nossa análise também para antes de chegar à linha
-   * do erro.
-   */
-  test("nenhum falso negativo além do exemplo quebrado", () => {
+  test("nenhum falso negativo", () => {
     const falsos = resultados.flatMap(({ arquivo, erros, linhasPs }) => {
       const linhasNossas = new Set(erros.map(erro => erro.startLine));
 
       return [...linhasPs].filter(linha => !linhasNossas.has(linha)).map(linha => `${arquivo}:${linha}`);
     });
 
-    expect(falsos).toMatchInlineSnapshot(`
-      [
-        "jogos/arkanoid.por:155",
-      ]
-    `);
+    expect(falsos).toEqual([]);
   });
 
   test("os avisos batem em quantidade e código com o Portugol Studio", () => {
@@ -93,7 +84,7 @@ describe.skipIf(!temCorpus)("Corpus dos exemplos oficiais", () => {
 
     expect(porCódigo).toEqual({
       "AvisoSemantico.AvisoSimboloGlobalOcultado": 13,
-      "AvisoSemantico.AvisoValorExpressaoSeraConvertido": 509,
+      "AvisoSemantico.AvisoValorExpressaoSeraConvertido": 507,
       "AvisoSemantico.AvisoVetorPodeSerVariavel": 2,
     });
   });
@@ -106,18 +97,14 @@ describe.skipIf(!temCorpus)("Corpus dos exemplos oficiais", () => {
     });
 
     expect(webstudio.filter(linha => !linha.endsWith("ErroWebstudio.ErroBibliotecaNaoSuportada"))).toEqual([]);
-    expect(webstudio).toHaveLength(82);
+    expect(webstudio).toHaveLength(81);
   });
 
-  test("os parseErrors são só os do exemplo quebrado", () => {
+  test("nenhum exemplo tem parseError", () => {
     expect(
       resultados
         .filter(({ resultado }) => resultado.parseErrors.length > 0)
         .map(({ arquivo, resultado }) => `${arquivo} (${resultado.parseErrors.length})`),
-    ).toMatchInlineSnapshot(`
-      [
-        "jogos/arkanoid.por (2)",
-      ]
-    `);
+    ).toEqual([]);
   });
 });

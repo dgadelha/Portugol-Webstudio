@@ -537,9 +537,6 @@ programa {
             veiculos[i][_Y] = veiculos[i][_Y] + veiculos[i][_VELOCIDADE] + diferenca_velocidade
           }
 
-          sm.reproduzir_som(som_colisao, falso)
-          danificar(velocidade1, velocidade2)
-
           atualizar_posicao_veiculos()
           atualizar_posicao_estrada()
         }

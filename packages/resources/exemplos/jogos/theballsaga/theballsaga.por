@@ -1062,7 +1062,7 @@ programa {
         g.definir_opacidade(255)
         g.definir_cor(g.COR_BRANCO)
         g.definir_tamanho_texto(TAMANHO_TILE * 2)
-        g.desenhar_texto(largura_tela / 2 - g.largura_texto("Pause") / 2, altura_tela / 2 - g.altura_texto("Pause") / 2, "Pause")
+        g.desenhar_texto(largura_tela / 2 - g.largura_texto("Pausa") / 2, altura_tela / 2 - g.altura_texto("Pausa") / 2, "Pausa")
         g.renderizar()
         enquanto (t.tecla_pressionada(t.TECLA_P)) {
         }

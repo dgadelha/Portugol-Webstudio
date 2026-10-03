@@ -59,7 +59,7 @@ programa {
   inteiro campo[5]
 
   real tamanho_fonte
-  inteiro pontuacao_y, pontuacao1_x, pontuacao2_x, pontuacao = -1, imagem_pausa = 0, atalhosimg = -1, portugol = -1
+  inteiro pontuacao_y, pontuacao1_x, pontuacao2_x, pontuacao = -1, imagem_pausa = -1, atalhosimg = -1, portugol = -1
   inteiro tempo_anterior_demo = u.tempo_decorrido(), player_demo_aleatoriedade
 
   logico DEMO_mode = falso
@@ -183,9 +183,9 @@ programa {
 
     para (inteiro i = 0; i < LINHAS; i++) {
       para (inteiro j = 0; j < COLUNAS; j++) {
-        se (i == 0 ou i == 30) {
+        se (i == 0 ou i == LINHAS - 1) {
           matriz_fundo[i][j] = 1
-        } senao se (j == 25 e i % 2 == 0) {
+        } senao se (j == COLUNAS / 2 e i % 2 == 0) {
           matriz_fundo[i][j] = 2
         } senao {
           matriz_fundo[i][j] = 0
@@ -221,12 +221,17 @@ programa {
     g.limpar()
     g.definir_cor(cor_principal)
     se (DEMO_mode) {
-      g.desenhar_texto(campo[X] + campo[LARGURA] - g.largura_texto("Press any key to return"), tamanho_tile * 1.5, "Press any key to return")
+      g.desenhar_texto(campo[X] + campo[LARGURA] - g.largura_texto("Pressione uma tecla para voltar"), tamanho_tile * 1.5, "Pressione uma tecla para voltar")
     } senao {
-      g.desenhar_texto(campo[X], tamanho_tile * 1.5, "Press R to reset score")
-      g.desenhar_texto(campo[X] + campo[LARGURA] - g.largura_texto("Press P to pause the game"), tamanho_tile * 1.5, "Press P to pause the game")
+      g.desenhar_texto(campo[X], tamanho_tile * 1.5, "R para zerar o placar")
+      g.desenhar_texto(campo[X] + campo[LARGURA] - g.largura_texto("P para pausar"), tamanho_tile * 1.5, "P para pausar")
     }
     g.definir_tamanho_texto(tela_h / 15.0)
+
+    // Libera a imagem anterior antes de gerar a nova
+    se (atalhosimg != -1) {
+      g.liberar_imagem(atalhosimg)
+    }
     atalhosimg = g.renderizar_imagem(tela_w, tela_h / 6)
   }
 
@@ -355,6 +360,11 @@ programa {
     se (t.tecla_pressionada(t.TECLA_P)) {
       pausado = verdadeiro
       desenhar()
+
+      // Libera a imagem da pausa anterior antes de gerar a nova
+      se (imagem_pausa != -1) {
+        g.liberar_imagem(imagem_pausa)
+      }
       imagem_pausa = g.renderizar_imagem(tela_w, tela_h)
       enquanto (t.tecla_pressionada(t.TECLA_P)) {
       }
@@ -407,7 +417,7 @@ programa {
         g.definir_cor(cor_fundo)
         g.limpar()
         g.definir_cor(cor_principal)
-        g.desenhar_texto(tela_w / 2 - g.largura_texto("Press Enter to Start") / 2, tela_h / 2 - g.altura_texto("Press Enter to Start") / 2, "Press Enter to Start")
+        g.desenhar_texto(tela_w / 2 - g.largura_texto("Pressione Enter para começar") / 2, tela_h / 2 - g.altura_texto("Pressione Enter para começar") / 2, "Pressione Enter para começar")
       }
 
       se (u.tempo_decorrido() - tempo_anterior > 500) {
@@ -417,7 +427,7 @@ programa {
           switch = falso
         } senao {
           g.definir_cor(cor_principal)
-          g.desenhar_texto(tela_w / 2 - g.largura_texto("Press Enter to Start") / 2, tela_h / 2 - g.altura_texto("Press Enter to Start") / 2, "Press Enter to Start")
+          g.desenhar_texto(tela_w / 2 - g.largura_texto("Pressione Enter para começar") / 2, tela_h / 2 - g.altura_texto("Pressione Enter para começar") / 2, "Pressione Enter para começar")
           switch = verdadeiro
         }
         tempo_anterior = u.tempo_decorrido()

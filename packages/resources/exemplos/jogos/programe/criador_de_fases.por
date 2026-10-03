@@ -674,7 +674,7 @@ programa {
     // Inicia o modo gráfico
     g.iniciar_modo_grafico(verdadeiro)
     g.definir_dimensoes_janela(800, 600)
-    g.definir_titulo_janela("JogoLite")
+    g.definir_titulo_janela("Programe - Criador de Fases")
   }
 
   funcao inicio() {
