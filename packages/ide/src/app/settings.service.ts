@@ -31,6 +31,70 @@ export class SettingsService {
   }
 
   /**
+   * As opções do editor de código que vêm das configurações.
+   */
+  editorOptions(): Observable<monaco.editor.IEditorOptions & monaco.editor.IGlobalEditorOptions> {
+    return combineLatest([
+      this.observe(settings.editorFontSize),
+      this.observe(settings.editorWordWrap),
+      this.observe(settings.editorTabSize),
+      this.observe(settings.editorInsertSpaces),
+      this.observe(settings.editorLineNumbers),
+      this.observe(settings.editorMinimap),
+      this.observe(settings.editorBracketPairColorization),
+      this.observe(settings.editorIndentationGuides),
+      this.observe(settings.editorRenderWhitespace),
+      this.observe(settings.editorAutoClosing),
+      this.observe(settings.editorCursorStyle),
+      this.observe(settings.editorQuickSuggestions),
+      this.observe(settings.editorRenderLineHighlight),
+      this.observe(settings.editorFolding),
+      this.observe(settings.editorStickyScroll),
+    ]).pipe(
+      map(
+        ([
+          fontSize,
+          wordWrap,
+          tabSize,
+          insertSpaces,
+          lineNumbers,
+          minimap,
+          bracketPairColorization,
+          indentationGuides,
+          renderWhitespace,
+          autoClosing,
+          cursorStyle,
+          quickSuggestions,
+          renderLineHighlight,
+          folding,
+          stickyScroll,
+        ]) => {
+          return {
+            fontSize,
+            wordWrap: wordWrap ? "on" : "off",
+            tabSize,
+            insertSpaces,
+            lineNumbers,
+            minimap: { enabled: minimap },
+            "bracketPairColorization.enabled": bracketPairColorization,
+            guides: { indentation: indentationGuides },
+            renderWhitespace,
+            autoClosingBrackets: autoClosing ? "languageDefined" : "never",
+            autoClosingQuotes: autoClosing ? "languageDefined" : "never",
+            cursorStyle,
+            // Desativadas, as sugestões ainda aparecem com Ctrl + Espaço.
+            quickSuggestions,
+            suggestOnTriggerCharacters: quickSuggestions,
+            renderLineHighlight,
+            folding,
+            stickyScroll: { enabled: stickyScroll },
+          };
+        },
+      ),
+    );
+  }
+
+  /**
    * Um nível de indentação, do jeito que o editor está configurado agora.
    */
   editorIndentation() {

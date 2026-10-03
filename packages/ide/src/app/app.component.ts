@@ -6,7 +6,9 @@ import { GoogleAnalyticsService } from "ngx-google-analytics";
 import { Subscription } from "rxjs";
 import { DialogConfirmCloseTabComponent } from "./dialog-confirm-close-tab/dialog-confirm-close-tab.component";
 import { DialogRenameTabComponent } from "./dialog-rename-tab/dialog-rename-tab.component";
+import { settings } from "../settings";
 import { DialogSettingsComponent } from "./dialog-settings/dialog-settings.component";
+import { SettingsService } from "./settings.service";
 import { ShareService } from "./share.service";
 import { WorkspaceService } from "./workspace.service";
 import { isMeaningfulCode, Tab } from "./workspace.types";
@@ -25,6 +27,7 @@ export class AppComponent implements OnInit, OnDestroy {
   private dialog = inject(MatDialog);
   private shareService = inject(ShareService);
   private workspace = inject(WorkspaceService);
+  private settingsService = inject(SettingsService);
 
   renameDialogRef?: MatDialogRef<DialogRenameTabComponent>;
   renameDialogSubscription?: Subscription;
@@ -135,8 +138,12 @@ export class AppComponent implements OnInit, OnDestroy {
     };
 
     // Só vale interromper quem tem algo a perder: aba de ajuda e aba intocada
-    // fecham direto.
-    if (tab.type !== "editor" || !isMeaningfulCode(tab.contents)) {
+    // fecham direto, e quem desligou a confirmação também.
+    if (
+      tab.type !== "editor" ||
+      !isMeaningfulCode(tab.contents) ||
+      !this.settingsService.get(settings.interfaceConfirmCloseTab)
+    ) {
       confirmClose();
       return;
     }
@@ -197,8 +204,9 @@ export class AppComponent implements OnInit, OnDestroy {
   openSettingsModal() {
     // A aba Inicial e o editor já registram de onde o diálogo foi aberto.
     this.dialog.open(DialogSettingsComponent, {
-      width: "min(92vw, 1100px)",
-      maxWidth: "92vw",
+      width: "min(92vw, 768px)",
+      maxWidth: "none",
+      height: "min(90vh, 600px)",
     });
   }
 }

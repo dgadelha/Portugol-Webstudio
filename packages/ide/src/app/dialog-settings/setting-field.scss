@@ -1,0 +1,49 @@
+// Campos das seções: rótulo e descrição, com o controle abaixo ou ao lado.
+
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+svg-icon {
+  display: flex;
+  flex-shrink: 0;
+}
+
+hr {
+  width: 100%;
+  margin: 0;
+  border: 0;
+  border-top: 1px solid var(--pws-border-color);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  &.inline {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.field-text {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.field-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.field-description {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: var(--pws-text-muted);
+}

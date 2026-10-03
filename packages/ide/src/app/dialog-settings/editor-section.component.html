@@ -1,0 +1,235 @@
+<figure class="preview">
+  <figcaption>Prévia</figcaption>
+  <div class="preview-editor">
+    <ngx-monaco-editor [options]="previewOptions" [(ngModel)]="previewCode" />
+  </div>
+</figure>
+
+<div class="field">
+  <div class="field-text">
+    <span id="setting-editor-font-size" class="field-label">Tamanho da fonte</span>
+    <p class="field-description">
+      Usado no editor e, até ser alterado na seção Saída, também na saída. O padrão é
+      {{ settings.editorFontSize.default }}px.
+    </p>
+  </div>
+
+  <app-font-size-control
+    labelledBy="setting-editor-font-size"
+    [value]="editorFontSize"
+    (valueChange)="editorFontSize = $event"
+  />
+</div>
+
+<div class="field inline">
+  <div class="field-text">
+    <span id="setting-editor-word-wrap" class="field-label">Quebra de linha</span>
+    <p class="field-description">Linhas longas continuam embaixo em vez de rolar para o lado.</p>
+  </div>
+
+  <mat-slide-toggle aria-labelledby="setting-editor-word-wrap" color="primary" [(ngModel)]="editorWordWrap" />
+</div>
+
+<div class="row">
+  <div class="field">
+    <span id="setting-editor-tab-size" class="field-label">Tamanho da tabulação</span>
+
+    <mat-button-toggle-group
+      aria-labelledby="setting-editor-tab-size"
+      name="tabSize"
+      class="toggle-group tab-size"
+      hideSingleSelectionIndicator
+      [(ngModel)]="editorTabSize"
+    >
+      @for (size of tabSizes; track size) {
+        <mat-button-toggle [value]="size">{{ size }}</mat-button-toggle>
+      }
+    </mat-button-toggle-group>
+  </div>
+
+  <div class="field">
+    <span id="setting-editor-insert-spaces" class="field-label">Indentar com</span>
+
+    <mat-button-toggle-group
+      aria-labelledby="setting-editor-insert-spaces"
+      name="insertSpaces"
+      class="toggle-group"
+      hideSingleSelectionIndicator
+      [(ngModel)]="editorInsertSpaces"
+    >
+      <mat-button-toggle [value]="true">Espaços</mat-button-toggle>
+      <mat-button-toggle [value]="false">Tabulações</mat-button-toggle>
+    </mat-button-toggle-group>
+  </div>
+</div>
+
+<hr />
+
+<div class="field">
+  <div class="field-text">
+    <span id="setting-editor-line-numbers" class="field-label">Números das linhas</span>
+    <p class="field-description">Relativos contam a partir da linha do cursor.</p>
+  </div>
+
+  <mat-button-toggle-group
+    aria-labelledby="setting-editor-line-numbers"
+    name="lineNumbers"
+    class="toggle-group"
+    hideSingleSelectionIndicator
+    [(ngModel)]="editorLineNumbers"
+  >
+    <mat-button-toggle value="on">Exibir</mat-button-toggle>
+    <mat-button-toggle value="relative">Relativos</mat-button-toggle>
+    <mat-button-toggle value="off">Ocultar</mat-button-toggle>
+  </mat-button-toggle-group>
+</div>
+
+<div class="field">
+  <div class="field-text">
+    <span id="setting-editor-render-line-highlight" class="field-label">Destacar a linha atual</span>
+    <p class="field-description">Uma faixa marca a linha onde está o cursor.</p>
+  </div>
+
+  <mat-button-toggle-group
+    aria-labelledby="setting-editor-render-line-highlight"
+    name="renderLineHighlight"
+    class="toggle-group"
+    hideSingleSelectionIndicator
+    [(ngModel)]="editorRenderLineHighlight"
+  >
+    <mat-button-toggle value="none">Nunca</mat-button-toggle>
+    <mat-button-toggle value="line">No código</mat-button-toggle>
+    <mat-button-toggle value="all">No código e na margem</mat-button-toggle>
+  </mat-button-toggle-group>
+</div>
+
+<div class="field">
+  <div class="field-text">
+    <span id="setting-editor-render-whitespace" class="field-label">Exibir espaços em branco</span>
+    <p class="field-description">Espaços aparecem como pontos e tabulações como setas.</p>
+  </div>
+
+  <mat-button-toggle-group
+    aria-labelledby="setting-editor-render-whitespace"
+    name="renderWhitespace"
+    class="toggle-group"
+    hideSingleSelectionIndicator
+    [(ngModel)]="editorRenderWhitespace"
+  >
+    <mat-button-toggle value="none">Nunca</mat-button-toggle>
+    <mat-button-toggle value="selection">Na seleção</mat-button-toggle>
+    <mat-button-toggle value="all">Sempre</mat-button-toggle>
+  </mat-button-toggle-group>
+</div>
+
+<div class="field">
+  <span id="setting-editor-cursor-style" class="field-label">Estilo do cursor</span>
+
+  <mat-button-toggle-group
+    aria-labelledby="setting-editor-cursor-style"
+    name="cursorStyle"
+    class="toggle-group"
+    hideSingleSelectionIndicator
+    [(ngModel)]="editorCursorStyle"
+  >
+    <mat-button-toggle value="line">Linha</mat-button-toggle>
+    <mat-button-toggle value="block">Bloco</mat-button-toggle>
+    <mat-button-toggle value="underline">Sublinhado</mat-button-toggle>
+  </mat-button-toggle-group>
+</div>
+
+<hr />
+
+<div class="field inline">
+  <div class="field-text">
+    <span id="setting-editor-quick-suggestions" class="field-label">Sugestões ao digitar</span>
+    <p class="field-description">
+      Palavras e comandos aparecem numa lista enquanto você escreve. Desativadas, ainda abrem com Ctrl + Espaço.
+    </p>
+  </div>
+
+  <mat-slide-toggle
+    aria-labelledby="setting-editor-quick-suggestions"
+    color="primary"
+    [(ngModel)]="editorQuickSuggestions"
+  />
+</div>
+
+<div class="field inline">
+  <div class="field-text">
+    <span id="setting-editor-live-diagnostics" class="field-label">Mostrar erros enquanto digita</span>
+    <p class="field-description">Desativado, os erros só são marcados no código ao executar.</p>
+  </div>
+
+  <mat-slide-toggle
+    aria-labelledby="setting-editor-live-diagnostics"
+    color="primary"
+    [(ngModel)]="editorLiveDiagnostics"
+  />
+</div>
+
+<div class="field inline">
+  <div class="field-text">
+    <span id="setting-editor-auto-closing" class="field-label">Fechar chaves e aspas automaticamente</span>
+    <p class="field-description">Ao abrir chaves, parênteses ou aspas, o fechamento já aparece.</p>
+  </div>
+
+  <mat-slide-toggle aria-labelledby="setting-editor-auto-closing" color="primary" [(ngModel)]="editorAutoClosing" />
+</div>
+
+<hr />
+
+<div class="field inline">
+  <div class="field-text">
+    <span id="setting-editor-minimap" class="field-label">Minimapa</span>
+    <p class="field-description">Miniatura do código ao lado da barra de rolagem.</p>
+  </div>
+
+  <mat-slide-toggle aria-labelledby="setting-editor-minimap" color="primary" [(ngModel)]="editorMinimap" />
+</div>
+
+<div class="field inline">
+  <div class="field-text">
+    <span id="setting-editor-indentation-guides" class="field-label">Guias de indentação</span>
+    <p class="field-description">Linhas verticais ligando o início e o fim de cada bloco.</p>
+  </div>
+
+  <mat-slide-toggle
+    aria-labelledby="setting-editor-indentation-guides"
+    color="primary"
+    [(ngModel)]="editorIndentationGuides"
+  />
+</div>
+
+<div class="field inline">
+  <div class="field-text">
+    <span id="setting-editor-bracket-pair-colorization" class="field-label">Colorir pares de chaves e parênteses</span>
+    <p class="field-description">Cada nível de chaves e parênteses ganha uma cor.</p>
+  </div>
+
+  <mat-slide-toggle
+    aria-labelledby="setting-editor-bracket-pair-colorization"
+    color="primary"
+    [(ngModel)]="editorBracketPairColorization"
+  />
+</div>
+
+<div class="field inline">
+  <div class="field-text">
+    <span id="setting-editor-folding" class="field-label">Recolher blocos</span>
+    <p class="field-description">Setas na margem escondem e mostram o conteúdo de cada bloco.</p>
+  </div>
+
+  <mat-slide-toggle aria-labelledby="setting-editor-folding" color="primary" [(ngModel)]="editorFolding" />
+</div>
+
+<div class="field inline">
+  <div class="field-text">
+    <span id="setting-editor-sticky-scroll" class="field-label">Fixar o bloco atual no topo</span>
+    <p class="field-description">
+      Ao rolar, a linha de início da função e dos blocos em que o cursor está fica visível no alto do editor.
+    </p>
+  </div>
+
+  <mat-slide-toggle aria-labelledby="setting-editor-sticky-scroll" color="primary" [(ngModel)]="editorStickyScroll" />
+</div>

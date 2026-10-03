@@ -1,104 +1,208 @@
-header {
+:host {
+  display: flex;
+  height: 100%;
+  overflow: hidden;
+}
+
+svg-icon {
+  display: flex;
+  flex-shrink: 0;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  gap: 0.25rem;
+  width: 14rem;
+  padding: 0.75rem;
+  border-right: 1px solid var(--pws-border-color);
+  background-color: rgba(var(--pws-body-color-rgb), 0.02);
+}
+
+h2.title.mat-mdc-dialog-title {
+  margin: 0;
+  padding: 0.25rem 0.5rem 0.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.5rem;
+  color: var(--pws-body-color);
+
+  &::before {
+    display: none;
+  }
+}
+
+.sections {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.section {
   display: flex;
   align-items: center;
-  padding: 0.5rem 1rem;
+  gap: 0.5rem;
+  height: 2.25rem;
+  padding: 0 0.625rem;
+  border: 0;
+  border-radius: 0.375rem;
+  outline: none;
+  background: transparent;
+  color: var(--pws-text-muted);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    color 0.15s,
+    background-color 0.15s;
+
+  svg-icon {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  &:hover {
+    background-color: rgba(var(--pws-body-color-rgb), 0.05);
+    color: var(--pws-body-color);
+  }
+
+  &:focus-visible {
+    box-shadow: 0 0 0 2px var(--pws-color-primary);
+  }
+
+  &[aria-current="page"] {
+    background-color: rgba(var(--pws-body-color-rgb), 0.1);
+    color: var(--pws-body-color);
+  }
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  min-width: 0;
+  min-height: 0;
+}
+
+.header {
+  position: relative;
+  padding: 1rem 3.5rem 1rem 1.5rem;
   border-bottom: 1px solid var(--pws-border-color);
-}
 
-.radio-group {
-  display: flex;
-  flex-direction: column;
-  margin-top: 1rem;
+  h3 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.5rem;
+  }
 
-  .mat-radio-button {
-    margin-bottom: 0.5rem;
+  p {
+    margin: 0.125rem 0 0;
+    font-size: 0.875rem;
+    color: var(--pws-text-muted);
+  }
+
+  .close {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
   }
 }
 
-.toggle-group {
-  margin-top: 1rem;
+.body {
+  --settings-body-padding-top: 1.25rem;
+  --settings-body-padding-inline: 1.5rem;
 
-  // No tema M2, a opção escolhida só fica um cinza mais claro: aqui ela usa a
-  // cor principal, como o controle deslizante, os botões de opção e as chaves.
-  --mat-button-toggle-height: 36px;
-  --mat-button-toggle-shape: 0.25rem;
-  --mat-button-toggle-background-color: transparent;
-  --mat-button-toggle-text-color: var(--pws-text-200);
-  --mat-button-toggle-divider-color: var(--pws-border-color);
-  --mat-button-toggle-selected-state-background-color: var(--pws-color-primary);
-  --mat-button-toggle-selected-state-text-color: #000;
-  --mat-button-toggle-state-layer-color: var(--pws-color-primary);
+  // As seções consultam a altura disponível (a prévia do editor só fica fixa
+  // no topo quando sobra espaço para rolar o resto).
+  container: settings-body / size;
+  flex-grow: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--settings-body-padding-top) var(--settings-body-padding-inline) 1.25rem;
+  scrollbar-width: thin;
 }
 
-mat-dialog-content {
-  margin-top: 1rem;
-}
-
-.preferences,
-.preference-section {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.preference-section-header {
+.footer {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  border-radius: 0.25rem;
-  background-color: var(--pws-bg-100);
-  border: 1px solid var(--pws-border-color);
-}
-
-// As colunas seguem a largura do diálogo, não a da janela.
-.preferences {
-  container-type: inline-size;
-}
-
-.preference-list {
-  display: grid;
-  grid-template-columns: 1fr;
+  justify-content: space-between;
   gap: 1rem;
+  padding: 0.75rem 1.5rem;
+  border-top: 1px solid var(--pws-border-color);
+}
 
-  @container (min-width: 560px) {
-    grid-template-columns: repeat(2, 1fr);
+// Em telas estreitas, o aviso encurta e o botão continua numa linha só.
+.saved {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  min-width: 0;
+  font-size: 0.75rem;
+  color: var(--pws-text-muted);
+
+  span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
-  @container (min-width: 900px) {
-    grid-template-columns: repeat(3, 1fr);
+  svg-icon {
+    width: 0.875rem;
+    height: 0.875rem;
+  }
+}
+
+// Discreto, como o aviso ao lado: só ganha destaque ao passar o mouse.
+.reset {
+  --mat-button-text-container-height: 32px;
+  --mat-button-text-horizontal-padding: 0.625rem;
+  --mat-button-text-label-text-size: 0.8125rem;
+  --mat-button-text-label-text-color: var(--pws-text-muted);
+  --mat-button-text-state-layer-color: var(--pws-body-color);
+
+  flex-shrink: 0;
+  white-space: nowrap;
+
+  &:hover {
+    --mat-button-text-label-text-color: var(--pws-body-color);
   }
 
-  .preference {
-    display: flex;
+  svg-icon {
+    width: 0.875rem;
+    height: 0.875rem;
+    margin-right: 0.375rem;
+  }
+}
+
+// Em telas pequenas, as seções ficam numa linha acima do conteúdo.
+@media (max-width: 767px) {
+  :host {
     flex-direction: column;
-    align-items: start;
-    padding: 1rem;
-    background-color: var(--pws-bg-200);
-    border: 0.5px solid var(--pws-border-color);
-    border-radius: 0.25rem;
+  }
+
+  .nav {
+    width: auto;
+    border-right: 0;
+    border-bottom: 1px solid var(--pws-border-color);
+  }
+
+  .sections {
+    flex-direction: row;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .section {
+    flex-shrink: 0;
   }
 }
 
-.preference-slider {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-
-  mat-slider {
-    flex-grow: 1;
+// Em celulares, as quatro seções só cabem lado a lado sem os ícones.
+@media (max-width: 479px) {
+  .section svg-icon {
+    display: none;
   }
-}
-
-.slider-value-fix-width {
-  width: 2ch;
-}
-
-.preference-switch {
-  padding-top: 0.75rem;
-}
-
-::ng-deep .preference-switch .mat-mdc-slide-toggle .mat-internal-form-field {
-  gap: 0.5rem;
 }

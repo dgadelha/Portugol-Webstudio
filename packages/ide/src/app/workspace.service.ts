@@ -1,4 +1,5 @@
 import { computed, DestroyRef, effect, inject, NgZone, Service, signal, untracked } from "@angular/core";
+import { settings } from "../settings";
 import { SettingsService } from "./settings.service";
 import { WorkspaceStorageService } from "./workspace-storage.service";
 import {
@@ -32,9 +33,18 @@ const HEARTBEAT_STALE_AFTER = 90_000;
  */
 const PERSIST_DEBOUNCE = 500;
 
-const MAX_RECOVERABLE = 10;
+/**
+ * Quantas áreas de trabalho de sessões anteriores ficam guardadas; as mais
+ * antigas além disso são apagadas.
+ */
+export const MAX_RECOVERABLE = 10;
 
-const MAX_AGE = 30 /* dias */ * 24 * 60 * 60 * 1000;
+/**
+ * Por quantos dias, sem alterações, uma área de trabalho anterior fica guardada.
+ */
+export const MAX_AGE_DAYS = 30;
+
+const MAX_AGE = MAX_AGE_DAYS * 24 * 60 * 60 * 1000;
 
 /**
  * Dono do estado do IDE: as abas abertas, qual está em foco e o que cada uma
@@ -235,7 +245,9 @@ export class WorkspaceService {
 
     const [latest, ...rest] = orphans;
 
-    if (latest && this.adopt(latest.id)) {
+    // Sem reabrir as abas, a janela nova começa vazia e a última área fica na
+    // lista de recuperáveis, como as outras: nada se perde.
+    if (latest && this.settings.get(settings.interfaceReopenTabs) && this.adopt(latest.id)) {
       this.restoredFromPreviousSession.set(true);
       this.recoverable.set(rest);
       return;
