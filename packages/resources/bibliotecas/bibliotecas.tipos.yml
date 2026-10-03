@@ -1,0 +1,365 @@
+# yaml-language-server: $schema=./bibliotecas.schema.json
+$schema: "./bibliotecas.schema.json"
+
+bibliotecas:
+  - nome: Tipos
+    descrição: Esta biblioteca contém funções que permitem converter os tipos de dado do Portugol entre si
+    constantes: []
+
+    funções:
+      - nome: cadeia_e_inteiro
+        descrição: |
+          Verifica se a `cadeia` passada por parâmetro representa um valor do tipo `inteiro` escrito na notação definida pelo parâmetro `base`
+        retorno:
+          tipo:
+            primitivo: logico
+          descrição: |
+            `verdadeiro` se a `cadeia` representar um valor do tipo `inteiro`, caso contrário, retorna `falso`
+        parâmetros:
+          - nome: cad
+            descrição: a `cadeia` a ser verificada
+            tipo:
+              primitivo: cadeia
+          - nome: base
+            descrição: |
+              a base que deverá ser assumida ao realizar a verificação. Os valores possíveis são: 2, 10 e 16.
+
+              O valor 2 assume que a `cadeia` representa um número `inteiro` escrito em notação binária.
+              Ex.: 0b1001; 01101001; 101; 0B1101.
+
+              O valor 10 assume que a `cadeia` representa um número `inteiro` escrito em notação decimal.
+              Ex.: 52; -34; 0; 71.
+
+              O valor 16 assume que a `cadeia` representa um número `inteiro` escrito em notação hexadecimal.
+              Ex.: 0xFF5AC; 0XDf5Ac01B; A0B551ce; ff00ff.
+
+              Caso a base informada seja diferente de qualquer um destes valores, será gerado um erro de execução.
+            tipo:
+              primitivo: inteiro
+
+      - nome: cadeia_e_real
+        descrição: |
+          Verifica se a `cadeia` passada por parâmetro representa um valor do tipo `real`
+        retorno:
+          tipo:
+            primitivo: logico
+          descrição: |
+            `verdadeiro` se a `cadeia` representar um valor do tipo `real`, caso contrário, retorna `falso`
+        parâmetros:
+          - nome: cad
+            descrição: a `cadeia` a ser verificada
+            tipo:
+              primitivo: cadeia
+
+      - nome: cadeia_e_logico
+        descrição: |
+          Verifica se a `cadeia` passada por parâmetro representa um valor do tipo `logico`
+        retorno:
+          tipo:
+            primitivo: logico
+          descrição: |
+            `verdadeiro` se a `cadeia` representar um valor do tipo `logico`, caso contrário, retorna `falso`
+        parâmetros:
+          - nome: cad
+            descrição: a `cadeia` a ser verificada
+            tipo:
+              primitivo: cadeia
+
+      - nome: cadeia_e_caracter
+        descrição: |
+          Verifica se a `cadeia` passada por parâmetro representa um valor do tipo `caracter`
+        retorno:
+          tipo:
+            primitivo: logico
+          descrição: |
+            `verdadeiro` se a `cadeia` representar um valor do tipo `caracter`, caso contrário, retorna `falso`
+        parâmetros:
+          - nome: cad
+            descrição: a `cadeia` a ser verificada
+            tipo:
+              primitivo: cadeia
+
+      - nome: cadeia_para_caracter
+        descrição: |
+          Converte um valor do tipo `cadeia` em um valor do tipo `caracter`
+        retorno:
+          tipo:
+            primitivo: caracter
+          descrição: um valor do tipo `caracter`
+        parâmetros:
+          - nome: valor
+            descrição: o valor a ser convertido
+            tipo:
+              primitivo: cadeia
+
+      - nome: cadeia_para_inteiro
+        descrição: |
+          Converte um valor do tipo `cadeia` em um valor do tipo `inteiro` utilizando a `base` informada
+        retorno:
+          tipo:
+            primitivo: inteiro
+          descrição: um valor do tipo `inteiro`
+        parâmetros:
+          - nome: valor
+            descrição: o valor a ser convertido
+            tipo:
+              primitivo: cadeia
+          - nome: base
+            descrição: |
+              a notação em que o número `inteiro` está representado na `cadeia`. Os valores possíveis são: 2, 10 e 16.
+
+              O valor 2 assume que a `cadeia` representa um número `inteiro` escrito em notação binária.
+              Ex.: 0b1001; 01101001; 101; 0B1101.
+
+              O valor 10 assume que a `cadeia` representa um número `inteiro` escrito em notação decimal.
+              Ex.: 52; -34; 0; 71.
+
+              O valor 16 assume que a `cadeia` representa um número `inteiro` escrito em notação hexadecimal.
+              Ex.: 0xFF5AC; 0XDf5Ac01B; A0B551ce; ff00ff.
+
+              Caso a base informada seja diferente de qualquer um destes valores, será gerado um erro de execução.
+            tipo:
+              primitivo: inteiro
+
+      - nome: cadeia_para_real
+        descrição: |
+          Converte um valor do tipo `cadeia` em um valor do tipo `real`
+        retorno:
+          tipo:
+            primitivo: real
+          descrição: um valor do tipo `real`
+        parâmetros:
+          - nome: valor
+            descrição: o valor a ser convertido
+            tipo:
+              primitivo: cadeia
+
+      - nome: cadeia_para_logico
+        descrição: |
+          Converte um valor do tipo `cadeia` em um valor do tipo `logico`
+        retorno:
+          tipo:
+            primitivo: logico
+          descrição: um valor do tipo `logico`
+        parâmetros:
+          - nome: valor
+            descrição: o valor a ser convertido
+            tipo:
+              primitivo: cadeia
+
+      - nome: inteiro_e_caracter
+        descrição: |
+          Verifica se o `inteiro` passado por parâmetro representa um valor do tipo `caracter`
+        retorno:
+          tipo:
+            primitivo: logico
+          descrição: |
+            `verdadeiro` se o `inteiro` representar um valor do tipo `caracter`, caso contrário, retorna `falso`
+        parâmetros:
+          - nome: int
+            descrição: o `inteiro` a ser verificado
+            tipo:
+              primitivo: inteiro
+
+      - nome: inteiro_para_cadeia
+        descrição: |
+          Converte um valor do tipo `inteiro` em um valor do tipo `cadeia` utilizando a `base` informada
+        retorno:
+          tipo:
+            primitivo: cadeia
+          descrição: um valor do tipo `cadeia`
+        parâmetros:
+          - nome: valor
+            descrição: o valor a ser convertido
+            tipo:
+              primitivo: inteiro
+          - nome: base
+            descrição: |
+              a notação em que o número `inteiro` está representado na `cadeia`. Os valores possíveis são: 2, 10 e 16.
+
+              O valor 2 assume que a `cadeia` representa um número `inteiro` escrito em notação binária.
+              Ex.: 0b1001; 01101001; 101; 0B1101.
+
+              O valor 10 assume que a `cadeia` representa um número `inteiro` escrito em notação decimal.
+              Ex.: 52; -34; 0; 71.
+
+              O valor 16 assume que a `cadeia` representa um número `inteiro` escrito em notação hexadecimal.
+              Ex.: 0xFF5AC; 0XDf5Ac01B; A0B551ce; ff00ff.
+
+              Caso a base informada seja diferente de qualquer um destes valores, será gerado um erro de execução.
+            tipo:
+              primitivo: inteiro
+
+      - nome: inteiro_para_caracter
+        descrição: |
+          Converte um valor do tipo `inteiro` em um valor do tipo `caracter`
+        retorno:
+          tipo:
+            primitivo: caracter
+          descrição: um valor do tipo `caracter`
+        parâmetros:
+          - nome: valor
+            descrição: o valor a ser convertido
+            tipo:
+              primitivo: inteiro
+
+      - nome: inteiro_para_logico
+        descrição: |
+          Converte um valor do tipo `inteiro` em um valor do tipo `logico`
+        retorno:
+          tipo:
+            primitivo: logico
+          descrição: |
+            `falso` se o valor for menor ou igual a 0, `verdadeiro` se o valor for maior ou igual a 1
+        parâmetros:
+          - nome: valor
+            descrição: o valor a ser convertido
+            tipo:
+              primitivo: inteiro
+
+      - nome: inteiro_para_real
+        descrição: |
+          Converte um valor do tipo `inteiro` em um valor do tipo `real`
+        retorno:
+          tipo:
+            primitivo: real
+          descrição: um valor do tipo `real`
+        parâmetros:
+          - nome: valor
+            descrição: o valor a ser convertido
+            tipo:
+              primitivo: inteiro
+
+      - nome: caracter_e_inteiro
+        descrição: |
+          Verifica se o `caracter` passado por parâmetro representa um valor do tipo `inteiro`
+        retorno:
+          tipo:
+            primitivo: logico
+          descrição: |
+            `verdadeiro` se o `caracter` representar um valor do tipo `inteiro`, caso contrário, retorna `falso`
+        parâmetros:
+          - nome: car
+            descrição: o `caracter` a ser verificado
+            tipo:
+              primitivo: caracter
+
+      - nome: caracter_e_logico
+        descrição: |
+          Verifica se o `caracter` passado por parâmetro representa um valor do tipo `logico`
+        retorno:
+          tipo:
+            primitivo: logico
+          descrição: |
+            `verdadeiro` se o `caracter` for um dos seguintes valores: 'S', 's', 'N' ou 'n'. Caso contrário, retorna `falso`
+        parâmetros:
+          - nome: car
+            descrição: o `caracter` a ser verificado
+            tipo:
+              primitivo: caracter
+
+      - nome: caracter_para_cadeia
+        descrição: |
+          Converte um valor do tipo `caracter` em um valor do tipo `cadeia`
+        retorno:
+          tipo:
+            primitivo: cadeia
+          descrição: um valor do tipo `cadeia`
+        parâmetros:
+          - nome: valor
+            descrição: o valor a ser convertido
+            tipo:
+              primitivo: caracter
+
+      - nome: caracter_para_inteiro
+        descrição: |
+          Converte um valor do tipo `caracter` em um valor do tipo `inteiro`
+        retorno:
+          tipo:
+            primitivo: inteiro
+          descrição: um valor do tipo `inteiro`
+        parâmetros:
+          - nome: valor
+            descrição: o valor a ser convertido
+            tipo:
+              primitivo: caracter
+
+      - nome: caracter_para_logico
+        descrição: |
+          Converte um valor do tipo `caracter` em um valor do tipo `logico`
+        retorno:
+          tipo:
+            primitivo: logico
+          descrição: |
+            `verdadeiro` se o `caracter` for um dos seguintes valores: 'S', 's'; `falso` se o `caracter` for um dos seguintes valores: 'N', 'n'
+        parâmetros:
+          - nome: valor
+            descrição: o valor a ser convertido
+            tipo:
+              primitivo: caracter
+
+      - nome: logico_para_cadeia
+        descrição: |
+          Converte um valor do tipo `logico` em um valor do tipo `cadeia`
+        retorno:
+          tipo:
+            primitivo: cadeia
+          descrição: um valor do tipo `cadeia`
+        parâmetros:
+          - nome: valor
+            descrição: o valor a ser convertido
+            tipo:
+              primitivo: logico
+
+      - nome: logico_para_inteiro
+        descrição: |
+          Converte um valor do tipo `logico` em um valor do tipo `inteiro`
+        retorno:
+          tipo:
+            primitivo: inteiro
+          descrição: 1 se o valor passado por parâmetro for `verdadeiro`, 0 se o valor passado por parâmetro for `falso`
+        parâmetros:
+          - nome: valor
+            descrição: o valor a ser convertido
+            tipo:
+              primitivo: logico
+
+      - nome: logico_para_caracter
+        descrição: |
+          Converte um valor do tipo `logico` em um valor do tipo `caracter`
+        retorno:
+          tipo:
+            primitivo: caracter
+          descrição: |
+            'S' se o valor passado por parâmetro for `verdadeiro`, 'N' se o valor passado por parâmetro for `falso`
+        parâmetros:
+          - nome: valor
+            descrição: o valor a ser convertido
+            tipo:
+              primitivo: logico
+
+      - nome: real_para_cadeia
+        descrição: |
+          Converte um valor do tipo `real` em um valor do tipo `cadeia`
+        retorno:
+          tipo:
+            primitivo: cadeia
+          descrição: um valor do tipo `cadeia`
+        parâmetros:
+          - nome: valor
+            descrição: o valor a ser convertido
+            tipo:
+              primitivo: real
+
+      - nome: real_para_inteiro
+        descrição: |
+          Converte um valor do tipo `real` em um valor do tipo `inteiro`. Se o valor `real` tiver uma porção fracionária (Ex.: 9.56), o valor será truncado (Ex.: 9)
+        retorno:
+          tipo:
+            primitivo: inteiro
+          descrição: um valor do tipo `inteiro`
+        parâmetros:
+          - nome: valor
+            descrição: o valor a ser convertido
+            tipo:
+              primitivo: real

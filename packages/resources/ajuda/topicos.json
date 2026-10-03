@@ -1,0 +1,216 @@
+[
+  {
+    "titulo": "Linguagem Portugol",
+    "arquivo": "topicos/linguagem_portugol/index.md",
+    "subtopicos": [
+      {
+        "titulo": "Tipos",
+        "arquivo": "topicos/linguagem_portugol/tipos/index.md",
+        "subtopicos": [
+          {
+            "titulo": "Inteiro",
+            "arquivo": "topicos/linguagem_portugol/tipos/inteiro.md"
+          },
+          {
+            "titulo": "Real",
+            "arquivo": "topicos/linguagem_portugol/tipos/real.md"
+          },
+          {
+            "titulo": "Caracter",
+            "arquivo": "topicos/linguagem_portugol/tipos/caracter.md"
+          },
+          {
+            "titulo": "Cadeia",
+            "arquivo": "topicos/linguagem_portugol/tipos/cadeia.md"
+          },
+          {
+            "titulo": "Logico",
+            "arquivo": "topicos/linguagem_portugol/tipos/logico.md"
+          },
+          {
+            "titulo": "Vazio",
+            "arquivo": "topicos/linguagem_portugol/tipos/vazio.md"
+          }
+        ]
+      },
+      {
+        "titulo": "Declarações",
+        "arquivo": "topicos/linguagem_portugol/declaracoes/index.md",
+        "subtopicos": [
+          {
+            "titulo": "Declaração de Variáveis",
+            "arquivo": "topicos/linguagem_portugol/declaracoes/variavel.md"
+          },
+          {
+            "titulo": "Declaração de Constante",
+            "arquivo": "topicos/linguagem_portugol/declaracoes/constante.md"
+          },
+          {
+            "titulo": "Declaração de Função",
+            "arquivo": "topicos/linguagem_portugol/declaracoes/funcao.md"
+          },
+          {
+            "titulo": "Declaração de Matriz",
+            "arquivo": "topicos/linguagem_portugol/declaracoes/matriz.md"
+          },
+          {
+            "titulo": "Declaração de Vetor",
+            "arquivo": "topicos/linguagem_portugol/declaracoes/vetor.md"
+          }
+        ]
+      },
+      {
+        "titulo": "Entrada e Saída",
+        "arquivo": "topicos/linguagem_portugol/entrada_saida/index.md",
+        "subtopicos": [
+          {
+            "titulo": "Escreva",
+            "arquivo": "topicos/linguagem_portugol/entrada_saida/escreva.md"
+          },
+          {
+            "titulo": "Leia",
+            "arquivo": "topicos/linguagem_portugol/entrada_saida/leia.md"
+          },
+          {
+            "titulo": "Limpa",
+            "arquivo": "topicos/linguagem_portugol/entrada_saida/limpa.md"
+          }
+        ]
+      },
+      {
+        "titulo": "Expressões",
+        "arquivo": "topicos/linguagem_portugol/expressao/index.md",
+        "subtopicos": [
+          {
+            "titulo": "Operações Relacionais",
+            "arquivo": "topicos/linguagem_portugol/expressao/relacional.md"
+          },
+          {
+            "titulo": "Atribuições",
+            "arquivo": "topicos/linguagem_portugol/expressao/atribuicao.md"
+          },
+          {
+            "titulo": "Operações Aritméticas",
+            "arquivo": "topicos/linguagem_portugol/expressao/operacoes_aritimeticas/index.md",
+            "subtopicos": [
+              {
+                "titulo": "Operação de Adição",
+                "arquivo": "topicos/linguagem_portugol/expressao/operacoes_aritimeticas/operacao_adicao.md"
+              },
+              {
+                "titulo": "Operação de Subtração",
+                "arquivo": "topicos/linguagem_portugol/expressao/operacoes_aritimeticas/operacao_subtracao.md"
+              },
+              {
+                "titulo": "Operação de Multiplicação",
+                "arquivo": "topicos/linguagem_portugol/expressao/operacoes_aritimeticas/operacao_multiplicacao.md"
+              },
+              {
+                "titulo": "Operação de Divisão",
+                "arquivo": "topicos/linguagem_portugol/expressao/operacoes_aritimeticas/operacao_divisao.md"
+              },
+              {
+                "titulo": "Operação de Modulo",
+                "arquivo": "topicos/linguagem_portugol/expressao/operacoes_aritimeticas/operacao_modulo.md"
+              }
+            ]
+          },
+          {
+            "titulo": "Operações Lógicas",
+            "arquivo": "topicos/linguagem_portugol/expressao/operacoes_logicas/index.md",
+            "subtopicos": [
+              {
+                "titulo": "e",
+                "arquivo": "topicos/linguagem_portugol/expressao/operacoes_logicas/e.md"
+              },
+              {
+                "titulo": "ou",
+                "arquivo": "topicos/linguagem_portugol/expressao/operacoes_logicas/ou.md"
+              },
+              {
+                "titulo": "nao",
+                "arquivo": "topicos/linguagem_portugol/expressao/operacoes_logicas/nao.md"
+              }
+            ]
+          },
+          {
+            "titulo": "Operações Bitwise",
+            "arquivo": "topicos/linguagem_portugol/expressao/operacoes_bitwise/index.md",
+            "subtopicos": [
+              {
+                "titulo": "Operação de Bitwise AND",
+                "arquivo": "topicos/linguagem_portugol/expressao/operacoes_bitwise/bitwise_and.md"
+              },
+              {
+                "titulo": "Operação de Bitwise OR",
+                "arquivo": "topicos/linguagem_portugol/expressao/operacoes_bitwise/bitwise_or.md"
+              },
+              {
+                "titulo": "Operação de Bitwise NOT",
+                "arquivo": "topicos/linguagem_portugol/expressao/operacoes_bitwise/bitwise_not.md"
+              },
+              {
+                "titulo": "Operação de Bitwise XOR",
+                "arquivo": "topicos/linguagem_portugol/expressao/operacoes_bitwise/bitwise_xor.md"
+              },
+              {
+                "titulo": "Operação de Bitwise Shift",
+                "arquivo": "topicos/linguagem_portugol/expressao/operacoes_bitwise/bitwise_shift.md"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "titulo": "Estruturas de Controle",
+        "arquivo": "topicos/linguagem_portugol/estruturas_controle/index.md",
+        "subtopicos": [
+          {
+            "titulo": "Desvios Condicionais",
+            "arquivo": "topicos/linguagem_portugol/estruturas_controle/desvio/index.md",
+            "subtopicos": [
+              {
+                "titulo": "Se",
+                "arquivo": "topicos/linguagem_portugol/estruturas_controle/desvio/se.md"
+              },
+              {
+                "titulo": "Se senao",
+                "arquivo": "topicos/linguagem_portugol/estruturas_controle/desvio/se_senao.md"
+              },
+              {
+                "titulo": "Se senao se",
+                "arquivo": "topicos/linguagem_portugol/estruturas_controle/desvio/se_senao_se.md"
+              },
+              {
+                "titulo": "Escolha caso",
+                "arquivo": "topicos/linguagem_portugol/estruturas_controle/desvio/escolha_caso.md"
+              }
+            ]
+          },
+          {
+            "titulo": "Laços de Repetição",
+            "arquivo": "topicos/linguagem_portugol/estruturas_controle/repeticao/index.md",
+            "subtopicos": [
+              {
+                "titulo": "Enquanto",
+                "arquivo": "topicos/linguagem_portugol/estruturas_controle/repeticao/enquanto.md"
+              },
+              {
+                "titulo": "Faca enquanto",
+                "arquivo": "topicos/linguagem_portugol/estruturas_controle/repeticao/faca_enquanto.md"
+              },
+              {
+                "titulo": "Para",
+                "arquivo": "topicos/linguagem_portugol/estruturas_controle/repeticao/para.md"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "titulo": "Bibliotecas",
+        "arquivo": "topicos/linguagem_portugol/bibliotecas/index.md"
+      }
+    ]
+  }
+]

@@ -58,10 +58,11 @@ describe.skipIf(!temCorpus)("Corpus dos exemplos oficiais", () => {
   });
 
   /**
-   * Os dois são exemplos quebrados no upstream, que o próprio Portugol Studio recusa no
-   * sintático: a nossa análise também para antes de chegar à linha do erro.
+   * O `jogos/arkanoid.por` é um exemplo inacabado (fora do índice de exemplos), que o próprio
+   * Portugol Studio recusa no sintático: a nossa análise também para antes de chegar à linha
+   * do erro.
    */
-  test("nenhum falso negativo além dos dois exemplos quebrados no upstream", () => {
+  test("nenhum falso negativo além do exemplo quebrado", () => {
     const falsos = resultados.flatMap(({ arquivo, erros, linhasPs }) => {
       const linhasNossas = new Set(erros.map(erro => erro.startLine));
 
@@ -70,8 +71,7 @@ describe.skipIf(!temCorpus)("Corpus dos exemplos oficiais", () => {
 
     expect(falsos).toMatchInlineSnapshot(`
       [
-        "bibliotecas/tipos/logico.por:67",
-        "jogos/arkanoid.por:193",
+        "jogos/arkanoid.por:155",
       ]
     `);
   });
@@ -106,17 +106,16 @@ describe.skipIf(!temCorpus)("Corpus dos exemplos oficiais", () => {
     });
 
     expect(webstudio.filter(linha => !linha.endsWith("ErroWebstudio.ErroBibliotecaNaoSuportada"))).toEqual([]);
-    expect(webstudio).toHaveLength(68);
+    expect(webstudio).toHaveLength(82);
   });
 
-  test("os parseErrors são só os dos dois arquivos quebrados", () => {
+  test("os parseErrors são só os do exemplo quebrado", () => {
     expect(
       resultados
         .filter(({ resultado }) => resultado.parseErrors.length > 0)
         .map(({ arquivo, resultado }) => `${arquivo} (${resultado.parseErrors.length})`),
     ).toMatchInlineSnapshot(`
       [
-        "bibliotecas/tipos/logico.por (1)",
         "jogos/arkanoid.por (2)",
       ]
     `);

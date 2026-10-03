@@ -1,0 +1,398 @@
+# yaml-language-server: $schema=./bibliotecas.schema.json
+$schema: "./bibliotecas.schema.json"
+
+bibliotecas:
+  - nome: Objetos
+    descrição: Esta biblioteca contém uma série de funções para criar e trabalhar com objetos
+    constantes:
+      - nome: TIPO_INTEIRO
+        tipo:
+          primitivo: inteiro
+        valor: 1
+        descrição: Constante para definir o tipo inteiro
+
+      - nome: TIPO_CADEIA
+        tipo:
+          primitivo: inteiro
+        valor: 2
+        descrição: Constante para definir o tipo cadeia
+
+      - nome: TIPO_CARACTER
+        tipo:
+          primitivo: inteiro
+        valor: 3
+        descrição: Constante para definir o tipo caracter
+
+      - nome: TIPO_REAL
+        tipo:
+          primitivo: inteiro
+        valor: 4
+        descrição: Constante para definir o tipo real
+
+      - nome: TIPO_LOGICO
+        tipo:
+          primitivo: inteiro
+        valor: 5
+        descrição: Constante para definir o tipo logico
+
+      - nome: TIPO_OBJETO
+        tipo:
+          primitivo: inteiro
+        valor: 6
+        descrição: Constante para definir o tipo objeto
+
+      - nome: TIPO_VETOR
+        tipo:
+          primitivo: inteiro
+        valor: 7
+        descrição: Constante para definir o tipo vetor
+
+    funções:
+      - nome: criar_objeto_via_json
+        descrição: Realiza a criação de um objeto a partir de uma cadeia no formato JSON (JavaScript Object Notation)
+        retorno:
+          tipo:
+            primitivo: inteiro
+          descrição: O endereço de memória no qual o objeto foi carregado
+        referência: https://pt.wikipedia.org/wiki/JSON
+        parâmetros:
+          - nome: json
+            descrição: texto no formato JSON para criar o objeto
+            tipo:
+              primitivo: cadeia
+
+      - nome: criar_objeto_via_xml
+        descrição: Realiza a criação de um objeto a partir de uma cadeia no formato XML (eXtensible Markup Language)
+        retorno:
+          tipo:
+            primitivo: inteiro
+          descrição: O endereço de memória no qual o objeto foi carregado
+        referência: https://pt.wikipedia.org/wiki/XML
+        parâmetros:
+          - nome: xml
+            descrição: texto no formato XML para criar o objeto
+            tipo:
+              primitivo: cadeia
+
+      - nome: criar_objeto
+        descrição: Realiza a criação de um objeto vazio em memória
+        parâmetros: []
+        retorno:
+          tipo:
+            primitivo: inteiro
+          descrição: O endereço de memória no qual o objeto foi carregado
+
+      - nome: atribuir_propriedade
+        descrição: Realiza a atribuição de uma propriedade do objeto no endereço informado
+        parâmetros:
+          - nome: endereco
+            descrição: o endereço onde o objeto foi armazenado
+            tipo:
+              primitivo: inteiro
+          - nome: propriedade
+            descrição: a descrição da propriedade que terá o valor alterado
+            tipo:
+              primitivo: cadeia
+          - nome: valor
+            descrição: o valor que será atribuído para a propriedade
+            tipo:
+              primitivo: "*"
+        retorno:
+          tipo:
+            primitivo: vazio
+
+      - nome: obter_propriedade_tipo_inteiro
+        descrição: Obtém o valor de uma propriedade do tipo inteiro no objeto do endereço informado
+        retorno:
+          tipo:
+            primitivo: inteiro
+          descrição: o valor da propriedade informada
+        parâmetros:
+          - nome: endereco
+            descrição: o endereço onde o objeto foi armazenado
+            tipo:
+              primitivo: inteiro
+          - nome: propriedade
+            descrição: a descrição da propriedade que terá o valor obtido
+            tipo:
+              primitivo: cadeia
+
+      - nome: obter_propriedade_tipo_real
+        descrição: Obtém o valor de uma propriedade do tipo real no objeto do endereço informado
+        retorno:
+          tipo:
+            primitivo: real
+          descrição: o valor da propriedade informada
+        parâmetros:
+          - nome: endereco
+            descrição: o endereço onde o objeto foi armazenado
+            tipo:
+              primitivo: inteiro
+          - nome: propriedade
+            descrição: a descrição da propriedade que terá o valor obtido
+            tipo:
+              primitivo: cadeia
+
+      - nome: obter_propriedade_tipo_logico
+        descrição: Obtém o valor de uma propriedade do tipo logico no objeto do endereço informado
+        retorno:
+          tipo:
+            primitivo: logico
+          descrição: o valor da propriedade informada
+        parâmetros:
+          - nome: endereco
+            descrição: o endereço onde o objeto foi armazenado
+            tipo:
+              primitivo: inteiro
+          - nome: propriedade
+            descrição: a descrição da propriedade que terá o valor obtido
+            tipo:
+              primitivo: cadeia
+
+      - nome: obter_propriedade_tipo_caracter
+        descrição: Obtém o valor de uma propriedade do tipo caracter no objeto do endereço informado
+        retorno:
+          tipo:
+            primitivo: caracter
+          descrição: o valor da propriedade informada
+        parâmetros:
+          - nome: endereco
+            descrição: o endereço onde o objeto foi armazenado
+            tipo:
+              primitivo: inteiro
+          - nome: propriedade
+            descrição: a descrição da propriedade que terá o valor obtido
+            tipo:
+              primitivo: cadeia
+
+      - nome: obter_propriedade_tipo_cadeia
+        descrição: Obtém o valor de uma propriedade do tipo cadeia no objeto do endereço informado
+        retorno:
+          tipo:
+            primitivo: cadeia
+          descrição: o valor da propriedade informada
+        parâmetros:
+          - nome: endereco
+            descrição: o endereço onde o objeto foi armazenado
+            tipo:
+              primitivo: inteiro
+          - nome: propriedade
+            descrição: a descrição da propriedade que terá o valor obtido
+            tipo:
+              primitivo: cadeia
+
+      - nome: obter_propriedade_tipo_objeto
+        descrição: Obtém o valor de uma propriedade do tipo objeto no objeto do endereço informado
+        retorno:
+          tipo:
+            primitivo: inteiro
+          descrição: o valor da propriedade informada
+        parâmetros:
+          - nome: endereco
+            descrição: o endereço onde o objeto foi armazenado
+            tipo:
+              primitivo: inteiro
+          - nome: propriedade
+            descrição: a descrição da propriedade que terá o valor obtido
+            tipo:
+              primitivo: cadeia
+
+      - nome: obter_propriedade_tipo_objeto_em_vetor
+        descrição: Obtém o valor de um vetor armazenado no objeto do endereço informado
+        retorno:
+          tipo:
+            primitivo: inteiro
+          descrição: o valor da propriedade informada
+        parâmetros:
+          - nome: endereco
+            descrição: o endereço onde o objeto foi armazenado
+            tipo:
+              primitivo: inteiro
+          - nome: propriedade
+            descrição: a descrição da propriedade que terá o valor obtido
+            tipo:
+              primitivo: cadeia
+          - nome: indice
+            descrição: o índice do elemento do vetor que será obtido
+            tipo:
+              primitivo: inteiro
+
+      - nome: obter_propriedade_tipo_caracter_em_vetor
+        descrição: Obtém o valor de um vetor armazenado no objeto do endereço informado
+        retorno:
+          tipo:
+            primitivo: caracter
+          descrição: o valor da propriedade informada
+        parâmetros:
+          - nome: endereco
+            descrição: o endereço onde o objeto foi armazenado
+            tipo:
+              primitivo: inteiro
+          - nome: propriedade
+            descrição: a descrição da propriedade que terá o valor obtido
+            tipo:
+              primitivo: cadeia
+          - nome: indice
+            descrição: o índice do elemento do vetor que será obtido
+            tipo:
+              primitivo: inteiro
+
+      - nome: obter_propriedade_tipo_logico_em_vetor
+        descrição: Obtém o valor de um vetor armazenado no objeto do endereço informado
+        retorno:
+          tipo:
+            primitivo: logico
+          descrição: o valor da propriedade informada
+        parâmetros:
+          - nome: endereco
+            descrição: o endereço onde o objeto foi armazenado
+            tipo:
+              primitivo: inteiro
+          - nome: propriedade
+            descrição: a descrição da propriedade que terá o valor obtido
+            tipo:
+              primitivo: cadeia
+          - nome: indice
+            descrição: o índice do elemento do vetor que será obtido
+            tipo:
+              primitivo: inteiro
+
+      - nome: obter_propriedade_tipo_real_em_vetor
+        descrição: Obtém o valor de um vetor armazenado no objeto do endereço informado
+        retorno:
+          tipo:
+            primitivo: real
+          descrição: o valor da propriedade informada
+        parâmetros:
+          - nome: endereco
+            descrição: o endereço onde o objeto foi armazenado
+            tipo:
+              primitivo: inteiro
+          - nome: propriedade
+            descrição: a descrição da propriedade que terá o valor obtido
+            tipo:
+              primitivo: cadeia
+          - nome: indice
+            descrição: o índice do elemento do vetor que será obtido
+            tipo:
+              primitivo: inteiro
+
+      - nome: obter_propriedade_tipo_inteiro_em_vetor
+        descrição: Obtém o valor de um vetor armazenado no objeto do endereço informado
+        retorno:
+          tipo:
+            primitivo: inteiro
+          descrição: o valor da propriedade informada
+        parâmetros:
+          - nome: endereco
+            descrição: o endereço onde o objeto foi armazenado
+            tipo:
+              primitivo: inteiro
+          - nome: propriedade
+            descrição: a descrição da propriedade que terá o valor obtido
+            tipo:
+              primitivo: cadeia
+          - nome: indice
+            descrição: o índice do elemento do vetor que será obtido
+            tipo:
+              primitivo: inteiro
+
+      - nome: obter_propriedade_tipo_cadeia_em_vetor
+        descrição: Obtém o valor de um vetor armazenado no objeto do endereço informado
+        retorno:
+          tipo:
+            primitivo: cadeia
+          descrição: o valor da propriedade informada
+        parâmetros:
+          - nome: endereco
+            descrição: o endereço onde o objeto foi armazenado
+            tipo:
+              primitivo: inteiro
+          - nome: propriedade
+            descrição: a descrição da propriedade que terá o valor obtido
+            tipo:
+              primitivo: cadeia
+          - nome: indice
+            descrição: o índice do elemento do vetor que será obtido
+            tipo:
+              primitivo: inteiro
+
+      - nome: obter_tamanho_vetor_propriedade
+        descrição: Obtém o tamanho de um vetor armazenado no objeto do endereço informado
+        retorno:
+          tipo:
+            primitivo: inteiro
+          descrição: o valor da propriedade informada
+        parâmetros:
+          - nome: endereco
+            descrição: o endereço onde o objeto foi armazenado
+            tipo:
+              primitivo: inteiro
+          - nome: propriedade
+            descrição: a descrição da propriedade que terá o valor obtido
+            tipo:
+              primitivo: cadeia
+
+      - nome: liberar_objeto
+        descrição: Libera o objeto do endereço informado da memória
+        parâmetros:
+          - nome: endereco
+            descrição: o endereço onde o objeto foi armazenado
+            tipo:
+              primitivo: inteiro
+        retorno:
+          tipo:
+            primitivo: vazio
+
+      - nome: liberar
+        descrição: Libera todos os objetos previamente armazenados na memória
+        parâmetros: []
+        retorno:
+          tipo:
+            primitivo: vazio
+
+      - nome: obter_json
+        descrição: Obtém a cadeia que representa o objeto inteiro no formato JSON (JavaScript Object Notation)
+        retorno:
+          tipo:
+            primitivo: cadeia
+          descrição: a cadeia que representa o objeto inteiro no formato JSON
+        referência: https://pt.wikipedia.org/wiki/JSON
+        parâmetros:
+          - nome: endereco
+            descrição: o endereço onde o objeto foi armazenado
+            tipo:
+              primitivo: inteiro
+
+      - nome: contem_propriedade
+        descrição: Identifica se o objeto contém ou não a propriedade informada
+        retorno:
+          tipo:
+            primitivo: logico
+          descrição: |
+            `verdadeiro` se o objeto contém a propriedade informada. Caso contrário, retorna `falso`
+        parâmetros:
+          - nome: endereco
+            descrição: o endereço onde o objeto foi armazenado
+            tipo:
+              primitivo: inteiro
+          - nome: propriedade
+            descrição: propriedade utilizada para verificação
+            tipo:
+              primitivo: cadeia
+
+      - nome: tipo_propriedade
+        descrição: Identifica o tipo da propriedade informada
+        retorno:
+          tipo:
+            primitivo: inteiro
+          descrição: o tipo da propriedade informada
+        parâmetros:
+          - nome: endereco
+            descrição: o endereço onde o objeto foi armazenado
+            tipo:
+              primitivo: inteiro
+          - nome: propriedade
+            descrição: propriedade utilizada para verificação
+            tipo:
+              primitivo: cadeia

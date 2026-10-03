@@ -1,0 +1,83 @@
+# yaml-language-server: $schema=./bibliotecas.schema.json
+$schema: "./bibliotecas.schema.json"
+
+bibliotecas:
+  - nome: Mouse
+    descrição: Esta biblioteca contém um conjunto de funções para manipular a entrada de dados através do mouse do computador. **IMPORTANTE:** Esta biblioteca não funciona no console de entrada e saída de dados do Portugol Studio, ela só funciona com a biblioteca Graficos, se o modo gráfico estiver iniciado.
+    constantes:
+      - nome: BOTAO_ESQUERDO
+        tipo:
+          primitivo: inteiro
+        valor: 0
+        descrição: Código numérico do botão esquerdo do mouse
+
+      - nome: BOTAO_DIREITO
+        tipo:
+          primitivo: inteiro
+        valor: 1
+        descrição: Código numérico do botão direito do mouse
+
+      - nome: BOTAO_MEIO
+        tipo:
+          primitivo: inteiro
+        valor: 2
+        descrição: Código numérico do botão do meio do mouse
+
+    funções:
+      - nome: botao_pressionado
+        descrição: Testa se um determinado `botão` do mouse está pressionado neste instante
+        retorno:
+          tipo:
+            primitivo: logico
+          descrição: o resultado do teste. `verdadeiro` se o `botão` estiver pressionado no momento do teste. Caso contrário, retorna `falso`
+        parâmetros:
+          - nome: botao
+            descrição: o código do botão que será testado
+            tipo:
+              primitivo: inteiro
+
+      - nome: algum_botao_pressionado
+        descrição: Testa se existe algum botão do mouse pressionado neste instante
+        parâmetros: []
+        retorno:
+          tipo:
+            primitivo: logico
+          descrição: o resultado do teste. `verdadeiro` se houver um botão do mouse pressionado no momento do teste. Caso contrário, retorna `falso`
+
+      - nome: ler_botao
+        descrição: Aguarda até que um botão seja clicado (isto é, foi pressionado e depois solto), e captura o seu código
+        parâmetros: []
+        retorno:
+          tipo:
+            primitivo: inteiro
+          descrição: o código do botão lido
+
+      - nome: posicao_x
+        descrição: Obtém a coordenada X do mouse neste instante
+        parâmetros: []
+        retorno:
+          tipo:
+            primitivo: inteiro
+          descrição: a coordenada X do mouse neste instante
+
+      - nome: posicao_y
+        descrição: Obtém a coordenada Y do mouse neste instante
+        parâmetros: []
+        retorno:
+          tipo:
+            primitivo: inteiro
+          descrição: a coordenada Y do mouse neste instante
+
+      - nome: ocultar_cursor
+        descrição: Oculta o cursor do mouse
+        parâmetros: []
+        retorno:
+          tipo:
+            primitivo: vazio
+
+      - nome: exibir_cursor
+        descrição: Exibe novamente o cursor do mouse caso ele esteja oculto
+        parâmetros: []
+        retorno:
+          tipo:
+            primitivo: vazio

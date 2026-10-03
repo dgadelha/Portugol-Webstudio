@@ -37,8 +37,8 @@
     "test": "vitest"
   },
   "dependencies": {
-    "@portugol-recursos/bibliotecas": "^0.0.0-dev.8",
     "@portugol-webstudio/antlr": "*",
+    "@portugol-webstudio/resources": "*",
     "antlr4ng": "^3.0.16"
   },
   "devDependencies": {
