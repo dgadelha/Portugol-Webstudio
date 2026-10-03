@@ -264,16 +264,16 @@ class PortugolGraphicsContext {
             break;
           }
 
-          case 5: { // GRADIENTE_INFERIOR_ESQUERDO
+          case 5: { // GRADIENTE_INFERIOR_ESQUERDO: do canto superior direito ao inferior esquerdo
             gradient = this.canvasContext.createLinearGradient(
-              targetBounds.x,
-              targetBounds.y,
               targetBounds.x + targetBounds.width,
+              targetBounds.y,
+              targetBounds.x,
               targetBounds.y + targetBounds.height
             );
 
-            gradient.addColorStop(0, colorBHex);
-            gradient.addColorStop(1, colorAHex);
+            gradient.addColorStop(0, colorAHex);
+            gradient.addColorStop(1, colorBHex);
             break;
           }
 
@@ -290,16 +290,16 @@ class PortugolGraphicsContext {
             break;
           }
 
-          case 7: { // GRADIENTE_SUPERIOR_ESQUERDO
+          case 7: { // GRADIENTE_SUPERIOR_ESQUERDO: do canto inferior direito ao superior esquerdo
             gradient = this.canvasContext.createLinearGradient(
-              targetBounds.x,
-              targetBounds.y + targetBounds.height,
               targetBounds.x + targetBounds.width,
+              targetBounds.y + targetBounds.height,
+              targetBounds.x,
               targetBounds.y
             );
 
-            gradient.addColorStop(0, colorBHex);
-            gradient.addColorStop(1, colorAHex);
+            gradient.addColorStop(0, colorAHex);
+            gradient.addColorStop(1, colorBHex);
             break;
           }
 
@@ -336,7 +336,7 @@ class PortugolGraphicsContext {
       const rotation = this.getWorkingRotationInRadians();
       this.canvasContext.setTransform(1, 0, 0, 1, 0, 0);
 
-      if (!ignoreRotation && rotation > 0) {
+      if (!ignoreRotation && rotation !== 0) {
         if (objectBounds) {
           const { x, y, width, height } = objectBounds;
           this.canvasContext.translate(x + (width / 2), y + (height / 2));
@@ -350,7 +350,7 @@ class PortugolGraphicsContext {
   applyTransformationToBounds(objectBounds) {
     const rotation = this.getWorkingRotationInRadians();
 
-    if (rotation > 0) {
+    if (rotation !== 0) {
       return {
         x: -(objectBounds.width / 2),
         y: -(objectBounds.height / 2),
@@ -483,7 +483,7 @@ class PortugolGraphicsContext {
   applyTransformationToPolygon(points, bounds) {
     const rotation = this.getWorkingRotationInRadians();
 
-    if (rotation > 0) {
+    if (rotation !== 0) {
       return points.map((point) => [
         point[0] - bounds.x - (bounds.width / 2),
         point[1] - bounds.y - (bounds.height / 2)
@@ -526,7 +526,15 @@ class PortugolGraphicsContext {
   calculateTextSize(text) {
     if (this.canvasContext) {
       this.applyWorkParams(true);
-      return this.canvasContext.measureText(text);
+
+      const metrics = this.canvasContext.measureText(text);
+
+      // O \`TextMetrics\` não tem \`height\`: como no Portugol Studio
+      // (\`FontMetrics.getAscent()\`), a altura é a ascendente da fonte.
+      return {
+        width: metrics.width,
+        height: Math.round(metrics.fontBoundingBoxAscent ?? metrics.actualBoundingBoxAscent ?? 0),
+      };
     }
 
     return { width: 0, height: 0 };
