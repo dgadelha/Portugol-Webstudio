@@ -76,6 +76,20 @@ function juntar(...partes: string[]) {
   return partes.filter(Boolean).join("\n\n") + "\n";
 }
 
+/**
+ * Os links das listas são relativos à pasta da biblioteca (`bibliotecas/<Nome>/`),
+ * onde ficam as páginas das constantes e funções.
+ */
+function listaDeConstantes(biblioteca: Biblioteca, pasta: string) {
+  return biblioteca.constantes
+    .map(c => `- [\`${c.nome}\`](${pasta}${c.nome}.md): ${emUmaLinha(c.descrição)}`)
+    .join("\n");
+}
+
+function listaDeFunções(biblioteca: Biblioteca, pasta: string) {
+  return biblioteca.funções.map(f => `- [\`${f.nome}\`](${pasta}${f.nome}.md): ${emUmaLinha(f.descrição)}`).join("\n");
+}
+
 function páginaDaBiblioteca(biblioteca: Biblioteca) {
   const { nome } = biblioteca;
   const exemplo = biblioteca.funções[0] ?? biblioteca.constantes[0];
@@ -90,9 +104,21 @@ function páginaDaBiblioteca(biblioteca: Biblioteca) {
     blocoDeSintaxe(`inclua biblioteca ${nome}`),
     uso,
     biblioteca.constantes.length > 0 ? "## Constantes" : "",
-    biblioteca.constantes.map(c => `- [\`${c.nome}\`](${nome}/${c.nome}.md): ${emUmaLinha(c.descrição)}`).join("\n"),
+    listaDeConstantes(biblioteca, `${nome}/`),
     biblioteca.funções.length > 0 ? "## Funções" : "",
-    biblioteca.funções.map(f => `- [\`${f.nome}\`](${nome}/${f.nome}.md): ${emUmaLinha(f.descrição)}`).join("\n"),
+    listaDeFunções(biblioteca, `${nome}/`),
+  );
+}
+
+/**
+ * As pastas "Constantes" e "Funções" da árvore ficam ao lado das páginas
+ * (`bibliotecas/<Nome>/constantes.md`), então as listas apontam para a mesma pasta.
+ */
+function páginaDoGrupo(biblioteca: Biblioteca, grupo: "Constantes" | "Funções") {
+  return juntar(
+    `# ${grupo} da biblioteca ${biblioteca.nome}`,
+    `Voltar para a biblioteca [${biblioteca.nome}](../${biblioteca.nome}.md).`,
+    grupo === "Constantes" ? listaDeConstantes(biblioteca, "") : listaDeFunções(biblioteca, ""),
   );
 }
 
@@ -140,6 +166,26 @@ function item(arquivo: string, text: string, source: string, children?: TreeItem
 const implementadas = new Set<string>(BIBLIOTECAS_IMPLEMENTADAS);
 
 /**
+ * Os itens de uma biblioteca na árvore. Com constantes e funções, cada tipo
+ * fica numa pasta: na Graficos, as 55 funções não vêm depois de 17 constantes,
+ * e quem usa o teclado pula um grupo inteiro com uma seta.
+ */
+function itensDaBiblioteca(b: Biblioteca): TreeItem[] {
+  const pasta = `${PASTA}/${b.nome}`;
+  const constantes = b.constantes.map(c => item(`${pasta}/${c.nome}.md`, c.nome, páginaDaConstante(b, c)));
+  const funções = b.funções.map(f => item(`${pasta}/${f.nome}.md`, f.nome, páginaDaFunção(b, f)));
+
+  if (constantes.length === 0 || funções.length === 0) {
+    return [...constantes, ...funções];
+  }
+
+  return [
+    item(`${pasta}/constantes.md`, "Constantes", páginaDoGrupo(b, "Constantes"), constantes),
+    item(`${pasta}/funcoes.md`, "Funções", páginaDoGrupo(b, "Funções"), funções),
+  ];
+}
+
+/**
  * O grupo "Bibliotecas" da árvore da Ajuda: um índice e, para cada biblioteca
  * que o Webstudio executa, a página dela, das constantes e das funções.
  */
@@ -150,13 +196,6 @@ export function criarAjudaDasBibliotecas(): TreeItem {
     `${PASTA}/index.md`,
     "Bibliotecas",
     páginaDoÍndice(lista),
-    lista.map(b => {
-      const constantes = b.constantes.map(c =>
-        item(`${PASTA}/${b.nome}/${c.nome}.md`, c.nome, páginaDaConstante(b, c)),
-      );
-      const funções = b.funções.map(f => item(`${PASTA}/${b.nome}/${f.nome}.md`, f.nome, páginaDaFunção(b, f)));
-
-      return item(`${PASTA}/${b.nome}.md`, b.nome, páginaDaBiblioteca(b), [...constantes, ...funções]);
-    }),
+    lista.map(b => item(`${PASTA}/${b.nome}.md`, b.nome, páginaDaBiblioteca(b), itensDaBiblioteca(b))),
   );
 }
