@@ -1,278 +1,329 @@
-<ng-keyboard-shortcuts [shortcuts]="shortcuts" />
+@if (isActive()) {
+  <ng-keyboard-shortcuts [shortcuts]="shortcuts" />
+}
 
-<div class="sidebar">
+<div class="activity-bar" role="toolbar" aria-label="Ações" aria-orientation="vertical">
   <button
-    mat-ripple
     type="button"
-    class="sidebar-button"
-    title="Iniciar execução"
-    [disabled]="executor.running || transpiling"
-    (click)="runCode()"
+    class="activity-button"
+    tabindex="0"
+    appTooltip="Executar"
+    appTooltipShortcut="Ctrl+Enter"
+    appTooltipPosition="right"
+    aria-label="Executar"
+    aria-keyshortcuts="Control+Enter"
+    [attr.aria-disabled]="!canRun() || null"
+    (click)="canRun() && runCode()"
   >
-    <svg-icon src="assets/icon-start.svg" svgClass="text-secondary" aria-hidden="true" focusable="false" />
+    <svg-icon src="assets/icon-start.svg" class="icon-green" aria-hidden="true" />
   </button>
 
   <button
-    mat-ripple
     type="button"
-    class="sidebar-button"
-    title="Parar execução"
-    [disabled]="!executor.running && !transpiling"
-    (click)="stopCode()"
+    class="activity-button"
+    tabindex="-1"
+    appTooltip="Parar"
+    appTooltipPosition="right"
+    aria-label="Parar"
+    [attr.aria-disabled]="!canStop() || null"
+    (click)="canStop() && stopCode()"
   >
-    <svg-icon src="assets/mdi/square-rounded-outline.svg" svgClass="text-red" aria-hidden="true" focusable="false" />
+    <svg-icon src="assets/mdi/square-rounded-outline.svg" class="icon-red" aria-hidden="true" />
   </button>
 
-  <div class="sidebar-divider"></div>
+  <span class="activity-separator" role="separator"></span>
 
   <button
-    mat-ripple
     type="button"
-    class="sidebar-button"
-    title="Salvar arquivo"
+    class="activity-button"
+    tabindex="-1"
+    appTooltip="Abrir arquivo"
+    appTooltipShortcut="Ctrl+O"
+    appTooltipPosition="right"
+    aria-label="Abrir arquivo"
+    aria-keyshortcuts="Control+O"
+    (click)="openFile.emit()"
+  >
+    <svg-icon src="assets/mdi/folder-open-outline.svg" class="icon-yellow" aria-hidden="true" />
+  </button>
+
+  <button
+    type="button"
+    class="activity-button"
+    tabindex="-1"
+    appTooltip="Salvar"
+    appTooltipShortcut="Ctrl+S"
+    appTooltipPosition="right"
+    aria-label="Salvar"
+    aria-keyshortcuts="Control+S"
     gaEvent="editor_save_file"
     gaCategory="editor"
     gaLabel="Botão de Salvar arquivo"
     (click)="saveFile()"
   >
-    <svg-icon src="assets/mdi/content-save-outline.svg" svgClass="text-blue" aria-hidden="true" focusable="false" />
+    <svg-icon src="assets/mdi/content-save-outline.svg" class="icon-blue" aria-hidden="true" />
   </button>
 
   <button
-    mat-ripple
     type="button"
-    class="sidebar-button"
-    title="Salvar como…"
+    class="activity-button"
+    tabindex="-1"
+    appTooltip="Salvar como…"
+    appTooltipPosition="right"
+    aria-label="Salvar como"
     gaEvent="editor_save_as"
     gaCategory="Editor"
     gaLabel="Botão de Salvar como"
-    [matMenuTriggerFor]="saveMenu"
+    [cdkMenuTriggerFor]="saveMenu"
+    [cdkMenuPosition]="menuPositions"
   >
-    <svg-icon
-      src="assets/mdi/content-save-settings-outline.svg"
-      svgClass="text-blue"
-      aria-hidden="true"
-      focusable="false"
-    />
+    <svg-icon src="assets/mdi/content-save-settings-outline.svg" class="icon-blue" aria-hidden="true" />
   </button>
 
-  <mat-menu #saveMenu="matMenu">
-    <button mat-menu-item disabled type="button">Salvar como</button>
+  <button
+    type="button"
+    class="activity-button"
+    tabindex="-1"
+    appTooltip="Compartilhar código"
+    appTooltipPosition="right"
+    aria-label="Compartilhar código"
+    [attr.aria-disabled]="sharing || null"
+    (click)="!sharing && shareFile()"
+  >
+    <svg-icon src="assets/mdi/share-variant-outline.svg" class="icon-green" aria-hidden="true" />
+  </button>
 
+  <span class="activity-separator" role="separator"></span>
+
+  <button
+    type="button"
+    class="activity-button"
+    tabindex="-1"
+    appTooltip="Abrir exemplo"
+    appTooltipPosition="right"
+    aria-label="Abrir exemplo"
+    (click)="examples.emit()"
+  >
+    <svg-icon src="assets/mdi/book-open-page-variant-outline.svg" class="icon-yellow" aria-hidden="true" />
+  </button>
+
+  <button
+    type="button"
+    class="activity-button"
+    tabindex="-1"
+    appTooltip="Ajuda"
+    appTooltipShortcut="F1"
+    appTooltipPosition="right"
+    aria-label="Ajuda"
+    aria-keyshortcuts="F1"
+    (click)="openHelp()"
+  >
+    <svg-icon src="assets/mdi/help-circle-outline.svg" class="icon-blue" aria-hidden="true" />
+  </button>
+
+  <span class="activity-spacer"></span>
+
+  <button
+    type="button"
+    class="activity-button"
+    tabindex="-1"
+    appTooltip="Configurações"
+    appTooltipPosition="right"
+    aria-label="Configurações"
+    gaEvent="open_settings"
+    gaCategory="Interface"
+    gaLabel="Botão de Configurações da barra de atividades"
+    (click)="openSettings()"
+  >
+    <svg-icon src="assets/mdi/cog-outline.svg" class="icon-yellow" aria-hidden="true" />
+  </button>
+</div>
+
+<ng-template #saveMenu>
+  <div class="menu" cdkMenu aria-label="Salvar como">
     @if (hasSaveFilePickerSupport) {
       <button
-        mat-menu-item
         type="button"
-        aria-label="Escolher um arquivo"
+        class="menu-item"
+        cdkMenuItem
         gaEvent="editor_save_as_file_picker"
         gaCategory="Editor"
         gaLabel="Botão de Salvar como - Ação Escolher um arquivo"
-        (click)="saveFileWithPicker()"
+        (cdkMenuItemTriggered)="saveFileWithPicker()"
       >
-        <mat-icon>
-          <svg-icon src="assets/mdi/content-save-move.svg" aria-hidden="true" focusable="false" />
-        </mat-icon>
-
-        Escolher um arquivo
+        <svg-icon src="assets/mdi/content-save-move.svg" aria-hidden="true" />
+        Escolher onde salvar…
       </button>
     }
 
     <button
-      mat-menu-item
       type="button"
-      aria-label="Download"
+      class="menu-item"
+      cdkMenuItem
       gaEvent="editor_save_as_download"
       gaCategory="Editor"
       gaLabel="Botão de Salvar como - Ação Download"
-      (click)="saveFile()"
+      (cdkMenuItemTriggered)="saveFile()"
     >
-      <mat-icon>
-        <svg-icon src="assets/mdi/download.svg" aria-hidden="true" focusable="false" />
-      </mat-icon>
-
-      Download
+      <svg-icon src="assets/mdi/download.svg" aria-hidden="true" />
+      Baixar
     </button>
 
     <button
-      mat-menu-item
       type="button"
-      aria-label="Download para Portugol Studio"
+      class="menu-item"
+      cdkMenuItem
       gaEvent="editor_save_as_download_portugol_studio"
       gaCategory="Editor"
       gaLabel="Botão de Salvar como - Ação Download para Portugol Studio"
-      (click)="saveFile(true)"
+      (cdkMenuItemTriggered)="saveFile(true)"
     >
-      <mat-icon>
-        <svg-icon src="assets/lightbulb-sq.svg" aria-hidden="true" focusable="false" />
-      </mat-icon>
-
-      Download para abrir no Portugol Studio
+      <svg-icon src="assets/lightbulb-sq.svg" aria-hidden="true" />
+      Baixar para abrir no Portugol Studio
     </button>
 
     <button
-      mat-menu-item
       type="button"
-      aria-label="Abrir nova aba como texto"
+      class="menu-item"
+      cdkMenuItem
       gaEvent="editor_save_as_text"
       gaCategory="Editor"
       gaLabel="Botão de Salvar como - Ação Nova aba como texto"
-      (click)="saveFileManual('text')"
+      (cdkMenuItemTriggered)="saveFileManual('text')"
     >
-      <mat-icon>
-        <svg-icon src="assets/mdi/file-document-outline.svg" aria-hidden="true" focusable="false" />
-      </mat-icon>
-
-      Abrir nova aba como texto
+      <svg-icon src="assets/mdi/file-document-outline.svg" aria-hidden="true" />
+      Abrir numa aba do navegador, como texto
     </button>
 
     <button
-      mat-menu-item
       type="button"
-      aria-label="Abrir nova aba como binário"
+      class="menu-item"
+      cdkMenuItem
       gaEvent="editor_save_as_binary"
       gaCategory="Editor"
       gaLabel="Botão de Salvar como - Ação Nova aba como binário"
-      (click)="saveFileManual('binary')"
+      (cdkMenuItemTriggered)="saveFileManual('binary')"
     >
-      <mat-icon>
-        <svg-icon src="assets/mdi/file-download-outline.svg" aria-hidden="true" focusable="false" />
-      </mat-icon>
-
-      Abrir nova aba como binário
+      <svg-icon src="assets/mdi/file-download-outline.svg" aria-hidden="true" />
+      Abrir numa aba do navegador, como binário
     </button>
-  </mat-menu>
+  </div>
+</ng-template>
 
-  <button mat-ripple type="button" class="sidebar-button" title="Abrir arquivo" (click)="fileInput.click()">
-    <svg-icon src="assets/mdi/folder-open-outline.svg" svgClass="text-primary" aria-hidden="true" focusable="false" />
-    <input #fileInput type="file" hidden accept=".por,text/plain" (change)="openFile($event)" />
-  </button>
-
-  <button
-    mat-ripple
-    type="button"
-    class="sidebar-button"
-    title="Compartilhar código"
-    [disabled]="sharing"
-    (click)="shareFile()"
-  >
-    <svg-icon
-      src="assets/mdi/share-variant-outline.svg"
-      svgClass="text-secondary"
-      aria-hidden="true"
-      focusable="false"
-    />
-  </button>
-
-  <div class="sidebar-divider"></div>
-
-  <button mat-ripple type="button" class="sidebar-button" title="Abrir seção de Ajuda" (click)="openHelp()">
-    <svg-icon src="assets/mdi/help-circle-outline.svg" svgClass="text-blue" aria-hidden="true" focusable="false" />
-  </button>
-
-  <s></s>
-
-  <button
-    mat-ripple
-    type="button"
-    class="sidebar-button"
-    title="Configurações"
-    gaEvent="editor_open_settings"
-    gaCategory="Editor"
-    gaLabel="Botão de Configurações"
-    (click)="openSettings()"
-  >
-    <svg-icon src="assets/mdi/cog-outline.svg" svgClass="text-primary" aria-hidden="true" focusable="false" />
-  </button>
-</div>
-
-<div class="editor-inner">
-  <as-split
-    #split
-    class="output-split"
-    direction="vertical"
-    unit="pixel"
-    [gutterSize]="1"
-    (dragEnd)="onSplitDragEnd($event)"
-  >
-    <as-split-area size="*" [minSize]="120">
-      <as-split direction="horizontal">
-        <as-split-area [size]="100">
-          <ngx-monaco-editor
-            [options]="codeEditorOptions"
-            [ngModel]="code"
-            (ngModelChange)="onCodeChange($event)"
-            (init)="onEditorInit($event)"
-          />
-        </as-split-area>
-
-        <as-split-area [size]="0">
-          <ngx-monaco-editor [options]="generatedCodeEditorOptions" [(ngModel)]="executor.byteCode" />
-        </as-split-area>
-      </as-split>
-    </as-split-area>
-
-    <as-split-area [size]="outputSize" [minSize]="outputHeaderHeight">
-      <section class="output" aria-labelledby="output-title">
-        <header class="output-header">
-          <div class="output-title">
-            <svg-icon src="assets/mdi/console.svg" aria-hidden="true" focusable="false" />
-            <h2 id="output-title">Saída</h2>
-
-            <span class="output-status-region" role="status">
-              @if (executor.waitingForInput) {
-                <span class="output-status waiting"><span class="dot"></span>Aguardando entrada</span>
-              } @else if (executor.running) {
-                <span class="output-status running"><span class="dot"></span>Executando</span>
-              }
-            </span>
-          </div>
-
-          <button
-            type="button"
-            mat-icon-button
-            class="output-action"
-            aria-label="Limpar saída"
-            matTooltip="Limpar saída"
-            matTooltipPosition="above"
-            [disabled]="!executor.stdOut || executor.running"
-            (click)="clearOutput()"
-          >
-            <svg-icon src="assets/mdi/eraser.svg" aria-hidden="true" focusable="false" />
-          </button>
-
-          <button
-            type="button"
-            mat-icon-button
-            class="output-action"
-            aria-controls="output"
-            matTooltipPosition="above"
-            [attr.aria-label]="outputCollapsed ? 'Mostrar saída' : 'Recolher saída'"
-            [attr.aria-expanded]="!outputCollapsed"
-            [matTooltip]="outputCollapsed ? 'Mostrar saída' : 'Recolher saída'"
-            (click)="toggleOutput()"
-          >
-            <svg-icon
-              src="assets/mdi/chevron-up.svg"
-              class="chevron"
-              aria-hidden="true"
-              focusable="false"
-              [class.open]="!outputCollapsed"
-            />
-          </button>
-        </header>
-
+<as-split #split direction="vertical" unit="pixel" (dragEnd)="onSplitDragEnd($event)">
+  <as-split-area size="*">
+    <as-split direction="horizontal" class="thin-split" [gutterSize]="1">
+      <as-split-area [size]="100">
         <ngx-monaco-editor
-          id="output"
+          [options]="codeEditorOptions"
+          [ngModel]="code"
+          (ngModelChange)="onCodeChange($event)"
+          (init)="onEditorInit($event)"
+        />
+      </as-split-area>
+
+      <as-split-area [size]="0">
+        <ngx-monaco-editor [options]="generatedCodeEditorOptions" [(ngModel)]="executor.byteCode" />
+      </as-split-area>
+    </as-split>
+  </as-split-area>
+
+  <as-split-area [size]="outputSize" [minSize]="panelHeaderHeight">
+    <section class="panel" aria-label="Painel">
+      <header class="panel-header">
+        <div class="panel-tabs" role="tablist" aria-label="Painel">
+          <button
+            type="button"
+            role="tab"
+            class="panel-tab"
+            [id]="ids().outputTab"
+            [attr.aria-controls]="ids().outputPanel"
+            [attr.aria-selected]="panelView() === 'output'"
+            [attr.tabindex]="panelView() === 'output' ? 0 : -1"
+            (click)="showPanel('output')"
+            (keydown)="onPanelTabsKeydown($event)"
+          >
+            Saída
+          </button>
+
+          <button
+            type="button"
+            role="tab"
+            class="panel-tab"
+            [id]="ids().problemsTab"
+            [attr.aria-controls]="ids().problemsPanel"
+            [attr.aria-selected]="panelView() === 'problems'"
+            [attr.tabindex]="panelView() === 'problems' ? 0 : -1"
+            (click)="showPanel('problems')"
+            (keydown)="onPanelTabsKeydown($event)"
+          >
+            Problemas
+            @if (problems().length > 0) {
+              <span class="badge" aria-hidden="true">{{ problems().length }}</span>
+            }
+          </button>
+        </div>
+
+        <span class="panel-status" role="status">
+          @if (executor.waitingForInput) {
+            <span class="run-status waiting"><span class="dot"></span>Aguardando entrada</span>
+          } @else if (executor.running) {
+            <span class="run-status running"><span class="dot"></span>Executando</span>
+          }
+        </span>
+
+        <span class="panel-spacer"></span>
+
+        <button
+          type="button"
+          class="icon-btn"
+          aria-label="Limpar saída"
+          appTooltip="Limpar saída"
+          appTooltipPosition="above"
+          [disabled]="!executor.stdOut || executor.running"
+          (click)="clearOutput()"
+        >
+          <svg-icon src="assets/mdi/eraser.svg" aria-hidden="true" />
+        </button>
+
+        <button
+          type="button"
+          class="icon-btn"
+          appTooltipPosition="above"
+          [attr.aria-label]="outputCollapsed ? 'Mostrar painel' : 'Recolher painel'"
+          [attr.aria-expanded]="!outputCollapsed"
+          [appTooltip]="outputCollapsed ? 'Mostrar painel' : 'Recolher painel'"
+          (click)="toggleOutput()"
+        >
+          <svg-icon
+            src="assets/mdi/chevron-up.svg"
+            class="chevron"
+            aria-hidden="true"
+            [class.open]="!outputCollapsed"
+          />
+        </button>
+      </header>
+
+      <div
+        class="panel-body"
+        role="tabpanel"
+        [id]="ids().outputPanel"
+        [attr.aria-labelledby]="ids().outputTab"
+        [hidden]="panelView() !== 'output'"
+      >
+        <ngx-monaco-editor
+          class="output-editor"
           [options]="stdOutEditorOptions"
           [(ngModel)]="executor.stdOut"
           (init)="onStdOutEditorInit($event)"
         />
 
-        @if (executor.waitingForInput && coarsePointer.matches) {
+        @if (executor.waitingForInput && coarsePointer()) {
           <form class="output-input" (ngSubmit)="sendProgramInput()">
             <input
               #programInputField
               type="text"
+              class="input"
               name="programInput"
               aria-label="Entrada do programa"
               placeholder="Digite e pressione Enter"
@@ -280,32 +331,53 @@
               enterkeyhint="send"
               [(ngModel)]="programInput"
             />
-            <button type="submit" mat-icon-button class="output-action" aria-label="Enviar entrada">
-              <svg-icon src="assets/mdi/send.svg" aria-hidden="true" focusable="false" />
+            <button type="submit" class="icon-btn" aria-label="Enviar entrada">
+              <svg-icon src="assets/mdi/send.svg" class="icon-yellow" aria-hidden="true" />
             </button>
           </form>
         }
-      </section>
-    </as-split-area>
-  </as-split>
-</div>
+      </div>
 
-<ng-template #shareSnackTemplate let-data>
-  <div class="share-snack">
-    <span class="share-snack-text">
-      <span class="share-snack-link">
-        <strong>Link gerado:</strong>
-        <a target="_blank" [href]="data.url">
-          {{ data.url | slice: 0 : 10 }}…{{ data.url | slice: data.url.length - 14 }}
-        </a>
-      </span>
+      <div
+        class="panel-body problems"
+        role="tabpanel"
+        [id]="ids().problemsPanel"
+        [attr.aria-labelledby]="ids().problemsTab"
+        [hidden]="panelView() !== 'problems'"
+      >
+        @if (problems().length === 0) {
+          <p class="problems-empty">Nenhum problema encontrado no código.</p>
+        } @else {
+          <ul class="problems-list">
+            @for (problem of problems(); track $index) {
+              <li>
+                <button type="button" class="problem" (click)="revealProblem(problem)">
+                  <svg-icon
+                    aria-hidden="true"
+                    [class]="`problem-icon ${problem.severity}`"
+                    [src]="problemIcons[problem.severity]"
+                  />
+                  <span class="visually-hidden">{{ severityLabels[problem.severity] }}:</span>
+                  <span class="problem-message">{{ problem.message }}</span>
+                  <span class="problem-location">linha {{ problem.line }}, coluna {{ problem.column }}</span>
+                </button>
+              </li>
+            }
+          </ul>
+        }
+      </div>
+    </section>
+  </as-split-area>
+</as-split>
 
-      <small>
-        <svg-icon src="assets/mdi/clock-alert.svg" svgClass="text-red" aria-hidden="true" focusable="false" />
-        Este link expira em 15 dias.
-      </small>
-    </span>
-
-    <button mat-raised-button color="primary" type="button" (click)="copyStringAndCloseSnack(data.url)">COPIAR</button>
+<ng-template #shareToastTemplate let-toastRef>
+  <div class="share-toast">
+    <p class="share-toast-title">Link gerado</p>
+    <a class="share-toast-link" target="_blank" rel="noopener" [href]="toastRef.data.url">{{ toastRef.data.url }}</a>
+    <p class="share-toast-note">
+      <svg-icon src="assets/mdi/clock-alert-outline.svg" class="icon-red" aria-hidden="true" />
+      Este link expira em 15 dias.
+    </p>
+    <button type="button" class="btn btn-primary btn-sm" (click)="copyShareUrl(toastRef)">Copiar link</button>
   </div>
 </ng-template>
