@@ -1,0 +1,11 @@
+/*
+ * Programa usado pelo ESLint para as regras com informação de tipo. Ele cobre o repositório
+ * inteiro, então precisa dos tipos do Node para os pacotes que rodam no Node (runner, testes e
+ * ferramentas). Os builds continuam usando o tsconfig de cada pacote.
+ */
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "types": ["node"]
+  }
+}

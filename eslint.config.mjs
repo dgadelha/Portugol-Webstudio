@@ -24,7 +24,7 @@ export default defineConfig(
     processor: angular.processInlineTemplates,
     languageOptions: {
       parserOptions: {
-        project: ["tsconfig.json", "tsconfig.spec.json"],
+        project: ["tsconfig.eslint.json"],
         // @ts-expect-error - esm
         tsconfigDirName: import.meta.dirname,
       },
