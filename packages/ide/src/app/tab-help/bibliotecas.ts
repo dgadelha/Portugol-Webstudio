@@ -62,6 +62,13 @@ function blocoDeSintaxe(código: string) {
 }
 
 /**
+ * A declaração da função ou constante: colorida como o código, sem botão de copiar.
+ */
+function blocoDeAssinatura(código: string) {
+  return "```portugol assinatura\n" + código + "\n```";
+}
+
+/**
  * As descrições dos metadados podem ter várias linhas; nas listas, cabem numa só.
  */
 function emUmaLinha(texto: string) {
@@ -126,9 +133,10 @@ function páginaDaConstante(biblioteca: Biblioteca, constante: Constante) {
   return juntar(
     `# ${constante.nome}`,
     `Constante da biblioteca [${biblioteca.nome}](../${biblioteca.nome}.md).`,
-    blocoDeSintaxe(`const ${nomeDoTipo(constante.tipo)} ${constante.nome} = ${valorNoCódigo(constante)}`),
+    blocoDeAssinatura(`const ${nomeDoTipo(constante.tipo)} ${constante.nome} = ${valorNoCódigo(constante)}`),
     constante.descrição.trim(),
-    `Para usar: \`${biblioteca.nome}.${constante.nome}\``,
+    "## Para usar",
+    blocoDeSintaxe(`${biblioteca.nome}.${constante.nome}`),
     referência(constante.referência),
   );
 }
@@ -139,10 +147,12 @@ function páginaDaFunção(biblioteca: Biblioteca, função: Função) {
   return juntar(
     `# ${função.nome}`,
     `Função da biblioteca [${biblioteca.nome}](../${biblioteca.nome}.md).`,
-    blocoDeSintaxe(assinaturaDaFunção(função)),
+    blocoDeAssinatura(assinaturaDaFunção(função)),
     função.descrição.trim(),
     função.parâmetros.length > 0 ? "## Parâmetros" : "",
     função.parâmetros.map(p => `- \`${p.nome}\` (${nomeDoTipo(p.tipo)}): ${emUmaLinha(p.descrição)}`).join("\n"),
+    "## Para usar",
+    blocoDeSintaxe(`${biblioteca.nome}.${função.nome}(${função.parâmetros.map(p => p.nome).join(", ")})`),
     retorno.tipo.primitivo === "vazio" ? "" : "## Retorno",
     retorno.tipo.primitivo === "vazio"
       ? ""

@@ -101,6 +101,7 @@ as-split-area {
   padding-bottom: 2rem;
 
   .codigo-portugol {
+    position: relative;
     margin: 1rem 0;
     overflow: hidden;
     border: 1px solid var(--pws-border);
@@ -130,6 +131,34 @@ as-split-area {
       font-family: var(--pws-font-mono);
       font-size: var(--pws-text-md);
       line-height: 1.45;
+    }
+
+    // No canto do bloco, por cima do título quando ele existe.
+    .copiar-codigo {
+      position: absolute;
+      top: 0.375rem;
+      right: 0.375rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      padding: 0;
+      border: 0;
+      border-radius: var(--pws-radius-sm);
+      background: transparent;
+      color: var(--pws-fg-muted);
+
+      &:hover {
+        background-color: var(--pws-bg-hover);
+        color: var(--pws-fg);
+      }
+
+      svg {
+        width: 16px;
+        height: 16px;
+        fill: currentColor;
+      }
     }
 
     .tente-voce-mesmo {
