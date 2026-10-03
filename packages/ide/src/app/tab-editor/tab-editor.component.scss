@@ -1,222 +1,273 @@
+@use "styles/mixins";
+
 :host {
-  // Fundo dos temas do Monaco (`vs-dark` e `vs`), que os temas do Portugol herdam.
-  --editor-bg: #1e1e1e;
-
   display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  width: 100%;
-  height: 100%;
+  min-height: 0;
 }
 
-::ng-deep .editor-inner {
-  .monaco-editor .monaco-hover {
-    position: fixed;
-    z-index: 9999;
-  }
-}
-
-.editor-inner {
-  background-color: var(--pws-bg-300);
+as-split {
   flex-grow: 1;
-  display: flex;
-
-  as-split-area {
-    overflow: hidden;
-  }
-
-  ngx-monaco-editor {
-    flex-grow: 1;
-  }
+  min-width: 0;
 }
 
-.sidebar {
+////////////////////////
+// Barra de atividades //
+////////////////////////
+
+.activity-bar {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  flex-shrink: 0;
+  align-items: center;
+  width: var(--pws-activity-bar-width);
+  padding: 0.25rem 0;
+  // Sem rolagem lateral: com ela, o Firefox põe a barra inteira na ordem do Tab.
+  overflow-x: hidden;
+  overflow-y: auto;
+  border-right: 1px solid var(--pws-border);
+  scrollbar-width: none;
 }
 
-.sidebar-button {
-  appearance: none;
+.activity-button {
+  position: relative;
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  padding: 1rem;
-  background-color: var(--pws-bg-200);
-  color: var(--pws-text-200);
-  border: none;
-  transition: all 0.2s ease;
-  cursor: pointer;
-
-  &:hover:not(:disabled) {
-    background-color: var(--pws-bg-300);
-  }
-
-  &:disabled {
-    cursor: not-allowed;
-    pointer-events: none;
-
-    svg {
-      filter: grayscale(1);
-      transform: translateZ(0);
-    }
-  }
-}
-
-.sidebar-button svg,
-.sidebar-button svg-icon {
-  width: 1.5rem;
-  height: 1.5rem;
-  fill: currentColor;
-}
-
-.sidebar-divider {
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
   width: 100%;
-  height: 1px;
-  background-color: var(--pws-bg-300);
-}
+  height: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
 
-////////////
-// Saída  //
-////////////
+  svg-icon {
+    width: 24px;
+    height: 24px;
+    transition: opacity var(--pws-duration);
+  }
 
-:host-context([data-theme="light"]) {
-  --editor-bg: #fffffe;
-}
-
-// Entre o código e a saída, só uma linha, como uma borda. A área de arrastar
-// continua maior que ela, e a linha ganha a cor principal ao passar o mouse.
-.output-split ::ng-deep > .as-split-gutter {
-  position: relative;
-  background-color: var(--pws-border-color) !important;
-  transition: background-color 0.15s;
-
+  // Indicador à esquerda, como o da view ativa no VS Code
   &::before {
     content: "";
     position: absolute;
-    inset: -3px 0;
-    z-index: 1;
+    top: 10px;
+    bottom: 10px;
+    left: 0;
+    width: 2px;
+    border-radius: 0 2px 2px 0;
+    background-color: transparent;
+    transition: background-color var(--pws-duration);
   }
 
-  &:hover,
-  &:active {
-    background-color: var(--pws-color-primary) !important;
+  &:hover:not([aria-disabled="true"])::before {
+    background-color: var(--pws-fg-muted);
   }
 
-  .as-split-gutter-icon {
-    display: none;
+  &[aria-disabled="true"] {
+    cursor: default;
+
+    svg-icon {
+      opacity: 0.35;
+    }
+  }
+
+  &:focus-visible {
+    outline-offset: -4px;
+  }
+
+  &[aria-expanded="true"]::before {
+    background-color: var(--pws-accent);
   }
 }
 
-.output {
+.activity-separator {
+  flex-shrink: 0;
+  width: 24px;
+  height: 1px;
+  margin: 0.375rem 0;
+  background-color: var(--pws-border-strong);
+}
+
+.activity-spacer {
+  flex-grow: 1;
+}
+
+// Em telas baixas (celular deitado), os botões encolhem para todos caberem.
+@media (max-height: 480px) {
+  .activity-button {
+    height: 32px;
+
+    svg-icon {
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  .activity-separator {
+    margin: 0.125rem 0;
+  }
+}
+
+// Em telas pequenas, a barra de atividades fica mais estreita.
+@media (max-width: 575px) {
+  :host {
+    --pws-activity-bar-width: 40px;
+  }
+
+  .activity-button svg-icon {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+as-split-area {
+  display: flex;
+  overflow: hidden;
+}
+
+ngx-monaco-editor {
+  flex-grow: 1;
+  min-width: 0;
+  min-height: 0;
+}
+
+// Dicas do Monaco (erros ao passar o mouse) acima de tudo, mesmo perto da
+// borda do painel.
+:host ::ng-deep .monaco-editor .monaco-hover {
+  position: fixed;
+  z-index: 9999;
+}
+
+////////////
+// Painel //
+////////////
+
+.panel {
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 100%;
   min-height: 0;
-
-  ngx-monaco-editor {
-    min-height: 0;
-  }
+  background-color: var(--pws-bg-chrome);
 }
 
-// O `<svg>` dentro do `svg-icon` não tem altura própria e passaria dos 16px
-// da caixa, desalinhando os ícones do cabeçalho.
-.output ::ng-deep svg-icon > svg {
-  display: block;
-  width: 100%;
-  height: 100%;
-}
-
-.output-header {
+.panel-header {
   display: flex;
   flex-shrink: 0;
   align-items: center;
   gap: 0.25rem;
-  height: 36px;
-  padding: 0 0.375rem 0 0;
-  // Mesma superfície do editor: o cabeçalho é o topo da saída, não uma faixa
-  // à parte.
-  background-color: var(--editor-bg);
+  height: var(--pws-tab-height);
+  padding: 0 0.5rem;
 }
 
-.output-title {
+.panel-tabs {
   display: flex;
-  flex-grow: 1;
   align-items: center;
-  gap: 0.5rem;
-  min-width: 0;
-  padding: 0 0.75rem;
-  user-select: none;
-
-  svg-icon {
-    display: flex;
-    width: 1rem;
-    height: 1rem;
-    color: var(--pws-text-muted);
-  }
-
-  h2 {
-    margin: 0;
-    font-size: 0.875rem;
-    font-weight: 500;
-  }
+  gap: 0.25rem;
 }
 
-// A região do estado (`role="status"`) existe sempre, vazia ou não: leitores
-// de tela só anunciam mudanças em live regions que já estavam na página.
-.output-status-region {
+// Abas do painel como as do VS Code: a escolhida ganha fundo e texto forte.
+.panel-tab {
   display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  height: 24px;
+  padding: 0 0.625rem;
+  border: 0;
+  border-radius: var(--pws-radius-sm);
+  background: transparent;
+  color: var(--pws-fg-muted);
+  font-size: var(--pws-text-ui);
+  transition:
+    background-color var(--pws-duration),
+    color var(--pws-duration);
+
+  &:hover {
+    color: var(--pws-fg);
+  }
+
+  &[aria-selected="true"] {
+    background-color: var(--pws-bg-active);
+    color: var(--pws-fg-strong);
+  }
 }
 
-.output-status {
+.panel-status {
+  display: flex;
+  margin-left: 0.25rem;
+}
+
+.run-status {
   display: inline-flex;
   align-items: center;
   gap: 0.375rem;
-  padding: 0.125rem 0.5rem;
+  padding: 0.0625rem 0.5rem;
   border: 1px solid;
-  border-radius: 0.375rem;
-  font-size: 0.75rem;
-  font-weight: 500;
+  border-radius: var(--pws-radius-sm);
+  font-size: var(--pws-text-xs);
+  font-weight: 600;
   white-space: nowrap;
 
   &.waiting {
-    border-color: rgba(245, 158, 11, 0.4);
-    color: #fcd34d;
+    border-color: rgba(var(--pws-warning-fg-rgb), 0.5);
+    color: var(--pws-warning-fg);
   }
 
   &.running {
-    border-color: rgba(16, 185, 129, 0.4);
-    color: #34d399;
+    border-color: rgba(var(--pws-success-fg-rgb), 0.5);
+    color: var(--pws-success-fg);
   }
 
   .dot {
-    width: 0.375rem;
-    height: 0.375rem;
+    width: 6px;
+    height: 6px;
     border-radius: 50%;
     background-color: currentColor;
-    animation: output-status-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    animation: run-status-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
 }
 
-// Tons mais escuros no tema claro: texto de 0,75rem precisa de contraste de
-// 4,5:1 sobre o fundo do editor.
-:host-context([data-theme="light"]) .output-status {
-  &.waiting {
-    color: #b45309;
-  }
-
-  &.running {
-    color: #047857;
-  }
-}
-
-@keyframes output-status-pulse {
+@keyframes run-status-pulse {
   50% {
-    opacity: 0.5;
+    opacity: 0.4;
   }
+}
+
+.panel-spacer {
+  flex-grow: 1;
+}
+
+// No celular, o estado já aparece na barra de status e o selo empurraria os
+// botões para fora da tela. Ele some só da vista: a região continua
+// anunciando "Executando" e "Aguardando entrada" aos leitores de tela.
+@media (max-width: 575px) {
+  .panel-status {
+    @include mixins.visually-hidden;
+  }
+}
+
+.chevron {
+  transition: transform var(--pws-duration);
+
+  &.open {
+    transform: rotate(180deg);
+  }
+}
+
+.panel-body {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  min-height: 0;
+
+  &[hidden] {
+    display: none;
+  }
+}
+
+// Na saída não se edita: a mensagem "não é possível editar" do Monaco só
+// atrapalharia quem digita a entrada do programa.
+.output-editor ::ng-deep .monaco-editor-overlaymessage {
+  display: none !important;
 }
 
 .output-input {
@@ -225,123 +276,118 @@
   align-items: center;
   gap: 0.375rem;
   padding: 0.375rem 0.375rem 0.375rem 0.75rem;
-  border-top: 1px solid var(--pws-border-color);
-  background-color: var(--pws-bg-200);
+  border-top: 1px solid var(--pws-border);
 
-  input {
-    flex-grow: 1;
-    min-width: 0;
-    height: 2.25rem;
-    padding: 0 0.75rem;
-    border: 1px solid var(--pws-border-color);
-    border-radius: 0.375rem;
-    outline: none;
-    background-color: var(--pws-body-bg);
-    color: var(--pws-body-color);
-    font: inherit;
+  .input {
+    height: 36px;
     // Abaixo de 16px, o Safari do iPhone dá zoom na página ao focar o campo.
     font-size: 1rem;
-
-    &:focus {
-      border-color: var(--pws-color-primary);
-    }
-
-    &::placeholder {
-      color: var(--pws-text-muted);
-    }
   }
 
-  .output-action {
+  .icon-btn {
     width: 36px;
     height: 36px;
-    --mat-icon-button-state-layer-size: 36px;
-    --mat-icon-button-icon-color: var(--pws-color-primary);
   }
 }
 
-.output-action {
-  --mat-icon-button-state-layer-size: 28px;
-  --mat-icon-button-icon-color: var(--pws-text-muted);
+///////////////
+// Problemas //
+///////////////
 
-  display: inline-flex;
-  flex-shrink: 0;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
+.problems {
+  overflow-y: auto;
+  padding: 0.25rem 0;
+}
+
+.problems-empty {
+  padding: 0.5rem 1rem;
+  color: var(--pws-fg-muted);
+}
+
+.problems-list {
+  margin: 0;
   padding: 0;
-  line-height: 1;
+  list-style: none;
+}
+
+.problem {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.25rem 1rem;
+  border: 0;
+  background: transparent;
+  color: var(--pws-fg);
+  font-size: var(--pws-text-ui);
+  text-align: left;
+
+  &:hover {
+    background-color: var(--pws-bg-hover);
+  }
+}
+
+.problem-icon {
+  align-self: center;
+  width: 16px;
+  height: 16px;
+
+  &.error {
+    color: var(--pws-danger-fg);
+  }
+
+  &.warning {
+    color: var(--pws-warning-fg);
+  }
+
+  &.info {
+    color: var(--pws-info-fg);
+  }
+}
+
+.problem-message {
+  min-width: 0;
+}
+
+.problem-location {
+  flex-shrink: 0;
+  color: var(--pws-fg-muted);
+  font-size: var(--pws-text-sm);
+}
+
+//////////////////////////
+// Aviso do compartilhar //
+//////////////////////////
+
+.share-toast {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+  max-width: 22rem;
+}
+
+.share-toast-title {
+  color: var(--pws-fg-strong);
+  font-weight: 600;
+}
+
+.share-toast-link {
+  margin-top: -0.25rem;
+  font-family: var(--pws-font-mono);
+  font-size: var(--pws-text-ui);
+  word-break: break-all;
+}
+
+.share-toast-note {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: var(--pws-fg-muted);
+  font-size: var(--pws-text-sm);
 
   svg-icon {
-    display: flex;
-    width: 1rem;
-    height: 1rem;
-  }
-}
-
-.chevron {
-  transition: rotate 0.2s ease;
-
-  &.open {
-    rotate: 180deg;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .output-status .dot,
-  .chevron {
-    animation: none;
-    transition: none;
-  }
-}
-
-::ng-deep #output {
-  .monaco-editor-overlaymessage {
-    display: none !important;
-  }
-}
-
-#bug {
-  position: absolute;
-  bottom: 7.5px;
-  right: 7.5px;
-}
-
-.share-snack {
-  display: flex;
-  flex-direction: row;
-  gap: 1rem;
-
-  .share-snack-text {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  .share-snack-link {
-    display: flex;
-    gap: 0.25rem;
-
-    a,
-    a:visited,
-    a:active {
-      color: var(--pws-color-red);
-      text-decoration: underline;
-    }
-  }
-
-  small {
-    font-size: 0.75rem;
-    margin: 0;
-    display: block;
-    text-align: center;
-
-    svg-icon {
-      display: inline-block;
-      vertical-align: bottom;
-      margin-right: 2px;
-      width: 1rem;
-      height: 1rem;
-    }
+    width: 14px;
+    height: 14px;
   }
 }

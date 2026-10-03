@@ -1,101 +1,138 @@
+<a class="skip-link" href="#conteudo" (click)="focusContent($event)">Ir para o conteúdo da aba</a>
+
 <ng-keyboard-shortcuts [shortcuts]="shortcuts" />
 
-<div id="preload">
+<div id="preload" inert>
   <ngx-monaco-editor />
 </div>
 
-<mat-tab-group
-  animationDuration="0"
-  mat-stretch-tabs="false"
-  mat-align-tabs="start"
-  [selectedIndex]="selectedIndex()"
-  (selectedIndexChange)="selectTab($event)"
->
-  <mat-tab labelClass="tab-home">
-    <ng-template mat-tab-label>
-      <span class="tab-icon">
-        <svg-icon
-          src="assets/lightbulb.svg"
-          svgClass="text-primary cap-my-height"
-          aria-hidden="true"
-          focusable="false"
-        />
-      </span>
+<input #fileInput type="file" hidden multiple accept=".por,text/plain" (change)="openFiles($event)" />
 
-      <span class="tab-text">Portugol Webstudio</span>
-    </ng-template>
+<main id="conteudo" class="editor-area" tabindex="-1" aria-label="Abas">
+  <div class="tab-strip">
+    <div #tablist class="tablist" role="tablist" aria-label="Abas abertas">
+      <div class="tab" role="presentation" [class.active]="activeTabId() === null">
+        <button
+          id="aba-inicio"
+          type="button"
+          class="tab-label"
+          role="tab"
+          aria-controls="painel-inicio"
+          [attr.aria-selected]="activeTabId() === null"
+          [tabIndex]="activeTabId() === null ? 0 : -1"
+          (click)="selectTab(null)"
+        >
+          <svg-icon src="assets/lightbulb.svg" class="tab-icon icon-yellow" aria-hidden="true" />
+          <span class="tab-title">Portugol Webstudio</span>
+        </button>
+      </div>
 
-    <app-tab-start
-      (newTab)="addTab($event?.name, $event?.contents)"
-      (help)="upsertHelpTab()"
-      (changelog)="upsertChangelogTab()"
-      (settings)="openSettingsModal()"
-    />
-  </mat-tab>
+      @for (tab of tabs(); track tab.id) {
+        <div class="tab" role="presentation" [class.active]="activeTabId() === tab.id">
+          <button
+            type="button"
+            class="tab-label"
+            role="tab"
+            aria-describedby="atalhos-aba"
+            [id]="`aba-${tab.id}`"
+            [attr.aria-controls]="`painel-${tab.id}`"
+            [attr.aria-selected]="activeTabId() === tab.id"
+            [tabIndex]="activeTabId() === tab.id ? 0 : -1"
+            (click)="selectTab(tab.id)"
+            (auxclick)="$event.button === 1 && closeTab(tab)"
+            (dblclick)="changeTabTitle(tab)"
+          >
+            <svg-icon
+              class="tab-icon"
+              aria-hidden="true"
+              [src]="tabIcons[tab.type]"
+              [class.icon-blue]="tab.type !== 'editor'"
+            />
+            <span class="tab-title">{{ tab.title }}</span>
+          </button>
 
-  @for (tab of tabs(); track tab.id) {
-    <mat-tab [labelClass]="`tab-item tab-${tab.type}`">
-      <ng-template mat-tab-label>
-        <span>
-          <span class="tab-icon">
-            @switch (tab.type) {
-              @case ("editor") {
-                <svg-icon src="assets/mdi/file-document-outline.svg" svgAriaLabel="Ícone de documento" />
-              }
-
-              @case ("help") {
-                <svg-icon
-                  src="assets/mdi/help-circle-outline.svg"
-                  svgClass="text-blue"
-                  aria-hidden="true"
-                  focusable="false"
-                />
-              }
-
-              @case ("changelog") {
-                <svg-icon src="assets/mdi/newspaper.svg" svgClass="text-blue" aria-hidden="true" focusable="false" />
-              }
-
-              @default never;
-            }
-          </span>
-
-          <span class="tab-text">{{ tab.title }}</span>
-        </span>
-
-        <span class="tab-actions">
           @if (tab.type === "editor") {
-            <button
-              mat-icon-button
-              aria-label="Renomear aba"
-              matTooltip="Renomear aba"
-              type="button"
-              (click)="changeTabTitle(tab)"
+            <span
+              class="icon-btn icon-btn-sm tab-action"
+              aria-hidden="true"
+              data-tab-action="rename"
+              appTooltip="Renomear"
+              appTooltipShortcut="F2"
+              [attr.data-tab-id]="tab.id"
             >
-              <svg-icon src="assets/mdi/rename-outline.svg" aria-hidden="true" focusable="false" />
-            </button>
+              <svg-icon src="assets/mdi/pencil-outline.svg" />
+            </span>
           }
 
-          <button
-            mat-icon-button
-            aria-label="Fechar aba"
-            matTooltip="Fechar aba"
-            type="button"
-            [class.single-button]="tab.type === 'editor'"
-            (click)="closeTab(tab)"
+          <span
+            class="icon-btn icon-btn-sm tab-action"
+            aria-hidden="true"
+            data-tab-action="close"
+            appTooltip="Fechar"
+            appTooltipShortcut="Delete"
+            [attr.data-tab-id]="tab.id"
           >
-            <svg-icon src="assets/mdi/close.svg" aria-hidden="true" focusable="false" />
-          </button>
-        </span>
-      </ng-template>
+            <svg-icon src="assets/mdi/close.svg" />
+          </span>
+        </div>
+      }
+    </div>
 
+    <button
+      type="button"
+      class="icon-btn new-tab"
+      aria-label="Nova aba de código"
+      aria-keyshortcuts="Control+N"
+      appTooltip="Nova aba de código"
+      appTooltipShortcut="Ctrl+N"
+      (click)="addTab()"
+    >
+      <svg-icon src="assets/mdi/plus.svg" aria-hidden="true" />
+    </button>
+
+    <span id="atalhos-aba" class="visually-hidden">Delete fecha a aba; F2 renomeia.</span>
+  </div>
+
+  <div
+    id="painel-inicio"
+    class="tab-panel"
+    role="tabpanel"
+    tabindex="-1"
+    aria-labelledby="aba-inicio"
+    [hidden]="activeTabId() !== null"
+  >
+    <app-tab-start
+      (newTab)="addTab($event?.name, $event?.contents)"
+      (openFile)="fileInput.click()"
+      (examples)="openExamplesDialog()"
+      (help)="upsertHelpTab()"
+      (changelog)="upsertChangelogTab()"
+      (settings)="openSettingsDialog()"
+    />
+  </div>
+
+  @for (tab of tabs(); track tab.id) {
+    <div
+      class="tab-panel"
+      role="tabpanel"
+      tabindex="-1"
+      [id]="`painel-${tab.id}`"
+      [attr.aria-labelledby]="`aba-${tab.id}`"
+      [hidden]="activeTabId() !== tab.id"
+    >
       @switch (tab.type) {
         @case ("editor") {
-          <app-tab-editor [tabId]="tab.id" (help)="upsertHelpTab()" (settings)="openSettingsModal()" />
+          <app-tab-editor
+            [tabId]="tab.id"
+            (help)="upsertHelpTab()"
+            (settings)="openSettingsDialog()"
+            (openFile)="fileInput.click()"
+            (examples)="openExamplesDialog()"
+          />
         }
 
         @case ("help") {
-          <app-tab-help (newTab)="addTab($event?.name, $event?.contents)" />
+          <app-tab-help (newTab)="addTab($event.name, $event.contents)" />
         }
 
         @case ("changelog") {
@@ -104,21 +141,62 @@
 
         @default never;
       }
-    </mat-tab>
+    </div>
+  }
+</main>
+
+<footer class="status-bar" aria-label="Barra de status">
+  @if (activeEditor(); as editor) {
+    <button
+      type="button"
+      class="status-item"
+      appTooltip="Ver os problemas do código"
+      appTooltipPosition="above"
+      [attr.aria-label]="problemsLabel()"
+      (click)="editor.showProblems()"
+    >
+      <svg-icon src="assets/mdi/close-circle-outline.svg" aria-hidden="true" />
+      {{ problemCounts().errors }}
+      <svg-icon src="assets/mdi/alert-outline.svg" aria-hidden="true" />
+      {{ problemCounts().warnings }}
+    </button>
+
+    @if (editor.executor.running) {
+      <span class="status-item status-running">
+        <svg-icon src="assets/mdi/play-outline.svg" aria-hidden="true" />
+        {{ editor.executor.waitingForInput ? "Aguardando entrada" : "Executando" }}
+      </span>
+    }
+
+    <span class="status-spacer"></span>
+
+    <button
+      type="button"
+      class="status-item"
+      appTooltip="Ir para a linha"
+      appTooltipShortcut="Ctrl+G"
+      appTooltipPosition="above"
+      (click)="editor.goToLine()"
+    >
+      Ln {{ editor.cursor().line }}, Col {{ editor.cursor().column }}
+    </button>
+
+    <button
+      type="button"
+      class="status-item"
+      appTooltip="Mudar a indentação nas configurações"
+      appTooltipPosition="above"
+      (click)="openSettingsDialog('editor')"
+    >
+      {{ indentationLabel() }}
+    </button>
+
+    <span class="status-item">Portugol</span>
+  } @else {
+    <span class="status-spacer"></span>
   }
 
-  <mat-tab labelClass="tab-item tab-action tab-action-add" disabled>
-    <ng-template mat-tab-label>
-      <button
-        class="action-button add-button"
-        mat-icon-button
-        aria-label="Nova aba de editor de código"
-        matTooltip="Nova aba de editor de código"
-        type="button"
-        (click)="addTab()"
-      >
-        <svg-icon src="assets/mdi/plus.svg" aria-hidden="true" focusable="false" />
-      </button>
-    </ng-template>
-  </mat-tab>
-</mat-tab-group>
+  @if (isBeta) {
+    <span class="status-item status-beta">Beta</span>
+  }
+</footer>
