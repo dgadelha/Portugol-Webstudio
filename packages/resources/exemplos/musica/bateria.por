@@ -207,10 +207,6 @@ programa {
       se (ultimo_x <= 0 e ultimo_y <= 0) {
         ultimo_x = Mouse.posicao_x()
         ultimo_y = Mouse.posicao_y()
-
-        escreva("Mouse pressionado em X: ", ultimo_x, "\n")
-        escreva("Mouse pressionado em Y: ", ultimo_y, "\n")
-        escreva("\n")
       }
     } senao {
       /*
@@ -227,10 +223,6 @@ programa {
            * foi liberado na mesma região onde ele foi pressionado
            */
           clicou = verdadeiro
-
-          escreva("Clique em X: ", Mouse.posicao_x(), "\n")
-          escreva("Clique em Y: ", Mouse.posicao_y(), "\n")
-          escreva("\n")
         }
       }
 

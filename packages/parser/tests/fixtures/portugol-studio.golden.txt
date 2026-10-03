@@ -80,24 +80,24 @@ AVISO|109|27|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da express
 AVISO|109|35|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_retangulo" será truncado
 AVISO|109|38|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "largura" da função "desenhar_retangulo" será truncado
 AVISO|109|58|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "altura" da função "desenhar_retangulo" será truncado
-AVISO|126|30|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
-AVISO|128|27|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
-AVISO|132|30|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
-AVISO|135|30|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
-AVISO|138|30|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
-AVISO|141|30|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
-AVISO|144|30|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
-AVISO|147|30|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
-AVISO|162|18|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "cor" da função "definir_cor" será truncado
-AVISO|163|19|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|168|22|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_elipse" será truncado
-AVISO|168|25|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_elipse" será truncado
-AVISO|168|28|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "largura" da função "desenhar_elipse" será truncado
-AVISO|168|38|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "altura" da função "desenhar_elipse" será truncado
-AVISO|171|23|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x1" da função "desenhar_linha" será truncado
-AVISO|171|26|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y1" da função "desenhar_linha" será truncado
-AVISO|171|40|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x2" da função "desenhar_linha" será truncado
-AVISO|171|54|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y2" da função "desenhar_linha" será truncado
+AVISO|128|30|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
+AVISO|130|27|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
+AVISO|134|30|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
+AVISO|137|30|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
+AVISO|140|30|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
+AVISO|143|30|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
+AVISO|146|30|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
+AVISO|149|30|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
+AVISO|164|18|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "cor" da função "definir_cor" será truncado
+AVISO|165|19|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|170|22|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_elipse" será truncado
+AVISO|170|25|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_elipse" será truncado
+AVISO|170|28|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "largura" da função "desenhar_elipse" será truncado
+AVISO|170|38|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "altura" da função "desenhar_elipse" será truncado
+AVISO|173|23|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x1" da função "desenhar_linha" será truncado
+AVISO|173|26|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y1" da função "desenhar_linha" será truncado
+AVISO|173|40|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x2" da função "desenhar_linha" será truncado
+AVISO|173|54|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y2" da função "desenhar_linha" será truncado
 ### bibliotecas/graficos/sphere.por
 AVISO|25|15|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
 AVISO|27|15|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
@@ -619,9 +619,9 @@ AVISO|638|26|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da express
 AVISO|651|46|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "base" da função "logaritmo" será automaticamente convertido de "inteiro" para "real"
 AVISO|651|26|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
 AVISO|701|23|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
-AVISO|793|11|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
-AVISO|794|12|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
-AVISO|795|21|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|792|11|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
+AVISO|793|12|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
+AVISO|794|21|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
 ### operacoes_aritmeticas/divisoes_inteiras.por
 ### operacoes_aritmeticas/operacoes_simples.por
 ### operacoes_aritmeticas/potencia_raiz.por

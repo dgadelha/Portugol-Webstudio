@@ -28,17 +28,16 @@ programa {
   funcao inicio() {
     caracter letra
 
-    escreva("Digite uma letra: ")
+    escreva("Digite uma letra, sem acento: ")
     leia(letra)
 
-    // O Portugol diferencia caracteres minúsculos e maiúsculos,
-    // portanto é preciso verificar ambos os casos
-
-    se
-    (
-    letra == 'A' ou letra == 'E' ou letra == 'I' ou letra == 'O' ou letra == 'U' ou
-    letra == 'a' ou letra == 'e' ou letra == 'i' ou letra == 'o' ou letra == 'u'
-    ) {
+    // Primeiro, verifica se o caractere é uma letra de A a Z. Os caracteres podem ser
+    // comparados com <, >, <= e >=, que seguem a ordem alfabética
+    se (nao ((letra >= 'a' e letra <= 'z') ou (letra >= 'A' e letra <= 'Z'))) {
+      escreva("\n'", letra, "' não é uma letra de A a Z\n")
+    } senao se (letra == 'A' ou letra == 'E' ou letra == 'I' ou letra == 'O' ou letra == 'U' ou letra == 'a' ou letra == 'e' ou letra == 'i' ou letra == 'o' ou letra == 'u') {
+      // O Portugol diferencia caracteres minúsculos e maiúsculos,
+      // portanto é preciso verificar ambos os casos
       escreva("\nA letra '", letra, "' é uma vogal\n")
     } senao {
       escreva("\nA letra '", letra, "' é uma consoante\n")

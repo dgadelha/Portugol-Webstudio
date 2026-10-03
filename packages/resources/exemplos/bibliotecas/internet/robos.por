@@ -2,7 +2,7 @@ programa {
   inclua biblioteca Graficos --> g
   inclua biblioteca Teclado --> t
   inclua biblioteca Texto --> tx
-  inclua biblioteca Internet --> i
+  inclua biblioteca Internet --> web
   inclua biblioteca Util --> u
   inclua biblioteca Arquivos --> a
 
@@ -30,14 +30,14 @@ programa {
       hash = hash + tx.obter_caracter(letras, temp)
     }
 
-    i.baixar_imagem("https://robohash.org/" + hash + ".png", diretorio_ps + "bolinha")
+    web.baixar_imagem("https://robohash.org/" + hash + ".png", diretorio_ps + "bolinha")
     img = g.carregar_imagem(diretorio_ps + "bolinha.png")
   }
 
   funcao inicio() {
     g.iniciar_modo_grafico(verdadeiro)
     g.definir_dimensoes_janela(300, 300)
-    i.definir_tempo_limite(5000)
+    web.definir_tempo_limite(5000)
     diretorio_ps = u.obter_diretorio_usuario() + "/.portugol/dados/robos/"
     a.criar_pasta(diretorio_ps)
     reload()

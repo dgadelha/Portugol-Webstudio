@@ -9,8 +9,8 @@ programa {
   inclua biblioteca Arquivos --> a
   inclua biblioteca Matematica --> mat
 
-  inteiro ALTURA_DA_JANELA = 800
-  inteiro LARGURA_DA_JANELA = 600
+  inteiro LARGURA_DA_JANELA = 800
+  inteiro ALTURA_DA_JANELA = 600
 
   inteiro musica = -1
   inteiro fundo = -1
@@ -780,8 +780,7 @@ programa {
     atualizar_titulo()
 
     se (nao tela_cheia) {
-      //g.definir_dimensoes_janela(800, 600)
-      g.definir_dimensoes_janela(ALTURA_DA_JANELA, LARGURA_DA_JANELA)
+      g.definir_dimensoes_janela(LARGURA_DA_JANELA, ALTURA_DA_JANELA)
     } senao {
       g.entrar_modo_tela_cheia()
     }

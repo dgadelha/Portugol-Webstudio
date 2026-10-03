@@ -110,9 +110,11 @@ programa {
       g.desenhar_texto(100, 100, i + " ")
       g.renderizar()
       inteiro file = a.abrir_arquivo(caminho_pln + i + ".pln", a.MODO_LEITURA)
-      cadeia r = a.ler_linha(file)
-      cadeia g = a.ler_linha(file)
-      cadeia b = a.ler_linha(file)
+      // Cada arquivo .pln traz as componentes da cor do planeta (vermelho, verde e azul),
+      // o seu tipo e o incremento do ângulo, um valor por linha
+      cadeia vermelho = a.ler_linha(file)
+      cadeia verde = a.ler_linha(file)
+      cadeia azul = a.ler_linha(file)
       caracter tipo = tp.cadeia_para_caracter(a.ler_linha(file))
       cadeia inc = a.ler_linha(file)
       a.fechar_arquivo(file)
@@ -125,7 +127,7 @@ programa {
       planetas[i][DISTANCIA] = xp - xc
       planetas[i][ANGULO] = u.sorteia(0, 360)
       planetas[i][ANGULO_INC] = speed / tp.cadeia_para_real(inc)
-      planetas[i][COR] = g.criar_cor(tp.cadeia_para_inteiro(r, 10), tp.cadeia_para_inteiro(g, 10), tp.cadeia_para_inteiro(b, 10))
+      planetas[i][COR] = g.criar_cor(tp.cadeia_para_inteiro(vermelho, 10), tp.cadeia_para_inteiro(verde, 10), tp.cadeia_para_inteiro(azul, 10))
 
       escolha (tipo) {
         caso 'P':
