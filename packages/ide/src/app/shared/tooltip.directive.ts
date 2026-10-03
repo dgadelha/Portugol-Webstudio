@@ -7,10 +7,10 @@ import {
 import { AriaDescriber } from "@angular/cdk/a11y";
 import { ComponentPortal } from "@angular/cdk/portal";
 import {
+  afterRenderEffect,
   ChangeDetectionStrategy,
   Component,
   Directive,
-  effect,
   ElementRef,
   inject,
   Injector,
@@ -46,6 +46,12 @@ const POSITIONS: Record<TooltipPosition, ConnectedPosition[]> = {
  */
 const HOVER_DELAY = 500;
 
+/**
+ * Espera antes de esconder a dica quando o ponteiro sai do controle, tempo de
+ * ele atravessar o espaço até a dica (WCAG 1.4.13).
+ */
+const LEAVE_DELAY = 150;
+
 @Component({
   selector: "app-tooltip",
   templateUrl: "./tooltip.component.html",
@@ -59,18 +65,19 @@ class TooltipComponent {
 
 /**
  * Dica visual de um controle, como as do VS Code. Aparece ao passar o mouse e
- * também ao focar pelo teclado, some com Esc (WCAG 1.4.13) e não repete o nome
- * do controle para leitores de tela: quem usa um deve dar o nome ao controle
- * com `aria-label` ou com o próprio texto.
+ * também ao focar pelo teclado, continua aberta com o ponteiro sobre ela e
+ * some com Esc (WCAG 1.4.13).
  *
- * O atalho de teclado (`appTooltipShortcut`) aparece na dica com outra fonte e
- * também chega aos leitores de tela, como descrição do controle.
+ * Para leitores de tela, a dica vira a descrição do controle quando diz algo
+ * além do nome dele (que vem do `aria-label` ou do próprio texto), como a ação
+ * de "Ln 3, Col 25". O atalho de teclado (`appTooltipShortcut`) aparece na dica
+ * com outra fonte e também entra na descrição.
  */
 @Directive({
   selector: "[appTooltip]",
   host: {
     "(mouseenter)": "show(true)",
-    "(mouseleave)": "hide()",
+    "(mouseleave)": "scheduleHide()",
     "(focusin)": "onFocus()",
     "(focusout)": "hide()",
     "(click)": "hide()",
@@ -86,14 +93,13 @@ export class TooltipDirective implements OnDestroy {
   readonly appTooltipShortcut = input<string>("");
 
   constructor() {
-    effect(onCleanup => {
-      const shortcut = this.appTooltipShortcut();
+    // Depois da renderização, quando o `aria-label` do controle já está no DOM.
+    afterRenderEffect(onCleanup => {
+      const description = this.description();
 
-      if (!shortcut) {
+      if (!description) {
         return;
       }
-
-      const description = `Atalho: ${shortcut}`;
 
       this.ariaDescriber.describe(this.element.nativeElement, description);
       onCleanup(() => {
@@ -138,6 +144,16 @@ export class TooltipDirective implements OnDestroy {
     }
   }
 
+  scheduleHide() {
+    clearTimeout(this.timer);
+
+    if (this.overlayRef?.hasAttached()) {
+      this.timer = setTimeout(() => {
+        this.hide();
+      }, LEAVE_DELAY);
+    }
+  }
+
   hide() {
     clearTimeout(this.timer);
     this.overlayRef?.detach();
@@ -147,6 +163,34 @@ export class TooltipDirective implements OnDestroy {
   ngOnDestroy() {
     this.hide();
     this.overlayRef?.dispose();
+  }
+
+  /**
+   * O texto da dica, se não repetir o nome do controle, e o atalho.
+   */
+  private description() {
+    const text = this.appTooltip();
+    const shortcut = this.appTooltipShortcut();
+    const element = this.element.nativeElement;
+    const name = this.normalize(element.getAttribute("aria-label") ?? element.textContent ?? "");
+    const parts = [];
+
+    if (text && !name.includes(this.normalize(text))) {
+      parts.push(text);
+    }
+
+    if (shortcut) {
+      parts.push(`Atalho: ${shortcut}`);
+    }
+
+    return parts.join(". ");
+  }
+
+  /**
+   * Para comparar a dica com o nome: "Salvar como…" e "Salvar como" são iguais.
+   */
+  private normalize(text: string) {
+    return text.replaceAll("…", "").replaceAll(/\s+/g, " ").trim().toLowerCase();
   }
 
   private attach() {
@@ -164,6 +208,16 @@ export class TooltipDirective implements OnDestroy {
     const ref = this.overlayRef.attach(new ComponentPortal(TooltipComponent));
     ref.instance.text.set(this.appTooltip());
     ref.instance.shortcut.set(this.appTooltipShortcut());
+
+    // Com o ponteiro sobre a dica, ela continua aberta, para quem usa lupa ler.
+    const tooltip = ref.location.nativeElement as HTMLElement;
+
+    tooltip.addEventListener("mouseenter", () => {
+      clearTimeout(this.timer);
+    });
+    tooltip.addEventListener("mouseleave", () => {
+      this.scheduleHide();
+    });
     document.addEventListener("keydown", this.onDocumentKeydown, { capture: true });
   }
 }

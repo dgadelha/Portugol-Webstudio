@@ -12,7 +12,17 @@
   }
 }
 
+// Um desenho maior que a tela rola dentro da janela, como no
+// `mat-dialog-content` de antes. A margem automática centraliza a tela de
+// desenho só quando sobra espaço: com `justify-content`, a borda esquerda de
+// um desenho largo ficaria fora da área de rolagem.
 .renderer-content {
   display: flex;
-  justify-content: center;
+  min-height: 0;
+  overflow: auto;
+
+  canvas {
+    flex-shrink: 0;
+    margin: auto;
+  }
 }
