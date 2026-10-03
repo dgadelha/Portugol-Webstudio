@@ -98,8 +98,9 @@ export class TabStartComponent {
     this.gaService.event("open_examples_dialog", "Aba Inicial", "Abrir diálogo de exemplos");
 
     const ref = this.dialog.open(DialogOpenExampleComponent, {
-      width: "min(85vw, 780px)",
-      height: "min(85vh, 600px)",
+      width: "min(92vw, 960px)",
+      maxWidth: "none",
+      height: "min(85vh, 640px)",
     });
 
     this._dialogExample$ = ref.componentInstance.exampleOpened.subscribe(example => {
