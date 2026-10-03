@@ -12,5 +12,5 @@
 
 <footer class="dialog-footer">
   <button type="button" class="btn" (click)="dialogRef.close(false)">Manter aberta</button>
-  <button type="button" class="btn btn-primary" (click)="dialogRef.close(true)">Fechar aba</button>
+  <button type="button" class="btn btn-primary" cdkFocusInitial (click)="dialogRef.close(true)">Fechar aba</button>
 </footer>
