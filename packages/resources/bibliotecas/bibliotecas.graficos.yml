@@ -247,10 +247,10 @@ bibliotecas:
             primitivo: vazio
 
       - nome: desenhar_poligono
-        descrição: Desenha poligono
+        descrição: Desenha um polígono ligando os pontos informados, na ordem em que aparecem na matriz
         parâmetros:
           - nome: pontos
-            descrição: a largura do retângulo em pixels
+            descrição: uma matriz com uma linha para cada vértice do polígono, com a coordenada `x` na coluna 0 e a `y` na coluna 1
             tipo:
               primitivo: inteiro
               dimensão: matriz

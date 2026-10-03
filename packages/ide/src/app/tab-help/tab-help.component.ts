@@ -27,7 +27,7 @@ import { SettingsService } from "../settings.service";
 import { WorkspaceService } from "../workspace.service";
 import { ResponsiveService } from "../responsive.service";
 import { Theme, ThemeService } from "../theme.service";
-import { libsTree } from "./bibliotecas";
+import { criarAjudaDasBibliotecas } from "./bibliotecas";
 import { AjudaTopico, TreeItem } from "./types";
 
 const AJUDA_BASE = "assets/recursos/ajuda/";
@@ -103,7 +103,11 @@ export class TabHelpComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.http.get<AjudaTopico[]>(`${AJUDA_BASE}topicos.json`).subscribe({
       next: topicos => {
-        const ajudaWithLibs = topicos.map(topico => this.#criarItem(topico)).concat(libsTree);
+        const ajudaWithLibs = [...topicos.map(topico => this.#criarItem(topico)), criarAjudaDasBibliotecas()];
+
+        for (const item of ajudaWithLibs) {
+          this.#indexar(item);
+        }
 
         this.topicos = ajudaWithLibs;
         this.loadItem(ajudaWithLibs[0]);
@@ -297,17 +301,35 @@ export class TabHelpComponent implements OnInit, OnDestroy {
     void this.#renderizarDiagramas();
   }
 
-  #criarItem(topico: AjudaTopico, pai?: TreeItem): TreeItem {
-    const item: TreeItem = { id: topico.arquivo, text: topico.titulo, arquivo: topico.arquivo };
+  #criarItem(topico: AjudaTopico): TreeItem {
+    return {
+      id: topico.arquivo,
+      text: topico.titulo,
+      arquivo: topico.arquivo,
+      children: topico.subtopicos?.map(subtopico => this.#criarItem(subtopico)),
+    };
+  }
 
-    item.children = topico.subtopicos?.map(subtopico => this.#criarItem(subtopico, item));
-    this.#topicos.set(topico.arquivo, item);
+  /**
+   * Registra os tópicos pelo caminho do arquivo e pelo pai, para seguir os links
+   * entre eles e abrir as pastas da árvore até um tópico.
+   */
+  #indexar(item: TreeItem, pai?: TreeItem) {
+    if (item.arquivo) {
+      this.#topicos.set(item.arquivo, item);
+    }
 
     if (pai) {
       this.#pais.set(item, pai);
     }
 
-    return item;
+    if (!item.children) {
+      return;
+    }
+
+    for (const filho of item.children) {
+      this.#indexar(filho, item);
+    }
   }
 
   #exibir(item: TreeItem) {
