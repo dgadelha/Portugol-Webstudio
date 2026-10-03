@@ -227,6 +227,24 @@ describe("Tipos", () => {
         ]
       `);
     });
+    test("caracter + caracter é inteiro, a soma dos códigos", () => {
+      expect(
+        analisar(portugol`
+          programa {
+            funcao inicio() {
+              inteiro soma = 'C' + 'a'
+              cadeia texto = 'C' + 'a'
+              cadeia concatenado = "" + 'C' + 'a'
+              escreva(soma, texto, concatenado)
+            }
+          }
+        `),
+      ).toMatchInlineSnapshot(`
+        [
+          4:19/4:27 E [ErroSemantico.ErroTiposIncompativeis.1]: Tipos incompatíveis! Não é possível atribuir uma expressão do tipo "inteiro" à uma expressão do tipo "cadeia".,
+        ]
+      `);
+    });
   });
 
   describe("Unários", () => {

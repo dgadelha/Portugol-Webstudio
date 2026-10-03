@@ -28,22 +28,27 @@ Note que você poderá atribuir o resultado desta operação a uma variável, ou
 
 ## Tabela de compatibilidade de tipos da operação de adição
 
-| Operando Esquerdo | Operando Direito | Tipo Resultado | Exemplo                             | Resultado                 |
-| ----------------- | ---------------- | -------------- | ----------------------------------- | ------------------------- |
-| `cadeia`          | `cadeia`         | `cadeia`       | `"Oi" + " mundo"`                   | `"Oi mundo"`              |
-| `cadeia`          | `caracter`       | `cadeia`       | `"Banan" + 'a'`                     | `"Banana"`                |
-| `cadeia`          | `inteiro`        | `cadeia`       | `"Faz um " + 21`                    | `"Faz um 21"`             |
-| `cadeia`          | `real`           | `cadeia`       | `"Altura: " + 1.78`                 | `"Altura: 1.78"`          |
-| `cadeia`          | `logico`         | `cadeia`       | `"Help bom =" + verdadeiro`         | `"Help bom = verdadeiro"` |
-| `caracter`        | `cadeia`         | `cadeia`       | `'P' + "anqueca"`                   | `"Panqueca"`              |
-| `caracter`        | `caracter`       | `cadeia`       | `'C' + 'a' + 'd' + 'e' + 'i' + 'a'` | `"Cadeia"`                |
-| `inteiro`         | `cadeia`         | `cadeia`       | `22 + " de agosto"`                 | `"22 de agosto"`          |
-| `inteiro`         | `inteiro`        | `inteiro`      | `12 + 34`                           | `46`                      |
-| `inteiro`         | `real`           | `real`         | `76 + 3.25`                         | `79.25`                   |
-| `real`            | `cadeia`         | `cadeia`       | `3.24 + " Kg"`                      | `"3.24 Kg"`               |
-| `real`            | `inteiro`        | `real`         | `9.87 + 1`                          | `10.87`                   |
-| `real`            | `real`           | `real`         | `9.87 + 0.13`                       | `10.0`                    |
-| `logico`          | `cadeia`         | `cadeia`       | `verdadeiro + " amigo"`             | `"verdadeiro amigo"`      |
+| Operando Esquerdo | Operando Direito | Tipo Resultado | Exemplo                      | Resultado           |
+| ----------------- | ---------------- | -------------- | ---------------------------- | ------------------- |
+| `cadeia`          | `cadeia`         | `cadeia`       | `"Oi" + " mundo"`            | `"Oi mundo"`        |
+| `cadeia`          | `caracter`       | `cadeia`       | `"Banan" + 'a'`              | `"Banana"`          |
+| `cadeia`          | `inteiro`        | `cadeia`       | `"Faz um " + 21`             | `"Faz um 21"`       |
+| `cadeia`          | `real`           | `cadeia`       | `"Altura: " + 1.78`          | `"Altura: 1.78"`    |
+| `cadeia`          | `logico`         | `cadeia`       | `"Help bom = " + verdadeiro` | `"Help bom = true"` |
+| `caracter`        | `cadeia`         | `cadeia`       | `'P' + "anqueca"`            | `"Panqueca"`        |
+| `caracter`        | `caracter`       | `inteiro`      | `'C' + 'a'`                  | `164`               |
+| `inteiro`         | `cadeia`         | `cadeia`       | `22 + " de agosto"`          | `"22 de agosto"`    |
+| `inteiro`         | `inteiro`        | `inteiro`      | `12 + 34`                    | `46`                |
+| `inteiro`         | `real`           | `real`         | `76 + 3.25`                  | `79.25`             |
+| `real`            | `cadeia`         | `cadeia`       | `3.24 + " Kg"`               | `"3.24 Kg"`         |
+| `real`            | `inteiro`        | `real`         | `9.87 + 1`                   | `10.87`             |
+| `real`            | `real`           | `real`         | `9.87 + 0.13`                | `10.0`              |
+| `logico`          | `cadeia`         | `cadeia`       | `verdadeiro + " amigo"`      | `"true amigo"`      |
+
+Note que:
+
+- Ao ser concatenado com uma cadeia, um valor lógico aparece como `true` ou `false`, e não como `verdadeiro` ou `falso`, que é o que o comando `escreva` exibe quando recebe o valor sozinho.
+- A soma de dois caracteres não junta os caracteres: o resultado é um número inteiro, a soma dos códigos de cada caractere (`'C'` tem o código 67 e `'a'`, o código 97). Para juntar caracteres em uma cadeia, comece a expressão com uma cadeia, já que a adição é feita da esquerda para a direita: `"" + 'C' + 'a'` resulta em `"Ca"`, mas `'C' + 'a' + ""` resulta em `"164"`.
 
 Para melhor compreensão deste conceito, confira o exemplo abaixo.
 
