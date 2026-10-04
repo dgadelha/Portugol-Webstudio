@@ -12,9 +12,10 @@
  *
  * Descrição:
  *
- *   Este exemplo pede ao usuário que informe 10 números. Logo após, calcula e
- *   exibe a média dos números digitados. O exemplo utiliza um laço de repetição do
- *   tipo "enquanto" para determinar se todos os 10 valores já foram lidos.
+ *   Este exemplo pede ao usuário que informe 10 números. Logo após, calcula e exibe
+ *   a soma e a média dos números digitados. O exemplo utiliza um laço de repetição
+ *   do tipo "enquanto" com um contador, que controla quantas vezes o laço se repete,
+ *   e um acumulador, que guarda a soma dos números.
  *
  * Autores:
  *
@@ -26,24 +27,29 @@
 
 programa {
   funcao inicio() {
+    const inteiro QUANTIDADE = 10
+
+    // O contador começa em 1 e aumenta a cada número lido
     inteiro contador = 1
 
-    real numero, media, soma = 0.0
+    // O acumulador precisa começar em zero, pois cada número será somado a ele
+    real soma = 0.0
+    real numero, media
 
-    // Laço que verifica se já foram informados 10 valores
-
-    enquanto (contador <= 10) {
-      limpa()
+    enquanto (contador <= QUANTIDADE) {
       escreva("Digite o ", contador, "º número: ")
       leia(numero)
 
-      soma = soma + numero // A variável soma é o acumulador deste exemplo
-      contador = contador + 1 // Incrementa o contador
+      // Somamos o número digitado ao total já acumulado
+      soma = soma + numero
+
+      contador = contador + 1
     }
 
-    media = soma / 10
+    // Quando o laço termina, a soma contém todos os números digitados
+    media = soma / QUANTIDADE
 
-    limpa()
-    escreva("A média dos números é: ", media, "\n")
+    escreva("\nA soma dos números é ", soma, "\n")
+    escreva("A média dos números é ", media, "\n")
   }
 }

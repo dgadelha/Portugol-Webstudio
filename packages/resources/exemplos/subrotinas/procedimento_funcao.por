@@ -1,64 +1,42 @@
-/*
- * Copyright (C) 2014 - UNIVALI - Universidade do Vale do Itajaí
- *
- * Este arquivo de código fonte é livre para utilização, cópia e/ou modificação
- * desde que este cabeçalho, contendo os direitos autorais e a descrição do programa,
- * seja mantido.
- *
- * Se tiver dificuldade em compreender este exemplo, acesse as vídeoaulas do Portugol
- * Studio para auxiliá-lo:
- *
- * https://www.youtube.com/watch?v=K02TnB3IGnQ&list=PLb9yvNDCid3jQAEbNoPHtPR0SWwmRSM-t
- *
- * Descrição:
- *
- *   Este exemplo ilustra o uso das funções da linguagem Portugol.
- *
- *   Neste exemplo, foi criado um procedimento que formata uma mensagem qualquer e uma
- *   função que realiza um cálculo matemático entre dois números informados.
- *
- * Autores:
- *
- *   Giordana Maria da Costa Valle
- *   Carlos Alexandre Krueger
- *
- * Data: 01/06/2013
+/**
+ * Este exemplo mostra a diferença entre um procedimento e uma função. O
+ * procedimento "linha" apenas executa uma tarefa (desenhar uma linha), enquanto
+ * a função "area_retangulo" faz um cálculo e devolve o resultado com "retorne".
  */
 
 programa {
   funcao inicio() {
-    mensagem("Bem-vindo") // Chama o procedimento
+    real area
 
-    escreva("O resultado do primeiro cálculo é: ", calcula(3.0, 4.0)) // Chama a função no escreva
-    escreva("\nO resultado do segundo cálculo é: ", calcula(7.0, 2.0), "\n") // Chama a função no escreva
+    // Para usar um procedimento, basta chamá-lo pelo nome
+    linha()
+    escreva("Calculadora de áreas\n")
+    linha()
 
-    mensagem("Tchau") // Chama o procedimento
+    // Uma função devolve um valor, que pode ser guardado em uma variável...
+    area = area_retangulo(5.0, 3.0)
+    escreva("Um retângulo de 5 por 3 tem área ", area, "\n")
+
+    // ...ou usado diretamente, por exemplo dentro de um "escreva"
+    escreva("Um retângulo de 2.5 por 4 tem área ", area_retangulo(2.5, 4.0), "\n")
+
+    linha()
   }
 
-  funcao mensagem(cadeia texto) {
-    inteiro i
-
-    // Insere uma linha antes do texto da mensagem
-    para (i = 0; i < 50; i++) {
-      escreva("-")
-    }
-
-    escreva("\n", texto, "\n") // Escreve a mensagem
-
-    // Insere uma linha após o texto da mensagem
-    para (i = 0; i < 50; i++) {
+  // Um procedimento é uma função que não devolve nenhum valor. Por isso,
+  // não há nenhum tipo entre a palavra "funcao" e o nome dela
+  funcao linha() {
+    para (inteiro i = 0; i < 30; i++) {
       escreva("-")
     }
 
     escreva("\n")
   }
 
-  // Função que realiza um cálculo e retorna o resultado
-  funcao real calcula(real a, real b) {
-    real resultado
-
-    resultado = a * a + b * b
-
-    retorne resultado
+  // Esta função recebe dois parâmetros (a base e a altura) e devolve um valor
+  // do tipo real. O tipo do valor devolvido é escrito antes do nome da função
+  funcao real area_retangulo(real base, real altura) {
+    // O "retorne" encerra a função e devolve o resultado para quem a chamou
+    retorne base * altura
   }
 }

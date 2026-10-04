@@ -1,43 +1,29 @@
-/*
- * Copyright (C) 2014 - UNIVALI - Universidade do Vale do Itajaí
- *
- * Este arquivo de código fonte é livre para utilização, cópia e/ou modificação
- * desde que este cabeçalho, contendo os direitos autorais e a descrição do programa,
- * seja mantido.
- *
- * Se tiver dificuldade em compreender este exemplo, acesse as vídeoaulas do Portugol
- * Studio para auxiliá-lo:
- *
- * https://www.youtube.com/watch?v=K02TnB3IGnQ&list=PLb9yvNDCid3jQAEbNoPHtPR0SWwmRSM-t
- *
- * Descrição:
- *
- *   Este exemplo utiliza um laço de repetição e uma variável para exibir uma
- *   contagem regressiva na tela.
- *
- * Autores:
- *
- *   Giordana Maria da Costa Valle
- *   Carlos Alexandre Krueger
- *
- * Data: 01/06/2013
+/**
+ * Este exemplo pede ao usuário um número e faz uma contagem regressiva a
+ * partir dele até 1. Ele mostra como funciona o laço "enquanto": as instruções
+ * se repetem enquanto a condição for verdadeira.
  */
 
 programa {
-  inclua biblioteca Util
-
   funcao inicio() {
-    inteiro contador = 10
+    inteiro contador
 
+    escreva("A contagem deve começar em qual número? ")
+    leia(contador)
+
+    escreva("\n")
+
+    // O laço "enquanto" verifica a condição antes de cada repetição.
+    // Se o usuário digitar 0 ou um número negativo, a condição já começa
+    // falsa e o laço não é executado nenhuma vez
     enquanto (contador > 0) {
-      limpa()
-      escreva("Detonação em: ", contador)
+      escreva(contador, "...\n")
 
+      // Diminuímos o contador a cada repetição. Sem esta linha, a condição
+      // seria sempre verdadeira e o laço nunca terminaria
       contador = contador - 1
-      Util.aguarde(1000) // Aguarda 1000 milissegundos (1 segundo)
     }
 
-    limpa()
-    escreva("Booom!\n")
+    escreva("Já!\n")
   }
 }

@@ -12,12 +12,15 @@ export interface Exemplo {
 }
 
 /**
- * Exemplos que dependem de bibliotecas que o Webstudio ainda não executa (Teclado,
- * Mouse, Sons, Arquivos e Internet) — inclusive os de Gráficos, Calendário, jogos e
- * música, que usam o teclado ou o mouse
+ * Exemplos que dependem do que o Webstudio ainda não executa: as bibliotecas
+ * Teclado, Mouse, Sons, Arquivos e Internet, e as funções de imagem e fonte da
+ * Graficos. Os jogos e a música usam o teclado ou o mouse; em Gráficos e
+ * Calendário, só os exemplos originais que usam esses recursos ficam de fora.
  */
 const EXEMPLOS_IGNORADOS = [
-  /^bibliotecas\/(sons|graficos|mouse|teclado|internet|calendario|arquivos)\//,
+  /^bibliotecas\/(sons|mouse|teclado|internet|arquivos)\//,
+  /^bibliotecas\/graficos\/(onda|senoides|solar|salvar_imagem|sphere|fractal_fern|paint|qr_code)\.por$/,
+  /^bibliotecas\/calendario\/(relogio_analogico|relogio_digital)\.por$/,
   /^jogos\//,
   /^musica\//,
 ];
