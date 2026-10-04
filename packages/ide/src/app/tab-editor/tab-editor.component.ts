@@ -27,7 +27,6 @@ import { captureException, setExtra } from "@sentry/angular";
 import { AngularSplitModule, SplitGutterInteractionEvent } from "angular-split";
 import { AngularSvgIconModule } from "angular-svg-icon";
 import { saveAs } from "file-saver";
-import { encode } from "iconv-lite";
 import { GoogleAnalyticsService, NgxGoogleAnalyticsModule } from "ngx-google-analytics";
 import { EMPTY, Subscription, debounceTime, fromEventPattern, mergeMap, startWith, switchMap } from "rxjs";
 import { GraphicsRenderer, IGraphicsRendererComponent } from "../../renderer";
@@ -590,10 +589,22 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     this.workspace.setContents(this.tabId(), contents);
   }
 
+  /**
+   * ISO-8859-1 (o que o Portugol Studio abre) tem um byte por caractere, igual aos primeiros
+   * 256 pontos do Unicode. O que não cabe nele vira `?`.
+   */
+  private encodeLatin1(text: string) {
+    return Uint8Array.from(text, char => {
+      const code = char.codePointAt(0)!;
+
+      return code <= 0xff ? code : 0x3f;
+    });
+  }
+
   private prepareFile(as: "text" | "binary", compat = false) {
     const blob = (() => {
       if (compat) {
-        return new Blob([Uint8Array.from(encode(this.code, "ISO-8859-1"))], {
+        return new Blob([this.encodeLatin1(this.code)], {
           type: `${as === "binary" ? "application/octet-stream" : "text/plain"}; charset=ISO-8859-1`,
         });
       }

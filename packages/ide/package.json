@@ -57,7 +57,6 @@
     "angular-svg-icon": "^19.1.1",
     "file-saver": "^2.0.5",
     "firebase": "^12.19.0",
-    "iconv-lite": "^0.7.3",
     "marked": "^18.0.14",
     "mermaid": "^12.1.0",
     "monaco-editor": "^0.57.0",
