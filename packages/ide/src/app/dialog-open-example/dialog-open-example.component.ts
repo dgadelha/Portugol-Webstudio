@@ -95,6 +95,13 @@ export class DialogOpenExampleComponent implements OnInit, OnDestroy {
   exampleCode = "";
   editor?: monaco.editor.IStandaloneCodeEditor;
 
+  /**
+   * O Monaco fixa o bloco atual no topo por padrão: na prévia, "programa {"
+   * ficaria preso em cima. Num campo à parte porque os tipos do \`monaco\` do
+   * ngx-monaco-editor não conhecem o \`stickyScroll\`.
+   */
+  private readonly previaSemFixar = { stickyScroll: { enabled: false } };
+
   editorOptions: monaco.editor.IStandaloneEditorConstructionOptions = {
     theme: "portugol-dark",
     lineNumbers: "off",
@@ -102,6 +109,7 @@ export class DialogOpenExampleComponent implements OnInit, OnDestroy {
     minimap: { enabled: false },
     language: "portugol",
     fontSize: 13,
+    ...this.previaSemFixar,
   };
 
   constructor() {

@@ -254,6 +254,14 @@ export class TabEditorComponent implements OnInit, OnDestroy {
 
   outputAutoScroll = true;
 
+  /**
+   * O Monaco liga por padrão a fixação do bloco no topo e o recolher blocos, que
+   * tratariam as linhas recuadas da saída como blocos de código. Fica num campo à
+   * parte porque os tipos do \`monaco\` do ngx-monaco-editor são mais antigos que o
+   * Monaco em uso e não conhecem o \`stickyScroll\`.
+   */
+  private readonly saidaSemBlocos = { stickyScroll: { enabled: false }, folding: false };
+
   stdOutEditorOptions: monaco.editor.IStandaloneEditorConstructionOptions = {
     theme: "portugol-dark",
     lineNumbers: "off",
@@ -264,6 +272,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     // Na saída não se edita: a faixa da linha do cursor só pareceria uma caixa
     // vazia em volta da primeira linha.
     renderLineHighlight: "none",
+    ...this.saidaSemBlocos,
     // Sem `tabSize`: no Monaco ele vale para todos os editores da página, e um
     // valor aqui sobrescreveria o das configurações no editor de código.
     guides: { indentation: false },
