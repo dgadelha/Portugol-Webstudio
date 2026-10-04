@@ -59,7 +59,7 @@ linha `### <caminho>` — inclusive os que não produzem nenhum diagnóstico.
 
 ### `../corpus.mjs`
 
-Do outro lado da comparação: roda o **nosso** analisador sobre os mesmos 116 exemplos.
+Do outro lado da comparação: roda o **nosso** analisador sobre os mesmos 137 exemplos.
 
 ```sh
 npm run build -w @portugol-webstudio/antlr
@@ -122,7 +122,7 @@ gravado no código gerado.
 
 ### A fixture `portugol-studio.golden.txt`
 
-É a saída do `portugol-analisador` para os 116 exemplos de `packages/resources/exemplos/**/*.por`,
+É a saída do `portugol-analisador` para os 137 exemplos de `packages/resources/exemplos/**/*.por`,
 com o caminho relativo a esse diretório (sem `./`) e em ordem alfabética estável (`LC_ALL=C`).
 Existe para que o teste diferencial compare nossos diagnósticos com os do Portugol Studio **sem
 precisar de Java** em CI ou no clone de quem for mexer no checker.
@@ -133,10 +133,10 @@ aparece no mesmo diff que a fixture regerada.
 Regere-a quando o corpus de exemplos ou a versão do `portugol-core` mudar — e leia o diff: cada
 linha que aparece ou some é uma mudança de comportamento do analisador de referência.
 
-No estado atual (`portugol-core-2.7.5`) ela contém, dos 116 exemplos:
+No estado atual (`portugol-core-2.7.5`) ela contém, dos 137 exemplos:
 
 - nenhum erro;
 - 507 `AvisoValorExpressaoSeraConvertido`, 13 `AvisoSimboloGlobalOcultado` e
   2 `AvisoVetorPodeSerVariavel`.
 
-Ou seja: **nenhum dos 116 exemplos tem erro**, e é isso que o checker precisa reproduzir.
+Ou seja: **nenhum dos 137 exemplos tem erro**, e é isso que o checker precisa reproduzir.

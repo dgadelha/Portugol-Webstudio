@@ -1,6 +1,6 @@
 ### algoritmos_sequenciais/altura_media.por
 ### algoritmos_sequenciais/loja_ferramentas.por
-### algoritmos_sequenciais/maioridade_penal.por
+### algoritmos_sequenciais/meta_economia.por
 ### algoritmos_sequenciais/quantos_dias.por
 ### algoritmos_sequenciais/troca_variaveis.por
 ### bibliotecas/arquivos/gravar_arquivo.por
@@ -11,6 +11,9 @@
 ### bibliotecas/arquivos/selecionar_arquivo.por
 ### bibliotecas/arquivos/substituir_arquivo.por
 ### bibliotecas/arquivos/verificar.por
+### bibliotecas/calendario/data_hora_atual.por
+### bibliotecas/calendario/dias_ate_aniversario.por
+### bibliotecas/calendario/relogio.por
 ### bibliotecas/calendario/relogio_analogico.por
 AVISO|122|22|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_elipse" será truncado
 AVISO|122|74|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_elipse" será truncado
@@ -61,11 +64,15 @@ AVISO|443|20|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da express
 AVISO|445|15|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
 AVISO|446|15|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
 ### bibliotecas/calendario/relogio_digital.por
+### bibliotecas/graficos/bandeira_brasil.por
 ### bibliotecas/graficos/basico/iniciando.por
+### bibliotecas/graficos/bola_quicando.por
+### bibliotecas/graficos/formas_cores.por
 ### bibliotecas/graficos/fractal_fern.por
 AVISO|70|20|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
 AVISO|123|22|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_imagem" será truncado
 AVISO|123|44|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_imagem" será truncado
+### bibliotecas/graficos/grafico_barras.por
 ### bibliotecas/graficos/onda.por
 ### bibliotecas/graficos/paint.por
 ### bibliotecas/graficos/qr_code.por
@@ -137,6 +144,8 @@ AVISO|20|28|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da express�
 ### bibliotecas/mouse/cursor.por
 ### bibliotecas/mouse/ler_botao.por
 ### bibliotecas/mouse/posicao_mouse.por
+### bibliotecas/objetos/agenda_contatos.por
+### bibliotecas/objetos/cadastro_alunos.por
 ### bibliotecas/sons/interromper.por
 ### bibliotecas/sons/reproduzir_um.por
 ### bibliotecas/sons/reproduzir_varios.por
@@ -159,6 +168,8 @@ AVISO|20|28|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da express�
 ### bibliotecas/util/sorteio.por
 ### bibliotecas/util/tempo.por
 ### bibliotecas/util/vetor.por
+### desvios_condicionais/ano_bissexto.por
+### desvios_condicionais/calculadora_imc.por
 ### desvios_condicionais/escolha_caso.por
 ### desvios_condicionais/idade.por
 ### desvios_condicionais/media_final.por
@@ -167,11 +178,11 @@ AVISO|20|28|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da express�
 ### desvios_condicionais/multiplo.por
 ### desvios_condicionais/numero_inteiro.por
 ### desvios_condicionais/numeros_iguais.por
+### desvios_condicionais/pedra_papel_tesoura.por
 ### desvios_condicionais/tipo_triangulo.por
 ### desvios_condicionais/vogal.por
-### entrada_saida/numero_digitado.por
+### entrada_saida/lendo_valores.por
 ### entrada_saida/ola_mundo.por
-### entrada_saida/seu_nome.por
 ### jogos/colisoes/ex1_colisao_ponto_retangulo.por
 ### jogos/colisoes/ex2_colisao_ponto_circulo.por
 ### jogos/colisoes/ex3_colisao_retangulos.por
@@ -576,13 +587,17 @@ AVISO|836|74|AvisoSemantico.AvisoSimboloGlobalOcultado|A variável "linhas" est�
 AVISO|843|24|AvisoSemantico.AvisoSimboloGlobalOcultado|A variável "prop" está ocultando uma variável do escopo global.
 AVISO|845|167|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numero" da função "logaritmo" será automaticamente convertido de "inteiro" para "real"
 AVISO|845|173|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "base" da função "logaritmo" será automaticamente convertido de "inteiro" para "real"
+### lacos_repeticao/adivinhe_numero.por
 ### lacos_repeticao/consistencia.por
 ### lacos_repeticao/contagem_regressiva.por
-### lacos_repeticao/eleicao.por
 ### lacos_repeticao/fatorial.por
+### lacos_repeticao/fibonacci.por
 ### lacos_repeticao/media_dez_numeros.por
+### lacos_repeticao/numeros_primos.por
+### lacos_repeticao/pesquisa_opiniao.por
 ### lacos_repeticao/soma_um_x.por
 ### lacos_repeticao/tabuada.por
+### lacos_repeticao/validacao_senha.por
 ### musica/bateria.por
 ### musica/player.por
 AVISO|25|9|AvisoSemantico.AvisoVetorPodeSerVariavel|O Vetor formatos tem tamanho [1] e pode ser substituido por uma variável
@@ -624,15 +639,21 @@ AVISO|794|21|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da express
 ### operacoes_aritmeticas/divisoes_inteiras.por
 ### operacoes_aritmeticas/operacoes_simples.por
 ### operacoes_aritmeticas/potencia_raiz.por
-### operacoes_aritmeticas/prioridades.por
+### subrotinas/conversor_temperatura.por
 ### subrotinas/fatorial_recursivo.por
 ### subrotinas/fibonacci_recursivo.por
 ### subrotinas/lagarta.por
+### subrotinas/mdc.por
+### subrotinas/palindromo.por
 ### subrotinas/parametros_referencia.por
 ### subrotinas/procedimento_funcao.por
 ### subrotinas/vetores_parametro.por
+### vetores_matrizes/busca_binaria.por
 ### vetores_matrizes/diagonal_principal.por
 ### vetores_matrizes/exibe_matriz.por
+### vetores_matrizes/jogo_da_velha.por
+### vetores_matrizes/notas_turma.por
+### vetores_matrizes/ordenacao_bolha.por
 ### vetores_matrizes/pesquisa_vetor.por
 ### vetores_matrizes/preenche_vetor.por
 ### vetores_matrizes/tabela_dados.por

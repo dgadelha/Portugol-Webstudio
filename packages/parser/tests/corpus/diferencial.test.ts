@@ -9,7 +9,7 @@ import { lerGolden, linhasDeErro } from "../../tools/golden.mjs";
 import { EXEMPLOS, temCorpus } from "../helpers/corpus.js";
 
 /**
- * Compara a nossa análise dos 116 exemplos oficiais com a do Portugol Studio, gravada em
+ * Compara a nossa análise dos 137 exemplos oficiais com a do Portugol Studio, gravada em
  * `tests/fixtures/portugol-studio.golden.txt` (regere com
  * `packages/parser/tools/oracle/run.sh --golden`). O critério que não se negocia é zero
  * falso positivo: um erro nosso numa linha em que o Portugol Studio não vê erro bloqueia um
@@ -43,8 +43,8 @@ const resultados = temCorpus
 
 describe.skipIf(!temCorpus)("Corpus dos exemplos oficiais", () => {
   test("o golden cobre exatamente os exemplos que existem no disco", () => {
-    expect(golden.size).toBe(116);
-    expect(globSync("**/*.por", { cwd: EXEMPLOS })).toHaveLength(116);
+    expect(golden.size).toBe(137);
+    expect(globSync("**/*.por", { cwd: EXEMPLOS })).toHaveLength(137);
   });
 
   test("nenhum falso positivo", () => {
