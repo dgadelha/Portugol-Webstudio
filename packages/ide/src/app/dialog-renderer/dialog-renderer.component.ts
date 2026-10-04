@@ -6,6 +6,10 @@ import { AngularSvgIconModule } from "angular-svg-icon";
 import { IGraphicsRendererComponent } from "../../renderer";
 import { TooltipDirective } from "../shared/tooltip.directive";
 
+export interface RendererDialogResult {
+  stopProgram: boolean;
+}
+
 interface DialogData {
   /**
    * `id` do título, que dá o nome acessível da janela.
@@ -25,7 +29,7 @@ interface DialogData {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DialogRendererComponent implements IGraphicsRendererComponent {
-  private readonly dialogRef = inject(DialogRef);
+  private readonly dialogRef = inject<DialogRef<RendererDialogResult>>(DialogRef);
   readonly data = inject<DialogData>(DIALOG_DATA);
 
   readonly title = signal("");
@@ -53,7 +57,7 @@ export class DialogRendererComponent implements IGraphicsRendererComponent {
     // O canvas se ajusta sozinho
   }
 
-  close() {
-    this.dialogRef.close();
+  close(stopProgram = true) {
+    this.dialogRef.close({ stopProgram });
   }
 }

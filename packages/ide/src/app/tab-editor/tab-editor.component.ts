@@ -32,7 +32,7 @@ import { EMPTY, Subscription, debounceTime, fromEventPattern, mergeMap, startWit
 import { GraphicsRenderer, IGraphicsRendererComponent } from "../../renderer";
 import { settings } from "../../settings";
 import { IExtendedWindowApi } from "../../types";
-import { DialogRendererComponent } from "../dialog-renderer/dialog-renderer.component";
+import { DialogRendererComponent, RendererDialogResult } from "../dialog-renderer/dialog-renderer.component";
 import { ResponsiveService } from "../responsive.service";
 import { SettingsService } from "../settings.service";
 import { ShareService } from "../share.service";
@@ -189,7 +189,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
   executor = new PortugolExecutor(PortugolWebWorkersRunner);
 
   graphicsRenderer = new GraphicsRenderer(this.executor);
-  graphicsRendererModal: DialogRef<unknown, DialogRendererComponent> | null = null;
+  graphicsRendererModal: DialogRef<RendererDialogResult, DialogRendererComponent> | null = null;
 
   codeEditor?: monaco.editor.IStandaloneCodeEditor;
 
@@ -565,23 +565,30 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     this.gaService.event("editor_open_renderer", "Editor", "Abrir modal de renderização");
     const titleId = `janela-graficos-titulo-${this.tabId()}`;
 
-    this.graphicsRendererModal = this.dialog.open<unknown, unknown, DialogRendererComponent>(DialogRendererComponent, {
+    const modal = this.dialog.open<RendererDialogResult, unknown, DialogRendererComponent>(DialogRendererComponent, {
       ariaLabelledBy: titleId,
       data: { titleId },
       panelClass: "pws-renderer-dialog",
       modeless: true,
     });
 
-    this.graphicsRendererModal.closed.subscribe(() => {
+    this.graphicsRendererModal = modal;
+
+    modal.closed.subscribe(result => {
       this.graphicsRenderer.destroy();
 
-      if (this.graphicsRendererModal !== null) {
+      // Só a janela atual: depois de um `encerrar_modo_grafico`, o programa pode abrir outra.
+      if (this.graphicsRendererModal === modal) {
         this.graphicsRendererModal = null;
-        this.stopCode();
+
+        // Sem resultado é o Esc, que também encerra o programa.
+        if (result?.stopProgram !== false) {
+          this.stopCode();
+        }
       }
     });
 
-    return this.graphicsRendererModal.componentInstance;
+    return modal.componentInstance;
   }
 
   onCodeChange(contents: string) {
