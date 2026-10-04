@@ -97,8 +97,8 @@ export class DialogOpenExampleComponent implements OnInit, OnDestroy {
 
   /**
    * O Monaco fixa o bloco atual no topo por padrão: na prévia, "programa {"
-   * ficaria preso em cima. Num campo à parte porque os tipos do \`monaco\` do
-   * ngx-monaco-editor não conhecem o \`stickyScroll\`.
+   * ficaria preso em cima. Num campo à parte porque os tipos do `monaco` do
+   * ngx-monaco-editor não conhecem o `stickyScroll`.
    */
   private readonly previaSemFixar = { stickyScroll: { enabled: false } };
 

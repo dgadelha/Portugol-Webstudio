@@ -130,10 +130,10 @@ export class MonacoService {
             // reservadas, como o "and" e o "or" de outras linguagens no VS Code.
             wordOperators: ["e", "ou", "nao"],
 
-            // Os mesmos operadores do analisador (\`PortugolLexico.g4\`), dos mais
+            // Os mesmos operadores do analisador (`PortugolLexico.g4`), dos mais
             // longos aos mais curtos, para "-->" não virar "--" e ">". É uma
-            // expressão regular (usada como \`@operadores\` nas regras), não a lista
-            // de palavras que o Monarch costuma chamar de \`operators\`
+            // expressão regular (usada como `@operadores` nas regras), não a lista
+            // de palavras que o Monarch costuma chamar de `operators`
             operadores: /-->|\+\+|--|[-+*/]=|[!<=>]=|<<|>>|[-+*/%=<>^|~&]/,
 
             // Escapes do Portugol: \b \t \n \r \f \" \' \\, \uXXXX e octal (\101)
