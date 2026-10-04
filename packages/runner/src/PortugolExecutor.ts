@@ -1,9 +1,8 @@
-import { IPortugolCodeDiagnostic, PortugolDiagnosticSeverity, PortugolErrorListener } from "@portugol-webstudio/antlr";
-import { PortugolCodeChecker } from "@portugol-webstudio/parser";
-import { PortugolJs } from "@portugol-webstudio/runtime";
+import { PortugolDiagnosticSeverity } from "@portugol-webstudio/antlr";
 import { Subject, Subscription } from "rxjs";
 
 import { IPortugolRunner, PortugolEvent, PortugolMessage } from "./runners/IPortugolRunner.js";
+import type { PortugolTranspiledCode } from "./transpile.js";
 
 export class PortugolExecutor {
   private _runner?: IPortugolRunner;
@@ -57,55 +56,9 @@ export class PortugolExecutor {
   private _running$?: Subscription;
 
   events = new Subject<PortugolEvent>();
-  errorListener = new PortugolErrorListener();
-
-  run(code: string) {
-    let diagnostics: IPortugolCodeDiagnostic[] = [];
-    let parseErrors: IPortugolCodeDiagnostic[] = [];
-    let js = "";
-    let checkStart = 0;
-    let checkEnd = 0;
-    let transpileStart = 0;
-    let transpileEnd = 0;
-
-    try {
-      checkStart = performance.now();
-      const checkResult = PortugolCodeChecker.checkCode(code);
-
-      diagnostics = checkResult.diagnostics;
-      parseErrors = checkResult.parseErrors;
-
-      checkEnd = performance.now();
-
-      transpileStart = performance.now();
-      js = new PortugolJs().visit(checkResult.tree)!;
-      transpileEnd = performance.now();
-    } catch {}
-
-    this.runTranspiled({
-      js,
-      diagnostics,
-      parseErrors,
-      times: {
-        check: checkEnd - checkStart,
-        transpile: transpileEnd - transpileStart,
-      },
-    });
-  }
-
   #printTimes(_times: { check: number; transpile: number; execution?: number }) {}
 
-  runTranspiled({
-    js,
-    diagnostics,
-    parseErrors,
-    times,
-  }: {
-    js: string;
-    diagnostics: IPortugolCodeDiagnostic[];
-    parseErrors: IPortugolCodeDiagnostic[];
-    times: { check: number; transpile: number };
-  }) {
+  runTranspiled({ js, diagnostics, parseErrors, times }: PortugolTranspiledCode) {
     try {
       this.reset(this.clearStdOutOnRun);
 

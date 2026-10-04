@@ -22,6 +22,7 @@
     "access": "public"
   },
   "homepage": "https://github.com/dgadelha/Portugol-Webstudio#readme",
+  "sideEffects": false,
   "main": "lib/entrypoints/node.js",
   "browser": "lib/entrypoints/browser.js",
   "typings": "lib/index.d.ts",
