@@ -14,7 +14,6 @@ import { toSignal } from "@angular/core/rxjs-interop";
 import { MonacoEditorModule } from "@materia-ui/ngx-monaco-editor";
 import { HotToastService } from "@ngxpert/hot-toast";
 import { AngularSvgIconModule } from "angular-svg-icon";
-import { KeyboardShortcutsModule, ShortcutInput } from "ng-keyboard-shortcuts";
 import { GoogleAnalyticsService, NgxGoogleAnalyticsModule } from "ngx-google-analytics";
 
 import { settings } from "../settings";
@@ -26,6 +25,7 @@ import { DialogSettingsComponent, SettingsSectionId } from "./dialog-settings/di
 import { FileService } from "./file.service";
 import { SettingsService } from "./settings.service";
 import { ShareService } from "./share.service";
+import { atalhoDoEvento } from "./shared/atalhos";
 import { DialogService } from "./shared/dialog.service";
 import { ACTIVE_TAB_SELECTOR, focusAfterRender } from "./shared/focus";
 import { moveRovingFocus } from "./shared/roving-focus";
@@ -45,7 +45,6 @@ import { isMeaningfulCode, Tab, TabType } from "./workspace.types";
   selector: "app-root",
   imports: [
     AngularSvgIconModule,
-    KeyboardShortcutsModule,
     MonacoEditorModule,
     NgxGoogleAnalyticsModule,
     TabChangelogComponent,
@@ -59,6 +58,7 @@ import { isMeaningfulCode, Tab, TabType } from "./workspace.types";
   changeDetection: ChangeDetectionStrategy.Eager,
   host: {
     "(keydown)": "onKeydown($event)",
+    "(document:keydown)": "onShortcut($event)",
     "(click)": "onClick($event)",
     // Um link `#share=` ou `#ajuda=` colado na barra de endereço com o IDE já aberto.
     "(window:hashchange)": "openFromHash()",
@@ -108,27 +108,6 @@ export class AppComponent implements OnInit {
     return `${errors} ${errors === 1 ? "erro" : "erros"} e ${warnings} ${warnings === 1 ? "aviso" : "avisos"}. Ver os problemas do código`;
   });
 
-  shortcuts: ShortcutInput[] = [
-    {
-      key: "ctrl + q",
-      preventDefault: true,
-      command: () => {
-        const tab = this.workspace.activeTab();
-
-        if (tab) {
-          this.closeTab(tab);
-        }
-      },
-    },
-    {
-      key: "ctrl + n",
-      preventDefault: true,
-      command: () => {
-        this.addTab();
-      },
-    },
-  ];
-
   ngOnInit() {
     if (this.workspace.restoredFromPreviousSession()) {
       this.toast.show("Recuperamos o código que você estava editando.", { duration: 8000 });
@@ -156,6 +135,32 @@ export class AppComponent implements OnInit {
 
     // Com muitas abas restauradas, a aba em foco pode começar fora da vista.
     this.selectTab(this.workspace.activeTabId());
+  }
+
+  onShortcut(event: KeyboardEvent) {
+    switch (atalhoDoEvento(event)) {
+      case "alt+n": {
+        event.preventDefault();
+        this.addTab();
+        break;
+      }
+
+      case "alt+w": {
+        event.preventDefault();
+        this.closeActiveTab();
+        break;
+      }
+
+      default:
+    }
+  }
+
+  closeActiveTab() {
+    const tab = this.workspace.activeTab();
+
+    if (tab) {
+      this.closeTab(tab);
+    }
   }
 
   /**

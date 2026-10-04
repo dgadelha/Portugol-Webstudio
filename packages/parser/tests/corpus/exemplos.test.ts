@@ -30,7 +30,7 @@ function exemplosExibidos(exemplos: Exemplo[]): string[] {
       return exemplosExibidos(exemplo.itens);
     }
 
-    return exemplo.arquivo ? [exemplo.arquivo] : [];
+    return exemplo.arquivo ?? [];
   });
 }
 

@@ -296,14 +296,12 @@ export class DialogOpenExampleComponent implements OnInit, OnDestroy {
         return [];
       }
 
-      return [
-        {
-          item,
-          category: parents[0] ?? "Exemplos",
-          path: parents.slice(1),
-          searchText: this.normalize([item.name, ...parents, item.description ?? ""].join(" ")),
-        },
-      ];
+      return {
+        item,
+        category: parents[0] ?? "Exemplos",
+        path: parents.slice(1),
+        searchText: this.normalize([item.name, ...parents, item.description ?? ""].join(" ")),
+      };
     });
   }
 }

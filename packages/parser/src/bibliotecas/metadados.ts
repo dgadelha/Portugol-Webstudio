@@ -1,6 +1,6 @@
 import { bibliotecas as bibliotecasRecursos } from "@portugol-webstudio/resources/bibliotecas";
 
-import { TIPO_TODOS, type TipoOperando } from "../analise/TipoDado.js";
+import { TIPO_TODOS, type TipoOperando, TipoPrimitivo } from "../analise/TipoDado.js";
 import type { NomeBiblioteca } from "./suporte.gerado.js";
 
 export type Biblioteca = (typeof bibliotecasRecursos)[number];
@@ -10,10 +10,21 @@ type TipoBiblioteca = FunçãoBiblioteca["retorno"]["tipo"];
 
 /**
  * O `@portugol-webstudio/resources/bibliotecas` escreve o curinga como `"*"`; as tabelas de
- * compatibilidade o indexam como `todos`.
+ * compatibilidade o indexam como `todos`. Com a chave tipada pelo esquema dos metadados, um
+ * tipo novo no esquema não compila até ganhar o seu correspondente aqui.
  */
+const TIPOS_DA_BIBLIOTECA: Record<TipoBiblioteca["primitivo"], TipoOperando> = {
+  inteiro: TipoPrimitivo.INTEIRO,
+  real: TipoPrimitivo.REAL,
+  cadeia: TipoPrimitivo.CADEIA,
+  logico: TipoPrimitivo.LÓGICO,
+  vazio: TipoPrimitivo.VAZIO,
+  caracter: TipoPrimitivo.CARACTER,
+  "*": TIPO_TODOS,
+};
+
 export function tipoDaBiblioteca(tipo: TipoBiblioteca): TipoOperando {
-  return (tipo.primitivo === "*" ? TIPO_TODOS : tipo.primitivo) as TipoOperando;
+  return TIPOS_DA_BIBLIOTECA[tipo.primitivo];
 }
 
 interface Índice {

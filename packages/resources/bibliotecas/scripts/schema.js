@@ -50,7 +50,6 @@ export const schema = z.object({
 const jsonSchema = schema.toJSONSchema();
 const baseDirectory = path.join(import.meta.dirname, "..");
 
-// eslint-disable-next-line unicorn/no-top-level-side-effects
 await fs.writeFile(
   path.join(baseDirectory, "bibliotecas.schema.json"),
   JSON.stringify(jsonSchema, undefined, 2) + "\n",

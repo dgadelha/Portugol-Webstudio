@@ -51,7 +51,7 @@ function entryFiles() {
 
   return readdirSync(DIR)
     .filter(name => name.endsWith(".md") && name !== "README.md")
-    .toSorted()
+    .toSorted((a, b) => a.localeCompare(b))
     .toReversed()
     .map(name => path.join(DIR, name));
 }
@@ -83,7 +83,7 @@ function writeChangelog(sections, file = FILE) {
 function pendingChanges() {
   const files = entryFiles();
   const { sections, legacyBeta } = readChangelog();
-  const texts = [...files.map(entryText), legacyBeta].filter(Boolean);
+  const texts = [...files.map(file => entryText(file)), legacyBeta].filter(Boolean);
 
   // O primeiro pedaço é o que vem antes de qualquer seção: o comentário e a introdução
   const firstSectionIndex = sections.findIndex(section => section.startsWith("## "));
@@ -156,9 +156,9 @@ function release() {
 const commands = { new: newEntry, beta, release };
 const command = commands[process.argv[2]];
 
-if (!command) {
+if (command) {
+  command(process.argv[3]);
+} else {
   console.error(`Usage: node ${path.relative(process.cwd(), process.argv[1])} <${Object.keys(commands).join("|")}>`);
-  process.exit(1);
+  process.exitCode = 1;
 }
-
-command(process.argv[3]);

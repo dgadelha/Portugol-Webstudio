@@ -2,7 +2,6 @@ import { DialogRef } from "@angular/cdk/dialog";
 import { CdkMenu, CdkMenuItem, CdkMenuTrigger } from "@angular/cdk/menu";
 import { ConnectedPosition } from "@angular/cdk/overlay";
 import {
-  afterNextRender,
   ChangeDetectionStrategy,
   Component,
   ElementRef,
@@ -10,6 +9,7 @@ import {
   OnDestroy,
   OnInit,
   TemplateRef,
+  afterNextRender,
   computed,
   inject,
   input,
@@ -28,16 +28,16 @@ import { AngularSplitModule, SplitGutterInteractionEvent } from "angular-split";
 import { AngularSvgIconModule } from "angular-svg-icon";
 import { saveAs } from "file-saver";
 import { encode } from "iconv-lite";
-import { KeyboardShortcutsModule, ShortcutInput } from "ng-keyboard-shortcuts";
 import { GoogleAnalyticsService, NgxGoogleAnalyticsModule } from "ngx-google-analytics";
 import { EMPTY, Subscription, debounceTime, fromEventPattern, mergeMap, startWith, switchMap } from "rxjs";
 import { GraphicsRenderer, IGraphicsRendererComponent } from "../../renderer";
+import { settings } from "../../settings";
 import { IExtendedWindowApi } from "../../types";
 import { DialogRendererComponent } from "../dialog-renderer/dialog-renderer.component";
-import { settings } from "../../settings";
-import { SettingsService } from "../settings.service";
 import { ResponsiveService } from "../responsive.service";
+import { SettingsService } from "../settings.service";
 import { ShareService } from "../share.service";
+import { atalhoDoEvento } from "../shared/atalhos";
 import { DialogService } from "../shared/dialog.service";
 import { focusAfterRender } from "../shared/focus";
 import { moveRovingFocus } from "../shared/roving-focus";
@@ -76,7 +76,6 @@ type PanelView = "output" | "problems";
     CdkMenuItem,
     CdkMenuTrigger,
     FormsModule,
-    KeyboardShortcutsModule,
     MonacoEditorModule,
     NgxGoogleAnalyticsModule,
     TooltipDirective,
@@ -84,6 +83,9 @@ type PanelView = "output" | "problems";
   templateUrl: "./tab-editor.component.html",
   styleUrl: "./tab-editor.component.scss",
   changeDetection: ChangeDetectionStrategy.Eager,
+  host: {
+    "(document:keydown)": "onShortcut($event)",
+  },
 })
 export class TabEditorComponent implements OnInit, OnDestroy {
   private gaService = inject(GoogleAnalyticsService);
@@ -112,10 +114,8 @@ export class TabEditorComponent implements OnInit, OnDestroy {
   private readonly title = computed(() => this.workspace.titleOf(this.tabId()));
 
   /**
-   * Esta aba de código é a que está em foco. Todas as abas ficam montadas, e o
-   * `ng-keyboard-shortcuts` entrega cada atalho a um só componente (o último
-   * registrado): só a aba em foco registra os seus, para o Ctrl+Enter e o
-   * Ctrl+S valerem para ela, e não para uma aba escondida.
+   * Esta aba de código é a que está em foco. Todas as abas ficam montadas: os
+   * atalhos e a saída só valem para a aba em foco, e não para uma escondida.
    */
   readonly isActive = computed(() => this.workspace.activeTabId() === this.tabId());
 
@@ -133,6 +133,8 @@ export class TabEditorComponent implements OnInit, OnDestroy {
    */
   readonly openFile = output();
   readonly examples = output();
+  readonly newTab = output();
+  readonly closeTab = output();
 
   /**
    * O menu "Salvar como" abre ao lado da barra de atividades.
@@ -287,33 +289,6 @@ export class TabEditorComponent implements OnInit, OnDestroy {
   sharing = false;
 
   hasSaveFilePickerSupport = "showSaveFilePicker" in window;
-
-  shortcuts: ShortcutInput[] = [
-    {
-      key: "f1",
-      preventDefault: true,
-      command: this.openHelp.bind(this),
-    },
-    {
-      key: "ctrl + s",
-      preventDefault: true,
-      command: () => {
-        this.saveFile();
-      },
-    },
-    {
-      key: "ctrl + o",
-      preventDefault: true,
-      command: () => {
-        this.openFile.emit();
-      },
-    },
-    {
-      key: "ctrl + enter",
-      preventDefault: true,
-      command: this.runCode.bind(this),
-    },
-  ];
 
   /**
    * Com "Começar com o painel recolhido" desligado, o painel abre em 30% da
@@ -541,6 +516,44 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     }
 
     this.stdOutEditorCursorEnd();
+  }
+
+  /**
+   * Os atalhos da aba de código quando o foco não está no editor, que tem os
+   * mesmos atalhos (em `onEditorInit`) e consome o evento antes daqui.
+   */
+  onShortcut(event: KeyboardEvent) {
+    if (!this.isActive()) {
+      return;
+    }
+
+    switch (atalhoDoEvento(event)) {
+      case "f1": {
+        event.preventDefault();
+        this.openHelp();
+        break;
+      }
+
+      case "ctrl+s": {
+        event.preventDefault();
+        this.saveFile();
+        break;
+      }
+
+      case "ctrl+o": {
+        event.preventDefault();
+        this.openFile.emit();
+        break;
+      }
+
+      case "ctrl+enter": {
+        event.preventDefault();
+        void this.runCode();
+        break;
+      }
+
+      default:
+    }
   }
 
   async handlePortugolMessage(message: PortugolMessage) {
@@ -848,6 +861,25 @@ export class TabEditorComponent implements OnInit, OnDestroy {
       keybindings: [monaco.KeyCode.F1],
       label: "Ajuda",
       run: this.openHelp.bind(this),
+    });
+
+    // Os atalhos de abas do IDE também valem com o cursor no código
+    editor.addAction({
+      id: "newTab",
+      keybindings: [monaco.KeyMod.Alt | monaco.KeyCode.KeyN],
+      label: "Nova aba de código",
+      run: () => {
+        this.newTab.emit();
+      },
+    });
+
+    editor.addAction({
+      id: "closeTab",
+      keybindings: [monaco.KeyMod.Alt | monaco.KeyCode.KeyW],
+      label: "Fechar aba",
+      run: () => {
+        this.closeTab.emit();
+      },
     });
   }
 
