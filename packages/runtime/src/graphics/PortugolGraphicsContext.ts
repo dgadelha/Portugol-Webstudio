@@ -556,12 +556,14 @@ class PortugolGraphicsContext {
 
         const { x: rx, y: ry, width: rwidth, height: rheight } = this.applyTransformationToBounds(bounds);
 
-        this.canvasContext.fillText(text, rx, ry);
+        // Como no Portugol Studio, o \`y\` é o topo do texto: a linha de base fica
+        // uma ascendente abaixo (\`height\`, de \`calculateTextSize\`).
+        this.canvasContext.fillText(text, rx, ry + rheight);
 
         if (this.workingTextStyle.underline) {
           const underlineBounds = {
             x,
-            y,
+            y: y + height,
             width,
             height: 1,
           };
