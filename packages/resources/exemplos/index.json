@@ -299,6 +299,7 @@
     "itens": [
       {
         "nome": "Arquivos",
+        "suportado": false,
         "itens": [
           {
             "nome": "Ler Arquivo",
@@ -509,31 +510,36 @@
             "nome": "Efeito de Onda",
             "arquivo": "bibliotecas/graficos/onda.por",
             "descricao": "Este exemplo utiliza primitivas gráficas e cálculos de seno e cosseno para simular o movimento de uma onda na tela.",
-            "imagem": "bibliotecas/graficos/onda.png"
+            "imagem": "bibliotecas/graficos/onda.png",
+            "suportado": false
           },
           {
             "nome": "Curvas de Lissajous",
             "arquivo": "bibliotecas/graficos/senoides.por",
             "descricao": "Este exemplo utiliza as funções de desenho da biblioteca gráfica para criar formas baseadas nas funções de seno e cosseno.",
-            "imagem": "bibliotecas/graficos/senoides.png"
+            "imagem": "bibliotecas/graficos/senoides.png",
+            "suportado": false
           },
           {
             "nome": "Solar",
             "arquivo": "bibliotecas/graficos/solar.por",
             "descricao": "Este exemplo utiliza as funções de desenho da biblioteca gráfica para apresentar as órbitas do sistema solar a partir de alguns cálculos com diâmetro e ângulo.",
-            "imagem": "bibliotecas/graficos/solar.png"
+            "imagem": "bibliotecas/graficos/solar.png",
+            "suportado": false
           },
           {
             "nome": "Salvar Imagem",
             "arquivo": "bibliotecas/graficos/salvar_imagem.por",
             "descricao": "Este exemplo utiliza a biblioteca gráfica para salvar no computador uma imagem do que foi desenhado na tela.",
-            "imagem": "bibliotecas/graficos/salvar_imagem.png"
+            "imagem": "bibliotecas/graficos/salvar_imagem.png",
+            "suportado": false
           },
           {
             "nome": "Esfera 3D",
             "arquivo": "bibliotecas/graficos/sphere.por",
             "descricao": "Este exemplo renderiza uma esfera em 3D.",
-            "imagem": "bibliotecas/graficos/esfera.png"
+            "imagem": "bibliotecas/graficos/esfera.png",
+            "suportado": false
           }
         ]
       },
@@ -559,18 +565,21 @@
             "nome": "Relógio Analógico",
             "arquivo": "bibliotecas/calendario/relogio_analogico.por",
             "descricao": "Este é um exemplo de utilização da biblioteca \"Calendario\" que exibe um relógio analógico.",
-            "imagem": "bibliotecas/calendario/relogio_analogico.png"
+            "imagem": "bibliotecas/calendario/relogio_analogico.png",
+            "suportado": false
           },
           {
             "nome": "Relógio Digital",
             "arquivo": "bibliotecas/calendario/relogio_digital.por",
             "descricao": "Este é um exemplo de utilização da biblioteca \"Calendario\" que exibe um relógio digital.",
-            "imagem": "bibliotecas/calendario/relogio_digital.png"
+            "imagem": "bibliotecas/calendario/relogio_digital.png",
+            "suportado": false
           }
         ]
       },
       {
         "nome": "Internet",
+        "suportado": false,
         "itens": [
           {
             "nome": "Obter Texto de um Site",
@@ -587,6 +596,7 @@
       },
       {
         "nome": "Teclado",
+        "suportado": false,
         "itens": [
           {
             "nome": "Ler Tecla",
@@ -627,6 +637,7 @@
       },
       {
         "nome": "Mouse",
+        "suportado": false,
         "itens": [
           {
             "nome": "Posição do Mouse",
@@ -652,6 +663,7 @@
       },
       {
         "nome": "Sons",
+        "suportado": false,
         "itens": [
           {
             "nome": "Reproduzir um Som",
@@ -674,6 +686,7 @@
   },
   {
     "nome": "Música",
+    "suportado": false,
     "itens": [
       {
         "nome": "Bateria",
@@ -691,6 +704,7 @@
   },
   {
     "nome": "Jogos",
+    "suportado": false,
     "itens": [
       {
         "nome": "Detectando Colisões",
