@@ -257,8 +257,8 @@ export class TabEditorComponent implements OnInit, OnDestroy {
   /**
    * O Monaco liga por padrão a fixação do bloco no topo e o recolher blocos, que
    * tratariam as linhas recuadas da saída como blocos de código. Fica num campo à
-   * parte porque os tipos do \`monaco\` do ngx-monaco-editor são mais antigos que o
-   * Monaco em uso e não conhecem o \`stickyScroll\`.
+   * parte porque os tipos do `monaco` do ngx-monaco-editor são mais antigos que o
+   * Monaco em uso e não conhecem o `stickyScroll`.
    */
   private readonly saidaSemBlocos = { stickyScroll: { enabled: false }, folding: false };
 
