@@ -9,28 +9,24 @@ export interface Exemplo {
   descricao?: string;
   imagem?: string;
   itens?: Exemplo[];
+  /**
+   * `false` nos exemplos (ou pastas) que dependem do que o Webstudio ainda não
+   * executa: as bibliotecas Teclado, Mouse, Sons, Arquivos e Internet, e as
+   * funções de imagem e fonte da Graficos
+   */
+  suportado?: boolean;
 }
 
 /**
- * Exemplos que dependem do que o Webstudio ainda não executa: as bibliotecas
- * Teclado, Mouse, Sons, Arquivos e Internet, e as funções de imagem e fonte da
- * Graficos. Os jogos e a música usam o teclado ou o mouse; em Gráficos e
- * Calendário, só os exemplos originais que usam esses recursos ficam de fora.
- */
-const EXEMPLOS_IGNORADOS = [
-  /^bibliotecas\/(sons|mouse|teclado|internet|arquivos)\//,
-  /^bibliotecas\/graficos\/(onda|senoides|solar|salvar_imagem|sphere|fractal_fern|paint|qr_code)\.por$/,
-  /^bibliotecas\/calendario\/(relogio_analogico|relogio_digital)\.por$/,
-  /^jogos\//,
-  /^musica\//,
-];
-
-/**
  * Converte o índice de exemplos para a árvore exibida no diálogo, sem os exemplos
- * ignorados e sem as pastas que ficarem vazias
+ * não suportados e sem as pastas que ficarem vazias
  */
 export function converterExemplos(exemplos: Exemplo[], pasta = ""): ExampleItem[] {
   return exemplos.flatMap<ExampleItem>(exemplo => {
+    if (exemplo.suportado === false) {
+      return [];
+    }
+
     if (exemplo.itens) {
       const id = `${pasta}/${exemplo.nome}`;
       const children = converterExemplos(exemplo.itens, id);
@@ -39,10 +35,6 @@ export function converterExemplos(exemplos: Exemplo[], pasta = ""): ExampleItem[
     }
 
     const arquivo = exemplo.arquivo ?? "";
-
-    if (EXEMPLOS_IGNORADOS.some(regex => regex.test(arquivo))) {
-      return [];
-    }
 
     return [
       {
