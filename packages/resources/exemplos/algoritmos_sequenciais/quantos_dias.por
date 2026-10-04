@@ -12,9 +12,10 @@
  *
  * Descrição:
  *
- *   Este exemplo pede ao usuário que informe o ano atual. Logo após, calcula e
- *   exibe a quantidade de dias que se passaram desde o dia 01/01/0001 (ano 1 d.C.)
- *   até o dia 01/01 do ano atual.
+ *   Este exemplo pede ao usuário que informe um ano. Logo após, calcula e exibe a
+ *   quantidade de dias que se passaram desde o dia 01/01/0001 (ano 1 d.C.) até o dia
+ *   01/01 do ano informado, seguindo as regras dos anos bissextos do calendário
+ *   atual.
  *
  * Autores:
  *
@@ -26,20 +27,29 @@
 
 programa {
   funcao inicio() {
-    inteiro ano_atual, qtd_anos_bi, dias
+    inteiro ano, anos_completos, anos_bissextos, total_de_dias
 
-    escreva("Informe o ano atual: ")
-    leia(ano_atual)
+    escreva("Informe um ano: ")
+    leia(ano)
 
-    /*
-     *  Calcula a quantidade de anos bissextos que ocorreram antes
-     *  do ano atual (divisão inteira)
-     */
-    qtd_anos_bi = (ano_atual - 1) / 4
+    // Do ano 1 até o ano informado, passaram-se (ano - 1) anos completos
+    anos_completos = ano - 1
 
-    /* Calcula quantos dias serão no total */
-    dias = (ano_atual - 1) * 365 + qtd_anos_bi
+    // Um ano bissexto tem 366 dias em vez de 365. Pelas regras do calendário,
+    // são bissextos os anos divisíveis por 4, exceto os divisíveis por 100,
+    // a menos que também sejam divisíveis por 400.
+    //
+    // Como a divisão entre dois inteiros descarta as casas decimais, a conta
+    // anos_completos / 4 diz quantos múltiplos de 4 existem nesse período.
+    // Depois tiramos os múltiplos de 100 e devolvemos os múltiplos de 400
+    anos_bissextos = anos_completos / 4 - anos_completos / 100 + anos_completos / 400
 
-    escreva("Já se passaram ", dias, " dias desde 01/01/0001\n")
+    // Cada ano tem 365 dias, e cada ano bissexto tem um dia a mais
+    total_de_dias = anos_completos * 365 + anos_bissextos
+
+    escreva("\nDe 01/01/1 até 01/01/", ano, ":\n")
+    escreva("Anos completos: ", anos_completos, "\n")
+    escreva("Anos bissextos: ", anos_bissextos, "\n")
+    escreva("Total de dias: ", total_de_dias, "\n")
   }
 }

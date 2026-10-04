@@ -1,54 +1,30 @@
-/*
- * Copyright (C) 2014 - UNIVALI - Universidade do Vale do Itajaí
- *
- * Este arquivo de código fonte é livre para utilização, cópia e/ou modificação
- * desde que este cabeçalho, contendo os direitos autorais e a descrição do programa,
- * seja mantido.
- *
- * Se tiver dificuldade em compreender este exemplo, acesse as vídeoaulas do Portugol
- * Studio para auxiliá-lo:
- *
- * https://www.youtube.com/watch?v=K02TnB3IGnQ&list=PLb9yvNDCid3jQAEbNoPHtPR0SWwmRSM-t
- *
- * Descrição:
- *
- *   Este exemplo ilustra o uso dos vetores da linguagem Portugol.
- *
- *   Neste exemplo, são criados dois vetores. O primeiro é do tipo cadeia e armazena os
- *   nomes de várias pessoas. O segundo é do tipo real e armazena as alturas destas pessoas.
- *
- *   O programa então percorre cada um dos vetores, montando no console uma tabela dos dados
- *   existentes. Cada nome é associado à sua respectiva altura.
- *
- * Autores:
- *
- *   Giordana Maria da Costa Valle
- *   Carlos Alexandre Krueger
- *
- * Data: 01/06/2013
+/**
+ * Este exemplo guarda o nome, a idade e a cidade de algumas pessoas em três
+ * vetores e exibe esses dados em forma de lista. Ele mostra como usar vetores
+ * paralelos: a mesma posição em cada vetor guarda os dados da mesma pessoa.
  */
 
 programa {
   funcao inicio() {
-    // Criação dos vetores, já com os dados inicializados
-    cadeia nome[] = {"André", "Thiago", "Bruno", "Carlos", "Cássio"}
-    real altura[] = {1.71, 1.78, 1.75, 1.87, 1.71}
+    const inteiro PESSOAS = 5
 
-    // Cria o cabeçalho da tabela
-    escreva("--------------------\n")
-    escreva("       TABELA       \n")
-    escreva("--------------------\n")
+    // Cada vetor guarda um tipo de informação. Os dados da primeira pessoa
+    // ficam na posição 0 de todos os vetores, os da segunda na posição 1, e
+    // assim por diante. Por isso a ordem dos valores é importante
+    cadeia nome[PESSOAS] = {"Ana", "Bruno", "Carla", "Diego", "Elisa"}
+    inteiro idade[PESSOAS] = {19, 22, 18, 25, 20}
+    cadeia cidade[PESSOAS] = {"Recife", "Manaus", "Curitiba", "Salvador", "Goiânia"}
 
-    /* Percorre os vetores exibindo as informações. Note que as informações
-     * são relacionadas, colocando-as na mesma posição em ambos os
-     * vetores. Por exemplo, se quiséssemos incluir a idade de cada pessoa,
-     * criaríamos mais um vetor do tipo inteiro e a idade de André seria
-     * armazenada na posição 0 do novo vetor, a idade de Thiago, na posição 1,
-     * a de Bruno na posição 2, e assim por diante.
-     */
-    para (inteiro posicao = 0; posicao < 5; posicao++) {
-      // O caractere especial \t serve para escrever uma tabulação
-      escreva(nome[posicao], "\t\t", altura[posicao], "\n")
+    escreva("Cadastro de participantes\n")
+    escreva("-------------------------\n")
+
+    // Um único laço percorre os três vetores ao mesmo tempo, usando a
+    // mesma posição em cada um deles
+    para (inteiro posicao = 0; posicao < PESSOAS; posicao++) {
+      escreva(posicao + 1, ". ", nome[posicao], ", ", idade[posicao], " anos, mora em ", cidade[posicao], "\n")
     }
+
+    // Para encontrar os dados de uma pessoa, basta saber a sua posição
+    escreva("\nA terceira pessoa da lista é ", nome[2], ", de ", cidade[2], ".\n")
   }
 }

@@ -25,7 +25,7 @@
 
 programa {
   funcao inicio() {
-    inteiro numero, multiplo
+    inteiro numero
 
     escreva("Digite um número: ")
     leia(numero)

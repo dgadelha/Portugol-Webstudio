@@ -1,40 +1,28 @@
-/*
- * Copyright (C) 2014 - UNIVALI - Universidade do Vale do Itajaí
- *
- * Este arquivo de código fonte é livre para utilização, cópia e/ou modificação
- * desde que este cabeçalho, contendo os direitos autorais e a descrição do programa,
- * seja mantido.
- *
- * Se tiver dificuldade em compreender este exemplo, acesse as vídeoaulas do Portugol
- * Studio para auxiliá-lo:
- *
- * https://www.youtube.com/watch?v=K02TnB3IGnQ&list=PLb9yvNDCid3jQAEbNoPHtPR0SWwmRSM-t
- *
- * Descrição:
- *
- *   Este exemplo ilustra o uso de um laço de repetição do tipo "faca-enquanto" para
- *   validar a entrada dos dados informados pelo usuário.
- *
- * Autores:
- *
- *   Giordana Maria da Costa Valle
- *   Carlos Alexandre Krueger
- *
- * Data: 01/06/2013
+/**
+ * Este exemplo pede ao usuário uma nota de 0 a 10 e repete a pergunta até que
+ * um valor válido seja digitado. Ele mostra como usar o laço "faca-enquanto"
+ * para validar (verificar a consistência de) os dados digitados.
  */
 
 programa {
   funcao inicio() {
-    inteiro idade
+    real nota
 
+    // O laço "faca-enquanto" executa as instruções pelo menos uma vez e só
+    // depois verifica a condição. Isso é ideal para validar uma entrada:
+    // primeiro perguntamos, depois conferimos se a resposta é válida
     faca {
-      escreva("Informe sua idade (valores aceitos de 5 a 150): ")
-      leia(idade)
-    } enquanto (idade < 5 ou idade > 150)
+      escreva("Digite uma nota de 0 a 10: ")
+      leia(nota)
 
-    // A partir deste ponto do código é garantido que a idade
-    // terá um valor válido e não causará erros inesperados
+      // Avisamos o usuário do erro para que ele saiba por que a
+      // pergunta está sendo repetida
+      se (nota < 0 ou nota > 10) {
+        escreva("A nota ", nota, " não é válida. Tente novamente.\n\n")
+      }
+    } enquanto (nota < 0 ou nota > 10)
 
-    escreva("\nCorreto!\n")
+    // A partir daqui, temos certeza de que a nota está entre 0 e 10
+    escreva("\nNota registrada: ", nota, "\n")
   }
 }

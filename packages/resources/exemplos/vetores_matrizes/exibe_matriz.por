@@ -1,45 +1,43 @@
-/*
- * Copyright (C) 2014 - UNIVALI - Universidade do Vale do Itajaí
- *
- * Este arquivo de código fonte é livre para utilização, cópia e/ou modificação
- * desde que este cabeçalho, contendo os direitos autorais e a descrição do programa,
- * seja mantido.
- *
- * Se tiver dificuldade em compreender este exemplo, acesse as vídeoaulas do Portugol
- * Studio para auxiliá-lo:
- *
- * https://www.youtube.com/watch?v=K02TnB3IGnQ&list=PLb9yvNDCid3jQAEbNoPHtPR0SWwmRSM-t
- *
- * Descrição:
- *
- *   Este exemplo cria e exibe uma matriz para ilustrar o uso das matrizes na linguagem
- *   Portugol.
- *
- * Autores:
- *
- *   Giordana Maria da Costa Valle
- *   Carlos Alexandre Krueger
- *
- * Data: 01/06/2013
+/**
+ * Este exemplo guarda em uma matriz as notas de 3 alunos em 4 provas e as
+ * exibe em forma de tabela. Ele mostra como declarar uma matriz, como acessar
+ * um elemento pela linha e pela coluna, e como percorrê-la com dois laços "para".
  */
 
 programa {
-  inclua biblioteca Util --> u
-
   funcao inicio() {
-    // Define as dimensões (linhas e colunas) da matriz
-    const inteiro TAMANHO = 5
+    const inteiro ALUNOS = 3
+    const inteiro PROVAS = 4
 
-    // Cria a matriz
-    inteiro matriz[TAMANHO][TAMANHO]
+    // Uma matriz é como uma tabela: cada linha é um aluno e cada coluna é uma prova.
+    // Os valores podem ser informados já na declaração, linha por linha
+    inteiro notas[ALUNOS][PROVAS] = {
+      {7, 8, 6, 9},
+      {5, 6, 7, 6},
+      {9, 9, 8, 10}
+    }
 
-    para (inteiro linha = 0; linha < TAMANHO; linha++) {
-      para (inteiro coluna = 0; coluna < TAMANHO; coluna++) {
-        matriz[linha][coluna] = u.sorteia(1, 9) // Atribui um valor aleatório à posição da matriz
+    // Para acessar um elemento, informamos a linha e depois a coluna.
+    // Assim como nos vetores, a contagem começa em 0: notas[1][2] é a nota
+    // do segundo aluno (linha 1) na terceira prova (coluna 2)
+    escreva("Nota do aluno 2 na prova 3: ", notas[1][2], "\n")
 
-        escreva("[", matriz[linha][coluna], "]") // Exibe o valor contido na posição da matriz
+    // Também podemos alterar um elemento. O primeiro aluno refez a prova 1
+    notas[0][0] = 8
+    escreva("O aluno 1 refez a prova 1 e agora tem nota ", notas[0][0], "\n\n")
+
+    // Para percorrer a matriz, usamos um laço para as linhas e, dentro dele,
+    // outro laço para as colunas. Para cada linha, todas as colunas são visitadas
+    escreva("Notas de todos os alunos:\n")
+
+    para (inteiro aluno = 0; aluno < ALUNOS; aluno++) {
+      escreva("Aluno ", aluno + 1, ":")
+
+      para (inteiro prova = 0; prova < PROVAS; prova++) {
+        escreva(" ", notas[aluno][prova])
       }
 
+      // Depois de exibir todas as colunas de uma linha, pulamos para a próxima
       escreva("\n")
     }
   }

@@ -26,7 +26,7 @@ programa {
   inclua biblioteca Matematica --> mat
 
   funcao inicio() {
-    real base, quadrado, cubo, resultado
+    real base, quadrado, cubo
 
     escreva("Informe um número: ")
     leia(base)

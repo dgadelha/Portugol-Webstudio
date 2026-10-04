@@ -12,9 +12,9 @@
  *
  * Descrição:
  *
- *   Este exemplo pede ao usuário que informe três médias. Logo após, calcula
- *   e exibe a média final destas notas. Por último, verifica se alguma das
- *   médias parciais é menor que a média final e a exibe (caso exista).
+ *   Este exemplo pede ao usuário as notas de três provas e calcula a média delas.
+ *   Depois, usa um "se" para cada nota para mostrar quais ficaram abaixo da média,
+ *   mostrando que vários "se" independentes podem ser verdadeiros ao mesmo tempo.
  *
  * Autores:
  *
@@ -28,30 +28,42 @@ programa {
   inclua biblioteca Matematica --> mat
 
   funcao inicio() {
-    real m1, m2, m3, media
+    real nota1, nota2, nota3, media
+    logico alguma_abaixo = falso
 
-    escreva("Informe a média 1: ")
-    leia(m1)
-    escreva("Informe a média 2: ")
-    leia(m2)
-    escreva("Informe a média 3: ")
-    leia(m3)
+    escreva("Digite a nota da prova 1: ")
+    leia(nota1)
+    escreva("Digite a nota da prova 2: ")
+    leia(nota2)
+    escreva("Digite a nota da prova 3: ")
+    leia(nota3)
 
-    media = (m1 + m2 + m3) / 3
+    // Os parênteses fazem a soma acontecer antes da divisão
+    media = (nota1 + nota2 + nota3) / 3
 
-    limpa()
-    escreva("A média final é: ", mat.arredondar(media, 2), "\n\n")
+    // A função "arredondar" deixa a média com no máximo duas casas decimais
+    escreva("\nA média das notas é ", mat.arredondar(media, 2), "\n\n")
 
-    se (m1 < media) {
-      escreva("A média 1 é menor que a média final\n")
+    // Aqui não usamos "senao": cada "se" é verificado separadamente,
+    // então mais de uma mensagem pode ser exibida
+    se (nota1 < media) {
+      escreva("A nota da prova 1 (", nota1, ") ficou abaixo da média\n")
+      alguma_abaixo = verdadeiro
     }
 
-    se (m2 < media) {
-      escreva("A média 2 é menor que a média final\n")
+    se (nota2 < media) {
+      escreva("A nota da prova 2 (", nota2, ") ficou abaixo da média\n")
+      alguma_abaixo = verdadeiro
     }
 
-    se (m3 < media) {
-      escreva("A média 3 é menor que a média final\n")
+    se (nota3 < media) {
+      escreva("A nota da prova 3 (", nota3, ") ficou abaixo da média\n")
+      alguma_abaixo = verdadeiro
+    }
+
+    // Isso só acontece quando as três notas são iguais
+    se (nao alguma_abaixo) {
+      escreva("Nenhuma nota ficou abaixo da média\n")
     }
   }
 }

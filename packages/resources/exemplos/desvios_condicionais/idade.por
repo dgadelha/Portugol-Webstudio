@@ -25,7 +25,7 @@
 
 programa {
   funcao inicio() {
-    inteiro menor, idade
+    inteiro idade
 
     escreva("Informe sua idade: ")
     leia(idade)

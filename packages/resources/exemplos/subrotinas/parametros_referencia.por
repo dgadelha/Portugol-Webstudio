@@ -1,73 +1,36 @@
-/*
- * Copyright (C) 2014 - UNIVALI - Universidade do Vale do Itajaí
- *
- * Este arquivo de código fonte é livre para utilização, cópia e/ou modificação
- * desde que este cabeçalho, contendo os direitos autorais e a descrição do programa,
- * seja mantido.
- *
- * Se tiver dificuldade em compreender este exemplo, acesse as vídeoaulas do Portugol
- * Studio para auxiliá-lo:
- *
- * https://www.youtube.com/watch?v=K02TnB3IGnQ&list=PLb9yvNDCid3jQAEbNoPHtPR0SWwmRSM-t
- *
- * Descrição:
- *
- *   Este exemplo ilustra a passagem de parâmetros para uma função. O exemplo
- *   demonstra tanto a passagem de parâmetro por valor, quanto a passagem de
- *   parâmetro por referência.
- *
- *   Quando um parâmetro é passado por valor, o seu valor é copiado para dentro
- *   da função. Desta forma, se a função altera o valor do parâmetro, o valor só
- *   é alterado dentro da função, mas é mantido o valor original fora dela.
- *
- *   Por outro lado, quando um parâmetro é passado por referência, qualquer alteração
- *   dentro da função é imediatamente refletida na variável fora da função. Isto porque,
- *   na verdade, o que a função recebe não é uma cópia do valor contido na variável, mas
- *   sim, uma referência (um atalho) para a variável original. No Portugol, a passagem de
- *   parâmetro por referência é representada pelo operador '&'.
- *
- *   Caso não compreenda estes conceitos, experimente alterar o programa e observar
- *   os valores exibidos. Se ainda assim tiver dificuldades, peça a ajuda de um
- *   professor ou de alguém experiente em programação.
- *
- * Autores:
- *
- *   Giordana Maria da Costa Valle
- *   Carlos Alexandre Krueger
- *
- * Data: 01/06/2013
+/**
+ * Este exemplo mostra a diferença entre passar um parâmetro por valor e por
+ * referência. As duas funções dobram o número recebido, mas só a que recebe
+ * o parâmetro por referência (com o símbolo &) altera a variável original.
  */
 
 programa {
-  inclua biblioteca Util --> util
-
   funcao inicio() {
-    inteiro vet = 0 // Declara uma variável
+    inteiro numero = 10
 
-    escreva("Variável antes:\n")
-    exibe(vet)
+    escreva("Valor inicial da variável: ", numero, "\n\n")
 
-    preenche(vet)
+    // Passagem por valor: a função recebe uma cópia do valor da variável
+    dobrar_por_valor(numero)
+    escreva("Depois de dobrar_por_valor, a variável vale: ", numero, "\n\n")
 
-    escreva("\n\nVariável após:\n")
-    exibe(vet)
-
-    escreva("\n")
+    // Passagem por referência: a função recebe um atalho para a própria
+    // variável, então o que ela altera vale também aqui fora
+    dobrar_por_referencia(numero)
+    escreva("Depois de dobrar_por_referencia, a variável vale: ", numero, "\n")
   }
 
-  // Preenche a variável com um número aleatório. Neste caso, a variável é
-  // passada por referência
-  funcao preenche(inteiro &v) {
-    v = util.sorteia(1, 100)
+  // Sem o &, o parâmetro "valor" é uma cópia. Alterar a cópia não muda
+  // a variável que foi passada na chamada
+  funcao dobrar_por_valor(inteiro valor) {
+    valor = valor * 2
+    escreva("  Dentro de dobrar_por_valor, o parâmetro vale: ", valor, "\n")
   }
 
-  // Exibe o valor contido na variável. Neste caso, a variável é
-  // passada por valor
-  funcao exibe(inteiro v) {
-    escreva(v, " ")
-
-    // O valor é alterado dentro da função, mas fora da função
-    // o valor permanece o mesmo, pois a variável foi passada por valor
-    v = 5
+  // Com o &, o parâmetro "valor" é a própria variável que foi passada
+  // na chamada. Alterar o parâmetro altera a variável original
+  funcao dobrar_por_referencia(inteiro &valor) {
+    valor = valor * 2
+    escreva("  Dentro de dobrar_por_referencia, o parâmetro vale: ", valor, "\n")
   }
 }

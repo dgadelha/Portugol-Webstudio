@@ -1,118 +1,35 @@
-/*
- * Copyright (C) 2014 - UNIVALI - Universidade do Vale do Itajaí
- *
- * Este arquivo de código fonte é livre para utilização, cópia e/ou modificação
- * desde que este cabeçalho, contendo os direitos autorais e a descrição do programa,
- * seja mantido.
- *
- * Se tiver dificuldade em compreender este exemplo, acesse as vídeoaulas do Portugol
- * Studio para auxiliá-lo:
- *
- * https://www.youtube.com/watch?v=K02TnB3IGnQ&list=PLb9yvNDCid3jQAEbNoPHtPR0SWwmRSM-t
- *
- * Descrição:
- *
- *   Este exemplo demonstra o uso da função "substituir" da biblioteca "Texto" para trocar
- *   uma sequência de caracteres por outra em um dado do tipo cadeia.
- *
- * Autores:
- *
- *   Luiz Fernando Noschang (noschang@univali.br)
- *
- * Data: 18/07/2014
+/**
+ * Este exemplo usa a função "substituir" da biblioteca "Texto" para trocar um
+ * trecho de um texto por outro. Ele mostra que a função troca todas as
+ * ocorrências, diferencia letras maiúsculas de minúsculas e não altera a
+ * variável original: ela devolve um novo texto.
  */
 
 programa {
   inclua biblioteca Texto --> tx
 
   funcao inicio() {
-    cadeia texto = "PATO"
-    cadeia substituicao
+    cadeia frase = "Eu gosto de café. O café da manhã é a melhor refeição."
+    cadeia nova_frase
 
-    /*
-     * Ao substituir um texto, devem ser considerados os seguintes aspectos:
-     *
-     * 1 - A função "substituir" não altera o valor da variável original, mas
-     *     retorna um novo valor. Desta forma, a variável "texto" vai possuir
-     *     sempre o valor "PATO", a não ser que o valor retornado pela função
-     *     seja atribuído a ela
-     *
-     * 2 - A função "substituir" diferencia letras maiúsculas e minúsculas na
-     *     hora de procurar o texto que se quer substituir
-     */
+    escreva("Frase original:\n", frase, "\n\n")
 
-    //-----------------------------------------------------------------------------------//
+    // A função recebe o texto, o trecho que queremos procurar e o trecho que
+    // deve ficar no lugar dele. Todas as ocorrências do trecho são trocadas
+    nova_frase = tx.substituir(frase, "café", "chá")
+    escreva("Trocando \"café\" por \"chá\":\n", nova_frase, "\n\n")
 
-    // Aqui substituímos a sequência de caracteres "PA" pela
-    // sequência de caracteres "RA" para formar a palavra "RATO"
-    substituicao = tx.substituir(texto, "PA", "RA")
+    // A função não altera a variável que foi passada: ela devolve um novo
+    // texto. Por isso a variável "frase" continua igual
+    escreva("A variável frase continua igual:\n", frase, "\n\n")
 
-    escreva(texto) // A variável "texto" manteve seu valor
-    escreva(" --> ", substituicao, "\n") // A variável "substituicao" possui o novo valor
+    // Letras maiúsculas e minúsculas são diferentes para a função.
+    // Como a frase não tem "CAFÉ" em maiúsculas, nada é trocado
+    nova_frase = tx.substituir(frase, "CAFÉ", "chá")
+    escreva("Procurando \"CAFÉ\" em maiúsculas:\n", nova_frase, "\n\n")
 
-    //-----------------------------------------------------------------------------------//
-
-    // Aqui substituímos a sequência de caracteres "PA" pela
-    // sequência de caracteres "GA" para formar a palavra "GATO"
-    substituicao = tx.substituir(texto, "PA", "GA")
-
-    escreva(texto) // A variável "texto" manteve seu valor
-    escreva(" --> ", substituicao, "\n") // A variável "substituicao" possui o novo valor
-
-    //-----------------------------------------------------------------------------------//
-
-    // Aqui substituímos a sequência de caracteres "A" pela
-    // sequência de caracteres "AR" para formar a palavra "PARTO"
-    substituicao = tx.substituir(texto, "A", "AR")
-
-    escreva(texto) // A variável "texto" manteve seu valor
-    escreva(" --> ", substituicao, "\n") // A variável "substituicao" possui o novo valor
-
-    //-----------------------------------------------------------------------------------//
-
-    // Aqui substituímos a sequência de caracteres "AT" pela
-    // sequência de caracteres "ELICAN" para formar a palavra "PELICANO"
-    substituicao = tx.substituir(texto, "AT", "ELICAN")
-
-    escreva(texto) // A variável "texto" manteve seu valor
-    escreva(" --> ", substituicao, "\n") // A variável "substituicao" possui o novo valor
-
-    //-----------------------------------------------------------------------------------//
-
-    // Aqui substituímos a sequência de caracteres "TO" pela
-    // sequência de caracteres "MONHA" para formar a palavra "PAMONHA"
-    substituicao = tx.substituir(texto, "TO", "MONHA")
-
-    escreva(texto) // A variável "texto" manteve seu valor
-    escreva(" --> ", substituicao, "\n") // A variável "substituicao" possui o novo valor
-
-    //-----------------------------------------------------------------------------------//
-
-    // Aqui realizamos uma substituição, mas como informamos uma sequência de caracteres
-    // em letras minúsculas, a substituição não irá ocorrer
-    substituicao = tx.substituir(texto, "to", "MONHA")
-
-    escreva(texto) // A variável "texto" manteve seu valor
-    escreva(" --> ", substituicao, "\n") // A variável "substituicao" possui o texto original, sem alterações
-
-    //-----------------------------------------------------------------------------------//
-
-    // Aqui realizamos uma substituição, mas como informamos uma sequência de caracteres
-    // que não existe no texto, a substituição não irá ocorrer
-    substituicao = tx.substituir(texto, "LI", "MA")
-
-    escreva(texto) // A variável "texto" manteve seu valor
-    escreva(" --> ", substituicao, "\n") // A variável "substituicao" possui o texto original, sem alterações
-
-    //-----------------------------------------------------------------------------------//
-
-    // Aqui realizamos uma substituição e atribuímos o valor retornado à
-    // variável "texto"
-    texto = tx.substituir(texto, "PA", "LAGAR")
-
-    escreva(texto) // A variável "texto" possui o novo valor
-    escreva(" --> ", substituicao, "\n") // A variável "substituicao" manteve seu valor
-
-    //-----------------------------------------------------------------------------------//
+    // Para guardar a troca na própria variável, atribuímos o resultado a ela
+    frase = tx.substituir(frase, "Eu gosto", "Nós gostamos")
+    escreva("Guardando a troca na própria variável:\n", frase, "\n")
   }
 }
