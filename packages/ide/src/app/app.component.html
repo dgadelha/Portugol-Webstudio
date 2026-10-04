@@ -1,7 +1,5 @@
 <a class="skip-link" href="#conteudo" (click)="focusContent($event)">Ir para o conteúdo da aba</a>
 
-<ng-keyboard-shortcuts [shortcuts]="shortcuts" />
-
 <div id="preload" inert>
   <ngx-monaco-editor />
 </div>
@@ -84,7 +82,7 @@
       aria-label="Nova aba de código"
       aria-keyshortcuts="Control+N"
       appTooltip="Nova aba de código"
-      appTooltipShortcut="Ctrl+N"
+      appTooltipShortcut="Alt+N"
       (click)="addTab()"
     >
       <svg-icon src="assets/mdi/plus.svg" aria-hidden="true" />
@@ -128,6 +126,8 @@
             (settings)="openSettingsDialog()"
             (openFile)="fileInput.click()"
             (examples)="openExamplesDialog()"
+            (newTab)="addTab()"
+            (closeTab)="closeActiveTab()"
           />
         }
 

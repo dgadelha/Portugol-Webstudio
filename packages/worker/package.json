@@ -35,13 +35,11 @@
   "dependencies": {
     "@portugol-webstudio/antlr": "*",
     "@portugol-webstudio/parser": "*",
-    "@portugol-webstudio/runtime": "*",
-    "antlr4ng": "^3.0.16"
+    "@portugol-webstudio/runtime": "*"
   },
   "devDependencies": {
-    "antlr-ng": "^1.0.10",
     "babel-loader": "^10.1.1",
-    "webpack": "^5.110.3",
+    "webpack": "^5.111.1",
     "webpack-cli": "^7.2.3"
   }
 }

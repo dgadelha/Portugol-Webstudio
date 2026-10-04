@@ -15,7 +15,6 @@ import { provideHotToastConfig } from "@ngxpert/hot-toast";
 import * as Sentry from "@sentry/angular";
 import { provideAngularSplitOptions } from "angular-split";
 import { provideAngularSvgIcon } from "angular-svg-icon";
-import { KeyboardShortcutsModule } from "ng-keyboard-shortcuts";
 import { NgxGoogleAnalyticsModule } from "ngx-google-analytics";
 import { MARKED_EXTENSIONS, provideMarkdown } from "ngx-markdown";
 import { provideNgxWebstorage, withNgxWebstorageConfig } from "ngx-webstorage";
@@ -45,7 +44,6 @@ export const appConfig: ApplicationConfig = {
     }),
     provideNgxWebstorage(withNgxWebstorageConfig({ prefix: "pws", separator: ":" }), withNgxLocalStorageFallback()),
     importProvidersFrom(
-      KeyboardShortcutsModule.forRoot(),
       NgxGoogleAnalyticsModule.forRoot(GA_TRACKING_CODE, [
         // Parâmetros do `config` acompanham todos os eventos, inclusive o `page_view` automático.
         { command: "config", values: [GA_TRACKING_CODE, { app_channel: RELEASE_CHANNEL }] },

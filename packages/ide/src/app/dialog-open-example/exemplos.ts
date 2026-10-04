@@ -31,21 +31,19 @@ export function converterExemplos(exemplos: Exemplo[], pasta = ""): ExampleItem[
       const id = `${pasta}/${exemplo.nome}`;
       const children = converterExemplos(exemplo.itens, id);
 
-      return children.length > 0 ? [{ id, name: exemplo.nome, type: "dir", children }] : [];
+      return children.length > 0 ? { id, name: exemplo.nome, type: "dir", children } : [];
     }
 
     const arquivo = exemplo.arquivo ?? "";
 
-    return [
-      {
-        id: arquivo,
-        name: exemplo.nome,
-        type: "file",
-        file: arquivo,
-        description: exemplo.descricao,
-        hasImage: exemplo.imagem !== undefined,
-        image: exemplo.imagem,
-      },
-    ];
+    return {
+      id: arquivo,
+      name: exemplo.nome,
+      type: "file",
+      file: arquivo,
+      description: exemplo.descricao,
+      hasImage: exemplo.imagem !== undefined,
+      image: exemplo.imagem,
+    };
   });
 }
