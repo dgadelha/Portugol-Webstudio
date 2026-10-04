@@ -131,8 +131,10 @@ export class MonacoService {
             wordOperators: ["e", "ou", "nao"],
 
             // Os mesmos operadores do analisador (\`PortugolLexico.g4\`), dos mais
-            // longos aos mais curtos, para "-->" não virar "--" e ">"
-            operators: /-->|\+\+|--|[-+*/]=|[!<=>]=|<<|>>|[-+*/%=<>^|~&]/,
+            // longos aos mais curtos, para "-->" não virar "--" e ">". É uma
+            // expressão regular (usada como \`@operadores\` nas regras), não a lista
+            // de palavras que o Monarch costuma chamar de \`operators\`
+            operadores: /-->|\+\+|--|[-+*/]=|[!<=>]=|<<|>>|[-+*/%=<>^|~&]/,
 
             // Escapes do Portugol: \b \t \n \r \f \" \' \\, \uXXXX e octal (\101)
             escapes: /\\(?:[btnrf"'\\]|u[\dA-Fa-f]{4}|[0-3][0-7]{2}|[0-7]{1,2})/,
@@ -169,7 +171,7 @@ export class MonacoService {
                     },
                   },
                 ],
-                [/[A-Z][\w$]*/, "type.identifier"], // to show class names nicely
+                [/[A-Z]\w*/, "type.identifier"], // to show class names nicely
 
                 // whitespace
                 { include: "@whitespace" },
@@ -177,7 +179,7 @@ export class MonacoService {
                 // delimiters and operators. "<" e ">" são sempre comparações:
                 // o Portugol não tem tipos genéricos
                 [/[()[\]{}]/, "@brackets"],
-                [/@operators/, "operator"],
+                [/@operadores/, "operator"],
 
                 // numbers: o real pode ser "3.", "3.14" ou ".5", sem expoente
                 [/0[Xx][\dA-Fa-f]+/, "number.hex"],
