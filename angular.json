@@ -47,7 +47,6 @@
             "allowedCommonJsDependencies": [
               "antlr4ng",
               "file-saver",
-              "iconv-lite",
               "@braintree/sanitize-url",
               "cytoscape-cose-bilkent",
               "cytoscape-fcose",
