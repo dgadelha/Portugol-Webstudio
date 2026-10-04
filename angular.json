@@ -44,15 +44,8 @@
         "build": {
           "builder": "@angular/build:application",
           "options": {
-            "allowedCommonJsDependencies": [
-              "antlr4ng",
-              "file-saver",
-              "@braintree/sanitize-url",
-              "cytoscape-cose-bilkent",
-              "cytoscape-fcose",
-              "dayjs",
-              "fastdom"
-            ],
+            "allowedCommonJsDependencies": ["antlr4ng", "file-saver", "@braintree/sanitize-url", "dayjs", "fastdom"],
+            "externalDependencies": ["cytoscape", "cytoscape-cose-bilkent", "cytoscape-fcose", "katex"],
             "outputPath": "packages/ide/dist",
             "index": "packages/ide/src/index.html",
             "browser": "packages/ide/src/main.ts",
