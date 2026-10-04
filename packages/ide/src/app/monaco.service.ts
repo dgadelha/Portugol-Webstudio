@@ -88,7 +88,6 @@ export class MonacoService {
               { open: "(", close: ")" },
               { open: '"', close: '"', notIn: ["string"] },
               { open: "'", close: "'", notIn: ["string", "comment"] },
-              { open: "`", close: "`", notIn: ["string", "comment"] },
               { open: "/**", close: " */", notIn: ["string"] },
             ],
 
@@ -104,15 +103,6 @@ export class MonacoService {
           monaco.languages.setMonarchTokensProvider("portugol", {
             defaultToken: "invalid",
             tokenPostfix: ".portugol",
-            autoClosingPairs: [
-              { open: "{", close: "}" },
-              { open: "[", close: "]" },
-              { open: "(", close: ")" },
-              { open: '"', close: '"', notIn: ["string"] },
-              { open: "'", close: "'", notIn: ["string", "comment"] },
-              { open: "`", close: "`", notIn: ["string", "comment"] },
-              { open: "/**", close: " */", notIn: ["string"] },
-            ],
 
             keywords: [
               "faca",
@@ -136,56 +126,45 @@ export class MonacoService {
 
             typeKeywords: ["real", "inteiro", "vazio", "logico", "cadeia", "caracter"],
 
-            operators: [
-              "nao",
-              "e",
-              "ou",
-              "-",
-              "+",
-              "*",
-              "/",
-              "%",
-              "=",
-              "==",
-              "!=",
-              ">",
-              "<",
-              "<=",
-              ">=",
-              "++",
-              "--",
-              "<<",
-              ">>",
-              "^",
-              "|",
-              "~",
-              "-->",
-              "&",
-              "+=",
-              "-=",
-              "*=",
-              "/=",
-            ],
+            // Os operadores lógicos são palavras: coloridos como as palavras
+            // reservadas, como o "and" e o "or" de outras linguagens no VS Code.
+            wordOperators: ["e", "ou", "nao"],
 
-            // we include these common regular expressions
-            symbols: /[!%&*+/:<=>?^|~\-]+/,
-            escapes: /\\(?:["'\\abfnrtv]|x[\dA-Fa-f]{1,4}|u[\dA-Fa-f]{4}|U[\dA-Fa-f]{8})/,
-            digits: /\d+(_+\d+)*/,
-            octaldigits: /[0-7]+(_+[0-7]+)*/,
-            binarydigits: /[01]+(_+[01]+)*/,
-            hexdigits: /[\dA-F[a-f]+(_+[\dA-Fa-f]+)*/,
+            // Os mesmos operadores do analisador (\`PortugolLexico.g4\`), dos mais
+            // longos aos mais curtos, para "-->" não virar "--" e ">"
+            operators: /-->|\+\+|--|[-+*/]=|[!<=>]=|<<|>>|[-+*/%=<>^|~&]/,
+
+            // Escapes do Portugol: \b \t \n \r \f \" \' \\, \uXXXX e octal (\101)
+            escapes: /\\(?:[btnrf"'\\]|u[\dA-Fa-f]{4}|[0-3][0-7]{2}|[0-7]{1,2})/,
 
             // The main tokenizer for our languages
             tokenizer: {
-              root: [[/[{}]/, "delimiter.bracket"], [/([1A-Z_a-z{}]\w+)(?=\s*\()/, "functions"], { include: "common" }],
-              common: [
-                // identifiers and keywords
+              root: [
+                [/[{}]/, "delimiter.bracket"],
+                // Uma palavra seguida de "(" é uma chamada de função, a não ser que
+                // seja uma palavra reservada, como em "se (", "para (" e "e ("
                 [
-                  /[$_a-z][\w$]*/,
+                  /[A-Z_a-z]\w*(?=\s*\()/,
                   {
                     cases: {
                       "@typeKeywords": "keyword",
                       "@keywords": "keyword",
+                      "@wordOperators": "keyword",
+                      "@default": "functions",
+                    },
+                  },
+                ],
+                { include: "common" },
+              ],
+              common: [
+                // identifiers and keywords
+                [
+                  /[_a-z]\w*/,
+                  {
+                    cases: {
+                      "@typeKeywords": "keyword",
+                      "@keywords": "keyword",
+                      "@wordOperators": "keyword",
                       "@default": "identifier",
                     },
                   },
@@ -195,18 +174,18 @@ export class MonacoService {
                 // whitespace
                 { include: "@whitespace" },
 
-                // delimiters and operators
+                // delimiters and operators. "<" e ">" são sempre comparações:
+                // o Portugol não tem tipos genéricos
                 [/[()[\]{}]/, "@brackets"],
-                [/[<>](?!@symbols)/, "@brackets"],
-                [/@symbols/, { cases: { "@operators": "operator", "@default": "" } }],
+                [/@operators/, "operator"],
 
-                // numbers
-                [/\d*\.\d+([Ee][+\-]?\d+)?/, "number.float"],
+                // numbers: o real pode ser "3.", "3.14" ou ".5", sem expoente
                 [/0[Xx][\dA-Fa-f]+/, "number.hex"],
+                [/\d+\.\d*|\.\d+/, "number.float"],
                 [/\d+/, "number"],
 
                 // delimiter: after number because of .\d floats
-                [/[,.;]/, "delimiter"],
+                [/[,.:;]/, "delimiter"],
 
                 // strings
                 [/"([^"\\]|\\.)*$/, "string.invalid"], // non-teminated string
@@ -218,11 +197,12 @@ export class MonacoService {
                 [/'/, "string.invalid"],
               ],
 
+              // Como no analisador, o comentário termina no primeiro "*/": um "/*"
+              // dentro dele não abre outro
               comment: [
-                [/[^*/]+/, "comment"],
-                [/\/\*/, "comment", "@push"], // nested comment
+                [/[^*]+/, "comment"],
                 [String.raw`\*/`, "comment", "@pop"],
-                [/[*/]/, "comment"],
+                [/\*/, "comment"],
               ],
 
               string: [
