@@ -132,7 +132,7 @@
         }
 
         @case ("help") {
-          <app-tab-help (newTab)="addTab($event.name, $event.contents)" />
+          <app-tab-help [tabId]="tab.id" (newTab)="addTab($event.name, $event.contents)" />
         }
 
         @case ("changelog") {

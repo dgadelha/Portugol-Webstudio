@@ -345,10 +345,11 @@ export class WorkspaceService {
       return false;
     }
 
+    // A aba de Ajuda também guarda conteúdo: o tópico que estava aberto.
     const tabs = meta.tabs.map<Tab>(tab => {
       return {
         ...tab,
-        contents: tab.type === "editor" ? (this.storage.readTab(workspaceId, tab.id) ?? "") : "",
+        contents: tab.type === "changelog" ? "" : (this.storage.readTab(workspaceId, tab.id) ?? ""),
       };
     });
 
