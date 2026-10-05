@@ -6,6 +6,7 @@ import {
   ElementRef,
   inject,
   Injector,
+  NgZone,
   OnInit,
   viewChild,
   viewChildren,
@@ -60,7 +61,8 @@ import { isMeaningfulCode, Tab, TabType } from "./workspace.types";
     "(keydown)": "onKeydown($event)",
     "(document:keydown)": "onShortcut($event)",
     "(click)": "onClick($event)",
-    // Um link `#share=` ou `#ajuda=` colado na barra de endereço com o IDE já aberto.
+    // Um link `#share=` ou `#ajuda=` colado na barra de endereço com o IDE já aberto, ou um
+    // atalho do app instalado.
     "(window:hashchange)": "openFromHash()",
   },
 })
@@ -73,6 +75,7 @@ export class AppComponent implements OnInit {
   private workspace = inject(WorkspaceService);
   private settingsService = inject(SettingsService);
   private injector = inject(Injector);
+  private zone = inject(NgZone);
 
   private readonly tablist = viewChild.required<ElementRef<HTMLElement>>("tablist");
   private readonly editors = viewChildren(TabEditorComponent);
@@ -132,6 +135,7 @@ export class AppComponent implements OnInit {
     }
 
     this.openFromHash();
+    this.openLaunchedFiles();
 
     // Com muitas abas restauradas, a aba em foco pode começar fora da vista.
     this.selectTab(this.workspace.activeTabId());
@@ -165,13 +169,37 @@ export class AppComponent implements OnInit {
 
   /**
    * Endereços que abrem algo no IDE: `#share=<id>` (código compartilhado) e
-   * `#ajuda=<arquivo>` (um tópico da Ajuda, como nos links entre tópicos).
+   * `#ajuda=<arquivo>` (um tópico da Ajuda, como nos links entre tópicos). Os
+   * atalhos do app instalado (`shortcuts` no `manifest.webmanifest`) usam
+   * `#novo`, `#exemplos` e `#ajuda`.
    */
   openFromHash() {
     const hash = window.location.hash;
 
     // O que o endereço pede é aberto uma vez só: mantê-lo faria cada
     // recarregamento abrir de novo (ou repetir o erro de um link inválido).
+    switch (hash) {
+      case "#novo": {
+        this.clearHash();
+        this.addTab();
+        return;
+      }
+
+      case "#exemplos": {
+        this.clearHash();
+        this.openExamplesDialog();
+        return;
+      }
+
+      case "#ajuda": {
+        this.clearHash();
+        this.upsertHelpTab();
+        return;
+      }
+
+      default:
+    }
+
     if (hash.startsWith("#share=")) {
       this.clearHash();
       void this.loadSharedCode(hash.slice(7));
@@ -191,6 +219,29 @@ export class AppComponent implements OnInit {
       // A aba de Ajuda abre o tópico quando os tópicos carregarem.
       this.workspace.helpTopicRequest.set(topico);
     }
+  }
+
+  /**
+   * Arquivos `.por` abertos pelo sistema com o app instalado (`file_handlers` no
+   * `manifest.webmanifest`). Com o IDE já aberto, eles chegam nesta mesma janela.
+   */
+  private openLaunchedFiles() {
+    const { launchQueue } = window;
+
+    launchQueue?.setConsumer(params => {
+      void this.zone.run(async () => {
+        for (const handle of params.files) {
+          if (handle.kind !== "file") {
+            continue;
+          }
+
+          const file = await (handle as FileSystemFileHandle).getFile();
+
+          this.gaService.event("open_file_launch", "Interface", "Abrir arquivo pelo sistema");
+          this.addTab(file.name, await this.fileService.getContents(file));
+        }
+      });
+    });
   }
 
   private clearHash() {
