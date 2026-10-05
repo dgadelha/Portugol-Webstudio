@@ -259,8 +259,11 @@ export class PwaService {
    * deve dizer que está pronto. Um recarregamento forçado (Shift) também abre sem service
    * worker, mas aí o cache já está completo na primeira conferência, e nada é avisado.
    *
-   * Uma atualização publicada e ainda não baixada também conta como download (a lista do
-   * servidor já é a nova), até ela ficar pronta.
+   * Com uma atualização publicada, a lista do servidor é a da versão nova, e os arquivos
+   * dela faltariam no cache até ela ser baixada. A página sabe que a lista não é a dela
+   * quando o `main-*.js` que ela carregou não está na lista: aí não há como conferir a
+   * versão aberta, e quem volta com service worker está pronto (a versão nova chega pelo
+   * aviso de atualização, com a barra dela).
    */
   private watchOfflineCopy() {
     if (!("caches" in window)) {
@@ -271,44 +274,54 @@ export class PwaService {
 
     this.offlineStatus.set("checking");
 
-    this.trackDownload("all", (progress, pending) => {
-      if (!progress) {
-        // Sem a lista, não dá para conferir. Quem volta com service worker está com o IDE
-        // aberto pelo cache (sem internet, a lista não chega); na primeira visita, não se sabe.
-        this.offlineStatus.set(returning ? "ready" : "unknown");
-        return;
-      }
+    const onNewerVersion = returning
+      ? () => {
+          this.offlineStatus.set("ready");
+        }
+      : undefined;
 
-      if (progress.done < progress.total) {
-        this.offlineStatus.set("downloading");
-        this.offlineProgress.set(progress);
+    this.trackDownload(
+      "all",
+      (progress, pending) => {
+        if (!progress) {
+          // Sem a lista, não dá para conferir. Quem volta com service worker está com o IDE
+          // aberto pelo cache (sem internet, a lista não chega); na primeira visita, não se sabe.
+          this.offlineStatus.set(returning ? "ready" : "unknown");
+          return;
+        }
 
-        if (returning) {
-          this.offlineMissing = pending;
-          this.refillOfflineCopy();
-        } else {
-          this.offlineToast ??= this.toast.show<DownloadToastData>(DownloadProgressToastComponent, {
-            data: { kind: "offline", progress: this.offlineProgress },
-            autoClose: false,
+        if (progress.done < progress.total) {
+          this.offlineStatus.set("downloading");
+          this.offlineProgress.set(progress);
+
+          if (returning) {
+            this.offlineMissing = pending;
+            this.refillOfflineCopy();
+          } else {
+            this.offlineToast ??= this.toast.show<DownloadToastData>(DownloadProgressToastComponent, {
+              data: { kind: "offline", progress: this.offlineProgress },
+              autoClose: false,
+              dismissible: true,
+            });
+          }
+
+          return;
+        }
+
+        this.offlineStatus.set("ready");
+        this.offlineMissing = [];
+
+        if (this.offlineToast) {
+          this.offlineToast.close();
+
+          this.toast.success("O Portugol Webstudio já pode ser usado sem internet.", {
+            duration: 8000,
             dismissible: true,
           });
         }
-
-        return;
-      }
-
-      this.offlineStatus.set("ready");
-      this.offlineMissing = [];
-
-      if (this.offlineToast) {
-        this.offlineToast.close();
-
-        this.toast.success("O Portugol Webstudio já pode ser usado sem internet.", {
-          duration: 8000,
-          dismissible: true,
-        });
-      }
-    });
+      },
+      onNewerVersion,
+    );
   }
 
   /**
@@ -323,21 +336,29 @@ export class PwaService {
   private trackDownload(
     scope: "all" | "pending",
     onProgress: (progress: DownloadProgress | null, pending: readonly string[]) => void,
+    onNewerVersion?: () => void,
   ) {
     let stopped = false;
     let timer: ReturnType<typeof setTimeout> | undefined;
 
     const run = async () => {
-      const urls = await this.prefetchUrls();
+      const manifest = await this.prefetchUrls();
 
       if (stopped) {
         return;
       }
 
-      if (!urls) {
+      if (!manifest) {
         onProgress(null, []);
         return;
       }
+
+      if (onNewerVersion && !manifest.hasRunningVersion) {
+        this.zone.run(onNewerVersion);
+        return;
+      }
+
+      const { urls } = manifest;
 
       let pending = await this.missingFromCache(urls);
       const total = scope === "all" ? urls.length : pending.length;
@@ -418,7 +439,7 @@ export class PwaService {
    * Os arquivos dos grupos `prefetch` do `ngsw.json` mais recente, direto do servidor
    * (`ngsw-bypass` faz o service worker não interceptar).
    */
-  private async prefetchUrls(): Promise<string[] | null> {
+  private async prefetchUrls(): Promise<{ urls: string[]; hasRunningVersion: boolean } | null> {
     try {
       const response = await fetch(`ngsw.json?ngsw-bypass=true&t=${Date.now()}`, { cache: "no-store" });
 
@@ -426,11 +447,22 @@ export class PwaService {
         return null;
       }
 
-      const manifest = (await response.json()) as { assetGroups?: Array<{ installMode: string; urls: string[] }> };
+      const manifest = (await response.json()) as {
+        assetGroups?: Array<{ installMode: string; urls: string[] }>;
+        hashTable?: Record<string, string>;
+      };
 
-      return (
-        manifest.assetGroups?.filter(group => group.installMode === "prefetch").flatMap(group => group.urls) ?? null
-      );
+      const urls = manifest.assetGroups?.filter(group => group.installMode === "prefetch").flatMap(group => group.urls);
+
+      if (!urls) {
+        return null;
+      }
+
+      // O `main-*.js` tem o hash do conteúdo no nome: só a lista da versão aberta o tem
+      const main = document.querySelector<HTMLScriptElement>('script[src*="main-"]');
+      const mainPath = main ? new URL(main.src).pathname : null;
+
+      return { urls, hasRunningVersion: !mainPath || Object.hasOwn(manifest.hashTable ?? {}, mainPath) };
     } catch {
       return null;
     }
