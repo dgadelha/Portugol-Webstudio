@@ -20,6 +20,51 @@
   line-height: 1.6;
 }
 
+.app-status {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: min(100%, 28rem);
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--pws-border-strong);
+  border-radius: var(--pws-radius);
+  text-align: start;
+
+  p {
+    margin: 0;
+  }
+}
+
+.status-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  > svg-icon {
+    flex-shrink: 0;
+    width: 1.125rem;
+    height: 1.125rem;
+    color: var(--pws-fg-muted);
+  }
+}
+
+// O commit em maiúsculas, como no rodapé da aba Inicial
+.version {
+  text-transform: uppercase;
+}
+
+.update-row {
+  flex-wrap: wrap;
+}
+
+.update-message {
+  color: var(--pws-fg-muted);
+
+  &:empty {
+    display: none;
+  }
+}
+
 .made-with-love {
   display: flex;
   align-items: center;

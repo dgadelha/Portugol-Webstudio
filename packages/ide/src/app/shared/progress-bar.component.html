@@ -1,0 +1,5 @@
+<progress max="100" [attr.aria-label]="label()" [attr.value]="percent()"></progress>
+
+@if (percent() !== null) {
+  <span class="percent" aria-hidden="true">{{ percent() }}%</span>
+}

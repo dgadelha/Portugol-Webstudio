@@ -4,6 +4,7 @@ import * as Sentry from "@sentry/angular";
 
 import { AppComponent } from "./app/app.component";
 import { appConfig } from "./app/app.config";
+import { APP_VERSION } from "./app/version";
 import { environment } from "./environments/environment";
 
 Sentry.init({
@@ -12,7 +13,7 @@ Sentry.init({
   debug: false,
   tracesSampleRate: 0.1,
   replaysOnErrorSampleRate: 0.1,
-  release: "%SENTRY_RELEASE%",
+  release: APP_VERSION.commit ?? "local",
   integrations: [
     Sentry.replayIntegration({
       maskAllInputs: false,

@@ -1,0 +1,45 @@
+:host {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+// Sem `value`, o `<progress>` fica indeterminado
+progress {
+  flex: 1;
+  height: 6px;
+  overflow: hidden;
+  border: none;
+  border-radius: 3px;
+  background-color: var(--pws-bg-active);
+  color: var(--pws-accent);
+  appearance: none;
+
+  &::-webkit-progress-bar {
+    background-color: var(--pws-bg-active);
+  }
+
+  &::-webkit-progress-value {
+    border-radius: 3px;
+    background-color: var(--pws-accent);
+    transition: width var(--pws-duration) ease-out;
+  }
+
+  &::-moz-progress-bar {
+    border-radius: 3px;
+    background-color: var(--pws-accent);
+  }
+}
+
+.percent {
+  min-width: 2.5rem;
+  color: var(--pws-fg-muted);
+  font-variant-numeric: tabular-nums;
+  text-align: end;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  progress::-webkit-progress-value {
+    transition: none;
+  }
+}

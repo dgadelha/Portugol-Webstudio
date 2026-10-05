@@ -20,6 +20,50 @@
     estudantes e professores possam escrever, compilar e executar programas de computador diretamente no navegador.
   </p>
 
+  <section class="app-status" aria-labelledby="sobre-versao-titulo">
+    <h3 id="sobre-versao-titulo" class="visually-hidden">Versão e atualizações</h3>
+
+    <p class="status-row">
+      <svg-icon src="assets/mdi/tag-outline.svg" aria-hidden="true" />
+      @if (commitUrl) {
+        <span
+          >Versão <a class="version" target="_blank" rel="external noopener" [href]="commitUrl">{{ version.label }}</a
+          >{{ dateSuffix }}</span
+        >
+      } @else {
+        <span>Versão local, de desenvolvimento</span>
+      }
+    </p>
+
+    <p class="status-row">
+      <svg-icon aria-hidden="true" [src]="`assets/mdi/${offline().icon}.svg`" />
+      <span>{{ offline().text }}</span>
+    </p>
+
+    @if (pwa.offlineStatus() === "downloading") {
+      <app-progress-bar label="Progresso do download para usar sem internet" [progress]="pwa.offlineProgress()" />
+    }
+
+    @if (pwa.offlineStatus() !== "unsupported") {
+      <div class="status-row update-row">
+        <button type="button" class="btn btn-sm" [disabled]="checking()" (click)="checkForUpdate()">
+          <svg-icon src="assets/mdi/refresh.svg" aria-hidden="true" />
+          Procurar atualizações
+        </button>
+
+        @if (pwa.updateStatus() === "ready") {
+          <button type="button" class="btn btn-primary btn-sm" (click)="pwa.reloadToUpdate()">Atualizar</button>
+        }
+      </div>
+
+      <p class="update-message" role="status">{{ updateMessage() }}</p>
+
+      @if (pwa.updateStatus() === "downloading") {
+        <app-progress-bar label="Progresso do download da atualização" [progress]="pwa.updateProgress()" />
+      }
+    }
+  </section>
+
   <p class="made-with-love">
     Feito com <svg-icon src="assets/mdi/heart.svg" class="icon-red" svgAriaLabel="amor" /> no
     <svg-icon src="assets/flag-br.svg" svgAriaLabel="Brasil" />
