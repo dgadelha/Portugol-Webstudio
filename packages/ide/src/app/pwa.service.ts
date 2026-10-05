@@ -22,6 +22,13 @@ const PROGRESS_BATCH = 200;
  */
 const REFILL_CONCURRENCY = 4;
 
+/**
+ * Quanto o Sobre espera a resposta do service worker (versão nova ou não) antes de mostrar
+ * como download os arquivos que faltam. Ele verifica entre 5 e 30 segundos depois de a
+ * página carregar.
+ */
+const OFFLINE_VERDICT_TIMEOUT_MS = 45_000;
+
 @Service()
 export class PwaService {
   private swUpdate = inject(SwUpdate);
@@ -72,6 +79,14 @@ export class PwaService {
   private latestConfirmed = false;
   private refilling = false;
 
+  /**
+   * Visita com service worker: faltar arquivo pode ser cópia incompleta ou atualização
+   * publicada (aí a lista do servidor é a da versão nova). Quem decide é a resposta do
+   * service worker à verificação dele depois de carregar a página.
+   */
+  private returningVisit = false;
+  private offlineVerdictTimer?: ReturnType<typeof setTimeout>;
+
   constructor() {
     window.addEventListener("online", () => {
       this.online.set(true);
@@ -119,6 +134,7 @@ export class PwaService {
             this.updateProgress.set(progress);
           });
 
+          this.updateReturningOfflineStatus();
           break;
         }
 
@@ -164,7 +180,7 @@ export class PwaService {
           }
 
           this.latestConfirmed = true;
-          this.refillOfflineCopy();
+          this.updateReturningOfflineStatus();
 
           break;
         }
@@ -267,10 +283,10 @@ export class PwaService {
    * primeira conferência, e nada é avisado.
    *
    * Com uma atualização publicada, a lista do servidor é a da versão nova, e os arquivos
-   * dela faltariam no cache até ela ser baixada. A página sabe que a lista não é a dela
-   * quando o `main-*.js` que ela carregou não está na lista: aí não há como conferir a
-   * versão aberta, e quem volta com service worker está pronto (a versão nova chega pelo
-   * aviso de atualização, com a barra dela).
+   * dela faltam no cache até ela ser baixada; a página nem sabe qual é a versão dela (com
+   * `navigationRequestStrategy: "freshness"`, o `index.html` e o `main-*.js` novos vêm da
+   * rede). Por isso, numa visita com service worker em que faltam arquivos, o Sobre fica
+   * em "Conferindo…" até o service worker responder (ver `updateReturningOfflineStatus`).
    */
   private watchOfflineCopy() {
     if (!("caches" in window)) {
@@ -279,52 +295,83 @@ export class PwaService {
 
     const returning = Boolean(navigator.serviceWorker.controller);
 
+    this.returningVisit = returning;
     this.offlineStatus.set("checking");
 
-    const onNewerVersion = returning
-      ? () => {
-          this.offlineStatus.set("ready");
-        }
-      : undefined;
+    this.trackDownload("all", (progress, pending) => {
+      if (!progress) {
+        // Sem a lista, não dá para conferir. Quem volta com service worker está com o IDE
+        // aberto pelo cache (sem internet, a lista não chega); na primeira visita, não se sabe.
+        this.offlineStatus.set(returning ? "ready" : "unknown");
+        return;
+      }
 
-    this.trackDownload(
-      "all",
-      (progress, pending) => {
-        if (!progress) {
-          // Sem a lista, não dá para conferir. Quem volta com service worker está com o IDE
-          // aberto pelo cache (sem internet, a lista não chega); na primeira visita, não se sabe.
-          this.offlineStatus.set(returning ? "ready" : "unknown");
-          return;
-        }
+      if (progress.done < progress.total) {
+        this.offlineProgress.set(progress);
 
-        if (progress.done < progress.total) {
+        if (returning) {
+          this.offlineMissing = pending;
+          this.updateReturningOfflineStatus();
+        } else {
           this.offlineStatus.set("downloading");
-          this.offlineProgress.set(progress);
+          this.announceOfflineReady = true;
+        }
 
-          if (returning) {
-            this.offlineMissing = pending;
-            this.refillOfflineCopy();
-          } else {
-            this.announceOfflineReady = true;
+        return;
+      }
+
+      this.offlineStatus.set("ready");
+      this.offlineMissing = [];
+      clearTimeout(this.offlineVerdictTimer);
+
+      if (this.announceOfflineReady) {
+        this.announceOfflineReady = false;
+
+        this.toast.success("O Portugol Webstudio já pode ser usado sem internet.", {
+          duration: 8000,
+          dismissible: true,
+        });
+      }
+    });
+  }
+
+  /**
+   * Numa visita com service worker em que faltam arquivos:
+   * - com uma atualização sendo baixada (ou pronta), a lista do servidor é a dela: a versão
+   *   aberta está guardada, e o progresso aparece na linha da atualização;
+   * - se o service worker conferiu que não há versão nova, os arquivos faltam mesmo: a
+   *   página os pede (`refillOfflineCopy`) e o Sobre mostra o download;
+   * - sem resposta ainda, fica em "Conferindo…"; se ela não vier (servidor fora do ar, por
+   *   exemplo), mostra o download depois de um tempo.
+   */
+  private updateReturningOfflineStatus() {
+    if (!this.returningVisit || this.offlineMissing.length === 0) {
+      return;
+    }
+
+    if (this.downloadingHash || this.readyHash) {
+      this.offlineStatus.set("ready");
+      return;
+    }
+
+    if (this.latestConfirmed) {
+      clearTimeout(this.offlineVerdictTimer);
+      this.offlineStatus.set("downloading");
+      this.refillOfflineCopy();
+      return;
+    }
+
+    this.offlineStatus.set("checking");
+
+    this.offlineVerdictTimer ??= this.zone.runOutsideAngular(() => {
+      return setTimeout(() => {
+        this.zone.run(() => {
+          if (this.offlineStatus() === "checking" && this.offlineMissing.length > 0) {
+            this.offlineStatus.set("downloading");
           }
-
-          return;
-        }
-
-        this.offlineStatus.set("ready");
-        this.offlineMissing = [];
-
-        if (this.announceOfflineReady) {
-          this.announceOfflineReady = false;
-
-          this.toast.success("O Portugol Webstudio já pode ser usado sem internet.", {
-            duration: 8000,
-            dismissible: true,
-          });
-        }
-      },
-      onNewerVersion,
-    );
+        });
+      }, OFFLINE_VERDICT_TIMEOUT_MS);
+    });
   }
 
   /**
@@ -339,29 +386,21 @@ export class PwaService {
   private trackDownload(
     scope: "all" | "pending",
     onProgress: (progress: DownloadProgress | null, pending: readonly string[]) => void,
-    onNewerVersion?: () => void,
   ) {
     let stopped = false;
     let timer: ReturnType<typeof setTimeout> | undefined;
 
     const run = async () => {
-      const manifest = await this.prefetchUrls();
+      const urls = await this.prefetchUrls();
 
       if (stopped) {
         return;
       }
 
-      if (!manifest) {
+      if (!urls) {
         onProgress(null, []);
         return;
       }
-
-      if (onNewerVersion && !manifest.hasRunningVersion) {
-        this.zone.run(onNewerVersion);
-        return;
-      }
-
-      const { urls } = manifest;
 
       let pending = await this.missingFromCache(urls);
       const total = scope === "all" ? urls.length : pending.length;
@@ -442,7 +481,7 @@ export class PwaService {
    * Os arquivos dos grupos `prefetch` do `ngsw.json` mais recente, direto do servidor
    * (`ngsw-bypass` faz o service worker não interceptar).
    */
-  private async prefetchUrls(): Promise<{ urls: string[]; hasRunningVersion: boolean } | null> {
+  private async prefetchUrls(): Promise<string[] | null> {
     try {
       const response = await fetch(`ngsw.json?ngsw-bypass=true&t=${Date.now()}`, { cache: "no-store" });
 
@@ -450,22 +489,11 @@ export class PwaService {
         return null;
       }
 
-      const manifest = (await response.json()) as {
-        assetGroups?: Array<{ installMode: string; urls: string[] }>;
-        hashTable?: Record<string, string>;
-      };
+      const manifest = (await response.json()) as { assetGroups?: Array<{ installMode: string; urls: string[] }> };
 
-      const urls = manifest.assetGroups?.filter(group => group.installMode === "prefetch").flatMap(group => group.urls);
-
-      if (!urls) {
-        return null;
-      }
-
-      // O `main-*.js` tem o hash do conteúdo no nome: só a lista da versão aberta o tem
-      const main = document.querySelector<HTMLScriptElement>('script[src*="main-"]');
-      const mainPath = main ? new URL(main.src).pathname : null;
-
-      return { urls, hasRunningVersion: !mainPath || Object.hasOwn(manifest.hashTable ?? {}, mainPath) };
+      return (
+        manifest.assetGroups?.filter(group => group.installMode === "prefetch").flatMap(group => group.urls) ?? null
+      );
     } catch {
       return null;
     }
