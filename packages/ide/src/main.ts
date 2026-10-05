@@ -28,19 +28,6 @@ if (environment.production) {
   enableProdMode();
 }
 
-bootstrapApplication(AppComponent, appConfig)
-  .then(() => {
-    try {
-      /**
-       *@see https://stackoverflow.com/a/51059335
-       */
-      if ("serviceWorker" in navigator && environment.production) {
-        void navigator.serviceWorker.register("/ngsw-worker.js");
-      }
-    } catch (error: unknown) {
-      console.error("Service worker registration failed:", error);
-    }
-  })
-  .catch((error: unknown) => {
-    console.error(error);
-  });
+bootstrapApplication(AppComponent, appConfig).catch((error: unknown) => {
+  console.error(error);
+});

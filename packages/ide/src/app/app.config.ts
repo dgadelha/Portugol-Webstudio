@@ -51,8 +51,8 @@ export const appConfig: ApplicationConfig = {
     ),
     provideServiceWorker("ngsw-worker.js", {
       enabled: !isDevMode(),
-      // Registra o service worker quando a aplicação fica estável, ou depois de 30 segundos.
-      registrationStrategy: "registerWhenStable:30000",
+      // Registra o service worker quando a aplicação fica estável, ou depois de 10 segundos.
+      registrationStrategy: "registerWhenStable:10000",
     }),
     provideAppInitializer(() => {
       inject(MonacoService);
