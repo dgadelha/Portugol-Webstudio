@@ -49,6 +49,14 @@ jobs:
                       "value": "max-age=900, stale-while-revalidate=180"
                     }
                   ]
+                },
+                {
+                  "source": "/",
+                  "headers": [{ "key": "Cache-Control", "value": "no-cache" }]
+                },
+                {
+                  "source": "/@(index.html|ngsw.json|ngsw-worker.js|manifest.webmanifest)",
+                  "headers": [{ "key": "Cache-Control", "value": "no-cache" }]
                 }
               ],
               "rewrites": [
