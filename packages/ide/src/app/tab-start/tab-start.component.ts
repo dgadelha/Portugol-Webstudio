@@ -10,6 +10,7 @@ import { DialogAboutComponent } from "../dialog-about/dialog-about.component";
 import { DialogService } from "../shared/dialog.service";
 import { ACTIVE_TAB_SELECTOR, focusAfterRender } from "../shared/focus";
 import { TooltipDirective } from "../shared/tooltip.directive";
+import { APP_VERSION } from "../version";
 import { WorkspaceService } from "../workspace.service";
 
 @Component({
@@ -30,6 +31,10 @@ export class TabStartComponent {
    * Código de janelas fechadas que esta sessão não adotou automaticamente.
    */
   readonly recoverable = this.workspace.recoverable;
+
+  readonly version = APP_VERSION;
+  readonly buildDate =
+    APP_VERSION.buildDate?.toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" }) ?? "Ambiente local";
 
   readonly newTab = output<{ name: string; contents: string } | undefined>();
   readonly openFile = output();

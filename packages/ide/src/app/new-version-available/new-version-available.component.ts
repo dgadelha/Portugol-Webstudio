@@ -8,16 +8,13 @@ import { HotToastRef } from "@ngxpert/hot-toast";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NewVersionAvailableComponent {
-  public toastRef = inject(HotToastRef, { optional: true });
+  /**
+   * O `PwaService` passa como recarregar, o mesmo do botão Atualizar do Sobre.
+   */
+  public toastRef = inject<HotToastRef<{ reload: () => void }>>(HotToastRef, { optional: true });
 
   onReload() {
-    if (
-      confirm(
-        'Lembre-se de salvar seu código antes de recarregar a página!\n\nAperte "OK" para recarregar a página, ou "Cancelar" para abortar.',
-      )
-    ) {
-      window.location.reload();
-    }
+    this.toastRef?.data.reload();
   }
 
   onIgnore() {
