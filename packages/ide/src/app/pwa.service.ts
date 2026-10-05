@@ -1,10 +1,11 @@
-import { inject, NgZone, Service, signal } from "@angular/core";
+import { inject, Injector, NgZone, Service, signal } from "@angular/core";
 import { SwUpdate } from "@angular/service-worker";
 import { CreateHotToastRef, HotToastService } from "@ngxpert/hot-toast";
 import { interval } from "rxjs";
 import { DownloadProgressToastComponent } from "./download-progress-toast/download-progress-toast.component";
 import { NewVersionAvailableComponent } from "./new-version-available/new-version-available.component";
 import { DownloadProgress, DownloadToastData, OfflineStatus, UpdateStatus } from "./pwa.types";
+import { WorkspaceService } from "./workspace.service";
 
 /**
  * Intervalo entre as conferências do cache durante um download.
@@ -26,6 +27,7 @@ export class PwaService {
   private swUpdate = inject(SwUpdate);
   private toast = inject(HotToastService);
   private zone = inject(NgZone);
+  private injector = inject(Injector);
 
   readonly offlineStatus = signal<OfflineStatus>("unsupported");
   readonly offlineProgress = signal<DownloadProgress | null>(null);
@@ -218,14 +220,25 @@ export class PwaService {
     }
   }
 
+  /**
+   * O código das abas fica guardado no navegador e volta igual depois de recarregar, então
+   * só pergunta antes quando o navegador não está guardando nada. A área de trabalho é
+   * buscada aqui, e não injetada, para o serviço (criado na inicialização) não carregá-la antes.
+   */
   reloadToUpdate() {
+    const workspace = this.injector.get(WorkspaceService);
+
     if (
-      confirm(
-        'Lembre-se de salvar seu código antes de recarregar a página!\n\nAperte "OK" para recarregar a página, ou "Cancelar" para abortar.',
+      !workspace.persistenceAvailable &&
+      !confirm(
+        "Seu navegador não está salvando o código. Baixe seus arquivos antes de atualizar, ou eles serão perdidos.\n\nAtualizar agora?",
       )
     ) {
-      window.location.reload();
+      return;
     }
+
+    workspace.saveNow();
+    window.location.reload();
   }
 
   private finishUpdateDownload() {

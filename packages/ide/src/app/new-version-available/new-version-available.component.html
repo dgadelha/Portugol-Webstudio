@@ -1,6 +1,10 @@
 <strong>Uma nova versão do Portugol Webstudio está disponível</strong>
 
-<p>Lembre-se de salvar os seus arquivos antes de atualizar.</p>
+@if (persistenceAvailable) {
+  <p>O código das abas continua aqui depois de atualizar.</p>
+} @else {
+  <p>Seu navegador não está salvando o código: baixe seus arquivos antes de atualizar.</p>
+}
 <p>Quando estiver pronto, atualize a página ou use o botão abaixo.</p>
 
 <div class="buttons">
