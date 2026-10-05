@@ -8,6 +8,7 @@ import {
   ElementRef,
   Injector,
   inject,
+  input,
   NgZone,
   OnDestroy,
   OnInit,
@@ -88,6 +89,12 @@ export class TabHelpComponent implements OnInit, OnDestroy {
   readonly isBelowMd = this.responsive.isBelowMd;
   readonly newTab = output<{ name: string; contents: string }>();
 
+  /**
+   * A aba guarda o tópico aberto no próprio conteúdo, que a área de trabalho grava:
+   * depois de recarregar, a Ajuda volta ao mesmo tópico.
+   */
+  readonly tabId = input.required<string>();
+
   constructor() {
     // Um endereço `#ajuda=<arquivo>` pede um tópico pelo estado da aplicação.
     effect(() => {
@@ -112,18 +119,23 @@ export class TabHelpComponent implements OnInit, OnDestroy {
         }
 
         this.topicos = ajudaWithLibs;
-        this.loadItem(ajudaWithLibs[0]);
+
+        // O primeiro tópico: o de um endereço `#ajuda=`, senão o que estava aberto antes de
+        // recarregar, senão o primeiro da lista. Um tópico que não existe mais vira o primeiro.
+        const salvo = this.workspace.tabs().find(tab => tab.id === this.tabId())?.contents;
+        const pedido = this.#topicoPendente ?? salvo;
+        const inicial = (pedido && this.#topicos.get(pedido)) || ajudaWithLibs[0];
+
+        this.#topicoPendente = undefined;
+        this.loadItem(inicial);
 
         // Depois que a árvore desenha os tópicos: os dois primeiros grupos
-        // começam abertos, e um tópico pedido antes de carregar é aberto.
+        // começam abertos, e as pastas até o tópico inicial também.
         afterNextRender(
           () => {
             this.tree()?.expand(ajudaWithLibs[0]);
             this.tree()?.expand(ajudaWithLibs[1]);
-
-            if (this.#topicoPendente) {
-              this.openTopic(this.#topicoPendente);
-            }
+            this.#expandirAte(inicial);
           },
           { injector: this.injector },
         );
@@ -174,6 +186,11 @@ export class TabHelpComponent implements OnInit, OnDestroy {
     this.gaService.pageView(item.arquivo ?? item.id, item.text, item.arquivo ?? item.id);
     this.current = item;
     this.#rolarParaTopo = true;
+
+    if (item.arquivo) {
+      this.workspace.setContents(this.tabId(), item.arquivo);
+    }
+
     this.#conteudo$?.unsubscribe();
 
     if (item.source !== undefined) {
@@ -242,12 +259,14 @@ export class TabHelpComponent implements OnInit, OnDestroy {
     }
 
     this.#topicoPendente = undefined;
+    this.#expandirAte(destino);
+    this.loadItem(destino);
+  }
 
-    for (let pai = this.#pais.get(destino); pai; pai = this.#pais.get(pai)) {
+  #expandirAte(item: TreeItem) {
+    for (let pai = this.#pais.get(item); pai; pai = this.#pais.get(pai)) {
       this.tree()?.expand(pai);
     }
-
-    this.loadItem(destino);
   }
 
   /**
