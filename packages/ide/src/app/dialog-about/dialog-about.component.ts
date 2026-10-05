@@ -33,25 +33,28 @@ export class DialogAboutComponent {
     switch (status) {
       case "ready": {
         return this.pwa.online()
-          ? { icon: "cloud-check-outline", text: "Pronto para usar sem internet" }
-          : { icon: "cloud-off-outline", text: "Sem internet: usando a cópia guardada no navegador" };
+          ? { icon: "assets/mdi/cloud-check-outline.svg", text: "Pronto para usar sem internet" }
+          : { icon: "assets/mdi/cloud-off-outline.svg", text: "Sem internet: usando a cópia guardada no navegador" };
       }
 
       case "downloading": {
-        return { icon: "cloud-download-outline", text: "Baixando para usar sem internet…" };
+        return { icon: "assets/mdi/cloud-download-outline.svg", text: "Baixando para usar sem internet…" };
       }
 
       case "checking": {
-        return { icon: "cloud-question-outline", text: "Conferindo a cópia guardada no navegador…" };
+        return { icon: "assets/mdi/cloud-question-outline.svg", text: "Conferindo a cópia guardada no navegador…" };
       }
 
       case "unknown": {
-        return { icon: "cloud-question-outline", text: "Não foi possível conferir se o IDE já funciona sem internet" };
+        return {
+          icon: "assets/mdi/cloud-question-outline.svg",
+          text: "Não foi possível conferir se o IDE já funciona sem internet",
+        };
       }
 
       default: {
         return {
-          icon: "cloud-off-outline",
+          icon: "assets/mdi/cloud-off-outline.svg",
           text: isDevMode()
             ? "O uso sem internet fica desligado no ambiente local"
             : "Este navegador não guarda o IDE para usar sem internet",
