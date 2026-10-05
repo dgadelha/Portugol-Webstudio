@@ -94,6 +94,8 @@ export class PwaService {
           this.updateStatus.set("downloading");
           this.updateProgress.set(null);
           this.loadingToast?.close();
+          // Uma versão pronta antes desta deixa de ser a novidade: a desta avisa quando ficar pronta
+          this.versionReadyToast?.close();
 
           this.loadingToast = this.toast.show<DownloadToastData>(DownloadProgressToastComponent, {
             data: { kind: "update", progress: this.updateProgress },
