@@ -44,7 +44,9 @@ export class DialogService {
       width: config.width,
       height: config.height,
       maxWidth: "calc(100vw - 2rem)",
-      maxHeight: "calc(100vh - 2rem)",
+      // `dvh`: a altura visível. No Safari do iPhone, `vh` conta a tela sem as barras do
+      // navegador, e um diálogo alto passava da área visível, sem as margens.
+      maxHeight: "calc(100dvh - 2rem)",
       ariaLabelledBy: config.ariaLabelledBy,
       ariaModal: !modeless,
       hasBackdrop: !modeless,

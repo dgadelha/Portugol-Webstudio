@@ -489,7 +489,7 @@ export class AppComponent implements OnInit {
 
     const ref = this.dialog.open<{ title: string; code: string }>(DialogOpenExampleComponent, {
       width: "min(92vw, 960px)",
-      height: "min(85vh, 640px)",
+      height: "min(85dvh, 640px)",
       ariaLabelledBy: "dialogo-exemplos-titulo",
     });
 
@@ -507,7 +507,7 @@ export class AppComponent implements OnInit {
       data: { section },
       width: "min(92vw, 768px)",
       // Alto o bastante para a prévia do editor e os controles abaixo dela
-      height: "min(90vh, 720px)",
+      height: "min(90dvh, 720px)",
       ariaLabelledBy: "dialogo-configuracoes-titulo",
     });
   }
