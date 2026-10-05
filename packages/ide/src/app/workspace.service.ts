@@ -486,6 +486,14 @@ export class WorkspaceService {
     });
   }
 
+  /**
+   * Grava agora o que ainda está esperando o intervalo, como antes de recarregar a página
+   * para atualizar o IDE.
+   */
+  saveNow() {
+    this.persistNow();
+  }
+
   private persistNow() {
     if (!this.storage.available) {
       return;
