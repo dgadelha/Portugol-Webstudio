@@ -39,7 +39,13 @@ export class PwaService {
 
   loadingToast?: CreateHotToastRef<unknown>;
   versionReadyToast?: CreateHotToastRef<unknown>;
-  private offlineToast?: CreateHotToastRef<unknown>;
+
+  /**
+   * Primeira visita em que faltavam arquivos: quando a cópia offline fica completa, um
+   * aviso diz que o IDE já funciona sem internet. O download em si não tem aviso (o
+   * progresso fica no Sobre), para não aparecer sem a pessoa ter pedido nada.
+   */
+  private announceOfflineReady = false;
 
   /**
    * Versão sendo baixada. O service worker avisa de novo a cada verificação que acontece
@@ -100,7 +106,7 @@ export class PwaService {
           this.versionReadyToast?.close();
 
           this.loadingToast = this.toast.show<DownloadToastData>(DownloadProgressToastComponent, {
-            data: { kind: "update", progress: this.updateProgress },
+            data: { progress: this.updateProgress },
             autoClose: false,
             dismissible: true,
           });
@@ -254,10 +260,11 @@ export class PwaService {
    * não avisa quando termina. Então a página confere o cache até ter todos os arquivos.
    *
    * Sem service worker controlando a página quando ela abriu, é a primeira visita (ou o
-   * cache foi apagado), e o download tem aviso. Com service worker, a conferência é calada:
-   * quem fechou a aba antes do fim da primeira visita ainda não tem tudo, e o Sobre não
-   * deve dizer que está pronto. Um recarregamento forçado (Shift) também abre sem service
-   * worker, mas aí o cache já está completo na primeira conferência, e nada é avisado.
+   * cache foi apagado): o progresso fica no Sobre, e um aviso diz quando termina. Com
+   * service worker, a conferência é calada: quem fechou a aba antes do fim da primeira
+   * visita ainda não tem tudo, e o Sobre não deve dizer que está pronto. Um recarregamento
+   * forçado (Shift) também abre sem service worker, mas aí o cache já está completo na
+   * primeira conferência, e nada é avisado.
    *
    * Com uma atualização publicada, a lista do servidor é a da versão nova, e os arquivos
    * dela faltariam no cache até ela ser baixada. A página sabe que a lista não é a dela
@@ -298,11 +305,7 @@ export class PwaService {
             this.offlineMissing = pending;
             this.refillOfflineCopy();
           } else {
-            this.offlineToast ??= this.toast.show<DownloadToastData>(DownloadProgressToastComponent, {
-              data: { kind: "offline", progress: this.offlineProgress },
-              autoClose: false,
-              dismissible: true,
-            });
+            this.announceOfflineReady = true;
           }
 
           return;
@@ -311,8 +314,8 @@ export class PwaService {
         this.offlineStatus.set("ready");
         this.offlineMissing = [];
 
-        if (this.offlineToast) {
-          this.offlineToast.close();
+        if (this.announceOfflineReady) {
+          this.announceOfflineReady = false;
 
           this.toast.success("O Portugol Webstudio já pode ser usado sem internet.", {
             duration: 8000,

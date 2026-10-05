@@ -5,8 +5,7 @@ import type { DownloadToastData } from "../pwa.types";
 import { ProgressBarComponent } from "../shared/progress-bar.component";
 
 /**
- * Aviso de download com barra de progresso: `offline` na primeira visita, quando o IDE
- * baixa os arquivos para funcionar sem internet, e `update` numa atualização.
+ * Aviso de download de uma atualização, com barra de progresso.
  */
 @Component({
   selector: "app-download-progress-toast",
@@ -18,15 +17,9 @@ import { ProgressBarComponent } from "../shared/progress-bar.component";
 export class DownloadProgressToastComponent {
   private toastRef = inject<HotToastRef<DownloadToastData>>(HotToastRef, { optional: true });
 
-  readonly kind = this.toastRef?.data.kind ?? "update";
-
   readonly progress = computed(() => this.toastRef?.data.progress() ?? null);
 
   readonly message = computed(() => {
-    if (this.kind === "offline") {
-      return "Baixando o Portugol Webstudio para usar sem internet…";
-    }
-
     const progress = this.progress();
 
     // Os arquivos novos chegaram; falta o service worker terminar de preparar a versão

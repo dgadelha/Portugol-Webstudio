@@ -26,9 +26,8 @@ export interface DownloadProgress {
 }
 
 /**
- * O que o aviso de download recebe: o tipo de download e o progresso, que ele acompanha.
+ * O que o aviso de download de uma atualização recebe: o progresso, que ele acompanha.
  */
 export interface DownloadToastData {
-  kind: "offline" | "update";
   progress: Signal<DownloadProgress | null>;
 }
