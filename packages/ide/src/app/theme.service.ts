@@ -31,11 +31,12 @@ export class ThemeService {
     this.theme$.subscribe(theme => {
       this.document.body.dataset.theme = theme;
 
-      // A barra de título do app instalado acompanha o fundo das abas, como no VS Code
-      const chrome = getComputedStyle(this.document.body).getPropertyValue("--pws-bg-chrome").trim();
+      // A barra de título do app instalado e as barras do Safari acompanham a moldura em
+      // volta da área arredondada
+      const frame = getComputedStyle(this.document.body).getPropertyValue("--pws-bg-frame").trim();
 
-      if (chrome) {
-        this.meta.updateTag({ name: "theme-color", content: chrome });
+      if (frame) {
+        this.meta.updateTag({ name: "theme-color", content: frame });
       }
 
       this.ref.tick();

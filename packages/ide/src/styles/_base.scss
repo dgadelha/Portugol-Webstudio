@@ -15,8 +15,10 @@ app-root {
   overflow: hidden;
 }
 
+// O fundo da moldura (`bg-frame`), que é o que aparece em volta da área arredondada:
+// o Safari pinta as áreas de cima e de baixo da tela com a cor do `body`.
 body {
-  background-color: var(--pws-bg-chrome);
+  background-color: var(--pws-bg-frame);
   color: var(--pws-fg);
   font-family: var(--pws-font);
   font-size: var(--pws-text-ui);
