@@ -37,14 +37,18 @@ A classe `PortugolExecutor` exporta uma interface com as seguintes propriedades:
 
 ### Métodos:
 
-- `run(code: string)`: executa o código passado como parâmetro. O código deve estar em Portugol, e deve conter uma função `inicio()`.
+- `runTranspiled(transpiled)`: executa um código já analisado e transpilado pela função `transpile`. Se o código tiver erros de compilação, eles vão para a saída e o programa não é executado.
 
-- `destroy()`: interrompe a execução do programa atual e limpa o estado do executor.
+- `stop()`: interrompe a execução do programa atual.
+
+### Funções:
+
+- `transpile(code: string)`: analisa e transpila o código, que deve estar em Portugol e conter uma função `inicio()`. Retorna o JavaScript gerado, os erros e avisos encontrados e o tempo de cada etapa, no formato que o `runTranspiled` recebe. Fica fora do executor para quem transpila em outro lugar (como o IDE, num worker) não levar o analisador junto.
 
 ## Exemplo de uso:
 
 ```typescript
-import { PortugolExecutor, PortugolWebWorkersRunner } from "@portugol-webstudio/runner";
+import { PortugolExecutor, PortugolWebWorkersRunner, transpile } from "@portugol-webstudio/runner";
 
 const executor = new PortugolExecutor(PortugolWebWorkersRunner);
 
@@ -52,9 +56,11 @@ executor.stdOut$.subscribe(stdOut => {
   console.log(stdOut);
 });
 
-executor.run(`programa {
+executor.runTranspiled(
+  transpile(`programa {
   funcao inicio() {
     escreva("Olá mundo!")
   }
-}`);
+}`),
+);
 ```
