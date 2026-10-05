@@ -4,10 +4,7 @@
   "short_name": "Portugol",
   "description": "Ambiente de desenvolvimento (IDE) online e de código aberto para a linguagem Portugol, baseado no Portugol Studio.",
   "lang": "pt-BR",
-  "categories": [
-    "education",
-    "developer"
-  ],
+  "categories": ["education", "developer"],
   "theme_color": "#181818",
   "background_color": "#181818",
   "display": "standalone",
@@ -80,5 +77,30 @@
       "type": "image/png",
       "purpose": "maskable"
     }
-  ]
+  ],
+  "shortcuts": [
+    {
+      "name": "Novo arquivo",
+      "url": "./#novo"
+    },
+    {
+      "name": "Abrir exemplo",
+      "url": "./#exemplos"
+    },
+    {
+      "name": "Ajuda",
+      "url": "./#ajuda"
+    }
+  ],
+  "file_handlers": [
+    {
+      "action": "./",
+      "accept": {
+        "application/x-portugol": [".por"]
+      }
+    }
+  ],
+  "launch_handler": {
+    "client_mode": ["focus-existing", "auto"]
+  }
 }
