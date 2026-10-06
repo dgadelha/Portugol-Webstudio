@@ -99,8 +99,14 @@ export class DialogAboutComponent {
 
   readonly checking = computed(() => ["checking", "downloading"].includes(this.pwa.updateStatus()));
 
-  checkForUpdate() {
+  async checkForUpdate() {
     this.gaService.event("about_check_updates", "about_dialog", "Procurar atualizações (diálogo Sobre)");
-    void this.pwa.checkForUpdate();
+
+    // "latest", "ready" (versão nova baixada), "offline" ou "failed"
+    const result = await this.pwa.checkForUpdate();
+
+    if (result) {
+      this.gaService.event("about_check_updates_result", "about_dialog", result);
+    }
   }
 }

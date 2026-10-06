@@ -213,16 +213,17 @@ export class PwaService {
 
   /**
    * A verificação pedida no Sobre. O `checkForUpdate` só termina quando a versão nova
-   * acaba de baixar; enquanto isso, os eventos atualizam o `updateStatus`.
+   * acaba de baixar; enquanto isso, os eventos atualizam o `updateStatus`. Devolve o resultado,
+   * ou `undefined` quando não verificou (sem service worker, ou já baixando).
    */
-  async checkForUpdate() {
+  async checkForUpdate(): Promise<UpdateStatus | undefined> {
     if (!this.swUpdate.isEnabled || this.updateStatus() === "downloading") {
-      return;
+      return undefined;
     }
 
     if (!this.online()) {
       this.updateStatus.set("offline");
-      return;
+      return "offline";
     }
 
     if (this.updateStatus() !== "ready") {
@@ -240,6 +241,8 @@ export class PwaService {
       console.error("PWA: falha ao verificar atualizações", error);
       this.updateStatus.set("failed");
     }
+
+    return this.updateStatus();
   }
 
   /**
