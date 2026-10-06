@@ -67,7 +67,7 @@
                 "output": "assets/recursos/ajuda/"
               },
               {
-                "glob": "**/*",
+                "glob": "**/*.{por,json}",
                 "input": "node_modules/@portugol-webstudio/resources/exemplos",
                 "output": "assets/recursos/exemplos/",
                 "ignore": ["jogos/**", "musica/**"]
