@@ -143,9 +143,11 @@
   }
 }
 
+// Fora das abas, com uma borda para parecer um botão também sem o mouse em cima (no celular)
 .new-tab {
   align-self: center;
   margin: 0 0.25rem;
+  border: 1px solid var(--pws-border);
 }
 
 .tab-panel {
