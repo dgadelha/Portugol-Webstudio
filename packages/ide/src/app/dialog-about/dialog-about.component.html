@@ -64,6 +64,19 @@
     }
   </section>
 
+  @if (survey.active) {
+    <a
+      class="btn btn-primary"
+      target="_blank"
+      rel="external noopener"
+      [href]="survey.url"
+      (click)="survey.markAnswered('about')"
+    >
+      <svg-icon src="assets/mdi/clipboard-text-outline.svg" aria-hidden="true" />
+      Responder pesquisa
+    </a>
+  }
+
   <p class="made-with-love">
     Feito com <svg-icon src="assets/mdi/heart.svg" class="icon-red" svgAriaLabel="amor" /> no
     <svg-icon src="assets/flag-br.svg" svgAriaLabel="Brasil" />

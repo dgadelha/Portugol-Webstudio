@@ -26,6 +26,7 @@ import { DialogSettingsComponent, SettingsSectionId } from "./dialog-settings/di
 import { FileService } from "./file.service";
 import { SettingsService } from "./settings.service";
 import { ShareService } from "./share.service";
+import { SurveyService } from "./survey.service";
 import { atalhoDoEvento } from "./shared/atalhos";
 import { DialogService } from "./shared/dialog.service";
 import { ACTIVE_TAB_SELECTOR, focusAfterRender } from "./shared/focus";
@@ -76,6 +77,7 @@ export class AppComponent implements OnInit {
   private settingsService = inject(SettingsService);
   private injector = inject(Injector);
   private zone = inject(NgZone);
+  private survey = inject(SurveyService);
 
   private readonly tablist = viewChild.required<ElementRef<HTMLElement>>("tablist");
   private readonly editors = viewChildren(TabEditorComponent);
@@ -139,6 +141,9 @@ export class AppComponent implements OnInit {
 
     // Com muitas abas restauradas, a aba em foco pode começar fora da vista.
     this.selectTab(this.workspace.activeTabId());
+
+    // A aba Inicial é a que aparece sem nenhuma aba ativa.
+    this.survey.inviteOnStart(() => this.workspace.activeTabId() === null);
   }
 
   onShortcut(event: KeyboardEvent) {

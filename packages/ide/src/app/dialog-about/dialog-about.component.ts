@@ -5,6 +5,7 @@ import { GoogleAnalyticsService, NgxGoogleAnalyticsModule } from "ngx-google-ana
 
 import { IS_BETA } from "../beta";
 import { PwaService } from "../pwa.service";
+import { SurveyService } from "../survey.service";
 import { ProgressBarComponent } from "../shared/progress-bar.component";
 import { TooltipDirective } from "../shared/tooltip.directive";
 import { APP_COMMIT_URL, APP_VERSION } from "../version";
@@ -19,6 +20,7 @@ import { APP_COMMIT_URL, APP_VERSION } from "../version";
 export class DialogAboutComponent {
   readonly dialogRef = inject<DialogRef<"changelog">>(DialogRef);
   readonly pwa = inject(PwaService);
+  readonly survey = inject(SurveyService);
   private gaService = inject(GoogleAnalyticsService);
 
   readonly isBeta = IS_BETA;
