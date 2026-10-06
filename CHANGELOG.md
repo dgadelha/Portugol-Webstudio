@@ -11,6 +11,70 @@ Quando o beta chega na main, o deploy junta os arquivos de `changelog/` aqui, nu
 
 As mudanças mais recentes do Portugol Webstudio aparecem primeiro.
 
+## 06/10/2026
+
+A interface foi redesenhada:
+
+- Uma barra de status, embaixo, mostra a linha e a coluna do cursor, a indentação e a quantidade de erros e avisos
+- As dicas dos botões mostram o atalho de teclado de cada ação
+- As cores do editor seguem as regras do Portugol: os operadores `e`, `ou` e `nao` ganharam cor, palavras como `se` e `para` não são mais coloridas como funções antes de um parêntese, e comentários, números e caracteres especiais (como `\n`) são reconhecidos como no Portugol Studio
+- Tudo pode ser usado só pelo teclado e com leitores de tela: as setas trocam de aba, Delete fecha a aba e F2 a renomeia, e Alt+N abre uma aba nova e Alt+W fecha a aba atual
+- Trocar de aba não interrompe mais o programa em execução, e abrir um arquivo sempre cria uma aba nova
+- No celular, a aba Inicial mostra só o ícone, deixando espaço para as outras abas, e no iPhone a página não dá mais zoom ao tocar no código ou num campo de texto
+
+O painel de baixo também mudou:
+
+- Mostra se o programa está "Executando" ou "Aguardando entrada", com botões para limpar e recolher a saída
+- Ganhou uma lista de "Problemas", que leva direto à linha de cada erro
+- Em celulares e tablets, um campo de texto aparece quando o programa espera uma entrada (`leia`)
+
+As configurações foram reorganizadas em seções (Aparência, Editor, Saída e Abas), com uma prévia do editor que mostra cada mudança na hora. Opções novas:
+
+- Desligar as sugestões ao digitar, ou mostrar os erros só ao executar
+- Destacar a linha atual, recolher blocos e fixar o bloco atual no topo
+- Desligar a quebra de linha da saída, esconder o tempo de execução e começar com o painel recolhido
+- Fechar abas sem confirmar, e começar cada janela nova sem as abas da última
+
+O diálogo "Abrir exemplo" foi redesenhado:
+
+- Os exemplos ficam numa lista agrupada por assunto, com uma busca que ignora acentos
+- Uma prévia mostra a descrição e o código do exemplo escolhido
+- Funciona só com o teclado: as setas escolhem o exemplo e o Enter abre
+
+O Webstudio também ficou mais leve e abre mais rápido. Depois da primeira visita, ele funciona sem internet, e a janela "Sobre" mostra se ele já está pronto para isso, a versão em uso e um botão para procurar atualizações. Instalado como aplicativo, ele acompanha o tema claro ou escuro, pode ser usado na horizontal no celular, ganhou atalhos no ícone e, no computador, abre arquivos `.por` direto pelo sistema.
+
+---
+
+Correções na execução do código Portugol:
+
+- Somar dois caracteres, como `'C' + 'a'`, resulta em um número inteiro (a soma dos códigos dos caracteres), e não em um texto. Agora o editor aponta um erro quando esse resultado é guardado numa variável do tipo `cadeia`; antes, o programa só falhava ao ser executado, sem nenhuma mensagem. A tabela da adição na Ajuda também foi corrigida
+
+Na biblioteca Graficos:
+
+- `encerrar_modo_grafico` fecha a janela e o programa continua, como no Portugol Studio. Antes, o programa era interrompido
+- `definir_rotacao` com ângulos negativos gira no sentido anti-horário. Antes, o desenho não girava
+- `altura_texto` retorna a altura do texto. Antes, não retornava nenhum valor
+- `desenhar_texto` usa a posição `y` como o topo do texto, como no Portugol Studio. Antes, um texto desenhado no topo da janela ficava cortado
+- Os gradientes `GRADIENTE_INFERIOR_ESQUERDO` e `GRADIENTE_SUPERIOR_ESQUERDO` estavam com as direções trocadas, e agora seguem o Portugol Studio
+
+---
+
+A seção Ajuda foi refeita:
+
+- Funciona também no tema claro, e as imagens e os fluxogramas acompanham o tema escolhido
+- Os exemplos de código têm as cores do editor e um botão para copiar, e o botão "Tente você mesmo" abre o exemplo numa aba nova
+- O conteúdo foi revisado: foram corrigidos erros de português, além de explicações e exemplos incorretos
+- Cada biblioteca tem uma página que mostra como incluí-la e lista as constantes e funções
+- Cada função tem a própria página, com a assinatura, os parâmetros, o retorno e como usá-la
+- As descrições das bibliotecas foram revisadas e corrigidas
+
+Os exemplos (em "Abrir exemplo") também foram revisados:
+
+- O código foi organizado, os textos e comentários corrigidos, e vários exemplos foram reescritos para explicar melhor cada conceito
+- Exemplos com erro foram consertados, como o "Quantos Dias", que não seguia todas as regras dos anos bissextos, e a "Minicalculadora", o "Tipo de Triângulo" e o "Vogal" avisam quando o que foi digitado não é válido
+- Há exemplos novos, como "Adivinhe o Número", "Jogo da Velha", "Pedra, Papel e Tesoura", "Ordenação (Bubble Sort)" e "Busca Binária"
+- Há exemplos de gráficos que funcionam no Webstudio, como "Bandeira do Brasil", "Bola Quicando" e "Relógio Analógico", e das bibliotecas Calendario, Objetos e Tipos
+
 ## 02/10/2026
 
 Uma barra invertida `\` sozinha dentro de um texto agora é apontada como erro, como no Portugol Studio, com a dica de escrever `\\` para mostrar a barra. Antes, a barra sumia do que era escrito na tela, o que estragava desenhos como `/\_/\`. Contribuição de [@kwy404](https://github.com/kwy404). [Mais detalhes](https://github.com/dgadelha/Portugol-Webstudio/pull/451)
