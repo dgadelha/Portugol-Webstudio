@@ -29,6 +29,34 @@ progress {
     border-radius: 3px;
     background-color: var(--pws-accent);
   }
+
+  // Sem valor, o Chromium e o Safari não desenham nada com `appearance: none`: um trecho
+  // amarelo corre pelo fundo do próprio `<progress>`, com a trilha transparente por cima.
+  &:indeterminate {
+    background-image: linear-gradient(var(--pws-accent), var(--pws-accent));
+    background-repeat: no-repeat;
+    background-size: 30% 100%;
+    animation: progress-indeterminate 1.4s ease-in-out infinite;
+
+    &::-webkit-progress-bar {
+      background-color: transparent;
+    }
+
+    &::-moz-progress-bar {
+      background-color: transparent;
+    }
+  }
+}
+
+// Com o tamanho de 30%, de -50% a 150% o trecho sai inteiro pela esquerda e pela direita
+@keyframes progress-indeterminate {
+  from {
+    background-position: -50% 0;
+  }
+
+  to {
+    background-position: 150% 0;
+  }
 }
 
 .percent {
@@ -41,5 +69,13 @@ progress {
 @media (prefers-reduced-motion: reduce) {
   progress::-webkit-progress-value {
     transition: none;
+  }
+
+  // Parado, um trecho à esquerda pareceria progresso de verdade: a trilha inteira fica
+  // amarelada
+  progress:indeterminate {
+    background-image: none;
+    background-color: rgba(var(--pws-accent-rgb), 0.35);
+    animation: none;
   }
 }
