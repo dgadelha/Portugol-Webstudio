@@ -152,6 +152,9 @@ export class TabHelpComponent implements OnInit, OnDestroy {
         this.#exibir(this.current);
       }
 
+      // Sem imagens por tema, o Markdown não muda e o conteúdo não é renderizado de novo:
+      // as cores dos códigos já exibidos são refeitas aqui
+      void this.#recolorirCodigos();
       void this.#renderizarDiagramas();
     });
   }
@@ -379,6 +382,43 @@ export class TabHelpComponent implements OnInit, OnDestroy {
     this.markdown = markdown;
   }
 
+  /**
+   * Colore o código com o tema atual do Monaco. As classes geradas apontam para as cores
+   * do tema em uso, então o código precisa ser colorido de novo quando o tema muda.
+   */
+  async #colorir(elementoCodigo: HTMLElement, codigo: string) {
+    // Com a Ajuda aberta ao recarregar a página, o conteúdo chega antes do
+    // Monaco: as cores esperam ele ficar pronto.
+    await this.monacoService.ready;
+
+    // HTML gerado pelo Monaco a partir do texto do código
+    // eslint-disable-next-line unicorn/no-unsafe-dom-html
+    elementoCodigo.innerHTML = await monaco.editor.colorize(codigo, "portugol", {
+      // A mesma largura de tabulação do editor, escolhida nas configurações
+      tabSize: this.settingsService.get(settings.editorTabSize),
+    });
+  }
+
+  async #recolorirCodigos() {
+    const conteudo = this.conteudo()?.nativeElement;
+
+    if (!conteudo) {
+      return;
+    }
+
+    await this.monacoService.ready;
+    monaco.editor.setTheme(`portugol-${this.theme}`);
+
+    for (const bloco of conteudo.querySelectorAll("figure.codigo-portugol")) {
+      const codigo = this.#codigos.get(bloco);
+      const elementoCodigo = bloco.querySelector("code");
+
+      if (codigo !== undefined && elementoCodigo) {
+        void this.#colorir(elementoCodigo, codigo);
+      }
+    }
+  }
+
   #prepararCodigo(bloco: Element) {
     const elementoCodigo = bloco.querySelector("code");
 
@@ -394,16 +434,7 @@ export class TabHelpComponent implements OnInit, OnDestroy {
       bloco.append(this.#criarBotaoCopiar(codigo));
     }
 
-    // Com a Ajuda aberta ao recarregar a página, o conteúdo chega antes do
-    // Monaco: as cores esperam ele ficar pronto.
-    void this.monacoService.ready.then(async () => {
-      // HTML gerado pelo Monaco a partir do texto do código
-      // eslint-disable-next-line unicorn/no-unsafe-dom-html
-      elementoCodigo.innerHTML = await monaco.editor.colorize(codigo, "portugol", {
-        // A mesma largura de tabulação do editor, escolhida nas configurações
-        tabSize: this.settingsService.get(settings.editorTabSize),
-      });
-    });
+    void this.#colorir(elementoCodigo, codigo);
 
     if (bloco.classList.contains("exemplo")) {
       const botao = document.createElement("button");
