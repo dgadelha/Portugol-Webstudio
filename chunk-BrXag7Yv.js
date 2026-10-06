@@ -1,0 +1,1 @@
+import"./main-YC2EZKCM.js";import{n as v,t as C}from"./chunk-B1qNNO4b.js";export{C as ArchitectureModule,v as createArchitectureServices};

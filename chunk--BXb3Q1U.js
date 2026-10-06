@@ -1,1 +1,0 @@
-import"./main-KMK6A6YZ.js";import{n as v,t as C}from"./chunk-BDQ6zSsI.js";export{C as ArchitectureModule,v as createArchitectureServices};

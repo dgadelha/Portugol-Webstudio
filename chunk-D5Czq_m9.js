@@ -1,4 +1,0 @@
-import{i as E}from"./main-KMK6A6YZ.js";import{n as o}from"./chunk-Cvof6wl4.js";import{R as ct}from"./chunk-CA__pNLu.js";import{nt as va}from"./chunk-BYjSKBcW.js";import{j as m$1}from"./chunk-BDQ6zSsI.js";import{n as a}from"./chunk-CoKBDiX3.js";var m={parse:o(e=>E(null,null,function*(){let t=yield m$1(`info`,e);ct.debug(t)}),`parse`)};var v={version:`12.1.0`};var S={parser:m,db:{getVersion:o(()=>v.version,`getVersion`)},renderer:{draw:o((e,t,g)=>{ct.debug(`rendering info diagram
-`+e);let o=a(t);va(o,100,400,!0),o.append(`g`).append(`text`).attr(`x`,100).attr(`y`,40).attr(`class`,`version`).attr(`font-size`,32).style(`text-anchor`,`middle`).text(`v${g}`)},`draw`)}};export{S as diagram};
-//# debugId=74c538a5-f2f1-51b3-a699-eb8142408bd4
-//# sourceMappingURL=chunk-D5Czq_m9.js.map

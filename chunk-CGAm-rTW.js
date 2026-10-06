@@ -1,0 +1,1 @@
+import"./main-YC2EZKCM.js";import{l as m,u as v}from"./chunk-B1qNNO4b.js";export{m as InfoModule,v as createInfoServices};
