@@ -42,6 +42,8 @@ programa {
     // mais de um caractere
     se (tp.cadeia_e_caracter(cad1)) {
       escreva("A cadeia \"", cad1, "\" representa um caractere\n")
+    } senao {
+      escreva("A cadeia \"", cad1, "\" não representa um caractere\n")
     }
 
     // Aqui repetimos o teste feito anteriormente, mas neste caso, será retornado

@@ -13,7 +13,8 @@
  * Descrição:
  *
  *   Este exemplo demonstra o uso da função "preencher_a_esquerda" da biblioteca "Texto"
- *   para inserir uma sequência de caracteres em um dado do tipo cadeia.
+ *   para completar um texto à esquerda com um caractere até que ele atinja um
+ *   determinado tamanho.
  *
  * Autores:
  *

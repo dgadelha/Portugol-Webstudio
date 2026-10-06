@@ -38,11 +38,13 @@ programa {
     escreva("Digite a nota da prova 3: ")
     leia(nota3)
 
-    // Os parênteses fazem a soma acontecer antes da divisão
-    media = (nota1 + nota2 + nota3) / 3
+    // Os parênteses fazem a soma acontecer antes da divisão. A função "arredondar"
+    // deixa a média com no máximo duas casas decimais, e as notas são comparadas
+    // com a média já arredondada: sem isso, as notas 0.1, 0.1 e 0.1 dariam a média
+    // 0.10000000000000002, e as três apareceriam "abaixo da média"
+    media = mat.arredondar((nota1 + nota2 + nota3) / 3, 2)
 
-    // A função "arredondar" deixa a média com no máximo duas casas decimais
-    escreva("\nA média das notas é ", mat.arredondar(media, 2), "\n\n")
+    escreva("\nA média das notas é ", media, "\n\n")
 
     // Aqui não usamos "senao": cada "se" é verificado separadamente,
     // então mais de uma mensagem pode ser exibida
@@ -61,7 +63,8 @@ programa {
       alguma_abaixo = verdadeiro
     }
 
-    // Isso só acontece quando as três notas são iguais
+    // Isso acontece quando nenhuma nota fica abaixo da média, por exemplo quando
+    // as três notas são iguais
     se (nao alguma_abaixo) {
       escreva("Nenhuma nota ficou abaixo da média\n")
     }

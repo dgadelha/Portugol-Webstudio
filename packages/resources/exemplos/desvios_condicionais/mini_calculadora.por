@@ -12,10 +12,12 @@
  *
  * Descrição:
  *
- *   Este exemplo demonstra o uso do desvio condicional para criar uma mini
- *   calculadora. O programa pede ao usuário que informe dois números reais
+ *   Este exemplo demonstra o uso do desvio condicional para criar uma
+ *   minicalculadora. O programa pede ao usuário que informe dois números reais
  *   e a operação a ser executada entre estes números (soma, divisão, etc.).
  *   Por fim, é exibido o valor resultante da operação entre os dois números.
+ *   O programa também avisa quando a operação informada não existe e quando
+ *   há uma divisão por zero.
  *
  * Autores:
  *
@@ -67,6 +69,8 @@ programa {
     }
 
     escreva("Resultado:\n\n")
+    // Os números reais nem sempre são guardados com exatidão no computador: por
+    // isso 0.1 + 0.2 aparece como 0.30000000000000004
     escreva(operando1, " ", operador, " ", operando2, " = ", resultado)
 
     escreva("\n")

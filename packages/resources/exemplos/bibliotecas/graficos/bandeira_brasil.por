@@ -1,5 +1,6 @@
 /**
- * Este exemplo desenha a Bandeira do Brasil com as proporções oficiais. Ele
+ * Este exemplo desenha a Bandeira do Brasil com as proporções oficiais, de forma
+ * simplificada (sem as estrelas e o lema "Ordem e Progresso"). Ele
  * mostra como calcular coordenadas a partir de uma medida base (o "módulo") e
  * como desenhar um losango com "desenhar_poligono", usando uma matriz de pontos.
  */

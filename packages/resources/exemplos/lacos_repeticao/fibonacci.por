@@ -1,7 +1,7 @@
 /**
  * Este exemplo mostra os N primeiros termos da sequência de Fibonacci, em que cada
  * termo é a soma dos dois anteriores (0, 1, 1, 2, 3, 5, 8...). Ele usa um laço com
- * duas variáveis que "caminham" pela sequência. Na categoria Subrotinas há uma
+ * duas variáveis que "caminham" pela sequência. Na categoria Sub-rotinas há uma
  * versão recursiva deste mesmo programa.
  */
 

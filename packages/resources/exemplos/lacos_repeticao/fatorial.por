@@ -39,14 +39,21 @@ programa {
   funcao inicio() {
     inteiro numero, atual = 1, fatorial = 1
 
-    escreva("Digite um número: ")
+    escreva("Digite um número de 0 a 12: ")
     leia(numero)
 
-    enquanto (atual <= numero) { // Itera 'atual' até o valor informado
-      fatorial = fatorial * atual // Calcula a próxima multiplicação do fatorial
-      atual = atual + 1
-    }
+    // O fatorial cresce muito rápido. O de 13 já passa do maior valor que uma
+    // variável inteiro consegue guardar (2.147.483.647), e não existe fatorial
+    // de número negativo
+    se (numero < 0 ou numero > 12) {
+      escreva("Digite um número de 0 a 12.\n")
+    } senao {
+      enquanto (atual <= numero) { // Itera 'atual' até o valor informado
+        fatorial = fatorial * atual // Calcula a próxima multiplicação do fatorial
+        atual = atual + 1
+      }
 
-    escreva("O fatorial de ", numero, " é: ", fatorial, "\n")
+      escreva("O fatorial de ", numero, " é: ", fatorial, "\n")
+    }
   }
 }

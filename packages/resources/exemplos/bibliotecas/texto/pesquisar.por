@@ -66,7 +66,7 @@ programa {
     // partir da posição 3, a função irá retornar o valor 4, que corresponde ao índice
     // da segunda letra 'C'.
     posicao = tx.posicao_texto("CA", texto, 3)
-    escreva("A posição do texto \"CA\" na palavra \"", texto, "\" é: ", posicao, "\n")
+    escreva("A posição do texto \"CA\" na palavra \"", texto, "\", a partir da posição 3, é: ", posicao, "\n")
 
     //-----------------------------------------------------------------------------------//
 
@@ -94,7 +94,7 @@ programa {
     // vamos entrar em um loop infinito, pois o valor retornado será sempre 1, que
     // corresponde à primeira letra 'A'.
     //
-    // O segredo aqui, é sempre procurar a próxima letra 'A' a partir da posição seguinte
+    // O segredo aqui é sempre procurar a próxima letra 'A' a partir da posição seguinte
     // à da última letra 'A' encontrada.
 
     faca {

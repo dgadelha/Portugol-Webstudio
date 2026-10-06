@@ -43,11 +43,19 @@ programa {
   funcao inicio() {
     inteiro numero
 
-    escreva("Digite um número: ")
+    escreva("Digite um número de 0 a 12: ")
     leia(numero)
 
     limpa()
-    escreva("O fatorial de ", numero, " é: ", fatorial(numero), "\n")
+
+    // O fatorial cresce muito rápido. O de 13 já passa do maior valor que uma
+    // variável inteiro consegue guardar (2.147.483.647), e não existe fatorial
+    // de número negativo
+    se (numero < 0 ou numero > 12) {
+      escreva("Digite um número de 0 a 12.\n")
+    } senao {
+      escreva("O fatorial de ", numero, " é: ", fatorial(numero), "\n")
+    }
   }
 
   // Função recursiva que calcula o fatorial do número passado

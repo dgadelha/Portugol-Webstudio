@@ -20,11 +20,11 @@ programa {
     se (peso <= 0 ou altura <= 0) {
       escreva("\nO peso e a altura precisam ser maiores que zero.\n")
     } senao {
-      // O IMC é o peso dividido pela altura ao quadrado
-      imc = peso / (altura * altura)
+      // O IMC é o peso dividido pela altura ao quadrado, arredondado para 1 casa
+      // decimal. A faixa é escolhida com esse mesmo valor que aparece na tela
+      imc = mat.arredondar(peso / (altura * altura), 1)
 
-      // Arredondamos para 1 casa decimal só na hora de mostrar o valor
-      escreva("\nSeu IMC é ", mat.arredondar(imc, 1), "\n")
+      escreva("\nSeu IMC é ", imc, "\n")
 
       // As faixas abaixo são as da Organização Mundial da Saúde (OMS). Como
       // cada "senao se" só é testado quando os anteriores deram falso, basta

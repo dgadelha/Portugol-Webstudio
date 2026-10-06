@@ -33,7 +33,7 @@ programa {
     // Aqui usamos a função "cadeia_e_inteiro" para verificar se o texto
     // contido na variável do tipo cadeia representa um número inteiro
     //
-    // Note que, devemos informar a base do número que queremos verificar.
+    // Note que devemos informar a base do número que queremos verificar.
     // Por exemplo, para verificar se a cadeia representa um número decimal
     // informamos a base 10, para verificar se a cadeia representa um número
     // binário, informamos a base 2

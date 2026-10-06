@@ -45,6 +45,6 @@ programa {
     }
 
     limpa()
-    escreva("O foguete foi lançado!!\n")
+    escreva("O foguete foi lançado!\n")
   }
 }

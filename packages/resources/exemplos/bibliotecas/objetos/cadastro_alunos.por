@@ -1,7 +1,7 @@
 /**
  * Este exemplo mostra como usar a biblioteca "Objetos" para guardar os dados de
- * vários alunos. Cada aluno é um objeto: um grupo de propriedades com nome
- * (nome, idade e nota). Os endereços dos objetos ficam guardados em um vetor.
+ * vários alunos. Cada aluno é um objeto com as propriedades nome, idade e nota.
+ * Os endereços dos objetos ficam guardados em um vetor.
  */
 
 programa {

@@ -12,9 +12,10 @@
  *
  * Descrição:
  *
- *   Este exemplo pede ao usuário que informe uma letra (caracter). Logo após
+ *   Este exemplo pede ao usuário que informe uma letra (caracter). Logo após,
  *   verifica se a letra digitada é uma vogal ou uma consoante e exibe o resultado
- *   ao usuário.
+ *   ao usuário. Se o caractere digitado não for uma letra de A a Z, o programa
+ *   avisa o usuário.
  *
  * Autores:
  *

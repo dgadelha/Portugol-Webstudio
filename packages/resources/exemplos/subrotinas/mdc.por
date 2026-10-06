@@ -22,7 +22,9 @@ programa {
   }
 
   // O MMC pode ser calculado a partir do MDC: MMC(a, b) = a * b / MDC(a, b).
-  // Dividimos antes de multiplicar para não gerar um número grande demais
+  // Dividimos antes de multiplicar para o número intermediário não ficar tão
+  // grande. Mesmo assim, o MMC de números grandes pode passar do maior valor que
+  // uma variável inteiro consegue guardar (2.147.483.647)
   funcao inteiro mmc(inteiro a, inteiro b) {
     retorne a / mdc(a, b) * b
   }

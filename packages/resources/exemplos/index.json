@@ -165,7 +165,7 @@
       {
         "nome": "Fatorial",
         "arquivo": "lacos_repeticao/fatorial.por",
-        "descricao": "Este exemplo ilustra o uso do laço de repetição \"enquanto\". O exemplo pede ao usuário que informe um número e, logo após, calcula e exibe o fatorial do número digitado."
+        "descricao": "Este exemplo ilustra o uso do laço de repetição \"enquanto\". O exemplo pede ao usuário que informe um número de 0 a 12 e, logo após, calcula e exibe o fatorial do número digitado."
       },
       {
         "nome": "Pesquisa de Opinião",
@@ -270,7 +270,7 @@
       {
         "nome": "Fatorial Recursivo",
         "arquivo": "subrotinas/fatorial_recursivo.por",
-        "descricao": "Este exemplo pede ao usuário que informe um número inteiro. Logo após, calcula e exibe o fatorial do número informado.\n\nNeste exemplo, o fatorial é calculado chamando recursivamente a função \"fatorial\" definida no programa.\n\nO fatorial de um número é calculado multiplicando todos os valores inteiros entre 1 e o próprio número."
+        "descricao": "Este exemplo pede ao usuário que informe um número inteiro de 0 a 12. Logo após, calcula e exibe o fatorial do número informado.\n\nNeste exemplo, o fatorial é calculado chamando recursivamente a função \"fatorial\" definida no programa.\n\nO fatorial de um número é calculado multiplicando todos os valores inteiros entre 1 e o próprio número."
       },
       {
         "nome": "Fibonacci Recursivo",
@@ -442,7 +442,7 @@
             "descricao": "Este exemplo ilustra o uso da função \"aguarde\" da biblioteca \"Util\" simulando uma contagem regressiva. O programa utiliza a função aguarde para fazer com que o programa espere 1 segundo antes de escrever o próximo número da contagem regressiva na tela."
           },
           {
-            "nome": "Sorteio de um Número",
+            "nome": "Sorteio de Números",
             "arquivo": "bibliotecas/util/sorteio.por",
             "descricao": "Este exemplo pede ao usuário que informe um valor inicial, um valor final e uma quantidade de sorteios a ser executada. Logo após, utiliza a função \"sorteia\" da biblioteca \"Util\" para sortear números entre os dois valores informados pelo usuário."
           },
@@ -494,7 +494,7 @@
           {
             "nome": "Bandeira do Brasil",
             "arquivo": "bibliotecas/graficos/bandeira_brasil.por",
-            "descricao": "Este exemplo desenha a Bandeira do Brasil com as proporções oficiais, calculando as coordenadas a partir de uma medida base e desenhando o losango com uma matriz de pontos."
+            "descricao": "Este exemplo desenha a Bandeira do Brasil com as proporções oficiais, de forma simplificada (sem as estrelas e o lema), calculando as coordenadas a partir de uma medida base e desenhando o losango com uma matriz de pontos."
           },
           {
             "nome": "Bola Quicando",

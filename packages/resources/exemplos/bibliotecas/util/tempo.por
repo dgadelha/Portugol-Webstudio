@@ -62,6 +62,7 @@ programa {
       }
     } enquanto (tempo_total < 10000) // Finaliza o programa após 10 segundos
 
+    // Limpa as mensagens para mostrar só os tempos no final
     limpa()
 
     escreva("Tempo Inicial: ", tempo_inicial, "\n")

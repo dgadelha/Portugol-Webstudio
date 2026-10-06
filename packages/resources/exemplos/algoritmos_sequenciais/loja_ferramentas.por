@@ -13,7 +13,7 @@
  * Descrição:
  *
  *   Este exemplo pede o nome do usuário e três valores inteiros, os quais
- *   representam a quantidade de porcas, parafusos e arruelas compradas.
+ *   representam a quantidade de parafusos, arruelas e porcas comprados.
  *   Após, exibe o nome do usuário seguido da quantidade de cada item comprado
  *   e o valor total a ser pago.
  *
@@ -26,6 +26,8 @@
  */
 
 programa {
+  inclua biblioteca Matematica --> mat
+
   funcao inicio() {
     // Os preços dos produtos são definidos em constantes
 
@@ -51,7 +53,7 @@ programa {
 
     /*
      * Cálculo dos valores a serem pagos. O cálculo é feito multiplicando
-     * a quantidade de itens vendidos pelo preço de cada item
+     * a quantidade de itens comprados pelo preço de cada item
      */
     total_parafusos = PRECO_PARAFUSO * quantidade_parafusos
     total_arruelas = PRECO_ARRUELA * quantidade_arruelas
@@ -67,6 +69,9 @@ programa {
     escreva("Arruelas: ", quantidade_arruelas, "\n")
     escreva("Porcas: ", quantidade_porcas, "\n")
     escreva("===============================\n")
-    escreva("Total a pagar:  R$ ", total_pagar, "\n")
+    // O Portugol mostra os números reais com ponto no lugar da vírgula e sem os
+    // zeros do fim: R$ 32,50 aparece como R$ 32.5. A função "arredondar" garante
+    // no máximo duas casas decimais
+    escreva("Total a pagar: R$ ", mat.arredondar(total_pagar, 2), "\n")
   }
 }

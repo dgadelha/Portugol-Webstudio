@@ -1,7 +1,8 @@
 /**
  * Este exemplo mostra os operadores aritméticos do Portugol (+, -, *, / e %)
  * e a ordem em que eles são calculados quando aparecem juntos em uma expressão.
- * Cada expressão é exibida ao lado do seu resultado.
+ * Cada expressão é exibida ao lado do seu resultado, inclusive com o uso de
+ * parênteses.
  */
 
 programa {

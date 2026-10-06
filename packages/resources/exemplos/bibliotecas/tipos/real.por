@@ -39,7 +39,7 @@ programa {
       num_real = tp.cadeia_para_real(texto)
       num_real = num_real * 2
 
-      escreva("Valor convertido em real: ", num_real, "\n")
+      escreva("Valor convertido em real e multiplicado por 2: ", num_real, "\n")
 
       // Algumas operações, como o MOD (%), só podem ser feitas entre
       // números inteiros
@@ -52,6 +52,7 @@ programa {
       // número será mantida
       num_inteiro = tp.real_para_inteiro(num_real)
       escreva("Valor convertido em inteiro: ", num_inteiro, "\n")
+      escreva("Resto da divisão por 2: ", num_inteiro % 2, "\n")
 
       // Por último, podemos transformar novamente o valor real em uma cadeia,
       // caso seja necessário. Para isso usamos a função "real_para_cadeia"

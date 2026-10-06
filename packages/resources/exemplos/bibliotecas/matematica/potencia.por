@@ -32,6 +32,9 @@ programa {
     leia(base)
 
     // Eleva o número informado ao quadrado
+    // Os números reais nem sempre são guardados com exatidão no computador: 0.1 ao
+    // quadrado aparece como 0.010000000000000002. Já os números muito grandes
+    // aparecem em notação científica: 1.0E10 quer dizer 1 vezes 10 elevado a 10
     quadrado = mat.potencia(base, 2.0)
     escreva("\n", base, " ao quadrado é igual a: ", quadrado)
 

@@ -50,5 +50,7 @@ programa {
     para (inteiro posicao = 9; posicao >= 0; posicao--) {
       escreva(vetor[posicao], " ")
     }
+
+    escreva("\n")
   }
 }

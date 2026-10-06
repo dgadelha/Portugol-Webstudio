@@ -26,6 +26,8 @@
  */
 
 programa {
+  inclua biblioteca Matematica --> mat
+
   funcao inicio() {
     const inteiro QUANTIDADE = 10
 
@@ -50,6 +52,9 @@ programa {
     media = soma / QUANTIDADE
 
     escreva("\nA soma dos números é ", soma, "\n")
-    escreva("A média dos números é ", media, "\n")
+    // Os números reais nem sempre são guardados com exatidão no computador, e a
+    // média pode aparecer como 2.4050000000000002. A função "arredondar" deixa
+    // no máximo duas casas decimais
+    escreva("A média dos números é ", mat.arredondar(media, 2), "\n")
   }
 }

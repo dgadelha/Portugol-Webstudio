@@ -45,15 +45,18 @@ programa {
     escreva("Digite a terceira nota: ")
     leia(nota3)
 
-    /* Calcula a média final do usuário */
-    media = (nota1 + nota2 + nota3) / 3
+    /* Calcula a média final do usuário, com no máximo duas casas decimais.
+     * A aprovação é decidida com a média já arredondada: sem isso, as notas
+     * 6, 6 e 5.99 dariam 5.9966..., que aparece como 6.0 na tela, e o aluno
+     * seria reprovado mesmo vendo a média 6.0 */
+    media = mat.arredondar((nota1 + nota2 + nota3) / 3, 2)
 
     limpa()
 
     se (media >= 6) {
-      escreva("Parabéns, ", nome, "!\nVocê foi aprovado com a média ", mat.arredondar(media, 2))
+      escreva("Parabéns, ", nome, "!\nVocê foi aprovado com a média ", media)
     } senao {
-      escreva("Que pena, ", nome, "!\nVocê foi reprovado com a média ", mat.arredondar(media, 2))
+      escreva("Que pena, ", nome, "!\nVocê foi reprovado com a média ", media)
     }
 
     escreva("\n")

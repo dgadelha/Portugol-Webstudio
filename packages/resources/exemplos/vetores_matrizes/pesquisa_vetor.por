@@ -38,6 +38,8 @@ programa {
     escreva("Qual número deseja procurar? ")
     leia(numero)
 
+    // As posições de um vetor começam em 0: o primeiro número (1) está na
+    // posição 0, e o último (9) está na posição 4
     para (inteiro posicao = 0; posicao < 5; posicao++) {
       se (vetor[posicao] == numero) {
         escreva("Encontrado na posição: ", posicao, "\n")
@@ -46,7 +48,7 @@ programa {
     }
 
     se (nao achou) {
-      escreva("O número não está no vetor\n")
+      escreva("O número não está no vetor.\n")
     }
   }
 }
