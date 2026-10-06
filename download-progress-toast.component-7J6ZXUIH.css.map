@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["packages/ide/src/app/download-progress-toast/download-progress-toast.component.scss"],
+  "sourcesContent": [":host {\n  display: flex;\n  flex-direction: column;\n  gap: 0.5rem;\n  min-width: 16rem;\n}\n"],
+  "mappings": "AAAA,MACE,QAAA,KACA,eAAA,OACA,IAAA,MACA,UAAA",
+  "names": []
+}

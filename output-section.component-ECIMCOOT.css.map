@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["packages/ide/src/app/dialog-settings/output-section.component.scss"],
+  "sourcesContent": [".follow-editor {\n  align-self: flex-start;\n  margin-top: -0.5rem;\n}\n"],
+  "mappings": "AAAA,CAAA,cACE,WAAA,WACA,WAAA",
+  "names": []
+}

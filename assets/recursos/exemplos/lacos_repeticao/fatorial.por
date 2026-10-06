@@ -1,58 +1,59 @@
-
-/* CLIQUE NO SINAL DE "+", À ESQUERDA, PARA EXIBIR A DESCRIÇÃO DO EXEMPLO
- *  
+/*
  * Copyright (C) 2014 - UNIVALI - Universidade do Vale do Itajaí
- * 
+ *
  * Este arquivo de código fonte é livre para utilização, cópia e/ou modificação
- * desde que este cabeçalho, contendo os direitos autorais e a descrição do programa, 
+ * desde que este cabeçalho, contendo os direitos autorais e a descrição do programa,
  * seja mantido.
- * 
- * Se tiver dificuldade em compreender este exemplo, acesse as vídeoaulas do Portugol 
+ *
+ * Se tiver dificuldade em compreender este exemplo, acesse as vídeoaulas do Portugol
  * Studio para auxiliá-lo:
- * 
+ *
  * https://www.youtube.com/watch?v=K02TnB3IGnQ&list=PLb9yvNDCid3jQAEbNoPHtPR0SWwmRSM-t
- * 
+ *
  * Descrição:
- * 
- * 	Este exemplo ilustra o uso do laço de repetição "enquanto". O exemplo pede ao usuario 
- * 	que informe um número, logo após, calcula e exibe o fatorial do número digitado.
- * 	
- * 	O fatorial de um número é calculado multiplicando todos os valores inteiros entre 1 e 
- * 	o próprio número. Exemplos:
- * 	
- * 	Fatorial de 3 = 1 * 2 * 3 = 6
- * 	Fatorial de 4 = 1 * 2 * 3 * 4 = 24
- * 	Fatorial de 5 = 1 * 2 * 3 * 4 * 5 = 120
- * 	
- * 	Na matemática, o fatorial é representado pelo símbolo '!'.
- * 	Exemplo: 5!
- * 	
- * 	Para saber mais sobre o fatorial, acesse: http://www.infoescola.com/matematica/fatorial/
- * 	
+ *
+ *   Este exemplo ilustra o uso do laço de repetição "enquanto". O exemplo pede ao usuário
+ *   que informe um número e, logo após, calcula e exibe o fatorial do número digitado.
+ *
+ *   O fatorial de um número é calculado multiplicando todos os valores inteiros entre 1 e
+ *   o próprio número. Exemplos:
+ *
+ *   Fatorial de 3 = 1 * 2 * 3 = 6
+ *   Fatorial de 4 = 1 * 2 * 3 * 4 = 24
+ *   Fatorial de 5 = 1 * 2 * 3 * 4 * 5 = 120
+ *
+ *   Na matemática, o fatorial é representado pelo símbolo '!'.
+ *   Exemplo: 5!
+ *
+ *   Para saber mais sobre o fatorial, acesse: http://www.infoescola.com/matematica/fatorial/
+ *
  * Autores:
- * 
- * 	Giordana Maria da Costa Valle
- * 	Carlos Alexandre Krueger
- * 	
+ *
+ *   Giordana Maria da Costa Valle
+ *   Carlos Alexandre Krueger
+ *
  * Data: 01/06/2013
- */ 
+ */
 
-programa
-{
-	funcao inicio()
-	{
-		inteiro numero, atual = 1, fatorial = 1
-		
-		escreva("Digite um numero: ")
-		leia(numero)
-		
-		enquanto (atual <= numero) // Itera 'atual' até o valor informado
-		{
-			fatorial = fatorial * atual // Cálcula a próxima multipllicação do fatorial
-			atual = atual + 1
-		}
-		
-		escreva("O fatorial de ", numero, " é: ", fatorial, "\n")
-	}
+programa {
+  funcao inicio() {
+    inteiro numero, atual = 1, fatorial = 1
+
+    escreva("Digite um número de 0 a 12: ")
+    leia(numero)
+
+    // O fatorial cresce muito rápido. O de 13 já passa do maior valor que uma
+    // variável inteiro consegue guardar (2.147.483.647), e não existe fatorial
+    // de número negativo
+    se (numero < 0 ou numero > 12) {
+      escreva("Digite um número de 0 a 12.\n")
+    } senao {
+      enquanto (atual <= numero) { // Itera 'atual' até o valor informado
+        fatorial = fatorial * atual // Calcula a próxima multiplicação do fatorial
+        atual = atual + 1
+      }
+
+      escreva("O fatorial de ", numero, " é: ", fatorial, "\n")
+    }
+  }
 }
-

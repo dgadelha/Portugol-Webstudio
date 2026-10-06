@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["packages/ide/src/app/dialog-settings/tabs-section.component.scss"],
+  "sourcesContent": ["// Aviso sobre a sessão anterior: vale com a opção ligada ou desligada, então\n// fica abaixo dela, sem chave própria.\n.field-note {\n  display: flex;\n  align-items: flex-start;\n  gap: 0.5rem;\n  margin: -0.5rem 0 0;\n  padding: 0.75rem;\n  border: 1px solid var(--pws-border);\n  border-radius: var(--pws-radius);\n  background-color: var(--pws-bg-chrome);\n  font-size: var(--pws-text-ui);\n  line-height: 1.25rem;\n  color: var(--pws-fg-muted);\n\n  svg-icon {\n    width: 1rem;\n    height: 1rem;\n    margin-top: 0.125rem;\n  }\n}\n"],
+  "mappings": "AAEA,CAAA,WACE,QAAA,KACA,YAAA,WACA,IAAA,MAHF,OAIE,OAAA,EAAA,EAJF,QAKE,OACA,OAAA,IAAA,MAAA,IAAA,cACA,cAAA,IAAA,cACA,iBAAA,IAAA,iBACA,UAAA,IAAA,eACA,YAAA,QACA,MAAA,IAAA,gBAEA,CAbF,WAaE,SACE,MAAA,KACA,OAAA,KACA,WAAA",
+  "names": []
+}

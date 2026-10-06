@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["packages/ide/src/app/survey-invite/survey-invite.component.scss"],
+  "sourcesContent": [":host {\n  display: flex;\n  flex-direction: column;\n  gap: 0.375rem;\n}\n\n.buttons {\n  display: flex;\n  align-items: center;\n  gap: 0.5rem;\n  margin-top: 0.25rem;\n}\n"],
+  "mappings": "AAAA,MACE,QAAA,KACA,eAAA,OACA,IAAA,QAGF,CAAA,QACE,QAAA,KACA,YAAA,OACA,IAAA,MACA,WAAA",
+  "names": []
+}

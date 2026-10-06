@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["packages/ide/src/app/dialog-settings/setting-field.scss"],
+  "sourcesContent": ["// Campos das seções: rótulo e descrição, com o controle abaixo ou ao lado.\n\n:host {\n  display: flex;\n  flex-direction: column;\n  gap: 1.5rem;\n}\n\nsvg-icon {\n  display: flex;\n  flex-shrink: 0;\n}\n\nhr {\n  width: 100%;\n  margin: 0;\n  border: 0;\n  border-top: 1px solid var(--pws-border);\n}\n\n.field {\n  display: flex;\n  flex-direction: column;\n  gap: 1rem;\n\n  &.inline {\n    flex-direction: row;\n    align-items: center;\n    justify-content: space-between;\n  }\n}\n\n.field-text {\n  display: grid;\n  gap: 0.25rem;\n}\n\n.field-label {\n  color: var(--pws-fg-strong);\n  font-size: var(--pws-text-md);\n  font-weight: 600;\n  line-height: 1.2;\n}\n\n.field-description {\n  color: var(--pws-fg-muted);\n  font-size: var(--pws-text-ui);\n  line-height: 1.45;\n}\n"],
+  "mappings": "AAEA,MACE,QAAA,KACA,eAAA,OACA,IAAA,OAGF,SACE,QAAA,KACA,YAAA,EAGF,GACE,MAAA,KAZF,OAaE,EACA,OAAA,EACA,WAAA,IAAA,MAAA,IAAA,cAGF,CAAA,MACE,QAAA,KACA,eAAA,OACA,IAAA,KAEA,CALF,KAKE,CAAA,OACE,eAAA,IACA,YAAA,OACA,gBAAA,cAIJ,CAAA,WACE,QAAA,KACA,IAAA,OAGF,CAAA,YACE,MAAA,IAAA,iBACA,UAAA,IAAA,eACA,YAAA,IACA,YAAA,IAGF,CAAA,kBACE,MAAA,IAAA,gBACA,UAAA,IAAA,eACA,YAAA",
+  "names": []
+}

@@ -1,1 +1,822 @@
-[{"name":"Entrada e Saída","type":"dir","dir":"entrada_saida","id":"/entrada_saida","children":[{"name":"Olá Mundo","type":"file","file":"entrada_saida/ola_mundo.por","description":"Este exemplo utiliza a saída de dados do Portugol para exibir a mensagem \"Olá mundo\".","hasImage":false,"image":"contagem_regressiva.jpg","id":"entrada_saida/ola_mundo.por"},{"name":"Número Digitado","type":"file","file":"entrada_saida/numero_digitado.por","description":"Este exemplo utiliza a entrada de dados do Portugol para ler e armazenar um número inteiro em uma variável. Logo após, utiliza a saída de dados para exibir o número digitado.","hasImage":false,"image":"contagem_regressiva.jpg","id":"entrada_saida/numero_digitado.por"},{"name":"Seu Nome","type":"file","file":"entrada_saida/seu_nome.por","description":"Este exemplo utiliza a entrada de dados do Portugol para obter e armazenar o nome do usuário em um variável. Logo após, utiliza a saída de dados para exibir o nome digitado.","hasImage":false,"image":"contagem_regressiva.jpg","id":"entrada_saida/seu_nome.por"}]},{"name":"Operações Aritméticas","type":"dir","dir":"operacoes_aritmeticas","id":"/operacoes_aritmeticas","children":[{"name":"Operações Simples","type":"file","file":"operacoes_aritmeticas/operacoes_simples.por","description":"Este exemplo pede ao usuário que informe dois números. Logo após, calcula e exibe: a) A soma entre os números b) A subtração entre os números c) A multiplicação entre os números d) A divisão entre os números","hasImage":false,"image":"contagem_regressiva.jpg","id":"operacoes_aritmeticas/operacoes_simples.por"},{"name":"Prioridades","type":"file","file":"operacoes_aritmeticas/prioridades.por","description":"Este exemplo demonstra a prioridade das operações aritméticas no Portugol. As operações de multiplicação (*), divisão (/) e módulo (%) têm prioridade sobre as operações de soma (+) e subtração (-). Além disso, o exemplo demonstra como os parênteses podem ser utilizados para alterar esta prioridade, fazendo com que uma operação de soma ocorra antes de uma operação de multiplicação.","hasImage":false,"image":"contagem_regressiva.jpg","id":"operacoes_aritmeticas/prioridades.por"},{"name":"Divisões Inteiras","type":"file","file":"operacoes_aritmeticas/divisoes_inteiras.por","description":"Este exemplo pede ao usuário que informe um número inteiro. Logo após, calcula e exibe: a) O resultado da divisão inteira por 2 b) O resto da divisão inteira por 3 (mod)","hasImage":false,"image":"contagem_regressiva.jpg","id":"operacoes_aritmeticas/divisoes_inteiras.por"},{"name":"Potencia e Raiz","type":"file","file":"operacoes_aritmeticas/potencia_raiz.por","description":"Este exemplo pede ao usuário que informe um valor. Logo após, utiliza a biblioteca \"Matematica\" para calcular e exibir: a) O número elevado ao cubo b) A raiz quadrada do número","hasImage":false,"image":"contagem_regressiva.jpg","id":"operacoes_aritmeticas/potencia_raiz.por"}]},{"name":"Algoritmos Sequencias","type":"dir","dir":"algoritmos_sequenciais","id":"/algoritmos_sequenciais","children":[{"name":"Troca Variáveis","type":"file","file":"algoritmos_sequenciais/troca_variaveis.por","description":"Este exemplo pede ao usuário que informe dois valores inteiros e os\tarmazena em duas variáveis. Logo após, o programa troca os valores contidos nas variáveis entre si e os exibe ao usuário.","hasImage":false,"image":"contagem_regressiva.jpg","id":"algoritmos_sequenciais/troca_variaveis.por"},{"name":"Maioridade Penal","type":"file","file":"algoritmos_sequenciais/maioridade_penal.por","description":"Este exemplo define qual o valor da maior Idade penal usando uma constante. Logo após, pede ao usuário que informe sua idade e calcula quantos anos faltam para ele atingir a maioridade.","hasImage":false,"image":"contagem_regressiva.jpg","id":"algoritmos_sequenciais/maioridade_penal.por"},{"name":"Altura média","type":"file","file":"algoritmos_sequenciais/altura_media.por","description":"Este exemplo pede ao usuário a altura de 3 pessoas. Logo após, calcula e exibe a média das alturas informadas.","hasImage":false,"image":"contagem_regressiva.jpg","id":"algoritmos_sequenciais/altura_media.por"},{"name":"Loja de Ferramentas","type":"file","file":"algoritmos_sequenciais/loja_ferramentas.por","description":"Este exemplo pede o nome do usuário e três valores inteiros, os quais representam a quantidade de porcas, parafusos e arruelas compradas. Após, exibe o nome do usuário seguido da quantidade de cada item comprado e o valor total a ser pago.","hasImage":false,"image":"contagem_regressiva.jpg","id":"algoritmos_sequenciais/loja_ferramentas.por"},{"name":"Quantos Dias","type":"file","file":"algoritmos_sequenciais/quantos_dias.por","description":"Este exemplo pede ao usuário que informe o ano atual. Logo após, calcula e exibe a quantidade de dias que se passaram desde o dia 01/01/0001 (ano 1 dc)\taté o dia 01/01 do ano atual.","hasImage":false,"image":"contagem_regressiva.jpg","id":"algoritmos_sequenciais/quantos_dias.por"}]},{"name":"Desvios Condicionais","type":"dir","dir":"desvios_condicionais","id":"/desvios_condicionais","children":[{"name":"Vogal","type":"file","file":"desvios_condicionais/vogal.por","description":"Este exemplo pede ao usuário que informe uma letra (tipo caracter). Logo após verifica se a letra digitada é uma vogal ou uma consoante e exibe o resultado ao usuário.","hasImage":false,"image":"contagem_regressiva.jpg","id":"desvios_condicionais/vogal.por"},{"name":"Médias","type":"file","file":"desvios_condicionais/medias.por","description":"Este exemplo pede ao usuário que informe três médias. Logo após, calcula e exibe a média final destas notas. Por último, verifica se alguma das médias parciais é menor que a média final e a exibe (caso exista).","hasImage":false,"image":"contagem_regressiva.jpg","id":"desvios_condicionais/medias.por"},{"name":"Idade do Usuário","type":"file","file":"desvios_condicionais/idade.por","description":"Este exemplo pede ao usuário que informa a sua idade. Logo após exibe uma mensagem informando se ele for maior ou menor de idade.","hasImage":false,"image":"contagem_regressiva.jpg","id":"desvios_condicionais/idade.por"},{"name":"Múltiplo de Cinco","type":"file","file":"desvios_condicionais/multiplo.por","description":"Este exemplo pede ao usuário que informe um valor inteiro, logo após, exibe uma mensagem indicando se o número informado é múltiplo de 5 ou não.","hasImage":false,"image":"contagem_regressiva.jpg","id":"desvios_condicionais/multiplo.por"},{"name":"Números Iguais","type":"file","file":"desvios_condicionais/numeros_iguais.por","description":"Este exemplo pede ao usuário que informe um valor de 0 a 6. Logo após, o programa sorteia um valor também de 0 a 6 e exibe uma mensagem informando se o número sorteado e o número digitado são iguais.","hasImage":false,"image":"contagem_regressiva.jpg","id":"desvios_condicionais/numeros_iguais.por"},{"name":"Média Final","type":"file","file":"desvios_condicionais/media_final.por","description":"Este exemplo pede ao usuário que informe seu nome e três notas. Logo após, calcula a média final do usuário e exibe uma mensagem informando se ele foi aprovado ou reprovado.","hasImage":false,"image":"contagem_regressiva.jpg","id":"desvios_condicionais/media_final.por"},{"name":"Número Inteiro","type":"file","file":"desvios_condicionais/numero_inteiro.por","description":"Este exemplo pede ao usuário que informe um número inteiro. Logo após, exibe uma mensagem indicando se o número informado é positivo, negativo ou igual a zero.","hasImage":false,"image":"contagem_regressiva.jpg","id":"desvios_condicionais/numero_inteiro.por"},{"name":"Tipo de Triângulo","type":"file","file":"desvios_condicionais/tipo_triangulo.por","description":"Este exemplo pede ao usuário que informe o tamanho dos 3 lados de um triângulo. Logo após, compara os lados do triângulo e exibe ao usuário o tipo de triângulo informado.","hasImage":false,"image":"contagem_regressiva.jpg","id":"desvios_condicionais/tipo_triangulo.por"},{"name":"Mini Calculadora","type":"file","file":"desvios_condicionais/mini_calculadora.por","description":"Este exemplo demonstra o uso do desvio condicional para criar uma mini calculadora. O programa pede ao usuário que informe dois números reais e a operação a ser executada entre estes números (soma, divisão, etc.). Por fim, é exibido o valor resultante da operação entre os dois números.","hasImage":false,"image":"contagem_regressiva.jpg","id":"desvios_condicionais/mini_calculadora.por"},{"name":"Escolha-Caso","type":"file","file":"desvios_condicionais/escolha_caso.por","description":"Este exemplo ilustra o uso da instrução \"escolha\". Para isso, o programa pede ao usuário que escolha uma opção e exibe uma frase correspondente à opção escolhida.","hasImage":false,"image":"contagem_regressiva.jpg","id":"desvios_condicionais/escolha_caso.por"}]},{"name":"Laços de Repetição","type":"dir","dir":"lacos_repeticao","id":"/lacos_repeticao","children":[{"name":"Contagem Regressiva","type":"file","file":"lacos_repeticao/contagem_regressiva.por","description":"Este exemplo utiliza um laço de repetição e uma variável para exibir uma contagem regressiva na tela.","hasImage":false,"image":"contagem_regressiva.jpg","id":"lacos_repeticao/contagem_regressiva.por"},{"name":"Tabuada","type":"file","file":"lacos_repeticao/tabuada.por","description":"Este exemplo pede ao usuário que informe um número inteiro. Logo após, utiliza um laço de repetição do tipo \"para\", para calcular e exibir a tabuada do número informado.","hasImage":false,"image":"contagem_regressiva.jpg","id":"lacos_repeticao/tabuada.por"},{"name":"Consistência","type":"file","file":"lacos_repeticao/consistencia.por","description":"Este exemplo ilustra o uso de um laço de repetição do tipo \"faca-enquanto\" para\tvalidar a entrada dos dados informados pelo usuário.","hasImage":false,"image":"contagem_regressiva.jpg","id":"lacos_repeticao/consistencia.por"},{"name":"Média de Dez Números","type":"file","file":"lacos_repeticao/media_dez_numeros.por","description":"Este exemplo pede ao usuário que informe 10 números. Logo após, calcula e\texibe a média dos números digitados. O exemplo utiliza um laço de repetição do tipo \"enquanto\" para determinar se todos os 10 valores já foram lidos.","hasImage":false,"image":"contagem_regressiva.jpg","id":"lacos_repeticao/media_dez_numeros.por"},{"name":"Soma de Um a X","type":"file","file":"lacos_repeticao/soma_um_x.por","description":"Este exemplo pede ao usuário que informe um valor inteiro. Logo após, calcula e\texibe a soma dos números de 1 e até o número digitado.","hasImage":false,"image":"contagem_regressiva.jpg","id":"lacos_repeticao/soma_um_x.por"},{"name":"Fatorial","type":"file","file":"lacos_repeticao/fatorial.por","description":"Este exemplo ilustra o uso do laço de repetição \"enquanto\". O exemplo pede ao usuario que informe um número, logo após, calcula e exibe o fatorial do número digitado.","hasImage":false,"image":"contagem_regressiva.jpg","id":"lacos_repeticao/fatorial.por"},{"name":"Eleição","type":"file","file":"lacos_repeticao/eleicao.por","description":"Este exemplo ilustra o uso do laço \"faca-enquanto\", simulando uma eleição entre\tdois candidatos. O exemplo ilustra também o uso do comando \"escolha\" para contabilizar os votos de cada candidato.","hasImage":false,"image":"contagem_regressiva.jpg","id":"lacos_repeticao/eleicao.por"}]},{"name":"Vetores e Matrizes","type":"dir","dir":"vetores_matrizes","id":"/vetores_matrizes","children":[{"name":"Preenche e Exibe Vetor","type":"file","file":"vetores_matrizes/preenche_vetor.por","description":"Este exemplo cria e preenche um vetor com números aleatórios. Logo após exibe o vetor no console de duas formas diferentes: a) Na ordem em que os números foram preenchidos b) Na ordem inversa em que os números foram preenchidos","hasImage":false,"image":"contagem_regressiva.jpg","id":"vetores_matrizes/preenche_vetor.por"},{"name":"Pesquisa Vetor","type":"file","file":"vetores_matrizes/pesquisa_vetor.por","description":"Este exemplo ilustra o uso dos vetores na linguagem Portugol. Neste exemplo, é criado um vetor com valores pré-definidos. Logo após, o programa pede ao usuário que informe um valor e percorre o vetor procurando pelo valor informado. Por último, o programa exibe uma mensagem informando se o valor informado foi encontrado dentro do vetor ou não.","hasImage":false,"image":"contagem_regressiva.jpg","id":"vetores_matrizes/pesquisa_vetor.por"},{"name":"Tabela de Dados","type":"file","file":"vetores_matrizes/tabela_dados.por","description":"Este exemplo ilustra o uso dos vetores da linguagem Portugol. Neste exemplo, são criados dois vetores. O primeiro, é do tipo cadeia e armazena os nomes de várias pessoas. O segundo, é do tipo real e armazena as alturas destas pessoas. O programa então percorre cada um dos vetores, montando no console uma tabela dos dados existentes. Cada nome é associado à sua respectiva altura.","hasImage":false,"image":"contagem_regressiva.jpg","id":"vetores_matrizes/tabela_dados.por"},{"name":"Diagonal Principal","type":"file","file":"vetores_matrizes/diagonal_principal.por","description":"Este exemplo ilustra o uso das matrizes na linguagem Portugol criando uma matriz e preenchendo sua diagonal principal. As matrizes nada mais são do que vetores de duas dimensões (bidimensionais). Em outras palavras, a matriz é um vetor aonde cada uma de suas posições (colunas) armazena um outro vetor (linhas).","hasImage":false,"image":"contagem_regressiva.jpg","id":"vetores_matrizes/diagonal_principal.por"},{"name":"Exibe Matriz","type":"file","file":"vetores_matrizes/exibe_matriz.por","description":"Este exemplo cria e exibe uma matriz para ilustrar o uso das matrizes na linguagem Portugol.","hasImage":false,"image":"contagem_regressiva.jpg","id":"vetores_matrizes/exibe_matriz.por"}]},{"name":"Subrotinas","type":"dir","dir":"subrotinas","id":"/subrotinas","children":[{"name":"Procedimento e Função","type":"file","file":"subrotinas/procedimento_funcao.por","description":"Este exemplo ilustra o uso das funções da linguagem Portugol. Neste exemplo, foi criado um procedimento que formata uma mensagem qualquer e uma função que realiza um cálculo matemático entre dois números informados. Para saber mais sobre o fatorial, acesse: http://www.infoescola.com/matematica/fatorial/","hasImage":false,"image":"contagem_regressiva.jpg","id":"subrotinas/procedimento_funcao.por"},{"name":"Animação","type":"file","file":"subrotinas/lagarta.por","description":"Este exemplo ilustra o uso das funções da linguagem Portugol para criar uma animação no console.","hasImage":false,"image":"contagem_regressiva.jpg","id":"subrotinas/lagarta.por"},{"name":"Parâmetros por Referencia","type":"file","file":"subrotinas/parametros_referencia.por","description":"Este exemplo ilustra a passagem de parâmetros para uma função. O exemplo demonstra tanto a passagem de parâmetro por valor, quanto a passagem de parâmetro por referência. Quando um parâmetro é passado por valor, o seu valor é copiado para dentro da função. Desta forma, se a função altera o valor do parâmetro, o valor só é alterado dentro da função, mas é mantido o valor original fora dela. Por outro lado, quando um parâmetro é passado por referência, qualquer alteração dentro da função é imediatamente refletida na variável fora da função. Isto porque, na verdade, o que a função recebe não é uma cópia do valor contido na variável, mas sim, uma referência (um atalho) para a variável original. No Portugol, a passagem de parâmetro por referência é representada pelo operador '&'. Caso não compreenda estes conceitos, experimente depurar o programa e visualizar como o valor das variáveis são alterados na árvore estrutural à esquerda. Se ainda assim tiver dificuldades, peça a ajuda de um professor ou alguém experiente em programação.","hasImage":false,"image":"contagem_regressiva.jpg","id":"subrotinas/parametros_referencia.por"},{"name":"Vetores por Parâmetros","type":"file","file":"subrotinas/vetores_parametro.por","description":"Este exemplo ilustra a passagem de parâmetros para uma função. O exemplo demonstra que vetores não precisam ser passados por referência, pois eles já fazem isso naturalmente.","hasImage":false,"image":"contagem_regressiva.jpg","id":"subrotinas/vetores_parametro.por"},{"name":"Fatorial Recursivo","type":"file","file":"subrotinas/fatorial_recursivo.por","description":"Este exemplo pede ao usuário que informe um número inteiro. Logo após, calcula e exibe o fatorial do número informado. Neste exemplo, o fatorial é calculado chamando recursivamente a função \"fatorial\" definida no programa. O fatorial de um número é calculado multiplicando todos os valores inteiros entre 1 e o próprio número.","hasImage":false,"image":"contagem_regressiva.jpg","id":"subrotinas/fatorial_recursivo.por"},{"name":"Fibonacci Recursivo","type":"file","file":"subrotinas/fibonacci_recursivo.por","description":"Este exemplo pede ao usuário que informe um número inteiro. Logo após, calcula e exibe todos os números da sequência de Fibonacci até a posição informada pelo usuário. Neste exemplo, os números da sequência de Fibonacci são calculados chamando recursivamente a função \"fibonacci\" definida no programa. A sequência de Fibonacci é uma sequência numérica especial, na qual cada elemento da sequência é calculado somando os dois elementos anteriores.","hasImage":false,"image":"contagem_regressiva.jpg","id":"subrotinas/fibonacci_recursivo.por"}]},{"name":"Bibliotecas","type":"dir","dir":"bibliotecas","id":"/bibliotecas","children":[{"name":"Texto","type":"dir","dir":"texto","id":"bibliotecas/texto","children":[{"name":"Tamanho do Texto","type":"file","file":"bibliotecas/texto/tamanho.por","description":"Este exemplo demonstra como utilizar a função \"numero_caracteres\" da biblioteca \"Texto\" para descobrir o tamanho de um dado do tipo cadeia.","hasImage":false,"image":"contagem_regressiva.jpg","id":"bibliotecas/texto/tamanho.por"},{"name":"Ler Caracteres","type":"file","file":"bibliotecas/texto/caracteres.por","description":"Este exemplo demonstra o uso da função \"obter_caracter\" da biblioteca \"Texto\" para obter um caractere específico dentro de um dado do tipo cadeia. Neste exemplo, o usuário deve informar um valor e o programa irá verificar se o valor digitado é um número binário válido.","hasImage":false,"image":"contagem_regressiva.jpg","id":"bibliotecas/texto/caracteres.por"},{"name":"Pesquisar Texto","type":"file","file":"bibliotecas/texto/pesquisar.por","description":"Este exemplo demonstra o uso da função \"posicao_texto\" da biblioteca \"Texto\" para descobrir se um dado do tipo cadeia contém uma sequência de caracteres.","hasImage":false,"image":"contagem_regressiva.jpg","id":"bibliotecas/texto/pesquisar.por"},{"name":"Extrair Texto","type":"file","file":"bibliotecas/texto/subtexto.por","description":"Este exemplo demonstra como utilizar a função \"extrair_subtexto\" da biblioteca \"Texto\" para obter uma parte de um texto armazenado em uma variável do tipo cadeia.","hasImage":false,"image":"contagem_regressiva.jpg","id":"bibliotecas/texto/subtexto.por"},{"name":"Substituir Texto","type":"file","file":"bibliotecas/texto/substituir.por","description":"Este exemplo demonstra o uso da função \"substituir\" da biblioteca \"Texto\" para trocar uma sequência de caracteres por outra em um dado do tipo cadeia.","hasImage":false,"image":"contagem_regressiva.jpg","id":"bibliotecas/texto/substituir.por"},{"name":"Caixa Alta","type":"file","file":"bibliotecas/texto/caixa_alta.por","description":"Este exemplo demonstra como utilizar a função \"caixa_alta\" da biblioteca \"Texto\" para transformar os caracteres de um dado do tipo cadeia em caracteres maiúsculos.","hasImage":false,"image":"contagem_regressiva.jpg","id":"bibliotecas/texto/caixa_alta.por"},{"name":"Caixa Baixa","type":"file","file":"bibliotecas/texto/caixa_baixa.por","description":"Este exemplo demonstra como utilizar a função \"caixa_baixa\" da biblioteca \"Texto\" para transformar os caracteres de um dado do tipo cadeia em caracteres minúsculos.","hasImage":false,"image":"contagem_regressiva.jpg","id":"bibliotecas/texto/caixa_baixa.por"},{"name":"Preencher Texto","type":"file","file":"bibliotecas/texto/preencher.por","description":"Este exemplo demonstra o uso da função \"preencher_a_esquerda\" da biblioteca \"Texto\" para inserir uma sequência de caracteres em um dado do tipo cadeia.","hasImage":false,"image":"contagem_regressiva.jpg","id":"bibliotecas/texto/preencher.por"}]},{"name":"Util","type":"dir","dir":"util","id":"bibliotecas/util","children":[{"name":"Aguardar Intervalo","type":"file","file":"bibliotecas/util/aguarde.por","description":"Este exemplo ilustra o uso da função \"aguarde\" da biblioteca \"Util\" simulando uma contagem regressiva. O programa utiliza a função aguarde para fazer com que o programa espere 1 segundo antes de escrever o próximo número da contagem regressiva na tela.","hasImage":false,"image":"contagem_regressiva.jpg","id":"bibliotecas/util/aguarde.por"},{"name":"Sorteio de Um Número","type":"file","file":"bibliotecas/util/sorteio.por","description":"Este exemplo pede ao usuário que informe um valor inicial, um valor final e uma quantidade de sorteios a ser executada. Logo após, utiliza a função \"sorteia\" da biblioteca \"Util\" para sortear números entre os dois valores informados pelo usuário.","hasImage":false,"image":"contagem_regressiva.jpg","id":"bibliotecas/util/sorteio.por"},{"name":"Tamanho do Vetor","type":"file","file":"bibliotecas/util/vetor.por","description":"Este exemplo demonstra como descobrir dinamicamente o número de elementos contidos em um vetor. Para isto, o programa utiliza a função \"numero_elementos\" da biblioteca \"Matematica\".","hasImage":false,"image":"contagem_regressiva.jpg","id":"bibliotecas/util/vetor.por"},{"name":"Tamanho da Matriz","type":"file","file":"bibliotecas/util/matriz.por","description":"Este exemplo demonstra como descobrir dinamicamente as dimensões de uma matriz, isto é, o número de linhas e colunas que ela possui. Para isto, o programa utiliza as funções \"numero_linhas\" e \"numero_colunas\" da biblioteca \"Util\".","hasImage":false,"image":"contagem_regressiva.jpg","id":"bibliotecas/util/matriz.por"},{"name":"Controle de Tempo","type":"file","file":"bibliotecas/util/tempo.por","description":"Este exemplo ilustra como a função \"tempo_decorrido\" da biblioteca \"Util\" pode ser utilizada para realizar medição e controle de tempo em um algoritmo sem utilizar a função \"aguarde\".","hasImage":false,"image":"contagem_regressiva.jpg","id":"bibliotecas/util/tempo.por"}]}]}]
+[
+  {
+    "nome": "Entrada e Saída",
+    "itens": [
+      {
+        "nome": "Olá Mundo",
+        "arquivo": "entrada_saida/ola_mundo.por",
+        "descricao": "Este exemplo é o primeiro programa clássico de quem aprende a programar: ele exibe a mensagem \"Olá, mundo!\" na tela. Os comentários explicam as partes que todo programa em Portugol tem: \"programa\", \"funcao inicio\" e \"escreva\"."
+      },
+      {
+        "nome": "Lendo Valores",
+        "arquivo": "entrada_saida/lendo_valores.por",
+        "descricao": "Este exemplo mostra como usar o comando \"leia\" para guardar em variáveis os valores digitados pelo usuário. São lidos valores de cada tipo básico (cadeia, inteiro, real, caracter e logico), que depois são exibidos com \"escreva\"."
+      }
+    ]
+  },
+  {
+    "nome": "Operações Aritméticas",
+    "itens": [
+      {
+        "nome": "Operações e Prioridades",
+        "arquivo": "operacoes_aritmeticas/operacoes_simples.por",
+        "descricao": "Este exemplo mostra os operadores aritméticos do Portugol (+, -, *, / e %) e a ordem em que eles são calculados quando aparecem juntos em uma expressão. Cada expressão é exibida ao lado do seu resultado, inclusive com o uso de parênteses."
+      },
+      {
+        "nome": "Divisões Inteiras",
+        "arquivo": "operacoes_aritmeticas/divisoes_inteiras.por",
+        "descricao": "Este exemplo divide uma quantidade de balas igualmente entre um grupo de crianças. Ele mostra a diferença entre a divisão inteira (/), que diz quantas balas cada criança recebe, e o resto da divisão (%), que diz quantas sobram."
+      },
+      {
+        "nome": "Potência e Raiz",
+        "arquivo": "operacoes_aritmeticas/potencia_raiz.por",
+        "descricao": "Este exemplo pede ao usuário que informe um valor. Logo após, utiliza a biblioteca \"Matematica\" para calcular e exibir:\n\na) o número elevado ao cubo;\nb) a raiz quadrada do número."
+      }
+    ]
+  },
+  {
+    "nome": "Algoritmos Sequenciais",
+    "itens": [
+      {
+        "nome": "Troca de Variáveis",
+        "arquivo": "algoritmos_sequenciais/troca_variaveis.por",
+        "descricao": "Este exemplo pede ao usuário que informe dois valores inteiros e os armazena em duas variáveis. Logo após, o programa troca os valores contidos nas variáveis entre si e os exibe ao usuário."
+      },
+      {
+        "nome": "Meta de Economia",
+        "arquivo": "algoritmos_sequenciais/meta_economia.por",
+        "descricao": "Este exemplo guarda o preço de uma bicicleta em uma constante e pergunta ao usuário quanto dinheiro ele já guardou. Depois, calcula quanto ainda falta para comprar a bicicleta, mostrando como declarar e usar constantes."
+      },
+      {
+        "nome": "Altura Média",
+        "arquivo": "algoritmos_sequenciais/altura_media.por",
+        "descricao": "Este exemplo pede ao usuário a altura de 3 pessoas. Logo após, calcula e exibe a média das alturas informadas."
+      },
+      {
+        "nome": "Loja de Ferramentas",
+        "arquivo": "algoritmos_sequenciais/loja_ferramentas.por",
+        "descricao": "Este exemplo pede o nome do usuário e três valores inteiros, os quais representam a quantidade de parafusos, arruelas e porcas comprados. Após, exibe o nome do usuário seguido da quantidade de cada item comprado e o valor total a ser pago."
+      },
+      {
+        "nome": "Quantos Dias",
+        "arquivo": "algoritmos_sequenciais/quantos_dias.por",
+        "descricao": "Este exemplo pede ao usuário que informe um ano. Logo após, calcula e exibe a quantidade de dias que se passaram desde o dia 01/01/0001 (ano 1 d.C.) até o dia 01/01 do ano informado, seguindo as regras dos anos bissextos do calendário atual."
+      }
+    ]
+  },
+  {
+    "nome": "Desvios Condicionais",
+    "itens": [
+      {
+        "nome": "Vogal",
+        "arquivo": "desvios_condicionais/vogal.por",
+        "descricao": "Este exemplo pede ao usuário que informe uma letra (tipo caracter). Logo após, verifica se a letra digitada é uma vogal ou uma consoante e exibe o resultado ao usuário. Se o caractere digitado não for uma letra de A a Z, o programa avisa o usuário."
+      },
+      {
+        "nome": "Médias",
+        "arquivo": "desvios_condicionais/medias.por",
+        "descricao": "Este exemplo pede ao usuário as notas de três provas e calcula a média delas. Depois, usa um \"se\" para cada nota para mostrar quais ficaram abaixo da média, mostrando que vários \"se\" independentes podem ser verdadeiros ao mesmo tempo."
+      },
+      {
+        "nome": "Idade do Usuário",
+        "arquivo": "desvios_condicionais/idade.por",
+        "descricao": "Este exemplo pede ao usuário que informe a sua idade. Logo após, exibe uma mensagem informando se ele é maior ou menor de idade."
+      },
+      {
+        "nome": "Múltiplo de Cinco",
+        "arquivo": "desvios_condicionais/multiplo.por",
+        "descricao": "Este exemplo pede ao usuário que informe um valor inteiro. Logo após, exibe uma mensagem indicando se o número informado é múltiplo de 5 ou não."
+      },
+      {
+        "nome": "Números Iguais",
+        "arquivo": "desvios_condicionais/numeros_iguais.por",
+        "descricao": "Este exemplo pede ao usuário que informe um valor de 0 a 6. Logo após, o programa sorteia um valor também de 0 a 6 e exibe uma mensagem informando se o número sorteado e o número digitado são iguais."
+      },
+      {
+        "nome": "Média Final",
+        "arquivo": "desvios_condicionais/media_final.por",
+        "descricao": "Este exemplo pede ao usuário que informe seu nome e três notas. Logo após, calcula a média final do usuário e exibe uma mensagem informando se ele foi aprovado ou reprovado."
+      },
+      {
+        "nome": "Número Inteiro",
+        "arquivo": "desvios_condicionais/numero_inteiro.por",
+        "descricao": "Este exemplo pede ao usuário que informe um número inteiro. Logo após, exibe uma mensagem indicando se o número informado é positivo, negativo ou igual a zero."
+      },
+      {
+        "nome": "Tipo de Triângulo",
+        "arquivo": "desvios_condicionais/tipo_triangulo.por",
+        "descricao": "Este exemplo pede ao usuário que informe o tamanho dos 3 lados de um triângulo. Logo após, compara os lados do triângulo e exibe ao usuário o tipo de triângulo informado, ou avisa se os lados informados não formam um triângulo:\n\na) equilátero: possui os 3 lados iguais;\nb) isósceles: possui apenas 2 lados iguais;\nc) escaleno: possui todos os lados diferentes."
+      },
+      {
+        "nome": "Minicalculadora",
+        "arquivo": "desvios_condicionais/mini_calculadora.por",
+        "descricao": "Este exemplo demonstra o uso do desvio condicional para criar uma minicalculadora. O programa pede ao usuário que informe dois números reais e a operação a ser executada entre estes números (soma, divisão, etc.). Por fim, é exibido o valor resultante da operação entre os dois números. O programa também avisa quando a operação informada não existe e quando há uma divisão por zero."
+      },
+      {
+        "nome": "Escolha-Caso",
+        "arquivo": "desvios_condicionais/escolha_caso.por",
+        "descricao": "Este exemplo mostra o cardápio de uma lanchonete e usa o comando \"escolha\" para exibir o preço do item escolhido pelo usuário. Ele mostra como o \"escolha\" compara um valor com vários casos, e o papel do \"pare\" e do \"caso contrario\"."
+      },
+      {
+        "nome": "Ano Bissexto",
+        "arquivo": "desvios_condicionais/ano_bissexto.por",
+        "descricao": "Este exemplo lê um ano e informa se ele é bissexto, explicando a regra do calendário. Ele mostra como combinar condições com os operadores lógicos \"e\", \"ou\" e \"nao\"."
+      },
+      {
+        "nome": "Pedra, Papel e Tesoura",
+        "arquivo": "desvios_condicionais/pedra_papel_tesoura.por",
+        "descricao": "Este exemplo é o jogo Pedra, Papel e Tesoura contra o computador, em 3 rodadas com placar. Ele mostra como sortear números, usar o \"escolha\" e combinar condições para decidir o vencedor."
+      },
+      {
+        "nome": "Calculadora de IMC",
+        "arquivo": "desvios_condicionais/calculadora_imc.por",
+        "descricao": "Este exemplo calcula o IMC a partir do peso e da altura e mostra a faixa correspondente da OMS. Ele mostra como usar números reais e uma sequência de \"se / senao se\" para encontrar a faixa de um valor."
+      }
+    ]
+  },
+  {
+    "nome": "Laços de Repetição",
+    "itens": [
+      {
+        "nome": "Contagem Regressiva",
+        "arquivo": "lacos_repeticao/contagem_regressiva.por",
+        "descricao": "Este exemplo pede ao usuário um número e faz uma contagem regressiva a partir dele até 1. Ele mostra como funciona o laço \"enquanto\": as instruções se repetem enquanto a condição for verdadeira."
+      },
+      {
+        "nome": "Tabuada",
+        "arquivo": "lacos_repeticao/tabuada.por",
+        "descricao": "Este exemplo pede ao usuário que informe um número inteiro. Logo após, utiliza um laço de repetição do tipo \"para\", para calcular e exibir a tabuada do número informado."
+      },
+      {
+        "nome": "Consistência",
+        "arquivo": "lacos_repeticao/consistencia.por",
+        "descricao": "Este exemplo pede ao usuário uma nota de 0 a 10 e repete a pergunta até que um valor válido seja digitado, avisando o motivo de cada erro. Ele mostra como usar o laço \"faca-enquanto\" para validar os dados digitados."
+      },
+      {
+        "nome": "Média de Dez Números",
+        "arquivo": "lacos_repeticao/media_dez_numeros.por",
+        "descricao": "Este exemplo pede ao usuário que informe 10 números. Logo após, calcula e exibe a soma e a média dos números digitados. O exemplo utiliza um laço de repetição do tipo \"enquanto\" com um contador e um acumulador."
+      },
+      {
+        "nome": "Soma de Um a X",
+        "arquivo": "lacos_repeticao/soma_um_x.por",
+        "descricao": "Este exemplo pede ao usuário que informe um valor inteiro. Logo após, calcula e exibe a soma dos números de 1 até o número digitado."
+      },
+      {
+        "nome": "Fatorial",
+        "arquivo": "lacos_repeticao/fatorial.por",
+        "descricao": "Este exemplo ilustra o uso do laço de repetição \"enquanto\". O exemplo pede ao usuário que informe um número de 0 a 12 e, logo após, calcula e exibe o fatorial do número digitado."
+      },
+      {
+        "nome": "Pesquisa de Opinião",
+        "arquivo": "lacos_repeticao/pesquisa_opiniao.por",
+        "descricao": "Este exemplo faz uma pesquisa sobre a fruta preferida da turma, até que alguém digite 0. Ele mostra o laço \"faca-enquanto\" repetindo a leitura, o \"escolha\" contando os votos e o cálculo da porcentagem de cada opção."
+      },
+      {
+        "nome": "Adivinhe o Número",
+        "arquivo": "lacos_repeticao/adivinhe_numero.por",
+        "descricao": "Este exemplo é um jogo em que o computador sorteia um número de 1 a 100 e você tenta adivinhar com dicas de \"maior\" e \"menor\". Ele mostra como repetir até uma condição ser atendida com o \"faca-enquanto\" e como contar as tentativas."
+      },
+      {
+        "nome": "Números Primos",
+        "arquivo": "lacos_repeticao/numeros_primos.por",
+        "descricao": "Este exemplo lê um número e mostra todos os números primos até ele. Ele mostra como usar um laço dentro de outro e como interromper um laço mais cedo com o comando \"pare\"."
+      },
+      {
+        "nome": "Sequência de Fibonacci",
+        "arquivo": "lacos_repeticao/fibonacci.por",
+        "descricao": "Este exemplo mostra os primeiros termos da sequência de Fibonacci usando um laço e duas variáveis que caminham pela sequência. É a versão sem recursão do exemplo Fibonacci Recursivo."
+      },
+      {
+        "nome": "Validação de Senha",
+        "arquivo": "lacos_repeticao/validacao_senha.por",
+        "descricao": "Este exemplo pede para criar uma senha e repete a pergunta até ela ter pelo menos 6 caracteres e um número, depois pede a confirmação. Ele mostra como validar uma entrada com o \"faca-enquanto\" e percorrer um texto com a biblioteca Texto."
+      }
+    ]
+  },
+  {
+    "nome": "Vetores e Matrizes",
+    "itens": [
+      {
+        "nome": "Preenche e Exibe Vetor",
+        "arquivo": "vetores_matrizes/preenche_vetor.por",
+        "descricao": "Este exemplo cria e preenche um vetor com números aleatórios. Logo após, exibe o vetor no console de duas formas diferentes:\n\na) na ordem em que os números foram preenchidos;\nb) na ordem inversa em que os números foram preenchidos."
+      },
+      {
+        "nome": "Pesquisa em Vetor",
+        "arquivo": "vetores_matrizes/pesquisa_vetor.por",
+        "descricao": "Este exemplo ilustra o uso dos vetores na linguagem Portugol.\n\nNeste exemplo, é criado um vetor com valores predefinidos. Logo após, o programa pede ao usuário que informe um valor e percorre o vetor procurando pelo valor informado.\n\nPor último, o programa exibe uma mensagem informando se o valor informado foi encontrado dentro do vetor ou não."
+      },
+      {
+        "nome": "Tabela de Dados",
+        "arquivo": "vetores_matrizes/tabela_dados.por",
+        "descricao": "Este exemplo guarda o nome, a idade e a cidade de algumas pessoas em três vetores e exibe esses dados em forma de lista. Ele mostra como usar vetores paralelos: a mesma posição em cada vetor guarda os dados da mesma pessoa."
+      },
+      {
+        "nome": "Diagonal Principal",
+        "arquivo": "vetores_matrizes/diagonal_principal.por",
+        "descricao": "Este exemplo ilustra o uso das matrizes na linguagem Portugol criando uma matriz e preenchendo sua diagonal principal.\n\nAs matrizes nada mais são do que vetores de duas dimensões (bidimensionais). Em outras palavras, a matriz é um vetor onde cada uma de suas posições (linhas) armazena um outro vetor (colunas)."
+      },
+      {
+        "nome": "Exibe Matriz",
+        "arquivo": "vetores_matrizes/exibe_matriz.por",
+        "descricao": "Este exemplo guarda em uma matriz as notas de 3 alunos em 4 provas e as exibe em forma de tabela. Ele mostra como declarar uma matriz, acessar e alterar um elemento pela linha e pela coluna, e percorrê-la com dois laços \"para\"."
+      },
+      {
+        "nome": "Ordenação (Bubble Sort)",
+        "arquivo": "vetores_matrizes/ordenacao_bolha.por",
+        "descricao": "Este exemplo ordena um vetor de 8 números com o método da bolha, mostrando o vetor depois de cada passada. Ele mostra como comparar e trocar elementos vizinhos de um vetor."
+      },
+      {
+        "nome": "Busca Binária",
+        "arquivo": "vetores_matrizes/busca_binaria.por",
+        "descricao": "Este exemplo procura um número em um vetor ordenado com a busca binária, mostrando cada passo (início, meio e fim) e quantas comparações foram feitas."
+      },
+      {
+        "nome": "Notas da Turma",
+        "arquivo": "vetores_matrizes/notas_turma.por",
+        "descricao": "Este exemplo lê as notas de uma turma em um vetor e mostra a média, a maior e a menor nota e quantos alunos ficaram acima da média."
+      },
+      {
+        "nome": "Jogo da Velha",
+        "arquivo": "vetores_matrizes/jogo_da_velha.por",
+        "descricao": "Este exemplo é o Jogo da Velha para duas pessoas, com o tabuleiro guardado em uma matriz 3x3. Ele mostra como percorrer linhas, colunas e diagonais de uma matriz e como organizar um programa maior em funções."
+      }
+    ]
+  },
+  {
+    "nome": "Sub-rotinas",
+    "itens": [
+      {
+        "nome": "Procedimento e Função",
+        "arquivo": "subrotinas/procedimento_funcao.por",
+        "descricao": "Este exemplo mostra a diferença entre um procedimento e uma função. O procedimento \"linha\" apenas executa uma tarefa, enquanto a função \"area_retangulo\" faz um cálculo e devolve o resultado com \"retorne\"."
+      },
+      {
+        "nome": "Animação",
+        "arquivo": "subrotinas/lagarta.por",
+        "descricao": "Este exemplo ilustra o uso das funções da linguagem Portugol para criar uma animação no console."
+      },
+      {
+        "nome": "Parâmetros por Referência",
+        "arquivo": "subrotinas/parametros_referencia.por",
+        "descricao": "Este exemplo mostra a diferença entre passar um parâmetro por valor e por referência. As duas funções dobram o número recebido, mas só a que recebe o parâmetro por referência (com o símbolo &) altera a variável original."
+      },
+      {
+        "nome": "Vetores como Parâmetros",
+        "arquivo": "subrotinas/vetores_parametro.por",
+        "descricao": "Este exemplo ilustra a passagem de vetores como parâmetros para uma função. Diferente das variáveis comuns, os vetores são sempre passados por referência, mesmo sem o operador '&'; por isso, as alterações feitas nos elementos do vetor dentro da função valem para o vetor original."
+      },
+      {
+        "nome": "Fatorial Recursivo",
+        "arquivo": "subrotinas/fatorial_recursivo.por",
+        "descricao": "Este exemplo pede ao usuário que informe um número inteiro de 0 a 12. Logo após, calcula e exibe o fatorial do número informado.\n\nNeste exemplo, o fatorial é calculado chamando recursivamente a função \"fatorial\" definida no programa.\n\nO fatorial de um número é calculado multiplicando todos os valores inteiros entre 1 e o próprio número."
+      },
+      {
+        "nome": "Fibonacci Recursivo",
+        "arquivo": "subrotinas/fibonacci_recursivo.por",
+        "descricao": "Este exemplo pede ao usuário que informe um número inteiro. Logo após, calcula e exibe essa quantidade de números da sequência de Fibonacci.\n\nNeste exemplo, os números da sequência de Fibonacci são calculados chamando recursivamente a função \"fibonacci\" definida no programa.\n\nA sequência de Fibonacci é uma sequência numérica especial, na qual cada elemento da sequência é calculado somando os dois elementos anteriores."
+      },
+      {
+        "nome": "MDC (Algoritmo de Euclides)",
+        "arquivo": "subrotinas/mdc.por",
+        "descricao": "Este exemplo calcula o MDC de dois números com o Algoritmo de Euclides e, a partir dele, o MMC. Ele mostra como criar funções que devolvem um valor e como uma função pode usar outra."
+      },
+      {
+        "nome": "Palíndromo",
+        "arquivo": "subrotinas/palindromo.por",
+        "descricao": "Este exemplo verifica se uma palavra ou frase é um palíndromo, ignorando espaços e maiúsculas. Ele mostra como criar uma função que devolve um valor lógico e percorrer um texto com a biblioteca Texto."
+      },
+      {
+        "nome": "Conversor de Temperatura",
+        "arquivo": "subrotinas/conversor_temperatura.por",
+        "descricao": "Este exemplo converte temperaturas entre Celsius, Fahrenheit e Kelvin com um menu que se repete até a opção de sair. Cada fórmula fica em uma função que recebe e devolve um valor real."
+      }
+    ]
+  },
+  {
+    "nome": "Bibliotecas",
+    "itens": [
+      {
+        "nome": "Arquivos",
+        "suportado": false,
+        "itens": [
+          {
+            "nome": "Ler Arquivo",
+            "arquivo": "bibliotecas/arquivos/ler_arquivo.por",
+            "descricao": "Este exemplo mostra como ler o conteúdo de um arquivo de texto."
+          },
+          {
+            "nome": "Ler Linha",
+            "arquivo": "bibliotecas/arquivos/ler_linha.por",
+            "descricao": "Este exemplo mostra como ler uma linha de um arquivo de texto."
+          },
+          {
+            "nome": "Ler Linhas em Loop",
+            "arquivo": "bibliotecas/arquivos/loop_linhas.por",
+            "descricao": "Este exemplo mostra como ler todas as linhas de um arquivo usando um laço de repetição."
+          },
+          {
+            "nome": "Gravar Arquivo",
+            "arquivo": "bibliotecas/arquivos/gravar_arquivo.por",
+            "descricao": "Este exemplo mostra como gravar linhas em um arquivo, substituindo ou acrescentando conteúdo."
+          },
+          {
+            "nome": "Selecionar e Ler Arquivo",
+            "arquivo": "bibliotecas/arquivos/ler_selecionado.por",
+            "descricao": "Este exemplo demonstra como abrir uma janela para permitir ao usuário selecionar um arquivo. Após abrir a janela de seleção, o programa abre o arquivo selecionado caso o usuário tenha selecionado um arquivo ou exibe uma mensagem caso o usuário não tenha selecionado nenhum arquivo."
+          },
+          {
+            "nome": "Verificar Arquivo",
+            "arquivo": "bibliotecas/arquivos/verificar.por",
+            "descricao": "Este exemplo mostra como verificar se um arquivo existe antes de abri-lo, utilizando a função \"arquivo_existe\"."
+          },
+          {
+            "nome": "Selecionar Arquivo",
+            "arquivo": "bibliotecas/arquivos/selecionar_arquivo.por",
+            "descricao": "Este exemplo mostra como abrir uma janela para o usuário escolher um arquivo, utilizando a função \"selecionar_arquivo\"."
+          }
+        ]
+      },
+      {
+        "nome": "Matematica",
+        "itens": [
+          {
+            "nome": "Raiz de um Número",
+            "arquivo": "bibliotecas/matematica/raiz.por",
+            "descricao": "Este exemplo demonstra como obter a raiz quadrada e a raiz cúbica de um número usando a função \"raiz\" da biblioteca \"Matematica\"."
+          },
+          {
+            "nome": "Potência de um Número",
+            "arquivo": "bibliotecas/matematica/potencia.por",
+            "descricao": "Este exemplo demonstra como obter o quadrado e o cubo de um número utilizando a função \"potencia\" da biblioteca \"Matematica\"."
+          },
+          {
+            "nome": "Logaritmo de um Número",
+            "arquivo": "bibliotecas/matematica/logaritmo.por",
+            "descricao": "Este exemplo utiliza a função \"logaritmo\" da biblioteca \"Matematica\" para calcular o logaritmo de um número para uma determinada base. Calcular o logaritmo de um número significa encontrar o expoente ao qual a base foi elevada para chegar ao número."
+          },
+          {
+            "nome": "Funções Trigonométricas",
+            "arquivo": "bibliotecas/matematica/funcoes_trigonometricas.por",
+            "descricao": "Este exemplo pede um ângulo em graus, converte-o para radianos usando a constante PI e calcula o seno, o cosseno e a tangente com as funções da biblioteca \"Matematica\". O programa avisa quando a tangente não existe, como em 90 graus."
+          },
+          {
+            "nome": "Maior Número",
+            "arquivo": "bibliotecas/matematica/maior_numero.por",
+            "descricao": "Este exemplo demonstra como utilizar a função \"maior_numero\" da biblioteca \"Matematica\" para escolher o maior entre dois números."
+          },
+          {
+            "nome": "Menor Número",
+            "arquivo": "bibliotecas/matematica/menor_numero.por",
+            "descricao": "Este exemplo demonstra como utilizar a função \"menor_numero\" da biblioteca \"Matematica\" para escolher o menor entre dois números."
+          },
+          {
+            "nome": "Valor Absoluto",
+            "arquivo": "bibliotecas/matematica/valor_absoluto.por",
+            "descricao": "Este exemplo demonstra como utilizar a função \"valor_absoluto\" da biblioteca \"Matematica\" para obter o valor absoluto de um número."
+          },
+          {
+            "nome": "Arredondamento",
+            "arquivo": "bibliotecas/matematica/arredondamento.por",
+            "descricao": "Este exemplo demonstra como utilizar a função \"arredondar\" da biblioteca \"Matematica\" para arredondar um número qualquer."
+          },
+          {
+            "nome": "Área da Circunferência",
+            "arquivo": "bibliotecas/matematica/area_circunferencia.por",
+            "descricao": "Este exemplo demonstra o uso da constante \"PI\" da biblioteca \"Matematica\". Neste exemplo, a constante é utilizada para calcular a área de uma circunferência."
+          }
+        ]
+      },
+      {
+        "nome": "Texto",
+        "itens": [
+          {
+            "nome": "Tamanho do Texto",
+            "arquivo": "bibliotecas/texto/tamanho.por",
+            "descricao": "Este exemplo demonstra como utilizar a função \"numero_caracteres\" da biblioteca \"Texto\" para descobrir o tamanho de um dado do tipo cadeia."
+          },
+          {
+            "nome": "Ler Caracteres",
+            "arquivo": "bibliotecas/texto/caracteres.por",
+            "descricao": "Este exemplo demonstra o uso da função \"obter_caracter\" da biblioteca \"Texto\" para obter um caractere específico dentro de um dado do tipo cadeia. Neste exemplo, o usuário deve informar um valor e o programa irá verificar se o valor digitado é um número binário válido."
+          },
+          {
+            "nome": "Pesquisar Texto",
+            "arquivo": "bibliotecas/texto/pesquisar.por",
+            "descricao": "Este exemplo demonstra o uso da função \"posicao_texto\" da biblioteca \"Texto\" para descobrir se um dado do tipo cadeia contém uma sequência de caracteres."
+          },
+          {
+            "nome": "Extrair Texto",
+            "arquivo": "bibliotecas/texto/subtexto.por",
+            "descricao": "Este exemplo demonstra como utilizar a função \"extrair_subtexto\" da biblioteca \"Texto\" para obter uma parte de um texto armazenado em uma variável do tipo cadeia."
+          },
+          {
+            "nome": "Substituir Texto",
+            "arquivo": "bibliotecas/texto/substituir.por",
+            "descricao": "Este exemplo usa a função \"substituir\" da biblioteca \"Texto\" para trocar um trecho de um texto por outro. Ele mostra que a função troca todas as ocorrências, diferencia letras maiúsculas de minúsculas e devolve um novo texto sem alterar a variável original."
+          },
+          {
+            "nome": "Caixa Alta",
+            "arquivo": "bibliotecas/texto/caixa_alta.por",
+            "descricao": "Este exemplo demonstra como utilizar a função \"caixa_alta\" da biblioteca \"Texto\" para transformar os caracteres de um dado do tipo cadeia em caracteres maiúsculos."
+          },
+          {
+            "nome": "Caixa Baixa",
+            "arquivo": "bibliotecas/texto/caixa_baixa.por",
+            "descricao": "Este exemplo demonstra como utilizar a função \"caixa_baixa\" da biblioteca \"Texto\" para transformar os caracteres de um dado do tipo cadeia em caracteres minúsculos."
+          },
+          {
+            "nome": "Preencher Texto",
+            "arquivo": "bibliotecas/texto/preencher.por",
+            "descricao": "Este exemplo demonstra o uso da função \"preencher_a_esquerda\" da biblioteca \"Texto\" para completar um texto à esquerda com um caractere até que ele atinja um determinado tamanho. No exemplo, ela é usada para exibir um número binário com 8, 16 e 32 dígitos."
+          }
+        ]
+      },
+      {
+        "nome": "Util",
+        "itens": [
+          {
+            "nome": "Aguardar Intervalo",
+            "arquivo": "bibliotecas/util/aguarde.por",
+            "descricao": "Este exemplo ilustra o uso da função \"aguarde\" da biblioteca \"Util\" simulando uma contagem regressiva. O programa utiliza a função aguarde para fazer com que o programa espere 1 segundo antes de escrever o próximo número da contagem regressiva na tela."
+          },
+          {
+            "nome": "Sorteio de Números",
+            "arquivo": "bibliotecas/util/sorteio.por",
+            "descricao": "Este exemplo pede ao usuário que informe um valor inicial, um valor final e uma quantidade de sorteios a ser executada. Logo após, utiliza a função \"sorteia\" da biblioteca \"Util\" para sortear números entre os dois valores informados pelo usuário."
+          },
+          {
+            "nome": "Tamanho do Vetor",
+            "arquivo": "bibliotecas/util/vetor.por",
+            "descricao": "Este exemplo demonstra como descobrir dinamicamente o número de elementos contidos em um vetor. Para isto, o programa utiliza a função \"numero_elementos\" da biblioteca \"Util\"."
+          },
+          {
+            "nome": "Tamanho da Matriz",
+            "arquivo": "bibliotecas/util/matriz.por",
+            "descricao": "Este exemplo demonstra como descobrir dinamicamente as dimensões de uma matriz, isto é, o número de linhas e colunas que ela possui. Para isto, o programa utiliza as funções \"numero_linhas\" e \"numero_colunas\" da biblioteca \"Util\"."
+          },
+          {
+            "nome": "Controle de Tempo",
+            "arquivo": "bibliotecas/util/tempo.por",
+            "descricao": "Este exemplo ilustra como a função \"tempo_decorrido\" da biblioteca \"Util\" pode ser utilizada para realizar medição e controle de tempo em um algoritmo sem utilizar a função \"aguarde\"."
+          }
+        ]
+      },
+      {
+        "nome": "Objetos",
+        "itens": [
+          {
+            "nome": "Cadastro de Alunos",
+            "arquivo": "bibliotecas/objetos/cadastro_alunos.por",
+            "descricao": "Este exemplo demonstra como utilizar a biblioteca \"Objetos\" para guardar os dados de vários alunos. Cada aluno é um objeto com as propriedades nome, idade e nota, e os endereços dos objetos ficam guardados em um vetor."
+          },
+          {
+            "nome": "Agenda de Contatos",
+            "arquivo": "bibliotecas/objetos/agenda_contatos.por",
+            "descricao": "Este exemplo é uma pequena agenda com um menu para adicionar, listar e buscar contatos pelo nome. Cada contato é um objeto da biblioteca \"Objetos\", e cada opção do menu é feita por uma função separada."
+          }
+        ]
+      },
+      {
+        "nome": "Graficos",
+        "itens": [
+          {
+            "nome": "Iniciando o Modo Gráfico",
+            "arquivo": "bibliotecas/graficos/basico/iniciando.por",
+            "descricao": "Este exemplo mostra como iniciar o ambiente gráfico do Portugol: abrir a janela, definir o seu tamanho e o seu título, desenhar e exibir o resultado."
+          },
+          {
+            "nome": "Formas e Cores",
+            "arquivo": "bibliotecas/graficos/formas_cores.por",
+            "descricao": "Este exemplo desenha retângulos, elipses, linhas, um polígono e textos em várias cores, e mostra como funcionam as coordenadas da janela: a origem fica no canto superior esquerdo e o y cresce para baixo."
+          },
+          {
+            "nome": "Bandeira do Brasil",
+            "arquivo": "bibliotecas/graficos/bandeira_brasil.por",
+            "descricao": "Este exemplo desenha a Bandeira do Brasil com as proporções oficiais, de forma simplificada (sem as estrelas e o lema), calculando as coordenadas a partir de uma medida base e desenhando o losango com uma matriz de pontos."
+          },
+          {
+            "nome": "Bola Quicando",
+            "arquivo": "bibliotecas/graficos/bola_quicando.por",
+            "descricao": "Este exemplo anima uma bola que quica nas bordas da janela e muda de cor a cada quique. Ele mostra o laço de animação: apagar a tela, atualizar a posição, desenhar e esperar."
+          },
+          {
+            "nome": "Gráfico de Barras",
+            "arquivo": "bibliotecas/graficos/grafico_barras.por",
+            "descricao": "Este exemplo desenha um gráfico de barras com a chuva de cada mês, guardada em um vetor. Ele usa uma regra de três para que as barras fiquem proporcionais à altura da janela."
+          },
+          {
+            "nome": "Efeito de Onda",
+            "arquivo": "bibliotecas/graficos/onda.por",
+            "descricao": "Este exemplo utiliza primitivas gráficas e cálculos de seno e cosseno para simular o movimento de uma onda na tela.",
+            "imagem": "bibliotecas/graficos/onda.png",
+            "suportado": false
+          },
+          {
+            "nome": "Curvas de Lissajous",
+            "arquivo": "bibliotecas/graficos/senoides.por",
+            "descricao": "Este exemplo utiliza as funções de desenho da biblioteca gráfica para criar formas baseadas nas funções de seno e cosseno.",
+            "imagem": "bibliotecas/graficos/senoides.png",
+            "suportado": false
+          },
+          {
+            "nome": "Solar",
+            "arquivo": "bibliotecas/graficos/solar.por",
+            "descricao": "Este exemplo utiliza as funções de desenho da biblioteca gráfica para apresentar as órbitas do sistema solar a partir de alguns cálculos com diâmetro e ângulo.",
+            "imagem": "bibliotecas/graficos/solar.png",
+            "suportado": false
+          },
+          {
+            "nome": "Salvar Imagem",
+            "arquivo": "bibliotecas/graficos/salvar_imagem.por",
+            "descricao": "Este exemplo utiliza a biblioteca gráfica para salvar no computador uma imagem do que foi desenhado na tela.",
+            "imagem": "bibliotecas/graficos/salvar_imagem.png",
+            "suportado": false
+          },
+          {
+            "nome": "Esfera 3D",
+            "arquivo": "bibliotecas/graficos/sphere.por",
+            "descricao": "Este exemplo renderiza uma esfera em 3D.",
+            "imagem": "bibliotecas/graficos/esfera.png",
+            "suportado": false
+          }
+        ]
+      },
+      {
+        "nome": "Calendario",
+        "itens": [
+          {
+            "nome": "Data e Hora Atual",
+            "arquivo": "bibliotecas/calendario/data_hora_atual.por",
+            "descricao": "Este exemplo utiliza a biblioteca \"Calendario\" para obter a data e a hora atuais e exibi-las em um formato amigável, como \"Hoje é sábado, 3 de outubro de 2026, 14:05\"."
+          },
+          {
+            "nome": "Quantos Dias Faltam",
+            "arquivo": "bibliotecas/calendario/dias_ate_aniversario.por",
+            "descricao": "Este exemplo pede o dia e o mês do seu aniversário e calcula quantos dias faltam para o próximo, a partir da data atual. Ele mostra como lidar com meses de tamanhos diferentes e com os anos bissextos."
+          },
+          {
+            "nome": "Relógio Analógico",
+            "arquivo": "bibliotecas/calendario/relogio.por",
+            "descricao": "Este exemplo desenha um relógio analógico que acompanha a hora do computador, usando a biblioteca \"Calendario\" para obter a hora e as funções seno e cosseno da biblioteca \"Matematica\" para posicionar os ponteiros."
+          },
+          {
+            "nome": "Relógio Analógico",
+            "arquivo": "bibliotecas/calendario/relogio_analogico.por",
+            "descricao": "Este é um exemplo de utilização da biblioteca \"Calendario\" que exibe um relógio analógico.",
+            "imagem": "bibliotecas/calendario/relogio_analogico.png",
+            "suportado": false
+          },
+          {
+            "nome": "Relógio Digital",
+            "arquivo": "bibliotecas/calendario/relogio_digital.por",
+            "descricao": "Este é um exemplo de utilização da biblioteca \"Calendario\" que exibe um relógio digital.",
+            "imagem": "bibliotecas/calendario/relogio_digital.png",
+            "suportado": false
+          }
+        ]
+      },
+      {
+        "nome": "Internet",
+        "suportado": false,
+        "itens": [
+          {
+            "nome": "Obter Texto de um Site",
+            "arquivo": "bibliotecas/internet/obtertexto.por",
+            "descricao": "Este exemplo utiliza a biblioteca \"Internet\" para obter o conteúdo de uma página web e a biblioteca \"Texto\" para encontrar o título da página."
+          },
+          {
+            "nome": "Robô Aleatório",
+            "arquivo": "bibliotecas/internet/robos.por",
+            "descricao": "Este é um exemplo de utilização da biblioteca \"Internet\" que exibe um robô aleatório sempre que executado.",
+            "imagem": "bibliotecas/internet/bolinha.png"
+          }
+        ]
+      },
+      {
+        "nome": "Teclado",
+        "suportado": false,
+        "itens": [
+          {
+            "nome": "Ler Tecla",
+            "arquivo": "bibliotecas/teclado/ler_tecla.por",
+            "descricao": "Este exemplo mostra como aguardar até que uma tecla seja digitada e obter o seu código e o seu caractere, utilizando as funções \"ler_tecla\" e \"caracter_tecla\"."
+          },
+          {
+            "nome": "Tecla Pressionada",
+            "arquivo": "bibliotecas/teclado/tecla_pressionada.por",
+            "descricao": "Este exemplo mostra como mover um quadrado pela janela com as setas do teclado, utilizando a função \"tecla_pressionada\"."
+          }
+        ]
+      },
+      {
+        "nome": "Tipos",
+        "itens": [
+          {
+            "nome": "Inteiro",
+            "arquivo": "bibliotecas/tipos/inteiro.por",
+            "descricao": "Este exemplo mostra como verificar e converter dados do tipo inteiro para outros tipos e vice-versa, utilizando a biblioteca \"Tipos\"."
+          },
+          {
+            "nome": "Real",
+            "arquivo": "bibliotecas/tipos/real.por",
+            "descricao": "Este exemplo mostra como verificar e converter dados do tipo real para outros tipos e vice-versa, utilizando a biblioteca \"Tipos\"."
+          },
+          {
+            "nome": "Caracter",
+            "arquivo": "bibliotecas/tipos/caracter.por",
+            "descricao": "Este exemplo mostra como verificar e converter dados do tipo caracter para outros tipos e vice-versa, utilizando a biblioteca \"Tipos\"."
+          },
+          {
+            "nome": "Lógico",
+            "arquivo": "bibliotecas/tipos/logico.por",
+            "descricao": "Este exemplo mostra como verificar e converter dados do tipo logico para outros tipos e vice-versa, utilizando a biblioteca \"Tipos\"."
+          }
+        ]
+      },
+      {
+        "nome": "Mouse",
+        "suportado": false,
+        "itens": [
+          {
+            "nome": "Posição do Mouse",
+            "arquivo": "bibliotecas/mouse/posicao_mouse.por",
+            "descricao": "Este exemplo mostra como obter a posição do cursor do mouse, utilizando as funções \"posicao_x\" e \"posicao_y\"."
+          },
+          {
+            "nome": "Botão Pressionado",
+            "arquivo": "bibliotecas/mouse/botao_pressionado.por",
+            "descricao": "Este exemplo mostra quais botões do mouse estão pressionados em cada instante, utilizando as funções \"botao_pressionado\" e \"algum_botao_pressionado\"."
+          },
+          {
+            "nome": "Ler Botão",
+            "arquivo": "bibliotecas/mouse/ler_botao.por",
+            "descricao": "Este exemplo mostra como aguardar até que um botão do mouse seja clicado e descobrir qual foi, utilizando a função \"ler_botao\"."
+          },
+          {
+            "nome": "Cursor",
+            "arquivo": "bibliotecas/mouse/cursor.por",
+            "descricao": "Este exemplo mostra como ocultar e exibir o cursor do mouse, utilizando as funções \"ocultar_cursor\" e \"exibir_cursor\"."
+          }
+        ]
+      },
+      {
+        "nome": "Sons",
+        "suportado": false,
+        "itens": [
+          {
+            "nome": "Reproduzir um Som",
+            "arquivo": "bibliotecas/sons/reproduzir_um.por",
+            "descricao": "Este exemplo mostra como carregar e reproduzir um som, utilizando as funções \"carregar_som\" e \"reproduzir_som\"."
+          },
+          {
+            "nome": "Reproduzir Vários Sons",
+            "arquivo": "bibliotecas/sons/reproduzir_varios.por",
+            "descricao": "Este exemplo mostra como reproduzir vários sons, inclusive ao mesmo tempo, tocando uma batida simples de bateria."
+          },
+          {
+            "nome": "Interromper um Som",
+            "arquivo": "bibliotecas/sons/interromper.por",
+            "descricao": "Este exemplo mostra como interromper um som que está sendo reproduzido em repetição, utilizando a função \"interromper_som\"."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "nome": "Música",
+    "suportado": false,
+    "itens": [
+      {
+        "nome": "Bateria",
+        "arquivo": "musica/bateria.por",
+        "descricao": "Este exemplo apresenta o motor de áudio do Portugol em um programa para criar batidas com instrumentos diferentes.",
+        "imagem": "musica/bateria.png"
+      },
+      {
+        "nome": "Player de Música",
+        "arquivo": "musica/player.por",
+        "descricao": "Este exemplo apresenta um player de música criado utilizando os recursos de reprodução de sons e música do Portugol. O exemplo também utiliza os recursos da biblioteca gráfica para criar um fundo animado e os botões de controle de reprodução do player.",
+        "imagem": "musica/player.png"
+      }
+    ]
+  },
+  {
+    "nome": "Jogos",
+    "suportado": false,
+    "itens": [
+      {
+        "nome": "Detectando Colisões",
+        "itens": [
+          {
+            "nome": "Colisão entre um Ponto e um Retângulo",
+            "arquivo": "jogos/colisoes/ex1_colisao_ponto_retangulo.por",
+            "descricao": "Este exemplo demonstra como é detectada a colisão entre um ponto e um retângulo.",
+            "imagem": "jogos/colisoes/ponto_retangulo.png"
+          },
+          {
+            "nome": "Colisão entre um Ponto e um Círculo",
+            "arquivo": "jogos/colisoes/ex2_colisao_ponto_circulo.por",
+            "descricao": "Este exemplo demonstra como é detectada a colisão entre um ponto e um círculo.",
+            "imagem": "jogos/colisoes/ponto_circulo.png"
+          },
+          {
+            "nome": "Colisão entre Dois Retângulos",
+            "arquivo": "jogos/colisoes/ex3_colisao_retangulos.por",
+            "descricao": "Este exemplo demonstra como é detectada a colisão entre dois retângulos.",
+            "imagem": "jogos/colisoes/retangulo_retangulo.png"
+          },
+          {
+            "nome": "Colisão entre Dois Círculos",
+            "arquivo": "jogos/colisoes/ex4_colisao_circulos.por",
+            "descricao": "Este exemplo demonstra como é detectada a colisão entre dois círculos.",
+            "imagem": "jogos/colisoes/circulo_circulo.png"
+          },
+          {
+            "nome": "Colisão entre um Círculo e um Retângulo",
+            "arquivo": "jogos/colisoes/ex5_colisao_circulo_retangulo.por",
+            "descricao": "Este exemplo demonstra como é detectada a colisão entre um círculo e um retângulo.",
+            "imagem": "jogos/colisoes/circulo_retangulo.png"
+          },
+          {
+            "nome": "Várias Colisões",
+            "arquivo": "jogos/colisoes/ex6_colisao_todos.por",
+            "descricao": "Este exemplo demonstra a detecção de vários tipos de colisão ao mesmo tempo.",
+            "imagem": "jogos/colisoes/todos.png"
+          }
+        ]
+      },
+      {
+        "nome": "Moon Lander",
+        "arquivo": "jogos/moon_lander.por",
+        "descricao": "Este exemplo é um jogo escrito em Portugol no qual o jogador controla uma nave que deve pousar na lua o mais rápido possível. O exemplo demonstra como utilizar algumas das bibliotecas existentes no Portugol. Neste exemplo, também é possível ver algumas técnicas utilizadas na criação de jogos.\n\nO jogador perde se:\n\na) guiar a nave para fora da tela;\nb) pousar a nave fora da plataforma de pouso;\nc) pousar a nave muito rápido.",
+        "imagem": "jogos/moonlander.png"
+      },
+      {
+        "nome": "Serpente",
+        "arquivo": "jogos/serpente.por",
+        "descricao": "Este exemplo é um jogo da serpente (Snake) escrito em Portugol. O exemplo demonstra como utilizar algumas das bibliotecas existentes no Portugol. Neste exemplo, também é possível ver algumas técnicas utilizadas na criação de jogos.",
+        "imagem": "jogos/serpente.png"
+      },
+      {
+        "nome": "Corrida",
+        "arquivo": "jogos/corrida.por",
+        "descricao": "Este exemplo é um jogo de corrida escrito em Portugol (ainda em desenvolvimento). O exemplo demonstra como utilizar algumas das bibliotecas existentes no Portugol. Neste exemplo, também é possível ver algumas técnicas utilizadas na criação de jogos.",
+        "imagem": "jogos/corrida.png"
+      },
+      {
+        "nome": "Pong",
+        "arquivo": "jogos/pong.por",
+        "descricao": "Este exemplo é um jogo de Pong escrito em Portugol (ainda em desenvolvimento). O exemplo demonstra como utilizar algumas das bibliotecas existentes no Portugol. Neste exemplo, também é possível ver algumas técnicas utilizadas na criação de jogos.",
+        "imagem": "jogos/pong_game.png"
+      },
+      {
+        "nome": "Quebra-cabeça Deslizante",
+        "arquivo": "jogos/slide.por",
+        "descricao": "Este exemplo é um jogo de quebra-cabeça escrito em Portugol. O exemplo demonstra como utilizar algumas das bibliotecas existentes no Portugol. Neste exemplo, também é possível ver algumas técnicas utilizadas na criação de jogos.",
+        "imagem": "jogos/slide-game.jpg"
+      },
+      {
+        "nome": "Crie um Personagem Medieval",
+        "arquivo": "jogos/medieval.por",
+        "descricao": "Este exemplo é um jogo em que o jogador monta um personagem medieval, escolhendo rosto, roupa, escudo, arma e cenário, e pode salvar a imagem criada.",
+        "imagem": "jogos/medieval.png"
+      },
+      {
+        "nome": "The Ball Saga",
+        "itens": [
+          {
+            "nome": "The Ball Saga",
+            "arquivo": "jogos/theballsaga/theballsaga.por",
+            "descricao": "Este exemplo é um jogo de habilidade (Bounce) escrito em Portugol. O exemplo demonstra como utilizar algumas das bibliotecas existentes no Portugol. Neste exemplo, também é possível ver algumas técnicas utilizadas na criação de jogos.",
+            "imagem": "jogos/theballsaga/theballsaga.png"
+          },
+          {
+            "nome": "Criador de Fases",
+            "arquivo": "jogos/theballsaga/theballsagacriador.por",
+            "descricao": "Este exemplo é um gerador de fases para o jogo The Ball Saga, um jogo de habilidade (Bounce) escrito em Portugol. O exemplo demonstra como utilizar algumas das bibliotecas existentes no Portugol. Neste exemplo, também é possível ver algumas técnicas utilizadas na criação de jogos.",
+            "imagem": "jogos/theballsaga/criadordefases.png"
+          }
+        ]
+      },
+      {
+        "nome": "Programe",
+        "itens": [
+          {
+            "nome": "Programe",
+            "arquivo": "jogos/programe/programe.por",
+            "descricao": "Este exemplo é um jogo, escrito em Portugol, em que se programa o caminho de um personagem. O exemplo demonstra como utilizar algumas das bibliotecas existentes no Portugol. Neste exemplo, também é possível ver algumas técnicas utilizadas na criação de jogos.",
+            "imagem": "jogos/programe/programe.png"
+          },
+          {
+            "nome": "Criador de Fases",
+            "arquivo": "jogos/programe/criador_de_fases.por",
+            "descricao": "Este exemplo é um gerador de fases para o jogo Programe, um jogo de programar escrito em Portugol. O exemplo demonstra como utilizar algumas das bibliotecas existentes no Portugol. Neste exemplo, também é possível ver algumas técnicas utilizadas na criação de jogos.",
+            "imagem": "jogos/programe/criador_de_fases.png"
+          }
+        ]
+      }
+    ]
+  }
+]

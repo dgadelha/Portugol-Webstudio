@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["packages/ide/src/app/dialog-rename-tab/dialog-rename-tab.component.scss"],
+  "sourcesContent": ["form {\n  display: flex;\n  flex-direction: column;\n  flex-grow: 1;\n}\n\n.field {\n  display: flex;\n  flex-direction: column;\n  gap: 0.375rem;\n}\n\n.field-label {\n  font-weight: 600;\n}\n"],
+  "mappings": "AAAA,KACE,QAAA,KACA,eAAA,OACA,UAAA,EAGF,CAAA,MACE,QAAA,KACA,eAAA,OACA,IAAA,QAGF,CAAA,YACE,YAAA",
+  "names": []
+}

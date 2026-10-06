@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["packages/ide/src/app/survey-invite/survey-invite-icon.component.scss"],
+  "sourcesContent": [":host {\n  display: flex;\n}\n\nsvg-icon {\n  width: 1.25rem;\n  height: 1.25rem;\n}\n"],
+  "mappings": "AAAA,MACE,QAAA,KAGF,SACE,MAAA,QACA,OAAA",
+  "names": []
+}

@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["packages/ide/src/app/dialog-settings/font-size-control.component.scss"],
+  "sourcesContent": ["// Tamanho da fonte em px: botões de um em um e um controle deslizante para\n// saltos maiores.\n:host {\n  display: flex;\n  align-items: center;\n  gap: 0.75rem;\n}\n\n.range {\n  flex-grow: 1;\n  min-width: 0;\n}\n\n.step {\n  border: 1px solid var(--pws-border-control);\n}\n\n.value {\n  flex-shrink: 0;\n  width: 3rem;\n  padding: 0.125rem 0;\n  border-radius: var(--pws-radius-sm);\n  background-color: var(--pws-bg-input);\n  font-family: var(--pws-font-mono);\n  font-size: var(--pws-text-sm);\n  text-align: center;\n}\n"],
+  "mappings": "AAEA,MACE,QAAA,KACA,YAAA,OACA,IAAA,OAGF,CAAA,MACE,UAAA,EACA,UAAA,EAGF,CAAA,KACE,OAAA,IAAA,MAAA,IAAA,sBAGF,CAAA,MACE,YAAA,EACA,MAAA,KAjBF,QAkBE,QAAA,EACA,cAAA,IAAA,iBACA,iBAAA,IAAA,gBACA,YAAA,IAAA,iBACA,UAAA,IAAA,eACA,WAAA",
+  "names": []
+}

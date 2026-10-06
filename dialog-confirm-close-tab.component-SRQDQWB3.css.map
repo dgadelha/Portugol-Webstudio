@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["packages/ide/src/app/dialog-confirm-close-tab/dialog-confirm-close-tab.component.scss"],
+  "sourcesContent": [".dialog-body {\n  display: flex;\n  flex-direction: column;\n  gap: 0.75rem;\n}\n\n.tab-name {\n  word-break: break-word;\n}\n\n.warning {\n  color: var(--pws-danger-fg);\n}\n"],
+  "mappings": "AAAA,CAAA,YACE,QAAA,KACA,eAAA,OACA,IAAA,OAGF,CAAA,SACE,WAAA,WAGF,CAAA,QACE,MAAA,IAAA",
+  "names": []
+}

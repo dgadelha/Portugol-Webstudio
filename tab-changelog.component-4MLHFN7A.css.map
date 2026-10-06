@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["packages/ide/src/app/tab-changelog/tab-changelog.component.scss"],
+  "sourcesContent": [":host {\n  display: block;\n  height: 100%;\n  overflow: auto;\n}\n\nmarkdown {\n  max-width: 50rem;\n  margin: 0 auto;\n  padding: 1.5rem 2rem 3rem;\n}\n"],
+  "mappings": "AAAA,MACE,QAAA,MACA,OAAA,KACA,SAAA,KAGF,SACE,UAAA,MAPF,OAQE,EAAA,KARF,QASE,OAAA,KAAA",
+  "names": []
+}

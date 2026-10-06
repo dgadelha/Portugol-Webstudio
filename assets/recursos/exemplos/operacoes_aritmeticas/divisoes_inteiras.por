@@ -1,47 +1,37 @@
-
-/* CLIQUE NO SINAL DE "+", À ESQUERDA, PARA EXIBIR A DESCRIÇÃO DO EXEMPLO
- *  
- * Copyright (C) 2014 - UNIVALI - Universidade do Vale do Itajaí
- * 
- * Este arquivo de código fonte é livre para utilização, cópia e/ou modificação
- * desde que este cabeçalho, contendo os direitos autorais e a descrição do programa, 
- * seja mantido.
- * 
- * Se tiver dificuldade em compreender este exemplo, acesse as vídeoaulas do Portugol 
- * Studio para auxiliá-lo:
- * 
- * https://www.youtube.com/watch?v=K02TnB3IGnQ&list=PLb9yvNDCid3jQAEbNoPHtPR0SWwmRSM-t
- * 
- * Descrição:
- * 
- * 	Este exemplo pede ao usuario que informe um número inteiro. Logo após, calcula 
- * 	e exibe: 
- * 	
- * 	  a) O resultado da divisão inteira por 2
- *	  b) O resto da divisão inteira por 3 (mod)
- *	  
- * Autores:
- * 
- * 	Giordana Maria da Costa Valle
- * 	Carlos Alexandre Krueger
- * 	
- * Data: 01/06/2013
+/**
+ * Este exemplo divide uma quantidade de balas igualmente entre um grupo de
+ * crianças. Ele mostra a diferença entre a divisão inteira (/), que diz quantas
+ * balas cada criança recebe, e o resto da divisão (%), que diz quantas sobram.
  */
 
-programa
-{
-	funcao inicio() 
-	{
-		inteiro metade_inteira, resto, valor
-		
-		escreva("Digite um valor: ") 
-		leia(valor)
+programa {
+  funcao inicio() {
+    inteiro balas, criancas, balas_por_crianca, balas_que_sobram
 
-		metade_inteira = valor / 2 // Calcula a metade inteira do valor
-		resto = valor % 3 // Calcula o resto da divisão do valor por 3
-		
-		escreva("\nA metade inteira do numero é: ", metade_inteira)
-		escreva("\nO resto (mod) da divisão por 3 é: ", resto, "\n")
-	}
+    escreva("Quantas balas há no pacote? ")
+    leia(balas)
+
+    escreva("Entre quantas crianças elas serão divididas? ")
+    leia(criancas)
+
+    // Não é possível dividir por zero, então verificamos antes de calcular
+    se (criancas <= 0) {
+      escreva("\nÉ preciso ter pelo menos uma criança para dividir as balas.\n")
+    } senao {
+      // Quando os dois valores são do tipo inteiro, o operador / faz a divisão
+      // inteira: o resultado não tem casas decimais. Por exemplo, 17 / 5 = 3
+      balas_por_crianca = balas / criancas
+
+      // O operador % calcula o resto da divisão inteira. Por exemplo, 17 % 5 = 2,
+      // pois 5 cabe 3 vezes em 17 (15) e sobram 2
+      balas_que_sobram = balas % criancas
+
+      escreva("\nBalas para cada criança: ", balas_por_crianca, "\n")
+      escreva("Balas que sobram no pacote: ", balas_que_sobram, "\n")
+
+      // Podemos conferir a conta: o quociente vezes o divisor, mais o resto,
+      // é sempre igual ao valor que foi dividido
+      escreva("\nConferindo: ", balas_por_crianca, " x ", criancas, " + ", balas_que_sobram, " = ", balas_por_crianca * criancas + balas_que_sobram, "\n")
+    }
+  }
 }
-

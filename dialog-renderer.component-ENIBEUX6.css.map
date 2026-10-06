@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["packages/ide/src/app/dialog-renderer/dialog-renderer.component.scss"],
+  "sourcesContent": [".dialog-header {\n  padding-top: 0.5rem;\n  padding-bottom: 0.5rem;\n  cursor: grab;\n\n  &.cdk-drag-dragging {\n    cursor: grabbing;\n  }\n\n  h2 {\n    font-size: var(--pws-text-md);\n  }\n}\n\n// Um desenho maior que a tela rola dentro da janela, como no\n// `mat-dialog-content` de antes. A margem automática centraliza a tela de\n// desenho só quando sobra espaço: com `justify-content`, a borda esquerda de\n// um desenho largo ficaria fora da área de rolagem.\n.renderer-content {\n  display: flex;\n  min-height: 0;\n  overflow: auto;\n\n  canvas {\n    flex-shrink: 0;\n    margin: auto;\n  }\n}\n"],
+  "mappings": "AAAA,CAAA,cACE,YAAA,MACA,eAAA,MACA,OAAA,KAEA,CALF,aAKE,CAAA,kBACE,OAAA,SAGF,CATF,cASE,GACE,UAAA,IAAA,eAQJ,CAAA,iBACE,QAAA,KACA,WAAA,EACA,SAAA,KAEA,CALF,iBAKE,OACE,YAAA,EAxBJ,OAyBI",
+  "names": []
+}

@@ -1,0 +1,3 @@
+import{n as o}from"./chunk-Cvof6wl4.js";var u=new Set([`redux-color`,`redux-dark-color`]);var S=12;var v=64;var a=o(r=>Array.isArray(r)&&r.length>0,`hasPalette`);var O=o((r,o)=>r!=null&&u.has(r)&&a(o),`isColorTheme`);var c=/^[\w-]+$/;var _=o(r=>{let o=typeof r==`string`||typeof r==`number`?String(r):``;return c.test(o)?o:`classic`},`safeLook`);var s=o(r=>a(r)?r.length:0,`paletteSlotCount`);var C=o((r,o)=>a(o)?s(o):typeof r==`number`&&Number.isInteger(r)&&r>0&&r<=v?r:S,`colorSlotCount`);var T=o((r,o,e,n)=>{if(o===void 0||!O(e,n))return;let l=o%s(n);r.attr(`data-color-id`,`color-${l}`)},`stampColorSlot`);export{a,_ as i,O as n,s as o,T as r,u as s,C as t};
+//# debugId=00595c7c-63e2-5398-b61b-498cbb341e76
+//# sourceMappingURL=chunk-C51XrdjX.js.map

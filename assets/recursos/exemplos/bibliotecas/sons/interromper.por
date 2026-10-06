@@ -1,33 +1,30 @@
-
-/* CLIQUE NO SINAL DE "+", À ESQUERDA, PARA EXIBIR A DESCRIÇÃO DO EXEMPLO
- *  
- * Copyright (C) 2014 - UNIVALI - Universidade do Vale do Itajaí
- * 
- * Este arquivo de código fonte é livre para utilização, cópia e/ou modificação
- * desde que este cabeçalho, contendo os direitos autorais e a descrição do programa, 
- * seja mantido.
- * 
- * Se tiver dificuldade em compreender este exemplo, acesse as vídeoaulas do Portugol 
- * Studio para auxiliá-lo:
- * 
- * https://www.youtube.com/watch?v=K02TnB3IGnQ&list=PLb9yvNDCid3jQAEbNoPHtPR0SWwmRSM-t
- * 
- * Descrição:
- * 
- * 	
- * 
- * Autores:
- * 
- * 	Luiz Fernando Noschang (noschang@univali.br)
- * 	
- * Data: 18/07/2014
+/**
+ * Este exemplo demonstra como interromper um som que está sendo reproduzido,
+ * utilizando a função "interromper_som" da biblioteca "Sons". O som é reproduzido
+ * em repetição e interrompido depois de alguns segundos. Os sons ficam na mesma
+ * pasta do exemplo.
  */
- 
-programa
-{
-	funcao inicio()
-	{
-		
-	}
-}
 
+programa {
+  inclua biblioteca Sons --> s
+  inclua biblioteca Util --> u
+
+  funcao inicio() {
+    inteiro som = s.carregar_som("chimbal.mp3")
+
+    // O parâmetro verdadeiro faz com que o som se repita até ser interrompido.
+    // A função "reproduzir_som" retorna o endereço desta reprodução, que é
+    // usado para interrompê-la depois
+    inteiro reproducao = s.reproduzir_som(som, verdadeiro)
+
+    para (inteiro segundos = 3; segundos >= 1; segundos--) {
+      escreva("O som será interrompido em ", segundos, "...\n")
+      u.aguarde(1000)
+    }
+
+    s.interromper_som(reproducao)
+    escreva("Som interrompido!\n")
+
+    s.liberar_som(som)
+  }
+}

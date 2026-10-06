@@ -1,79 +1,78 @@
-
-/* CLIQUE NO SINAL DE "+", À ESQUERDA, PARA EXIBIR A DESCRIÇÃO DO EXEMPLO
- *  
+/*
  * Copyright (C) 2014 - UNIVALI - Universidade do Vale do Itajaí
- * 
+ *
  * Este arquivo de código fonte é livre para utilização, cópia e/ou modificação
- * desde que este cabeçalho, contendo os direitos autorais e a descrição do programa, 
+ * desde que este cabeçalho, contendo os direitos autorais e a descrição do programa,
  * seja mantido.
- * 
- * Se tiver dificuldade em compreender este exemplo, acesse as vídeoaulas do Portugol 
+ *
+ * Se tiver dificuldade em compreender este exemplo, acesse as vídeoaulas do Portugol
  * Studio para auxiliá-lo:
- * 
+ *
  * https://www.youtube.com/watch?v=K02TnB3IGnQ&list=PLb9yvNDCid3jQAEbNoPHtPR0SWwmRSM-t
- * 
+ *
  * Descrição:
- * 
- * 	Este exemplo demonstra o uso do desvio condicional para criar uma mini 
- * 	calculadora. O programa pede ao usuário que informe dois números reais 
- * 	e a operação a ser executada entre estes números (soma, divisão, etc.).
+ *
+ *   Este exemplo demonstra o uso do desvio condicional para criar uma
+ *   minicalculadora. O programa pede ao usuário que informe dois números reais
+ *   e a operação a ser executada entre estes números (soma, divisão, etc.).
  *   Por fim, é exibido o valor resultante da operação entre os dois números.
- * 
+ *   O programa também avisa quando a operação informada não existe e quando
+ *   há uma divisão por zero.
+ *
  * Autores:
- * 
- * 	Giordana Maria da Costa Valle
- * 	Carlos Alexandre Krueger
- * 	
+ *
+ *   Giordana Maria da Costa Valle
+ *   Carlos Alexandre Krueger
+ *
  * Data: 01/06/2013
- */ 
+ */
 
-programa
-{
-	funcao inicio()
-	{
-		caracter operador
-		
-		real resultado = 0.0, operando1, operando2
+programa {
+  funcao inicio() {
+    caracter operador
 
-		escreva("Digite o primeiro número: ")
-		leia(operando1)
+    real resultado = 0.0, operando1, operando2
 
-		escreva("Digite o segundo número: ")
-		leia(operando2)
+    escreva("Digite o primeiro número: ")
+    leia(operando1)
 
-		escreva("\n")
-		
-		escreva("Agora digite uma das operações ( + - * / ): ")
-		leia(operador)
+    escreva("Digite o segundo número: ")
+    leia(operando2)
 
-		/* Verifica qual foi a operação selecionada */
-		
-		se (operador == '+')
-		{
-			resultado = operando1 + operando2
-			
-		}
-		senao  se(operador == '-')
-		{
-			resultado = operando1 - operando2
-			
-		}
-		senao se(operador == '/')
-		{
-			resultado = operando1 / operando2
-			
-		}
-		senao se(operador == '*')
-		{
-			resultado = operando1 * operando2
-		}	
+    escreva("\n")
 
-		limpa()
-		
-		escreva("Resultado:\n\n")
-		escreva(operando1, " ", operador, " ", operando2, " = ", resultado)
-		
-		escreva("\n")
-	}
+    escreva("Agora digite uma das operações ( + - * / ): ")
+    leia(operador)
+
+    limpa()
+
+    /* Verifica qual foi a operação selecionada */
+
+    se (operador == '+') {
+      resultado = operando1 + operando2
+    } senao se (operador == '-') {
+      resultado = operando1 - operando2
+    } senao se (operador == '/') {
+      // Não existe divisão por zero: o programa avisa o usuário e termina
+      se (operando2 == 0.0) {
+        escreva("Não é possível dividir por zero\n")
+        retorne
+      }
+
+      resultado = operando1 / operando2
+    } senao se (operador == '*') {
+      resultado = operando1 * operando2
+    } senao {
+      // Qualquer outro caractere não é uma das operações da calculadora
+      escreva("A operação '", operador, "' não existe. Use uma destas: + - * /\n")
+      retorne
+    }
+
+    escreva("Resultado:\n\n")
+    // Os números reais nem sempre são guardados com exatidão no computador: por
+    // isso 0.1 + 0.2 aparece como 0.30000000000000004
+    escreva(operando1, " ", operador, " ", operando2, " = ", resultado)
+
+    escreva("\n")
+  }
 }
-
