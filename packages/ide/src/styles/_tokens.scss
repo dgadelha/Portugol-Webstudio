@@ -1,0 +1,155 @@
+@use "sass:color";
+@use "sass:list";
+@use "sass:map";
+@use "sass:math";
+
+// Cores da interface, inspiradas nos temas "Dark Modern" e "Light Modern" do
+// VS Code, com o amarelo do Portugol como destaque. Toda cor de texto passa de
+// 4,5:1 sobre os fundos em que aparece, e bordas de controles e ícones passam
+// de 3:1 (WCAG AA).
+//
+// As cores usadas com transparência também viram `--pws-<nome>-rgb`, para
+// `rgba(var(--pws-<nome>-rgb), 0.5)`.
+
+$themes: (
+  dark: (
+    // Fundos, do mais externo ao mais interno
+    // Em volta da área arredondada (abas e conteúdo)
+    bg-frame: #111111,
+    bg-chrome: #181818,
+    // barra de atividades, abas, painel, barra de status
+    bg-editor: #1f1f1f,
+    bg-elevated: #252526,
+    // diálogos, menus, dicas
+    bg-input: #313131,
+    bg-button: #313131,
+    bg-hover: #2a2d2e,
+    bg-active: #37373d,
+    // Texto
+    fg: #cccccc,
+    fg-strong: #ffffff,
+    fg-muted: #9d9d9d,
+    // Bordas: `border` separa áreas; `border-control` delimita controles (3:1)
+    border: #2b2b2b,
+    border-strong: #3c3c3c,
+    border-control: #7a7a7a,
+    // Destaque
+    accent: #ffc200,
+    accent-hover: #ffcf3d,
+    on-accent: #1f1f1f,
+    // Destaque usado como texto, borda ou foco sobre os fundos
+    accent-fg: #ffc200,
+    focus: #ffc200,
+    // Cores dos ícones e estados
+    "green": #89d185,
+    "red": #f14c4c,
+    "blue": #3794ff,
+    "yellow": #ffc200,
+    danger-fg: #f48771,
+    success-fg: #89d185,
+    warning-fg: #cca700,
+    info-fg: #3794ff,
+    // Fundo do Monaco (`editor.background` dos temas do Portugol)
+    monaco-bg: #1f1f1f,
+  ),
+  light: (
+    bg-frame: #ececec,
+    bg-chrome: #f8f8f8,
+    bg-editor: #ffffff,
+    bg-elevated: #ffffff,
+    bg-input: #ffffff,
+    // Botões secundários precisam de fundo próprio: no claro, o dos campos é
+    // o mesmo branco das superfícies.
+    bg-button: #e5e5e5,
+    bg-hover: #f0f0f0,
+    bg-active: #e4e6f1,
+    fg: #3b3b3b,
+    fg-strong: #1f1f1f,
+    fg-muted: #616161,
+    border: #e5e5e5,
+    border-strong: #d4d4d4,
+    border-control: #8a8a8a,
+    accent: #ffc200,
+    accent-hover: #ffcf3d,
+    on-accent: #1f1f1f,
+    accent-fg: #8a6200,
+    focus: #8a6200,
+    "green": #388a34,
+    "red": #d32f2f,
+    "blue": #005fb8,
+    "yellow": #9a6f00,
+    danger-fg: #c72e0f,
+    success-fg: #2d7a2a,
+    warning-fg: #8a6200,
+    info-fg: #005fb8,
+    monaco-bg: #ffffff,
+  ),
+);
+
+// Cores que aparecem com transparência (`rgba(var(--pws-<nome>-rgb), …)`)
+$with-alpha: accent, fg-muted, success-fg, warning-fg;
+
+@function channels($color) {
+  @return math.round(color.channel($color, "red", $space: rgb)),
+    math.round(color.channel($color, "green", $space: rgb)), math.round(color.channel($color, "blue", $space: rgb));
+}
+
+@mixin theme($name) {
+  $theme: map.get($themes, $name);
+
+  color-scheme: $name;
+
+  @each $key, $value in $theme {
+    --pws-#{$key}: #{$value};
+
+    @if list.index($with-alpha, $key) {
+      --pws-#{$key}-rgb: #{channels($value)};
+    }
+  }
+
+  @if $name == dark {
+    --pws-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+    --pws-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
+    --pws-backdrop: rgba(0, 0, 0, 0.6);
+  } @else {
+    --pws-shadow: 0 8px 24px rgba(0, 0, 0, 0.16);
+    --pws-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.12);
+    --pws-backdrop: rgba(0, 0, 0, 0.3);
+  }
+}
+
+:root {
+  // Fonte do sistema, como o VS Code: nada para baixar, e a mesma das outras
+  // janelas do computador.
+  --pws-font:
+    system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu, Cantarell, "Noto Sans", "Helvetica Neue", Arial, sans-serif;
+  --pws-font-mono: "Cascadia Code", Consolas, Menlo, Monaco, "Droid Sans Mono", "Liberation Mono", monospace;
+
+  // A interface usa 13px, como o VS Code; o conteúdo (diálogos, aba inicial,
+  // ajuda) fica em 14px.
+  --pws-text-xs: 0.6875rem;
+  --pws-text-sm: 0.75rem;
+  --pws-text-ui: 0.8125rem;
+  --pws-text-md: 0.875rem;
+  --pws-text-lg: 1rem;
+
+  --pws-radius-sm: 4px;
+  --pws-radius: 6px;
+  --pws-radius-lg: 8px;
+
+  --pws-activity-bar-width: 48px;
+  --pws-tab-height: 35px;
+  --pws-status-bar-height: 25px;
+
+  --pws-duration: 0.12s;
+
+  @include theme(dark);
+}
+
+[data-theme="light"] {
+  @include theme(light);
+}
+
+[data-theme="dark"] {
+  @include theme(dark);
+}

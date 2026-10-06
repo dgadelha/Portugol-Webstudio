@@ -1,0 +1,96 @@
+# yaml-language-server: $schema=./bibliotecas.schema.json
+$schema: "./bibliotecas.schema.json"
+
+bibliotecas:
+  - nome: Util
+    descrição: Esta biblioteca contém funções de uso geral, como sortear números, pausar o programa e contar os elementos de vetores e matrizes
+    constantes: []
+
+    funções:
+      - nome: obter_diretorio_usuario
+        descrição: |
+          Obtém o caminho da pasta pessoal do usuário no sistema operacional.
+
+          No Portugol Webstudio, que funciona no navegador, sempre retorna `"/home"`.
+        parâmetros: []
+        retorno:
+          tipo:
+            primitivo: cadeia
+          descrição: o caminho da pasta do usuário
+
+      - nome: numero_elementos
+        descrição: Conta o número de elementos de um vetor
+        retorno:
+          tipo:
+            primitivo: inteiro
+          descrição: o número de elementos do vetor
+        parâmetros:
+          - nome: vetor
+            descrição: o vetor cujos elementos serão contados
+            tipo:
+              primitivo: "*"
+              dimensão: vetor
+
+      - nome: numero_linhas
+        descrição: Conta o número de linhas de uma matriz
+        retorno:
+          tipo:
+            primitivo: inteiro
+          descrição: o número de linhas da matriz
+        parâmetros:
+          - nome: matriz
+            descrição: a matriz cujas linhas serão contadas
+            tipo:
+              primitivo: "*"
+              dimensão: matriz
+
+      - nome: numero_colunas
+        descrição: Conta o número de colunas de uma matriz
+        retorno:
+          tipo:
+            primitivo: inteiro
+          descrição: o número de colunas da matriz
+        parâmetros:
+          - nome: matriz
+            descrição: a matriz cujas colunas serão contadas
+            tipo:
+              primitivo: "*"
+              dimensão: matriz
+
+      - nome: sorteia
+        descrição: |
+          Sorteia um número inteiro entre os valores mínimo e máximo, incluindo os dois.
+
+          Se o `minimo` for maior ou igual ao `maximo`, ocorre um erro de execução.
+        retorno:
+          tipo:
+            primitivo: inteiro
+          descrição: o número sorteado
+        parâmetros:
+          - nome: minimo
+            descrição: o menor número que pode ser sorteado
+            tipo:
+              primitivo: inteiro
+          - nome: maximo
+            descrição: o maior número que pode ser sorteado
+            tipo:
+              primitivo: inteiro
+
+      - nome: aguarde
+        descrição: Pausa a execução do programa pelo tempo informado
+        parâmetros:
+          - nome: intervalo
+            descrição: o tempo de pausa, em milissegundos (1000 milissegundos equivalem a 1 segundo)
+            tipo:
+              primitivo: inteiro
+        retorno:
+          tipo:
+            primitivo: vazio
+
+      - nome: tempo_decorrido
+        descrição: Obtém o tempo que passou desde que a biblioteca foi incluída, no início do programa
+        parâmetros: []
+        retorno:
+          tipo:
+            primitivo: inteiro
+          descrição: o tempo decorrido, em milissegundos

@@ -1,6 +1,8 @@
 {
   "name": "@portugol-webstudio/resources",
+  "description": "Recursos do Portugol Webstudio: a Ajuda, os exemplos e os metadados das bibliotecas",
   "version": "0.0.0",
+  "private": true,
   "type": "module",
   "repository": {
     "type": "git",
@@ -18,30 +20,21 @@
   "bugs": {
     "url": "https://github.com/dgadelha/Portugol-Webstudio/issues"
   },
-  "publishConfig": {
-    "access": "public"
-  },
   "homepage": "https://github.com/dgadelha/Portugol-Webstudio#readme",
-  "directories": {
-    "lib": "assets"
+  "exports": {
+    "./bibliotecas": {
+      "types": "./bibliotecas/index.d.ts",
+      "default": "./bibliotecas/index.js"
+    },
+    "./ajuda/*": "./ajuda/*",
+    "./exemplos/*": "./exemplos/*"
   },
-  "files": [
-    "assets"
-  ],
   "scripts": {
-    "build": "node --no-warnings --loader ts-node/esm src/atualizar.ts"
+    "build": "node bibliotecas/scripts/build.js"
   },
   "devDependencies": {
-    "@swc/core": "^1.16.2",
-    "@types/adm-zip": "^0.5.8",
-    "@types/ini": "^4.1.1",
-    "adm-zip": "^0.6.0",
-    "axios": "^1.20.0",
-    "iconv-lite": "^0.7.3",
-    "ini": "^7.0.0",
-    "readdirp": "^5.1.1",
-    "rimraf": "^6.1.3",
-    "slugify": "^1.6.9",
-    "typescript": "~6.0.3"
+    "yaml": "^2.9.1",
+    "zod": "^4.6.5",
+    "zod-to-ts": "^2.1.0"
   }
 }

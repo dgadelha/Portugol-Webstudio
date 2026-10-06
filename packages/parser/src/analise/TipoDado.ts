@@ -45,13 +45,28 @@ export function parseTipoPrimitivo(tipo: TerminalNode | null): TipoPrimitivo {
   const text = tipo.getText();
 
   switch (text) {
-    case "inteiro":
-    case "real":
-    case "cadeia":
-    case "logico":
-    case "vazio":
+    case "inteiro": {
+      return TipoPrimitivo.INTEIRO;
+    }
+
+    case "real": {
+      return TipoPrimitivo.REAL;
+    }
+
+    case "cadeia": {
+      return TipoPrimitivo.CADEIA;
+    }
+
+    case "logico": {
+      return TipoPrimitivo.LÓGICO;
+    }
+
+    case "vazio": {
+      return TipoPrimitivo.VAZIO;
+    }
+
     case "caracter": {
-      return text as TipoPrimitivo;
+      return TipoPrimitivo.CARACTER;
     }
 
     default: {

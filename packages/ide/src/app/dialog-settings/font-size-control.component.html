@@ -1,0 +1,34 @@
+<button
+  type="button"
+  class="icon-btn step"
+  aria-label="Diminuir fonte"
+  [disabled]="value() <= range.min"
+  (click)="change(value() - 1)"
+>
+  <svg-icon src="assets/mdi/minus.svg" aria-hidden="true" />
+</button>
+
+<input
+  type="range"
+  class="range"
+  step="1"
+  [min]="range.min"
+  [max]="range.max"
+  [attr.aria-labelledby]="labelledBy()"
+  [attr.aria-describedby]="describedBy()"
+  [attr.aria-valuetext]="`${value()} pixels`"
+  [ngModel]="value()"
+  (ngModelChange)="change(+$event)"
+/>
+
+<button
+  type="button"
+  class="icon-btn step"
+  aria-label="Aumentar fonte"
+  [disabled]="value() >= range.max"
+  (click)="change(value() + 1)"
+>
+  <svg-icon src="assets/mdi/plus.svg" aria-hidden="true" />
+</button>
+
+<span class="value" aria-hidden="true">{{ value() }}px</span>

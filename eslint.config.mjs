@@ -24,7 +24,7 @@ export default defineConfig(
     processor: angular.processInlineTemplates,
     languageOptions: {
       parserOptions: {
-        project: ["tsconfig.json", "tsconfig.spec.json"],
+        project: ["tsconfig.eslint.json"],
         // @ts-expect-error - esm
         tsconfigDirName: import.meta.dirname,
       },
@@ -84,8 +84,7 @@ export default defineConfig(
       // Arquivos gerados:
       "packages/antlr/src/Portugol*.ts",
       "packages/parser/src/bibliotecas/*.gerado.ts",
-      "packages/resources/assets/",
-      "packages/resources/recursos.temp/",
+      "packages/resources/bibliotecas/index.d.ts",
       "packages/ide/src/index.html",
     ],
   },
@@ -129,9 +128,11 @@ export default defineConfig(
       "unicorn/no-incorrect-template-string-interpolation": "off",
       "unicorn/no-keyword-prefix": "off",
       "unicorn/no-lonely-if": "off",
+      "unicorn/no-manually-wrapped-comments": "off",
       "unicorn/no-null": "off",
       "unicorn/no-object-as-default-parameter": "off",
       "unicorn/no-top-level-assignment-in-function": "off",
+      "unicorn/no-top-level-side-effects": "off",
       "unicorn/no-unreadable-new-expression": "off",
       "unicorn/no-unsafe-string-replacement": "off",
       "unicorn/no-useless-override": "off",
@@ -139,6 +140,7 @@ export default defineConfig(
       "unicorn/no-useless-template-literals": "off",
       "unicorn/prefer-await": "off",
       "unicorn/prefer-continue": "off",
+      "unicorn/prefer-default-parameters": "off",
       "unicorn/prefer-early-return": "off",
       "unicorn/prefer-error-is-error": "off",
       "unicorn/prefer-export-from": "off",

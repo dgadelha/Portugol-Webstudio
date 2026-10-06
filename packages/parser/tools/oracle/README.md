@@ -35,7 +35,7 @@ Invólucro fino sobre o `portugol-analisador`.
 
 ```sh
 # analisa arquivos
-./run.sh ../../../resources/assets/exemplos/jogos/arkanoid.por
+./run.sh ../../../resources/exemplos/jogos/arkanoid.por
 
 # analisa um programa vindo do stdin (o modo mais útil no dia a dia)
 echo 'programa { funcao inicio() { inteiro a  a = b } }' | ./run.sh
@@ -59,7 +59,7 @@ linha `### <caminho>` — inclusive os que não produzem nenhum diagnóstico.
 
 ### `../corpus.mjs`
 
-Do outro lado da comparação: roda o **nosso** analisador sobre os mesmos 119 exemplos.
+Do outro lado da comparação: roda o **nosso** analisador sobre os mesmos 137 exemplos.
 
 ```sh
 npm run build -w @portugol-webstudio/antlr
@@ -79,7 +79,7 @@ nosso impede de rodar um programa que funciona.
 Despeja os metadados das 13 bibliotecas em JSON, direto do `GerenciadorBibliotecas`.
 
 **Não é a fonte dos metadados que o checker usa** — essa é o pacote
-[`@portugol-recursos/bibliotecas`](https://github.com/portugol-webstudio/portugol-recursos), que é
+`@portugol-webstudio/resources/bibliotecas` (em `packages/resources/bibliotecas`), que é
 mantido à mão, tem descrição de cada símbolo e já alimenta a Ajuda do IDE. O dump aqui serve para
 _conferir_ aquele pacote contra o Java e detectar deriva: foi assim que se descobriu que
 `Graficos.definir_tamanho_texto` estava tipado como `inteiro` sendo `double` no Java, e que seis
@@ -93,7 +93,7 @@ coincidem nas duas direções, sem exceção — é a semântica do Portugol, n�
 ### `../gerar-suporte.mjs`
 
 Gera `packages/parser/src/bibliotecas/suporte.gerado.ts`, cruzando o que a linguagem tem
-(`@portugol-recursos/bibliotecas`) com o que o runtime do Webstudio sabe executar
+(`@portugol-webstudio/resources/bibliotecas`) com o que o runtime do Webstudio sabe executar
 (`packages/runtime/src/libs`). É o que alimenta as verificações #47 e #48.
 
 ```sh
@@ -122,24 +122,21 @@ gravado no código gerado.
 
 ### A fixture `portugol-studio.golden.txt`
 
-É a saída do `portugol-analisador` para os 119 exemplos de `packages/resources/assets/exemplos/**/*.por`,
+É a saída do `portugol-analisador` para os 137 exemplos de `packages/resources/exemplos/**/*.por`,
 com o caminho relativo a esse diretório (sem `./`) e em ordem alfabética estável (`LC_ALL=C`).
 Existe para que o teste diferencial compare nossos diagnósticos com os do Portugol Studio **sem
 precisar de Java** em CI ou no clone de quem for mexer no checker.
 
-O corpus em si **não** é versionado: `packages/resources/assets/` é gitignored e baixado do
-`master` do Portugol Studio por `npm run build -w @portugol-webstudio/resources`. Como vem do
-`master`, ele pode mudar sem aviso — por isso a fixture é versionada e os testes que dependem do
-corpus precisam tolerar a ausência do diretório.
+O corpus é versionado em `packages/resources/exemplos`, então qualquer mudança nos exemplos
+aparece no mesmo diff que a fixture regerada.
 
 Regere-a quando o corpus de exemplos ou a versão do `portugol-core` mudar — e leia o diff: cada
 linha que aparece ou some é uma mudança de comportamento do analisador de referência.
 
-No estado atual (`portugol-core-2.7.5`) ela contém, dos 119 exemplos:
+No estado atual (`portugol-core-2.7.5`) ela contém, dos 137 exemplos:
 
-- 2 erros de sintaxe, ambos em arquivos quebrados no próprio upstream
-  (`bibliotecas/tipos/logico.por` e `jogos/arkanoid.por`);
-- 509 `AvisoValorExpressaoSeraConvertido`, 13 `AvisoSimboloGlobalOcultado` e
+- nenhum erro;
+- 507 `AvisoValorExpressaoSeraConvertido`, 13 `AvisoSimboloGlobalOcultado` e
   2 `AvisoVetorPodeSerVariavel`.
 
-Ou seja: **117 dos 119 exemplos não têm erro nenhum**, e é isso que o checker precisa reproduzir.
+Ou seja: **nenhum dos 137 exemplos tem erro**, e é isso que o checker precisa reproduzir.

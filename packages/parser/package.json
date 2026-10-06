@@ -22,6 +22,7 @@
     "access": "public"
   },
   "homepage": "https://github.com/dgadelha/Portugol-Webstudio#readme",
+  "sideEffects": false,
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "directories": {
@@ -37,14 +38,14 @@
     "test": "vitest"
   },
   "dependencies": {
-    "@portugol-recursos/bibliotecas": "^0.0.0-dev.8",
     "@portugol-webstudio/antlr": "*",
+    "@portugol-webstudio/resources": "*",
     "antlr4ng": "^3.0.16"
   },
   "devDependencies": {
-    "@types/node": "^26.4.1",
-    "@vitest/coverage-v8": "^5.0.0",
+    "@types/node": "^26.6.4",
+    "@vitest/coverage-v8": "^5.0.3",
     "typescript": "~6.0.3",
-    "vitest": "^5.0.0"
+    "vitest": "^5.0.3"
   }
 }

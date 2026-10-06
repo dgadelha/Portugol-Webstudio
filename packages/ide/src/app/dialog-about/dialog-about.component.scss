@@ -1,22 +1,13 @@
-mat-dialog-content {
+.dialog-body {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
   align-items: center;
+  gap: 1rem;
   text-align: center;
-  position: relative;
-  max-height: unset;
-  max-width: min(85vw, 780px);
-}
-
-.close-btn {
-  position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
 }
 
 .logo {
-  width: min(80%, 350px);
+  width: min(80%, 320px);
   padding: 0.5rem;
 
   svg-icon {
@@ -24,24 +15,67 @@ mat-dialog-content {
   }
 }
 
+.app-about {
+  max-width: 36rem;
+  line-height: 1.6;
+}
+
+.app-status {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: min(100%, 28rem);
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--pws-border-strong);
+  border-radius: var(--pws-radius);
+  text-align: start;
+
+  p {
+    margin: 0;
+  }
+}
+
+.status-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  > svg-icon {
+    flex-shrink: 0;
+    width: 1.125rem;
+    height: 1.125rem;
+    color: var(--pws-fg-muted);
+  }
+}
+
+// O commit em maiúsculas, como no rodapé da aba Inicial
+.version {
+  text-transform: uppercase;
+}
+
+.update-row {
+  flex-wrap: wrap;
+}
+
+.update-message {
+  color: var(--pws-fg-muted);
+
+  &:empty {
+    display: none;
+  }
+}
+
 .made-with-love {
   display: flex;
-  gap: 0.5rem;
   align-items: center;
+  gap: 0.375rem;
 
-  svg-icon,
-  svg {
-    width: 1.5rem;
-    height: 1.5rem;
+  svg-icon {
+    width: 1.25rem;
+    height: 1.25rem;
   }
 }
 
 .links {
-  display: flex;
-  flex-direction: row;
-  gap: 1rem;
-
-  @media (max-width: 576px) {
-    flex-direction: column;
-  }
+  justify-content: center;
 }

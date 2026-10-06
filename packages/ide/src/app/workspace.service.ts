@@ -1,4 +1,5 @@
 import { computed, DestroyRef, effect, inject, NgZone, Service, signal, untracked } from "@angular/core";
+import { settings } from "../settings";
 import { SettingsService } from "./settings.service";
 import { WorkspaceStorageService } from "./workspace-storage.service";
 import {
@@ -32,9 +33,18 @@ const HEARTBEAT_STALE_AFTER = 90_000;
  */
 const PERSIST_DEBOUNCE = 500;
 
-const MAX_RECOVERABLE = 10;
+/**
+ * Quantas áreas de trabalho de sessões anteriores ficam guardadas; as mais
+ * antigas além disso são apagadas.
+ */
+export const MAX_RECOVERABLE = 10;
 
-const MAX_AGE = 30 /* dias */ * 24 * 60 * 60 * 1000;
+/**
+ * Por quantos dias, sem alterações, uma área de trabalho anterior fica guardada.
+ */
+export const MAX_AGE_DAYS = 30;
+
+const MAX_AGE = MAX_AGE_DAYS * 24 * 60 * 60 * 1000;
 
 /**
  * Dono do estado do IDE: as abas abertas, qual está em foco e o que cada uma
@@ -82,6 +92,34 @@ export class WorkspaceService {
   readonly persistenceAvailable = this.storage.available;
 
   readonly activeTab = computed(() => this.tabs().find(tab => tab.id === this.activeTabId()) ?? null);
+
+  /**
+   * Aba recém-aberta que deve receber o foco assim que estiver pronta (uma aba
+   * de código só pode ser focada depois que o Monaco é criado).
+   */
+  private focusRequest: string | null = null;
+
+  /**
+   * Tópico da Ajuda pedido por um endereço `#ajuda=`; a aba de Ajuda o abre
+   * quando os tópicos carregarem.
+   */
+  readonly helpTopicRequest = signal<string | null>(null);
+
+  requestFocus(tabId: string) {
+    this.focusRequest = tabId;
+  }
+
+  /**
+   * Verdadeiro uma única vez, para a aba que pediu o foco.
+   */
+  consumeFocusRequest(tabId: string) {
+    if (this.focusRequest !== tabId) {
+      return false;
+    }
+
+    this.focusRequest = null;
+    return true;
+  }
 
   constructor() {
     this.bootstrap();
@@ -235,7 +273,9 @@ export class WorkspaceService {
 
     const [latest, ...rest] = orphans;
 
-    if (latest && this.adopt(latest.id)) {
+    // Sem reabrir as abas, a janela nova começa vazia e a última área fica na
+    // lista de recuperáveis, como as outras: nada se perde.
+    if (latest && this.settings.get(settings.interfaceReopenTabs) && this.adopt(latest.id)) {
       this.restoredFromPreviousSession.set(true);
       this.recoverable.set(rest);
       return;
@@ -305,10 +345,11 @@ export class WorkspaceService {
       return false;
     }
 
+    // A aba de Ajuda também guarda conteúdo: o tópico que estava aberto.
     const tabs = meta.tabs.map<Tab>(tab => {
       return {
         ...tab,
-        contents: tab.type === "editor" ? (this.storage.readTab(workspaceId, tab.id) ?? "") : "",
+        contents: tab.type === "changelog" ? "" : (this.storage.readTab(workspaceId, tab.id) ?? ""),
       };
     });
 
@@ -443,6 +484,14 @@ export class WorkspaceService {
       activeTabId,
       tabs: tabs.map(({ id, title, type }) => ({ id, title, type })),
     });
+  }
+
+  /**
+   * Grava agora o que ainda está esperando o intervalo, como antes de recarregar a página
+   * para atualizar o IDE.
+   */
+  saveNow() {
+    this.persistNow();
   }
 
   private persistNow() {

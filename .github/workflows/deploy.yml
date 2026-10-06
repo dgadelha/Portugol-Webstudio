@@ -13,10 +13,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout 🛎️
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
 
       - name: Setup Node.js 📦
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: lts/*
 
@@ -42,10 +42,7 @@ jobs:
 
       - name: Release front-end 🎢
         run: |
-          sed -i -e 's/%COMMIT_SHA%/'"${GITHUB_SHA::7}"'/g' packages/ide/src/app/tab-start/tab-start.component.html
-          export DATE_NOW_FORMATTED=$(date +'%d/%m/%Y %I:%M:%S %p %Z')
-          sed -i -e 's*%DATE%*'"${DATE_NOW_FORMATTED}"'*g' packages/ide/src/app/tab-start/tab-start.component.html
-          sed -i -e 's/%SENTRY_RELEASE%/'"${GITHUB_SHA}"'/g' packages/ide/src/main.ts
+          sed -i -e 's/%COMMIT_SHA%/'"${GITHUB_SHA}"'/g' -e 's/%BUILD_DATE%/'"$(date -u +%Y-%m-%dT%H:%M:%SZ)"'/g' packages/ide/src/app/version.ts
           ./packages/ide/cleanup-icons.sh
           npm run release
 
@@ -71,7 +68,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout 🛎️
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
         with:
           ref: beta
           fetch-depth: 0

@@ -1,0 +1,933 @@
+# yaml-language-server: $schema=./bibliotecas.schema.json
+$schema: "./bibliotecas.schema.json"
+
+bibliotecas:
+  - nome: Graficos
+    descrição: Esta biblioteca contém funções para abrir uma janela gráfica e desenhar nela formas geométricas e textos, com cores, gradientes, transparência e rotação
+    constantes:
+      - nome: COR_PRETO
+        tipo:
+          primitivo: inteiro
+        valor: -16777216
+        descrição: A cor preta, para usar em `definir_cor` e `definir_gradiente`
+      - nome: COR_BRANCO
+        tipo:
+          primitivo: inteiro
+        valor: -1
+        descrição: A cor branca, para usar em `definir_cor` e `definir_gradiente`
+      - nome: COR_AZUL
+        tipo:
+          primitivo: inteiro
+        valor: -16776961
+        descrição: A cor azul, para usar em `definir_cor` e `definir_gradiente`
+      - nome: COR_VERMELHO
+        tipo:
+          primitivo: inteiro
+        valor: -65536
+        descrição: A cor vermelha, para usar em `definir_cor` e `definir_gradiente`
+      - nome: COR_VERDE
+        tipo:
+          primitivo: inteiro
+        valor: -16711936
+        descrição: A cor verde, para usar em `definir_cor` e `definir_gradiente`
+      - nome: COR_AMARELO
+        tipo:
+          primitivo: inteiro
+        valor: -256
+        descrição: A cor amarela, para usar em `definir_cor` e `definir_gradiente`
+      - nome: GRADIENTE_DIREITA
+        tipo:
+          primitivo: inteiro
+        valor: 0
+        descrição: |
+          Direção de gradiente para `definir_gradiente`: da primeira cor, à esquerda, até a segunda, à direita
+      - nome: GRADIENTE_ESQUERDA
+        tipo:
+          primitivo: inteiro
+        valor: 1
+        descrição: |
+          Direção de gradiente para `definir_gradiente`: da primeira cor, à direita, até a segunda, à esquerda
+      - nome: GRADIENTE_ACIMA
+        tipo:
+          primitivo: inteiro
+        valor: 2
+        descrição: |
+          Direção de gradiente para `definir_gradiente`: da primeira cor, embaixo, até a segunda, em cima
+      - nome: GRADIENTE_ABAIXO
+        tipo:
+          primitivo: inteiro
+        valor: 3
+        descrição: |
+          Direção de gradiente para `definir_gradiente`: da primeira cor, em cima, até a segunda, embaixo
+      - nome: GRADIENTE_INFERIOR_DIREITO
+        tipo:
+          primitivo: inteiro
+        valor: 4
+        descrição: |
+          Direção de gradiente para `definir_gradiente`: na diagonal, da primeira cor, no canto superior esquerdo, até a segunda, no canto inferior direito
+      - nome: GRADIENTE_INFERIOR_ESQUERDO
+        tipo:
+          primitivo: inteiro
+        valor: 5
+        descrição: |
+          Direção de gradiente para `definir_gradiente`: na diagonal, em direção ao canto inferior esquerdo
+      - nome: GRADIENTE_SUPERIOR_DIREITO
+        tipo:
+          primitivo: inteiro
+        valor: 6
+        descrição: |
+          Direção de gradiente para `definir_gradiente`: na diagonal, da primeira cor, no canto inferior esquerdo, até a segunda, no canto superior direito
+      - nome: GRADIENTE_SUPERIOR_ESQUERDO
+        tipo:
+          primitivo: inteiro
+        valor: 7
+        descrição: |
+          Direção de gradiente para `definir_gradiente`: na diagonal, em direção ao canto superior esquerdo
+      - nome: CANAL_R
+        tipo:
+          primitivo: inteiro
+        valor: 0
+        descrição: O canal vermelho (R) de uma cor, para usar em `obter_RGB`
+      - nome: CANAL_G
+        tipo:
+          primitivo: inteiro
+        valor: 1
+        descrição: O canal verde (G) de uma cor, para usar em `obter_RGB`
+      - nome: CANAL_B
+        tipo:
+          primitivo: inteiro
+        valor: 2
+        descrição: O canal azul (B) de uma cor, para usar em `obter_RGB`
+    funções:
+      - nome: iniciar_modo_grafico
+        descrição: |
+          Inicia o modo gráfico e abre a janela onde os desenhos são exibidos.
+
+          As outras funções de janela e de desenho só podem ser usadas depois dela; antes, causam um erro de execução.
+        parâmetros:
+          - nome: manter_visivel
+            descrição: define se a janela do modo gráfico deve ficar sempre visível sobre as outras janelas (útil durante a depuração)
+            tipo:
+              primitivo: logico
+        retorno:
+          tipo:
+            primitivo: vazio
+
+      - nome: fechar_janela
+        descrição: Fecha a janela do modo gráfico, como se o usuário tivesse clicado no botão de fechar
+        parâmetros: []
+        retorno:
+          tipo:
+            primitivo: vazio
+
+      - nome: minimizar_janela
+        descrição: Minimiza a janela do modo gráfico, como se o usuário tivesse clicado no botão de minimizar
+        parâmetros: []
+        retorno:
+          tipo:
+            primitivo: vazio
+
+      - nome: restaurar_janela
+        descrição: Restaura a janela do modo gráfico depois de minimizada, como se o usuário tivesse clicado no ícone do programa na barra de tarefas do sistema operacional
+        parâmetros: []
+        retorno:
+          tipo:
+            primitivo: vazio
+
+      - nome: ocultar_borda_janela
+        descrição: Oculta a borda da janela do modo gráfico, deixando visível só o conteúdo dela
+        parâmetros: []
+        retorno:
+          tipo:
+            primitivo: vazio
+
+      - nome: exibir_borda_janela
+        descrição: Exibe novamente a borda da janela do modo gráfico, se ela tiver sido ocultada com `ocultar_borda_janela`
+        parâmetros: []
+        retorno:
+          tipo:
+            primitivo: vazio
+
+      - nome: encerrar_modo_grafico
+        descrição: Encerra o modo gráfico e fecha a janela aberta por `iniciar_modo_grafico`
+        parâmetros: []
+        retorno:
+          tipo:
+            primitivo: vazio
+
+      - nome: definir_dimensoes_janela
+        descrição: Altera o tamanho da área de desenho da janela do modo gráfico
+        parâmetros:
+          - nome: largura
+            descrição: a nova largura, em pixels
+            tipo:
+              primitivo: inteiro
+          - nome: altura
+            descrição: a nova altura, em pixels
+            tipo:
+              primitivo: inteiro
+        retorno:
+          tipo:
+            primitivo: vazio
+
+      - nome: definir_titulo_janela
+        descrição: Define o título exibido no alto da janela do modo gráfico
+        parâmetros:
+          - nome: titulo
+            descrição: o novo título da janela
+            tipo:
+              primitivo: cadeia
+        retorno:
+          tipo:
+            primitivo: vazio
+
+      - nome: limpar
+        descrição: Apaga todos os desenhos e pinta o fundo da janela com a cor (ou o gradiente) atual
+        parâmetros: []
+        retorno:
+          tipo:
+            primitivo: vazio
+
+      - nome: renderizar
+        descrição: |
+          Exibe na janela tudo o que foi desenhado desde a última chamada desta função.
+
+          As funções de desenho não desenham direto na tela: elas acumulam os desenhos em uma área reservada da memória, e a tela só é atualizada de uma vez quando `renderizar` é chamada. Essa técnica, chamada de **Double Buffer**, deixa o programa mais rápido e evita que a imagem pisque.
+
+          Por isso, chame esta função depois de todas as outras funções de desenho, para garantir que os desenhos apareçam.
+        parâmetros: []
+        retorno:
+          tipo:
+            primitivo: vazio
+        referência: http://en.wikipedia.org/wiki/Multiple_buffering#Double_buffering_in_computer_graphics
+
+      - nome: renderizar_imagem
+        descrição: Cria uma nova imagem na memória e desenha nela o conteúdo do modo gráfico, em vez de desenhá-lo na tela
+        parâmetros:
+          - nome: largura
+            descrição: a largura da nova imagem, em pixels
+            tipo:
+              primitivo: inteiro
+          - nome: altura
+            descrição: a altura da nova imagem, em pixels
+            tipo:
+              primitivo: inteiro
+        retorno:
+          tipo:
+            primitivo: inteiro
+          descrição: o endereço da nova imagem
+
+      - nome: desenhar_retangulo
+        descrição: Desenha um retângulo com o canto superior esquerdo na posição `x` e `y` e com o tamanho definido por `largura` e `altura`
+        parâmetros:
+          - nome: x
+            descrição: a posição horizontal do canto superior esquerdo do retângulo, em pixels, contada a partir da borda esquerda da janela
+            tipo:
+              primitivo: inteiro
+          - nome: y
+            descrição: a posição vertical do canto superior esquerdo do retângulo, em pixels, contada a partir do topo da janela
+            tipo:
+              primitivo: inteiro
+          - nome: largura
+            descrição: a largura do retângulo, em pixels
+            tipo:
+              primitivo: inteiro
+          - nome: altura
+            descrição: a altura do retângulo, em pixels
+            tipo:
+              primitivo: inteiro
+          - nome: arredondar_cantos
+            descrição: se `verdadeiro`, o retângulo é desenhado com os cantos arredondados
+            tipo:
+              primitivo: logico
+          - nome: preencher
+            descrição: se `verdadeiro`, o retângulo é preenchido com a cor atual; se `falso`, só o contorno é desenhado
+            tipo:
+              primitivo: logico
+        retorno:
+          tipo:
+            primitivo: vazio
+
+      - nome: desenhar_poligono
+        descrição: Desenha um polígono ligando os pontos informados, na ordem em que aparecem na matriz, e ligando o último ponto ao primeiro
+        parâmetros:
+          - nome: pontos
+            descrição: uma matriz com uma linha para cada vértice do polígono, com a coordenada `x` na coluna 0 e a `y` na coluna 1, em pixels
+            tipo:
+              primitivo: inteiro
+              dimensão: matriz
+          - nome: preencher
+            descrição: se `verdadeiro`, o polígono é preenchido com a cor atual; se `falso`, só o contorno é desenhado
+            tipo:
+              primitivo: logico
+        retorno:
+          tipo:
+            primitivo: vazio
+
+      - nome: desenhar_elipse
+        descrição: Desenha uma elipse (ou um círculo, se `largura` e `altura` forem iguais) dentro de um retângulo imaginário com o canto superior esquerdo na posição `x` e `y` e com o tamanho definido por `largura` e `altura`
+        parâmetros:
+          - nome: x
+            descrição: a posição horizontal do canto superior esquerdo do retângulo que contém a elipse, em pixels, contada a partir da borda esquerda da janela
+            tipo:
+              primitivo: inteiro
+          - nome: y
+            descrição: a posição vertical do canto superior esquerdo do retângulo que contém a elipse, em pixels, contada a partir do topo da janela
+            tipo:
+              primitivo: inteiro
+          - nome: largura
+            descrição: a largura da elipse, em pixels
+            tipo:
+              primitivo: inteiro
+          - nome: altura
+            descrição: a altura da elipse, em pixels
+            tipo:
+              primitivo: inteiro
+          - nome: preencher
+            descrição: se `verdadeiro`, a elipse é preenchida com a cor atual; se `falso`, só o contorno é desenhado
+            tipo:
+              primitivo: logico
+        retorno:
+          tipo:
+            primitivo: vazio
+
+      - nome: desenhar_ponto
+        descrição: Desenha um ponto, do tamanho de um pixel, na posição `x` e `y`
+        parâmetros:
+          - nome: x
+            descrição: a posição horizontal do ponto, em pixels, contada a partir da borda esquerda da janela
+            tipo:
+              primitivo: inteiro
+          - nome: y
+            descrição: a posição vertical do ponto, em pixels, contada a partir do topo da janela
+            tipo:
+              primitivo: inteiro
+        retorno:
+          tipo:
+            primitivo: vazio
+
+      - nome: desenhar_linha
+        descrição: Desenha uma linha reta do ponto A (`x1`, `y1`) até o ponto B (`x2`, `y2`)
+        parâmetros:
+          - nome: x1
+            descrição: a posição horizontal do ponto A, em pixels, contada a partir da borda esquerda da janela
+            tipo:
+              primitivo: inteiro
+          - nome: y1
+            descrição: a posição vertical do ponto A, em pixels, contada a partir do topo da janela
+            tipo:
+              primitivo: inteiro
+          - nome: x2
+            descrição: a posição horizontal do ponto B, em pixels, contada a partir da borda esquerda da janela
+            tipo:
+              primitivo: inteiro
+          - nome: y2
+            descrição: a posição vertical do ponto B, em pixels, contada a partir do topo da janela
+            tipo:
+              primitivo: inteiro
+        retorno:
+          tipo:
+            primitivo: vazio
+
+      - nome: carregar_imagem
+        descrição: Carrega uma imagem de um arquivo para a memória, para ser usada depois. Os formatos aceitos são JPEG, PNG, BMP e GIF.
+        parâmetros:
+          - nome: caminho
+            descrição: o caminho do arquivo de imagem no computador
+            tipo:
+              primitivo: cadeia
+        retorno:
+          tipo:
+            primitivo: inteiro
+          descrição: o endereço da imagem carregada, usado nas outras funções de imagem
+
+      - nome: proximo_frame_gif
+        descrição: Avança a animação de um GIF para o próximo quadro
+        parâmetros:
+          - nome: endereco
+            descrição: o endereço do GIF
+            tipo:
+              primitivo: inteiro
+        retorno:
+          tipo:
+            primitivo: vazio
+
+      - nome: transformar_imagem
+        descrição: |
+          Cria uma cópia transformada de uma imagem carregada com `carregar_imagem`. As transformações possíveis são espelhamento, rotação e remoção de cor.
+
+          O espelhamento inverte a imagem na horizontal, na vertical ou nas duas direções.
+
+          A rotação gira a imagem em qualquer ângulo.
+
+          A remoção de cor torna transparente uma cor escolhida da imagem.
+
+          A imagem original não é alterada: o resultado fica em uma nova imagem, em outro endereço de memória.
+        parâmetros:
+          - nome: endereco
+            descrição: o endereço da imagem que será transformada
+            tipo:
+              primitivo: inteiro
+          - nome: espelhamento_horizontal
+            descrição: se `verdadeiro`, a imagem é espelhada na horizontal
+            tipo:
+              primitivo: logico
+          - nome: espelhamento_vertical
+            descrição: se `verdadeiro`, a imagem é espelhada na vertical
+            tipo:
+              primitivo: logico
+          - nome: rotacao
+            descrição: o ângulo de rotação, em graus. Com 0, a imagem não é girada. Ao girar a imagem, a largura e a altura dela podem mudar.
+            tipo:
+              primitivo: inteiro
+          - nome: cor_transparente
+            descrição: a cor que se tornará transparente. Com 0, nenhuma cor é removida.
+            tipo:
+              primitivo: inteiro
+        retorno:
+          tipo:
+            primitivo: inteiro
+          descrição: o endereço da nova imagem
+
+      - nome: redimensionar_imagem
+        descrição: |
+          Cria uma cópia de uma imagem carregada com `carregar_imagem`, com outro tamanho.
+
+          Se a largura ou a altura for 0, ela é calculada a partir da outra, mantendo a proporção da imagem.
+        parâmetros:
+          - nome: endereco
+            descrição: o endereço da imagem que será redimensionada
+            tipo:
+              primitivo: inteiro
+          - nome: largura
+            descrição: a nova largura da imagem, em pixels
+            tipo:
+              primitivo: inteiro
+          - nome: altura
+            descrição: a nova altura da imagem, em pixels
+            tipo:
+              primitivo: inteiro
+          - nome: manter_qualidade
+            descrição: se `verdadeiro`, o redimensionamento preserva melhor a qualidade da imagem
+            tipo:
+              primitivo: logico
+        retorno:
+          tipo:
+            primitivo: inteiro
+          descrição: o endereço da nova imagem
+
+      - nome: obter_cor_pixel
+        descrição: Obtém a cor de um pixel de uma imagem carregada com `carregar_imagem`
+        parâmetros:
+          - nome: endereco
+            descrição: o endereço da imagem
+            tipo:
+              primitivo: inteiro
+          - nome: x
+            descrição: a coluna do pixel na imagem
+            tipo:
+              primitivo: inteiro
+          - nome: y
+            descrição: a linha do pixel na imagem
+            tipo:
+              primitivo: inteiro
+        retorno:
+          tipo:
+            primitivo: inteiro
+          descrição: a cor do pixel
+
+      - nome: obter_RGB
+        descrição: Obtém o valor de um dos canais (vermelho, verde ou azul) de uma cor
+        parâmetros:
+          - nome: cor
+            descrição: a cor da qual será obtido o canal
+            tipo:
+              primitivo: inteiro
+          - nome: canal
+            descrição: |
+              o canal desejado: `CANAL_R` (vermelho), `CANAL_G` (verde) ou `CANAL_B` (azul)
+            tipo:
+              primitivo: inteiro
+        retorno:
+          tipo:
+            primitivo: inteiro
+          descrição: o valor do canal, de 0 a 255. Para um canal inválido, retorna 0.
+
+      - nome: transformar_porcao_imagem
+        descrição: |
+          Cria uma cópia transformada de uma parte de uma imagem carregada com `carregar_imagem`. As transformações possíveis são espelhamento, rotação e remoção de cor.
+
+          O espelhamento inverte a parte da imagem na horizontal, na vertical ou nas duas direções.
+
+          A rotação gira a parte da imagem em qualquer ângulo.
+
+          A remoção de cor torna transparente uma cor escolhida da imagem.
+
+          A imagem original não é alterada: o resultado fica em uma nova imagem, em outro endereço de memória.
+        parâmetros:
+          - nome: endereco
+            descrição: o endereço da imagem que será transformada
+            tipo:
+              primitivo: inteiro
+          - nome: x
+            descrição: a posição horizontal, dentro da imagem, onde começa a parte que será transformada
+            tipo:
+              primitivo: inteiro
+          - nome: y
+            descrição: a posição vertical, dentro da imagem, onde começa a parte que será transformada
+            tipo:
+              primitivo: inteiro
+          - nome: largura
+            descrição: a largura da parte que será transformada, em pixels
+            tipo:
+              primitivo: inteiro
+          - nome: altura
+            descrição: a altura da parte que será transformada, em pixels
+            tipo:
+              primitivo: inteiro
+          - nome: espelhamento_horizontal
+            descrição: se `verdadeiro`, a imagem é espelhada na horizontal
+            tipo:
+              primitivo: logico
+          - nome: espelhamento_vertical
+            descrição: se `verdadeiro`, a imagem é espelhada na vertical
+            tipo:
+              primitivo: logico
+          - nome: rotacao
+            descrição: o ângulo de rotação, em graus. Com 0, a imagem não é girada. Ao girar a imagem, a largura e a altura dela podem mudar.
+            tipo:
+              primitivo: inteiro
+          - nome: cor_transparente
+            descrição: a cor que se tornará transparente. Com 0, nenhuma cor é removida.
+            tipo:
+              primitivo: inteiro
+        retorno:
+          tipo:
+            primitivo: inteiro
+          descrição: o endereço da nova imagem
+
+      - nome: desenhar_imagem
+        descrição: Desenha uma imagem carregada anteriormente, com o canto superior esquerdo na posição `x` e `y`
+        parâmetros:
+          - nome: x
+            descrição: a posição horizontal da imagem, em pixels, contada a partir da borda esquerda da janela
+            tipo:
+              primitivo: inteiro
+          - nome: y
+            descrição: a posição vertical da imagem, em pixels, contada a partir do topo da janela
+            tipo:
+              primitivo: inteiro
+          - nome: endereco
+            descrição: o endereço da imagem que será desenhada
+            tipo:
+              primitivo: inteiro
+        retorno:
+          tipo:
+            primitivo: vazio
+
+      - nome: salvar_imagem
+        descrição: Salva uma imagem em um arquivo
+        parâmetros:
+          - nome: endereco
+            descrição: o endereço da imagem que será salva
+            tipo:
+              primitivo: inteiro
+          - nome: caminho
+            descrição: o caminho do arquivo onde a imagem será salva
+            tipo:
+              primitivo: cadeia
+        retorno:
+          tipo:
+            primitivo: vazio
+
+      - nome: desenhar_quadro_atual_gif
+        descrição: Desenha o quadro atual de um GIF carregado anteriormente, com o canto superior esquerdo na posição `x` e `y`
+        parâmetros:
+          - nome: x
+            descrição: a posição horizontal do GIF, em pixels, contada a partir da borda esquerda da janela
+            tipo:
+              primitivo: inteiro
+          - nome: y
+            descrição: a posição vertical do GIF, em pixels, contada a partir do topo da janela
+            tipo:
+              primitivo: inteiro
+          - nome: endereco
+            descrição: o endereço do GIF
+            tipo:
+              primitivo: inteiro
+        retorno:
+          tipo:
+            primitivo: vazio
+
+      - nome: desenhar_porcao_imagem
+        descrição: Desenha uma parte de uma imagem carregada anteriormente, com o canto superior esquerdo na posição `x` e `y`
+        parâmetros:
+          - nome: x
+            descrição: a posição horizontal onde a parte da imagem será desenhada, em pixels, contada a partir da borda esquerda da janela
+            tipo:
+              primitivo: inteiro
+          - nome: y
+            descrição: a posição vertical onde a parte da imagem será desenhada, em pixels, contada a partir do topo da janela
+            tipo:
+              primitivo: inteiro
+          - nome: xi
+            descrição: a posição horizontal, dentro da imagem, onde começa a parte que será desenhada
+            tipo:
+              primitivo: inteiro
+          - nome: yi
+            descrição: a posição vertical, dentro da imagem, onde começa a parte que será desenhada
+            tipo:
+              primitivo: inteiro
+          - nome: largura
+            descrição: a largura da parte que será desenhada, em pixels
+            tipo:
+              primitivo: inteiro
+          - nome: altura
+            descrição: a altura da parte que será desenhada, em pixels
+            tipo:
+              primitivo: inteiro
+          - nome: endereco
+            descrição: o endereço da imagem que será desenhada
+            tipo:
+              primitivo: inteiro
+        retorno:
+          tipo:
+            primitivo: vazio
+
+      - nome: obter_intervalo_gif
+        descrição: Obtém o intervalo entre os quadros de um GIF
+        parâmetros:
+          - nome: endereco
+            descrição: o endereço do GIF
+            tipo:
+              primitivo: inteiro
+        retorno:
+          tipo:
+            primitivo: inteiro
+          descrição: o intervalo do quadro atual, em milissegundos
+
+      - nome: obter_numero_quadros_gif
+        descrição: Obtém o número de quadros de um GIF
+        parâmetros:
+          - nome: endereco
+            descrição: o endereço do GIF
+            tipo:
+              primitivo: inteiro
+        retorno:
+          tipo:
+            primitivo: inteiro
+          descrição: o número de quadros do GIF
+
+      - nome: obter_numero_quadro_atual_gif
+        descrição: Obtém o número do quadro atual de um GIF
+        parâmetros:
+          - nome: endereco
+            descrição: o endereço do GIF
+            tipo:
+              primitivo: inteiro
+        retorno:
+          tipo:
+            primitivo: inteiro
+          descrição: o número do quadro atual
+
+      - nome: obter_quadro_gif
+        descrição: Obtém um quadro de um GIF como uma imagem separada
+        parâmetros:
+          - nome: endereco
+            descrição: o endereço do GIF
+            tipo:
+              primitivo: inteiro
+          - nome: quadro
+            descrição: o número do quadro desejado
+            tipo:
+              primitivo: inteiro
+        retorno:
+          tipo:
+            primitivo: inteiro
+          descrição: o endereço da imagem com o quadro
+
+      - nome: definir_quadro_gif
+        descrição: Define qual quadro de um GIF é o atual
+        parâmetros:
+          - nome: endereco
+            descrição: o endereço do GIF
+            tipo:
+              primitivo: inteiro
+          - nome: quadro
+            descrição: o número do quadro que passará a ser o atual
+            tipo:
+              primitivo: inteiro
+        retorno:
+          tipo:
+            primitivo: vazio
+
+      - nome: liberar_imagem
+        descrição: Libera a memória ocupada por uma imagem carregada anteriormente
+        parâmetros:
+          - nome: endereco
+            descrição: o endereço da imagem
+            tipo:
+              primitivo: inteiro
+        retorno:
+          tipo:
+            primitivo: vazio
+
+      - nome: desenhar_texto
+        descrição: Desenha um texto na posição `x` e `y`, com a cor, a fonte, o tamanho e o estilo atuais
+        parâmetros:
+          - nome: x
+            descrição: a posição horizontal do texto, em pixels, contada a partir da borda esquerda da janela
+            tipo:
+              primitivo: inteiro
+          - nome: y
+            descrição: a posição vertical do texto, em pixels, contada a partir do topo da janela
+            tipo:
+              primitivo: inteiro
+          - nome: texto
+            descrição: o texto que será desenhado
+            tipo:
+              primitivo: cadeia
+        retorno:
+          tipo:
+            primitivo: vazio
+
+      - nome: definir_cor
+        descrição: Define a cor atual do modo gráfico. Ela é usada nos desenhos feitos a partir de então (formas e textos) e no fundo, ao chamar `limpar`. Substitui o gradiente definido com `definir_gradiente`.
+        parâmetros:
+          - nome: cor
+            descrição: |
+              a nova cor: uma das constantes `COR_*` ou uma cor criada com `criar_cor`
+            tipo:
+              primitivo: inteiro
+        retorno:
+          tipo:
+            primitivo: vazio
+
+      - nome: definir_gradiente
+        descrição: Define como cor atual um gradiente, ou seja, uma transição suave entre duas cores. Ele é usado nos desenhos feitos a partir de então (formas e textos) e no fundo, ao chamar `limpar`. Em cada desenho, o gradiente vai de um lado ao outro da forma desenhada.
+        parâmetros:
+          - nome: tipo
+            descrição: |
+              a direção do gradiente: uma das constantes `GRADIENTE_*`
+            tipo:
+              primitivo: inteiro
+          - nome: cor1
+            descrição: a cor em que o gradiente começa
+            tipo:
+              primitivo: inteiro
+          - nome: cor2
+            descrição: a cor em que o gradiente termina
+            tipo:
+              primitivo: inteiro
+        retorno:
+          tipo:
+            primitivo: vazio
+
+      - nome: definir_fonte_texto
+        descrição: Define a fonte usada para desenhar os textos
+        parâmetros:
+          - nome: nome
+            descrição: |
+              o nome da fonte (ex.: Arial, Times New Roman, Tahoma). Se a fonte não estiver instalada no computador, é usada uma fonte padrão.
+            tipo:
+              primitivo: cadeia
+        retorno:
+          tipo:
+            primitivo: vazio
+
+      - nome: definir_tamanho_texto
+        descrição: Define o tamanho da fonte usada para desenhar os textos
+        parâmetros:
+          - nome: tamanho
+            descrição: o tamanho da fonte, em pixels
+            tipo:
+              primitivo: real
+        retorno:
+          tipo:
+            primitivo: vazio
+
+      - nome: definir_estilo_texto
+        descrição: Define o estilo da fonte usada para desenhar os textos
+        parâmetros:
+          - nome: italico
+            descrição: se `verdadeiro`, o texto é desenhado em itálico
+            tipo:
+              primitivo: logico
+          - nome: negrito
+            descrição: se `verdadeiro`, o texto é desenhado em negrito
+            tipo:
+              primitivo: logico
+          - nome: sublinhado
+            descrição: se `verdadeiro`, o texto é desenhado sublinhado
+            tipo:
+              primitivo: logico
+        retorno:
+          tipo:
+            primitivo: vazio
+
+      - nome: largura_texto
+        descrição: Calcula a largura que um texto ocupa ao ser desenhado com a fonte, o tamanho e o estilo atuais
+        parâmetros:
+          - nome: texto
+            descrição: o texto que será medido
+            tipo:
+              primitivo: cadeia
+        retorno:
+          tipo:
+            primitivo: inteiro
+          descrição: a largura do texto, em pixels
+
+      - nome: altura_texto
+        descrição: Calcula a altura que um texto ocupa ao ser desenhado com a fonte, o tamanho e o estilo atuais
+        parâmetros:
+          - nome: texto
+            descrição: o texto que será medido
+            tipo:
+              primitivo: cadeia
+        retorno:
+          tipo:
+            primitivo: inteiro
+          descrição: a altura do texto, em pixels
+
+      - nome: largura_imagem
+        descrição: Obtém a largura de uma imagem carregada anteriormente
+        parâmetros:
+          - nome: endereco
+            descrição: o endereço da imagem
+            tipo:
+              primitivo: inteiro
+        retorno:
+          tipo:
+            primitivo: inteiro
+          descrição: a largura da imagem, em pixels
+
+      - nome: altura_imagem
+        descrição: Obtém a altura de uma imagem carregada anteriormente
+        parâmetros:
+          - nome: endereco
+            descrição: o endereço da imagem
+            tipo:
+              primitivo: inteiro
+        retorno:
+          tipo:
+            primitivo: inteiro
+          descrição: a altura da imagem, em pixels
+
+      - nome: criar_cor
+        descrição: |
+          Cria uma cor a partir da combinação de tons de vermelho, verde e azul (RGB).
+
+          Se algum tom estiver fora do intervalo de 0 a 255, ocorre um erro de execução.
+        parâmetros:
+          - nome: vermelho
+            descrição: a intensidade do vermelho, de 0 a 255
+            tipo:
+              primitivo: inteiro
+          - nome: verde
+            descrição: a intensidade do verde, de 0 a 255
+            tipo:
+              primitivo: inteiro
+          - nome: azul
+            descrição: a intensidade do azul, de 0 a 255
+            tipo:
+              primitivo: inteiro
+        retorno:
+          tipo:
+            primitivo: inteiro
+          descrição: a cor criada, para usar em `definir_cor` e `definir_gradiente`
+
+      - nome: carregar_fonte
+        descrição: Carrega uma fonte a partir de um arquivo, para usá-la nos textos
+        parâmetros:
+          - nome: caminho_fonte
+            descrição: o caminho do arquivo de fonte no computador
+            tipo:
+              primitivo: cadeia
+        retorno:
+          tipo:
+            primitivo: vazio
+
+      - nome: definir_icone_janela
+        descrição: Altera o ícone da janela do modo gráfico, que aparece ao lado do título e na barra de tarefas do sistema operacional
+        parâmetros:
+          - nome: endereco
+            descrição: o endereço da imagem que será usada como ícone
+            tipo:
+              primitivo: inteiro
+        retorno:
+          tipo:
+            primitivo: vazio
+
+      - nome: definir_opacidade
+        descrição: |
+          Define a opacidade dos desenhos: quanto menor o valor, mais transparente fica o desenho. Com ela, é possível fazer desenhos semitransparentes, através dos quais se vê o que está atrás.
+
+          A opacidade vale para todos os desenhos feitos depois da chamada. Se um retângulo e uma elipse forem desenhados em seguida, os dois ficarão com a mesma opacidade. Para mudar só a do retângulo, chame a função de novo com o valor 255 antes de desenhar a elipse.
+        parâmetros:
+          - nome: opacidade
+            descrição: o nível de opacidade, de 0 (totalmente transparente) a 255 (totalmente opaco). Fora desse intervalo, ocorre um erro de execução.
+            tipo:
+              primitivo: inteiro
+        retorno:
+          tipo:
+            primitivo: vazio
+
+      - nome: definir_rotacao
+        descrição: |
+          Define a rotação dos desenhos, que é feita em torno do centro de cada desenho. Vale para textos e formas, como linhas, retângulos e elipses.
+
+          A rotação vale para todos os desenhos feitos depois da chamada. Se um retângulo e uma elipse forem desenhados em seguida, os dois ficarão girados no mesmo ângulo. Para girar só o retângulo, chame a função de novo com o valor 0 antes de desenhar a elipse.
+        parâmetros:
+          - nome: rotacao
+            descrição: o ângulo de rotação, em graus. 0 e os múltiplos de 360 indicam que não há rotação; valores positivos giram no sentido horário, e negativos, no sentido anti-horário
+            tipo:
+              primitivo: inteiro
+        retorno:
+          tipo:
+            primitivo: vazio
+
+      - nome: largura_janela
+        descrição: Obtém a largura atual da área de desenho da janela do modo gráfico
+        parâmetros: []
+        retorno:
+          tipo:
+            primitivo: inteiro
+          descrição: a largura, em pixels
+
+      - nome: altura_janela
+        descrição: Obtém a altura atual da área de desenho da janela do modo gráfico
+        parâmetros: []
+        retorno:
+          tipo:
+            primitivo: inteiro
+          descrição: a altura, em pixels
+
+      - nome: largura_tela
+        descrição: Obtém a largura da tela do computador
+        parâmetros: []
+        retorno:
+          tipo:
+            primitivo: inteiro
+          descrição: a largura da tela, em pixels
+
+      - nome: altura_tela
+        descrição: Obtém a altura da tela do computador
+        parâmetros: []
+        retorno:
+          tipo:
+            primitivo: inteiro
+          descrição: a altura da tela, em pixels
+
+      - nome: entrar_modo_tela_cheia
+        descrição: Amplia a janela do modo gráfico para que ela ocupe a tela inteira
+        parâmetros: []
+        retorno:
+          tipo:
+            primitivo: vazio
+
+      - nome: sair_modo_tela_cheia
+        descrição: Volta a janela do modo gráfico ao tamanho que ela tinha antes de entrar no modo de tela cheia
+        parâmetros: []
+        retorno:
+          tipo:
+            primitivo: vazio

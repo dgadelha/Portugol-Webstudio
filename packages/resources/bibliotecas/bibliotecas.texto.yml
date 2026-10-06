@@ -1,0 +1,155 @@
+# yaml-language-server: $schema=./bibliotecas.schema.json
+$schema: "./bibliotecas.schema.json"
+
+bibliotecas:
+  - nome: Texto
+    descrição: Esta biblioteca contém funções para manipular textos (valores do tipo `cadeia`)
+    constantes: []
+
+    funções:
+      - nome: numero_caracteres
+        descrição: Conta quantos caracteres uma `cadeia` tem
+        retorno:
+          tipo:
+            primitivo: inteiro
+          descrição: o número de caracteres da `cadeia`, contando os espaços
+        parâmetros:
+          - nome: cadeia
+            descrição: o texto cujos caracteres serão contados
+            tipo:
+              primitivo: cadeia
+
+      - nome: caixa_alta
+        descrição: Converte todas as letras de uma `cadeia` em maiúsculas
+        retorno:
+          tipo:
+            primitivo: cadeia
+          descrição: uma nova `cadeia` com as letras em maiúsculas
+        parâmetros:
+          - nome: cad
+            descrição: o texto que será convertido
+            tipo:
+              primitivo: cadeia
+
+      - nome: caixa_baixa
+        descrição: Converte todas as letras de uma `cadeia` em minúsculas
+        retorno:
+          tipo:
+            primitivo: cadeia
+          descrição: uma nova `cadeia` com as letras em minúsculas
+        parâmetros:
+          - nome: cad
+            descrição: o texto que será convertido
+            tipo:
+              primitivo: cadeia
+
+      - nome: substituir
+        descrição: Procura um trecho de texto em uma `cadeia` e substitui todas as ocorrências por outro texto
+        retorno:
+          tipo:
+            primitivo: cadeia
+          descrição: uma nova `cadeia` com as substituições feitas
+        parâmetros:
+          - nome: cad
+            descrição: o texto onde será feita a procura
+            tipo:
+              primitivo: cadeia
+          - nome: texto_pesquisa
+            descrição: o trecho que será procurado
+            tipo:
+              primitivo: cadeia
+          - nome: texto_substituto
+            descrição: o texto que entrará no lugar de cada ocorrência
+            tipo:
+              primitivo: cadeia
+
+      - nome: preencher_a_esquerda
+        descrição: |
+          Acrescenta o caractere informado à esquerda da `cadeia`, repetindo-o até que ela fique com o `tamanho` indicado.
+
+          Se a `cadeia` já tiver o `tamanho` indicado ou mais, ela é retornada sem alterações.
+        retorno:
+          tipo:
+            primitivo: cadeia
+          descrição: a `cadeia` preenchida à esquerda
+        parâmetros:
+          - nome: car
+            descrição: o caractere que será acrescentado à esquerda da `cadeia`
+            tipo:
+              primitivo: caracter
+          - nome: tamanho
+            descrição: o número de caracteres que a `cadeia` terá depois de preenchida
+            tipo:
+              primitivo: inteiro
+          - nome: cad
+            descrição: o texto que será preenchido
+            tipo:
+              primitivo: cadeia
+
+      - nome: obter_caracter
+        descrição: |
+          Obtém o caractere que está na posição informada da `cadeia`.
+
+          As posições começam em 0, então o `indice` deve estar entre 0 e o número de caracteres da `cadeia` menos 1. Fora desse intervalo, ocorre um erro de execução.
+        retorno:
+          tipo:
+            primitivo: caracter
+          descrição: o caractere na posição informada
+        parâmetros:
+          - nome: cad
+            descrição: o texto do qual será obtido o caractere
+            tipo:
+              primitivo: cadeia
+          - nome: indice
+            descrição: a posição do caractere, começando em 0
+            tipo:
+              primitivo: inteiro
+
+      - nome: posicao_texto
+        descrição: Procura um trecho de texto dentro de uma `cadeia` e retorna a posição da primeira ocorrência
+        retorno:
+          tipo:
+            primitivo: inteiro
+          descrição: a posição (a partir de 0) em que começa a primeira ocorrência do texto, ou -1 se ele não for encontrado
+        parâmetros:
+          - nome: texto
+            descrição: o trecho que será procurado
+            tipo:
+              primitivo: cadeia
+          - nome: cad
+            descrição: o texto onde será feita a procura
+            tipo:
+              primitivo: cadeia
+          - nome: posicao_inicial
+            descrição: a posição a partir da qual a procura começa. Para procurar desde o início da `cadeia`, use 0.
+            tipo:
+              primitivo: inteiro
+
+      - nome: extrair_subtexto
+        descrição: |
+          Extrai um trecho da `cadeia`, do caractere na `posicao_inicial` até o caractere anterior à `posicao_final`. Exemplos:
+
+          `extrair_subtexto("salgado", 0, 3) // resultado: "sal"`
+
+          `extrair_subtexto("salgado", 3, 7) // resultado: "gado"`
+
+          `extrair_subtexto("salgado", 1, 5) // resultado: "alga"`
+
+          Se a `posicao_inicial` for negativa, se a `posicao_final` for maior que o número de caracteres da `cadeia` ou se a `posicao_inicial` for maior que a `posicao_final`, ocorre um erro de execução.
+        retorno:
+          tipo:
+            primitivo: cadeia
+          descrição: o trecho extraído
+        parâmetros:
+          - nome: cad
+            descrição: o texto do qual será extraído o trecho
+            tipo:
+              primitivo: cadeia
+          - nome: posicao_inicial
+            descrição: a posição do primeiro caractere do trecho, começando em 0
+            tipo:
+              primitivo: inteiro
+          - nome: posicao_final
+            descrição: a posição logo depois do último caractere do trecho (o caractere nessa posição não é incluído)
+            tipo:
+              primitivo: inteiro

@@ -1,27 +1,112 @@
-import { ChangeDetectionStrategy, Component } from "@angular/core";
-import { MatButtonModule } from "@angular/material/button";
-import { MatDialogClose, MatDialogContent } from "@angular/material/dialog";
-import { MatIconModule } from "@angular/material/icon";
+import { DialogRef } from "@angular/cdk/dialog";
+import { ChangeDetectionStrategy, Component, computed, inject, isDevMode } from "@angular/core";
 import { AngularSvgIconModule } from "angular-svg-icon";
-import { NgxGoogleAnalyticsModule } from "ngx-google-analytics";
+import { GoogleAnalyticsService, NgxGoogleAnalyticsModule } from "ngx-google-analytics";
 
 import { IS_BETA } from "../beta";
+import { PwaService } from "../pwa.service";
+import { SurveyService } from "../survey.service";
+import { ProgressBarComponent } from "../shared/progress-bar.component";
+import { TooltipDirective } from "../shared/tooltip.directive";
+import { APP_COMMIT_URL, APP_VERSION } from "../version";
 
 @Component({
   selector: "app-dialog-about",
-  imports: [
-    AngularSvgIconModule,
-    MatButtonModule,
-    MatDialogClose,
-    MatDialogContent,
-    MatIconModule,
-    NgxGoogleAnalyticsModule,
-  ],
-  standalone: true,
+  imports: [AngularSvgIconModule, NgxGoogleAnalyticsModule, ProgressBarComponent, TooltipDirective],
   templateUrl: "./dialog-about.component.html",
   styleUrl: "./dialog-about.component.scss",
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DialogAboutComponent {
+  readonly dialogRef = inject<DialogRef<"changelog">>(DialogRef);
+  readonly pwa = inject(PwaService);
+  readonly survey = inject(SurveyService);
+  private gaService = inject(GoogleAnalyticsService);
+
   readonly isBeta = IS_BETA;
+
+  readonly version = APP_VERSION;
+  readonly commitUrl = APP_COMMIT_URL;
+  readonly dateSuffix = APP_VERSION.buildDate ? `, de ${APP_VERSION.buildDate.toLocaleDateString("pt-BR")}` : "";
+
+  readonly offline = computed(() => {
+    const status = this.pwa.offlineStatus();
+
+    switch (status) {
+      case "ready": {
+        return this.pwa.online()
+          ? { icon: "assets/mdi/cloud-check-outline.svg", text: "Pronto para usar sem internet" }
+          : { icon: "assets/mdi/cloud-off-outline.svg", text: "Sem internet: usando a cópia guardada no navegador" };
+      }
+
+      case "downloading": {
+        return { icon: "assets/mdi/cloud-download-outline.svg", text: "Baixando para usar sem internet…" };
+      }
+
+      case "checking": {
+        return { icon: "assets/mdi/cloud-question-outline.svg", text: "Conferindo a cópia guardada no navegador…" };
+      }
+
+      case "unknown": {
+        return {
+          icon: "assets/mdi/cloud-question-outline.svg",
+          text: "Não foi possível conferir se o IDE já funciona sem internet",
+        };
+      }
+
+      default: {
+        return {
+          icon: "assets/mdi/cloud-off-outline.svg",
+          text: isDevMode()
+            ? "O uso sem internet fica desligado no ambiente local"
+            : "Este navegador não guarda o IDE para usar sem internet",
+        };
+      }
+    }
+  });
+
+  readonly updateMessage = computed(() => {
+    switch (this.pwa.updateStatus()) {
+      case "checking": {
+        return "Procurando atualizações…";
+      }
+
+      case "latest": {
+        return "Você já está na versão mais recente.";
+      }
+
+      case "offline": {
+        return "Sem internet para procurar atualizações.";
+      }
+
+      case "downloading": {
+        return "Baixando a nova versão…";
+      }
+
+      case "ready": {
+        return "Uma nova versão está pronta.";
+      }
+
+      case "failed": {
+        return "Não foi possível baixar a atualização. Tente de novo mais tarde.";
+      }
+
+      default: {
+        return "";
+      }
+    }
+  });
+
+  readonly checking = computed(() => ["checking", "downloading"].includes(this.pwa.updateStatus()));
+
+  async checkForUpdate() {
+    this.gaService.event("about_check_updates", "about_dialog", "Procurar atualizações (diálogo Sobre)");
+
+    // "latest", "ready" (versão nova baixada), "offline" ou "failed"
+    const result = await this.pwa.checkForUpdate();
+
+    if (result) {
+      this.gaService.event("about_check_updates_result", "about_dialog", result);
+    }
+  }
 }

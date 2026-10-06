@@ -1,110 +1,211 @@
-import { bibliotecas } from "@portugol-recursos/bibliotecas";
+import { bibliotecas } from "@portugol-webstudio/resources/bibliotecas";
 import { BIBLIOTECAS_IMPLEMENTADAS } from "@portugol-webstudio/parser";
 import { TreeItem } from "./types";
 
-const dimensãoMap = {
-  vetor: "[]",
-  matriz: "[][]",
-};
+type Biblioteca = (typeof bibliotecas)[number];
+type Constante = Biblioteca["constantes"][number];
+type Função = Biblioteca["funções"][number];
+type Tipo = Função["retorno"]["tipo"];
 
-function getTypeSource(
-  tipo: (typeof bibliotecas)[0]["funções"][0]["retorno"]["tipo"],
-  name: string,
-  kind: "func" | "const" | "param",
-) {
-  let ret = `<span class="code-keyword">${tipo.primitivo}</span>`;
+/**
+ * As páginas das bibliotecas são geradas dos metadados, em Markdown como os
+ * outros tópicos da Ajuda. Cada uma tem um caminho de arquivo (que não existe
+ * no servidor) para os links entre elas e os endereços `#ajuda=` funcionarem
+ * como nos outros tópicos.
+ */
+const PASTA = "bibliotecas";
 
-  if (tipo.dimensão) {
-    if (kind === "param") {
-      ret += ` <span class="code-param-name">&${name}</span>`;
-    } else if (kind === "func") {
-      ret += `<span class="code-keyword-brackets">${dimensãoMap[tipo.dimensão]}</span>`;
-      ret += ` <span class="code-func-name">${name}</span>`;
-    } else {
-      ret += ` <span class="code-${kind}-name">${name}</span>`;
+const DIMENSÕES = { vetor: "[]", matriz: "[][]" };
+
+/**
+ * `inteiro`, `real[]`… O tipo `*` dos metadados aceita qualquer tipo.
+ */
+function nomeDoTipo(tipo: Tipo) {
+  const primitivo = tipo.primitivo === "*" ? "qualquer tipo" : tipo.primitivo;
+
+  return tipo.dimensão ? `${primitivo}${DIMENSÕES[tipo.dimensão]}` : primitivo;
+}
+
+/**
+ * Parâmetros vetores e matrizes são passados por referência no Portugol: `inteiro &vetor[]`.
+ */
+function parâmetroNaAssinatura({ tipo, nome }: Função["parâmetros"][number]) {
+  return tipo.dimensão ? `${tipo.primitivo} &${nome}${DIMENSÕES[tipo.dimensão]}` : `${tipo.primitivo} ${nome}`;
+}
+
+function assinaturaDaFunção(função: Função) {
+  const retorno = função.retorno.tipo;
+  const tipo = retorno.dimensão ? `${retorno.primitivo}${DIMENSÕES[retorno.dimensão]}` : retorno.primitivo;
+
+  return `funcao ${tipo} ${função.nome}(${função.parâmetros.map(p => parâmetroNaAssinatura(p)).join(", ")})`;
+}
+
+function valorNoCódigo(constante: Constante) {
+  switch (constante.tipo.primitivo) {
+    case "cadeia": {
+      return `"${constante.valor}"`;
     }
-
-    if (kind !== "func") {
-      ret += `<span class="code-keyword-brackets">${dimensãoMap[tipo.dimensão]}</span>`;
+    case "caracter": {
+      return `'${constante.valor}'`;
     }
-  } else {
-    ret += ` <span class="code-${kind}-name">${name}</span>`;
+    case "logico": {
+      return constante.valor ? "verdadeiro" : "falso";
+    }
+    default: {
+      return String(constante.valor);
+    }
+  }
+}
+
+function blocoDeSintaxe(código: string) {
+  return "```portugol sintaxe\n" + código + "\n```";
+}
+
+/**
+ * A declaração da função ou constante: colorida como o código, sem botão de copiar.
+ */
+function blocoDeAssinatura(código: string) {
+  return "```portugol assinatura\n" + código + "\n```";
+}
+
+/**
+ * As descrições dos metadados podem ter várias linhas; nas listas, cabem numa só.
+ */
+function emUmaLinha(texto: string) {
+  return texto.replaceAll(/\s+/g, " ").trim();
+}
+
+function referência(url: string | undefined) {
+  return url ? `[Saiba mais sobre o assunto](${url})` : "";
+}
+
+function juntar(...partes: string[]) {
+  return partes.filter(Boolean).join("\n\n") + "\n";
+}
+
+/**
+ * Os links das listas são relativos à pasta da biblioteca (`bibliotecas/<Nome>/`),
+ * onde ficam as páginas das constantes e funções.
+ */
+function listaDeConstantes(biblioteca: Biblioteca, pasta: string) {
+  return biblioteca.constantes
+    .map(c => `- [\`${c.nome}\`](${pasta}${c.nome}.md): ${emUmaLinha(c.descrição)}`)
+    .join("\n");
+}
+
+function listaDeFunções(biblioteca: Biblioteca, pasta: string) {
+  return biblioteca.funções.map(f => `- [\`${f.nome}\`](${pasta}${f.nome}.md): ${emUmaLinha(f.descrição)}`).join("\n");
+}
+
+function páginaDaBiblioteca(biblioteca: Biblioteca) {
+  const { nome } = biblioteca;
+  const exemplo = biblioteca.funções[0] ?? biblioteca.constantes[0];
+  const uso = exemplo
+    ? `Depois de incluída, os recursos da biblioteca são usados com o nome dela e um ponto, como \`${nome}.${exemplo.nome}\`.`
+    : "";
+
+  return juntar(
+    `# Biblioteca ${nome}`,
+    biblioteca.descrição,
+    "## Como incluir",
+    blocoDeSintaxe(`inclua biblioteca ${nome}`),
+    uso,
+    biblioteca.constantes.length > 0 ? "## Constantes" : "",
+    listaDeConstantes(biblioteca, `${nome}/`),
+    biblioteca.funções.length > 0 ? "## Funções" : "",
+    listaDeFunções(biblioteca, `${nome}/`),
+  );
+}
+
+/**
+ * As pastas "Constantes" e "Funções" da árvore ficam ao lado das páginas
+ * (`bibliotecas/<Nome>/constantes.md`), então as listas apontam para a mesma pasta.
+ */
+function páginaDoGrupo(biblioteca: Biblioteca, grupo: "Constantes" | "Funções") {
+  return juntar(
+    `# ${grupo} da biblioteca ${biblioteca.nome}`,
+    `Voltar para a biblioteca [${biblioteca.nome}](../${biblioteca.nome}.md).`,
+    grupo === "Constantes" ? listaDeConstantes(biblioteca, "") : listaDeFunções(biblioteca, ""),
+  );
+}
+
+function páginaDaConstante(biblioteca: Biblioteca, constante: Constante) {
+  return juntar(
+    `# ${constante.nome}`,
+    `Constante da biblioteca [${biblioteca.nome}](../${biblioteca.nome}.md).`,
+    blocoDeAssinatura(`const ${nomeDoTipo(constante.tipo)} ${constante.nome} = ${valorNoCódigo(constante)}`),
+    constante.descrição.trim(),
+    "## Para usar",
+    blocoDeSintaxe(`${biblioteca.nome}.${constante.nome}`),
+    referência(constante.referência),
+  );
+}
+
+function páginaDaFunção(biblioteca: Biblioteca, função: Função) {
+  const { retorno } = função;
+
+  return juntar(
+    `# ${função.nome}`,
+    `Função da biblioteca [${biblioteca.nome}](../${biblioteca.nome}.md).`,
+    blocoDeAssinatura(assinaturaDaFunção(função)),
+    função.descrição.trim(),
+    função.parâmetros.length > 0 ? "## Parâmetros" : "",
+    função.parâmetros.map(p => `- \`${p.nome}\` (${nomeDoTipo(p.tipo)}): ${emUmaLinha(p.descrição)}`).join("\n"),
+    "## Para usar",
+    blocoDeSintaxe(`${biblioteca.nome}.${função.nome}(${função.parâmetros.map(p => p.nome).join(", ")})`),
+    retorno.tipo.primitivo === "vazio" ? "" : "## Retorno",
+    retorno.tipo.primitivo === "vazio"
+      ? ""
+      : `${nomeDoTipo(retorno.tipo)}${retorno.descrição ? `: ${emUmaLinha(retorno.descrição)}` : ""}`,
+    referência(função.referência),
+  );
+}
+
+function páginaDoÍndice(implementadas: Biblioteca[]) {
+  return juntar(
+    "# Bibliotecas",
+    "Conjuntos de funções e constantes prontas para usar nos programas. Veja como incluir uma biblioteca em [Bibliotecas, na Linguagem Portugol](../topicos/linguagem_portugol/bibliotecas/index.md).",
+    implementadas.map(b => `- [${b.nome}](${b.nome}.md): ${emUmaLinha(b.descrição)}`).join("\n"),
+  );
+}
+
+function item(arquivo: string, text: string, source: string, children?: TreeItem[]): TreeItem {
+  return { id: arquivo, text, arquivo, source, children };
+}
+
+const implementadas = new Set<string>(BIBLIOTECAS_IMPLEMENTADAS);
+
+/**
+ * Os itens de uma biblioteca na árvore. Com constantes e funções, cada tipo
+ * fica numa pasta: na Graficos, as 55 funções não vêm depois de 17 constantes,
+ * e quem usa o teclado pula um grupo inteiro com uma seta.
+ */
+function itensDaBiblioteca(b: Biblioteca): TreeItem[] {
+  const pasta = `${PASTA}/${b.nome}`;
+  const constantes = b.constantes.map(c => item(`${pasta}/${c.nome}.md`, c.nome, páginaDaConstante(b, c)));
+  const funções = b.funções.map(f => item(`${pasta}/${f.nome}.md`, f.nome, páginaDaFunção(b, f)));
+
+  if (constantes.length === 0 || funções.length === 0) {
+    return [...constantes, ...funções];
   }
 
-  return ret;
+  return [
+    item(`${pasta}/constantes.md`, "Constantes", páginaDoGrupo(b, "Constantes"), constantes),
+    item(`${pasta}/funcoes.md`, "Funções", páginaDoGrupo(b, "Funções"), funções),
+  ];
 }
 
-function getConstantSource(constante: (typeof bibliotecas)[0]["constantes"][0]) {
-  return `
-    <div class="code">
-      ${getTypeSource(constante.tipo, constante.nome, "const")} = <span class="code-value">${constante.valor}</span>
-    </div>
+/**
+ * O grupo "Bibliotecas" da árvore da Ajuda: um índice e, para cada biblioteca
+ * que o Webstudio executa, a página dela, das constantes e das funções.
+ */
+export function criarAjudaDasBibliotecas(): TreeItem {
+  const lista = bibliotecas.filter(b => implementadas.has(b.nome));
 
-    ${constante.descrição ? `**Descrição:** ${constante.descrição}` : ""}
-
-    ${constante.referência ? `<a href="${constante.referência}" rel="external noopener noreferrer" target="_blank">Referência</a>` : ""}
-  `
-    .split("\n")
-    .map(l => l.trim())
-    .join("\n");
+  return item(
+    `${PASTA}/index.md`,
+    "Bibliotecas",
+    páginaDoÍndice(lista),
+    lista.map(b => item(`${PASTA}/${b.nome}.md`, b.nome, páginaDaBiblioteca(b), itensDaBiblioteca(b))),
+  );
 }
-
-function getFunctionSource(func: (typeof bibliotecas)[0]["funções"][0]) {
-  return `
-    <div class="code">
-      <span class="code-keyword">funcao</span> ${getTypeSource(func.retorno.tipo, func.nome, "func")}(${func.parâmetros
-        .map(p => getTypeSource(p.tipo, p.nome, "param"))
-        .join(", ")})
-    </div>
-
-    ${func.descrição ? `**Descrição:** ${func.descrição}` : ""}
-
-    ${func.parâmetros.length > 0 ? `**Parâmetros:**` + func.parâmetros.map(p => "\n  - `" + p.nome + "`: " + p.descrição).join("") : ""}
-
-    ${func.retorno.descrição ? `**Retorna:** ${func.retorno.descrição}` : ""}
-
-    ${func.referência ? `<a href="${func.referência}" rel="external noopener noreferrer" target="_blank">Referência</a>` : ""}
-  `
-    .split("\n")
-    .map(l => l.trim())
-    .join("\n");
-}
-
-const bibliotecasWebstudio = new Set<string>(BIBLIOTECAS_IMPLEMENTADAS);
-
-// Código temporário até a Ajuda inteira ser em markdown também
-export const libsTree: TreeItem = {
-  id: "libs",
-  text: "Bibliotecas",
-  kind: "markdown",
-  source: "Selecione um item na árvore à esquerda para visualizar sua documentação",
-  children: bibliotecas
-    .filter(lib => bibliotecasWebstudio.has(lib.nome))
-    .map(lib => {
-      return {
-        id: lib.nome,
-        text: lib.nome,
-        kind: "markdown",
-        source: `# Biblioteca ${lib.nome}\n\n**Descrição:** ${lib.descrição}`,
-        children: lib.constantes
-          .map<TreeItem>(constante => {
-            return {
-              id: `${lib.nome}_${constante.nome}`,
-              text: constante.nome,
-              kind: "markdown",
-              source: `# Biblioteca ${lib.nome}\n\n` + getConstantSource(constante),
-            };
-          })
-          .concat(
-            lib.funções.map<TreeItem>(função => {
-              return {
-                id: `${lib.nome}_${função.nome}`,
-                text: função.nome,
-                kind: "markdown",
-                source: `# Biblioteca ${lib.nome}\n\n` + getFunctionSource(função),
-              };
-            }),
-          ),
-      };
-    }),
-};

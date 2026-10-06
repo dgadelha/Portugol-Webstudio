@@ -1,0 +1,44 @@
+<div class="field inline">
+  <div class="field-text">
+    <span id="setting-tabs-confirm-close" class="field-label">Confirmar ao fechar</span>
+    <p id="setting-tabs-confirm-close-descricao" class="field-description">
+      Pergunta antes de fechar uma aba com código. Abas vazias ou só com o modelo inicial fecham direto.
+    </p>
+  </div>
+
+  <input
+    type="checkbox"
+    role="switch"
+    class="switch"
+    aria-labelledby="setting-tabs-confirm-close"
+    aria-describedby="setting-tabs-confirm-close-descricao"
+    [(ngModel)]="interfaceConfirmCloseTab"
+  />
+</div>
+
+<div class="field inline">
+  <div class="field-text">
+    <span id="setting-tabs-reopen" class="field-label">Reabrir as abas da última janela</span>
+    <p id="setting-tabs-reopen-descricao" class="field-description">
+      Uma janela nova começa com o código da última fechada. Desativado, ela começa vazia e esse código fica em "Código
+      de sessões anteriores", na aba inicial, para restaurar quando quiser.
+    </p>
+  </div>
+
+  <input
+    type="checkbox"
+    role="switch"
+    class="switch"
+    aria-labelledby="setting-tabs-reopen"
+    aria-describedby="setting-tabs-reopen-descricao"
+    [(ngModel)]="interfaceReopenTabs"
+  />
+</div>
+
+<p class="field-note">
+  <svg-icon src="assets/mdi/information-outline.svg" aria-hidden="true" focusable="false" />
+  <span>
+    O código de sessões anteriores fica guardado neste navegador por até {{ maxAgeDays }} dias. Quando passa de
+    {{ maxRecoverable }} sessões, as mais antigas são apagadas.
+  </span>
+</p>

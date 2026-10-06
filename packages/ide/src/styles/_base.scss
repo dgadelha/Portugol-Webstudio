@@ -1,0 +1,182 @@
+@use "mixins";
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+app-root {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+// O fundo da moldura (`bg-frame`), que é o que aparece em volta da área arredondada:
+// o Safari pinta as áreas de cima e de baixo da tela com a cor do `body`.
+body {
+  background-color: var(--pws-bg-frame);
+  color: var(--pws-fg);
+  font-family: var(--pws-font);
+  font-size: var(--pws-text-ui);
+  line-height: 1.4;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  margin: 0;
+  color: var(--pws-fg-strong);
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+p {
+  margin: 0;
+}
+
+a {
+  color: var(--pws-info-fg);
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+button,
+input,
+select,
+textarea {
+  color: inherit;
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+
+  &:disabled {
+    cursor: default;
+  }
+}
+
+// Foco como no VS Code: um contorno de 1px na cor de destaque, só quando vem
+// do teclado.
+:focus {
+  outline: none;
+}
+
+:focus-visible {
+  outline: 1px solid var(--pws-focus);
+  outline-offset: -1px;
+}
+
+::selection {
+  background-color: rgba(var(--pws-accent-rgb), 0.35);
+}
+
+// Barras de rolagem finas e discretas, como as do editor.
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(var(--pws-fg-muted-rgb), 0.4) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  border: 2px solid transparent;
+  border-radius: 10px;
+  background-clip: padding-box;
+  background-color: rgba(var(--pws-fg-muted-rgb), 0.4);
+
+  &:hover {
+    background-color: rgba(var(--pws-fg-muted-rgb), 0.6);
+  }
+}
+
+::-webkit-scrollbar-track,
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+svg-icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+
+  > svg {
+    width: 100%;
+    height: 100%;
+    fill: currentColor;
+  }
+}
+
+// Cores dos ícones: os ícones coloridos ajudam a reconhecer cada ação.
+@each $name in "green", "red", "blue", "yellow" {
+  .icon-#{$name} {
+    color: var(--pws-#{$name});
+  }
+}
+
+.visually-hidden {
+  @include mixins.visually-hidden;
+}
+
+// Link para quem navega pelo teclado ou com leitor de tela pular direto para o
+// conteúdo da aba. Só aparece quando recebe o foco.
+.skip-link {
+  position: fixed;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: 10000;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--pws-radius);
+  background-color: var(--pws-accent);
+  color: var(--pws-on-accent);
+  font-weight: 600;
+  transform: translateY(-200%);
+
+  &:focus {
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+// No alto contraste do Windows, as cores do sistema substituem as do tema:
+// bordas transparentes viram a única pista de onde fica cada controle.
+@media (forced-colors: active) {
+  :focus-visible {
+    outline: 2px solid CanvasText;
+  }
+}
+
+// O Safari do iPhone dá zoom na página ao focar um campo com texto menor que
+// 16px (a busca dos exemplos, o campo escondido do Monaco ao tocar no código).
+// O `-webkit-touch-callout` só existe no Safari do iOS: os outros navegadores
+// ficam como estão, e o zoom com os dedos continua funcionando.
+@supports (-webkit-touch-callout: none) {
+  input:not([type="checkbox"], [type="radio"], [type="range"]),
+  textarea,
+  select {
+    font-size: max(16px, 1em) !important;
+  }
+}

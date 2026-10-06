@@ -1,0 +1,27 @@
+// Tamanho da fonte em px: botões de um em um e um controle deslizante para
+// saltos maiores.
+:host {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.range {
+  flex-grow: 1;
+  min-width: 0;
+}
+
+.step {
+  border: 1px solid var(--pws-border-control);
+}
+
+.value {
+  flex-shrink: 0;
+  width: 3rem;
+  padding: 0.125rem 0;
+  border-radius: var(--pws-radius-sm);
+  background-color: var(--pws-bg-input);
+  font-family: var(--pws-font-mono);
+  font-size: var(--pws-text-sm);
+  text-align: center;
+}

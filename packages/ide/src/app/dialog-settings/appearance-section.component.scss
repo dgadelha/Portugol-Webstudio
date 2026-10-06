@@ -1,0 +1,188 @@
+.themes {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.theme {
+  display: grid;
+  gap: 0.5rem;
+  padding: 0;
+  border: 0;
+  outline: none;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+
+  &[aria-checked="true"] {
+    .theme-frame {
+      border-color: var(--pws-accent);
+    }
+
+    .theme-label {
+      font-weight: 500;
+      color: var(--pws-fg);
+    }
+  }
+
+  &[aria-checked="false"]:hover .theme-frame {
+    border-color: rgba(var(--pws-fg-muted-rgb), 0.5);
+  }
+
+  &:focus-visible .theme-frame {
+    outline: 2px solid var(--pws-focus);
+    outline-offset: 2px;
+  }
+}
+
+.theme-frame {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  border: 2px solid var(--pws-border);
+  border-radius: var(--pws-radius-lg);
+  transition: border-color 0.15s;
+}
+
+.theme-check {
+  position: absolute;
+  top: 0.375rem;
+  right: 0.375rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 50%;
+  background-color: var(--pws-accent);
+  color: var(--pws-on-accent);
+
+  svg-icon {
+    width: 0.75rem;
+    height: 0.75rem;
+  }
+}
+
+.theme-label {
+  font-size: var(--pws-text-md);
+  color: var(--pws-fg-muted);
+}
+
+// Miniatura do IDE: sempre nas cores do tema que representa, qualquer que seja o atual.
+
+.split {
+  position: relative;
+  display: block;
+}
+
+.split-dark {
+  position: absolute;
+  inset: 0;
+  clip-path: inset(0 0 0 50%);
+}
+
+.mockup {
+  display: flex;
+  gap: 0.375rem;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  padding: 0.5rem;
+  background-color: #fff;
+}
+
+.mockup-sidebar {
+  width: 0.75rem;
+  border-radius: 0.25rem;
+  background-color: #f5f5f5;
+}
+
+.mockup-main {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 0.375rem;
+}
+
+.mockup-tabs {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.mockup-active-tab,
+.mockup-tab {
+  height: 0.625rem;
+  border-radius: 0.25rem;
+}
+
+.mockup-active-tab {
+  width: 1.5rem;
+  background-color: #e5e5e5;
+}
+
+.mockup-tab {
+  width: 1rem;
+  background-color: #f5f5f5;
+}
+
+.mockup-editor {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 0.25rem;
+  padding: 0.375rem;
+  border-radius: 0.25rem;
+  background-color: #fafafa;
+}
+
+.line {
+  height: 0.25rem;
+  border-radius: 9999px;
+}
+
+.program-line,
+.end-line {
+  background-color: rgba(0, 166, 244, 0.7);
+}
+
+.program-line {
+  width: 75%;
+}
+
+.call-line {
+  width: 50%;
+  margin-left: 0.5rem;
+  background-color: rgba(254, 154, 0, 0.7);
+}
+
+.text-line {
+  width: 66.667%;
+  margin-left: 0.5rem;
+  background-color: #d4d4d4;
+}
+
+.end-line {
+  width: 25%;
+}
+
+.mockup[data-variant="dark"] {
+  background-color: #0a0a0a;
+
+  .mockup-sidebar,
+  .mockup-tab {
+    background-color: #262626;
+  }
+
+  .mockup-active-tab {
+    background-color: #404040;
+  }
+
+  .mockup-editor {
+    background-color: #171717;
+  }
+
+  .text-line {
+    background-color: #525252;
+  }
+}

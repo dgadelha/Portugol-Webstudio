@@ -1,0 +1,59 @@
+# yaml-language-server: $schema=./bibliotecas.schema.json
+$schema: "./bibliotecas.schema.json"
+
+bibliotecas:
+  - nome: Internet
+    descrição: Esta biblioteca contém diversas funções de conexão com a web
+    constantes: []
+    funções:
+      - nome: definir_tempo_limite
+        descrição: Define um valor de tempo limite de espera
+        parâmetros:
+          - nome: tempo
+            descrição: o tempo limite de espera em milisegundos
+            tipo:
+              primitivo: inteiro
+        retorno:
+          tipo:
+            primitivo: vazio
+
+      - nome: obter_texto
+        descrição: Obtém o conteúdo de uma página web
+        parâmetros:
+          - nome: caminho
+            descrição: o caminho de onde o conteúdo deverá ser obtido
+            tipo:
+              primitivo: cadeia
+        retorno:
+          tipo:
+            primitivo: cadeia
+          descrição: O conteúdo de uma página web
+
+      - nome: baixar_imagem
+        descrição: Obtém recursos de uma página web
+        parâmetros:
+          - nome: endereço
+            descrição: o endereço de onde o conteúdo deverá ser obtido
+            tipo:
+              primitivo: cadeia
+          - nome: caminho
+            descrição: o caminho de onde o conteúdo deverá ser salvo
+            tipo:
+              primitivo: cadeia
+        retorno:
+          tipo:
+            primitivo: cadeia
+          descrição: O tipo da Imagem
+
+      - nome: endereco_disponivel
+        descrição: Verifica a disponibilidade atual de algum endereço
+        parâmetros:
+          - nome: endereço
+            descrição: o endereço de onde o conteúdo deverá ser obtido
+            tipo:
+              primitivo: cadeia
+        retorno:
+          tipo:
+            primitivo: logico
+          descrição: |
+            `verdadeiro` se o endereço estiver disponível no momento, `falso` se não

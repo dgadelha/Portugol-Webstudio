@@ -1,6 +1,6 @@
 ### algoritmos_sequenciais/altura_media.por
 ### algoritmos_sequenciais/loja_ferramentas.por
-### algoritmos_sequenciais/maioridade_penal.por
+### algoritmos_sequenciais/meta_economia.por
 ### algoritmos_sequenciais/quantos_dias.por
 ### algoritmos_sequenciais/troca_variaveis.por
 ### bibliotecas/arquivos/gravar_arquivo.por
@@ -11,120 +11,126 @@
 ### bibliotecas/arquivos/selecionar_arquivo.por
 ### bibliotecas/arquivos/substituir_arquivo.por
 ### bibliotecas/arquivos/verificar.por
+### bibliotecas/calendario/data_hora_atual.por
+### bibliotecas/calendario/dias_ate_aniversario.por
+### bibliotecas/calendario/relogio.por
 ### bibliotecas/calendario/relogio_analogico.por
-AVISO|127|20|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_elipse" será truncado
-AVISO|127|66|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_elipse" será truncado
-AVISO|155|20|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_elipse" será truncado
-AVISO|155|66|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_elipse" será truncado
-AVISO|163|8|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|164|19|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numero" da função "arredondar" será automaticamente convertido de "inteiro" para "real"
-AVISO|164|8|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|165|8|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|166|19|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numero" da função "arredondar" será automaticamente convertido de "inteiro" para "real"
-AVISO|166|8|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|171|8|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|172|19|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numero" da função "arredondar" será automaticamente convertido de "inteiro" para "real"
-AVISO|172|8|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|173|8|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|174|19|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numero" da função "arredondar" será automaticamente convertido de "inteiro" para "real"
-AVISO|174|8|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|206|59|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "largura" da função "desenhar_elipse" será truncado
-AVISO|206|78|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "altura" da função "desenhar_elipse" será truncado
-AVISO|209|54|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "largura" da função "desenhar_elipse" será truncado
-AVISO|209|73|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "altura" da função "desenhar_elipse" será truncado
-AVISO|222|50|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "largura" da função "desenhar_elipse" será truncado
-AVISO|222|67|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "altura" da função "desenhar_elipse" será truncado
-AVISO|230|48|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "largura" da função "desenhar_elipse" será truncado
-AVISO|230|64|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "altura" da função "desenhar_elipse" será truncado
-AVISO|234|56|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_texto" será truncado
-AVISO|235|60|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_retangulo" será truncado
-AVISO|283|11|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
-AVISO|313|14|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
-AVISO|380|26|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_retangulo" será truncado
-AVISO|381|23|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_retangulo" será truncado
-AVISO|385|26|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_retangulo" será truncado
-AVISO|386|23|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_retangulo" será truncado
-AVISO|391|23|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_texto" será truncado
-AVISO|392|23|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_texto" será truncado
-AVISO|394|19|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_texto" será truncado
-AVISO|422|16|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|440|20|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
-AVISO|441|21|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
-AVISO|448|14|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|449|14|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|451|20|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|452|20|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|454|17|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|455|17|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|457|18|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|458|18|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|460|13|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|461|13|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|122|22|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_elipse" será truncado
+AVISO|122|74|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_elipse" será truncado
+AVISO|150|22|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_elipse" será truncado
+AVISO|150|74|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_elipse" será truncado
+AVISO|158|10|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|159|21|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numero" da função "arredondar" será automaticamente convertido de "inteiro" para "real"
+AVISO|159|10|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|160|10|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|161|21|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numero" da função "arredondar" será automaticamente convertido de "inteiro" para "real"
+AVISO|161|10|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|166|10|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|167|21|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numero" da função "arredondar" será automaticamente convertido de "inteiro" para "real"
+AVISO|167|10|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|168|10|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|169|21|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numero" da função "arredondar" será automaticamente convertido de "inteiro" para "real"
+AVISO|169|10|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|199|65|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "largura" da função "desenhar_elipse" será truncado
+AVISO|199|84|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "altura" da função "desenhar_elipse" será truncado
+AVISO|202|56|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "largura" da função "desenhar_elipse" será truncado
+AVISO|202|75|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "altura" da função "desenhar_elipse" será truncado
+AVISO|215|52|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "largura" da função "desenhar_elipse" será truncado
+AVISO|215|69|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "altura" da função "desenhar_elipse" será truncado
+AVISO|223|50|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "largura" da função "desenhar_elipse" será truncado
+AVISO|223|66|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "altura" da função "desenhar_elipse" será truncado
+AVISO|227|62|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_texto" será truncado
+AVISO|228|66|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_retangulo" será truncado
+AVISO|275|16|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
+AVISO|304|17|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
+AVISO|370|28|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_retangulo" será truncado
+AVISO|371|25|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_retangulo" será truncado
+AVISO|375|28|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_retangulo" será truncado
+AVISO|376|25|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_retangulo" será truncado
+AVISO|381|25|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_texto" será truncado
+AVISO|382|25|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_texto" será truncado
+AVISO|384|21|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_texto" será truncado
+AVISO|408|18|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|425|22|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
+AVISO|426|23|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
+AVISO|433|16|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|434|16|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|436|22|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|437|22|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|439|19|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|440|19|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|442|20|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|443|20|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|445|15|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|446|15|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
 ### bibliotecas/calendario/relogio_digital.por
+### bibliotecas/graficos/bandeira_brasil.por
 ### bibliotecas/graficos/basico/iniciando.por
+### bibliotecas/graficos/bola_quicando.por
+### bibliotecas/graficos/formas_cores.por
 ### bibliotecas/graficos/fractal_fern.por
-AVISO|76|25|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|141|20|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_imagem" será truncado
-AVISO|141|42|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_imagem" será truncado
+AVISO|70|20|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|123|22|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_imagem" será truncado
+AVISO|123|44|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_imagem" será truncado
+### bibliotecas/graficos/grafico_barras.por
 ### bibliotecas/graficos/onda.por
 ### bibliotecas/graficos/paint.por
 ### bibliotecas/graficos/qr_code.por
 ### bibliotecas/graficos/salvar_imagem.por
 ### bibliotecas/graficos/senoides.por
-AVISO|80|26|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "tamanho" da função "definir_tamanho_texto" será automaticamente convertido de "inteiro" para "real"
-AVISO|101|12|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|103|21|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_elipse" será truncado
-AVISO|103|58|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_elipse" será truncado
+AVISO|77|28|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "tamanho" da função "definir_tamanho_texto" será automaticamente convertido de "inteiro" para "real"
+AVISO|97|16|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|99|24|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_elipse" será truncado
+AVISO|99|71|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_elipse" será truncado
 ### bibliotecas/graficos/solar.por
-AVISO|113|24|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_retangulo" será truncado
-AVISO|113|32|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_retangulo" será truncado
-AVISO|113|35|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "largura" da função "desenhar_retangulo" será truncado
-AVISO|113|49|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "altura" da função "desenhar_retangulo" será truncado
-AVISO|129|26|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
-AVISO|131|22|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
-AVISO|135|23|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
-AVISO|138|23|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
-AVISO|141|23|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
-AVISO|144|23|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
-AVISO|147|23|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
-AVISO|150|23|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
-AVISO|168|16|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "cor" da função "definir_cor" será truncado
-AVISO|169|17|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|174|20|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_elipse" será truncado
-AVISO|174|23|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_elipse" será truncado
-AVISO|174|26|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "largura" da função "desenhar_elipse" será truncado
-AVISO|174|36|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "altura" da função "desenhar_elipse" será truncado
-AVISO|177|20|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x1" da função "desenhar_linha" será truncado
-AVISO|177|23|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y1" da função "desenhar_linha" será truncado
-AVISO|177|35|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x2" da função "desenhar_linha" será truncado
-AVISO|177|47|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y2" da função "desenhar_linha" será truncado
+AVISO|109|27|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_retangulo" será truncado
+AVISO|109|35|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_retangulo" será truncado
+AVISO|109|38|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "largura" da função "desenhar_retangulo" será truncado
+AVISO|109|58|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "altura" da função "desenhar_retangulo" será truncado
+AVISO|128|30|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
+AVISO|130|27|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
+AVISO|134|30|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
+AVISO|137|30|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
+AVISO|140|30|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
+AVISO|143|30|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
+AVISO|146|30|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
+AVISO|149|30|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
+AVISO|164|18|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "cor" da função "definir_cor" será truncado
+AVISO|165|19|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|170|22|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_elipse" será truncado
+AVISO|170|25|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_elipse" será truncado
+AVISO|170|28|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "largura" da função "desenhar_elipse" será truncado
+AVISO|170|38|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "altura" da função "desenhar_elipse" será truncado
+AVISO|173|23|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x1" da função "desenhar_linha" será truncado
+AVISO|173|26|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y1" da função "desenhar_linha" será truncado
+AVISO|173|40|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x2" da função "desenhar_linha" será truncado
+AVISO|173|54|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y2" da função "desenhar_linha" será truncado
 ### bibliotecas/graficos/sphere.por
-AVISO|28|13|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
-AVISO|30|14|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
-AVISO|31|14|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
-AVISO|33|16|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
-AVISO|294|17|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|295|17|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|299|17|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|300|17|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|304|17|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|305|17|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|313|12|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|326|20|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|328|13|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|330|13|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|357|18|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|359|11|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|367|19|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x1" da função "desenhar_linha" será truncado
-AVISO|367|24|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y1" da função "desenhar_linha" será truncado
-AVISO|367|29|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x2" da função "desenhar_linha" será truncado
-AVISO|367|34|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y2" da função "desenhar_linha" será truncado
+AVISO|25|15|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
+AVISO|27|15|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
+AVISO|28|15|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
+AVISO|30|17|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
+AVISO|515|19|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|516|19|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|520|19|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|521|19|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|525|19|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|526|19|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|534|16|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|547|24|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|549|18|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|551|18|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|572|20|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|574|14|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|581|21|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x1" da função "desenhar_linha" será truncado
+AVISO|581|26|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y1" da função "desenhar_linha" será truncado
+AVISO|581|31|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x2" da função "desenhar_linha" será truncado
+AVISO|581|36|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y2" da função "desenhar_linha" será truncado
 ### bibliotecas/graficos/tela_cheia/teste_tela_cheia.por
 ### bibliotecas/graficos/varios.por
-### bibliotecas/internet/gerador_palavras.por
 ### bibliotecas/internet/obtertexto.por
 ### bibliotecas/internet/robos.por
-AVISO|21|26|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "tamanho" da função "definir_tamanho_texto" será automaticamente convertido de "inteiro" para "real"
+AVISO|20|28|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "tamanho" da função "definir_tamanho_texto" será automaticamente convertido de "inteiro" para "real"
 ### bibliotecas/matematica/area_circunferencia.por
 ### bibliotecas/matematica/arredondamento.por
 ### bibliotecas/matematica/funcoes_trigonometricas.por
@@ -138,6 +144,8 @@ AVISO|21|26|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da express�
 ### bibliotecas/mouse/cursor.por
 ### bibliotecas/mouse/ler_botao.por
 ### bibliotecas/mouse/posicao_mouse.por
+### bibliotecas/objetos/agenda_contatos.por
+### bibliotecas/objetos/cadastro_alunos.por
 ### bibliotecas/sons/interromper.por
 ### bibliotecas/sons/reproduzir_um.por
 ### bibliotecas/sons/reproduzir_varios.por
@@ -154,13 +162,14 @@ AVISO|21|26|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da express�
 ### bibliotecas/tipos/caracter.por
 ### bibliotecas/tipos/inteiro.por
 ### bibliotecas/tipos/logico.por
-ERRO|67|3||A expressão não foi iniciada corretamente. Insira o caracter '(' para corrigir o problema.
 ### bibliotecas/tipos/real.por
 ### bibliotecas/util/aguarde.por
 ### bibliotecas/util/matriz.por
 ### bibliotecas/util/sorteio.por
 ### bibliotecas/util/tempo.por
 ### bibliotecas/util/vetor.por
+### desvios_condicionais/ano_bissexto.por
+### desvios_condicionais/calculadora_imc.por
 ### desvios_condicionais/escolha_caso.por
 ### desvios_condicionais/idade.por
 ### desvios_condicionais/media_final.por
@@ -169,13 +178,11 @@ ERRO|67|3||A expressão não foi iniciada corretamente. Insira o caracter '(' pa
 ### desvios_condicionais/multiplo.por
 ### desvios_condicionais/numero_inteiro.por
 ### desvios_condicionais/numeros_iguais.por
+### desvios_condicionais/pedra_papel_tesoura.por
 ### desvios_condicionais/tipo_triangulo.por
 ### desvios_condicionais/vogal.por
-### entrada_saida/numero_digitado.por
+### entrada_saida/lendo_valores.por
 ### entrada_saida/ola_mundo.por
-### entrada_saida/seu_nome.por
-### jogos/arkanoid.por
-ERRO|193|133||O nome do parâmetro da função não foi informado
 ### jogos/colisoes/ex1_colisao_ponto_retangulo.por
 ### jogos/colisoes/ex2_colisao_ponto_circulo.por
 ### jogos/colisoes/ex3_colisao_retangulos.por
@@ -184,462 +191,469 @@ ERRO|193|133||O nome do parâmetro da função não foi informado
 ### jogos/colisoes/ex6_colisao_todos.por
 ### jogos/corrida.por
 ### jogos/medieval.por
-AVISO|340|10|AvisoSemantico.AvisoVetorPodeSerVariavel|O Vetor formatos_suportados tem tamanho [1] e pode ser substituido por uma variável
-AVISO|371|46|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_elipse" será truncado
-AVISO|373|47|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
-AVISO|374|64|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_imagem" será truncado
-AVISO|375|64|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_imagem" será truncado
-AVISO|377|63|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_imagem" será truncado
+AVISO|321|13|AvisoSemantico.AvisoVetorPodeSerVariavel|O Vetor formatos_suportados tem tamanho [1] e pode ser substituido por uma variável
+AVISO|354|54|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_elipse" será truncado
+AVISO|356|51|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
+AVISO|357|74|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_imagem" será truncado
+AVISO|358|76|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_imagem" será truncado
+AVISO|360|72|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_imagem" será truncado
 ### jogos/moon_lander.por
 ### jogos/pong.por
-AVISO|93|50|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numero" da função "valor_absoluto" será automaticamente convertido de "inteiro" para "real"
-AVISO|93|23|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|171|18|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
-AVISO|237|88|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_texto" será truncado
-AVISO|241|30|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_texto" será truncado
-AVISO|242|89|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_texto" será truncado
+AVISO|87|57|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numero" da função "valor_absoluto" será automaticamente convertido de "inteiro" para "real"
+AVISO|87|28|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|164|20|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
+AVISO|224|103|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_texto" será truncado
+AVISO|226|33|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_texto" será truncado
+AVISO|227|85|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_texto" será truncado
 ### jogos/programe/criador_de_fases.por
-AVISO|213|30|AvisoSemantico.AvisoSimboloGlobalOcultado|A variável "nome_arquivo" está ocultando uma variável do escopo global.
-AVISO|286|30|AvisoSemantico.AvisoSimboloGlobalOcultado|A variável "nome_arquivo" está ocultando uma variável do escopo global.
+AVISO|201|31|AvisoSemantico.AvisoSimboloGlobalOcultado|A variável "nome_arquivo" está ocultando uma variável do escopo global.
+AVISO|267|31|AvisoSemantico.AvisoSimboloGlobalOcultado|A variável "nome_arquivo" está ocultando uma variável do escopo global.
 AVISO|-1|-1|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
 AVISO|-1|-1|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
 AVISO|-1|-1|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
 ### jogos/programe/programe.por
-AVISO|331|30|AvisoSemantico.AvisoSimboloGlobalOcultado|A variável "nome_arquivo" está ocultando uma variável do escopo global.
-AVISO|958|31|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
-AVISO|958|76|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
-AVISO|962|31|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
-AVISO|962|76|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
-AVISO|973|38|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
-AVISO|973|83|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
-AVISO|974|38|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
-AVISO|974|83|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
-AVISO|975|38|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
-AVISO|975|83|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
-AVISO|986|38|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
-AVISO|986|89|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
-AVISO|987|38|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
-AVISO|987|89|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
-AVISO|988|38|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
-AVISO|988|89|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
-AVISO|989|38|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
-AVISO|989|89|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
-AVISO|990|38|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
-AVISO|990|89|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
-AVISO|991|38|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
-AVISO|991|89|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
-AVISO|992|38|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
-AVISO|992|89|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
-AVISO|993|38|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
-AVISO|993|89|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
-AVISO|994|38|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
-AVISO|994|89|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
-AVISO|995|38|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
-AVISO|995|89|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
-AVISO|996|38|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
-AVISO|996|89|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
-AVISO|997|38|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
-AVISO|997|89|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
-AVISO|998|38|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
-AVISO|998|89|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
-AVISO|999|38|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
-AVISO|999|89|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
-AVISO|1000|38|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
-AVISO|1000|89|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
-AVISO|1001|38|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
-AVISO|1001|89|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
-AVISO|1018|27|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
-AVISO|1018|70|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
-AVISO|1034|22|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
-AVISO|1041|20|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_imagem" será truncado
-AVISO|1041|39|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_imagem" será truncado
-AVISO|1042|27|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
-AVISO|1042|46|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
-AVISO|1042|68|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "yi" da função "desenhar_porcao_imagem" será truncado
-AVISO|1042|88|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "largura" da função "desenhar_porcao_imagem" será truncado
-AVISO|1042|115|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "altura" da função "desenhar_porcao_imagem" será truncado
-AVISO|1043|27|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
-AVISO|1043|46|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
-AVISO|1043|96|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "yi" da função "desenhar_porcao_imagem" será truncado
-AVISO|1043|116|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "largura" da função "desenhar_porcao_imagem" será truncado
-AVISO|1043|143|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "altura" da função "desenhar_porcao_imagem" será truncado
-AVISO|1044|20|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_imagem" será truncado
-AVISO|1044|38|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_imagem" será truncado
-AVISO|1083|28|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
-AVISO|1083|67|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
-AVISO|1083|156|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "xi" da função "desenhar_porcao_imagem" será truncado
-AVISO|1083|175|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "yi" da função "desenhar_porcao_imagem" será truncado
-AVISO|1083|214|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "largura" da função "desenhar_porcao_imagem" será truncado
-AVISO|1083|231|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "altura" da função "desenhar_porcao_imagem" será truncado
-AVISO|1088|45|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
-AVISO|1088|84|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
-AVISO|1088|173|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "xi" da função "desenhar_porcao_imagem" será truncado
-AVISO|1088|192|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "yi" da função "desenhar_porcao_imagem" será truncado
-AVISO|1088|231|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "largura" da função "desenhar_porcao_imagem" será truncado
-AVISO|1088|248|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "altura" da função "desenhar_porcao_imagem" será truncado
-AVISO|1089|43|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
-AVISO|1089|82|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
-AVISO|1089|171|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "xi" da função "desenhar_porcao_imagem" será truncado
-AVISO|1089|190|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "yi" da função "desenhar_porcao_imagem" será truncado
-AVISO|1089|229|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "largura" da função "desenhar_porcao_imagem" será truncado
-AVISO|1089|246|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "altura" da função "desenhar_porcao_imagem" será truncado
-AVISO|1090|42|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
-AVISO|1090|81|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
-AVISO|1090|170|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "xi" da função "desenhar_porcao_imagem" será truncado
-AVISO|1090|189|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "yi" da função "desenhar_porcao_imagem" será truncado
-AVISO|1090|228|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "largura" da função "desenhar_porcao_imagem" será truncado
-AVISO|1090|245|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "altura" da função "desenhar_porcao_imagem" será truncado
-AVISO|1091|45|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
-AVISO|1091|84|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
-AVISO|1091|173|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "xi" da função "desenhar_porcao_imagem" será truncado
-AVISO|1091|192|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "yi" da função "desenhar_porcao_imagem" será truncado
-AVISO|1091|231|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "largura" da função "desenhar_porcao_imagem" será truncado
-AVISO|1091|248|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "altura" da função "desenhar_porcao_imagem" será truncado
-AVISO|1092|56|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
-AVISO|1092|95|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
-AVISO|1092|184|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "xi" da função "desenhar_porcao_imagem" será truncado
-AVISO|1092|203|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "yi" da função "desenhar_porcao_imagem" será truncado
-AVISO|1092|242|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "largura" da função "desenhar_porcao_imagem" será truncado
-AVISO|1092|259|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "altura" da função "desenhar_porcao_imagem" será truncado
-AVISO|1093|53|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
-AVISO|1093|92|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
-AVISO|1093|181|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "xi" da função "desenhar_porcao_imagem" será truncado
-AVISO|1093|200|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "yi" da função "desenhar_porcao_imagem" será truncado
-AVISO|1093|239|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "largura" da função "desenhar_porcao_imagem" será truncado
-AVISO|1093|256|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "altura" da função "desenhar_porcao_imagem" será truncado
-AVISO|1107|28|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
-AVISO|1107|78|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
-AVISO|1107|181|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "yi" da função "desenhar_porcao_imagem" será truncado
-AVISO|1107|204|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "largura" da função "desenhar_porcao_imagem" será truncado
-AVISO|1107|221|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "altura" da função "desenhar_porcao_imagem" será truncado
-AVISO|1114|20|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_imagem" será truncado
-AVISO|1114|78|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_imagem" será truncado
-AVISO|1123|28|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
-AVISO|1123|69|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
-AVISO|1123|110|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "xi" da função "desenhar_porcao_imagem" será truncado
-AVISO|1123|136|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "yi" da função "desenhar_porcao_imagem" será truncado
-AVISO|1123|162|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "largura" da função "desenhar_porcao_imagem" será truncado
-AVISO|1123|183|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "altura" da função "desenhar_porcao_imagem" será truncado
-AVISO|1127|28|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
-AVISO|1127|69|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
-AVISO|1127|111|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "xi" da função "desenhar_porcao_imagem" será truncado
-AVISO|1127|137|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "yi" da função "desenhar_porcao_imagem" será truncado
-AVISO|1127|163|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "largura" da função "desenhar_porcao_imagem" será truncado
-AVISO|1127|184|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "altura" da função "desenhar_porcao_imagem" será truncado
-AVISO|1131|28|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
-AVISO|1131|69|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
-AVISO|1131|110|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "xi" da função "desenhar_porcao_imagem" será truncado
-AVISO|1131|136|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "yi" da função "desenhar_porcao_imagem" será truncado
-AVISO|1131|162|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "largura" da função "desenhar_porcao_imagem" será truncado
-AVISO|1131|183|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "altura" da função "desenhar_porcao_imagem" será truncado
-AVISO|1135|28|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
-AVISO|1135|69|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
-AVISO|1135|110|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "xi" da função "desenhar_porcao_imagem" será truncado
-AVISO|1135|136|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "yi" da função "desenhar_porcao_imagem" será truncado
-AVISO|1135|162|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "largura" da função "desenhar_porcao_imagem" será truncado
-AVISO|1135|183|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "altura" da função "desenhar_porcao_imagem" será truncado
-AVISO|1139|28|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
-AVISO|1139|69|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
-AVISO|1139|110|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "xi" da função "desenhar_porcao_imagem" será truncado
-AVISO|1139|133|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "yi" da função "desenhar_porcao_imagem" será truncado
-AVISO|1139|159|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "largura" da função "desenhar_porcao_imagem" será truncado
-AVISO|1139|185|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "altura" da função "desenhar_porcao_imagem" será truncado
-AVISO|1146|27|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
-AVISO|1146|71|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
-AVISO|1160|27|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
-AVISO|1160|46|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
-AVISO|1160|72|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "largura" da função "desenhar_porcao_imagem" será truncado
-AVISO|1160|87|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "altura" da função "desenhar_porcao_imagem" será truncado
-AVISO|1163|21|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_imagem" será truncado
-AVISO|1163|40|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_imagem" será truncado
-AVISO|1167|28|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
-AVISO|1167|49|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
-AVISO|1167|74|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "largura" da função "desenhar_porcao_imagem" será truncado
-AVISO|1167|89|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "altura" da função "desenhar_porcao_imagem" será truncado
+AVISO|325|31|AvisoSemantico.AvisoSimboloGlobalOcultado|A variável "nome_arquivo" está ocultando uma variável do escopo global.
+AVISO|832|37|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
+AVISO|832|84|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
+AVISO|834|37|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
+AVISO|834|84|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
+AVISO|844|39|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
+AVISO|844|86|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
+AVISO|845|39|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
+AVISO|845|86|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
+AVISO|846|39|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
+AVISO|846|86|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
+AVISO|855|39|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
+AVISO|855|92|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
+AVISO|856|40|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
+AVISO|856|93|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
+AVISO|857|39|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
+AVISO|857|92|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
+AVISO|858|39|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
+AVISO|858|92|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
+AVISO|859|40|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
+AVISO|859|93|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
+AVISO|860|40|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
+AVISO|860|93|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
+AVISO|861|40|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
+AVISO|861|93|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
+AVISO|862|40|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
+AVISO|862|93|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
+AVISO|863|39|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
+AVISO|863|92|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
+AVISO|864|40|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
+AVISO|864|93|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
+AVISO|865|39|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
+AVISO|865|92|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
+AVISO|866|39|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
+AVISO|866|92|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
+AVISO|867|40|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
+AVISO|867|93|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
+AVISO|868|40|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
+AVISO|868|93|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
+AVISO|869|40|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
+AVISO|869|93|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
+AVISO|870|40|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
+AVISO|870|93|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
+AVISO|884|29|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
+AVISO|884|76|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
+AVISO|895|27|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
+AVISO|901|22|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_imagem" será truncado
+AVISO|901|41|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_imagem" será truncado
+AVISO|902|29|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
+AVISO|902|48|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
+AVISO|902|70|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "yi" da função "desenhar_porcao_imagem" será truncado
+AVISO|902|90|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "largura" da função "desenhar_porcao_imagem" será truncado
+AVISO|902|117|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "altura" da função "desenhar_porcao_imagem" será truncado
+AVISO|903|29|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
+AVISO|903|48|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
+AVISO|903|102|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "yi" da função "desenhar_porcao_imagem" será truncado
+AVISO|903|122|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "largura" da função "desenhar_porcao_imagem" será truncado
+AVISO|903|149|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "altura" da função "desenhar_porcao_imagem" será truncado
+AVISO|904|22|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_imagem" será truncado
+AVISO|904|40|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_imagem" será truncado
+AVISO|934|31|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
+AVISO|934|74|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
+AVISO|934|171|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "xi" da função "desenhar_porcao_imagem" será truncado
+AVISO|934|192|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "yi" da função "desenhar_porcao_imagem" será truncado
+AVISO|934|235|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "largura" da função "desenhar_porcao_imagem" será truncado
+AVISO|934|252|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "altura" da função "desenhar_porcao_imagem" será truncado
+AVISO|938|46|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
+AVISO|938|89|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
+AVISO|938|186|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "xi" da função "desenhar_porcao_imagem" será truncado
+AVISO|938|207|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "yi" da função "desenhar_porcao_imagem" será truncado
+AVISO|938|250|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "largura" da função "desenhar_porcao_imagem" será truncado
+AVISO|938|267|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "altura" da função "desenhar_porcao_imagem" será truncado
+AVISO|939|43|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
+AVISO|939|86|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
+AVISO|939|183|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "xi" da função "desenhar_porcao_imagem" será truncado
+AVISO|939|204|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "yi" da função "desenhar_porcao_imagem" será truncado
+AVISO|939|247|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "largura" da função "desenhar_porcao_imagem" será truncado
+AVISO|939|264|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "altura" da função "desenhar_porcao_imagem" será truncado
+AVISO|940|42|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
+AVISO|940|85|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
+AVISO|940|182|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "xi" da função "desenhar_porcao_imagem" será truncado
+AVISO|940|203|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "yi" da função "desenhar_porcao_imagem" será truncado
+AVISO|940|246|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "largura" da função "desenhar_porcao_imagem" será truncado
+AVISO|940|263|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "altura" da função "desenhar_porcao_imagem" será truncado
+AVISO|941|45|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
+AVISO|941|88|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
+AVISO|941|185|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "xi" da função "desenhar_porcao_imagem" será truncado
+AVISO|941|206|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "yi" da função "desenhar_porcao_imagem" será truncado
+AVISO|941|249|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "largura" da função "desenhar_porcao_imagem" será truncado
+AVISO|941|266|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "altura" da função "desenhar_porcao_imagem" será truncado
+AVISO|942|57|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
+AVISO|942|100|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
+AVISO|942|197|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "xi" da função "desenhar_porcao_imagem" será truncado
+AVISO|942|218|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "yi" da função "desenhar_porcao_imagem" será truncado
+AVISO|942|261|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "largura" da função "desenhar_porcao_imagem" será truncado
+AVISO|942|278|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "altura" da função "desenhar_porcao_imagem" será truncado
+AVISO|943|54|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
+AVISO|943|97|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
+AVISO|943|194|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "xi" da função "desenhar_porcao_imagem" será truncado
+AVISO|943|215|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "yi" da função "desenhar_porcao_imagem" será truncado
+AVISO|943|258|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "largura" da função "desenhar_porcao_imagem" será truncado
+AVISO|943|275|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "altura" da função "desenhar_porcao_imagem" será truncado
+AVISO|955|31|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
+AVISO|955|85|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
+AVISO|955|196|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "yi" da função "desenhar_porcao_imagem" será truncado
+AVISO|955|221|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "largura" da função "desenhar_porcao_imagem" será truncado
+AVISO|955|238|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "altura" da função "desenhar_porcao_imagem" será truncado
+AVISO|961|22|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_imagem" será truncado
+AVISO|961|84|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_imagem" será truncado
+AVISO|968|31|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
+AVISO|968|76|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
+AVISO|968|121|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "xi" da função "desenhar_porcao_imagem" será truncado
+AVISO|968|151|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "yi" da função "desenhar_porcao_imagem" será truncado
+AVISO|968|181|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "largura" da função "desenhar_porcao_imagem" será truncado
+AVISO|968|202|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "altura" da função "desenhar_porcao_imagem" será truncado
+AVISO|971|31|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
+AVISO|971|76|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
+AVISO|971|121|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "xi" da função "desenhar_porcao_imagem" será truncado
+AVISO|971|151|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "yi" da função "desenhar_porcao_imagem" será truncado
+AVISO|971|181|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "largura" da função "desenhar_porcao_imagem" será truncado
+AVISO|971|202|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "altura" da função "desenhar_porcao_imagem" será truncado
+AVISO|974|31|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
+AVISO|974|76|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
+AVISO|974|121|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "xi" da função "desenhar_porcao_imagem" será truncado
+AVISO|974|151|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "yi" da função "desenhar_porcao_imagem" será truncado
+AVISO|974|181|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "largura" da função "desenhar_porcao_imagem" será truncado
+AVISO|974|202|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "altura" da função "desenhar_porcao_imagem" será truncado
+AVISO|977|31|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
+AVISO|977|76|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
+AVISO|977|121|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "xi" da função "desenhar_porcao_imagem" será truncado
+AVISO|977|151|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "yi" da função "desenhar_porcao_imagem" será truncado
+AVISO|977|181|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "largura" da função "desenhar_porcao_imagem" será truncado
+AVISO|977|202|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "altura" da função "desenhar_porcao_imagem" será truncado
+AVISO|980|31|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
+AVISO|980|76|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
+AVISO|980|121|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "xi" da função "desenhar_porcao_imagem" será truncado
+AVISO|980|146|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "yi" da função "desenhar_porcao_imagem" será truncado
+AVISO|980|176|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "largura" da função "desenhar_porcao_imagem" será truncado
+AVISO|980|206|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "altura" da função "desenhar_porcao_imagem" será truncado
+AVISO|986|29|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
+AVISO|986|77|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
+AVISO|997|29|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
+AVISO|997|48|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
+AVISO|997|74|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "largura" da função "desenhar_porcao_imagem" será truncado
+AVISO|997|89|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "altura" da função "desenhar_porcao_imagem" será truncado
+AVISO|999|24|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_imagem" será truncado
+AVISO|999|43|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_imagem" será truncado
+AVISO|1001|31|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_porcao_imagem" será truncado
+AVISO|1001|54|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_porcao_imagem" será truncado
+AVISO|1001|79|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "largura" da função "desenhar_porcao_imagem" será truncado
+AVISO|1001|94|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "altura" da função "desenhar_porcao_imagem" será truncado
 AVISO|-1|-1|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|1215|84|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "yi" da função "desenhar_porcao_imagem" será truncado
-AVISO|1215|111|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "altura" da função "desenhar_porcao_imagem" será truncado
-AVISO|1252|164|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "tamanho_x_objeto" da função "mouse_esta_sobre_objeto" será automaticamente convertido de "inteiro" para "real"
-AVISO|1252|168|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "tamanho_y_objeto" da função "mouse_esta_sobre_objeto" será automaticamente convertido de "inteiro" para "real"
-AVISO|1266|164|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "tamanho_x_objeto" da função "mouse_esta_sobre_objeto" será automaticamente convertido de "inteiro" para "real"
-AVISO|1266|168|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "tamanho_y_objeto" da função "mouse_esta_sobre_objeto" será automaticamente convertido de "inteiro" para "real"
-AVISO|1283|23|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenha_numero_loop" será truncado
-AVISO|1283|65|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenha_numero_loop" será truncado
-AVISO|1295|22|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_imagem" será truncado
-AVISO|1295|80|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_imagem" será truncado
-AVISO|1712|20|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_texto" será truncado
-AVISO|1712|65|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_texto" será truncado
-AVISO|1746|54|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "posicao_x_objeto" da função "mouse_esta_sobre_objeto" será automaticamente convertido de "inteiro" para "real"
-AVISO|1746|59|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "posicao_y_objeto" da função "mouse_esta_sobre_objeto" será automaticamente convertido de "inteiro" para "real"
-AVISO|1746|64|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "tamanho_x_objeto" da função "mouse_esta_sobre_objeto" será automaticamente convertido de "inteiro" para "real"
-AVISO|1746|69|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "tamanho_y_objeto" da função "mouse_esta_sobre_objeto" será automaticamente convertido de "inteiro" para "real"
-AVISO|1832|54|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "posicao_x_objeto" da função "mouse_esta_sobre_objeto" será automaticamente convertido de "inteiro" para "real"
-AVISO|1832|59|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "posicao_y_objeto" da função "mouse_esta_sobre_objeto" será automaticamente convertido de "inteiro" para "real"
-AVISO|1832|64|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "tamanho_x_objeto" da função "mouse_esta_sobre_objeto" será automaticamente convertido de "inteiro" para "real"
-AVISO|1832|69|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "tamanho_y_objeto" da função "mouse_esta_sobre_objeto" será automaticamente convertido de "inteiro" para "real"
+AVISO|1042|95|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "yi" da função "desenhar_porcao_imagem" será truncado
+AVISO|1042|124|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "altura" da função "desenhar_porcao_imagem" será truncado
+AVISO|1070|184|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "tamanho_x_objeto" da função "mouse_esta_sobre_objeto" será automaticamente convertido de "inteiro" para "real"
+AVISO|1070|188|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "tamanho_y_objeto" da função "mouse_esta_sobre_objeto" será automaticamente convertido de "inteiro" para "real"
+AVISO|1080|184|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "tamanho_x_objeto" da função "mouse_esta_sobre_objeto" será automaticamente convertido de "inteiro" para "real"
+AVISO|1080|188|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "tamanho_y_objeto" da função "mouse_esta_sobre_objeto" será automaticamente convertido de "inteiro" para "real"
+AVISO|1093|26|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenha_numero_loop" será truncado
+AVISO|1093|74|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenha_numero_loop" será truncado
+AVISO|1102|26|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_imagem" será truncado
+AVISO|1102|92|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_imagem" será truncado
+AVISO|1417|21|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_texto" será truncado
+AVISO|1417|68|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_texto" será truncado
+AVISO|1446|57|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "posicao_x_objeto" da função "mouse_esta_sobre_objeto" será automaticamente convertido de "inteiro" para "real"
+AVISO|1446|62|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "posicao_y_objeto" da função "mouse_esta_sobre_objeto" será automaticamente convertido de "inteiro" para "real"
+AVISO|1446|67|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "tamanho_x_objeto" da função "mouse_esta_sobre_objeto" será automaticamente convertido de "inteiro" para "real"
+AVISO|1446|72|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "tamanho_y_objeto" da função "mouse_esta_sobre_objeto" será automaticamente convertido de "inteiro" para "real"
+AVISO|1521|57|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "posicao_x_objeto" da função "mouse_esta_sobre_objeto" será automaticamente convertido de "inteiro" para "real"
+AVISO|1521|62|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "posicao_y_objeto" da função "mouse_esta_sobre_objeto" será automaticamente convertido de "inteiro" para "real"
+AVISO|1521|67|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "tamanho_x_objeto" da função "mouse_esta_sobre_objeto" será automaticamente convertido de "inteiro" para "real"
+AVISO|1521|72|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "tamanho_y_objeto" da função "mouse_esta_sobre_objeto" será automaticamente convertido de "inteiro" para "real"
 ### jogos/serpente.por
 ### jogos/slide.por
-AVISO|79|102|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numero" da função "arredondar" será automaticamente convertido de "inteiro" para "real"
-AVISO|79|91|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "yi" da função "desenhar_porcao_imagem" será truncado
-### jogos/slide/slide.por
-AVISO|79|102|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numero" da função "arredondar" será automaticamente convertido de "inteiro" para "real"
-AVISO|79|91|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "yi" da função "desenhar_porcao_imagem" será truncado
+AVISO|98|112|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numero" da função "arredondar" será automaticamente convertido de "inteiro" para "real"
+AVISO|98|101|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "yi" da função "desenhar_porcao_imagem" será truncado
 ### jogos/theballsaga/theballsaga.por
-AVISO|210|26|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "tamanho" da função "definir_tamanho_texto" será automaticamente convertido de "inteiro" para "real"
-AVISO|211|19|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_texto" será truncado
-AVISO|212|19|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_texto" será truncado
-AVISO|214|19|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_texto" será truncado
-AVISO|214|62|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_texto" será truncado
-AVISO|276|33|AvisoSemantico.AvisoSimboloGlobalOcultado|A variável "largura_tela" está ocultando uma variável do escopo global.
-AVISO|425|21|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_imagem" será truncado
-AVISO|425|63|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_imagem" será truncado
-AVISO|430|21|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_imagem" será truncado
-AVISO|430|63|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_imagem" será truncado
-AVISO|434|21|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_imagem" será truncado
-AVISO|434|63|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_imagem" será truncado
-AVISO|454|26|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|473|24|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|490|27|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "tamanho" da função "definir_tamanho_texto" será automaticamente convertido de "inteiro" para "real"
-AVISO|492|34|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_texto" será truncado
-AVISO|493|36|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_texto" será truncado
-AVISO|494|36|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_texto" será truncado
-AVISO|498|37|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_texto" será truncado
-AVISO|520|36|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_texto" será truncado
-AVISO|522|37|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_texto" será truncado
-AVISO|524|36|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_texto" será truncado
-AVISO|531|36|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_texto" será truncado
-AVISO|533|37|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_texto" será truncado
-AVISO|540|36|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_texto" será truncado
-AVISO|542|37|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_texto" será truncado
-AVISO|550|36|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_texto" será truncado
-AVISO|552|36|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_texto" será truncado
-AVISO|559|36|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_texto" será truncado
-AVISO|561|37|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_texto" será truncado
-AVISO|646|53|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroA" da função "maior_numero" será automaticamente convertido de "inteiro" para "real"
-AVISO|646|76|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroB" da função "maior_numero" será automaticamente convertido de "inteiro" para "real"
-AVISO|646|40|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|648|52|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroA" da função "menor_numero" será automaticamente convertido de "inteiro" para "real"
-AVISO|648|75|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroB" da função "menor_numero" será automaticamente convertido de "inteiro" para "real"
-AVISO|648|39|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|651|48|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroA" da função "maior_numero" será automaticamente convertido de "inteiro" para "real"
-AVISO|651|70|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroB" da função "maior_numero" será automaticamente convertido de "inteiro" para "real"
-AVISO|651|35|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|653|49|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroA" da função "menor_numero" será automaticamente convertido de "inteiro" para "real"
-AVISO|653|71|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroB" da função "menor_numero" será automaticamente convertido de "inteiro" para "real"
-AVISO|653|36|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|659|33|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
-AVISO|660|32|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
-AVISO|662|37|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
-AVISO|663|35|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
-AVISO|667|27|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
-AVISO|668|27|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
-AVISO|1016|24|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
-AVISO|1021|24|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
-AVISO|1029|26|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
-AVISO|1037|26|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
-AVISO|1062|22|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
-AVISO|1063|20|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
-AVISO|1064|25|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
-AVISO|1065|23|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
-AVISO|1189|27|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
-AVISO|1218|73|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroB" da função "menor_numero" será automaticamente convertido de "inteiro" para "real"
-AVISO|1218|27|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|1219|70|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroB" da função "menor_numero" será automaticamente convertido de "inteiro" para "real"
-AVISO|1219|26|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|1221|18|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|1221|56|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|1272|28|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "tamanho" da função "definir_tamanho_texto" será automaticamente convertido de "inteiro" para "real"
-AVISO|1332|29|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numero" da função "arredondar" será automaticamente convertido de "inteiro" para "real"
-AVISO|1332|18|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|1381|21|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
-AVISO|1382|19|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
-AVISO|1383|24|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
-AVISO|1384|22|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
-AVISO|1437|38|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_item_menu" será truncado
-AVISO|1469|15|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
-AVISO|1474|28|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "tamanho" da função "definir_tamanho_texto" será automaticamente convertido de "inteiro" para "real"
-AVISO|1475|67|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_texto" será truncado
-AVISO|1476|28|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "tamanho" da função "definir_tamanho_texto" será automaticamente convertido de "inteiro" para "real"
-AVISO|1477|95|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_texto" será truncado
-AVISO|1478|102|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_texto" será truncado
-AVISO|1479|99|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_texto" será truncado
-AVISO|1480|93|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_texto" será truncado
-AVISO|1481|95|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_texto" será truncado
-AVISO|1483|21|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_texto" será truncado
-AVISO|1561|21|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
-AVISO|1562|19|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
-AVISO|1582|28|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "tamanho" da função "definir_tamanho_texto" será automaticamente convertido de "inteiro" para "real"
-AVISO|1584|35|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_texto" será truncado
-AVISO|1585|37|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_texto" será truncado
-AVISO|1586|37|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_texto" será truncado
-AVISO|1590|38|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_texto" será truncado
-AVISO|1705|27|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "tamanho" da função "definir_tamanho_texto" será automaticamente convertido de "inteiro" para "real"
-AVISO|1706|36|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_texto" será truncado
-AVISO|1739|39|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_retangulo" será truncado
-AVISO|1742|26|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "tamanho" da função "definir_tamanho_texto" será automaticamente convertido de "inteiro" para "real"
-AVISO|1756|40|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_item_menu" será truncado
-AVISO|1793|5|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|1796|5|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|1799|5|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|1802|5|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|1805|5|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|1808|5|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|1811|5|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|1937|23|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_retangulo" será truncado
-AVISO|1937|43|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_retangulo" será truncado
-AVISO|1938|16|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|1938|54|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|1943|95|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x2" da função "desenhar_linha" será truncado
-AVISO|1943|128|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y2" da função "desenhar_linha" será truncado
+AVISO|197|28|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "tamanho" da função "definir_tamanho_texto" será automaticamente convertido de "inteiro" para "real"
+AVISO|198|21|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_texto" será truncado
+AVISO|199|21|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_texto" será truncado
+AVISO|201|21|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_texto" será truncado
+AVISO|201|68|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_texto" será truncado
+AVISO|256|34|AvisoSemantico.AvisoSimboloGlobalOcultado|A variável "largura_tela" está ocultando uma variável do escopo global.
+AVISO|386|24|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_imagem" será truncado
+AVISO|386|68|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_imagem" será truncado
+AVISO|389|24|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_imagem" será truncado
+AVISO|389|68|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_imagem" será truncado
+AVISO|391|24|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_imagem" será truncado
+AVISO|391|68|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_imagem" será truncado
+AVISO|404|30|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|417|28|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|432|30|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "tamanho" da função "definir_tamanho_texto" será automaticamente convertido de "inteiro" para "real"
+AVISO|434|37|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_texto" será truncado
+AVISO|435|41|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_texto" será truncado
+AVISO|436|41|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_texto" será truncado
+AVISO|440|42|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_texto" será truncado
+AVISO|456|41|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_texto" será truncado
+AVISO|458|42|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_texto" será truncado
+AVISO|460|41|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_texto" será truncado
+AVISO|465|41|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_texto" será truncado
+AVISO|467|42|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_texto" será truncado
+AVISO|472|41|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_texto" será truncado
+AVISO|474|42|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_texto" será truncado
+AVISO|480|41|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_texto" será truncado
+AVISO|482|41|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_texto" será truncado
+AVISO|488|41|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_texto" será truncado
+AVISO|490|42|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_texto" será truncado
+AVISO|553|55|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroA" da função "maior_numero" será automaticamente convertido de "inteiro" para "real"
+AVISO|553|80|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroB" da função "maior_numero" será automaticamente convertido de "inteiro" para "real"
+AVISO|553|42|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|555|54|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroA" da função "menor_numero" será automaticamente convertido de "inteiro" para "real"
+AVISO|555|79|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroB" da função "menor_numero" será automaticamente convertido de "inteiro" para "real"
+AVISO|555|41|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|558|50|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroA" da função "maior_numero" será automaticamente convertido de "inteiro" para "real"
+AVISO|558|74|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroB" da função "maior_numero" será automaticamente convertido de "inteiro" para "real"
+AVISO|558|37|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|560|51|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroA" da função "menor_numero" será automaticamente convertido de "inteiro" para "real"
+AVISO|560|75|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroB" da função "menor_numero" será automaticamente convertido de "inteiro" para "real"
+AVISO|560|38|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|565|35|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
+AVISO|566|34|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
+AVISO|568|39|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
+AVISO|569|37|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
+AVISO|573|29|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
+AVISO|574|28|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
+AVISO|861|25|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
+AVISO|864|25|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
+AVISO|869|27|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
+AVISO|874|27|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
+AVISO|894|27|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
+AVISO|895|25|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
+AVISO|896|30|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
+AVISO|897|28|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
+AVISO|997|32|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
+AVISO|1021|77|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroB" da função "menor_numero" será automaticamente convertido de "inteiro" para "real"
+AVISO|1021|29|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|1022|74|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroB" da função "menor_numero" será automaticamente convertido de "inteiro" para "real"
+AVISO|1022|28|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|1024|20|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|1024|62|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|1064|32|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "tamanho" da função "definir_tamanho_texto" será automaticamente convertido de "inteiro" para "real"
+AVISO|1113|34|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numero" da função "arredondar" será automaticamente convertido de "inteiro" para "real"
+AVISO|1113|23|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|1159|25|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
+AVISO|1160|23|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
+AVISO|1161|28|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
+AVISO|1162|26|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
+AVISO|1204|40|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_item_menu" será truncado
+AVISO|1230|21|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
+AVISO|1234|32|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "tamanho" da função "definir_tamanho_texto" será automaticamente convertido de "inteiro" para "real"
+AVISO|1235|77|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_texto" será truncado
+AVISO|1236|32|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "tamanho" da função "definir_tamanho_texto" será automaticamente convertido de "inteiro" para "real"
+AVISO|1237|105|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_texto" será truncado
+AVISO|1238|112|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_texto" será truncado
+AVISO|1239|109|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_texto" será truncado
+AVISO|1240|103|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_texto" será truncado
+AVISO|1241|105|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_texto" será truncado
+AVISO|1243|25|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_texto" será truncado
+AVISO|1308|25|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
+AVISO|1309|23|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
+AVISO|1326|32|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "tamanho" da função "definir_tamanho_texto" será automaticamente convertido de "inteiro" para "real"
+AVISO|1328|39|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_texto" será truncado
+AVISO|1329|43|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_texto" será truncado
+AVISO|1330|43|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_texto" será truncado
+AVISO|1334|44|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_texto" será truncado
+AVISO|1432|30|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "tamanho" da função "definir_tamanho_texto" será automaticamente convertido de "inteiro" para "real"
+AVISO|1433|41|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_texto" será truncado
+AVISO|1464|43|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_retangulo" será truncado
+AVISO|1467|28|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "tamanho" da função "definir_tamanho_texto" será automaticamente convertido de "inteiro" para "real"
+AVISO|1479|41|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_item_menu" será truncado
+AVISO|1510|10|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|1513|10|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|1516|10|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|1519|10|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|1522|10|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|1525|10|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|1528|10|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|1633|25|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_retangulo" será truncado
+AVISO|1633|45|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y" da função "desenhar_retangulo" será truncado
+AVISO|1634|20|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|1634|62|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|1637|114|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x2" da função "desenhar_linha" será truncado
+AVISO|1637|149|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "y2" da função "desenhar_linha" será truncado
 ### jogos/theballsaga/theballsagacriador.por
-AVISO|103|36|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numero" da função "logaritmo" será automaticamente convertido de "inteiro" para "real"
-AVISO|103|50|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "base" da função "logaritmo" será automaticamente convertido de "inteiro" para "real"
-AVISO|107|61|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "base" da função "potencia" será automaticamente convertido de "inteiro" para "real"
-AVISO|107|63|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "expoente" da função "potencia" será automaticamente convertido de "inteiro" para "real"
-AVISO|164|26|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "tamanho" da função "definir_tamanho_texto" será automaticamente convertido de "inteiro" para "real"
-AVISO|177|26|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "tamanho" da função "definir_tamanho_texto" será automaticamente convertido de "inteiro" para "real"
-AVISO|222|45|AvisoSemantico.AvisoSimboloGlobalOcultado|A variável "nome_arquivo" está ocultando uma variável do escopo global.
-AVISO|224|10|AvisoSemantico.AvisoSimboloGlobalOcultado|A variável "linhas" está ocultando uma função do escopo global.
-AVISO|238|30|AvisoSemantico.AvisoSimboloGlobalOcultado|A variável "nome_arquivo" está ocultando uma variável do escopo global.
-AVISO|268|30|AvisoSemantico.AvisoSimboloGlobalOcultado|A variável "nome_arquivo" está ocultando uma variável do escopo global.
-AVISO|280|13|AvisoSemantico.AvisoSimboloGlobalOcultado|A variável "prop" está ocultando uma variável do escopo global.
-AVISO|344|47|AvisoSemantico.AvisoSimboloGlobalOcultado|A variável "linhas" está ocultando uma função do escopo global.
-AVISO|349|28|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroA" da função "menor_numero" será automaticamente convertido de "inteiro" para "real"
-AVISO|349|38|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroB" da função "menor_numero" será automaticamente convertido de "inteiro" para "real"
-AVISO|349|15|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|350|29|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroA" da função "maior_numero" será automaticamente convertido de "inteiro" para "real"
-AVISO|350|37|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroB" da função "maior_numero" será automaticamente convertido de "inteiro" para "real"
-AVISO|350|15|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|352|27|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroA" da função "menor_numero" será automaticamente convertido de "inteiro" para "real"
-AVISO|352|36|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroB" da função "menor_numero" será automaticamente convertido de "inteiro" para "real"
-AVISO|352|14|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|353|28|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroA" da função "maior_numero" será automaticamente convertido de "inteiro" para "real"
-AVISO|353|35|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroB" da função "maior_numero" será automaticamente convertido de "inteiro" para "real"
-AVISO|353|14|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|374|28|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroA" da função "menor_numero" será automaticamente convertido de "inteiro" para "real"
-AVISO|374|38|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroB" da função "menor_numero" será automaticamente convertido de "inteiro" para "real"
-AVISO|374|15|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|375|29|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroA" da função "maior_numero" será automaticamente convertido de "inteiro" para "real"
-AVISO|375|37|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroB" da função "maior_numero" será automaticamente convertido de "inteiro" para "real"
-AVISO|375|15|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|377|27|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroA" da função "menor_numero" será automaticamente convertido de "inteiro" para "real"
-AVISO|377|36|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroB" da função "menor_numero" será automaticamente convertido de "inteiro" para "real"
-AVISO|377|14|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|378|28|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroA" da função "maior_numero" será automaticamente convertido de "inteiro" para "real"
-AVISO|378|35|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroB" da função "maior_numero" será automaticamente convertido de "inteiro" para "real"
-AVISO|378|14|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|393|29|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroA" da função "menor_numero" será automaticamente convertido de "inteiro" para "real"
-AVISO|393|38|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroB" da função "menor_numero" será automaticamente convertido de "inteiro" para "real"
-AVISO|393|16|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|394|30|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroA" da função "maior_numero" será automaticamente convertido de "inteiro" para "real"
-AVISO|394|38|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroB" da função "maior_numero" será automaticamente convertido de "inteiro" para "real"
-AVISO|394|16|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|396|28|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroA" da função "menor_numero" será automaticamente convertido de "inteiro" para "real"
-AVISO|396|37|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroB" da função "menor_numero" será automaticamente convertido de "inteiro" para "real"
-AVISO|396|15|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|397|29|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroA" da função "maior_numero" será automaticamente convertido de "inteiro" para "real"
-AVISO|397|36|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroB" da função "maior_numero" será automaticamente convertido de "inteiro" para "real"
-AVISO|397|15|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|414|29|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroA" da função "menor_numero" será automaticamente convertido de "inteiro" para "real"
-AVISO|414|38|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroB" da função "menor_numero" será automaticamente convertido de "inteiro" para "real"
-AVISO|414|16|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|415|30|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroA" da função "maior_numero" será automaticamente convertido de "inteiro" para "real"
-AVISO|415|38|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroB" da função "maior_numero" será automaticamente convertido de "inteiro" para "real"
-AVISO|415|16|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|417|49|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numero" da função "logaritmo" será automaticamente convertido de "inteiro" para "real"
-AVISO|417|62|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "base" da função "logaritmo" será automaticamente convertido de "inteiro" para "real"
-AVISO|417|28|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroA" da função "menor_numero" será automaticamente convertido de "inteiro" para "real"
-AVISO|417|15|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|418|29|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroA" da função "maior_numero" será automaticamente convertido de "inteiro" para "real"
-AVISO|418|36|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroB" da função "maior_numero" será automaticamente convertido de "inteiro" para "real"
-AVISO|418|15|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|571|31|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroA" da função "maior_numero" será automaticamente convertido de "inteiro" para "real"
-AVISO|571|47|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroB" da função "maior_numero" será automaticamente convertido de "inteiro" para "real"
-AVISO|571|18|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|586|31|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroA" da função "menor_numero" será automaticamente convertido de "inteiro" para "real"
-AVISO|586|47|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroB" da função "menor_numero" será automaticamente convertido de "inteiro" para "real"
-AVISO|586|18|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|610|30|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroA" da função "maior_numero" será automaticamente convertido de "inteiro" para "real"
-AVISO|610|45|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroB" da função "maior_numero" será automaticamente convertido de "inteiro" para "real"
-AVISO|610|17|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|625|30|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroA" da função "menor_numero" será automaticamente convertido de "inteiro" para "real"
-AVISO|625|45|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroB" da função "menor_numero" será automaticamente convertido de "inteiro" para "real"
-AVISO|625|17|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|99|42|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numero" da função "logaritmo" será automaticamente convertido de "inteiro" para "real"
+AVISO|99|56|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "base" da função "logaritmo" será automaticamente convertido de "inteiro" para "real"
+AVISO|101|66|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "base" da função "potencia" será automaticamente convertido de "inteiro" para "real"
+AVISO|101|69|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "expoente" da função "potencia" será automaticamente convertido de "inteiro" para "real"
+AVISO|149|28|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "tamanho" da função "definir_tamanho_texto" será automaticamente convertido de "inteiro" para "real"
+AVISO|161|28|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "tamanho" da função "definir_tamanho_texto" será automaticamente convertido de "inteiro" para "real"
+AVISO|199|46|AvisoSemantico.AvisoSimboloGlobalOcultado|A variável "nome_arquivo" está ocultando uma variável do escopo global.
+AVISO|200|12|AvisoSemantico.AvisoSimboloGlobalOcultado|A variável "linhas" está ocultando uma função do escopo global.
+AVISO|213|31|AvisoSemantico.AvisoSimboloGlobalOcultado|A variável "nome_arquivo" está ocultando uma variável do escopo global.
+AVISO|239|31|AvisoSemantico.AvisoSimboloGlobalOcultado|A variável "nome_arquivo" está ocultando uma variável do escopo global.
+AVISO|248|16|AvisoSemantico.AvisoSimboloGlobalOcultado|A variável "prop" está ocultando uma variável do escopo global.
+AVISO|305|48|AvisoSemantico.AvisoSimboloGlobalOcultado|A variável "linhas" está ocultando uma função do escopo global.
+AVISO|308|30|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroA" da função "menor_numero" será automaticamente convertido de "inteiro" para "real"
+AVISO|308|40|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroB" da função "menor_numero" será automaticamente convertido de "inteiro" para "real"
+AVISO|308|17|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|309|30|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroA" da função "maior_numero" será automaticamente convertido de "inteiro" para "real"
+AVISO|309|38|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroB" da função "maior_numero" será automaticamente convertido de "inteiro" para "real"
+AVISO|309|17|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|311|29|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroA" da função "menor_numero" será automaticamente convertido de "inteiro" para "real"
+AVISO|311|38|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroB" da função "menor_numero" será automaticamente convertido de "inteiro" para "real"
+AVISO|311|16|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|312|29|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroA" da função "maior_numero" será automaticamente convertido de "inteiro" para "real"
+AVISO|312|36|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroB" da função "maior_numero" será automaticamente convertido de "inteiro" para "real"
+AVISO|312|16|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|329|32|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroA" da função "menor_numero" será automaticamente convertido de "inteiro" para "real"
+AVISO|329|42|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroB" da função "menor_numero" será automaticamente convertido de "inteiro" para "real"
+AVISO|329|19|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|330|32|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroA" da função "maior_numero" será automaticamente convertido de "inteiro" para "real"
+AVISO|330|40|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroB" da função "maior_numero" será automaticamente convertido de "inteiro" para "real"
+AVISO|330|19|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|332|31|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroA" da função "menor_numero" será automaticamente convertido de "inteiro" para "real"
+AVISO|332|40|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroB" da função "menor_numero" será automaticamente convertido de "inteiro" para "real"
+AVISO|332|18|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|333|31|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroA" da função "maior_numero" será automaticamente convertido de "inteiro" para "real"
+AVISO|333|38|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroB" da função "maior_numero" será automaticamente convertido de "inteiro" para "real"
+AVISO|333|18|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|345|32|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroA" da função "menor_numero" será automaticamente convertido de "inteiro" para "real"
+AVISO|345|42|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroB" da função "menor_numero" será automaticamente convertido de "inteiro" para "real"
+AVISO|345|19|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|346|32|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroA" da função "maior_numero" será automaticamente convertido de "inteiro" para "real"
+AVISO|346|40|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroB" da função "maior_numero" será automaticamente convertido de "inteiro" para "real"
+AVISO|346|19|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|348|31|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroA" da função "menor_numero" será automaticamente convertido de "inteiro" para "real"
+AVISO|348|40|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroB" da função "menor_numero" será automaticamente convertido de "inteiro" para "real"
+AVISO|348|18|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|349|31|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroA" da função "maior_numero" será automaticamente convertido de "inteiro" para "real"
+AVISO|349|38|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroB" da função "maior_numero" será automaticamente convertido de "inteiro" para "real"
+AVISO|349|18|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|362|32|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroA" da função "menor_numero" será automaticamente convertido de "inteiro" para "real"
+AVISO|362|42|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroB" da função "menor_numero" será automaticamente convertido de "inteiro" para "real"
+AVISO|362|19|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|363|32|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroA" da função "maior_numero" será automaticamente convertido de "inteiro" para "real"
+AVISO|363|40|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroB" da função "maior_numero" será automaticamente convertido de "inteiro" para "real"
+AVISO|363|19|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|365|52|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numero" da função "logaritmo" será automaticamente convertido de "inteiro" para "real"
+AVISO|365|66|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "base" da função "logaritmo" será automaticamente convertido de "inteiro" para "real"
+AVISO|365|31|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroA" da função "menor_numero" será automaticamente convertido de "inteiro" para "real"
+AVISO|365|18|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|366|31|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroA" da função "maior_numero" será automaticamente convertido de "inteiro" para "real"
+AVISO|366|38|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroB" da função "maior_numero" será automaticamente convertido de "inteiro" para "real"
+AVISO|366|18|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|495|36|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroA" da função "maior_numero" será automaticamente convertido de "inteiro" para "real"
+AVISO|495|52|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroB" da função "maior_numero" será automaticamente convertido de "inteiro" para "real"
+AVISO|495|23|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|509|36|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroA" da função "menor_numero" será automaticamente convertido de "inteiro" para "real"
+AVISO|509|52|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroB" da função "menor_numero" será automaticamente convertido de "inteiro" para "real"
+AVISO|509|23|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|531|35|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroA" da função "maior_numero" será automaticamente convertido de "inteiro" para "real"
+AVISO|531|50|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroB" da função "maior_numero" será automaticamente convertido de "inteiro" para "real"
+AVISO|531|22|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|545|35|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroA" da função "menor_numero" será automaticamente convertido de "inteiro" para "real"
+AVISO|545|50|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroB" da função "menor_numero" será automaticamente convertido de "inteiro" para "real"
+AVISO|545|22|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
 AVISO|-1|-1|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroA" da função "maior_numero" será automaticamente convertido de "inteiro" para "real"
-AVISO|642|58|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroB" da função "maior_numero" será automaticamente convertido de "inteiro" para "real"
-AVISO|642|23|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|559|66|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroB" da função "maior_numero" será automaticamente convertido de "inteiro" para "real"
+AVISO|559|29|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
 AVISO|-1|-1|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroA" da função "menor_numero" será automaticamente convertido de "inteiro" para "real"
-AVISO|653|58|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroB" da função "menor_numero" será automaticamente convertido de "inteiro" para "real"
-AVISO|653|23|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|567|66|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroB" da função "menor_numero" será automaticamente convertido de "inteiro" para "real"
+AVISO|567|29|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
 AVISO|-1|-1|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroA" da função "maior_numero" será automaticamente convertido de "inteiro" para "real"
-AVISO|671|57|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroB" da função "maior_numero" será automaticamente convertido de "inteiro" para "real"
-AVISO|671|23|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|679|69|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numero" da função "logaritmo" será automaticamente convertido de "inteiro" para "real"
-AVISO|679|82|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "base" da função "logaritmo" será automaticamente convertido de "inteiro" para "real"
+AVISO|582|65|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroB" da função "maior_numero" será automaticamente convertido de "inteiro" para "real"
+AVISO|582|29|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|590|77|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numero" da função "logaritmo" será automaticamente convertido de "inteiro" para "real"
+AVISO|590|91|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "base" da função "logaritmo" será automaticamente convertido de "inteiro" para "real"
 AVISO|-1|-1|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numeroA" da função "menor_numero" será automaticamente convertido de "inteiro" para "real"
-AVISO|679|23|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|983|54|AvisoSemantico.AvisoSimboloGlobalOcultado|A variável "linhas" está ocultando uma função do escopo global.
-AVISO|996|72|AvisoSemantico.AvisoSimboloGlobalOcultado|A variável "linhas" está ocultando uma função do escopo global.
-AVISO|1009|19|AvisoSemantico.AvisoSimboloGlobalOcultado|A variável "prop" está ocultando uma variável do escopo global.
-AVISO|1013|144|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numero" da função "logaritmo" será automaticamente convertido de "inteiro" para "real"
-AVISO|1013|149|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "base" da função "logaritmo" será automaticamente convertido de "inteiro" para "real"
+AVISO|590|29|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|826|55|AvisoSemantico.AvisoSimboloGlobalOcultado|A variável "linhas" está ocultando uma função do escopo global.
+AVISO|836|74|AvisoSemantico.AvisoSimboloGlobalOcultado|A variável "linhas" está ocultando uma função do escopo global.
+AVISO|843|24|AvisoSemantico.AvisoSimboloGlobalOcultado|A variável "prop" está ocultando uma variável do escopo global.
+AVISO|845|167|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "numero" da função "logaritmo" será automaticamente convertido de "inteiro" para "real"
+AVISO|845|173|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "base" da função "logaritmo" será automaticamente convertido de "inteiro" para "real"
+### lacos_repeticao/adivinhe_numero.por
 ### lacos_repeticao/consistencia.por
 ### lacos_repeticao/contagem_regressiva.por
-### lacos_repeticao/eleicao.por
 ### lacos_repeticao/fatorial.por
+### lacos_repeticao/fibonacci.por
 ### lacos_repeticao/media_dez_numeros.por
+### lacos_repeticao/numeros_primos.por
+### lacos_repeticao/pesquisa_opiniao.por
 ### lacos_repeticao/soma_um_x.por
 ### lacos_repeticao/tabuada.por
+### lacos_repeticao/validacao_senha.por
 ### musica/bateria.por
 ### musica/player.por
-AVISO|26|8|AvisoSemantico.AvisoVetorPodeSerVariavel|O Vetor formatos tem tamanho [1] e pode ser substituido por uma variável
-AVISO|99|14|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
-AVISO|159|20|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_elipse" será truncado
-AVISO|160|37|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "largura" da função "desenhar_retangulo" será truncado
-AVISO|173|42|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "largura" da função "desenhar_retangulo" será truncado
-AVISO|177|21|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_elipse" será truncado
-AVISO|187|13|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
-AVISO|190|37|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "largura" da função "desenhar_retangulo" será truncado
-AVISO|195|21|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_elipse" será truncado
-AVISO|200|65|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "tempo" da função "formatar_tempo" será truncado
-AVISO|200|93|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "tempo" da função "formatar_tempo" será truncado
-AVISO|200|19|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_texto" será truncado
-AVISO|388|40|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "base" da função "logaritmo" será automaticamente convertido de "inteiro" para "real"
-AVISO|388|20|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|433|45|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "milissegundos" da função "definir_posicao_atual_musica" será truncado
-AVISO|437|45|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "milissegundos" da função "definir_posicao_atual_musica" será truncado
-AVISO|453|9|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
-AVISO|461|42|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "base" da função "logaritmo" será automaticamente convertido de "inteiro" para "real"
-AVISO|461|22|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|475|40|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "volume" da função "definir_volume_reproducao" será truncado
-AVISO|479|42|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "base" da função "logaritmo" será automaticamente convertido de "inteiro" para "real"
-AVISO|479|22|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|631|18|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
-AVISO|633|43|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "milissegundos" da função "definir_posicao_atual_musica" será truncado
-AVISO|642|18|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
-AVISO|644|43|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "milissegundos" da função "definir_posicao_atual_musica" será truncado
-AVISO|657|42|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "base" da função "logaritmo" será automaticamente convertido de "inteiro" para "real"
-AVISO|657|22|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|666|42|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "base" da função "logaritmo" será automaticamente convertido de "inteiro" para "real"
-AVISO|666|22|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|680|42|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "base" da função "logaritmo" será automaticamente convertido de "inteiro" para "real"
-AVISO|680|22|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
-AVISO|732|20|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
-AVISO|828|9|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
-AVISO|829|10|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
-AVISO|830|19|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|25|9|AvisoSemantico.AvisoVetorPodeSerVariavel|O Vetor formatos tem tamanho [1] e pode ser substituido por uma variável
+AVISO|98|15|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
+AVISO|157|22|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_elipse" será truncado
+AVISO|158|41|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "largura" da função "desenhar_retangulo" será truncado
+AVISO|169|48|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "largura" da função "desenhar_retangulo" será truncado
+AVISO|173|24|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_elipse" será truncado
+AVISO|183|16|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
+AVISO|186|41|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "largura" da função "desenhar_retangulo" será truncado
+AVISO|190|24|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_elipse" será truncado
+AVISO|195|73|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "tempo" da função "formatar_tempo" será truncado
+AVISO|195|105|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "tempo" da função "formatar_tempo" será truncado
+AVISO|195|21|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "x" da função "desenhar_texto" será truncado
+AVISO|379|42|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "base" da função "logaritmo" será automaticamente convertido de "inteiro" para "real"
+AVISO|379|22|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|421|51|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "milissegundos" da função "definir_posicao_atual_musica" será truncado
+AVISO|424|51|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "milissegundos" da função "definir_posicao_atual_musica" será truncado
+AVISO|439|14|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
+AVISO|447|46|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "base" da função "logaritmo" será automaticamente convertido de "inteiro" para "real"
+AVISO|447|26|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|461|44|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "volume" da função "definir_volume_reproducao" será truncado
+AVISO|465|46|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "base" da função "logaritmo" será automaticamente convertido de "inteiro" para "real"
+AVISO|465|26|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|607|22|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
+AVISO|609|47|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "milissegundos" da função "definir_posicao_atual_musica" será truncado
+AVISO|616|22|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
+AVISO|618|47|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "milissegundos" da função "definir_posicao_atual_musica" será truncado
+AVISO|629|46|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "base" da função "logaritmo" será automaticamente convertido de "inteiro" para "real"
+AVISO|629|26|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|638|46|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "base" da função "logaritmo" será automaticamente convertido de "inteiro" para "real"
+AVISO|638|26|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|651|46|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão passada para o parâmetro "base" da função "logaritmo" será automaticamente convertido de "inteiro" para "real"
+AVISO|651|26|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
+AVISO|701|23|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
+AVISO|792|11|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
+AVISO|793|12|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será automaticamente convertido de "inteiro" para "real"
+AVISO|794|21|AvisoSemantico.AvisoValorExpressaoSeraConvertido|O valor da expressão á direita da atribuição será truncado
 ### operacoes_aritmeticas/divisoes_inteiras.por
 ### operacoes_aritmeticas/operacoes_simples.por
 ### operacoes_aritmeticas/potencia_raiz.por
-### operacoes_aritmeticas/prioridades.por
+### subrotinas/conversor_temperatura.por
 ### subrotinas/fatorial_recursivo.por
 ### subrotinas/fibonacci_recursivo.por
 ### subrotinas/lagarta.por
+### subrotinas/mdc.por
+### subrotinas/palindromo.por
 ### subrotinas/parametros_referencia.por
 ### subrotinas/procedimento_funcao.por
 ### subrotinas/vetores_parametro.por
+### vetores_matrizes/busca_binaria.por
 ### vetores_matrizes/diagonal_principal.por
 ### vetores_matrizes/exibe_matriz.por
+### vetores_matrizes/jogo_da_velha.por
+### vetores_matrizes/notas_turma.por
+### vetores_matrizes/ordenacao_bolha.por
 ### vetores_matrizes/pesquisa_vetor.por
 ### vetores_matrizes/preenche_vetor.por
 ### vetores_matrizes/tabela_dados.por

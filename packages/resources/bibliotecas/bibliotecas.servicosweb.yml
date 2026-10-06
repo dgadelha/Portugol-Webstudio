@@ -1,0 +1,147 @@
+# yaml-language-server: $schema=./bibliotecas.schema.json
+$schema: "./bibliotecas.schema.json"
+
+bibliotecas:
+  - nome: ServicosWeb
+    descrição: Esta biblioteca contém uma série de funções para trabalhar com serviços web
+    constantes:
+      - nome: OBTER
+        tipo:
+          primitivo: inteiro
+        valor: 1
+        descrição: Constante para definir o método HTTP GET
+        referência: https://pt.wikipedia.org/wiki/Hypertext_Transfer_Protocol#GET
+
+      - nome: PUBLICAR
+        tipo:
+          primitivo: inteiro
+        valor: 2
+        descrição: Constante para definir o método HTTP POST
+        referência: https://pt.wikipedia.org/wiki/Hypertext_Transfer_Protocol#POST
+
+      - nome: ATUALIZAR
+        tipo:
+          primitivo: inteiro
+        valor: 3
+        descrição: Constante para definir o método HTTP PUT
+        referência: https://pt.wikipedia.org/wiki/Hypertext_Transfer_Protocol#PUT
+
+      - nome: EXCLUIR
+        tipo:
+          primitivo: inteiro
+        valor: 4
+        descrição: Constante para definir o método HTTP DELETE
+        referência: https://pt.wikipedia.org/wiki/Hypertext_Transfer_Protocol#DELETE
+
+    funções:
+      - nome: obter_dados
+        descrição: Realiza uma chamada HTTP GET para o endereço especificado, retornando uma cadeia no formato JSON como resposta
+        retorno:
+          tipo:
+            primitivo: cadeia
+          descrição: a cadeia JSON contendo a resposta da requisição
+        referência: https://pt.wikipedia.org/wiki/Hypertext_Transfer_Protocol#GET
+        parâmetros:
+          - nome: endereco
+            descrição: endereço para o qual a requisição será feita
+            tipo:
+              primitivo: cadeia
+
+      - nome: excluir_dados
+        descrição: Realiza uma chamada HTTP DELETE para o endereço especificado, retornando uma cadeia no formato JSON como resposta
+        retorno:
+          tipo:
+            primitivo: cadeia
+          descrição: a cadeia JSON contendo a resposta da requisição
+        referência: https://pt.wikipedia.org/wiki/Hypertext_Transfer_Protocol#DELETE
+        parâmetros:
+          - nome: endereco
+            descrição: endereço para o qual a requisição será feita
+            tipo:
+              primitivo: cadeia
+
+      - nome: publicar_dados
+        descrição: Realiza uma chamada HTTP POST para o endereço especificado, retornando uma cadeia no formato JSON como resposta
+        retorno:
+          tipo:
+            primitivo: cadeia
+          descrição: a cadeia JSON contendo a resposta da requisição
+        referência: https://pt.wikipedia.org/wiki/Hypertext_Transfer_Protocol#POST
+        parâmetros:
+          - nome: endereco
+            descrição: endereço para o qual a requisição será feita
+            tipo:
+              primitivo: cadeia
+          - nome: objeto
+            descrição: objeto no formato JSON passado por parâmetro no corpo da requisição
+            tipo:
+              primitivo: cadeia
+
+      - nome: atualizar_dados
+        descrição: Realiza uma chamada HTTP PUT para o endereço especificado, retornando uma cadeia no formato JSON como resposta
+        retorno:
+          tipo:
+            primitivo: cadeia
+          descrição: a cadeia JSON contendo a resposta da requisição
+        referência: https://pt.wikipedia.org/wiki/Hypertext_Transfer_Protocol#PUT
+        parâmetros:
+          - nome: endereco
+            descrição: endereço para o qual a requisição será feita
+            tipo:
+              primitivo: cadeia
+          - nome: objeto
+            descrição: objeto no formato JSON passado por parâmetro no corpo da requisição
+            tipo:
+              primitivo: cadeia
+
+      - nome: abrir_conexao
+        descrição: Abre uma conexão customizável com o endereço especificado
+        parâmetros:
+          - nome: endereco
+            descrição: endereço para o qual a requisição será feita
+            tipo:
+              primitivo: cadeia
+        retorno:
+          tipo:
+            primitivo: vazio
+
+      - nome: adicionar_cabecalho
+        descrição: Adiciona um cabeçalho na conexão customizável, para utilizar esta função é necessário abrir uma conexão antes
+        referência: https://pt.wikipedia.org/wiki/Lista_de_campos_de_cabe%C3%A7alho_HTTP
+        parâmetros:
+          - nome: chave
+            descrição: chave do cabeçalho que será incluído na conexão
+            tipo:
+              primitivo: cadeia
+          - nome: valor
+            descrição: valor do cabeçalho que será incluído na conexão
+            tipo:
+              primitivo: cadeia
+        retorno:
+          tipo:
+            primitivo: vazio
+
+      - nome: adicionar_parametros
+        descrição: Adiciona um objeto no formato JSON na conexão customizável, para utilizar esta função é necessário abrir uma conexão antes. Esta função deve ser utilizada para informar os parâmetros dos métodos HTTP POST e PUT
+        referência: https://pt.wikipedia.org/wiki/Hypertext_Transfer_Protocol
+        parâmetros:
+          - nome: objeto
+            descrição: objeto no formato JSON passado por parâmetro no corpo da requisição
+            tipo:
+              primitivo: cadeia
+        retorno:
+          tipo:
+            primitivo: vazio
+
+      - nome: fazer_requisicao
+        descrição: Realiza uma chamada HTTP através de uma conexão customizada, retornando uma cadeia no formato JSON como resposta
+        retorno:
+          tipo:
+            primitivo: cadeia
+          descrição: a cadeia JSON contendo a resposta da requisição
+        referência: https://pt.wikipedia.org/wiki/Hypertext_Transfer_Protocol
+        parâmetros:
+          - nome: metodoHttp
+            descrição: Método HTTP que será utilizado nesta execução (GET, POST, PUT ou DELETE)
+            tipo:
+              primitivo: inteiro

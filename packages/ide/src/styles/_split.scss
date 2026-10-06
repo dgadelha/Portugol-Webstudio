@@ -1,0 +1,54 @@
+// Divisores do `angular-split` (8px, em `provideAngularSplitOptions`): um vão
+// na cor da moldura entre as áreas, como entre o editor e o painel do VS Code.
+// O vão inteiro é a área de arrastar, e o pegador no meio fica amarelo ao
+// passar o mouse ou arrastar.
+as-split {
+  --as-gutter-background-color: var(--pws-bg-frame);
+}
+
+.as-split-gutter {
+  position: relative;
+
+  // Pegador: três pontos no meio do vão.
+  &::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    background-image: radial-gradient(circle, var(--pws-fg-muted) 1.5px, transparent 2px);
+    background-size: 6px 6px;
+    opacity: 0.6;
+    transform: translate(-50%, -50%);
+    transition: opacity var(--pws-duration);
+  }
+
+  &:hover::after,
+  &:active::after {
+    background-image: radial-gradient(circle, var(--pws-accent) 1.5px, transparent 2px);
+    opacity: 1;
+  }
+
+  .as-split-gutter-icon {
+    display: none;
+  }
+}
+
+.as-vertical > .as-split-gutter::after {
+  width: 18px;
+  height: 6px;
+}
+
+.as-horizontal > .as-split-gutter::after {
+  width: 6px;
+  height: 18px;
+}
+
+// Um divisor de 1px fica como uma linha, sem pegador (a área do código
+// gerado, escondida ao lado do editor).
+.thin-split {
+  --as-gutter-background-color: var(--pws-border);
+
+  > .as-split-gutter::after {
+    display: none;
+  }
+}

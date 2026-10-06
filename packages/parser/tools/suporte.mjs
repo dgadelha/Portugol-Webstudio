@@ -1,10 +1,10 @@
 //
-// Cruza o que a linguagem tem (`@portugol-recursos/bibliotecas`) com o que o runtime do
+// Cruza o que a linguagem tem (`@portugol-webstudio/resources/bibliotecas`) com o que o runtime do
 // Webstudio sabe executar (packages/runtime/src/libs), para o checker acusar o que
 // quebraria só em execução. O CLI está em gerar-suporte.mjs; o teste
 // tests/analise/suporte.test.ts usa `gerar()` como guarda de atualidade.
 //
-import { bibliotecas } from "@portugol-recursos/bibliotecas";
+import { bibliotecas } from "@portugol-webstudio/resources/bibliotecas";
 import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 
@@ -141,7 +141,7 @@ export function gerar(runtime) {
 
   return `// ARQUIVO GERADO — não edite à mão.
 //
-// Cruza \`@portugol-recursos/bibliotecas\` (o que a linguagem tem) com
+// Cruza \`@portugol-webstudio/resources/bibliotecas\` (o que a linguagem tem) com
 // packages/runtime/src/libs (o que o runtime do Webstudio executa).
 // Regere com, a partir da raiz do repositório:
 //

@@ -5,7 +5,7 @@ import { DESTINO, gerar, inspecionarRuntime } from "../../tools/suporte.mjs";
 
 /**
  * `suporte.gerado.ts` grava um fato sobre dois insumos que mudam sozinhos:
- * `@portugol-recursos/bibliotecas` e `packages/runtime/src/libs`. Sem esta guarda, um bump
+ * `@portugol-webstudio/resources/bibliotecas` e `packages/runtime/src/libs`. Sem esta guarda, um bump
  * de dependência deixa o arquivo obsoleto em silêncio — e a falha é na direção insegura:
  * o checker passaria a aceitar uma função de biblioteca que o runtime não executa.
  */

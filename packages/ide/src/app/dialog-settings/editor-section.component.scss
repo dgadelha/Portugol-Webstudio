@@ -1,0 +1,61 @@
+// Tabulação e indentação lado a lado quando cabem.
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem 2.5rem;
+}
+
+// Os números da tabulação ficam com a mesma largura.
+.tab-size span {
+  font-variant-numeric: tabular-nums;
+}
+
+////////////
+// Prévia //
+////////////
+
+.preview {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0;
+
+  figcaption {
+    color: var(--pws-fg-muted);
+    font-size: var(--pws-text-sm);
+    font-weight: 600;
+  }
+}
+
+.preview-editor {
+  display: flex;
+  // A altura acompanha o código (ver `onPreviewInit`), até um limite.
+  height: var(--preview-height, 10rem);
+  overflow: hidden;
+  border: 1px solid var(--pws-border);
+  border-radius: var(--pws-radius);
+
+  ngx-monaco-editor {
+    flex-grow: 1;
+    min-width: 0;
+  }
+}
+
+// Com altura para a prévia e para os controles, a prévia fica fixa no topo e
+// mostra cada mudança enquanto as configurações rolam por baixo. Em telas
+// baixas ela ocuparia quase tudo, e rola junto.
+@container settings-body (min-height: 26rem) {
+  .preview {
+    position: sticky;
+    // O `top` conta a partir do espaçamento interno da área que rola: negativo,
+    // a prévia gruda na borda de cima, onde ela já começa.
+    top: calc(-1 * var(--settings-body-padding-top));
+    z-index: 10;
+
+    // Ocupa a largura toda e cobre o espaçamento do topo, para o que rola não
+    // aparecer acima nem ao lado dela.
+    margin: calc(-1 * var(--settings-body-padding-top)) calc(-1 * var(--settings-body-padding-inline)) 0;
+    padding: var(--settings-body-padding-top) var(--settings-body-padding-inline) 1.25rem;
+    border-bottom: 1px solid var(--pws-border);
+    background-color: var(--pws-bg-elevated);
+  }
+}

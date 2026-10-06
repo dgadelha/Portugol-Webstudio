@@ -26,7 +26,7 @@ O Portugol Webstudio é um projeto que utiliza o framework [Angular](https://ang
 - `@portugol-webstudio/antlr`: Pacote que contém a gramática do Portugol e a geração do parser, lexer e visitor
 - `@portugol-webstudio/ide`: Pacote que contém a interface do usuário
 - `@portugol-webstudio/parser`: Pacote que contém o novo parser do Portugol, que recebe uma árvore pré-processada pelo ANTLR e a transforma em uma árvore semântica
-- `@portugol-webstudio/resources`: Pacote que contém os recursos do Portugol, como os exemplos e a seção de ajuda
+- `@portugol-webstudio/resources`: Pacote que contém os recursos do Portugol: os exemplos, os tópicos da Ajuda (em Markdown) e os metadados das bibliotecas
 - `@portugol-webstudio/runner`: Pacote que executa o código gerado pelo transpilador em Web Workers, tratando entrada, saída, erros e eventos.
 - `@portugol-webstudio/runtime`: Pacote que contém o transpilador de Portugol para JavaScript e o código de execução em _runtime_ necessário: variáveis, bibliotecas, etc.
 - `@portugol-webstudio/worker`: Pacote que contém o código que será executado em Web Workers, que é responsável por receber o código do Portugol, e executar a verificação de erros e transpilação do código em uma _thread_ separada.

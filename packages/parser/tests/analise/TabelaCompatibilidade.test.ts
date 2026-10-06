@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 
-import { bibliotecas } from "@portugol-recursos/bibliotecas";
+import { bibliotecas } from "@portugol-webstudio/resources/bibliotecas";
 
 import {
   consultarCompatibilidade,
@@ -26,6 +26,10 @@ describe("TabelaCompatibilidade", () => {
 
     test("inteiro / real resulta em real", () => {
       expect(célulaDaTabela("divisaoMultiplicacaoSubtracao", INTEIRO, REAL)).toBe(REAL);
+    });
+
+    test("caracter + caracter é inteiro (a soma dos códigos), como o runtime calcula", () => {
+      expect(célulaDaTabela("soma", CARACTER, CARACTER)).toBe(INTEIRO);
     });
 
     test("soma com cadeia resulta em cadeia, venha de onde vier", () => {

@@ -1,0 +1,337 @@
+# yaml-language-server: $schema=./bibliotecas.schema.json
+$schema: "./bibliotecas.schema.json"
+
+bibliotecas:
+  - nome: Tipos
+    descrição: Esta biblioteca contém funções para verificar se um valor pode ser convertido de um tipo de dado do Portugol para outro e para fazer essa conversão
+    constantes: []
+
+    funções:
+      - nome: cadeia_e_inteiro
+        descrição: Verifica se a `cadeia` representa um número `inteiro` escrito na base informada
+        retorno:
+          tipo:
+            primitivo: logico
+          descrição: |
+            `verdadeiro` se a `cadeia` representar um número `inteiro` na base informada; caso contrário, `falso`
+        parâmetros:
+          - nome: cad
+            descrição: o texto que será verificado
+            tipo:
+              primitivo: cadeia
+          - nome: base
+            descrição: |
+              a base de numeração em que o número está escrito: 2 (binária, ex.: `0b1001`, `101`), 10 (decimal, ex.: `52`, `-34`) ou 16 (hexadecimal, ex.: `0xFF5AC`, `ff00ff`). Qualquer outro valor causa um erro de execução.
+            tipo:
+              primitivo: inteiro
+
+      - nome: cadeia_e_real
+        descrição: |
+          Verifica se a `cadeia` representa um número `real` escrito com ponto decimal, com dígitos antes e depois do ponto (ex.: `3.14`, `-0.5`)
+        retorno:
+          tipo:
+            primitivo: logico
+          descrição: |
+            `verdadeiro` se a `cadeia` representar um número `real`; caso contrário, `falso`. Um número sem ponto decimal, como `10`, resulta em `falso`.
+        parâmetros:
+          - nome: cad
+            descrição: o texto que será verificado
+            tipo:
+              primitivo: cadeia
+
+      - nome: cadeia_e_logico
+        descrição: Verifica se a `cadeia` representa um valor `logico`, ou seja, se é `verdadeiro` ou `falso` escrito em letras minúsculas
+        retorno:
+          tipo:
+            primitivo: logico
+          descrição: |
+            `verdadeiro` se a `cadeia` representar um valor `logico`; caso contrário, `falso`
+        parâmetros:
+          - nome: cad
+            descrição: o texto que será verificado
+            tipo:
+              primitivo: cadeia
+
+      - nome: cadeia_e_caracter
+        descrição: Verifica se a `cadeia` tem exatamente um caractere e, portanto, pode ser convertida em `caracter`
+        retorno:
+          tipo:
+            primitivo: logico
+          descrição: |
+            `verdadeiro` se a `cadeia` tiver exatamente um caractere; caso contrário, `falso`
+        parâmetros:
+          - nome: cad
+            descrição: o texto que será verificado
+            tipo:
+              primitivo: cadeia
+
+      - nome: cadeia_para_caracter
+        descrição: |
+          Converte uma `cadeia` de um só caractere em um valor do tipo `caracter`.
+
+          Se a `cadeia` estiver vazia ou tiver mais de um caractere, ocorre um erro de execução.
+        retorno:
+          tipo:
+            primitivo: caracter
+          descrição: o único caractere da `cadeia`
+        parâmetros:
+          - nome: valor
+            descrição: o valor que será convertido
+            tipo:
+              primitivo: cadeia
+
+      - nome: cadeia_para_inteiro
+        descrição: |
+          Converte uma `cadeia` que representa um número inteiro, escrito na base informada, em um valor do tipo `inteiro`.
+
+          Se a `cadeia` não representar um número inteiro nessa base, ocorre um erro de execução.
+        retorno:
+          tipo:
+            primitivo: inteiro
+          descrição: o número representado na `cadeia`
+        parâmetros:
+          - nome: valor
+            descrição: o valor que será convertido
+            tipo:
+              primitivo: cadeia
+          - nome: base
+            descrição: |
+              a base de numeração em que o número está escrito: 2 (binária, ex.: `0b1001`, `101`), 10 (decimal, ex.: `52`, `-34`) ou 16 (hexadecimal, ex.: `0xFF5AC`, `ff00ff`). Qualquer outro valor causa um erro de execução.
+            tipo:
+              primitivo: inteiro
+
+      - nome: cadeia_para_real
+        descrição: |
+          Converte uma `cadeia` que representa um número (ex.: `3.14`, `10`) em um valor do tipo `real`.
+
+          Se a `cadeia` não representar um número, ocorre um erro de execução.
+        retorno:
+          tipo:
+            primitivo: real
+          descrição: o número representado na `cadeia`
+        parâmetros:
+          - nome: valor
+            descrição: o valor que será convertido
+            tipo:
+              primitivo: cadeia
+
+      - nome: cadeia_para_logico
+        descrição: |
+          Converte a `cadeia` `"verdadeiro"` ou `"falso"` no valor `logico` correspondente.
+
+          Qualquer outro texto, inclusive com letras maiúsculas, causa um erro de execução.
+        retorno:
+          tipo:
+            primitivo: logico
+          descrição: |
+            `verdadeiro` para a `cadeia` `"verdadeiro"` e `falso` para a `cadeia` `"falso"`
+        parâmetros:
+          - nome: valor
+            descrição: o valor que será convertido
+            tipo:
+              primitivo: cadeia
+
+      - nome: inteiro_e_caracter
+        descrição: Verifica se o número `inteiro` tem um só algarismo (de 0 a 9) e, portanto, pode ser convertido em `caracter` com `inteiro_para_caracter`
+        retorno:
+          tipo:
+            primitivo: logico
+          descrição: |
+            `verdadeiro` se o número estiver entre 0 e 9; caso contrário, `falso`
+        parâmetros:
+          - nome: int
+            descrição: o número que será verificado
+            tipo:
+              primitivo: inteiro
+
+      - nome: inteiro_para_cadeia
+        descrição: Converte um valor do tipo `inteiro` em uma `cadeia` com o número escrito na base informada
+        retorno:
+          tipo:
+            primitivo: cadeia
+          descrição: |
+            o número escrito na base informada. Nas bases 2 e 16, o texto não tem prefixo e é completado com zeros à esquerda até ter 32 e 8 dígitos, respectivamente. Ex.: `inteiro_para_cadeia(255, 16)` retorna `"000000FF"`.
+        parâmetros:
+          - nome: valor
+            descrição: o valor que será convertido
+            tipo:
+              primitivo: inteiro
+          - nome: base
+            descrição: |
+              a base de numeração do texto gerado: 2 (binária), 10 (decimal) ou 16 (hexadecimal). Qualquer outro valor causa um erro de execução.
+            tipo:
+              primitivo: inteiro
+
+      - nome: inteiro_para_caracter
+        descrição: |
+          Converte um número `inteiro` de um só algarismo (de 0 a 9) no `caracter` desse algarismo. Ex.: 7 resulta em `'7'`.
+
+          Para números fora desse intervalo, ocorre um erro de execução.
+        retorno:
+          tipo:
+            primitivo: caracter
+          descrição: o caractere do algarismo
+        parâmetros:
+          - nome: valor
+            descrição: o valor que será convertido
+            tipo:
+              primitivo: inteiro
+
+      - nome: inteiro_para_logico
+        descrição: Converte um valor do tipo `inteiro` em um valor do tipo `logico`
+        retorno:
+          tipo:
+            primitivo: logico
+          descrição: |
+            `falso` se o valor for menor ou igual a 0; `verdadeiro` se for maior que 0
+        parâmetros:
+          - nome: valor
+            descrição: o valor que será convertido
+            tipo:
+              primitivo: inteiro
+
+      - nome: inteiro_para_real
+        descrição: Converte um valor do tipo `inteiro` em um valor do tipo `real`
+        retorno:
+          tipo:
+            primitivo: real
+          descrição: |
+            o mesmo número, como `real`. Ex.: 5 resulta em 5.0.
+        parâmetros:
+          - nome: valor
+            descrição: o valor que será convertido
+            tipo:
+              primitivo: inteiro
+
+      - nome: caracter_e_inteiro
+        descrição: Verifica se o `caracter` é um algarismo (de `'0'` a `'9'`) e, portanto, pode ser convertido em `inteiro` com `caracter_para_inteiro`
+        retorno:
+          tipo:
+            primitivo: logico
+          descrição: |
+            `verdadeiro` se o `caracter` for um algarismo; caso contrário, `falso`
+        parâmetros:
+          - nome: car
+            descrição: o caractere que será verificado
+            tipo:
+              primitivo: caracter
+
+      - nome: caracter_e_logico
+        descrição: Verifica se o `caracter` representa um valor `logico`, ou seja, se é `'S'` ou `'N'` (maiúsculo ou minúsculo)
+        retorno:
+          tipo:
+            primitivo: logico
+          descrição: |
+            `verdadeiro` se o `caracter` for `'S'`, `'s'`, `'N'` ou `'n'`; caso contrário, `falso`
+        parâmetros:
+          - nome: car
+            descrição: o caractere que será verificado
+            tipo:
+              primitivo: caracter
+
+      - nome: caracter_para_cadeia
+        descrição: Converte um valor do tipo `caracter` em uma `cadeia` com esse único caractere
+        retorno:
+          tipo:
+            primitivo: cadeia
+          descrição: uma `cadeia` com o caractere
+        parâmetros:
+          - nome: valor
+            descrição: o valor que será convertido
+            tipo:
+              primitivo: caracter
+
+      - nome: caracter_para_inteiro
+        descrição: |
+          Converte um `caracter` que é um algarismo (de `'0'` a `'9'`) no número `inteiro` correspondente. Ex.: `'7'` resulta em 7.
+
+          Se o `caracter` não for um algarismo, ocorre um erro de execução.
+        retorno:
+          tipo:
+            primitivo: inteiro
+          descrição: o número do algarismo
+        parâmetros:
+          - nome: valor
+            descrição: o valor que será convertido
+            tipo:
+              primitivo: caracter
+
+      - nome: caracter_para_logico
+        descrição: |
+          Converte o `caracter` `'S'` ou `'N'` (maiúsculo ou minúsculo) em um valor do tipo `logico`.
+
+          Qualquer outro caractere causa um erro de execução.
+        retorno:
+          tipo:
+            primitivo: logico
+          descrição: |
+            `verdadeiro` para `'S'` ou `'s'`; `falso` para `'N'` ou `'n'`
+        parâmetros:
+          - nome: valor
+            descrição: o valor que será convertido
+            tipo:
+              primitivo: caracter
+
+      - nome: logico_para_cadeia
+        descrição: Converte um valor do tipo `logico` em uma `cadeia`
+        retorno:
+          tipo:
+            primitivo: cadeia
+          descrição: |
+            `"verdadeiro"` ou `"falso"`, conforme o valor
+        parâmetros:
+          - nome: valor
+            descrição: o valor que será convertido
+            tipo:
+              primitivo: logico
+
+      - nome: logico_para_inteiro
+        descrição: Converte um valor do tipo `logico` em um valor do tipo `inteiro`
+        retorno:
+          tipo:
+            primitivo: inteiro
+          descrição: 1 se o valor for `verdadeiro`; 0 se for `falso`
+        parâmetros:
+          - nome: valor
+            descrição: o valor que será convertido
+            tipo:
+              primitivo: logico
+
+      - nome: logico_para_caracter
+        descrição: Converte um valor do tipo `logico` em um valor do tipo `caracter`
+        retorno:
+          tipo:
+            primitivo: caracter
+          descrição: |
+            `'S'` se o valor for `verdadeiro`; `'N'` se for `falso`
+        parâmetros:
+          - nome: valor
+            descrição: o valor que será convertido
+            tipo:
+              primitivo: logico
+
+      - nome: real_para_cadeia
+        descrição: Converte um valor do tipo `real` em uma `cadeia`
+        retorno:
+          tipo:
+            primitivo: cadeia
+          descrição: |
+            o número escrito como texto, com ponto decimal. Ex.: 2.5 resulta em `"2.5"`.
+        parâmetros:
+          - nome: valor
+            descrição: o valor que será convertido
+            tipo:
+              primitivo: real
+
+      - nome: real_para_inteiro
+        descrição: |
+          Converte um valor do tipo `real` em um valor do tipo `inteiro`, descartando a parte fracionária (sem arredondar). Ex.: 9.56 resulta em 9, e -9.56 resulta em -9.
+        retorno:
+          tipo:
+            primitivo: inteiro
+          descrição: a parte inteira do número
+        parâmetros:
+          - nome: valor
+            descrição: o valor que será convertido
+            tipo:
+              primitivo: real

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 //
-// Roda o nosso analisador sobre os 119 exemplos oficiais
-// (packages/resources/assets/exemplos/**/*.por) e imprime um resumo mais uma linha por
+// Roda o nosso analisador sobre os 116 exemplos oficiais
+// (packages/resources/exemplos/**/*.por) e imprime um resumo mais uma linha por
 // erro e por parseError.
 //
 // Uso, a partir da raiz do repositório (o pacote precisa estar compilado):
@@ -28,7 +28,7 @@ const { PortugolCodeChecker, éDoWebstudio } = /** @type {typeof import("../src/
   await import(path.join(raiz, "packages/parser/lib/index.js").replaceAll("\\", "/"))
 );
 
-const base = path.join(raiz, "packages/resources/assets/exemplos");
+const base = path.join(raiz, "packages/resources/exemplos");
 /**
  * Ordem por unidade de código UTF-16, a mesma do `LC_ALL=C sort` que gera o golden.
  *
@@ -45,11 +45,10 @@ function porCódigo(a, b) {
 
 const arquivos = globSync("**/*.por", { cwd: base }).toSorted(porCódigo);
 
-// `packages/resources/assets/` é gitignored: sem esta guarda, um corpus ausente daria
-// `arquivos=0 falsosPositivos=0` e saída 0 — verde silencioso.
+// Sem esta guarda, um caminho errado daria `arquivos=0 falsosPositivos=0` e saída 0 —
+// verde silencioso.
 if (arquivos.length === 0) {
   console.error(`erro: nenhum exemplo .por em ${base}`);
-  console.error("Gere o corpus com: npm run build -w @portugol-webstudio/resources");
   process.exit(1);
 }
 const diferencial = process.argv.includes("--diferencial");

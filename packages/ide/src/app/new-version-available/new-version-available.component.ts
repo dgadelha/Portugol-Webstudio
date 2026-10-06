@@ -1,26 +1,24 @@
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
-import { MatButtonModule } from "@angular/material/button";
 import { HotToastRef } from "@ngxpert/hot-toast";
+
+import { WorkspaceService } from "../workspace.service";
 
 @Component({
   selector: "app-new-version-available",
-  imports: [MatButtonModule],
-  standalone: true,
   templateUrl: "./new-version-available.component.html",
   styleUrl: "./new-version-available.component.scss",
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NewVersionAvailableComponent {
-  public toastRef = inject(HotToastRef, { optional: true });
+  /**
+   * O `PwaService` passa como recarregar, o mesmo do botão Atualizar do Sobre.
+   */
+  public toastRef = inject<HotToastRef<{ reload: () => void }>>(HotToastRef, { optional: true });
+
+  readonly persistenceAvailable = inject(WorkspaceService).persistenceAvailable;
 
   onReload() {
-    if (
-      confirm(
-        'Lembre-se de salvar seu código antes de recarregar a página!\n\nAperte "OK" para recarregar a página, ou "Cancelar" para abortar.',
-      )
-    ) {
-      window.location.reload();
-    }
+    this.toastRef?.data.reload();
   }
 
   onIgnore() {

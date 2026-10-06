@@ -1,43 +1,64 @@
-import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
+import { DIALOG_DATA, DialogRef } from "@angular/cdk/dialog";
+import { NgComponentOutlet } from "@angular/common";
+import { ChangeDetectionStrategy, Component, computed, inject, signal, Type } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { FormsModule } from "@angular/forms";
-import { MatButtonModule } from "@angular/material/button";
-import { MatButtonToggleModule } from "@angular/material/button-toggle";
-import { MatDialogClose, MatDialogContent, MatDialogTitle } from "@angular/material/dialog";
-import { MatInputModule } from "@angular/material/input";
-import { MatRadioModule } from "@angular/material/radio";
-import { MatSlideToggleModule } from "@angular/material/slide-toggle";
-import { MatSliderModule } from "@angular/material/slider";
-import { MatTooltipModule } from "@angular/material/tooltip";
 import { AngularSvgIconModule } from "angular-svg-icon";
 import { GoogleAnalyticsService } from "ngx-google-analytics";
-import { LocalStorage, LocalStorageService } from "ngx-webstorage";
+import { LocalStorageService } from "ngx-webstorage";
 import { debounceTime, filter, map, merge } from "rxjs";
-import {
-  EditorCursorStyle,
-  EditorLineNumbers,
-  EditorRenderWhitespace,
-  settings,
-  ThemePreference,
-} from "../../settings";
+import { settings } from "../../settings";
+import { TooltipDirective } from "../shared/tooltip.directive";
+import { AppearanceSectionComponent } from "./appearance-section.component";
+import { EditorSectionComponent } from "./editor-section.component";
+import { OutputSectionComponent } from "./output-section.component";
+import { TabsSectionComponent } from "./tabs-section.component";
 
+export type SettingsSectionId = "appearance" | "editor" | "output" | "tabs";
+
+const SECTIONS: Array<{
+  id: SettingsSectionId;
+  label: string;
+  description: string;
+  icon: string;
+  component: Type<unknown>;
+}> = [
+  {
+    id: "appearance",
+    label: "Aparência",
+    description: "Tema da interface e do editor.",
+    icon: "assets/mdi/palette-outline.svg",
+    component: AppearanceSectionComponent,
+  },
+  {
+    id: "editor",
+    label: "Editor",
+    description: "Como o código aparece enquanto você escreve.",
+    icon: "assets/mdi/code-tags.svg",
+    component: EditorSectionComponent,
+  },
+  {
+    id: "output",
+    label: "Saída",
+    description: "O que o programa escreve enquanto executa.",
+    icon: "assets/mdi/console.svg",
+    component: OutputSectionComponent,
+  },
+  {
+    id: "tabs",
+    label: "Abas",
+    description: "O que acontece ao fechar uma aba e ao abrir uma janela nova.",
+    icon: "assets/mdi/tab.svg",
+    component: TabsSectionComponent,
+  },
+];
+
+/**
+ * Preferências do usuário, organizadas em seções. As mudanças valem na hora e
+ * ficam salvas neste navegador.
+ */
 @Component({
   selector: "app-dialog-settings",
-  imports: [
-    FormsModule,
-    MatButtonModule,
-    MatButtonToggleModule,
-    MatDialogClose,
-    MatDialogContent,
-    MatDialogTitle,
-    MatRadioModule,
-    MatSliderModule,
-    MatSlideToggleModule,
-    MatTooltipModule,
-    MatInputModule,
-    AngularSvgIconModule,
-  ],
-  standalone: true,
+  imports: [NgComponentOutlet, AngularSvgIconModule, TooltipDirective],
   templateUrl: "./dialog-settings.component.html",
   styleUrl: "./dialog-settings.component.scss",
   changeDetection: ChangeDetectionStrategy.Eager,
@@ -45,64 +66,13 @@ import {
 export class DialogSettingsComponent {
   private localStorageService = inject(LocalStorageService);
   private gaService = inject(GoogleAnalyticsService);
+  readonly dialogRef = inject(DialogRef);
+  private readonly data = inject<{ section?: SettingsSectionId } | undefined>(DIALOG_DATA, { optional: true });
 
-  protected readonly settings = settings;
+  protected readonly sections = SECTIONS;
 
-  @LocalStorage(settings.theme.key, settings.theme.default)
-  theme!: ThemePreference;
-
-  @LocalStorage(settings.editorFontSize.key, settings.editorFontSize.default)
-  editorFontSize!: number;
-
-  @LocalStorage(settings.editorWordWrap.key, settings.editorWordWrap.default)
-  editorWordWrap!: boolean;
-
-  @LocalStorage(settings.editorTabSize.key, settings.editorTabSize.default)
-  editorTabSize!: number;
-
-  @LocalStorage(settings.editorInsertSpaces.key, settings.editorInsertSpaces.default)
-  editorInsertSpaces!: boolean;
-
-  @LocalStorage(settings.editorLineNumbers.key, settings.editorLineNumbers.default)
-  editorLineNumbers!: EditorLineNumbers;
-
-  @LocalStorage(settings.editorMinimap.key, settings.editorMinimap.default)
-  editorMinimap!: boolean;
-
-  @LocalStorage(settings.editorBracketPairColorization.key, settings.editorBracketPairColorization.default)
-  editorBracketPairColorization!: boolean;
-
-  @LocalStorage(settings.editorIndentationGuides.key, settings.editorIndentationGuides.default)
-  editorIndentationGuides!: boolean;
-
-  @LocalStorage(settings.editorRenderWhitespace.key, settings.editorRenderWhitespace.default)
-  editorRenderWhitespace!: EditorRenderWhitespace;
-
-  @LocalStorage(settings.editorAutoClosing.key, settings.editorAutoClosing.default)
-  editorAutoClosing!: boolean;
-
-  @LocalStorage(settings.editorCursorStyle.key, settings.editorCursorStyle.default)
-  editorCursorStyle!: EditorCursorStyle;
-
-  @LocalStorage(settings.outputFontSize.key)
-  private storedOutputFontSize?: number;
-
-  /**
-   * Até ser alterado, acompanha o tamanho da fonte do editor.
-   */
-  get outputFontSize() {
-    return this.storedOutputFontSize ?? this.editorFontSize;
-  }
-
-  set outputFontSize(value: number) {
-    this.storedOutputFontSize = value;
-  }
-
-  @LocalStorage(settings.outputClearOnRun.key, settings.outputClearOnRun.default)
-  outputClearOnRun!: boolean;
-
-  @LocalStorage(settings.outputAutoScroll.key, settings.outputAutoScroll.default)
-  outputAutoScroll!: boolean;
+  protected readonly sectionId = signal<SettingsSectionId>(this.data?.section ?? "appearance");
+  protected readonly section = computed(() => SECTIONS.find(item => item.id === this.sectionId()) ?? SECTIONS[0]);
 
   constructor() {
     // Uma espera por configuração, para o controle deslizante não registrar

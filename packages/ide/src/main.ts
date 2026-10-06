@@ -1,8 +1,10 @@
 import { enableProdMode } from "@angular/core";
-import { platformBrowser } from "@angular/platform-browser";
+import { bootstrapApplication } from "@angular/platform-browser";
 import * as Sentry from "@sentry/angular";
 
-import { AppModule } from "./app/app.module";
+import { AppComponent } from "./app/app.component";
+import { appConfig } from "./app/app.config";
+import { APP_VERSION } from "./app/version";
 import { environment } from "./environments/environment";
 
 Sentry.init({
@@ -11,7 +13,7 @@ Sentry.init({
   debug: false,
   tracesSampleRate: 0.1,
   replaysOnErrorSampleRate: 0.1,
-  release: "%SENTRY_RELEASE%",
+  release: APP_VERSION.commit ?? "local",
   integrations: [
     Sentry.replayIntegration({
       maskAllInputs: false,
@@ -27,20 +29,6 @@ if (environment.production) {
   enableProdMode();
 }
 
-platformBrowser()
-  .bootstrapModule(AppModule)
-  .then(() => {
-    try {
-      /**
-       *@see https://stackoverflow.com/a/51059335
-       */
-      if ("serviceWorker" in navigator && environment.production) {
-        void navigator.serviceWorker.register("/ngsw-worker.js");
-      }
-    } catch (error: unknown) {
-      console.error("Service worker registration failed:", error);
-    }
-  })
-  .catch((error: unknown) => {
-    console.error(error);
-  });
+bootstrapApplication(AppComponent, appConfig).catch((error: unknown) => {
+  console.error(error);
+});

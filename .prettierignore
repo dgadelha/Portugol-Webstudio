@@ -11,7 +11,9 @@ package-lock.json
 packages/antlr/src/Portugol*.ts
 packages/parser/src/bibliotecas/*.gerado.ts
 packages/parser/tests/fixtures/
-packages/resources/assets/
-packages/resources/recursos.temp/
+packages/resources/bibliotecas/bibliotecas.json
+packages/resources/bibliotecas/bibliotecas.schema.json
+packages/resources/bibliotecas/bibliotecas.yml
+packages/resources/bibliotecas/index.d.ts
 packages/ide/src/index.html
 packages/ide/src/app/changelog.gerado.md

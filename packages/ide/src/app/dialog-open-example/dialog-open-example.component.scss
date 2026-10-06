@@ -1,115 +1,252 @@
+@use "styles/mixins";
+
 :host {
+  overflow: hidden;
+}
+
+.dialog-title {
+  flex-grow: 1;
+  min-width: 0;
+}
+
+.examples {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  flex-grow: 1;
+  min-height: 0;
+}
+
+.list {
   display: flex;
   flex-direction: column;
-  --mat-dialog-supporting-text-size: 14px;
-  --mat-dialog-supporting-text-line-height: 21px;
-  --mat-dialog-supporting-text-color: var(--pws-body-color);
-  height: 100%;
+  min-height: 0;
+  border-right: 1px solid var(--pws-border);
 }
 
-header {
+.search {
   display: flex;
+  flex-shrink: 0;
   align-items: center;
-  padding: 8px 16px;
-  border-bottom: 1px solid var(--pws-border-color);
+  gap: 0.5rem;
+  height: 2.75rem;
+  padding: 0 0.75rem;
+  border-bottom: 1px solid var(--pws-border);
+  cursor: text;
+
+  svg-icon {
+    width: 16px;
+    height: 16px;
+    color: var(--pws-fg-muted);
+  }
+
+  input {
+    flex-grow: 1;
+    min-width: 0;
+    border: 0;
+    outline: none;
+    background: transparent;
+    color: var(--pws-fg);
+    font-size: var(--pws-text-md);
+
+    &::placeholder {
+      color: var(--pws-fg-muted);
+    }
+
+    &::-webkit-search-cancel-button {
+      display: none;
+    }
+  }
+
+  // O campo de busca não tem borda própria: o foco aparece na faixa inteira.
+  &:focus-within {
+    box-shadow: inset 0 -2px 0 var(--pws-focus);
+  }
 }
 
-mat-spinner {
-  margin: 0 auto;
-}
-
-.hidden {
-  display: none !important;
-}
-
-as-split-area {
-  scrollbar-width: thin;
-}
-
-.mat-mdc-tree-node {
-  min-height: 0 !important;
-}
-
-ul {
-  padding-left: 1rem;
-  padding-right: 1rem;
-  box-sizing: border-box;
-  -webkit-user-select: none;
-  -moz-user-select: none;
+.items {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 0.25rem;
   user-select: none;
 
-  li {
-    list-style: none;
-    overflow: hidden;
-    width: 100%;
-    cursor: pointer;
-    display: flex;
-
-    &.active {
-      background-color: rgba(0, 0, 0, 0.1);
-    }
-
-    span {
-      align-self: center;
-    }
+  .spinner {
+    margin: 2rem auto;
   }
 }
 
-.mat-mdc-dialog-content,
-main {
-  display: flex;
-  max-height: 100%;
+.group {
+  margin-bottom: 0.25rem;
 }
 
-main {
-  flex-grow: 1;
+.group-heading {
+  @include mixins.section-label;
+
+  padding: 0.625rem 0.5rem 0.25rem;
 }
 
-::ng-deep .as-split-gutter {
-  background-color: rgba(0, 0, 0, 0.2) !important;
-}
-
-#empty {
-  flex-grow: 1;
+.item {
   display: flex;
   align-items: center;
+  gap: 0.5rem;
+  padding: 0.375rem 0.5rem;
+  border-radius: var(--pws-radius-sm);
+  font-size: var(--pws-text-ui);
+  cursor: pointer;
 
-  p {
-    margin: 0 auto;
+  svg-icon {
+    width: 16px;
+    height: 16px;
+    color: var(--pws-fg-muted);
+  }
+
+  &:hover {
+    background-color: var(--pws-bg-hover);
+  }
+
+  // O item escolhido usa a cor de seleção, com a borda de destaque que o
+  // foco de `aria-activedescendant` não desenharia sozinho.
+  &.active {
+    background-color: var(--pws-bg-active);
+    box-shadow: inset 2px 0 0 var(--pws-accent);
+    color: var(--pws-fg-strong);
   }
 }
 
-#content {
-  width: 100%;
-  padding: 1rem 1.5rem 1.5rem 1.5rem;
-  position: relative;
+.item-name,
+.item-path {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.item-path {
+  margin-left: auto;
+  color: var(--pws-fg-muted);
+  font-size: var(--pws-text-xs);
+}
+
+.empty {
+  padding: 1.5rem;
+  color: var(--pws-fg-muted);
+  text-align: center;
+}
+
+.preview {
   display: flex;
   flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+
+.preview-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--pws-border);
+}
+
+.preview-text {
+  flex-grow: 1;
+  min-width: 0;
 
   h3 {
-    margin: 0;
+    overflow: hidden;
+    font-size: var(--pws-text-lg);
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   p {
-    text-align: justify;
+    display: -webkit-box;
+    margin-top: 0.375rem;
+    overflow: hidden;
+    color: var(--pws-fg-muted);
+    font-size: var(--pws-text-md);
+    line-height: 1.5;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    // As descrições do índice de exemplos separam parágrafos e itens de lista com "\n"
+    white-space: pre-line;
+
+    &:empty {
+      display: none;
+    }
+
+    &.expanded {
+      display: block;
+      max-height: 12rem;
+      overflow-y: auto;
+    }
   }
+
+  .read-more {
+    margin-top: 0.25rem;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--pws-info-fg);
+    font-size: var(--pws-text-ui);
+
+    &:hover {
+      text-decoration: underline;
+    }
+
+    &[hidden] {
+      display: none;
+    }
+  }
+}
+
+// A ação principal fica embaixo da prévia, como nos rodapés dos outros
+// diálogos, com a dica de que o Enter faz o mesmo.
+.preview-footer {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 1rem;
+  padding: 0.75rem 1.25rem;
+  border-top: 1px solid var(--pws-border);
+}
+
+.preview-hint {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  color: var(--pws-fg-muted);
+  font-size: var(--pws-text-ui);
+}
+
+.open-button {
+  height: 32px;
+  padding: 0 1rem;
+  font-size: var(--pws-text-md);
+}
+
+.preview-code {
+  display: flex;
+  flex-grow: 1;
+  min-height: 0;
 
   ngx-monaco-editor {
     flex-grow: 1;
-    margin-bottom: 3.75rem;
+    min-width: 0;
+  }
+}
+
+@media (max-width: 767px) {
+  .examples {
+    grid-template-columns: 1fr;
   }
 
-  button {
-    $left: 15px;
-    $right: 7.5px;
+  .list {
+    border-right: 0;
+  }
 
-    width: calc(100% - (#{$left} + #{$right}));
-    text-transform: uppercase;
-    position: absolute;
-    bottom: 20px;
-    left: $left;
-    right: $right;
-    font-size: 1.15rem;
-    line-height: 3rem;
+  // Em telas pequenas não há prévia: o clique no exemplo já o abre
+  .preview {
+    display: none;
   }
 }

@@ -1,104 +1,203 @@
-header {
+:host {
+  flex-direction: row;
+  overflow: hidden;
+}
+
+svg-icon {
   display: flex;
-  align-items: center;
-  padding: 0.5rem 1rem;
-  border-bottom: 1px solid var(--pws-border-color);
+  flex-shrink: 0;
 }
 
-.radio-group {
-  display: flex;
-  flex-direction: column;
-  margin-top: 1rem;
-
-  .mat-radio-button {
-    margin-bottom: 0.5rem;
-  }
-}
-
-.toggle-group {
-  margin-top: 1rem;
-
-  // No tema M2, a opção escolhida só fica um cinza mais claro: aqui ela usa a
-  // cor principal, como o controle deslizante, os botões de opção e as chaves.
-  --mat-button-toggle-height: 36px;
-  --mat-button-toggle-shape: 0.25rem;
-  --mat-button-toggle-background-color: transparent;
-  --mat-button-toggle-text-color: var(--pws-text-200);
-  --mat-button-toggle-divider-color: var(--pws-border-color);
-  --mat-button-toggle-selected-state-background-color: var(--pws-color-primary);
-  --mat-button-toggle-selected-state-text-color: #000;
-  --mat-button-toggle-state-layer-color: var(--pws-color-primary);
-}
-
-mat-dialog-content {
-  margin-top: 1rem;
-}
-
-.preferences,
-.preference-section {
+.nav {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  flex-shrink: 0;
+  gap: 0.25rem;
+  width: 14rem;
+  padding: 0.75rem;
+  border-right: 1px solid var(--pws-border);
+  background-color: var(--pws-bg-chrome);
 }
 
-.preference-section-header {
+.title {
+  padding: 0.25rem 0.5rem 0.75rem;
+  font-size: var(--pws-text-lg);
+}
+
+.sections {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.section {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  border-radius: 0.25rem;
-  background-color: var(--pws-bg-100);
-  border: 1px solid var(--pws-border-color);
+  height: 2.25rem;
+  padding: 0 0.625rem;
+  border: 0;
+  border-radius: var(--pws-radius-sm);
+  background: transparent;
+  color: var(--pws-fg-muted);
+  font-size: var(--pws-text-md);
+  font-weight: 500;
+  transition:
+    color var(--pws-duration),
+    background-color var(--pws-duration);
+
+  svg-icon {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  &:hover {
+    background-color: var(--pws-bg-hover);
+    color: var(--pws-fg);
+  }
+
+  &[aria-current="page"] {
+    background-color: var(--pws-bg-active);
+    box-shadow: inset 2px 0 0 var(--pws-accent);
+    color: var(--pws-fg-strong);
+  }
 }
 
-// As colunas seguem a largura do diálogo, não a da janela.
-.preferences {
-  container-type: inline-size;
+.main {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  min-width: 0;
+  min-height: 0;
 }
 
-.preference-list {
-  display: grid;
-  grid-template-columns: 1fr;
+.header {
+  position: relative;
+  padding: 1rem 3.5rem 1rem 1.5rem;
+  border-bottom: 1px solid var(--pws-border);
+
+  h3 {
+    font-size: var(--pws-text-lg);
+  }
+
+  p {
+    margin-top: 0.125rem;
+    color: var(--pws-fg-muted);
+    font-size: var(--pws-text-md);
+  }
+
+  .close {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+  }
+}
+
+.body {
+  --settings-body-padding-top: 1.25rem;
+  --settings-body-padding-inline: 1.5rem;
+
+  // As seções consultam a altura disponível (a prévia do editor só fica fixa
+  // no topo quando sobra espaço para rolar o resto).
+  container: settings-body / size;
+  flex-grow: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--settings-body-padding-top) var(--settings-body-padding-inline) 1.25rem;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   gap: 1rem;
+  padding: 0.75rem 1.5rem;
+  border-top: 1px solid var(--pws-border);
+}
 
-  @container (min-width: 560px) {
-    grid-template-columns: repeat(2, 1fr);
+// Em telas estreitas, o aviso encurta e o botão continua numa linha só.
+.saved {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  min-width: 0;
+  color: var(--pws-fg-muted);
+  font-size: var(--pws-text-sm);
+
+  span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
-  @container (min-width: 900px) {
-    grid-template-columns: repeat(3, 1fr);
+  svg-icon {
+    width: 0.875rem;
+    height: 0.875rem;
   }
+}
 
-  .preference {
-    display: flex;
+// Discreto, como o aviso ao lado: só ganha destaque ao passar o mouse.
+.reset {
+  color: var(--pws-fg-muted);
+
+  svg-icon {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+// Em telas pequenas, as seções ficam numa linha acima do conteúdo.
+@media (max-width: 767px) {
+  :host {
     flex-direction: column;
-    align-items: start;
-    padding: 1rem;
-    background-color: var(--pws-bg-200);
-    border: 0.5px solid var(--pws-border-color);
-    border-radius: 0.25rem;
+  }
+
+  .nav {
+    width: auto;
+    border-right: 0;
+    border-bottom: 1px solid var(--pws-border);
+  }
+
+  .sections {
+    flex-direction: row;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .section {
+    flex-shrink: 0;
+  }
+
+  // O fechar sobe para o canto do diálogo, ao lado do título, e não fica
+  // abaixo das seções, no cabeçalho da seção escolhida.
+  :host {
+    position: relative;
+  }
+
+  .title {
+    padding-right: 2.5rem;
+  }
+
+  .header {
+    position: static;
+    padding-right: 1.5rem;
+
+    .close {
+      top: 0.75rem;
+      right: 0.75rem;
+    }
   }
 }
 
-.preference-slider {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-
-  mat-slider {
-    flex-grow: 1;
+// Em celulares, as quatro seções só cabem lado a lado sem os ícones, e o
+// rodapé aperta o espaçamento para o aviso não ser cortado.
+@media (max-width: 479px) {
+  .section svg-icon {
+    display: none;
   }
-}
 
-.slider-value-fix-width {
-  width: 2ch;
-}
-
-.preference-switch {
-  padding-top: 0.75rem;
-}
-
-::ng-deep .preference-switch .mat-mdc-slide-toggle .mat-internal-form-field {
-  gap: 0.5rem;
+  .footer {
+    gap: 0.5rem;
+    padding-inline: 1rem;
+  }
 }
