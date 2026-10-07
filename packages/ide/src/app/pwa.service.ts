@@ -1,6 +1,7 @@
 import { inject, Injector, NgZone, Service, signal } from "@angular/core";
 import { SwUpdate } from "@angular/service-worker";
 import { CreateHotToastRef, HotToastService } from "@ngxpert/hot-toast";
+import { GoogleAnalyticsService } from "ngx-google-analytics";
 import { interval } from "rxjs";
 import { DownloadProgressToastComponent } from "./download-progress-toast/download-progress-toast.component";
 import { NewVersionAvailableComponent } from "./new-version-available/new-version-available.component";
@@ -33,6 +34,7 @@ const OFFLINE_VERDICT_TIMEOUT_MS = 45_000;
 export class PwaService {
   private swUpdate = inject(SwUpdate);
   private toast = inject(HotToastService);
+  private gaService = inject(GoogleAnalyticsService);
   private zone = inject(NgZone);
   private injector = inject(Injector);
 
@@ -150,11 +152,12 @@ export class PwaService {
           this.readyHash = hash;
           this.updateStatus.set("ready");
           this.versionReadyToast?.close();
+          this.gaService.event("pwa_update", "PWA", "mostrado");
 
           this.versionReadyToast = this.toast.success(NewVersionAvailableComponent, {
             data: {
               reload: () => {
-                this.reloadToUpdate();
+                this.reloadToUpdate("aviso");
               },
             },
             autoClose: false,
@@ -170,6 +173,7 @@ export class PwaService {
           // A próxima verificação tenta de novo, e mostra o aviso de novo
           this.finishUpdateDownload();
           this.updateStatus.set("failed");
+          this.gaService.event("pwa_update", "PWA", "falhou");
           break;
         }
 
@@ -194,6 +198,7 @@ export class PwaService {
     // O navegador pode apagar arquivos do cache que a versão aberta ainda usa
     this.swUpdate.unrecoverable.subscribe(event => {
       console.error("PWA: estado irrecuperável", event.reason);
+      this.gaService.event("pwa_update", "PWA", "irrecuperavel");
 
       this.toast.error(
         "Não foi possível carregar uma parte do Portugol Webstudio. Salve seus arquivos e recarregue a página.",
@@ -250,7 +255,12 @@ export class PwaService {
    * só pergunta antes quando o navegador não está guardando nada. A área de trabalho é
    * buscada aqui, e não injetada, para o serviço (criado na inicialização) não carregá-la antes.
    */
-  reloadToUpdate() {
+  /**
+   * Pelo botão Atualizar do aviso de versão nova (`aviso`) ou do Sobre (`sobre`).
+   */
+  reloadToUpdate(origin: "aviso" | "sobre") {
+    this.gaService.event("pwa_update", "PWA", `atualizar_${origin}`);
+
     const workspace = this.injector.get(WorkspaceService);
 
     if (
@@ -329,6 +339,7 @@ export class PwaService {
 
       if (this.announceOfflineReady) {
         this.announceOfflineReady = false;
+        this.gaService.event("pwa_offline_ready", "PWA", "primeira_visita");
 
         this.toast.success("O Portugol Webstudio já pode ser usado sem internet.", {
           duration: 8000,

@@ -66,6 +66,8 @@ const SEVERITIES: Record<PortugolDiagnosticSeverity, ProblemSeverity> = {
 
 type PanelView = "output" | "problems";
 
+export type EditorOrigin = "editor" | "atalho";
+
 @Component({
   selector: "app-tab-editor",
   imports: [
@@ -125,12 +127,17 @@ export class TabEditorComponent implements OnInit, OnDestroy {
    */
   code = "";
 
-  readonly help = output();
+  /**
+   * Se a execução atual terminou com erro, para o `execution_finish`
+   */
+  private runFailed = false;
+
+  readonly help = output<EditorOrigin>();
   readonly settings = output();
   /**
    * Ctrl+O no editor: quem abre o arquivo é a janela, numa aba nova.
    */
-  readonly openFile = output();
+  readonly openFile = output<EditorOrigin>();
   readonly examples = output();
   readonly newTab = output();
   readonly closeTab = output();
@@ -362,6 +369,15 @@ export class TabEditorComponent implements OnInit, OnDestroy {
       next: event => {
         switch (event.type) {
           case "finish": {
+            // Como a execução terminou e quanto durou, em segundos (o tempo inclui a espera
+            // pelo que a pessoa digita)
+            const outcome = event.stopped ? "parado" : this.runFailed ? "erro" : "ok";
+
+            // O `value` vai nas opções: o `event` do ngx-google-analytics descarta o 0
+            this.gaService.event("execution_finish", "Execução", outcome, undefined, undefined, {
+              value: Math.round(event.time / 1000),
+            });
+
             const rendererModal = this.graphicsRendererModal;
 
             if (rendererModal) {
@@ -373,7 +389,20 @@ export class TabEditorComponent implements OnInit, OnDestroy {
           }
 
           case "error": {
-            this.gaService.event("execution_error", "Execução", "Erro em execução de código");
+            this.runFailed = true;
+            this.gaService.event("execution_error", "Execução", this.errorLabel(event.error.message));
+            break;
+          }
+
+          case "parseError": {
+            // O código do Portugol Studio do primeiro erro; erros de sintaxe não têm código
+            this.gaService.event(
+              "execution_compile_error",
+              "Execução",
+              event.errors[0]?.code ?? "sintaxe",
+              event.errors.length,
+            );
+
             break;
           }
 
@@ -389,7 +418,12 @@ export class TabEditorComponent implements OnInit, OnDestroy {
       },
 
       error: error => {
-        this.gaService.event("execution_runner_error", "Execução", "Erro ao carregar o runner para rodar o código");
+        // Só o tipo do erro: a mensagem pode trazer partes do código
+        this.gaService.event(
+          "execution_runner_error",
+          "Execução",
+          error instanceof Error ? error.name : "desconhecido",
+        );
 
         captureException(error, { extra: { code: this.code } });
       },
@@ -468,8 +502,29 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     this._settings$?.unsubscribe();
   }
 
-  async runCode() {
-    this.gaService.event("editor_start_execution", "Editor", "Botão de Iniciar Execução");
+  /**
+   * A mensagem do erro sem nada do programa, para os erros iguais serem contados juntos e
+   * nada do que foi digitado sair do navegador: textos entre aspas (menos os nomes de
+   * tipos, como 'cadeia'), valores entre parênteses, o nome depois de dois-pontos no fim
+   * (como em "Função não declarada: calcular") e números. O Analytics guarda até 100
+   * caracteres.
+   */
+  private errorLabel(message: string) {
+    const typeNames = new Set(["inteiro", "real", "cadeia", "caracter", "logico", "vazio"]);
+
+    return message
+      .replaceAll(/'([^']*)'/g, (quoted, content: string) => (typeNames.has(content) ? quoted : "'…'"))
+      .replaceAll(/"[^"]*"/g, '"…"')
+      .replaceAll(/\([^)]*\)/g, "(…)")
+      .replace(/:\s*\S+$/, ": …")
+      .replaceAll(/\d+(?:[.,]\d+)?/g, "N")
+      .trim()
+      .slice(0, 100);
+  }
+
+  async runCode(origin: EditorOrigin) {
+    this.gaService.event("editor_start_execution", "Editor", origin);
+    this.runFailed = false;
     this.showPanel("output");
     // O que ficou no campo de toque de uma execução interrompida não pode
     // virar a resposta do próximo `leia`.
@@ -505,8 +560,11 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     }
   }
 
-  stopCode() {
-    this.gaService.event("editor_stop_execution", "Editor", "Botão de Parar Execução");
+  /**
+   * Pelo botão Parar, ou ao fechar a janela de gráficos (pelo botão dela ou com Esc).
+   */
+  stopCode(origin: "editor" | "janela_graficos") {
+    this.gaService.event("editor_stop_execution", "Editor", origin);
     this.executor.stop();
 
     if (this.transpiling) {
@@ -529,25 +587,29 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     switch (atalhoDoEvento(event)) {
       case "f1": {
         event.preventDefault();
-        this.openHelp();
+        this.openHelp("atalho");
         break;
       }
 
       case "ctrl+s": {
         event.preventDefault();
-        this.saveFile();
+        this.saveFromEditor("atalho");
         break;
       }
 
       case "ctrl+o": {
         event.preventDefault();
-        this.openFile.emit();
+        this.openFile.emit("atalho");
         break;
       }
 
       case "ctrl+enter": {
         event.preventDefault();
-        void this.runCode();
+
+        if (this.canRun()) {
+          void this.runCode("atalho");
+        }
+
         break;
       }
 
@@ -583,7 +645,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
 
         // Sem resultado é o Esc, que também encerra o programa.
         if (result?.stopProgram !== false) {
-          this.stopCode();
+          this.stopCode("janela_graficos");
         }
       }
     });
@@ -630,6 +692,15 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     return { blob, fileName };
   }
 
+  /**
+   * O Salvar do editor, pelo botão ou pelo Ctrl+S. O "Baixar" do Salvar como também usa o
+   * `saveFile`, mas tem o próprio evento.
+   */
+  saveFromEditor(origin: EditorOrigin) {
+    this.gaService.event("editor_save_file", "Editor", origin);
+    this.saveFile();
+  }
+
   saveFile(compat = false) {
     const { blob, fileName } = this.prepareFile("binary", compat);
 
@@ -670,12 +741,15 @@ export class TabEditorComponent implements OnInit, OnDestroy {
       await writable.write(blob);
       await writable.close();
 
+      this.gaService.event("editor_save_as_file_picker_result", "Editor", "ok");
       this.toast.success("Arquivo salvo com sucesso!", { duration: 3000 });
     } catch (error) {
       if (error instanceof Error && error.name === "AbortError") {
+        this.gaService.event("editor_save_as_file_picker_result", "Editor", "cancelado");
         return;
       }
 
+      this.gaService.event("editor_save_as_file_picker_result", "Editor", "erro");
       console.error(error);
 
       this.toast.error("Ocorreu um erro ao salvar o arquivo!", { duration: 5000 });
@@ -713,9 +787,25 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     }
 
     this.outputSize = size;
+    this.gaService.event("split_drag", "Divisores", "saida", undefined, undefined, { value: Math.round(size) });
 
     if (!this.outputCollapsed) {
       this.lastOpenOutputSize = size;
+    }
+  }
+
+  /**
+   * O código gerado fica escondido à direita do editor, atrás de um divisor de 1px: quem o
+   * arrasta abre o JavaScript gerado. O valor é a largura do código gerado, em %.
+   */
+  onGeneratedCodeDragEnd({ sizes }: SplitGutterInteractionEvent) {
+    const size = sizes[1];
+
+    if (typeof size === "number") {
+      // 0 = o código gerado foi fechado de novo
+      this.gaService.event("split_drag", "Divisores", "codigo_gerado", undefined, undefined, {
+        value: Math.round(size),
+      });
     }
   }
 
@@ -735,9 +825,19 @@ export class TabEditorComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * As abas "Saída" e "Problemas" do painel. O `showPanel` também é chamado ao executar,
+   * e só o clique conta.
+   */
+  selectPanelTab(view: PanelView) {
+    this.gaService.event("output_panel_tab", "Saída", view);
+    this.showPanel(view);
+  }
+
+  /**
    * Pela barra de status: abre a lista de problemas e leva o foco até ela.
    */
   showProblems() {
+    this.gaService.event("output_panel_tab", "Barra de status", "problems_barra_status");
     this.showPanel("problems");
 
     focusAfterRender(this.injector, () => this.panelTab(this.ids().problemsTab));
@@ -784,6 +884,8 @@ export class TabEditorComponent implements OnInit, OnDestroy {
   }
 
   toggleOutput() {
+    this.gaService.event("output_toggle", "Saída", this.outputCollapsed ? "mostrar" : "recolher");
+
     if (this.outputCollapsed) {
       this.expandOutput();
     } else {
@@ -796,6 +898,8 @@ export class TabEditorComponent implements OnInit, OnDestroy {
    * seguida do Enter.
    */
   sendProgramInput() {
+    this.gaService.event("touch_input_submit", "Saída", "Campo de entrada");
+
     for (const char of this.programInput) {
       this.executor.stdIn.next(char);
     }
@@ -805,6 +909,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
   }
 
   clearOutput() {
+    this.gaService.event("output_clear", "Saída", "Limpar saída");
     this.executor.stdOut = "";
 
     // Com a saída vazia, o botão fica desativado e perderia o foco: ele vai
@@ -853,7 +958,11 @@ export class TabEditorComponent implements OnInit, OnDestroy {
       id: "runCode",
       keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, monaco.KeyMod.WinCtrl | monaco.KeyCode.Enter],
       label: "Executar código",
-      run: this.runCode.bind(this),
+      run: () => {
+        if (this.canRun()) {
+          void this.runCode("atalho");
+        }
+      },
     });
 
     editor.addAction({
@@ -861,7 +970,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
       keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, monaco.KeyMod.WinCtrl | monaco.KeyCode.KeyS],
       label: "Salvar arquivo",
       run: () => {
-        this.saveFile();
+        this.saveFromEditor("atalho");
       },
     });
 
@@ -870,7 +979,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
       keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyO, monaco.KeyMod.WinCtrl | monaco.KeyCode.KeyO],
       label: "Abrir arquivo",
       run: () => {
-        this.openFile.emit();
+        this.openFile.emit("atalho");
       },
     });
 
@@ -878,7 +987,9 @@ export class TabEditorComponent implements OnInit, OnDestroy {
       id: "openHelp",
       keybindings: [monaco.KeyCode.F1],
       label: "Ajuda",
-      run: this.openHelp.bind(this),
+      run: () => {
+        this.openHelp("atalho");
+      },
     });
 
     // Os atalhos de abas do IDE também valem com o cursor no código
@@ -957,13 +1068,16 @@ export class TabEditorComponent implements OnInit, OnDestroy {
       });
   }
 
-  openHelp() {
-    this.gaService.event("editor_help_tab_open", "Editor", "Nova aba de ajuda através do Editor");
-    this.help.emit();
+  /**
+   * A aba da Ajuda registra o próprio evento (`help_tab_open` ou `help_tab_select`), com
+   * esta origem.
+   */
+  openHelp(origin: EditorOrigin) {
+    this.help.emit(origin);
   }
 
   openSettings() {
-    this.gaService.event("editor_settings_open", "Editor", "Abrir diálogo de configurações");
+    this.gaService.event("open_settings_dialog", "Editor", "editor");
     this.settings.emit();
   }
 
@@ -974,11 +1088,11 @@ export class TabEditorComponent implements OnInit, OnDestroy {
 
     this.sharing = true;
 
-    const shareUrl = await this.shareService.share(this.code);
+    const result = await this.shareService.share(this.code);
 
-    if (shareUrl) {
+    if (result.ok) {
       this.toast.show(this.shareToastTemplate(), {
-        data: { url: shareUrl },
+        data: { url: result.value },
         duration: 30_000,
         dismissible: true,
         // O link precisa ser lido e copiado: o aviso só some ao ser fechado,
@@ -987,13 +1101,13 @@ export class TabEditorComponent implements OnInit, OnDestroy {
         ariaLive: "polite",
       });
 
-      this.gaService.event("share_code_success", "Editor", "Código compartilhado com sucesso");
+      this.gaService.event("share_code_success", "Editor", "editor");
     } else {
       this.toast.error("Ocorreu um erro ao compartilhar o arquivo. Tente novamente mais tarde.", {
         duration: 5000,
       });
 
-      this.gaService.event("share_code_error", "Editor", "Erro ao compartilhar código");
+      this.gaService.event("share_code_error", "Editor", result.reason);
     }
 
     setTimeout(() => {
@@ -1001,8 +1115,21 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     }, 1000);
   }
 
+  /**
+   * A área de transferência pode recusar (sem permissão, ou fora de um contexto seguro): o
+   * aviso com o link continua aberto para copiar à mão.
+   */
   async copyShareUrl(toastRef: CreateHotToastRef<{ url: string }>) {
-    await navigator.clipboard.writeText(toastRef.data.url);
+    try {
+      await navigator.clipboard.writeText(toastRef.data.url);
+    } catch (error) {
+      console.error(error);
+      this.gaService.event("share_copy_link", "Editor", "erro");
+      this.toast.error("Não foi possível copiar o link. Selecione o link e copie.", { duration: 5000 });
+      return;
+    }
+
+    this.gaService.event("share_copy_link", "Editor", "ok");
     toastRef.close();
     this.toast.success("Link copiado.", { duration: 3000 });
   }
@@ -1054,6 +1181,8 @@ export class TabEditorComponent implements OnInit, OnDestroy {
    * Leva o cursor até o problema e devolve o foco ao código.
    */
   revealProblem(problem: Problem) {
+    this.gaService.event("problem_reveal", "Problemas", problem.severity);
+
     const editor = this.codeEditor;
 
     if (!editor) {

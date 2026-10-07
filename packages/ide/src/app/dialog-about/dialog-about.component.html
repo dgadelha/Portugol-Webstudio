@@ -52,7 +52,7 @@
         </button>
 
         @if (pwa.updateStatus() === "ready") {
-          <button type="button" class="btn btn-primary btn-sm" (click)="pwa.reloadToUpdate()">Atualizar</button>
+          <button type="button" class="btn btn-primary btn-sm" (click)="pwa.reloadToUpdate('sobre')">Atualizar</button>
         }
       </div>
 

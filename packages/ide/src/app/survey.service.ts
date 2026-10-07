@@ -64,8 +64,11 @@ export class SurveyService {
             return;
           }
 
-          this.save({ ...state, shown: (state.shown ?? 0) + 1, lastShownAt: Date.now() });
-          this.gaService.event("survey_invite_shown", "Pesquisa", SURVEY.id);
+          const shown = (state.shown ?? 0) + 1;
+
+          this.save({ ...state, shown, lastShownAt: Date.now() });
+          // O valor é a vez em que o convite aparece para esta pessoa (1, 2, 3…)
+          this.gaService.event("survey_invite_shown", "Pesquisa", SURVEY.id, shown);
 
           this.inviteToast = this.toast.show<SurveyInviteData>(SurveyInviteComponent, {
             data: {
@@ -81,6 +84,13 @@ export class SurveyService {
             icon: SurveyInviteIconComponent,
             autoClose: false,
             dismissible: true,
+          });
+
+          // O X do próprio aviso: "Agora não" e responder fecham pelo código e já são contados
+          this.inviteToast.afterClosed.subscribe(({ dismissedByAction }) => {
+            if (dismissedByAction) {
+              this.gaService.event("survey_invite_close", "Pesquisa", SURVEY.id);
+            }
           });
         });
       }, INVITE_DELAY_MS);

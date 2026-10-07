@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { HotToastRef } from "@ngxpert/hot-toast";
+import { GoogleAnalyticsService } from "ngx-google-analytics";
 
 import { WorkspaceService } from "../workspace.service";
 
@@ -16,12 +17,14 @@ export class NewVersionAvailableComponent {
   public toastRef = inject<HotToastRef<{ reload: () => void }>>(HotToastRef, { optional: true });
 
   readonly persistenceAvailable = inject(WorkspaceService).persistenceAvailable;
+  private readonly gaService = inject(GoogleAnalyticsService);
 
   onReload() {
     this.toastRef?.data.reload();
   }
 
   onIgnore() {
+    this.gaService.event("pwa_update", "PWA", "ignorar");
     this.toastRef?.close();
   }
 }

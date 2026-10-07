@@ -16,7 +16,7 @@ import {
   untracked,
   viewChild,
 } from "@angular/core";
-import { AngularSplitModule } from "angular-split";
+import { AngularSplitModule, SplitGutterInteractionEvent } from "angular-split";
 import { AngularSvgIconModule } from "angular-svg-icon";
 import { HotToastService } from "@ngxpert/hot-toast";
 import { GoogleAnalyticsService } from "ngx-google-analytics";
@@ -33,6 +33,12 @@ import { criarAjudaDasBibliotecas } from "./bibliotecas";
 import { AjudaTopico, TreeItem } from "./types";
 
 const AJUDA_BASE = "assets/recursos/ajuda/";
+
+/**
+ * O que abriu um tópico: a árvore, um link no conteúdo, ou a abertura da Ajuda (uma aba
+ * nova, ou um endereço `#ajuda=`).
+ */
+type OrigemTopico = "arvore" | "link" | "abertura";
 
 @Component({
   selector: "app-tab-help",
@@ -103,7 +109,7 @@ export class TabHelpComponent implements OnInit, OnDestroy {
       if (topico) {
         untracked(() => {
           this.workspace.helpTopicRequest.set(null);
-          this.openTopic(topico);
+          this.openTopic(topico, "abertura");
         });
       }
     });
@@ -125,9 +131,11 @@ export class TabHelpComponent implements OnInit, OnDestroy {
         const salvo = this.workspace.tabs().find(tab => tab.id === this.tabId())?.contents;
         const pedido = this.#topicoPendente ?? salvo;
         const inicial = (pedido && this.#topicos.get(pedido)) || ajudaWithLibs[0];
+        // Restaurar a aba ao recarregar não é uma visita: só a Ajuda recém-aberta conta
+        const origem = !salvo || this.#topicoPendente ? "abertura" : undefined;
 
         this.#topicoPendente = undefined;
-        this.loadItem(inicial);
+        this.loadItem(inicial, origem);
 
         // Depois que a árvore desenha os tópicos: os dois primeiros grupos
         // começam abertos, e as pastas até o tópico inicial também.
@@ -184,9 +192,26 @@ export class TabHelpComponent implements OnInit, OnDestroy {
     return (item.children?.length ?? 0) > 0;
   }
 
-  loadItem(item: TreeItem) {
-    this.gaService.event("help_navigation", "Ajuda", item.arquivo ?? item.id);
-    this.gaService.pageView(item.arquivo ?? item.id, item.text, item.arquivo ?? item.id);
+  /**
+   * O divisor entre a lista de tópicos e o conteúdo. O valor é o tamanho da lista, em pixels.
+   */
+  onSidebarDragEnd({ sizes }: SplitGutterInteractionEvent) {
+    const size = sizes[0];
+
+    if (typeof size === "number") {
+      this.gaService.event("split_drag", "Divisores", "ajuda_lista", undefined, undefined, { value: Math.round(size) });
+    }
+  }
+
+  /**
+   * Abre um tópico. A `origem` diz o que levou a ele, para o Analytics; sem ela (a aba
+   * restaurada ao recarregar), nada é registrado, e reabrir o tópico atual também não.
+   */
+  loadItem(item: TreeItem, origem?: OrigemTopico) {
+    if (origem && item !== this.current) {
+      this.#registrarVisita(item, origem);
+    }
+
     this.current = item;
     this.#rolarParaTopo = true;
 
@@ -224,7 +249,7 @@ export class TabHelpComponent implements OnInit, OnDestroy {
       const item = this.#encontrar(this.topicos, row.dataset["topico"]);
 
       if (item) {
-        this.loadItem(item);
+        this.loadItem(item, "arvore");
       }
 
       return;
@@ -245,7 +270,7 @@ export class TabHelpComponent implements OnInit, OnDestroy {
     }
 
     event.preventDefault();
-    this.openTopic(arquivo);
+    this.openTopic(arquivo, "link");
   }
 
   /**
@@ -253,7 +278,7 @@ export class TabHelpComponent implements OnInit, OnDestroy {
    * abrindo as pastas da árvore até ele. Antes de os tópicos carregarem, o
    * pedido espera por eles.
    */
-  openTopic(arquivo: string) {
+  openTopic(arquivo: string, origem?: OrigemTopico) {
     const destino = this.#topicos.get(arquivo);
 
     if (!destino) {
@@ -263,7 +288,34 @@ export class TabHelpComponent implements OnInit, OnDestroy {
 
     this.#topicoPendente = undefined;
     this.#expandirAte(destino);
-    this.loadItem(destino);
+    this.loadItem(destino, origem);
+  }
+
+  /**
+   * Cada tópico aberto vira um `page_view` com o caminho na árvore como título ("Linguagem
+   * Portugol / Tipos / Vazio") e o endereço `#ajuda=` do tópico. É um evento, e não o
+   * `config` do `pageView`, que trocaria o endereço e os parâmetros (como o `app_channel`)
+   * de todos os eventos seguintes. A navegação pela árvore e os links do conteúdo têm
+   * eventos próprios.
+   */
+  #registrarVisita(item: TreeItem, origem: OrigemTopico) {
+    const caminho = item.arquivo ?? item.id;
+    const titulos = [item.text];
+
+    for (let pai = this.#pais.get(item); pai; pai = this.#pais.get(pai)) {
+      titulos.unshift(pai.text);
+    }
+
+    this.gaService.gtag("event", "page_view", {
+      page_title: titulos.join(" / "),
+      page_location: `${location.origin}${location.pathname}#ajuda=${caminho}`,
+    });
+
+    if (origem === "arvore") {
+      this.gaService.event("help_navigation", "Ajuda", caminho);
+    } else if (origem === "link") {
+      this.gaService.event("help_link", "Ajuda", caminho);
+    }
   }
 
   #expandirAte(item: TreeItem) {

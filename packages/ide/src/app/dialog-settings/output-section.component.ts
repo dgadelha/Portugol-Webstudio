@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { AngularSvgIconModule } from "angular-svg-icon";
+import { GoogleAnalyticsService } from "ngx-google-analytics";
 import { LocalStorage, LocalStorageService } from "ngx-webstorage";
 import { settings } from "../../settings";
 import { FontSizeControlComponent } from "./font-size-control.component";
@@ -14,6 +15,7 @@ import { FontSizeControlComponent } from "./font-size-control.component";
 })
 export class OutputSectionComponent {
   private localStorageService = inject(LocalStorageService);
+  private gaService = inject(GoogleAnalyticsService);
 
   @LocalStorage(settings.editorFontSize.key, settings.editorFontSize.default)
   editorFontSize!: number;
@@ -51,7 +53,12 @@ export class OutputSectionComponent {
   @LocalStorage(settings.outputShowExecutionTime.key, settings.outputShowExecutionTime.default)
   outputShowExecutionTime!: boolean;
 
+  /**
+   * Apagar a configuração não passa pelo `settings_change` do diálogo (que ignora as
+   * chaves apagadas, como as do "Restaurar padrões"): o evento sai daqui.
+   */
   followEditor() {
+    this.gaService.event("settings_change", "Configurações", `${settings.outputFontSize.key}=editor`);
     this.localStorageService.clear(settings.outputFontSize.key);
   }
 }

@@ -9,7 +9,7 @@
     aria-label="Executar"
     aria-keyshortcuts="Control+Enter"
     [attr.aria-disabled]="!canRun() || null"
-    (click)="canRun() && runCode()"
+    (click)="canRun() && runCode('editor')"
   >
     <svg-icon src="assets/icon-start.svg" class="icon-green" aria-hidden="true" />
   </button>
@@ -22,7 +22,7 @@
     appTooltipPosition="right"
     aria-label="Parar"
     [attr.aria-disabled]="!canStop() || null"
-    (click)="canStop() && stopCode()"
+    (click)="canStop() && stopCode('editor')"
   >
     <svg-icon src="assets/mdi/square-rounded-outline.svg" class="icon-red" aria-hidden="true" />
   </button>
@@ -38,7 +38,7 @@
     appTooltipPosition="right"
     aria-label="Abrir arquivo"
     aria-keyshortcuts="Control+O"
-    (click)="openFile.emit()"
+    (click)="openFile.emit('editor')"
   >
     <svg-icon src="assets/mdi/folder-open-outline.svg" class="icon-yellow" aria-hidden="true" />
   </button>
@@ -52,10 +52,7 @@
     appTooltipPosition="right"
     aria-label="Salvar"
     aria-keyshortcuts="Control+S"
-    gaEvent="editor_save_file"
-    gaCategory="editor"
-    gaLabel="Botão de Salvar arquivo"
-    (click)="saveFile()"
+    (click)="saveFromEditor('editor')"
   >
     <svg-icon src="assets/mdi/content-save-outline.svg" class="icon-blue" aria-hidden="true" />
   </button>
@@ -112,7 +109,7 @@
     appTooltipPosition="right"
     aria-label="Ajuda"
     aria-keyshortcuts="F1"
-    (click)="openHelp()"
+    (click)="openHelp('editor')"
   >
     <svg-icon src="assets/mdi/help-circle-outline.svg" class="icon-blue" aria-hidden="true" />
   </button>
@@ -126,9 +123,6 @@
     appTooltip="Configurações"
     appTooltipPosition="right"
     aria-label="Configurações"
-    gaEvent="open_settings"
-    gaCategory="Interface"
-    gaLabel="Botão de Configurações da barra de atividades"
     (click)="openSettings()"
   >
     <svg-icon src="assets/mdi/cog-outline.svg" class="icon-yellow" aria-hidden="true" />
@@ -214,7 +208,7 @@
   (dragEnd)="onSplitDragEnd($event)"
 >
   <as-split-area size="*">
-    <as-split direction="horizontal" class="thin-split" [gutterSize]="1">
+    <as-split direction="horizontal" class="thin-split" [gutterSize]="1" (dragEnd)="onGeneratedCodeDragEnd($event)">
       <as-split-area [size]="100">
         <ngx-monaco-editor
           [options]="codeEditorOptions"
@@ -242,7 +236,7 @@
             [attr.aria-controls]="ids().outputPanel"
             [attr.aria-selected]="panelView() === 'output'"
             [attr.tabindex]="panelView() === 'output' ? 0 : -1"
-            (click)="showPanel('output')"
+            (click)="selectPanelTab('output')"
             (keydown)="onPanelTabsKeydown($event)"
           >
             Saída
@@ -256,7 +250,7 @@
             [attr.aria-controls]="ids().problemsPanel"
             [attr.aria-selected]="panelView() === 'problems'"
             [attr.tabindex]="panelView() === 'problems' ? 0 : -1"
-            (click)="showPanel('problems')"
+            (click)="selectPanelTab('problems')"
             (keydown)="onPanelTabsKeydown($event)"
           >
             Problemas

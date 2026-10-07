@@ -43,6 +43,13 @@ import { isMeaningfulCode, Tab, TabType } from "./workspace.types";
  * O IDE no formato do VS Code: barra de atividades à esquerda, abas em cima do
  * conteúdo e barra de status embaixo.
  */
+/**
+ * De onde veio a ação, enviado como rótulo dos eventos do Analytics: a aba Inicial, o
+ * editor, a barra de abas, um atalho de teclado, um atalho do app instalado (ou um
+ * endereço `#...`), um link da Ajuda ou a barra de status.
+ */
+type Origin = "inicio" | "editor" | "abas" | "atalho" | "app" | "link" | "barra_status";
+
 @Component({
   selector: "app-root",
   imports: [
@@ -80,6 +87,8 @@ export class AppComponent implements OnInit {
   private survey = inject(SurveyService);
 
   private readonly tablist = viewChild.required<ElementRef<HTMLElement>>("tablist");
+  private readonly fileInput = viewChild.required<ElementRef<HTMLInputElement>>("fileInput");
+  private openFileOrigin: Origin = "inicio";
   private readonly editors = viewChildren(TabEditorComponent);
 
   readonly tabs = this.workspace.tabs;
@@ -150,7 +159,7 @@ export class AppComponent implements OnInit {
     switch (atalhoDoEvento(event)) {
       case "alt+n": {
         event.preventDefault();
-        this.addTab();
+        this.newTab("atalho");
         break;
       }
 
@@ -168,7 +177,7 @@ export class AppComponent implements OnInit {
     const tab = this.workspace.activeTab();
 
     if (tab) {
-      this.closeTab(tab);
+      this.closeTab(tab, "atalho");
     }
   }
 
@@ -186,19 +195,19 @@ export class AppComponent implements OnInit {
     switch (hash) {
       case "#novo": {
         this.clearHash();
-        this.addTab();
+        this.newTab("app");
         return;
       }
 
       case "#exemplos": {
         this.clearHash();
-        this.openExamplesDialog();
+        this.openExamplesDialog("app");
         return;
       }
 
       case "#ajuda": {
         this.clearHash();
-        this.upsertHelpTab();
+        this.upsertHelpTab("app");
         return;
       }
 
@@ -210,7 +219,7 @@ export class AppComponent implements OnInit {
       void this.loadSharedCode(hash.slice(7));
     } else if (hash.startsWith("#ajuda=")) {
       this.clearHash();
-      this.upsertHelpTab();
+      this.upsertHelpTab("link");
 
       // Um `%` solto num endereço colado à mão faz o `decodeURIComponent` lançar.
       let topico: string;
@@ -255,16 +264,16 @@ export class AppComponent implements OnInit {
 
   private async loadSharedCode(hash: string) {
     const loading = this.toast.loading("Carregando código compartilhado…");
-    const data = await this.shareService.load(hash);
+    const result = await this.shareService.load(hash);
 
     loading.close();
 
-    if (data) {
-      this.addTab(`Código compartilhado (#${hash})`, data);
-      this.gaService.event("load_shared_code_success", "Interface", "Código compartilhado carregado");
+    if (result.ok) {
+      this.addTab(`Código compartilhado (#${hash})`, result.value);
+      this.gaService.event("load_shared_code_success", "Interface", "link");
     } else {
       this.toast.error("Erro ao carregar código compartilhado", { duration: 10_000, dismissible: true });
-      this.gaService.event("load_shared_code_error", "Interface", "Erro ao carregar código compartilhado");
+      this.gaService.event("load_shared_code_error", "Interface", result.reason);
     }
   }
 
@@ -313,9 +322,9 @@ export class AppComponent implements OnInit {
     }
 
     if (action.dataset["tabAction"] === "close") {
-      this.closeTab(tab);
+      this.closeTab(tab, "abas");
     } else {
-      this.changeTabTitle(tab);
+      this.changeTabTitle(tab, "abas");
     }
   }
 
@@ -328,13 +337,13 @@ export class AppComponent implements OnInit {
 
     if (tab && event.key === "Delete") {
       event.preventDefault();
-      this.closeTab(tab);
+      this.closeTab(tab, "atalho");
       return;
     }
 
     if (tab && event.key === "F2") {
       event.preventDefault();
-      this.changeTabTitle(tab);
+      this.changeTabTitle(tab, "atalho");
       return;
     }
 
@@ -378,11 +387,27 @@ export class AppComponent implements OnInit {
     );
   }
 
+  /**
+   * Uma aba vazia pedida por quem usa. Só ela conta como `new_tab_top`: as abas de
+   * arquivos, exemplos e links têm eventos próprios.
+   */
+  newTab(origin: Origin) {
+    this.addTab();
+    this.gaService.event("new_tab_top", "Editor", origin, this.workspace.tabs().length);
+  }
+
   addTab(title?: string, contents?: string) {
     this.workspace.addTab(title, contents);
-    this.gaService.event("new_tab_top", "Editor", "Nova aba", this.workspace.tabs().length);
     this.selectTab(this.workspace.activeTabId());
     this.focusNewTab(this.workspace.activeTab());
+  }
+
+  /**
+   * O seletor de arquivos é um só: a origem fica guardada até o arquivo ser escolhido.
+   */
+  chooseFiles(origin: Origin) {
+    this.openFileOrigin = origin;
+    this.fileInput().nativeElement.click();
   }
 
   /**
@@ -397,17 +422,23 @@ export class AppComponent implements OnInit {
     input.value = "";
 
     for (const file of files) {
-      this.gaService.event("open_file", "Interface", "Abrir arquivo");
+      this.gaService.event("open_file", "Interface", this.openFileOrigin);
       this.addTab(file.name, await this.fileService.getContents(file));
     }
   }
 
-  closeTab(tab: Tab) {
+  /**
+   * Pelo X ou o clique do meio (`abas`), ou por Delete e Alt+W (`atalho`).
+   */
+  closeTab(tab: Tab, origin: "abas" | "atalho") {
     // A aba fechada leva junto o botão que estava em foco: o foco vai para a
     // aba que ficou no lugar.
     const confirmClose = () => {
       this.workspace.closeTab(tab.id);
-      this.gaService.event("close_tab", "Interface", "Fechar aba", this.workspace.tabs().length);
+      // O `value` vai nas opções: o `event` do ngx-google-analytics descarta o 0 (a última aba)
+      this.gaService.event("close_tab", "Interface", origin, undefined, undefined, {
+        value: this.workspace.tabs().length,
+      });
       this.focusActiveTab();
     };
 
@@ -425,54 +456,51 @@ export class AppComponent implements OnInit {
     const ref = this.dialog.open<boolean>(DialogConfirmCloseTabComponent, {
       data: { title: tab.title },
       width: "28rem",
-      ariaLabelledBy: "dialogo-fechar-aba-titulo",
+      ariaLabelledBy: "exampleDialog-fechar-aba-titulo",
       restoreFocus: ACTIVE_TAB_SELECTOR,
     });
 
     ref.closed.subscribe(result => {
+      // Se a confirmação evita perder código: quantas vezes a pessoa desiste de fechar
+      this.gaService.event("close_tab_confirm", "Interface", result ? "fechar" : "manter");
+
       if (result) {
         confirmClose();
       }
     });
   }
 
-  changeTabTitle(tab: Tab) {
+  /**
+   * `edit_tab_title` conta o nome trocado, e `edit_tab_title_cancel`, a desistência, com a
+   * origem: o duplo clique ou o lápis (`abas`), ou o F2 (`atalho`). O nome não é enviado.
+   */
+  changeTabTitle(tab: Tab, origin: "abas" | "atalho") {
     if (tab.type !== "editor") {
       return;
     }
 
-    this.gaService.event("edit_tab_title", "Interface", "Editar título de aba");
-
     const ref = this.dialog.open<string>(DialogRenameTabComponent, {
       data: { title: tab.title },
       width: "28rem",
-      ariaLabelledBy: "dialogo-renomear-aba-titulo",
+      ariaLabelledBy: "exampleDialog-renomear-aba-titulo",
       restoreFocus: ACTIVE_TAB_SELECTOR,
     });
 
     ref.closed.subscribe(result => {
+      this.gaService.event(result ? "edit_tab_title" : "edit_tab_title_cancel", "Interface", origin);
+
       if (result) {
         this.workspace.renameTab(tab.id, result);
       }
     });
   }
 
-  upsertHelpTab() {
-    this.upsertSingleTab(
-      this.workspace.upsertHelpTab(),
-      "help",
-      "Nova aba de ajuda",
-      "Selecionar aba de ajuda já aberta",
-    );
+  upsertHelpTab(origin: Origin) {
+    this.upsertSingleTab(this.workspace.upsertHelpTab(), "help", origin, origin);
   }
 
-  upsertChangelogTab() {
-    this.upsertSingleTab(
-      this.workspace.upsertChangelogTab(),
-      "changelog",
-      "Nova aba de novidades",
-      "Selecionar aba de novidades já aberta",
-    );
+  upsertChangelogTab(origin: "inicio" | "sobre") {
+    this.upsertSingleTab(this.workspace.upsertChangelogTab(), "changelog", origin, origin);
   }
 
   /**
@@ -489,31 +517,52 @@ export class AppComponent implements OnInit {
     this.focusNewTab(this.workspace.activeTab());
   }
 
-  openExamplesDialog() {
-    this.gaService.event("open_examples_dialog", "Interface", "Abrir diálogo de exemplos");
+  openExamplesDialog(origin: Origin) {
+    this.gaService.event("open_examples_dialog", "Interface", origin);
 
-    const ref = this.dialog.open<{ title: string; code: string }>(DialogOpenExampleComponent, {
-      width: "min(92vw, 960px)",
-      height: "min(85dvh, 640px)",
-      ariaLabelledBy: "dialogo-exemplos-titulo",
-    });
+    const ref = this.dialog.open<{ title: string; code: string; file?: string }, unknown, DialogOpenExampleComponent>(
+      DialogOpenExampleComponent,
+      {
+        width: "min(92vw, 960px)",
+        height: "min(85dvh, 640px)",
+        ariaLabelledBy: "exampleDialog-exemplos-titulo",
+      },
+    );
+
+    const exampleDialog = ref.componentInstance;
 
     ref.closed.subscribe(example => {
+      // Só se algo foi buscado, e sem o texto da busca: se ela levou a um exemplo, não achou
+      // nada, ou a pessoa desistiu. O valor é o número de resultados.
+      if (exampleDialog?.query.trim()) {
+        const results = exampleDialog.filtered.length;
+        const outcome = example ? "aberto" : results === 0 ? "sem_resultado" : "fechado";
+
+        this.gaService.event("examples_search", "Diálogo de Exemplos", outcome, undefined, undefined, {
+          value: results,
+        });
+      }
+
       if (example) {
-        this.gaService.event("open_example", "Diálogo de Exemplos", `Abrir exemplo: ${example.title}`);
+        this.gaService.event("open_example", "Diálogo de Exemplos", example.file ?? example.title);
         this.addTab(example.title, example.code);
       }
     });
   }
 
+  openStatusBarSettings() {
+    this.gaService.event("open_settings_dialog", "Barra de status", "barra_status");
+    this.openSettingsDialog("editor");
+  }
+
   openSettingsDialog(section?: SettingsSectionId) {
-    // A aba Inicial e o editor já registram de onde o diálogo foi aberto.
+    // A aba Inicial e o editor registram o próprio evento; a barra de status, o dela.
     this.dialog.open(DialogSettingsComponent, {
       data: { section },
       width: "min(92vw, 768px)",
       // Alto o bastante para a prévia do editor e os controles abaixo dela
       height: "min(90dvh, 720px)",
-      ariaLabelledBy: "dialogo-configuracoes-titulo",
+      ariaLabelledBy: "exampleDialog-configuracoes-titulo",
     });
   }
 }

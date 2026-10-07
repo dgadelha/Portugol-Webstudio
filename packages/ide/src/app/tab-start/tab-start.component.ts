@@ -40,7 +40,7 @@ export class TabStartComponent {
   readonly openFile = output();
   readonly examples = output();
   readonly help = output();
-  readonly changelog = output();
+  readonly changelog = output<"inicio" | "sobre">();
   readonly settings = output();
 
   readonly latestNews = LATEST_CHANGELOG_ENTRY;
@@ -71,16 +71,18 @@ export class TabStartComponent {
   recoverWorkspace(workspaceId: string) {
     const recovered = this.workspace.recover(workspaceId);
 
-    this.gaService.event("workspace_recover", "Aba Inicial", "Recuperar código de uma sessão anterior", recovered);
+    this.gaService.event("workspace_recover", "Aba Inicial", "inicio", undefined, undefined, { value: recovered });
 
     // O botão some com o cartão: o foco vai para a aba restaurada.
     focusAfterRender(this.injector, () => document.querySelector<HTMLElement>(ACTIVE_TAB_SELECTOR));
   }
 
   discardWorkspace(workspaceId: string) {
+    const tabs = this.workspace.recoverable().find(item => item.id === workspaceId)?.tabTitles.length;
+
     this.workspace.discard(workspaceId);
 
-    this.gaService.event("workspace_discard", "Aba Inicial", "Descartar código de uma sessão anterior");
+    this.gaService.event("workspace_discard", "Aba Inicial", "inicio", tabs);
 
     // O botão some da lista: o foco vai para a próxima sessão, ou para o
     // primeiro atalho da página se não sobrou nenhuma. São duas buscas porque,
@@ -96,17 +98,17 @@ export class TabStartComponent {
   }
 
   openChangelog() {
-    this.gaService.event("open_changelog", "Aba Inicial", "Ver histórico de atualizações");
-    this.changelog.emit();
+    // A aba do histórico registra a abertura, com a origem (`changelog_tab_open`)
+    this.changelog.emit("inicio");
   }
 
   openSettingsDialog() {
-    this.gaService.event("open_settings_dialog", "Aba Inicial", "Abrir diálogo de Configurações");
+    this.gaService.event("open_settings_dialog", "Aba Inicial", "inicio");
     this.settings.emit();
   }
 
   openAboutDialog() {
-    this.gaService.event("open_about_dialog", "Aba Inicial", "Abrir diálogo Sobre");
+    this.gaService.event("open_about_dialog", "Aba Inicial", "inicio");
     const ref = this.dialog.open<"changelog">(DialogAboutComponent, {
       width: "min(92vw, 44rem)",
       ariaLabelledBy: "dialogo-sobre-titulo",
@@ -115,7 +117,7 @@ export class TabStartComponent {
     // O diálogo fecha pedindo o histórico: a aba abre pelo mesmo caminho do botão da aba inicial
     ref.closed.subscribe(result => {
       if (result === "changelog") {
-        this.changelog.emit();
+        this.changelog.emit("sobre");
       }
     });
   }

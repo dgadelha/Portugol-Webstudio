@@ -65,7 +65,7 @@ export class DialogOpenExampleComponent implements OnInit, OnDestroy {
   /**
    * O diálogo fecha com o exemplo escolhido, e a janela o abre numa aba nova.
    */
-  readonly dialogRef = inject<DialogRef<{ title: string; code: string }>>(DialogRef);
+  readonly dialogRef = inject<DialogRef<{ title: string; code: string; file?: string }>>(DialogRef);
 
   private _loadSubscription$?: Subscription;
   private _data$?: Subscription;
@@ -264,7 +264,7 @@ export class DialogOpenExampleComponent implements OnInit, OnDestroy {
 
   openExample(item: ExampleItem) {
     if (this.rawExampleCode && this.rawExampleCodeId === item.id) {
-      this.dialogRef.close({ title: item.name, code: this.rawExampleCode });
+      this.dialogRef.close({ title: item.name, code: this.rawExampleCode, file: item.file });
       return;
     }
 
@@ -274,7 +274,7 @@ export class DialogOpenExampleComponent implements OnInit, OnDestroy {
       .get(`assets/recursos/exemplos/${item.file}`, { responseType: "text" })
       .subscribe(code => {
         if (this.current?.id === item.id) {
-          this.dialogRef.close({ title: item.name, code });
+          this.dialogRef.close({ title: item.name, code, file: item.file });
         }
       });
   }

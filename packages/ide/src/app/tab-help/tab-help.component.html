@@ -2,6 +2,7 @@
   unit="pixel"
   gutterAriaLabel="Tamanho da lista de tópicos"
   [direction]="isBelowMd() ? 'vertical' : 'horizontal'"
+  (dragEnd)="onSidebarDragEnd($event)"
 >
   <as-split-area class="sidebar" [size]="300" [minSize]="180">
     <h2 class="sidebar-title">Ajuda</h2>
@@ -20,7 +21,7 @@
         [isExpandable]="false"
         [cdkTreeNodeTypeaheadLabel]="node.text"
         [attr.aria-current]="current?.id === node.id ? 'page' : null"
-        (activation)="loadItem(node)"
+        (activation)="loadItem(node, 'arvore')"
       >
         <div class="node-row" [class.active]="current?.id === node.id" [attr.data-topico]="node.id">
           <span class="twisty" aria-hidden="true"></span>
@@ -34,7 +35,7 @@
         [isExpandable]="true"
         [cdkTreeNodeTypeaheadLabel]="node.text"
         [attr.aria-current]="current?.id === node.id ? 'page' : null"
-        (activation)="loadItem(node)"
+        (activation)="loadItem(node, 'arvore')"
       >
         <div class="node-row" [class.active]="current?.id === node.id" [attr.data-topico]="node.id">
           <button

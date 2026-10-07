@@ -37,8 +37,8 @@
             [attr.aria-selected]="activeTabId() === tab.id"
             [tabIndex]="activeTabId() === tab.id ? 0 : -1"
             (click)="selectTab(tab.id)"
-            (auxclick)="$event.button === 1 && closeTab(tab)"
-            (dblclick)="changeTabTitle(tab)"
+            (auxclick)="$event.button === 1 && closeTab(tab, 'abas')"
+            (dblclick)="changeTabTitle(tab, 'abas')"
           >
             <svg-icon
               class="tab-icon"
@@ -83,7 +83,7 @@
       aria-keyshortcuts="Control+N"
       appTooltip="Nova aba de código"
       appTooltipShortcut="Alt+N"
-      (click)="addTab()"
+      (click)="newTab('abas')"
     >
       <svg-icon src="assets/mdi/plus.svg" aria-hidden="true" />
     </button>
@@ -100,11 +100,11 @@
     [hidden]="activeTabId() !== null"
   >
     <app-tab-start
-      (newTab)="addTab($event?.name, $event?.contents)"
-      (openFile)="fileInput.click()"
-      (examples)="openExamplesDialog()"
-      (help)="upsertHelpTab()"
-      (changelog)="upsertChangelogTab()"
+      (newTab)="$event ? addTab($event.name, $event.contents) : newTab('inicio')"
+      (openFile)="chooseFiles('inicio')"
+      (examples)="openExamplesDialog('inicio')"
+      (help)="upsertHelpTab('inicio')"
+      (changelog)="upsertChangelogTab($event)"
       (settings)="openSettingsDialog()"
     />
   </div>
@@ -122,11 +122,11 @@
         @case ("editor") {
           <app-tab-editor
             [tabId]="tab.id"
-            (help)="upsertHelpTab()"
+            (help)="upsertHelpTab($event)"
             (settings)="openSettingsDialog()"
-            (openFile)="fileInput.click()"
-            (examples)="openExamplesDialog()"
-            (newTab)="addTab()"
+            (openFile)="chooseFiles($event)"
+            (examples)="openExamplesDialog('editor')"
+            (newTab)="newTab('atalho')"
             (closeTab)="closeActiveTab()"
           />
         }
@@ -186,7 +186,7 @@
       class="status-item"
       appTooltip="Mudar a indentação nas configurações"
       appTooltipPosition="above"
-      (click)="openSettingsDialog('editor')"
+      (click)="openStatusBarSettings()"
     >
       {{ indentationLabel() }}
     </button>
