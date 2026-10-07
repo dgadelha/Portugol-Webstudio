@@ -1,1 +1,0 @@
-import"./main-2TDMAIPG.js";import{n as v,t as C}from"./chunk-C5AnlBV5.js";export{C as ArchitectureModule,v as createArchitectureServices};
