@@ -8,8 +8,9 @@
 //                                                no topo, para o build da IDE. Sem mudanças pendentes, como na main
 //                                                depois do `release`, grava o CHANGELOG.md como está
 //   node .github/scripts/changelog.mjs release   junta as mudanças numa seção com a data de hoje (horário de Brasília)
-//                                                e apaga os arquivos. Se já existe uma seção com a data de hoje, as
-//                                                mudanças novas entram no topo dela
+//                                                e apaga os arquivos. Se a seção do topo começou há até 7 dias, as
+//                                                mudanças novas entram no topo dela, e o título vira um período que
+//                                                termina hoje
 import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
@@ -18,6 +19,13 @@ const FILE = path.join(ROOT, "CHANGELOG.md");
 const DIR = path.join(ROOT, "changelog");
 const BETA_HEADING = "## BETA\n";
 const SEPARATOR = "\n\n---\n\n";
+
+// A aba inicial da IDE mostra só a seção do topo. Uma atualização grande fica nela por pelo menos este número de dias:
+// o que for publicado nesse meio tempo entra na mesma seção, em vez de abrir uma nova que a esconderia
+const DAYS_IN_TOP_SECTION = 7;
+
+// `## 06/10/2026` ou `## 06/10/2026 – 08/10/2026`, com meia-risca. O hífen também é aceito, para um título editado à mão
+const DATED_HEADING = /^## (\d{2})\/(\d{2})\/(\d{4})(?: [–-] \d{2}\/\d{2}\/\d{4})?\n/;
 
 const TEMPLATE = `<!--
 Escreva a mudança pensando em quem usa a IDE (estudantes e professores), sem jargão técnico.
@@ -131,15 +139,31 @@ function release() {
 
   if (text) {
     const { year, month, day } = nowInBrasília();
-    const todayHeading = `## ${day}/${month}/${year}\n`;
+    const today = `${day}/${month}/${year}`;
     const next = sections[insertAt];
+    const heading = next?.match(DATED_HEADING);
 
-    if (next?.startsWith(todayHeading)) {
-      console.log(`Adding the pending changelog entries to the existing ${todayHeading.trim()} section`);
-      sections[insertAt] = `${todayHeading}\n${text}${SEPARATOR}${next.slice(todayHeading.length).trim()}\n\n`;
+    // As duas datas são de Brasília e sem hora, então a diferença é um número exato de dias
+    const age = heading
+      ? (Date.UTC(year, month - 1, day) - Date.UTC(heading[3], heading[2] - 1, heading[1])) / 86_400_000
+      : -1;
+
+    if (age === 0) {
+      console.log(`Adding the pending changelog entries to the existing ## ${today} section`);
+      sections[insertAt] = `${heading[0]}\n${text}${SEPARATOR}${next.slice(heading[0].length).trim()}\n\n`;
+    } else if (age > 0 && age <= DAYS_IN_TOP_SECTION) {
+      // O rótulo mostra a quem já leu a seção o que chegou depois. Num segundo deploy no mesmo dia, as mudanças entram
+      // embaixo do rótulo que já existe
+      const label = `**Novo em ${today}:**`;
+      const body = next.slice(heading[0].length).trim();
+      const rest = body.startsWith(label) ? body.slice(label.length).trim() : body;
+
+      console.log(`Adding the pending changelog entries to the top of the ${heading[0].trim()} section`);
+      sections[insertAt] =
+        `## ${heading[1]}/${heading[2]}/${heading[3]} – ${today}\n\n${label}\n\n${text}${SEPARATOR}${rest}\n\n`;
     } else {
-      console.log(`Adding the pending changelog entries to a new ${todayHeading.trim()} section`);
-      sections.splice(insertAt, 0, `${todayHeading}\n${text}\n\n`);
+      console.log(`Adding the pending changelog entries to a new ## ${today} section`);
+      sections.splice(insertAt, 0, `## ${today}\n\n${text}\n\n`);
     }
 
     writeChangelog(sections);
