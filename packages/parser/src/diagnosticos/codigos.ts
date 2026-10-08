@@ -75,6 +75,39 @@ export const CÓDIGOS = {
    */
   ESCAPE_UNICO: "ErroSintatico.ErroEscapeUnico",
 
+  // Sintaxe (`analise/sintatica/erros` do Java)
+  EXPRESSAO_INESPERADA: "ErroSintatico.ErroExpressaoInesperada",
+  EXPRESSAO_FORA_ESCOPO_FUNCAO: "ErroSintatico.ErroExpressaoForaEscopoFuncao",
+  ESCOPO: "ErroSintatico.ErroEscopo",
+  EXPRESSAO_ESPERADA: "ErroSintatico.ErroExpressaoEsperada",
+  /**
+   * Nome herdado do Java: é o código de `ErroExpressaoIncompleta`, mas também de
+   * `ErroRealComVirgula` e `ErroChaveDeVetorMatrizMalPosicionada`.
+   */
+  EXPRESSAO_INCOMPLETA: "ErroSintatico.ErroExpressaoIncompleta",
+  /**
+   * Nome herdado do Java: é o código de `ErroNomeSimboloEstaFaltando`, mas também de
+   * `ErroSimboloFaltandoOuRealComVirgula`.
+   */
+  NOME_SIMBOLO_ESTA_FALTANDO: "ErroSintatico.ErroNomeSimboloEstaFaltando",
+  PARENTESIS: "ErroSintatico.ErroParentesis",
+  TOKEN_FALTANDO: "ErroSintatico.ErroTokenFaltando",
+  PARA_ESPERA_CONDICAO: "ErroSintatico.ErroParaEsperaCondicao",
+  COMANDO_ESPERADO: "ErroSintatico.ErroComandoEsperado",
+  TIPO_DE_DADO_ESTA_FALTANDO: "ErroSintatico.ErroTipoDeDadoEstaFaltando",
+  FALTA_DOIS_PONTOS: "ErroSintatico.ErroFaltaDoisPontos",
+  PALAVRA_RESERVADA_ESTA_FALTANDO: "ErroSintatico.ErroPalavraReservadaEstaFaltando",
+  EXPRESSOES_FORA_ESCOPO_PROGRAMA: "ErroSintatico.ErroExpressoesForaEscopoPrograma",
+  CADEIA_INCOMPLETA: "ErroSintatico.ErroCadeiaIncompleta",
+  INTEIRO_FORA_DO_INTERVALO: "ErroSintatico.ErroInteiroForaDoIntervalo",
+  PARSING_NAO_TRATADO: "ErroSintatico.ErroParsingNaoTratado",
+  /**
+   * Os três abaixo são `ErroSemiSintatico` anônimos no Portugol Studio, sem código.
+   */
+  SENAO_INESPERADO: "ErroSintatico.ErroSenaoInesperado",
+  PARAMETROS_NAO_TIPADOS: "ErroSintatico.ErroParametrosNaoTipados",
+  RETORNO_VETOR_MATRIZ: "ErroSintatico.ErroRetornoVetorMatriz",
+
   // Específicos do Webstudio
   /**
    * No Portugol Studio isto é erro sintático (`ErroSintatico.ErroExpressaoInesperada`); aqui

@@ -1,16 +1,4 @@
-import {
-  ANTLRErrorListener,
-  ATNConfigSet,
-  ATNSimulator,
-  BitSet,
-  DFA,
-  Parser,
-  ParserRuleContext,
-  ParseTree,
-  RecognitionException,
-  Recognizer,
-  Token,
-} from "antlr4ng";
+import { ParserRuleContext, ParseTree, Token } from "antlr4ng";
 
 export enum PortugolDiagnosticSeverity {
   Error = 0,
@@ -141,57 +129,4 @@ export class PortugolCodeDiagnostic extends Error implements IPortugolCodeDiagno
 
     return new PortugolCodeDiagnostic(severity, message, ctx, 1, 0, 9999, 0, code);
   }
-}
-
-export class PortugolErrorListener implements ANTLRErrorListener {
-  private errors: PortugolCodeDiagnostic[] = [];
-
-  syntaxError<S extends Token, T extends ATNSimulator>(
-    _recognizer: Recognizer<T>,
-    offendingSymbol: S | null,
-    _line: number,
-    _charPositionInLine: number,
-    _msg: string,
-    e: RecognitionException | null,
-  ) {
-    this.errors.push(
-      PortugolCodeDiagnostic.fromContext(e?.ctx || offendingSymbol || (null as any), "Código incompleto ou inválido"),
-    );
-  }
-
-  getErrors() {
-    return this.errors;
-  }
-
-  reset() {
-    this.errors = [];
-  }
-
-  reportAmbiguity(
-    _recognizer: Parser,
-    _dfa: DFA,
-    _startIndex: number,
-    _stopIndex: number,
-    _exact: boolean,
-    _ambigAlts: BitSet | undefined,
-    _configs: ATNConfigSet,
-  ) {}
-
-  reportAttemptingFullContext(
-    _recognizer: Parser,
-    _dfa: DFA,
-    _startIndex: number,
-    _stopIndex: number,
-    _conflictingAlts: BitSet | undefined,
-    _configs: ATNConfigSet,
-  ) {}
-
-  reportContextSensitivity(
-    _recognizer: Parser,
-    _dfa: DFA,
-    _startIndex: number,
-    _stopIndex: number,
-    _prediction: number,
-    _configs: ATNConfigSet,
-  ) {}
 }

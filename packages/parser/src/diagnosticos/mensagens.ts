@@ -1023,6 +1023,270 @@ export function erroAtribuirFunçãoBiblioteca(origem: Origem, biblioteca: strin
 }
 
 // ---------------------------------------------------------------------------------------
+// Sintaxe
+// ---------------------------------------------------------------------------------------
+
+/**
+ * Para o Portugol Studio, o lugar de cada erro é o nome de uma regra da gramática
+ * (`contextoAtual`); só estes viram nome de escopo, o resto cai em "comando".
+ */
+const ESCOPOS: Readonly<Record<string, readonly [sufixo: string, nome: string]>> = {
+  arquivo: ["1", "do programa"],
+  declaracaoFuncao: ["2", "da função"],
+  inicializacaoArray: ["3", "do vetor"],
+  inicializacaoMatriz: ["4", "da matriz"],
+};
+
+/**
+ * `ErroExpressaoEsperada`: o comando que esperava a expressão é o contexto pai da regra.
+ */
+const COMANDOS_COM_EXPRESSÃO: ReadonlyMap<string, readonly [sufixo: string, mensagem: string]> = new Map([
+  ["se", ["4", 'O comando "se" espera uma expressão do tipo lógico entre os parênteses']],
+  ["enquanto", ["5", 'O comando "enquanto" espera uma expressão do tipo lógico entre os parênteses']],
+  ["facaEnquanto", ["6", 'O comando "faca-enquanto" espera uma expressão do tipo lógico entre os parênteses']],
+  ["escolha", ["7", 'O comando "escolha" espera um valor ou uma expressão']],
+]);
+
+const SÍMBOLO_FALTANDO: Readonly<Record<string, readonly [sufixo: string, nome: string]>> = {
+  parametro: ["1", "O nome do parâmetro da função não foi informado"],
+  declaracaoFuncao: ["2", "O nome da função não foi informado"],
+};
+
+/**
+ * Os tipos primitivos que o `AnalisadorSintatico.getTipoToken` do Java reconhece. As outras
+ * listas dele (palavras reservadas `PR_*` e operadores literais) nunca batem com os nomes
+ * dos tokens da gramática, então todo o resto cai na variante genérica.
+ */
+const TOKENS_TIPO_PRIMITIVO = new Set(["REAL", "CADEIA", "CARACTER", "INTEIRO", "LOGICO"]);
+
+export function erroExpressãoForaEscopoFunção(origem: Origem, token: string): PortugolCodeDiagnostic {
+  return erro(
+    origem,
+    `A expressão '${token}' está fora de um escopo de função e nunca será chamada. Adicione ela a uma função ou remova-a.`,
+    CÓDIGOS.EXPRESSAO_FORA_ESCOPO_FUNCAO,
+  );
+}
+
+export function erroExpressãoInesperada(origem: Origem, token: string): PortugolCodeDiagnostic {
+  return erro(
+    origem,
+    `A expressão '${token}' não era esperada neste local, remova a expressão para corrigir o problema`,
+    CÓDIGOS.EXPRESSAO_INESPERADA,
+  );
+}
+
+export function erroEscopo(origem: Origem, contexto: string): PortugolCodeDiagnostic {
+  const [sufixo, nome] = ESCOPOS[contexto] ?? [
+    "5",
+    `do comando "${contexto.replace("facaEnquanto", "faca-enquanto")}"`,
+  ];
+
+  return erro(
+    origem,
+    `O escopo ${nome} não foi fechado corretamente. Insira o caracter '}' para corrigir o problema`,
+    código(CÓDIGOS.ESCOPO, sufixo),
+  );
+}
+
+export function erroExpressãoEsperada(
+  origem: Origem,
+  contextoPai: string,
+  contextoAvô: string,
+): PortugolCodeDiagnostic {
+  let sufixo = "8";
+  let mensagem = "Era esperada uma expressão";
+
+  if (contextoAvô === "inicializacaoMatriz") {
+    sufixo = "3";
+    mensagem =
+      "O elemento não foi informado na linha da matriz, insira um valor ou uma expressão para corrigir o problema";
+  } else if (contextoPai === "inicializacaoArray") {
+    sufixo = "2";
+    mensagem = "O elemento do vetor não foi informado, insira um valor ou uma expressão para corrigir o problema";
+  } else if (COMANDOS_COM_EXPRESSÃO.has(contextoPai)) {
+    [sufixo, mensagem] = COMANDOS_COM_EXPRESSÃO.get(contextoPai)!;
+  }
+
+  return erro(origem, mensagem, código(CÓDIGOS.EXPRESSAO_ESPERADA, sufixo));
+}
+
+export function erroExpressãoIncompleta(origem: Origem): PortugolCodeDiagnostic {
+  return erro(
+    origem,
+    "A expressão está incompleta. Verifique se ambos os operandos direito e esquerdo estão presentes.",
+    CÓDIGOS.EXPRESSAO_INCOMPLETA,
+  );
+}
+
+export function erroRealComVírgula(origem: Origem): PortugolCodeDiagnostic {
+  return erro(
+    origem,
+    "A expressão foi formada utilizando vírgulas. Valores reais devem ser expressados utilizando pontos. ex: 2.75",
+    CÓDIGOS.EXPRESSAO_INCOMPLETA,
+  );
+}
+
+export function erroChaveDeVetorMatrizMalPosicionada(origem: Origem): PortugolCodeDiagnostic {
+  return erro(
+    origem,
+    "O formato de Vetor/Matriz está errado. As chaves devem ser posicionadas no nome da variavel. \nex: inteiro a[] = {2, 3}",
+    CÓDIGOS.EXPRESSAO_INCOMPLETA,
+  );
+}
+
+/**
+ * Com `palavraReservada`, o nome foi escrito, mas é uma palavra da linguagem: o Java dá a
+ * mesma mensagem de quando não há nome nenhum.
+ */
+export function erroNomeSímboloEstáFaltando(
+  origem: Origem,
+  contexto: string,
+  palavraReservada?: string,
+): PortugolCodeDiagnostic {
+  const [sufixo, mensagem] = SÍMBOLO_FALTANDO[contexto] ?? ["3", "O nome da variável não foi informado"];
+  const motivo = palavraReservada
+    ? `: '${palavraReservada}' é uma palavra reservada da linguagem e não pode ser usada como nome`
+    : "";
+
+  return erro(origem, mensagem + motivo, código(CÓDIGOS.NOME_SIMBOLO_ESTA_FALTANDO, sufixo));
+}
+
+export function erroSímboloFaltandoOuRealComVírgula(origem: Origem, contexto: string): PortugolCodeDiagnostic {
+  const [sufixo, nome] = SÍMBOLO_FALTANDO[contexto] ?? ["3", "O nome da variável não foi informado"];
+
+  return erro(
+    origem,
+    `Uma vírgula foi mal colocada. ${nome} ou o número real não foi escrito com pontos.`,
+    código(CÓDIGOS.NOME_SIMBOLO_ESTA_FALTANDO, sufixo),
+  );
+}
+
+export function erroParêntese(origem: Origem, tipo: "abertura" | "fechamento"): PortugolCodeDiagnostic {
+  const [sufixo, verbo, caractere] = tipo === "abertura" ? ["1", "iniciada", "("] : ["2", "finalizada", ")"];
+
+  return erro(
+    origem,
+    `A expressão não foi ${verbo} corretamente. Insira o caracter '${caractere}' para corrigir o problema.`,
+    código(CÓDIGOS.PARENTESIS, sufixo),
+  );
+}
+
+/**
+ * O Java recebe o nome do token na gramática e o mostra em minúsculas ("está faltando o
+ * token 'pontovirgula'"). Aqui quem chama passa o símbolo, quando ele existe.
+ */
+export function erroTokenFaltando(origem: Origem, nomeToken: string, símbolo: string): PortugolCodeDiagnostic {
+  if (TOKENS_TIPO_PRIMITIVO.has(nomeToken)) {
+    return erro(
+      origem,
+      `A expressão está incompleta, está faltando um dado do tipo '${nomeToken.toLowerCase()}'`,
+      código(CÓDIGOS.TOKEN_FALTANDO, "2"),
+    );
+  }
+
+  return erro(
+    origem,
+    `A expressão está incompleta, está faltando o token '${símbolo}'`,
+    código(CÓDIGOS.TOKEN_FALTANDO, "3"),
+  );
+}
+
+export function erroParaEsperaCondição(origem: Origem): PortugolCodeDiagnostic {
+  return erro(
+    origem,
+    'O comando "para" necessita ao menos de uma condição de parada. Utilize a seguinte construção para corrigir o problema: "para( ; <condicao> ; ){ <comandos> }"',
+    CÓDIGOS.PARA_ESPERA_CONDICAO,
+  );
+}
+
+export function erroComandoEsperado(origem: Origem): PortugolCodeDiagnostic {
+  return erro(
+    origem,
+    "Esta construção espera um comando. Insira um comando ou inicie um novo escopo utilizando os caracteres '{' e '}'.",
+    CÓDIGOS.COMANDO_ESPERADO,
+  );
+}
+
+export function erroTipoDeDadoEstáFaltando(origem: Origem): PortugolCodeDiagnostic {
+  return erro(origem, "Você esqueceu de informar o tipo de dado da variável.", CÓDIGOS.TIPO_DE_DADO_ESTA_FALTANDO);
+}
+
+export function erroFaltaDoisPontos(origem: Origem): PortugolCodeDiagnostic {
+  return erro(origem, "O caracter ':' é necessário após o caso.", CÓDIGOS.FALTA_DOIS_PONTOS);
+}
+
+export function erroPalavraReservadaEstáFaltando(origem: Origem, palavra: string): PortugolCodeDiagnostic {
+  return erro(
+    origem,
+    `O algoritmo está incompleto, está faltando a palavra reservada '${palavra}'`,
+    CÓDIGOS.PALAVRA_RESERVADA_ESTA_FALTANDO,
+  );
+}
+
+export function erroExpressõesForaEscopoPrograma(
+  origem: Origem,
+  trecho: string,
+  local: "antes" | "depois",
+): PortugolCodeDiagnostic {
+  const onde =
+    local === "antes" ? "localizado antes da palavra reservada 'programa'" : "localizado após o caracter '}'";
+
+  return erro(
+    origem,
+    `Não são permitidas expressões fora do escopo do programa. Para corrigir o problema, remova o seguinte trecho de código '${trecho}', que está ${onde}`,
+    CÓDIGOS.EXPRESSOES_FORA_ESCOPO_PROGRAMA,
+  );
+}
+
+export function erroCadeiaIncompleta(origem: Origem): PortugolCodeDiagnostic {
+  return erro(
+    origem,
+    "A expressão do tipo 'cadeia' não foi finalizada corretamente. Insira o caracter '\"' para corrigir o problema.",
+    CÓDIGOS.CADEIA_INCOMPLETA,
+  );
+}
+
+export function erroInteiroForaDoIntervalo(origem: Origem, número: string): PortugolCodeDiagnostic {
+  return erro(
+    origem,
+    `O número ${número} está fora do intervalo de 32 bits. Digite um número entre: -2147483648 e 2147483647`,
+    CÓDIGOS.INTEIRO_FORA_DO_INTERVALO,
+  );
+}
+
+export function erroSenãoInesperado(origem: Origem): PortugolCodeDiagnostic {
+  return erro(
+    origem,
+    "O token 'senao' não faz sentido neste local. O comando 'senao' deve ser utilizado com o comando 'se' da seguinte maneira:\nse(condicao){\n\n}senao{\n\n}\n\nou então: \n\nse(condicao){\n\n}senao se(condicao2){\n\n}",
+    CÓDIGOS.SENAO_INESPERADO,
+  );
+}
+
+export function erroParâmetrosNãoTipados(origem: Origem): PortugolCodeDiagnostic {
+  return erro(
+    origem,
+    "Os parametros da função, não estão tipados.\nAdicione tipos para cada um dos parametros utilizados ex: funcao nome(inteiro idade, cadeia sobrenome)",
+    CÓDIGOS.PARAMETROS_NAO_TIPADOS,
+  );
+}
+
+export function erroRetornoVetorMatriz(origem: Origem): PortugolCodeDiagnostic {
+  return erro(origem, "Não é possível retornar vetores ou matrizes por funções.", CÓDIGOS.RETORNO_VETOR_MATRIZ);
+}
+
+/**
+ * O Java mostra a mensagem crua do ANTLR, em inglês na maior parte dos casos; aqui é a frase
+ * que ele usa para a alternativa inviável, a única que traduziu.
+ */
+export function erroParsingNãoTratado(origem: Origem, token: string, esperado: string): PortugolCodeDiagnostic {
+  return erro(
+    origem,
+    `Expressão ${token} não faz sentido, era esperado o token ${esperado}.`,
+    CÓDIGOS.PARSING_NAO_TRATADO,
+  );
+}
+
+// ---------------------------------------------------------------------------------------
 // Específicos do Webstudio
 // ---------------------------------------------------------------------------------------
 
