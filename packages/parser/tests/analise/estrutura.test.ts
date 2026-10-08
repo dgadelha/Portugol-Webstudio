@@ -116,6 +116,34 @@ describe("Estrutura do programa", () => {
       `);
     });
 
+    // A árvore do Portugol Studio não tem nó de parênteses: `(x(2))` é só a chamada.
+    test("chamada entre parênteses vale como comando, e o resto é julgado pelo que está dentro", () => {
+      expect(
+        analisar(portugol`
+          programa {
+            inclua biblioteca Texto --> t
+
+            funcao inteiro dobro(inteiro y) {
+              retorne y * 2
+            }
+
+            funcao inicio() {
+              inteiro x = 1
+              (dobro(2))
+              ((t.caixa_alta("texto")))
+              (x + 1)
+              (x == 1)
+            }
+          }
+        `),
+      ).toMatchInlineSnapshot(`
+        [
+          12:4/12:10 E [ErroSemantico.ErroBlocoInvalido.2]: Esta expressão não faz sentido se estiver sozinha no código. Você pode atribuir a expressão a uma variável, vetor, matriz ou passá-la como parâmetro em uma chamada de função,
+          13:4/13:11 E [ErroSemantico.ErroBlocoInvalido.11]: Esta expressão lógica não faz sentido se estiver sozinha no código. Você pode utilizar a expressão como condição em um dos seguintes comandos: 'se', 'enquanto', 'faca-enquanto'. Se você estiver tentando atribuir um valor ou expressão à variável "x", utilize o operador '=' ao invés do operador '==',
+        ]
+      `);
+    });
+
     test("literal lógico solto", () => {
       expect(
         analisar(portugol`

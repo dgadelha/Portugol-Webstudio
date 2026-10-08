@@ -97,7 +97,7 @@ describe("Programas válidos", () => {
                 escreva("[", matriz[linha][coluna], "]")
               }
 
-              escreva("\n")
+              escreva("\\n")
             }
           }
         }
@@ -138,7 +138,7 @@ describe("Programas válidos", () => {
                 escreva("[", matriz[linha][coluna], "]")
               }
 
-              escreva("\n")
+              escreva("\\n")
             }
           }
         }

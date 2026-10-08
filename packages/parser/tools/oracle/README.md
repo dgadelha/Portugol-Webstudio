@@ -45,6 +45,9 @@ echo 'programa { funcao inicio() { inteiro a  a = b } }' | ./run.sh
 
 # regera tests/fixtures/portugol-studio.golden.txt
 ./run.sh --golden
+
+# regera tests/fixtures/portugol-studio-sintaxe.golden.txt (precisa do pacote antlr compilado)
+./run.sh --golden-sintaxe
 ```
 
 Cada diagnóstico sai numa linha:
@@ -73,6 +76,15 @@ node packages/parser/tools/corpus.mjs --diferencial # compara com o golden
 negativo. Falso positivo é o que importa: como no Portugol Studio, o `PortugolExecutor` recusa
 executar um programa com erro de compilação e lista os erros na saída — então um erro inventado
 nosso impede de rodar um programa que funciona.
+
+### `--golden-sintaxe`
+
+Os erros de sintaxe não aparecem no golden dos exemplos, que compilam todos. Este modo quebra cada
+exemplo de três formas (`../mutantes.mjs`: token apagado, duplicado, trocado ou sobrando,
+caractere apagado, arquivo cortado), passa os mutantes pelo Portugol Studio e guarda em
+`tests/fixtures/portugol-studio-sintaxe.golden.txt` só o primeiro erro de sintaxe de cada um.
+`tests/corpus/mutantes.test.ts` confere que o nosso analisador vê erro de sintaxe exatamente
+quando o Portugol Studio vê, e na mesma linha. Mudou um exemplo, regere os dois goldens.
 
 ### `--bibliotecas`
 

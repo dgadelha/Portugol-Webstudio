@@ -358,6 +358,14 @@ export function erroEscapeÚnico(origem: Origem): PortugolCodeDiagnostic {
   );
 }
 
+export function erroLinhaPuladaEmCadeia(origem: Origem): PortugolCodeDiagnostic {
+  return erro(
+    origem,
+    "Você pulou uma linha ao escrever uma cadeia. Cadeias apenas podem ser escritas em uma mesma linha",
+    CÓDIGOS.LINHA_PULADA_EM_STRING,
+  );
+}
+
 export function erroPareForaDeLaço(origem: Origem): PortugolCodeDiagnostic {
   return erro(
     origem,
@@ -1059,6 +1067,24 @@ const SÍMBOLO_FALTANDO: Readonly<Record<string, readonly [sufixo: string, nome:
  */
 const TOKENS_TIPO_PRIMITIVO = new Set(["REAL", "CADEIA", "CARACTER", "INTEIRO", "LOGICO"]);
 
+/**
+ * Sugere a letra sem o acento, quando ela existe: `ç` vira `c`, `ã` vira `a`.
+ */
+export function erroCaractereEmNome(origem: Origem, caractere: string): PortugolCodeDiagnostic {
+  const base = caractere.normalize("NFD").charAt(0);
+  const troca = /^[a-z]$/i.test(base) ? `: troque o '${caractere}' por '${base}'` : "";
+
+  return erro(origem, `Nomes não podem ter acentos nem 'ç'${troca}`, CÓDIGOS.EXPRESSAO_INESPERADA);
+}
+
+export function erroComentárioSemFim(origem: Origem): PortugolCodeDiagnostic {
+  return erro(
+    origem,
+    "O comentário não foi fechado corretamente. Insira os caracteres '*/' no fim do comentário para corrigir o problema",
+    CÓDIGOS.COMENTARIO_SEM_FIM,
+  );
+}
+
 export function erroExpressãoForaEscopoFunção(origem: Origem, token: string): PortugolCodeDiagnostic {
   return erro(
     origem,
@@ -1246,6 +1272,20 @@ export function erroCadeiaIncompleta(origem: Origem): PortugolCodeDiagnostic {
   );
 }
 
+/**
+ * Não há equivalente no Java, que mostra o resto da linha como expressão inesperada. A frase
+ * segue a de `ErroCadeiaIncompleta`.
+ */
+export function erroCaracterIncompleto(origem: Origem, vazio: boolean): PortugolCodeDiagnostic {
+  return erro(
+    origem,
+    vazio
+      ? "A expressão do tipo 'caracter' está vazia. Escreva um caractere entre as aspas simples para corrigir o problema."
+      : "A expressão do tipo 'caracter' não foi finalizada corretamente. Insira o caracter ''' para corrigir o problema.",
+    CÓDIGOS.EXPRESSAO_INESPERADA,
+  );
+}
+
 export function erroInteiroForaDoIntervalo(origem: Origem, número: string): PortugolCodeDiagnostic {
   return erro(
     origem,
@@ -1275,15 +1315,17 @@ export function erroRetornoVetorMatriz(origem: Origem): PortugolCodeDiagnostic {
 }
 
 /**
- * O Java mostra a mensagem crua do ANTLR, em inglês na maior parte dos casos; aqui é a frase
- * que ele usa para a alternativa inviável, a única que traduziu.
+ * O Java mostra a mensagem crua do ANTLR, em inglês e com os nomes dos tokens na gramática.
+ * Sem `esperado`, o código acabou sem que desse para dizer o que faltava.
  */
-export function erroParsingNãoTratado(origem: Origem, token: string, esperado: string): PortugolCodeDiagnostic {
-  return erro(
-    origem,
-    `Expressão ${token} não faz sentido, era esperado o token ${esperado}.`,
-    CÓDIGOS.PARSING_NAO_TRATADO,
-  );
+export function erroParsingNãoTratado(origem: Origem, esperado?: string, antesDe?: string): PortugolCodeDiagnostic {
+  let mensagem = "O código terminou antes do esperado";
+
+  if (esperado) {
+    mensagem = `Era esperado ${esperado} ${antesDe === undefined ? "no fim do código" : `antes de '${antesDe}'`}`;
+  }
+
+  return erro(origem, mensagem, CÓDIGOS.PARSING_NAO_TRATADO);
 }
 
 // ---------------------------------------------------------------------------------------

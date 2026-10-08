@@ -74,6 +74,10 @@ export const CÓDIGOS = {
    * O Portugol Studio emite este erro como um `ErroSemiSintatico` anônimo, sem código.
    */
   ESCAPE_UNICO: "ErroSintatico.ErroEscapeUnico",
+  /**
+   * Também um `ErroSemiSintatico` anônimo no Portugol Studio, do mesmo `AnalisadorStringInvalida`.
+   */
+  LINHA_PULADA_EM_STRING: "ErroSintatico.ErroLinhaPuladaEmString",
 
   // Sintaxe (`analise/sintatica/erros` do Java)
   EXPRESSAO_INESPERADA: "ErroSintatico.ErroExpressaoInesperada",
@@ -140,6 +144,12 @@ export const CÓDIGOS = {
    * `checkCode(code, { avisosDeUso: false })`.
    */
   SIMBOLO_NAO_UTILIZADO: "InfoWebstudio.SimboloNaoUtilizado",
+
+  /**
+   * Um comentário de bloco que não foi fechado. No Portugol Studio o erro sai onde o parser tropeça no texto do
+   * comentário, com a mensagem desse ponto (muitas vezes "o nome da função não foi informado").
+   */
+  COMENTARIO_SEM_FIM: "ErroWebstudio.ErroComentarioSemFim",
 } as const;
 
 /**

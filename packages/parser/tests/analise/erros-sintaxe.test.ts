@@ -485,3 +485,117 @@ describe("onde o Portugol Studio erra a mensagem", () => {
     expect(errosDeSintaxe(código)).toMatchObject([{ code: "ErroSintatico.ErroParentesis.1" }]);
   });
 });
+
+/**
+ * Achados do teste de batalha (mutações dos exemplos comparadas com o Portugol Studio, mais
+ * casos de borda escritos à mão).
+ */
+describe("casos de borda", () => {
+  const programa = (corpo: string) => `programa {\n  funcao inicio() {\n${corpo}\n  }\n}\n`;
+
+  test.each([
+    ["'\\n'", String.raw`'\n'`],
+    ["'\\t'", String.raw`'\t'`],
+    ["'\\\\'", String.raw`'\\'`],
+    ["'\\''", String.raw`'\''`],
+    ["octal", String.raw`'\033'`],
+    ["unicode", String.raw`'̷'`],
+    ["emoji", "'😀'"],
+  ])("caracter com %s é válido, como no Portugol Studio", (_nome, literal) => {
+    const resultado = PortugolCodeChecker.checkCode(programa(`    caracter c = ${literal}\n    escreva(c)`));
+
+    expect(resultado.parseErrors).toEqual([]);
+    expect(resultado.diagnostics.filter(d => d.code?.startsWith("Erro"))).toEqual([]);
+  });
+
+  test("cadeia que quebra a linha é erro, como no Portugol Studio", () => {
+    const { diagnostics } = PortugolCodeChecker.checkCode(programa('    escreva("a\nb")'));
+
+    expect(diagnostics).toMatchObject([{ code: "ErroSintatico.ErroLinhaPuladaEmString", startLine: 3 }]);
+  });
+
+  test.each([
+    ["caracter sem fim", "    caracter c = 'a", "não foi finalizada"],
+    ["caracter vazio", "    caracter c = ''", "está vazia"],
+    ["acento num nome", "    inteiro ação = 1", "Nomes não podem ter acentos nem 'ç': troque o 'ç' por 'c'"],
+    ["comentário sem fim", "    /* sem fim", "O comentário não foi fechado"],
+    ["`v[i` no fim do código não é cadeia", "    escreva(v[0", "Era esperad"],
+  ])("%s", (_nome, corpo, trecho) => {
+    const código =
+      corpo.includes("sem fim") || corpo.includes("v[0")
+        ? `programa {\n  funcao inicio() {\n${corpo}`
+        : programa(corpo);
+    const [erro] = errosDeSintaxe(código);
+
+    expect(erro?.message).toContain(trecho);
+    expect(erro?.startLine).toBe(3);
+  });
+
+  test("o comentário sem fim é apontado no `/*`, e não onde o parser tropeça", () => {
+    expect(errosDeSintaxe(programa("    /* sem fim\n    escreva(1)"))).toMatchObject([
+      { code: "ErroWebstudio.ErroComentarioSemFim", startLine: 3, startCol: 4 },
+    ]);
+  });
+
+  test.each([
+    ["arquivo vazio", ""],
+    ["só espaços", "  \n\n\t\n"],
+    ["só comentários", "// nada\n/* nada */\n"],
+  ])("%s: falta a palavra `programa`", (_nome, código) => {
+    expect(errosDeSintaxe(código)).toMatchObject([
+      { message: "O algoritmo está incompleto, está faltando a palavra reservada 'programa'" },
+    ]);
+  });
+
+  test("o trecho antes do programa não para num `programa` dentro de comentário", () => {
+    const [erro] = errosDeSintaxe("// programa antigo\ninteiro x\nprograma {\n  funcao inicio() {\n  }\n}\n");
+
+    expect(erro).toMatchObject({ startLine: 2, startCol: 0 });
+    expect(erro?.message).toContain("remova o seguinte trecho de código 'inteiro x'");
+  });
+
+  test("sem `programa` nenhum, o trecho é o código todo", () => {
+    expect(errosDeSintaxe("}")[0]?.message).toContain("trecho de código '}'");
+  });
+
+  test("um emoji antes não desloca o texto lido do código", () => {
+    // As posições do ANTLR contam pontos de código; as strings do JavaScript, UTF-16.
+    const real = errosDeSintaxe(programa('    escreva("😀😀")\n    real x = 2,5'));
+    const depois = errosDeSintaxe(`${programa('    escreva("😀😀😀")')}escreva("fora")\n`);
+
+    expect(real[0]?.message).toContain("Uma vírgula foi mal colocada");
+    expect(depois[0]?.message).toContain(`trecho de código 'escreva("fora")'`);
+  });
+
+  test("o escopo sem fim de um bloco diz o comando, e não `listaComandos`", () => {
+    const [erro] = errosDeSintaxe("programa {\n  funcao inicio() {\n    se (verdadeiro) {\n      escreva(1)");
+
+    expect(erro?.message).not.toContain("listaComandos");
+  });
+
+  test.each([
+    ["programa sem `{`", "programa\n  funcao inicio() {\n  }\n}\n", "Era esperado '{' antes de 'funcao'"],
+    ["só `programa`", "programa", "Era esperado '{' no fim do código"],
+    [
+      "inclua sem `biblioteca`",
+      "programa {\n  inclua Util\n  funcao inicio() {\n  }\n}\n",
+      "está faltando a palavra reservada 'biblioteca'",
+    ],
+  ])("mensagem do ANTLR traduzida: %s", (_nome, código, mensagem) => {
+    expect(errosDeSintaxe(código)[0]?.message).toBe(
+      mensagem.startsWith("está") ? `O algoritmo está incompleto, ${mensagem}` : mensagem,
+    );
+  });
+
+  test("nome solto no programa que não começa comando fica como expressão inesperada", () => {
+    const código = "programa {\n  inclua biblioteca Graficos lol --> g\n  funcao inicio() {\n  }\n}\n";
+
+    expect(errosDeSintaxe(código)).toMatchObject([{ code: "ErroSintatico.ErroExpressaoInesperada" }]);
+  });
+
+  test("CRLF não muda a posição do erro", () => {
+    const código = programa('    escreva("a"),').replaceAll("\n", "\r\n");
+
+    expect(errosDeSintaxe(código)).toMatchObject([{ startLine: 3, startCol: 16, endCol: 16 }]);
+  });
+});

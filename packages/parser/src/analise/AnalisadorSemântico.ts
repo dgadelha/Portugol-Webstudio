@@ -27,6 +27,7 @@ import {
   erroBlocoInválido,
   erroConstanteNãoEncontradaNaBiblioteca,
   erroEscapeÚnico,
+  erroLinhaPuladaEmCadeia,
   erroEscreverFunçãoSemRetorno,
   erroFunçãoInícioInexistente,
   erroFunçãoReservada,
@@ -143,7 +144,7 @@ import {
   SubtraçãoExpr,
   ÍndiceArrayExpr,
 } from "../nodes/index.js";
-import { blocoVálido } from "./blocoVálido.js";
+import { blocoVálido, semParênteses } from "./blocoVálido.js";
 import { Memória } from "./Memória.js";
 import { possuiRetornoObrigatório } from "./retornoObrigatório.js";
 import { criarDado, criarFunção, type Símbolo, type SímboloFunção } from "./Símbolo.js";
@@ -329,7 +330,8 @@ export class AnalisadorSemântico {
 
   /**
    * Espelha o `AnalisadorStringInvalida` do Portugol Studio: uma barra invertida numa cadeia
-   * só pode vir antes de t, n, b, r, f, aspas ou outra barra. Como o `VisitanteNulo` dele,
+   * só pode vir antes de t, n, b, r, f, aspas ou outra barra, e a cadeia não pode quebrar a
+   * linha (o Java reclama uma vez por quebra; aqui, uma vez por cadeia). Como o `VisitanteNulo` dele,
    * não olha o operando do `nao` e do `~`, os índices e o incremento do `para`. Ele também
    * pula os literais de vetor e matriz, mas por descuido do visitante (no de vetor, é o javac
    * que acaba recusando o código gerado); aqui eles são verificados como qualquer cadeia.
@@ -342,6 +344,10 @@ export class AnalisadorSemântico {
     }
 
     if (nó instanceof CadeiaExpr) {
+      if (nó.conteúdo.includes("\n")) {
+        this.registrar(erroLinhaPuladaEmCadeia(nó));
+      }
+
       let escape = false;
 
       for (const caractere of nó.conteúdo) {
@@ -912,13 +918,16 @@ export class AnalisadorSemântico {
   }
 
   private diagnósticoBlocoInválido(bloco: Comando | Expressão): PortugolCodeDiagnostic {
-    const éLógico = bloco instanceof LógicoExpr || OPERAÇÕES_LÓGICAS.has(bloco.constructor as Construtor);
+    // A variante depende do que está entre os parênteses, como no Java, mas o erro marca o
+    // trecho todo.
+    const interno = semParênteses(bloco);
+    const éLógico = interno instanceof LógicoExpr || OPERAÇÕES_LÓGICAS.has(interno.constructor as Construtor);
 
     if (!éLógico) {
       return erroBlocoInválido(bloco, { tipo: "expressão" });
     }
 
-    const esquerda = bloco instanceof ExpressãoMatemática ? bloco.esquerda : undefined;
+    const esquerda = interno instanceof ExpressãoMatemática ? interno.esquerda : undefined;
     const referência = this.formaEIdentificadorDaReferência(esquerda);
 
     return erroBlocoInválido(bloco, { tipo: "lógica", referênciaEsquerda: referência });
