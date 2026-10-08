@@ -1,13 +1,7 @@
-import {
-  ArquivoContext,
-  PortugolCodeDiagnostic,
-  PortugolErrorListener,
-  PortugolLexer,
-  PortugolParser,
-} from "@portugol-webstudio/antlr";
-import { CharStream, CommonTokenStream } from "antlr4ng";
+import { ArquivoContext, PortugolCodeDiagnostic } from "@portugol-webstudio/antlr";
 
 import { analisar, type OpçõesAnálise } from "./analise/AnalisadorSemântico.js";
+import { analisarSintaxe } from "./analise/AnalisadorSintático.js";
 import { ParseError } from "./helpers/ParseError.js";
 import { PortugolNode } from "./PortugolNode.js";
 
@@ -23,23 +17,16 @@ export class PortugolCodeChecker {
   private static portugolNode = new PortugolNode();
 
   public static checkCode(code: string, options?: IPortugolCodeCheckerOptions): IPortugolCodeCheckerResult {
-    const errorListener = new PortugolErrorListener();
-    const inputStream = CharStream.fromString(code);
-    const lexer = new PortugolLexer(inputStream);
-    const tokenStream = new CommonTokenStream(lexer);
-    const parser = new PortugolParser(tokenStream);
+    const { árvore: tree, erros } = analisarSintaxe(code);
 
-    parser.removeErrorListeners();
-    parser.addErrorListener(errorListener);
+    // Como no Portugol Studio, com erro de sintaxe não há análise semântica: a árvore é a que
+    // o ANTLR remendou para seguir em frente, e tudo o que se achasse nela seria consequência
+    // do primeiro erro.
+    if (erros.length > 0) {
+      return { parseErrors: erros, diagnostics: [], tree };
+    }
 
-    const tree = parser.arquivo();
-    const treeResult = this.checkTree(tree, options);
-
-    return {
-      parseErrors: errorListener.getErrors().concat(treeResult.parseErrors),
-      diagnostics: treeResult.diagnostics,
-      tree,
-    };
+    return this.checkTree(tree, options);
   }
 
   private static checkTree(tree: ArquivoContext, options?: IPortugolCodeCheckerOptions): IPortugolCodeCheckerResult {

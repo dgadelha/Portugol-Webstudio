@@ -4,3 +4,4 @@ export * from "./Memória.js";
 export * from "./Símbolo.js";
 export * from "./TabelaCompatibilidade.js";
 export * from "./TipoDado.js";
+export * from "./AnalisadorSintático.js";

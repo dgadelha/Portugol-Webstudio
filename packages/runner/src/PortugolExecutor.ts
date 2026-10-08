@@ -81,8 +81,9 @@ export class PortugolExecutor {
 
         this.stdOut += `⛔ O seu código possui ${errors.length} erro${plural} de compilação e não foi executado:\n\n`;
 
+        // A coluna do diagnóstico começa em 0; a mostrada começa em 1, como no editor.
         this.stdOut += errors
-          .map(error => `ERRO: ${error.message} (linha ${error.startLine}, coluna ${error.startCol})\n`)
+          .map(error => `ERRO: ${error.message} (linha ${error.startLine}, coluna ${error.startCol + 1})\n`)
           .join("");
 
         this.stdOut$.next(this.stdOut);
