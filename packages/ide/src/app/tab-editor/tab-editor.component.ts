@@ -1027,32 +1027,30 @@ export class TabEditorComponent implements OnInit, OnDestroy {
 
     this._code$?.unsubscribe();
 
-    // Sem a checagem ao vivo, os erros só aparecem ao executar. Ao ser religada,
-    // ela confere o código na hora, sem esperar a próxima tecla.
-    let initial = true;
-
+    // Sem a checagem ao vivo, os erros só aparecem ao executar. Ligada, ela confere o código
+    // na hora, sem esperar a próxima tecla: o editor pode nascer já com o código da aba (ao
+    // recarregar a página), e aí nenhuma mudança de conteúdo chega a disparar a primeira
+    // checagem. Se o código ainda chegar depois, o `debounceTime` junta as duas numa só.
     this._code$ = this.settingsService
       .observe(settings.editorLiveDiagnostics)
       .pipe(
         switchMap(live => {
+          if (!live) {
+            this.setEditorDiagnostics([]);
+            return EMPTY;
+          }
+
           const changes = fromEventPattern(
             handler => editor.onDidChangeModelContent(handler),
             (_handler, listener: monaco.IDisposable) => {
               listener.dispose();
             },
           );
-          const wasInitial = initial;
-
-          initial = false;
-
-          if (!live) {
-            this.setEditorDiagnostics([]);
-            return EMPTY;
-          }
 
           // Dentro do `switchMap`, uma checagem em andamento ao desligar é
           // descartada, e não marca erros depois da limpeza.
-          return (wasInitial ? changes : changes.pipe(startWith(null))).pipe(
+          return changes.pipe(
+            startWith(null),
             debounceTime(500),
             mergeMap(async () => this.worker.checkCode(this.code)),
           );
@@ -1150,9 +1148,9 @@ export class TabEditorComponent implements OnInit, OnDestroy {
         diagnostics.map(error => {
           return {
             startLineNumber: error.startLine,
-            startColumn: error.startCol + 1,
+            startColumn: this.editorColumn(model, error.startLine, error.startCol),
             endLineNumber: error.endLine,
-            endColumn: error.endCol + 2,
+            endColumn: this.editorColumn(model, error.endLine, error.endCol + 1),
             message: error.message,
             severity: severityMap[error.severity] ?? monaco.MarkerSeverity.Error,
           };
@@ -1170,11 +1168,25 @@ export class TabEditorComponent implements OnInit, OnDestroy {
             severity: SEVERITIES[diagnostic.severity] ?? "error",
             message: diagnostic.message,
             line: diagnostic.startLine,
-            column: diagnostic.startCol + 1,
+            column: model
+              ? this.editorColumn(model, diagnostic.startLine, diagnostic.startCol)
+              : diagnostic.startCol + 1,
           };
         })
         .toSorted((a, b) => order[a.severity] - order[b.severity] || a.line - b.line || a.column - b.column),
     );
+  }
+
+  /**
+   * A coluna (base 0) da análise conta pontos de código, como o ANTLR; o Monaco conta unidades
+   * de UTF-16 (base 1). Sem a conversão, cada emoji antes na linha deslocava o marcador.
+   */
+  private editorColumn(model: monaco.editor.ITextModel, line: number, column: number) {
+    if (line < 1 || line > model.getLineCount()) {
+      return column + 1;
+    }
+
+    return Array.from(model.getLineContent(line)).slice(0, column).join("").length + 1;
   }
 
   /**

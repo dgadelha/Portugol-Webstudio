@@ -1,0 +1,723 @@
+### algoritmos_sequenciais__altura_media.1.por
+### algoritmos_sequenciais__altura_media.2.por
+SINTAXE|1|1|ErroSintatico.ErroExpressoesForaEscopoPrograma
+### algoritmos_sequenciais__altura_media.3.por
+SINTAXE|43|41|ErroSintatico.ErroExpressaoInesperada
+### algoritmos_sequenciais__loja_ferramentas.1.por
+SINTAXE|62|4|ErroSintatico.ErroExpressaoInesperada
+### algoritmos_sequenciais__loja_ferramentas.2.por
+### algoritmos_sequenciais__loja_ferramentas.3.por
+### algoritmos_sequenciais__meta_economia.1.por
+SINTAXE|1|1|ErroSintatico.ErroExpressoesForaEscopoPrograma
+### algoritmos_sequenciais__meta_economia.2.por
+### algoritmos_sequenciais__meta_economia.3.por
+SINTAXE|25|28|
+### algoritmos_sequenciais__quantos_dias.1.por
+### algoritmos_sequenciais__quantos_dias.2.por
+SINTAXE|1|1|ErroSintatico.ErroExpressoesForaEscopoPrograma
+### algoritmos_sequenciais__quantos_dias.3.por
+SINTAXE|50|39|ErroSintatico.ErroExpressaoInesperada
+### algoritmos_sequenciais__troca_variaveis.1.por
+### algoritmos_sequenciais__troca_variaveis.2.por
+SINTAXE|1|1|ErroSintatico.ErroExpressoesForaEscopoPrograma
+### algoritmos_sequenciais__troca_variaveis.3.por
+SINTAXE|37|12|ErroSintatico.ErroExpressaoInesperada
+### bibliotecas__arquivos__gravar_arquivo.1.por
+SINTAXE|67|20|
+### bibliotecas__arquivos__gravar_arquivo.2.por
+SINTAXE|47|4|
+### bibliotecas__arquivos__gravar_arquivo.3.por
+SINTAXE|37|20|
+### bibliotecas__arquivos__ler_arquivo.1.por
+SINTAXE|61|65|
+### bibliotecas__arquivos__ler_arquivo.2.por
+### bibliotecas__arquivos__ler_arquivo.3.por
+SINTAXE|29|33|
+### bibliotecas__arquivos__ler_linha.1.por
+SINTAXE|90|4|
+### bibliotecas__arquivos__ler_linha.2.por
+### bibliotecas__arquivos__ler_linha.3.por
+SINTAXE|98|11|
+### bibliotecas__arquivos__ler_selecionado.1.por
+SINTAXE|140|23|ErroSintatico.ErroExpressaoInesperada
+### bibliotecas__arquivos__ler_selecionado.2.por
+### bibliotecas__arquivos__ler_selecionado.3.por
+### bibliotecas__arquivos__loop_linhas.1.por
+SINTAXE|62|66|
+### bibliotecas__arquivos__loop_linhas.2.por
+SINTAXE|84|58|ErroSintatico.ErroExpressaoInesperada
+### bibliotecas__arquivos__loop_linhas.3.por
+### bibliotecas__arquivos__selecionar_arquivo.1.por
+SINTAXE|29|4|ErroSintatico.ErroExpressaoInesperada
+### bibliotecas__arquivos__selecionar_arquivo.2.por
+SINTAXE|1|1|ErroSintatico.ErroExpressoesForaEscopoPrograma
+### bibliotecas__arquivos__selecionar_arquivo.3.por
+SINTAXE|16|6|ErroSintatico.ErroExpressaoInesperada
+### bibliotecas__arquivos__substituir_arquivo.1.por
+### bibliotecas__arquivos__substituir_arquivo.2.por
+SINTAXE|41|13|ErroSintatico.ErroExpressaoInesperada
+### bibliotecas__arquivos__substituir_arquivo.3.por
+SINTAXE|44|38|ErroSintatico.ErroExpressaoInesperada
+### bibliotecas__arquivos__verificar.1.por
+SINTAXE|1|1|ErroSintatico.ErroExpressoesForaEscopoPrograma
+### bibliotecas__arquivos__verificar.2.por
+SINTAXE|10|2|ErroSintatico.ErroExpressaoInesperada
+### bibliotecas__arquivos__verificar.3.por
+SINTAXE|24|13|
+### bibliotecas__calendario__data_hora_atual.1.por
+### bibliotecas__calendario__data_hora_atual.2.por
+### bibliotecas__calendario__data_hora_atual.3.por
+SINTAXE|48|81|
+### bibliotecas__calendario__dias_ate_aniversario.1.por
+SINTAXE|1|1|ErroSintatico.ErroExpressoesForaEscopoPrograma
+### bibliotecas__calendario__dias_ate_aniversario.2.por
+SINTAXE|40|6|
+### bibliotecas__calendario__dias_ate_aniversario.3.por
+SINTAXE|70|29|ErroSintatico.ErroExpressaoInesperada
+### bibliotecas__calendario__relogio_analogico.1.por
+SINTAXE|207|23|ErroSintatico.ErroExpressaoInesperada
+### bibliotecas__calendario__relogio_analogico.2.por
+### bibliotecas__calendario__relogio_analogico.3.por
+SINTAXE|1|1|ErroSintatico.ErroExpressoesForaEscopoPrograma
+### bibliotecas__calendario__relogio_digital.1.por
+SINTAXE|16|24|ErroSintatico.ErroExpressaoInesperada
+### bibliotecas__calendario__relogio_digital.2.por
+### bibliotecas__calendario__relogio_digital.3.por
+SINTAXE|47|37|
+### bibliotecas__calendario__relogio.1.por
+SINTAXE|113|12|
+### bibliotecas__calendario__relogio.2.por
+SINTAXE|131|2|
+### bibliotecas__calendario__relogio.3.por
+SINTAXE|124|53|ErroSintatico.ErroParsingNaoTratado
+### bibliotecas__graficos__bandeira_brasil.1.por
+SINTAXE|31|4|
+### bibliotecas__graficos__bandeira_brasil.2.por
+SINTAXE|63|69|
+### bibliotecas__graficos__bandeira_brasil.3.por
+### bibliotecas__graficos__basico__iniciando.1.por
+SINTAXE|34|5|ErroSintatico.ErroExpressaoInesperada
+### bibliotecas__graficos__basico__iniciando.2.por
+SINTAXE|27|4|
+### bibliotecas__graficos__basico__iniciando.3.por
+### bibliotecas__graficos__bola_quicando.1.por
+SINTAXE|30|43|ErroSintatico.ErroCadeiaIncompleta
+### bibliotecas__graficos__bola_quicando.2.por
+SINTAXE|21|3|ErroSintatico.ErroExpressaoInesperada
+### bibliotecas__graficos__bola_quicando.3.por
+### bibliotecas__graficos__formas_cores.1.por
+### bibliotecas__graficos__formas_cores.2.por
+### bibliotecas__graficos__formas_cores.3.por
+SINTAXE|54|7|
+### bibliotecas__graficos__fractal_fern.1.por
+### bibliotecas__graficos__fractal_fern.2.por
+SINTAXE|38|36|
+### bibliotecas__graficos__fractal_fern.3.por
+SINTAXE|28|17|
+### bibliotecas__graficos__grafico_barras.1.por
+SINTAXE|78|18|
+### bibliotecas__graficos__grafico_barras.2.por
+SINTAXE|33|35|
+### bibliotecas__graficos__grafico_barras.3.por
+SINTAXE|73|60|ErroSintatico.ErroExpressaoInesperada
+### bibliotecas__graficos__onda.1.por
+SINTAXE|68|15|ErroSintatico.ErroExpressaoInesperada
+### bibliotecas__graficos__onda.2.por
+### bibliotecas__graficos__onda.3.por
+### bibliotecas__graficos__paint.1.por
+SINTAXE|300|4|
+### bibliotecas__graficos__paint.2.por
+SINTAXE|353|6|
+### bibliotecas__graficos__paint.3.por
+SINTAXE|409|16|ErroSintatico.ErroParaEsperaCondicao
+### bibliotecas__graficos__qr_code.1.por
+SINTAXE|1251|72|
+### bibliotecas__graficos__qr_code.2.por
+SINTAXE|833|2|
+### bibliotecas__graficos__qr_code.3.por
+SINTAXE|284|12|ErroSintatico.ErroExpressaoInesperada
+### bibliotecas__graficos__salvar_imagem.1.por
+### bibliotecas__graficos__salvar_imagem.2.por
+SINTAXE|33|11|
+### bibliotecas__graficos__salvar_imagem.3.por
+SINTAXE|2|33|ErroSintatico.ErroExpressaoInesperada
+### bibliotecas__graficos__senoides.1.por
+SINTAXE|75|31|ErroSintatico.ErroExpressaoInesperada
+### bibliotecas__graficos__senoides.2.por
+### bibliotecas__graficos__senoides.3.por
+SINTAXE|51|4|ErroSintatico.ErroParsingNaoTratado
+### bibliotecas__graficos__solar.1.por
+SINTAXE|168|18|ErroSintatico.ErroExpressaoInesperada
+### bibliotecas__graficos__solar.2.por
+SINTAXE|192|4|ErroSintatico.ErroExpressaoInesperada
+### bibliotecas__graficos__solar.3.por
+SINTAXE|138|10|
+### bibliotecas__graficos__sphere.1.por
+### bibliotecas__graficos__sphere.2.por
+SINTAXE|243|5|ErroSintatico.ErroExpressaoInesperada
+### bibliotecas__graficos__sphere.3.por
+### bibliotecas__graficos__tela_cheia__teste_tela_cheia.1.por
+SINTAXE|54|37|
+### bibliotecas__graficos__tela_cheia__teste_tela_cheia.2.por
+### bibliotecas__graficos__tela_cheia__teste_tela_cheia.3.por
+SINTAXE|69|27|ErroSintatico.ErroExpressaoInesperada
+### bibliotecas__graficos__varios.1.por
+SINTAXE|59|53|
+### bibliotecas__graficos__varios.2.por
+SINTAXE|53|15|
+### bibliotecas__graficos__varios.3.por
+SINTAXE|84|43|
+### bibliotecas__internet__obtertexto.1.por
+SINTAXE|23|18|
+### bibliotecas__internet__obtertexto.2.por
+SINTAXE|27|44|ErroSintatico.ErroExpressaoInesperada
+### bibliotecas__internet__obtertexto.3.por
+### bibliotecas__internet__robos.1.por
+SINTAXE|16|2|ErroSintatico.ErroExpressaoInesperada
+### bibliotecas__internet__robos.2.por
+SINTAXE|30|18|ErroSintatico.ErroCadeiaIncompleta
+### bibliotecas__internet__robos.3.por
+SINTAXE|12|9|
+### bibliotecas__matematica__area_circunferencia.1.por
+SINTAXE|35|56|ErroSintatico.ErroExpressaoInesperada
+### bibliotecas__matematica__area_circunferencia.2.por
+SINTAXE|1|1|ErroSintatico.ErroExpressoesForaEscopoPrograma
+### bibliotecas__matematica__area_circunferencia.3.por
+### bibliotecas__matematica__arredondamento.1.por
+SINTAXE|34|46|ErroSintatico.ErroExpressaoInesperada
+### bibliotecas__matematica__arredondamento.2.por
+SINTAXE|35|64|ErroSintatico.ErroExpressaoInesperada
+### bibliotecas__matematica__arredondamento.3.por
+SINTAXE|49|11|
+### bibliotecas__matematica__funcoes_trigonometricas.1.por
+SINTAXE|22|88|ErroSintatico.ErroExpressaoInesperada
+### bibliotecas__matematica__funcoes_trigonometricas.2.por
+SINTAXE|1|1|ErroSintatico.ErroExpressoesForaEscopoPrograma
+### bibliotecas__matematica__funcoes_trigonometricas.3.por
+SINTAXE|9|31|ErroSintatico.ErroExpressaoInesperada
+### bibliotecas__matematica__logaritmo.1.por
+### bibliotecas__matematica__logaritmo.2.por
+SINTAXE|48|57|
+### bibliotecas__matematica__logaritmo.3.por
+SINTAXE|35|9|ErroSintatico.ErroExpressaoInesperada
+### bibliotecas__matematica__maior_numero.1.por
+SINTAXE|40|28|
+### bibliotecas__matematica__maior_numero.2.por
+### bibliotecas__matematica__maior_numero.3.por
+### bibliotecas__matematica__menor_numero.1.por
+SINTAXE|28|9|
+### bibliotecas__matematica__menor_numero.2.por
+### bibliotecas__matematica__menor_numero.3.por
+SINTAXE|39|32|
+### bibliotecas__matematica__potencia.1.por
+SINTAXE|38|15|ErroSintatico.ErroExpressaoInesperada
+### bibliotecas__matematica__potencia.2.por
+SINTAXE|42|6|
+### bibliotecas__matematica__potencia.3.por
+SINTAXE|38|34|ErroSintatico.ErroExpressaoInesperada
+### bibliotecas__matematica__raiz.1.por
+SINTAXE|33|19|
+### bibliotecas__matematica__raiz.2.por
+SINTAXE|1|1|ErroSintatico.ErroExpressoesForaEscopoPrograma
+### bibliotecas__matematica__raiz.3.por
+### bibliotecas__matematica__valor_absoluto.1.por
+SINTAXE|1|1|ErroSintatico.ErroExpressoesForaEscopoPrograma
+### bibliotecas__matematica__valor_absoluto.2.por
+SINTAXE|49|0|
+### bibliotecas__matematica__valor_absoluto.3.por
+SINTAXE|1|1|ErroSintatico.ErroExpressoesForaEscopoPrograma
+### bibliotecas__mouse__botao_pressionado.1.por
+SINTAXE|12|33|ErroSintatico.ErroExpressaoInesperada
+### bibliotecas__mouse__botao_pressionado.2.por
+SINTAXE|1|1|ErroSintatico.ErroExpressoesForaEscopoPrograma
+### bibliotecas__mouse__botao_pressionado.3.por
+SINTAXE|30|27|
+### bibliotecas__mouse__cursor.1.por
+SINTAXE|45|6|
+### bibliotecas__mouse__cursor.2.por
+### bibliotecas__mouse__cursor.3.por
+SINTAXE|36|21|
+### bibliotecas__mouse__ler_botao.1.por
+SINTAXE|27|19|ErroSintatico.ErroParaEsperaCondicao
+### bibliotecas__mouse__ler_botao.2.por
+SINTAXE|23|53|
+### bibliotecas__mouse__ler_botao.3.por
+SINTAXE|40|19|ErroSintatico.ErroExpressaoInesperada
+### bibliotecas__mouse__posicao_mouse.1.por
+SINTAXE|23|10|ErroSintatico.ErroComandoEsperado
+### bibliotecas__mouse__posicao_mouse.2.por
+SINTAXE|24|11|
+### bibliotecas__mouse__posicao_mouse.3.por
+### bibliotecas__objetos__agenda_contatos.1.por
+SINTAXE|44|18|ErroSintatico.ErroExpressaoInesperada
+### bibliotecas__objetos__agenda_contatos.2.por
+SINTAXE|15|11|
+### bibliotecas__objetos__agenda_contatos.3.por
+SINTAXE|22|13|
+### bibliotecas__objetos__cadastro_alunos.1.por
+SINTAXE|17|4|
+### bibliotecas__objetos__cadastro_alunos.2.por
+SINTAXE|49|7|ErroSintatico.ErroExpressaoInesperada
+### bibliotecas__objetos__cadastro_alunos.3.por
+### bibliotecas__sons__interromper.1.por
+SINTAXE|13|32|
+### bibliotecas__sons__interromper.2.por
+SINTAXE|26|35|ErroSintatico.ErroExpressaoInesperada
+### bibliotecas__sons__interromper.3.por
+SINTAXE|22|6|ErroSintatico.ErroParaEsperaCondicao
+### bibliotecas__sons__reproduzir_um.1.por
+SINTAXE|8|25|ErroSintatico.ErroExpressaoInesperada
+### bibliotecas__sons__reproduzir_um.2.por
+SINTAXE|16|13|
+### bibliotecas__sons__reproduzir_um.3.por
+SINTAXE|20|6|ErroSintatico.ErroExpressaoInesperada
+### bibliotecas__sons__reproduzir_varios.1.por
+SINTAXE|28|8|
+### bibliotecas__sons__reproduzir_varios.2.por
+### bibliotecas__sons__reproduzir_varios.3.por
+SINTAXE|17|10|
+### bibliotecas__teclado__ler_tecla.1.por
+SINTAXE|13|21|ErroSintatico.ErroExpressaoInesperada
+### bibliotecas__teclado__ler_tecla.2.por
+SINTAXE|1|1|ErroSintatico.ErroExpressoesForaEscopoPrograma
+### bibliotecas__teclado__ler_tecla.3.por
+SINTAXE|30|6|
+### bibliotecas__teclado__tecla_pressionada.1.por
+SINTAXE|20|29|
+### bibliotecas__teclado__tecla_pressionada.2.por
+SINTAXE|53|26|
+### bibliotecas__teclado__tecla_pressionada.3.por
+SINTAXE|33|59|ErroSintatico.ErroExpressaoInesperada
+### bibliotecas__texto__caixa_alta.1.por
+### bibliotecas__texto__caixa_alta.2.por
+SINTAXE|29|15|ErroSintatico.ErroExpressaoInesperada
+### bibliotecas__texto__caixa_alta.3.por
+### bibliotecas__texto__caixa_baixa.1.por
+SINTAXE|41|41|ErroSintatico.ErroExpressaoInesperada
+### bibliotecas__texto__caixa_baixa.2.por
+SINTAXE|28|9|
+### bibliotecas__texto__caixa_baixa.3.por
+SINTAXE|32|12|ErroSintatico.ErroExpressaoInesperada
+### bibliotecas__texto__caracteres.1.por
+SINTAXE|33|18|
+### bibliotecas__texto__caracteres.2.por
+### bibliotecas__texto__caracteres.3.por
+### bibliotecas__texto__pesquisar.1.por
+SINTAXE|68|45|ErroSintatico.ErroExpressaoInesperada
+### bibliotecas__texto__pesquisar.2.por
+### bibliotecas__texto__pesquisar.3.por
+SINTAXE|49|30|
+### bibliotecas__texto__preencher.1.por
+### bibliotecas__texto__preencher.2.por
+SINTAXE|50|25|
+### bibliotecas__texto__preencher.3.por
+SINTAXE|47|44|ErroSintatico.ErroExpressaoInesperada
+### bibliotecas__texto__substituir.1.por
+SINTAXE|29|64|ErroSintatico.ErroExpressaoInesperada
+### bibliotecas__texto__substituir.2.por
+### bibliotecas__texto__substituir.3.por
+SINTAXE|24|4|
+### bibliotecas__texto__subtexto.1.por
+SINTAXE|61|35|
+### bibliotecas__texto__subtexto.2.por
+### bibliotecas__texto__subtexto.3.por
+SINTAXE|33|4|ErroSintatico.ErroExpressaoInesperada
+### bibliotecas__texto__tamanho.1.por
+SINTAXE|1|1|ErroSintatico.ErroExpressoesForaEscopoPrograma
+### bibliotecas__texto__tamanho.2.por
+SINTAXE|26|3|
+### bibliotecas__texto__tamanho.3.por
+SINTAXE|1|1|ErroSintatico.ErroExpressoesForaEscopoPrograma
+### bibliotecas__tipos__caracter.1.por
+SINTAXE|34|4|
+### bibliotecas__tipos__caracter.2.por
+### bibliotecas__tipos__caracter.3.por
+### bibliotecas__tipos__inteiro.1.por
+SINTAXE|42|46|ErroSintatico.ErroComandoEsperado
+### bibliotecas__tipos__inteiro.2.por
+SINTAXE|89|65|ErroSintatico.ErroExpressaoInesperada
+### bibliotecas__tipos__inteiro.3.por
+SINTAXE|92|62|
+### bibliotecas__tipos__logico.1.por
+SINTAXE|45|61|ErroSintatico.ErroExpressaoInesperada
+### bibliotecas__tipos__logico.2.por
+SINTAXE|32|14|
+### bibliotecas__tipos__logico.3.por
+SINTAXE|39|51|
+### bibliotecas__tipos__real.1.por
+SINTAXE|1|1|ErroSintatico.ErroExpressoesForaEscopoPrograma
+### bibliotecas__tipos__real.2.por
+SINTAXE|1|1|ErroSintatico.ErroExpressoesForaEscopoPrograma
+### bibliotecas__tipos__real.3.por
+### bibliotecas__util__aguarde.1.por
+SINTAXE|44|19|ErroSintatico.ErroExpressaoInesperada
+### bibliotecas__util__aguarde.2.por
+### bibliotecas__util__aguarde.3.por
+SINTAXE|31|62|ErroSintatico.ErroExpressaoInesperada
+### bibliotecas__util__matriz.1.por
+SINTAXE|56|35|ErroSintatico.ErroTokenFaltando
+### bibliotecas__util__matriz.2.por
+SINTAXE|37|4|ErroSintatico.ErroExpressaoInesperada
+### bibliotecas__util__matriz.3.por
+SINTAXE|33|10|ErroSintatico.ErroExpressaoInesperada
+### bibliotecas__util__sorteio.1.por
+### bibliotecas__util__sorteio.2.por
+SINTAXE|1|1|ErroSintatico.ErroExpressoesForaEscopoPrograma
+### bibliotecas__util__sorteio.3.por
+SINTAXE|1|1|ErroSintatico.ErroExpressoesForaEscopoPrograma
+### bibliotecas__util__tempo.1.por
+### bibliotecas__util__tempo.2.por
+SINTAXE|56|30|
+### bibliotecas__util__tempo.3.por
+SINTAXE|68|11|
+### bibliotecas__util__vetor.1.por
+SINTAXE|40|12|ErroSintatico.ErroExpressaoInesperada
+### bibliotecas__util__vetor.2.por
+SINTAXE|51|32|ErroSintatico.ErroExpressaoInesperada
+### bibliotecas__util__vetor.3.por
+SINTAXE|49|13|ErroSintatico.ErroParaEsperaCondicao
+### desvios_condicionais__ano_bissexto.1.por
+SINTAXE|30|13|
+### desvios_condicionais__ano_bissexto.2.por
+SINTAXE|8|13|
+### desvios_condicionais__ano_bissexto.3.por
+SINTAXE|27|9|ErroSintatico.ErroExpressaoInesperada
+### desvios_condicionais__calculadora_imc.1.por
+SINTAXE|36|6|
+### desvios_condicionais__calculadora_imc.2.por
+### desvios_condicionais__calculadora_imc.3.por
+SINTAXE|46|0|ErroSintatico.ErroExpressaoInesperada
+### desvios_condicionais__escolha_caso.1.por
+SINTAXE|18|11|ErroSintatico.ErroExpressaoInesperada
+### desvios_condicionais__escolha_caso.2.por
+SINTAXE|9|3|
+### desvios_condicionais__escolha_caso.3.por
+### desvios_condicionais__idade.1.por
+### desvios_condicionais__idade.2.por
+SINTAXE|34|13|
+### desvios_condicionais__idade.3.por
+SINTAXE|1|1|ErroSintatico.ErroExpressoesForaEscopoPrograma
+### desvios_condicionais__media_final.1.por
+SINTAXE|28|2|
+### desvios_condicionais__media_final.2.por
+SINTAXE|62|15|ErroSintatico.ErroExpressaoInesperada
+### desvios_condicionais__media_final.3.por
+SINTAXE|1|1|ErroSintatico.ErroExpressoesForaEscopoPrograma
+### desvios_condicionais__medias.1.por
+### desvios_condicionais__medias.2.por
+SINTAXE|1|1|ErroSintatico.ErroExpressoesForaEscopoPrograma
+### desvios_condicionais__medias.3.por
+### desvios_condicionais__mini_calculadora.1.por
+### desvios_condicionais__mini_calculadora.2.por
+### desvios_condicionais__mini_calculadora.3.por
+SINTAXE|67|6|ErroSintatico.ErroExpressaoInesperada
+### desvios_condicionais__multiplo.1.por
+SINTAXE|42|8|ErroSintatico.ErroExpressaoInesperada
+### desvios_condicionais__multiplo.2.por
+### desvios_condicionais__multiplo.3.por
+SINTAXE|45|35|
+### desvios_condicionais__numero_inteiro.1.por
+### desvios_condicionais__numero_inteiro.2.por
+SINTAXE|36|6|
+### desvios_condicionais__numero_inteiro.3.por
+SINTAXE|34|13|
+### desvios_condicionais__numeros_iguais.1.por
+SINTAXE|1|1|ErroSintatico.ErroExpressoesForaEscopoPrograma
+### desvios_condicionais__numeros_iguais.2.por
+### desvios_condicionais__numeros_iguais.3.por
+SINTAXE|38|21|
+### desvios_condicionais__pedra_papel_tesoura.1.por
+### desvios_condicionais__pedra_papel_tesoura.2.por
+SINTAXE|52|66|ErroSintatico.ErroExpressaoInesperada
+### desvios_condicionais__pedra_papel_tesoura.3.por
+SINTAXE|66|14|ErroSintatico.ErroExpressaoInesperada
+### desvios_condicionais__tipo_triangulo.1.por
+SINTAXE|48|4|
+### desvios_condicionais__tipo_triangulo.2.por
+SINTAXE|56|31|ErroSintatico.ErroExpressaoInesperada
+### desvios_condicionais__tipo_triangulo.3.por
+### desvios_condicionais__vogal.1.por
+### desvios_condicionais__vogal.2.por
+SINTAXE|44|59|ErroSintatico.ErroExpressaoInesperada
+### desvios_condicionais__vogal.3.por
+SINTAXE|44|6|
+### entrada_saida__lendo_valores.1.por
+### entrada_saida__lendo_valores.2.por
+SINTAXE|29|4|
+### entrada_saida__lendo_valores.3.por
+SINTAXE|43|11|
+### entrada_saida__ola_mundo.1.por
+### entrada_saida__ola_mundo.2.por
+SINTAXE|14|40|
+### entrada_saida__ola_mundo.3.por
+SINTAXE|13|19|
+### jogos__colisoes__ex1_colisao_ponto_retangulo.1.por
+### jogos__colisoes__ex1_colisao_ponto_retangulo.2.por
+SINTAXE|171|4|ErroSintatico.ErroParsingNaoTratado
+### jogos__colisoes__ex1_colisao_ponto_retangulo.3.por
+SINTAXE|142|49|ErroSintatico.ErroExpressaoInesperada
+### jogos__colisoes__ex2_colisao_ponto_circulo.1.por
+SINTAXE|260|3|ErroSintatico.ErroExpressaoInesperada
+### jogos__colisoes__ex2_colisao_ponto_circulo.2.por
+### jogos__colisoes__ex2_colisao_ponto_circulo.3.por
+SINTAXE|251|2|
+### jogos__colisoes__ex3_colisao_retangulos.1.por
+SINTAXE|128|58|
+### jogos__colisoes__ex3_colisao_retangulos.2.por
+SINTAXE|380|14|
+### jogos__colisoes__ex3_colisao_retangulos.3.por
+SINTAXE|272|23|
+### jogos__colisoes__ex4_colisao_circulos.1.por
+SINTAXE|352|43|ErroSintatico.ErroExpressaoInesperada
+### jogos__colisoes__ex4_colisao_circulos.2.por
+SINTAXE|98|27|
+### jogos__colisoes__ex4_colisao_circulos.3.por
+SINTAXE|295|20|
+### jogos__colisoes__ex5_colisao_circulo_retangulo.1.por
+SINTAXE|481|13|
+### jogos__colisoes__ex5_colisao_circulo_retangulo.2.por
+SINTAXE|467|56|ErroSintatico.ErroExpressaoInesperada
+### jogos__colisoes__ex5_colisao_circulo_retangulo.3.por
+SINTAXE|250|28|
+### jogos__colisoes__ex6_colisao_todos.1.por
+SINTAXE|179|99|ErroSintatico.ErroExpressaoIncompleta
+### jogos__colisoes__ex6_colisao_todos.2.por
+SINTAXE|122|28|ErroSintatico.ErroExpressaoInesperada
+### jogos__colisoes__ex6_colisao_todos.3.por
+SINTAXE|731|4|ErroSintatico.ErroExpressaoInesperada
+### jogos__corrida.1.por
+SINTAXE|72|3|ErroSintatico.ErroExpressaoInesperada
+### jogos__corrida.2.por
+SINTAXE|617|93|ErroSintatico.ErroExpressaoInesperada
+### jogos__corrida.3.por
+SINTAXE|629|46|
+### jogos__medieval.1.por
+SINTAXE|125|11|ErroSintatico.ErroExpressaoInesperada
+### jogos__medieval.2.por
+SINTAXE|354|54|
+### jogos__medieval.3.por
+SINTAXE|11|10|ErroSintatico.ErroExpressaoInesperada
+### jogos__moon_lander.1.por
+SINTAXE|613|6|
+### jogos__moon_lander.2.por
+SINTAXE|1|1|ErroSintatico.ErroExpressoesForaEscopoPrograma
+### jogos__moon_lander.3.por
+SINTAXE|316|5|
+### jogos__pong.1.por
+SINTAXE|45|16|ErroSintatico.ErroExpressaoInesperada
+### jogos__pong.2.por
+SINTAXE|246|28|
+### jogos__pong.3.por
+SINTAXE|31|2|ErroSintatico.ErroExpressaoInesperada
+### jogos__programe__criador_de_fases.1.por
+SINTAXE|530|28|
+### jogos__programe__criador_de_fases.2.por
+SINTAXE|445|158|ErroSintatico.ErroCadeiaIncompleta
+### jogos__programe__criador_de_fases.3.por
+SINTAXE|565|20|
+### jogos__programe__programe.1.por
+### jogos__programe__programe.2.por
+SINTAXE|689|6|
+### jogos__programe__programe.3.por
+SINTAXE|1001|54|ErroSintatico.ErroExpressaoInesperada
+### jogos__serpente.1.por
+SINTAXE|1068|18|ErroSintatico.ErroExpressaoInesperada
+### jogos__serpente.2.por
+SINTAXE|1150|24|
+### jogos__serpente.3.por
+### jogos__slide.1.por
+SINTAXE|127|44|
+### jogos__slide.2.por
+SINTAXE|106|80|ErroSintatico.ErroCadeiaIncompleta
+### jogos__slide.3.por
+SINTAXE|102|47|ErroSintatico.ErroExpressaoInesperada
+### jogos__theballsaga__theballsaga.1.por
+SINTAXE|500|20|
+### jogos__theballsaga__theballsaga.2.por
+SINTAXE|480|22|
+### jogos__theballsaga__theballsaga.3.por
+SINTAXE|62|47|ErroSintatico.ErroExpressaoInesperada
+### jogos__theballsaga__theballsagacriador.1.por
+SINTAXE|557|23|
+### jogos__theballsaga__theballsagacriador.2.por
+SINTAXE|525|80|ErroSintatico.ErroExpressaoInesperada
+### jogos__theballsaga__theballsagacriador.3.por
+SINTAXE|717|22|
+### lacos_repeticao__adivinhe_numero.1.por
+SINTAXE|38|52|
+### lacos_repeticao__adivinhe_numero.2.por
+SINTAXE|25|18|
+### lacos_repeticao__adivinhe_numero.3.por
+### lacos_repeticao__consistencia.1.por
+SINTAXE|23|39|ErroSintatico.ErroExpressaoInesperada
+### lacos_repeticao__consistencia.2.por
+SINTAXE|16|10|
+### lacos_repeticao__consistencia.3.por
+SINTAXE|26|41|ErroSintatico.ErroExpressaoInesperada
+### lacos_repeticao__contagem_regressiva.1.por
+### lacos_repeticao__contagem_regressiva.2.por
+### lacos_repeticao__contagem_regressiva.3.por
+SINTAXE|11|53|ErroSintatico.ErroExpressaoInesperada
+### lacos_repeticao__fatorial.1.por
+SINTAXE|52|26|
+### lacos_repeticao__fatorial.2.por
+### lacos_repeticao__fatorial.3.por
+SINTAXE|56|13|
+### lacos_repeticao__fibonacci.1.por
+SINTAXE|40|6|ErroSintatico.ErroParaEsperaCondicao
+### lacos_repeticao__fibonacci.2.por
+SINTAXE|17|23|ErroSintatico.ErroExpressaoInesperada
+### lacos_repeticao__fibonacci.3.por
+SINTAXE|1|1|ErroSintatico.ErroExpressoesForaEscopoPrograma
+### lacos_repeticao__media_dez_numeros.1.por
+SINTAXE|58|64|ErroSintatico.ErroExpressaoInesperada
+### lacos_repeticao__media_dez_numeros.2.por
+SINTAXE|54|4|ErroSintatico.ErroExpressaoInesperada
+### lacos_repeticao__media_dez_numeros.3.por
+### lacos_repeticao__numeros_primos.1.por
+### lacos_repeticao__numeros_primos.2.por
+SINTAXE|15|17|ErroSintatico.ErroExpressaoIncompleta
+### lacos_repeticao__numeros_primos.3.por
+### lacos_repeticao__pesquisa_opiniao.1.por
+SINTAXE|62|54|
+### lacos_repeticao__pesquisa_opiniao.2.por
+SINTAXE|48|15|ErroSintatico.ErroExpressaoInesperada
+### lacos_repeticao__pesquisa_opiniao.3.por
+SINTAXE|26|6|
+### lacos_repeticao__soma_um_x.1.por
+### lacos_repeticao__soma_um_x.2.por
+SINTAXE|31|8|
+### lacos_repeticao__soma_um_x.3.por
+### lacos_repeticao__tabuada.1.por
+SINTAXE|35|19|ErroSintatico.ErroParaEsperaCondicao
+### lacos_repeticao__tabuada.2.por
+SINTAXE|37|62|ErroSintatico.ErroExpressaoInesperada
+### lacos_repeticao__tabuada.3.por
+SINTAXE|35|19|ErroSintatico.ErroParaEsperaCondicao
+### lacos_repeticao__validacao_senha.1.por
+SINTAXE|42|14|ErroSintatico.ErroExpressaoIncompleta
+### lacos_repeticao__validacao_senha.2.por
+SINTAXE|29|21|
+### lacos_repeticao__validacao_senha.3.por
+SINTAXE|12|11|ErroSintatico.ErroExpressaoInesperada
+### musica__bateria.1.por
+### musica__bateria.2.por
+SINTAXE|141|136|ErroSintatico.ErroExpressaoInesperada
+### musica__bateria.3.por
+### musica__player.1.por
+### musica__player.2.por
+### musica__player.3.por
+### operacoes_aritmeticas__divisoes_inteiras.1.por
+SINTAXE|14|11|
+### operacoes_aritmeticas__divisoes_inteiras.2.por
+SINTAXE|30|62|
+### operacoes_aritmeticas__divisoes_inteiras.3.por
+SINTAXE|34|56|
+### operacoes_aritmeticas__operacoes_simples.1.por
+SINTAXE|18|4|
+### operacoes_aritmeticas__operacoes_simples.2.por
+### operacoes_aritmeticas__operacoes_simples.3.por
+SINTAXE|34|25|
+### operacoes_aritmeticas__potencia_raiz.1.por
+### operacoes_aritmeticas__potencia_raiz.2.por
+SINTAXE|30|35|ErroSintatico.ErroExpressaoInesperada
+### operacoes_aritmeticas__potencia_raiz.3.por
+SINTAXE|30|20|ErroSintatico.ErroParsingNaoTratado
+### subrotinas__conversor_temperatura.1.por
+### subrotinas__conversor_temperatura.2.por
+SINTAXE|9|10|ErroSintatico.ErroParsingNaoTratado
+### subrotinas__conversor_temperatura.3.por
+SINTAXE|65|17|
+### subrotinas__fatorial_recursivo.1.por
+SINTAXE|63|21|
+### subrotinas__fatorial_recursivo.2.por
+SINTAXE|63|8|ErroSintatico.ErroExpressaoInesperada
+### subrotinas__fatorial_recursivo.3.por
+### subrotinas__fibonacci_recursivo.1.por
+SINTAXE|1|1|ErroSintatico.ErroExpressoesForaEscopoPrograma
+### subrotinas__fibonacci_recursivo.2.por
+SINTAXE|59|6|ErroSintatico.ErroExpressaoInesperada
+### subrotinas__fibonacci_recursivo.3.por
+SINTAXE|46|24|ErroSintatico.ErroExpressaoInesperada
+### subrotinas__lagarta.1.por
+### subrotinas__lagarta.2.por
+SINTAXE|54|12|
+### subrotinas__lagarta.3.por
+SINTAXE|38|44|ErroSintatico.ErroExpressaoInesperada
+### subrotinas__mdc.1.por
+SINTAXE|15|13|
+### subrotinas__mdc.2.por
+SINTAXE|15|24|
+### subrotinas__mdc.3.por
+SINTAXE|45|31|ErroSintatico.ErroExpressaoInesperada
+### subrotinas__palindromo.1.por
+SINTAXE|30|2|
+### subrotinas__palindromo.2.por
+SINTAXE|13|16|ErroSintatico.ErroExpressaoInesperada
+### subrotinas__palindromo.3.por
+### subrotinas__parametros_referencia.1.por
+SINTAXE|20|11|
+### subrotinas__parametros_referencia.2.por
+SINTAXE|11|4|
+### subrotinas__parametros_referencia.3.por
+SINTAXE|20|72|ErroSintatico.ErroCadeiaIncompleta
+### subrotinas__procedimento_funcao.1.por
+SINTAXE|29|19|
+### subrotinas__procedimento_funcao.2.por
+SINTAXE|30|14|ErroSintatico.ErroExpressaoInesperada
+### subrotinas__procedimento_funcao.3.por
+SINTAXE|40|12|ErroSintatico.ErroExpressaoInesperada
+### subrotinas__vetores_parametro.1.por
+### subrotinas__vetores_parametro.2.por
+SINTAXE|77|19|ErroSintatico.ErroExpressaoIncompleta
+### subrotinas__vetores_parametro.3.por
+SINTAXE|68|9|ErroSintatico.ErroExpressaoInesperada
+### vetores_matrizes__busca_binaria.1.por
+### vetores_matrizes__busca_binaria.2.por
+SINTAXE|32|21|ErroSintatico.ErroExpressaoInesperada
+### vetores_matrizes__busca_binaria.3.por
+SINTAXE|30|42|ErroSintatico.ErroExpressaoInesperada
+### vetores_matrizes__diagonal_principal.1.por
+SINTAXE|66|2|
+### vetores_matrizes__diagonal_principal.2.por
+SINTAXE|80|9|
+### vetores_matrizes__diagonal_principal.3.por
+SINTAXE|82|15|ErroSintatico.ErroParaEsperaCondicao
+### vetores_matrizes__exibe_matriz.1.por
+SINTAXE|8|9|ErroSintatico.ErroExpressaoInesperada
+### vetores_matrizes__exibe_matriz.2.por
+SINTAXE|26|16|ErroSintatico.ErroExpressaoInesperada
+### vetores_matrizes__exibe_matriz.3.por
+SINTAXE|9|27|
+### vetores_matrizes__jogo_da_velha.1.por
+SINTAXE|81|4|ErroSintatico.ErroExpressaoInesperada
+### vetores_matrizes__jogo_da_velha.2.por
+SINTAXE|76|19|
+### vetores_matrizes__jogo_da_velha.3.por
+SINTAXE|30|15|ErroSintatico.ErroParaEsperaCondicao
+### vetores_matrizes__notas_turma.1.por
+SINTAXE|28|39|
+### vetores_matrizes__notas_turma.2.por
+### vetores_matrizes__notas_turma.3.por
+SINTAXE|63|11|
+### vetores_matrizes__ordenacao_bolha.1.por
+### vetores_matrizes__ordenacao_bolha.2.por
+SINTAXE|20|37|ErroSintatico.ErroExpressaoInesperada
+### vetores_matrizes__ordenacao_bolha.3.por
+SINTAXE|51|14|ErroSintatico.ErroExpressaoInesperada
+### vetores_matrizes__pesquisa_vetor.1.por
+### vetores_matrizes__pesquisa_vetor.2.por
+SINTAXE|34|24|ErroSintatico.ErroExpressaoInesperada
+### vetores_matrizes__pesquisa_vetor.3.por
+SINTAXE|55|0|
+### vetores_matrizes__preenche_vetor.1.por
+SINTAXE|30|26|ErroSintatico.ErroExpressaoInesperada
+### vetores_matrizes__preenche_vetor.2.por
+SINTAXE|36|12|ErroSintatico.ErroExpressaoInesperada
+### vetores_matrizes__preenche_vetor.3.por
+### vetores_matrizes__tabela_dados.1.por
+SINTAXE|24|13|ErroSintatico.ErroParaEsperaCondicao
+### vetores_matrizes__tabela_dados.2.por
+SINTAXE|8|16|
+### vetores_matrizes__tabela_dados.3.por
+SINTAXE|16|17|ErroSintatico.ErroExpressaoInesperada

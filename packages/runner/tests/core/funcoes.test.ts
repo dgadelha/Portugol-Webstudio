@@ -161,6 +161,21 @@ describe("Funções", () => {
         ),
       ).resolves.toBe("-1|0|1");
     });
+
+    // Como no Portugol Studio, os parênteses não mudam nada: a chamada roda, e o retorno de
+    // uma função é descartado como numa chamada sem parênteses.
+    test("Chamada entre parênteses vale como comando", async () => {
+      await expect(
+        runPortugolCode(
+          programa(portugol`
+            (incrementaContador())
+            ((incrementaContador()))
+            (dobro(2))
+            escreva(contador)
+          `),
+        ),
+      ).resolves.toBe("2");
+    });
   });
 
   describe("Recursão", () => {

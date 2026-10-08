@@ -2,6 +2,7 @@ import { type ArquivoContext, PortugolLexer, PortugolParser } from "@portugol-we
 import type { PortugolCodeDiagnostic } from "@portugol-webstudio/antlr";
 import {
   type ATNSimulator,
+  BailErrorStrategy,
   BaseErrorListener,
   CharStream,
   CommonToken,
@@ -9,6 +10,8 @@ import {
   Lexer,
   Parser,
   type ParserRuleContext,
+  ParseCancellationException,
+  PredictionMode,
   type RecognitionException,
   type Recognizer,
   Token,
@@ -16,8 +19,11 @@ import {
 
 import {
   erroCadeiaIncompleta,
+  erroCaracterIncompleto,
+  erroCaractereEmNome,
   erroChaveDeVetorMatrizMalPosicionada,
   erroComandoEsperado,
+  erroComentárioSemFim,
   erroEscopo,
   erroExpressãoEsperada,
   erroExpressãoIncompleta,
@@ -66,6 +72,13 @@ const OPERADORES_BINÁRIOS = new Set([
   ">>",
 ]);
 
+const COMANDOS = new Set(["se", "enquanto", "para", "faca", "escolha", "retorne", "pare"]);
+
+/**
+ * O que, depois de um nome, faz dele uma chamada de função ou uma atribuição.
+ */
+const SEGUEM_COMANDO = new Set(["(", "[", "=", "+=", "-=", "*=", "/=", "%=", "++", "--"]);
+
 /**
  * O nome da regra em que o parser estava e os dois acima dela: é por eles que o Portugol
  * Studio decide qual erro mostrar.
@@ -99,6 +112,8 @@ export interface ResultadoSintaxe {
  *   sobrou, e o segundo erro dela é sempre consequência do primeiro;
  * - código depois do programa é procurado nos tokens, e não por contagem de chaves no texto,
  *   que se confundia com chaves dentro de cadeias e com comentários de linha;
+ * - um comentário de bloco que não foi fechado é apontado como tal (no Java, o erro sai onde o parser
+ *   tropeçou no texto do comentário), e um acento num nome ganha uma mensagem própria;
  * - onde a mensagem do Java aponta o problema errado (mandar inserir `(` quando falta uma
  *   expressão, por exemplo), a tradução foi corrigida; cada caso está marcado com
  *   "Divergência" no código.
@@ -107,21 +122,25 @@ class AnalisadorSintático extends BaseErrorListener {
   private readonly erros: PortugolCodeDiagnostic[] = [];
   private erroNoParser = false;
 
+  /**
+   * As posições do ANTLR contam pontos de código, e não unidades de UTF-16 como as strings do
+   * JavaScript: um emoji antes desloca qualquer `slice` feito direto no código.
+   */
+  private readonly pontos: string[];
+
   constructor(private readonly código: string) {
     super();
+    this.pontos = Array.from(código);
   }
 
   analisar(): ResultadoSintaxe {
     const lexer = new PortugolLexer(CharStream.fromString(this.código));
     const tokens = new CommonTokenStream(lexer);
-    const parser = new PortugolParser(tokens);
 
     lexer.removeErrorListeners();
     lexer.addErrorListener(this);
-    parser.removeErrorListeners();
-    parser.addErrorListener(this);
 
-    const árvore = parser.arquivo();
+    const árvore = this.montarÁrvore(tokens);
 
     tokens.fill();
 
@@ -136,9 +155,47 @@ class AnalisadorSintático extends BaseErrorListener {
       erro = inteiro;
     }
 
+    // O texto de um comentário sem fim vira código, e o parser tropeça nele em algum ponto
+    // depois do `/*`: o comentário é a causa.
+    const comentário = this.comentárioSemFim(tokens);
+
+    if (comentário && (!erro || !this.vemAntes(erro, comentário))) {
+      erro = comentário;
+    }
+
     erro ??= this.códigoApósPrograma(tokens, árvore);
 
     return { árvore, erros: erro ? [erro] : [] };
+  }
+
+  /**
+   * Em duas passadas, como recomenda o ANTLR: a predição SLL é centenas de vezes mais rápida
+   * que a LL completa (12 ms contra 2,5 s num programa de 5000 linhas), mas desiste no primeiro
+   * erro. Só então o código é analisado de novo na LL, que reporta o erro e se recupera dele.
+   */
+  private montarÁrvore(tokens: CommonTokenStream) {
+    const rápido = new PortugolParser(tokens);
+
+    rápido.removeErrorListeners();
+    rápido.errorHandler = new BailErrorStrategy();
+    rápido.interpreter.predictionMode = PredictionMode.SLL;
+
+    try {
+      return rápido.arquivo();
+    } catch (error) {
+      if (!(error instanceof ParseCancellationException)) {
+        throw error;
+      }
+    }
+
+    tokens.seek(0);
+
+    const parser = new PortugolParser(tokens);
+
+    parser.removeErrorListeners();
+    parser.addErrorListener(this);
+
+    return parser.arquivo();
   }
 
   override syntaxError<T extends ATNSimulator>(
@@ -163,12 +220,28 @@ class AnalisadorSintático extends BaseErrorListener {
    */
   private traduzirErroLéxico(linha: number, coluna: number, msg: string) {
     const texto = this.desfazerExibição(msg.replace(/^token recognition error at: /, ""));
-    const token = CommonToken.fromType(Token.INVALID_TYPE, texto.split("\n", 1)[0]);
+    const primeiraLinha = texto.split("\n", 1)[0];
+    const token = CommonToken.fromType(Token.INVALID_TYPE, primeiraLinha);
 
     token.line = linha;
     token.column = coluna;
 
-    return texto.startsWith('"') ? erroCadeiaIncompleta(token) : erroExpressãoInesperada(token, texto);
+    if (texto.startsWith('"')) {
+      return erroCadeiaIncompleta(token);
+    }
+
+    // Divergência: o Java mostra o resto da linha como "expressão inesperada", aspas incluídas.
+    if (texto.startsWith("'")) {
+      return erroCaracterIncompleto(token, primeiraLinha.startsWith("''"));
+    }
+
+    // Divergência: uma letra que o léxico não aceita só pode ser acentuada, e quase sempre
+    // está num nome (`inteiro ação`). O Java diz só que "a expressão 'ç' não era esperada".
+    if (/^\p{L}/u.test(primeiraLinha)) {
+      return erroCaractereEmNome(token, Array.from(primeiraLinha)[0]);
+    }
+
+    return erroExpressãoInesperada(token, primeiraLinha);
   }
 
   private traduzirErroParsing(parser: Parser, msg: string, e: RecognitionException | null): PortugolCodeDiagnostic {
@@ -182,8 +255,15 @@ class AnalisadorSintático extends BaseErrorListener {
       tipo => parser.vocabulary.getSymbolicName(tipo) ?? parser.vocabulary.getLiteralName(tipo) ?? "",
     );
 
-    // No fim do arquivo não há o que sublinhar: marca o último token antes dele.
-    const alvo = token.type === Token.EOF ? (parser.tokenStream.LT(-1) ?? token) : token;
+    // No fim do arquivo não há o que sublinhar: marca o último token antes dele, ou, num
+    // arquivo sem nenhum, o lugar onde o código acaba.
+    const alvo = token.type === Token.EOF ? (parser.tokenStream.LT(-1) ?? this.fimDoCódigo(token)) : token;
+
+    // Só o primeiro token do arquivo pode esperar `programa`: o que vier antes dele está fora
+    // do programa. Antes de tudo, porque o resto confundiria esse código com um comando.
+    if (nomesEsperados.includes("PROGRAMA")) {
+      return this.códigoAntesDoPrograma(token, alvo);
+    }
 
     // O Java só tem uma exceção "causa" quando o ANTLR lançou uma; para token sobrando ou
     // faltando ele monta a própria exceção, sem causa.
@@ -206,14 +286,14 @@ class AnalisadorSintático extends BaseErrorListener {
     // Divergência: comando direto no programa, fora de função. O Java tem a mensagem
     // (`ErroExpressaoForaEscopoFuncao`), mas o trecho que a usava está comentado e o erro sai
     // como "o escopo do programa não foi fechado".
-    if (atual === "arquivo" && !["<EOF>", "funcao", "}"].includes(texto) && !nomesEsperados.includes("PROGRAMA")) {
+    if (atual === "arquivo" && this.começaComando(parser, token)) {
       return erroExpressãoForaEscopoFunção(alvo, texto);
     }
 
     // `reportUnwantedToken`: o token sobra, e removê-lo resolveria.
     if (msg.startsWith("extraneous input")) {
       if ((texto === "<EOF>" || texto === "funcao") && nomesEsperados.includes("FECHA_CHAVES")) {
-        return erroEscopo(alvo, atual);
+        return erroEscopo(alvo, atual === "listaComandos" ? pai : atual);
       }
 
       if (atual === "expressao" && pai === "declaracaoVariavel") {
@@ -252,9 +332,9 @@ class AnalisadorSintático extends BaseErrorListener {
         return erroRealComVírgula(alvo);
       }
 
-      if (msg.includes("<EOF>")) {
-        return erroCadeiaIncompleta(alvo);
-      }
+      // Divergência: aqui o Java concluía "cadeia sem fim" sempre que o código acabava no meio
+      // de uma expressão, como em `v[i` no fim do arquivo. A cadeia sem fim de verdade já é
+      // apontada pelo léxico, então o caso segue para as outras regras.
     }
 
     if (this.contém(contextos, "para")) {
@@ -304,18 +384,42 @@ class AnalisadorSintático extends BaseErrorListener {
     }
 
     for (const [i, nome] of nomesEsperados.entries()) {
-      const traduzido = this.traduzirTokenEsperado(parser, alvo, atual, nome, esperados[i]);
+      const traduzido = this.traduzirTokenEsperado(parser, alvo, contextos, nome, esperados[i]);
 
       if (traduzido) {
         return traduzido;
       }
     }
 
-    return erroParsingNãoTratado(
-      alvo,
-      this.exibir(e?.offendingToken ?? token),
-      parser.getExpectedTokens().toStringWithVocabulary(parser.vocabulary),
-    );
+    return this.traduzirNãoTratado(parser, alvo, token, texto, esperados);
+  }
+
+  /**
+   * Divergência: aqui o Java mostra a mensagem crua do ANTLR, em inglês e com os nomes dos
+   * tokens na gramática ("mismatched input 'funcao' expecting '{'"). Quando só um token cabe,
+   * ele é dito; senão, o token que sobra é apontado.
+   */
+  private traduzirNãoTratado(parser: Parser, alvo: Token, token: Token, texto: string, esperados: number[]) {
+    const antesDe = token.type === Token.EOF ? undefined : texto;
+
+    if (esperados.length === 1) {
+      const [tipo] = esperados as [number];
+      const literal = parser.vocabulary.getLiteralName(tipo)?.slice(1, -1);
+
+      if (literal && /^\p{L}+$/u.test(literal)) {
+        return erroPalavraReservadaEstáFaltando(alvo, literal);
+      }
+
+      if (literal) {
+        return erroParsingNãoTratado(alvo, `'${literal}'`, antesDe);
+      }
+
+      if (tipo === PortugolLexer.ID) {
+        return erroParsingNãoTratado(alvo, "um nome", antesDe);
+      }
+    }
+
+    return antesDe === undefined ? erroParsingNãoTratado(alvo) : erroExpressãoInesperada(alvo, texto);
   }
 
   /**
@@ -324,7 +428,7 @@ class AnalisadorSintático extends BaseErrorListener {
   private traduzirTokenEsperado(
     parser: Parser,
     alvo: Token,
-    atual: string,
+    { atual, pai }: Contextos,
     nome: string,
     tipo: number,
   ): PortugolCodeDiagnostic | undefined {
@@ -334,7 +438,7 @@ class AnalisadorSintático extends BaseErrorListener {
       }
 
       case "FECHA_CHAVES": {
-        return erroEscopo(alvo, atual);
+        return erroEscopo(alvo, atual === "listaComandos" ? pai : atual);
       }
 
       case "ABRE_PARENTESES": {
@@ -355,12 +459,6 @@ class AnalisadorSintático extends BaseErrorListener {
 
       case "ENQUANTO": {
         return erroPalavraReservadaEstáFaltando(alvo, "enquanto");
-      }
-
-      case "PROGRAMA": {
-        const início = this.código.indexOf("programa");
-
-        return erroExpressõesForaEscopoPrograma(alvo, this.código.slice(0, Math.max(início - 1, 0)), "antes");
       }
 
       default: {
@@ -425,13 +523,28 @@ class AnalisadorSintático extends BaseErrorListener {
           token.tokenIndex > fim.tokenIndex && token.channel === Token.DEFAULT_CHANNEL && token.type !== Token.EOF,
       );
 
-    return sobra && erroExpressõesForaEscopoPrograma(sobra, this.código.slice(fim.stop + 1).trim(), "depois");
+    return sobra && erroExpressõesForaEscopoPrograma(sobra, this.trecho(fim.stop + 1).trim(), "depois");
   }
 
   private contextosDe(parser: Parser, ctx: ParserRuleContext): Contextos {
     const nome = (c: ParserRuleContext | null | undefined) => (c ? parser.ruleNames[c.ruleIndex] : "");
 
     return { atual: nome(ctx), pai: nome(ctx.parent), avô: nome(ctx.parent?.parent) };
+  }
+
+  /**
+   * Um comando de controle, ou um nome seguido do que faz dele uma chamada ou uma atribuição.
+   * Qualquer outra coisa solta no programa (como o `lol` em `inclua biblioteca Graficos lol`)
+   * fica com a mensagem do Java, de expressão inesperada.
+   */
+  private começaComando(parser: Parser, token: Token) {
+    if (COMANDOS.has(token.text ?? "")) {
+      return true;
+    }
+
+    const próximo = parser.tokenStream.LT(2)?.text ?? "";
+
+    return token.type === PortugolLexer.ID && SEGUEM_COMANDO.has(próximo);
   }
 
   private vemAntes(a: PortugolCodeDiagnostic, b: PortugolCodeDiagnostic) {
@@ -449,7 +562,54 @@ class AnalisadorSintático extends BaseErrorListener {
   private textoAntesDe(ctx: ParserRuleContext) {
     const início = ctx.start?.start ?? -1;
 
-    return início < 2 ? "" : this.código.slice(início - 2, início + 1);
+    return início < 2 ? "" : this.trecho(início - 2, início + 1);
+  }
+
+  private trecho(início: number, fim?: number) {
+    return this.pontos.slice(início, fim).join("");
+  }
+
+  /**
+   * Divergência: o Java corta o texto até o primeiro "programa" que achar, mesmo dentro de um
+   * comentário, e sem ele mostra um trecho vazio. Num arquivo vazio, ou só com comentários,
+   * o que falta é o próprio `programa`.
+   */
+  private códigoAntesDoPrograma(token: Token, alvo: Token) {
+    if (token.type === Token.EOF) {
+      return erroPalavraReservadaEstáFaltando(alvo, "programa");
+    }
+
+    const resto = this.trecho(token.start);
+    const programa = /\bprograma\b/.exec(resto);
+
+    return erroExpressõesForaEscopoPrograma(alvo, resto.slice(0, programa?.index).trim(), "antes");
+  }
+
+  /**
+   * Um token sem largura onde o código acaba, para o erro não marcar o texto `<EOF>`.
+   */
+  private fimDoCódigo(eof: Token) {
+    const token = CommonToken.fromType(Token.EOF, "");
+
+    token.line = eof.line;
+    token.column = eof.column;
+
+    return token;
+  }
+
+  /**
+   * O léxico não reconhece um comentário de bloco sem fechamento: sobram um `/` e um `*` colados,
+   * que nenhum código válido tem (não existe `*` unário).
+   */
+  private comentárioSemFim(tokens: CommonTokenStream) {
+    const visíveis = tokens.getTokens().filter(token => token.channel === Token.DEFAULT_CHANNEL);
+    const barra = visíveis.find((token, i) => {
+      const próximo = visíveis[i + 1];
+
+      return token.text === "/" && próximo?.text === "*" && próximo.start === token.stop + 1;
+    });
+
+    return barra && erroComentárioSemFim(barra);
   }
 
   /**
@@ -459,18 +619,6 @@ class AnalisadorSintático extends BaseErrorListener {
     const literal = parser.vocabulary.getLiteralName(tipo);
 
     return literal ? literal.slice(1, -1) : (parser.vocabulary.getSymbolicName(tipo) ?? "").toLowerCase();
-  }
-
-  /**
-   * O `getTokenErrorDisplay` do ANTLR.
-   */
-  private exibir(token: Token) {
-    const texto = token.type === Token.EOF ? "<EOF>" : (token.text ?? `<${token.type}>`);
-
-    return `'${texto
-      .replaceAll("\n", String.raw`\n`)
-      .replaceAll("\r", String.raw`\r`)
-      .replaceAll("\t", String.raw`\t`)}'`;
   }
 
   /**

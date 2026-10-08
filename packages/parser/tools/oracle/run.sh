@@ -10,6 +10,8 @@
 #   ./run.sh                               analisa o programa lido do stdin
 #   ./run.sh --bibliotecas                 despeja os metadados das bibliotecas em JSON
 #   ./run.sh --golden [destino]            regera a fixture (destino `-` imprime no stdout)
+#   ./run.sh --golden-sintaxe [destino]    regera a fixture dos exemplos quebrados
+#                                          (tools/mutantes.mjs; o pacote antlr precisa estar compilado)
 #
 # Requer os JARs do Portugol Studio em packages/runner/tests/assets (gitignored):
 # npm run test:setup -w @portugol-webstudio/runner
@@ -90,6 +92,28 @@ case "${1:-}" in
     else
       echo "gerando $DESTINO a partir de ${#EXEMPLOS[@]} exemplos..." >&2
       executar "${EXEMPLOS[@]}" > "$DESTINO"
+      echo "ok" >&2
+    fi
+    ;;
+
+  --golden-sintaxe)
+    DESTINO="${2:-$PARSER_DIR/tests/fixtures/portugol-studio-sintaxe.golden.txt}"
+
+    if [ "$DESTINO" != "-" ] && [ "${DESTINO#/}" = "$DESTINO" ]; then
+      DESTINO="$PWD/$DESTINO"
+    fi
+
+    MUTANTES_DIR="$(mktemp -d)"
+    trap 'rm -rf "$MUTANTES_DIR"' EXIT
+
+    node "$PARSER_DIR/tools/mutantes.mjs" gravar "$MUTANTES_DIR"
+    cd "$MUTANTES_DIR"
+
+    if [ "$DESTINO" = "-" ]; then
+      executar ./*.por | node "$PARSER_DIR/tools/mutantes.mjs" resumir
+    else
+      echo "gerando $DESTINO a partir de $(find . -name "*.por" | wc -l | tr -d ' ') mutantes..." >&2
+      executar ./*.por | node "$PARSER_DIR/tools/mutantes.mjs" resumir > "$DESTINO"
       echo "ok" >&2
     fi
     ;;

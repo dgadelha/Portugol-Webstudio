@@ -8,6 +8,7 @@ import {
   EnquantoCmd,
   EscolhaCmd,
   Expressão,
+  ExpressãoEntreParênteses,
   ExpressãoUnária,
   FaçaEnquantoCmd,
   ParaCmd,
@@ -39,6 +40,22 @@ const PERMITIDOS: readonly Construtor[] = [
   SeCmd,
 ];
 
+/**
+ * A árvore do Portugol Studio não tem nó de parênteses: `(x(2))` é só a chamada, e vale como
+ * comando. Na nossa, os parênteses viram um nó que escondia o que está dentro.
+ */
+export function semParênteses<T extends Comando | Expressão>(bloco: T): T | Expressão {
+  let interno: T | Expressão = bloco;
+
+  while (interno instanceof ExpressãoEntreParênteses) {
+    interno = interno.expressão;
+  }
+
+  return interno;
+}
+
 export function blocoVálido(bloco: Comando | Expressão): boolean {
-  return PERMITIDOS.some(classe => bloco instanceof classe);
+  const interno = semParênteses(bloco);
+
+  return PERMITIDOS.some(classe => interno instanceof classe);
 }
