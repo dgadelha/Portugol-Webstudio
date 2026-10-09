@@ -35,6 +35,14 @@ export class PortugolCodeDiagnostic extends Error implements IPortugolCodeDiagno
     super(message);
   }
 
+  /**
+   * As colunas do ANTLR contam pontos de código, e o `length` de uma string conta unidades de
+   * UTF-16: um emoji no token esticava o fim do diagnóstico uma coluna além.
+   */
+  private static comprimento(texto: string) {
+    return Array.from(texto).length;
+  }
+
   static fromTokens(
     start: Token,
     stop: Token,
@@ -43,8 +51,8 @@ export class PortugolCodeDiagnostic extends Error implements IPortugolCodeDiagno
     code?: string,
   ) {
     // `endCol` é a coluna (base 0) do último caractere, *inclusive*: é o que a IDE assume ao
-    // converter para o intervalo do Monaco, que é exclusivo e base 1 (`endCol + 2`).
-    const endCol = stop.column + Math.max((stop.text ?? "").length, 1) - 1;
+    // converter para o intervalo do Monaco, que é exclusivo e base 1.
+    const endCol = stop.column + Math.max(PortugolCodeDiagnostic.comprimento(stop.text ?? ""), 1) - 1;
 
     return new PortugolCodeDiagnostic(severity, message, start, start.line, start.column, stop.line, endCol, code);
   }
@@ -86,7 +94,7 @@ export class PortugolCodeDiagnostic extends Error implements IPortugolCodeDiagno
         let { line: endLine, column: endCol } = stop;
 
         if (startLine === endLine && startCol === endCol) {
-          endCol += ctx.getText().length - 1;
+          endCol += PortugolCodeDiagnostic.comprimento(ctx.getText()) - 1;
         }
 
         return new PortugolCodeDiagnostic(severity, message, ctx, startLine, startCol, endLine, endCol, code);
@@ -99,7 +107,7 @@ export class PortugolCodeDiagnostic extends Error implements IPortugolCodeDiagno
         Math.max(startLine - 1, 1),
         startCol,
         startLine,
-        startCol + Math.max(ctx.getText().length, 1) - 1,
+        startCol + Math.max(PortugolCodeDiagnostic.comprimento(ctx.getText()), 1) - 1,
         code,
       );
     }
@@ -117,14 +125,14 @@ export class PortugolCodeDiagnostic extends Error implements IPortugolCodeDiagno
           line,
           column,
           line,
-          column + ctx.getText().length,
+          column + PortugolCodeDiagnostic.comprimento(ctx.getText()),
           code,
         );
       }
     }
 
     if (Object.hasOwn(ctx, "getText") && typeof ctx.getText === "function") {
-      return new PortugolCodeDiagnostic(severity, message, ctx, 1, 1, 1, 2 + ctx.getText().length, code);
+      return new PortugolCodeDiagnostic(severity, message, ctx, 1, 1, 1, 2 + PortugolCodeDiagnostic.comprimento(ctx.getText()), code);
     }
 
     return new PortugolCodeDiagnostic(severity, message, ctx, 1, 0, 9999, 0, code);

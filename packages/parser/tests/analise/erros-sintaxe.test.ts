@@ -558,6 +558,13 @@ describe("casos de borda", () => {
     expect(errosDeSintaxe("}")[0]?.message).toContain("trecho de código '}'");
   });
 
+  test("um emoji dentro do token não estica o fim do diagnóstico", () => {
+    // `"😀😀"` ocupa as colunas 16 a 19 em pontos de código; contado em UTF-16, ia até 21.
+    const { diagnostics } = PortugolCodeChecker.checkCode(programa('    inteiro x = "😀😀"'), { avisosDeUso: false });
+
+    expect(diagnostics).toMatchObject([{ startLine: 3, startCol: 16, endLine: 3, endCol: 19 }]);
+  });
+
   test("um emoji antes não desloca o texto lido do código", () => {
     // As posições do ANTLR contam pontos de código; as strings do JavaScript, UTF-16.
     const real = errosDeSintaxe(programa('    escreva("😀😀")\n    real x = 2,5'));
