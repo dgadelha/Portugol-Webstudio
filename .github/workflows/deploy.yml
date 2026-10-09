@@ -12,8 +12,17 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
+      - name: Generate app token 🔑
+        id: app-token
+        uses: actions/create-github-app-token@v3.2.0
+        with:
+          client-id: ${{ vars.APP_CLIENT_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+
       - name: Checkout 🛎️
         uses: actions/checkout@v7
+        with:
+          token: ${{ steps.app-token.outputs.token }}
 
       - name: Setup Node.js 📦
         uses: actions/setup-node@v7
@@ -21,6 +30,8 @@ jobs:
           node-version: lts/*
 
       - name: Date the beta changelog 📅
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
           node .github/scripts/changelog.mjs release
 
@@ -28,8 +39,8 @@ jobs:
             exit 0
           fi
 
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.name "${{ steps.app-token.outputs.app-slug }}[bot]"
+          git config user.email "$(gh api "/users/${{ steps.app-token.outputs.app-slug }}%5Bbot%5D" --jq .id)+${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com"
           git add -A -- CHANGELOG.md changelog
           git commit -m "Atualizar data do changelog"
           git push origin HEAD:main
@@ -67,20 +78,30 @@ jobs:
     if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
     steps:
+      - name: Generate app token 🔑
+        id: app-token
+        uses: actions/create-github-app-token@v3.2.0
+        with:
+          client-id: ${{ vars.APP_CLIENT_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+
       - name: Checkout 🛎️
         uses: actions/checkout@v7
         with:
           ref: beta
           fetch-depth: 0
+          token: ${{ steps.app-token.outputs.token }}
 
       - name: Merge main into beta 🔄
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
           if git merge-base --is-ancestor origin/main HEAD; then
             echo "beta already contains main"
             exit 0
           fi
 
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.name "${{ steps.app-token.outputs.app-slug }}[bot]"
+          git config user.email "$(gh api "/users/${{ steps.app-token.outputs.app-slug }}%5Bbot%5D" --jq .id)+${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com"
           git merge --no-edit origin/main
           git push origin HEAD:beta
