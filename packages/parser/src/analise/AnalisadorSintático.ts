@@ -247,7 +247,8 @@ class AnalisadorSintático extends BaseErrorListener {
 
   private traduzirErroParsing(parser: Parser, msg: string, e: RecognitionException | null): PortugolCodeDiagnostic {
     const token = parser.getCurrentToken();
-    const texto = token.type === Token.EOF ? "<EOF>" : (token.text ?? "");
+    // Uma aspa sobrando transforma linhas inteiras numa cadeia: o erro é onde ela começa.
+    const texto = token.type === Token.EOF ? "<EOF>" : (token.text ?? "").split("\n", 1)[0];
     const ctx = parser.context!;
     const contextos = this.contextosDe(parser, ctx);
     const { atual, pai, avô } = contextos;
@@ -258,7 +259,9 @@ class AnalisadorSintático extends BaseErrorListener {
 
     // No fim do arquivo não há o que sublinhar: marca o último token antes dele, ou, num
     // arquivo sem nenhum, o lugar onde o código acaba.
-    const alvo = token.type === Token.EOF ? (parser.tokenStream.LT(-1) ?? this.fimDoCódigo(token)) : token;
+    const alvo = this.primeiraLinha(
+      token.type === Token.EOF ? (parser.tokenStream.LT(-1) ?? this.fimDoCódigo(token)) : token,
+    );
 
     // Só o primeiro token do arquivo pode esperar `programa`: o que vier antes dele está fora
     // do programa. Antes de tudo, porque o resto confundiria esse código com um comando.
@@ -685,6 +688,25 @@ class AnalisadorSintático extends BaseErrorListener {
     const programa = /\bprograma\b/.exec(resto);
 
     return erroExpressõesForaEscopoPrograma(alvo, resto.slice(0, programa?.index).trim(), "antes");
+  }
+
+  /**
+   * O token, ou um que cobre só a primeira linha dele: um erro de sintaxe não marca as
+   * linhas que uma cadeia mal fechada engoliu.
+   */
+  private primeiraLinha(token: Token) {
+    const texto = token.text ?? "";
+
+    if (!texto.includes("\n")) {
+      return token;
+    }
+
+    const recortado = CommonToken.fromType(token.type, texto.split("\n", 1)[0]);
+
+    recortado.line = token.line;
+    recortado.column = token.column;
+
+    return recortado;
   }
 
   /**

@@ -163,7 +163,7 @@ describe("Bibliotecas", () => {
     ).toBe(1);
   });
 
-  test("#49 sorteia global, que o runtime do Webstudio não define", () => {
+  test("sorteia global, como no Portugol Studio", () => {
     expect(
       analisar(portugol`
         programa {
@@ -172,14 +172,10 @@ describe("Bibliotecas", () => {
           }
         }
       `),
-    ).toMatchInlineSnapshot(`
-      [
-        3:12/3:18 E [ErroWebstudio.ErroFuncaoReservadaNaoSuportada]: A função "sorteia" ainda não é suportada pelo Portugol Webstudio e o programa não pode ser executado. Inclua a biblioteca Util e use "Util.sorteia" no lugar,
-      ]
-    `);
+    ).toMatchInlineSnapshot(`[]`);
   });
 
-  test("Util.sorteia é a forma suportada", () => {
+  test("Util.sorteia também", () => {
     expect(
       analisar(portugol`
         programa {

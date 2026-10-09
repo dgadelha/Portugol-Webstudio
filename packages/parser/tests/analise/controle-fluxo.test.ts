@@ -128,7 +128,7 @@ describe("Controle de fluxo", () => {
         `),
       ).toMatchInlineSnapshot(`
         [
-          4:4/4:29 E [ErroSemantico.ErroParaSemExpressaoAtribuicao]: O comando 'para' quando há uma atribuição utiliza uma das seguintes sintaxes: i=i+1 / i++ / i+=1,
+          4:24/4:24 E [ErroSemantico.ErroParaSemExpressaoAtribuicao]: O comando 'para' quando há uma atribuição utiliza uma das seguintes sintaxes: i=i+1 / i++ / i+=1,
         ]
       `);
     });

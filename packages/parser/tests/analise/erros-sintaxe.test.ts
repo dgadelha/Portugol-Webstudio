@@ -585,7 +585,21 @@ describe("casos de borda", () => {
   test("cadeia que quebra a linha é erro, como no Portugol Studio", () => {
     const { diagnostics } = PortugolCodeChecker.checkCode(programa('    escreva("a\nb")'));
 
-    expect(diagnostics).toMatchObject([{ code: "ErroSintatico.ErroLinhaPuladaEmString", startLine: 3 }]);
+    // O sublinhado vai até a aspa que fecha a cadeia, duas linhas abaixo; antes, o fim era
+    // calculado na primeira linha e o editor o cortava em `"a`.
+    expect(diagnostics).toMatchObject([
+      { code: "ErroSintatico.ErroLinhaPuladaEmString", startLine: 3, startCol: 12, endLine: 4, endCol: 1 },
+    ]);
+  });
+
+  test("um erro de sintaxe numa cadeia que engoliu linhas marca só a primeira linha dela", () => {
+    // A aspa a mais depois de `Util` abre uma cadeia que só fecha no comentário de baixo.
+    const [erro] = errosDeSintaxe(
+      'programa {\n  inclua biblioteca Util " --> u\n\n  // fim "\n  funcao inicio() {\n  }\n}\n',
+    );
+
+    expect(erro).toMatchObject({ startLine: 2, endLine: 2 });
+    expect(erro?.message).not.toContain("\n");
   });
 
   test.each([

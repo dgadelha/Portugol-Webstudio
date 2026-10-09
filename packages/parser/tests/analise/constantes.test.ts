@@ -48,7 +48,7 @@ describe("Constantes", () => {
       `),
     ).toMatchInlineSnapshot(`
       [
-        3:20/3:22 E [ErroSemantico.ErroAtribuirEmConstante.3]: "A" é uma constante, e portanto, não pode ter seu valor alterado após a inicialização,
+        3:20/3:20 E [ErroSemantico.ErroAtribuirEmConstante.3]: "A" é uma constante, e portanto, não pode ter seu valor alterado após a inicialização,
       ]
     `);
   });
@@ -137,7 +137,7 @@ describe("Constantes", () => {
       `),
     ).toMatchInlineSnapshot(`
       [
-        3:20/3:27 E [ErroSemantico.ErroAtribuirEmConstante.1]: O vetor "W" é constante e, portanto, não pode ter seus valores alterados após a inicialização,
+        3:20/3:20 E [ErroSemantico.ErroAtribuirEmConstante.1]: O vetor "W" é constante e, portanto, não pode ter seus valores alterados após a inicialização,
       ]
     `);
   });

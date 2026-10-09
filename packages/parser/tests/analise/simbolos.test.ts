@@ -418,7 +418,7 @@ describe("Símbolos", () => {
         [
           5:12/5:12 E [ErroSemantico.ErroReferenciaInvalida.11]: O vetor 'v' está sendo utilizado como uma variável,
           6:4/6:4 E [ErroSemantico.ErroReferenciaInvalida.11]: O vetor 'v' está sendo utilizado como uma variável,
-          7:4/7:7 E [ErroSemantico.ErroReferenciaInvalida.33]: A variável 'x' está sendo utilizada como um vetor,
+          7:4/7:4 E [ErroSemantico.ErroReferenciaInvalida.33]: A variável 'x' está sendo utilizada como um vetor,
         ]
       `);
     });
@@ -435,7 +435,7 @@ describe("Símbolos", () => {
         `),
       ).toMatchInlineSnapshot(`
         [
-          4:12/4:15 E [ErroSemantico.ErroReferenciaInvalida.23]: A matriz 'm' está sendo utilizada como um vetor,
+          4:12/4:12 E [ErroSemantico.ErroReferenciaInvalida.23]: A matriz 'm' está sendo utilizada como um vetor,
         ]
       `);
     });
@@ -452,7 +452,7 @@ describe("Símbolos", () => {
         `),
       ).toMatchInlineSnapshot(`
         [
-          4:12/4:14 E [ErroSemantico.ErroReferenciaInvalida.34]: A variável 'x' está sendo utilizada como uma função,
+          4:12/4:12 E [ErroSemantico.ErroReferenciaInvalida.34]: A variável 'x' está sendo utilizada como uma função,
         ]
       `);
     });

@@ -51,10 +51,15 @@ export class PortugolCodeDiagnostic extends Error implements IPortugolCodeDiagno
     code?: string,
   ) {
     // `endCol` é a coluna (base 0) do último caractere, *inclusive*: é o que a IDE assume ao
-    // converter para o intervalo do Monaco, que é exclusivo e base 1.
-    const endCol = stop.column + Math.max(PortugolCodeDiagnostic.comprimento(stop.text ?? ""), 1) - 1;
+    // converter para o intervalo do Monaco, que é exclusivo e base 1. Um token que quebra a
+    // linha (uma cadeia com quebra) termina na última linha dele, e não na primeira.
+    const linhas = (stop.text ?? "").split("\n");
+    const últimaLinha = linhas.at(-1) ?? "";
+    const endLine = stop.line + linhas.length - 1;
+    const início = linhas.length > 1 ? 0 : stop.column;
+    const endCol = início + Math.max(PortugolCodeDiagnostic.comprimento(últimaLinha), 1) - 1;
 
-    return new PortugolCodeDiagnostic(severity, message, start, start.line, start.column, stop.line, endCol, code);
+    return new PortugolCodeDiagnostic(severity, message, start, start.line, start.column, endLine, endCol, code);
   }
 
   static fromContext(

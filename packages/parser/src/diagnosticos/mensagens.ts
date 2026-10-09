@@ -12,7 +12,7 @@ import {
   SUFIXO_NAO_DECLARADO,
   SUFIXO_TIPOS_INCOMPATIVEIS,
 } from "./codigos.js";
-import { aviso, diagnósticoEntre, erro, informação, Origem } from "./posição.js";
+import { aviso, diagnósticoEntre, erro, informação, Origem, textoDe } from "./posição.js";
 
 const INCOMPATÍVEIS = "Tipos incompatíveis! ";
 
@@ -1357,11 +1357,13 @@ export function erroSímboloBibliotecaNãoSuportado(
   );
 }
 
-export function erroFunçãoReservadaNãoSuportada(origem: Origem, nome: string): PortugolCodeDiagnostic {
-  return erro(
+export function avisoIncrementoEmConta(origem: Origem): PortugolCodeDiagnostic {
+  const texto = textoDe(origem);
+
+  return aviso(
     origem,
-    `A função "${nome}" ainda não é suportada pelo Portugol Webstudio e o programa não pode ser executado. Inclua a biblioteca Util e use "Util.${nome}" no lugar`,
-    CÓDIGOS.FUNCAO_RESERVADA_NAO_SUPORTADA,
+    `Usar '${texto}' dentro de uma conta pode dar um resultado diferente do esperado. Para evitar surpresas, escreva '${texto}' numa linha separada, antes ou depois da conta`,
+    CÓDIGOS.INCREMENTO_EM_CONTA,
   );
 }
 
@@ -1374,6 +1376,10 @@ export function informaçãoSímboloNãoUtilizado(
   símbolo: Símbolo,
   uso: "nuncaEscrito" | "nuncaLido" | "nãoUtilizado",
 ): PortugolCodeDiagnostic {
+  if (símbolo.parâmetro) {
+    return informação(origem, `O parâmetro '${símbolo.nome}' não é utilizado`, CÓDIGOS.SIMBOLO_NAO_UTILIZADO);
+  }
+
   // O Portugol Studio não tem esta mensagem, e chamar uma constante de "variável" confundiria.
   const substantivo =
     símbolo.classe === "variável" && símbolo.constante ? "A constante" : CLASSE_DEFINIDA[símbolo.classe];

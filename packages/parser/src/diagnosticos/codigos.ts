@@ -133,17 +133,19 @@ export const CÓDIGOS = {
   SIMBOLO_BIBLIOTECA_NAO_SUPORTADO: "ErroWebstudio.ErroSimboloBibliotecaNaoSuportado",
 
   /**
-   * Verificação #49: `sorteia(...)` global. O Portugol Studio a reserva na linguagem; o
-   * runtime do Webstudio só tem `Util.sorteia`.
-   */
-  FUNCAO_RESERVADA_NAO_SUPORTADA: "ErroWebstudio.ErroFuncaoReservadaNaoSuportada",
-
-  /**
    * Verificação #15: avisos de uso (declarada e não usada / só lida / só escrita). O
    * Portugol Studio não os emite; aqui são informativos e podem ser desligados com
    * `checkCode(code, { avisosDeUso: false })`.
    */
   SIMBOLO_NAO_UTILIZADO: "InfoWebstudio.SimboloNaoUtilizado",
+
+  /**
+   * `i++` (ou `++i`, `i--`, `--i`) como operando de uma conta, como em `i++ + i++` ou
+   * `(x++) * 2`. O Portugol só define o incremento como comando (`i = i + 1`); dentro de uma
+   * conta, o resultado é o do código que o Portugol Studio gera, e não o do C ou do JavaScript.
+   * O Portugol Studio não avisa, e nem compila parte desses casos.
+   */
+  INCREMENTO_EM_CONTA: "AvisoWebstudio.AvisoIncrementoEmConta",
 
   /**
    * Um comentário de bloco que não foi fechado. No Portugol Studio o erro sai onde o parser tropeça no texto do

@@ -132,8 +132,8 @@ describe("Retorno de função", () => {
         `),
       ).toMatchInlineSnapshot(`
         [
-          3:4/3:12 E [ErroSemantico.ErroTiposIncompativeis.25]: Tipos incompatíveis! O retorno da função "inicio" é do tipo "vazio" mas foi retornada uma expressão do tipo "inteiro".,
-          5:22/5:30 E [ErroSemantico.ErroTiposIncompativeis.25]: Tipos incompatíveis! O retorno da função "h" é do tipo "cadeia" mas foi retornada uma expressão do tipo "inteiro".,
+          3:12/3:12 E [ErroSemantico.ErroTiposIncompativeis.25]: Tipos incompatíveis! O retorno da função "inicio" é do tipo "vazio" mas foi retornada uma expressão do tipo "inteiro".,
+          5:30/5:30 E [ErroSemantico.ErroTiposIncompativeis.25]: Tipos incompatíveis! O retorno da função "h" é do tipo "cadeia" mas foi retornada uma expressão do tipo "inteiro".,
         ]
       `);
     });
@@ -174,8 +174,8 @@ describe("Retorno de função", () => {
         `),
       ).toMatchInlineSnapshot(`
         [
-          3:23/3:33 W [AvisoSemantico.AvisoValorExpressaoSeraConvertido]: O valor da expressão retornada na função "f" será truncado,
-          4:20/4:28 W [AvisoSemantico.AvisoValorExpressaoSeraConvertido]: O valor da expressão retornada na função "g" será automaticamente convertido de "inteiro" para "real",
+          3:31/3:33 W [AvisoSemantico.AvisoValorExpressaoSeraConvertido]: O valor da expressão retornada na função "f" será truncado,
+          4:28/4:28 W [AvisoSemantico.AvisoValorExpressaoSeraConvertido]: O valor da expressão retornada na função "g" será automaticamente convertido de "inteiro" para "real",
         ]
       `);
     });
