@@ -480,6 +480,65 @@ describe("onde o Portugol Studio erra a mensagem", () => {
       "ErroSintatico.ErroExpressaoIncompleta",
       "A expressão está incompleta",
     ],
+    [
+      "`;` no corpo de um para (o Java diz que falta a condição de parada)",
+      portugol`
+        programa {
+          funcao inicio() {
+            inteiro i
+            para (i = 1; i <= 10; i++) {
+              escreva(i);
+            }
+          }
+        }
+      `,
+      "ErroSintatico.ErroExpressaoInesperada",
+      "A expressão ';' não era esperada",
+    ],
+    [
+      "chamada sem `)` no fim do bloco (o Java manda inserir `(`)",
+      portugol`
+        programa {
+          funcao inicio() {
+            se (verdadeiro) {
+              escreva("a"
+            }
+          }
+        }
+      `,
+      "ErroSintatico.ErroParentesis.2",
+      "Insira o caracter ')'",
+    ],
+    [
+      "`)` solto depois de um caso (o Java manda inserir `(`)",
+      portugol`
+        programa {
+          funcao inicio() {
+            inteiro i = 1
+            escolha (i) {
+              caso 1:
+                )
+                pare
+            }
+          }
+        }
+      `,
+      "ErroSintatico.ErroExpressaoInesperada",
+      "A expressão ')' não era esperada",
+    ],
+    [
+      "real com vírgula numa atribuição (o Java diz só que a vírgula não era esperada)",
+      portugol`
+        programa {
+          funcao inicio() {
+            real p
+            p = 2,5
+          }
+        }
+      `,
+      "ErroSintatico.ErroExpressaoIncompleta",
+      "Valores reais devem ser expressados utilizando pontos",
+    ],
   ])("%s", (_nome, código, códigoErro, trecho) => {
     const [erro] = errosDeSintaxe(código);
 
@@ -613,6 +672,33 @@ describe("casos de borda", () => {
     const código = "programa {\n  inclua biblioteca Graficos lol --> g\n  funcao inicio() {\n  }\n}\n";
 
     expect(errosDeSintaxe(código)).toMatchObject([{ code: "ErroSintatico.ErroExpressaoInesperada" }]);
+  });
+
+  test("`2,5` como dois argumentos ou elementos continua válido", () => {
+    const código = programa(
+      "    inteiro v[] = {2,5}\n    inteiro m[][] = {{1,2},{3,4}}\n    inteiro a = 2,b = 5\n    escreva(2,5, v[0], m[1][1], a, b)",
+    );
+
+    expect(errosDeSintaxe(código)).toEqual([]);
+  });
+
+  test.each([
+    ["atribuição", "    real p\n    p = 2,5"],
+    ["negativo", "    real p\n    p = -2,5"],
+    ["no meio de uma soma", "    real p\n    p = 1 + 2,5"],
+    ["na condição do para", "    real i\n    para (i = 0.0; i < 2,5; i++) {\n    }"],
+  ])("real com vírgula: %s", (_nome, corpo) => {
+    expect(errosDeSintaxe(programa(corpo))[0]?.message).toContain(
+      "Valores reais devem ser expressados utilizando pontos",
+    );
+  });
+
+  test.each([
+    ["com espaço depois da vírgula", "    real p\n    p = 2, 5"],
+    ["com espaço antes da vírgula", "    real p\n    p = 2 ,5"],
+    ["entre variáveis", "    inteiro a = 1, b = 2, p\n    p = a,b"],
+  ])("vírgula sobrando que não é real: %s", (_nome, corpo) => {
+    expect(errosDeSintaxe(programa(corpo))[0]?.message).toContain("A expressão ',' não era esperada");
   });
 
   test("CRLF não muda a posição do erro", () => {

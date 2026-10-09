@@ -8,6 +8,7 @@ import {
   CommonToken,
   CommonTokenStream,
   Lexer,
+  NoViableAltException,
   Parser,
   type ParserRuleContext,
   ParseCancellationException,
@@ -283,6 +284,19 @@ class AnalisadorSintático extends BaseErrorListener {
       return erroSenãoInesperado(alvo);
     }
 
+    // Divergência: numa chamada que a linha deixou sem `)`, como `escreva(1` antes de um `}`,
+    // o ANTLR só reclama no começo da decisão, e os tokens esperados são os de um comando
+    // inteiro. O Java pedia um `(`; aqui, o `)` ou o `]` que falta.
+    const semFechar = this.delimitadorSemFechar(parser, e);
+
+    if (semFechar?.abertura === "(") {
+      return erroParêntese(semFechar.último, "fechamento");
+    }
+
+    if (semFechar) {
+      return erroParsingNãoTratado(semFechar.último, "']'", this.textoOuFim(semFechar.travou));
+    }
+
     // Divergência: comando direto no programa, fora de função. O Java tem a mensagem
     // (`ErroExpressaoForaEscopoFuncao`), mas o trecho que a usava está comentado e o erro sai
     // como "o escopo do programa não foi fechado".
@@ -300,7 +314,7 @@ class AnalisadorSintático extends BaseErrorListener {
         return erroExpressãoEsperada(alvo, pai, avô);
       }
 
-      if (texto === ";" && this.contém(contextos, "para")) {
+      if (texto === ";" && this.noCabeçalhoDoPara(contextos)) {
         return erroParaEsperaCondição(alvo);
       }
 
@@ -309,6 +323,12 @@ class AnalisadorSintático extends BaseErrorListener {
       }
 
       if (texto === "," && /^.*retorne\d*$/.test(ctx.getText())) {
+        return erroRealComVírgula(alvo);
+      }
+
+      // Divergência: o Java só reconhece o real escrito com vírgula numa declaração e no
+      // `retorne`; numa atribuição como `p = 2,5`, a vírgula era só "inesperada".
+      if (texto === "," && this.númeroComVírgula(parser, token)) {
         return erroRealComVírgula(alvo);
       }
 
@@ -337,10 +357,7 @@ class AnalisadorSintático extends BaseErrorListener {
       // apontada pelo léxico, então o caso segue para as outras regras.
     }
 
-    // Divergência: o Java usa os erros do `para` sempre que ele está entre as três regras mais
-    // próximas, e aí um `p+` no corpo do laço virava "o comando para necessita de uma condição
-    // de parada". Só o cabeçalho do `para` tem condição; o corpo é uma `listaComandos`.
-    if (atual !== "listaComandos" && pai !== "listaComandos" && this.contém(contextos, "para")) {
+    if (this.noCabeçalhoDoPara(contextos)) {
       let contextosPara = contextos;
 
       if (causa && e?.ctx) {
@@ -349,6 +366,12 @@ class AnalisadorSintático extends BaseErrorListener {
         if (texto === "," && causa.contexto === "expressao") {
           return erroRealComVírgula(alvo);
         }
+      }
+
+      // Divergência de versão do ANTLR: aqui a vírgula de `i < 2,5` quebra a própria regra
+      // `para`, e não a `expressao` como no Java, e virava "falta o token ';'".
+      if (texto === "," && this.númeroComVírgula(parser, token)) {
+        return erroRealComVírgula(alvo);
       }
 
       return this.traduzirErroPara(parser, alvo, ctx, esperados, contextosPara);
@@ -381,6 +404,12 @@ class AnalisadorSintático extends BaseErrorListener {
     if (nomesEsperados.includes("ABRE_PARENTESES") && nomesEsperados.includes("ID")) {
       if (OPERADORES_BINÁRIOS.has(texto)) {
         return erroExpressãoIncompleta(alvo);
+      }
+
+      // Onde cabe um comando (o `se` está entre os esperados), não falta expressão nenhuma: o
+      // token sobra, como um `)` solto depois de `caso 1:`.
+      if (nomesEsperados.includes("SE") && token.type !== Token.EOF) {
+        return erroExpressãoInesperada(alvo, texto);
       }
 
       return atual === "expressao" ? erroExpressãoEsperada(alvo, pai, avô) : erroExpressãoEsperada(alvo, atual, pai);
@@ -552,6 +581,76 @@ class AnalisadorSintático extends BaseErrorListener {
 
   private vemAntes(a: PortugolCodeDiagnostic, b: PortugolCodeDiagnostic) {
     return a.startLine < b.startLine || (a.startLine === b.startLine && a.startCol < b.startCol);
+  }
+
+  /**
+   * Divergência: o Java usa os erros do `para` sempre que ele está entre as três regras mais
+   * próximas, e aí um `p+` no corpo do laço virava "o comando para necessita de uma condição de
+   * parada". Só o cabeçalho do `para` tem condição; o corpo é uma `listaComandos`.
+   */
+  private noCabeçalhoDoPara(contextos: Contextos) {
+    return contextos.atual !== "listaComandos" && contextos.pai !== "listaComandos" && this.contém(contextos, "para");
+  }
+
+  /**
+   * O `(` ou o `[` mais interno que a linha deixou aberto no trecho que o parser não conseguiu
+   * decidir, e o último token antes da quebra. Só quando a linha acaba assim: em `escreva(1 2)`
+   * o `(` também está aberto quando o parser trava, mas o que falta é um operador ou uma
+   * vírgula.
+   */
+  private delimitadorSemFechar(parser: Parser, e: RecognitionException | null) {
+    if (!(e instanceof NoViableAltException) || !e.startToken || !e.offendingToken) {
+      return;
+    }
+
+    const abertos: string[] = [];
+    let último: Token | undefined;
+
+    for (let i = e.startToken.tokenIndex; i < e.offendingToken.tokenIndex; i++) {
+      const token = parser.tokenStream.get(i);
+
+      if (token.channel !== Token.DEFAULT_CHANNEL) {
+        continue;
+      }
+
+      if (token.text === "(" || token.text === "[") {
+        abertos.push(token.text);
+      } else if (token.text === ")" || token.text === "]") {
+        abertos.pop();
+      }
+
+      último = token;
+    }
+
+    const abertura = abertos.at(-1);
+    const quebrouALinha = e.offendingToken.type === Token.EOF || e.offendingToken.line > (último?.line ?? 0);
+
+    return quebrouALinha && abertura && último ? { abertura, último, travou: e.offendingToken } : undefined;
+  }
+
+  /**
+   * O texto do token, ou `undefined` no fim do arquivo, que é como as mensagens dizem "no fim do
+   * código".
+   */
+  private textoOuFim(token: Token) {
+    return token.type === Token.EOF ? undefined : (token.text ?? "");
+  }
+
+  /**
+   * Uma vírgula colada a dois números, como em `2,5`. Separados por espaço (`2, 5`), são dois
+   * valores, e numa chamada a vírgula nem sobra.
+   */
+  private númeroComVírgula(parser: Parser, vírgula: Token) {
+    // A vírgula é o token atual; o seguinte pode nem ter sido lido ainda, e o `LT` o lê.
+    const antes = parser.tokenStream.LT(-1);
+    const depois = parser.tokenStream.LT(2);
+
+    return (
+      antes?.type === PortugolLexer.INT &&
+      depois?.type === PortugolLexer.INT &&
+      antes.stop + 1 === vírgula.start &&
+      vírgula.stop + 1 === depois.start
+    );
   }
 
   private contém({ atual, pai, avô }: Contextos, regra: string) {
