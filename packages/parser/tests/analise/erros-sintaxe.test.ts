@@ -465,6 +465,21 @@ describe("onde o Portugol Studio erra a mensagem", () => {
       "ErroSintatico.ErroNomeSimboloEstaFaltando.3",
       "'se' é uma palavra reservada da linguagem e não pode ser usada como nome",
     ],
+    [
+      "expressão incompleta no corpo de um para (o Java diz que falta a condição de parada)",
+      portugol`
+        programa {
+          funcao inicio() {
+            inteiro i, p
+            para (i = 1; i <= 10; i++) {
+              p+
+            }
+          }
+        }
+      `,
+      "ErroSintatico.ErroExpressaoIncompleta",
+      "A expressão está incompleta",
+    ],
   ])("%s", (_nome, código, códigoErro, trecho) => {
     const [erro] = errosDeSintaxe(código);
 

@@ -337,7 +337,10 @@ class AnalisadorSintático extends BaseErrorListener {
       // apontada pelo léxico, então o caso segue para as outras regras.
     }
 
-    if (this.contém(contextos, "para")) {
+    // Divergência: o Java usa os erros do `para` sempre que ele está entre as três regras mais
+    // próximas, e aí um `p+` no corpo do laço virava "o comando para necessita de uma condição
+    // de parada". Só o cabeçalho do `para` tem condição; o corpo é uma `listaComandos`.
+    if (atual !== "listaComandos" && pai !== "listaComandos" && this.contém(contextos, "para")) {
       let contextosPara = contextos;
 
       if (causa && e?.ctx) {
