@@ -498,5 +498,93 @@ describe("Incremento e Decremento", () => {
         ),
       ).resolves.toBe("610|6");
     });
+
+    test("O decremento pré-fixado também absorve", async () => {
+      await expect(
+        runPortugolCode(
+          portugol`
+            programa {
+
+              funcao inicio() {
+                inteiro m = 5
+                inteiro r = --m + 10
+                escreva("r=", r, " m=", m)
+              }
+
+              funcao inteiro dobro(inteiro x) {
+                retorne x * 2
+              }
+            }
+          `,
+        ),
+      ).resolves.toBe("r=14 m=14");
+    });
+
+    test("Os operadores bitwise seguintes entram na atribuição", async () => {
+      await expect(
+        runPortugolCode(
+          portugol`
+            programa {
+
+              funcao inicio() {
+                inteiro a = 5, b = 5, c = 5
+                inteiro r = a++ & 6
+                inteiro s = b++ | 8
+                inteiro t = c-- ^ 1
+                escreva(r, " ", a, "|", s, " ", b, "|", t, " ", c)
+              }
+
+              funcao inteiro dobro(inteiro x) {
+                retorne x * 2
+              }
+            }
+          `,
+        ),
+      ).resolves.toBe("6 6|14 14|5 5");
+    });
+
+    test("O deslocamento seguinte entra na atribuição", async () => {
+      await expect(
+        runPortugolCode(
+          portugol`
+            programa {
+
+              funcao inicio() {
+                inteiro a = 5
+                inteiro r = a++ << 1
+                escreva("r=", r, " a=", a)
+              }
+
+              funcao inteiro dobro(inteiro x) {
+                retorne x * 2
+              }
+            }
+          `,
+        ),
+      ).resolves.toBe("r=12 a=12");
+    });
+
+    // O Portugol Studio não escreve os parênteses em volta do incremento, então
+    // (a++) * 2 vira a = a + 1 * 2
+    test("Os parênteses em volta do incremento não impedem a absorção", async () => {
+      await expect(
+        runPortugolCode(
+          portugol`
+            programa {
+
+              funcao inicio() {
+                inteiro a = 5
+                inteiro r = (a++) * 2
+                escreva("r=", r, " a=", a)
+              }
+
+              funcao inteiro dobro(inteiro x) {
+                retorne x * 2
+              }
+            }
+          `,
+        ),
+      ).resolves.toBe("r=7 a=7");
+    });
   });
 });

@@ -268,6 +268,26 @@ describe("Tipos", () => {
       `);
     });
 
+    test("operando indeterminado não gera erro de tipo", () => {
+      expect(
+        analisar(portugol`
+          programa {
+            funcao inicio() {
+              escreva(-z, ~z, nao z, z << 1, 1 >> z)
+            }
+          }
+        `),
+      ).toMatchInlineSnapshot(`
+        [
+          3:13/3:13 E [ErroSemantico.ErroSimboloNaoDeclarado.3]: A variável "z" não foi declarada neste escopo.,
+          3:17/3:17 E [ErroSemantico.ErroSimboloNaoDeclarado.3]: A variável "z" não foi declarada neste escopo.,
+          3:24/3:24 E [ErroSemantico.ErroSimboloNaoDeclarado.3]: A variável "z" não foi declarada neste escopo.,
+          3:27/3:27 E [ErroSemantico.ErroSimboloNaoDeclarado.3]: A variável "z" não foi declarada neste escopo.,
+          3:40/3:40 E [ErroSemantico.ErroSimboloNaoDeclarado.3]: A variável "z" não foi declarada neste escopo.,
+        ]
+      `);
+    });
+
     test("mais unário não é verificado, como no Portugol Studio", () => {
       expect(
         analisar(portugol`

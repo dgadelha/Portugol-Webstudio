@@ -177,6 +177,23 @@ describe("Estrutura do programa", () => {
       `);
     });
 
+    test("comparação com matriz à esquerda cita a matriz", () => {
+      expect(
+        analisar(portugol`
+          programa {
+            funcao inicio() {
+              inteiro m[2][2] = {{1, 2}, {3, 4}}
+              m[0][1] == 2
+            }
+          }
+        `),
+      ).toMatchInlineSnapshot(`
+        [
+          4:4/4:15 E [ErroSemantico.ErroBlocoInvalido.13]: Esta expressão lógica não faz sentido se estiver sozinha no código. Você pode utilizar a expressão como condição em um dos seguintes comandos: 'se', 'enquanto', 'faca-enquanto'. Se você estiver tentando atribuir um valor ou expressão à matriz "m", utilize o operador '=' ao invés do operador '==',
+        ]
+      `);
+    });
+
     test("comandos válidos sozinhos não são bloco inválido", () => {
       expect(
         analisar(portugol`

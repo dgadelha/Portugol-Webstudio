@@ -940,3 +940,121 @@ describe("mensagens para os enganos mais comuns", () => {
     expect(errosDeSintaxe(programa(corpo))[0]?.message).toContain(trecho);
   });
 });
+
+/**
+ * Caminhos da tradução que só alguns códigos alcançam. Conferidos com o Portugol Studio
+ * (`tools/oracle/run.sh`); onde a mensagem ou a posição dele é outra, o comentário diz qual.
+ */
+describe("caminhos menos comuns da tradução", () => {
+  test.each([
+    [
+      // O Java marca o `funcao` da linha seguinte (3:2) como expressão inesperada.
+      "`inclua biblioteca` sem o nome",
+      portugol`
+        programa {
+          inclua biblioteca
+          funcao inicio() {
+          }
+        }
+      `,
+      { startLine: 2, startCol: 9, endLine: 2, endCol: 18 },
+      "ErroSintatico.ErroParsingNaoTratado",
+      "Era esperado o nome da biblioteca no fim da linha",
+    ],
+    [
+      // Igual ao Java.
+      "`faca` sem o `enquanto`",
+      portugol`
+        programa {
+          funcao inicio() {
+            faca {
+              escreva(1)
+            }
+            escreva(2)
+          }
+        }
+      `,
+      { startLine: 6, startCol: 4, endLine: 6, endCol: 10 },
+      "ErroSintatico.ErroPalavraReservadaEstaFaltando",
+      "O algoritmo está incompleto, está faltando a palavra reservada 'enquanto'",
+    ],
+    [
+      // O Java mostra a mensagem do ANTLR ("missing ']' at 'inteiro'") no começo da linha seguinte.
+      "tamanho de matriz sem `]` no fim da linha",
+      portugol`
+        programa {
+          funcao inicio() {
+            inteiro m[2][3
+            inteiro x
+          }
+        }
+      `,
+      { startLine: 3, startCol: 17, endLine: 3, endCol: 17 },
+      "ErroSintatico.ErroParsingNaoTratado",
+      "Era esperado ']' no fim da linha",
+    ],
+    [
+      // Igual ao Java, que procura `retorne` seguido de um número no texto antes da vírgula.
+      "real com vírgula e espaço no `retorne`",
+      portugol`
+        programa {
+          funcao inteiro f() {
+            retorne 2, 5
+          }
+          funcao inicio() {
+          }
+        }
+      `,
+      { startLine: 3, startCol: 13, endLine: 3, endCol: 13 },
+      "ErroSintatico.ErroExpressaoIncompleta",
+      "A expressão foi formada utilizando vírgulas. Valores reais devem ser expressados utilizando pontos. ex: 2.75",
+    ],
+    [
+      // O Java diz que o escopo do programa não foi fechado.
+      "comando de controle fora de uma função",
+      portugol`
+        programa {
+          se (verdadeiro) {
+          }
+          funcao inicio() {
+          }
+        }
+      `,
+      { startLine: 2, startCol: 2, endLine: 2, endCol: 3 },
+      "ErroSintatico.ErroExpressaoForaEscopoFuncao",
+      "A expressão 'se' está fora de um escopo de função e nunca será chamada. Adicione ela a uma função ou remova-a.",
+    ],
+    [
+      // Igual ao Java.
+      "vírgula sem elemento no fim da inicialização de um vetor",
+      portugol`
+        programa {
+          funcao inicio() {
+            inteiro v[] = {1, 2,}
+          }
+        }
+      `,
+      { startLine: 3, startCol: 24, endLine: 3, endCol: 24 },
+      "ErroSintatico.ErroExpressaoEsperada.2",
+      "O elemento do vetor não foi informado, insira um valor ou uma expressão para corrigir o problema",
+    ],
+    [
+      // O Java manda inserir um `(` (3:12).
+      "código que termina logo depois de um operador",
+      "programa {\n  funcao inteiro f(inteiro a) {\n    retorne a /",
+      { startLine: 3, startCol: 14, endLine: 3, endCol: 14 },
+      "ErroSintatico.ErroExpressaoIncompleta",
+      "A expressão está incompleta. Verifique se ambos os operandos direito e esquerdo estão presentes.",
+    ],
+    [
+      // O Java manda inserir um `(` (3:12).
+      "código que termina no meio de uma conta com chamada",
+      "programa {\n  funcao inteiro f(inteiro a) {\n    retorne a / f(a)",
+      { startLine: 3, startCol: 19, endLine: 3, endCol: 19 },
+      "ErroSintatico.ErroParsingNaoTratado",
+      "O código terminou antes do esperado",
+    ],
+  ])("%s", (_nome, código, posição, códigoDoErro, mensagem) => {
+    expect(errosDeSintaxe(código)).toEqual([{ ...posição, code: códigoDoErro, message: mensagem }]);
+  });
+});

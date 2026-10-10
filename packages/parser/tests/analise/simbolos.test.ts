@@ -41,6 +41,28 @@ describe("Símbolos", () => {
       `);
     });
 
+    test("incremento de variável, vetor e matriz inexistentes", () => {
+      // O Portugol Studio acusa duas ou três vezes cada um (o desdobramento em atribuição
+      // visita o nome de novo); aqui sai um erro por incremento.
+      expect(
+        analisar(portugol`
+          programa {
+            funcao inicio() {
+              nada++
+              nada[0]++
+              nada[0][0]++
+            }
+          }
+        `),
+      ).toMatchInlineSnapshot(`
+        [
+          3:4/3:7 E [ErroSemantico.ErroSimboloNaoDeclarado.3]: A variável "nada" não foi declarada neste escopo.,
+          4:4/4:7 E [ErroSemantico.ErroSimboloNaoDeclarado.1]: O vetor "nada" não foi declarado neste escopo.,
+          5:4/5:7 E [ErroSemantico.ErroSimboloNaoDeclarado.2]: A matriz "nada" não foi declarada neste escopo.,
+        ]
+      `);
+    });
+
     test("variável declarada depois do uso, no mesmo escopo", () => {
       expect(
         analisar(portugol`
@@ -440,6 +462,31 @@ describe("Símbolos", () => {
       `);
     });
 
+    test("variável e vetor usados como matriz, lidos e incrementados", () => {
+      // O Portugol Studio repete o erro do incremento (o `x[0][1]++` dele vira
+      // `x[0][1] = x[0][1] + 1`) e sem posição; aqui sai um, no nome.
+      expect(
+        analisar(portugol`
+          programa {
+            funcao inicio() {
+              inteiro x = 1
+              inteiro v[2] = {1, 2}
+              x[0][1]++
+              v[0][0]++
+              escreva(x[0][0], v[0][1])
+            }
+          }
+        `),
+      ).toMatchInlineSnapshot(`
+        [
+          5:4/5:4 E [ErroSemantico.ErroReferenciaInvalida.32]: A variável 'x' está sendo utilizada como uma matriz,
+          6:4/6:4 E [ErroSemantico.ErroReferenciaInvalida.12]: O vetor 'v' está sendo utilizado como uma matriz,
+          7:12/7:12 E [ErroSemantico.ErroReferenciaInvalida.32]: A variável 'x' está sendo utilizada como uma matriz,
+          7:21/7:21 E [ErroSemantico.ErroReferenciaInvalida.12]: O vetor 'v' está sendo utilizado como uma matriz,
+        ]
+      `);
+    });
+
     test("variável usada como função", () => {
       expect(
         analisar(portugol`
@@ -532,6 +579,25 @@ describe("Símbolos", () => {
           }
         `),
       ).toMatchInlineSnapshot(`[]`);
+    });
+
+    test("constante de biblioteca usada como vetor ou matriz não é declarada", () => {
+      // Nenhuma constante de biblioteca é vetor: o Portugol Studio procura o nome no programa.
+      expect(
+        analisar(portugol`
+          programa {
+            inclua biblioteca Matematica --> mat
+            funcao inicio() {
+              escreva(mat.PI[0], mat.PI[0][1])
+            }
+          }
+        `),
+      ).toMatchInlineSnapshot(`
+        [
+          4:16/4:17 E [ErroSemantico.ErroSimboloNaoDeclarado.1]: O vetor "PI" não foi declarado neste escopo.,
+          4:27/4:28 E [ErroSemantico.ErroSimboloNaoDeclarado.2]: A matriz "PI" não foi declarada neste escopo.,
+        ]
+      `);
     });
   });
 });

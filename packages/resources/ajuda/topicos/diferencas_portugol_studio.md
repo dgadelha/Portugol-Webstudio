@@ -71,7 +71,8 @@ O Webstudio aceita estes programas, que estão corretos, mas que o Portugol Stud
 
 - Um comentário depois do `}` que fecha o programa
 - Uma chave `}` dentro de uma cadeia, como em `escreva(" }")`
-- Tamanho de vetor ou matriz com subtração ou divisão, como `inteiro v[5 - 2]`: o Portugol Studio faz a conta ao contrário
+- Tamanho de vetor ou matriz com uma conta como `inteiro v[5 - 2]` ou `inteiro v[8 >> 1]`: na subtração, na divisão, no resto e nos deslocamentos, o Portugol Studio faz a conta ao contrário
+- Tamanho de vetor ou matriz com um sinal de menos ou um `~` em volta do valor todo, como `inteiro v[-(-3)]`
 - Algumas expressões que o Portugol Studio não consegue traduzir, como `1 - 2 + "a"`, `7 % 5 * 0.5` e o operador `~` logo antes de uma função de biblioteca
 - Um incremento dentro de uma conta, como `i++ + i++` ou `-i++` (veja abaixo)
 

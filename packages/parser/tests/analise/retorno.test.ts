@@ -138,6 +138,25 @@ describe("Retorno de função", () => {
       `);
     });
 
+    test("retorne com expressão indeterminada só acusa a expressão", () => {
+      expect(
+        analisar(portugol`
+          programa {
+            funcao inteiro f() {
+              retorne y
+            }
+            funcao inicio() {
+              f()
+            }
+          }
+        `),
+      ).toMatchInlineSnapshot(`
+        [
+          3:12/3:12 E [ErroSemantico.ErroSimboloNaoDeclarado.3]: A variável "y" não foi declarada neste escopo.,
+        ]
+      `);
+    });
+
     test("retorne sem valor em função tipada", () => {
       expect(
         analisar(portugol`

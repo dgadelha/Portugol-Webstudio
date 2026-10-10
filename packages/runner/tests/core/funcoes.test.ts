@@ -91,6 +91,14 @@ const AUXILIARES = portugol`
   funcao incrementaContador() {
     contador++
   }
+
+  funcao escrevePositivo(inteiro x) {
+    se (x <= 0) {
+      retorne
+    }
+
+    escreva(x)
+  }
 `;
 
 function programa(corpo: string) {
@@ -160,6 +168,17 @@ describe("Funções", () => {
           `),
         ),
       ).resolves.toBe("-1|0|1");
+    });
+
+    test("Sai de uma função sem retorno com retorne sozinho", async () => {
+      await expect(
+        runPortugolCode(
+          programa(portugol`
+            escrevePositivo(0 - 3)
+            escrevePositivo(4)
+          `),
+        ),
+      ).resolves.toBe("4");
     });
 
     // Como no Portugol Studio, os parênteses não mudam nada: a chamada roda, e o retorno de

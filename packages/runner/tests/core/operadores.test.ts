@@ -278,6 +278,18 @@ describe("Operadores", () => {
       ).resolves.toBe("-5|-6|-6");
     });
 
+    test("Aplica o mais unário", async () => {
+      await expect(
+        runPortugolCode(
+          portugolInicio`
+            inteiro x = -5
+            real r = 2.5
+            escreva(+x, "|", +r, "|", +2 * 3, "|", 1 + +x)
+          `,
+        ),
+      ).resolves.toBe("-5|2.5|6|-4");
+    });
+
     test("Incrementa e decrementa antes da expressão", async () => {
       await expect(
         runPortugolCode(
@@ -287,6 +299,17 @@ describe("Operadores", () => {
           `,
         ),
       ).resolves.toBe("6|6");
+    });
+
+    test("Decrementa antes da expressão", async () => {
+      await expect(
+        runPortugolCode(
+          portugolInicio`
+            inteiro x = 5
+            escreva(--x, "|", x)
+          `,
+        ),
+      ).resolves.toBe("4|4");
     });
 
     test("Incrementa como comando", async () => {

@@ -146,6 +146,23 @@ describe("Controle de Fluxo", () => {
       ).resolves.toBe("0 5 10 15 20 |1 2 4 8 16 32 64 ");
     });
 
+    test("Aceita a inicialização vazia ou só com a variável", async () => {
+      await expect(
+        runPortugolCode(
+          portugolInicio`
+            inteiro i = 2
+            para (; i < 4; i++) {
+              escreva(i)
+            }
+            escreva("|")
+            para (i; i < 6; i++) {
+              escreva(i)
+            }
+          `,
+        ),
+      ).resolves.toBe("23|45");
+    });
+
     test("Aninha laços", async () => {
       await expect(
         runPortugolCode(
