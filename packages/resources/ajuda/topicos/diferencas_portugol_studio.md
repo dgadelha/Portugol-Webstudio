@@ -94,10 +94,22 @@ Para evitar surpresas, escreva o incremento numa linha separada, antes ou depois
 
 As mensagens de erro são as do Portugol Studio, com algumas diferenças:
 
-- O sublinhado marca só o trecho onde está o erro.
+- O sublinhado marca só o trecho onde está o erro, e não o começo do comando. Em `escreva(a b)`, o Webstudio aponta o `b`, e o Portugol Studio aponta o `(`.
+- Quando falta fechar um `(`, `[` ou `{` no fim de uma linha, o erro aparece no fim dessa linha, e não no começo da próxima.
 - Quando a mensagem do Portugol Studio aponta o problema errado, o Webstudio mostra uma mensagem corrigida. Por exemplo, em `inteiro x =` sem um valor, o Portugol Studio pede para inserir um `(`, e o Webstudio diz que era esperada uma expressão.
 - Algumas mensagens são exclusivas do Webstudio, como a de um comentário que não foi fechado, a de um acento no nome de uma variável e a de um `caracter` vazio.
 - Onde o Portugol Studio mostra uma mensagem em inglês ou para com um erro interno, o Webstudio mostra uma mensagem em português.
+
+Para alguns enganos comuns, o Webstudio diz o que está errado, onde o Portugol Studio quase sempre pede um `(` ou um `)`:
+
+| Código                         | Mensagem do Webstudio                                                                |
+| ------------------------------ | ------------------------------------------------------------------------------------ |
+| `se (x = 1)`                   | Um sinal de igual só, `=`, guarda um valor numa variável, e não compara dois valores |
+| `se (x =< 1)`                  | O operador `=<` não existe                                                           |
+| `senao (x > 1)`                | O `senao` não recebe uma condição                                                    |
+| `inteiro m[2,3]`               | As posições de uma matriz não são separadas por vírgula                              |
+| `se (v[1) {`                   | Era esperado `]` antes de `)`                                                        |
+| `caso 1:` fora de um `escolha` | A palavra `caso` só pode ser usada dentro de um `escolha`                            |
 
 O Webstudio também mostra avisos que o Portugol Studio não tem. Eles não impedem a execução do programa:
 

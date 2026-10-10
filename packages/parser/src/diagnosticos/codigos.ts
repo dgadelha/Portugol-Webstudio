@@ -152,6 +152,27 @@ export const CÓDIGOS = {
    * comentário, com a mensagem desse ponto (muitas vezes "o nome da função não foi informado").
    */
   COMENTARIO_SEM_FIM: "ErroWebstudio.ErroComentarioSemFim",
+
+  /**
+   * `se (a = 1)`: um `=` onde cabia uma comparação. O Portugol Studio pede um `)` (ou um `;`
+   * no para, ou um `:` no caso), que não resolveria.
+   */
+  IGUAL_EM_COMPARACAO: "ErroWebstudio.ErroIgualEmComparacao",
+
+  /**
+   * `=<` e `=>`: os sinais de `<=` e `>=` na ordem trocada.
+   */
+  OPERADOR_INEXISTENTE: "ErroWebstudio.ErroOperadorInexistente",
+
+  /**
+   * `senao (condição)`: o `senao` não recebe uma condição.
+   */
+  SENAO_COM_CONDICAO: "ErroWebstudio.ErroSenaoComCondicao",
+
+  /**
+   * `inteiro m[2,3]` ou `m[1,2]`: as posições de uma matriz não são separadas por vírgula.
+   */
+  VIRGULA_EM_COLCHETES: "ErroWebstudio.ErroVirgulaEmColchetes",
 } as const;
 
 /**

@@ -32,6 +32,28 @@ function depoisDoÚltimoToken(código: string, linha: number, coluna: number) {
 }
 
 /**
+ * Quando o erro do Portugol Studio está no primeiro token de uma linha, a linha de antes é que
+ * ficou incompleta (um `(` sem fechar, um nome faltando), e o nosso erro fica no fim dela.
+ */
+function linhaIncompletaAntes(código: string, linha: number, coluna: number) {
+  const lexer = new PortugolLexer(CharStream.fromString(código));
+
+  lexer.removeErrorListeners();
+
+  const tokens = lexer.getAllTokens().filter(token => token.channel === Token.DEFAULT_CHANNEL);
+  const índice = tokens.findIndex(token => token.line === linha && token.column === coluna);
+  const anterior = tokens[índice - 1];
+
+  if (!anterior || índice <= 0) {
+    return;
+  }
+
+  const fimDoAnterior = anterior.line + (anterior.text?.split("\n").length ?? 1) - 1;
+
+  return fimDoAnterior < linha ? fimDoAnterior : undefined;
+}
+
+/**
  * Os exemplos oficiais quebrados de algumas formas (`tools/mutantes.mjs`), comparados com o que
  * o Portugol Studio diz deles (`tests/fixtures/portugol-studio-sintaxe.golden.txt`). Mudou um
  * exemplo, regere o golden com `tools/oracle/run.sh --golden-sintaxe`.
@@ -80,7 +102,12 @@ describe.skipIf(!temCorpus)("Exemplos quebrados", () => {
 
     const { depois, linhaDoÚltimo } = depoisDoÚltimoToken(código, doStudio.linha, doStudio.coluna);
 
-    expect(erro.startLine).toBe(depois ? linhaDoÚltimo : doStudio.linha);
+    const esperadas = [
+      depois ? linhaDoÚltimo : doStudio.linha,
+      linhaIncompletaAntes(código, doStudio.linha, doStudio.coluna),
+    ];
+
+    expect(esperadas).toContain(erro.startLine);
   });
 });
 

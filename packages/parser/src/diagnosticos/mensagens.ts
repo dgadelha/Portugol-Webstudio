@@ -1077,6 +1077,52 @@ export function erroCaractereEmNome(origem: Origem, caractere: string): Portugol
   return erro(origem, `Nomes não podem ter acentos nem 'ç'${troca}`, CÓDIGOS.EXPRESSAO_INESPERADA);
 }
 
+/**
+ * Quando a linha acabou sem fechar o que abriu, ou sem o nome que faltava: o erro fica no fim
+ * dela, e não no começo da linha seguinte, onde o parser percebeu.
+ */
+export function erroFaltaNoFimDaLinha(origem: Origem, esperado: string): PortugolCodeDiagnostic {
+  return erro(origem, `Era esperado ${esperado} no fim da linha`, CÓDIGOS.PARSING_NAO_TRATADO);
+}
+
+/**
+ * Uma palavra da linguagem num lugar onde ela não cabe. `caso` e `contrario` (só dentro de um
+ * `escolha`) e `inclua` (só no começo do programa) ganham a explicação de onde podem ficar.
+ */
+export function erroPalavraForaDoLugar(origem: Origem, palavra: string): PortugolCodeDiagnostic {
+  const onde: Readonly<Record<string, string>> = {
+    caso: ": ela só pode ser usada dentro de um 'escolha'",
+    contrario: ": ela só pode ser usada dentro de um 'escolha', depois de 'caso'",
+    inclua: ": ela só pode ser usada no começo do programa, antes das variáveis e funções",
+  };
+
+  return erro(
+    origem,
+    `A palavra '${palavra}' não era esperada neste local${onde[palavra] ?? ", remova-a para corrigir o problema"}`,
+    CÓDIGOS.EXPRESSAO_INESPERADA,
+  );
+}
+
+export function erroSenãoComCondição(origem: Origem): PortugolCodeDiagnostic {
+  return erro(origem, "O 'senao' não recebe uma condição", CÓDIGOS.SENAO_COM_CONDICAO);
+}
+
+export function erroVírgulaEmColchetes(origem: Origem): PortugolCodeDiagnostic {
+  return erro(origem, "As posições de uma matriz não são separadas por vírgula", CÓDIGOS.VIRGULA_EM_COLCHETES);
+}
+
+export function erroIgualEmComparação(origem: Origem): PortugolCodeDiagnostic {
+  return erro(
+    origem,
+    "Um sinal de igual só, '=', guarda um valor numa variável, e não compara dois valores",
+    CÓDIGOS.IGUAL_EM_COMPARACAO,
+  );
+}
+
+export function erroOperadorInexistente(origem: Origem, escrito: string): PortugolCodeDiagnostic {
+  return erro(origem, `O operador '${escrito}' não existe`, CÓDIGOS.OPERADOR_INEXISTENTE);
+}
+
 export function erroComentárioSemFim(origem: Origem): PortugolCodeDiagnostic {
   return erro(
     origem,
