@@ -34,8 +34,9 @@
   "scripts": {
     "antlr-update:Portugol": "wget https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/core/src/main/antlr/Portugol.g4 -O src/Portugol.g4",
     "antlr-update:PortugolLexico": "wget https://raw.githubusercontent.com/UNIVALI-LITE/Portugol-Studio/master/core/src/main/antlr/PortugolLexico.g4 -O src/PortugolLexico.g4",
+    "antlr-update:Portugol:patch": "patch src/Portugol.g4 < src/sintatico.patch",
     "antlr-update:PortugolLexico:patch": "patch src/PortugolLexico.g4 < src/lexico.patch",
-    "antlr-update": "npm run antlr-update:Portugol && npm run antlr-update:PortugolLexico && npm run antlr-update:PortugolLexico:patch",
+    "antlr-update": "npm run antlr-update:Portugol && npm run antlr-update:Portugol:patch && npm run antlr-update:PortugolLexico && npm run antlr-update:PortugolLexico:patch",
     "antlr-ng": "antlr-ng -Dlanguage=TypeScript --generate-visitor=true src/Portugol.g4",
     "build": "tsc",
     "build:w": "tsc -w"

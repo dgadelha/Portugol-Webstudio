@@ -44,9 +44,11 @@ const INDETERMINADO: ResultadoTamanho = { situação: "indeterminado" };
  * Porta de `analise/semantica/AnalisadorDeclaracaoTamanhoVetorMatriz.java` (mais o trecho
  * de `obterTamanhoVetorMatriz` que trata literal e constante).
  *
- * **Divergência intencional:** o Java calcula subtração e divisão com os operandos trocados
- * (`direito - esquerdo`), recusando `inteiro v[5-2]` e aceitando `inteiro v[2-5]`. Aqui a
- * aritmética é a correta, então aceitamos mais programas que o Portugol Studio.
+ * **Divergência intencional:** o Java calcula toda operação binária com os operandos trocados
+ * (`direito - esquerdo`), o que muda a subtração, a divisão, o resto e os deslocamentos:
+ * recusa `inteiro v[5-2]` e `inteiro v[8 >> 1]` e aceita `inteiro v[2-5]`. Ele também recusa
+ * um `-` ou `~` em volta do tamanho todo, como `-(-3)`. Aqui a aritmética é a
+ * correta, então aceitamos mais programas que o Portugol Studio.
  */
 export function avaliarTamanho(expressão: Expressão, resolver: ResolverConstanteDeTamanho): ResultadoTamanho {
   if (expressão instanceof ExpressãoEntreParênteses) {

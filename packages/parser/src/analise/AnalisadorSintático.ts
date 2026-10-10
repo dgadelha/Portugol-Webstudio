@@ -19,6 +19,7 @@ import {
 } from "antlr4ng";
 
 import {
+  CÓDIGOS,
   erroCadeiaIncompleta,
   erroCaracterIncompleto,
   erroCaractereEmNome,
@@ -31,20 +32,26 @@ import {
   erroExpressãoForaEscopoFunção,
   erroExpressãoInesperada,
   erroExpressõesForaEscopoPrograma,
+  erroFaltaNoFimDaLinha,
   erroFaltaDoisPontos,
+  erroIgualEmComparação,
   erroInteiroForaDoIntervalo,
   erroNomeSímboloEstáFaltando,
+  erroOperadorInexistente,
   erroPalavraReservadaEstáFaltando,
+  erroPalavraForaDoLugar,
   erroParaEsperaCondição,
   erroParâmetrosNãoTipados,
   erroParêntese,
   erroParsingNãoTratado,
   erroRealComVírgula,
   erroRetornoVetorMatriz,
+  erroSenãoComCondição,
   erroSenãoInesperado,
   erroSímboloFaltandoOuRealComVírgula,
   erroTipoDeDadoEstáFaltando,
   erroTokenFaltando,
+  erroVírgulaEmColchetes,
 } from "../diagnosticos/index.js";
 
 const MAIOR_INTEIRO = 2_147_483_647n;
@@ -122,6 +129,7 @@ export interface ResultadoSintaxe {
 class AnalisadorSintático extends BaseErrorListener {
   private readonly erros: PortugolCodeDiagnostic[] = [];
   private erroNoParser = false;
+  private readonly errosDoParser = new Set<PortugolCodeDiagnostic>();
 
   /**
    * As posições do ANTLR contam pontos de código, e não unidades de UTF-16 como as strings do
@@ -148,6 +156,13 @@ class AnalisadorSintático extends BaseErrorListener {
     // A ordem é a do Java: o léxico reclama quando o parser pede o token, então um caractere
     // inválido logo adiante sai antes do erro do parser que ele causou.
     let erro: PortugolCodeDiagnostic | undefined = this.erros[0];
+
+    // Com todos os tokens lidos: o engano pode estar depois do token em que o parser travou,
+    // como a vírgula de `inteiro m[2,3]`.
+    if (erro && this.errosDoParser.has(erro)) {
+      erro = this.enganoNaLinha(tokens, erro);
+    }
+
     const inteiro = this.inteiroForaDoIntervalo(tokens);
 
     // O inteiro grande também é erro do léxico no Java; aqui ele só é achado no fim, então
@@ -211,7 +226,10 @@ class AnalisadorSintático extends BaseErrorListener {
       this.erros.push(this.traduzirErroLéxico(line, column, msg));
     } else if (recognizer instanceof Parser && !this.erroNoParser) {
       this.erroNoParser = true;
-      this.erros.push(this.traduzirErroParsing(recognizer, msg, e));
+      const traduzido = this.ondeTravou(recognizer, e, this.traduzirErroParsing(recognizer, msg, e));
+
+      this.erros.push(this.comPalavraReservada(recognizer, this.noFimDaLinha(recognizer, traduzido)));
+      this.errosDoParser.add(this.erros.at(-1)!);
     }
   }
 
@@ -245,9 +263,418 @@ class AnalisadorSintático extends BaseErrorListener {
     return erroExpressãoInesperada(token, primeiraLinha);
   }
 
+  /**
+   * Divergência: numa "alternativa inviável", o token atual é onde a decisão do ANTLR começou
+   * (o `(` de uma chamada, o `v` de um índice), e não onde ele travou. O Java decide e marca o
+   * erro por esse começo, e `escreva(p b)` virava "a expressão '(' não era esperada". Quando a
+   * tradução cai numa mensagem genérica, ela passa a falar do token onde o parser travou; as
+   * mensagens específicas do Java, que dependem do começo da decisão, continuam as mesmas.
+   */
+  private ondeTravou(parser: Parser, e: RecognitionException | null, traduzido: PortugolCodeDiagnostic) {
+    const genérica = [
+      CÓDIGOS.EXPRESSAO_INESPERADA,
+      CÓDIGOS.PARSING_NAO_TRATADO,
+      `${CÓDIGOS.PARENTESIS}.1`,
+      `${CÓDIGOS.EXPRESSAO_ESPERADA}.8`,
+    ].includes(traduzido.code ?? "");
+
+    // O `(` ou o `[` que a linha deixou aberto já diz o que falta, e no lugar certo.
+    if (
+      !genérica ||
+      !(e instanceof NoViableAltException) ||
+      !e.offendingToken ||
+      e.offendingToken.tokenIndex <= parser.getCurrentToken().tokenIndex ||
+      this.delimitadorSemFechar(parser, e)
+    ) {
+      return traduzido;
+    }
+
+    const travou = e.offendingToken;
+    const anterior = this.tokenAnterior(parser, travou);
+
+    // `para (inteiro i = v[0])`: a decisão do índice trava no `)` do cabeçalho. O que falta é a
+    // condição de parada, como em `para (inteiro i = 0)`, que o parser percebe na regra `para`.
+    if (this.fechaOCabeçalhoDoPara(parser, travou)) {
+      return erroParaEsperaCondição(travou);
+    }
+
+    if (travou.type === Token.EOF) {
+      return anterior && OPERADORES_BINÁRIOS.has(anterior.text ?? "")
+        ? erroExpressãoIncompleta(anterior)
+        : erroParsingNãoTratado(anterior ?? this.fimDoCódigo(travou));
+    }
+
+    // `escreva("a" + )`: o que falta é o operando depois do operador.
+    if (anterior && OPERADORES_BINÁRIOS.has(anterior.text ?? "") && !OPERADORES_BINÁRIOS.has(travou.text ?? "")) {
+      return erroExpressãoIncompleta(anterior);
+    }
+
+    const alvo = this.primeiraLinha(travou);
+
+    return erroExpressãoInesperada(alvo, alvo.text ?? "");
+  }
+
+  /**
+   * Na condição de um comando (`se`, `enquanto`, `faca-enquanto`, `para`) ou no valor de um
+   * `escolha` ou `caso`, e não no corpo dele. No `para`, um `=` na inicialização é válido e
+   * nem chega aqui.
+   */
+  private naCondição(contextos: Contextos) {
+    const { atual, pai } = contextos;
+    const noCorpo = atual === "listaComandos" || pai === "listaComandos" || atual === "comando";
+
+    return (
+      !noCorpo &&
+      ["se", "enquanto", "facaEnquanto", "para", "condicao", "escolha", "caso"].some(regra =>
+        this.contém(contextos, regra),
+      )
+    );
+  }
+
+  /**
+   * Um token com o texto dado na posição de outro, para marcar mais de um token de uma vez.
+   */
+  private trechoDe(token: Token, texto: string) {
+    const trecho = CommonToken.fromType(token.type, texto);
+
+    trecho.line = token.line;
+    trecho.column = token.column;
+
+    return trecho;
+  }
+
+  /**
+   * Logo depois de um `(`, `{` ou `,` vem um fechamento ou outra vírgula: falta mesmo o valor.
+   */
+  private lugarVazio(parser: Parser, token: Token) {
+    const anterior = this.tokenAnterior(parser, token)?.text ?? "";
+
+    return ["(", "{", ","].includes(anterior) && [")", "}", ",", ";"].includes(token.text ?? "");
+  }
+
+  /**
+   * Dois valores lado a lado na mesma linha, como `a 1`: faltou um operador ou uma vírgula.
+   */
+  private valoresColados(parser: Parser, token: Token) {
+    const anterior = this.tokenAnterior(parser, token);
+    const valores = new Set<number>([
+      PortugolLexer.ID,
+      PortugolLexer.INT,
+      PortugolLexer.HEXADECIMAL,
+      PortugolLexer.REAL,
+      PortugolLexer.STRING,
+      PortugolLexer.CARACTER,
+      PortugolLexer.LOGICO,
+    ]);
+
+    return (
+      anterior !== undefined && anterior.line === token.line && valores.has(anterior.type) && valores.has(token.type)
+    );
+  }
+
+  /**
+   * Divergência: quando uma linha acaba sem fechar um `(`, `[` ou `{`, ou sem o nome que
+   * faltava (`inclua biblioteca`, `inteiro a = 1,`), o ANTLR só percebe no primeiro token da
+   * linha seguinte, e o Java marca o erro lá, às vezes com a mensagem desse token. Aqui o erro
+   * vai para o fim da linha que ficou incompleta, dizendo o que falta.
+   */
+  private noFimDaLinha(parser: Parser, traduzido: PortugolCodeDiagnostic) {
+    const token = parser.getCurrentToken();
+    const anterior = this.tokenAnterior(parser, token);
+
+    // Uma cadeia que engoliu uma quebra de linha termina depois da linha em que começa.
+    const fimDoAnterior = (anterior?.line ?? 0) + (anterior?.text?.split("\n").length ?? 1) - 1;
+
+    if (!anterior || token.type === Token.EOF || fimDoAnterior >= token.line || traduzido.startLine !== token.line) {
+      return traduzido;
+    }
+
+    const aberto = this.abertoNaLinha(parser, anterior);
+
+    if (aberto === "(") {
+      return erroParêntese(anterior, "fechamento");
+    }
+
+    if (aberto === "[") {
+      return erroFaltaNoFimDaLinha(anterior, "']'");
+    }
+
+    if (aberto === "{" || aberto === "{{") {
+      return erroEscopo(anterior, aberto === "{{" ? "inicializacaoMatriz" : "inicializacaoArray");
+    }
+
+    const esperados = parser.getExpectedTokens();
+
+    if (esperados.length === 1 && esperados.contains(PortugolLexer.ID)) {
+      return erroFaltaNoFimDaLinha(anterior, anterior.text === "biblioteca" ? "o nome da biblioteca" : "um nome");
+    }
+
+    if (traduzido.code === CÓDIGOS.PALAVRA_RESERVADA_ESTA_FALTANDO) {
+      return erroPalavraReservadaEstáFaltando(this.trechoDe(token, token.text ?? ""), "enquanto");
+    }
+
+    return traduzido;
+  }
+
+  /**
+   * O `(`, `[` ou `{` que ficou aberto na linha do token, o mais interno. `{{` quando é a chave
+   * de fora de uma matriz, que tem outras chaves dentro.
+   */
+  private abertoNaLinha(parser: Parser, último: Token) {
+    let início = último.tokenIndex;
+
+    while (início > 0 && parser.tokenStream.get(início - 1).line === último.line) {
+      início--;
+    }
+
+    const pilha: Array<{ texto: string; matriz: boolean }> = [];
+    let anterior = "";
+
+    for (let i = início; i <= último.tokenIndex; i++) {
+      const token = parser.tokenStream.get(i);
+
+      if (token.channel !== Token.DEFAULT_CHANNEL) {
+        continue;
+      }
+
+      const texto = token.text ?? "";
+
+      // A chave que abre um bloco (`funcao inicio() {`, `se (x) {`) fica aberta no fim da linha
+      // de propósito; só a de uma inicialização de vetor ou matriz pode ter sido esquecida.
+      const inicialização = texto === "{" && ["=", "{", ","].includes(anterior);
+
+      if (texto === "(" || texto === "[" || inicialização) {
+        pilha.push({ texto, matriz: false });
+      } else if ([")", "]", "}"].includes(texto)) {
+        pilha.pop();
+
+        const fora = pilha.at(-1);
+
+        if (texto === "}" && fora?.texto === "{") {
+          fora.matriz = true;
+        }
+      }
+
+      anterior = texto;
+    }
+
+    const topo = pilha.at(-1);
+
+    return topo?.matriz ? "{{" : topo?.texto;
+  }
+
+  /**
+   * "A expressão 'caso' não era esperada" sai de vários caminhos; com uma palavra da linguagem,
+   * a mensagem diz que é uma palavra, e onde ela pode ficar.
+   */
+  private comPalavraReservada(parser: Parser, traduzido: PortugolCodeDiagnostic) {
+    const palavra = /^A expressão '(\p{L}+)' não era esperada/u.exec(traduzido.message)?.[1];
+
+    if (!palavra || traduzido.code !== CÓDIGOS.EXPRESSAO_INESPERADA) {
+      return traduzido;
+    }
+
+    const éPalavra = parser.vocabulary.getLiteralNames().includes(`'${palavra}'`);
+
+    if (!éPalavra) {
+      return traduzido;
+    }
+
+    const token = CommonToken.fromType(Token.INVALID_TYPE, palavra);
+
+    token.line = traduzido.startLine;
+    token.column = traduzido.startCol;
+
+    return erroPalavraForaDoLugar(token, palavra);
+  }
+
+  /**
+   * Divergência: enganos que o Java só aponta como "'{' não era esperada" ou pior, olhando a
+   * linha inteira do erro.
+   */
+  private enganoNaLinha(tokens: CommonTokenStream, traduzido: PortugolCodeDiagnostic) {
+    const parser = { tokenStream: tokens };
+    const doErro = this.tokenNaPosição(tokens, traduzido.startLine, traduzido.startCol);
+
+    if (!doErro) {
+      return traduzido;
+    }
+
+    const início = this.começoDoComando(parser, doErro);
+    const linha = this.tokensEntre(parser, início, this.fimDaLinha(parser, doErro));
+
+    // `senao (condição) {`.
+    const senão = linha.findIndex(token => token.text === "senao");
+
+    if (senão !== -1 && linha[senão + 1]?.text === "(") {
+      return erroSenãoComCondição(linha[senão]);
+    }
+
+    // `inteiro m[2,3]` ou `m[1,2]`.
+    const vírgula = linha.findIndex((token, i) => token.text === "," && this.abertoAntes(linha, i) === "[");
+
+    if (vírgula !== -1) {
+      return erroVírgulaEmColchetes(linha[vírgula]);
+    }
+
+    // `se (v[1)`, `escreva(a }` e `inteiro v[3 = {1, 2, 3}`: um delimitador ficou aberto antes de outro
+    // fechar, ou de um `=`.
+    const semFechar = this.delimitadorAbertoAntes(linha);
+
+    // No `para`, faltar a condição de parada vem antes: `para (inteiro i = 0 }`.
+    if (semFechar && traduzido.code !== CÓDIGOS.PARA_ESPERA_CONDICAO) {
+      return erroParsingNãoTratado(semFechar.token, `'${semFechar.esperado}'`, semFechar.token.text ?? "");
+    }
+
+    return traduzido;
+  }
+
+  /**
+   * O primeiro token da linha que fecha o delimitador errado, ou um `=` dentro de colchetes, com o
+   * fechamento que era esperado ali. Fechamentos de linhas anteriores ficam de fora.
+   */
+  private delimitadorAbertoAntes(linha: readonly Token[]) {
+    const fechamentos = new Map([
+      ["(", ")"],
+      ["[", "]"],
+      ["{", "}"],
+    ]);
+    const abertos: string[] = [];
+
+    for (const token of linha) {
+      const texto = token.text ?? "";
+      const esperado = abertos.at(-1);
+      const fechamento = fechamentos.get(texto);
+
+      if (fechamento) {
+        abertos.push(fechamento);
+      } else if (esperado && [")", "]", "}"].includes(texto)) {
+        if (texto !== esperado) {
+          return { token, esperado };
+        }
+
+        abertos.pop();
+      } else if (esperado === "]" && texto === "=") {
+        return { token, esperado };
+      }
+    }
+
+    return;
+  }
+
+  /**
+   * O `(`, `[` ou `{` mais interno que está aberto antes do token, contando só a linha.
+   */
+  private abertoAntes(tokens: readonly Token[], até: number) {
+    const abertos: string[] = [];
+
+    for (const token of tokens.slice(0, até)) {
+      const texto = token.text ?? "";
+
+      if (["(", "[", "{"].includes(texto)) {
+        abertos.push(texto);
+      } else if ([")", "]", "}"].includes(texto)) {
+        abertos.pop();
+      }
+    }
+
+    return abertos.at(-1);
+  }
+
+  /**
+   * O primeiro token do comando: o primeiro da linha, ou o que vem depois de um `}`, `{` ou `;`.
+   */
+  private começoDoComando(parser: Pick<Parser, "tokenStream">, token: Token) {
+    let início = token;
+
+    for (let anterior = this.tokenAnterior(parser, token); anterior; anterior = this.tokenAnterior(parser, anterior)) {
+      if (anterior.line !== token.line || ["{", "}", ";"].includes(anterior.text ?? "")) {
+        break;
+      }
+
+      início = anterior;
+    }
+
+    return início;
+  }
+
+  private tokensEntre(parser: Pick<Parser, "tokenStream">, início: Token, fim: Token) {
+    const tokens: Token[] = [];
+
+    for (let i = início.tokenIndex; i <= fim.tokenIndex; i++) {
+      const token = parser.tokenStream.get(i);
+
+      if (token.channel === Token.DEFAULT_CHANNEL) {
+        tokens.push(token);
+      }
+    }
+
+    return tokens;
+  }
+
+  private tokenSeguinte(parser: Pick<Parser, "tokenStream">, token: Token) {
+    for (let i = token.tokenIndex + 1; i < (parser.tokenStream as CommonTokenStream).size; i++) {
+      const seguinte = parser.tokenStream.get(i);
+
+      if (seguinte.channel === Token.DEFAULT_CHANNEL) {
+        return seguinte;
+      }
+    }
+
+    return;
+  }
+
+  /**
+   * O token que começa na posição do diagnóstico, entre os que o parser já leu.
+   */
+  private tokenNaPosição(tokens: CommonTokenStream, linha: number, coluna: number) {
+    return tokens
+      .getTokens()
+      .find(token => token.line === linha && token.column === coluna && token.channel === Token.DEFAULT_CHANNEL);
+  }
+
+  /**
+   * O último token da linha do token, para olhar o comando inteiro.
+   */
+  private fimDaLinha(parser: Pick<Parser, "tokenStream">, token: Token) {
+    let fim = token;
+
+    for (let seguinte = this.tokenSeguinte(parser, token); seguinte?.line === token.line;) {
+      fim = seguinte;
+      seguinte = this.tokenSeguinte(parser, seguinte);
+    }
+
+    return fim;
+  }
+
+  private éPalavraReservada(parser: Parser, token: Token) {
+    const texto = token.text ?? "";
+
+    return parser.vocabulary.getLiteralName(token.type) === `'${texto}'` && /^\p{L}+$/u.test(texto);
+  }
+
+  private palavraOuSobra(parser: Parser, token: Token, alvo: Token, texto: string) {
+    return this.éPalavraReservada(parser, token)
+      ? erroPalavraForaDoLugar(alvo, texto)
+      : erroExpressãoInesperada(alvo, texto);
+  }
+
+  private tokenAnterior(parser: Pick<Parser, "tokenStream">, token: Token) {
+    for (let i = token.tokenIndex - 1; i >= 0; i--) {
+      const anterior = parser.tokenStream.get(i);
+
+      if (anterior.channel === Token.DEFAULT_CHANNEL) {
+        return anterior;
+      }
+    }
+
+    return;
+  }
+
   private traduzirErroParsing(parser: Parser, msg: string, e: RecognitionException | null): PortugolCodeDiagnostic {
     const token = parser.getCurrentToken();
-    const texto = token.type === Token.EOF ? "<EOF>" : (token.text ?? "");
+    // Uma aspa sobrando transforma linhas inteiras numa cadeia: o erro é onde ela começa.
+    const texto = token.type === Token.EOF ? "<EOF>" : (token.text ?? "").split("\n", 1)[0];
     const ctx = parser.context!;
     const contextos = this.contextosDe(parser, ctx);
     const { atual, pai, avô } = contextos;
@@ -258,7 +685,9 @@ class AnalisadorSintático extends BaseErrorListener {
 
     // No fim do arquivo não há o que sublinhar: marca o último token antes dele, ou, num
     // arquivo sem nenhum, o lugar onde o código acaba.
-    const alvo = token.type === Token.EOF ? (parser.tokenStream.LT(-1) ?? this.fimDoCódigo(token)) : token;
+    const alvo = this.primeiraLinha(
+      token.type === Token.EOF ? (parser.tokenStream.LT(-1) ?? this.fimDoCódigo(token)) : token,
+    );
 
     // Só o primeiro token do arquivo pode esperar `programa`: o que vier antes dele está fora
     // do programa. Antes de tudo, porque o resto confundiria esse código com um comando.
@@ -271,11 +700,42 @@ class AnalisadorSintático extends BaseErrorListener {
     const causa = e?.ctx ? { token: e.offendingToken?.text ?? "", contexto: parser.ruleNames[e.ctx.ruleIndex] } : null;
 
     if (causa?.contexto === "comando" && causa.token === ",") {
+      // Divergência: em `f(a +, 5)` a vírgula vem logo depois de um operador, e o que falta é
+      // o operando; o Java fala de vírgula mal colocada e de nome não informado.
+      const antesDaVírgula = e?.offendingToken ? this.tokenAnterior(parser, e.offendingToken) : undefined;
+
+      if (antesDaVírgula && OPERADORES_BINÁRIOS.has(antesDaVírgula.text ?? "")) {
+        return erroExpressãoIncompleta(antesDaVírgula);
+      }
+
       return erroSímboloFaltandoOuRealComVírgula(alvo, atual);
     }
 
     if (/^\d*$/.test(texto) && /^\d*,\d*$/.test(this.textoAntesDe(ctx))) {
       return erroSímboloFaltandoOuRealComVírgula(alvo, atual);
+    }
+
+    // Divergência: um `=` onde cabia uma comparação, como `se (a = 1)`. O Java pede o `)`, o
+    // `;` ou o `:` que viria depois da condição, o que não resolveria.
+    if (texto === "=" && this.naCondição(contextos)) {
+      const próximo = parser.tokenStream.LT(2);
+
+      if ((próximo?.text === "<" || próximo?.text === ">") && próximo.start === token.stop + 1) {
+        return erroOperadorInexistente(this.trechoDe(token, `=${próximo.text}`), `=${próximo.text}`);
+      }
+
+      return erroIgualEmComparação(alvo);
+    }
+
+    // Divergência: o real escrito com vírgula também numa condição e num caso, como em
+    // `se (a > 2,5)`. Num índice, `m[1,2]` é mais provavelmente `m[1][2]`, e fica com o Java.
+    if (
+      texto === "," &&
+      atual !== "tamanhoArray" &&
+      !this.contém(contextos, "indiceArray") &&
+      this.númeroComVírgula(parser, token)
+    ) {
+      return erroRealComVírgula(alvo);
     }
 
     // Divergência: o Java só reconhece o `senao` solto quando o token sobra; nos outros
@@ -294,7 +754,9 @@ class AnalisadorSintático extends BaseErrorListener {
     }
 
     if (semFechar) {
-      return erroParsingNãoTratado(semFechar.último, "']'", this.textoOuFim(semFechar.travou));
+      return semFechar.travou.type === Token.EOF
+        ? erroParsingNãoTratado(semFechar.último, "']'", undefined)
+        : erroFaltaNoFimDaLinha(semFechar.último, "']'");
     }
 
     // Divergência: comando direto no programa, fora de função. O Java tem a mensagem
@@ -326,12 +788,6 @@ class AnalisadorSintático extends BaseErrorListener {
         return erroRealComVírgula(alvo);
       }
 
-      // Divergência: o Java só reconhece o real escrito com vírgula numa declaração e no
-      // `retorne`; numa atribuição como `p = 2,5`, a vírgula era só "inesperada".
-      if (texto === "," && this.númeroComVírgula(parser, token)) {
-        return erroRealComVírgula(alvo);
-      }
-
       return erroExpressãoInesperada(alvo, texto);
     }
 
@@ -340,7 +796,9 @@ class AnalisadorSintático extends BaseErrorListener {
     }
 
     if (atual === "expressao") {
-      if (["se", "enquanto", "facaEnquanto"].includes(pai)) {
+      // Divergência: o Java diz que falta a condição para qualquer erro dentro dela, como em
+      // `se (v[1)`; aqui, só quando ela está vazia.
+      if (["se", "enquanto", "facaEnquanto"].includes(pai) && this.lugarVazio(parser, token)) {
         return erroExpressãoEsperada(alvo, pai, avô);
       }
 
@@ -348,7 +806,9 @@ class AnalisadorSintático extends BaseErrorListener {
         return erroExpressãoIncompleta(alvo);
       }
 
-      if (texto === ",") {
+      // Divergência: o Java fala de real com vírgula para qualquer vírgula aqui, mesmo sem
+      // número, como em `inteiro x = (0, y = 1`.
+      if (texto === "," && this.númeroComVírgula(parser, token)) {
         return erroRealComVírgula(alvo);
       }
 
@@ -358,29 +818,29 @@ class AnalisadorSintático extends BaseErrorListener {
     }
 
     if (this.noCabeçalhoDoPara(contextos)) {
-      let contextosPara = contextos;
-
-      if (causa && e?.ctx) {
-        contextosPara = this.contextosDe(parser, e.ctx);
-
-        if (texto === "," && causa.contexto === "expressao") {
-          return erroRealComVírgula(alvo);
-        }
-      }
-
-      // Divergência de versão do ANTLR: aqui a vírgula de `i < 2,5` quebra a própria regra
-      // `para`, e não a `expressao` como no Java, e virava "falta o token ';'".
-      if (texto === "," && this.númeroComVírgula(parser, token)) {
-        return erroRealComVírgula(alvo);
-      }
-
-      return this.traduzirErroPara(parser, alvo, ctx, esperados, contextosPara);
+      return this.traduzirErroPara(parser, alvo, ctx, esperados, contextos);
     }
 
     // Função, variável ou parâmetro sem nome.
     if (atual === "parametro" || atual.startsWith("declaracao")) {
       if (texto === "[") {
         return atual === "declaracaoFuncao" ? erroRetornoVetorMatriz(alvo) : erroChaveDeVetorMatrizMalPosicionada(alvo);
+      }
+
+      // Divergência: dentro do corpo de uma função, o nome dela já foi informado, e uma palavra
+      // da linguagem ali (como `caso` ou `inclua`) é que está fora do lugar.
+      if (atual === "declaracaoFuncao" && ctx.getToken(PortugolLexer.ABRE_CHAVES, 0)) {
+        return this.palavraOuSobra(parser, token, alvo, texto);
+      }
+
+      // Divergência: em `inteiro m[2][` no fim do código, o nome está lá; falta fechar o `[`. O
+      // Java diz que o nome não foi informado, porque o tamanho também pode começar por um nome.
+      if (nomesEsperados.includes("FECHA_COLCHETES")) {
+        const anterior = this.tokenAnterior(parser, token);
+
+        return anterior && token.type === Token.EOF
+          ? erroParsingNãoTratado(anterior, "']'", undefined)
+          : erroParsingNãoTratado(alvo, "']'", texto);
       }
 
       if (nomesEsperados.includes("ID")) {
@@ -392,10 +852,18 @@ class AnalisadorSintático extends BaseErrorListener {
     }
 
     if (atual === "listaComandos") {
+      // Divergência: uma palavra da linguagem que não começa comando (como `caso`) não é a falta
+      // de um comando, que é o que o Java diz.
+      if (this.éPalavraReservada(parser, token)) {
+        return this.palavraOuSobra(parser, token, alvo, texto);
+      }
+
       return erroComandoEsperado(alvo);
     }
 
-    if (atual === "listaExpressoes") {
+    // Divergência: o Java diz que o elemento não foi informado para qualquer erro dentro das
+    // chaves, como em `{1, a || verdadeiro}`; aqui, só quando o lugar está vazio.
+    if (atual === "listaExpressoes" && this.lugarVazio(parser, token)) {
       return erroExpressãoEsperada(alvo, pai, avô);
     }
 
@@ -410,6 +878,12 @@ class AnalisadorSintático extends BaseErrorListener {
       // token sobra, como um `)` solto depois de `caso 1:`.
       if (nomesEsperados.includes("SE") && token.type !== Token.EOF) {
         return erroExpressãoInesperada(alvo, texto);
+      }
+
+      // A mensagem que cita o comando ("o se espera uma expressão") só quando falta mesmo a
+      // expressão; com algo lá dentro, a genérica, que `ondeTravou` leva aonde o parser travou.
+      if (!this.lugarVazio(parser, token)) {
+        return erroExpressãoEsperada(alvo, "", "");
       }
 
       return atual === "expressao" ? erroExpressãoEsperada(alvo, pai, avô) : erroExpressãoEsperada(alvo, atual, pai);
@@ -470,6 +944,12 @@ class AnalisadorSintático extends BaseErrorListener {
       }
 
       case "FECHA_CHAVES": {
+        // Divergência: em `{a 1, 2}` falta um operador ou uma vírgula entre os dois valores, e
+        // não o `}` que o Java pede.
+        if (this.valoresColados(parser, alvo)) {
+          return erroExpressãoInesperada(alvo, alvo.text ?? "");
+        }
+
         return erroEscopo(alvo, atual === "listaComandos" ? pai : atual);
       }
 
@@ -486,7 +966,7 @@ class AnalisadorSintático extends BaseErrorListener {
       }
 
       case "PONTOVIRGULA": {
-        return erroTokenFaltando(alvo, nome, this.símboloDe(parser, tipo));
+        return erroTokenFaltando(alvo, this.símboloDe(parser, tipo));
       }
 
       case "ENQUANTO": {
@@ -519,7 +999,7 @@ class AnalisadorSintático extends BaseErrorListener {
     }
 
     if (ctx.getText().split(";").length - 1 === 1 && esperados.length > 0) {
-      return erroTokenFaltando(alvo, nomes[0], this.símboloDe(parser, esperados[0]));
+      return erroTokenFaltando(alvo, this.símboloDe(parser, esperados[0]));
     }
 
     return erroParaEsperaCondição(alvo);
@@ -581,6 +1061,39 @@ class AnalisadorSintático extends BaseErrorListener {
 
   private vemAntes(a: PortugolCodeDiagnostic, b: PortugolCodeDiagnostic) {
     return a.startLine < b.startLine || (a.startLine === b.startLine && a.startCol < b.startCol);
+  }
+
+  /**
+   * Se o token é o `)` que fecha o cabeçalho do `para` em que o parser está.
+   */
+  private fechaOCabeçalhoDoPara(parser: Parser, token: Token) {
+    let contexto: ParserRuleContext | null = parser.context;
+
+    while (contexto && contexto.ruleIndex !== PortugolParser.RULE_para) {
+      if (contexto.ruleIndex === PortugolParser.RULE_listaComandos) {
+        return false;
+      }
+
+      contexto = contexto.parent;
+    }
+
+    if (!contexto?.start) {
+      return false;
+    }
+
+    let abertos = 0;
+
+    for (let i = contexto.start.tokenIndex + 1; i <= token.tokenIndex; i++) {
+      const texto = parser.tokenStream.get(i).text;
+
+      if (texto === "(") {
+        abertos++;
+      } else if (texto === ")" && --abertos === 0) {
+        return i === token.tokenIndex;
+      }
+    }
+
+    return false;
   }
 
   /**
@@ -685,6 +1198,25 @@ class AnalisadorSintático extends BaseErrorListener {
     const programa = /\bprograma\b/.exec(resto);
 
     return erroExpressõesForaEscopoPrograma(alvo, resto.slice(0, programa?.index).trim(), "antes");
+  }
+
+  /**
+   * O token, ou um que cobre só a primeira linha dele: um erro de sintaxe não marca as
+   * linhas que uma cadeia mal fechada engoliu.
+   */
+  private primeiraLinha(token: Token) {
+    const texto = token.text ?? "";
+
+    if (!texto.includes("\n")) {
+      return token;
+    }
+
+    const recortado = CommonToken.fromType(token.type, texto.split("\n", 1)[0]);
+
+    recortado.line = token.line;
+    recortado.column = token.column;
+
+    return recortado;
   }
 
   /**

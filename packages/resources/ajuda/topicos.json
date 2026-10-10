@@ -212,5 +212,9 @@
         "arquivo": "topicos/linguagem_portugol/bibliotecas/index.md"
       }
     ]
+  },
+  {
+    "titulo": "Diferenças em relação ao Portugol Studio",
+    "arquivo": "topicos/diferencas_portugol_studio.md"
   }
 ]

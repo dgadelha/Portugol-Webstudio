@@ -95,6 +95,33 @@ describe("Controle de fluxo", () => {
       ).toMatchInlineSnapshot(`[]`);
     });
 
+    test("escolha de cadeia ou real pede caso inteiro ou caracter", () => {
+      expect(
+        analisar(portugol`
+          programa {
+            funcao inicio() {
+              cadeia c = "a"
+              escolha (c) {
+                caso "a":
+                  pare
+              }
+              real r = 1.0
+              escolha (r) {
+                caso 1:
+                  pare
+              }
+            }
+          }
+        `),
+      ).toMatchInlineSnapshot(`
+        [
+          4:13/4:13 E [ErroSemantico.ErroTiposIncompativeis.17]: Tipos incompatíveis! O comando "escolha" espera uma expressão do tipo "inteiro" ou "caracter" mas foi passada uma expressão do tipo "cadeia".,
+          5:11/5:13 E [ErroSemantico.ErroTiposIncompativeis.18]: Tipos incompatíveis! A expressão esperada para esse caso deveria ser do tipo "inteiro" ou "caracter" mas foi passada uma expressão do tipo "cadeia".,
+          9:13/9:13 E [ErroSemantico.ErroTiposIncompativeis.17]: Tipos incompatíveis! O comando "escolha" espera uma expressão do tipo "inteiro" ou "caracter" mas foi passada uma expressão do tipo "real".,
+        ]
+      `);
+    });
+
     test("tipo indeterminado no escolha não gera erro nos casos", () => {
       expect(
         analisar(portugol`
@@ -128,7 +155,7 @@ describe("Controle de fluxo", () => {
         `),
       ).toMatchInlineSnapshot(`
         [
-          4:4/4:29 E [ErroSemantico.ErroParaSemExpressaoAtribuicao]: O comando 'para' quando há uma atribuição utiliza uma das seguintes sintaxes: i=i+1 / i++ / i+=1,
+          4:24/4:24 E [ErroSemantico.ErroParaSemExpressaoAtribuicao]: O comando 'para' quando há uma atribuição utiliza uma das seguintes sintaxes: i=i+1 / i++ / i+=1,
         ]
       `);
     });

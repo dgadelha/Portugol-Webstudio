@@ -48,7 +48,7 @@ describe("Constantes", () => {
       `),
     ).toMatchInlineSnapshot(`
       [
-        3:20/3:22 E [ErroSemantico.ErroAtribuirEmConstante.3]: "A" é uma constante, e portanto, não pode ter seu valor alterado após a inicialização,
+        3:20/3:20 E [ErroSemantico.ErroAtribuirEmConstante.3]: "A" é uma constante, e portanto, não pode ter seu valor alterado após a inicialização,
       ]
     `);
   });
@@ -137,7 +137,66 @@ describe("Constantes", () => {
       `),
     ).toMatchInlineSnapshot(`
       [
-        3:20/3:27 E [ErroSemantico.ErroAtribuirEmConstante.1]: O vetor "W" é constante e, portanto, não pode ter seus valores alterados após a inicialização,
+        3:20/3:20 E [ErroSemantico.ErroAtribuirEmConstante.1]: O vetor "W" é constante e, portanto, não pode ter seus valores alterados após a inicialização,
+      ]
+    `);
+  });
+
+  test("vetor e matriz constantes sem inicialização", () => {
+    // O exemplo do Portugol Studio usa valores sorteados; o nosso, zeros.
+    expect(
+      analisar(portugol`
+        programa {
+          funcao inicio() {
+            const inteiro v[3]
+            const real m[2][2]
+            escreva(v[0], m[0][0])
+          }
+        }
+      `),
+    ).toMatchInlineSnapshot(`
+      [
+        3:18/3:18 E [ErroSemantico.ErroSimboloNaoInicializado.1]: O vetor "v" não foi inicializado. Você deve inicializar o vetor antes de poder utilizá-lo no programa. Você pode inicializar o vetor atribuindo valores do tipo "inteiro". Exemplo: inteiro v[4] = {0, 0, 0, 0}. Você também pode usar a função "leia" para ler valores digitados pelo usuário. Exemplo: leia(v[0]),
+        4:15/4:15 E [ErroSemantico.ErroSimboloNaoInicializado.2]: A matriz "m" não foi inicializada. Você deve inicializar a matriz antes de poder utilizá-la no programa. Você pode inicializar a matriz atribuindo valores do tipo "real". Exemplo: real m[3][3] = {{0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}}. Você também pode usar a função "leia" para ler valores digitados pelo usuário. Exemplo: leia(m[0][0]),
+      ]
+    `);
+  });
+
+  test("constante inicializada com variável inexistente e com constante real de biblioteca", () => {
+    expect(
+      analisar(portugol`
+        programa {
+          inclua biblioteca Matematica --> mat
+          funcao inicio() {
+            const inteiro A = B
+            const inteiro C = 2 + mat.PI
+          }
+        }
+      `),
+    ).toMatchInlineSnapshot(`
+      [
+        4:22/4:22 E [ErroSemantico.ErroInicializacaoConstante.1]: A constante "A" deve ser inicializada com um valor ao invés de uma expressão,
+        4:22/4:22 E [ErroSemantico.ErroSimboloNaoDeclarado.3]: A variável "B" não foi declarada neste escopo.,
+        5:22/5:31 E [ErroSemantico.ErroInicializacaoConstante.1]: A constante "C" deve ser inicializada com um valor ao invés de uma expressão,
+        5:22/5:31 W [AvisoSemantico.AvisoValorExpressaoSeraConvertido]: O valor da expressão á direita da atribuição será truncado,
+      ]
+    `);
+  });
+
+  test("constante inteira inicializada com comparação", () => {
+    // O valor da constante ainda é calculado, e a comparação não é conta: nada além dos dois erros.
+    expect(
+      analisar(portugol`
+        programa {
+          funcao inicio() {
+            const inteiro A = 1 < 2
+          }
+        }
+      `),
+    ).toMatchInlineSnapshot(`
+      [
+        3:22/3:26 E [ErroSemantico.ErroInicializacaoConstante.1]: A constante "A" deve ser inicializada com um valor ao invés de uma expressão,
+        3:22/3:26 E [ErroSemantico.ErroTiposIncompativeis.1]: Tipos incompatíveis! Não é possível atribuir uma expressão do tipo "lógico" à uma expressão do tipo "inteiro".,
       ]
     `);
   });

@@ -153,8 +153,8 @@ describe("Chamadas de função", () => {
   });
 
   test("#29 sorteia exige dois inteiros", () => {
-    // O `sorteia` global também é recusado pelo Webstudio; aqui o foco é a checagem de
-    // tipos, que o Portugol Studio faz igual.
+    // Divergência: o Portugol Studio deixa o nome do parâmetro em branco (`O parâmetro ""`);
+    // aqui são os nomes da `Util.sorteia`.
     expect(
       analisar(portugol`
         programa {
@@ -162,10 +162,10 @@ describe("Chamadas de função", () => {
             escreva(sorteia(1.5, 2))
           }
         }
-      `).filter(diagnóstico => diagnóstico.code !== "ErroWebstudio.ErroFuncaoReservadaNaoSuportada"),
+      `),
     ).toMatchInlineSnapshot(`
       [
-        3:20/3:22 E [ErroSemantico.ErroTipoParametroIncompativel]: Tipos incompatíveis! O parâmetro "" da função "sorteia" espera uma expressão do tipo "inteiro", mas foi passada uma expressão do tipo "real",
+        3:20/3:22 E [ErroSemantico.ErroTipoParametroIncompativel]: Tipos incompatíveis! O parâmetro "minimo" da função "sorteia" espera uma expressão do tipo "inteiro", mas foi passada uma expressão do tipo "real",
       ]
     `);
   });
@@ -182,6 +182,76 @@ describe("Chamadas de função", () => {
     ).toMatchInlineSnapshot(`
       [
         3:4/3:12 E [ErroSemantico.ErroSimboloNaoDeclarado.4]: A função "naoexiste" não foi declarada no programa,
+      ]
+    `);
+  });
+});
+
+describe("Chamadas: achados do teste de mutação contra o Portugol Studio", () => {
+  test("função passada como valor para uma função do usuário", () => {
+    expect(
+      analisar(portugol`
+        programa {
+          funcao inteiro f(inteiro x) {
+            retorne x
+          }
+
+          funcao inicio() {
+            escreva(f(inicio))
+            escreva(f(f))
+          }
+        }
+      `),
+    ).toMatchInlineSnapshot(`
+      [
+        7:14/7:19 E [ErroSemantico.ErroReferenciaInvalida.41]: A função 'inicio' está sendo utilizada como uma variável,
+        8:14/8:14 E [ErroSemantico.ErroReferenciaInvalida.41]: A função 'f' está sendo utilizada como uma variável,
+      ]
+    `);
+  });
+
+  test("Util.sorteia só aceita inteiros, como a sorteia reservada", () => {
+    expect(
+      analisar(portugol`
+        programa {
+          inclua biblioteca Util --> u
+
+          funcao inicio() {
+            real r = 2.0
+            escreva(u.sorteia(1, r))
+            escreva(u.sorteia(1.5, 2))
+            escreva(u.sorteia(1, 2))
+          }
+        }
+      `),
+    ).toMatchInlineSnapshot(`
+      [
+        6:25/6:25 E [ErroSemantico.ErroTipoParametroIncompativel]: Tipos incompatíveis! O parâmetro "maximo" da função "sorteia" espera uma expressão do tipo "inteiro", mas foi passada uma expressão do tipo "real",
+        6:25/6:25 W [AvisoSemantico.AvisoValorExpressaoSeraConvertido]: O valor da expressão passada para o parâmetro "maximo" da função "sorteia" será truncado,
+        7:22/7:24 E [ErroSemantico.ErroTipoParametroIncompativel]: Tipos incompatíveis! O parâmetro "minimo" da função "sorteia" espera uma expressão do tipo "inteiro", mas foi passada uma expressão do tipo "real",
+        7:22/7:24 W [AvisoSemantico.AvisoValorExpressaoSeraConvertido]: O valor da expressão passada para o parâmetro "minimo" da função "sorteia" será truncado,
+      ]
+    `);
+  });
+
+  test("leia e referência com variável não declarada dão só o erro de não declarada", () => {
+    expect(
+      analisar(portugol`
+        programa {
+          funcao g(inteiro &a) {
+            a = 1
+          }
+
+          funcao inicio() {
+            leia(x)
+            g(y)
+          }
+        }
+      `),
+    ).toMatchInlineSnapshot(`
+      [
+        7:9/7:9 E [ErroSemantico.ErroSimboloNaoDeclarado.3]: A variável "x" não foi declarada neste escopo.,
+        8:6/8:6 E [ErroSemantico.ErroSimboloNaoDeclarado.3]: A variável "y" não foi declarada neste escopo.,
       ]
     `);
   });

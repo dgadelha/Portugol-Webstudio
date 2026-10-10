@@ -33,7 +33,7 @@ describe("Avisos de uso (#15)", () => {
         5:12/5:19 I [InfoWebstudio.SimboloNaoUtilizado]: A variável 'naoUsada' é declarada, mas não é utilizada,
         6:12/6:20 I [InfoWebstudio.SimboloNaoUtilizado]: A variável 'soEscrita' é atribuída, mas nunca é lida,
         7:12/7:17 I [InfoWebstudio.SimboloNaoUtilizado]: A variável 'soLida' é lida, mas nunca recebe um valor,
-        12:23/12:27 I [InfoWebstudio.SimboloNaoUtilizado]: A variável 'param' é atribuída, mas nunca é lida,
+        12:23/12:27 I [InfoWebstudio.SimboloNaoUtilizado]: O parâmetro 'param' não é utilizado,
         2:10/2:15 I [InfoWebstudio.SimboloNaoUtilizado]: A variável 'global' é declarada, mas não é utilizada,
       ]
     `);

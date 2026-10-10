@@ -94,6 +94,88 @@ describe("Vetores e matrizes", () => {
       `);
     });
 
+    test("variável não constante dentro de uma conta é citada pelo nome", () => {
+      // O "linhas" com a variável culpada fica de fora: ali o Portugol Studio diz "colunas".
+      expect(
+        analisar(portugol`
+          programa {
+            funcao inicio() {
+              inteiro n = 2
+              inteiro a[n + 1]
+              inteiro b[1 + n]
+              inteiro m[2][n + 1]
+              escreva(a[0], b[0], m[0][0])
+            }
+          }
+        `),
+      ).toMatchInlineSnapshot(`
+        [
+          4:14/4:14 E [ErroSemantico.ErroTamanhoVetorMatriz.1]: A variavel 'n' do tamanho do vetor 'a' deve ser uma variavel ou valor constante do tipo inteiro e positivo 
+         Ex: 
+         const inteiro x = 3 
+         vetor[x],
+          5:18/5:18 E [ErroSemantico.ErroTamanhoVetorMatriz.1]: A variavel 'n' do tamanho do vetor 'b' deve ser uma variavel ou valor constante do tipo inteiro e positivo 
+         Ex: 
+         const inteiro x = 3 
+         vetor[x],
+          6:17/6:17 E [ErroSemantico.ErroTamanhoVetorMatriz.2]: A variavel 'n' no número de colunas da matriz 'm' deve ser um valor ou uma constante do tipo inteiro e positivo 
+         Ex: 
+         const inteiro x = 3 
+         matriz[x][5],
+        ]
+      `);
+    });
+
+    test("tamanho com variável inexistente só acusa a variável", () => {
+      expect(
+        analisar(portugol`
+          programa {
+            funcao inicio() {
+              inteiro v[x]
+              inteiro m[y][2]
+            }
+          }
+        `),
+      ).toMatchInlineSnapshot(`
+        [
+          3:14/3:14 E [ErroSemantico.ErroSimboloNaoDeclarado.3]: A variável "x" não foi declarada neste escopo.,
+          4:14/4:14 E [ErroSemantico.ErroSimboloNaoDeclarado.3]: A variável "y" não foi declarada neste escopo.,
+        ]
+      `);
+    });
+
+    test("operadores aritméticos e bit a bit no tamanho", () => {
+      // O Portugol Studio calcula com os operandos trocados (`b - a`, `b >> a`...): os
+      // operandos foram escolhidos para dar o mesmo resultado nos dois.
+      expect(
+        analisar(portugol`
+          programa {
+            funcao inicio() {
+              inteiro a[3 - 3]
+              inteiro b[2 / 2]
+              inteiro c[7 % 4]
+              inteiro d[1 << 2]
+              inteiro k[1 >> 1]
+              inteiro f[6 & 3]
+              inteiro g[4 | 1]
+              inteiro h[6 ^ 6]
+              inteiro i[~2]
+              inteiro j[1 + ~2 + 5]
+              escreva(a[0], b[0], c[0], d[0], k[0], f[0], g[0], h[0], i[0], j[0])
+            }
+          }
+        `).map(diagnóstico => `${diagnóstico.startLine}: ${diagnóstico.code}`),
+      ).toMatchInlineSnapshot(`
+        [
+          "3: ErroSemantico.ErroTamanhoVetorMatriz.1",
+          "4: AvisoSemantico.AvisoVetorPodeSerVariavel",
+          "7: ErroSemantico.ErroTamanhoVetorMatriz.1",
+          "10: ErroSemantico.ErroTamanhoVetorMatriz.1",
+          "11: ErroSemantico.ErroTamanhoVetorMatriz.1",
+        ]
+      `);
+    });
+
     test("tamanho máximo de vetor e de matriz", () => {
       expect(
         analisar(portugol`
@@ -180,6 +262,27 @@ describe("Vetores e matrizes", () => {
       ).toMatchInlineSnapshot(`
         [
           3:22/3:39 E [ErroSemantico.ErroDefinirTipoDadoMatrizLiteral]: A inicialização da matriz possui mais de um tipo de dado,
+        ]
+      `);
+    });
+
+    test("literal vazio e primeiro elemento indeterminado não geram erro de tipo", () => {
+      expect(
+        analisar(portugol`
+          programa {
+            funcao inicio() {
+              inteiro v[] = {}
+              inteiro m[][] = {{}}
+              inteiro w[2] = {z, 1}
+              inteiro n[2][2] = {{z, 1}, {2, 3}}
+              escreva(v[0], m[0][0], w[0], n[0][0])
+            }
+          }
+        `),
+      ).toMatchInlineSnapshot(`
+        [
+          5:20/5:20 E [ErroSemantico.ErroSimboloNaoDeclarado.3]: A variável "z" não foi declarada neste escopo.,
+          6:24/6:24 E [ErroSemantico.ErroSimboloNaoDeclarado.3]: A variável "z" não foi declarada neste escopo.,
         ]
       `);
     });

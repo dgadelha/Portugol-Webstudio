@@ -7,7 +7,7 @@ import { Node } from "./Node.js";
 
 export class ParaCmd extends Comando<ParaContext> {
   inicializações: Array<Comando | Expressão> = [];
-  condição?: Expressão;
+  condição!: Expressão;
 
   incremento?: Comando | Expressão;
 

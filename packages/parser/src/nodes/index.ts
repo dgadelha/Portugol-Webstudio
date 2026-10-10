@@ -197,8 +197,6 @@ export const ContextNodeObj: Record<string, new (ctx: any) => Node> = {
   OperacaoMenorIgualContext: OperaçãoMenorOuIgualQueExpr,
   OperacaoOrBitwiseContext: OperaçãoOrBitwiseExpr,
   OperacaoOuLogicoContext: OperaçãoOrLógicoExpr,
-  OperacaoShiftLeftContext: OperaçãoShiftLeftExpr,
-  OperacaoShiftRightContext: OperaçãoShiftRightExpr,
   OperacaoXorContext: OperaçãoXorExpr,
   ParaContext: ParaCmd,
   ParametroContext: Parâmetro,

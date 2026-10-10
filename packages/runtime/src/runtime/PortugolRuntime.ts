@@ -16,6 +16,11 @@ class PortugolRuntime {
 
     this.objetos = new PortugolCacheObjetos();
     this.libs = ${portugolLibs};
+
+    // A 'sorteia' sem biblioteca é a mesma do Portugol Studio que a 'Util.sorteia': o mesmo
+    // intervalo e as mesmas mensagens de erro. As outras funções reservadas fazem entrada e
+    // saída e vêm de quem executa o programa (initScope).
+    this.globalScope.functions.sorteia = (minimo, maximo) => this.libs.Util.sorteia(minimo, maximo);
   }
 
   DEBUG(...args) {

@@ -46,6 +46,12 @@ interface SímboloBase {
    */
   leituras: number;
   escritas: number;
+
+  /**
+   * Só para a mensagem de uso: um parâmetro já nasce escrito, e "atribuído, mas nunca lido"
+   * não diz a quem o escreveu que o problema é ele não ser usado.
+   */
+  parâmetro?: boolean;
 }
 
 export interface SímboloDado extends SímboloBase {

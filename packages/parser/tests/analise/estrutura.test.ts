@@ -41,7 +41,7 @@ describe("Estrutura do programa", () => {
       `),
     ).toMatchInlineSnapshot(`
       [
-        1:0/5:0 E [ErroSemantico.ErroFuncaoInicioInexistente]: A função "inicio" não existe no seu código. Ela é necessária pois será a primeira a ser chamada na execução do código,
+        1:0/1:7 E [ErroSemantico.ErroFuncaoInicioInexistente]: A função "inicio" não existe no seu código. Ela é necessária pois será a primeira a ser chamada na execução do código,
       ]
     `);
   });
@@ -177,6 +177,23 @@ describe("Estrutura do programa", () => {
       `);
     });
 
+    test("comparação com matriz à esquerda cita a matriz", () => {
+      expect(
+        analisar(portugol`
+          programa {
+            funcao inicio() {
+              inteiro m[2][2] = {{1, 2}, {3, 4}}
+              m[0][1] == 2
+            }
+          }
+        `),
+      ).toMatchInlineSnapshot(`
+        [
+          4:4/4:15 E [ErroSemantico.ErroBlocoInvalido.13]: Esta expressão lógica não faz sentido se estiver sozinha no código. Você pode utilizar a expressão como condição em um dos seguintes comandos: 'se', 'enquanto', 'faca-enquanto'. Se você estiver tentando atribuir um valor ou expressão à matriz "m", utilize o operador '=' ao invés do operador '==',
+        ]
+      `);
+    });
+
     test("comandos válidos sozinhos não são bloco inválido", () => {
       expect(
         analisar(portugol`
@@ -208,9 +225,9 @@ describe("Estrutura do programa", () => {
       `),
     ).toMatchInlineSnapshot(`
       [
-        3:12/3:20 E [ErroSintatico.ErroEscapeUnico]: Variáveis do tipo cadeias e caracter com o símbolo '\\' devem utiliza-lo como: '\\\\'.
+        3:15/3:16 E [ErroSintatico.ErroEscapeUnico]: Variáveis do tipo cadeias e caracter com o símbolo '\\' devem utiliza-lo como: '\\\\'.
       Isso se deve ao símbolo '\\' ser utilizado em casos como '\\t' e '\\n' onde ele passa por uma reinterpretação do seu significado, se tornando uma tabulação e um pular linha respectivamente,
-        3:12/3:20 E [ErroSintatico.ErroEscapeUnico]: Variáveis do tipo cadeias e caracter com o símbolo '\\' devem utiliza-lo como: '\\\\'.
+        3:18/3:19 E [ErroSintatico.ErroEscapeUnico]: Variáveis do tipo cadeias e caracter com o símbolo '\\' devem utiliza-lo como: '\\\\'.
       Isso se deve ao símbolo '\\' ser utilizado em casos como '\\t' e '\\n' onde ele passa por uma reinterpretação do seu significado, se tornando uma tabulação e um pular linha respectivamente,
       ]
     `);

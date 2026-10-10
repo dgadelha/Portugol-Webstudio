@@ -1,13 +1,8 @@
 import type { PortugolCodeDiagnostic } from "@portugol-webstudio/antlr";
-import type { Token } from "antlr4ng";
+import { CommonToken, Token } from "antlr4ng";
 
 import { obterBiblioteca, obterConstante, obterFunção, tipoDaBiblioteca } from "../bibliotecas/metadados.js";
-import {
-  bibliotecaImplementada,
-  constanteImplementada,
-  funçãoImplementada,
-  funçãoReservadaImplementada,
-} from "../bibliotecas/suporte.js";
+import { bibliotecaImplementada, constanteImplementada, funçãoImplementada } from "../bibliotecas/suporte.js";
 import {
   avisoMatrizPodeSerVariável,
   avisoMatrizPodeSerVetor,
@@ -21,24 +16,22 @@ import {
   erroAtribuirEmConstante,
   erroAtribuirEmExpressão,
   erroAtribuirFunçãoBiblioteca,
-  erroAtribuirMatrizVetorEmVariável,
   erroBibliotecaNãoInserida,
   erroBibliotecaNãoSuportada,
   erroBlocoInválido,
+  erroComparaçãoDeCadeias,
   erroConstanteNãoEncontradaNaBiblioteca,
+  avisoIncrementoEmConta,
   erroEscapeÚnico,
   erroLinhaPuladaEmCadeia,
   erroEscreverFunçãoSemRetorno,
   erroFunçãoInícioInexistente,
   erroFunçãoReservada,
-  erroFunçãoReservadaNãoSuportada,
   erroFunçãoSemRetorne,
   erroInclusãoBiblioteca,
   erroInicializaçãoConstante,
-  erroInicializaçãoErrada,
   erroNúmeroParâmetrosFunção,
   erroParaSemExpressãoAtribuição,
-  erroParaSemExpressãoComparação,
   erroPareForaDeLaço,
   erroParâmetroExcedente,
   erroParâmetroRedeclarado,
@@ -195,6 +188,16 @@ const OPERADOR_COMPOSTO = new Map<Construtor, OperadorBinário>([
 ]);
 
 /**
+ * As comparações que não valem entre duas cadeias.
+ */
+const SÍMBOLO_DA_COMPARAÇÃO: Partial<Record<OperadorBinário, string>> = {
+  maior: ">",
+  maiorIgual: ">=",
+  menor: "<",
+  menorIgual: "<=",
+};
+
+/**
  * O operador que cada incremento/decremento desdobra (`x++` é `x = x + 1`).
  */
 const OPERADOR_UNÁRIO = new Map<Construtor, OperadorBinário>([
@@ -248,6 +251,15 @@ function éLiteral(nó: Node): boolean {
     nó instanceof CaractereExpr ||
     nó instanceof LógicoExpr
   );
+}
+
+/**
+ * O valor de uma constante: um literal, com sinal de menos e parênteses em volta ou não.
+ */
+function éValorLiteral(expressão: Expressão): boolean {
+  const semSinal = semParênteses(expressão);
+
+  return éLiteral(semSinal instanceof MenosUnárioExpr ? semParênteses(semSinal.valor) : semSinal);
 }
 
 /**
@@ -305,7 +317,7 @@ export class AnalisadorSemântico {
     }
 
     if (!temInício) {
-      this.registrar(erroFunçãoInícioInexistente(arquivo));
+      this.registrar(erroFunçãoInícioInexistente(arquivo.ctx.PROGRAMA().symbol));
     }
 
     for (const biblioteca of arquivo.bibliotecas) {
@@ -350,9 +362,9 @@ export class AnalisadorSemântico {
 
       let escape = false;
 
-      for (const caractere of nó.conteúdo) {
+      for (const [índice, caractere] of Array.from(nó.conteúdo).entries()) {
         if (escape && !'tnbrf"\\'.includes(caractere)) {
-          this.registrar(erroEscapeÚnico(nó));
+          this.registrar(erroEscapeÚnico(this.trechoDaCadeia(nó, índice - 1, `\\${caractere}`)));
         }
 
         escape = !escape && caractere === "\\";
@@ -362,6 +374,22 @@ export class AnalisadorSemântico {
     for (const filho of nó.children) {
       this.verificarEscapes(filho, nó);
     }
+  }
+
+  /**
+   * Um token sobre o trecho `texto` de uma cadeia, começando no ponto de código `índice` do
+   * conteúdo (sem as aspas). O Portugol Studio aponta o erro de escape na barra invertida.
+   */
+  private trechoDaCadeia(nó: CadeiaExpr, índice: number, texto: string) {
+    const aspas = nó.ctx.STRING().symbol;
+    const antes = Array.from(nó.conteúdo).slice(0, índice);
+    const quebras = antes.filter(caractere => caractere === "\n").length;
+    const token = CommonToken.fromType(Token.INVALID_TYPE, texto);
+
+    token.line = aspas.line + quebras;
+    token.column = quebras > 0 ? antes.length - antes.lastIndexOf("\n") - 1 : aspas.column + 1 + antes.length;
+
+    return token;
   }
 
   private registrar(diagnóstico: PortugolCodeDiagnostic) {
@@ -450,9 +478,9 @@ export class AnalisadorSemântico {
     // oracle (`funcao inteiro f()` + `funcao cadeia f()` acusa retorno "inteiro" nas duas).
     const símbolo = this.memória.obterSímbolo(nó.nome);
 
+    // Sempre é a função: as funções entram na memória antes das globais, e uma global homônima
+    // é redeclaração e não entra. O `if` só estreita o tipo.
     if (símbolo?.classe !== "função") {
-      // O nome foi tomado por uma variável global. O Portugol Studio estoura
-      // `ClassCastException` aqui; nós apenas não analisamos o corpo.
       return;
     }
 
@@ -487,6 +515,7 @@ export class AnalisadorSemântico {
     // também como leitura. Vetor e matriz entram aí sem `&`: o Portugol passa por referência.
     símbolo.escritas = 1;
     símbolo.leituras = dimensão !== undefined || nó.referência ? 1 : 0;
+    símbolo.parâmetro = true;
 
     this.declararSímbolo(símbolo, nó.nomeToken, true);
   }
@@ -620,24 +649,19 @@ export class AnalisadorSemântico {
       this.registrar(erroSímboloNãoInicializado(nó.nomeToken, símbolo));
     }
 
-    if (nó.expressão) {
-      if (nó.expressão instanceof InicializaçãoVetorExpr) {
-        this.verificarQuantidadeElementosVetor(nó.expressão, nó.nome, tamanho);
+    // O slot só aceita `inicializacaoArray`: `inteiro v[2] = 5` não passa do sintático, então
+    // o `ErroAoInicializarVetor` do Portugol Studio é inalcançável.
+    if (nó.expressão instanceof InicializaçãoVetorExpr) {
+      this.verificarQuantidadeElementosVetor(nó.expressão, nó.nome, tamanho);
 
-        if (tamanho !== undefined && nó.constante) {
-          this.verificarInicializaçãoConstanteVetor(nó.expressão, nó.nome);
-        }
-
-        símbolo.escritas++;
-        this.declarandoArranjo = true;
-        this.analisarInicialização(símbolo, nó.expressão);
-        this.declarandoArranjo = false;
-      } else {
-        // `inteiro v[2] = 5` não passa do sintático (o slot só aceita `inicializacaoArray`),
-        // então o `ErroAoInicializarVetor` do Portugol Studio é inalcançável.
-        símbolo.escritas++;
-        this.resolverTipo(nó.expressão);
+      if (tamanho !== undefined && nó.constante) {
+        this.verificarInicializaçãoConstanteVetor(nó.expressão, nó.nome);
       }
+
+      símbolo.escritas++;
+      this.declarandoArranjo = true;
+      this.analisarInicialização(símbolo, nó.expressão);
+      this.declarandoArranjo = false;
     }
 
     símbolo.constante = nó.constante;
@@ -668,24 +692,19 @@ export class AnalisadorSemântico {
       this.registrar(erroSímboloNãoInicializado(nó.nomeToken, símbolo));
     }
 
-    if (nó.expressão) {
-      if (nó.expressão instanceof InicializaçãoMatrizExpr) {
-        this.verificarDimensõesInicializaçãoMatriz(nó.expressão, nó.nome, linhas, colunas);
+    // Como no vetor, `inteiro m[2][2] = 5` é erro sintático: `ErroAoInicializarMatriz` é
+    // inalcançável.
+    if (nó.expressão instanceof InicializaçãoMatrizExpr) {
+      this.verificarDimensõesInicializaçãoMatriz(nó.expressão, nó.nome, linhas, colunas);
 
-        if (linhas !== undefined && colunas !== undefined && nó.constante) {
-          this.verificarInicializaçãoConstanteMatriz(nó.expressão, nó.nome);
-        }
-
-        símbolo.escritas++;
-        this.declarandoArranjo = true;
-        this.analisarInicialização(símbolo, nó.expressão);
-        this.declarandoArranjo = false;
-      } else {
-        // Como no vetor, `inteiro m[2][2] = 5` é erro sintático: `ErroAoInicializarMatriz`
-        // é inalcançável.
-        símbolo.escritas++;
-        this.resolverTipo(nó.expressão);
+      if (linhas !== undefined && colunas !== undefined && nó.constante) {
+        this.verificarInicializaçãoConstanteMatriz(nó.expressão, nó.nome);
       }
+
+      símbolo.escritas++;
+      this.declarandoArranjo = true;
+      this.analisarInicialização(símbolo, nó.expressão);
+      this.declarandoArranjo = false;
     }
 
     símbolo.constante = nó.constante;
@@ -805,7 +824,7 @@ export class AnalisadorSemântico {
     }
 
     for (const [índice, linha] of inicialização.linhas.entries()) {
-      const declarados = linha instanceof InicializaçãoVetorExpr ? linha.valores.length : 1;
+      const declarados = linha.valores.length;
 
       if (colunas !== declarados) {
         this.registrar(erroQuantidadeElementosColunaMatriz(inicialização, nome, índice, colunas, declarados));
@@ -814,16 +833,14 @@ export class AnalisadorSemântico {
   }
 
   private verificarInicializaçãoConstante(expressão: Expressão, nome: string) {
-    const alvo = expressão instanceof MenosUnárioExpr ? expressão.valor : expressão;
-
-    if (!éLiteral(alvo)) {
+    if (!éValorLiteral(expressão)) {
       this.registrar(erroInicializaçãoConstante(expressão, nome));
     }
   }
 
   private verificarInicializaçãoConstanteVetor(inicialização: InicializaçãoVetorExpr, nome: string) {
     for (const [índice, valor] of inicialização.valores.entries()) {
-      if (!éLiteral(valor)) {
+      if (!éLiteral(semParênteses(valor))) {
         this.registrar(erroInicializaçãoConstante(valor, nome, { índice }));
       }
     }
@@ -831,12 +848,8 @@ export class AnalisadorSemântico {
 
   private verificarInicializaçãoConstanteMatriz(inicialização: InicializaçãoMatrizExpr, nome: string) {
     for (const [linha, valores] of inicialização.linhas.entries()) {
-      if (!(valores instanceof InicializaçãoVetorExpr)) {
-        continue;
-      }
-
       for (const [coluna, valor] of valores.valores.entries()) {
-        if (!éLiteral(valor)) {
+        if (!éLiteral(semParênteses(valor))) {
           this.registrar(erroInicializaçãoConstante(valor, nome, { linha, coluna }));
         }
       }
@@ -1009,32 +1022,23 @@ export class AnalisadorSemântico {
     this.memória.empilharEscopo();
 
     // `para (inteiro i = 0, j = 0; ...)` é aceito pela gramática e pelo Portugol Studio.
+    // A gramática só aceita atribuição ou declaração na inicialização e exige a condição, então
+    // `ErroInicializacaoErrada` e `ErroParaSemExpressaoComparacao` não passam do sintático.
     for (const inicialização of nó.inicializações) {
-      if (
-        inicialização instanceof AtribuiçãoCmd ||
-        inicialização instanceof DeclaraçãoCmd ||
-        inicialização instanceof ReferênciaVarExpr
-      ) {
-        this.visitarBloco(inicialização);
-      } else {
-        this.registrar(erroInicializaçãoErrada(inicialização));
-      }
+      this.visitarBloco(inicialização);
     }
 
-    if (nó.condição) {
-      this.verificarCondição(nó.condição, "para");
-    } else {
-      this.registrar(erroParaSemExpressãoComparação(nó));
-    }
+    this.verificarCondição(nó.condição, "para");
 
-    const incremento = nó.incremento;
+    // `(i++)` também é incremento: o Portugol Studio não vê os parênteses.
+    const incremento = nó.incremento && semParênteses(nó.incremento);
 
     if (incremento) {
       // `i++` e `i += 1` valem: o Portugol Studio os transforma em atribuição.
       if (incremento instanceof AtribuiçãoCmd || incremento instanceof ExpressãoUnária) {
         this.visitarBloco(incremento);
       } else {
-        this.registrar(erroParaSemExpressãoAtribuição(nó));
+        this.registrar(erroParaSemExpressãoAtribuição(incremento));
       }
     }
 
@@ -1106,10 +1110,15 @@ export class AnalisadorSemântico {
     const resultado = consultarCompatibilidade("retornoFuncao", função.tipo, tipo);
 
     if (resultado.situação === "incompatível") {
-      this.registrar(erroTiposRetorne(nó, função.nome, função.tipo, tipo));
+      this.registrar(erroTiposRetorne(nó.expressão, função.nome, função.tipo, tipo));
     } else if (resultado.situação === "conversão") {
       this.registrar(
-        avisoValorSeráConvertido(nó, { tipo: "retorno", função: função.nome }, resultado.de, resultado.resultado),
+        avisoValorSeráConvertido(
+          nó.expressão,
+          { tipo: "retorno", função: função.nome },
+          resultado.de,
+          resultado.resultado,
+        ),
       );
     }
   }
@@ -1131,16 +1140,12 @@ export class AnalisadorSemântico {
   }
 
   private visitarAtribuição(cmd: AtribuiçãoCmd): TipoPrimitivo | undefined {
-    const esquerda = cmd.esquerda;
+    // A árvore do Portugol Studio não tem nó de parênteses: `(x) = 1` é `x = 1`.
+    const esquerda = semParênteses(cmd.esquerda);
     const direita = cmd.direita;
 
-    if (!esquerda || !direita) {
-      // Árvore incompleta por erro sintático.
-      return undefined;
-    }
-
     const operador = this.operadorComposto(cmd);
-    const alvo = this.prepararAlvoAtribuição(cmd, esquerda, direita);
+    const alvo = this.prepararAlvoAtribuição(cmd, esquerda);
 
     // O lado esquerdo é destino, não leitura: sem isso nunca sairia o aviso "atribuída, mas
     // nunca é lida". Os índices de `v[i] = 1` continuam contando como leitura.
@@ -1198,11 +1203,10 @@ export class AnalisadorSemântico {
   private prepararAlvoAtribuição(
     cmd: Node,
     esquerda: Expressão,
-    direita: Expressão,
   ): { inicializadoAnterior: boolean; símbolo?: Símbolo; token?: Token } {
     if (esquerda instanceof ReferênciaVarExpr) {
       if (esquerda.escopoBiblioteca !== undefined) {
-        this.verificarAtribuiçãoEmBiblioteca(esquerda);
+        this.verificarAtribuiçãoEmBiblioteca(esquerda, esquerda.escopoBiblioteca);
 
         return { inicializadoAnterior: false };
       }
@@ -1219,11 +1223,9 @@ export class AnalisadorSemântico {
         if (símbolo.constante) {
           this.registrar(erroAtribuirEmConstante(esquerda, símbolo));
         }
-
-        if (direita instanceof InicializaçãoVetorExpr || direita instanceof InicializaçãoMatrizExpr) {
-          this.registrar(erroAtribuirMatrizVetorEmVariável(direita));
-        }
       }
+
+      // `x = {1, 2}` não passa do sintático: `ErroAtribuirMatrizVetorEmVariavel` é inalcançável.
 
       // `v = 5` com `v` vetor cai em `ErroReferenciaInvalida` na visita da referência: é por
       // isso que `ErroAoInicializarVetor`/`ErroAoInicializarMatriz` não são alcançáveis aqui.
@@ -1240,7 +1242,7 @@ export class AnalisadorSemântico {
       // Função também nasce `constante`, mas chamá-la de constante em `f[0] = 1` só
       // confundiria: o `ErroReferenciaInvalida` da visita já diz o que está errado.
       if (símbolo?.constante && símbolo.classe !== "função") {
-        this.registrar(erroAtribuirEmConstante(cmd, símbolo));
+        this.registrar(erroAtribuirEmConstante(esquerda.nomeToken, símbolo));
       }
 
       if (símbolo) {
@@ -1309,6 +1311,13 @@ export class AnalisadorSemântico {
       return undefined;
     }
 
+    // Divergência: a tabela do Java aceita, e só o gerador de código recusa, ao executar.
+    const comparação = SÍMBOLO_DA_COMPARAÇÃO[operador];
+
+    if (comparação && esquerdo === TipoPrimitivo.CADEIA && direito === TipoPrimitivo.CADEIA) {
+      this.registrar(erroComparaçãoDeCadeias(origem, comparação));
+    }
+
     // Nenhuma tabela de operação binária tem célula de conversão (só as de atribuição,
     // chamada de função e retorno têm), então aqui não há aviso a emitir.
     return comoPrimitivo(resultado.resultado);
@@ -1350,6 +1359,8 @@ export class AnalisadorSemântico {
     if (nó instanceof ExpressãoEntreParênteses) {
       return this.resolverTipo(nó.expressão);
     }
+
+    this.avisarIncrementoEmConta(nó);
 
     if (nó instanceof MaisUnárioExpr) {
       // O Portugol Studio não valida o `+` unário: `+"a"` não gera diagnóstico.
@@ -1442,6 +1453,31 @@ export class AnalisadorSemântico {
     return this.resolverUnárioTipado(nó.expressão, [TipoPrimitivo.INTEIRO], tipo => erroTiposNegaçãoBitwise(nó, tipo));
   }
 
+  /**
+   * Um incremento como operando de uma conta (`i++ + i++`, `-i++`, `(x++) * 2`): o Portugol só
+   * o define como comando, e o resultado dentro de uma conta surpreende. É aviso, e não erro,
+   * porque o programa é válido e o Portugol Studio aceita boa parte desses casos.
+   */
+  private avisarIncrementoEmConta(nó: NóComTipo | Comando) {
+    let operandos: Expressão[] = [];
+
+    if (nó instanceof ExpressãoMatemática) {
+      operandos = [nó.esquerda, nó.direita];
+    } else if (nó instanceof MaisUnárioExpr || nó instanceof MenosUnárioExpr) {
+      operandos = [nó.valor];
+    } else if (nó instanceof NegaçãoExpr || nó instanceof NegaçãoBitwiseExpr) {
+      operandos = [nó.expressão];
+    }
+
+    for (const operando of operandos) {
+      const interno = semParênteses(operando);
+
+      if (interno instanceof ExpressãoUnária) {
+        this.registrar(avisoIncrementoEmConta(interno));
+      }
+    }
+  }
+
   private resolverBinária(nó: ExpressãoMatemática): TipoPrimitivo | undefined {
     const esquerdo = this.resolverTipo(nó.esquerda);
     const direito = this.resolverTipo(nó.direita);
@@ -1497,7 +1533,7 @@ export class AnalisadorSemântico {
    * preferimos ficar calados a inventar erro.
    */
   private resolverLiteralMatriz(nó: InicializaçãoMatrizExpr): TipoPrimitivo | undefined {
-    const elementos = nó.linhas.flatMap(linha => (linha instanceof InicializaçãoVetorExpr ? linha.valores : [linha]));
+    const elementos = nó.linhas.flatMap(linha => linha.valores);
 
     if (elementos.length === 0) {
       return undefined;
@@ -1564,9 +1600,10 @@ export class AnalisadorSemântico {
       símbolo.classe !== "variável" &&
       !this.declarandoArranjo &&
       !this.passandoReferência &&
-      !this.passandoParâmetro
+      // Vetor e matriz passam inteiros para uma função do usuário; uma função, não.
+      (!this.passandoParâmetro || símbolo.classe === "função")
     ) {
-      this.registrar(erroReferênciaInválida(nó, símbolo, "variável"));
+      this.registrar(erroReferênciaInválida(nó.nomeToken, símbolo, "variável"));
     }
 
     // Divergência: o Portugol Studio devolve o tipo de retorno da função e isso cascateia
@@ -1623,7 +1660,7 @@ export class AnalisadorSemântico {
     this.contarUso(símbolo, nó);
 
     if (símbolo.classe !== "vetor") {
-      this.registrar(erroReferênciaInválida(nó, símbolo, "vetor"));
+      this.registrar(erroReferênciaInválida(nó.nomeToken, símbolo, "vetor"));
     }
 
     return símbolo.tipo;
@@ -1653,7 +1690,7 @@ export class AnalisadorSemântico {
     this.contarUso(símbolo, nó);
 
     if (símbolo.classe !== "matriz") {
-      this.registrar(erroReferênciaInválida(nó, símbolo, "matriz"));
+      this.registrar(erroReferênciaInválida(nó.nomeToken, símbolo, "matriz"));
     }
 
     return símbolo.tipo;
@@ -1687,13 +1724,7 @@ export class AnalisadorSemântico {
     return comoPrimitivo(tipoDaBiblioteca(constante.tipo));
   }
 
-  private verificarAtribuiçãoEmBiblioteca(esquerda: ReferênciaVarExpr) {
-    const escopo = esquerda.escopoBiblioteca;
-
-    if (escopo === undefined) {
-      return;
-    }
-
+  private verificarAtribuiçãoEmBiblioteca(esquerda: ReferênciaVarExpr, escopo: string) {
     const biblioteca = this.bibliotecas.get(escopo);
 
     if (!biblioteca) {
@@ -1749,13 +1780,13 @@ export class AnalisadorSemântico {
     }
 
     if (símbolo.classe !== forma) {
-      this.registrar(erroReferênciaInválida(nó, símbolo, forma));
+      this.registrar(erroReferênciaInválida(nó.nomeToken, símbolo, forma));
     }
 
     // Função também nasce `constante`, mas o Java só acusa constante de verdade: `f++` sai
     // com "usada como variável", "não inicializada" e o erro de tipo — nunca com este.
     if (símbolo.constante && símbolo.classe !== "função") {
-      this.registrar(erroAtribuirEmConstante(nó, símbolo));
+      this.registrar(erroAtribuirEmConstante(nó.nomeToken, símbolo));
     }
 
     // O `x` do lado direito do desdobramento vê o flag de inicialização anterior.
@@ -1806,11 +1837,6 @@ export class AnalisadorSemântico {
   private resolverAlvoChamada(nó: ChamadaFunçãoExpr): AlvoChamada | undefined {
     if (nó.escopoBiblioteca === undefined) {
       if (FUNÇÕES_RESERVADAS.has(nó.nome)) {
-        // `sorteia` é reservada no Portugol Studio, mas o nosso runtime só tem `Util.sorteia`.
-        if (!funçãoReservadaImplementada(nó.nome)) {
-          this.registrar(erroFunçãoReservadaNãoSuportada(nó.nomeToken, nó.nome));
-        }
-
         return alvoReservado(nó.nome);
       }
 
@@ -1823,7 +1849,7 @@ export class AnalisadorSemântico {
       }
 
       if (símbolo.classe !== "função") {
-        this.registrar(erroReferênciaInválida(nó, símbolo, "função"));
+        this.registrar(erroReferênciaInválida(nó.nomeToken, símbolo, "função"));
 
         return undefined;
       }
@@ -1899,11 +1925,20 @@ export class AnalisadorSemântico {
     alvo: AlvoChamada,
     tipos: ReadonlyArray<TipoPrimitivo | undefined>,
   ) {
-    if (alvo.reservada && alvo.nome === "sorteia") {
+    // Como no Java, a regra vale pelo nome, então também para `Util.sorteia`: lá um real
+    // passa com só o aviso de conversão da checagem geral, aqui é erro.
+    if (alvo.nome === "sorteia") {
       for (const [índice, tipo] of tipos.slice(0, 2).entries()) {
         if (tipo !== undefined && tipo !== TipoPrimitivo.INTEIRO) {
           this.registrar(
-            erroTipoParâmetroIncompatível(nó.argumentos[índice], alvo.nome, "", TipoPrimitivo.INTEIRO, tipo),
+            erroTipoParâmetroIncompatível(
+              nó.argumentos[índice],
+              alvo.nome,
+              // O Java deixa o nome em branco na `sorteia` reservada; os nomes são os da `Util`.
+              alvo.parâmetros[índice]?.nome ?? (índice === 0 ? "minimo" : "maximo"),
+              TipoPrimitivo.INTEIRO,
+              tipo,
+            ),
           );
         }
       }
@@ -1975,14 +2010,9 @@ export class AnalisadorSemântico {
    * acrescenta nada à lista nesses casos e desalinha os índices seguintes, chegando a acusar o
    * parâmetro errado; aqui a posição é preservada e a checagem é apenas pulada.
    */
-  private quantificadorDoArgumento(argumento: AtribuiçãoCmd | Expressão): QuantificadorParâmetro | undefined {
-    if (argumento instanceof InicializaçãoVetorExpr) {
-      return "vetor";
-    }
-
-    if (argumento instanceof InicializaçãoMatrizExpr) {
-      return "matriz";
-    }
+  private quantificadorDoArgumento(argumentoOriginal: AtribuiçãoCmd | Expressão): QuantificadorParâmetro | undefined {
+    // Literais `{…}` só existem em declarações: a gramática não os aceita como argumento.
+    const argumento = semParênteses(argumentoOriginal);
 
     if (!(argumento instanceof ReferênciaVarExpr)) {
       return "valor";
@@ -2048,7 +2078,9 @@ export class AnalisadorSemântico {
    * `somenteNomeInteiro` distingue os dois casos do Java: `leia(v[0])` é aceito (basta ser
    * referência), mas um parâmetro por referência exige o símbolo inteiro.
    */
-  private éReferênciaAtribuível(argumento: AtribuiçãoCmd | Expressão, somenteNomeInteiro = false): boolean {
+  private éReferênciaAtribuível(argumentoOriginal: AtribuiçãoCmd | Expressão, somenteNomeInteiro = false): boolean {
+    const argumento = semParênteses(argumentoOriginal);
+
     if (argumento instanceof ReferênciaArrayExpr || argumento instanceof ReferênciaMatrizExpr) {
       return !somenteNomeInteiro;
     }
@@ -2059,7 +2091,9 @@ export class AnalisadorSemântico {
 
     const símbolo = this.memória.obterSímbolo(argumento.nome);
 
-    return símbolo !== undefined && !símbolo.constante;
+    // Sem declaração, o "não foi declarada" da visita já diz o que está errado; o Portugol
+    // Studio não soma a ele um erro de passagem.
+    return símbolo === undefined || !símbolo.constante;
   }
 
   private verificarParâmetrosExcedentes(nó: ChamadaFunçãoExpr, alvo: AlvoChamada) {
@@ -2084,14 +2118,15 @@ export class AnalisadorSemântico {
     for (const [índice, argumento] of nó.argumentos.entries()) {
       this.passandoReferência = alvo.parâmetros[índice]?.porReferência ?? false;
 
+      // `leia((x))` lê para `x`, como `leia(x)`.
+      const destino = semParênteses(argumento);
+
       if (éLeia) {
-        const alvoLeitura = this.formaEIdentificadorDaReferência(
-          argumento instanceof Expressão ? argumento : undefined,
-        );
+        const alvoLeitura = this.formaEIdentificadorDaReferência(destino instanceof Expressão ? destino : undefined);
         const símbolo = alvoLeitura ? this.memória.obterSímbolo(alvoLeitura.nome) : undefined;
 
-        if (!símbolo && argumento instanceof ReferênciaVarExpr) {
-          this.registrar(erroSímboloNãoDeclarado(argumento.nomeToken, argumento.nome, "variável"));
+        if (!símbolo && destino instanceof ReferênciaVarExpr) {
+          this.registrar(erroSímboloNãoDeclarado(destino.nomeToken, destino.nome, "variável"));
           this.passandoReferência = false;
           this.alvoDeAtribuição = alvoAnterior;
 
@@ -2108,7 +2143,7 @@ export class AnalisadorSemântico {
 
       // `leia(x)` preenche `x`, não o lê: sem isto o argumento contaria como leitura e uma
       // variável que só é lida do teclado nunca cairia no aviso "nunca é lida".
-      this.alvoDeAtribuição = éLeia && argumento instanceof Expressão ? argumento : alvoAnterior;
+      this.alvoDeAtribuição = éLeia && destino instanceof Expressão ? destino : alvoAnterior;
       this.passandoParâmetro = funçãoDoUsuário;
       tipos.push(this.resolverTipo(argumento));
       this.passandoParâmetro = false;

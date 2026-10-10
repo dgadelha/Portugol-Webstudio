@@ -2,6 +2,7 @@ import {
   AdicaoSubtracaoContext,
   ArquivoContext,
   MultiplicacaoDivisaoModuloContext,
+  OperacaoShiftContext,
   PortugolParser,
   PortugolVisitor,
 } from "@portugol-webstudio/antlr";
@@ -15,6 +16,8 @@ import {
   MultiplicaçãoExpr,
   MóduloExpr,
   Node,
+  OperaçãoShiftLeftExpr,
+  OperaçãoShiftRightExpr,
   SomaExpr,
   SubtraçãoExpr,
   UnhandledNode,
@@ -23,14 +26,6 @@ import {
 export interface Empty {}
 
 export class PortugolNode extends AbstractParseTreeVisitor<Empty> implements PortugolVisitor<Empty> {
-  protected defaultResult(): Empty {
-    return {};
-  }
-
-  protected aggregateResult(_aggregate: Empty, _nextResult: Empty): Empty {
-    throw new Error("Shouldn't need to aggregate results");
-  }
-
   visitChildrenFromParent(ctx: ParseTree, parent: Node) {
     for (let i = 0; i < ctx.getChildCount(); i++) {
       const child = ctx.getChild(i);
@@ -83,6 +78,17 @@ export class PortugolNode extends AbstractParseTreeVisitor<Empty> implements Por
         }
         case PortugolParser.OP_SUBTRACAO: {
           return SubtraçãoExpr;
+        }
+      }
+    }
+
+    if (ctx instanceof OperacaoShiftContext) {
+      switch (ctx._op?.type) {
+        case PortugolParser.OP_SHIFT_LEFT: {
+          return OperaçãoShiftLeftExpr;
+        }
+        case PortugolParser.OP_SHIFT_RIGHT: {
+          return OperaçãoShiftRightExpr;
         }
       }
     }

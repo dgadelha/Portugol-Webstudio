@@ -86,6 +86,16 @@ describe("Operadores", () => {
         ),
       ).resolves.toBe("5|3|0");
     });
+
+    test("Deslocamentos seguidos são avaliados da esquerda para a direita", async () => {
+      await expect(
+        runPortugolCode(
+          portugolInicio`
+            escreva(8 >> 1 << 2, "|", 2 >> 1 << 31, "|", 1 << 3 >> 3 << 1, "|", 64 >> 2 >> 1, "|", 1 << 2 << 3)
+          `,
+        ),
+      ).resolves.toBe("16|-2147483648|2|8|32");
+    });
   });
 
   describe("Operadores bitwise", () => {
@@ -268,6 +278,18 @@ describe("Operadores", () => {
       ).resolves.toBe("-5|-6|-6");
     });
 
+    test("Aplica o mais unário", async () => {
+      await expect(
+        runPortugolCode(
+          portugolInicio`
+            inteiro x = -5
+            real r = 2.5
+            escreva(+x, "|", +r, "|", +2 * 3, "|", 1 + +x)
+          `,
+        ),
+      ).resolves.toBe("-5|2.5|6|-4");
+    });
+
     test("Incrementa e decrementa antes da expressão", async () => {
       await expect(
         runPortugolCode(
@@ -277,6 +299,17 @@ describe("Operadores", () => {
           `,
         ),
       ).resolves.toBe("6|6");
+    });
+
+    test("Decrementa antes da expressão", async () => {
+      await expect(
+        runPortugolCode(
+          portugolInicio`
+            inteiro x = 5
+            escreva(--x, "|", x)
+          `,
+        ),
+      ).resolves.toBe("4|4");
     });
 
     test("Incrementa como comando", async () => {

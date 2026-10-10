@@ -268,6 +268,26 @@ describe("Tipos", () => {
       `);
     });
 
+    test("operando indeterminado não gera erro de tipo", () => {
+      expect(
+        analisar(portugol`
+          programa {
+            funcao inicio() {
+              escreva(-z, ~z, nao z, z << 1, 1 >> z)
+            }
+          }
+        `),
+      ).toMatchInlineSnapshot(`
+        [
+          3:13/3:13 E [ErroSemantico.ErroSimboloNaoDeclarado.3]: A variável "z" não foi declarada neste escopo.,
+          3:17/3:17 E [ErroSemantico.ErroSimboloNaoDeclarado.3]: A variável "z" não foi declarada neste escopo.,
+          3:24/3:24 E [ErroSemantico.ErroSimboloNaoDeclarado.3]: A variável "z" não foi declarada neste escopo.,
+          3:27/3:27 E [ErroSemantico.ErroSimboloNaoDeclarado.3]: A variável "z" não foi declarada neste escopo.,
+          3:40/3:40 E [ErroSemantico.ErroSimboloNaoDeclarado.3]: A variável "z" não foi declarada neste escopo.,
+        ]
+      `);
+    });
+
     test("mais unário não é verificado, como no Portugol Studio", () => {
       expect(
         analisar(portugol`
@@ -340,6 +360,50 @@ describe("Tipos", () => {
               v[0]++
               m[0][1]--
               escreva(v[0], m[0][1])
+            }
+          }
+        `),
+      ).toMatchInlineSnapshot(`[]`);
+    });
+  });
+
+  describe("Comparação de cadeias", () => {
+    test("`>`, `<`, `>=` e `<=` entre duas cadeias são erro, como ao executar no Portugol Studio", () => {
+      expect(
+        analisar(portugol`
+          programa {
+            inclua biblioteca Texto --> tx
+            funcao inicio() {
+              cadeia s = "a", t = "b"
+              cadeia v[2] = {"x", "y"}
+              escreva(s > t, s < t, s >= t, s <= t)
+              escreva("b" > "a", v[0] < v[1], tx.caixa_alta(s) >= t)
+              se (s > t e verdadeiro) { }
+            }
+          }
+        `),
+      ).toMatchInlineSnapshot(`
+        [
+          6:12/6:16 E [ErroWebstudio.ErroComparacaoDeCadeias]: Não é possível comparar cadeias com o operador '>',
+          6:19/6:23 E [ErroWebstudio.ErroComparacaoDeCadeias]: Não é possível comparar cadeias com o operador '<',
+          6:26/6:31 E [ErroWebstudio.ErroComparacaoDeCadeias]: Não é possível comparar cadeias com o operador '>=',
+          6:34/6:39 E [ErroWebstudio.ErroComparacaoDeCadeias]: Não é possível comparar cadeias com o operador '<=',
+          7:12/7:20 E [ErroWebstudio.ErroComparacaoDeCadeias]: Não é possível comparar cadeias com o operador '>',
+          7:23/7:33 E [ErroWebstudio.ErroComparacaoDeCadeias]: Não é possível comparar cadeias com o operador '<',
+          7:36/7:56 E [ErroWebstudio.ErroComparacaoDeCadeias]: Não é possível comparar cadeias com o operador '>=',
+          8:8/8:12 E [ErroWebstudio.ErroComparacaoDeCadeias]: Não é possível comparar cadeias com o operador '>',
+        ]
+      `);
+    });
+
+    test("`==` e `!=` entre cadeias e a ordem entre caracteres continuam valendo", () => {
+      expect(
+        analisar(portugol`
+          programa {
+            funcao inicio() {
+              cadeia s = "a", t = "b"
+              caracter c = 'a', d = 'b'
+              escreva(s == t, s != t, c > d, c <= d)
             }
           }
         `),

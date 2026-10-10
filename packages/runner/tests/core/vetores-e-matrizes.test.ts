@@ -203,6 +203,35 @@ describe("Vetores e Matrizes", () => {
       ).resolves.toBe("3|4|6");
     });
 
+    test("Infere as dimensões da matriz pela inicialização", async () => {
+      await expect(
+        runPortugolCode(
+          portugolInicio`
+            inteiro a[][3] = {{1, 2, 3}, {4, 5, 6}}
+            inteiro b[2][] = {{7, 8}, {9, 10}}
+            inteiro c[][] = {{11}, {12}}
+            escreva(a[1][2], "|", b[1][0], "|", c[1][0])
+          `,
+        ),
+      ).resolves.toBe("6|9|12");
+    });
+
+    // O Portugol Studio só compila a declaração sem tamanho nem inicialização
+    // enquanto a variável não é usada: qualquer leitura vira o erro do Java de
+    // variável que pode não ter sido inicializada
+    test("Aceita vetor e matriz sem tamanho que não são usados", async () => {
+      await expect(
+        runPortugolCode(
+          portugolInicio`
+            inteiro v[]
+            inteiro m[2][]
+            inteiro n[][]
+            escreva("ok")
+          `,
+        ),
+      ).resolves.toBe("ok");
+    });
+
     test("Usa expressões como índice", async () => {
       await expect(
         runPortugolCode(

@@ -68,8 +68,7 @@ import { OperacaoMenorIgualContext } from "./PortugolParser.js";
 import { OperacaoMaiorIgualContext } from "./PortugolParser.js";
 import { OperacaoELogicoContext } from "./PortugolParser.js";
 import { OperacaoOuLogicoContext } from "./PortugolParser.js";
-import { OperacaoShiftLeftContext } from "./PortugolParser.js";
-import { OperacaoShiftRightContext } from "./PortugolParser.js";
+import { OperacaoShiftContext } from "./PortugolParser.js";
 import { OperacaoAndBitwiseContext } from "./PortugolParser.js";
 import { OperacaoXorContext } from "./PortugolParser.js";
 import { OperacaoOrBitwiseContext } from "./PortugolParser.js";
@@ -514,19 +513,12 @@ export class PortugolVisitor<Result> extends AbstractParseTreeVisitor<Result> {
      */
     visitOperacaoOuLogico?: (ctx: OperacaoOuLogicoContext) => Result;
     /**
-     * Visit a parse tree produced by the `operacaoShiftLeft`
+     * Visit a parse tree produced by the `operacaoShift`
      * labeled alternative in `PortugolParser.expressao`.
      * @param ctx the parse tree
      * @return the visitor result
      */
-    visitOperacaoShiftLeft?: (ctx: OperacaoShiftLeftContext) => Result;
-    /**
-     * Visit a parse tree produced by the `operacaoShiftRight`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     * @return the visitor result
-     */
-    visitOperacaoShiftRight?: (ctx: OperacaoShiftRightContext) => Result;
+    visitOperacaoShift?: (ctx: OperacaoShiftContext) => Result;
     /**
      * Visit a parse tree produced by the `operacaoAndBitwise`
      * labeled alternative in `PortugolParser.expressao`.

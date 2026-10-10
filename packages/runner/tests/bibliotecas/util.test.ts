@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { portugol } from "../helpers/code";
+import { portugol, portugolInicio } from "../helpers/code";
 import { runPortugolCode } from "../helpers/runner";
 
 describe("Biblioteca: Util", () => {
@@ -248,6 +248,47 @@ describe("Biblioteca: Util", () => {
                 escreva("depois")
               }
             }
+          `,
+        ),
+      ).resolves.toBe("antes ");
+    });
+  });
+
+  // A `sorteia` sem biblioteca é reservada na linguagem e igual à `Util.sorteia`.
+  describe("sorteia sem biblioteca", () => {
+    test("Sorteia dentro da faixa e alcança os dois extremos", async () => {
+      await expect(
+        runPortugolCode(
+          portugolInicio`
+            inteiro i, x, ok = 1, viuMin = 0, viuMax = 0
+            para (i = 0; i < 500; i++) {
+              x = sorteia(1, 3)
+
+              se (x < 1 ou x > 3) {
+                ok = 0
+              }
+
+              se (x == 1) {
+                viuMin = 1
+              }
+
+              se (x == 3) {
+                viuMax = 1
+              }
+            }
+            escreva(ok, viuMin, viuMax)
+          `,
+        ),
+      ).resolves.toBe("111");
+    });
+
+    test("Mínimo maior que o máximo interrompe o programa", async () => {
+      await expect(
+        runPortugolCode(
+          portugolInicio`
+            escreva("antes ")
+            escreva(sorteia(10, 1))
+            escreva("depois")
           `,
         ),
       ).resolves.toBe("antes ");

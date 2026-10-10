@@ -12,7 +12,7 @@ import {
   SUFIXO_NAO_DECLARADO,
   SUFIXO_TIPOS_INCOMPATIVEIS,
 } from "./codigos.js";
-import { aviso, diagnósticoEntre, erro, informação, Origem } from "./posição.js";
+import { aviso, diagnósticoEntre, erro, informação, Origem, textoDe } from "./posição.js";
 
 const INCOMPATÍVEIS = "Tipos incompatíveis! ";
 
@@ -318,35 +318,11 @@ export function erroAtribuirEmChamadaFunção(origem: Origem): PortugolCodeDiagn
   );
 }
 
-export function erroAtribuirMatrizVetorEmVariável(origem: Origem): PortugolCodeDiagnostic {
-  return erro(
-    origem,
-    "não é possível atribuir uma matriz ou um vetor a uma variável",
-    CÓDIGOS.ATRIBUIR_MATRIZ_VETOR_EM_VARIAVEL,
-  );
-}
-
-export function erroInicializaçãoErrada(origem: Origem): PortugolCodeDiagnostic {
-  return erro(
-    origem,
-    "Não é possível inicializar. Utilize uma expressão de atribuição como: inteiro x = 0",
-    CÓDIGOS.INICIALIZACAO_ERRADA,
-  );
-}
-
 export function erroParaSemExpressãoAtribuição(origem: Origem): PortugolCodeDiagnostic {
   return erro(
     origem,
     "O comando 'para' quando há uma atribuição utiliza uma das seguintes sintaxes: i=i+1 / i++ / i+=1",
     CÓDIGOS.PARA_SEM_EXPRESSAO_ATRIBUICAO,
-  );
-}
-
-export function erroParaSemExpressãoComparação(origem: Origem): PortugolCodeDiagnostic {
-  return erro(
-    origem,
-    "O comando 'para' necessita ao menos de uma condição de parada. Utilize a seguinte construção para corrigir o problema: 'para( ; <condicao> ; ){ <comandos> }'",
-    CÓDIGOS.PARA_SEM_EXPRESSAO_COMPARACAO,
   );
 }
 
@@ -1065,7 +1041,6 @@ const SÍMBOLO_FALTANDO: Readonly<Record<string, readonly [sufixo: string, nome:
  * listas dele (palavras reservadas `PR_*` e operadores literais) nunca batem com os nomes
  * dos tokens da gramática, então todo o resto cai na variante genérica.
  */
-const TOKENS_TIPO_PRIMITIVO = new Set(["REAL", "CADEIA", "CARACTER", "INTEIRO", "LOGICO"]);
 
 /**
  * Sugere a letra sem o acento, quando ela existe: `ç` vira `c`, `ã` vira `a`.
@@ -1075,6 +1050,56 @@ export function erroCaractereEmNome(origem: Origem, caractere: string): Portugol
   const troca = /^[a-z]$/i.test(base) ? `: troque o '${caractere}' por '${base}'` : "";
 
   return erro(origem, `Nomes não podem ter acentos nem 'ç'${troca}`, CÓDIGOS.EXPRESSAO_INESPERADA);
+}
+
+/**
+ * Quando a linha acabou sem fechar o que abriu, ou sem o nome que faltava: o erro fica no fim
+ * dela, e não no começo da linha seguinte, onde o parser percebeu.
+ */
+export function erroFaltaNoFimDaLinha(origem: Origem, esperado: string): PortugolCodeDiagnostic {
+  return erro(origem, `Era esperado ${esperado} no fim da linha`, CÓDIGOS.PARSING_NAO_TRATADO);
+}
+
+/**
+ * Uma palavra da linguagem num lugar onde ela não cabe. `caso` e `contrario` (só dentro de um
+ * `escolha`) e `inclua` (só no começo do programa) ganham a explicação de onde podem ficar.
+ */
+export function erroPalavraForaDoLugar(origem: Origem, palavra: string): PortugolCodeDiagnostic {
+  const onde: Readonly<Record<string, string>> = {
+    caso: ": ela só pode ser usada dentro de um 'escolha'",
+    contrario: ": ela só pode ser usada dentro de um 'escolha', depois de 'caso'",
+    inclua: ": ela só pode ser usada no começo do programa, antes das variáveis e funções",
+  };
+
+  return erro(
+    origem,
+    `A palavra '${palavra}' não era esperada neste local${onde[palavra] ?? ", remova-a para corrigir o problema"}`,
+    CÓDIGOS.EXPRESSAO_INESPERADA,
+  );
+}
+
+export function erroSenãoComCondição(origem: Origem): PortugolCodeDiagnostic {
+  return erro(origem, "O 'senao' não recebe uma condição", CÓDIGOS.SENAO_COM_CONDICAO);
+}
+
+export function erroVírgulaEmColchetes(origem: Origem): PortugolCodeDiagnostic {
+  return erro(origem, "As posições de uma matriz não são separadas por vírgula", CÓDIGOS.VIRGULA_EM_COLCHETES);
+}
+
+export function erroIgualEmComparação(origem: Origem): PortugolCodeDiagnostic {
+  return erro(
+    origem,
+    "Um sinal de igual só, '=', guarda um valor numa variável, e não compara dois valores",
+    CÓDIGOS.IGUAL_EM_COMPARACAO,
+  );
+}
+
+export function erroOperadorInexistente(origem: Origem, escrito: string): PortugolCodeDiagnostic {
+  return erro(origem, `O operador '${escrito}' não existe`, CÓDIGOS.OPERADOR_INEXISTENTE);
+}
+
+export function erroComparaçãoDeCadeias(origem: Origem, operador: string): PortugolCodeDiagnostic {
+  return erro(origem, `Não é possível comparar cadeias com o operador '${operador}'`, CÓDIGOS.COMPARACAO_DE_CADEIAS);
 }
 
 export function erroComentárioSemFim(origem: Origem): PortugolCodeDiagnostic {
@@ -1201,15 +1226,7 @@ export function erroParêntese(origem: Origem, tipo: "abertura" | "fechamento"):
  * O Java recebe o nome do token na gramática e o mostra em minúsculas ("está faltando o
  * token 'pontovirgula'"). Aqui quem chama passa o símbolo, quando ele existe.
  */
-export function erroTokenFaltando(origem: Origem, nomeToken: string, símbolo: string): PortugolCodeDiagnostic {
-  if (TOKENS_TIPO_PRIMITIVO.has(nomeToken)) {
-    return erro(
-      origem,
-      `A expressão está incompleta, está faltando um dado do tipo '${nomeToken.toLowerCase()}'`,
-      código(CÓDIGOS.TOKEN_FALTANDO, "2"),
-    );
-  }
-
+export function erroTokenFaltando(origem: Origem, símbolo: string): PortugolCodeDiagnostic {
   return erro(
     origem,
     `A expressão está incompleta, está faltando o token '${símbolo}'`,
@@ -1357,11 +1374,13 @@ export function erroSímboloBibliotecaNãoSuportado(
   );
 }
 
-export function erroFunçãoReservadaNãoSuportada(origem: Origem, nome: string): PortugolCodeDiagnostic {
-  return erro(
+export function avisoIncrementoEmConta(origem: Origem): PortugolCodeDiagnostic {
+  const texto = textoDe(origem);
+
+  return aviso(
     origem,
-    `A função "${nome}" ainda não é suportada pelo Portugol Webstudio e o programa não pode ser executado. Inclua a biblioteca Util e use "Util.${nome}" no lugar`,
-    CÓDIGOS.FUNCAO_RESERVADA_NAO_SUPORTADA,
+    `Usar '${texto}' dentro de uma conta pode dar um resultado diferente do esperado. Para evitar surpresas, escreva '${texto}' numa linha separada, antes ou depois da conta`,
+    CÓDIGOS.INCREMENTO_EM_CONTA,
   );
 }
 
@@ -1374,6 +1393,10 @@ export function informaçãoSímboloNãoUtilizado(
   símbolo: Símbolo,
   uso: "nuncaEscrito" | "nuncaLido" | "nãoUtilizado",
 ): PortugolCodeDiagnostic {
+  if (símbolo.parâmetro) {
+    return informação(origem, `O parâmetro '${símbolo.nome}' não é utilizado`, CÓDIGOS.SIMBOLO_NAO_UTILIZADO);
+  }
+
   // O Portugol Studio não tem esta mensagem, e chamar uma constante de "variável" confundiria.
   const substantivo =
     símbolo.classe === "variável" && símbolo.constante ? "A constante" : CLASSE_DEFINIDA[símbolo.classe];

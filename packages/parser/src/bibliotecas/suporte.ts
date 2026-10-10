@@ -13,12 +13,6 @@ export interface SímbolosNãoImplementados {
 
 const IMPLEMENTADAS = new Set<string>(BIBLIOTECAS_IMPLEMENTADAS);
 
-/**
- * Escrita à mão: funções reservadas não são bibliotecas e não aparecem nos metadados.
- * `escreva`, `leia` e `limpa` são implementadas; `sorteia` só existe como `Util.sorteia`.
- */
-export const FUNÇÕES_RESERVADAS_NÃO_IMPLEMENTADAS: readonly string[] = ["sorteia"];
-
 export function bibliotecaImplementada(nome: string): boolean {
   return IMPLEMENTADAS.has(nome);
 }
@@ -39,10 +33,6 @@ export function funçãoImplementada(biblioteca: string, funcao: string): boolea
 
 export function constanteImplementada(biblioteca: string, constante: string): boolean {
   return bibliotecaImplementada(biblioteca) && !símbolosNãoImplementados(biblioteca)?.constantes.includes(constante);
-}
-
-export function funçãoReservadaImplementada(nome: string): boolean {
-  return !FUNÇÕES_RESERVADAS_NÃO_IMPLEMENTADAS.includes(nome);
 }
 
 export { BIBLIOTECAS_IMPLEMENTADAS, SÍMBOLOS_NÃO_IMPLEMENTADOS };
