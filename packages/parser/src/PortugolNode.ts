@@ -2,6 +2,7 @@ import {
   AdicaoSubtracaoContext,
   ArquivoContext,
   MultiplicacaoDivisaoModuloContext,
+  OperacaoShiftContext,
   PortugolParser,
   PortugolVisitor,
 } from "@portugol-webstudio/antlr";
@@ -15,6 +16,8 @@ import {
   MultiplicaçãoExpr,
   MóduloExpr,
   Node,
+  OperaçãoShiftLeftExpr,
+  OperaçãoShiftRightExpr,
   SomaExpr,
   SubtraçãoExpr,
   UnhandledNode,
@@ -83,6 +86,17 @@ export class PortugolNode extends AbstractParseTreeVisitor<Empty> implements Por
         }
         case PortugolParser.OP_SUBTRACAO: {
           return SubtraçãoExpr;
+        }
+      }
+    }
+
+    if (ctx instanceof OperacaoShiftContext) {
+      switch (ctx._op?.type) {
+        case PortugolParser.OP_SHIFT_LEFT: {
+          return OperaçãoShiftLeftExpr;
+        }
+        case PortugolParser.OP_SHIFT_RIGHT: {
+          return OperaçãoShiftRightExpr;
         }
       }
     }

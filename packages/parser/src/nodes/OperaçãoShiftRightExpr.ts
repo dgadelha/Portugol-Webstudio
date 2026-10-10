@@ -1,5 +1,5 @@
-import { OperacaoShiftRightContext } from "@portugol-webstudio/antlr";
+import { OperacaoShiftContext } from "@portugol-webstudio/antlr";
 
 import { ExpressãoMatemática } from "./ExpressãoMatemática.js";
 
-export class OperaçãoShiftRightExpr extends ExpressãoMatemática<OperacaoShiftRightContext> {}
+export class OperaçãoShiftRightExpr extends ExpressãoMatemática<OperacaoShiftContext> {}

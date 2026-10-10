@@ -68,8 +68,7 @@ import { OperacaoMenorIgualContext } from "./PortugolParser.js";
 import { OperacaoMaiorIgualContext } from "./PortugolParser.js";
 import { OperacaoELogicoContext } from "./PortugolParser.js";
 import { OperacaoOuLogicoContext } from "./PortugolParser.js";
-import { OperacaoShiftLeftContext } from "./PortugolParser.js";
-import { OperacaoShiftRightContext } from "./PortugolParser.js";
+import { OperacaoShiftContext } from "./PortugolParser.js";
 import { OperacaoAndBitwiseContext } from "./PortugolParser.js";
 import { OperacaoXorContext } from "./PortugolParser.js";
 import { OperacaoOrBitwiseContext } from "./PortugolParser.js";
@@ -807,29 +806,17 @@ export class PortugolListener implements ParseTreeListener {
      */
     exitOperacaoOuLogico?: (ctx: OperacaoOuLogicoContext) => void;
     /**
-     * Enter a parse tree produced by the `operacaoShiftLeft`
+     * Enter a parse tree produced by the `operacaoShift`
      * labeled alternative in `PortugolParser.expressao`.
      * @param ctx the parse tree
      */
-    enterOperacaoShiftLeft?: (ctx: OperacaoShiftLeftContext) => void;
+    enterOperacaoShift?: (ctx: OperacaoShiftContext) => void;
     /**
-     * Exit a parse tree produced by the `operacaoShiftLeft`
+     * Exit a parse tree produced by the `operacaoShift`
      * labeled alternative in `PortugolParser.expressao`.
      * @param ctx the parse tree
      */
-    exitOperacaoShiftLeft?: (ctx: OperacaoShiftLeftContext) => void;
-    /**
-     * Enter a parse tree produced by the `operacaoShiftRight`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     */
-    enterOperacaoShiftRight?: (ctx: OperacaoShiftRightContext) => void;
-    /**
-     * Exit a parse tree produced by the `operacaoShiftRight`
-     * labeled alternative in `PortugolParser.expressao`.
-     * @param ctx the parse tree
-     */
-    exitOperacaoShiftRight?: (ctx: OperacaoShiftRightContext) => void;
+    exitOperacaoShift?: (ctx: OperacaoShiftContext) => void;
     /**
      * Enter a parse tree produced by the `operacaoAndBitwise`
      * labeled alternative in `PortugolParser.expressao`.

@@ -56,8 +56,7 @@ import {
   OperacaoMenorIgualContext,
   OperacaoOrBitwiseContext,
   OperacaoOuLogicoContext,
-  OperacaoShiftLeftContext,
-  OperacaoShiftRightContext,
+  OperacaoShiftContext,
   OperacaoXorContext,
   ParaContext,
   ParametroArrayContext,
@@ -125,16 +124,14 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
   ): ctx is
     | MultiplicacaoDivisaoModuloContext
     | AdicaoSubtracaoContext
-    | OperacaoShiftLeftContext
-    | OperacaoShiftRightContext
+    | OperacaoShiftContext
     | OperacaoAndBitwiseContext
     | OperacaoOrBitwiseContext
     | OperacaoXorContext {
     return (
       ctx instanceof MultiplicacaoDivisaoModuloContext ||
       ctx instanceof AdicaoSubtracaoContext ||
-      ctx instanceof OperacaoShiftLeftContext ||
-      ctx instanceof OperacaoShiftRightContext ||
+      ctx instanceof OperacaoShiftContext ||
       ctx instanceof OperacaoAndBitwiseContext ||
       ctx instanceof OperacaoOrBitwiseContext ||
       ctx instanceof OperacaoXorContext
@@ -550,10 +547,7 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     return sb.toString();
   }
 
-  visitOperacaoMatematica(
-    ctx:
-      MultiplicacaoDivisaoModuloContext | AdicaoSubtracaoContext | OperacaoShiftLeftContext | OperacaoShiftRightContext,
-  ) {
+  visitOperacaoMatematica(ctx: MultiplicacaoDivisaoModuloContext | AdicaoSubtracaoContext | OperacaoShiftContext) {
     const sb = new StringBuilder();
 
     // Um incremento à esquerda já gera a expressão inteira, vide emitIncrementOrDecrement
@@ -578,11 +572,11 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
             : ctx._op?.type === PortugolParser.OP_SUBTRACAO
               ? "-"
               : "?"
-          : ctx instanceof OperacaoShiftLeftContext
-            ? "<<"
-            : ctx instanceof OperacaoShiftRightContext
-              ? ">>"
-              : "?";
+          : ctx instanceof OperacaoShiftContext
+            ? ctx._op?.type === PortugolParser.OP_SHIFT_LEFT
+              ? "<<"
+              : ">>"
+            : "?";
 
     sb.append(this.PAD(), `runtime.mathOperation("${op}", [`, `\n`);
 
@@ -603,12 +597,7 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
   }
 
   visitOperacaoBitwise(
-    ctx:
-      | OperacaoAndBitwiseContext
-      | OperacaoOrBitwiseContext
-      | OperacaoXorContext
-      | OperacaoShiftLeftContext
-      | OperacaoShiftRightContext,
+    ctx: OperacaoAndBitwiseContext | OperacaoOrBitwiseContext | OperacaoXorContext | OperacaoShiftContext,
   ) {
     const sb = new StringBuilder();
 
@@ -626,11 +615,11 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
           ? "|"
           : ctx instanceof OperacaoXorContext
             ? "^"
-            : ctx instanceof OperacaoShiftLeftContext
-              ? "<<"
-              : ctx instanceof OperacaoShiftRightContext
-                ? ">>"
-                : "?";
+            : ctx instanceof OperacaoShiftContext
+              ? ctx._op?.type === PortugolParser.OP_SHIFT_LEFT
+                ? "<<"
+                : ">>"
+              : "?";
 
     sb.append(this.PAD(), `runtime.bitwiseOperation("${op}", [`, `\n`);
 
@@ -827,19 +816,10 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     return sb.toString();
   }
 
-  visitOperacaoShiftLeft(ctx: OperacaoShiftLeftContext) {
+  visitOperacaoShift(ctx: OperacaoShiftContext) {
     const sb = new StringBuilder();
 
-    sb.append(this.DEBUG(`visitOperacaoShiftLeft`, ctx));
-    sb.append(this.visitOperacaoBitwise(ctx));
-
-    return sb.toString();
-  }
-
-  visitOperacaoShiftRight(ctx: OperacaoShiftRightContext) {
-    const sb = new StringBuilder();
-
-    sb.append(this.DEBUG(`visitOperacaoShiftRight`, ctx));
+    sb.append(this.DEBUG(`visitOperacaoShift`, ctx));
     sb.append(this.visitOperacaoBitwise(ctx));
 
     return sb.toString();

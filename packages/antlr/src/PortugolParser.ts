@@ -1860,7 +1860,7 @@ export class PortugolParser extends antlr.Parser {
                 this.state = 381;
                 this.match(PortugolParser.OP_SUBTRACAO);
                 this.state = 382;
-                this.expressao(30);
+                this.expressao(29);
                 }
                 break;
             case 5:
@@ -1871,7 +1871,7 @@ export class PortugolParser extends antlr.Parser {
                 this.state = 383;
                 this.match(PortugolParser.OP_ADICAO);
                 this.state = 384;
-                this.expressao(29);
+                this.expressao(28);
                 }
                 break;
             case 6:
@@ -1882,7 +1882,7 @@ export class PortugolParser extends antlr.Parser {
                 this.state = 385;
                 this.match(PortugolParser.OP_NAO);
                 this.state = 386;
-                this.expressao(28);
+                this.expressao(27);
                 }
                 break;
             case 7:
@@ -1893,7 +1893,7 @@ export class PortugolParser extends antlr.Parser {
                 this.state = 387;
                 this.match(PortugolParser.OP_NOT_BITWISE);
                 this.state = 388;
-                this.expressao(27);
+                this.expressao(26);
                 }
                 break;
             case 8:
@@ -2106,7 +2106,7 @@ export class PortugolParser extends antlr.Parser {
                 break;
             }
             this.context!.stop = this.tokenStream.LT(-1);
-            this.state = 483;
+            this.state = 480;
             this.errorHandler.sync(this);
             alternative = this.interpreter.adaptivePredict(this.tokenStream, 52, this.context);
             while (alternative !== 2 && alternative !== antlr.ATN.INVALID_ALT_NUMBER) {
@@ -2116,7 +2116,7 @@ export class PortugolParser extends antlr.Parser {
                     }
                     previousContext = localContext;
                     {
-                    this.state = 481;
+                    this.state = 478;
                     this.errorHandler.sync(this);
                     switch (this.interpreter.adaptivePredict(this.tokenStream, 51, this.context) ) {
                     case 1:
@@ -2124,8 +2124,8 @@ export class PortugolParser extends antlr.Parser {
                         localContext = new MultiplicacaoDivisaoModuloContext(new ExpressaoContext(parentContext, parentState));
                         this.pushNewRecursionContext(localContext, _startState, PortugolParser.RULE_expressao);
                         this.state = 436;
-                        if (!(this.precpred(this.context, 22))) {
-                            throw this.createFailedPredicateException("this.precpred(this.context, 22)");
+                        if (!(this.precpred(this.context, 21))) {
+                            throw this.createFailedPredicateException("this.precpred(this.context, 21)");
                         }
                         this.state = 437;
                         (localContext as MultiplicacaoDivisaoModuloContext)._op = this.tokenStream.LT(1);
@@ -2138,7 +2138,7 @@ export class PortugolParser extends antlr.Parser {
                             this.consume();
                         }
                         this.state = 438;
-                        this.expressao(23);
+                        this.expressao(22);
                         }
                         break;
                     case 2:
@@ -2146,8 +2146,8 @@ export class PortugolParser extends antlr.Parser {
                         localContext = new AdicaoSubtracaoContext(new ExpressaoContext(parentContext, parentState));
                         this.pushNewRecursionContext(localContext, _startState, PortugolParser.RULE_expressao);
                         this.state = 439;
-                        if (!(this.precpred(this.context, 21))) {
-                            throw this.createFailedPredicateException("this.precpred(this.context, 21)");
+                        if (!(this.precpred(this.context, 20))) {
+                            throw this.createFailedPredicateException("this.precpred(this.context, 20)");
                         }
                         this.state = 440;
                         (localContext as AdicaoSubtracaoContext)._op = this.tokenStream.LT(1);
@@ -2160,7 +2160,7 @@ export class PortugolParser extends antlr.Parser {
                             this.consume();
                         }
                         this.state = 441;
-                        this.expressao(22);
+                        this.expressao(21);
                         }
                         break;
                     case 3:
@@ -2168,13 +2168,13 @@ export class PortugolParser extends antlr.Parser {
                         localContext = new OperacaoIgualdadeContext(new ExpressaoContext(parentContext, parentState));
                         this.pushNewRecursionContext(localContext, _startState, PortugolParser.RULE_expressao);
                         this.state = 442;
-                        if (!(this.precpred(this.context, 20))) {
-                            throw this.createFailedPredicateException("this.precpred(this.context, 20)");
+                        if (!(this.precpred(this.context, 19))) {
+                            throw this.createFailedPredicateException("this.precpred(this.context, 19)");
                         }
                         this.state = 443;
                         this.match(PortugolParser.OP_IGUALDADE);
                         this.state = 444;
-                        this.expressao(21);
+                        this.expressao(20);
                         }
                         break;
                     case 4:
@@ -2182,13 +2182,13 @@ export class PortugolParser extends antlr.Parser {
                         localContext = new OperacaoDiferencaContext(new ExpressaoContext(parentContext, parentState));
                         this.pushNewRecursionContext(localContext, _startState, PortugolParser.RULE_expressao);
                         this.state = 445;
-                        if (!(this.precpred(this.context, 19))) {
-                            throw this.createFailedPredicateException("this.precpred(this.context, 19)");
+                        if (!(this.precpred(this.context, 18))) {
+                            throw this.createFailedPredicateException("this.precpred(this.context, 18)");
                         }
                         this.state = 446;
                         this.match(PortugolParser.OP_DIFERENCA);
                         this.state = 447;
-                        this.expressao(20);
+                        this.expressao(19);
                         }
                         break;
                     case 5:
@@ -2196,13 +2196,13 @@ export class PortugolParser extends antlr.Parser {
                         localContext = new OperacaoMaiorContext(new ExpressaoContext(parentContext, parentState));
                         this.pushNewRecursionContext(localContext, _startState, PortugolParser.RULE_expressao);
                         this.state = 448;
-                        if (!(this.precpred(this.context, 18))) {
-                            throw this.createFailedPredicateException("this.precpred(this.context, 18)");
+                        if (!(this.precpred(this.context, 17))) {
+                            throw this.createFailedPredicateException("this.precpred(this.context, 17)");
                         }
                         this.state = 449;
                         this.match(PortugolParser.OP_MAIOR);
                         this.state = 450;
-                        this.expressao(19);
+                        this.expressao(18);
                         }
                         break;
                     case 6:
@@ -2210,13 +2210,13 @@ export class PortugolParser extends antlr.Parser {
                         localContext = new OperacaoMenorContext(new ExpressaoContext(parentContext, parentState));
                         this.pushNewRecursionContext(localContext, _startState, PortugolParser.RULE_expressao);
                         this.state = 451;
-                        if (!(this.precpred(this.context, 17))) {
-                            throw this.createFailedPredicateException("this.precpred(this.context, 17)");
+                        if (!(this.precpred(this.context, 16))) {
+                            throw this.createFailedPredicateException("this.precpred(this.context, 16)");
                         }
                         this.state = 452;
                         this.match(PortugolParser.OP_MENOR);
                         this.state = 453;
-                        this.expressao(18);
+                        this.expressao(17);
                         }
                         break;
                     case 7:
@@ -2224,13 +2224,13 @@ export class PortugolParser extends antlr.Parser {
                         localContext = new OperacaoMenorIgualContext(new ExpressaoContext(parentContext, parentState));
                         this.pushNewRecursionContext(localContext, _startState, PortugolParser.RULE_expressao);
                         this.state = 454;
-                        if (!(this.precpred(this.context, 16))) {
-                            throw this.createFailedPredicateException("this.precpred(this.context, 16)");
+                        if (!(this.precpred(this.context, 15))) {
+                            throw this.createFailedPredicateException("this.precpred(this.context, 15)");
                         }
                         this.state = 455;
                         this.match(PortugolParser.OP_MENOR_IGUAL);
                         this.state = 456;
-                        this.expressao(17);
+                        this.expressao(16);
                         }
                         break;
                     case 8:
@@ -2238,13 +2238,13 @@ export class PortugolParser extends antlr.Parser {
                         localContext = new OperacaoMaiorIgualContext(new ExpressaoContext(parentContext, parentState));
                         this.pushNewRecursionContext(localContext, _startState, PortugolParser.RULE_expressao);
                         this.state = 457;
-                        if (!(this.precpred(this.context, 15))) {
-                            throw this.createFailedPredicateException("this.precpred(this.context, 15)");
+                        if (!(this.precpred(this.context, 14))) {
+                            throw this.createFailedPredicateException("this.precpred(this.context, 14)");
                         }
                         this.state = 458;
                         this.match(PortugolParser.OP_MAIOR_IGUAL);
                         this.state = 459;
-                        this.expressao(16);
+                        this.expressao(15);
                         }
                         break;
                     case 9:
@@ -2252,13 +2252,13 @@ export class PortugolParser extends antlr.Parser {
                         localContext = new OperacaoELogicoContext(new ExpressaoContext(parentContext, parentState));
                         this.pushNewRecursionContext(localContext, _startState, PortugolParser.RULE_expressao);
                         this.state = 460;
-                        if (!(this.precpred(this.context, 14))) {
-                            throw this.createFailedPredicateException("this.precpred(this.context, 14)");
+                        if (!(this.precpred(this.context, 13))) {
+                            throw this.createFailedPredicateException("this.precpred(this.context, 13)");
                         }
                         this.state = 461;
                         this.match(PortugolParser.OP_E_LOGICO);
                         this.state = 462;
-                        this.expressao(15);
+                        this.expressao(14);
                         }
                         break;
                     case 10:
@@ -2266,89 +2266,83 @@ export class PortugolParser extends antlr.Parser {
                         localContext = new OperacaoOuLogicoContext(new ExpressaoContext(parentContext, parentState));
                         this.pushNewRecursionContext(localContext, _startState, PortugolParser.RULE_expressao);
                         this.state = 463;
-                        if (!(this.precpred(this.context, 13))) {
-                            throw this.createFailedPredicateException("this.precpred(this.context, 13)");
+                        if (!(this.precpred(this.context, 12))) {
+                            throw this.createFailedPredicateException("this.precpred(this.context, 12)");
                         }
                         this.state = 464;
                         this.match(PortugolParser.OP_OU_LOGICO);
                         this.state = 465;
-                        this.expressao(14);
+                        this.expressao(13);
                         }
                         break;
                     case 11:
                         {
-                        localContext = new OperacaoShiftLeftContext(new ExpressaoContext(parentContext, parentState));
+                        localContext = new OperacaoShiftContext(new ExpressaoContext(parentContext, parentState));
                         this.pushNewRecursionContext(localContext, _startState, PortugolParser.RULE_expressao);
                         this.state = 466;
-                        if (!(this.precpred(this.context, 12))) {
-                            throw this.createFailedPredicateException("this.precpred(this.context, 12)");
+                        if (!(this.precpred(this.context, 11))) {
+                            throw this.createFailedPredicateException("this.precpred(this.context, 11)");
                         }
                         this.state = 467;
-                        this.match(PortugolParser.OP_SHIFT_LEFT);
+                        (localContext as OperacaoShiftContext)._op = this.tokenStream.LT(1);
+                        _la = this.tokenStream.LA(1);
+                        if(!(_la === 40 || _la === 41)) {
+                            (localContext as OperacaoShiftContext)._op = this.errorHandler.recoverInline(this);
+                        }
+                        else {
+                            this.errorHandler.reportMatch(this);
+                            this.consume();
+                        }
                         this.state = 468;
-                        this.expressao(13);
+                        this.expressao(12);
                         }
                         break;
                     case 12:
                         {
-                        localContext = new OperacaoShiftRightContext(new ExpressaoContext(parentContext, parentState));
+                        localContext = new OperacaoAndBitwiseContext(new ExpressaoContext(parentContext, parentState));
                         this.pushNewRecursionContext(localContext, _startState, PortugolParser.RULE_expressao);
                         this.state = 469;
-                        if (!(this.precpred(this.context, 11))) {
-                            throw this.createFailedPredicateException("this.precpred(this.context, 11)");
+                        if (!(this.precpred(this.context, 10))) {
+                            throw this.createFailedPredicateException("this.precpred(this.context, 10)");
                         }
                         this.state = 470;
-                        this.match(PortugolParser.OP_SHIFT_RIGHT);
+                        this.match(PortugolParser.E_COMERCIAL);
                         this.state = 471;
-                        this.expressao(12);
+                        this.expressao(11);
                         }
                         break;
                     case 13:
                         {
-                        localContext = new OperacaoAndBitwiseContext(new ExpressaoContext(parentContext, parentState));
+                        localContext = new OperacaoXorContext(new ExpressaoContext(parentContext, parentState));
                         this.pushNewRecursionContext(localContext, _startState, PortugolParser.RULE_expressao);
                         this.state = 472;
-                        if (!(this.precpred(this.context, 10))) {
-                            throw this.createFailedPredicateException("this.precpred(this.context, 10)");
+                        if (!(this.precpred(this.context, 9))) {
+                            throw this.createFailedPredicateException("this.precpred(this.context, 9)");
                         }
                         this.state = 473;
-                        this.match(PortugolParser.E_COMERCIAL);
+                        this.match(PortugolParser.OP_XOR);
                         this.state = 474;
-                        this.expressao(11);
+                        this.expressao(10);
                         }
                         break;
                     case 14:
                         {
-                        localContext = new OperacaoXorContext(new ExpressaoContext(parentContext, parentState));
-                        this.pushNewRecursionContext(localContext, _startState, PortugolParser.RULE_expressao);
-                        this.state = 475;
-                        if (!(this.precpred(this.context, 9))) {
-                            throw this.createFailedPredicateException("this.precpred(this.context, 9)");
-                        }
-                        this.state = 476;
-                        this.match(PortugolParser.OP_XOR);
-                        this.state = 477;
-                        this.expressao(10);
-                        }
-                        break;
-                    case 15:
-                        {
                         localContext = new OperacaoOrBitwiseContext(new ExpressaoContext(parentContext, parentState));
                         this.pushNewRecursionContext(localContext, _startState, PortugolParser.RULE_expressao);
-                        this.state = 478;
+                        this.state = 475;
                         if (!(this.precpred(this.context, 8))) {
                             throw this.createFailedPredicateException("this.precpred(this.context, 8)");
                         }
-                        this.state = 479;
+                        this.state = 476;
                         this.match(PortugolParser.OP_OU_BITWISE);
-                        this.state = 480;
+                        this.state = 477;
                         this.expressao(9);
                         }
                         break;
                     }
                     }
                 }
-                this.state = 485;
+                this.state = 482;
                 this.errorHandler.sync(this);
                 alternative = this.interpreter.adaptivePredict(this.tokenStream, 52, this.context);
             }
@@ -2374,61 +2368,61 @@ export class PortugolParser extends antlr.Parser {
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 489;
+            this.state = 486;
             this.errorHandler.sync(this);
             switch (this.interpreter.adaptivePredict(this.tokenStream, 53, this.context) ) {
             case 1:
                 {
-                this.state = 486;
+                this.state = 483;
                 this.expressao(0);
                 }
                 break;
             case 2:
                 {
-                this.state = 487;
+                this.state = 484;
                 this.atribuicaoComposta();
                 }
                 break;
             case 3:
                 {
-                this.state = 488;
+                this.state = 485;
                 this.atribuicao();
                 }
                 break;
             }
-            this.state = 499;
+            this.state = 496;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
             while (_la === 64) {
                 {
                 {
-                this.state = 491;
+                this.state = 488;
                 this.match(PortugolParser.VIRGULA);
-                this.state = 495;
+                this.state = 492;
                 this.errorHandler.sync(this);
                 switch (this.interpreter.adaptivePredict(this.tokenStream, 54, this.context) ) {
                 case 1:
                     {
-                    this.state = 492;
+                    this.state = 489;
                     this.expressao(0);
                     }
                     break;
                 case 2:
                     {
-                    this.state = 493;
+                    this.state = 490;
                     this.atribuicaoComposta();
                     }
                     break;
                 case 3:
                     {
-                    this.state = 494;
+                    this.state = 491;
                     this.atribuicao();
                     }
                     break;
                 }
                 }
                 }
-                this.state = 501;
+                this.state = 498;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
             }
@@ -2454,9 +2448,9 @@ export class PortugolParser extends antlr.Parser {
             this.enterOuterAlt(localContext, 1);
             {
             {
-            this.state = 502;
+            this.state = 499;
             this.match(PortugolParser.ID);
-            this.state = 503;
+            this.state = 500;
             this.match(PortugolParser.PONTO);
             }
             }
@@ -2485,41 +2479,39 @@ export class PortugolParser extends antlr.Parser {
     private expressao_sempred(localContext: ExpressaoContext | null, predIndex: number): boolean {
         switch (predIndex) {
         case 0:
-            return this.precpred(this.context, 22);
-        case 1:
             return this.precpred(this.context, 21);
-        case 2:
+        case 1:
             return this.precpred(this.context, 20);
-        case 3:
+        case 2:
             return this.precpred(this.context, 19);
-        case 4:
+        case 3:
             return this.precpred(this.context, 18);
-        case 5:
+        case 4:
             return this.precpred(this.context, 17);
-        case 6:
+        case 5:
             return this.precpred(this.context, 16);
-        case 7:
+        case 6:
             return this.precpred(this.context, 15);
-        case 8:
+        case 7:
             return this.precpred(this.context, 14);
-        case 9:
+        case 8:
             return this.precpred(this.context, 13);
-        case 10:
+        case 9:
             return this.precpred(this.context, 12);
-        case 11:
+        case 10:
             return this.precpred(this.context, 11);
-        case 12:
+        case 11:
             return this.precpred(this.context, 10);
-        case 13:
+        case 12:
             return this.precpred(this.context, 9);
-        case 14:
+        case 13:
             return this.precpred(this.context, 8);
         }
         return true;
     }
 
     public static readonly _serializedATN: number[] = [
-        4,1,66,506,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,
+        4,1,66,503,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,
         6,2,7,7,7,2,8,7,8,2,9,7,9,2,10,7,10,2,11,7,11,2,12,7,12,2,13,7,13,
         2,14,7,14,2,15,7,15,2,16,7,16,2,17,7,17,2,18,7,18,2,19,7,19,2,20,
         7,20,2,21,7,21,2,22,7,22,2,23,7,23,2,24,7,24,2,25,7,25,2,26,7,26,
@@ -2558,159 +2550,157 @@ export class PortugolParser extends antlr.Parser {
         3,35,435,8,35,1,35,1,35,1,35,1,35,1,35,1,35,1,35,1,35,1,35,1,35,
         1,35,1,35,1,35,1,35,1,35,1,35,1,35,1,35,1,35,1,35,1,35,1,35,1,35,
         1,35,1,35,1,35,1,35,1,35,1,35,1,35,1,35,1,35,1,35,1,35,1,35,1,35,
-        1,35,1,35,1,35,1,35,1,35,1,35,1,35,1,35,1,35,5,35,482,8,35,10,35,
-        12,35,485,9,35,1,36,1,36,1,36,3,36,490,8,36,1,36,1,36,1,36,1,36,
-        3,36,496,8,36,5,36,498,8,36,10,36,12,36,501,9,36,1,37,1,37,1,37,
-        1,37,0,1,70,38,0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,
-        36,38,40,42,44,46,48,50,52,54,56,58,60,62,64,66,68,70,72,74,0,3,
-        1,0,58,59,1,0,28,30,1,0,26,27,569,0,76,1,0,0,0,2,93,1,0,0,0,4,101,
-        1,0,0,0,6,115,1,0,0,0,8,117,1,0,0,0,10,122,1,0,0,0,12,137,1,0,0,
-        0,14,148,1,0,0,0,16,150,1,0,0,0,18,152,1,0,0,0,20,162,1,0,0,0,22,
-        168,1,0,0,0,24,170,1,0,0,0,26,185,1,0,0,0,28,191,1,0,0,0,30,199,
-        1,0,0,0,32,208,1,0,0,0,34,211,1,0,0,0,36,227,1,0,0,0,38,229,1,0,
-        0,0,40,249,1,0,0,0,42,251,1,0,0,0,44,255,1,0,0,0,46,263,1,0,0,0,
-        48,266,1,0,0,0,50,272,1,0,0,0,52,279,1,0,0,0,54,300,1,0,0,0,56,305,
-        1,0,0,0,58,307,1,0,0,0,60,312,1,0,0,0,62,314,1,0,0,0,64,327,1,0,
-        0,0,66,352,1,0,0,0,68,354,1,0,0,0,70,434,1,0,0,0,72,489,1,0,0,0,
-        74,502,1,0,0,0,76,77,5,15,0,0,77,81,5,5,0,0,78,80,3,2,1,0,79,78,
-        1,0,0,0,80,83,1,0,0,0,81,79,1,0,0,0,81,82,1,0,0,0,82,88,1,0,0,0,
-        83,81,1,0,0,0,84,87,3,24,12,0,85,87,3,4,2,0,86,84,1,0,0,0,86,85,
-        1,0,0,0,87,90,1,0,0,0,88,86,1,0,0,0,88,89,1,0,0,0,89,91,1,0,0,0,
-        90,88,1,0,0,0,91,92,5,6,0,0,92,1,1,0,0,0,93,94,5,21,0,0,94,95,5,
-        22,0,0,95,98,5,56,0,0,96,97,5,45,0,0,97,99,5,56,0,0,98,96,1,0,0,
-        0,98,99,1,0,0,0,99,3,1,0,0,0,100,102,5,13,0,0,101,100,1,0,0,0,101,
-        102,1,0,0,0,102,103,1,0,0,0,103,104,5,7,0,0,104,109,3,6,3,0,105,
-        106,5,64,0,0,106,108,3,6,3,0,107,105,1,0,0,0,108,111,1,0,0,0,109,
-        107,1,0,0,0,109,110,1,0,0,0,110,5,1,0,0,0,111,109,1,0,0,0,112,116,
-        3,8,4,0,113,116,3,18,9,0,114,116,3,10,5,0,115,112,1,0,0,0,115,113,
-        1,0,0,0,115,114,1,0,0,0,116,7,1,0,0,0,117,120,5,56,0,0,118,119,5,
-        31,0,0,119,121,3,70,35,0,120,118,1,0,0,0,120,121,1,0,0,0,121,9,1,
-        0,0,0,122,123,5,56,0,0,123,125,5,3,0,0,124,126,3,14,7,0,125,124,
-        1,0,0,0,125,126,1,0,0,0,126,127,1,0,0,0,127,128,5,4,0,0,128,130,
-        5,3,0,0,129,131,3,16,8,0,130,129,1,0,0,0,130,131,1,0,0,0,131,132,
-        1,0,0,0,132,135,5,4,0,0,133,134,5,31,0,0,134,136,3,12,6,0,135,133,
-        1,0,0,0,135,136,1,0,0,0,136,11,1,0,0,0,137,138,5,5,0,0,138,143,3,
-        20,10,0,139,140,5,64,0,0,140,142,3,20,10,0,141,139,1,0,0,0,142,145,
-        1,0,0,0,143,141,1,0,0,0,143,144,1,0,0,0,144,146,1,0,0,0,145,143,
-        1,0,0,0,146,147,5,6,0,0,147,13,1,0,0,0,148,149,3,22,11,0,149,15,
-        1,0,0,0,150,151,3,22,11,0,151,17,1,0,0,0,152,153,5,56,0,0,153,155,
-        5,3,0,0,154,156,3,22,11,0,155,154,1,0,0,0,155,156,1,0,0,0,156,157,
-        1,0,0,0,157,160,5,4,0,0,158,159,5,31,0,0,159,161,3,20,10,0,160,158,
-        1,0,0,0,160,161,1,0,0,0,161,19,1,0,0,0,162,164,5,5,0,0,163,165,3,
-        72,36,0,164,163,1,0,0,0,164,165,1,0,0,0,165,166,1,0,0,0,166,167,
-        5,6,0,0,167,21,1,0,0,0,168,169,3,70,35,0,169,23,1,0,0,0,170,172,
-        5,14,0,0,171,173,5,7,0,0,172,171,1,0,0,0,172,173,1,0,0,0,173,174,
-        1,0,0,0,174,175,5,56,0,0,175,176,3,26,13,0,176,180,5,5,0,0,177,179,
-        3,36,18,0,178,177,1,0,0,0,179,182,1,0,0,0,180,178,1,0,0,0,180,181,
-        1,0,0,0,181,183,1,0,0,0,182,180,1,0,0,0,183,184,5,6,0,0,184,25,1,
-        0,0,0,185,187,5,1,0,0,186,188,3,28,14,0,187,186,1,0,0,0,187,188,
-        1,0,0,0,188,189,1,0,0,0,189,190,5,2,0,0,190,27,1,0,0,0,191,196,3,
-        30,15,0,192,193,5,64,0,0,193,195,3,30,15,0,194,192,1,0,0,0,195,198,
-        1,0,0,0,196,194,1,0,0,0,196,197,1,0,0,0,197,29,1,0,0,0,198,196,1,
-        0,0,0,199,201,5,7,0,0,200,202,5,46,0,0,201,200,1,0,0,0,201,202,1,
-        0,0,0,202,203,1,0,0,0,203,206,5,56,0,0,204,207,3,32,16,0,205,207,
-        3,34,17,0,206,204,1,0,0,0,206,205,1,0,0,0,206,207,1,0,0,0,207,31,
-        1,0,0,0,208,209,5,3,0,0,209,210,5,4,0,0,210,33,1,0,0,0,211,212,5,
-        3,0,0,212,213,5,4,0,0,213,214,5,3,0,0,214,215,5,4,0,0,215,35,1,0,
-        0,0,216,228,3,4,2,0,217,228,3,44,22,0,218,228,3,48,24,0,219,228,
-        3,50,25,0,220,228,3,52,26,0,221,228,3,62,31,0,222,228,3,42,21,0,
-        223,228,3,66,33,0,224,228,3,38,19,0,225,228,3,40,20,0,226,228,3,
-        70,35,0,227,216,1,0,0,0,227,217,1,0,0,0,227,218,1,0,0,0,227,219,
-        1,0,0,0,227,220,1,0,0,0,227,221,1,0,0,0,227,222,1,0,0,0,227,223,
-        1,0,0,0,227,224,1,0,0,0,227,225,1,0,0,0,227,226,1,0,0,0,228,37,1,
-        0,0,0,229,230,3,70,35,0,230,231,5,31,0,0,231,232,3,70,35,0,232,39,
-        1,0,0,0,233,234,3,70,35,0,234,235,5,47,0,0,235,236,3,70,35,0,236,
-        250,1,0,0,0,237,238,3,70,35,0,238,239,5,48,0,0,239,240,3,70,35,0,
-        240,250,1,0,0,0,241,242,3,70,35,0,242,243,5,49,0,0,243,244,3,70,
-        35,0,244,250,1,0,0,0,245,246,3,70,35,0,246,247,5,50,0,0,247,248,
-        3,70,35,0,248,250,1,0,0,0,249,233,1,0,0,0,249,237,1,0,0,0,249,241,
-        1,0,0,0,249,245,1,0,0,0,250,41,1,0,0,0,251,253,5,20,0,0,252,254,
-        3,70,35,0,253,252,1,0,0,0,253,254,1,0,0,0,254,43,1,0,0,0,255,256,
-        5,11,0,0,256,257,5,1,0,0,257,258,3,70,35,0,258,259,5,2,0,0,259,261,
-        3,54,27,0,260,262,3,46,23,0,261,260,1,0,0,0,261,262,1,0,0,0,262,
-        45,1,0,0,0,263,264,5,12,0,0,264,265,3,54,27,0,265,47,1,0,0,0,266,
-        267,5,9,0,0,267,268,5,1,0,0,268,269,3,70,35,0,269,270,5,2,0,0,270,
-        271,3,54,27,0,271,49,1,0,0,0,272,273,5,8,0,0,273,274,3,54,27,0,274,
-        275,5,9,0,0,275,276,5,1,0,0,276,277,3,70,35,0,277,278,5,2,0,0,278,
-        51,1,0,0,0,279,280,5,10,0,0,280,282,5,1,0,0,281,283,3,56,28,0,282,
-        281,1,0,0,0,282,283,1,0,0,0,283,284,1,0,0,0,284,285,5,65,0,0,285,
-        286,3,58,29,0,286,287,5,65,0,0,287,288,3,60,30,0,288,289,5,2,0,0,
-        289,290,3,54,27,0,290,53,1,0,0,0,291,295,5,5,0,0,292,294,3,36,18,
-        0,293,292,1,0,0,0,294,297,1,0,0,0,295,293,1,0,0,0,295,296,1,0,0,
-        0,296,298,1,0,0,0,297,295,1,0,0,0,298,301,5,6,0,0,299,301,3,36,18,
-        0,300,291,1,0,0,0,300,299,1,0,0,0,301,55,1,0,0,0,302,306,3,38,19,
-        0,303,306,3,4,2,0,304,306,5,56,0,0,305,302,1,0,0,0,305,303,1,0,0,
-        0,305,304,1,0,0,0,306,57,1,0,0,0,307,308,3,70,35,0,308,59,1,0,0,
-        0,309,313,3,70,35,0,310,313,3,40,20,0,311,313,3,38,19,0,312,309,
-        1,0,0,0,312,310,1,0,0,0,312,311,1,0,0,0,313,61,1,0,0,0,314,315,5,
-        16,0,0,315,316,5,1,0,0,316,317,3,70,35,0,317,318,5,2,0,0,318,322,
-        5,5,0,0,319,321,3,64,32,0,320,319,1,0,0,0,321,324,1,0,0,0,322,320,
-        1,0,0,0,322,323,1,0,0,0,323,325,1,0,0,0,324,322,1,0,0,0,325,326,
-        5,6,0,0,326,63,1,0,0,0,327,330,5,17,0,0,328,331,5,18,0,0,329,331,
-        3,70,35,0,330,328,1,0,0,0,330,329,1,0,0,0,331,332,1,0,0,0,332,347,
-        5,66,0,0,333,335,3,36,18,0,334,333,1,0,0,0,335,338,1,0,0,0,336,334,
-        1,0,0,0,336,337,1,0,0,0,337,348,1,0,0,0,338,336,1,0,0,0,339,343,
-        5,5,0,0,340,342,3,36,18,0,341,340,1,0,0,0,342,345,1,0,0,0,343,341,
-        1,0,0,0,343,344,1,0,0,0,344,346,1,0,0,0,345,343,1,0,0,0,346,348,
-        5,6,0,0,347,336,1,0,0,0,347,339,1,0,0,0,348,350,1,0,0,0,349,351,
-        3,66,33,0,350,349,1,0,0,0,350,351,1,0,0,0,351,65,1,0,0,0,352,353,
-        5,19,0,0,353,67,1,0,0,0,354,355,5,3,0,0,355,356,3,70,35,0,356,357,
-        5,4,0,0,357,69,1,0,0,0,358,360,6,35,-1,0,359,361,3,74,37,0,360,359,
-        1,0,0,0,360,361,1,0,0,0,361,362,1,0,0,0,362,363,5,56,0,0,363,365,
-        5,1,0,0,364,366,3,72,36,0,365,364,1,0,0,0,365,366,1,0,0,0,366,367,
-        1,0,0,0,367,435,5,2,0,0,368,370,3,74,37,0,369,368,1,0,0,0,369,370,
-        1,0,0,0,370,371,1,0,0,0,371,372,5,56,0,0,372,435,3,68,34,0,373,375,
-        3,74,37,0,374,373,1,0,0,0,374,375,1,0,0,0,375,376,1,0,0,0,376,377,
-        5,56,0,0,377,379,3,68,34,0,378,380,3,68,34,0,379,378,1,0,0,0,379,
-        380,1,0,0,0,380,435,1,0,0,0,381,382,5,26,0,0,382,435,3,70,35,30,
-        383,384,5,27,0,0,384,435,3,70,35,29,385,386,5,23,0,0,386,435,3,70,
-        35,28,387,388,5,44,0,0,388,435,3,70,35,27,389,394,5,56,0,0,390,392,
-        3,68,34,0,391,393,3,68,34,0,392,391,1,0,0,0,392,393,1,0,0,0,393,
-        395,1,0,0,0,394,390,1,0,0,0,394,395,1,0,0,0,395,396,1,0,0,0,396,
-        435,5,38,0,0,397,402,5,56,0,0,398,400,3,68,34,0,399,401,3,68,34,
-        0,400,399,1,0,0,0,400,401,1,0,0,0,401,403,1,0,0,0,402,398,1,0,0,
-        0,402,403,1,0,0,0,403,404,1,0,0,0,404,435,5,39,0,0,405,406,5,38,
-        0,0,406,411,5,56,0,0,407,409,3,68,34,0,408,410,3,68,34,0,409,408,
-        1,0,0,0,409,410,1,0,0,0,410,412,1,0,0,0,411,407,1,0,0,0,411,412,
-        1,0,0,0,412,435,1,0,0,0,413,414,5,39,0,0,414,419,5,56,0,0,415,417,
-        3,68,34,0,416,418,3,68,34,0,417,416,1,0,0,0,417,418,1,0,0,0,418,
-        420,1,0,0,0,419,415,1,0,0,0,419,420,1,0,0,0,420,435,1,0,0,0,421,
-        423,3,74,37,0,422,421,1,0,0,0,422,423,1,0,0,0,423,424,1,0,0,0,424,
-        435,5,56,0,0,425,435,7,0,0,0,426,435,5,57,0,0,427,435,5,51,0,0,428,
-        435,5,54,0,0,429,435,5,55,0,0,430,431,5,1,0,0,431,432,3,70,35,0,
-        432,433,5,2,0,0,433,435,1,0,0,0,434,358,1,0,0,0,434,369,1,0,0,0,
-        434,374,1,0,0,0,434,381,1,0,0,0,434,383,1,0,0,0,434,385,1,0,0,0,
-        434,387,1,0,0,0,434,389,1,0,0,0,434,397,1,0,0,0,434,405,1,0,0,0,
-        434,413,1,0,0,0,434,422,1,0,0,0,434,425,1,0,0,0,434,426,1,0,0,0,
-        434,427,1,0,0,0,434,428,1,0,0,0,434,429,1,0,0,0,434,430,1,0,0,0,
-        435,483,1,0,0,0,436,437,10,22,0,0,437,438,7,1,0,0,438,482,3,70,35,
-        23,439,440,10,21,0,0,440,441,7,2,0,0,441,482,3,70,35,22,442,443,
-        10,20,0,0,443,444,5,32,0,0,444,482,3,70,35,21,445,446,10,19,0,0,
-        446,447,5,33,0,0,447,482,3,70,35,20,448,449,10,18,0,0,449,450,5,
-        34,0,0,450,482,3,70,35,19,451,452,10,17,0,0,452,453,5,35,0,0,453,
-        482,3,70,35,18,454,455,10,16,0,0,455,456,5,36,0,0,456,482,3,70,35,
-        17,457,458,10,15,0,0,458,459,5,37,0,0,459,482,3,70,35,16,460,461,
-        10,14,0,0,461,462,5,24,0,0,462,482,3,70,35,15,463,464,10,13,0,0,
-        464,465,5,25,0,0,465,482,3,70,35,14,466,467,10,12,0,0,467,468,5,
-        40,0,0,468,482,3,70,35,13,469,470,10,11,0,0,470,471,5,41,0,0,471,
-        482,3,70,35,12,472,473,10,10,0,0,473,474,5,46,0,0,474,482,3,70,35,
-        11,475,476,10,9,0,0,476,477,5,42,0,0,477,482,3,70,35,10,478,479,
-        10,8,0,0,479,480,5,43,0,0,480,482,3,70,35,9,481,436,1,0,0,0,481,
-        439,1,0,0,0,481,442,1,0,0,0,481,445,1,0,0,0,481,448,1,0,0,0,481,
-        451,1,0,0,0,481,454,1,0,0,0,481,457,1,0,0,0,481,460,1,0,0,0,481,
-        463,1,0,0,0,481,466,1,0,0,0,481,469,1,0,0,0,481,472,1,0,0,0,481,
-        475,1,0,0,0,481,478,1,0,0,0,482,485,1,0,0,0,483,481,1,0,0,0,483,
-        484,1,0,0,0,484,71,1,0,0,0,485,483,1,0,0,0,486,490,3,70,35,0,487,
-        490,3,40,20,0,488,490,3,38,19,0,489,486,1,0,0,0,489,487,1,0,0,0,
-        489,488,1,0,0,0,490,499,1,0,0,0,491,495,5,64,0,0,492,496,3,70,35,
-        0,493,496,3,40,20,0,494,496,3,38,19,0,495,492,1,0,0,0,495,493,1,
-        0,0,0,495,494,1,0,0,0,496,498,1,0,0,0,497,491,1,0,0,0,498,501,1,
-        0,0,0,499,497,1,0,0,0,499,500,1,0,0,0,500,73,1,0,0,0,501,499,1,0,
-        0,0,502,503,5,56,0,0,503,504,5,63,0,0,504,75,1,0,0,0,56,81,86,88,
-        98,101,109,115,120,125,130,135,143,155,160,164,172,180,187,196,201,
-        206,227,249,253,261,282,295,300,305,312,322,330,336,343,347,350,
-        360,365,369,374,379,392,394,400,402,409,411,417,419,422,434,481,
-        483,489,495,499
+        1,35,1,35,1,35,1,35,1,35,1,35,5,35,479,8,35,10,35,12,35,482,9,35,
+        1,36,1,36,1,36,3,36,487,8,36,1,36,1,36,1,36,1,36,3,36,493,8,36,5,
+        36,495,8,36,10,36,12,36,498,9,36,1,37,1,37,1,37,1,37,0,1,70,38,0,
+        2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,44,46,
+        48,50,52,54,56,58,60,62,64,66,68,70,72,74,0,4,1,0,58,59,1,0,28,30,
+        1,0,26,27,1,0,40,41,565,0,76,1,0,0,0,2,93,1,0,0,0,4,101,1,0,0,0,
+        6,115,1,0,0,0,8,117,1,0,0,0,10,122,1,0,0,0,12,137,1,0,0,0,14,148,
+        1,0,0,0,16,150,1,0,0,0,18,152,1,0,0,0,20,162,1,0,0,0,22,168,1,0,
+        0,0,24,170,1,0,0,0,26,185,1,0,0,0,28,191,1,0,0,0,30,199,1,0,0,0,
+        32,208,1,0,0,0,34,211,1,0,0,0,36,227,1,0,0,0,38,229,1,0,0,0,40,249,
+        1,0,0,0,42,251,1,0,0,0,44,255,1,0,0,0,46,263,1,0,0,0,48,266,1,0,
+        0,0,50,272,1,0,0,0,52,279,1,0,0,0,54,300,1,0,0,0,56,305,1,0,0,0,
+        58,307,1,0,0,0,60,312,1,0,0,0,62,314,1,0,0,0,64,327,1,0,0,0,66,352,
+        1,0,0,0,68,354,1,0,0,0,70,434,1,0,0,0,72,486,1,0,0,0,74,499,1,0,
+        0,0,76,77,5,15,0,0,77,81,5,5,0,0,78,80,3,2,1,0,79,78,1,0,0,0,80,
+        83,1,0,0,0,81,79,1,0,0,0,81,82,1,0,0,0,82,88,1,0,0,0,83,81,1,0,0,
+        0,84,87,3,24,12,0,85,87,3,4,2,0,86,84,1,0,0,0,86,85,1,0,0,0,87,90,
+        1,0,0,0,88,86,1,0,0,0,88,89,1,0,0,0,89,91,1,0,0,0,90,88,1,0,0,0,
+        91,92,5,6,0,0,92,1,1,0,0,0,93,94,5,21,0,0,94,95,5,22,0,0,95,98,5,
+        56,0,0,96,97,5,45,0,0,97,99,5,56,0,0,98,96,1,0,0,0,98,99,1,0,0,0,
+        99,3,1,0,0,0,100,102,5,13,0,0,101,100,1,0,0,0,101,102,1,0,0,0,102,
+        103,1,0,0,0,103,104,5,7,0,0,104,109,3,6,3,0,105,106,5,64,0,0,106,
+        108,3,6,3,0,107,105,1,0,0,0,108,111,1,0,0,0,109,107,1,0,0,0,109,
+        110,1,0,0,0,110,5,1,0,0,0,111,109,1,0,0,0,112,116,3,8,4,0,113,116,
+        3,18,9,0,114,116,3,10,5,0,115,112,1,0,0,0,115,113,1,0,0,0,115,114,
+        1,0,0,0,116,7,1,0,0,0,117,120,5,56,0,0,118,119,5,31,0,0,119,121,
+        3,70,35,0,120,118,1,0,0,0,120,121,1,0,0,0,121,9,1,0,0,0,122,123,
+        5,56,0,0,123,125,5,3,0,0,124,126,3,14,7,0,125,124,1,0,0,0,125,126,
+        1,0,0,0,126,127,1,0,0,0,127,128,5,4,0,0,128,130,5,3,0,0,129,131,
+        3,16,8,0,130,129,1,0,0,0,130,131,1,0,0,0,131,132,1,0,0,0,132,135,
+        5,4,0,0,133,134,5,31,0,0,134,136,3,12,6,0,135,133,1,0,0,0,135,136,
+        1,0,0,0,136,11,1,0,0,0,137,138,5,5,0,0,138,143,3,20,10,0,139,140,
+        5,64,0,0,140,142,3,20,10,0,141,139,1,0,0,0,142,145,1,0,0,0,143,141,
+        1,0,0,0,143,144,1,0,0,0,144,146,1,0,0,0,145,143,1,0,0,0,146,147,
+        5,6,0,0,147,13,1,0,0,0,148,149,3,22,11,0,149,15,1,0,0,0,150,151,
+        3,22,11,0,151,17,1,0,0,0,152,153,5,56,0,0,153,155,5,3,0,0,154,156,
+        3,22,11,0,155,154,1,0,0,0,155,156,1,0,0,0,156,157,1,0,0,0,157,160,
+        5,4,0,0,158,159,5,31,0,0,159,161,3,20,10,0,160,158,1,0,0,0,160,161,
+        1,0,0,0,161,19,1,0,0,0,162,164,5,5,0,0,163,165,3,72,36,0,164,163,
+        1,0,0,0,164,165,1,0,0,0,165,166,1,0,0,0,166,167,5,6,0,0,167,21,1,
+        0,0,0,168,169,3,70,35,0,169,23,1,0,0,0,170,172,5,14,0,0,171,173,
+        5,7,0,0,172,171,1,0,0,0,172,173,1,0,0,0,173,174,1,0,0,0,174,175,
+        5,56,0,0,175,176,3,26,13,0,176,180,5,5,0,0,177,179,3,36,18,0,178,
+        177,1,0,0,0,179,182,1,0,0,0,180,178,1,0,0,0,180,181,1,0,0,0,181,
+        183,1,0,0,0,182,180,1,0,0,0,183,184,5,6,0,0,184,25,1,0,0,0,185,187,
+        5,1,0,0,186,188,3,28,14,0,187,186,1,0,0,0,187,188,1,0,0,0,188,189,
+        1,0,0,0,189,190,5,2,0,0,190,27,1,0,0,0,191,196,3,30,15,0,192,193,
+        5,64,0,0,193,195,3,30,15,0,194,192,1,0,0,0,195,198,1,0,0,0,196,194,
+        1,0,0,0,196,197,1,0,0,0,197,29,1,0,0,0,198,196,1,0,0,0,199,201,5,
+        7,0,0,200,202,5,46,0,0,201,200,1,0,0,0,201,202,1,0,0,0,202,203,1,
+        0,0,0,203,206,5,56,0,0,204,207,3,32,16,0,205,207,3,34,17,0,206,204,
+        1,0,0,0,206,205,1,0,0,0,206,207,1,0,0,0,207,31,1,0,0,0,208,209,5,
+        3,0,0,209,210,5,4,0,0,210,33,1,0,0,0,211,212,5,3,0,0,212,213,5,4,
+        0,0,213,214,5,3,0,0,214,215,5,4,0,0,215,35,1,0,0,0,216,228,3,4,2,
+        0,217,228,3,44,22,0,218,228,3,48,24,0,219,228,3,50,25,0,220,228,
+        3,52,26,0,221,228,3,62,31,0,222,228,3,42,21,0,223,228,3,66,33,0,
+        224,228,3,38,19,0,225,228,3,40,20,0,226,228,3,70,35,0,227,216,1,
+        0,0,0,227,217,1,0,0,0,227,218,1,0,0,0,227,219,1,0,0,0,227,220,1,
+        0,0,0,227,221,1,0,0,0,227,222,1,0,0,0,227,223,1,0,0,0,227,224,1,
+        0,0,0,227,225,1,0,0,0,227,226,1,0,0,0,228,37,1,0,0,0,229,230,3,70,
+        35,0,230,231,5,31,0,0,231,232,3,70,35,0,232,39,1,0,0,0,233,234,3,
+        70,35,0,234,235,5,47,0,0,235,236,3,70,35,0,236,250,1,0,0,0,237,238,
+        3,70,35,0,238,239,5,48,0,0,239,240,3,70,35,0,240,250,1,0,0,0,241,
+        242,3,70,35,0,242,243,5,49,0,0,243,244,3,70,35,0,244,250,1,0,0,0,
+        245,246,3,70,35,0,246,247,5,50,0,0,247,248,3,70,35,0,248,250,1,0,
+        0,0,249,233,1,0,0,0,249,237,1,0,0,0,249,241,1,0,0,0,249,245,1,0,
+        0,0,250,41,1,0,0,0,251,253,5,20,0,0,252,254,3,70,35,0,253,252,1,
+        0,0,0,253,254,1,0,0,0,254,43,1,0,0,0,255,256,5,11,0,0,256,257,5,
+        1,0,0,257,258,3,70,35,0,258,259,5,2,0,0,259,261,3,54,27,0,260,262,
+        3,46,23,0,261,260,1,0,0,0,261,262,1,0,0,0,262,45,1,0,0,0,263,264,
+        5,12,0,0,264,265,3,54,27,0,265,47,1,0,0,0,266,267,5,9,0,0,267,268,
+        5,1,0,0,268,269,3,70,35,0,269,270,5,2,0,0,270,271,3,54,27,0,271,
+        49,1,0,0,0,272,273,5,8,0,0,273,274,3,54,27,0,274,275,5,9,0,0,275,
+        276,5,1,0,0,276,277,3,70,35,0,277,278,5,2,0,0,278,51,1,0,0,0,279,
+        280,5,10,0,0,280,282,5,1,0,0,281,283,3,56,28,0,282,281,1,0,0,0,282,
+        283,1,0,0,0,283,284,1,0,0,0,284,285,5,65,0,0,285,286,3,58,29,0,286,
+        287,5,65,0,0,287,288,3,60,30,0,288,289,5,2,0,0,289,290,3,54,27,0,
+        290,53,1,0,0,0,291,295,5,5,0,0,292,294,3,36,18,0,293,292,1,0,0,0,
+        294,297,1,0,0,0,295,293,1,0,0,0,295,296,1,0,0,0,296,298,1,0,0,0,
+        297,295,1,0,0,0,298,301,5,6,0,0,299,301,3,36,18,0,300,291,1,0,0,
+        0,300,299,1,0,0,0,301,55,1,0,0,0,302,306,3,38,19,0,303,306,3,4,2,
+        0,304,306,5,56,0,0,305,302,1,0,0,0,305,303,1,0,0,0,305,304,1,0,0,
+        0,306,57,1,0,0,0,307,308,3,70,35,0,308,59,1,0,0,0,309,313,3,70,35,
+        0,310,313,3,40,20,0,311,313,3,38,19,0,312,309,1,0,0,0,312,310,1,
+        0,0,0,312,311,1,0,0,0,313,61,1,0,0,0,314,315,5,16,0,0,315,316,5,
+        1,0,0,316,317,3,70,35,0,317,318,5,2,0,0,318,322,5,5,0,0,319,321,
+        3,64,32,0,320,319,1,0,0,0,321,324,1,0,0,0,322,320,1,0,0,0,322,323,
+        1,0,0,0,323,325,1,0,0,0,324,322,1,0,0,0,325,326,5,6,0,0,326,63,1,
+        0,0,0,327,330,5,17,0,0,328,331,5,18,0,0,329,331,3,70,35,0,330,328,
+        1,0,0,0,330,329,1,0,0,0,331,332,1,0,0,0,332,347,5,66,0,0,333,335,
+        3,36,18,0,334,333,1,0,0,0,335,338,1,0,0,0,336,334,1,0,0,0,336,337,
+        1,0,0,0,337,348,1,0,0,0,338,336,1,0,0,0,339,343,5,5,0,0,340,342,
+        3,36,18,0,341,340,1,0,0,0,342,345,1,0,0,0,343,341,1,0,0,0,343,344,
+        1,0,0,0,344,346,1,0,0,0,345,343,1,0,0,0,346,348,5,6,0,0,347,336,
+        1,0,0,0,347,339,1,0,0,0,348,350,1,0,0,0,349,351,3,66,33,0,350,349,
+        1,0,0,0,350,351,1,0,0,0,351,65,1,0,0,0,352,353,5,19,0,0,353,67,1,
+        0,0,0,354,355,5,3,0,0,355,356,3,70,35,0,356,357,5,4,0,0,357,69,1,
+        0,0,0,358,360,6,35,-1,0,359,361,3,74,37,0,360,359,1,0,0,0,360,361,
+        1,0,0,0,361,362,1,0,0,0,362,363,5,56,0,0,363,365,5,1,0,0,364,366,
+        3,72,36,0,365,364,1,0,0,0,365,366,1,0,0,0,366,367,1,0,0,0,367,435,
+        5,2,0,0,368,370,3,74,37,0,369,368,1,0,0,0,369,370,1,0,0,0,370,371,
+        1,0,0,0,371,372,5,56,0,0,372,435,3,68,34,0,373,375,3,74,37,0,374,
+        373,1,0,0,0,374,375,1,0,0,0,375,376,1,0,0,0,376,377,5,56,0,0,377,
+        379,3,68,34,0,378,380,3,68,34,0,379,378,1,0,0,0,379,380,1,0,0,0,
+        380,435,1,0,0,0,381,382,5,26,0,0,382,435,3,70,35,29,383,384,5,27,
+        0,0,384,435,3,70,35,28,385,386,5,23,0,0,386,435,3,70,35,27,387,388,
+        5,44,0,0,388,435,3,70,35,26,389,394,5,56,0,0,390,392,3,68,34,0,391,
+        393,3,68,34,0,392,391,1,0,0,0,392,393,1,0,0,0,393,395,1,0,0,0,394,
+        390,1,0,0,0,394,395,1,0,0,0,395,396,1,0,0,0,396,435,5,38,0,0,397,
+        402,5,56,0,0,398,400,3,68,34,0,399,401,3,68,34,0,400,399,1,0,0,0,
+        400,401,1,0,0,0,401,403,1,0,0,0,402,398,1,0,0,0,402,403,1,0,0,0,
+        403,404,1,0,0,0,404,435,5,39,0,0,405,406,5,38,0,0,406,411,5,56,0,
+        0,407,409,3,68,34,0,408,410,3,68,34,0,409,408,1,0,0,0,409,410,1,
+        0,0,0,410,412,1,0,0,0,411,407,1,0,0,0,411,412,1,0,0,0,412,435,1,
+        0,0,0,413,414,5,39,0,0,414,419,5,56,0,0,415,417,3,68,34,0,416,418,
+        3,68,34,0,417,416,1,0,0,0,417,418,1,0,0,0,418,420,1,0,0,0,419,415,
+        1,0,0,0,419,420,1,0,0,0,420,435,1,0,0,0,421,423,3,74,37,0,422,421,
+        1,0,0,0,422,423,1,0,0,0,423,424,1,0,0,0,424,435,5,56,0,0,425,435,
+        7,0,0,0,426,435,5,57,0,0,427,435,5,51,0,0,428,435,5,54,0,0,429,435,
+        5,55,0,0,430,431,5,1,0,0,431,432,3,70,35,0,432,433,5,2,0,0,433,435,
+        1,0,0,0,434,358,1,0,0,0,434,369,1,0,0,0,434,374,1,0,0,0,434,381,
+        1,0,0,0,434,383,1,0,0,0,434,385,1,0,0,0,434,387,1,0,0,0,434,389,
+        1,0,0,0,434,397,1,0,0,0,434,405,1,0,0,0,434,413,1,0,0,0,434,422,
+        1,0,0,0,434,425,1,0,0,0,434,426,1,0,0,0,434,427,1,0,0,0,434,428,
+        1,0,0,0,434,429,1,0,0,0,434,430,1,0,0,0,435,480,1,0,0,0,436,437,
+        10,21,0,0,437,438,7,1,0,0,438,479,3,70,35,22,439,440,10,20,0,0,440,
+        441,7,2,0,0,441,479,3,70,35,21,442,443,10,19,0,0,443,444,5,32,0,
+        0,444,479,3,70,35,20,445,446,10,18,0,0,446,447,5,33,0,0,447,479,
+        3,70,35,19,448,449,10,17,0,0,449,450,5,34,0,0,450,479,3,70,35,18,
+        451,452,10,16,0,0,452,453,5,35,0,0,453,479,3,70,35,17,454,455,10,
+        15,0,0,455,456,5,36,0,0,456,479,3,70,35,16,457,458,10,14,0,0,458,
+        459,5,37,0,0,459,479,3,70,35,15,460,461,10,13,0,0,461,462,5,24,0,
+        0,462,479,3,70,35,14,463,464,10,12,0,0,464,465,5,25,0,0,465,479,
+        3,70,35,13,466,467,10,11,0,0,467,468,7,3,0,0,468,479,3,70,35,12,
+        469,470,10,10,0,0,470,471,5,46,0,0,471,479,3,70,35,11,472,473,10,
+        9,0,0,473,474,5,42,0,0,474,479,3,70,35,10,475,476,10,8,0,0,476,477,
+        5,43,0,0,477,479,3,70,35,9,478,436,1,0,0,0,478,439,1,0,0,0,478,442,
+        1,0,0,0,478,445,1,0,0,0,478,448,1,0,0,0,478,451,1,0,0,0,478,454,
+        1,0,0,0,478,457,1,0,0,0,478,460,1,0,0,0,478,463,1,0,0,0,478,466,
+        1,0,0,0,478,469,1,0,0,0,478,472,1,0,0,0,478,475,1,0,0,0,479,482,
+        1,0,0,0,480,478,1,0,0,0,480,481,1,0,0,0,481,71,1,0,0,0,482,480,1,
+        0,0,0,483,487,3,70,35,0,484,487,3,40,20,0,485,487,3,38,19,0,486,
+        483,1,0,0,0,486,484,1,0,0,0,486,485,1,0,0,0,487,496,1,0,0,0,488,
+        492,5,64,0,0,489,493,3,70,35,0,490,493,3,40,20,0,491,493,3,38,19,
+        0,492,489,1,0,0,0,492,490,1,0,0,0,492,491,1,0,0,0,493,495,1,0,0,
+        0,494,488,1,0,0,0,495,498,1,0,0,0,496,494,1,0,0,0,496,497,1,0,0,
+        0,497,73,1,0,0,0,498,496,1,0,0,0,499,500,5,56,0,0,500,501,5,63,0,
+        0,501,75,1,0,0,0,56,81,86,88,98,101,109,115,120,125,130,135,143,
+        155,160,164,172,180,187,196,201,206,227,249,253,261,282,295,300,
+        305,312,322,330,336,343,347,350,360,365,369,374,379,392,394,400,
+        402,409,411,417,419,422,434,478,480,486,492,496
     ];
 
     private static __ATN: antlr.ATN;
@@ -5270,7 +5260,8 @@ export class OperacaoOuLogicoContext extends ExpressaoContext {
         }
     }
 }
-export class OperacaoShiftLeftContext extends ExpressaoContext {
+export class OperacaoShiftContext extends ExpressaoContext {
+    public _op?: Token | null;
     public constructor(ctx: ExpressaoContext) {
         super(ctx.parent, ctx.invokingState);
         super.copyFrom(ctx);
@@ -5284,57 +5275,25 @@ export class OperacaoShiftLeftContext extends ExpressaoContext {
 
         return this.getRuleContext(i, ExpressaoContext);
     }
-    public OP_SHIFT_LEFT(): antlr.TerminalNode {
-        return this.getToken(PortugolParser.OP_SHIFT_LEFT, 0)!;
+    public OP_SHIFT_LEFT(): antlr.TerminalNode | null {
+        return this.getToken(PortugolParser.OP_SHIFT_LEFT, 0);
+    }
+    public OP_SHIFT_RIGHT(): antlr.TerminalNode | null {
+        return this.getToken(PortugolParser.OP_SHIFT_RIGHT, 0);
     }
     public override enterRule(listener: PortugolListener): void {
-        if(listener.enterOperacaoShiftLeft) {
-             listener.enterOperacaoShiftLeft(this);
+        if(listener.enterOperacaoShift) {
+             listener.enterOperacaoShift(this);
         }
     }
     public override exitRule(listener: PortugolListener): void {
-        if(listener.exitOperacaoShiftLeft) {
-             listener.exitOperacaoShiftLeft(this);
+        if(listener.exitOperacaoShift) {
+             listener.exitOperacaoShift(this);
         }
     }
     public override accept<Result>(visitor: PortugolVisitor<Result>): Result | null {
-        if (visitor.visitOperacaoShiftLeft) {
-            return visitor.visitOperacaoShiftLeft(this);
-        } else {
-            return visitor.visitChildren(this);
-        }
-    }
-}
-export class OperacaoShiftRightContext extends ExpressaoContext {
-    public constructor(ctx: ExpressaoContext) {
-        super(ctx.parent, ctx.invokingState);
-        super.copyFrom(ctx);
-    }
-    public expressao(): ExpressaoContext[];
-    public expressao(i: number): ExpressaoContext | null;
-    public expressao(i?: number): ExpressaoContext[] | ExpressaoContext | null {
-        if (i === undefined) {
-            return this.getRuleContexts(ExpressaoContext);
-        }
-
-        return this.getRuleContext(i, ExpressaoContext);
-    }
-    public OP_SHIFT_RIGHT(): antlr.TerminalNode {
-        return this.getToken(PortugolParser.OP_SHIFT_RIGHT, 0)!;
-    }
-    public override enterRule(listener: PortugolListener): void {
-        if(listener.enterOperacaoShiftRight) {
-             listener.enterOperacaoShiftRight(this);
-        }
-    }
-    public override exitRule(listener: PortugolListener): void {
-        if(listener.exitOperacaoShiftRight) {
-             listener.exitOperacaoShiftRight(this);
-        }
-    }
-    public override accept<Result>(visitor: PortugolVisitor<Result>): Result | null {
-        if (visitor.visitOperacaoShiftRight) {
-            return visitor.visitOperacaoShiftRight(this);
+        if (visitor.visitOperacaoShift) {
+            return visitor.visitOperacaoShift(this);
         } else {
             return visitor.visitChildren(this);
         }
