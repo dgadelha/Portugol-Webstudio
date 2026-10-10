@@ -99,6 +99,7 @@ As mensagens de erro são as do Portugol Studio, com algumas diferenças:
 - Quando a mensagem do Portugol Studio aponta o problema errado, o Webstudio mostra uma mensagem corrigida. Por exemplo, em `inteiro x =` sem um valor, o Portugol Studio pede para inserir um `(`, e o Webstudio diz que era esperada uma expressão.
 - Algumas mensagens são exclusivas do Webstudio, como a de um comentário que não foi fechado, a de um acento no nome de uma variável e a de um `caracter` vazio.
 - Onde o Portugol Studio mostra uma mensagem em inglês ou para com um erro interno, o Webstudio mostra uma mensagem em português.
+- Comparar duas cadeias com `>`, `<`, `>=` ou `<=` é um erro nos dois. O Portugol Studio só mostra o erro ao executar o programa, sem dizer a linha; o Webstudio mostra no editor, no lugar da comparação.
 
 Para alguns enganos comuns, o Webstudio diz o que está errado, onde o Portugol Studio quase sempre pede um `(` ou um `)`:
 

@@ -20,6 +20,7 @@ import {
   erroBibliotecaNãoInserida,
   erroBibliotecaNãoSuportada,
   erroBlocoInválido,
+  erroComparaçãoDeCadeias,
   erroConstanteNãoEncontradaNaBiblioteca,
   avisoIncrementoEmConta,
   erroEscapeÚnico,
@@ -188,6 +189,16 @@ const OPERADOR_COMPOSTO = new Map<Construtor, OperadorBinário>([
   [AtribuiçãoCompostaMultiplicaçãoCmd, "multiplicação"],
   [AtribuiçãoCompostaDivisãoCmd, "divisão"],
 ]);
+
+/**
+ * As comparações que não valem entre duas cadeias.
+ */
+const SÍMBOLO_DA_COMPARAÇÃO: Partial<Record<OperadorBinário, string>> = {
+  maior: ">",
+  maiorIgual: ">=",
+  menor: "<",
+  menorIgual: "<=",
+};
 
 /**
  * O operador que cada incremento/decremento desdobra (`x++` é `x = x + 1`).
@@ -1333,6 +1344,13 @@ export class AnalisadorSemântico {
       this.registrar(erroTiposOperaçãoBinária(origem, operador, esquerdo, direito));
 
       return undefined;
+    }
+
+    // Divergência: a tabela do Java aceita, e só o gerador de código recusa, ao executar.
+    const comparação = SÍMBOLO_DA_COMPARAÇÃO[operador];
+
+    if (comparação && esquerdo === TipoPrimitivo.CADEIA && direito === TipoPrimitivo.CADEIA) {
+      this.registrar(erroComparaçãoDeCadeias(origem, comparação));
     }
 
     // Nenhuma tabela de operação binária tem célula de conversão (só as de atribuição,

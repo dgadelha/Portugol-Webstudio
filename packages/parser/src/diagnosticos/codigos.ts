@@ -165,6 +165,12 @@ export const CÓDIGOS = {
   OPERADOR_INEXISTENTE: "ErroWebstudio.ErroOperadorInexistente",
 
   /**
+   * `cadeia > cadeia` (e `<`, `>=`, `<=`). A análise do Portugol Studio aceita, mas o gerador de
+   * código recusa ao executar, sem linha (`GeradorOperacao`); aqui o erro aparece no editor.
+   */
+  COMPARACAO_DE_CADEIAS: "ErroWebstudio.ErroComparacaoDeCadeias",
+
+  /**
    * `senao (condição)`: o `senao` não recebe uma condição.
    */
   SENAO_COM_CONDICAO: "ErroWebstudio.ErroSenaoComCondicao",

@@ -1123,6 +1123,10 @@ export function erroOperadorInexistente(origem: Origem, escrito: string): Portug
   return erro(origem, `O operador '${escrito}' não existe`, CÓDIGOS.OPERADOR_INEXISTENTE);
 }
 
+export function erroComparaçãoDeCadeias(origem: Origem, operador: string): PortugolCodeDiagnostic {
+  return erro(origem, `Não é possível comparar cadeias com o operador '${operador}'`, CÓDIGOS.COMPARACAO_DE_CADEIAS);
+}
+
 export function erroComentárioSemFim(origem: Origem): PortugolCodeDiagnostic {
   return erro(
     origem,
