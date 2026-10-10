@@ -292,6 +292,12 @@ class AnalisadorSintático extends BaseErrorListener {
     const travou = e.offendingToken;
     const anterior = this.tokenAnterior(parser, travou);
 
+    // `para (inteiro i = v[0])`: a decisão do índice trava no `)` do cabeçalho. O que falta é a
+    // condição de parada, como em `para (inteiro i = 0)`, que o parser percebe na regra `para`.
+    if (this.fechaOCabeçalhoDoPara(parser, travou)) {
+      return erroParaEsperaCondição(travou);
+    }
+
     if (travou.type === Token.EOF) {
       return anterior && OPERADORES_BINÁRIOS.has(anterior.text ?? "")
         ? erroExpressãoIncompleta(anterior)
@@ -505,9 +511,7 @@ class AnalisadorSintático extends BaseErrorListener {
     }
 
     // `inteiro m[2,3]` ou `m[1,2]`.
-    const vírgula = linha.findIndex(
-      (token, i) => token.text === "," && linha[i - 2]?.text === "[" && this.dentroDeColchetes(linha, i),
-    );
+    const vírgula = linha.findIndex((token, i) => token.text === "," && this.abertoAntes(linha, i) === "[");
 
     if (vírgula !== -1) {
       return erroVírgulaEmColchetes(linha[vírgula]);
@@ -517,7 +521,8 @@ class AnalisadorSintático extends BaseErrorListener {
     // fechar, ou de um `=`.
     const semFechar = this.delimitadorAbertoAntes(linha);
 
-    if (semFechar) {
+    // No `para`, faltar a condição de parada vem antes: `para (inteiro i = 0 }`.
+    if (semFechar && traduzido.code !== CÓDIGOS.PARA_ESPERA_CONDICAO) {
       return erroParsingNãoTratado(semFechar.token, `'${semFechar.esperado}'`, semFechar.token.text ?? "");
     }
 
@@ -557,14 +562,23 @@ class AnalisadorSintático extends BaseErrorListener {
     return;
   }
 
-  private dentroDeColchetes(tokens: readonly Token[], até: number) {
-    let abertos = 0;
+  /**
+   * O `(`, `[` ou `{` mais interno que está aberto antes do token, contando só a linha.
+   */
+  private abertoAntes(tokens: readonly Token[], até: number) {
+    const abertos: string[] = [];
 
     for (const token of tokens.slice(0, até)) {
-      abertos += token.text === "[" ? 1 : token.text === "]" ? -1 : 0;
+      const texto = token.text ?? "";
+
+      if (["(", "[", "{"].includes(texto)) {
+        abertos.push(texto);
+      } else if ([")", "]", "}"].includes(texto)) {
+        abertos.pop();
+      }
     }
 
-    return abertos > 0;
+    return abertos.at(-1);
   }
 
   /**
@@ -740,7 +754,9 @@ class AnalisadorSintático extends BaseErrorListener {
     }
 
     if (semFechar) {
-      return erroParsingNãoTratado(semFechar.último, "']'", this.textoOuFim(semFechar.travou));
+      return semFechar.travou.type === Token.EOF
+        ? erroParsingNãoTratado(semFechar.último, "']'", undefined)
+        : erroFaltaNoFimDaLinha(semFechar.último, "']'");
     }
 
     // Divergência: comando direto no programa, fora de função. O Java tem a mensagem
@@ -790,7 +806,9 @@ class AnalisadorSintático extends BaseErrorListener {
         return erroExpressãoIncompleta(alvo);
       }
 
-      if (texto === ",") {
+      // Divergência: o Java fala de real com vírgula para qualquer vírgula aqui, mesmo sem
+      // número, como em `inteiro x = (0, y = 1`.
+      if (texto === "," && this.númeroComVírgula(parser, token)) {
         return erroRealComVírgula(alvo);
       }
 
@@ -813,6 +831,16 @@ class AnalisadorSintático extends BaseErrorListener {
       // da linguagem ali (como `caso` ou `inclua`) é que está fora do lugar.
       if (atual === "declaracaoFuncao" && ctx.getToken(PortugolLexer.ABRE_CHAVES, 0)) {
         return this.palavraOuSobra(parser, token, alvo, texto);
+      }
+
+      // Divergência: em `inteiro m[2][` no fim do código, o nome está lá; falta fechar o `[`. O
+      // Java diz que o nome não foi informado, porque o tamanho também pode começar por um nome.
+      if (nomesEsperados.includes("FECHA_COLCHETES")) {
+        const anterior = this.tokenAnterior(parser, token);
+
+        return anterior && token.type === Token.EOF
+          ? erroParsingNãoTratado(anterior, "']'", undefined)
+          : erroParsingNãoTratado(alvo, "']'", texto);
       }
 
       if (nomesEsperados.includes("ID")) {
@@ -1033,6 +1061,39 @@ class AnalisadorSintático extends BaseErrorListener {
 
   private vemAntes(a: PortugolCodeDiagnostic, b: PortugolCodeDiagnostic) {
     return a.startLine < b.startLine || (a.startLine === b.startLine && a.startCol < b.startCol);
+  }
+
+  /**
+   * Se o token é o `)` que fecha o cabeçalho do `para` em que o parser está.
+   */
+  private fechaOCabeçalhoDoPara(parser: Parser, token: Token) {
+    let contexto: ParserRuleContext | null = parser.context;
+
+    while (contexto && contexto.ruleIndex !== PortugolParser.RULE_para) {
+      if (contexto.ruleIndex === PortugolParser.RULE_listaComandos) {
+        return false;
+      }
+
+      contexto = contexto.parent;
+    }
+
+    if (!contexto?.start) {
+      return false;
+    }
+
+    let abertos = 0;
+
+    for (let i = contexto.start.tokenIndex + 1; i <= token.tokenIndex; i++) {
+      const texto = parser.tokenStream.get(i).text;
+
+      if (texto === "(") {
+        abertos++;
+      } else if (texto === ")" && --abertos === 0) {
+        return i === token.tokenIndex;
+      }
+    }
+
+    return false;
   }
 
   /**

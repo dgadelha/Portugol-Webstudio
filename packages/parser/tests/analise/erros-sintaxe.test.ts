@@ -1058,3 +1058,84 @@ describe("caminhos menos comuns da tradução", () => {
     expect(errosDeSintaxe(código)).toEqual([{ ...posição, code: códigoDoErro, message: mensagem }]);
   });
 });
+
+/**
+ * Mensagens que o Portugol Studio também dava erradas: real com vírgula onde não há número,
+ * nome não informado onde ele está, e o mesmo engano com mensagens diferentes conforme o lugar.
+ */
+describe("a mesma mensagem para o mesmo engano", () => {
+  test.each([
+    [
+      "vírgula sem número no fim de uma declaração global",
+      "programa {\n  inteiro x = ,\n  funcao inicio() {\n  }\n}\n",
+      { startLine: 2, startCol: 14, endLine: 2, endCol: 14 },
+      "ErroSintatico.ErroExpressaoEsperada.8",
+      "Era esperada uma expressão",
+    ],
+    [
+      "vírgula depois de um parêntese aberto",
+      "programa {\n  funcao inicio() {\n    inteiro y\n    inteiro x = (0, y = 1\n  }\n}\n",
+      { startLine: 4, startCol: 18, endLine: 4, endCol: 18 },
+      "ErroSintatico.ErroParentesis.2",
+      "A expressão não foi finalizada corretamente. Insira o caracter ')' para corrigir o problema.",
+    ],
+    [
+      "`para` sem `;` antes do `}`",
+      "programa {\n  funcao inicio() {\n    para (inteiro i = 0 }\n  }\n}\n",
+      { startLine: 3, startCol: 24, endLine: 3, endCol: 24 },
+      "ErroSintatico.ErroParaEsperaCondicao",
+      'O comando "para" necessita ao menos de uma condição de parada. Utilize a seguinte construção para corrigir o problema: "para( ; <condicao> ; ){ <comandos> }"',
+    ],
+    [
+      "`para` sem condição, inicializado com um vetor",
+      "programa {\n  funcao inicio() {\n    inteiro v[2]\n    para (inteiro i = v[0]) {}\n  }\n}\n",
+      { startLine: 4, startCol: 26, endLine: 4, endCol: 26 },
+      "ErroSintatico.ErroParaEsperaCondicao",
+      'O comando "para" necessita ao menos de uma condição de parada. Utilize a seguinte construção para corrigir o problema: "para( ; <condicao> ; ){ <comandos> }"',
+    ],
+    [
+      "`para` sem condição, inicializado com uma matriz",
+      "programa {\n  funcao inicio() {\n    inteiro m[2][2]\n    para (inteiro i = m[0][1]) {}\n  }\n}\n",
+      { startLine: 4, startCol: 29, endLine: 4, endCol: 29 },
+      "ErroSintatico.ErroParaEsperaCondicao",
+      'O comando "para" necessita ao menos de uma condição de parada. Utilize a seguinte construção para corrigir o problema: "para( ; <condicao> ; ){ <comandos> }"',
+    ],
+    [
+      "vírgula num tamanho com conta",
+      "programa {\n  funcao inicio() {\n    inteiro v[1+2,5]\n  }\n}\n",
+      { startLine: 3, startCol: 17, endLine: 3, endCol: 17 },
+      "ErroWebstudio.ErroVirgulaEmColchetes",
+      "As posições de uma matriz não são separadas por vírgula",
+    ],
+    [
+      "`[` sem fechar no fim do código",
+      "programa {\n  inteiro v[2][",
+      { startLine: 2, startCol: 14, endLine: 2, endCol: 14 },
+      "ErroSintatico.ErroParsingNaoTratado",
+      "Era esperado ']' no fim do código",
+    ],
+    [
+      "`]` faltando no tamanho do vetor",
+      "programa {\n  funcao inicio() {\n    inteiro v[3\n    inteiro x\n  }\n}\n",
+      { startLine: 3, startCol: 14, endLine: 3, endCol: 14 },
+      "ErroSintatico.ErroParsingNaoTratado",
+      "Era esperado ']' no fim da linha",
+    ],
+    [
+      "`]` faltando no índice de uma atribuição",
+      "programa {\n  funcao inicio() {\n    inteiro v[2]\n    inteiro x = v[1\n    escreva(x)\n  }\n}\n",
+      { startLine: 4, startCol: 18, endLine: 4, endCol: 18 },
+      "ErroSintatico.ErroParsingNaoTratado",
+      "Era esperado ']' no fim da linha",
+    ],
+    [
+      "`]` faltando no índice dentro de uma chamada",
+      "programa {\n  funcao inicio() {\n    inteiro v[2]\n    escreva(v[1\n    escreva(1)\n  }\n}\n",
+      { startLine: 4, startCol: 14, endLine: 4, endCol: 14 },
+      "ErroSintatico.ErroParsingNaoTratado",
+      "Era esperado ']' no fim da linha",
+    ],
+  ])("%s", (_nome, código, posição, códigoDoErro, mensagem) => {
+    expect(errosDeSintaxe(código)).toEqual([{ ...posição, code: códigoDoErro, message: mensagem }]);
+  });
+});
