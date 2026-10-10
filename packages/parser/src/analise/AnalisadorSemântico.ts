@@ -16,7 +16,6 @@ import {
   erroAtribuirEmConstante,
   erroAtribuirEmExpressão,
   erroAtribuirFunçãoBiblioteca,
-  erroAtribuirMatrizVetorEmVariável,
   erroBibliotecaNãoInserida,
   erroBibliotecaNãoSuportada,
   erroBlocoInválido,
@@ -31,10 +30,8 @@ import {
   erroFunçãoSemRetorne,
   erroInclusãoBiblioteca,
   erroInicializaçãoConstante,
-  erroInicializaçãoErrada,
   erroNúmeroParâmetrosFunção,
   erroParaSemExpressãoAtribuição,
-  erroParaSemExpressãoComparação,
   erroPareForaDeLaço,
   erroParâmetroExcedente,
   erroParâmetroRedeclarado,
@@ -481,9 +478,9 @@ export class AnalisadorSemântico {
     // oracle (`funcao inteiro f()` + `funcao cadeia f()` acusa retorno "inteiro" nas duas).
     const símbolo = this.memória.obterSímbolo(nó.nome);
 
+    // Sempre é a função: as funções entram na memória antes das globais, e uma global homônima
+    // é redeclaração e não entra. O `if` só estreita o tipo.
     if (símbolo?.classe !== "função") {
-      // O nome foi tomado por uma variável global. O Portugol Studio estoura
-      // `ClassCastException` aqui; nós apenas não analisamos o corpo.
       return;
     }
 
@@ -652,24 +649,19 @@ export class AnalisadorSemântico {
       this.registrar(erroSímboloNãoInicializado(nó.nomeToken, símbolo));
     }
 
-    if (nó.expressão) {
-      if (nó.expressão instanceof InicializaçãoVetorExpr) {
-        this.verificarQuantidadeElementosVetor(nó.expressão, nó.nome, tamanho);
+    // O slot só aceita `inicializacaoArray`: `inteiro v[2] = 5` não passa do sintático, então
+    // o `ErroAoInicializarVetor` do Portugol Studio é inalcançável.
+    if (nó.expressão instanceof InicializaçãoVetorExpr) {
+      this.verificarQuantidadeElementosVetor(nó.expressão, nó.nome, tamanho);
 
-        if (tamanho !== undefined && nó.constante) {
-          this.verificarInicializaçãoConstanteVetor(nó.expressão, nó.nome);
-        }
-
-        símbolo.escritas++;
-        this.declarandoArranjo = true;
-        this.analisarInicialização(símbolo, nó.expressão);
-        this.declarandoArranjo = false;
-      } else {
-        // `inteiro v[2] = 5` não passa do sintático (o slot só aceita `inicializacaoArray`),
-        // então o `ErroAoInicializarVetor` do Portugol Studio é inalcançável.
-        símbolo.escritas++;
-        this.resolverTipo(nó.expressão);
+      if (tamanho !== undefined && nó.constante) {
+        this.verificarInicializaçãoConstanteVetor(nó.expressão, nó.nome);
       }
+
+      símbolo.escritas++;
+      this.declarandoArranjo = true;
+      this.analisarInicialização(símbolo, nó.expressão);
+      this.declarandoArranjo = false;
     }
 
     símbolo.constante = nó.constante;
@@ -700,24 +692,19 @@ export class AnalisadorSemântico {
       this.registrar(erroSímboloNãoInicializado(nó.nomeToken, símbolo));
     }
 
-    if (nó.expressão) {
-      if (nó.expressão instanceof InicializaçãoMatrizExpr) {
-        this.verificarDimensõesInicializaçãoMatriz(nó.expressão, nó.nome, linhas, colunas);
+    // Como no vetor, `inteiro m[2][2] = 5` é erro sintático: `ErroAoInicializarMatriz` é
+    // inalcançável.
+    if (nó.expressão instanceof InicializaçãoMatrizExpr) {
+      this.verificarDimensõesInicializaçãoMatriz(nó.expressão, nó.nome, linhas, colunas);
 
-        if (linhas !== undefined && colunas !== undefined && nó.constante) {
-          this.verificarInicializaçãoConstanteMatriz(nó.expressão, nó.nome);
-        }
-
-        símbolo.escritas++;
-        this.declarandoArranjo = true;
-        this.analisarInicialização(símbolo, nó.expressão);
-        this.declarandoArranjo = false;
-      } else {
-        // Como no vetor, `inteiro m[2][2] = 5` é erro sintático: `ErroAoInicializarMatriz`
-        // é inalcançável.
-        símbolo.escritas++;
-        this.resolverTipo(nó.expressão);
+      if (linhas !== undefined && colunas !== undefined && nó.constante) {
+        this.verificarInicializaçãoConstanteMatriz(nó.expressão, nó.nome);
       }
+
+      símbolo.escritas++;
+      this.declarandoArranjo = true;
+      this.analisarInicialização(símbolo, nó.expressão);
+      this.declarandoArranjo = false;
     }
 
     símbolo.constante = nó.constante;
@@ -837,7 +824,7 @@ export class AnalisadorSemântico {
     }
 
     for (const [índice, linha] of inicialização.linhas.entries()) {
-      const declarados = linha instanceof InicializaçãoVetorExpr ? linha.valores.length : 1;
+      const declarados = linha.valores.length;
 
       if (colunas !== declarados) {
         this.registrar(erroQuantidadeElementosColunaMatriz(inicialização, nome, índice, colunas, declarados));
@@ -861,10 +848,6 @@ export class AnalisadorSemântico {
 
   private verificarInicializaçãoConstanteMatriz(inicialização: InicializaçãoMatrizExpr, nome: string) {
     for (const [linha, valores] of inicialização.linhas.entries()) {
-      if (!(valores instanceof InicializaçãoVetorExpr)) {
-        continue;
-      }
-
       for (const [coluna, valor] of valores.valores.entries()) {
         if (!éLiteral(semParênteses(valor))) {
           this.registrar(erroInicializaçãoConstante(valor, nome, { linha, coluna }));
@@ -1039,23 +1022,13 @@ export class AnalisadorSemântico {
     this.memória.empilharEscopo();
 
     // `para (inteiro i = 0, j = 0; ...)` é aceito pela gramática e pelo Portugol Studio.
+    // A gramática só aceita atribuição ou declaração na inicialização e exige a condição, então
+    // `ErroInicializacaoErrada` e `ErroParaSemExpressaoComparacao` não passam do sintático.
     for (const inicialização of nó.inicializações) {
-      if (
-        inicialização instanceof AtribuiçãoCmd ||
-        inicialização instanceof DeclaraçãoCmd ||
-        inicialização instanceof ReferênciaVarExpr
-      ) {
-        this.visitarBloco(inicialização);
-      } else {
-        this.registrar(erroInicializaçãoErrada(inicialização));
-      }
+      this.visitarBloco(inicialização);
     }
 
-    if (nó.condição) {
-      this.verificarCondição(nó.condição, "para");
-    } else {
-      this.registrar(erroParaSemExpressãoComparação(nó));
-    }
+    this.verificarCondição(nó.condição, "para");
 
     // `(i++)` também é incremento: o Portugol Studio não vê os parênteses.
     const incremento = nó.incremento && semParênteses(nó.incremento);
@@ -1168,16 +1141,11 @@ export class AnalisadorSemântico {
 
   private visitarAtribuição(cmd: AtribuiçãoCmd): TipoPrimitivo | undefined {
     // A árvore do Portugol Studio não tem nó de parênteses: `(x) = 1` é `x = 1`.
-    const esquerda = cmd.esquerda && semParênteses(cmd.esquerda);
+    const esquerda = semParênteses(cmd.esquerda);
     const direita = cmd.direita;
 
-    if (!esquerda || !direita) {
-      // Árvore incompleta por erro sintático.
-      return undefined;
-    }
-
     const operador = this.operadorComposto(cmd);
-    const alvo = this.prepararAlvoAtribuição(cmd, esquerda, direita);
+    const alvo = this.prepararAlvoAtribuição(cmd, esquerda);
 
     // O lado esquerdo é destino, não leitura: sem isso nunca sairia o aviso "atribuída, mas
     // nunca é lida". Os índices de `v[i] = 1` continuam contando como leitura.
@@ -1235,11 +1203,10 @@ export class AnalisadorSemântico {
   private prepararAlvoAtribuição(
     cmd: Node,
     esquerda: Expressão,
-    direita: Expressão,
   ): { inicializadoAnterior: boolean; símbolo?: Símbolo; token?: Token } {
     if (esquerda instanceof ReferênciaVarExpr) {
       if (esquerda.escopoBiblioteca !== undefined) {
-        this.verificarAtribuiçãoEmBiblioteca(esquerda);
+        this.verificarAtribuiçãoEmBiblioteca(esquerda, esquerda.escopoBiblioteca);
 
         return { inicializadoAnterior: false };
       }
@@ -1256,11 +1223,9 @@ export class AnalisadorSemântico {
         if (símbolo.constante) {
           this.registrar(erroAtribuirEmConstante(esquerda, símbolo));
         }
-
-        if (direita instanceof InicializaçãoVetorExpr || direita instanceof InicializaçãoMatrizExpr) {
-          this.registrar(erroAtribuirMatrizVetorEmVariável(direita));
-        }
       }
+
+      // `x = {1, 2}` não passa do sintático: `ErroAtribuirMatrizVetorEmVariavel` é inalcançável.
 
       // `v = 5` com `v` vetor cai em `ErroReferenciaInvalida` na visita da referência: é por
       // isso que `ErroAoInicializarVetor`/`ErroAoInicializarMatriz` não são alcançáveis aqui.
@@ -1568,7 +1533,7 @@ export class AnalisadorSemântico {
    * preferimos ficar calados a inventar erro.
    */
   private resolverLiteralMatriz(nó: InicializaçãoMatrizExpr): TipoPrimitivo | undefined {
-    const elementos = nó.linhas.flatMap(linha => (linha instanceof InicializaçãoVetorExpr ? linha.valores : [linha]));
+    const elementos = nó.linhas.flatMap(linha => linha.valores);
 
     if (elementos.length === 0) {
       return undefined;
@@ -1759,13 +1724,7 @@ export class AnalisadorSemântico {
     return comoPrimitivo(tipoDaBiblioteca(constante.tipo));
   }
 
-  private verificarAtribuiçãoEmBiblioteca(esquerda: ReferênciaVarExpr) {
-    const escopo = esquerda.escopoBiblioteca;
-
-    if (escopo === undefined) {
-      return;
-    }
-
+  private verificarAtribuiçãoEmBiblioteca(esquerda: ReferênciaVarExpr, escopo: string) {
     const biblioteca = this.bibliotecas.get(escopo);
 
     if (!biblioteca) {
@@ -2052,15 +2011,8 @@ export class AnalisadorSemântico {
    * parâmetro errado; aqui a posição é preservada e a checagem é apenas pulada.
    */
   private quantificadorDoArgumento(argumentoOriginal: AtribuiçãoCmd | Expressão): QuantificadorParâmetro | undefined {
+    // Literais `{…}` só existem em declarações: a gramática não os aceita como argumento.
     const argumento = semParênteses(argumentoOriginal);
-
-    if (argumento instanceof InicializaçãoVetorExpr) {
-      return "vetor";
-    }
-
-    if (argumento instanceof InicializaçãoMatrizExpr) {
-      return "matriz";
-    }
 
     if (!(argumento instanceof ReferênciaVarExpr)) {
       return "valor";

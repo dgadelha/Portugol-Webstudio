@@ -318,35 +318,11 @@ export function erroAtribuirEmChamadaFunção(origem: Origem): PortugolCodeDiagn
   );
 }
 
-export function erroAtribuirMatrizVetorEmVariável(origem: Origem): PortugolCodeDiagnostic {
-  return erro(
-    origem,
-    "não é possível atribuir uma matriz ou um vetor a uma variável",
-    CÓDIGOS.ATRIBUIR_MATRIZ_VETOR_EM_VARIAVEL,
-  );
-}
-
-export function erroInicializaçãoErrada(origem: Origem): PortugolCodeDiagnostic {
-  return erro(
-    origem,
-    "Não é possível inicializar. Utilize uma expressão de atribuição como: inteiro x = 0",
-    CÓDIGOS.INICIALIZACAO_ERRADA,
-  );
-}
-
 export function erroParaSemExpressãoAtribuição(origem: Origem): PortugolCodeDiagnostic {
   return erro(
     origem,
     "O comando 'para' quando há uma atribuição utiliza uma das seguintes sintaxes: i=i+1 / i++ / i+=1",
     CÓDIGOS.PARA_SEM_EXPRESSAO_ATRIBUICAO,
-  );
-}
-
-export function erroParaSemExpressãoComparação(origem: Origem): PortugolCodeDiagnostic {
-  return erro(
-    origem,
-    "O comando 'para' necessita ao menos de uma condição de parada. Utilize a seguinte construção para corrigir o problema: 'para( ; <condicao> ; ){ <comandos> }'",
-    CÓDIGOS.PARA_SEM_EXPRESSAO_COMPARACAO,
   );
 }
 
@@ -1065,7 +1041,6 @@ const SÍMBOLO_FALTANDO: Readonly<Record<string, readonly [sufixo: string, nome:
  * listas dele (palavras reservadas `PR_*` e operadores literais) nunca batem com os nomes
  * dos tokens da gramática, então todo o resto cai na variante genérica.
  */
-const TOKENS_TIPO_PRIMITIVO = new Set(["REAL", "CADEIA", "CARACTER", "INTEIRO", "LOGICO"]);
 
 /**
  * Sugere a letra sem o acento, quando ela existe: `ç` vira `c`, `ã` vira `a`.
@@ -1251,15 +1226,7 @@ export function erroParêntese(origem: Origem, tipo: "abertura" | "fechamento"):
  * O Java recebe o nome do token na gramática e o mostra em minúsculas ("está faltando o
  * token 'pontovirgula'"). Aqui quem chama passa o símbolo, quando ele existe.
  */
-export function erroTokenFaltando(origem: Origem, nomeToken: string, símbolo: string): PortugolCodeDiagnostic {
-  if (TOKENS_TIPO_PRIMITIVO.has(nomeToken)) {
-    return erro(
-      origem,
-      `A expressão está incompleta, está faltando um dado do tipo '${nomeToken.toLowerCase()}'`,
-      código(CÓDIGOS.TOKEN_FALTANDO, "2"),
-    );
-  }
-
+export function erroTokenFaltando(origem: Origem, símbolo: string): PortugolCodeDiagnostic {
   return erro(
     origem,
     `A expressão está incompleta, está faltando o token '${símbolo}'`,

@@ -66,10 +66,7 @@ export const CÓDIGOS = {
    */
   OPERACAO_COM_EXPRESSAO_CONSTANTE: "ErroSemantico.ErroOperacaoComExpressaoConstante",
   ATRIBUIR_EM_CHAMADA_FUNCAO: "ErroSemantico.ErroAtribuirEmChamadaFuncao",
-  ATRIBUIR_MATRIZ_VETOR_EM_VARIAVEL: "ErroSemantico.ErroAtribuirMatrizVetorEmVariavel",
-  INICIALIZACAO_ERRADA: "ErroSemantico.ErroInicializacaoErrada",
   PARA_SEM_EXPRESSAO_ATRIBUICAO: "ErroSemantico.ErroParaSemExpressaoAtribuicao",
-  PARA_SEM_EXPRESSAO_COMPARACAO: "ErroSemantico.ErroParaSemExpressaoComparacao",
   /**
    * O Portugol Studio emite este erro como um `ErroSemiSintatico` anônimo, sem código.
    */

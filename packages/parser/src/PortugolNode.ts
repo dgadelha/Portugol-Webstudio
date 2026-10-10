@@ -26,14 +26,6 @@ import {
 export interface Empty {}
 
 export class PortugolNode extends AbstractParseTreeVisitor<Empty> implements PortugolVisitor<Empty> {
-  protected defaultResult(): Empty {
-    return {};
-  }
-
-  protected aggregateResult(_aggregate: Empty, _nextResult: Empty): Empty {
-    throw new Error("Shouldn't need to aggregate results");
-  }
-
   visitChildrenFromParent(ctx: ParseTree, parent: Node) {
     for (let i = 0; i < ctx.getChildCount(); i++) {
       const child = ctx.getChild(i);

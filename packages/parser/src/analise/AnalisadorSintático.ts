@@ -772,12 +772,6 @@ class AnalisadorSintático extends BaseErrorListener {
         return erroRealComVírgula(alvo);
       }
 
-      // Divergência: o Java só reconhece o real escrito com vírgula numa declaração e no
-      // `retorne`; numa atribuição como `p = 2,5`, a vírgula era só "inesperada".
-      if (texto === "," && this.númeroComVírgula(parser, token)) {
-        return erroRealComVírgula(alvo);
-      }
-
       return erroExpressãoInesperada(alvo, texto);
     }
 
@@ -806,23 +800,7 @@ class AnalisadorSintático extends BaseErrorListener {
     }
 
     if (this.noCabeçalhoDoPara(contextos)) {
-      let contextosPara = contextos;
-
-      if (causa && e?.ctx) {
-        contextosPara = this.contextosDe(parser, e.ctx);
-
-        if (texto === "," && causa.contexto === "expressao") {
-          return erroRealComVírgula(alvo);
-        }
-      }
-
-      // Divergência de versão do ANTLR: aqui a vírgula de `i < 2,5` quebra a própria regra
-      // `para`, e não a `expressao` como no Java, e virava "falta o token ';'".
-      if (texto === "," && this.númeroComVírgula(parser, token)) {
-        return erroRealComVírgula(alvo);
-      }
-
-      return this.traduzirErroPara(parser, alvo, ctx, esperados, contextosPara);
+      return this.traduzirErroPara(parser, alvo, ctx, esperados, contextos);
     }
 
     // Função, variável ou parâmetro sem nome.
@@ -960,7 +938,7 @@ class AnalisadorSintático extends BaseErrorListener {
       }
 
       case "PONTOVIRGULA": {
-        return erroTokenFaltando(alvo, nome, this.símboloDe(parser, tipo));
+        return erroTokenFaltando(alvo, this.símboloDe(parser, tipo));
       }
 
       case "ENQUANTO": {
@@ -993,7 +971,7 @@ class AnalisadorSintático extends BaseErrorListener {
     }
 
     if (ctx.getText().split(";").length - 1 === 1 && esperados.length > 0) {
-      return erroTokenFaltando(alvo, nomes[0], this.símboloDe(parser, esperados[0]));
+      return erroTokenFaltando(alvo, this.símboloDe(parser, esperados[0]));
     }
 
     return erroParaEsperaCondição(alvo);
