@@ -377,11 +377,11 @@ export default /* javascript */ `{
     self.runtime.getGraphicsContext();
 
     // Os pontos são copiados agora: a matriz pode mudar antes do 'renderizar'
-    const pontosCopiados = pontos.getValue().map((ponto) =>
-      Array.from(ponto, (coordenada) => coordenada instanceof PortugolVar ? coordenada.value : coordenada)
+    const points = pontos.getValue().map((point) =>
+      Array.from(point, (coordinate) => coordinate instanceof PortugolVar ? coordinate.value : coordinate)
     );
 
-    self.graphics.drawPolygon(pontosCopiados, preencher.getValue());
+    self.graphics.drawPolygon(points, preencher.getValue());
   },
 
   desenhar_texto(x, y, texto) {
