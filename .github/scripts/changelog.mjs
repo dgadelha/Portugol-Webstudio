@@ -8,7 +8,7 @@
 //                                                no topo, para o build da IDE. Sem mudanças pendentes, como na main
 //                                                depois do `release`, grava o CHANGELOG.md como está
 //   node .github/scripts/changelog.mjs release   junta as mudanças numa seção com a data de hoje (horário de Brasília)
-//                                                e apaga os arquivos. Se a seção do topo começou há até 7 dias, as
+//                                                e apaga os arquivos. Se a seção do topo começou há até 3 dias, as
 //                                                mudanças novas entram no topo dela, e o título vira um período que
 //                                                termina hoje
 import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
@@ -22,7 +22,7 @@ const SEPARATOR = "\n\n---\n\n";
 
 // A aba inicial da IDE mostra só a seção do topo. Uma atualização grande fica nela por pelo menos este número de dias:
 // o que for publicado nesse meio tempo entra na mesma seção, em vez de abrir uma nova que a esconderia
-const DAYS_IN_TOP_SECTION = 7;
+const DAYS_IN_TOP_SECTION = 3;
 
 // `## 06/10/2026` ou `## 06/10/2026 – 08/10/2026`, com meia-risca. O hífen também é aceito, para um título editado à mão
 const DATED_HEADING = /^## (\d{2})\/(\d{2})\/(\d{4})(?: [–-] \d{2}\/\d{2}\/\d{4})?\n/;
