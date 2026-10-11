@@ -35,7 +35,7 @@
         [isExpandable]="true"
         [cdkTreeNodeTypeaheadLabel]="node.text"
         [attr.aria-current]="current?.id === node.id ? 'page' : null"
-        (activation)="loadItem(node, 'arvore')"
+        (activation)="tree.expand(node); loadItem(node, 'arvore')"
       >
         <div class="node-row" [class.active]="current?.id === node.id" [attr.data-topico]="node.id">
           <button

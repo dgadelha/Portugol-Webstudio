@@ -251,6 +251,11 @@ export class TabHelpComponent implements OnInit, OnDestroy {
       const item = this.#encontrar(this.topicos, row.dataset["topico"]);
 
       if (item) {
+        // Um grupo abre a página dele e mostra os tópicos de dentro; fechar fica com a seta.
+        if (item.children?.length) {
+          this.tree()?.expand(item);
+        }
+
         this.loadItem(item, "arvore");
       }
 
