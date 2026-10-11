@@ -28,11 +28,7 @@ programa {
     g.definir_cor(g.COR_BRANCO)
     g.limpar()
 
-    // O tamanho do texto só passa a valer na próxima renderização. Como vamos
-    // medir a largura dos textos para centralizá-los, renderizamos uma vez
-    // logo depois de definir o tamanho
     g.definir_tamanho_texto(14.0)
-    g.renderizar()
 
     // Primeiro descobrimos o maior valor do vetor: a barra dele terá a altura
     // máxima, e as outras serão calculadas em relação a ela
