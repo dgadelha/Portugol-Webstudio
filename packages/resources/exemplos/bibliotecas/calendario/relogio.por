@@ -22,10 +22,7 @@ programa {
     g.definir_dimensoes_janela(400, 450)
     g.definir_titulo_janela("Relógio Analógico")
 
-    // O tamanho do texto só passa a valer na próxima renderização. Como vamos
-    // medir os números para centralizá-los, renderizamos uma vez antes
     g.definir_tamanho_texto(22.0)
-    g.renderizar()
 
     inteiro ultimo_segundo = -1
 

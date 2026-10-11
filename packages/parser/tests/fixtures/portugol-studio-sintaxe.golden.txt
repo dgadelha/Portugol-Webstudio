@@ -85,11 +85,11 @@ SINTAXE|16|24|ErroSintatico.ErroExpressaoInesperada
 ### bibliotecas__calendario__relogio_digital.3.por
 SINTAXE|47|37|
 ### bibliotecas__calendario__relogio.1.por
-SINTAXE|113|12|
+SINTAXE|115|18|ErroSintatico.ErroExpressaoInesperada
 ### bibliotecas__calendario__relogio.2.por
-SINTAXE|131|2|
+SINTAXE|127|84|
 ### bibliotecas__calendario__relogio.3.por
-SINTAXE|124|53|ErroSintatico.ErroParsingNaoTratado
+SINTAXE|122|42|
 ### bibliotecas__graficos__bandeira_brasil.1.por
 SINTAXE|31|4|
 ### bibliotecas__graficos__bandeira_brasil.2.por
@@ -115,11 +115,11 @@ SINTAXE|38|36|
 ### bibliotecas__graficos__fractal_fern.3.por
 SINTAXE|28|17|
 ### bibliotecas__graficos__grafico_barras.1.por
-SINTAXE|78|18|
+SINTAXE|74|27|ErroSintatico.ErroParaEsperaCondicao
 ### bibliotecas__graficos__grafico_barras.2.por
-SINTAXE|33|35|
+SINTAXE|33|74|
 ### bibliotecas__graficos__grafico_barras.3.por
-SINTAXE|73|60|ErroSintatico.ErroExpressaoInesperada
+SINTAXE|69|48|ErroSintatico.ErroExpressaoInesperada
 ### bibliotecas__graficos__onda.1.por
 SINTAXE|68|15|ErroSintatico.ErroExpressaoInesperada
 ### bibliotecas__graficos__onda.2.por
