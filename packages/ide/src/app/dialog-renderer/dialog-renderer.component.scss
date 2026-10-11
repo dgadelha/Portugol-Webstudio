@@ -37,4 +37,15 @@
   .renderer-content {
     overflow: hidden;
   }
+
+  // Como no Portugol Studio, o tamanho do desenho não muda em tela cheia. Se a
+  // aba mudar de tamanho depois (a janela do navegador, o celular girando), o
+  // desenho é ampliado ou reduzido para caber, com faixas pretas em volta
+  canvas {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    background-color: #000;
+    object-fit: contain;
+  }
 }

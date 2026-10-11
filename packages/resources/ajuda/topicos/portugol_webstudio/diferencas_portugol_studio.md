@@ -36,7 +36,7 @@ Estas funções dependem de abrir arquivos do computador e ainda não estão dis
 ## A janela
 
 - `minimizar_janela`, `restaurar_janela`, `ocultar_borda_janela` e `exibir_borda_janela` não fazem nada.
-- No modo tela cheia, a janela ocupa a aba do navegador, e não a tela toda, e continua com o título em cima. `largura_janela` e `altura_janela` dão o tamanho da área de desenho. O navegador só deixa um site ocupar a tela toda quando a pessoa clica ou aperta uma tecla, e não quando o programa pede.
+- No modo tela cheia, a janela ocupa a aba do navegador, e não a tela toda, e continua com o título em cima. `largura_janela` e `altura_janela` dão o tamanho da área de desenho, que não muda enquanto a tela cheia durar: se a aba mudar de tamanho, o desenho é ampliado ou reduzido para caber. O navegador só deixa um site ocupar a tela toda quando a pessoa clica ou aperta uma tecla, e não quando o programa pede.
 - Fechar a janela com **Esc** também para o programa.
 - `largura_tela` e `altura_tela` dão o tamanho da tela como o navegador conta, que pode ser menor que o do Portugol Studio em telas de alta resolução.
 - Com a aba do Webstudio escondida, o programa fica pausado no `renderizar` e continua quando a aba volta.
