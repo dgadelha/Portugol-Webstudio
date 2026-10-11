@@ -645,6 +645,12 @@ describe("casos de borda", () => {
     expect(erro?.message).toContain("remova o seguinte trecho de código 'inteiro x'");
   });
 
+  test("um `programa` num comentário depois do trecho não corta o trecho", () => {
+    const [erro] = errosDeSintaxe("inteiro x // programa antigo\nprograma {\n  funcao inicio() {\n  }\n}\n");
+
+    expect(erro?.message).toContain("remova o seguinte trecho de código 'inteiro x // programa antigo'");
+  });
+
   test("sem `programa` nenhum, o trecho é o código todo", () => {
     expect(errosDeSintaxe("}")[0]?.message).toContain("trecho de código '}'");
   });

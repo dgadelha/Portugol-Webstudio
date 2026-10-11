@@ -1202,7 +1202,12 @@ class AnalisadorSintático extends BaseErrorListener {
     }
 
     const resto = this.trecho(token.start);
-    const programa = /\bprograma\b/.exec(resto);
+    // Um "programa" num comentário entre o trecho e o programa de verdade não conta: os
+    // comentários viram espaços, do mesmo tamanho, antes da busca.
+    const semComentários = resto.replaceAll(/\/\*[\s\S]*?\*\/|\/\/[^\n]*/g, comentário =>
+      " ".repeat(comentário.length),
+    );
+    const programa = /\bprograma\b/.exec(semComentários);
 
     return erroExpressõesForaEscopoPrograma(alvo, resto.slice(0, programa?.index).trim(), "antes");
   }
