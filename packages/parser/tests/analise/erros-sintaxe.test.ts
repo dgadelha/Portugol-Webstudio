@@ -373,8 +373,9 @@ describe("o erro escolhido é o mesmo do Portugol Studio", () => {
     ]);
   });
 
-  test("o token que falta aparece como símbolo", () => {
-    // Divergência: o Java mostra o nome do token na gramática, `'pontovirgula'`.
+  test("o token que falta aparece como símbolo, com o lugar em que faltou", () => {
+    // Divergência: o Java diz "está faltando o token 'pontovirgula'", com o nome do token na
+    // gramática.
     const código = portugol`
       programa {
         funcao inicio() {
@@ -384,7 +385,7 @@ describe("o erro escolhido é o mesmo do Portugol Studio", () => {
       }
     `;
 
-    expect(errosDeSintaxe(código)[0]?.message).toBe("A expressão está incompleta, está faltando o token ';'");
+    expect(errosDeSintaxe(código)[0]?.message).toBe("Era esperado ';' antes de ')'");
   });
 });
 
@@ -1061,7 +1062,8 @@ describe("caminhos menos comuns da tradução", () => {
 
 /**
  * Mensagens que o Portugol Studio também dava erradas: real com vírgula onde não há número,
- * nome não informado onde ele está, e o mesmo engano com mensagens diferentes conforme o lugar.
+ * nome não informado onde ele está, e o mesmo engano com mensagens diferentes conforme o lugar
+ * ou conforme a linha seguinte.
  */
 describe("a mesma mensagem para o mesmo engano", () => {
   test.each([
@@ -1134,6 +1136,48 @@ describe("a mesma mensagem para o mesmo engano", () => {
       { startLine: 4, startCol: 14, endLine: 4, endCol: 14 },
       "ErroSintatico.ErroParsingNaoTratado",
       "Era esperado ']' no fim da linha",
+    ],
+    [
+      "`enquanto ()` vazio, com um comando na linha seguinte",
+      "programa {\n  funcao inicio() {\n    faca {\n    } enquanto ()\n    escreva(1)\n  }\n}\n",
+      { startLine: 4, startCol: 16, endLine: 4, endCol: 16 },
+      "ErroSintatico.ErroExpressaoEsperada.6",
+      'O comando "faca-enquanto" espera uma expressão do tipo lógico entre os parênteses',
+    ],
+    [
+      "`++` sem o nome, com um comando na linha seguinte",
+      "programa {\n  funcao inicio() {\n    inteiro p\n    p = ++1\n    escreva(p)\n  }\n}\n",
+      { startLine: 4, startCol: 10, endLine: 4, endCol: 10 },
+      "ErroSintatico.ErroParsingNaoTratado",
+      "Era esperado um nome antes de '1'",
+    ],
+    [
+      "vírgula sem o último argumento, com um comando na linha seguinte",
+      "programa {\n  funcao inicio() {\n    escreva(1,)\n    escreva(2)\n  }\n}\n",
+      { startLine: 3, startCol: 14, endLine: 3, endCol: 14 },
+      "ErroSintatico.ErroExpressaoEsperada.8",
+      "Era esperada uma expressão",
+    ],
+    [
+      "vírgula sem o último elemento do vetor, com um comando na linha seguinte",
+      "programa {\n  funcao inicio() {\n    inteiro v[] = {1, }\n    escreva(v[0])\n  }\n}\n",
+      { startLine: 3, startCol: 22, endLine: 3, endCol: 22 },
+      "ErroSintatico.ErroExpressaoEsperada.2",
+      "O elemento do vetor não foi informado, insira um valor ou uma expressão para corrigir o problema",
+    ],
+    [
+      "vírgula sem o primeiro elemento do vetor",
+      "programa {\n  funcao inicio() {\n    inteiro v[] = {, 1}\n    escreva(v[0])\n  }\n}\n",
+      { startLine: 3, startCol: 19, endLine: 3, endCol: 19 },
+      "ErroSintatico.ErroExpressaoEsperada.2",
+      "O elemento do vetor não foi informado, insira um valor ou uma expressão para corrigir o problema",
+    ],
+    [
+      "código depois do `}` do programa mostra só a primeira linha",
+      "programa {\n  funcao inicio() {\n  }\n}\nfuncao f() {\n  escreva(1)\n}\n",
+      { startLine: 5, startCol: 0, endLine: 5, endCol: 5 },
+      "ErroSintatico.ErroExpressoesForaEscopoPrograma",
+      "Não são permitidas expressões fora do escopo do programa. Para corrigir o problema, remova o seguinte trecho de código 'funcao f() {…', que está localizado após o caracter '}'",
     ],
   ])("%s", (_nome, código, posição, códigoDoErro, mensagem) => {
     expect(errosDeSintaxe(código)).toEqual([{ ...posição, code: códigoDoErro, message: mensagem }]);

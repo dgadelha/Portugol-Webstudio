@@ -1223,13 +1223,13 @@ export function erroParêntese(origem: Origem, tipo: "abertura" | "fechamento"):
 }
 
 /**
- * O Java recebe o nome do token na gramática e o mostra em minúsculas ("está faltando o
- * token 'pontovirgula'"). Aqui quem chama passa o símbolo, quando ele existe.
+ * Divergência: o Java mostra o nome do token na gramática ("está faltando o token
+ * 'pontovirgula'"). Aqui a mensagem diz o símbolo e onde ele faltou, como as outras.
  */
-export function erroTokenFaltando(origem: Origem, símbolo: string): PortugolCodeDiagnostic {
+export function erroTokenFaltando(origem: Origem, símbolo: string, antesDe?: string): PortugolCodeDiagnostic {
   return erro(
     origem,
-    `A expressão está incompleta, está faltando o token '${símbolo}'`,
+    `Era esperado '${símbolo}' ${antesDe === undefined ? "no fim do código" : `antes de '${antesDe}'`}`,
     código(CÓDIGOS.TOKEN_FALTANDO, "3"),
   );
 }
@@ -1274,9 +1274,14 @@ export function erroExpressõesForaEscopoPrograma(
   const onde =
     local === "antes" ? "localizado antes da palavra reservada 'programa'" : "localizado após o caracter '}'";
 
+  // Divergência: o trecho pode ser o resto do arquivo, e o Java o mostra inteiro. Aqui só a
+  // primeira linha dele.
+  const [primeira = "", ...outras] = trecho.split(/\r?\n/);
+  const mostrado = outras.length > 0 ? `${primeira.trimEnd()}…` : primeira;
+
   return erro(
     origem,
-    `Não são permitidas expressões fora do escopo do programa. Para corrigir o problema, remova o seguinte trecho de código '${trecho}', que está ${onde}`,
+    `Não são permitidas expressões fora do escopo do programa. Para corrigir o problema, remova o seguinte trecho de código '${mostrado}', que está ${onde}`,
     CÓDIGOS.EXPRESSOES_FORA_ESCOPO_PROGRAMA,
   );
 }

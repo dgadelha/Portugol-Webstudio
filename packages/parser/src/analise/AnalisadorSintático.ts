@@ -767,7 +767,14 @@ class AnalisadorSintático extends BaseErrorListener {
     }
 
     // `reportUnwantedToken`: o token sobra, e removê-lo resolveria.
-    if (msg.startsWith("extraneous input")) {
+    // Divergência: o ANTLR diz que o token sobra quando o que vem depois dele cabe no lugar, e a
+    // mensagem dependia da linha seguinte. Um fechamento logo depois de um `(` ou de uma vírgula,
+    // ou um valor onde só cabe um nome (`++1`), não sobra: falta o que viria antes dele.
+    const faltaAntes =
+      this.lugarVazio(parser, token) ||
+      (nomesEsperados.length === 1 && nomesEsperados[0] === "ID" && token.type !== PortugolLexer.ID);
+
+    if (!faltaAntes && msg.startsWith("extraneous input")) {
       if ((texto === "<EOF>" || texto === "funcao") && nomesEsperados.includes("FECHA_CHAVES")) {
         return erroEscopo(alvo, atual === "listaComandos" ? pai : atual);
       }
@@ -966,7 +973,7 @@ class AnalisadorSintático extends BaseErrorListener {
       }
 
       case "PONTOVIRGULA": {
-        return erroTokenFaltando(alvo, this.símboloDe(parser, tipo));
+        return erroTokenFaltando(alvo, this.símboloDe(parser, tipo), this.textoOuFim(alvo));
       }
 
       case "ENQUANTO": {
@@ -999,7 +1006,7 @@ class AnalisadorSintático extends BaseErrorListener {
     }
 
     if (ctx.getText().split(";").length - 1 === 1 && esperados.length > 0) {
-      return erroTokenFaltando(alvo, this.símboloDe(parser, esperados[0]));
+      return erroTokenFaltando(alvo, this.símboloDe(parser, esperados[0]), this.textoOuFim(alvo));
     }
 
     return erroParaEsperaCondição(alvo);

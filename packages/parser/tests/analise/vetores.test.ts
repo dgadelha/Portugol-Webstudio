@@ -144,6 +144,31 @@ describe("Vetores e matrizes", () => {
       `);
     });
 
+    test("vetor e matriz com tamanho errado continuam declarados", () => {
+      // Divergência: quando o tamanho usa uma variável que não existe, o Portugol Studio não
+      // declara o vetor, e cada uso de `v` depois diz que ele não foi declarado (quatro erros a
+      // mais aqui). Aqui só o tamanho é apontado, como ele já faz com `m`.
+      expect(
+        analisar(portugol`
+          programa {
+            funcao inicio() {
+              inteiro v[x]
+              inteiro m[2.5][2]
+              v[0] = 1
+              m[0][0] = v[0]
+              escreva(v[0], m[0][0])
+            }
+          }
+        `),
+      ).toMatchInlineSnapshot(`
+        [
+          3:14/3:14 E [ErroSemantico.ErroSimboloNaoDeclarado.3]: A variável "x" não foi declarada neste escopo.,
+          4:14/4:16 E [ErroSemantico.ErroTamanhoVetorMatriz.2]: O número de linhas da matriz 'm' deve ser um valor ou uma constante do tipo inteiro e positivo 
+         Ex: matriz[5][4],
+        ]
+      `);
+    });
+
     test("operadores aritméticos e bit a bit no tamanho", () => {
       // O Portugol Studio calcula com os operandos trocados (`b - a`, `b >> a`...): os
       // operandos foram escolhidos para dar o mesmo resultado nos dois.
