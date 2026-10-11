@@ -19,6 +19,8 @@ import {
   erroBibliotecaNãoInserida,
   erroBibliotecaNãoSuportada,
   erroBlocoInválido,
+  erroCasoContrárioRepetido,
+  erroCasoRepetido,
   erroComparaçãoDeCadeias,
   erroConstanteNãoEncontradaNaBiblioteca,
   avisoIncrementoEmConta,
@@ -1064,8 +1066,56 @@ export class AnalisadorSemântico {
       this.visitarCaso(caso);
     }
 
+    this.verificarCasosRepetidos(nó);
+
     this.profundidadeEscolha--;
     this.tipoDadoEscolha.pop();
+  }
+
+  /**
+   * Divergência: o Portugol Studio aceita dois `caso contrario`, ou o mesmo literal em dois
+   * `caso`, e o Java que ele gera não compila, com um erro sem linha. Aqui o erro aparece no
+   * `caso` repetido. Com uma constante, uma conta ou um negativo (`caso A`, `caso 1 + 1`,
+   * `caso -1`), o Java dele compila, e o primeiro `caso` vale: esses ficam de fora.
+   */
+  private verificarCasosRepetidos(nó: EscolhaCmd) {
+    let temContrário = false;
+    const valores = new Set<string>();
+
+    for (const caso of nó.casos) {
+      if (caso.contrário) {
+        if (temContrário) {
+          this.registrar(erroCasoContrárioRepetido(caso.ctx.CASO(), caso.condição));
+        }
+
+        temContrário = true;
+        continue;
+      }
+
+      const valor = this.literalDoCaso(caso.condição);
+
+      if (valor !== undefined && valores.has(valor)) {
+        this.registrar(erroCasoRepetido(caso.condição, valor));
+      }
+
+      if (valor !== undefined) {
+        valores.add(valor);
+      }
+    }
+  }
+
+  /**
+   * O valor de um `caso` escrito como literal, como aparece na mensagem: `1` (também de
+   * `0x1`) ou `'a'`.
+   */
+  private literalDoCaso(expressão: Expressão) {
+    const literal = semParênteses(expressão);
+
+    if (literal instanceof InteiroExpr) {
+      return String(literal.valor);
+    }
+
+    return literal instanceof CaractereExpr ? `'${literal.conteúdo}'` : undefined;
   }
 
   private visitarCaso(nó: CasoCmd) {

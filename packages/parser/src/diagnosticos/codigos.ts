@@ -168,6 +168,14 @@ export const CÓDIGOS = {
   COMPARACAO_DE_CADEIAS: "ErroWebstudio.ErroComparacaoDeCadeias",
 
   /**
+   * Dois `caso contrario` no mesmo `escolha`, ou o mesmo valor em dois `caso`. A análise do
+   * Portugol Studio aceita, mas o Java gerado não compila ("duplicate default label",
+   * "duplicate case label"), sem linha; aqui o erro aparece no `caso` repetido.
+   */
+  CASO_CONTRARIO_REPETIDO: "ErroWebstudio.ErroCasoContrarioRepetido",
+  CASO_REPETIDO: "ErroWebstudio.ErroCasoRepetido",
+
+  /**
    * `senao (condição)`: o `senao` não recebe uma condição.
    */
   SENAO_COM_CONDICAO: "ErroWebstudio.ErroSenaoComCondicao",

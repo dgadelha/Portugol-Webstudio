@@ -46,6 +46,90 @@ describe("Controle de fluxo", () => {
   });
 
   describe("escolha / caso", () => {
+    test("dois `caso contrario` ou o mesmo literal em dois `caso` são erro, como ao executar no Portugol Studio", () => {
+      // O `caso contrario` de fora caiu dentro do `escolha` de dentro, que não foi fechado.
+      expect(
+        analisar(portugol`
+          programa {
+            funcao inicio() {
+              inteiro a = 1
+              caracter c = 'x'
+              escolha (a) {
+                caso 1:
+                  escolha (c) {
+                    caso 'x':
+                      pare
+                    caso contrario:
+                      pare
+                  caso contrario:
+                    pare
+                  }
+              }
+              escolha (a) {
+                caso 1:
+                  pare
+                caso 0x1:
+                  pare
+                caso (1):
+                  pare
+              }
+              escolha (c) {
+                caso 'y':
+                  pare
+                caso 'y':
+                  pare
+              }
+            }
+          }
+        `),
+      ).toMatchInlineSnapshot(`
+        [
+          12:8/12:21 E [ErroWebstudio.ErroCasoContrarioRepetido]: Este 'escolha' já tem um 'caso contrario',
+          19:11/19:13 E [ErroWebstudio.ErroCasoRepetido]: O valor 1 já aparece em outro 'caso' deste 'escolha',
+          21:11/21:13 E [ErroWebstudio.ErroCasoRepetido]: O valor 1 já aparece em outro 'caso' deste 'escolha',
+          27:11/27:13 E [ErroWebstudio.ErroCasoRepetido]: O valor 'y' já aparece em outro 'caso' deste 'escolha',
+        ]
+      `);
+    });
+
+    test("com constante, conta ou negativo o primeiro `caso` vale, como no Portugol Studio", () => {
+      expect(
+        analisar(portugol`
+          programa {
+            const inteiro A = 1
+            funcao inicio() {
+              inteiro a = 1
+              escolha (a) {
+                caso 1:
+                  pare
+                caso A:
+                  pare
+                caso 0 + 1:
+                  pare
+                caso -1:
+                  pare
+                caso -1:
+                  pare
+                caso contrario:
+                  pare
+              }
+              escolha (a) {
+                caso contrario:
+                  pare
+                caso 1:
+                  escolha (a) {
+                    caso 1:
+                      pare
+                    caso contrario:
+                      pare
+                  }
+              }
+            }
+          }
+        `),
+      ).toMatchInlineSnapshot(`[]`);
+    });
+
     test("escolha exige inteiro ou caracter e o caso precisa casar", () => {
       expect(
         analisar(portugol`

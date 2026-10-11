@@ -102,7 +102,7 @@ comando.casoFora.func | 7:4-7:7 | ErroSintatico.ErroExpressaoInesperada | A pala
 comando.casoFora.funcFim | 8:4-8:7 | ErroSintatico.ErroExpressaoInesperada | A palavra 'caso' não era esperada neste local: ela só pode ser usada dentro de um 'escolha'
 comando.casoFora.aninhado | 10:10-10:13 | ErroSintatico.ErroExpressaoInesperada | A palavra 'caso' não era esperada neste local: ela só pode ser usada dentro de um 'escolha'
 comando.casoFora.senaoSe | 9:6-9:9 | ErroSintatico.ErroExpressaoInesperada | A palavra 'caso' não era esperada neste local: ela só pode ser usada dentro de um 'escolha'
-comando.casoFora.caso | sem erros
+comando.casoFora.caso | sem erro de sintaxe; semântico: ErroWebstudio.ErroCasoRepetido
 comando.casoFora.contrario | sem erros
 comando.casoFora.funcRet | 13:4-13:7 | ErroSintatico.ErroExpressaoInesperada | A palavra 'caso' não era esperada neste local: ela só pode ser usada dentro de um 'escolha'
 comando.casoFora.globalTopo | 3:2-3:5 | ErroSintatico.ErroExpressaoInesperada | A palavra 'caso' não era esperada neste local: ela só pode ser usada dentro de um 'escolha'
@@ -113,7 +113,7 @@ comando.contrarioFora.funcFim | 8:4-8:7 | ErroSintatico.ErroExpressaoInesperada 
 comando.contrarioFora.aninhado | 10:10-10:13 | ErroSintatico.ErroExpressaoInesperada | A palavra 'caso' não era esperada neste local: ela só pode ser usada dentro de um 'escolha'
 comando.contrarioFora.senaoSe | 9:6-9:9 | ErroSintatico.ErroExpressaoInesperada | A palavra 'caso' não era esperada neste local: ela só pode ser usada dentro de um 'escolha'
 comando.contrarioFora.caso | sem erros
-comando.contrarioFora.contrario | sem erros
+comando.contrarioFora.contrario | sem erro de sintaxe; semântico: ErroWebstudio.ErroCasoContrarioRepetido
 comando.contrarioFora.funcRet | 13:4-13:7 | ErroSintatico.ErroExpressaoInesperada | A palavra 'caso' não era esperada neste local: ela só pode ser usada dentro de um 'escolha'
 comando.contrarioFora.globalTopo | 3:2-3:5 | ErroSintatico.ErroExpressaoInesperada | A palavra 'caso' não era esperada neste local: ela só pode ser usada dentro de um 'escolha'
 comando.contrarioFora.globalEntre | 12:2-12:5 | ErroSintatico.ErroExpressaoInesperada | A palavra 'caso' não era esperada neste local: ela só pode ser usada dentro de um 'escolha'

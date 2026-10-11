@@ -1105,6 +1105,20 @@ export function erroComparaçãoDeCadeias(origem: Origem, operador: string): Por
   return erro(origem, `Não é possível comparar cadeias com o operador '${operador}'`, CÓDIGOS.COMPARACAO_DE_CADEIAS);
 }
 
+export function erroCasoContrárioRepetido(início: Origem, fim: Origem): PortugolCodeDiagnostic {
+  return diagnósticoEntre(
+    início,
+    fim,
+    "Este 'escolha' já tem um 'caso contrario'",
+    PortugolDiagnosticSeverity.Error,
+    CÓDIGOS.CASO_CONTRARIO_REPETIDO,
+  );
+}
+
+export function erroCasoRepetido(origem: Origem, valor: string): PortugolCodeDiagnostic {
+  return erro(origem, `O valor ${valor} já aparece em outro 'caso' deste 'escolha'`, CÓDIGOS.CASO_REPETIDO);
+}
+
 export function erroComentárioSemFim(origem: Origem): PortugolCodeDiagnostic {
   return erro(
     origem,
