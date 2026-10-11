@@ -11,6 +11,28 @@ Quando o beta chega na main, o deploy junta os arquivos de `changelog/` aqui, nu
 
 As mudanças mais recentes do Portugol Webstudio aparecem primeiro.
 
+## 11/10/2026
+
+A Ajuda ganhou um guia do Portugol Webstudio, com imagens: dos primeiros passos aos atalhos de teclado, passando pelas configurações e pelo uso sem internet.
+
+---
+
+Os erros de digitação no código ficaram mais fáceis de achar e de entender:
+
+- Só o trecho com o erro fica sublinhado em vermelho, e não mais o programa inteiro. [Mais detalhes](https://github.com/dgadelha/Portugol-Webstudio/issues/468)
+- As mensagens dizem o que está errado e onde o código quebrou, como "Era esperada uma expressão", em vez de só "Código incompleto ou inválido"
+- Enganos comuns ganharam mensagens próprias, como em `se (x = 1)`, `senao (x > 1)` e `inteiro m[2,3]`
+- Números inteiros grandes demais e código depois do `}` que fecha o programa também são apontados como erro
+- A verificação de erros ficou bem mais rápida em programas grandes, e volta a acontecer logo depois de recarregar a página
+
+A verificação também ficou mais parecida com a do Portugol Studio:
+
+- `'\n'`, `(x(2))`, `(x) = 1` e `leia((x))` não são mais apontados como erro, e a função `sorteia` funciona sem incluir a biblioteca Util
+- Comparar duas cadeias com `>` ou `<` é apontado como erro já no editor, e um incremento dentro de uma conta, como `i++ + i++`, ganha um aviso
+- Dois `caso contrario`, ou o mesmo valor em dois `caso`, no mesmo `escolha` são apontados como erro já no editor
+- Deslocamentos seguidos, como `8 >> 1 << 2`, são calculados da esquerda para a direita
+- Números com zero à esquerda, como `012`, são lidos como decimais
+
 ## 06/10/2026
 
 A interface foi redesenhada:
