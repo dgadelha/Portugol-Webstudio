@@ -577,8 +577,27 @@ class PortugolRuntime {
     return new PortugolVar(type, this.coerceToType(type, value.value, value.type));
   }
 
-  assertGraphicsContext() {
+  // Como no Portugol Studio, a superfície de desenho existe desde o início do
+  // programa: desenhos e cores antes do 'iniciar_modo_grafico' só ficam na fila
+  getGraphicsContext() {
     if (!self.graphics) {
+      self.graphics = new PortugolGraphicsContext();
+    }
+
+    return self.graphics;
+  }
+
+  // As funções da janela exigem o modo gráfico iniciado
+  assertGraphicsContext() {
+    if (!self.graphics?.initialized) {
+      throw new Error("O modo gráfico não foi inicializado");
+    }
+  }
+
+  // O 'renderizar', o 'limpar' e as de texto exigem que a janela tenha sido
+  // criada alguma vez, mesmo que o modo gráfico já tenha sido encerrado
+  assertGraphicsSurface() {
+    if (!self.graphics?.canvas) {
       throw new Error("O modo gráfico não foi inicializado");
     }
   }

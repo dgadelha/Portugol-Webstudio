@@ -9,6 +9,11 @@ export interface IGraphicsRendererComponent {
   getCanvas(): Promise<OffscreenCanvas>;
   setTitle(title: string): void;
   setSize(width: number, height: number): void;
+  /**
+   * Ocupa a aba do navegador e devolve o tamanho que sobra para o desenho.
+   */
+  enterFullscreen(): Promise<{ width: number; height: number }>;
+  exitFullscreen(): void;
 }
 
 export class CreateGraphicsRendererComponentEvent extends Event {
@@ -101,11 +106,13 @@ export class GraphicsRenderer extends EventTarget {
       }
 
       case "graphics.enterFullscreen": {
-        this.executor.replyMessage(message, null);
+        const size = await this.component?.enterFullscreen();
+        this.executor.replyMessage(message, size ?? { width: 640, height: 480 });
         break;
       }
 
       case "graphics.exitFullscreen": {
+        this.component?.exitFullscreen();
         this.executor.replyMessage(message, null);
         break;
       }

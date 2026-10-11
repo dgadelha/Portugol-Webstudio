@@ -18,11 +18,23 @@
 // um desenho largo ficaria fora da área de rolagem.
 .renderer-content {
   display: flex;
+  flex-grow: 1;
   min-height: 0;
   overflow: auto;
 
   canvas {
     flex-shrink: 0;
     margin: auto;
+  }
+}
+
+// Em tela cheia, a janela ocupa a aba toda e o desenho, o espaço abaixo do título
+:host-context(.pws-renderer-fullscreen) {
+  .dialog-header {
+    cursor: default;
+  }
+
+  .renderer-content {
+    overflow: hidden;
   }
 }

@@ -34,6 +34,22 @@
   }
 }
 
+// A janela da biblioteca Gráficos em tela cheia ocupa a aba toda, sem a
+// posição de onde foi arrastada. O `!important` vence o tamanho máximo que o
+// CDK põe direto no elemento, e a posição do arrasto.
+.pws-dialog.pws-renderer-fullscreen {
+  width: 100vw;
+  height: 100dvh;
+  max-width: none !important;
+  max-height: none !important;
+  transform: none !important;
+
+  .cdk-dialog-container {
+    border: none;
+    border-radius: 0;
+  }
+}
+
 // O conteúdo do diálogo ocupa o espaço todo, em coluna (cabeçalho, corpo e
 // rodapé). O `:where()` zera a especificidade: um diálogo pode trocar a
 // direção no próprio `:host`.

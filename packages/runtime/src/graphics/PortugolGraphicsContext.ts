@@ -1,5 +1,9 @@
 export const portugolGraphicsContext = /* javascript */ `
 class PortugolGraphicsContext {
+  initialized = false;
+  fullscreen = false;
+  sizeBeforeFullscreen = { width: 640, height: 480 };
+
   width = 800;
   height = 600;
 
@@ -13,15 +17,26 @@ class PortugolGraphicsContext {
     colorB: 0,
   };
 
-  workingTextFont = "serif";
-  workingTextSize = 14;
+  // Como a fonte padrão do Portugol Studio (Dialog, 12)
+  workingTextFont = "sans-serif";
+  workingTextSize = 12;
   workingTextStyle = {
     bold: false,
     italic: false,
     underline: false,
   };
 
+  // Estado na ordem das chamadas, não na dos desenhos: o Portugol Studio mede
+  // o texto com a fonte já definida, e o definir_opacidade volta à última cor
+  definedColor = 0;
+  definedTextFont = this.workingTextFont;
+  definedTextSize = this.workingTextSize;
+  definedTextStyle = { ...this.workingTextStyle };
+
   drawCalls = [];
+
+  yieldChannel = null;
+  lastAnimationFrame = 0;
 
   init(canvas) {
     if (!canvas) {
@@ -63,6 +78,8 @@ class PortugolGraphicsContext {
   }
 
   setWorkingColor(color) {
+    this.definedColor = color;
+
     this.drawCall(() => {
       this.workingColor = color;
       this.workingFillMode = 0;
@@ -126,13 +143,25 @@ class PortugolGraphicsContext {
   }
 
   setWorkingOpacity(opacity) {
+    const color = this.definedColor;
+
+    // No Portugol Studio, o definir_opacidade redefine a última cor e assim
+    // também desfaz o gradiente
     this.drawCall(() => {
       this.workingOpacity = opacity;
+      this.workingColor = color;
+      this.workingFillMode = 0;
     });
   }
 
   setWorkingTextStyle(italic, bold, underline) {
+    this.definedTextStyle = { italic, bold, underline };
+
+    // Como no Portugol Studio, recriar a fonte trunca o tamanho
+    this.definedTextSize = Math.trunc(this.definedTextSize);
+
     this.drawCall(() => {
+      this.workingTextSize = Math.trunc(this.workingTextSize);
       this.workingTextStyle.italic = italic;
       this.workingTextStyle.bold = bold;
       this.workingTextStyle.underline = underline;
@@ -144,6 +173,8 @@ class PortugolGraphicsContext {
   }
 
   setWorkingTextSize(size) {
+    this.definedTextSize = size;
+
     this.drawCall(() => {
       this.workingTextSize = size;
     });
@@ -154,8 +185,12 @@ class PortugolGraphicsContext {
   }
 
   setWorkingFont(font) {
+    this.definedTextFont = font;
+    this.definedTextSize = Math.trunc(this.definedTextSize);
+
     this.drawCall(() => {
       this.workingTextFont = font;
+      this.workingTextSize = Math.trunc(this.workingTextSize);
     });
   }
 
@@ -178,12 +213,25 @@ class PortugolGraphicsContext {
   }
 
   drawCall(drawFunc) {
+    if (this.drawCalls.length >= 131072) {
+      throw new Error("A função Graficos.renderizar() não foi chamada nenhuma vez em seu código ou o número de operações de desenho que você chamou antes do Graficos.renderizar() foi muito grande");
+    }
+
     this.drawCalls.push(drawFunc);
   }
 
-  applyWorkParams(ignoreRotation, objectBounds) {
+  buildFont(style, size, font) {
+    return (style.italic ? "italic " : "") +
+      (style.bold ? "bold " : "") +
+      size + "px " +
+      font;
+  }
+
+  applyWorkParams(ignoreRotation, objectBounds, gradientBounds) {
     if (this.canvasContext) {
-      const targetBounds = objectBounds ? {
+      const targetBounds = gradientBounds ? {
+        ...gradientBounds,
+      } : objectBounds ? {
         ...objectBounds,
       } : {
         x: 0,
@@ -192,7 +240,13 @@ class PortugolGraphicsContext {
         height: this.canvas.height
       };
 
-      if (this.workingFillMode === 1) {
+      if (this.workingFillMode === 1 && this.isGradientDegenerate(targetBounds)) {
+        // O canvas não pinta um gradiente sem comprimento; o Portugol Studio
+        // pinta com a primeira cor
+        const colorAHex = this.colorToHex(this.workingGradient.colorA);
+        this.canvasContext.strokeStyle = colorAHex;
+        this.canvasContext.fillStyle = colorAHex;
+      } else if (this.workingFillMode === 1) {
         const colorAHex = this.colorToHex(this.workingGradient.colorA);
         const colorBHex = this.colorToHex(this.workingGradient.colorB);
 
@@ -327,11 +381,7 @@ class PortugolGraphicsContext {
 
       this.canvasContext.globalAlpha = this.getWorkingOpacityAsRange1();
 
-      this.canvasContext.font =
-        (this.workingTextStyle.italic ? "italic " : "") +
-        (this.workingTextStyle.bold ? "bold " : "") +
-        this.workingTextSize + "px " +
-        this.workingTextFont;
+      this.canvasContext.font = this.buildFont(this.workingTextStyle, this.workingTextSize, this.workingTextFont);
 
       const rotation = this.getWorkingRotationInRadians();
       this.canvasContext.setTransform(1, 0, 0, 1, 0, 0);
@@ -339,11 +389,29 @@ class PortugolGraphicsContext {
       if (!ignoreRotation && rotation !== 0) {
         if (objectBounds) {
           const { x, y, width, height } = objectBounds;
-          this.canvasContext.translate(x + (width / 2), y + (height / 2));
+          // Como no Portugol Studio, o centro é arredondado para um pixel inteiro
+          this.canvasContext.translate(x + (width >> 1), y + (height >> 1));
         }
 
         this.canvasContext.rotate(rotation);
       }
+    }
+  }
+
+  isGradientDegenerate(bounds) {
+    switch (this.workingGradient.type) {
+      case 2: // GRADIENTE_ACIMA
+      case 3: // GRADIENTE_ABAIXO
+        return bounds.height === 0;
+
+      case 4: // GRADIENTE_INFERIOR_DIREITO
+      case 5: // GRADIENTE_INFERIOR_ESQUERDO
+      case 6: // GRADIENTE_SUPERIOR_DIREITO
+      case 7: // GRADIENTE_SUPERIOR_ESQUERDO
+        return bounds.width === 0 && bounds.height === 0;
+
+      default: // horizontais
+        return bounds.width === 0;
     }
   }
 
@@ -352,8 +420,8 @@ class PortugolGraphicsContext {
 
     if (rotation !== 0) {
       return {
-        x: -(objectBounds.width / 2),
-        y: -(objectBounds.height / 2),
+        x: -(objectBounds.width >> 1),
+        y: -(objectBounds.height >> 1),
         width: objectBounds.width,
         height: objectBounds.height,
       };
@@ -362,23 +430,67 @@ class PortugolGraphicsContext {
     return objectBounds;
   }
 
-  render() {
-    return new Promise((resolve) => {
-      self.requestAnimationFrame(() => {
-        while (this.drawCalls.length > 0) {
-          this.drawCalls.shift()?.();
-        }
+  // Como no Portugol Studio, o 'renderizar' desenha na hora e não espera a tela
+  // atualizar: a velocidade do programa depende só do 'aguarde'. O navegador
+  // mostra o último quadro completo a cada atualização da tela.
+  async render() {
+    this.startAnimationFrameHeartbeat();
 
-        resolve();
-      });
+    // Com a aba escondida, o navegador para de chamar o requestAnimationFrame:
+    // o programa espera por ele e fica pausado, sem gastar processamento
+    if (performance.now() - this.lastAnimationFrame > 250) {
+      await new Promise((resolve) => self.requestAnimationFrame(resolve));
+    }
+
+    this.drawFrame();
+
+    // Devolve a vez ao navegador, que só mostra o quadro quando a tarefa termina
+    await new Promise((resolve) => {
+      this.yieldChannel.port1.onmessage = resolve;
+      this.yieldChannel.port2.postMessage(null);
     });
+  }
+
+  startAnimationFrameHeartbeat() {
+    if (this.yieldChannel) {
+      return;
+    }
+
+    this.yieldChannel = new MessageChannel();
+    this.lastAnimationFrame = performance.now();
+
+    const tick = () => {
+      this.lastAnimationFrame = performance.now();
+      self.requestAnimationFrame(tick);
+    };
+
+    self.requestAnimationFrame(tick);
+  }
+
+  drawFrame() {
+    // O Portugol Studio desenha cada quadro do zero: fundo preto e cor preta.
+    // O gradiente, por outro lado, continua valendo até o próximo definir_cor.
+    this.workingColor = 0;
+
+    if (this.canvas && this.canvasContext) {
+      this.canvasContext.setTransform(1, 0, 0, 1, 0, 0);
+      this.canvasContext.globalAlpha = 1;
+      this.canvasContext.fillStyle = "#000000";
+      this.canvasContext.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    }
+
+    const drawCalls = this.drawCalls;
+    this.drawCalls = [];
+
+    for (const drawCall of drawCalls) {
+      drawCall();
+    }
   }
 
   clearRender() {
     this.drawCall(() => {
       if (this.canvas && this.canvasContext) {
         this.applyWorkParams(true);
-        this.canvasContext.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.canvasContext.fillRect(0, 0, this.canvas.width, this.canvas.height);
       }
     });
@@ -386,7 +498,8 @@ class PortugolGraphicsContext {
 
   drawRect(x, y, width, height, rounded, fill) {
     this.drawCall(() => {
-      if (this.canvasContext) {
+      // Como no Java, tamanho negativo não desenha nada
+      if (this.canvasContext && width >= 0 && height >= 0) {
         const bounds = {
           x,
           y,
@@ -398,9 +511,24 @@ class PortugolGraphicsContext {
 
         const { x: rx, y: ry, width: rwidth, height: rheight } = this.applyTransformationToBounds(bounds);
 
-        if (rounded) {
+        // O contorno de 1 pixel fica nítido no meio do pixel e, como no Java,
+        // cobre largura + 1 pixels
+        const offset = fill ? 0 : 0.5;
+
+        if (!fill && (width === 0 || height === 0)) {
+          // Sem largura ou sem altura, o contorno é uma linha, com as pontas
+          // incluídas como no Java
+          this.canvasContext.lineCap = "square";
           this.canvasContext.beginPath();
-          this.canvasContext.roundRect(rx, ry, rwidth, rheight, 5);
+          this.canvasContext.moveTo(rx + offset, ry + offset);
+          this.canvasContext.lineTo(rx + rwidth + offset, ry + rheight + offset);
+          this.canvasContext.stroke();
+          this.canvasContext.lineCap = "butt";
+        } else if (rounded) {
+          this.canvasContext.beginPath();
+          // O Portugol Studio usa 20% do menor lado como diâmetro do canto
+          const corner = Math.trunc(Math.min(width, height) * 0.2) / 2;
+          this.canvasContext.roundRect(rx + offset, ry + offset, rwidth, rheight, corner);
           this.canvasContext.closePath();
 
           if (fill) {
@@ -412,7 +540,7 @@ class PortugolGraphicsContext {
           if (fill) {
             this.canvasContext.fillRect(rx, ry, rwidth, rheight);
           } else {
-            this.canvasContext.strokeRect(rx, ry, rwidth, rheight);
+            this.canvasContext.strokeRect(rx + offset, ry + offset, rwidth, rheight);
           }
         }
       }
@@ -421,7 +549,8 @@ class PortugolGraphicsContext {
 
   drawEllipse(x, y, width, height, fill) {
     this.drawCall(() => {
-      if (this.canvasContext) {
+      // Como no Java, tamanho negativo não desenha nada (e o canvas lançaria um erro)
+      if (this.canvasContext && width >= 0 && height >= 0) {
         const bounds = {
           x,
           y,
@@ -433,8 +562,11 @@ class PortugolGraphicsContext {
 
         const { x: rx, y: ry, width: rwidth, height: rheight } = this.applyTransformationToBounds(bounds);
 
+        // Como no retângulo, o contorno fica no meio do pixel
+        const offset = fill ? 0 : 0.5;
+
         this.canvasContext.beginPath();
-        this.canvasContext.ellipse(rx + (rwidth / 2), ry + (rheight / 2), rwidth / 2, rheight / 2, 0, 0, 2 * Math.PI);
+        this.canvasContext.ellipse(rx + (rwidth / 2) + offset, ry + (rheight / 2) + offset, rwidth / 2, rheight / 2, 0, 0, 2 * Math.PI);
         this.canvasContext.closePath();
 
         if (fill) {
@@ -485,8 +617,8 @@ class PortugolGraphicsContext {
 
     if (rotation !== 0) {
       return points.map((point) => [
-        point[0] - bounds.x - (bounds.width / 2),
-        point[1] - bounds.y - (bounds.height / 2)
+        point[0] - bounds.x - (bounds.width >> 1),
+        point[1] - bounds.y - (bounds.height >> 1)
       ]);
     }
 
@@ -502,13 +634,16 @@ class PortugolGraphicsContext {
 
         const rpoints = this.applyTransformationToPolygon(points, bounds);
 
+        // Como no retângulo, o contorno fica no meio do pixel
+        const offset = fill ? 0 : 0.5;
+
         this.canvasContext.beginPath();
 
         rpoints.forEach((point, index) => {
           if (index === 0) {
-            this.canvasContext.moveTo(point[0], point[1]);
+            this.canvasContext.moveTo(point[0] + offset, point[1] + offset);
           } else {
-            this.canvasContext.lineTo(point[0], point[1]);
+            this.canvasContext.lineTo(point[0] + offset, point[1] + offset);
           }
         });
 
@@ -523,9 +658,13 @@ class PortugolGraphicsContext {
     });
   }
 
-  calculateTextSize(text) {
+  calculateTextSize(text, useDefinedFont = false) {
     if (this.canvasContext) {
       this.applyWorkParams(true);
+
+      if (useDefinedFont) {
+        this.canvasContext.font = this.buildFont(this.definedTextStyle, this.definedTextSize, this.definedTextFont);
+      }
 
       const metrics = this.canvasContext.measureText(text);
 
@@ -556,9 +695,11 @@ class PortugolGraphicsContext {
 
         const { x: rx, y: ry, width: rwidth, height: rheight } = this.applyTransformationToBounds(bounds);
 
-        // Como no Portugol Studio, o \`y\` é o topo do texto: a linha de base fica
-        // uma ascendente abaixo (\`height\`, de \`calculateTextSize\`).
-        this.canvasContext.fillText(text, rx, ry + rheight);
+        // Como no Portugol Studio, o \`y\` é o topo do texto, e a linha de base fica
+        // em ascendente - descendente + 1 (o canvas não expõe o leading)
+        const metrics = this.canvasContext.measureText(text);
+        const baseline = Math.round((metrics.fontBoundingBoxAscent ?? 0) - (metrics.fontBoundingBoxDescent ?? 0)) + 1;
+        this.canvasContext.fillText(text, rx, ry + baseline);
 
         if (this.workingTextStyle.underline) {
           const underlineBounds = {
@@ -581,18 +722,35 @@ class PortugolGraphicsContext {
   drawLine(x1, y1, x2, y2) {
     this.drawCall(() => {
       if (this.canvasContext) {
-        this.applyWorkParams(false, {
+        const bounds = {
           x: Math.min(x1, x2),
           y: Math.min(y1, y2),
           width: Math.abs(x2 - x1),
           height: Math.abs(y2 - y1),
-        });
+        };
 
+        // Como no Portugol Studio, o gradiente vai do primeiro ao segundo ponto
+        const gradientBounds = {
+          x: x1,
+          y: y1,
+          width: x2 - x1,
+          height: y2 - y1,
+        };
+
+        this.applyWorkParams(false, bounds, gradientBounds);
+
+        // Com rotação, a origem foi para o centro da linha. O meio do pixel deixa
+        // a linha nítida, e a ponta quadrada inclui os dois pontos, como no Java
+        const { x: rx, y: ry } = this.applyTransformationToBounds(bounds);
+        const dx = rx - bounds.x + 0.5;
+        const dy = ry - bounds.y + 0.5;
+
+        this.canvasContext.lineCap = "square";
         this.canvasContext.beginPath();
-        this.canvasContext.moveTo(x1, y1);
-        this.canvasContext.lineTo(x2, y2);
-        this.canvasContext.closePath();
+        this.canvasContext.moveTo(x1 + dx, y1 + dy);
+        this.canvasContext.lineTo(x2 + dx, y2 + dy);
         this.canvasContext.stroke();
+        this.canvasContext.lineCap = "butt";
       }
     });
   }
