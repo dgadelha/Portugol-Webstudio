@@ -819,7 +819,12 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     const sb = new StringBuilder();
 
     sb.append(this.DEBUG(`visitNumeroInteiro`, ctx));
-    sb.append(this.PAD(), `new PortugolVar("inteiro", ${ctx.getText()})`, `\n`);
+
+    // Um zero à esquerda, como em `012`, faria o JavaScript ler o número em octal. No
+    // Portugol, o número é decimal.
+    const valor = ctx.HEXADECIMAL()?.getText() ?? String(Number.parseInt(ctx.getText(), 10));
+
+    sb.append(this.PAD(), `new PortugolVar("inteiro", ${valor})`, `\n`);
 
     return sb.toString();
   }
@@ -828,7 +833,8 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     const sb = new StringBuilder();
 
     sb.append(this.DEBUG(`visitNumeroReal`, ctx));
-    sb.append(this.PAD(), `new PortugolVar("real", ${ctx.REAL().getText()})`, `\n`);
+    // `012.5` nem é um número válido em JavaScript.
+    sb.append(this.PAD(), `new PortugolVar("real", ${Number(ctx.REAL().getText())})`, `\n`);
 
     return sb.toString();
   }

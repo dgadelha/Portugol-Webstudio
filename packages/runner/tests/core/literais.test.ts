@@ -15,13 +15,15 @@ describe("Literais", () => {
     });
 
     test("Ignora zeros à esquerda", async () => {
+      // Em JavaScript, `012` seria octal (10).
       await expect(
         runPortugolCode(
           portugolInicio`
-            escreva(007, "|", 000, "|", 0)
+            inteiro v[03] = {1, 2, 3}
+            escreva(007, "|", 000, "|", 0, "|", 012, "|", 010 * 2, "|", v[02])
           `,
         ),
-      ).resolves.toBe("7|0|0");
+      ).resolves.toBe("7|0|0|12|20|3");
     });
 
     test("Aceita os limites de 32 bits", async () => {
@@ -36,6 +38,16 @@ describe("Literais", () => {
   });
 
   describe("Reais", () => {
+    test("Ignora zeros à esquerda", async () => {
+      await expect(
+        runPortugolCode(
+          portugolInicio`
+            escreva(012.5, "|", 00.5, "|", 2.0 * 010.25)
+          `,
+        ),
+      ).resolves.toBe("12.5|0.5|20.5");
+    });
+
     test("Distingue zero positivo e negativo", async () => {
       await expect(
         runPortugolCode(
