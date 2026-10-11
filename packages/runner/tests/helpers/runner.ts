@@ -26,9 +26,11 @@ const assetsDir = path.join(import.meta.dirname, "..", "assets");
 const portugolConsoleJar = globSync("portugol-console-*.jar", { cwd: assetsDir })
   .filter(jar => !jar.endsWith("-sources.jar"))
   .map(jar => path.join(assetsDir, jar))[0];
-const temPortugolCli = portugolConsoleJar !== undefined;
+// `SEM_PORTUGOL_CLI=1` pula a comparação com o Portugol Studio, que é a parte lenta dos testes.
+const semPortugolCli = Boolean(process.env.SEM_PORTUGOL_CLI);
+const temPortugolCli = !semPortugolCli && portugolConsoleJar !== undefined;
 
-if (!temPortugolCli) {
+if (!semPortugolCli && portugolConsoleJar === undefined) {
   const aviso = `Portugol Console não encontrado em ${assetsDir}. Execute tests/setup.sh para comparar a saída com a do Portugol Studio.`;
 
   if (process.env.CI) {
