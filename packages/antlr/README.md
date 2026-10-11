@@ -11,13 +11,16 @@ npm run antlr-update
 npm run antlr-ng
 ```
 
+O `antlr-update` baixa a gramática do Portugol Studio e aplica as mudanças do Webstudio, que ficam em `src/sintatico.patch` e `src/lexico.patch`.
+
 Os arquivos gerados serão salvos na pasta `src`, dentre eles:
 
-- `PortugolErrorListener.ts`: contém um `ANTLRErrorListener` que armazena os erros em memória
 - `PortugolLexer.ts`: contém a implementação do analisador léxico
 - `PortugolParser.ts`: contém a implementação do analisador sintático
 - `PortugolVisitor.ts`: contém a implementação do visitor
 - `PortugolListener.ts`: contém a implementação do listener
+
+O `PortugolErrorListener.ts` não é gerado: ele tem os tipos dos diagnósticos (`PortugolCodeDiagnostic`), usados pelo verificador do pacote `@portugol-webstudio/parser`.
 
 ## Uso
 
