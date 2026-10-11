@@ -30,7 +30,7 @@ import { WorkspaceService } from "../workspace.service";
 import { ResponsiveService } from "../responsive.service";
 import { Theme, ThemeService } from "../theme.service";
 import { criarAjudaDasBibliotecas } from "./bibliotecas";
-import { AjudaTopico, TreeItem } from "./types";
+import { AjudaTopico, AjudaTopicoArquivo, TreeItem } from "./types";
 
 const AJUDA_BASE = "assets/recursos/ajuda/";
 
@@ -118,7 +118,9 @@ export class TabHelpComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.http.get<AjudaTopico[]>(`${AJUDA_BASE}topicos.json`).subscribe({
       next: topicos => {
-        const ajudaWithLibs = [...topicos.map(topico => this.#criarItem(topico)), criarAjudaDasBibliotecas()];
+        const ajudaWithLibs = topicos.map(topico =>
+          "gerado" in topico ? criarAjudaDasBibliotecas() : this.#criarItem(topico),
+        );
 
         for (const item of ajudaWithLibs) {
           this.#indexar(item);
@@ -377,7 +379,7 @@ export class TabHelpComponent implements OnInit, OnDestroy {
     void this.#renderizarDiagramas();
   }
 
-  #criarItem(topico: AjudaTopico): TreeItem {
+  #criarItem(topico: AjudaTopicoArquivo): TreeItem {
     return {
       id: topico.arquivo,
       text: topico.titulo,

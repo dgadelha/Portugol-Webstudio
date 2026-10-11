@@ -71,6 +71,21 @@ markdown {
     max-width: 100%;
   }
 
+  // As capturas de tela (as imagens com a densidade no nome, como `@2x`, que viram `srcset`)
+  // ganham os cantos das janelas do IDE, que também cortam o fundo da página nos cantos de uma
+  // janela capturada sozinha.
+  img[srcset] {
+    border-radius: var(--pws-radius-lg);
+  }
+
+  // As capturas de tela do celular são estreitas e altas: limitadas na altura, não fazem rolar
+  // uma tela inteira. O nome do arquivo termina em `-celular` (antes da densidade, como `@2x`).
+  img[srcset*="-celular@"],
+  img[src*="-celular."] {
+    display: block;
+    max-height: 28rem;
+  }
+
   code {
     padding: 0.1em 0.35em;
     border-radius: var(--pws-radius-sm);

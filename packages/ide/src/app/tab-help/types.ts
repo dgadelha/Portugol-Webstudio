@@ -17,8 +17,19 @@ export interface TreeItem {
 /**
  * Formato do `topicos.json` da Ajuda (portugol-recursos)
  */
-export interface AjudaTopico {
+export type AjudaTopico = AjudaTopicoArquivo | AjudaTopicoGerado;
+
+export interface AjudaTopicoArquivo {
   titulo: string;
   arquivo: string;
-  subtopicos?: AjudaTopico[];
+  subtopicos?: AjudaTopicoArquivo[];
+}
+
+/**
+ * Marca o lugar, na lista, de um grupo montado pelo próprio IDE, como o das bibliotecas, que
+ * vem dos metadados delas.
+ */
+export interface AjudaTopicoGerado {
+  titulo: string;
+  gerado: "bibliotecas";
 }

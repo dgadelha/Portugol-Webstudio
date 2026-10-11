@@ -17,7 +17,7 @@ As bibliotecas abaixo existem no Portugol Studio, mas ainda não no Webstudio. U
 - Sons
 - Teclado
 
-As outras bibliotecas funcionam como no Portugol Studio. Veja a lista em [Bibliotecas](linguagem_portugol/bibliotecas/index.md).
+As outras bibliotecas funcionam como no Portugol Studio. Veja a lista em [Bibliotecas](../linguagem_portugol/bibliotecas/index.md).
 
 ---
 

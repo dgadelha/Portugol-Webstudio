@@ -31,7 +31,8 @@
     "prewatch": "npm run changelog",
     "watch": "ng build --watch --configuration development",
     "lint": "ng lint",
-    "typecheck": "tsc -p tsconfig.spec.json --noEmit"
+    "typecheck": "tsc -p tsconfig.spec.json --noEmit",
+    "capturas-da-ajuda": "node scripts/capturas-da-ajuda/capturar.mjs"
   },
   "dependencies": {
     "@angular/cdk": "^22.2.1",
@@ -72,6 +73,7 @@
     "@angular/cli": "^22.2.1",
     "@angular/compiler-cli": "^22.2.1",
     "@types/file-saver": "^2.0.7",
+    "playwright-core": "^1.64.0",
     "typescript": "~6.0.3"
   }
 }
