@@ -212,5 +212,59 @@
         "arquivo": "topicos/linguagem_portugol/bibliotecas/index.md"
       }
     ]
+  },
+  {
+    "titulo": "Bibliotecas",
+    "gerado": "bibliotecas"
+  },
+  {
+    "titulo": "Portugol Webstudio",
+    "arquivo": "topicos/portugol_webstudio/index.md",
+    "subtopicos": [
+      {
+        "titulo": "Primeiros passos",
+        "arquivo": "topicos/portugol_webstudio/primeiros_passos.md"
+      },
+      {
+        "titulo": "O editor de código",
+        "arquivo": "topicos/portugol_webstudio/editor.md"
+      },
+      {
+        "titulo": "Executando programas",
+        "arquivo": "topicos/portugol_webstudio/executando.md"
+      },
+      {
+        "titulo": "Abas e arquivos",
+        "arquivo": "topicos/portugol_webstudio/abas_e_arquivos.md"
+      },
+      {
+        "titulo": "Exemplos",
+        "arquivo": "topicos/portugol_webstudio/exemplos.md"
+      },
+      {
+        "titulo": "Compartilhando código",
+        "arquivo": "topicos/portugol_webstudio/compartilhando.md"
+      },
+      {
+        "titulo": "Configurações",
+        "arquivo": "topicos/portugol_webstudio/configuracoes.md"
+      },
+      {
+        "titulo": "Atalhos de teclado",
+        "arquivo": "topicos/portugol_webstudio/atalhos.md"
+      },
+      {
+        "titulo": "Sem internet e atualizações",
+        "arquivo": "topicos/portugol_webstudio/sem_internet.md"
+      },
+      {
+        "titulo": "Acessibilidade",
+        "arquivo": "topicos/portugol_webstudio/acessibilidade.md"
+      },
+      {
+        "titulo": "Diferenças em relação ao Portugol Studio",
+        "arquivo": "topicos/portugol_webstudio/diferencas_portugol_studio.md"
+      }
+    ]
   }
 ]

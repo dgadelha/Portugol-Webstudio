@@ -1,1 +1,0 @@
-import"./main-ZCWXYDND.js";import{n as v,t as C}from"./chunk-QxU_FBN4.js";export{C as ArchitectureModule,v as createArchitectureServices};
