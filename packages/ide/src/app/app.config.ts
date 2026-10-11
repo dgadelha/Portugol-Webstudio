@@ -33,7 +33,16 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection(),
     provideFirebaseApp(() => initializeApp(environment.firebase)),
-    provideStorage(() => getStorage()),
+    provideStorage(() => {
+      const storage = getStorage();
+
+      // O padrão do Firebase é tentar de novo por até 10 minutos, com o botão de compartilhar
+      // esperando e sem nenhum aviso. Sem conexão, 15 segundos bastam para desistir e avisar.
+      storage.maxUploadRetryTime = 15_000;
+      storage.maxOperationRetryTime = 15_000;
+
+      return storage;
+    }),
     provideHttpClient(),
     provideAngularSvgIcon(),
     // Divisores com um vão de 8px, como entre as áreas do VS Code (ver `styles/_split.scss`)

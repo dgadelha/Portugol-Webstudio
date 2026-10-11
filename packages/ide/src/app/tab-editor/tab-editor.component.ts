@@ -1101,9 +1101,12 @@ export class TabEditorComponent implements OnInit, OnDestroy {
 
       this.gaService.event("share_code_success", "Editor", "editor");
     } else {
-      this.toast.error("Ocorreu um erro ao compartilhar o arquivo. Tente novamente mais tarde.", {
-        duration: 5000,
-      });
+      this.toast.error(
+        result.reason === "offline"
+          ? "Sem internet para compartilhar o código. Conecte-se e tente de novo."
+          : "Ocorreu um erro ao compartilhar o arquivo. Tente novamente mais tarde.",
+        { duration: 5000 },
+      );
 
       this.gaService.event("share_code_error", "Editor", result.reason);
     }

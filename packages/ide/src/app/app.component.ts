@@ -272,7 +272,12 @@ export class AppComponent implements OnInit {
       this.addTab(`Código compartilhado (#${hash})`, result.value);
       this.gaService.event("load_shared_code_success", "Interface", "link");
     } else {
-      this.toast.error("Erro ao carregar código compartilhado", { duration: 10_000, dismissible: true });
+      this.toast.error(
+        result.reason === "offline"
+          ? "Sem internet para abrir o código compartilhado. Conecte-se e abra o link de novo."
+          : "Erro ao carregar código compartilhado",
+        { duration: 10_000, dismissible: true },
+      );
       this.gaService.event("load_shared_code_error", "Interface", result.reason);
     }
   }

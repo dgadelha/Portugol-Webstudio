@@ -14,6 +14,11 @@ export class ShareService {
   storage = inject(Storage);
 
   async share(code: string): Promise<ShareResult> {
+    // Sem internet, nem tenta: o Firebase só desistiria depois de várias tentativas.
+    if (!navigator.onLine) {
+      return { ok: false, reason: "offline" };
+    }
+
     const shareId = (Math.random() + 1).toString(36).slice(2, 9);
 
     try {
@@ -29,6 +34,10 @@ export class ShareService {
   }
 
   async load(shareId: string): Promise<ShareResult> {
+    if (!navigator.onLine) {
+      return { ok: false, reason: "offline" };
+    }
+
     try {
       const data = await getBlob(ref(this.storage, `share/${shareId}.por`));
       const contents = await data.text();
