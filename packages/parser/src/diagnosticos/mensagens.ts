@@ -570,14 +570,17 @@ export function erroTiposÍndiceVetor(origem: Origem, tipo: TipoOperando): Portu
 }
 
 export function erroTiposÍndiceMatriz(
-  origem: Origem,
+  início: Origem,
+  fim: Origem,
   tipoLinha: TipoOperando,
   tipoColuna: TipoOperando,
 ): PortugolCodeDiagnostic {
-  return tiposIncompatíveis(
-    origem,
-    SUFIXO_TIPOS_INCOMPATIVEIS.INDICE_MATRIZ,
-    `A linha e coluna da matriz devem ser uma expressão do tipo "inteiro" e "inteiro" mas foi passada uma expressão do tipo "${descreverTipo(tipoLinha)}" e "${descreverTipo(tipoColuna)}".`,
+  return diagnósticoEntre(
+    início,
+    fim,
+    `${INCOMPATÍVEIS}A linha e coluna da matriz devem ser uma expressão do tipo "inteiro" e "inteiro" mas foi passada uma expressão do tipo "${descreverTipo(tipoLinha)}" e "${descreverTipo(tipoColuna)}".`,
+    PortugolDiagnosticSeverity.Error,
+    código(CÓDIGOS.TIPOS_INCOMPATIVEIS, SUFIXO_TIPOS_INCOMPATIVEIS.INDICE_MATRIZ),
   );
 }
 

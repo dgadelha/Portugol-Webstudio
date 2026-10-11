@@ -1614,13 +1614,21 @@ export class AnalisadorSemântico {
   /**
    * Índice indeterminado não vira erro: o Portugol Studio só compara o que conseguiu
    * resolver, e a matriz exige as duas pontas resolvidas para acusar.
+   *
+   * Divergência: o Portugol Studio marca a referência inteira (`v[1.5]`); aqui só o índice
+   * errado, ou os dois índices da matriz, quando os dois estão errados.
    */
-  private verificarÍndices(origem: Origem, tipos: ReadonlyArray<TipoPrimitivo | undefined>): void {
+  private verificarÍndices(
+    referência: Origem,
+    índices: ReadonlyArray<Expressão | undefined>,
+    tipos: ReadonlyArray<TipoPrimitivo | undefined>,
+  ): void {
     const [linha, coluna] = tipos;
+    const [índiceLinha = referência, índiceColuna = referência] = índices;
 
     if (tipos.length === 1) {
       if (linha !== undefined && linha !== TipoPrimitivo.INTEIRO) {
-        this.registrar(erroTiposÍndiceVetor(origem, linha));
+        this.registrar(erroTiposÍndiceVetor(índiceLinha, linha));
       }
 
       return;
@@ -1630,8 +1638,18 @@ export class AnalisadorSemântico {
       return;
     }
 
-    if (linha !== TipoPrimitivo.INTEIRO || coluna !== TipoPrimitivo.INTEIRO) {
-      this.registrar(erroTiposÍndiceMatriz(origem, linha, coluna));
+    const linhaErrada = linha !== TipoPrimitivo.INTEIRO;
+    const colunaErrada = coluna !== TipoPrimitivo.INTEIRO;
+
+    if (linhaErrada || colunaErrada) {
+      this.registrar(
+        erroTiposÍndiceMatriz(
+          linhaErrada ? índiceLinha : índiceColuna,
+          colunaErrada ? índiceColuna : índiceLinha,
+          linha,
+          coluna,
+        ),
+      );
     }
   }
 
@@ -1639,7 +1657,7 @@ export class AnalisadorSemântico {
     // O `índice` é obrigatório na gramática, mas some numa árvore truncada por erro sintático.
     const tipoÍndice = nó.índice?.índice ? this.resolverTipo(nó.índice.índice) : undefined;
 
-    this.verificarÍndices(nó, [tipoÍndice]);
+    this.verificarÍndices(nó, [nó.índice?.índice], [tipoÍndice]);
 
     if (nó.escopoBiblioteca !== undefined) {
       // Nenhuma constante de biblioteca é vetor, e o Portugol Studio não trata `g.CONST[0]`:
@@ -1671,7 +1689,7 @@ export class AnalisadorSemântico {
     // A gramática permite `a[i]` no ramo de matriz, então a coluna pode faltar.
     const tipoColuna = nó.coluna?.índice ? this.resolverTipo(nó.coluna.índice) : undefined;
 
-    this.verificarÍndices(nó, [tipoLinha, tipoColuna]);
+    this.verificarÍndices(nó, [nó.linha?.índice, nó.coluna?.índice], [tipoLinha, tipoColuna]);
 
     if (nó.escopoBiblioteca !== undefined) {
       this.registrar(erroSímboloNãoDeclarado(nó.nomeToken, nó.nome, "matriz"));
@@ -1769,7 +1787,11 @@ export class AnalisadorSemântico {
     const tiposÍndices = nó.índices.map(índice => (índice.índice ? this.resolverTipo(índice.índice) : undefined));
     const forma: FormaReferência = nó.índices.length === 0 ? "variável" : nó.índices.length === 1 ? "vetor" : "matriz";
 
-    this.verificarÍndices(nó, tiposÍndices);
+    this.verificarÍndices(
+      nó,
+      nó.índices.map(índice => índice.índice),
+      tiposÍndices,
+    );
 
     const símbolo = this.memória.obterSímbolo(nó.nome);
 

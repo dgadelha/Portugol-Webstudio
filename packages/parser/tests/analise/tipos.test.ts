@@ -412,7 +412,7 @@ describe("Tipos", () => {
   });
 
   describe("Índices", () => {
-    test("índice de vetor e de matriz precisa ser inteiro", () => {
+    test("índice de vetor e de matriz precisa ser inteiro, e só o índice errado é marcado", () => {
       expect(
         analisar(portugol`
           programa {
@@ -421,13 +421,18 @@ describe("Tipos", () => {
               inteiro m[2][2] = {{1, 2}, {3, 4}}
               escreva(v["x"])
               escreva(m[1.5][verdadeiro])
+              escreva(m[0][2.5], m['a'][1])
+              v[1.5]++
             }
           }
         `),
       ).toMatchInlineSnapshot(`
         [
-          5:12/5:17 E [ErroSemantico.ErroTiposIncompativeis.24]: Tipos incompatíveis! O índice do vetor deve ser uma expressão do tipo "inteiro" mas foi passada uma expressão do tipo "cadeia".,
-          6:12/6:29 E [ErroSemantico.ErroTiposIncompativeis.23]: Tipos incompatíveis! A linha e coluna da matriz devem ser uma expressão do tipo "inteiro" e "inteiro" mas foi passada uma expressão do tipo "real" e "lógico".,
+          5:14/5:16 E [ErroSemantico.ErroTiposIncompativeis.24]: Tipos incompatíveis! O índice do vetor deve ser uma expressão do tipo "inteiro" mas foi passada uma expressão do tipo "cadeia".,
+          6:14/6:28 E [ErroSemantico.ErroTiposIncompativeis.23]: Tipos incompatíveis! A linha e coluna da matriz devem ser uma expressão do tipo "inteiro" e "inteiro" mas foi passada uma expressão do tipo "real" e "lógico".,
+          7:17/7:19 E [ErroSemantico.ErroTiposIncompativeis.23]: Tipos incompatíveis! A linha e coluna da matriz devem ser uma expressão do tipo "inteiro" e "inteiro" mas foi passada uma expressão do tipo "inteiro" e "real".,
+          7:25/7:27 E [ErroSemantico.ErroTiposIncompativeis.23]: Tipos incompatíveis! A linha e coluna da matriz devem ser uma expressão do tipo "inteiro" e "inteiro" mas foi passada uma expressão do tipo "caracter" e "inteiro".,
+          8:6/8:8 E [ErroSemantico.ErroTiposIncompativeis.24]: Tipos incompatíveis! O índice do vetor deve ser uma expressão do tipo "inteiro" mas foi passada uma expressão do tipo "real".,
         ]
       `);
     });
