@@ -63,7 +63,7 @@ O Portugol Webstudio confere o código meio segundo depois que você para de dig
 
 ![Um erro sublinhado no código e listado na aba Problemas](../../recursos/imagens/light/webstudio/erros-no-editor@2x.webp)
 
-Um **erro** impede o programa de ser executado: ao clicar em Executar, a saída lista os erros e o programa não começa. Um **aviso** aponta algo que provavelmente está errado, mas o programa executa assim mesmo. Uma **informação** é uma dica, como uma variável que foi declarada e nunca usada.
+Um **erro** impede o programa de ser executado: ao clicar em Executar, o programa não começa, e o painel abre na aba Problemas. Um **aviso** aponta algo que provavelmente está errado, mas o programa executa assim mesmo. Uma **informação** é uma dica, como uma variável que foi declarada e nunca usada.
 
 Se preferir que os erros só apareçam ao executar, desligue **Mostrar erros enquanto digita** nas [configurações](configuracoes.md).
 

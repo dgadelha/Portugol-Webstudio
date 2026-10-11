@@ -15,7 +15,7 @@ Depois vem o tempo de execução, em milissegundos. Ele pode ser escondido nas [
 
 ## Programas com erro
 
-Um programa com erro não é executado. A saída diz quantos erros foram encontrados e lista cada um, com a linha e a coluna. Os mesmos erros aparecem sublinhados no código e na aba **Problemas** (veja [O editor de código](editor.md)).
+Um programa com erro não é executado. Ao clicar em Executar, o painel abre na aba **Problemas**, com a lista dos erros: clique num deles para ir até ele no código (veja [O editor de código](editor.md)). A aba **Saída** também diz quantos erros foram encontrados e lista cada um, com a linha e a coluna.
 
 ![A saída de um programa com erro, que não foi executado](../../recursos/imagens/light/webstudio/executar-com-erros@2x.webp)
 

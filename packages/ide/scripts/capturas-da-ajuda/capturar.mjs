@@ -232,6 +232,8 @@ const cenas = {
 
     await abrir(página, "Com erros.por");
     await executar(página);
+    // Com erro, o painel abre nos Problemas: a captura mostra a mensagem da Saída.
+    await página.getByRole("tab", { name: "Saída" }).click();
     await página.getByText("não foi executado").waitFor();
     await página.waitForTimeout(400);
     await capturar(página, tema, "executar-com-erros");

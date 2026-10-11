@@ -556,6 +556,17 @@ export class TabEditorComponent implements OnInit, OnDestroy {
       // A checagem ao vivo é debounced: quem edita e roda em menos de 500ms veria as marcas
       // do código anterior. Estas vêm do mesmo `checkCode` que decidiu se ia executar.
       this.setEditorDiagnostics(result.diagnostics.concat(result.parseErrors));
+
+      // Com erro de compilação o programa não executa: a lista de Problemas, que leva até cada
+      // erro, é mais útil que a saída. O critério é o mesmo do executor.
+      const temErro =
+        result.parseErrors.length > 0 ||
+        result.diagnostics.some(diagnostic => diagnostic.severity === PortugolDiagnosticSeverity.Error);
+
+      if (temErro) {
+        this.showPanel("problems");
+      }
+
       this.executor.runTranspiled(result);
     }
   }
