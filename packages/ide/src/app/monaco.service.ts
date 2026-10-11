@@ -91,10 +91,12 @@ export class MonacoService {
               { open: "/**", close: " */", notIn: ["string"] },
             ],
 
+            // Comentários que criam um bloco recolhível: `// regiao` (ou `// região`) até
+            // `// fimregiao` (ou `// fim regiao`), além dos `// region` e `// endregion` do VS Code.
             folding: {
               markers: {
-                start: /^\s*\/\/\s*#?region\b/,
-                end: /^\s*\/\/\s*#?endregion\b/,
+                start: /^\s*\/\/\s*#?(?:region|regi[aã]o)(?![\p{L}\p{N}_])/u,
+                end: /^\s*\/\/\s*#?(?:endregion|fim\s*regi[aã]o)(?![\p{L}\p{N}_])/u,
               },
             },
           });
