@@ -17,7 +17,35 @@ As bibliotecas abaixo existem no Portugol Studio, mas ainda não no Webstudio. U
 - Sons
 - Teclado
 
-As outras bibliotecas funcionam como no Portugol Studio. Veja a lista em [Bibliotecas](../linguagem_portugol/bibliotecas/index.md).
+As outras bibliotecas funcionam como no Portugol Studio, com as exceções da Graficos, abaixo. Veja a lista em [Bibliotecas](../linguagem_portugol/bibliotecas/index.md).
+
+---
+
+# Biblioteca Graficos
+
+A biblioteca Graficos desenha como no Portugol Studio, mas a janela fica dentro do navegador, e isso muda algumas coisas.
+
+## Funções que ainda não existem
+
+Estas funções dependem de abrir arquivos do computador e ainda não estão disponíveis. Um programa que chama uma delas para com um erro:
+
+- As de imagens, como `carregar_imagem`, `desenhar_imagem`, `transformar_imagem` e as de GIFs
+- `carregar_fonte`
+- `definir_icone_janela`
+
+## A janela
+
+- `minimizar_janela`, `restaurar_janela`, `ocultar_borda_janela` e `exibir_borda_janela` não fazem nada.
+- No modo tela cheia, a janela ocupa a aba do navegador, e não a tela toda, e continua com o título em cima. `largura_janela` e `altura_janela` dão o tamanho da área de desenho. O navegador só deixa um site ocupar a tela toda quando a pessoa clica ou aperta uma tecla, e não quando o programa pede.
+- Fechar a janela com **Esc** também para o programa.
+- `largura_tela` e `altura_tela` dão o tamanho da tela como o navegador conta, que pode ser menor que o do Portugol Studio em telas de alta resolução.
+- Com a aba do Webstudio escondida, o programa fica pausado no `renderizar` e continua quando a aba volta.
+
+## Desenhos
+
+- O texto usa as fontes do navegador. A fonte padrão é parecida com a do Portugol Studio, mas não é a mesma, e as letras têm as bordas suavizadas.
+- Um gradiente vale também para pontos, textos e o `limpar`. No Portugol Studio, eles usam o gradiente da última forma desenhada, ou a cor sólida.
+- O Webstudio gira linhas e polígonos em volta do centro deles. O Portugol Studio erra o centro de uma linha desenhada da direita para a esquerda e o de alguns polígonos.
 
 ---
 
