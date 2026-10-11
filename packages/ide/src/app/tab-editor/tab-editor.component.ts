@@ -1173,7 +1173,9 @@ export class TabEditorComponent implements OnInit, OnDestroy {
               : diagnostic.startCol + 1,
           };
         })
-        .toSorted((a, b) => order[a.severity] - order[b.severity] || a.line - b.line || a.column - b.column),
+        // O Firefox 113 e o Chrome 96–101, que ainda aparecem no Sentry, não têm `toSorted`.
+        // eslint-disable-next-line unicorn/no-array-sort -- o `map` acima já criou uma cópia
+        .sort((a, b) => order[a.severity] - order[b.severity] || a.line - b.line || a.column - b.column),
     );
   }
 
