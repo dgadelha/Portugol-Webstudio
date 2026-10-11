@@ -27,7 +27,7 @@ const portugolConsoleJar = globSync("portugol-console-*.jar", { cwd: assetsDir }
   .filter(jar => !jar.endsWith("-sources.jar"))
   .map(jar => path.join(assetsDir, jar))[0];
 // `SEM_PORTUGOL_CLI=1` pula a comparação com o Portugol Studio, que é a parte lenta dos testes.
-const semPortugolCli = Boolean(process.env.SEM_PORTUGOL_CLI);
+const semPortugolCli = process.env.SEM_PORTUGOL_CLI === "1";
 const temPortugolCli = !semPortugolCli && portugolConsoleJar !== undefined;
 
 if (!semPortugolCli && portugolConsoleJar === undefined) {
