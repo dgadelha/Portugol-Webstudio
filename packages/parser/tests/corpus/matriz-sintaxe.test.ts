@@ -30,4 +30,5 @@ test("a grade de enganos de sintaxe dá as mensagens de sempre", async () => {
   const linhas = gerarMatriz().map(({ nome, código }) => `${nome} | ${resumo(código)}`);
 
   await expect(`${linhas.join("\n")}\n`).toMatchFileSnapshot("../fixtures/matriz-sintaxe.txt");
-});
+  // São quase 2 mil programas: com a suíte inteira rodando ao lado, passa dos 5 s padrão.
+}, 60_000);
