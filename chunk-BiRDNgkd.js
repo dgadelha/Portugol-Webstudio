@@ -1,0 +1,1 @@
+import"./main-KEPRMQST.js";import{n as v,t as C}from"./chunk-B2N2TBr3.js";export{C as ArchitectureModule,v as createArchitectureServices};
