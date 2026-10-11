@@ -40,6 +40,14 @@ const temporário = mkdtempSync(path.join(os.tmpdir(), "capturas-da-ajuda-"));
 const navegador = await chromium.launch({ channel: process.env.NAVEGADOR ?? "msedge", headless: true });
 
 /**
+ * Os contextos abertos pela cena em andamento: cada um carrega o IDE inteiro, e são fechados ao
+ * fim de cada cena, em vez de se acumularem até o fim.
+ *
+ * @type {import("playwright-core").BrowserContext[]}
+ */
+const contextosDaCena = [];
+
+/**
  * Uma página nova, num contexto limpo: sem abas de antes nem configurações mudadas.
  *
  * O navegador continua se apresentando como o do sistema: num Mac, o editor usa a Menlo, e com
@@ -65,6 +73,8 @@ async function novaPágina(
   await contexto.addInitScript(() => {
     localStorage.setItem("pws:editorfontsize", "14");
   });
+
+  contextosDaCena.push(contexto);
 
   const página = await contexto.newPage();
 
@@ -400,6 +410,8 @@ if (desconhecidas.length > 0) {
       } catch (error) {
         falhas++;
         console.error(`✘ ${tema}/${nome}: ${String(error).split("\n", 1)[0]}`);
+      } finally {
+        await Promise.all(contextosDaCena.splice(0).map(contexto => contexto.close()));
       }
     }
   }
