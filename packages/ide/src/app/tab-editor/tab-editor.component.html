@@ -11,7 +11,7 @@
     [attr.aria-disabled]="!canRun() || null"
     (click)="canRun() && runCode('editor')"
   >
-    <svg-icon src="assets/icon-start.svg" class="icon-green" aria-hidden="true" />
+    <svg-icon src="assets/lucide/play.svg" class="icon-green" aria-hidden="true" />
   </button>
 
   <button
@@ -24,7 +24,7 @@
     [attr.aria-disabled]="!canStop() || null"
     (click)="canStop() && stopCode('editor')"
   >
-    <svg-icon src="assets/mdi/square-rounded-outline.svg" class="icon-red" aria-hidden="true" />
+    <svg-icon src="assets/lucide/square.svg" class="icon-red" aria-hidden="true" />
   </button>
 
   <span class="activity-separator" role="separator"></span>
@@ -40,7 +40,7 @@
     aria-keyshortcuts="Control+O"
     (click)="openFile.emit('editor')"
   >
-    <svg-icon src="assets/mdi/folder-open-outline.svg" class="icon-yellow" aria-hidden="true" />
+    <svg-icon src="assets/lucide/folder-open.svg" class="icon-yellow" aria-hidden="true" />
   </button>
 
   <button
@@ -54,7 +54,7 @@
     aria-keyshortcuts="Control+S"
     (click)="saveFromEditor('editor')"
   >
-    <svg-icon src="assets/mdi/content-save-outline.svg" class="icon-blue" aria-hidden="true" />
+    <svg-icon src="assets/lucide/save.svg" class="icon-blue" aria-hidden="true" />
   </button>
 
   <button
@@ -70,7 +70,7 @@
     [cdkMenuTriggerFor]="saveMenu"
     [cdkMenuPosition]="menuPositions"
   >
-    <svg-icon src="assets/mdi/content-save-settings-outline.svg" class="icon-blue" aria-hidden="true" />
+    <svg-icon src="assets/lucide/save-pen.svg" class="icon-blue" aria-hidden="true" />
   </button>
 
   <button
@@ -83,7 +83,7 @@
     [attr.aria-disabled]="sharing || null"
     (click)="!sharing && shareFile()"
   >
-    <svg-icon src="assets/mdi/share-variant-outline.svg" class="icon-green" aria-hidden="true" />
+    <svg-icon src="assets/lucide/share-2.svg" class="icon-green" aria-hidden="true" />
   </button>
 
   <span class="activity-separator" role="separator"></span>
@@ -97,7 +97,7 @@
     aria-label="Abrir exemplo"
     (click)="examples.emit()"
   >
-    <svg-icon src="assets/mdi/book-open-page-variant-outline.svg" class="icon-yellow" aria-hidden="true" />
+    <svg-icon src="assets/lucide/book-open-text.svg" class="icon-yellow" aria-hidden="true" />
   </button>
 
   <button
@@ -111,7 +111,7 @@
     aria-keyshortcuts="F1"
     (click)="openHelp('editor')"
   >
-    <svg-icon src="assets/mdi/help-circle-outline.svg" class="icon-blue" aria-hidden="true" />
+    <svg-icon src="assets/lucide/circle-question-mark.svg" class="icon-blue" aria-hidden="true" />
   </button>
 
   <span class="activity-spacer"></span>
@@ -125,7 +125,7 @@
     aria-label="Configurações"
     (click)="openSettings()"
   >
-    <svg-icon src="assets/mdi/cog-outline.svg" class="icon-yellow" aria-hidden="true" />
+    <svg-icon src="assets/lucide/settings.svg" class="icon-yellow" aria-hidden="true" />
   </button>
 </div>
 
@@ -141,7 +141,7 @@
         gaLabel="Botão de Salvar como - Ação Escolher um arquivo"
         (cdkMenuItemTriggered)="saveFileWithPicker()"
       >
-        <svg-icon src="assets/mdi/content-save-move.svg" aria-hidden="true" />
+        <svg-icon src="assets/lucide/folder-input.svg" aria-hidden="true" />
         Escolher onde salvar…
       </button>
     }
@@ -155,7 +155,7 @@
       gaLabel="Botão de Salvar como - Ação Download"
       (cdkMenuItemTriggered)="saveFile()"
     >
-      <svg-icon src="assets/mdi/download.svg" aria-hidden="true" />
+      <svg-icon src="assets/lucide/download.svg" aria-hidden="true" />
       Baixar
     </button>
 
@@ -181,7 +181,7 @@
       gaLabel="Botão de Salvar como - Ação Nova aba como texto"
       (cdkMenuItemTriggered)="saveFileManual('text')"
     >
-      <svg-icon src="assets/mdi/file-document-outline.svg" aria-hidden="true" />
+      <svg-icon src="assets/lucide/file-text.svg" aria-hidden="true" />
       Abrir numa aba do navegador, como texto
     </button>
 
@@ -194,7 +194,7 @@
       gaLabel="Botão de Salvar como - Ação Nova aba como binário"
       (cdkMenuItemTriggered)="saveFileManual('binary')"
     >
-      <svg-icon src="assets/mdi/file-download-outline.svg" aria-hidden="true" />
+      <svg-icon src="assets/lucide/file-down.svg" aria-hidden="true" />
       Abrir numa aba do navegador, como binário
     </button>
   </div>
@@ -279,7 +279,7 @@
           [disabled]="!executor.stdOut || executor.running"
           (click)="clearOutput()"
         >
-          <svg-icon src="assets/mdi/eraser.svg" aria-hidden="true" />
+          <svg-icon src="assets/lucide/eraser.svg" aria-hidden="true" />
         </button>
 
         <button
@@ -292,7 +292,7 @@
           (click)="toggleOutput()"
         >
           <svg-icon
-            src="assets/mdi/chevron-up.svg"
+            src="assets/lucide/chevron-up.svg"
             class="chevron"
             aria-hidden="true"
             [class.open]="!outputCollapsed"
@@ -328,7 +328,7 @@
               [(ngModel)]="programInput"
             />
             <button type="submit" class="icon-btn" aria-label="Enviar entrada">
-              <svg-icon src="assets/mdi/send.svg" class="icon-yellow" aria-hidden="true" />
+              <svg-icon src="assets/lucide/send.svg" class="icon-yellow" aria-hidden="true" />
             </button>
           </form>
         }
@@ -371,7 +371,7 @@
     <p class="share-toast-title">Link gerado</p>
     <a class="share-toast-link" target="_blank" rel="noopener" [href]="toastRef.data.url">{{ toastRef.data.url }}</a>
     <p class="share-toast-note">
-      <svg-icon src="assets/mdi/clock-alert-outline.svg" class="icon-red" aria-hidden="true" />
+      <svg-icon src="assets/lucide/clock-alert.svg" class="icon-red" aria-hidden="true" />
       Este link expira em 15 dias.
     </p>
     <button type="button" class="btn btn-primary btn-sm" (click)="copyShareUrl(toastRef)">Copiar link</button>

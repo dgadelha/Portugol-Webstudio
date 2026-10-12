@@ -5,14 +5,14 @@
   </div>
 
   <button type="button" class="icon-btn" aria-label="Fechar" appTooltip="Fechar" (click)="dialogRef.close()">
-    <svg-icon src="assets/mdi/close.svg" aria-hidden="true" />
+    <svg-icon src="assets/lucide/x.svg" aria-hidden="true" />
   </button>
 </header>
 
 <div class="examples">
   <div class="list">
     <label class="search">
-      <svg-icon src="assets/mdi/magnify.svg" aria-hidden="true" />
+      <svg-icon src="assets/lucide/search.svg" aria-hidden="true" />
       <input
         type="search"
         placeholder="Buscar exemplos…"
@@ -55,7 +55,7 @@
                 (dblclick)="openExample(entry.item)"
                 (keydown.enter)="openExample(entry.item)"
               >
-                <svg-icon src="assets/mdi/file-code-outline.svg" aria-hidden="true" />
+                <svg-icon src="assets/lucide/file-code.svg" aria-hidden="true" />
                 <span class="item-name">{{ entry.item.name }}</span>
                 @if (entry.path.length) {
                   <span class="item-path">{{ entry.path.join(" › ") }}</span>
@@ -96,7 +96,7 @@
       <div class="preview-footer">
         <span class="preview-hint"><kbd>Enter</kbd> abre o exemplo escolhido</span>
         <button type="button" class="btn btn-primary open-button" (click)="openExample(current)">
-          <svg-icon src="assets/mdi/tab-plus.svg" aria-hidden="true" />
+          <svg-icon src="assets/lucide/file-input.svg" aria-hidden="true" />
           Abrir exemplo
         </button>
       </div>

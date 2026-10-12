@@ -58,7 +58,7 @@
               appTooltipShortcut="F2"
               [attr.data-tab-id]="tab.id"
             >
-              <svg-icon src="assets/mdi/pencil-outline.svg" />
+              <svg-icon src="assets/lucide/pencil.svg" />
             </span>
           }
 
@@ -70,7 +70,7 @@
             appTooltipShortcut="Delete"
             [attr.data-tab-id]="tab.id"
           >
-            <svg-icon src="assets/mdi/close.svg" />
+            <svg-icon src="assets/lucide/x.svg" />
           </span>
         </div>
       }
@@ -85,7 +85,7 @@
       appTooltipShortcut="Alt+N"
       (click)="newTab('abas')"
     >
-      <svg-icon src="assets/mdi/plus.svg" aria-hidden="true" />
+      <svg-icon src="assets/lucide/plus.svg" aria-hidden="true" />
     </button>
 
     <span id="atalhos-aba" class="visually-hidden">Delete fecha a aba; F2 renomeia.</span>
@@ -155,15 +155,15 @@
       [attr.aria-label]="problemsLabel()"
       (click)="editor.showProblems()"
     >
-      <svg-icon src="assets/mdi/close-circle-outline.svg" aria-hidden="true" />
+      <svg-icon src="assets/lucide/circle-x.svg" aria-hidden="true" />
       {{ problemCounts().errors }}
-      <svg-icon src="assets/mdi/alert-outline.svg" aria-hidden="true" />
+      <svg-icon src="assets/lucide/triangle-alert.svg" aria-hidden="true" />
       {{ problemCounts().warnings }}
     </button>
 
     @if (editor.executor.running) {
       <span class="status-item status-running">
-        <svg-icon src="assets/mdi/play-outline.svg" aria-hidden="true" />
+        <svg-icon src="assets/lucide/play.svg" aria-hidden="true" />
         {{ editor.executor.waitingForInput ? "Aguardando entrada" : "Executando" }}
       </span>
     }

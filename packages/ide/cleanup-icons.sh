@@ -5,7 +5,7 @@ pushd "$(dirname ${BASH_SOURCE:0})" || exit 1
 trap popd EXIT
 shopt -s globstar nullglob
 
-BASE_DIR="../../node_modules/@mdi/svg/svg/"
+BASE_DIR="../../node_modules/lucide-static/icons/"
 
 if [ ! -d "$BASE_DIR" ]; then
   echo "Error: $BASE_DIR does not exist"
@@ -16,7 +16,7 @@ for i in "$BASE_DIR"/*.svg; do
   ICON_NAME=$(basename "$i")
 
   # Check if any file inside src/ uses the icon
-  if grep -q "$ICON_NAME" src/**/*.ts src/**/*.html src/**/*.scss; then
+  if grep -q "assets/lucide/$ICON_NAME" src/**/*.ts src/**/*.html src/**/*.scss; then
     echo "skipped $ICON_NAME"
     continue
   fi

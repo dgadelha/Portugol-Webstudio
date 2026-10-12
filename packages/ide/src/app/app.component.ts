@@ -96,9 +96,9 @@ export class AppComponent implements OnInit {
   readonly isBeta = IS_BETA;
 
   readonly tabIcons: Record<TabType, string> = {
-    editor: "assets/mdi/file-document-outline.svg",
-    help: "assets/mdi/help-circle-outline.svg",
-    changelog: "assets/mdi/newspaper.svg",
+    editor: "assets/lucide/file-text.svg",
+    help: "assets/lucide/circle-question-mark.svg",
+    changelog: "assets/lucide/newspaper.svg",
   };
 
   /**

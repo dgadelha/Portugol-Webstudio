@@ -5,7 +5,7 @@
   [disabled]="value() <= range.min"
   (click)="change(value() - 1)"
 >
-  <svg-icon src="assets/mdi/minus.svg" aria-hidden="true" />
+  <svg-icon src="assets/lucide/minus.svg" aria-hidden="true" />
 </button>
 
 <input
@@ -28,7 +28,7 @@
   [disabled]="value() >= range.max"
   (click)="change(value() + 1)"
 >
-  <svg-icon src="assets/mdi/plus.svg" aria-hidden="true" />
+  <svg-icon src="assets/lucide/plus.svg" aria-hidden="true" />
 </button>
 
 <span class="value" aria-hidden="true">{{ value() }}px</span>

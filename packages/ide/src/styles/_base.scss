@@ -117,6 +117,12 @@ svg-icon {
     width: 100%;
     height: 100%;
     fill: currentColor;
+
+    // Os ícones do Lucide são desenhados só com traço, sem preenchimento.
+    &.lucide {
+      fill: none;
+      stroke-width: 1.5;
+    }
   }
 }
 

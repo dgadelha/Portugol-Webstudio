@@ -166,9 +166,9 @@ export class TabEditorComponent implements OnInit, OnDestroy {
   readonly panelView = signal<PanelView>("output");
 
   readonly problemIcons: Record<ProblemSeverity, string> = {
-    error: "assets/mdi/close-circle-outline.svg",
-    warning: "assets/mdi/alert-outline.svg",
-    info: "assets/mdi/information-outline.svg",
+    error: "assets/lucide/circle-x.svg",
+    warning: "assets/lucide/triangle-alert.svg",
+    info: "assets/lucide/info.svg",
   };
 
   readonly severityLabels: Record<ProblemSeverity, string> = {
