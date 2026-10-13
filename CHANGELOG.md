@@ -11,7 +11,26 @@ Quando o beta chega na main, o deploy junta os arquivos de `changelog/` aqui, nu
 
 As mudanças mais recentes do Portugol Webstudio aparecem primeiro.
 
-## 11/10/2026
+## 11/10/2026 – 13/10/2026
+
+**Novo em 13/10/2026:**
+
+A biblioteca Graficos ficou bem mais parecida com a do Portugol Studio:
+
+- Cada `renderizar` desenha a tela do zero, com fundo preto, e a cor volta a ser preta. Antes, a cor e os desenhos do quadro anterior continuavam valendo
+- A janela abre com 640x480, e chamar `iniciar_modo_grafico` de novo não abre outra janela
+- Os programas com `aguarde` rodam na mesma velocidade do Portugol Studio, em qualquer monitor. Com a aba escondida, o programa fica pausado
+- O modo tela cheia funciona: a janela ocupa a aba toda do navegador
+- `largura_texto` e `altura_texto` medem o texto com o tamanho e a fonte que acabaram de ser definidos, e o texto fica na mesma altura que no Portugol Studio
+- Linhas e contornos ficaram nítidos, e uma linha girada com `definir_rotacao` aparece no lugar certo
+- Usar a mesma matriz para desenhar vários polígonos antes do `renderizar` desenha todos eles, e não só o último
+- Um retângulo ou uma elipse com tamanho negativo não é desenhado, em vez de parar o programa com um erro
+- Esquecer o `renderizar` mostra o mesmo erro do Portugol Studio, em vez de deixar a janela vazia
+- Cores e desenhos podem ser definidos antes do `iniciar_modo_grafico`, como no Portugol Studio
+
+Obrigado a quem respondeu a pesquisa e contou que as cores se comportavam diferente!
+
+---
 
 A Ajuda ganhou um guia do Portugol Webstudio, com imagens: dos primeiros passos aos atalhos de teclado, passando pelas configurações e pelo uso sem internet.
 
