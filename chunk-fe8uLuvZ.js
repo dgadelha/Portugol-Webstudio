@@ -1,1 +1,0 @@
-import"./main-I52CFMPQ.js";import{n as v,t as C}from"./chunk-DjqzrouY.js";export{C as ArchitectureModule,v as createArchitectureServices};

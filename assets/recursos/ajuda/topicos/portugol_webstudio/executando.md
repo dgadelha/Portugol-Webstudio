@@ -50,6 +50,6 @@ Por padrão, uma aba de código nova começa com o painel recolhido, e ele abre 
 
 ## Gráficos
 
-Um programa que usa a biblioteca Graficos abre uma janela com o desenho por cima do editor. A janela pode ser arrastada para qualquer lugar da tela. Fechar a janela, pelo botão **Fechar janela** ou com **Esc**, também para o programa. Quando o programa termina, a janela fecha sozinha.
+Um programa que usa a biblioteca Graficos abre uma janela com o desenho por cima do editor. A janela pode ser arrastada para qualquer lugar da tela. Fechar a janela, pelo botão **Fechar janela** ou com **Esc**, também para o programa. Quando o programa termina, a janela fecha sozinha. No modo tela cheia, a janela ocupa a aba toda do navegador.
 
 As bibliotecas disponíveis estão em [Bibliotecas](../linguagem_portugol/bibliotecas/index.md).

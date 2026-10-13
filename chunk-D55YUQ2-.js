@@ -1,0 +1,1 @@
+import"./main-PHAMOBKQ.js";import{n as v,t as C}from"./chunk-DlRMNWhh.js";export{C as ArchitectureModule,v as createArchitectureServices};
