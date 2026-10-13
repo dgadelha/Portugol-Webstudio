@@ -1,5 +1,5 @@
 // https://github.com/microsoft/vscode/blob/1fe7285a1162756215a684ee702b16d0ce42bdb4/src/vs/base/common/platform.ts#L102
-const isMacintosh = navigator.userAgent.includes("Macintosh");
+export const isMacintosh = navigator.userAgent.includes("Macintosh");
 
 // https://github.com/microsoft/vscode/blob/1fe7285a1162756215a684ee702b16d0ce42bdb4/src/vs/editor/common/config/fontInfo.ts#L240
 const defaultFontSize = isMacintosh ? 12 : 14;
@@ -50,6 +50,25 @@ function integer<T extends number | null>(
   };
 }
 
+/**
+ * Uma posição na tela, como a da barra flutuante da depuração. Fora disso, vale o padrão.
+ */
+function position(key: string): Setting<{ x: number; y: number }> {
+  const defaultValue = { x: 0, y: 0 };
+
+  return {
+    key,
+    default: defaultValue,
+    parse: value => {
+      const { x, y } = (value ?? {}) as { x?: unknown; y?: unknown };
+
+      return typeof x === "number" && typeof y === "number" && Number.isFinite(x) && Number.isFinite(y)
+        ? { x, y }
+        : defaultValue;
+    },
+  };
+}
+
 function oneOf<const T extends string>(key: string, values: readonly T[], defaultValue: T): Setting<T> {
   return {
     key,
@@ -89,6 +108,11 @@ export const settings = {
   // Desativado, uma aba de código nova já começa com o painel aberto.
   outputStartCollapsed: boolean("outputStartCollapsed", true),
   outputShowExecutionTime: boolean("outputShowExecutionTime", true),
+  // Desativado, a execução passo a passo só tem o Próximo passo, sem pontos de parada.
+  executionAdvancedDebugging: boolean("executionAdvancedDebugging", false),
+  // Onde a barra flutuante da depuração avançada foi deixada, em relação ao alto e ao meio
+  // do editor. Não aparece no diálogo de configurações.
+  debugToolbarPosition: position("debugToolbarPosition"),
   interfaceConfirmCloseTab: boolean("interfaceConfirmCloseTab", true),
   // Numa janela nova, adota as abas da última janela fechada.
   interfaceReopenTabs: boolean("interfaceReopenTabs", true),

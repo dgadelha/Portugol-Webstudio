@@ -1,0 +1,183 @@
+:host {
+  display: block;
+  overflow: auto;
+  font-size: var(--pws-text-ui);
+}
+
+.debug-empty {
+  padding: 0.5rem 1rem;
+  color: var(--pws-fg-muted);
+}
+
+.debug-layout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  padding: 0.5rem 1rem;
+}
+
+.debug-section {
+  flex: 1 1 16rem;
+  min-width: 0;
+
+  &.frames {
+    flex: 0 1 12rem;
+  }
+}
+
+.debug-title {
+  margin-bottom: 0.25rem;
+  color: var(--pws-fg-muted);
+  font-size: var(--pws-text-sm);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.frame-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.frame {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.125rem 0.5rem;
+  border: 0;
+  border-radius: var(--pws-radius-sm);
+  background: transparent;
+  color: var(--pws-fg);
+  font-family: var(--pws-font-mono);
+  text-align: left;
+
+  &:hover {
+    background-color: var(--pws-bg-hover);
+  }
+
+  &.selected {
+    background-color: var(--pws-bg-active);
+    color: var(--pws-fg-strong);
+  }
+}
+
+.frame-line {
+  flex-shrink: 0;
+  color: var(--pws-fg-muted);
+  font-family: var(--pws-font);
+  font-size: var(--pws-text-sm);
+}
+
+.variables {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+// A declaração e, ao lado dela, o botão de copiar, que fica no alto mesmo com um vetor
+// aberto embaixo
+.variable {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5ch;
+  padding: 0.125rem 0.5rem;
+  border-radius: var(--pws-radius-sm);
+
+  > details,
+  > .declaration {
+    min-width: 0;
+  }
+
+  // O que mudou desde a última pausa
+  &.changed {
+    background-color: rgba(var(--pws-accent-rgb), 0.12);
+
+    .value {
+      color: var(--pws-accent-fg);
+      font-weight: 600;
+    }
+  }
+
+  summary {
+    cursor: pointer;
+  }
+}
+
+// Cada variável como a linha que a declara: `real soma = 15.5`. Inline, para uma
+// linha longa quebrar logo depois da seta de abrir, e não abaixo dela
+.declaration {
+  font-family: var(--pws-font-mono);
+  overflow-wrap: anywhere;
+
+  > span + span {
+    margin-left: 1ch;
+  }
+}
+
+// O botão de copiar, logo depois do valor
+.copy {
+  flex-shrink: 0;
+
+  svg-icon {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+.keyword {
+  color: var(--pws-blue);
+}
+
+.operator {
+  color: var(--pws-fg-muted);
+}
+
+.no-value {
+  color: var(--pws-fg-muted);
+  font-family: var(--pws-font);
+  font-style: italic;
+}
+
+.vector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.125rem 1.5rem;
+  margin: 0.25rem 0 0.25rem 1.25rem;
+  padding: 0;
+  font-family: var(--pws-font-mono);
+  list-style: none;
+
+  li {
+    display: flex;
+    gap: 1ch;
+  }
+}
+
+.vector-index {
+  color: var(--pws-fg-muted);
+}
+
+// Uma matriz larga rola sozinha, sem empurrar o resto do painel
+.matrix-scroll {
+  overflow-x: auto;
+  margin: 0.25rem 0 0.25rem 1.25rem;
+}
+
+.matrix {
+  border-collapse: collapse;
+
+  th,
+  td {
+    padding: 0 0.5rem;
+    border: 1px solid var(--pws-border);
+    font-family: var(--pws-font-mono);
+    font-weight: 400;
+    text-align: right;
+  }
+
+  th {
+    color: var(--pws-fg-muted);
+  }
+}

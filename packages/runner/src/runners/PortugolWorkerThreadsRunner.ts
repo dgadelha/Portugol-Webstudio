@@ -3,7 +3,14 @@ import { Worker } from "node:worker_threads";
 import { PortugolJsRuntime } from "@portugol-webstudio/runtime";
 import { Subject, Subscription } from "rxjs";
 
-import { IPortugolRunner, PortugolEvent, PortugolMessage } from "./IPortugolRunner.js";
+import {
+  DebugCommand,
+  IPortugolRunner,
+  RunOptions,
+  DebugPause,
+  PortugolEvent,
+  PortugolMessage,
+} from "./IPortugolRunner.js";
 
 export class PortugolWorkerThreadsRunner extends IPortugolRunner {
   private worker: Worker;
@@ -34,12 +41,22 @@ export class PortugolWorkerThreadsRunner extends IPortugolRunner {
 
       const exec = ${this.byteCode};
 
+      // Os comandos da depuração podem chegar a qualquer momento, com o programa pausado ou não
+      parentPort.on("message", (data) => {
+        if (data.type === "debug") {
+          self.runtime?.debugCommand(data.command);
+        }
+      });
+
       parentPort.once("message", async (data) => {
         try {
           if (data.type === "start") {
             parentPort.postMessage({ type: "started" });
 
+            const debug = data.debug;
+
             await exec({
+              debug: debug && { ...debug, send: (message) => parentPort.postMessage(message) },
               functions: {
                 __debug: async (...args) => {
                   for (const arg of args) {
@@ -107,6 +124,7 @@ export class PortugolWorkerThreadsRunner extends IPortugolRunner {
         content?: string;
         error?: { message: string; stack?: string };
         message?: PortugolMessage;
+        pause?: DebugPause;
       }) => {
         switch (data.type) {
           case "stdOut": {
@@ -155,6 +173,11 @@ export class PortugolWorkerThreadsRunner extends IPortugolRunner {
             break;
           }
 
+          case "paused": {
+            this._run.next({ type: "paused", pause: data.pause! });
+            break;
+          }
+
           default: {
             throw new Error(`Unknown message type: ${data.type}`);
           }
@@ -177,10 +200,10 @@ export class PortugolWorkerThreadsRunner extends IPortugolRunner {
     });
   }
 
-  run() {
+  run(options: RunOptions = {}) {
     this.startedAt = new Date();
 
-    this.worker.postMessage({ type: "start" });
+    this.worker.postMessage({ type: "start", debug: options.debug });
 
     this.running = true;
     this.running$.next(this.running);
@@ -206,6 +229,10 @@ export class PortugolWorkerThreadsRunner extends IPortugolRunner {
 
     this._stdIn$?.unsubscribe();
     this.stdIn.complete();
+  }
+
+  debug(command: DebugCommand) {
+    this.worker.postMessage({ type: "debug", command });
   }
 
   postMessage(message: PortugolMessage) {

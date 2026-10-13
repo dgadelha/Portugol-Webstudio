@@ -11,6 +11,8 @@ O painel de baixo abre sozinho na aba **Saída**, com tudo o que o programa escr
 
 Depois vem o tempo de execução, em milissegundos. Ele pode ser escondido nas [configurações](configuracoes.md).
 
+Para ver o programa executando um comando de cada vez, com o valor das variáveis, use o botão **Depurar**: veja [Executando passo a passo](depurando.md).
+
 ![O programa executado, com as mensagens na saída](../../recursos/imagens/light/webstudio/primeiro-programa@2x.webp)
 
 ## Programas com erro

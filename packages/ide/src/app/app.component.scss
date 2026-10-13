@@ -206,6 +206,11 @@ button.status-item:hover {
   color: var(--pws-success-fg);
 }
 
+// Pausado na depuração: a mesma cor do selo do painel
+.status-paused {
+  color: var(--pws-info-fg);
+}
+
 .status-beta {
   color: var(--pws-accent-fg);
   font-weight: 700;

@@ -88,12 +88,15 @@
     background-color var(--pws-duration),
     color var(--pws-duration);
 
-  &:hover:not(:disabled) {
+  // Como os botões da barra de ações, alguns ficam com `aria-disabled` em vez de
+  // `disabled`, para continuarem alcançáveis pelo Tab
+  &:hover:not(:disabled, [aria-disabled="true"]) {
     background-color: var(--pws-bg-hover);
     color: var(--pws-fg);
   }
 
-  &:disabled {
+  &:disabled,
+  &[aria-disabled="true"] {
     opacity: 0.4;
   }
 

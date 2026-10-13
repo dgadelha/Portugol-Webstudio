@@ -9,6 +9,7 @@ Este guia mostra tudo o que dá para fazer no Portugol Webstudio:
 - [Primeiros passos](primeiros_passos.md): o primeiro programa, do começo ao fim
 - [O editor de código](editor.md): os botões, as cores, as sugestões e os erros
 - [Executando programas](executando.md): a saída, a entrada de dados e os gráficos
+- [Executando passo a passo](depurando.md): um comando de cada vez, vendo as variáveis
 - [Abas e arquivos](abas_e_arquivos.md): abrir, salvar e organizar o código
 - [Exemplos](exemplos.md): programas prontos para estudar e modificar
 - [Compartilhando código](compartilhando.md): mandar o código para outra pessoa por um link

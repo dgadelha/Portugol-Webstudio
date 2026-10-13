@@ -46,7 +46,7 @@ function checkCode(code) {
 /**
  * @param {string} code
  */
-function transpileCode(code) {
+function transpileCode(code, debugSteps = false) {
   /**
    * @type {string | null}
    */
@@ -68,7 +68,10 @@ function transpileCode(code) {
     checkTime = checkEnd - checkStart;
 
     const transpileStart = performance.now();
-    js = new PortugolJs().visit(checkResult.tree);
+    const transpiler = new PortugolJs();
+
+    transpiler.debugSteps = debugSteps;
+    js = transpiler.visit(checkResult.tree);
     const transpileEnd = performance.now();
 
     transpileTime = transpileEnd - transpileStart;
@@ -88,7 +91,7 @@ function transpileCode(code) {
 }
 
 self.addEventListener("message", function onmessage(event) {
-  const { action, id, code } = event.data;
+  const { action, id, code, debugSteps } = event.data;
   let result;
 
   switch (action) {
@@ -98,7 +101,7 @@ self.addEventListener("message", function onmessage(event) {
     }
 
     case "transpile": {
-      result = transpileCode(code);
+      result = transpileCode(code, debugSteps);
       break;
     }
 

@@ -161,7 +161,12 @@
       {{ problemCounts().warnings }}
     </button>
 
-    @if (editor.executor.running) {
+    @if (editor.paused()) {
+      <span class="status-item status-running status-paused">
+        <svg-icon src="assets/mdi/pause.svg" aria-hidden="true" />
+        Pausado na linha {{ editor.debugPause()?.line }}
+      </span>
+    } @else if (editor.executor.running) {
       <span class="status-item status-running">
         <svg-icon src="assets/mdi/play-outline.svg" aria-hidden="true" />
         {{ editor.executor.waitingForInput ? "Aguardando entrada" : "Executando" }}

@@ -73,6 +73,13 @@ const ESCAPES: Record<string, string> = { t: "\t", n: "\n", b: "\b", r: "\r", f:
 
 export class PortugolJs extends AbstractParseTreeVisitor<string> implements PortugolVisitor<string> {
   debug = false;
+
+  /**
+   * Execução passo a passo: chama o `runtime.step` antes de cada comando e a cada
+   * teste de um laço, e registra as chamadas de função. Sem ela, o código gerado não
+   * tem nada disso e roda na velocidade de sempre.
+   */
+  debugSteps = false;
   pad = 0;
   hasScope = false;
 
@@ -315,6 +322,20 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     }
 
     return `${this.PAD()}/*! ${fn} !*/\n`;
+  }
+
+  // Quase sempre o 'step' volta na hora, sem 'await' (veja o PortugolRuntime)
+  STEP(token: Token | null) {
+    return `runtime.step(${token?.line ?? 0}, ${token?.column ?? 0}) && await runtime.stepping`;
+  }
+
+  // Na depuração, chama o 'step' antes de calcular uma condição
+  WITH_STEP(token: Token | null, expression: string | null) {
+    if (!this.debugSteps) {
+      return expression;
+    }
+
+    return `(${this.STEP(token)},\n${expression ?? ""}\n)`;
   }
 
   PAD() {
@@ -1188,6 +1209,20 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     this.currentReturnType = ctx.TIPO()?.getText() ?? null;
 
     sb.append(this.PAD(), `let scope = runtime.getScope(runtime.globalScope);`, `\n\n`);
+
+    // A chamada já está na pilha de chamadas da depuração (pelo 'callFunction'), que
+    // só não conhece as variáveis dela. Os nomes dos parâmetros vão junto: um parâmetro
+    // por referência pode ser a própria variável global com o mesmo nome
+    if (this.debugSteps) {
+      const params = ctx
+        .parametroFuncao()
+        .listaParametros()
+        ?.parametro()
+        .map(param => param.ID().getText());
+
+      sb.append(this.PAD(), `runtime.enterScope(scope, ${JSON.stringify(params ?? [])});`, `\n`);
+    }
+
     sb.append(super.visitChildren(ctx));
 
     this.currentReturnType = null;
@@ -1267,6 +1302,13 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     const sb = new StringBuilder();
 
     sb.append(this.DEBUG(`visitComando`, ctx));
+
+    // O 'enquanto' e o 'para' param a cada teste da condição, e não antes do comando,
+    // senão parariam duas vezes seguidas na mesma linha
+    if (this.debugSteps && !ctx.enquanto() && !ctx.para()) {
+      sb.append(`\n`, this.STEP(ctx.start), `;`);
+    }
+
     sb.append(`\n`, `${super.visitChildren(ctx)?.trimEnd()};`, `\n`);
 
     return sb.toString();
@@ -1418,7 +1460,7 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
 
     this.pad++;
 
-    sb.append(this.visit(ctx.expressao()));
+    sb.append(this.WITH_STEP(ctx.start, this.visit(ctx.expressao())));
     sb.append(this.PAD(), `.value === true`, `\n`);
 
     this.pad--;
@@ -1452,7 +1494,7 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
 
     this.pad++;
 
-    sb.append(this.visit(ctx.expressao()));
+    sb.append(this.WITH_STEP(ctx.expressao().start, this.visit(ctx.expressao())));
     sb.append(this.PAD(), `.value === true`, `\n`);
 
     this.pad--;
@@ -1519,7 +1561,11 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     const sb = new StringBuilder();
 
     sb.append(this.DEBUG(`visitCondicao`, ctx));
-    sb.append(this.visit(ctx.expressao())?.trimEnd(), `.value === true`, `\n`);
+
+    // Para a cada teste, na linha do 'para'
+    const loopStart = ctx.parent instanceof ParaContext ? ctx.parent.start : ctx.start;
+
+    sb.append(this.WITH_STEP(loopStart, this.visit(ctx.expressao()))?.trimEnd(), `.value === true`, `\n`);
 
     return sb.toString();
   }

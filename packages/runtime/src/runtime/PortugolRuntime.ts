@@ -21,6 +21,195 @@ class PortugolRuntime {
     // intervalo e as mesmas mensagens de erro. As outras funções reservadas fazem entrada e
     // saída e vêm de quem executa o programa (initScope).
     this.globalScope.functions.sorteia = (minimo, maximo) => this.libs.Util.sorteia(minimo, maximo);
+
+    // Execução passo a passo: o programa traduzido com a opção de depuração chama o
+    // 'step' antes de cada comando, e quem executa recebe as mensagens pelo 'send'.
+    // As chamadas das funções do programa, da mais antiga para a mais recente, ficam
+    // em 'frames', cada uma com as variáveis dela.
+    this.frames = [];
+    this.userFunctions = new Set();
+
+    if (initScope.debug) {
+      const breakpoints = initScope.debug.breakpoints ?? [];
+
+      this.debugState = {
+        send: initScope.debug.send,
+        // Sem pontos de parada, o programa já começa parado no primeiro comando
+        mode: breakpoints.length > 0 ? "continue" : "step",
+        depth: 0,
+        breakpoints: new Set(breakpoints),
+        pauseRequested: false,
+        ticks: 0,
+        lastYield: performance.now(),
+        resume: null,
+        wake: null,
+        channel: new MessageChannel(),
+      };
+
+      this.debugState.channel.port1.onmessage = () => this.debugState.wake?.();
+    }
+  }
+
+  // Chamado no começo de cada função do programa, na depuração: a chamada já está em
+  // 'frames' (pelo 'callFunction'), e ganha as variáveis dela
+  enterScope(scope, params) {
+    const frame = this.frames.at(-1);
+
+    if (frame) {
+      frame.scope = scope;
+      frame.params = params;
+    }
+  }
+
+  // Antes de cada comando, na depuração. Quase sempre não há o que esperar e ele volta
+  // na hora, sem 'await'; quando precisa pausar ou devolver a vez, guarda a espera em
+  // 'stepping' e devolve 'true', e o código gerado faz 'runtime.step(...) && await
+  // runtime.stepping'
+  step(line, column) {
+    const state = this.debugState;
+
+    if (!state) {
+      return false;
+    }
+
+    const depth = this.frames.length;
+
+    if (this.shouldPause(line, depth)) {
+      this.stepping = this.pause(line, column, depth);
+      return true;
+    }
+
+    // Sem pausar, devolve a vez de tempos em tempos para chegarem os comandos de quem
+    // executa, como o Pausar e os pontos de parada novos. O relógio só é lido a cada
+    // 1024 comandos
+    if ((++state.ticks & 1023) !== 0 || performance.now() - state.lastYield < 16) {
+      return false;
+    }
+
+    this.stepping = this.yieldToHost(line, column, depth);
+    return true;
+  }
+
+  async yieldToHost(line, column, depth) {
+    const state = this.debugState;
+
+    await new Promise((resolve) => {
+      state.wake = resolve;
+      state.channel.port2.postMessage(null);
+    });
+
+    state.lastYield = performance.now();
+
+    if (state.pauseRequested) {
+      await this.pause(line, column, depth);
+    }
+  }
+
+  async pause(line, column, depth) {
+    const state = this.debugState;
+
+    state.pauseRequested = false;
+
+    const mode = await new Promise((resolve) => {
+      state.resume = resolve;
+      state.send({ type: "paused", pause: this.describePause(line, column) });
+    });
+
+    state.resume = null;
+    state.mode = mode;
+    state.depth = depth;
+    state.lastYield = performance.now();
+  }
+
+  shouldPause(line, depth) {
+    const state = this.debugState;
+
+    if (state.pauseRequested || state.breakpoints.has(line)) {
+      return true;
+    }
+
+    switch (state.mode) {
+      case "step":
+        return true;
+
+      // Para de novo na mesma função ou na que a chamou
+      case "stepOver":
+        return depth <= state.depth;
+
+      // Para só na função que chamou esta
+      case "stepOut":
+        return depth < state.depth;
+
+      default:
+        return false;
+    }
+  }
+
+  // Os comandos de quem executa: 'step', 'stepOver', 'stepOut' e 'continue' retomam
+  // um programa pausado, 'pause' pausa no próximo comando, e 'breakpoints' troca as
+  // linhas em que o programa para
+  debugCommand(command) {
+    const state = this.debugState;
+
+    if (!state) {
+      return;
+    }
+
+    switch (command.type) {
+      case "breakpoints":
+        state.breakpoints = new Set(command.lines);
+        break;
+
+      case "pause":
+        if (!state.resume) {
+          state.pauseRequested = true;
+        }
+
+        break;
+
+      default:
+        state.resume?.(command.type);
+    }
+  }
+
+  // A pausa vai para outra thread, então leva só dados: a função de cada chamada, da
+  // mais recente para a mais antiga, com as variáveis dela, e as variáveis globais
+  describePause(line, column) {
+    const globals = this.globalScope.variables;
+
+    return {
+      line,
+      column,
+      frames: this.frames
+        .map((frame) => ({
+          name: frame.name,
+          // Cada chamada começa com as variáveis globais: as locais são as outras, e os
+          // parâmetros, mesmo um por referência que recebeu a global com o mesmo nome
+          variables: this.describeVariables(
+            frame.scope?.variables ?? {},
+            (name, variable) => globals[name] !== variable || frame.params?.includes(name),
+          ),
+        }))
+        .reverse(),
+      globals: this.describeVariables(globals),
+    };
+  }
+
+  describeVariables(variables, filter) {
+    return Object.entries(variables)
+      .filter(([name, variable]) => variable instanceof PortugolVar && (!filter || filter(name, variable)))
+      .map(([name, variable]) => ({ name, constant: Boolean(variable.isConstant), ...this.describeValue(variable) }));
+  }
+
+  describeValue(variable) {
+    if (variable.type === "vetor" || variable.type === "matriz") {
+      return {
+        type: variable.type,
+        items: (variable.value ?? []).map((item) => this.describeValue(item)),
+      };
+    }
+
+    return { type: variable.type, text: variable.value === undefined ? null : variable.toString() };
   }
 
   DEBUG(...args) {
@@ -81,6 +270,7 @@ class PortugolRuntime {
     }
 
     this.globalScope.functions[name] = call;
+    this.userFunctions.add(name);
   }
 
   async callFunction(name, functionScope = "", args = []) {
@@ -108,6 +298,14 @@ class PortugolRuntime {
 
     this.currentFunction = name;
 
+    // Na depuração, cada chamada de uma função do programa entra na pilha de chamadas
+    // (uma função de biblioteca pode ter o nome de uma do programa, como 'Matematica.raiz')
+    const frame = this.debugState && !functionScope && this.userFunctions.has(name) ? { name, scope: null, params: null } : null;
+
+    if (frame) {
+      this.frames.push(frame);
+    }
+
     let ret;
 
     try {
@@ -127,6 +325,10 @@ class PortugolRuntime {
       }
 
       throw error;
+    } finally {
+      if (frame) {
+        this.frames.pop();
+      }
     }
 
     this.currentFunction = last;

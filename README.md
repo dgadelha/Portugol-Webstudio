@@ -16,6 +16,7 @@ Baseado no Portugol Studio, o **Portugol Webstudio** tenta trazer todo ambiente 
 - Suporta abertura e escrita de arquivos `.por`
 - Permite editar e executar múltiplos códigos ao mesmo tempo
 - Executado no console original do Portugol com interação em tempo real
+- Execução passo a passo, com o valor das variáveis a cada comando
 - Interface simples e idêntica ao Portugol Studio
 - Código executado diretamente no navegador através de Web Workers
 

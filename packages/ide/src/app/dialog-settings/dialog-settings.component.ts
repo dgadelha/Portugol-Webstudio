@@ -10,10 +10,11 @@ import { settings } from "../../settings";
 import { TooltipDirective } from "../shared/tooltip.directive";
 import { AppearanceSectionComponent } from "./appearance-section.component";
 import { EditorSectionComponent } from "./editor-section.component";
+import { ExecutionSectionComponent } from "./execution-section.component";
 import { OutputSectionComponent } from "./output-section.component";
 import { TabsSectionComponent } from "./tabs-section.component";
 
-export type SettingsSectionId = "appearance" | "editor" | "output" | "tabs";
+export type SettingsSectionId = "appearance" | "editor" | "output" | "execution" | "tabs";
 
 const SECTIONS: Array<{
   id: SettingsSectionId;
@@ -42,6 +43,13 @@ const SECTIONS: Array<{
     description: "O que o programa escreve enquanto executa.",
     icon: "assets/mdi/console.svg",
     component: OutputSectionComponent,
+  },
+  {
+    id: "execution",
+    label: "Execução",
+    description: "Como o programa é executado.",
+    icon: "assets/mdi/play-circle-outline.svg",
+    component: ExecutionSectionComponent,
   },
   {
     id: "tabs",
