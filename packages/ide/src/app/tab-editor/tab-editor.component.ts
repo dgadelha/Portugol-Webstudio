@@ -498,7 +498,12 @@ export class TabEditorComponent implements OnInit, OnDestroy {
               this.showErrorLine(event.position.line, event.error.message);
             }
 
-            this.gaService.event("execution_error", "Execução", this.errorLabel(event.error.message));
+            // Como o `debug_finish`, um erro durante a depuração conta à parte da execução normal
+            this.gaService.event(
+              this.debugging ? "debug_error" : "execution_error",
+              this.debugging ? "Depuração" : "Execução",
+              this.errorLabel(event.error.message),
+            );
             break;
           }
 
