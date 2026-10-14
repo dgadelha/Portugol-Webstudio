@@ -519,16 +519,20 @@ export class TabHelpComponent implements OnInit, OnDestroy {
   #criarBotaoCopiar(codigo: string) {
     const botao = document.createElement("button");
     const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    const folha = document.createElementNS("http://www.w3.org/2000/svg", "rect");
     const caminho = document.createElementNS("http://www.w3.org/2000/svg", "path");
 
-    // Ícone `content-copy` do MDI
-    caminho.setAttribute(
-      "d",
-      "M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z",
-    );
+    // Ícone `copy` do Lucide
+    const medidasDaFolha = { width: "14", height: "14", x: "8", y: "8", rx: "2", ry: "2" };
+
+    for (const [nome, valor] of Object.entries(medidasDaFolha)) {
+      folha.setAttribute(nome, valor);
+    }
+
+    caminho.setAttribute("d", "M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2");
     svg.setAttribute("viewBox", "0 0 24 24");
     svg.setAttribute("aria-hidden", "true");
-    svg.append(caminho);
+    svg.append(folha, caminho);
 
     botao.type = "button";
     botao.className = "copiar-codigo";

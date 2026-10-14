@@ -79,8 +79,8 @@
               },
               {
                 "glob": "*.svg",
-                "input": "./node_modules/@mdi/svg/svg/",
-                "output": "./assets/mdi/"
+                "input": "./node_modules/lucide-static/icons/",
+                "output": "./assets/lucide/"
               },
               {
                 "glob": "manifest.webmanifest",

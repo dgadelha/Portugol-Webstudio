@@ -1,7 +1,7 @@
 <header class="dialog-header">
   <h2 id="dialogo-sobre-titulo">Sobre o Portugol Webstudio</h2>
   <button type="button" class="icon-btn" aria-label="Fechar" appTooltip="Fechar" (click)="dialogRef.close()">
-    <svg-icon src="assets/mdi/close.svg" aria-hidden="true" />
+    <svg-icon src="assets/lucide/x.svg" aria-hidden="true" />
   </button>
 </header>
 
@@ -24,7 +24,7 @@
     <h3 id="sobre-versao-titulo" class="visually-hidden">Versão e atualizações</h3>
 
     <p class="status-row">
-      <svg-icon src="assets/mdi/tag-outline.svg" aria-hidden="true" />
+      <svg-icon src="assets/lucide/tag.svg" aria-hidden="true" />
       @if (commitUrl) {
         <span
           >Versão <a class="version" target="_blank" rel="external noopener" [href]="commitUrl">{{ version.label }}</a
@@ -47,7 +47,7 @@
     @if (pwa.offlineStatus() !== "unsupported") {
       <div class="status-row update-row">
         <button type="button" class="btn btn-sm" [disabled]="checking()" (click)="checkForUpdate()">
-          <svg-icon src="assets/mdi/refresh.svg" aria-hidden="true" />
+          <svg-icon src="assets/lucide/refresh-cw.svg" aria-hidden="true" />
           Procurar atualizações
         </button>
 
@@ -72,13 +72,13 @@
       [href]="survey.url"
       (click)="survey.markAnswered('about')"
     >
-      <svg-icon src="assets/mdi/clipboard-text-outline.svg" aria-hidden="true" />
+      <svg-icon src="assets/lucide/clipboard-list.svg" aria-hidden="true" />
       Responder pesquisa
     </a>
   }
 
   <p class="made-with-love">
-    Feito com <svg-icon src="assets/mdi/heart.svg" class="icon-red" svgAriaLabel="amor" /> no
+    Feito com <svg-icon src="assets/lucide/heart.svg" class="icon-red" svgAriaLabel="amor" /> no
     <svg-icon src="assets/flag-br.svg" svgAriaLabel="Brasil" />
   </p>
 
@@ -110,7 +110,7 @@
     gaCategory="about_dialog"
     gaLabel="Reportar um problema (diálogo Sobre)"
   >
-    <svg-icon src="assets/mdi/bug-outline.svg" class="icon-red" aria-hidden="true" />
+    <svg-icon src="assets/lucide/bug.svg" class="icon-red" aria-hidden="true" />
     Reportar um problema
   </a>
 
@@ -122,7 +122,7 @@
     gaLabel="Histórico de atualizações (diálogo Sobre)"
     (click)="dialogRef.close('changelog')"
   >
-    <svg-icon src="assets/mdi/history.svg" class="icon-blue" aria-hidden="true" />
+    <svg-icon src="assets/lucide/history.svg" class="icon-blue" aria-hidden="true" />
     Histórico de atualizações
   </button>
 </footer>

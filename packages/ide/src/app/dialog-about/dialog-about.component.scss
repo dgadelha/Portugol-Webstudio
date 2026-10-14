@@ -74,6 +74,11 @@
     width: 1.25rem;
     height: 1.25rem;
   }
+
+  // O coração é o único ícone preenchido.
+  .icon-red ::ng-deep svg {
+    fill: currentColor;
+  }
 }
 
 .links {

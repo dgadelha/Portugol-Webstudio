@@ -14,25 +14,21 @@
     <ul class="tiles">
       <li>
         <button type="button" class="tile" (click)="newTab.emit(undefined)">
-          <svg-icon src="assets/mdi/file-plus-outline.svg" class="tile-icon icon-green" aria-hidden="true" />
+          <svg-icon src="assets/lucide/file-plus.svg" class="tile-icon icon-green" aria-hidden="true" />
           <span class="tile-title">Novo arquivo</span>
           <span class="tile-hint">Comece um programa do zero</span>
         </button>
       </li>
       <li>
         <button type="button" class="tile" (click)="openFile.emit()">
-          <svg-icon src="assets/mdi/folder-open-outline.svg" class="tile-icon icon-yellow" aria-hidden="true" />
+          <svg-icon src="assets/lucide/folder-open.svg" class="tile-icon icon-yellow" aria-hidden="true" />
           <span class="tile-title">Abrir arquivo</span>
           <span class="tile-hint">Um arquivo .por do seu computador</span>
         </button>
       </li>
       <li>
         <button type="button" class="tile tile-featured" (click)="examples.emit()">
-          <svg-icon
-            src="assets/mdi/book-open-page-variant-outline.svg"
-            class="tile-icon icon-yellow"
-            aria-hidden="true"
-          />
+          <svg-icon src="assets/lucide/book-open-text.svg" class="tile-icon icon-yellow" aria-hidden="true" />
           <span class="tile-title">Abrir exemplo</span>
           <span class="tile-hint">Programas prontos para estudar e modificar</span>
           <span class="badge badge-accent tile-badge">Recomendado para começar</span>
@@ -40,7 +36,7 @@
       </li>
       <li>
         <button type="button" class="tile" (click)="help.emit()">
-          <svg-icon src="assets/mdi/help-circle-outline.svg" class="tile-icon icon-blue" aria-hidden="true" />
+          <svg-icon src="assets/lucide/circle-question-mark.svg" class="tile-icon icon-blue" aria-hidden="true" />
           <span class="tile-title">Ajuda</span>
           <span class="tile-hint">A linguagem e as bibliotecas do Portugol</span>
         </button>
@@ -56,7 +52,7 @@
           rel="external noreferrer noopener nofollow"
           (click)="gaService.event('suggest_features', 'Aba Inicial', 'Enviar sugestões')"
         >
-          <svg-icon src="assets/mdi/lightbulb-on-outline.svg" class="tile-icon icon-green" aria-hidden="true" />
+          <svg-icon src="assets/lucide/lightbulb.svg" class="tile-icon icon-green" aria-hidden="true" />
           <span class="tile-title">Sugestões</span>
           <span class="visually-hidden">(abre em outra aba)</span>
         </a>
@@ -69,20 +65,24 @@
           rel="external noreferrer noopener nofollow"
           (click)="gaService.event('ask_questions', 'Aba Inicial', 'Enviar dúvidas')"
         >
-          <svg-icon src="assets/mdi/comment-question-outline.svg" class="tile-icon icon-blue" aria-hidden="true" />
+          <svg-icon
+            src="assets/lucide/message-circle-question-mark.svg"
+            class="tile-icon icon-blue"
+            aria-hidden="true"
+          />
           <span class="tile-title">Dúvidas e perguntas</span>
           <span class="visually-hidden">(abre em outra aba)</span>
         </a>
       </li>
       <li>
         <button type="button" class="tile" (click)="openSettingsDialog()">
-          <svg-icon src="assets/mdi/cog-outline.svg" class="tile-icon icon-yellow" aria-hidden="true" />
+          <svg-icon src="assets/lucide/settings.svg" class="tile-icon icon-yellow" aria-hidden="true" />
           <span class="tile-title">Configurações</span>
         </button>
       </li>
       <li>
         <button type="button" class="tile" (click)="openAboutDialog()">
-          <svg-icon src="assets/mdi/information-outline.svg" class="tile-icon icon-blue" aria-hidden="true" />
+          <svg-icon src="assets/lucide/info.svg" class="tile-icon icon-blue" aria-hidden="true" />
           <span class="tile-title">Sobre</span>
         </button>
       </li>
@@ -92,7 +92,7 @@
   @if (recoverable().length > 0) {
     <section class="card" aria-labelledby="inicio-recuperar">
       <h2 id="inicio-recuperar">
-        <svg-icon src="assets/mdi/file-restore-outline.svg" class="icon-yellow" aria-hidden="true" />
+        <svg-icon src="assets/lucide/file-clock.svg" class="icon-yellow" aria-hidden="true" />
         Código de sessões anteriores
       </h2>
       <p class="hint">Este código ficou aberto quando o Portugol Webstudio foi fechado.</p>
@@ -132,13 +132,13 @@
 
   <section class="card news" aria-labelledby="inicio-novidades">
     <h2 id="inicio-novidades">
-      <svg-icon src="assets/mdi/newspaper.svg" class="icon-blue" aria-hidden="true" />
+      <svg-icon src="assets/lucide/newspaper.svg" class="icon-blue" aria-hidden="true" />
       Novidades
     </h2>
     <markdown [data]="latestNews" />
     <button type="button" class="news-more" (click)="openChangelog()">
       Ver o histórico de atualizações
-      <svg-icon src="assets/mdi/arrow-right.svg" aria-hidden="true" />
+      <svg-icon src="assets/lucide/arrow-right.svg" aria-hidden="true" />
     </button>
   </section>
 
