@@ -96,7 +96,9 @@ export class PortugolWebWorkersRunner extends IPortugolRunner {
           self.postMessage({ type: "error", error: {
             message: error.message,
             stack: error.stack,
-          }});
+          }, position: self.runtime?.line
+            ? { line: self.runtime.line, column: self.runtime.column + 1 }
+            : undefined });
         } finally {
           self.postMessage({ type: "finish" });
         }
@@ -131,7 +133,7 @@ export class PortugolWebWorkersRunner extends IPortugolRunner {
 
           error.stack = message.data.error.stack;
 
-          this._run.next({ type: "error", error });
+          this._run.next({ type: "error", error, position: message.data.position });
           this.destroy();
           break;
         }

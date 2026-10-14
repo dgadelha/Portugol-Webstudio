@@ -82,6 +82,9 @@ type PanelView = "output" | "problems" | "variables";
  */
 type DebugResume = Extract<DebugCommand["type"], "step" | "stepOver" | "stepOut" | "continue">;
 
+// Os tipos do ngx-monaco-editor são de um Monaco sem o `lineNumberClassName`
+type LineDecorationOptions = monaco.editor.IModelDecorationOptions & { lineNumberClassName?: string };
+
 export type EditorOrigin = "editor" | "atalho";
 
 @Component({
@@ -266,6 +269,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
   // Os tipos do Monaco vêm do ngx-monaco-editor e não têm o `createDecorationsCollection`
   private breakpointDecorations: string[] = [];
   private currentLineDecoration: string[] = [];
+  private errorLineDecoration: string[] = [];
 
   /**
    * Depurando, o editor de código fica só para leitura, e os atalhos da depuração com Alt
@@ -489,6 +493,11 @@ export class TabEditorComponent implements OnInit, OnDestroy {
 
           case "error": {
             this.runFailed = true;
+
+            if (event.position) {
+              this.showErrorLine(event.position.line, event.error.message);
+            }
+
             this.gaService.event("execution_error", "Execução", this.errorLabel(event.error.message));
             break;
           }
@@ -667,6 +676,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
       this.gaService.event("editor_start_execution", "Editor", origin);
     }
     this.runFailed = false;
+    this.clearErrorLine();
     this.showPanel(debug ? "variables" : "output");
     // O que ficou no campo de toque de uma execução interrompida não pode
     // virar a resposta do próximo `leia`.
@@ -1322,8 +1332,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
    * ponto de parada com o programa pausado, a linha é desenhada de novo.
    */
   private showCurrentLine(line: number) {
-    // Os tipos do ngx-monaco-editor são de um Monaco sem o `lineNumberClassName`
-    const options: monaco.editor.IModelDecorationOptions & { lineNumberClassName?: string } = {
+    const options: LineDecorationOptions = {
       isWholeLine: true,
       className: "debug-current-line",
       // Sem a margem (fora da depuração avançada), a seta fica no espaço vazio à esquerda do
@@ -1354,6 +1363,34 @@ export class TabEditorComponent implements OnInit, OnDestroy {
 
   private clearCurrentLine() {
     this.currentLineDecoration = this.codeEditor?.deltaDecorations(this.currentLineDecoration, []) ?? [];
+  }
+
+  /**
+   * Marca de vermelho a linha de um erro de execução, com a mensagem ao passar o mouse. A
+   * marca some quando o código muda ou o programa executa de novo.
+   */
+  private showErrorLine(line: number, message: string) {
+    const options: LineDecorationOptions = {
+      isWholeLine: true,
+      className: "runtime-error-line",
+      lineNumberClassName: "runtime-error-line-number",
+      // Só a primeira linha: as mensagens do Portugol Studio seguem com explicações e
+      // exemplos de código, que ficam na saída. É texto, e não Markdown: `[5]` ou `*`
+      // aparecem como foram escritos
+      hoverMessage: { value: message.split("\n", 1)[0].replaceAll(/[\\`*_{}[\]()#+\-.!|<>]/g, String.raw`\$&`) },
+    };
+
+    this.errorLineDecoration =
+      this.codeEditor?.deltaDecorations(this.errorLineDecoration, [
+        { range: new monaco.Range(line, 1, line, 1), options },
+      ]) ?? [];
+    this.codeEditor?.revealLineInCenterIfOutsideViewport(line);
+  }
+
+  private clearErrorLine() {
+    if (this.errorLineDecoration.length > 0) {
+      this.errorLineDecoration = this.codeEditor?.deltaDecorations(this.errorLineDecoration, []) ?? [];
+    }
   }
 
   /**
@@ -1605,6 +1642,11 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     this.codeEditor = editor;
     this.initShortcuts(editor);
     this.debuggingInEditor = editor.createContextKey("pwsDepurando", false);
+
+    // Mudar o código tira a marca do erro de execução, que pode não estar mais naquela linha
+    editor.onDidChangeModelContent(() => {
+      this.clearErrorLine();
+    });
 
     // Um clique na margem à esquerda dos números das linhas marca um ponto de parada
     editor.onMouseDown(({ target, event }) => {

@@ -1396,6 +1396,14 @@ export function erroSímboloBibliotecaNãoSuportado(
   );
 }
 
+export function avisoPareDepoisDoCaso(origem: Origem): PortugolCodeDiagnostic {
+  return aviso(
+    origem,
+    "O 'pare' depois das chaves do caso não sai do 'escolha': a execução continua no caso seguinte",
+    CÓDIGOS.PARE_DEPOIS_DO_CASO,
+  );
+}
+
 export function avisoIncrementoEmConta(origem: Origem): PortugolCodeDiagnostic {
   const texto = textoDe(origem);
 

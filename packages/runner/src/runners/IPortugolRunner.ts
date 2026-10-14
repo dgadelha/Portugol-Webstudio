@@ -5,11 +5,17 @@ export type PortugolEvent =
   | { type: "start" }
   | { type: "clear" }
   | { type: "stdIn" }
-  | { type: "error"; error: Error }
+  | { type: "error"; error: Error; position?: ErrorPosition }
   | { type: "parseError"; errors: IPortugolCodeDiagnostic[] }
   | { type: "finish"; stopped: boolean; time: number }
   | { type: "message"; message: PortugolMessage }
   | { type: "paused"; pause: DebugPause };
+
+/**
+ * Onde aconteceu um erro de execução: o começo do comando, com a linha e a coluna contadas
+ * do 1, como no Portugol Studio e no editor.
+ */
+export type ErrorPosition = { line: number; column: number };
 
 /**
  * Um valor numa pausa da depuração: o texto de um valor simples, como `5`, `"abc"` ou

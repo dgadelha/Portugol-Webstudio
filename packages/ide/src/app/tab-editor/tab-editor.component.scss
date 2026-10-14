@@ -200,6 +200,16 @@ ngx-monaco-editor {
     clip-path: polygon(0 20%, 55% 20%, 55% 0, 100% 50%, 55% 100%, 55% 80%, 0 80%);
   }
 
+  // A linha de um erro de execução
+  .runtime-error-line {
+    background-color: rgba(var(--pws-danger-fg-rgb), 0.16);
+  }
+
+  .runtime-error-line-number {
+    color: var(--pws-danger-fg) !important;
+    font-weight: 700;
+  }
+
   .debug-current-glyph,
   .debug-breakpoint-glyph {
     cursor: pointer;

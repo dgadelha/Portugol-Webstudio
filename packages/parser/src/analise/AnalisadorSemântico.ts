@@ -24,6 +24,7 @@ import {
   erroComparaçãoDeCadeias,
   erroConstanteNãoEncontradaNaBiblioteca,
   avisoIncrementoEmConta,
+  avisoPareDepoisDoCaso,
   erroEscapeÚnico,
   erroLinhaPuladaEmCadeia,
   erroEscreverFunçãoSemRetorno,
@@ -1138,6 +1139,14 @@ export class AnalisadorSemântico {
     }
 
     this.analisarListaBlocos(nó.instruções);
+
+    // Sem chaves, o 'pare' é um dos comandos do caso; depois das chaves, ele é do próprio
+    // caso, e o Portugol Studio o ignora
+    const pare = nó.ctx.pare();
+
+    if (pare) {
+      this.registrar(avisoPareDepoisDoCaso(pare));
+    }
   }
 
   private visitarRetorne(nó: RetorneCmd) {

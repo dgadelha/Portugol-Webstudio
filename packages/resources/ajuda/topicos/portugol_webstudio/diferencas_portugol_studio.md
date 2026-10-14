@@ -148,3 +148,4 @@ O Webstudio também mostra avisos que o Portugol Studio não tem. Eles não impe
 
 - Sobre variáveis, vetores, matrizes, constantes e parâmetros que foram declarados mas não são usados
 - Sobre um incremento, como `i++`, usado dentro de uma conta
+- Sobre um `pare` logo depois das chaves de um `caso`, como em `caso 1: { ... } pare`: o Portugol Studio ignora esse `pare`, e a execução continua no caso seguinte. O Webstudio executa do mesmo jeito

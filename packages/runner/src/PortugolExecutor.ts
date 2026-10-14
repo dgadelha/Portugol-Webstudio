@@ -147,7 +147,13 @@ export class PortugolExecutor {
             }
 
             case "error": {
-              this.stdOut += `\n⛔ ${event.error.message}\n`;
+              // Como no Portugol Studio: a mensagem depois do aviso do erro, e a posição numa linha
+              // à parte
+              const position = event.position
+                ? `Linha: ${event.position.line}, Coluna: ${event.position.column}\n`
+                : "";
+
+              this.stdOut += `\n⛔ Ocorreu um erro durante a execução do programa: ${event.error.message}\n${position}`;
               this.stdOut$.next(this.stdOut);
               break;
             }

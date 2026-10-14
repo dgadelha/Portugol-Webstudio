@@ -87,7 +87,7 @@ $themes: (
 );
 
 // Cores que aparecem com transparência (`rgba(var(--pws-<nome>-rgb), …)`)
-$with-alpha: accent, fg-muted, success-fg, warning-fg, info-fg;
+$with-alpha: accent, fg-muted, success-fg, warning-fg, info-fg, danger-fg;
 
 @function channels($color) {
   @return math.round(color.channel($color, "red", $space: rgb)),

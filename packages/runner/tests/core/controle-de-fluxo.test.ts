@@ -277,6 +277,27 @@ describe("Controle de Fluxo", () => {
       ).resolves.toBe("umdoistres");
     });
 
+    test("Ignora o pare depois das chaves do caso, como o Portugol Studio", async () => {
+      await expect(
+        runPortugolCode(
+          portugolInicio`
+            inteiro x = 1
+            escolha (x) {
+              caso 1: {
+                escreva("um")
+              } pare
+              caso 2: {
+                escreva("dois")
+              }
+              pare
+              caso contrario:
+                escreva("outro")
+            }
+          `,
+        ),
+      ).resolves.toBe("umdoisoutro");
+    });
+
     test("Cai no caso contrário", async () => {
       await expect(
         runPortugolCode(

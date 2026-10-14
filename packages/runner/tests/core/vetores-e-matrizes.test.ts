@@ -1,6 +1,26 @@
+import { PortugolCodeChecker } from "@portugol-webstudio/parser";
+import { PortugolJs } from "@portugol-webstudio/runtime";
 import { describe, expect, test } from "vitest";
+import { PortugolWorkerThreadsRunner } from "../../src";
 import { portugol, portugolInicio } from "../helpers/code";
 import { runPortugolCode } from "../helpers/runner";
+
+/**
+ * A mensagem do erro de execução do programa, ou `undefined` se ele terminar sem erro.
+ */
+function runtimeError(code: string) {
+  const runner = new PortugolWorkerThreadsRunner(new PortugolJs().visit(PortugolCodeChecker.checkCode(code).tree)!);
+
+  return new Promise<string | undefined>(resolve => {
+    runner.run().subscribe(event => {
+      if (event.type === "error") {
+        resolve(event.error.message);
+      } else if (event.type === "finish") {
+        resolve(undefined);
+      }
+    });
+  });
+}
 
 describe("Vetores e Matrizes", () => {
   describe("Valores padrão", () => {
@@ -307,6 +327,51 @@ describe("Vetores e Matrizes", () => {
           `,
         ),
       ).resolves.toBe("antes ");
+    });
+    test("Interrompe o programa ao atribuir acima do último índice", async () => {
+      await expect(
+        runPortugolCode(
+          portugolInicio`
+            inteiro v[2]
+            escreva("antes ")
+            v[5] = 1
+            escreva("depois")
+          `,
+        ),
+      ).resolves.toBe("antes ");
+    });
+
+    test("Mostra a mensagem do Portugol Studio, com as explicações", async () => {
+      const codes = [
+        portugolInicio`
+          inteiro v[2]
+          v[5] = 1
+        `,
+        portugolInicio`
+          real notas[1]
+          escreva(notas[0 - 1])
+        `,
+        portugolInicio`
+          inteiro v[3]
+          inteiro i = 3
+          v[i]++
+        `,
+        portugolInicio`
+          inteiro m[2][3]
+          m[1][3] = 1
+        `,
+        portugolInicio`
+          inteiro m[1][1]
+          escreva(m[2][0])
+        `,
+      ];
+
+      for (const code of codes) {
+        const message = await runtimeError(code);
+
+        expect(message).toMatch(/^Você tentou acessar um índice de vetor ou matriz inválido\.\n\n/);
+        expect(message).toContain("escreva(matriz[-1][-1])");
+      }
     });
   });
 

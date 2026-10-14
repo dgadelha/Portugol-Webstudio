@@ -145,6 +145,13 @@ export const CÓDIGOS = {
   INCREMENTO_EM_CONTA: "AvisoWebstudio.AvisoIncrementoEmConta",
 
   /**
+   * Um `pare` logo depois das chaves de um `caso` (`caso 1: { ... } pare`). O Portugol Studio
+   * aceita, mas ignora esse `pare`: a execução continua no caso seguinte, e o Webstudio faz o
+   * mesmo. O Portugol Studio não avisa.
+   */
+  PARE_DEPOIS_DO_CASO: "AvisoWebstudio.AvisoPareDepoisDoCaso",
+
+  /**
    * Um comentário de bloco que não foi fechado. No Portugol Studio o erro sai onde o parser tropeça no texto do
    * comentário, com a mensagem desse ponto (muitas vezes "o nome da função não foi informado").
    */

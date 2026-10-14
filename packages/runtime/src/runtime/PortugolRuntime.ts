@@ -1,10 +1,16 @@
 import { portugolLibs } from "../libs/index.js";
+import { INVALID_INDEX_MESSAGE, STACK_OVERFLOW_MESSAGE } from "./messages.js";
 
 export const portugolRuntime = /* javascript */ `
 class PortugolRuntime {
   globalScope = {};
   currentFunction = null;
   debug = false;
+
+  // A linha e a coluna (contada do 0) do comando em execução: um erro de execução diz onde
+  // aconteceu
+  line = 0;
+  column = 0;
 
   constructor(initScope) {
     this.initScope = initScope;
@@ -48,6 +54,12 @@ class PortugolRuntime {
 
       this.debugState.channel.port1.onmessage = () => this.debugState.wake?.();
     }
+  }
+
+  // Chamado pelo programa traduzido antes de cada comando
+  position(line, column) {
+    this.line = line;
+    this.column = column;
   }
 
   // Chamado no começo de cada função do programa, na depuração: a chamada já está em
@@ -306,6 +318,11 @@ class PortugolRuntime {
       this.frames.push(frame);
     }
 
+    // Depois da chamada, a posição volta a ser a de quem chamou: em 'x = f() / 0', o erro
+    // é na linha da divisão, e não na do último comando de 'f'
+    const line = this.line;
+    const column = this.column;
+
     let ret;
 
     try {
@@ -317,11 +334,7 @@ class PortugolRuntime {
         (error instanceof RangeError && error.message.includes("call stack")) ||
         (error?.name === "InternalError" && error.message.includes("too much recursion"))
       ) {
-        throw new Error(
-          "Ocorreu um estouro de pilha de memória no programa.\\n" +
-            "Isto significa que existe alguma função do programa que está sendo chamada de forma recursiva sem uma condição de parada.",
-          { cause: error },
-        );
+        throw new Error(${JSON.stringify(STACK_OVERFLOW_MESSAGE)}, { cause: error });
       }
 
       throw error;
@@ -332,8 +345,32 @@ class PortugolRuntime {
     }
 
     this.currentFunction = last;
+    this.line = line;
+    this.column = column;
 
     return ret;
+  }
+
+  // Uma posição de um vetor ('v[i]'). Fora dele, o erro é o do Portugol Studio
+  item(vector, index) {
+    const item = vector.value[index];
+
+    if (item === undefined) {
+      throw new Error(${JSON.stringify(INVALID_INDEX_MESSAGE)});
+    }
+
+    return item;
+  }
+
+  // Uma posição de uma matriz ('m[i][j]'), com o mesmo erro do Portugol Studio fora dela
+  cell(matrix, row, column) {
+    const item = matrix.value[row]?.value[column];
+
+    if (item === undefined) {
+      throw new Error(${JSON.stringify(INVALID_INDEX_MESSAGE)});
+    }
+
+    return item;
   }
 
   assign(args) {
@@ -450,13 +487,22 @@ class PortugolRuntime {
 
   // O Portugol Studio aceita apenas 'verdadeiro' e 'falso' para o tipo lógico;
   // aqui a lista é maior para não penalizar quem digita na IDE
+  // O que foi digitado num 'leia'. Um valor de outro tipo, ou nenhum valor, para o programa
+  // com o erro do Portugol Studio
   readValue(type, text) {
+    const invalid = () =>
+      new Error(
+        "A entrada de dados do programa esperava um valor do tipo '" +
+          type +
+          "', mas nenhum valor foi informado ou o valor informado é de outro tipo",
+      );
+
     switch (type) {
       case "inteiro": {
         const parsed = PortugolVar.parseInteger32(text);
 
         if (parsed === null) {
-          throw new Error("O valor digitado não é inteiro!");
+          throw invalid();
         }
 
         return new PortugolVar("inteiro", parsed);
@@ -466,7 +512,7 @@ class PortugolRuntime {
         const parsed = PortugolVar.parseReal(text);
 
         if (parsed === null) {
-          throw new Error("O valor digitado não é real!" + (text.includes(",") ? " (Dica: utilize '.' ao invés de ',')" : ""));
+          throw invalid();
         }
 
         return new PortugolVar("real", parsed);
@@ -476,7 +522,7 @@ class PortugolRuntime {
         const normalized = text.toLowerCase();
 
         if (!/^(sim|nao|não|true|false|verdadeiro|falso|s|y|n|0|1)$/.test(normalized)) {
-          throw new Error("O valor digitado não é lógico! (Dica: os valores possíveis para o tipo lógico são: 'verdadeiro', 'falso', 'sim', 'nao', 'não', 'true', 'false', 's', 'y', 'n', '0', '1')");
+          throw invalid();
         }
 
         return new PortugolVar("logico", ["sim", "true", "verdadeiro", "s", "y", "1"].includes(normalized));
@@ -484,7 +530,7 @@ class PortugolRuntime {
 
       case "caracter": {
         if (text === "") {
-          throw new Error("O valor digitado não é um caracter!");
+          throw invalid();
         }
 
         return new PortugolVar("caracter", text.charAt(0));

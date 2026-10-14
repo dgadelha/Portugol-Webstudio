@@ -243,10 +243,10 @@ describe("Funções", () => {
         });
       });
 
-      expect(erro?.message).toBe(
-        "Ocorreu um estouro de pilha de memória no programa.\n" +
-          "Isto significa que existe alguma função do programa que está sendo chamada de forma recursiva sem uma condição de parada.",
+      expect(erro?.message).toMatch(
+        /^Ocorreu um estouro de pilha de memória no programa\.\nIsto significa que existe alguma função do programa que está sendo chamada de forma recursiva sem uma condição de parada\.\n\n/,
       );
+      expect(erro?.message).toContain("se (contador < 100)");
     });
   });
 

@@ -5,11 +5,12 @@ import { Subject, Subscription } from "rxjs";
 
 import {
   DebugCommand,
-  IPortugolRunner,
-  RunOptions,
   DebugPause,
+  ErrorPosition,
+  IPortugolRunner,
   PortugolEvent,
   PortugolMessage,
+  RunOptions,
 } from "./IPortugolRunner.js";
 
 export class PortugolWorkerThreadsRunner extends IPortugolRunner {
@@ -105,10 +106,16 @@ export class PortugolWorkerThreadsRunner extends IPortugolRunner {
             });
           }
         } catch (error) {
-          parentPort.postMessage({ type: "error", error: {
-            message: error.message,
-            stack: error.stack,
-          }});
+          parentPort.postMessage({
+            type: "error",
+            error: {
+              message: error.message,
+              stack: error.stack,
+            },
+            position: self.runtime?.line
+              ? { line: self.runtime.line, column: self.runtime.column + 1 }
+              : undefined,
+          });
         } finally {
           parentPort.postMessage({ type: "finish" });
         }
@@ -123,6 +130,7 @@ export class PortugolWorkerThreadsRunner extends IPortugolRunner {
         type: string;
         content?: string;
         error?: { message: string; stack?: string };
+        position?: ErrorPosition;
         message?: PortugolMessage;
         pause?: DebugPause;
       }) => {
@@ -145,7 +153,7 @@ export class PortugolWorkerThreadsRunner extends IPortugolRunner {
 
             error.stack = data.error!.stack;
 
-            this._run.next({ type: "error", error });
+            this._run.next({ type: "error", error, position: data.position });
             this.destroy();
             break;
           }
