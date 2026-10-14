@@ -1,7 +1,8 @@
 // As mensagens dos erros de execução do Portugol Studio, com as explicações e os exemplos dele:
-// as classes em `br.univali.portugol.nucleo.execucao.erros.mensagens`. O texto é o mesmo; só os
-// programas de exemplo seguem o formato do Webstudio (dois espaços, chaves na mesma linha). Ficam
-// aqui, e não no texto do runtime, para cada linha ser escrita uma vez, sem escapes duplos.
+// as classes em `br.univali.portugol.nucleo.execucao.erros.mensagens`. O texto é o mesmo, com
+// os erros de digitação corrigidos; os programas de exemplo seguem o formato do Webstudio (dois
+// espaços, chaves na mesma linha). Ficam aqui, e não no texto do runtime, para cada linha ser
+// escrita uma vez, sem escapes duplos.
 
 /**
  * Um índice fora de um vetor ou de uma matriz (`ErroIndiceInvalido`).
@@ -13,7 +14,7 @@ export const INVALID_INDEX_MESSAGE = [
   "Por exemplo, se foi declarado um vetor com 5 elementos (inteiro vetor[5]), o maior índice possível é 4.",
   "",
   "No caso das matrizes, o índice utilizado para acessar a linha da matriz deve ser menor que a quantidade de linhas que ela possui.",
-  "Da mesma forma, o índice utilzado para acessar a coluna da matriz deve ser menor que a quantidade de colunas que ela possui.",
+  "Da mesma forma, o índice utilizado para acessar a coluna da matriz deve ser menor que a quantidade de colunas que ela possui.",
   "",
   "Por exemplo, se foi declarada uma matriz com 3 linhas e 8 colunas (inteiro matriz[3][8]), o maior índice possível para a linha é 2 e o maior índice possível para a coluna é 7.",
   "",
