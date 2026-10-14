@@ -131,6 +131,116 @@ ngx-monaco-editor {
   min-height: 0;
 }
 
+// A barra flutuante da depuração avançada, como a do Visual Studio Code: no alto do
+// editor, sobre o código, e pode ser arrastada para qualquer lugar dele pela alça.
+.code-editor-area {
+  position: relative;
+}
+
+.debug-toolbar {
+  position: absolute;
+  top: 0.5rem;
+  left: 50%;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 0.125rem;
+  // Centralizada pela própria largura; o 'translate' se soma ao 'transform' do arrastar
+  translate: -50% 0;
+  padding: 0.125rem 0.25rem 0.125rem 0;
+  border: 1px solid var(--pws-border-strong);
+  border-radius: var(--pws-radius);
+  background-color: var(--pws-bg-elevated);
+  box-shadow: var(--pws-shadow-sm);
+
+  &.cdk-drag-dragging {
+    box-shadow: var(--pws-shadow);
+  }
+}
+
+.debug-toolbar-grip {
+  display: inline-flex;
+  align-items: center;
+  align-self: stretch;
+  justify-content: center;
+  // O mínimo de 24px para um alvo de toque (WCAG 2.5.8)
+  min-width: 24px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--pws-fg-muted);
+  cursor: grab;
+
+  .cdk-drag-dragging & {
+    cursor: grabbing;
+  }
+
+  svg-icon {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+// Depuração: a linha em que o programa parou, com uma seta na margem, e os
+// pontos de parada, como bolinhas vermelhas na margem.
+:host ::ng-deep .monaco-editor {
+  .debug-current-line {
+    background-color: rgba(var(--pws-accent-rgb), 0.18);
+  }
+
+  .debug-current-line-number {
+    color: var(--pws-accent-fg) !important;
+    font-weight: 700;
+  }
+
+  // Na depuração simples, sem a margem, a mesma seta à esquerda do número da linha: os
+  // números ficam à direita, e sobra espaço para ela antes deles
+  .debug-current-line-arrow::before {
+    content: "";
+    position: absolute;
+    top: 30%;
+    bottom: 30%;
+    left: 1px;
+    width: 10px;
+    background-color: var(--pws-accent-fg);
+    clip-path: polygon(0 20%, 55% 20%, 55% 0, 100% 50%, 55% 100%, 55% 80%, 0 80%);
+  }
+
+  // A linha de um erro de execução
+  .runtime-error-line {
+    background-color: rgba(var(--pws-danger-fg-rgb), 0.16);
+  }
+
+  .runtime-error-line-number {
+    color: var(--pws-danger-fg) !important;
+    font-weight: 700;
+  }
+
+  .debug-current-glyph,
+  .debug-breakpoint-glyph {
+    cursor: pointer;
+  }
+
+  .debug-current-glyph::after {
+    content: "";
+    position: absolute;
+    inset: 25% 15%;
+    background-color: var(--pws-accent-fg);
+    clip-path: polygon(0 20%, 55% 20%, 55% 0, 100% 50%, 55% 100%, 55% 80%, 0 80%);
+  }
+
+  .debug-breakpoint-glyph::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: var(--pws-red);
+  }
+}
+
 // Dicas do Monaco (erros ao passar o mouse) acima de tudo, mesmo perto da
 // borda do painel.
 :host ::ng-deep .monaco-editor .monaco-hover {
@@ -215,6 +325,15 @@ ngx-monaco-editor {
   &.running {
     border-color: rgba(var(--pws-success-fg-rgb), 0.5);
     color: var(--pws-success-fg);
+  }
+
+  &.paused {
+    border-color: rgba(var(--pws-info-fg-rgb), 0.5);
+    color: var(--pws-info-fg);
+
+    .dot {
+      animation: none;
+    }
   }
 
   .dot {

@@ -36,7 +36,10 @@ export class WorkerService {
     });
   }
 
-  async transpileCode(code: string): Promise<{
+  async transpileCode(
+    code: string,
+    { debugSteps = false } = {},
+  ): Promise<{
     js: string;
     diagnostics: IPortugolCodeDiagnostic[];
     parseErrors: IPortugolCodeDiagnostic[];
@@ -62,7 +65,7 @@ export class WorkerService {
       };
 
       this.worker?.addEventListener("message", listener);
-      this.worker?.postMessage({ code, id, action: "transpile" });
+      this.worker?.postMessage({ code, id, action: "transpile", debugSteps });
     });
   }
 

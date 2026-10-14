@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 import { portugol, portugolInicio } from "../helpers/code";
-import { runPortugolCode } from "../helpers/runner";
+import { runPortugolCode, runtimeError } from "../helpers/runner";
 
 describe("Entrada e Saída", () => {
   describe("escreva", () => {
@@ -386,6 +386,29 @@ describe("Entrada e Saída", () => {
           ["-0"],
         ),
       ).resolves.toBe("0|0.0");
+    });
+  });
+
+  describe("leia (valor inválido)", () => {
+    test.each([
+      ["inteiro", "abc"],
+      ["inteiro", ""],
+      ["real", "1,5"],
+      ["logico", "talvez"],
+      ["caracter", ""],
+    ])("%s com %j para o programa com o erro do Portugol Studio", async (tipo, entrada) => {
+      await expect(
+        runtimeError(
+          portugolInicio`
+            ${tipo} x
+            leia(x)
+          `,
+          { inputs: [entrada] },
+        ),
+      ).resolves.toHaveProperty(
+        "message",
+        `A entrada de dados do programa esperava um valor do tipo '${tipo}', mas nenhum valor foi informado ou o valor informado é de outro tipo`,
+      );
     });
   });
 });

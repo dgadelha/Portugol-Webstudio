@@ -1,6 +1,6 @@
 # Configurações
 
-Para abrir as configurações, clique na engrenagem no pé da barra de ações, ou em **Configurações** na aba inicial. Elas são divididas em quatro seções: **Aparência**, **Editor**, **Saída** e **Abas**.
+Para abrir as configurações, clique na engrenagem no pé da barra de ações, ou em **Configurações** na aba inicial. Elas são divididas em cinco seções: **Aparência**, **Editor**, **Saída**, **Execução** e **Abas**.
 
 As mudanças valem na hora e ficam salvas no navegador. Para voltar ao jeito original, clique em **Restaurar padrões**.
 
@@ -53,6 +53,16 @@ O que o programa escreve enquanto executa.
 | Rolar até o fim                | Acompanha a saída conforme o programa escreve. Quando o programa espera uma entrada, a saída sempre vai para o fim | Ligada            |
 | Quebra de linha                | Linhas longas continuam embaixo. Desligada, desenhos e tabelas feitos com texto não se desalinham                  | Ligada            |
 | Mostrar o tempo de execução    | Ao fim de cada execução, a saída diz quantos milissegundos o programa levou                                        | Ligada            |
+
+## Execução
+
+Como o programa é executado.
+
+![A seção Execução](../../recursos/imagens/light/webstudio/configuracoes-execucao@2x.webp)
+
+| Configuração       | O que faz                                                                                                                                                                            | Padrão    |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------- |
+| Depuração avançada | Executando passo a passo, mostra também os botões Continuar, Pausar, Pular função e Sair da função, e permite marcar pontos de parada. Veja [Executando passo a passo](depurando.md) | Desligada |
 
 ## Abas
 

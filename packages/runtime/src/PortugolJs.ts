@@ -73,6 +73,13 @@ const ESCAPES: Record<string, string> = { t: "\t", n: "\n", b: "\b", r: "\r", f:
 
 export class PortugolJs extends AbstractParseTreeVisitor<string> implements PortugolVisitor<string> {
   debug = false;
+
+  /**
+   * Execução passo a passo: chama o `runtime.step` antes de cada comando e a cada
+   * teste de um laço, e registra as chamadas de função. Sem ela, o código gerado não
+   * tem nada disso e roda na velocidade de sempre.
+   */
+  debugSteps = false;
   pad = 0;
   hasScope = false;
 
@@ -208,9 +215,9 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     const textoRaiz = this.originalText(raiz);
     const incrementText = this.originalText(ctx);
 
-    const reference =
-      `scope.variables["${name}"]` +
-      indices.map(index => `.value[${this.visit(index.expressao())?.trim()}.value]`).join("");
+    const variable = `scope.variables["${name}"]`;
+    const positions = indices.map(index => `${this.visit(index.expressao())?.trim()}.value`);
+    const reference = positions.reduce((item, position) => `runtime.item(${item}, ${position})`, variable);
 
     // O operando conserva os índices, para que `v[i]++` vire `v[i] + 1`
     const tree =
@@ -317,6 +324,24 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     return `${this.PAD()}/*! ${fn} !*/\n`;
   }
 
+  // Quase sempre o 'step' volta na hora, sem 'await' (veja o PortugolRuntime)
+  STEP(token: Token | null) {
+    return `runtime.step(${token?.line ?? 0}, ${token?.column ?? 0}) && await runtime.stepping`;
+  }
+
+  // Onde o programa está, para o erro de execução dizer a linha e a coluna, como o Portugol
+  // Studio: a do começo do comando. Uma chamada por comando, sem custo que se meça
+  POSITION(token: Token | null) {
+    return `runtime.position(${token?.line ?? 0}, ${token?.column ?? 0})`;
+  }
+
+  // Antes de calcular uma condição de laço: a posição e, na depuração, o 'step'
+  WITH_POSITION(token: Token | null, expression: string | null) {
+    const step = this.debugSteps ? `, ${this.STEP(token)}` : "";
+
+    return `${this.PAD()}(${this.POSITION(token)}${step},\n${expression?.trimEnd() ?? ""}\n${this.PAD()})\n`;
+  }
+
   PAD() {
     return "  ".repeat(this.pad);
   }
@@ -380,7 +405,7 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     const [abre, fecha] = this.leitura();
 
     sb.append(this.DEBUG(`visitReferenciaArray`, ctx));
-    sb.append(this.PAD(), abre, this.acesso(ctx), `.value[`, `\n`);
+    sb.append(this.PAD(), abre, `runtime.item(`, this.acesso(ctx), `,`, `\n`);
 
     this.pad++;
 
@@ -388,7 +413,7 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
 
     this.pad--;
 
-    sb.append(this.PAD(), `]`, fecha, `\n`);
+    sb.append(this.PAD(), `)`, fecha, `\n`);
 
     return sb.toString();
   }
@@ -398,27 +423,12 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     const [abre, fecha] = this.leitura();
 
     sb.append(this.DEBUG(`visitReferenciaMatriz`, ctx));
-    sb.append(this.PAD(), abre, this.acesso(ctx), `.value`, `\n`);
 
-    for (const idx of ctx.indiceArray()) {
-      this.pad++;
+    // 'm[i][j]' é a posição 'j' da linha 'i', com o mesmo erro fora da matriz
+    const positions = ctx.indiceArray().map(idx => `${this.visit(idx.expressao())?.trim()}.value`);
+    const reference = positions.reduce((item, position) => `runtime.item(${item}, ${position})`, this.acesso(ctx));
 
-      sb.append(this.PAD(), `[`, `\n`);
-
-      this.pad++;
-
-      sb.append(this.visit(idx.expressao())?.trimEnd(), `.value`, `\n`);
-
-      this.pad--;
-
-      sb.append(this.PAD(), `].value`, `\n`);
-
-      this.pad--;
-    }
-
-    sb.pop();
-    sb.pop();
-    sb.append(`]`, fecha, `\n`);
+    sb.append(this.PAD(), abre, reference, fecha, `\n`);
 
     return sb.toString();
   }
@@ -971,6 +981,12 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
 
     const declrs = ctx.declaracao();
 
+    // As declarações globais não são comandos: marcam a posição aqui, para um erro na
+    // inicialização delas
+    if (!this.hasScope) {
+      sb.append(this.PAD(), this.POSITION(ctx.start), `;`, `\n`);
+    }
+
     for (let i = 0; i < declrs.length; i++) {
       const declr = declrs[i];
       const [arr, mtrx, varb] = [declr.declaracaoArray(), declr.declaracaoMatriz(), declr.declaracaoVariavel()];
@@ -1188,6 +1204,20 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     this.currentReturnType = ctx.TIPO()?.getText() ?? null;
 
     sb.append(this.PAD(), `let scope = runtime.getScope(runtime.globalScope);`, `\n\n`);
+
+    // A chamada já está na pilha de chamadas da depuração (pelo 'callFunction'), que
+    // só não conhece as variáveis dela. Os nomes dos parâmetros vão junto: um parâmetro
+    // por referência pode ser a própria variável global com o mesmo nome
+    if (this.debugSteps) {
+      const params = ctx
+        .parametroFuncao()
+        .listaParametros()
+        ?.parametro()
+        .map(param => param.ID().getText());
+
+      sb.append(this.PAD(), `runtime.enterScope(scope, ${JSON.stringify(params ?? [])});`, `\n`);
+    }
+
     sb.append(super.visitChildren(ctx));
 
     this.currentReturnType = null;
@@ -1267,6 +1297,15 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     const sb = new StringBuilder();
 
     sb.append(this.DEBUG(`visitComando`, ctx));
+
+    sb.append(`\n`, this.PAD(), this.POSITION(ctx.start), `;`);
+
+    // O 'enquanto' e o 'para' param a cada teste da condição, e não antes do comando,
+    // senão parariam duas vezes seguidas na mesma linha
+    if (this.debugSteps && !ctx.enquanto() && !ctx.para()) {
+      sb.append(`\n`, this.PAD(), this.STEP(ctx.start), `;`);
+    }
+
     sb.append(`\n`, `${super.visitChildren(ctx)?.trimEnd()};`, `\n`);
 
     return sb.toString();
@@ -1418,7 +1457,7 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
 
     this.pad++;
 
-    sb.append(this.visit(ctx.expressao()));
+    sb.append(this.WITH_POSITION(ctx.start, this.visit(ctx.expressao())));
     sb.append(this.PAD(), `.value === true`, `\n`);
 
     this.pad--;
@@ -1452,7 +1491,7 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
 
     this.pad++;
 
-    sb.append(this.visit(ctx.expressao()));
+    sb.append(this.WITH_POSITION(ctx.expressao().start, this.visit(ctx.expressao())));
     sb.append(this.PAD(), `.value === true`, `\n`);
 
     this.pad--;
@@ -1519,7 +1558,11 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     const sb = new StringBuilder();
 
     sb.append(this.DEBUG(`visitCondicao`, ctx));
-    sb.append(this.visit(ctx.expressao())?.trimEnd(), `.value === true`, `\n`);
+
+    // Para a cada teste, na linha do 'para'
+    const loopStart = ctx.parent instanceof ParaContext ? ctx.parent.start : ctx.start;
+
+    sb.append(this.WITH_POSITION(loopStart, this.visit(ctx.expressao()))?.trimEnd(), `.value === true`, `\n`);
 
     return sb.toString();
   }
@@ -1528,8 +1571,20 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     const sb = new StringBuilder();
 
     sb.append(this.DEBUG(`visitIncrementoPara`, ctx));
-    sb.append(super.visitChildren(ctx));
-    // sb.append(`throw new Error("visitIncrementoPara não implementado")`);
+
+    // O incremento executa depois do corpo: um erro nele é na linha do 'para', e não na do
+    // último comando do corpo. Sem passo da depuração, que já para na condição logo depois
+    const paraStart = ctx.parent instanceof ParaContext ? ctx.parent.start : ctx.start;
+    const increment = super.visitChildren(ctx)?.trimEnd();
+
+    // Um 'para' sem incremento, como 'para (i = 0; i < 2; )'
+    if (!increment?.trim()) {
+      return sb.toString();
+    }
+
+    sb.append(this.PAD(), `(${this.POSITION(paraStart)},\n`);
+    sb.append(increment, `\n`);
+    sb.append(this.PAD(), `)`, `\n`);
 
     return sb.toString();
   }

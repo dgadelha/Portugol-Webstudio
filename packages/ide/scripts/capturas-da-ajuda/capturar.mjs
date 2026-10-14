@@ -54,11 +54,11 @@ const contextosDaCena = [];
  * outro sistema a fonte cairia na Courier. O tamanho da fonte é o padrão fora do Mac, 14px.
  *
  * @param {string} tema
- * @param {{ largura?: number; altura?: number; celular?: boolean; mensagens?: boolean; url?: string }} [opções]
+ * @param {{ largura?: number; altura?: number; celular?: boolean; mensagens?: boolean; url?: string; depuraçãoAvançada?: boolean }} [opções]
  */
 async function novaPágina(
   tema,
-  { largura = 1200, altura = 720, celular = false, mensagens = false, url = URL_IDE } = {},
+  { largura = 1200, altura = 720, celular = false, mensagens = false, url = URL_IDE, depuraçãoAvançada = false } = {},
 ) {
   const contexto = await navegador.newContext({
     viewport: { width: largura, height: altura },
@@ -70,9 +70,13 @@ async function novaPágina(
     ...(celular && { userAgent: UA_CELULAR }),
   });
 
-  await contexto.addInitScript(() => {
+  await contexto.addInitScript(avançada => {
     localStorage.setItem("pws:editorfontsize", "14");
-  });
+
+    if (avançada) {
+      localStorage.setItem("pws:executionadvanceddebugging", "true");
+    }
+  }, depuraçãoAvançada);
 
   contextosDaCena.push(contexto);
 
@@ -102,7 +106,84 @@ async function abrir(página, arquivo) {
  * @param {import("playwright-core").Page} página
  */
 async function executar(página) {
-  await página.getByRole("toolbar", { name: "Ações" }).getByRole("button", { name: "Executar", exact: true }).click();
+  await clicarAção(página, "Executar");
+}
+
+/**
+ * Um botão da barra de ações, como "Depurar" ou "Próximo passo".
+ *
+ * @param {import("playwright-core").Page} página
+ * @param {string} nome
+ */
+async function clicarAção(página, nome) {
+  await página.getByRole("toolbar", { name: "Ações" }).getByRole("button", { name: nome, exact: true }).click();
+}
+
+/**
+ * Espera a depuração parar na linha.
+ *
+ * @param {import("playwright-core").Page} página
+ * @param {number} linha
+ */
+async function pausadoNaLinha(página, linha) {
+  await página.locator(".status-paused", { hasText: `Pausado na linha ${linha}` }).waitFor();
+}
+
+/**
+ * Marca um ponto de parada com um clique na margem à esquerda do número da linha, como alguém
+ * faria com o mouse.
+ *
+ * @param {import("playwright-core").Page} página
+ * @param {number} linha
+ */
+async function marcarPontoDeParada(página, linha) {
+  const { margem, topo, altura } = await linhaNaTela(página, linha);
+
+  await página.mouse.click(margem, topo + altura / 2);
+}
+
+/**
+ * Onde uma linha do editor de código está na tela: o meio da margem dos pontos de parada,
+ * o topo e a altura da linha.
+ *
+ * @param {import("playwright-core").Page} página
+ * @param {number} linha
+ */
+async function linhaNaTela(página, linha) {
+  return página.evaluate(número => {
+    const editor = monaco.editor
+      .getEditors()
+      .find(item => !item.getDomNode()?.closest(".output-editor") && (item.getDomNode()?.offsetWidth ?? 0) > 100);
+
+    if (!editor) {
+      throw new Error("O editor de código não foi encontrado");
+    }
+
+    const caixa = editor.getDomNode().getBoundingClientRect();
+    const layout = editor.getLayoutInfo();
+
+    return {
+      margem: caixa.x + layout.glyphMarginLeft + layout.glyphMarginWidth / 2,
+      topo: caixa.y + editor.getTopForLineNumber(número) - editor.getScrollTop(),
+      altura: editor.getOption(monaco.editor.EditorOption.lineHeight),
+    };
+  }, linha);
+}
+
+/**
+ * Tira o foco e o mouse de cima dos botões, para a captura não mostrar o contorno do foco nem
+ * uma dica.
+ *
+ * @param {import("playwright-core").Page} página
+ */
+async function semFoco(página) {
+  await página.mouse.move(0, 0);
+  await página.evaluate(() => {
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
+  });
+  await página.waitForTimeout(400);
 }
 
 /**
@@ -176,7 +257,7 @@ const cenas = {
 
   async "barra-de-acoes"(tema) {
     // Numa janela baixa, sobra pouco espaço entre a Ajuda e as Configurações.
-    const página = await novaPágina(tema, { altura: 500 });
+    const página = await novaPágina(tema, { altura: 560 });
 
     await abrir(página, "Primeiro programa.por");
     await capturar(página.getByRole("toolbar", { name: "Ações" }), tema, "barra-de-acoes");
@@ -247,6 +328,52 @@ const cenas = {
     await página.getByText("não foi executado").waitFor();
     await página.waitForTimeout(400);
     await capturar(página, tema, "executar-com-erros");
+  },
+
+  async depurar(tema) {
+    const página = await novaPágina(tema, { altura: 800 });
+
+    await abrir(página, "Média das notas.por");
+    await clicarAção(página, "Depurar");
+    await pausadoNaLinha(página, 11);
+
+    // Até a terceira volta do 'para', dentro da função 'media': a soma e o 'i' acabaram de mudar
+    for (const linha of [12, 3, 4, 5, 4, 5, 4]) {
+      await clicarAção(página, "Próximo passo");
+      await pausadoNaLinha(página, linha);
+    }
+
+    // O painel sobe, como alguém arrastando a divisória, para caber o vetor aberto
+    const divisória = await caixaDe(página.getByRole("separator", { name: "Altura do painel" }));
+    const meio = { x: divisória.x + divisória.width / 2, y: divisória.y + divisória.height / 2 };
+
+    await página.mouse.move(meio.x, meio.y);
+    await página.mouse.down();
+    await página.mouse.move(meio.x, meio.y - 160, { steps: 8 });
+    await página.mouse.up();
+
+    await página.locator("app-debug-variables summary").first().click();
+    await semFoco(página);
+    await capturar(página, tema, "depurar");
+  },
+
+  async "depurar-ponto-de-parada"(tema) {
+    // Os pontos de parada são da depuração avançada
+    const página = await novaPágina(tema, { altura: 800, depuraçãoAvançada: true });
+
+    await abrir(página, "Média das notas.por");
+    await marcarPontoDeParada(página, 5);
+    await marcarPontoDeParada(página, 13);
+    await clicarAção(página, "Depurar");
+    await pausadoNaLinha(página, 5);
+    await semFoco(página);
+
+    // Das abas até a última linha do programa, com a barra flutuante da depuração avançada
+    const { topo: fim } = await linhaNaTela(página, 16);
+
+    await capturar(página, tema, "depurar-ponto-de-parada", {
+      clip: { x: 0, y: 0, width: 1200, height: fim },
+    });
   },
 
   async "salvar-como"(tema) {
@@ -329,6 +456,7 @@ const cenas = {
       ["Aparência", "configuracoes-aparencia"],
       ["Editor", "configuracoes-editor"],
       ["Saída", "configuracoes-saida"],
+      ["Execução", "configuracoes-execucao"],
       ["Abas", "configuracoes-abas"],
     ]) {
       await diálogo.getByRole("button", { name: seção, exact: true }).click();

@@ -1,0 +1,161 @@
+@let current = pause();
+
+@if (!current) {
+  <p class="debug-empty" tabindex="-1">
+    @if (debugging()) {
+      O programa está executando. As variáveis aparecem quando ele pausar.
+    } @else {
+      Use Depurar para executar o programa passo a passo e ver as variáveis aqui.
+    }
+  </p>
+} @else {
+  <div class="debug-layout">
+    <div class="debug-section frames">
+      <h3 class="debug-title">Chamadas</h3>
+
+      <ol class="frame-list">
+        @for (frame of current.frames; track $index) {
+          <li>
+            <button
+              type="button"
+              class="frame"
+              [class.selected]="$index === selectedFrame()"
+              [attr.aria-current]="$index === selectedFrame() || null"
+              (click)="selectFrame($index)"
+            >
+              <span>{{ frame.name }}()</span>
+              @if ($first) {
+                <span class="frame-line">linha {{ current.line }}</span>
+              }
+            </button>
+          </li>
+        }
+      </ol>
+    </div>
+
+    <div class="debug-section">
+      <h3 class="debug-title">Variáveis</h3>
+
+      <ng-container
+        [ngTemplateOutlet]="variablesTable"
+        [ngTemplateOutletContext]="{ variables: frame()?.variables ?? [], changed: changedLocals(), list: 'locals' }"
+      />
+    </div>
+
+    @if (current.globals.length > 0) {
+      <div class="debug-section">
+        <h3 class="debug-title">Globais</h3>
+
+        <ng-container
+          [ngTemplateOutlet]="variablesTable"
+          [ngTemplateOutletContext]="{ variables: current.globals, changed: changedGlobals(), list: 'globals' }"
+        />
+      </div>
+    }
+  </div>
+}
+
+<ng-template #variablesTable let-variables="variables" let-changed="changed" let-list="list">
+  @if (variables.length === 0) {
+    <p class="debug-empty">Nenhuma variável ainda.</p>
+  } @else {
+    <ul class="variables">
+      @for (variable of variables; track variable.name) {
+        @let isChanged = changed.has(variable.name);
+        @let openKey = `${list}:${variable.name}`;
+        <li class="variable" [class.changed]="isChanged">
+          @if (variable.items) {
+            <details [open]="opened().has(openKey)" (toggle)="onToggle(openKey, $event)">
+              <summary>
+                <ng-container
+                  [ngTemplateOutlet]="declaration"
+                  [ngTemplateOutletContext]="{ variable, changed: isChanged }"
+                />
+              </summary>
+              @if (opened().has(openKey)) {
+                <ng-container
+                  [ngTemplateOutlet]="collection"
+                  [ngTemplateOutletContext]="{ value: variable, name: variable.name }"
+                />
+              }
+            </details>
+          } @else {
+            <ng-container
+              [ngTemplateOutlet]="declaration"
+              [ngTemplateOutletContext]="{ variable, changed: isChanged }"
+            />
+          }
+
+          <button
+            type="button"
+            class="icon-btn icon-btn-sm copy"
+            appTooltip="Copiar a declaração"
+            appTooltipPosition="above"
+            [attr.aria-label]="`Copiar a declaração de ${variable.name}`"
+            (click)="copy(variable)"
+          >
+            <svg-icon
+              aria-hidden="true"
+              [src]="copied() === variable ? 'assets/mdi/check.svg' : 'assets/mdi/content-copy.svg'"
+            />
+          </button>
+        </li>
+      }
+    </ul>
+  }
+</ng-template>
+
+<ng-template #declaration let-variable="variable" let-changed="changed">
+  <code class="declaration">
+    @if (variable.constant) {
+      <span class="keyword">const</span>
+    }
+    <span class="keyword">{{ baseType(variable) }}</span>
+    <span class="name">{{ variable.name }}{{ dimensions(variable) }}</span>
+    @if (variable.text === null) {
+      <span class="no-value">(sem valor)</span>
+    } @else {
+      <span class="operator">=</span>
+      <span class="value">{{ summaryText(variable) }}</span>
+    }
+    @if (changed) {
+      <span class="visually-hidden">(mudou)</span>
+    }
+  </code>
+</ng-template>
+
+<ng-template #collection let-value="value" let-name="name">
+  @if (value.type === "matriz") {
+    <div class="matrix-scroll">
+      <table class="matrix" [attr.aria-label]="name">
+        <thead>
+          <tr>
+            <td></td>
+            @for (cell of value.items[0]?.items ?? []; track $index) {
+              <th scope="col">[{{ $index }}]</th>
+            }
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of value.items; track $index) {
+            <tr>
+              <th scope="row">[{{ $index }}]</th>
+              @for (cell of row.items; track $index) {
+                <td>{{ valueText(cell) }}</td>
+              }
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  } @else {
+    <ol class="vector" start="0">
+      @for (item of value.items; track $index) {
+        <li>
+          <span class="vector-index">[{{ $index }}]</span>
+          <span>{{ valueText(item) }}</span>
+        </li>
+      }
+    </ol>
+  }
+</ng-template>

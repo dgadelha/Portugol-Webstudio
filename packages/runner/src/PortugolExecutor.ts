@@ -1,7 +1,13 @@
 import { PortugolDiagnosticSeverity } from "@portugol-webstudio/antlr";
 import { Subject, Subscription } from "rxjs";
 
-import { IPortugolRunner, PortugolEvent, PortugolMessage } from "./runners/IPortugolRunner.js";
+import {
+  DebugCommand,
+  IPortugolRunner,
+  RunOptions,
+  PortugolEvent,
+  PortugolMessage,
+} from "./runners/IPortugolRunner.js";
 import type { PortugolTranspiledCode } from "./transpile.js";
 
 export class PortugolExecutor {
@@ -58,7 +64,7 @@ export class PortugolExecutor {
   events = new Subject<PortugolEvent>();
   #printTimes(_times: { check: number; transpile: number; execution?: number }) {}
 
-  runTranspiled({ js, diagnostics, parseErrors, times }: PortugolTranspiledCode) {
+  runTranspiled({ js, diagnostics, parseErrors, times }: PortugolTranspiledCode, options: RunOptions = {}) {
     try {
       this.reset(this.clearStdOutOnRun);
 
@@ -120,7 +126,7 @@ export class PortugolExecutor {
         this.running$.next(data);
       });
 
-      this._runner.run().subscribe({
+      this._runner.run(options).subscribe({
         next: event => {
           switch (event.type) {
             case "finish": {
@@ -141,7 +147,13 @@ export class PortugolExecutor {
             }
 
             case "error": {
-              this.stdOut += `\n⛔ ${event.error.message}\n`;
+              // Como no Portugol Studio: a mensagem depois do aviso do erro, e a posição numa linha
+              // à parte
+              const position = event.position
+                ? `Linha: ${event.position.line}, Coluna: ${event.position.column}\n`
+                : "";
+
+              this.stdOut += `\n⛔ Ocorreu um erro durante a execução do programa: ${event.error.message}\n${position}`;
               this.stdOut$.next(this.stdOut);
               break;
             }
@@ -188,6 +200,10 @@ export class PortugolExecutor {
     this._running$?.unsubscribe();
 
     this._runner?.destroy(true);
+  }
+
+  debug(command: DebugCommand) {
+    this._runner?.debug(command);
   }
 
   postMessage(message: PortugolMessage) {

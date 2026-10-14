@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 import { portugol, portugolInicio } from "../helpers/code";
-import { runPortugolCode } from "../helpers/runner";
+import { runPortugolCode, runtimeError } from "../helpers/runner";
 
 describe("Vetores e Matrizes", () => {
   describe("Valores padrão", () => {
@@ -307,6 +307,32 @@ describe("Vetores e Matrizes", () => {
           `,
         ),
       ).resolves.toBe("antes ");
+    });
+
+    test("Interrompe o programa ao atribuir acima do último índice", async () => {
+      await expect(
+        runPortugolCode(
+          portugolInicio`
+            inteiro v[2]
+            escreva("antes ")
+            v[5] = 1
+            escreva("depois")
+          `,
+        ),
+      ).resolves.toBe("antes ");
+    });
+
+    test.each([
+      ["escrita depois do fim de um vetor", "inteiro v[2]\nv[5] = 1"],
+      ["leitura antes do início de um vetor", "real notas[1]\nescreva(notas[0 - 1])"],
+      ["incremento fora de um vetor", "inteiro v[3]\ninteiro i = 3\nv[i]++"],
+      ["escrita fora das colunas de uma matriz", "inteiro m[2][3]\nm[1][3] = 1"],
+      ["leitura fora das linhas de uma matriz", "inteiro m[1][1]\nescreva(m[2][0])"],
+    ])("%s mostra a mensagem do Portugol Studio, com as explicações", async (_nome, corpo) => {
+      const error = await runtimeError(portugolInicio`${corpo}`);
+
+      expect(error?.message).toMatch(/^Você tentou acessar um índice de vetor ou matriz inválido\.\n\n/);
+      expect(error?.message).toContain("escreva(matriz[-1][-1])");
     });
   });
 

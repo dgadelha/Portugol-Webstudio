@@ -14,6 +14,7 @@ O Portugol Webstudio pode ser usado só com o teclado e com leitores de tela, co
 
 - As abas, a barra de ações, o painel e as janelas são anunciados com os nomes e os papéis certos.
 - O estado do programa, **Executando** e **Aguardando entrada**, é anunciado quando muda.
+- Executando passo a passo, cada pausa é anunciada com a linha e o que mudou nas variáveis. Veja [Executando passo a passo](depurando.md).
 - Na aba **Problemas**, cada item é anunciado como erro, aviso ou informação, com a linha e a coluna.
 - A quantidade de erros e de avisos, na barra de status, é anunciada por extenso.
 

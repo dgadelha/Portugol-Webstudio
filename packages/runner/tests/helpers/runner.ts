@@ -6,7 +6,7 @@ import { once } from "node:events";
 import { globSync } from "node:fs";
 import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
-import { PortugolWorkerThreadsRunner } from "../../src";
+import { ErrorPosition, PortugolWorkerThreadsRunner } from "../../src";
 
 class NoMoreInputsError extends Error {
   constructor() {
@@ -169,4 +169,44 @@ export async function runPortugolCode(code: string, inputs: string[] = []) {
   }
 
   return workerOutput;
+}
+
+/**
+ * O erro de execução do programa, com a mensagem e a posição, ou `undefined` se ele terminar
+ * sem erro. `inputs` responde aos `leia`; com `debugSteps`, executa com a depuração, sem
+ * parar em nenhum comando.
+ */
+export function runtimeError(code: string, { inputs = [] as string[], debugSteps = false } = {}) {
+  const js = new PortugolJs();
+
+  js.debugSteps = debugSteps;
+
+  const runner = new PortugolWorkerThreadsRunner(js.visit(PortugolCodeChecker.checkCode(code).tree)!);
+  const pending = [...inputs];
+
+  return new Promise<{ message: string; position?: ErrorPosition } | undefined>(resolve => {
+    runner.run(debugSteps ? { debug: { breakpoints: [] } } : {}).subscribe(event => {
+      switch (event.type) {
+        case "paused": {
+          runner.debug({ type: "continue" });
+          break;
+        }
+
+        case "stdIn": {
+          runner.stdIn.next(pending.shift() ?? "");
+          break;
+        }
+
+        case "error": {
+          resolve({ message: event.error.message, position: event.position });
+          break;
+        }
+
+        case "finish": {
+          resolve(undefined);
+          break;
+        }
+      }
+    });
+  });
 }

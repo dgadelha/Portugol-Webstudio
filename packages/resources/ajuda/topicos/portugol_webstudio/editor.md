@@ -6,7 +6,7 @@ Cada programa fica numa aba de código. Ela tem a barra de ações à esquerda, 
 
 ## A barra de ações
 
-![A barra de ações, com os botões de executar, parar, abrir, salvar, compartilhar, exemplos, ajuda e configurações](../../recursos/imagens/light/webstudio/barra-de-acoes@2x.webp)
+![A barra de ações, com os botões de executar, parar, depurar, abrir, salvar, compartilhar, exemplos, ajuda e configurações](../../recursos/imagens/light/webstudio/barra-de-acoes@2x.webp)
 
 De cima para baixo:
 
@@ -14,6 +14,7 @@ De cima para baixo:
 | ----------------------- | ---------------------------------------------------------------------------- | ------------ |
 | **Executar**            | Executa o programa (veja [Executando programas](executando.md))              | Ctrl + Enter |
 | **Parar**               | Interrompe o programa que está executando                                    |              |
+| **Depurar**             | Executa passo a passo (veja [Executando passo a passo](depurando.md))        | Alt + P      |
 | **Abrir arquivo**       | Abre arquivos `.por` do computador, cada um numa aba nova                    | Ctrl + O     |
 | **Salvar**              | Baixa o código como um arquivo `.por`                                        | Ctrl + S     |
 | **Salvar como…**        | Mostra outras formas de salvar (veja [Abas e arquivos](abas_e_arquivos.md))  |              |

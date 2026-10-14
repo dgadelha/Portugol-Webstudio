@@ -1,0 +1,18 @@
+<div class="field inline">
+  <div class="field-text">
+    <span id="setting-execution-advanced-debugging" class="field-label">Depuração avançada</span>
+    <p id="setting-execution-advanced-debugging-descricao" class="field-description">
+      Executando passo a passo, mostra também os botões Continuar, Pausar, Pular função e Sair da função, e permite
+      marcar pontos de parada na margem do código. Desativado, há só o Próximo passo.
+    </p>
+  </div>
+
+  <input
+    type="checkbox"
+    role="switch"
+    class="switch"
+    aria-labelledby="setting-execution-advanced-debugging"
+    aria-describedby="setting-execution-advanced-debugging-descricao"
+    [(ngModel)]="executionAdvancedDebugging"
+  />
+</div>

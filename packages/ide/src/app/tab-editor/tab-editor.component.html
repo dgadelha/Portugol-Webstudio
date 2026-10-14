@@ -27,6 +27,26 @@
     <svg-icon src="assets/mdi/square-rounded-outline.svg" class="icon-red" aria-hidden="true" />
   </button>
 
+  @let stepping = basicStepping();
+  <button
+    type="button"
+    class="activity-button debug-button"
+    tabindex="-1"
+    appTooltipShortcut="Alt+P"
+    appTooltipPosition="right"
+    aria-keyshortcuts="Alt+P"
+    [appTooltip]="stepping ? 'Próximo passo' : 'Depurar (passo a passo)'"
+    [attr.aria-label]="stepping ? 'Próximo passo' : 'Depurar'"
+    [attr.aria-disabled]="(stepping ? !paused() : !canRun()) || null"
+    (click)="(stepping || !debugging) && onDebugButton('editor')"
+  >
+    <svg-icon
+      aria-hidden="true"
+      [src]="stepping ? 'assets/mdi/debug-step-into.svg' : 'assets/mdi/bug-play-outline.svg'"
+      [class]="stepping ? 'icon-blue' : 'icon-green'"
+    />
+  </button>
+
   <span class="activity-separator" role="separator"></span>
 
   <button
@@ -209,13 +229,87 @@
 >
   <as-split-area size="*">
     <as-split direction="horizontal" class="thin-split" [gutterSize]="1" (dragEnd)="onGeneratedCodeDragEnd($event)">
-      <as-split-area [size]="100">
+      <as-split-area class="code-editor-area" [size]="100">
         <ngx-monaco-editor
           [options]="codeEditorOptions"
           [ngModel]="code"
           (ngModelChange)="onCodeChange($event)"
           (init)="onEditorInit($event)"
         />
+        @if (debugging && advancedDebugging) {
+          <div
+            class="debug-toolbar"
+            role="toolbar"
+            aria-label="Depuração"
+            cdkDrag
+            cdkDragBoundary=".code-editor-area"
+            [cdkDragFreeDragPosition]="debugToolbarPosition()"
+            (cdkDragEnded)="onDebugToolbarMoved($event)"
+          >
+            <button
+              type="button"
+              class="debug-toolbar-grip debug-toolbar-button"
+              tabindex="-1"
+              cdkDragHandle
+              aria-label="Voltar a barra ao lugar inicial"
+              appTooltip="Arrastar (dois cliques voltam ao lugar inicial)"
+              appTooltipPosition="below"
+              (click)="$event.detail === 0 && resetDebugToolbar()"
+              (dblclick)="resetDebugToolbar()"
+            >
+              <svg-icon src="assets/mdi/drag-vertical.svg" aria-hidden="true" />
+            </button>
+
+            @let isPaused = paused();
+            <button
+              type="button"
+              class="icon-btn debug-toolbar-button"
+              tabindex="0"
+              appTooltipShortcut="Alt+C"
+              appTooltipPosition="below"
+              aria-keyshortcuts="Alt+C"
+              [appTooltip]="isPaused ? 'Continuar' : 'Pausar'"
+              [attr.aria-label]="isPaused ? 'Continuar' : 'Pausar'"
+              [attr.aria-disabled]="(!isPaused && executor.waitingForInput) || null"
+              (click)="isPaused ? resumeDebugging('continue', 'editor') : pauseDebugging('editor')"
+            >
+              <svg-icon
+                aria-hidden="true"
+                [src]="isPaused ? 'assets/mdi/play.svg' : 'assets/mdi/pause.svg'"
+                [class]="isPaused ? 'icon-green' : 'icon-yellow'"
+              />
+            </button>
+
+            @for (button of stepButtons; track button.type) {
+              <button
+                type="button"
+                class="icon-btn debug-toolbar-button"
+                tabindex="-1"
+                appTooltipPosition="below"
+                [appTooltip]="button.label"
+                [appTooltipShortcut]="button.shortcut"
+                [attr.aria-label]="button.label"
+                [attr.aria-keyshortcuts]="button.shortcut"
+                [attr.aria-disabled]="!isPaused || null"
+                (click)="resumeDebugging(button.type, 'editor')"
+              >
+                <svg-icon class="icon-blue" aria-hidden="true" [src]="button.icon" />
+              </button>
+            }
+
+            <button
+              type="button"
+              class="icon-btn debug-toolbar-button"
+              tabindex="-1"
+              appTooltip="Parar"
+              appTooltipPosition="below"
+              aria-label="Parar"
+              (click)="stopCode('editor')"
+            >
+              <svg-icon src="assets/mdi/square-rounded-outline.svg" class="icon-red" aria-hidden="true" />
+            </button>
+          </div>
+        }
       </as-split-area>
 
       <as-split-area [size]="0">
@@ -258,29 +352,49 @@
               <span class="badge" aria-hidden="true">{{ problems().length }}</span>
             }
           </button>
+
+          <button
+            type="button"
+            role="tab"
+            class="panel-tab"
+            [id]="ids().variablesTab"
+            [attr.aria-controls]="ids().variablesPanel"
+            [attr.aria-selected]="panelView() === 'variables'"
+            [attr.tabindex]="panelView() === 'variables' ? 0 : -1"
+            (click)="selectPanelTab('variables')"
+            (keydown)="onPanelTabsKeydown($event)"
+          >
+            Variáveis
+          </button>
         </div>
 
         <span class="panel-status" role="status">
-          @if (executor.waitingForInput) {
+          @if (paused()) {
+            <span class="run-status paused" aria-hidden="true">
+              <span class="dot"></span>Pausado na linha {{ debugPause()?.line }}
+            </span>
+          } @else if (executor.waitingForInput) {
             <span class="run-status waiting"><span class="dot"></span>Aguardando entrada</span>
-          } @else if (executor.running) {
+          } @else if (executor.running && !stepInFlight()) {
             <span class="run-status running"><span class="dot"></span>Executando</span>
           }
         </span>
 
         <span class="panel-spacer"></span>
 
-        <button
-          type="button"
-          class="icon-btn"
-          aria-label="Limpar saída"
-          appTooltip="Limpar saída"
-          appTooltipPosition="above"
-          [disabled]="!executor.stdOut || executor.running"
-          (click)="clearOutput()"
-        >
-          <svg-icon src="assets/mdi/eraser.svg" aria-hidden="true" />
-        </button>
+        @if (panelView() === "output") {
+          <button
+            type="button"
+            class="icon-btn"
+            aria-label="Limpar saída"
+            appTooltip="Limpar saída"
+            appTooltipPosition="above"
+            [disabled]="!executor.stdOut || executor.running"
+            (click)="clearOutput()"
+          >
+            <svg-icon src="assets/mdi/eraser.svg" aria-hidden="true" />
+          </button>
+        }
 
         <button
           type="button"
@@ -362,6 +476,17 @@
           </ul>
         }
       </div>
+
+      <app-debug-variables
+        class="panel-body"
+        role="tabpanel"
+        [id]="ids().variablesPanel"
+        [attr.aria-labelledby]="ids().variablesTab"
+        [hidden]="panelView() !== 'variables'"
+        [pause]="debugPause()"
+        [previousPause]="previousDebugPause()"
+        [debugging]="debugging"
+      />
     </section>
   </as-split-area>
 </as-split>
