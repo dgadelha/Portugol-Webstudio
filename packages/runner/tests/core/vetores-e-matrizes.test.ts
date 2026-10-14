@@ -1,26 +1,6 @@
-import { PortugolCodeChecker } from "@portugol-webstudio/parser";
-import { PortugolJs } from "@portugol-webstudio/runtime";
 import { describe, expect, test } from "vitest";
-import { PortugolWorkerThreadsRunner } from "../../src";
 import { portugol, portugolInicio } from "../helpers/code";
-import { runPortugolCode } from "../helpers/runner";
-
-/**
- * A mensagem do erro de execução do programa, ou `undefined` se ele terminar sem erro.
- */
-function runtimeError(code: string) {
-  const runner = new PortugolWorkerThreadsRunner(new PortugolJs().visit(PortugolCodeChecker.checkCode(code).tree)!);
-
-  return new Promise<string | undefined>(resolve => {
-    runner.run().subscribe(event => {
-      if (event.type === "error") {
-        resolve(event.error.message);
-      } else if (event.type === "finish") {
-        resolve(undefined);
-      }
-    });
-  });
-}
+import { runPortugolCode, runtimeError } from "../helpers/runner";
 
 describe("Vetores e Matrizes", () => {
   describe("Valores padrão", () => {
@@ -341,37 +321,17 @@ describe("Vetores e Matrizes", () => {
       ).resolves.toBe("antes ");
     });
 
-    test("Mostra a mensagem do Portugol Studio, com as explicações", async () => {
-      const codes = [
-        portugolInicio`
-          inteiro v[2]
-          v[5] = 1
-        `,
-        portugolInicio`
-          real notas[1]
-          escreva(notas[0 - 1])
-        `,
-        portugolInicio`
-          inteiro v[3]
-          inteiro i = 3
-          v[i]++
-        `,
-        portugolInicio`
-          inteiro m[2][3]
-          m[1][3] = 1
-        `,
-        portugolInicio`
-          inteiro m[1][1]
-          escreva(m[2][0])
-        `,
-      ];
+    test.each([
+      ["escrita depois do fim de um vetor", "inteiro v[2]\nv[5] = 1"],
+      ["leitura antes do início de um vetor", "real notas[1]\nescreva(notas[0 - 1])"],
+      ["incremento fora de um vetor", "inteiro v[3]\ninteiro i = 3\nv[i]++"],
+      ["escrita fora das colunas de uma matriz", "inteiro m[2][3]\nm[1][3] = 1"],
+      ["leitura fora das linhas de uma matriz", "inteiro m[1][1]\nescreva(m[2][0])"],
+    ])("%s mostra a mensagem do Portugol Studio, com as explicações", async (_nome, corpo) => {
+      const error = await runtimeError(portugolInicio`${corpo}`);
 
-      for (const code of codes) {
-        const message = await runtimeError(code);
-
-        expect(message).toMatch(/^Você tentou acessar um índice de vetor ou matriz inválido\.\n\n/);
-        expect(message).toContain("escreva(matriz[-1][-1])");
-      }
+      expect(error?.message).toMatch(/^Você tentou acessar um índice de vetor ou matriz inválido\.\n\n/);
+      expect(error?.message).toContain("escreva(matriz[-1][-1])");
     });
   });
 

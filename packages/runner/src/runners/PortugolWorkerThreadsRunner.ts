@@ -112,9 +112,7 @@ export class PortugolWorkerThreadsRunner extends IPortugolRunner {
               message: error.message,
               stack: error.stack,
             },
-            position: self.runtime?.line
-              ? { line: self.runtime.line, column: self.runtime.column + 1 }
-              : undefined,
+            position: self.runtime?.errorPosition(),
           });
         } finally {
           parentPort.postMessage({ type: "finish" });

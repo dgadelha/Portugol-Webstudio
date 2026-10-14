@@ -229,6 +229,26 @@ describe("Controle de fluxo", () => {
      * O Portugol Studio aceita um `pare` depois das chaves do caso, mas o ignora: a execução
      * continua no caso seguinte. O aviso só existe no Webstudio, que executa do mesmo jeito.
      */
+    test("pare depois das chaves do último caso não tem aviso: não há caso seguinte", () => {
+      expect(
+        analisar(portugol`
+          programa {
+            funcao inicio() {
+              inteiro x = 1
+              escolha (x) {
+                caso 1:
+                  escreva("um")
+                  pare
+                caso contrario: {
+                  escreva("outro")
+                } pare
+              }
+            }
+          }
+        `),
+      ).toMatchInlineSnapshot(`[]`);
+    });
+
     test("pare depois das chaves do caso tem aviso; sem chaves ou dentro delas, não", () => {
       expect(
         analisar(portugol`

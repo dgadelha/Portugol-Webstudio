@@ -1,6 +1,18 @@
 import { LiveAnnouncer } from "@angular/cdk/a11y";
 import { NgTemplateOutlet } from "@angular/common";
-import { ChangeDetectionStrategy, Component, computed, inject, input, linkedSignal, signal } from "@angular/core";
+import {
+  afterNextRender,
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  ElementRef,
+  inject,
+  Injector,
+  input,
+  linkedSignal,
+  signal,
+} from "@angular/core";
 import type { DebugPause, DebugVariable } from "@portugol-webstudio/runner";
 import { AngularSvgIconModule } from "angular-svg-icon";
 import { GoogleAnalyticsService } from "ngx-google-analytics";
@@ -33,6 +45,31 @@ import {
 export class DebugVariablesComponent {
   private announcer = inject(LiveAnnouncer);
   private gaService = inject(GoogleAnalyticsService);
+  private host = inject<ElementRef<HTMLElement>>(ElementRef);
+  private injector = inject(Injector);
+
+  constructor() {
+    // Com o foco numa chamada que terminou, o botão dela some e o foco iria para a página:
+    // ele vai para a chamada de agora, a primeira da lista
+    effect(() => {
+      this.pause();
+
+      const list = this.host.nativeElement.querySelector(".frame-list");
+
+      if (!list?.contains(document.activeElement)) {
+        return;
+      }
+
+      afterNextRender(
+        () => {
+          if (!list.isConnected || !list.contains(document.activeElement)) {
+            this.host.nativeElement.querySelector<HTMLElement>(".frame")?.focus();
+          }
+        },
+        { injector: this.injector },
+      );
+    });
+  }
 
   /**
    * A pausa atual, ou `null` com o programa executando ou sem depuração.
@@ -49,14 +86,6 @@ export class DebugVariablesComponent {
   /**
    * Todas as abas de código ficam montadas: os `id`s dos títulos levam o da aba.
    */
-  readonly idPrefix = input.required<string>();
-
-  readonly ids = computed(() => {
-    const prefix = this.idPrefix();
-
-    return { frames: `${prefix}-chamadas`, locals: `${prefix}-locais`, globals: `${prefix}-globais` };
-  });
-
   /**
    * A chamada escolhida na lista; a mais recente, a cada pausa nova.
    */

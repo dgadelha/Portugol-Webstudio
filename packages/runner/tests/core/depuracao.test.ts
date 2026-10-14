@@ -17,18 +17,21 @@ function transpile(code: string, debugSteps: boolean) {
 }
 
 /**
- * Executa o programa com a depuração e guarda cada pausa. A cada pausa, `resume` diz
- * como continuar (por padrão, o próximo passo).
+ * Executa o programa com a depuração e guarda cada pausa. A cada pausa, `onPause` pode
+ * mandar outros comandos ao runner, e `resume` diz como continuar (por padrão, o próximo
+ * passo).
  */
 function debug(
   code: string,
   {
     breakpoints = [],
     resume = () => "step",
+    onPause,
     inputs = [],
   }: {
     breakpoints?: number[];
     resume?: (pause: DebugPause, index: number) => Resume;
+    onPause?: (runner: PortugolWorkerThreadsRunner, index: number) => void;
     inputs?: string[];
   } = {},
 ) {
@@ -45,6 +48,7 @@ function debug(
       switch (event.type) {
         case "paused": {
           pauses.push(event.pause);
+          onPause?.(runner, pauses.length - 1);
           runner.debug({ type: resume(event.pause, pauses.length - 1) });
           break;
         }
@@ -310,6 +314,71 @@ describe("Depuração", () => {
 
     expect(pauses).toHaveLength(2);
     expect(Number(variable(pauses[1], "i")?.text)).toBeGreaterThan(0);
+  });
+
+  test("Pausar com o programa já pausado não faz o Continuar parar de novo", async () => {
+    const { pauses, output } = await debug(
+      portugol`
+        programa {
+          funcao inicio() {
+            escreva("a")
+            escreva("b")
+          }
+        }
+      `,
+      {
+        onPause: (runner, index) => {
+          if (index === 0) {
+            runner.debug({ type: "pause" });
+          }
+        },
+        resume: () => "continue",
+      },
+    );
+
+    expect(lines(pauses)).toEqual([3]);
+    expect(output).toBe("ab");
+  });
+
+  test("Um ponto de parada marcado com o programa continuando faz ele parar", async () => {
+    const runner = new PortugolWorkerThreadsRunner(
+      transpile(
+        portugol`
+          programa {
+            funcao inicio() {
+              inteiro i = 0
+              enquanto (verdadeiro) {
+                i++
+              }
+            }
+          }
+        `,
+        true,
+      ),
+    );
+
+    const pauses: DebugPause[] = [];
+
+    await new Promise<void>(resolve => {
+      runner.run({ debug: { breakpoints: [] } }).subscribe(event => {
+        if (event.type === "paused") {
+          pauses.push(event.pause);
+
+          if (pauses.length === 1) {
+            runner.debug({ type: "continue" });
+            setTimeout(() => {
+              runner.debug({ type: "breakpoints", lines: [5] });
+            }, 50);
+          } else {
+            runner.destroy(true);
+          }
+        } else if (event.type === "finish") {
+          resolve();
+        }
+      });
+    });
+
+    expect(lines(pauses)).toEqual([3, 5]);
   });
 
   test("Mostra globais, vetores, matrizes, cadeias, caracteres e lógicos", async () => {
@@ -683,6 +752,6 @@ describe("Depuração", () => {
           }
         }
       `),
-    ).rejects.toThrow();
+    ).rejects.toThrow("Foi efetuada uma divisão por zero.");
   });
 });

@@ -1,5 +1,5 @@
 import { portugolLibs } from "../libs/index.js";
-import { INVALID_INDEX_MESSAGE, STACK_OVERFLOW_MESSAGE } from "./messages.js";
+import { INVALID_INDEX_MESSAGE, INVALID_INPUT_MESSAGE, STACK_OVERFLOW_MESSAGE } from "./messages.js";
 
 export const portugolRuntime = /* javascript */ `
 class PortugolRuntime {
@@ -31,8 +31,10 @@ class PortugolRuntime {
     // Execução passo a passo: o programa traduzido com a opção de depuração chama o
     // 'step' antes de cada comando, e quem executa recebe as mensagens pelo 'send'.
     // As chamadas das funções do programa, da mais antiga para a mais recente, ficam
-    // em 'frames', cada uma com as variáveis dela.
+    // em 'frames', cada uma com as variáveis dela e um número que a distingue de outra
+    // chamada da mesma função.
     this.frames = [];
+    this.frameCount = 0;
     this.userFunctions = new Set();
 
     if (initScope.debug) {
@@ -60,6 +62,12 @@ class PortugolRuntime {
   position(line, column) {
     this.line = line;
     this.column = column;
+  }
+
+  // Onde aconteceu o erro de execução, contando do 1 como o Portugol Studio e o editor, ou
+  // nada antes do primeiro comando
+  errorPosition() {
+    return this.line ? { line: this.line, column: this.column + 1 } : undefined;
   }
 
   // Chamado no começo de cada função do programa, na depuração: a chamada já está em
@@ -194,6 +202,7 @@ class PortugolRuntime {
       column,
       frames: this.frames
         .map((frame) => ({
+          id: frame.id,
           name: frame.name,
           // Cada chamada começa com as variáveis globais: as locais são as outras, e os
           // parâmetros, mesmo um por referência que recebeu a global com o mesmo nome
@@ -312,7 +321,7 @@ class PortugolRuntime {
 
     // Na depuração, cada chamada de uma função do programa entra na pilha de chamadas
     // (uma função de biblioteca pode ter o nome de uma do programa, como 'Matematica.raiz')
-    const frame = this.debugState && !functionScope && this.userFunctions.has(name) ? { name, scope: null, params: null } : null;
+    const frame = this.debugState && !functionScope && this.userFunctions.has(name) ? { id: ++this.frameCount, name, scope: null, params: null } : null;
 
     if (frame) {
       this.frames.push(frame);
@@ -351,20 +360,10 @@ class PortugolRuntime {
     return ret;
   }
 
-  // Uma posição de um vetor ('v[i]'). Fora dele, o erro é o do Portugol Studio
+  // Uma posição de um vetor ('v[i]') ou de uma linha de matriz. Fora dele, o erro é o do
+  // Portugol Studio
   item(vector, index) {
     const item = vector.value[index];
-
-    if (item === undefined) {
-      throw new Error(${JSON.stringify(INVALID_INDEX_MESSAGE)});
-    }
-
-    return item;
-  }
-
-  // Uma posição de uma matriz ('m[i][j]'), com o mesmo erro do Portugol Studio fora dela
-  cell(matrix, row, column) {
-    const item = matrix.value[row]?.value[column];
 
     if (item === undefined) {
       throw new Error(${JSON.stringify(INVALID_INDEX_MESSAGE)});
@@ -485,17 +484,10 @@ class PortugolRuntime {
     return new PortugolVar("cadeia", result);
   }
 
-  // O Portugol Studio aceita apenas 'verdadeiro' e 'falso' para o tipo lógico;
-  // aqui a lista é maior para não penalizar quem digita na IDE
   // O que foi digitado num 'leia'. Um valor de outro tipo, ou nenhum valor, para o programa
   // com o erro do Portugol Studio
   readValue(type, text) {
-    const invalid = () =>
-      new Error(
-        "A entrada de dados do programa esperava um valor do tipo '" +
-          type +
-          "', mas nenhum valor foi informado ou o valor informado é de outro tipo",
-      );
+    const invalid = () => new Error(${JSON.stringify(INVALID_INPUT_MESSAGE)}.replace("%s", type));
 
     switch (type) {
       case "inteiro": {
@@ -519,6 +511,8 @@ class PortugolRuntime {
       }
 
       case "logico": {
+        // O Portugol Studio aceita apenas 'verdadeiro' e 'falso' para o tipo lógico;
+        // aqui a lista é maior para não penalizar quem digita na IDE
         const normalized = text.toLowerCase();
 
         if (!/^(sim|nao|não|true|false|verdadeiro|falso|s|y|n|0|1)$/.test(normalized)) {

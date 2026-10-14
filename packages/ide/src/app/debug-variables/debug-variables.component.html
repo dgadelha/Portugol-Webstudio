@@ -10,8 +10,8 @@
   </p>
 } @else {
   <div class="debug-layout">
-    <section class="debug-section frames" [attr.aria-labelledby]="ids().frames">
-      <h3 class="debug-title" [id]="ids().frames">Chamadas</h3>
+    <div class="debug-section frames">
+      <h3 class="debug-title">Chamadas</h3>
 
       <ol class="frame-list">
         @for (frame of current.frames; track $index) {
@@ -31,26 +31,26 @@
           </li>
         }
       </ol>
-    </section>
+    </div>
 
-    <section class="debug-section" [attr.aria-labelledby]="ids().locals">
-      <h3 class="debug-title" [id]="ids().locals">Variáveis</h3>
+    <div class="debug-section">
+      <h3 class="debug-title">Variáveis</h3>
 
       <ng-container
         [ngTemplateOutlet]="variablesTable"
         [ngTemplateOutletContext]="{ variables: frame()?.variables ?? [], changed: changedLocals(), list: 'locals' }"
       />
-    </section>
+    </div>
 
     @if (current.globals.length > 0) {
-      <section class="debug-section" [attr.aria-labelledby]="ids().globals">
-        <h3 class="debug-title" [id]="ids().globals">Globais</h3>
+      <div class="debug-section">
+        <h3 class="debug-title">Globais</h3>
 
         <ng-container
           [ngTemplateOutlet]="variablesTable"
           [ngTemplateOutletContext]="{ variables: current.globals, changed: changedGlobals(), list: 'globals' }"
         />
-      </section>
+      </div>
     }
   </div>
 }
@@ -73,7 +73,10 @@
                 />
               </summary>
               @if (opened().has(openKey)) {
-                <ng-container [ngTemplateOutlet]="collection" [ngTemplateOutletContext]="{ value: variable }" />
+                <ng-container
+                  [ngTemplateOutlet]="collection"
+                  [ngTemplateOutletContext]="{ value: variable, name: variable.name }"
+                />
               }
             </details>
           } @else {
@@ -121,10 +124,10 @@
   </code>
 </ng-template>
 
-<ng-template #collection let-value="value">
+<ng-template #collection let-value="value" let-name="name">
   @if (value.type === "matriz") {
     <div class="matrix-scroll">
-      <table class="matrix">
+      <table class="matrix" [attr.aria-label]="name">
         <thead>
           <tr>
             <td></td>

@@ -1,4 +1,4 @@
-import type { PortugolCodeDiagnostic } from "@portugol-webstudio/antlr";
+import type { EscolhaContext, PortugolCodeDiagnostic } from "@portugol-webstudio/antlr";
 import { CommonToken, Token } from "antlr4ng";
 
 import { obterBiblioteca, obterConstante, obterFunção, tipoDaBiblioteca } from "../bibliotecas/metadados.js";
@@ -1141,10 +1141,12 @@ export class AnalisadorSemântico {
     this.analisarListaBlocos(nó.instruções);
 
     // Sem chaves, o 'pare' é um dos comandos do caso; depois das chaves, ele é do próprio
-    // caso, e o Portugol Studio o ignora
+    // caso, e o Portugol Studio o ignora. No último caso, não há outro para onde continuar
     const pare = nó.ctx.pare();
+    // Na gramática, o pai de um 'caso' é sempre o 'escolha'
+    const casos = (nó.ctx.parent as EscolhaContext | null)?.caso() ?? [];
 
-    if (pare) {
+    if (pare && casos.at(-1) !== nó.ctx) {
       this.registrar(avisoPareDepoisDoCaso(pare));
     }
   }

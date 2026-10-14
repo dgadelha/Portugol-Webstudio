@@ -145,7 +145,8 @@ ngx-monaco-editor {
   display: flex;
   align-items: center;
   gap: 0.125rem;
-  margin-left: -6.5rem;
+  // Centralizada pela própria largura; o 'translate' se soma ao 'transform' do arrastar
+  translate: -50% 0;
   padding: 0.125rem 0.25rem 0.125rem 0;
   border: 1px solid var(--pws-border-strong);
   border-radius: var(--pws-radius);
@@ -161,7 +162,9 @@ ngx-monaco-editor {
   display: inline-flex;
   align-items: center;
   align-self: stretch;
-  padding: 0 0.125rem;
+  justify-content: center;
+  // O mínimo de 24px para um alvo de toque (WCAG 2.5.8)
+  min-width: 24px;
   color: var(--pws-fg-muted);
   cursor: grab;
 
@@ -196,7 +199,7 @@ ngx-monaco-editor {
     bottom: 30%;
     left: 1px;
     width: 10px;
-    background-color: var(--pws-accent);
+    background-color: var(--pws-accent-fg);
     clip-path: polygon(0 20%, 55% 20%, 55% 0, 100% 50%, 55% 100%, 55% 80%, 0 80%);
   }
 
@@ -219,7 +222,7 @@ ngx-monaco-editor {
     content: "";
     position: absolute;
     inset: 25% 15%;
-    background-color: var(--pws-accent);
+    background-color: var(--pws-accent-fg);
     clip-path: polygon(0 20%, 55% 20%, 55% 0, 100% 50%, 55% 100%, 55% 80%, 0 80%);
   }
 

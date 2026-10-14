@@ -80,3 +80,10 @@ export const STACK_OVERFLOW_MESSAGE = [
   "}",
   "",
 ].join("\n");
+
+/**
+ * Um 'leia' que recebeu um valor de outro tipo, ou nenhum valor (`ErroValorEntradaInvalido`),
+ * com `%s` no lugar do tipo esperado.
+ */
+export const INVALID_INPUT_MESSAGE =
+  "A entrada de dados do programa esperava um valor do tipo '%s', mas nenhum valor foi informado ou o valor informado é de outro tipo";

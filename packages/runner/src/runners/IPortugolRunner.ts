@@ -36,9 +36,10 @@ export type DebugPause = {
   line: number;
   column: number;
   /**
-   * As funções em andamento, da chamada mais recente para a mais antiga.
+   * As funções em andamento, da chamada mais recente para a mais antiga. O `id` distingue
+   * duas chamadas da mesma função, como `f(1)` e depois `f(2)`.
    */
-  frames: Array<{ name: string; variables: DebugVariable[] }>;
+  frames: Array<{ id: number; name: string; variables: DebugVariable[] }>;
   globals: DebugVariable[];
 };
 

@@ -75,18 +75,13 @@ export function summaryText(value: DebugValue): string {
 }
 
 /**
- * As variáveis da mesma chamada na pausa anterior. As chamadas vêm da mais recente para a
- * mais antiga: a mesma chamada é a que está na mesma profundidade, contada do fim.
+ * As variáveis da mesma chamada na pausa anterior, ou `null` se ela não estava lá: outra
+ * chamada da mesma função, como `f(2)` depois de `f(1)`, começa do zero.
  */
 export function previousFrameVariables(pause: DebugPause, previous: DebugPause | null, index: number) {
-  if (!previous) {
-    return null;
-  }
+  const id = pause.frames[index]?.id;
 
-  const depth = pause.frames.length - 1 - index;
-  const previousFrame = previous.frames[previous.frames.length - 1 - depth];
-
-  return previousFrame?.name === pause.frames[index]?.name ? previousFrame.variables : null;
+  return previous?.frames.find(frame => frame.id === id)?.variables ?? null;
 }
 
 /**
@@ -125,4 +120,47 @@ export function variableChanges(variables: DebugVariable[], previous: DebugVaria
   }
 
   return changes;
+}
+
+/**
+ * As posições de um vetor ou matriz que mudaram, com o valor de antes: `[[0], …]` num vetor,
+ * `[[1, 2], …]` numa matriz.
+ */
+function changedPositions(
+  value: DebugValue,
+  before: DebugValue,
+  path: number[] = [],
+): Array<[number[], DebugValue, DebugValue]> {
+  if (!value.items || !before.items) {
+    return sameValue(value, before) ? [] : [[path, before, value]];
+  }
+
+  return value.items.flatMap((item, index) => {
+    const old = before.items![index];
+
+    return old
+      ? changedPositions(item, old, [...path, index])
+      : [[[...path, index], item, item] as [number[], DebugValue, DebugValue]];
+  });
+}
+
+/**
+ * Como dizer uma mudança a um leitor de tela: `x passou de 4 para 5`, `x recebeu 5` (antes
+ * sem valor), `x vale 5` ou `x sem valor` (variável nova). Num vetor ou matriz, só as
+ * posições que mudaram, como `notas[0] passou de 0.0 para 7.5`.
+ */
+export function describeChange({ variable, before }: VariableChange): string[] {
+  const shown = (value: DebugValue) => (value.text === null ? "sem valor" : summaryText(value));
+
+  if (!before) {
+    return [variable.text === null ? `${variable.name} sem valor` : `${variable.name} vale ${shown(variable)}`];
+  }
+
+  return changedPositions(variable, before).map(([path, old, value]) => {
+    const name = variable.name + path.map(index => `[${index}]`).join("");
+
+    return old.text === null
+      ? `${name} recebeu ${shown(value)}`
+      : `${name} passou de ${shown(old)} para ${shown(value)}`;
+  });
 }

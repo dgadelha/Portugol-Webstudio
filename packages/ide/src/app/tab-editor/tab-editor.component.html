@@ -246,7 +246,13 @@
             [cdkDragFreeDragPosition]="debugToolbarPosition()"
             (cdkDragEnded)="onDebugToolbarMoved($event)"
           >
-            <span class="debug-toolbar-grip" cdkDragHandle appTooltip="Arrastar" appTooltipPosition="below">
+            <span
+              class="debug-toolbar-grip"
+              cdkDragHandle
+              appTooltip="Arrastar (dois cliques voltam ao centro)"
+              appTooltipPosition="below"
+              (dblclick)="resetDebugToolbar()"
+            >
               <svg-icon src="assets/mdi/drag-vertical.svg" aria-hidden="true" />
             </span>
 
@@ -365,7 +371,7 @@
             </span>
           } @else if (executor.waitingForInput) {
             <span class="run-status waiting"><span class="dot"></span>Aguardando entrada</span>
-          } @else if (executor.running) {
+          } @else if (executor.running && !stepInFlight()) {
             <span class="run-status running"><span class="dot"></span>Executando</span>
           }
         </span>
@@ -476,7 +482,6 @@
         [pause]="debugPause()"
         [previousPause]="previousDebugPause()"
         [debugging]="debugging"
-        [idPrefix]="ids().variablesPanel"
       />
     </section>
   </as-split-area>

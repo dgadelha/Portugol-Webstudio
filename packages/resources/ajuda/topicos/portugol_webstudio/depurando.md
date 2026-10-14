@@ -36,7 +36,7 @@ O botão **Copiar a declaração**, depois de cada valor, copia a linha inteira,
 
 ## Depuração avançada
 
-Ligando a **Depuração avançada**, na seção **Execução** das [configurações](configuracoes.md), a execução passo a passo ganha mais botões e os pontos de parada. Os botões ficam numa barra flutuante, no alto do código, e não na barra de ações. A barra pode ser arrastada pela alça à esquerda para qualquer lugar do editor, e o Webstudio lembra onde ela ficou. Com o teclado, as setas andam entre os botões dela. O editor também ganha uma margem à esquerda dos números das linhas, com uma seta amarela na linha em que o programa está pausado e os pontos de parada.
+Ligando a **Depuração avançada**, na seção **Execução** das [configurações](configuracoes.md), a execução passo a passo ganha mais botões e os pontos de parada. Os botões ficam numa barra flutuante, no alto do código, e não na barra de ações. A barra pode ser arrastada pela alça à esquerda para qualquer lugar do editor, e o Webstudio lembra onde ela ficou. Dois cliques na alça a levam de volta ao centro. Com o teclado, as setas andam entre os botões dela. O editor também ganha uma margem à esquerda dos números das linhas, com uma seta amarela na linha em que o programa está pausado e os pontos de parada.
 
 | Botão          | Atalho  | O que faz                                                                                   |
 | -------------- | ------- | ------------------------------------------------------------------------------------------- |
@@ -61,4 +61,4 @@ A cada pausa, o leitor de tela anuncia a linha, a função quando ela muda e o q
 
 ## Terminar
 
-O programa sai da depuração quando chega ao fim ou quando você clica em **Parar**.
+O programa sai da depuração quando chega ao fim, quando acontece um erro ou quando você clica em **Parar**. O painel volta para a aba **Saída**, com o que o programa escreveu e o erro, se houver, e o leitor de tela anuncia o fim.

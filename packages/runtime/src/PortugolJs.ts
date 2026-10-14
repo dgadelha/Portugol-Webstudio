@@ -217,10 +217,7 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
 
     const variable = `scope.variables["${name}"]`;
     const positions = indices.map(index => `${this.visit(index.expressao())?.trim()}.value`);
-    const reference =
-      positions.length === 0
-        ? variable
-        : `runtime.${positions.length === 1 ? "item" : "cell"}(${variable}, ${positions.join(", ")})`;
+    const reference = positions.reduce((item, position) => `runtime.item(${item}, ${position})`, variable);
 
     // O operando conserva os índices, para que `v[i]++` vire `v[i] + 1`
     const tree =
@@ -426,21 +423,12 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     const [abre, fecha] = this.leitura();
 
     sb.append(this.DEBUG(`visitReferenciaMatriz`, ctx));
-    sb.append(this.PAD(), abre, `runtime.cell(`, this.acesso(ctx), `,`, `\n`);
 
-    this.pad++;
+    // 'm[i][j]' é a posição 'j' da linha 'i', com o mesmo erro fora da matriz
+    const positions = ctx.indiceArray().map(idx => `${this.visit(idx.expressao())?.trim()}.value`);
+    const reference = positions.reduce((item, position) => `runtime.item(${item}, ${position})`, this.acesso(ctx));
 
-    sb.append(
-      ctx
-        .indiceArray()
-        .map(idx => `${this.visit(idx.expressao())?.trimEnd()}.value`)
-        .join(`,\n`),
-      `\n`,
-    );
-
-    this.pad--;
-
-    sb.append(this.PAD(), `)`, fecha, `\n`);
+    sb.append(this.PAD(), abre, reference, fecha, `\n`);
 
     return sb.toString();
   }
@@ -1583,8 +1571,20 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     const sb = new StringBuilder();
 
     sb.append(this.DEBUG(`visitIncrementoPara`, ctx));
-    sb.append(super.visitChildren(ctx));
-    // sb.append(`throw new Error("visitIncrementoPara não implementado")`);
+
+    // O incremento executa depois do corpo: um erro nele é na linha do 'para', e não na do
+    // último comando do corpo. Sem passo da depuração, que já para na condição logo depois
+    const paraStart = ctx.parent instanceof ParaContext ? ctx.parent.start : ctx.start;
+    const increment = super.visitChildren(ctx)?.trimEnd();
+
+    // Um 'para' sem incremento, como 'para (i = 0; i < 2; )'
+    if (!increment?.trim()) {
+      return sb.toString();
+    }
+
+    sb.append(this.PAD(), `(${this.POSITION(paraStart)},\n`);
+    sb.append(increment, `\n`);
+    sb.append(this.PAD(), `)`, `\n`);
 
     return sb.toString();
   }

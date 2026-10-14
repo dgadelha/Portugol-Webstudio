@@ -41,7 +41,7 @@ import { EMPTY, Subscription, debounceTime, fromEventPattern, mergeMap, startWit
 import { GraphicsRenderer, IGraphicsRendererComponent } from "../../renderer";
 import { isMacintosh, settings } from "../../settings";
 import { IExtendedWindowApi } from "../../types";
-import { previousFrameVariables, summaryText, variableChanges } from "../debug-variables/debug-values";
+import { describeChange, previousFrameVariables, variableChanges } from "../debug-variables/debug-values";
 import { DebugVariablesComponent } from "../debug-variables/debug-variables.component";
 import { DialogRendererComponent, RendererDialogResult } from "../dialog-renderer/dialog-renderer.component";
 import { ResponsiveService } from "../responsive.service";
@@ -237,6 +237,12 @@ export class TabEditorComponent implements OnInit, OnDestroy {
   readonly paused = signal(false);
 
   /**
+   * Um passo (Próximo passo, Pular função ou Sair da função) em andamento: o status não diz
+   * "Executando" entre duas pausas, senão o leitor de tela o anunciaria a cada passo.
+   */
+  readonly stepInFlight = signal(false);
+
+  /**
    * Onde a barra flutuante da depuração avançada foi deixada, em relação ao alto e ao
    * meio do editor. Fica guardada neste navegador e vale para todas as abas.
    */
@@ -277,6 +283,16 @@ export class TabEditorComponent implements OnInit, OnDestroy {
    */
   private debuggingInEditor?: monaco.editor.IContextKey<boolean>;
 
+  // Na saída, os atalhos da depuração valem com o Option no Mac, menos esperando um `leia`,
+  // em que o Option digita os acentos e o "ç"
+  private debuggingInOutput?: monaco.editor.IContextKey<boolean>;
+
+  // Mantém a barra flutuante dentro do editor quando ele muda de tamanho durante a depuração
+  private debugToolbarFit?: ResizeObserver;
+
+  // A primeira linha do último erro de execução, para anunciar o fim da depuração
+  private lastErrorAnnouncement: string | null = null;
+
   graphicsRenderer = new GraphicsRenderer(this.executor);
   graphicsRendererModal: DialogRef<RendererDialogResult, DialogRendererComponent> | null = null;
 
@@ -295,7 +311,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     // A margem dos pontos de parada e da seta da linha em que a depuração parou: só na
     // depuração avançada (veja o `executionAdvancedDebugging`)
     glyphMargin: false,
-    readOnlyMessage: { value: "Pare a depuração para editar o código." },
+    readOnlyMessage: { value: "O código não pode ser editado durante a depuração." },
     // Com a detecção, um arquivo já indentado ignoraria o tamanho da tabulação
     // escolhido nas configurações.
     detectIndentation: false,
@@ -439,6 +455,8 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     // uma entrada: é com o foco nela que o que se digita chega ao `leia`.
     this._stdOut$.add(
       this.executor.waitingForInput$.subscribe(waiting => {
+        this.updateDebugContextKeys();
+
         if (waiting) {
           // Na depuração, a próxima pausa volta para as variáveis, se era nelas que o painel estava
           if (this.debugging && this.panelView() === "variables") {
@@ -479,6 +497,10 @@ export class TabEditorComponent implements OnInit, OnDestroy {
               { value: Math.round(event.time / 1000), ...(debug && this.debugFinishParams()) },
             );
 
+            if (debug) {
+              this.showDebugEnd(event.stopped);
+            }
+
             this.endDebugging();
 
             const rendererModal = this.graphicsRendererModal;
@@ -493,6 +515,11 @@ export class TabEditorComponent implements OnInit, OnDestroy {
 
           case "error": {
             this.runFailed = true;
+            // "Erro na linha 14: Foi efetuada uma divisão por zero.", só com a primeira linha
+            // da mensagem, que pode seguir com explicações e exemplos
+            const where = event.position ? `Erro na linha ${event.position.line}` : "Erro";
+
+            this.lastErrorAnnouncement = `${where}: ${event.error.message.split("\n", 1)[0]}`;
 
             if (event.position) {
               this.showErrorLine(event.position.line, event.error.message);
@@ -515,6 +542,9 @@ export class TabEditorComponent implements OnInit, OnDestroy {
               event.errors[0]?.code ?? "sintaxe",
               event.errors.length,
             );
+
+            // Sem o programa, a depuração que começou não recebe o fim
+            this.endDebugging();
 
             break;
           }
@@ -622,7 +652,22 @@ export class TabEditorComponent implements OnInit, OnDestroy {
         // valendo escondidos
         if (!advanced) {
           this.clearBreakpoints();
+        } else if (this.debugging) {
+          // A barra flutuante aparece no meio da depuração, talvez fora do editor
+          afterNextRender(
+            () => {
+              this.fitDebugToolbar();
+            },
+            { injector: this.injector },
+          );
         }
+      }),
+    );
+
+    // A barra pode ser movida em outra aba
+    this._settings$.add(
+      this.settingsService.observe(settings.debugToolbarPosition).subscribe(position => {
+        this.debugToolbarPosition.set(position);
       }),
     );
 
@@ -637,6 +682,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.firstLayout?.disconnect();
+    this.debugToolbarFit?.disconnect();
     this.executor.stop();
     this.worker.abortTranspilation();
     this._code$?.unsubscribe();
@@ -681,6 +727,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
       this.gaService.event("editor_start_execution", "Editor", origin);
     }
     this.runFailed = false;
+    this.lastErrorAnnouncement = null;
     this.clearErrorLine();
     this.showPanel(debug ? "variables" : "output");
     // O que ficou no campo de toque de uma execução interrompida não pode
@@ -941,6 +988,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
   onStdOutEditorInit(editor: monaco.editor.IStandaloneCodeEditor) {
     this.initShortcuts(editor);
     this.stdOutEditor = editor;
+    this.debuggingInOutput = editor.createContextKey("pwsDepurando", false);
 
     editor.onKeyDown(e => {
       if (!this.executor.waitingForInput) {
@@ -1139,18 +1187,26 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     this.debugging = true;
     this.debugCounts = this.emptyDebugCounts();
 
-    // A barra pode ter sido movida em outra aba desde que esta abriu
-    this.debugToolbarPosition.set(this.settingsService.get(settings.debugToolbarPosition));
-
-    // A posição guardada pode ser de uma tela maior: a barra volta para dentro do editor
+    // A posição guardada pode ser de uma tela maior: a barra volta para dentro do editor, e
+    // continua dentro quando ele muda de tamanho (celular girado, janela menor, o código gerado
+    // aberto ao lado)
     afterNextRender(
       () => {
         this.fitDebugToolbar();
+
+        const area = this.host.nativeElement.querySelector(".code-editor-area");
+
+        if (area) {
+          this.debugToolbarFit = new ResizeObserver(() => {
+            this.fitDebugToolbar();
+          });
+          this.debugToolbarFit.observe(area);
+        }
       },
       { injector: this.injector },
     );
 
-    this.debuggingInEditor?.set(true);
+    this.updateDebugContextKeys();
     this.lastDebugPause = null;
     this.previousDebugPause.set(null);
     this.debugPause.set(null);
@@ -1167,11 +1223,14 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     const host = this.host.nativeElement;
 
     if (host.querySelector(".debug-toolbar")?.contains(document.activeElement)) {
-      focusAfterRender(this.injector, () => host.querySelector<HTMLElement>(".debug-button"));
+      focusAfterRender(this.injector, () => this.rovingTarget(".activity-button", ".debug-button"));
     }
 
     this.debugging = false;
-    this.debuggingInEditor?.set(false);
+    this.stepInFlight.set(false);
+    this.debugToolbarFit?.disconnect();
+    this.debugToolbarFit = undefined;
+    this.updateDebugContextKeys();
     this.returnToVariables = false;
     this.paused.set(false);
     this.lastDebugPause = null;
@@ -1205,7 +1264,13 @@ export class TabEditorComponent implements OnInit, OnDestroy {
 
     this.showCurrentLine(pause.line);
     this.codeEditor?.revealLineInCenterIfOutsideViewport(pause.line);
-    void this.announcer.announce(this.pauseAnnouncement(pause, previous), "polite");
+    this.stepInFlight.set(false);
+
+    // Uma pausa numa aba que não está à vista (com o Continuar, a pessoa pode ter trocado
+    // de aba) não interrompe o que ela estiver ouvindo
+    if (this.isActive()) {
+      void this.announcer.announce(this.pauseAnnouncement(pause, previous), "polite");
+    }
   }
 
   private emptyDebugCounts(): Record<DebugResume | "pause", number> {
@@ -1229,6 +1294,68 @@ export class TabEditorComponent implements OnInit, OnDestroy {
       pauses: this.debugCounts.pause,
       breakpoints: this.breakpointLines().length,
     };
+  }
+
+  /**
+   * Os atalhos da depuração com o Option, no Mac: no código, durante toda a depuração; na
+   * saída, menos esperando um `leia`.
+   */
+  private updateDebugContextKeys() {
+    this.debuggingInEditor?.set(this.debugging);
+    this.debuggingInOutput?.set(this.debugging && !this.executor.waitingForInput);
+  }
+
+  /**
+   * O fim de uma depuração, que senão passaria em silêncio: o painel sai das variáveis, que
+   * ficam vazias, para a saída, com o fim do programa ou o erro, e o leitor de tela anuncia.
+   */
+  private showDebugEnd(stopped: boolean) {
+    if (this.panelView() === "variables") {
+      const focusInPanel = this.panelTab(this.ids().variablesPanel)?.contains(document.activeElement);
+
+      this.showPanel("output");
+
+      if (focusInPanel) {
+        focusAfterRender(this.injector, () => this.panelTab(this.ids().outputTab));
+      }
+    }
+
+    if (this.isActive()) {
+      const message = stopped
+        ? "Programa interrompido."
+        : this.runFailed
+          ? (this.lastErrorAnnouncement ?? "Erro.")
+          : "Programa finalizado.";
+
+      void this.announcer.announce(message, "polite");
+    }
+  }
+
+  /**
+   * Um item de um grupo com foco itinerante, que passa a ser o da ordem do Tab, como se a
+   * pessoa tivesse chegado nele pelas setas.
+   */
+  private rovingTarget(itemSelector: string, targetSelector: string) {
+    const host = this.host.nativeElement;
+    const target = host.querySelector<HTMLElement>(targetSelector);
+
+    for (const item of host.querySelectorAll<HTMLElement>(itemSelector)) {
+      item.tabIndex = item === target ? 0 : -1;
+    }
+
+    return target;
+  }
+
+  /**
+   * Dois cliques na alça levam a barra flutuante de volta ao lugar de sempre, no alto do
+   * editor: uma alternativa a arrastar.
+   */
+  resetDebugToolbar() {
+    const position = { x: 0, y: 0 };
+
+    this.debugToolbarPosition.set(position);
+    this.storage.store(settings.debugToolbarPosition.key, position);
+    this.gaService.event("debug_toolbar_move", "Depuração", "centralizar");
   }
 
   onDebugToolbarMoved(event: CdkDragEnd) {
@@ -1269,27 +1396,22 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     const parts = [`Linha ${pause.line}`];
     const frame = pause.frames[0];
 
-    // Uma função pode dar lugar a outra na mesma profundidade, entre duas pausas do Continuar
-    if (
-      frame &&
-      (!previous || previous.frames.length !== pause.frames.length || previous.frames[0]?.name !== frame.name)
-    ) {
+    // Uma chamada nova, mesmo da mesma função (como na recursão ou entre duas pausas do
+    // Continuar), diz a função
+    if (frame && previous?.frames[0]?.id !== frame.id) {
       parts.push(`na função ${frame.name}`);
     }
 
     const changes = [
       ...variableChanges(frame?.variables ?? [], previousFrameVariables(pause, previous, 0)),
       ...variableChanges(pause.globals, previous?.globals ?? null),
-    ];
+    ].flatMap(change => describeChange(change));
 
-    const described = changes.slice(0, 3).map(({ variable, before }) => {
-      return before
-        ? `${variable.name} passou de ${summaryText(before)} para ${summaryText(variable)}`
-        : `${variable.name} vale ${summaryText(variable)}`;
-    });
+    const described = changes.slice(0, 3);
+    const more = changes.length - 3;
 
-    if (changes.length > 3) {
-      described.push(`e mais ${changes.length - 3} mudanças`);
+    if (more > 0) {
+      described.push(`e mais ${more} ${more === 1 ? "mudança" : "mudanças"}`);
     }
 
     return [parts.join(", "), ...described].join(". ") + ".";
@@ -1308,6 +1430,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     }
 
     this.paused.set(false);
+    this.stepInFlight.set(type !== "continue");
 
     // Continuando, o programa pode demorar até a próxima pausa: a linha e as variáveis
     // de agora não valem mais. Num passo, ficam até a próxima pausa, sem piscar.
@@ -1541,7 +1664,9 @@ export class TabEditorComponent implements OnInit, OnDestroy {
       // abriria o teclado virtual à toa. Com a saída escondida (painel
       // recolhido, lista de problemas ou outra aba em foco), focá-la tiraria o
       // foco do que a pessoa estiver usando.
-      if (!this.coarsePointer() && this.outputVisible()) {
+      //
+      // Na depuração, o foco fica nos botões dos passos, menos num `leia`.
+      if (!this.coarsePointer() && this.outputVisible() && (!this.debugging || this.executor.waitingForInput)) {
         editor.focus();
       }
     }

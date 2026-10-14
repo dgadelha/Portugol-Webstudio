@@ -1,37 +1,6 @@
-import { PortugolCodeChecker } from "@portugol-webstudio/parser";
-import { PortugolJs } from "@portugol-webstudio/runtime";
 import { describe, expect, test } from "vitest";
-import { PortugolWorkerThreadsRunner } from "../../src";
 import { portugol, portugolInicio } from "../helpers/code";
-import { runPortugolCode } from "../helpers/runner";
-
-/**
- * A mensagem do erro de execução de um programa que lê `input` num `leia`.
- */
-function inputError(code: string, input: string) {
-  const runner = new PortugolWorkerThreadsRunner(new PortugolJs().visit(PortugolCodeChecker.checkCode(code).tree)!);
-
-  return new Promise<string | undefined>(resolve => {
-    runner.run().subscribe(event => {
-      switch (event.type) {
-        case "stdIn": {
-          runner.stdIn.next(input);
-          break;
-        }
-
-        case "error": {
-          resolve(event.error.message);
-          break;
-        }
-
-        case "finish": {
-          resolve(undefined);
-          break;
-        }
-      }
-    });
-  });
-}
+import { runPortugolCode, runtimeError } from "../helpers/runner";
 
 describe("Entrada e Saída", () => {
   describe("escreva", () => {
@@ -429,14 +398,15 @@ describe("Entrada e Saída", () => {
       ["caracter", ""],
     ])("%s com %j para o programa com o erro do Portugol Studio", async (tipo, entrada) => {
       await expect(
-        inputError(
+        runtimeError(
           portugolInicio`
             ${tipo} x
             leia(x)
           `,
-          entrada,
+          { inputs: [entrada] },
         ),
-      ).resolves.toBe(
+      ).resolves.toHaveProperty(
+        "message",
         `A entrada de dados do programa esperava um valor do tipo '${tipo}', mas nenhum valor foi informado ou o valor informado é de outro tipo`,
       );
     });

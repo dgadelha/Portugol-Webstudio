@@ -1,9 +1,6 @@
-import { PortugolCodeChecker } from "@portugol-webstudio/parser";
-import { PortugolJs } from "@portugol-webstudio/runtime";
 import { describe, expect, test } from "vitest";
-import { PortugolWorkerThreadsRunner } from "../../src";
 import { portugol } from "../helpers/code";
-import { runPortugolCode } from "../helpers/runner";
+import { runPortugolCode, runtimeError } from "../helpers/runner";
 
 // As funções auxiliares são as mesmas em todos os testes deste arquivo, então
 // cada teste declara apenas o corpo do inicio()
@@ -231,17 +228,7 @@ describe("Funções", () => {
         }
       `;
 
-      const byteCode = new PortugolJs().visit(PortugolCodeChecker.checkCode(código).tree)!;
-      const runner = new PortugolWorkerThreadsRunner(byteCode);
-      const erro = await new Promise<Error | undefined>(resolve => {
-        runner.run().subscribe(event => {
-          if (event.type === "error") {
-            resolve(event.error);
-          } else if (event.type === "finish") {
-            resolve(undefined);
-          }
-        });
-      });
+      const erro = await runtimeError(código);
 
       expect(erro?.message).toMatch(
         /^Ocorreu um estouro de pilha de memória no programa\.\nIsto significa que existe alguma função do programa que está sendo chamada de forma recursiva sem uma condição de parada\.\n\n/,

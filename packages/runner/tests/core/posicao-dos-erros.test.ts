@@ -1,31 +1,7 @@
-import { PortugolCodeChecker } from "@portugol-webstudio/parser";
-import { PortugolJs } from "@portugol-webstudio/runtime";
 import { describe, expect, test } from "vitest";
 
-import { ErrorPosition, PortugolWorkerThreadsRunner } from "../../src";
 import { portugol } from "../helpers/code";
-
-/**
- * A mensagem e a posição do erro de execução do programa. Com `debugSteps`, executa com a
- * depuração, sem parar em nenhum comando.
- */
-function runtimeError(code: string, debugSteps = false) {
-  const js = new PortugolJs();
-
-  js.debugSteps = debugSteps;
-
-  const runner = new PortugolWorkerThreadsRunner(js.visit(PortugolCodeChecker.checkCode(code).tree)!);
-
-  return new Promise<{ message: string; position?: ErrorPosition } | undefined>(resolve => {
-    runner.run(debugSteps ? { debug: { breakpoints: [99] } } : {}).subscribe(event => {
-      if (event.type === "error") {
-        resolve({ message: event.error.message, position: event.position });
-      } else if (event.type === "finish") {
-        resolve(undefined);
-      }
-    });
-  });
-}
+import { runtimeError } from "../helpers/runner";
 
 /**
  * Como no Portugol Studio, um erro de execução diz a linha e a coluna do começo do comando
@@ -81,7 +57,7 @@ describe("Posição dos erros de execução", () => {
     ).resolves.toMatchObject({ position: { line: 8, column: 5 } });
   });
 
-  test("Na condição de um laço, aponta o laço", async () => {
+  test("Na condição de um enquanto, aponta o enquanto", async () => {
     await expect(
       runtimeError(portugol`
         programa {
@@ -95,7 +71,24 @@ describe("Posição dos erros de execução", () => {
         }
       `),
     ).resolves.toMatchObject({ position: { line: 5, column: 5 } });
+  });
 
+  test("Na condição de um para, depois de algumas voltas, aponta o para", async () => {
+    await expect(
+      runtimeError(portugol`
+        programa {
+          funcao inicio() {
+            inteiro v[2] = {1, 2}
+            para (inteiro i = 0; v[i] > 0; i++) {
+              escreva(i)
+            }
+          }
+        }
+      `),
+    ).resolves.toMatchObject({ position: { line: 4, column: 5 } });
+  });
+
+  test("Na inicialização e no incremento de um para, aponta o para", async () => {
     await expect(
       runtimeError(portugol`
         programa {
@@ -108,6 +101,35 @@ describe("Posição dos erros de execução", () => {
         }
       `),
     ).resolves.toMatchObject({ position: { line: 4, column: 5 } });
+
+    await expect(
+      runtimeError(portugol`
+        programa {
+          funcao inicio() {
+            inteiro v[2], i
+            para (i = 0; i < 2; v[i + 5] = 1) {
+              escreva(i)
+            }
+          }
+        }
+      `),
+    ).resolves.toMatchObject({ position: { line: 4, column: 5 } });
+  });
+
+  test("Na condição de um faca-enquanto, aponta a condição", async () => {
+    await expect(
+      runtimeError(portugol`
+        programa {
+          funcao inicio() {
+            inteiro v[2] = {1, 2}
+            inteiro i = 0
+            faca {
+              i++
+            } enquanto (v[i] > 0)
+          }
+        }
+      `),
+    ).resolves.toMatchObject({ position: { line: 7, column: 17 } });
   });
 
   test("Numa declaração global, aponta a declaração", async () => {
@@ -136,7 +158,7 @@ describe("Posição dos erros de execução", () => {
             }
           }
         `,
-        true,
+        { debugSteps: true },
       ),
     ).resolves.toMatchObject({ position: { line: 4, column: 5 } });
   });
