@@ -6,8 +6,9 @@ const EDITÁVEIS = new Set(["INPUT", "TEXTAREA", "SELECT"]);
  *
  * - quando alguém já o tratou: o editor de código tem os próprios atalhos
  *   (Ctrl+Enter, Ctrl+S…) e consome o evento;
- * - quando vem de um campo de texto (os campos do Monaco também são
- *   `<textarea>`), em que as teclas são do campo;
+ * - quando vem de um campo de texto ou de um editor do Monaco, em que as teclas são
+ *   do campo (no Chrome, o Monaco recebe o texto num `<div>` com o `EditContext`, e não
+ *   num `<textarea>`): o editor de código registra os atalhos que valem nele;
  * - quando vem de um diálogo ou menu, que ficam por cima do IDE.
  */
 export function atalhoDoEvento(event: KeyboardEvent): string | undefined {
@@ -17,6 +18,7 @@ export function atalhoDoEvento(event: KeyboardEvent): string | undefined {
     event.defaultPrevented ||
     EDITÁVEIS.has(alvo.nodeName) ||
     alvo.isContentEditable ||
+    alvo.closest(".monaco-editor") ||
     alvo.closest(".cdk-overlay-container")
   ) {
     return undefined;
