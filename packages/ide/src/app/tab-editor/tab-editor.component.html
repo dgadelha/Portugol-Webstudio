@@ -246,15 +246,19 @@
             [cdkDragFreeDragPosition]="debugToolbarPosition()"
             (cdkDragEnded)="onDebugToolbarMoved($event)"
           >
-            <span
-              class="debug-toolbar-grip"
+            <button
+              type="button"
+              class="debug-toolbar-grip debug-toolbar-button"
+              tabindex="-1"
               cdkDragHandle
-              appTooltip="Arrastar (dois cliques voltam ao centro)"
+              aria-label="Voltar a barra ao lugar inicial"
+              appTooltip="Arrastar (dois cliques voltam ao lugar inicial)"
               appTooltipPosition="below"
+              (click)="$event.detail === 0 && resetDebugToolbar()"
               (dblclick)="resetDebugToolbar()"
             >
               <svg-icon src="assets/mdi/drag-vertical.svg" aria-hidden="true" />
-            </span>
+            </button>
 
             @let isPaused = paused();
             <button

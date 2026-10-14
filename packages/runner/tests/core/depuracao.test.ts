@@ -1,6 +1,6 @@
 import { PortugolCodeChecker } from "@portugol-webstudio/parser";
 import { PortugolJs } from "@portugol-webstudio/runtime";
-import { describe, expect, test } from "vitest";
+import { describe, expect, onTestFinished, test } from "vitest";
 
 import { DebugCommand, DebugPause, PortugolWorkerThreadsRunner } from "../../src";
 import { portugol } from "../helpers/code";
@@ -316,6 +316,33 @@ describe("Depuração", () => {
     expect(Number(variable(pauses[1], "i")?.text)).toBeGreaterThan(0);
   });
 
+  test("Cada chamada tem um número, o mesmo durante a chamada e outro na seguinte", async () => {
+    const { pauses } = await debug(portugol`
+      programa {
+        funcao f(inteiro n) {
+          inteiro m = n
+          escreva(m)
+        }
+
+        funcao inicio() {
+          f(1)
+          f(2)
+        }
+      }
+    `);
+
+    const calls = pauses.filter(pause => pause.frames[0]?.name === "f");
+    const first = calls.filter(pause => variable(pause, "n")?.text === "1").map(pause => pause.frames[0].id);
+    const second = calls.filter(pause => variable(pause, "n")?.text === "2").map(pause => pause.frames[0].id);
+
+    expect(first).toHaveLength(2);
+    expect(new Set(first).size).toBe(1);
+    expect(new Set(second).size).toBe(1);
+    expect(first[0]).not.toBe(second[0]);
+    // O inicio continua o mesmo nas duas chamadas
+    expect(new Set(calls.map(pause => pause.frames[1].id)).size).toBe(1);
+  });
+
   test("Pausar com o programa já pausado não faz o Continuar parar de novo", async () => {
     const { pauses, output } = await debug(
       portugol`
@@ -358,6 +385,11 @@ describe("Depuração", () => {
     );
 
     const pauses: DebugPause[] = [];
+
+    // Se o ponto de parada não valer, o laço não termina: o runner para com o teste
+    onTestFinished(() => {
+      runner.destroy(true);
+    });
 
     await new Promise<void>(resolve => {
       runner.run({ debug: { breakpoints: [] } }).subscribe(event => {

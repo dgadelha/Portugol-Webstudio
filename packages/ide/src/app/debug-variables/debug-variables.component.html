@@ -1,7 +1,7 @@
 @let current = pause();
 
 @if (!current) {
-  <p class="debug-empty">
+  <p class="debug-empty" tabindex="-1">
     @if (debugging()) {
       O programa está executando. As variáveis aparecem quando ele pausar.
     } @else {

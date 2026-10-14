@@ -49,22 +49,26 @@ export class DebugVariablesComponent {
   private injector = inject(Injector);
 
   constructor() {
-    // Com o foco numa chamada que terminou, o botão dela some e o foco iria para a página:
-    // ele vai para a chamada de agora, a primeira da lista
+    // Uma pausa nova pode tirar da tela o que tinha o foco: a chamada que terminou, uma
+    // variável que saiu da lista, ou tudo, com o Continuar. O foco iria para a página; ele vai
+    // para a chamada de agora, a primeira da lista, ou para o aviso de que o programa está
+    // executando
     effect(() => {
       this.pause();
 
-      const list = this.host.nativeElement.querySelector(".frame-list");
+      const host = this.host.nativeElement;
 
-      if (!list?.contains(document.activeElement)) {
+      if (!host.contains(document.activeElement)) {
         return;
       }
 
       afterNextRender(
         () => {
-          if (!list.isConnected || !list.contains(document.activeElement)) {
-            this.host.nativeElement.querySelector<HTMLElement>(".frame")?.focus();
+          if (document.activeElement && document.activeElement !== document.body) {
+            return;
           }
+
+          host.querySelector<HTMLElement>(".frame, .debug-empty")?.focus();
         },
         { injector: this.injector },
       );
@@ -83,9 +87,6 @@ export class DebugVariablesComponent {
 
   readonly debugging = input(false);
 
-  /**
-   * Todas as abas de código ficam montadas: os `id`s dos títulos levam o da aba.
-   */
   /**
    * A chamada escolhida na lista; a mais recente, a cada pausa nova.
    */

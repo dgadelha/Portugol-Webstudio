@@ -6,6 +6,11 @@ import { runtimeError } from "../helpers/runner";
 /**
  * Como no Portugol Studio, um erro de execução diz a linha e a coluna do começo do comando
  * em que aconteceu, contadas do 1.
+ *
+ * Nas condições dos laços e no incremento do `para`, de propósito, não: o Portugol Studio
+ * aponta o último comando que executou antes (conferido na versão 2.7.5: um erro no
+ * incremento de um `para` e na condição de um `faca-enquanto` apontam o último comando do
+ * corpo). Aqui, o erro aponta o laço, como diz a página de diferenças da Ajuda.
  */
 describe("Posição dos erros de execução", () => {
   test("Aponta o começo do comando, e não a expressão que falhou", async () => {
@@ -88,26 +93,16 @@ describe("Posição dos erros de execução", () => {
     ).resolves.toMatchObject({ position: { line: 4, column: 5 } });
   });
 
-  test("Na inicialização e no incremento de um para, aponta o para", async () => {
+  test.each([
+    ["na inicialização", "inteiro zero = 0, i", "para (i = 1 / zero; i < 3; i++) {"],
+    ["no incremento", "inteiro v[2], i", "para (i = 0; i < 2; v[i + 5] = 1) {"],
+  ])("Um erro %s de um para aponta o para", async (_onde, declaração, para) => {
     await expect(
       runtimeError(portugol`
         programa {
           funcao inicio() {
-            inteiro zero = 0
-            para (inteiro i = 1 / zero; i < 3; i++) {
-              escreva(i)
-            }
-          }
-        }
-      `),
-    ).resolves.toMatchObject({ position: { line: 4, column: 5 } });
-
-    await expect(
-      runtimeError(portugol`
-        programa {
-          funcao inicio() {
-            inteiro v[2], i
-            para (i = 0; i < 2; v[i + 5] = 1) {
+            ${declaração}
+            ${para}
               escreva(i)
             }
           }

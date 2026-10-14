@@ -308,6 +308,7 @@ describe("Vetores e Matrizes", () => {
         ),
       ).resolves.toBe("antes ");
     });
+
     test("Interrompe o programa ao atribuir acima do último índice", async () => {
       await expect(
         runPortugolCode(

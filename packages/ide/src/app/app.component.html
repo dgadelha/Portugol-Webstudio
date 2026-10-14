@@ -166,7 +166,7 @@
         <svg-icon src="assets/mdi/pause.svg" aria-hidden="true" />
         Pausado na linha {{ editor.debugPause()?.line }}
       </span>
-    } @else if (editor.executor.running && !editor.stepInFlight()) {
+    } @else if (editor.executor.waitingForInput || (editor.executor.running && !editor.stepInFlight())) {
       <span class="status-item status-running">
         <svg-icon src="assets/mdi/play-outline.svg" aria-hidden="true" />
         {{ editor.executor.waitingForInput ? "Aguardando entrada" : "Executando" }}

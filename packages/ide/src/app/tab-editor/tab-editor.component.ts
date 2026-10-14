@@ -248,6 +248,10 @@ export class TabEditorComponent implements OnInit, OnDestroy {
    */
   readonly debugToolbarPosition = signal(this.settingsService.get(settings.debugToolbarPosition));
 
+  // Onde a pessoa deixou a barra. A mostrada pode estar mais para dentro, numa tela menor,
+  // e volta para cá quando o editor cresce de novo
+  private savedToolbarPosition = this.settingsService.get(settings.debugToolbarPosition);
+
   /**
    * A pausa que a aba "Variáveis" mostra: a última, enquanto o programa dá um passo, ou
    * `null` enquanto ele continua até um ponto de parada.
@@ -667,6 +671,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     // A barra pode ser movida em outra aba
     this._settings$.add(
       this.settingsService.observe(settings.debugToolbarPosition).subscribe(position => {
+        this.savedToolbarPosition = position;
         this.debugToolbarPosition.set(position);
       }),
     );
@@ -782,6 +787,10 @@ export class TabEditorComponent implements OnInit, OnDestroy {
    */
   stopCode(origin: "editor" | "janela_graficos") {
     this.gaService.event("editor_stop_execution", "Editor", origin);
+
+    // O fim da depuração já cuida do foco (e o anuncia): a saída só rola até o fim
+    const wasDebugging = this.debugging;
+
     this.executor.stop();
 
     if (this.transpiling) {
@@ -789,7 +798,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
       this.transpiling = false;
     }
 
-    this.stdOutEditorCursorEnd();
+    this.stdOutEditorCursorEnd(!wasDebugging);
   }
 
   /**
@@ -1198,6 +1207,12 @@ export class TabEditorComponent implements OnInit, OnDestroy {
 
         if (area) {
           this.debugToolbarFit = new ResizeObserver(() => {
+            // A depuração pode ter terminado antes da primeira renderização
+            if (!this.debugging) {
+              this.debugToolbarFit?.disconnect();
+              return;
+            }
+
             this.fitDebugToolbar();
           });
           this.debugToolbarFit.observe(area);
@@ -1311,7 +1326,9 @@ export class TabEditorComponent implements OnInit, OnDestroy {
    */
   private showDebugEnd(stopped: boolean) {
     if (this.panelView() === "variables") {
-      const focusInPanel = this.panelTab(this.ids().variablesPanel)?.contains(document.activeElement);
+      const focusInPanel = [this.ids().variablesPanel, this.ids().variablesTab].some(id =>
+        this.panelTab(id)?.contains(document.activeElement),
+      );
 
       this.showPanel("output");
 
@@ -1347,20 +1364,22 @@ export class TabEditorComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Dois cliques na alça levam a barra flutuante de volta ao lugar de sempre, no alto do
-   * editor: uma alternativa a arrastar.
+   * Dois cliques na alça, ou o Enter com o foco nela, levam a barra flutuante de volta ao
+   * lugar inicial, no alto do editor: uma alternativa a arrastar.
    */
   resetDebugToolbar() {
     const position = { x: 0, y: 0 };
 
+    this.savedToolbarPosition = position;
     this.debugToolbarPosition.set(position);
     this.storage.store(settings.debugToolbarPosition.key, position);
-    this.gaService.event("debug_toolbar_move", "Depuração", "centralizar");
+    this.gaService.event("debug_toolbar_move", "Depuração", "lugar_inicial");
   }
 
   onDebugToolbarMoved(event: CdkDragEnd) {
     const position = event.source.getFreeDragPosition();
 
+    this.savedToolbarPosition = position;
     this.debugToolbarPosition.set(position);
     this.storage.store(settings.debugToolbarPosition.key, position);
     this.gaService.event("debug_toolbar_move", "Depuração", "arrastar");
@@ -1377,9 +1396,17 @@ export class TabEditorComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const bar = toolbar.getBoundingClientRect();
+    // Onde a barra ficaria na posição guardada, a partir de onde ela está agora
+    const shown = this.debugToolbarPosition();
+    let { x, y } = this.savedToolbarPosition;
+    const rect = toolbar.getBoundingClientRect();
+    const bar = {
+      left: rect.left + x - shown.x,
+      right: rect.right + x - shown.x,
+      top: rect.top + y - shown.y,
+      bottom: rect.bottom + y - shown.y,
+    };
     const limits = area.getBoundingClientRect();
-    let { x, y } = this.debugToolbarPosition();
 
     x += Math.max(0, limits.left - bar.left) - Math.max(0, bar.right - limits.right);
     y += Math.max(0, limits.top - bar.top) - Math.max(0, bar.bottom - limits.bottom);
@@ -1638,7 +1665,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     this.panelTab(this.ids().outputTab)?.focus();
   }
 
-  stdOutEditorCursorEnd() {
+  stdOutEditorCursorEnd(focus = true) {
     if (!this.stdOutEditor) {
       return;
     }
@@ -1666,7 +1693,12 @@ export class TabEditorComponent implements OnInit, OnDestroy {
       // foco do que a pessoa estiver usando.
       //
       // Na depuração, o foco fica nos botões dos passos, menos num `leia`.
-      if (!this.coarsePointer() && this.outputVisible() && (!this.debugging || this.executor.waitingForInput)) {
+      if (
+        focus &&
+        !this.coarsePointer() &&
+        this.outputVisible() &&
+        (!this.debugging || this.executor.waitingForInput)
+      ) {
         editor.focus();
       }
     }
@@ -1718,7 +1750,8 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     // No Mac, o Alt é o Option, que digita caracteres: no teclado americano, Option+C é o
     // "ç" e Option+N é o til do "ã". No editor, os atalhos com Alt só valem quando não
     // tiram uma letra de ninguém: fora do Mac e, os da depuração, também depurando (a chave
-    // `pwsDepurando`, que só o editor de código tem)
+    // `pwsDepurando`, que no editor de código vale a depuração inteira, e na saída, menos
+    // esperando um `leia`)
     editor.createContextKey("pwsAtalhosAlt", !isMacintosh);
 
     // Os atalhos de abas do IDE também valem com o cursor no código

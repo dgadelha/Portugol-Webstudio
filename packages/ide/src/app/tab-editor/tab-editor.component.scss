@@ -165,6 +165,9 @@ ngx-monaco-editor {
   justify-content: center;
   // O mínimo de 24px para um alvo de toque (WCAG 2.5.8)
   min-width: 24px;
+  padding: 0;
+  border: 0;
+  background: transparent;
   color: var(--pws-fg-muted);
   cursor: grab;
 

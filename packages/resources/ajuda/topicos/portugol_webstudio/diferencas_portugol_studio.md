@@ -132,6 +132,7 @@ As mensagens de erro são as do Portugol Studio, com algumas diferenças:
   - Comparar duas cadeias com `>`, `<`, `>=` ou `<=`
   - Dois `caso contrario` no mesmo `escolha`, o que costuma acontecer quando falta fechar um `escolha` dentro de outro
   - O mesmo valor escrito em dois `caso` do mesmo `escolha`, como `caso 1:` duas vezes
+- Um erro durante a execução na condição de um laço ou no incremento de um `para`, como `enquanto (v[i] > 0)` com uma posição que não existe, aponta a linha do laço. O Portugol Studio aponta o último comando que executou antes dele, que muitas vezes é uma linha sem erro, dentro do laço.
 
 Para alguns enganos comuns, o Webstudio diz o que está errado, onde o Portugol Studio quase sempre pede um `(` ou um `)`:
 

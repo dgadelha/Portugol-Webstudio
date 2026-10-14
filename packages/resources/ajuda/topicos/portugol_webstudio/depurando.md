@@ -6,7 +6,7 @@ Executar o programa passo a passo, um comando de cada vez, mostra o caminho que 
 
 Clique no botão **Depurar**, logo abaixo do **Parar** na barra de ações, ou aperte **Alt + P**. O programa começa e para antes do primeiro comando da função `inicio`:
 
-- A linha que vai ser executada fica destacada no código, com uma seta amarela ao lado do número dela.
+- A linha que vai ser executada fica destacada no código, com uma seta ao lado do número dela.
 - O painel de baixo abre na aba **Variáveis**.
 - O código não pode ser editado durante a depuração. Para editar, clique em **Parar**.
 
@@ -36,7 +36,7 @@ O botão **Copiar a declaração**, depois de cada valor, copia a linha inteira,
 
 ## Depuração avançada
 
-Ligando a **Depuração avançada**, na seção **Execução** das [configurações](configuracoes.md), a execução passo a passo ganha mais botões e os pontos de parada. Os botões ficam numa barra flutuante, no alto do código, e não na barra de ações. A barra pode ser arrastada pela alça à esquerda para qualquer lugar do editor, e o Webstudio lembra onde ela ficou. Dois cliques na alça a levam de volta ao centro. Com o teclado, as setas andam entre os botões dela. O editor também ganha uma margem à esquerda dos números das linhas, com uma seta amarela na linha em que o programa está pausado e os pontos de parada.
+Ligando a **Depuração avançada**, na seção **Execução** das [configurações](configuracoes.md), a execução passo a passo ganha mais botões e os pontos de parada. Os botões ficam numa barra flutuante, no alto do código, e não na barra de ações. A barra pode ser arrastada pela alça à esquerda para qualquer lugar do editor, e o Webstudio lembra onde ela ficou. Dois cliques na alça, ou o Enter com o foco nela, a levam de volta ao lugar inicial, no alto do editor. Com o teclado, as setas andam entre os botões dela. O editor também ganha uma margem à esquerda dos números das linhas, com uma seta na linha em que o programa está pausado e os pontos de parada.
 
 | Botão          | Atalho  | O que faz                                                                                   |
 | -------------- | ------- | ------------------------------------------------------------------------------------------- |
