@@ -94,6 +94,7 @@ describe("Posição dos erros de execução", () => {
   });
 
   test.each([
+    ["na declaração", "inteiro zero = 0", "para (inteiro i = 1 / zero; i < 3; i++) {"],
     ["na inicialização", "inteiro zero = 0, i", "para (i = 1 / zero; i < 3; i++) {"],
     ["no incremento", "inteiro v[2], i", "para (i = 0; i < 2; v[i + 5] = 1) {"],
   ])("Um erro %s de um para aponta o para", async (_onde, declaração, para) => {
