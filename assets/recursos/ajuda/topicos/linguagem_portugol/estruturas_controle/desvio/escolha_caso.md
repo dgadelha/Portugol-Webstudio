@@ -50,6 +50,8 @@ A figura a seguir ilustra um algoritmo que verifica se a variável valor é igua
 
 ```mermaid
 flowchart TD
+    accTitle: Fluxograma de um comando escolha caso
+    accDescr: O algoritmo lê o valor, que é 1, e o compara com cada caso, em ordem. Se for igual a 0, mostra O valor é igual a 0; senão, se for igual a 1, mostra O valor é igual a 1; senão, se for igual a 2, mostra O valor é igual a 2; se não for nenhum deles, mostra O valor não é igual a 0, 1 ou 2. Depois de qualquer um desses, vai para o fim.
     inicio([inicio]) --> leia@{ shape: manual-input, label: "Valor = 1" }
     leia --> c0{"Valor = 0"}
     c0 -- V --> r0([O valor é igual a 0])

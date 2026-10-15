@@ -2,7 +2,7 @@
 
 ## Executar e parar
 
-Para executar o programa da aba aberta, clique no botão verde **Executar**, no alto da barra de ações, ou aperte **Ctrl + Enter**. Enquanto o programa executa, o botão vermelho **Parar** fica disponível para interrompê-lo, o que é útil num laço que nunca termina.
+Para executar o programa da aba aberta, clique no botão verde **Executar**, no alto da barra de ações, ou aperte **Ctrl + Enter**. Enquanto o programa executa, o botão vermelho **Parar** (ou **Shift + F5**) fica disponível para interrompê-lo, o que é útil num laço que nunca termina.
 
 O painel de baixo abre sozinho na aba **Saída**, com tudo o que o programa escreveu. Quando ele termina, a saída diz:
 
@@ -10,6 +10,8 @@ O painel de baixo abre sozinho na aba **Saída**, com tudo o que o programa escr
 - **O programa foi interrompido!**, quando você clicou em Parar
 
 Depois vem o tempo de execução, em milissegundos. Ele pode ser escondido nas [configurações](configuracoes.md).
+
+Para ver o programa executando um comando de cada vez, com o valor das variáveis, use o botão **Depurar**: veja [Executando passo a passo](depurando.md).
 
 ![O programa executado, com as mensagens na saída](../../recursos/imagens/light/webstudio/primeiro-programa@2x.webp)
 
@@ -19,7 +21,7 @@ Um programa com erro não é executado. Ao clicar em Executar, o painel abre na 
 
 ![A saída de um programa com erro, que não foi executado](../../recursos/imagens/light/webstudio/executar-com-erros@2x.webp)
 
-Um erro que só acontece durante a execução, como uma divisão por zero ou uma posição de vetor que não existe, interrompe o programa e aparece na saída com o símbolo ⛔.
+Um erro que só acontece durante a execução, como uma divisão por zero ou uma posição de vetor que não existe, interrompe o programa e aparece na saída com o símbolo ⛔, a mesma mensagem do Portugol Studio e a linha e a coluna do comando em que aconteceu. Essa linha também fica marcada de vermelho no código, até o código mudar ou o programa executar de novo.
 
 ## Entrada de dados com o leia
 
@@ -29,7 +31,7 @@ No computador, digite a resposta direto na saída e aperte **Enter**. O Backspac
 
 ![O programa esperando o nome, com "Ana" digitado na saída](../../recursos/imagens/light/webstudio/leia-aguardando@2x.webp)
 
-Depois de cada Enter, o programa continua até o próximo `leia` ou até o fim:
+Depois de cada Enter, o programa continua até o próximo `leia` ou até o fim. Um valor de outro tipo, como uma palavra num `leia` de um `inteiro`, ou nenhum valor, fora de uma `cadeia`, interrompe o programa com um erro.
 
 ![O programa terminado, com as respostas digitadas na saída](../../recursos/imagens/light/webstudio/leia-concluido@2x.webp)
 
@@ -39,7 +41,7 @@ No celular e no tablet, o teclado da tela não consegue digitar direto na saída
 
 ## O painel de baixo
 
-O painel tem duas abas, **Saída** e **Problemas**, e alguns botões à direita:
+O painel tem três abas, **Saída**, **Problemas** e **Variáveis** (veja [Executando passo a passo](depurando.md)), e alguns botões à direita:
 
 - **Limpar saída** apaga o que está na saída.
 - **Recolher painel** e **Mostrar painel** escondem e mostram o conteúdo do painel.

@@ -234,6 +234,10 @@
         "arquivo": "topicos/portugol_webstudio/executando.md"
       },
       {
+        "titulo": "Executando passo a passo",
+        "arquivo": "topicos/portugol_webstudio/depurando.md"
+      },
+      {
         "titulo": "Abas e arquivos",
         "arquivo": "topicos/portugol_webstudio/abas_e_arquivos.md"
       },

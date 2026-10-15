@@ -17,6 +17,8 @@ se (condicao) {
 
 ```mermaid
 flowchart TD
+    accTitle: Fluxograma de um desvio condicional se senao
+    accDescr: Com a variável inteira hora declarada, o algoritmo pede que o usuário informe a hora e a lê. Se hora for maior ou igual a 6 e menor ou igual a 18, exibe É dia; senão, exibe É noite. Nos dois casos, depois vai para o fim.
     decl["inteiro hora"]:::decl --> inicio([inicio])
     inicio --> msg@{ shape: curv-trap, label: "&quot;Informe a hora: &quot;" }
     msg --> leia@{ shape: manual-input, label: "hora" }
