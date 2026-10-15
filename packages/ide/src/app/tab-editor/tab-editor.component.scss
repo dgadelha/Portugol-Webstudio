@@ -478,7 +478,8 @@ ngx-monaco-editor {
 // Aviso do compartilhar //
 //////////////////////////
 
-.share-toast {
+.share-toast,
+.debug-tip-toast {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -486,7 +487,14 @@ ngx-monaco-editor {
   max-width: 22rem;
 }
 
-.share-toast-title {
+.debug-tip-icon {
+  display: flex;
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.share-toast-title,
+.debug-tip-toast-title {
   color: var(--pws-fg-strong);
   font-weight: 600;
 }

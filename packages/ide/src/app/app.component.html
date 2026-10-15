@@ -123,7 +123,7 @@
           <app-tab-editor
             [tabId]="tab.id"
             (help)="upsertHelpTab($event)"
-            (settings)="openSettingsDialog()"
+            (settings)="openSettingsDialog($event)"
             (openFile)="chooseFiles($event)"
             (examples)="openExamplesDialog('editor')"
             (newTab)="newTab('atalho')"

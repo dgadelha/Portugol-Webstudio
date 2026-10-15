@@ -113,6 +113,9 @@ export const settings = {
   // Onde a barra flutuante da depuração avançada foi deixada, em relação ao alto e ao meio
   // do editor. Não aparece no diálogo de configurações.
   debugToolbarPosition: position("debugToolbarPosition"),
+  // A dica da depuração avançada, na primeira depuração simples, já apareceu neste navegador.
+  // Não aparece no diálogo de configurações.
+  debugAdvancedTipShown: boolean("debugAdvancedTipShown", false),
   interfaceConfirmCloseTab: boolean("interfaceConfirmCloseTab", true),
   // Numa janela nova, adota as abas da última janela fechada.
   interfaceReopenTabs: boolean("interfaceReopenTabs", true),

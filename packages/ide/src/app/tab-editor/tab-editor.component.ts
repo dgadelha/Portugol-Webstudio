@@ -44,6 +44,7 @@ import { IExtendedWindowApi } from "../../types";
 import { describeChange, previousFrameVariables, variableChanges } from "../debug-variables/debug-values";
 import { DebugVariablesComponent } from "../debug-variables/debug-variables.component";
 import { DialogRendererComponent, RendererDialogResult } from "../dialog-renderer/dialog-renderer.component";
+import type { SettingsSectionId } from "../dialog-settings/dialog-settings.component";
 import { ResponsiveService } from "../responsive.service";
 import { SettingsService } from "../settings.service";
 import { ShareService } from "../share.service";
@@ -156,7 +157,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
   private runFailed = false;
 
   readonly help = output<EditorOrigin>();
-  readonly settings = output();
+  readonly settings = output<SettingsSectionId | undefined>();
   /**
    * Ctrl+O no editor: quem abre o arquivo é a janela, numa aba nova.
    */
@@ -175,6 +176,10 @@ export class TabEditorComponent implements OnInit, OnDestroy {
 
   private readonly shareToastTemplate =
     viewChild.required<TemplateRef<{ data: { url: string } }>>("shareToastTemplate");
+
+  private readonly debugTipTemplate = viewChild.required<TemplateRef<unknown>>("debugTipTemplate");
+
+  private readonly debugTipIcon = viewChild.required<TemplateRef<unknown>>("debugTipIcon");
 
   /**
    * Erros, avisos e informações do código, da checagem mais recente.
@@ -656,6 +661,12 @@ export class TabEditorComponent implements OnInit, OnDestroy {
         // valendo escondidos
         if (!advanced) {
           this.clearBreakpoints();
+
+          // Continuando até um ponto de parada, o programa iria até o fim: a depuração simples
+          // não tem o Pausar. Ele pausa no próximo comando, e segue com o Próximo passo
+          if (this.debugging && !this.paused()) {
+            this.executor.debug({ type: "pause" });
+          }
         } else if (this.debugging) {
           // A barra flutuante aparece no meio da depuração, talvez fora do editor
           afterNextRender(
@@ -776,6 +787,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
         this.showPanel("problems");
       } else if (debug) {
         this.startDebugging();
+        this.showAdvancedDebuggingTip();
       }
 
       this.executor.runTranspiled(result, debug ? { debug: { breakpoints: this.breakpointLines() } } : {});
@@ -1878,7 +1890,43 @@ export class TabEditorComponent implements OnInit, OnDestroy {
 
   openSettings() {
     this.gaService.event("open_settings_dialog", "Editor", "editor");
-    this.settings.emit();
+    this.settings.emit(undefined);
+  }
+
+  /**
+   * Na primeira depuração simples neste navegador, avisa que a depuração avançada existe:
+   * a opção fica nas configurações, onde quem só depura não procuraria.
+   */
+  private showAdvancedDebuggingTip() {
+    if (this.advancedDebugging || this.settingsService.get(settings.debugAdvancedTipShown)) {
+      return;
+    }
+
+    this.storage.store(settings.debugAdvancedTipShown.key, true);
+    this.gaService.event("debug_tip_show", "Depuração", "avancada");
+
+    this.toast.show(this.debugTipTemplate(), {
+      icon: this.debugTipIcon(),
+      dismissible: true,
+      // O aviso tem um botão: só some ao ser fechado, senão sumiria enquanto alguém chega
+      // nele pelo teclado
+      autoClose: false,
+      ariaLive: "polite",
+    });
+  }
+
+  /**
+   * O botão da dica abre as configurações na seção Execução. A depuração continua: ligar a
+   * opção ali já mostra a barra flutuante.
+   */
+  openAdvancedDebuggingSettings(toastRef: CreateHotToastRef<unknown>) {
+    this.gaService.event("open_settings_dialog", "Depuração", "dica_depuracao");
+
+    // O diálogo devolve o foco a quem o abriu, e o aviso some: o foco passa antes para o
+    // Depurar, e volta para ele quando as configurações fecham
+    this.rovingTarget(".activity-button", ".debug-button")?.focus();
+    toastRef.close();
+    this.settings.emit("execution");
   }
 
   async shareFile() {

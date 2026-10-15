@@ -502,3 +502,20 @@
     <button type="button" class="btn btn-primary btn-sm" (click)="copyShareUrl(toastRef)">Copiar link</button>
   </div>
 </ng-template>
+
+<ng-template #debugTipIcon>
+  <svg-icon src="assets/mdi/lightbulb-on-outline.svg" class="debug-tip-icon icon-yellow" aria-hidden="true" />
+</ng-template>
+
+<ng-template #debugTipTemplate let-toastRef>
+  <div class="debug-tip-toast">
+    <p class="debug-tip-toast-title">Dica: depuração avançada</p>
+    <p>
+      Nas configurações, a depuração avançada permite marcar pontos de parada no código e mostra também os botões
+      Continuar, Pausar, Pular função e Sair da função.
+    </p>
+    <button type="button" class="btn btn-primary btn-sm" (click)="openAdvancedDebuggingSettings(toastRef)">
+      Abrir configurações
+    </button>
+  </div>
+</ng-template>

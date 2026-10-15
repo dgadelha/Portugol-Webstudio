@@ -30,6 +30,7 @@ export default defineConfig(
       },
     },
     rules: {
+      "@angular-eslint/component-max-inline-declarations": ["error", { "styles": 10 }],
       "@angular-eslint/prefer-on-push-component-change-detection": "off",
       "@angular-eslint/prefer-signals": "warn",
       "@typescript-eslint/ban-ts-comment": "off",

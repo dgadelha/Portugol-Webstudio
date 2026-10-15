@@ -7,8 +7,16 @@ import { AngularSvgIconModule } from "angular-svg-icon";
 @Component({
   selector: "app-survey-invite-icon",
   imports: [AngularSvgIconModule],
-  templateUrl: "./survey-invite-icon.component.html",
-  styleUrl: "./survey-invite-icon.component.scss",
+  template: `<svg-icon src="assets/mdi/clipboard-text-outline.svg" class="icon-yellow" aria-hidden="true" />`,
+  styles: `
+    :host {
+      display: flex;
+    }
+    svg-icon {
+      width: 1.25rem;
+      height: 1.25rem;
+    }
+  `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SurveyInviteIconComponent {}
