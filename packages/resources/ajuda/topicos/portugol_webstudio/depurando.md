@@ -38,14 +38,14 @@ O botão **Copiar a declaração**, depois de cada valor, copia a linha inteira,
 
 Ligando a **Depuração avançada**, na seção **Execução** das [configurações](configuracoes.md), a execução passo a passo ganha mais botões e os pontos de parada. Os botões ficam numa barra flutuante, no alto do código, e não na barra de ações. A barra pode ser arrastada pela alça à esquerda para qualquer lugar do editor, e o Webstudio lembra onde ela ficou. Dois cliques na alça, ou o Enter com o foco nela, a levam de volta ao lugar inicial, no alto do editor. Com o teclado, as setas andam entre os botões dela. O editor também ganha uma margem à esquerda dos números das linhas, com uma seta na linha em que o programa está pausado e os pontos de parada.
 
-| Botão          | Atalho  | O que faz                                                                                   |
-| -------------- | ------- | ------------------------------------------------------------------------------------------- |
-| Continuar      | Alt + C | Executa normalmente, até o próximo ponto de parada ou até o fim do programa                 |
-| Pausar         | Alt + C | Com o programa continuando, pausa onde ele estiver, o que é útil num laço que nunca termina |
-| Próximo passo  | Alt + P | O mesmo da depuração simples: executa a linha destacada, entrando nas funções               |
-| Pular função   | Alt + J | Como o Próximo passo, mas executa as funções chamadas na linha de uma vez, sem entrar nelas |
-| Sair da função | Alt + R | Executa o resto da função em que o programa está e para logo depois, em quem a chamou       |
-| Parar          |         | Interrompe o programa, como o Parar da barra de ações                                       |
+| Botão          | Atalho     | O que faz                                                                                   |
+| -------------- | ---------- | ------------------------------------------------------------------------------------------- |
+| Continuar      | Alt + C    | Executa normalmente, até o próximo ponto de parada ou até o fim do programa                 |
+| Pausar         | Alt + C    | Com o programa continuando, pausa onde ele estiver, o que é útil num laço que nunca termina |
+| Próximo passo  | Alt + P    | O mesmo da depuração simples: executa a linha destacada, entrando nas funções               |
+| Pular função   | Alt + J    | Como o Próximo passo, mas executa as funções chamadas na linha de uma vez, sem entrar nelas |
+| Sair da função | Alt + R    | Executa o resto da função em que o programa está e para logo depois, em quem a chamou       |
+| Parar          | Shift + F5 | Interrompe o programa, como o Parar da barra de ações                                       |
 
 ### Pontos de parada
 

@@ -24,8 +24,16 @@ export function atalhoDoEvento(event: KeyboardEvent): string | undefined {
     return undefined;
   }
 
-  if (event.metaKey || event.shiftKey || (event.ctrlKey && event.altKey)) {
+  if (event.metaKey || (event.ctrlKey && event.altKey)) {
     return undefined;
+  }
+
+  // Com o Shift, só as teclas de função, como o Shift+F5 do Parar: com as letras, o Shift
+  // digita maiúsculas
+  if (event.shiftKey) {
+    return !event.ctrlKey && !event.altKey && /^F\d{1,2}$/.test(event.key)
+      ? `shift+${event.key.toLowerCase()}`
+      : undefined;
   }
 
   if (event.altKey) {

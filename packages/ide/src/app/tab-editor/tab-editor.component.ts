@@ -797,7 +797,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
   /**
    * Pelo botão Parar, ou ao fechar a janela de gráficos (pelo botão dela ou com Esc).
    */
-  stopCode(origin: "editor" | "janela_graficos") {
+  stopCode(origin: "editor" | "janela_graficos" | "atalho") {
     this.gaService.event("editor_stop_execution", "Editor", origin);
 
     // O fim da depuração já cuida do foco (e o anuncia): a saída só rola até o fim
@@ -848,6 +848,17 @@ export class TabEditorComponent implements OnInit, OnDestroy {
 
         if (this.canRun()) {
           void this.runCode("atalho");
+        }
+
+        break;
+      }
+
+      // No Chrome, o Shift+F5 também recarrega a página sem o cache: sem programa para
+      // parar, fica com o navegador
+      case "shift+f5": {
+        if (this.canStop()) {
+          event.preventDefault();
+          this.stopCode("atalho");
         }
 
         break;
@@ -1730,6 +1741,25 @@ export class TabEditorComponent implements OnInit, OnDestroy {
           void this.runCode("atalho");
         }
       },
+    });
+
+    // Shift+F5, o mesmo do VS Code para parar a depuração: uma tecla de função não digita
+    // nada, e vale até no Mac. Não é uma ação do Monaco, que sempre consumiria a tecla: sem
+    // programa para parar, o Shift+F5 fica com o navegador, que no Chrome recarrega a página
+    // sem o cache
+    editor.onKeyDown(event => {
+      if (
+        event.keyCode === monaco.KeyCode.F5 &&
+        event.shiftKey &&
+        !event.ctrlKey &&
+        !event.altKey &&
+        !event.metaKey &&
+        this.canStop()
+      ) {
+        event.preventDefault();
+        event.stopPropagation();
+        this.stopCode("atalho");
+      }
     });
 
     editor.addAction({

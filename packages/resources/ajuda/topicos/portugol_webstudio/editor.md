@@ -13,7 +13,7 @@ De cima para baixo:
 | Botão                   | O que faz                                                                    | Atalho       |
 | ----------------------- | ---------------------------------------------------------------------------- | ------------ |
 | **Executar**            | Executa o programa (veja [Executando programas](executando.md))              | Ctrl + Enter |
-| **Parar**               | Interrompe o programa que está executando                                    |              |
+| **Parar**               | Interrompe o programa que está executando                                    | Shift + F5   |
 | **Depurar**             | Executa passo a passo (veja [Executando passo a passo](depurando.md))        | Alt + P      |
 | **Abrir arquivo**       | Abre arquivos `.por` do computador, cada um numa aba nova                    | Ctrl + O     |
 | **Salvar**              | Baixa o código como um arquivo `.por`                                        | Ctrl + S     |

@@ -19,8 +19,10 @@
     class="activity-button"
     tabindex="-1"
     appTooltip="Parar"
+    appTooltipShortcut="Shift+F5"
     appTooltipPosition="right"
     aria-label="Parar"
+    aria-keyshortcuts="Shift+F5"
     [attr.aria-disabled]="!canStop() || null"
     (click)="canStop() && stopCode('editor')"
   >
@@ -302,8 +304,10 @@
               class="icon-btn debug-toolbar-button"
               tabindex="-1"
               appTooltip="Parar"
+              appTooltipShortcut="Shift+F5"
               appTooltipPosition="below"
               aria-label="Parar"
+              aria-keyshortcuts="Shift+F5"
               (click)="stopCode('editor')"
             >
               <svg-icon src="assets/mdi/square-rounded-outline.svg" class="icon-red" aria-hidden="true" />

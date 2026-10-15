@@ -2,7 +2,7 @@
 
 ## Executar e parar
 
-Para executar o programa da aba aberta, clique no botão verde **Executar**, no alto da barra de ações, ou aperte **Ctrl + Enter**. Enquanto o programa executa, o botão vermelho **Parar** fica disponível para interrompê-lo, o que é útil num laço que nunca termina.
+Para executar o programa da aba aberta, clique no botão verde **Executar**, no alto da barra de ações, ou aperte **Ctrl + Enter**. Enquanto o programa executa, o botão vermelho **Parar** (ou **Shift + F5**) fica disponível para interrompê-lo, o que é útil num laço que nunca termina.
 
 O painel de baixo abre sozinho na aba **Saída**, com tudo o que o programa escreveu. Quando ele termina, a saída diz:
 
