@@ -57,6 +57,13 @@ export class TabStartComponent {
       this.logo = "assets/logo/carnaval.svg";
     } else if ((currentMonth === 3 && currentDay >= 20) || (currentMonth === 4 && currentDay <= 30)) {
       this.logo = "assets/logo/pascoa.svg";
+    } else if (currentMonth === 8 && currentDay === 11) {
+      this.logo = "assets/logo/dia-do-estudante.svg";
+    } else if (this.dayOfYear() === 256) {
+      // 13 de setembro, ou 12 em anos bissextos
+      this.logo = "assets/logo/dia-do-programador.svg";
+    } else if (currentMonth === 10 && currentDay === 15) {
+      this.logo = "assets/logo/dia-do-professor.svg";
     } else if ((currentMonth === 10 && currentDay >= 20) || (currentMonth === 11 && currentDay <= 5)) {
       this.logo = "assets/logo/halloween.svg";
     } else if (currentMonth === 12 && currentDay >= 15 && currentDay <= 29) {
@@ -66,6 +73,18 @@ export class TabStartComponent {
     } else {
       this.logo = "assets/logo/default.svg";
     }
+  }
+
+  /**
+   * O dia do ano de hoje, de 1 a 366.
+   */
+  private dayOfYear() {
+    const today = new Date();
+
+    return (
+      (Date.UTC(today.getFullYear(), today.getMonth(), today.getDate()) - Date.UTC(today.getFullYear(), 0, 0)) /
+      86_400_000
+    );
   }
 
   recoverWorkspace(workspaceId: string) {

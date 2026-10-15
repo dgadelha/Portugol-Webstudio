@@ -32,6 +32,10 @@
   fill: var(--pws-fg-strong);
 }
 
+.logo-title[stroke] {
+  stroke: var(--pws-fg-strong);
+}
+
 .logo-subtitle[fill] {
   fill: var(--pws-fg-muted);
 }
