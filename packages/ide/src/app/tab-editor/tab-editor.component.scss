@@ -418,8 +418,9 @@ ngx-monaco-editor {
   padding: 0.25rem 0;
 }
 
+// Com o espaço de cima da lista, fica no mesmo lugar que o aviso da aba Variáveis
 .problems-empty {
-  padding: 0.5rem 1rem;
+  padding: 0.25rem 1rem;
   color: var(--pws-fg-muted);
 }
 
