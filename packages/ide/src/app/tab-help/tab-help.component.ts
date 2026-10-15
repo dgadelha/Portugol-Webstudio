@@ -139,12 +139,15 @@ export class TabHelpComponent implements OnInit, OnDestroy {
         this.#topicoPendente = undefined;
         this.loadItem(inicial, origem);
 
-        // Depois que a árvore desenha os tópicos: os dois primeiros grupos
-        // começam abertos, e as pastas até o tópico inicial também.
+        // Depois que a árvore desenha os tópicos: os grupos (Linguagem Portugol,
+        // Bibliotecas e Portugol Webstudio) começam abertos, e as pastas até o
+        // tópico inicial também.
         afterNextRender(
           () => {
-            this.tree()?.expand(ajudaWithLibs[0]);
-            this.tree()?.expand(ajudaWithLibs[1]);
+            for (const grupo of ajudaWithLibs) {
+              this.tree()?.expand(grupo);
+            }
+
             this.#expandirAte(inicial);
           },
           { injector: this.injector },
