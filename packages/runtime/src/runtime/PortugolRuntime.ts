@@ -230,7 +230,7 @@ class PortugolRuntime {
       };
     }
 
-    return { type: variable.type, text: variable.value === undefined ? null : variable.toString() };
+    return { type: variable.type, text: variable.value === undefined ? null : variable.literal() };
   }
 
   DEBUG(...args) {

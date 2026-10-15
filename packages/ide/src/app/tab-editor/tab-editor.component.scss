@@ -239,6 +239,12 @@ ngx-monaco-editor {
     border-radius: 50%;
     background-color: var(--pws-red);
   }
+
+  // Por cima da bolinha vermelha, a seta escura do tema claro quase some: ali ela fica com o
+  // amarelo do destaque, nos dois temas
+  .debug-current-glyph.debug-breakpoint-glyph::after {
+    background-color: var(--pws-accent);
+  }
 }
 
 // Dicas do Monaco (erros ao passar o mouse) acima de tudo, mesmo perto da

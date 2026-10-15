@@ -28,7 +28,7 @@
     background-color var(--pws-duration),
     color var(--pws-duration);
 
-  &:hover:not(:disabled) {
+  &:hover:not(:disabled, [aria-disabled="true"]) {
     background-color: var(--pws-bg-active);
     text-decoration: none;
   }
@@ -37,7 +37,9 @@
     outline-offset: 2px;
   }
 
-  &:disabled {
+  // Alguns ficam com `aria-disabled` em vez de `disabled`, para continuarem alcançáveis pelo Tab
+  &:disabled,
+  &[aria-disabled="true"] {
     opacity: 0.5;
   }
 
@@ -51,7 +53,7 @@
   background-color: var(--pws-accent);
   color: var(--pws-on-accent);
 
-  &:hover:not(:disabled) {
+  &:hover:not(:disabled, [aria-disabled="true"]) {
     background-color: var(--pws-accent-hover);
     color: var(--pws-on-accent);
   }
@@ -60,7 +62,7 @@
 .btn-ghost {
   background-color: transparent;
 
-  &:hover:not(:disabled) {
+  &:hover:not(:disabled, [aria-disabled="true"]) {
     background-color: var(--pws-bg-hover);
   }
 }

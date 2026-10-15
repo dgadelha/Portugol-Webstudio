@@ -1,4 +1,4 @@
-import { CdkTree, CdkTreeModule } from "@angular/cdk/tree";
+import { CdkNestedTreeNode, CdkTree, CdkTreeModule } from "@angular/cdk/tree";
 import { HttpClient } from "@angular/common/http";
 import {
   afterNextRender,
@@ -15,6 +15,7 @@ import {
   output,
   untracked,
   viewChild,
+  viewChildren,
 } from "@angular/core";
 import { AngularSplitModule, SplitGutterInteractionEvent } from "angular-split";
 import { AngularSvgIconModule } from "angular-svg-icon";
@@ -26,6 +27,7 @@ import { Subscription } from "rxjs";
 import { settings } from "../../settings";
 import { MonacoService } from "../monaco.service";
 import { SettingsService } from "../settings.service";
+import { focusAfterRender } from "../shared/focus";
 import { WorkspaceService } from "../workspace.service";
 import { ResponsiveService } from "../responsive.service";
 import { Theme, ThemeService } from "../theme.service";
@@ -73,13 +75,25 @@ export class TabHelpComponent implements OnInit, OnDestroy {
   #codigos = new WeakMap<Element, string>();
   #diagramas = new WeakMap<Element, string>();
   #rolarParaTopo = false;
+  #focarTopico = false;
   #topicoPendente?: string;
   #idDiagrama = 0;
   #filaDiagramas = Promise.resolve();
 
+  /**
+   * Uma tabela mais larga que o conteúdo rola na própria caixa: só então ela vira uma
+   * região alcançável pelo Tab, para quem usa o teclado também conseguir rolá-la.
+   */
+  #tabelas = new ResizeObserver(entradas => {
+    for (const { target } of entradas) {
+      this.#atualizarTabela(target as HTMLElement);
+    }
+  });
+
   readonly conteudo = viewChild<string, ElementRef<HTMLElement>>("conteudo", { read: ElementRef });
 
   private readonly tree = viewChild<CdkTree<TreeItem>>("tree");
+  private readonly nos = viewChildren(CdkNestedTreeNode<TreeItem>);
 
   /**
    * Tópicos da Ajuda e as bibliotecas, na árvore da barra lateral (CDK Tree:
@@ -149,6 +163,7 @@ export class TabHelpComponent implements OnInit, OnDestroy {
             }
 
             this.#expandirAte(inicial);
+            this.#marcarNaArvore();
           },
           { injector: this.injector },
         );
@@ -175,6 +190,7 @@ export class TabHelpComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.#theme$?.unsubscribe();
     this.#conteudo$?.unsubscribe();
+    this.#tabelas.disconnect();
   }
 
   #encontrar(itens: TreeItem[], id: string | undefined): TreeItem | undefined {
@@ -217,8 +233,12 @@ export class TabHelpComponent implements OnInit, OnDestroy {
       this.#registrarVisita(item, origem);
     }
 
+    // Seguir um link troca o conteúdo, e o link com o foco some junto: o foco vai para o
+    // tópico novo. Pela árvore, o foco continua nela.
+    this.#focarTopico = origem === "link" && item !== this.current;
     this.current = item;
     this.#rolarParaTopo = true;
+    this.#marcarNaArvore();
 
     if (item.arquivo) {
       this.workspace.setContents(this.tabId(), item.arquivo);
@@ -328,6 +348,23 @@ export class TabHelpComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * O item do tópico aberto é a parada do Tab na árvore (o único com `tabindex="0"`), sem
+   * levar o foco para ele. Um clique numa linha passa pelos itens de todas as pastas em volta
+   * dela, e cada um vira o item ativo da árvore, até o mais de fora: aqui o item volta a ser o
+   * clicado. Depois da renderização, quando os itens das pastas recém-abertas já existem.
+   */
+  #marcarNaArvore() {
+    afterNextRender(
+      () => {
+        this.nos()
+          .find(no => no.data === this.current)
+          ?._setActiveItem();
+      },
+      { injector: this.injector },
+    );
+  }
+
   #expandirAte(item: TreeItem) {
     for (let pai = this.#pais.get(item); pai; pai = this.#pais.get(pai)) {
       this.tree()?.expand(pai);
@@ -347,6 +384,17 @@ export class TabHelpComponent implements OnInit, OnDestroy {
     if (this.#rolarParaTopo) {
       this.#rolarParaTopo = false;
       conteudo.closest("as-split-area")?.scrollTo(0, 0);
+    }
+
+    if (this.#focarTopico) {
+      this.#focarTopico = false;
+      focusAfterRender(this.injector, () => this.#alvoDoFoco(conteudo));
+    }
+
+    this.#tabelas.disconnect();
+
+    for (const tabela of conteudo.querySelectorAll<HTMLElement>(".tabela")) {
+      this.#tabelas.observe(tabela);
     }
 
     // Os links entre tópicos apontam para os arquivos Markdown, que não existem
@@ -385,6 +433,29 @@ export class TabHelpComponent implements OnInit, OnDestroy {
     }
 
     void this.#renderizarDiagramas();
+  }
+
+  /**
+   * O título do tópico recebe o foco (e o leitor de tela começa a leitura por ele); sem
+   * título, o artigo inteiro.
+   */
+  #alvoDoFoco(conteudo: HTMLElement) {
+    const alvo = conteudo.querySelector<HTMLElement>("h1") ?? conteudo.closest<HTMLElement>("article");
+
+    alvo?.setAttribute("tabindex", "-1");
+    return alvo;
+  }
+
+  #atualizarTabela(tabela: HTMLElement) {
+    if (tabela.scrollWidth > tabela.clientWidth) {
+      tabela.tabIndex = 0;
+      tabela.setAttribute("role", "region");
+      tabela.setAttribute("aria-label", "Tabela");
+    } else {
+      tabela.removeAttribute("tabindex");
+      tabela.removeAttribute("role");
+      tabela.removeAttribute("aria-label");
+    }
   }
 
   #criarItem(topico: AjudaTopicoArquivo): TreeItem {

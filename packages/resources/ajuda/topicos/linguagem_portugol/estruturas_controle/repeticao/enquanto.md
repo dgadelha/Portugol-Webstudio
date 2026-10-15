@@ -15,6 +15,8 @@ A figura abaixo ilustra um algoritmo que verifica uma variável do tipo `caracte
 
 ```mermaid
 flowchart TD
+    accTitle: Fluxograma de um laço enquanto
+    accDescr: Com a variável parar declarada, o algoritmo atribui N a ela. Enquanto parar for diferente de S, ele pergunta Deseja parar o laço? (S/N), lê a resposta em parar e volta a testar a condição. Quando parar for S, o laço termina, o algoritmo chama aguarda() e chega ao fim.
     decl["inteiro parar"]:::decl --> inicio([inicio])
     inicio --> atrib["parar <- 'N'"]
     atrib --> cond{"parar != 'S'"}

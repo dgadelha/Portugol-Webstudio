@@ -36,6 +36,14 @@ export interface PwsDialogConfig<D> {
 export class DialogService {
   private readonly dialog = inject(Dialog);
 
+  /**
+   * Quantos diálogos com fundo escurecido estão abertos. Os avisos ficam na camada do topo do
+   * navegador, acima de qualquer diálogo, e cobririam os botões dele: enquanto um está aberto,
+   * eles se escondem (veja `_overlay.scss`). A janela de gráficos não conta: ela fica aberta
+   * o programa inteiro, e os avisos de então (como o do arquivo salvo) sumiriam sem ser vistos.
+   */
+  private modalCount = 0;
+
   open<R, D = unknown, C = unknown>(component: ComponentType<C>, config: PwsDialogConfig<D>): DialogRef<R, C> {
     const modeless = config.modeless ?? false;
 
@@ -57,6 +65,18 @@ export class DialogService {
       restoreFocus: config.restoreFocus ?? true,
     };
 
-    return this.dialog.open<R, D, C>(component, dialogConfig);
+    const ref = this.dialog.open<R, D, C>(component, dialogConfig);
+
+    if (!modeless) {
+      this.modalCount++;
+      document.body.classList.add("pws-dialog-open");
+
+      ref.closed.subscribe(() => {
+        this.modalCount--;
+        document.body.classList.toggle("pws-dialog-open", this.modalCount > 0);
+      });
+    }
+
+    return ref;
   }
 }

@@ -20,6 +20,6 @@
 
   <footer class="dialog-footer">
     <button type="button" class="btn" (click)="dialogRef.close()">Cancelar</button>
-    <button type="submit" class="btn btn-primary">Renomear</button>
+    <button type="submit" class="btn btn-primary" [attr.aria-disabled]="!title().trim() || null">Renomear</button>
   </footer>
 </form>

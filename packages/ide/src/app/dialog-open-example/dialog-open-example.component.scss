@@ -225,6 +225,16 @@
   font-size: var(--pws-text-md);
 }
 
+.preview-empty {
+  display: flex;
+  flex-grow: 1;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  color: var(--pws-fg-muted);
+  text-align: center;
+}
+
 .preview-code {
   display: flex;
   flex-grow: 1;

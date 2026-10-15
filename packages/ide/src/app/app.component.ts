@@ -113,13 +113,23 @@ export class AppComponent implements OnInit {
     return {
       errors: problems.filter(problem => problem.severity === "error").length,
       warnings: problems.filter(problem => problem.severity === "warning").length,
+      infos: problems.filter(problem => problem.severity === "info").length,
     };
   });
 
   readonly problemsLabel = computed(() => {
-    const { errors, warnings } = this.problemCounts();
+    const { errors, warnings, infos } = this.problemCounts();
+    const counts = [
+      `${errors} ${errors === 1 ? "erro" : "erros"}`,
+      `${warnings} ${warnings === 1 ? "aviso" : "avisos"}`,
+    ];
 
-    return `${errors} ${errors === 1 ? "erro" : "erros"} e ${warnings} ${warnings === 1 ? "aviso" : "avisos"}. Ver os problemas do código`;
+    // As informações só aparecem quando existem, como no ícone da barra
+    if (infos > 0) {
+      counts.push(`${infos} ${infos === 1 ? "informação" : "informações"}`);
+    }
+
+    return `${counts.slice(0, -1).join(", ")} e ${counts.at(-1)}. Ver os problemas do código`;
   });
 
   ngOnInit() {
@@ -381,11 +391,13 @@ export class AppComponent implements OnInit {
   selectTab(tabId: string | null) {
     this.workspace.setActiveTab(tabId);
 
-    // A aba escolhida aparece inteira, mesmo com muitas abas abertas.
+    // A aba escolhida aparece inteira, com os botões de renomear e fechar, mesmo com muitas
+    // abas abertas
     afterNextRender(
       () => {
         this.tablist()
           .nativeElement.querySelector(ACTIVE_TAB_SELECTOR)
+          ?.closest(".tab")
           ?.scrollIntoView({ block: "nearest", inline: "nearest" });
       },
       { injector: this.injector },
@@ -461,7 +473,7 @@ export class AppComponent implements OnInit {
     const ref = this.dialog.open<boolean>(DialogConfirmCloseTabComponent, {
       data: { title: tab.title },
       width: "28rem",
-      ariaLabelledBy: "exampleDialog-fechar-aba-titulo",
+      ariaLabelledBy: "dialogo-fechar-aba-titulo",
       restoreFocus: ACTIVE_TAB_SELECTOR,
     });
 
@@ -487,7 +499,7 @@ export class AppComponent implements OnInit {
     const ref = this.dialog.open<string>(DialogRenameTabComponent, {
       data: { title: tab.title },
       width: "28rem",
-      ariaLabelledBy: "exampleDialog-renomear-aba-titulo",
+      ariaLabelledBy: "dialogo-renomear-aba-titulo",
       restoreFocus: ACTIVE_TAB_SELECTOR,
     });
 
@@ -530,7 +542,7 @@ export class AppComponent implements OnInit {
       {
         width: "min(92vw, 960px)",
         height: "min(85dvh, 640px)",
-        ariaLabelledBy: "exampleDialog-exemplos-titulo",
+        ariaLabelledBy: "dialogo-exemplos-titulo",
       },
     );
 
@@ -567,7 +579,7 @@ export class AppComponent implements OnInit {
       width: "min(92vw, 768px)",
       // Alto o bastante para a prévia do editor e os controles abaixo dela
       height: "min(90dvh, 720px)",
-      ariaLabelledBy: "exampleDialog-configuracoes-titulo",
+      ariaLabelledBy: "dialogo-configuracoes-titulo",
     });
   }
 }

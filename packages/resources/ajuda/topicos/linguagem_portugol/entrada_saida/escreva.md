@@ -14,6 +14,8 @@ O fluxograma abaixo ilustra as diversas formas de se exibir valores na tela com 
 
 ```mermaid
 flowchart TD
+    accTitle: Fluxograma das formas de usar o comando escreva
+    accDescr: Do início ao fim, o comando escreva exibe na tela uma cadeia, ou uma variável, ou o resultado de uma operação, ou vários desses valores separados por vírgula.
     entrada@{ shape: sm-circ } --> c1@{ shape: curv-trap, label: "&lt;cadeia&gt;" }
     c1 -. OU .- c2@{ shape: curv-trap, label: "&lt;variável&gt;" }
     c2 -. OU .- c3@{ shape: curv-trap, label: "&lt;operação&gt;" }

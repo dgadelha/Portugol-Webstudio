@@ -60,7 +60,8 @@ textarea {
 button {
   cursor: pointer;
 
-  &:disabled {
+  &:disabled,
+  &[aria-disabled="true"] {
     cursor: default;
   }
 }

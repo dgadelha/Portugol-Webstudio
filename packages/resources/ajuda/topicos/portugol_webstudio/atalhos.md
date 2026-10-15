@@ -2,7 +2,7 @@
 
 Tudo no Portugol Webstudio pode ser feito pelo teclado. Ao passar o mouse sobre um botão, ou chegar nele com o **Tab**, a dica mostra o atalho dele.
 
-No Mac, use **Cmd** no lugar de **Ctrl** nos atalhos do editor, e **Option** no lugar de **Alt**. Com o cursor no código, porém, o **Option** digita caracteres, como o til do "ã" (**Option + N**) e o "ç" (**Option + C**): ali, o **Option + N** e o **Option + W** não abrem nem fecham abas, e os atalhos da depuração só valem com o programa já sendo depurado, quando o código não pode ser editado. Fora do editor, todos funcionam.
+No Mac, use **Cmd** no lugar de **Ctrl**, e **Option** no lugar de **Alt**. Com o cursor no código, porém, o **Option** digita caracteres, como o til do "ã" (**Option + N**) e o "ç" (**Option + C**): ali, o **Option + N** e o **Option + W** não abrem nem fecham abas, e os atalhos da depuração só valem com o programa já sendo depurado, quando o código não pode ser editado. Fora do editor, todos funcionam.
 
 Em alguns notebooks, as teclas de função, como o **F1** e o **F5**, só funcionam junto com o **Fn**.
 

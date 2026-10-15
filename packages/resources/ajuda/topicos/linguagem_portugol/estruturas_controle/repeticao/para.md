@@ -18,6 +18,8 @@ A figura abaixo ilustra um algoritmo que exibe na tela a tabuada de 3. Note que 
 
 ```mermaid
 flowchart TD
+    accTitle: Fluxograma de um laço para
+    accDescr: Com as variáveis inteiras c e tab declaradas, o laço para conta c de 1 até 10, de 1 em 1. A cada volta, calcula tab como c vezes 3 e exibe 3 X, o valor de c, igual e o valor de tab. Quando c passa de 10, o laço termina e o algoritmo chega ao fim.
     decl["inteiro c, tab"]:::decl --> inicio([inicio])
     inicio --> para{{"c <- 1, 10, 1"}}
     para --> calc["tab <- c * 3"]

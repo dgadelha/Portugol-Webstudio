@@ -1,6 +1,6 @@
 # O editor de código
 
-Cada programa fica numa aba de código. Ela tem a barra de ações à esquerda, o editor no meio e, embaixo, o painel com a **Saída** e os **Problemas**.
+Cada programa fica numa aba de código. Ela tem a barra de ações à esquerda, o editor no meio e, embaixo, o painel com a **Saída**, os **Problemas** e as **Variáveis**.
 
 ![Uma aba de código com o programa executado](../../recursos/imagens/light/webstudio/primeiro-programa@2x.webp)
 

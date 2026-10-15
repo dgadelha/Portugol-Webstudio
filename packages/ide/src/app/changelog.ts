@@ -5,7 +5,10 @@ import changelogSource from "./changelog.gerado.md";
  * O `changelog.gerado.md` é gerado antes do `start` e do `release` (ver `package.json`), com uma seção `## BETA` a
  * mais para o que está em `changelog/` e ainda não chegou na main.
  */
+// O comentário para quem contribui, no começo do arquivo, não aparece na IDE: o sanitizador do Angular o tiraria do
+// HTML de qualquer jeito, com um aviso no console a cada vez que a aba abre
 const sections = changelogSource
+  .replaceAll(/<!--[\s\S]*?-->\n*/g, "")
   .split(/^(?=## )/m)
   .map(section => section.replace(/^## BETA$/m, "## Em teste na versão beta"));
 

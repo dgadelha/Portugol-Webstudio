@@ -24,6 +24,8 @@ A figura abaixo ilustra um algoritmo que verifica se o número digitado pelo usu
 
 ```mermaid
 flowchart TD
+    accTitle: Fluxograma de um desvio condicional se
+    accDescr: Com a variável inteira numero declarada, o algoritmo pede que o usuário informe um número e o lê. Se numero for igual a 0, exibe a mensagem O número digitado é 0 e vai para o fim. Se não for, vai direto para o fim, sem fazer nada.
     decl["inteiro numero"]:::decl --> inicio([inicio])
     inicio --> msg@{ shape: curv-trap, label: "&quot;Informe um número: &quot;" }
     msg --> leia@{ shape: manual-input, label: "numero" }

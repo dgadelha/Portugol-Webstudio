@@ -23,6 +23,8 @@ O fluxograma abaixo ilustra um algoritmo que lê as variáveis: idade, salario, 
 
 ```mermaid
 flowchart TD
+    accTitle: Fluxograma de um algoritmo que lê várias variáveis
+    accDescr: Depois do início, o algoritmo lê, em ordem, a idade, o salario, o nome e o sobrenome, e as notas nota1, nota2 e nota3, e então chega ao fim.
     inicio([inicio]) --> l1@{ shape: manual-input, label: "idade" }
     l1 --> l2@{ shape: manual-input, label: "salario" }
     l2 --> l3@{ shape: manual-input, label: "nome, sobrenome" }

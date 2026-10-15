@@ -92,10 +92,19 @@
       <div class="preview-code">
         <ngx-monaco-editor [options]="editorOptions" [(ngModel)]="exampleCode" (init)="editor = $event" />
       </div>
+    } @else if (!loading) {
+      <p class="preview-empty">Nenhum exemplo para mostrar.</p>
+    }
 
+    @if (!loading) {
       <div class="preview-footer">
         <span class="preview-hint"><kbd>Enter</kbd> abre o exemplo escolhido</span>
-        <button type="button" class="btn btn-primary open-button" (click)="openExample(current)">
+        <button
+          type="button"
+          class="btn btn-primary open-button"
+          [attr.aria-disabled]="!current || null"
+          (click)="openCurrent()"
+        >
           <svg-icon src="assets/mdi/tab-plus.svg" aria-hidden="true" />
           Abrir exemplo
         </button>

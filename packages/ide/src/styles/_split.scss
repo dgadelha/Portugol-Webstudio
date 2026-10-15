@@ -51,4 +51,10 @@ as-split {
   > .as-split-gutter::after {
     display: none;
   }
+
+  // O contorno de foco padrão fica para dentro e some num divisor de 1px
+  > .as-split-gutter:focus-visible {
+    outline-width: 2px;
+    outline-offset: 0;
+  }
 }

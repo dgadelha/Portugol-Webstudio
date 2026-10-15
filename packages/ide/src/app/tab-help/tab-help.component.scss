@@ -94,6 +94,14 @@ as-split-area {
   padding: 1.5rem 2rem 3rem;
 }
 
+// No celular, o conteúdo ocupa quase toda a largura: as tabelas e os códigos cabem
+// inteiros mais vezes, sem precisar rolar de lado.
+@media (max-width: 575px) {
+  .help-content {
+    padding: 1rem 1rem 2rem;
+  }
+}
+
 // O HTML vem do Markdown: o `markdown` injeta o conteúdo sem o escopo do
 // componente. O texto, as tabelas e o código em linha seguem
 // `styles/_markdown.scss`; aqui ficam só os blocos próprios da Ajuda.

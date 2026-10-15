@@ -206,9 +206,13 @@ button.status-item:hover {
   color: var(--pws-success-fg);
 }
 
-// Pausado na depuração: a mesma cor do selo do painel
+// Pausado na depuração e esperando um `leia`: as mesmas cores dos selos do painel
 .status-paused {
   color: var(--pws-info-fg);
+}
+
+.status-waiting {
+  color: var(--pws-warning-fg);
 }
 
 .status-beta {

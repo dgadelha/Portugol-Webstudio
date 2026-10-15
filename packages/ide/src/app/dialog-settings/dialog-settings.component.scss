@@ -80,16 +80,18 @@ svg-icon {
     font-size: var(--pws-text-lg);
   }
 
+  // O mesmo subtítulo e o mesmo lugar do botão de fechar do `.dialog-header` dos outros diálogos
   p {
     margin-top: 0.125rem;
     color: var(--pws-fg-muted);
-    font-size: var(--pws-text-md);
+    font-size: var(--pws-text-ui);
   }
 
   .close {
     position: absolute;
-    top: 0.5rem;
-    right: 0.5rem;
+    top: 50%;
+    right: 0.75rem;
+    transform: translateY(-50%);
   }
 }
 

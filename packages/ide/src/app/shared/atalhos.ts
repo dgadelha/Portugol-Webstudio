@@ -1,3 +1,5 @@
+import { isMacintosh } from "../../settings";
+
 const EDITÁVEIS = new Set(["INPUT", "TEXTAREA", "SELECT"]);
 
 /**
@@ -24,8 +26,15 @@ export function atalhoDoEvento(event: KeyboardEvent): string | undefined {
     return undefined;
   }
 
-  if (event.metaKey || (event.ctrlKey && event.altKey)) {
+  if (event.ctrlKey && event.altKey) {
     return undefined;
+  }
+
+  // No Mac, o Cmd faz o papel do Ctrl, como no editor de código: Cmd+S é o "ctrl+s"
+  if (event.metaKey) {
+    return isMacintosh && !event.ctrlKey && !event.altKey && !event.shiftKey
+      ? `ctrl+${event.key.toLowerCase()}`
+      : undefined;
   }
 
   // Com o Shift, só as teclas de função, como o Shift+F5 do Parar: com as letras, o Shift

@@ -41,7 +41,7 @@ No celular e no tablet, o teclado da tela não consegue digitar direto na saída
 
 ## O painel de baixo
 
-O painel tem duas abas, **Saída** e **Problemas**, e alguns botões à direita:
+O painel tem três abas, **Saída**, **Problemas** e **Variáveis** (veja [Executando passo a passo](depurando.md)), e alguns botões à direita:
 
 - **Limpar saída** apaga o que está na saída.
 - **Recolher painel** e **Mostrar painel** escondem e mostram o conteúdo do painel.

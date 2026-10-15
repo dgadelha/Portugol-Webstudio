@@ -79,6 +79,12 @@ const SEVERITIES: Record<PortugolDiagnosticSeverity, ProblemSeverity> = {
 type PanelView = "output" | "problems" | "variables";
 
 /**
+ * Quanto um passo da depuração pode levar, em milissegundos, antes de o status voltar a
+ * dizer "Executando".
+ */
+const LONG_STEP_DELAY = 500;
+
+/**
  * Os comandos que retomam um programa pausado na depuração.
  */
 type DebugResume = Extract<DebugCommand["type"], "step" | "stepOver" | "stepOut" | "continue">;
@@ -243,9 +249,12 @@ export class TabEditorComponent implements OnInit, OnDestroy {
 
   /**
    * Um passo (Próximo passo, Pular função ou Sair da função) em andamento: o status não diz
-   * "Executando" entre duas pausas, senão o leitor de tela o anunciaria a cada passo.
+   * "Executando" entre duas pausas, senão o leitor de tela o anunciaria a cada passo. Só
+   * vale pelo `LONG_STEP_DELAY`: um passo mais longo volta a mostrar o "Executando".
    */
   readonly stepInFlight = signal(false);
+
+  private longStepTimer?: ReturnType<typeof setTimeout>;
 
   /**
    * Onde a barra flutuante da depuração avançada foi deixada, em relação ao alto e ao
@@ -316,6 +325,9 @@ export class TabEditorComponent implements OnInit, OnDestroy {
   } = {
     theme: "portugol-dark",
     language: "portugol",
+    // O nome do editor para os leitores de tela; sem ele, os três editores da aba seriam
+    // "Editor content", em inglês
+    ariaLabel: "Código",
     tabCompletion: "on",
     // A margem dos pontos de parada e da seta da linha em que a depuração parou: só na
     // depuração avançada (veja o `executionAdvancedDebugging`)
@@ -384,6 +396,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
 
   stdOutEditorOptions: monaco.editor.IStandaloneEditorConstructionOptions = {
     theme: "portugol-dark",
+    ariaLabel: "Saída do programa",
     lineNumbers: "off",
     readOnly: true,
     minimap: { enabled: false },
@@ -400,6 +413,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
 
   generatedCodeEditorOptions: monaco.editor.IStandaloneEditorConstructionOptions = {
     ...this.stdOutEditorOptions,
+    ariaLabel: "Código JavaScript gerado",
     language: "swift",
     guides: { indentation: true },
   };
@@ -699,6 +713,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.firstLayout?.disconnect();
     this.debugToolbarFit?.disconnect();
+    clearTimeout(this.longStepTimer);
     this.executor.stop();
     this.worker.abortTranspilation();
     this._code$?.unsubscribe();
@@ -1057,6 +1072,12 @@ export class TabEditorComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * O código gerado está aberto. Fechado, ele fica fora da ordem do Tab: o foco cairia num
+   * editor de largura zero, invisível.
+   */
+  readonly generatedCodeOpen = signal(false);
+
+  /**
    * O código gerado fica escondido à direita do editor, atrás de um divisor de 1px: quem o
    * arrasta abre o JavaScript gerado. O valor é a largura do código gerado, em %.
    */
@@ -1064,6 +1085,8 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     const size = sizes[1];
 
     if (typeof size === "number") {
+      this.generatedCodeOpen.set(size > 0);
+
       // 0 = o código gerado foi fechado de novo
       this.gaService.event("split_drag", "Divisores", "codigo_gerado", undefined, undefined, {
         value: Math.round(size),
@@ -1265,6 +1288,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     }
 
     this.debugging = false;
+    clearTimeout(this.longStepTimer);
     this.stepInFlight.set(false);
     this.debugToolbarFit?.disconnect();
     this.debugToolbarFit = undefined;
@@ -1302,6 +1326,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
 
     this.showCurrentLine(pause.line);
     this.codeEditor?.revealLineInCenterIfOutsideViewport(pause.line);
+    clearTimeout(this.longStepTimer);
     this.stepInFlight.set(false);
 
     // Uma pausa numa aba que não está à vista (com o Continuar, a pessoa pode ter trocado
@@ -1481,6 +1506,16 @@ export class TabEditorComponent implements OnInit, OnDestroy {
 
     this.paused.set(false);
     this.stepInFlight.set(type !== "continue");
+
+    // Um passo que demora (pular uma função com um laço longo) volta a mostrar o "Executando",
+    // senão a depuração pareceria travada
+    clearTimeout(this.longStepTimer);
+
+    if (type !== "continue") {
+      this.longStepTimer = setTimeout(() => {
+        this.stepInFlight.set(false);
+      }, LONG_STEP_DELAY);
+    }
 
     // Continuando, o programa pode demorar até a próxima pausa: a linha e as variáveis
     // de agora não valem mais. Num passo, ficam até a próxima pausa, sem piscar.
@@ -1722,7 +1757,14 @@ export class TabEditorComponent implements OnInit, OnDestroy {
         this.outputVisible() &&
         (!this.debugging || this.executor.waitingForInput)
       ) {
-        editor.focus();
+        // Num `leia` da depuração, a saída acabou de trocar de lugar com as variáveis e só
+        // aparece na próxima renderização: escondida, ela não receberia o foco
+        afterNextRender(
+          () => {
+            editor.focus();
+          },
+          { injector: this.injector },
+        );
       }
     }
   }

@@ -15,6 +15,8 @@ A figura abaixo ilustra um algoritmo que calcula a área de um quadrado. Note qu
 
 ```mermaid
 flowchart TD
+    accTitle: Fluxograma de um laço faca enquanto
+    accDescr: Com as variáveis reais aresta e area declaradas, o algoritmo entra no laço: pede que o usuário informe o valor da aresta e o lê. Se aresta for menor ou igual a 0, volta ao começo do laço e pede de novo. Se não, calcula area como aresta ao quadrado, exibe A área é: seguida da área, e chega ao fim.
     decl["real aresta, area"]:::decl --> inicio([inicio])
     inicio --> laco@{ shape: sm-circ }
     laco --> msg@{ shape: curv-trap, label: "&quot;Informe o valor da aresta: &quot;" }

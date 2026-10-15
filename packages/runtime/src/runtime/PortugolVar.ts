@@ -255,5 +255,22 @@ class PortugolVar {
         return this.stringValue();
     }
   }
+
+  // O valor como se escreve no código, para a aba Variáveis mostrar e copiar a declaração:
+  // numa cadeia ou num caracter, as aspas, a barra invertida e as quebras de linha voltam a
+  // ser sequências de escape, senão a declaração copiada não seria um Portugol válido
+  literal() {
+    if (this.type !== "cadeia" && this.type !== "caracter") {
+      return this.toString();
+    }
+
+    const aspa = this.type === "cadeia" ? '"' : "'";
+    const escapes = { "\\\\": "\\\\\\\\", '"': '\\\\"', "'": "\\\\'", "\\n": "\\\\n", "\\t": "\\\\t", "\\r": "\\\\r", "\\b": "\\\\b", "\\f": "\\\\f" };
+
+    // Só a aspa que delimita o valor precisa de escape: a outra fica como está
+    const escapar = (caractere) => ((caractere === '"' || caractere === "'") && caractere !== aspa ? caractere : escapes[caractere]);
+
+    return aspa + this.stringValue().replace(/[\\\\"'\\n\\t\\r\\b\\f]/g, escapar) + aspa;
+  }
 }
 `;

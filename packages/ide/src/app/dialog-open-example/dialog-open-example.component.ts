@@ -1,3 +1,4 @@
+import { LiveAnnouncer } from "@angular/cdk/a11y";
 import { DialogRef } from "@angular/cdk/dialog";
 import { HttpClient } from "@angular/common/http";
 import {
@@ -62,6 +63,7 @@ export class DialogOpenExampleComponent implements OnInit, OnDestroy {
   private responsive = inject(ResponsiveService);
   private themeService = inject(ThemeService);
   private injector = inject(Injector);
+  private announcer = inject(LiveAnnouncer);
   /**
    * O diálogo fecha com o exemplo escolhido, e a janela o abre numa aba nova.
    */
@@ -88,6 +90,7 @@ export class DialogOpenExampleComponent implements OnInit, OnDestroy {
   query = "";
   current: ExampleItem | null = null;
   loading = true;
+  private noResults = false;
 
   readonly isBelowMd = this.responsive.isBelowMd;
   rawExampleCode = "";
@@ -134,11 +137,8 @@ export class DialogOpenExampleComponent implements OnInit, OnDestroy {
       .subscribe(data => {
         this.loading = false;
         this.entries = this.flattenExamples(data);
+        // A busca vazia já abre o primeiro exemplo na prévia
         this.search("");
-
-        if (!this.isBelowMd() && this.filtered[0]) {
-          this.loadItem(this.filtered[0].item);
-        }
       });
 
     this._theme$ = this.themeService.theme$.subscribe(theme => {
@@ -187,9 +187,30 @@ export class DialogOpenExampleComponent implements OnInit, OnDestroy {
       }
     }
 
+    // Sem resultados, a prévia não pode continuar num exemplo que não está na lista: o
+    // Abrir exemplo e o Enter abririam algo que a pessoa não vê, e o
+    // aria-activedescendant apontaria para uma opção que saiu da página
+    if (this.filtered.length === 0) {
+      this.clearCurrent();
+      return;
+    }
+
+    this.noResults = false;
+
     // Mantém a prévia no primeiro resultado quando o exemplo aberto some da busca
-    if (!this.isBelowMd() && this.filtered[0] && this.filtered.every(entry => entry.item.id !== this.current?.id)) {
+    if (!this.isBelowMd() && this.filtered.every(entry => entry.item.id !== this.current?.id)) {
       this.loadItem(this.filtered[0].item);
+    }
+  }
+
+  /**
+   * Abre o exemplo da prévia pelo botão. Sem exemplo, o botão fica com `aria-disabled`
+   * em vez de `disabled`, como na barra de ações, para continuar alcançável pelo Tab,
+   * e por isso o clique ainda chega aqui.
+   */
+  openCurrent() {
+    if (this.current) {
+      this.openExample(this.current);
     }
   }
 
@@ -277,6 +298,22 @@ export class DialogOpenExampleComponent implements OnInit, OnDestroy {
           this.dialogRef.close({ title: item.name, code, file: item.file });
         }
       });
+  }
+
+  private clearCurrent() {
+    // O aviso vale só na passagem para "sem resultados": repetir a cada tecla
+    // interromperia a leitura do que a pessoa digita
+    if (!this.noResults) {
+      void this.announcer.announce("Nenhum exemplo encontrado.", "polite");
+    }
+
+    this.noResults = true;
+    this._loadSubscription$?.unsubscribe();
+    this.current = null;
+    this.descriptionExpanded = false;
+    this.exampleCode = "";
+    this.rawExampleCode = "";
+    this.rawExampleCodeId = "";
   }
 
   private normalize(text: string) {

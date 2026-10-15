@@ -31,7 +31,7 @@
             type="button"
             class="tab-label"
             role="tab"
-            aria-describedby="atalhos-aba"
+            [attr.aria-describedby]="tab.type === 'editor' ? 'atalhos-aba-codigo' : 'atalhos-aba'"
             [id]="`aba-${tab.id}`"
             [attr.aria-controls]="`painel-${tab.id}`"
             [attr.aria-selected]="activeTabId() === tab.id"
@@ -88,7 +88,8 @@
       <svg-icon src="assets/mdi/plus.svg" aria-hidden="true" />
     </button>
 
-    <span id="atalhos-aba" class="visually-hidden">Delete fecha a aba; F2 renomeia.</span>
+    <span id="atalhos-aba-codigo" class="visually-hidden">Delete fecha a aba; F2 renomeia.</span>
+    <span id="atalhos-aba" class="visually-hidden">Delete fecha a aba.</span>
   </div>
 
   <div
@@ -159,6 +160,10 @@
       {{ problemCounts().errors }}
       <svg-icon src="assets/mdi/alert-outline.svg" aria-hidden="true" />
       {{ problemCounts().warnings }}
+      @if (problemCounts().infos > 0) {
+        <svg-icon src="assets/mdi/information-outline.svg" aria-hidden="true" />
+        {{ problemCounts().infos }}
+      }
     </button>
 
     @if (editor.paused()) {
@@ -166,10 +171,15 @@
         <svg-icon src="assets/mdi/pause.svg" aria-hidden="true" />
         Pausado na linha {{ editor.debugPause()?.line }}
       </span>
-    } @else if (editor.executor.waitingForInput || (editor.executor.running && !editor.stepInFlight())) {
+    } @else if (editor.executor.waitingForInput) {
+      <span class="status-item status-running status-waiting">
+        <svg-icon src="assets/mdi/keyboard-outline.svg" aria-hidden="true" />
+        Aguardando entrada
+      </span>
+    } @else if (editor.executor.running && !editor.stepInFlight()) {
       <span class="status-item status-running">
         <svg-icon src="assets/mdi/play-outline.svg" aria-hidden="true" />
-        {{ editor.executor.waitingForInput ? "Aguardando entrada" : "Executando" }}
+        Executando
       </span>
     }
 

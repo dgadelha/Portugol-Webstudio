@@ -13,6 +13,16 @@ const escapeHtml = (text: string) =>
  * botão "Tente você mesmo" são adicionados pela aba de ajuda depois da renderização.
  */
 export const markedPortugol: MarkedExtension = {
+  hooks: {
+    /**
+     * Cada tabela fica numa caixa que rola na horizontal, como a `.table-responsive` do
+     * Bootstrap: numa tela estreita, só a tabela rola, e não a página toda. A aba de ajuda
+     * torna a caixa alcançável pelo teclado quando a tabela não cabe nela. As tabelas do
+     * Markdown não se aninham, e o `<table>` dentro de um código chega aqui escapado.
+     */
+    postprocess: (html: string) =>
+      html.replaceAll("<table>", '<div class="tabela"><table>').replaceAll("</table>", "</table></div>"),
+  },
   renderer: {
     /**
      * Uma imagem com a densidade no nome, como `inicio@2x.webp`, vai só no `srcset`, com ela: o

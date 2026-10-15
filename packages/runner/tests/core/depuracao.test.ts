@@ -455,6 +455,34 @@ describe("Depuração", () => {
     expect(variable(last, "PI")).toMatchObject({ constant: true, text: "3.14" });
   });
 
+  test("Uma cadeia com aspas, barras e quebras de linha aparece como no código", async () => {
+    const { pauses } = await debug(portugol`
+      programa {
+        funcao inicio() {
+          cadeia s = "a\\"b\\\\c\\nd\\te"
+          escreva("fim")
+        }
+      }
+    `);
+
+    expect(variable(pauses.at(-1)!, "s")).toMatchObject({ type: "cadeia", text: String.raw`"a\"b\\c\nd\te"` });
+  });
+
+  test("Um caracter com barra invertida aparece como no código", async () => {
+    const { pauses } = await debug(portugol`
+      programa {
+        funcao inicio() {
+          caracter barra = '\\\\'
+          cadeia s = "it's"
+          escreva("fim")
+        }
+      }
+    `);
+
+    expect(variable(pauses.at(-1)!, "barra")).toMatchObject({ type: "caracter", text: String.raw`'\\'` });
+    expect(variable(pauses.at(-1)!, "s")).toMatchObject({ type: "cadeia", text: `"it's"` });
+  });
+
   test("O leia funciona durante a depuração", async () => {
     const { pauses, output } = await debug(
       portugol`

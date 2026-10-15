@@ -230,7 +230,13 @@
   (dragEnd)="onSplitDragEnd($event)"
 >
   <as-split-area size="*">
-    <as-split direction="horizontal" class="thin-split" [gutterSize]="1" (dragEnd)="onGeneratedCodeDragEnd($event)">
+    <as-split
+      direction="horizontal"
+      class="thin-split"
+      gutterAriaLabel="Código gerado"
+      [gutterSize]="1"
+      (dragEnd)="onGeneratedCodeDragEnd($event)"
+    >
       <as-split-area class="code-editor-area" [size]="100">
         <ngx-monaco-editor
           [options]="codeEditorOptions"
@@ -316,7 +322,7 @@
         }
       </as-split-area>
 
-      <as-split-area [size]="0">
+      <as-split-area [size]="0" [attr.inert]="generatedCodeOpen() ? null : ''">
         <ngx-monaco-editor [options]="generatedCodeEditorOptions" [(ngModel)]="executor.byteCode" />
       </as-split-area>
     </as-split>

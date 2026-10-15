@@ -99,6 +99,17 @@ markdown {
     background: none;
   }
 
+  // A caixa em volta de cada tabela (`marked-portugol.ts`): numa tela estreita, a tabela
+  // rola dentro dela, sem cortar a última coluna nem fazer a página rolar de lado.
+  .tabela {
+    margin: 0 0 1em;
+    overflow-x: auto;
+
+    > table {
+      margin: 0;
+    }
+  }
+
   table {
     border-collapse: collapse;
 
