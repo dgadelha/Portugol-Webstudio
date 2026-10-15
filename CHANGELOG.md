@@ -11,6 +11,27 @@ Quando o beta chega na main, o deploy junta os arquivos de `changelog/` aqui, nu
 
 As mudanças mais recentes do Portugol Webstudio aparecem primeiro.
 
+## 15/10/2026
+
+Agora dá para executar o programa passo a passo, um comando de cada vez, vendo o valor das variáveis. Foi o pedido mais votado na pesquisa!
+
+- O botão **Depurar**, na barra de ações (ou **Alt + P**), começa o programa pausado no primeiro comando, com a linha destacada no código. Depois, o mesmo botão vira o **Próximo passo** e avança um comando de cada vez, como no Portugol Studio
+- A nova aba **Variáveis**, no painel de baixo, mostra as funções em andamento e cada variável como a linha que a declara, com o valor de agora e o que mudou destacado, e vetores e matrizes posição por posição
+- Com um leitor de tela, cada pausa é anunciada com a linha e o que mudou nas variáveis
+- Na nova seção **Execução** das configurações, a **Depuração avançada** acrescenta **Continuar**, **Pausar**, **Pular função** e **Sair da função**, numa barra flutuante sobre o código que pode ser arrastada, e pontos de parada, marcados com um clique na margem ao lado do número da linha
+- O **Parar** ganhou um atalho, **Shift + F5**, que interrompe o programa executando ou sendo depurado
+
+Veja como usar no tópico **Executando passo a passo** da Ajuda.
+
+---
+
+Os erros durante a execução ficaram mais fáceis de entender e de achar:
+
+- A saída mostra a linha e a coluna do comando em que o erro aconteceu, e essa linha fica marcada de vermelho no código
+- As mensagens são as mesmas do Portugol Studio, com as explicações e os exemplos dele, ao usar uma posição que não existe num vetor ou numa matriz, numa função que chama a si mesma sem parar e num `leia` que recebe um valor de outro tipo
+
+Os programas também ficaram mais compatíveis com o Portugol Studio: um `pare` logo depois das chaves de um `caso`, como em `caso 1: { ... } pare`, ganhou um aviso no editor, porque o Portugol Studio ignora esse `pare`, e a execução continua no caso seguinte, como também acontece aqui.
+
 ## 11/10/2026 – 13/10/2026
 
 **Novo em 13/10/2026:**
