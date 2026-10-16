@@ -8,6 +8,6 @@ O Portugol Webstudio gera um link e mostra uma mensagem com ele e o botão **Cop
 
 Quem abrir o link vê o Portugol Webstudio com o código numa aba nova, chamada "Código compartilhado". Essa pessoa recebe uma cópia: o que ela mudar não muda o seu código.
 
-> O link expira em 15 dias. Para guardar o código por mais tempo, baixe o arquivo (veja [Abas e arquivos](abas_e_arquivos.md)).
+> O link expira em 90 dias. Para guardar o código por mais tempo, baixe o arquivo (veja [Abas e arquivos](abas_e_arquivos.md)).
 
 O código é enviado para a internet ao gerar o link, e qualquer pessoa com o link pode vê-lo. Não compartilhe informações pessoais no código.
