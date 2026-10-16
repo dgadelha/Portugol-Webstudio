@@ -73,6 +73,11 @@
                 "ignore": ["jogos/**", "musica/**"]
               },
               {
+                "glob": "**/*.json",
+                "input": "node_modules/@portugol-webstudio/resources/esquemas",
+                "output": "esquemas/"
+              },
+              {
                 "glob": "**/*",
                 "input": "packages/worker/lib",
                 "output": "assets/portugol-worker/"

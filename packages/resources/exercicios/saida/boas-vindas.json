@@ -1,0 +1,22 @@
+{
+  "$schema": "https://portugol.dev/esquemas/exercicio/v1.json",
+  "id": "pws:boas-vindas",
+  "título": "Boas-vindas",
+  "tópico": "saida",
+  "dificuldade": 1,
+  "enunciado": "Escreva um programa que mostre as duas linhas abaixo, exatamente assim:\n\n```\nBem-vindo ao Portugol!\nVamos programar.\n```",
+  "solução": "programa {\n  funcao inicio() {\n    escreva(\"Bem-vindo ao Portugol!\\n\")\n    escreva(\"Vamos programar.\\n\")\n  }\n}\n",
+  "modo": "simples",
+  "exemplos": [
+    {
+      "entradas": [],
+      "saída": "Bem-vindo ao Portugol!\nVamos programar.\n"
+    }
+  ],
+  "testes": [
+    {
+      "entradas": [],
+      "saída": "Bem-vindo ao Portugol!\nVamos programar.\n"
+    }
+  ]
+}

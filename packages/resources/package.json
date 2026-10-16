@@ -1,6 +1,6 @@
 {
   "name": "@portugol-webstudio/resources",
-  "description": "Recursos do Portugol Webstudio: a Ajuda, os exemplos e os metadados das bibliotecas",
+  "description": "Recursos do Portugol Webstudio: a Ajuda, os exemplos, os exercícios e os metadados das bibliotecas",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -27,10 +27,16 @@
       "default": "./bibliotecas/index.js"
     },
     "./ajuda/*": "./ajuda/*",
-    "./exemplos/*": "./exemplos/*"
+    "./exemplos/*": "./exemplos/*",
+    "./exercicios": {
+      "types": "./exercicios/index.d.ts",
+      "default": "./exercicios/index.json"
+    },
+    "./exercicios/*": "./exercicios/*",
+    "./esquemas/*": "./esquemas/*"
   },
   "scripts": {
-    "build": "node bibliotecas/scripts/build.js"
+    "build": "node bibliotecas/scripts/build.js && node exercicios/scripts/build.js"
   },
   "devDependencies": {
     "yaml": "^2.9.1",

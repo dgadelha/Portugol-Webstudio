@@ -1,0 +1,44 @@
+{
+  "$schema": "https://portugol.dev/esquemas/exercicio/v1.json",
+  "id": "pws:par-ou-impar",
+  "título": "Par ou ímpar",
+  "tópico": "condicionais",
+  "dificuldade": 1,
+  "enunciado": "Leia um número inteiro e escreva `par` se ele for par, ou `ímpar` se ele for ímpar.\n\nO programa não deve escrever mais nada: nem mensagens antes da leitura.",
+  "solução": "programa {\n  funcao inicio() {\n    inteiro numero\n\n    leia(numero)\n\n    se (numero % 2 == 0) {\n      escreva(\"par\\n\")\n    } senao {\n      escreva(\"ímpar\\n\")\n    }\n  }\n}\n",
+  "modo": "simples",
+  "exemplos": [
+    {
+      "descrição": "um número par",
+      "entradas": ["4"],
+      "saída": "par\n"
+    },
+    {
+      "descrição": "um número ímpar",
+      "entradas": ["7"],
+      "saída": "ímpar\n"
+    }
+  ],
+  "testes": [
+    {
+      "descrição": "zero",
+      "entradas": ["0"],
+      "saída": "par\n"
+    },
+    {
+      "descrição": "um número negativo ímpar",
+      "entradas": ["-3"],
+      "saída": "ímpar\n"
+    },
+    {
+      "descrição": "um número negativo par",
+      "entradas": ["-10"],
+      "saída": "par\n"
+    },
+    {
+      "descrição": "um número grande",
+      "entradas": ["1000001"],
+      "saída": "ímpar\n"
+    }
+  ]
+}

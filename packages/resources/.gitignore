@@ -2,3 +2,7 @@
 bibliotecas/bibliotecas.json
 bibliotecas/bibliotecas.yml
 bibliotecas/index.d.ts
+
+# Gerados por `npm run build` a partir dos exercicios/<tópico>/*.json
+exercicios/index.json
+exercicios/index.d.ts

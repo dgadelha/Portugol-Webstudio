@@ -1,7 +1,14 @@
 import { PortugolJsRuntime } from "@portugol-webstudio/runtime";
 import { Subject, Subscription } from "rxjs";
 
-import { DebugCommand, IPortugolRunner, RunOptions, PortugolEvent, PortugolMessage } from "./IPortugolRunner.js";
+import {
+  DebugCommand,
+  IPortugolRunner,
+  RunOptions,
+  PortugolEvent,
+  PortugolMessage,
+  WRITTEN_VALUES,
+} from "./IPortugolRunner.js";
 
 export class PortugolWebWorkersRunner extends IPortugolRunner {
   private worker: Worker;
@@ -27,6 +34,8 @@ export class PortugolWebWorkersRunner extends IPortugolRunner {
     const runCode = /* javascript */ `
       const exec = ${this.byteCode};
 
+      ${WRITTEN_VALUES}
+
       // Os comandos da depuração podem chegar a qualquer momento, com o programa pausado ou não
       self.addEventListener("message", (message) => {
         if (message.data.type === "debug") {
@@ -40,6 +49,7 @@ export class PortugolWebWorkersRunner extends IPortugolRunner {
             self.postMessage({ type: "started" });
 
             const debug = message.data.debug;
+            const writeValues = message.data.writeValues;
 
             await exec({
               debug: debug && { ...debug, send: (message) => self.postMessage(message) },
@@ -88,6 +98,10 @@ export class PortugolWebWorkersRunner extends IPortugolRunner {
                   }
 
                   self.postMessage({ type: "stdOut", content: str });
+
+                  if (writeValues) {
+                    self.postMessage({ type: "write", values: valuesOf(args) });
+                  }
                 },
               },
             });
@@ -164,6 +178,11 @@ export class PortugolWebWorkersRunner extends IPortugolRunner {
           break;
         }
 
+        case "write": {
+          this._run.next({ type: "write", values: message.data.values });
+          break;
+        }
+
         default: {
           throw new Error(`Unknown message type: ${message.data.type}`);
         }
@@ -190,7 +209,7 @@ export class PortugolWebWorkersRunner extends IPortugolRunner {
   run(options: RunOptions = {}) {
     this.startedAt = new Date();
 
-    this.worker.postMessage({ type: "start", debug: options.debug });
+    this.worker.postMessage({ type: "start", debug: options.debug, writeValues: options.writeValues });
 
     this.running = true;
     this.running$.next(this.running);

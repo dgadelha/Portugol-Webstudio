@@ -1,0 +1,34 @@
+{
+  "$schema": "https://portugol.dev/esquemas/exercicio/v1.json",
+  "id": "pws:tabuada",
+  "título": "Tabuada",
+  "tópico": "lacos",
+  "dificuldade": 2,
+  "enunciado": "Leia um número inteiro $n$ e escreva a tabuada dele, de 1 a 10, uma conta por linha, neste formato (para $n = 3$):\n\n```\n3 x 1 = 3\n3 x 2 = 6\n...\n3 x 10 = 30\n```\n\nO programa não deve escrever mais nada: nem mensagens antes da leitura.",
+  "solução": "programa {\n  funcao inicio() {\n    inteiro n\n\n    leia(n)\n\n    para (inteiro i = 1; i <= 10; i++) {\n      escreva(n, \" x \", i, \" = \", n * i, \"\\n\")\n    }\n  }\n}\n",
+  "modo": "simples",
+  "exemplos": [
+    {
+      "descrição": "tabuada do 3",
+      "entradas": ["3"],
+      "saída": "3 x 1 = 3\n3 x 2 = 6\n3 x 3 = 9\n3 x 4 = 12\n3 x 5 = 15\n3 x 6 = 18\n3 x 7 = 21\n3 x 8 = 24\n3 x 9 = 27\n3 x 10 = 30\n"
+    }
+  ],
+  "testes": [
+    {
+      "descrição": "tabuada do 7",
+      "entradas": ["7"],
+      "saída": "7 x 1 = 7\n7 x 2 = 14\n7 x 3 = 21\n7 x 4 = 28\n7 x 5 = 35\n7 x 6 = 42\n7 x 7 = 49\n7 x 8 = 56\n7 x 9 = 63\n7 x 10 = 70\n"
+    },
+    {
+      "descrição": "tabuada do 0",
+      "entradas": ["0"],
+      "saída": "0 x 1 = 0\n0 x 2 = 0\n0 x 3 = 0\n0 x 4 = 0\n0 x 5 = 0\n0 x 6 = 0\n0 x 7 = 0\n0 x 8 = 0\n0 x 9 = 0\n0 x 10 = 0\n"
+    },
+    {
+      "descrição": "um número negativo",
+      "entradas": ["-2"],
+      "saída": "-2 x 1 = -2\n-2 x 2 = -4\n-2 x 3 = -6\n-2 x 4 = -8\n-2 x 5 = -10\n-2 x 6 = -12\n-2 x 7 = -14\n-2 x 8 = -16\n-2 x 9 = -18\n-2 x 10 = -20\n"
+    }
+  ]
+}

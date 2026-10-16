@@ -6,5 +6,11 @@
     "source.fixAll.eslint": "always",
     "source.organizeImports": "always"
   },
-  "js/ts.implicitProjectConfig.checkJs": true
+  "js/ts.implicitProjectConfig.checkJs": true,
+  "json.schemas": [
+    {
+      "fileMatch": ["packages/resources/exercicios/*/*.json"],
+      "url": "./packages/resources/esquemas/exercicio/v1.json"
+    }
+  ]
 }

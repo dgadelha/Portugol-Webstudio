@@ -15,5 +15,8 @@ packages/resources/bibliotecas/bibliotecas.json
 packages/resources/bibliotecas/bibliotecas.schema.json
 packages/resources/bibliotecas/bibliotecas.yml
 packages/resources/bibliotecas/index.d.ts
+packages/resources/esquemas/
+packages/resources/exercicios/index.json
+packages/resources/exercicios/index.d.ts
 packages/ide/src/index.html
 packages/ide/src/app/changelog.gerado.md

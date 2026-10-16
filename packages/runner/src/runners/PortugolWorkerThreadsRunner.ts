@@ -11,6 +11,8 @@ import {
   PortugolEvent,
   PortugolMessage,
   RunOptions,
+  WRITTEN_VALUES,
+  WrittenValue,
 } from "./IPortugolRunner.js";
 
 export class PortugolWorkerThreadsRunner extends IPortugolRunner {
@@ -42,6 +44,8 @@ export class PortugolWorkerThreadsRunner extends IPortugolRunner {
 
       const exec = ${this.byteCode};
 
+      ${WRITTEN_VALUES}
+
       // Os comandos da depuração podem chegar a qualquer momento, com o programa pausado ou não
       parentPort.on("message", (data) => {
         if (data.type === "debug") {
@@ -55,6 +59,7 @@ export class PortugolWorkerThreadsRunner extends IPortugolRunner {
             parentPort.postMessage({ type: "started" });
 
             const debug = data.debug;
+            const writeValues = data.writeValues;
 
             await exec({
               debug: debug && { ...debug, send: (message) => parentPort.postMessage(message) },
@@ -101,6 +106,10 @@ export class PortugolWorkerThreadsRunner extends IPortugolRunner {
                   }
 
                   parentPort.postMessage({ type: "stdOut", content: str });
+
+                  if (writeValues) {
+                    parentPort.postMessage({ type: "write", values: valuesOf(args) });
+                  }
                 },
               },
             });
@@ -131,6 +140,7 @@ export class PortugolWorkerThreadsRunner extends IPortugolRunner {
         position?: ErrorPosition;
         message?: PortugolMessage;
         pause?: DebugPause;
+        values?: WrittenValue[];
       }) => {
         switch (data.type) {
           case "stdOut": {
@@ -184,6 +194,11 @@ export class PortugolWorkerThreadsRunner extends IPortugolRunner {
             break;
           }
 
+          case "write": {
+            this._run.next({ type: "write", values: data.values! });
+            break;
+          }
+
           default: {
             throw new Error(`Unknown message type: ${data.type}`);
           }
@@ -209,7 +224,7 @@ export class PortugolWorkerThreadsRunner extends IPortugolRunner {
   run(options: RunOptions = {}) {
     this.startedAt = new Date();
 
-    this.worker.postMessage({ type: "start", debug: options.debug });
+    this.worker.postMessage({ type: "start", debug: options.debug, writeValues: options.writeValues });
 
     this.running = true;
     this.running$.next(this.running);

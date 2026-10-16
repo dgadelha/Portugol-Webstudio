@@ -1,0 +1,78 @@
+{
+  "$schema": "https://portugol.dev/esquemas/exercicio/v1.json",
+  "id": "pws:soma-de-dois-numeros",
+  "título": "Soma de dois números",
+  "tópico": "operadores",
+  "dificuldade": 1,
+  "enunciado": "Leia dois números inteiros e escreva a soma deles.\n\nO programa pode escrever mensagens antes de cada leitura, como `Digite um número: `, mas a soma precisa ser escrita como um valor do tipo `inteiro`.",
+  "solução": "programa {\n  funcao inicio() {\n    inteiro a, b\n\n    escreva(\"Digite o primeiro número: \")\n    leia(a)\n    escreva(\"Digite o segundo número: \")\n    leia(b)\n    escreva(\"A soma é \", a + b, \"\\n\")\n  }\n}\n",
+  "modo": "avançado",
+  "exemplos": [
+    {
+      "descrição": "dois positivos",
+      "entradas": ["3", "5"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 8
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "testes": [
+    {
+      "descrição": "com zero",
+      "entradas": ["0", "7"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "números negativos",
+      "entradas": ["-4", "-6"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": -10
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "positivo e negativo",
+      "entradas": ["15", "-20"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": -5
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

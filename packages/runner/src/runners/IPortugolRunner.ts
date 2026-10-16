@@ -9,7 +9,27 @@ export type PortugolEvent =
   | { type: "parseError"; errors: IPortugolCodeDiagnostic[] }
   | { type: "finish"; stopped: boolean; time: number }
   | { type: "message"; message: PortugolMessage }
-  | { type: "paused"; pause: DebugPause };
+  | { type: "paused"; pause: DebugPause }
+  | { type: "write"; values: WrittenValue[] };
+
+/**
+ * Um valor escrito pelo `escreva`, com o tipo: um por argumento, como no corretor do Portugol
+ * Studio. Uma `cadeia` que nunca recebeu valor vem como `null`.
+ */
+export type WrittenValue =
+  | { type: "inteiro" | "real"; value: number }
+  | { type: "cadeia"; value: string | null }
+  | { type: "caracter"; value: string }
+  | { type: "logico"; value: boolean };
+
+/**
+ * Função `valuesOf(args)` dos workers: os valores dos argumentos de um `escreva`, no formato
+ * de `WrittenValue`. Os argumentos sem valor são pulados, como no texto escrito.
+ */
+export const WRITTEN_VALUES = /* javascript */ `
+  const valuesOf = (args) =>
+    args.filter((arg) => typeof arg.value !== "undefined").map((arg) => ({ type: arg.type, value: arg.value }));
+`;
 
 /**
  * Onde aconteceu um erro de execução: o começo do comando, com a linha e a coluna contadas
@@ -51,6 +71,12 @@ export type RunOptions = {
    * Para um programa transpilado com os passos da depuração.
    */
   debug?: { breakpoints: number[] };
+
+  /**
+   * Manda também um evento `write` com os valores de cada `escreva`, para a correção dos
+   * exercícios.
+   */
+  writeValues?: boolean;
 };
 
 export type PortugolMessage = {

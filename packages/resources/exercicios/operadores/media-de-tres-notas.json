@@ -1,0 +1,79 @@
+{
+  "$schema": "https://portugol.dev/esquemas/exercicio/v1.json",
+  "id": "pws:media-de-tres-notas",
+  "título": "Média de três notas",
+  "tópico": "operadores",
+  "dificuldade": 1,
+  "enunciado": "Leia as três notas de um aluno, que podem ter casas decimais, e escreva a média aritmética delas:\n\n$$\\text{média} = \\frac{n_1 + n_2 + n_3}{3}$$\n\nA média precisa ser escrita como um valor do tipo `real`.",
+  "solução": "programa {\n  funcao inicio() {\n    real n1, n2, n3\n\n    escreva(\"Primeira nota: \")\n    leia(n1)\n    escreva(\"Segunda nota: \")\n    leia(n2)\n    escreva(\"Terceira nota: \")\n    leia(n3)\n    escreva(\"Média: \", (n1 + n2 + n3) / 3, \"\\n\")\n  }\n}\n",
+  "modo": "avançado",
+  "exemplos": [
+    {
+      "descrição": "notas inteiras",
+      "entradas": ["7", "8", "9"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "real",
+              "valor": 8
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "testes": [
+    {
+      "descrição": "notas com casas decimais",
+      "entradas": ["6.5", "7.5", "9.1"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "real",
+              "valor": 7.7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "média que não termina",
+      "entradas": ["10", "10", "9"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "real",
+              "valor": 9.6667
+            }
+          ],
+          "tolerância": 0.001
+        }
+      ]
+    },
+    {
+      "descrição": "todas zero",
+      "entradas": ["0", "0", "0"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "real",
+              "valor": 0
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -86,6 +86,7 @@ export default defineConfig(
       "packages/antlr/src/Portugol*.ts",
       "packages/parser/src/bibliotecas/*.gerado.ts",
       "packages/resources/bibliotecas/index.d.ts",
+      "packages/resources/exercicios/index.d.ts",
       "packages/ide/src/index.html",
     ],
   },
