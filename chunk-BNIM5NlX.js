@@ -1,0 +1,1 @@
+import"./main-TF5QG5WF.js";import{n as v,t as C}from"./chunk-BbhwivUV.js";export{C as ArchitectureModule,v as createArchitectureServices};
