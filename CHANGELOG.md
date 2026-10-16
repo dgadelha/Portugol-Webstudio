@@ -13,6 +13,10 @@ As mudanças mais recentes do Portugol Webstudio aparecem primeiro.
 
 ## 15/10/2026
 
+- Os links de compartilhamento agora valem por 90 dias, e não mais 15
+
+---
+
 Agora dá para executar o programa passo a passo, um comando de cada vez, vendo o valor das variáveis. Foi o pedido mais votado na pesquisa!
 
 - O botão **Depurar**, na barra de ações (ou **Alt + P**), começa o programa pausado no primeiro comando, com a linha destacada no código. Depois, o mesmo botão vira o **Próximo passo** e avança um comando de cada vez, como no Portugol Studio
