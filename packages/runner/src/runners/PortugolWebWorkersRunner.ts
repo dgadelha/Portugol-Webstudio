@@ -12,6 +12,7 @@ import {
 
 export class PortugolWebWorkersRunner extends IPortugolRunner {
   private worker: Worker;
+  private workerUrl: string;
 
   stdIn = new Subject<string>();
   private _stdIn$?: Subscription;
@@ -50,9 +51,11 @@ export class PortugolWebWorkersRunner extends IPortugolRunner {
 
             const debug = message.data.debug;
             const writeValues = message.data.writeValues;
+            const call = message.data.call;
 
-            await exec({
+            const result = await exec({
               debug: debug && { ...debug, send: (message) => self.postMessage(message) },
+              call,
               functions: {
                 __debug: async (...args) => {
                   for (const arg of args) {
@@ -105,6 +108,10 @@ export class PortugolWebWorkersRunner extends IPortugolRunner {
                 },
               },
             });
+
+            if (call) {
+              self.postMessage({ type: "return", value: returnOf(result) });
+            }
           }
         } catch (error) {
           self.postMessage({ type: "error", error: {
@@ -117,13 +124,14 @@ export class PortugolWebWorkersRunner extends IPortugolRunner {
       }, { once: true });
     `;
 
-    this.worker = new Worker(
-      URL.createObjectURL(
-        new Blob([PortugolJsRuntime, runCode], {
-          type: "text/javascript",
-        }),
-      ),
+    // Cada execução tem o seu (a correção cria um por caso e por função conferida): o
+    // destroy libera o texto do programa, que senão fica na memória até fechar a página
+    this.workerUrl = URL.createObjectURL(
+      new Blob([PortugolJsRuntime, runCode], {
+        type: "text/javascript",
+      }),
     );
+    this.worker = new Worker(this.workerUrl);
 
     this.worker.addEventListener("message", (message: MessageEvent) => {
       switch (message.data.type) {
@@ -183,6 +191,11 @@ export class PortugolWebWorkersRunner extends IPortugolRunner {
           break;
         }
 
+        case "return": {
+          this._run.next({ type: "return", value: message.data.value ?? null });
+          break;
+        }
+
         default: {
           throw new Error(`Unknown message type: ${message.data.type}`);
         }
@@ -209,7 +222,7 @@ export class PortugolWebWorkersRunner extends IPortugolRunner {
   run(options: RunOptions = {}) {
     this.startedAt = new Date();
 
-    this.worker.postMessage({ type: "start", debug: options.debug, writeValues: options.writeValues });
+    this.worker.postMessage({ type: "start", ...options });
 
     this.running = true;
     this.running$.next(this.running);
@@ -219,6 +232,7 @@ export class PortugolWebWorkersRunner extends IPortugolRunner {
 
   destroy(stopped = false) {
     this.worker.terminate();
+    URL.revokeObjectURL(this.workerUrl);
 
     this._run.next({
       type: "finish",

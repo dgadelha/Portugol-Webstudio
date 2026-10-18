@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from "@angular/core";
-import { CaseFailure, CaseResult, EXERCISE_TIMEOUT } from "@portugol-webstudio/runner";
+import { CaseFailure, CaseResult, EXERCISE_TIMEOUT, portugolCall, portugolSignature } from "@portugol-webstudio/runner";
 import { AngularSvgIconModule } from "angular-svg-icon";
 
 import { ExerciseCheckOutcome, ExercisesService } from "../exercises.service";
@@ -33,7 +33,7 @@ export class ExerciseResultsComponent {
 
   caseLabel(result: CaseResult) {
     const kind = result.kind === "exemplo" ? "Exemplo" : "Teste";
-    const description = result.descrição ? ` (${result.descrição})` : "";
+    const description = result.description ? ` (${result.description})` : "";
 
     return `${kind} ${result.index}${description}`;
   }
@@ -49,16 +49,32 @@ export class ExerciseResultsComponent {
         return "resposta diferente";
       }
 
+      case "differentReturn": {
+        return `a função ${failure.name} retornou outro valor`;
+      }
+
+      case "missingFunction": {
+        return `a função ${failure.name} não existe`;
+      }
+
+      case "differentSignature": {
+        return `a função ${failure.name} tem outra assinatura`;
+      }
+
+      // Com `name`, foi a chamada da função conferida, e não o inicio
       case "timeout": {
-        return `tempo esgotado (${EXERCISE_TIMEOUT / 1000} segundos)`;
+        const where = failure.name ? ` na função ${failure.name}` : "";
+
+        return `tempo esgotado${where} (${EXERCISE_TIMEOUT / 1000} segundos)`;
       }
 
       case "error": {
-        return "erro de execução";
+        return failure.name ? `erro de execução na função ${failure.name}` : "erro de execução";
       }
 
       case "missingInputs": {
-        return "pediu mais entradas do que o caso tem";
+        // Uma função conferida sozinha não recebe entradas: o leia foi dentro dela
+        return failure.name ? `a função ${failure.name} pediu uma entrada` : "pediu mais entradas do que o caso tem";
       }
 
       case "extraInputs": {
@@ -77,8 +93,21 @@ export class ExerciseResultsComponent {
    * As falhas que têm o que mostrar além do tipo, nos exemplos.
    */
   hasDetails(failure: CaseFailure) {
-    return ["differentOutput", "differentValues", "missingValue", "error"].includes(failure.type);
+    return [
+      "differentOutput",
+      "differentValues",
+      "missingValue",
+      "error",
+      "differentReturn",
+      "differentSignature",
+    ].includes(failure.type);
   }
+
+  /**
+   * A assinatura esperada e a declarada, e a chamada que a correção fez, como no Portugol.
+   */
+  protected readonly signature = portugolSignature;
+  protected readonly call = portugolCall;
 
   /**
    * As linhas da saída como são comparadas, para mostrar entre aspas.

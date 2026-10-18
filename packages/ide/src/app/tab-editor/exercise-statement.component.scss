@@ -58,6 +58,26 @@
   }
 }
 
+// Um botão com cara de link, no meio do texto: quebra junto com ele
+.link-button {
+  display: inline;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--pws-info-fg);
+  font: inherit;
+  text-align: start;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+
+  &[aria-disabled="true"] {
+    color: var(--pws-fg-muted);
+    text-decoration: none;
+    cursor: default;
+  }
+}
+
 .statement-note {
   display: flex;
   align-items: flex-start;

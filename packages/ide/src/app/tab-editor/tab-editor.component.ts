@@ -274,6 +274,22 @@ export class TabEditorComponent implements OnInit, OnDestroy {
   });
 
   /**
+   * O código que está no editor, a cada mudança: `code` não avisa quem depende dele.
+   */
+  private readonly editorCode = signal("");
+
+  /**
+   * O exercício passou, e o código no editor já não é o que passou: o enunciado oferece
+   * recuperá-lo.
+   */
+  readonly approvedCodeChanged = computed(() => {
+    const exercise = this.exercise();
+    const approved = exercise && !this.exerciseCopy() ? this.exercises.progress()[exercise.id]?.aprovado : undefined;
+
+    return approved !== undefined && approved.código !== this.editorCode();
+  });
+
+  /**
    * O andamento do Verificar, enquanto ele confere os casos.
    */
   readonly checkProgress = signal<{ done: number; total: number } | null>(null);
@@ -571,7 +587,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     // O estado já entrega a aba pronta, inclusive o esqueleto de um programa novo.
-    this.code = this.workspace.contentsOf(this.tabId());
+    this.setCode(this.workspace.contentsOf(this.tabId()));
     const tab = this.workspace.tabs().find(item => item.id === this.tabId());
 
     this.exerciseId = tab?.exerciseId;
@@ -1078,8 +1094,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     // vindo de outra janela): só uma mudança no texto é uma edição
     const edited = contents !== this.code;
 
-    this.code = contents;
-    this.workspace.setContents(this.tabId(), contents);
+    this.setCode(contents);
 
     if (edited && this.exerciseId && !this.exerciseCopy()) {
       clearTimeout(this.draftTimer);
@@ -1137,8 +1152,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     // Toda edição é gravada, então o rascunho gravado é o código mais novo: uma aba restaurada
     // com outro código (de uma janela fechada antes) começa por ele
     if (stored !== undefined && stored !== this.code && !this.exerciseCopy()) {
-      this.code = stored;
-      this.workspace.setContents(this.tabId(), stored);
+      this.setCode(stored);
     }
 
     // Sem rascunho gravado, a aba mostra o código inicial: o primeiro rascunho de outra janela
@@ -1198,26 +1212,76 @@ export class TabEditorComponent implements OnInit, OnDestroy {
    * mantém o cursor onde estava. O resultado do último Verificar era de outro código.
    */
   private loadStoredDraft(code: string) {
-    this.code = code;
-    this.workspace.setContents(this.tabId(), code);
+    // Antes da edição: o editor avisa a mudança, e o mesmo código não conta como edição
+    this.setCode(code);
     this.checkOutcome.set(null);
 
+    const selections = this.codeEditor?.getSelections();
+    const replaced = this.replaceEditorText("rascunho-de-outra-janela", code);
+
+    if (selections && replaced) {
+      this.codeEditor?.setSelections(selections);
+    }
+  }
+
+  /**
+   * O código da aba: o campo, o sinal de quem depende dele e o conteúdo gravado na área de
+   * trabalho, sempre juntos.
+   */
+  private setCode(code: string) {
+    this.code = code;
+    this.editorCode.set(code);
+
+    if (this.workspace.contentsOf(this.tabId()) !== code) {
+      this.workspace.setContents(this.tabId(), code);
+    }
+  }
+
+  /**
+   * Troca todo o texto do editor por uma edição entre paradas do desfazer: o Ctrl+Z volta ao
+   * texto anterior, e o `ngModel` recebe a mudança pelo editor, sem o `setValue` que apagaria o
+   * histórico. Devolve se o editor existe para receber a edição.
+   */
+  private replaceEditorText(source: string, text: string) {
     const editor = this.codeEditor;
     const model = editor?.getModel();
 
     if (!editor || !model) {
+      return false;
+    }
+
+    editor.pushUndoStop();
+    editor.executeEdits(source, [{ range: model.getFullModelRange(), text }]);
+    editor.pushUndoStop();
+
+    return true;
+  }
+
+  /**
+   * O Reverter alterações, no enunciado: o código aprovado volta para o editor como
+   * uma edição (o Ctrl+Z desfaz, e o rascunho é gravado). O foco vai para o editor, porque o
+   * botão some quando o código volta a ser o que passou. O resultado do último Verificar era de
+   * outro código.
+   */
+  protected restoreApprovedCode() {
+    const exercise = this.exercise();
+    const approved = exercise ? this.exercises.progress()[exercise.id]?.aprovado : undefined;
+
+    if (!exercise || !approved || !this.canRun()) {
       return;
     }
 
-    const selections = editor.getSelections();
+    const replaced = this.replaceEditorText("codigo-aprovado", approved.código);
 
-    editor.pushUndoStop();
-    editor.executeEdits("rascunho-de-outra-janela", [{ range: model.getFullModelRange(), text: code }]);
-    editor.pushUndoStop();
-
-    if (selections) {
-      editor.setSelections(selections);
+    if (!replaced) {
+      return;
     }
+
+    this.codeEditor?.setPosition({ lineNumber: 1, column: 1 });
+    this.checkOutcome.set(null);
+    this.codeEditor?.focus();
+    void this.announcer.announce("O código que passou voltou para o editor.", "polite");
+    this.gaService.event("exercise_restore_approved", "Exercícios", exercise.id);
   }
 
   /**
@@ -1370,9 +1434,8 @@ export class TabEditorComponent implements OnInit, OnDestroy {
       if (confirmed) {
         const code = exercise.códigoInicial ?? defaultCode(this.settingsService.editorIndentation());
 
-        this.code = code;
+        this.setCode(code);
         this.codeEditor?.setValue(code);
-        this.workspace.setContents(this.tabId(), code);
         this.exercises.restart(exercise.id, code);
         this.checkOutcome.set(null);
       }

@@ -1,4 +1,6 @@
-import type { ErrorPosition, IPortugolRunner, WrittenValue } from "./runners/IPortugolRunner.js";
+import type { FunctionSignature } from "@portugol-webstudio/parser";
+
+import type { CallArgument, ErrorPosition, IPortugolRunner, WrittenValue } from "./runners/IPortugolRunner.js";
 
 /**
  * Um valor esperado num exercício, como no JSON (`@portugol-webstudio/resources/exercicios`).
@@ -8,13 +10,67 @@ export type ExpectedValue =
   | { tipo: "cadeia" | "caracter"; valor: string }
   | { tipo: "logico"; valor: boolean };
 
-export type ExerciseCheck = {
+/**
+ * Um vetor num argumento de uma função conferida, como no JSON.
+ */
+export type ExpectedVector =
+  | { tipo: "inteiro[]" | "real[]"; valor: number[] }
+  | { tipo: "cadeia[]" | "caracter[]"; valor: string[] }
+  | { tipo: "logico[]"; valor: boolean[] };
+
+/**
+ * Um argumento de uma função conferida, como no JSON: um valor simples ou um vetor.
+ */
+export type ExerciseArgument = ExpectedValue | ExpectedVector;
+
+/**
+ * O tipo dos elementos de um tipo de vetor (`real[]` → `real`), ou `undefined` num tipo
+ * simples. Matrizes ainda não existem nos exercícios: uma delas aqui é um erro, não um vetor
+ * de vetores.
+ */
+export function vectorElementType(tipo: string) {
+  if (!tipo.endsWith("[]")) {
+    return;
+  }
+
+  const element = tipo.slice(0, -2);
+
+  if (element.endsWith("[]")) {
+    throw new Error(`Tipo de argumento não suportado: ${tipo}`);
+  }
+
+  return element as ExpectedValue["tipo"];
+}
+
+export type WriteCheck = {
   descrição?: string;
   alvo: "escreva";
   regra: "igual" | "contém";
   valores: ExpectedValue[];
   tolerância?: number;
 };
+
+/**
+ * O retorno de uma função do programa, chamada sozinha com estes argumentos. A assinatura
+ * esperada vem dos tipos dos argumentos e do valor.
+ */
+export type FunctionCheck = {
+  descrição?: string;
+  alvo: "função";
+  nome: string;
+  argumentos: ExerciseArgument[];
+  regra: "igual";
+  valor: ExpectedValue;
+  tolerância?: number;
+};
+
+export type ExerciseCheck = WriteCheck | FunctionCheck;
+
+/**
+ * Uma assinatura sem o nome: os tipos dos parâmetros (`inteiro[]` num vetor, `inteiro[][]` numa
+ * matriz) e o do retorno.
+ */
+export type SignatureTypes = Omit<FunctionSignature, "name">;
 
 export type ExerciseCase = {
   descrição?: string;
@@ -60,6 +116,10 @@ export type CaseRun = {
    * Os valores escritos, só quando a execução pediu (`writeValues`).
    */
   values: WrittenValue[];
+  /**
+   * O retorno da função chamada (`call`): `null` sem chamada, ou se ela não retornou nada.
+   */
+  returned: WrittenValue | null;
 };
 
 /**
@@ -67,17 +127,36 @@ export type CaseRun = {
  * valor que faltou.
  */
 export type CaseFailure =
-  | Exclude<CaseEnding, { type: "finished" }>
+  // `name`: a função conferida, quando a execução que terminou assim era a chamada dela
+  | (Exclude<CaseEnding, { type: "finished" }> & { name?: string })
   | { type: "differentOutput"; line: number; expected: string | null; received: string | null }
   | {
       type: "differentValues";
       check: number;
-      descrição?: string;
+      description?: string;
       position: number;
       expected: ExpectedValue | null;
       received: WrittenValue | null;
     }
-  | { type: "missingValue"; check: number; descrição?: string; position: number; expected: ExpectedValue };
+  | { type: "missingValue"; check: number; description?: string; position: number; expected: ExpectedValue }
+  | { type: "missingFunction"; check: number; description?: string; name: string }
+  | {
+      type: "differentSignature";
+      check: number;
+      description?: string;
+      name: string;
+      expected: SignatureTypes;
+      received: SignatureTypes;
+    }
+  | {
+      type: "differentReturn";
+      check: number;
+      description?: string;
+      name: string;
+      arguments: ExerciseArgument[];
+      expected: ExpectedValue;
+      received: WrittenValue | null;
+    };
 
 export type CaseResult = {
   kind: "exemplo" | "teste";
@@ -85,7 +164,10 @@ export type CaseResult = {
    * A posição do caso entre os exemplos ou entre os testes, contando do 1.
    */
   index: number;
-  descrição?: string;
+  description?: string;
+  /**
+   * A última execução do caso: a do `inicio` ou, numa verificação de função, a da chamada.
+   */
   run: CaseRun;
   failure?: CaseFailure;
 };
@@ -104,9 +186,15 @@ export type ExerciseResult = {
   stopped?: "timeout" | "aborted";
 };
 
+/**
+ * O programa já transpilado, com as funções declaradas (`transpile` ou o worker do IDE).
+ */
+export type CheckableProgram = { js: string; functions: FunctionSignature[] };
+
 export type CheckOptions = {
   /**
-   * Em milissegundos, por caso.
+   * Em milissegundos, para cada execução: a do `inicio` de um caso, e a de cada função
+   * conferida sozinha.
    */
   timeout?: number;
   /**
@@ -120,7 +208,8 @@ export type CheckOptions = {
 };
 
 /**
- * Tempo limite de cada caso, o mesmo do corretor do Portugol Studio.
+ * Tempo limite de cada execução (o `inicio` de um caso, ou uma função conferida), o mesmo do
+ * corretor do Portugol Studio para cada caso.
  */
 export const EXERCISE_TIMEOUT = 60_000;
 
@@ -168,13 +257,23 @@ export function runExerciseCase(
   {
     timeout = EXERCISE_TIMEOUT,
     writeValues = false,
+    call,
     signal,
-  }: { timeout?: number; writeValues?: boolean; signal?: AbortSignal } = {},
+  }: {
+    timeout?: number;
+    writeValues?: boolean;
+    /**
+     * Chama só esta função, em vez do `inicio`: o retorno fica em `returned`.
+     */
+    call?: { name: string; args: CallArgument[] };
+    signal?: AbortSignal;
+  } = {},
 ): Promise<CaseRun> {
   // @ts-expect-error A classe concreta, não a abstrata
   const runner: IPortugolRunner = new Runner(js);
   const pending = [...inputs];
   const values: WrittenValue[] = [];
+  let returned: WrittenValue | null = null;
   let output = "";
   let ending: CaseEnding | undefined;
 
@@ -195,7 +294,7 @@ export function runExerciseCase(
       output += text;
     });
 
-    runner.run({ writeValues }).subscribe(event => {
+    runner.run({ writeValues, call }).subscribe(event => {
       switch (event.type) {
         case "stdIn": {
           const input = pending.shift();
@@ -215,6 +314,11 @@ export function runExerciseCase(
           break;
         }
 
+        case "return": {
+          returned = event.value;
+          break;
+        }
+
         case "error": {
           ending ??= { type: "error", message: event.error.message, position: event.position };
           break;
@@ -229,7 +333,7 @@ export function runExerciseCase(
             ending = { type: "extraInputs", remaining: pending.length };
           }
 
-          resolve({ ending: ending ?? { type: "finished" }, output, values });
+          resolve({ ending: ending ?? { type: "finished" }, output, values, returned });
           break;
         }
       }
@@ -243,16 +347,16 @@ export function runExerciseCase(
 }
 
 /**
- * Corrige um exercício: executa o código já transpilado (`js`) em cada exemplo e em cada teste,
- * um de cada vez, e compara o resultado com o esperado.
+ * Corrige um exercício: executa o programa já transpilado em cada exemplo e em cada teste, um
+ * de cada vez, e compara o resultado com o esperado. Uma verificação de função confere a
+ * assinatura e chama a função sozinha, numa execução à parte.
  */
 export async function checkExercise(
   Runner: typeof IPortugolRunner,
-  js: string,
+  program: CheckableProgram,
   exercise: CheckableExercise,
   { timeout, signal, onCase }: CheckOptions = {},
 ): Promise<ExerciseResult> {
-  const writeValues = exercise.modo === "avançado";
   const total = exercise.exemplos.length + exercise.testes.length;
   const cases: CaseResult[] = [];
 
@@ -264,9 +368,8 @@ export async function checkExercise(
         return { passed: false, cases, total, stopped: "aborted" };
       }
 
-      const run = await runExerciseCase(Runner, js, testCase.entradas, { timeout, writeValues, signal });
-      const failure = run.ending.type === "finished" ? compareCase(testCase, run) : run.ending;
-      const result: CaseResult = { kind, index: i + 1, descrição: testCase.descrição, run, failure };
+      const { run, failure } = await checkCase(Runner, program, testCase, { timeout, signal });
+      const result: CaseResult = { kind, index: i + 1, description: testCase.descrição, run, failure };
 
       cases.push(result);
       onCase?.(result, cases.length, total);
@@ -283,6 +386,129 @@ export async function checkExercise(
 }
 
 /**
+ * Se o caso executa o `inicio` com as entradas: no modo simples, ou quando confere o `escreva`.
+ * Um caso só com verificações de função chama cada função sozinha, sem entradas.
+ */
+export function runsInicio(testCase: ExerciseCase) {
+  return testCase.verificações?.some(check => check.alvo !== "função") ?? true;
+}
+
+/**
+ * Um caso: o `inicio` com as entradas, se o caso confere a saída ou o `escreva`, e cada função
+ * conferida numa execução própria, na ordem das verificações. Para na primeira falha.
+ */
+async function checkCase(
+  Runner: typeof IPortugolRunner,
+  program: CheckableProgram,
+  testCase: ExerciseCase,
+  options: { timeout?: number; signal?: AbortSignal },
+): Promise<{ run: CaseRun; failure?: CaseFailure }> {
+  const checks = testCase.verificações;
+  let run: CaseRun = { ending: { type: "finished" }, output: "", values: [], returned: null };
+
+  if (runsInicio(testCase)) {
+    run = await runExerciseCase(Runner, program.js, testCase.entradas, {
+      ...options,
+      writeValues: checks !== undefined,
+    });
+
+    if (run.ending.type !== "finished") {
+      return { run, failure: run.ending };
+    }
+  }
+
+  if (checks === undefined) {
+    return { run, failure: compareOutput(testCase.saída ?? "", run.output) };
+  }
+
+  for (const [i, check] of checks.entries()) {
+    const where = { check: i + 1, description: check.descrição };
+
+    if (check.alvo === "escreva") {
+      const failure = check.regra === "igual" ? compareEqual(check, run.values) : compareContains(check, run.values);
+
+      if (failure) {
+        return { run, failure: { ...failure, ...where } };
+      }
+
+      continue;
+    }
+
+    const result = await checkFunction(Runner, program, check, where, options);
+
+    run = result.run ?? run;
+
+    if (result.failure) {
+      return { run, failure: result.failure };
+    }
+  }
+
+  return { run };
+}
+
+/**
+ * Uma verificação de função: a assinatura, depois a chamada sozinha, e o retorno. `where` diz
+ * qual verificação do caso ela é.
+ */
+async function checkFunction(
+  Runner: typeof IPortugolRunner,
+  program: CheckableProgram,
+  check: FunctionCheck,
+  where: { check: number; description?: string },
+  options: { timeout?: number; signal?: AbortSignal },
+): Promise<{ run?: CaseRun; failure?: CaseFailure }> {
+  const declared = program.functions.find(signature => signature.name === check.nome);
+
+  if (!declared) {
+    return { failure: { type: "missingFunction", ...where, name: check.nome } };
+  }
+
+  const expected = { parameters: check.argumentos.map(argument => argument.tipo), returns: check.valor.tipo };
+  const received = { parameters: declared.parameters, returns: declared.returns };
+
+  // Os tipos não têm vírgula: juntar compara as listas
+  if (expected.returns !== received.returns || expected.parameters.join(",") !== received.parameters.join(",")) {
+    return { failure: { type: "differentSignature", ...where, name: check.nome, expected, received } };
+  }
+
+  const run = await runExerciseCase(Runner, program.js, [], {
+    ...options,
+    call: { name: check.nome, args: check.argumentos.map(argument => callArgument(argument)) },
+  });
+
+  if (run.ending.type !== "finished") {
+    return { run, failure: { ...run.ending, name: check.nome } };
+  }
+
+  if (run.returned === null || !sameValue(check.valor, run.returned, check.tolerância)) {
+    return {
+      run,
+      failure: {
+        type: "differentReturn",
+        ...where,
+        name: check.nome,
+        arguments: check.argumentos,
+        expected: check.valor,
+        received: run.returned,
+      },
+    };
+  }
+
+  return { run };
+}
+
+/**
+ * Um argumento do JSON no formato que o runtime recebe (`RunOptions.call`).
+ */
+function callArgument(argument: ExerciseArgument): CallArgument {
+  const element = vectorElementType(argument.tipo);
+
+  return element
+    ? { type: element, vector: true, value: argument.valor as Array<WrittenValue["value"]> }
+    : ({ type: argument.tipo, value: argument.valor } as WrittenValue);
+}
+
+/**
  * O texto como é comparado no modo simples: sem os espaços do começo e do fim de cada linha, e
  * sem as linhas em branco do fim.
  */
@@ -294,22 +520,6 @@ export function normalizeOutput(text: string) {
   }
 
   return lines;
-}
-
-function compareCase(testCase: ExerciseCase, run: CaseRun): CaseFailure | undefined {
-  if (testCase.verificações === undefined) {
-    return compareOutput(testCase.saída ?? "", run.output);
-  }
-
-  for (const [i, check] of testCase.verificações.entries()) {
-    const failure = check.regra === "igual" ? compareEqual(check, run.values) : compareContains(check, run.values);
-
-    if (failure) {
-      return { ...failure, check: i + 1, descrição: check.descrição };
-    }
-  }
-
-  return undefined;
 }
 
 function compareOutput(expected: string, received: string): CaseFailure | undefined {
@@ -331,7 +541,7 @@ function compareOutput(expected: string, received: string): CaseFailure | undefi
   return undefined;
 }
 
-function compareEqual(check: ExerciseCheck, values: WrittenValue[]) {
+function compareEqual(check: WriteCheck, values: WrittenValue[]) {
   const length = Math.max(check.valores.length, values.length);
 
   for (let i = 0; i < length; i++) {
@@ -351,7 +561,7 @@ function compareEqual(check: ExerciseCheck, values: WrittenValue[]) {
   return;
 }
 
-function compareContains(check: ExerciseCheck, values: WrittenValue[]) {
+function compareContains(check: WriteCheck, values: WrittenValue[]) {
   let next = 0;
 
   for (const [i, expected] of check.valores.entries()) {

@@ -74,6 +74,19 @@
                 <p>
                   O valor <code>{{ failure.expected | exerciseValue }}</code> não foi escrito.
                 </p>
+              } @else if (failure.type === "differentReturn") {
+                <p>
+                  Chamada: <code>{{ call(failure.name, failure.arguments) }}</code
+                  >. Esperado: <code>{{ failure.expected | exerciseValue }}</code
+                  >. Recebido: <code>{{ failure.received | exerciseValue }}</code
+                  >.
+                </p>
+              } @else if (failure.type === "differentSignature") {
+                <p>
+                  Esperado: <code>{{ signature(failure.name, failure.expected) }}</code
+                  >. Recebido: <code>{{ signature(failure.name, failure.received) }}</code
+                  >.
+                </p>
               } @else if (failure.type === "error") {
                 <p>
                   {{ failure.message.split("\n", 1)[0] }}

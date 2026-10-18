@@ -1,0 +1,140 @@
+{
+  "$schema": "https://portugol.dev/esquemas/exercicio/v1.json",
+  "id": "pws:maior-de-dois",
+  "título": "Maior de dois",
+  "tópico": "funcoes",
+  "dificuldade": 1,
+  "enunciado": "Escreva a função `maior`, que recebe dois números inteiros e retorna o maior deles. Se os dois forem iguais, ela retorna esse valor.\n\nA função deve ter esta assinatura:\n\n```portugol\nfuncao inteiro maior(inteiro a, inteiro b)\n```\n\nSó a função é conferida: o `inicio` pode ficar vazio, ou testar a função como você quiser.",
+  "códigoInicial": "programa {\n  funcao inteiro maior(inteiro a, inteiro b) {\n    retorne 0\n  }\n\n  funcao inicio() {\n    escreva(maior(3, 8))\n  }\n}\n",
+  "solução": "programa {\n  funcao inteiro maior(inteiro a, inteiro b) {\n    se (a > b) {\n      retorne a\n    }\n\n    retorne b\n  }\n\n  funcao inicio() {\n    escreva(maior(3, 8))\n  }\n}\n",
+  "modo": "avançado",
+  "exemplos": [
+    {
+      "descrição": "o segundo é maior",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "maior",
+          "argumentos": [
+            {
+              "tipo": "inteiro",
+              "valor": 3
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 8
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "inteiro",
+            "valor": 8
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "o primeiro é maior",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "maior",
+          "argumentos": [
+            {
+              "tipo": "inteiro",
+              "valor": 10
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 2
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "inteiro",
+            "valor": 10
+          }
+        }
+      ]
+    }
+  ],
+  "testes": [
+    {
+      "descrição": "iguais",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "maior",
+          "argumentos": [
+            {
+              "tipo": "inteiro",
+              "valor": 5
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 5
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "inteiro",
+            "valor": 5
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "números negativos",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "maior",
+          "argumentos": [
+            {
+              "tipo": "inteiro",
+              "valor": -7
+            },
+            {
+              "tipo": "inteiro",
+              "valor": -3
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "inteiro",
+            "valor": -3
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "negativo e zero",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "maior",
+          "argumentos": [
+            {
+              "tipo": "inteiro",
+              "valor": -1
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "inteiro",
+            "valor": 0
+          }
+        }
+      ]
+    }
+  ]
+}

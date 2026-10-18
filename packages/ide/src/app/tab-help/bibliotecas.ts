@@ -1,5 +1,6 @@
 import { bibliotecas } from "@portugol-webstudio/resources/bibliotecas";
-import { BIBLIOTECAS_IMPLEMENTADAS } from "@portugol-webstudio/parser";
+import { BIBLIOTECAS_IMPLEMENTADAS, SUFIXO_DA_DIMENSÃO, tipoNoCódigo } from "@portugol-webstudio/parser";
+import { portugolLiteral } from "@portugol-webstudio/runner";
 import { TreeItem } from "./types";
 
 type Biblioteca = (typeof bibliotecas)[number];
@@ -15,46 +16,26 @@ type Tipo = Função["retorno"]["tipo"];
  */
 const PASTA = "bibliotecas";
 
-const DIMENSÕES = { vetor: "[]", matriz: "[][]" };
-
 /**
  * `inteiro`, `real[]`… O tipo `*` dos metadados aceita qualquer tipo.
  */
 function nomeDoTipo(tipo: Tipo) {
   const primitivo = tipo.primitivo === "*" ? "qualquer tipo" : tipo.primitivo;
 
-  return tipo.dimensão ? `${primitivo}${DIMENSÕES[tipo.dimensão]}` : primitivo;
+  return tipoNoCódigo(primitivo, tipo.dimensão);
 }
 
 /**
  * Parâmetros vetores e matrizes são passados por referência no Portugol: `inteiro &vetor[]`.
  */
 function parâmetroNaAssinatura({ tipo, nome }: Função["parâmetros"][number]) {
-  return tipo.dimensão ? `${tipo.primitivo} &${nome}${DIMENSÕES[tipo.dimensão]}` : `${tipo.primitivo} ${nome}`;
+  return tipo.dimensão ? `${tipo.primitivo} &${nome}${SUFIXO_DA_DIMENSÃO[tipo.dimensão]}` : `${tipo.primitivo} ${nome}`;
 }
 
 function assinaturaDaFunção(função: Função) {
   const retorno = função.retorno.tipo;
-  const tipo = retorno.dimensão ? `${retorno.primitivo}${DIMENSÕES[retorno.dimensão]}` : retorno.primitivo;
 
-  return `funcao ${tipo} ${função.nome}(${função.parâmetros.map(p => parâmetroNaAssinatura(p)).join(", ")})`;
-}
-
-function valorNoCódigo(constante: Constante) {
-  switch (constante.tipo.primitivo) {
-    case "cadeia": {
-      return `"${constante.valor}"`;
-    }
-    case "caracter": {
-      return `'${constante.valor}'`;
-    }
-    case "logico": {
-      return constante.valor ? "verdadeiro" : "falso";
-    }
-    default: {
-      return String(constante.valor);
-    }
-  }
+  return `funcao ${tipoNoCódigo(retorno.primitivo, retorno.dimensão)} ${função.nome}(${função.parâmetros.map(p => parâmetroNaAssinatura(p)).join(", ")})`;
 }
 
 function blocoDeSintaxe(código: string) {
@@ -133,7 +114,9 @@ function páginaDaConstante(biblioteca: Biblioteca, constante: Constante) {
   return juntar(
     `# ${constante.nome}`,
     `Constante da biblioteca [${biblioteca.nome}](../${biblioteca.nome}.md).`,
-    blocoDeAssinatura(`const ${nomeDoTipo(constante.tipo)} ${constante.nome} = ${valorNoCódigo(constante)}`),
+    blocoDeAssinatura(
+      `const ${nomeDoTipo(constante.tipo)} ${constante.nome} = ${portugolLiteral(constante.tipo.primitivo, constante.valor)}`,
+    ),
     constante.descrição.trim(),
     "## Para usar",
     blocoDeSintaxe(`${biblioteca.nome}.${constante.nome}`),

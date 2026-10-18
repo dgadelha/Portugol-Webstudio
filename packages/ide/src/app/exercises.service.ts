@@ -228,7 +228,7 @@ export class ExercisesService {
       return { type: "compileErrors" };
     }
 
-    const result = await checkExercise(PortugolWebWorkersRunner, transpiled.js, exercise, { signal, onCase });
+    const result = await checkExercise(PortugolWebWorkersRunner, transpiled, exercise, { signal, onCase });
 
     // Uma correção interrompida não diz nada sobre o código
     if (record && result.passed && this.generations.get(exercise.id) === generation) {

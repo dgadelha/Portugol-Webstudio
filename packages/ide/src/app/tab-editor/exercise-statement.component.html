@@ -58,6 +58,22 @@
       </span>
     }
   </p>
+  @if (approvedChanged()) {
+    <p class="statement-note">
+      <svg-icon src="assets/mdi/information-outline.svg" class="icon-blue" aria-hidden="true" />
+      <span>
+        O código mudou desde que passou.
+        <button
+          type="button"
+          class="link-button"
+          [attr.aria-disabled]="busy() || null"
+          (click)="!busy() && restoreApproved.emit()"
+        >
+          Reverter alterações
+        </button>
+      </span>
+    </p>
+  }
   @if (copy()) {
     <p class="statement-note">
       <svg-icon src="assets/mdi/information-outline.svg" class="icon-blue" aria-hidden="true" />
@@ -91,14 +107,16 @@
       </h4>
 
       <dl>
-        <dt>Entrada</dt>
-        <dd>
-          @if (example.inputs.length > 0) {
-            <pre>{{ example.inputs.join("\n") }}</pre>
-          } @else {
-            <span class="muted">nenhuma</span>
-          }
-        </dd>
+        @if (example.showsInputs) {
+          <dt>Entrada</dt>
+          <dd>
+            @if (example.inputs.length > 0) {
+              <pre>{{ example.inputs.join("\n") }}</pre>
+            } @else {
+              <span class="muted">nenhuma</span>
+            }
+          </dd>
+        }
 
         @if (example.output !== undefined) {
           <dt>Saída esperada</dt>
@@ -112,21 +130,33 @@
         }
 
         @for (check of example.checks; track $index) {
-          <dt>
-            {{ check.rule === "igual" ? "Valores escritos" : "Valores que precisam ser escritos, nesta ordem" }}
-            @if (check.description) {
-              <span class="example-description">({{ check.description }})</span>
-            }
-          </dt>
-          <dd>
-            <ul class="values">
-              @for (value of check.values; track $index) {
-                <li>
-                  <code>{{ value | exerciseValue }}</code>
-                </li>
+          @if (check.target === "function") {
+            <dt>
+              Retorno de <code>{{ check.call }}</code>
+              @if (check.description) {
+                <span class="example-description">({{ check.description }})</span>
               }
-            </ul>
-          </dd>
+            </dt>
+            <dd>
+              <code>{{ check.returned | exerciseValue }}</code>
+            </dd>
+          } @else {
+            <dt>
+              {{ check.rule === "igual" ? "Valores escritos" : "Valores que precisam ser escritos, nesta ordem" }}
+              @if (check.description) {
+                <span class="example-description">({{ check.description }})</span>
+              }
+            </dt>
+            <dd>
+              <ul class="values">
+                @for (value of check.values; track $index) {
+                  <li>
+                    <code>{{ value | exerciseValue }}</code>
+                  </li>
+                }
+              </ul>
+            </dd>
+          }
         }
       </dl>
     </section>

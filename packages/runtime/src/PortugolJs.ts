@@ -951,7 +951,7 @@ export class PortugolJs extends AbstractParseTreeVisitor<string> implements Port
     sb.append(this.PAD(), `self.runtime = runtime;`, `\n\n`);
     sb.append(this.PAD(), `let scope = runtime.globalScope;`, `\n\n`);
     sb.append(super.visitChildren(ctx));
-    sb.append(`\n`, this.PAD(), `await runtime.callFunction("inicio");\n})`);
+    sb.append(`\n`, this.PAD(), `return await runtime.start();\n})`);
 
     this.pad--;
 

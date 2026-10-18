@@ -6,7 +6,9 @@ import {
   analyzeExerciseCode,
   CheckableExercise,
   checkExercise,
+  ExerciseCase,
   PortugolWorkerThreadsRunner,
+  runsInicio,
   transpile,
 } from "../../src";
 import { runPortugolCode } from "../helpers/runner";
@@ -38,6 +40,25 @@ describe("Exercícios", () => {
       expect(diagnostics.filter(d => d.severity !== PortugolDiagnosticSeverity.Information)).toEqual([]);
     });
 
+    // Sem código inicial, o IDE abre o esqueleto de um programa
+    test.skipIf(exercise.códigoInicial === undefined)("O código inicial compila sem erros", () => {
+      const { parseErrors, diagnostics } = transpile(exercise.códigoInicial!);
+
+      expect(parseErrors).toEqual([]);
+      expect(diagnostics.filter(d => d.severity === PortugolDiagnosticSeverity.Error)).toEqual([]);
+    });
+
+    test("Um caso só com verificações de função não tem entradas", () => {
+      // O inicio não executa nesses casos: entradas ali nunca seriam lidas
+      const cases: ExerciseCase[] = [...exercise.exemplos, ...exercise.testes];
+
+      for (const testCase of cases) {
+        if (!runsInicio(testCase)) {
+          expect(testCase.entradas, testCase.descrição).toEqual([]);
+        }
+      }
+    });
+
     test("Não usa bibliotecas bloqueadas", () => {
       for (const code of [exercise.solução, exercise.códigoInicial ?? ""]) {
         expect(analyzeExerciseCode(code).blockedLibraries).toEqual([]);
@@ -67,7 +88,7 @@ describe("Exercícios", () => {
 
     test("A solução passa em todos os casos", async () => {
       const exerciseNow = JSON.parse(readFileSync(filePath, "utf8")) as Exercise;
-      const result = await checkExercise(PortugolWorkerThreadsRunner, transpile(exerciseNow.solução).js, exerciseNow);
+      const result = await checkExercise(PortugolWorkerThreadsRunner, transpile(exerciseNow.solução), exerciseNow);
 
       expect(result.cases.filter(c => c.failure).map(c => ({ ...c, run: undefined }))).toEqual([]);
       expect(result.passed).toBe(true);

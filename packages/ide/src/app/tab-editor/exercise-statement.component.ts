@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input, output, resource } from "@angular/core";
+import { portugolCall, runsInicio } from "@portugol-webstudio/runner";
 import { AngularSvgIconModule } from "angular-svg-icon";
 
 import { ExerciseMarkdownService } from "../exercise-markdown.service";
@@ -33,11 +34,16 @@ export class ExerciseStatementComponent {
    * depurado ou conferido.
    */
   readonly busy = input(false);
+  /**
+   * O exercício passou, e o código no editor já não é o que passou.
+   */
+  readonly approvedChanged = input(false);
 
   readonly verify = output();
   readonly stopCheck = output();
   readonly restart = output();
   readonly adopt = output();
+  readonly restoreApproved = output();
 
   /**
    * Verificar e Parar são o mesmo botão: trocar um pelo outro tiraria o foco do teclado de
@@ -68,12 +74,26 @@ export class ExerciseStatementComponent {
       difficulty: DIFFICULTY_LABELS[exercise.dificuldade],
       difficultyIcon: DIFFICULTY_ICONS[exercise.dificuldade],
       examples: exercise.exemplos.map(example => {
+        const checks = "verificações" in example ? example.verificações : undefined;
+
         return {
           description: example.descrição,
+          // Um exemplo só com funções não executa o inicio: não há entrada para mostrar
+          showsInputs: runsInicio(example),
           inputs: example.entradas,
           output: "saída" in example ? example.saída : undefined,
-          checks: ("verificações" in example ? example.verificações : []).map(check => {
+          checks: (checks ?? []).map(check => {
+            if (check.alvo === "função") {
+              return {
+                target: "function" as const,
+                description: check.descrição,
+                call: portugolCall(check.nome, check.argumentos),
+                returned: check.valor,
+              };
+            }
+
             return {
+              target: "write" as const,
               description: check.descrição,
               rule: check.regra,
               values: check.valores,

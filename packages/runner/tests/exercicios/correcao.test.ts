@@ -4,15 +4,17 @@ import {
   CheckableExercise,
   checkExercise,
   ExerciseCheck,
+  FunctionCheck,
   normalizeOutput,
   PortugolWorkerThreadsRunner,
   runExerciseCase,
   transpile,
+  WriteCheck,
 } from "../../src";
-import { portugolInicio } from "../helpers/code";
+import { portugol, portugolInicio } from "../helpers/code";
 
 function check(code: string, exercise: CheckableExercise, timeout?: number) {
-  return checkExercise(PortugolWorkerThreadsRunner, transpile(code).js, exercise, { timeout });
+  return checkExercise(PortugolWorkerThreadsRunner, transpile(code), exercise, { timeout });
 }
 
 function simple(saída: string, entradas: string[] = []): CheckableExercise {
@@ -94,7 +96,7 @@ describe("Correção de exercícios", () => {
   });
 
   describe("Modo avançado", () => {
-    const igual = (valores: ExerciseCheck["valores"], tolerância?: number): ExerciseCheck => {
+    const igual = (valores: WriteCheck["valores"], tolerância?: number): ExerciseCheck => {
       return {
         alvo: "escreva",
         regra: "igual",
@@ -103,7 +105,7 @@ describe("Correção de exercícios", () => {
       };
     };
 
-    const contém = (valores: ExerciseCheck["valores"]): ExerciseCheck => {
+    const contém = (valores: WriteCheck["valores"]): ExerciseCheck => {
       return {
         alvo: "escreva",
         regra: "contém",
@@ -129,7 +131,7 @@ describe("Correção de exercícios", () => {
       ).resolves.toEqual({
         type: "differentValues",
         check: 1,
-        descrição: undefined,
+        description: undefined,
         position: 1,
         expected: { tipo: "inteiro", valor: 42 },
         received: { type: "cadeia", value: "42" },
@@ -180,7 +182,7 @@ describe("Correção de exercícios", () => {
       ).resolves.toEqual({
         type: "missingValue",
         check: 1,
-        descrição: undefined,
+        description: undefined,
         position: 2,
         expected: { tipo: "inteiro", valor: 3 },
       });
@@ -215,6 +217,15 @@ describe("Correção de exercícios", () => {
       await expect(failure(code, advanced([igual([{ tipo: "cadeia", valor: "" }])]))).resolves.toBeUndefined();
     });
 
+    test("Um argumento sem valor nenhum é pulado, como no texto escrito", async () => {
+      const code = portugolInicio`
+        cadeia x
+        escreva(x, 1)
+      `;
+
+      await expect(failure(code, advanced([igual([{ tipo: "inteiro", valor: 1 }])]))).resolves.toBeUndefined();
+    });
+
     test("Diz qual verificação falhou", async () => {
       const exercise = advanced([
         contém([{ tipo: "inteiro", valor: 1 }]),
@@ -224,8 +235,221 @@ describe("Correção de exercícios", () => {
       await expect(failure(portugolInicio`escreva(1)`, exercise)).resolves.toMatchObject({
         type: "missingValue",
         check: 2,
-        descrição: "o segundo",
+        description: "o segundo",
       });
+    });
+  });
+
+  describe("Verificação de função", () => {
+    const retorna = (
+      nome: string,
+      argumentos: FunctionCheck["argumentos"],
+      valor: FunctionCheck["valor"],
+      tolerância?: number,
+    ): FunctionCheck => ({ alvo: "função", nome, argumentos, regra: "igual", valor, tolerância });
+
+    const soma = retorna(
+      "soma",
+      [
+        { tipo: "inteiro", valor: 3 },
+        { tipo: "inteiro", valor: 5 },
+      ],
+      { tipo: "inteiro", valor: 8 },
+    );
+
+    const programa = (funções: string, inicio = "") => {
+      return portugol`
+        programa {
+          ${funções}
+
+          funcao inicio() {
+            ${inicio}
+          }
+        }
+      `;
+    };
+
+    test("Passa com o retorno certo", async () => {
+      const code = programa("funcao inteiro soma(inteiro a, inteiro b) { retorne a + b }");
+
+      await expect(check(code, advanced([soma]))).resolves.toMatchObject({ passed: true });
+    });
+
+    test("Chama só a função: o inicio não executa", async () => {
+      const code = programa("funcao inteiro soma(inteiro a, inteiro b) { retorne a + b }", "inteiro a leia(a)");
+
+      await expect(failure(code, advanced([soma]))).resolves.toBeUndefined();
+    });
+
+    test("Um retorno diferente", async () => {
+      const code = programa("funcao inteiro soma(inteiro a, inteiro b) { retorne a - b }");
+
+      await expect(failure(code, advanced([soma]))).resolves.toEqual({
+        type: "differentReturn",
+        check: 1,
+        description: undefined,
+        name: "soma",
+        arguments: [
+          { tipo: "inteiro", valor: 3 },
+          { tipo: "inteiro", valor: 5 },
+        ],
+        expected: { tipo: "inteiro", valor: 8 },
+        received: { type: "inteiro", value: -2 },
+      });
+    });
+
+    test("A função não existe", async () => {
+      const code = programa("funcao inteiro somar(inteiro a, inteiro b) { retorne a + b }");
+
+      await expect(failure(code, advanced([soma]))).resolves.toMatchObject({ type: "missingFunction", name: "soma" });
+    });
+
+    test.each([
+      ["outro retorno", "funcao real soma(inteiro a, inteiro b) { retorne a + b }", ["inteiro", "inteiro"], "real"],
+      ["um parâmetro a menos", "funcao inteiro soma(inteiro a) { retorne a }", ["inteiro"], "inteiro"],
+      [
+        "outro tipo de parâmetro",
+        "funcao inteiro soma(real a, inteiro b) { retorne 0 }",
+        ["real", "inteiro"],
+        "inteiro",
+      ],
+      [
+        "um vetor no lugar de um valor",
+        "funcao inteiro soma(inteiro a[], inteiro b) { retorne 0 }",
+        ["inteiro[]", "inteiro"],
+        "inteiro",
+      ],
+      ["sem retorno", "funcao soma(inteiro a, inteiro b) { }", ["inteiro", "inteiro"], "vazio"],
+      [
+        "uma matriz no lugar de um valor",
+        "funcao inteiro soma(inteiro a[][], inteiro b) { retorne 0 }",
+        ["inteiro[][]", "inteiro"],
+        "inteiro",
+      ],
+    ])("Assinatura diferente: %s", async (_, funções, parameters, returns) => {
+      await expect(failure(programa(funções), advanced([soma]))).resolves.toEqual({
+        type: "differentSignature",
+        check: 1,
+        description: undefined,
+        name: "soma",
+        expected: { parameters: ["inteiro", "inteiro"], returns: "inteiro" },
+        received: { parameters, returns },
+      });
+    });
+
+    test("Um vetor como argumento", async () => {
+      const code = programa(`
+        funcao real media(real v[]) {
+          real total = 0.0
+          para (inteiro i = 0; i < 3; i++) { total = total + v[i] }
+          retorne total / 3
+        }
+      `);
+      const exercise = advanced([
+        retorna("media", [{ tipo: "real[]", valor: [1, 2, 4.5] }], { tipo: "real", valor: 2.5 }),
+      ]);
+
+      await expect(check(code, exercise)).resolves.toMatchObject({ passed: true });
+    });
+
+    test("cadeia, caracter e logico", async () => {
+      const code = programa(`
+        funcao cadeia junta(cadeia a, caracter b) { retorne a + b }
+        funcao logico par(inteiro n) { retorne n % 2 == 0 }
+      `);
+      const exercise = advanced([
+        retorna(
+          "junta",
+          [
+            { tipo: "cadeia", valor: "ab" },
+            { tipo: "caracter", valor: "c" },
+          ],
+          { tipo: "cadeia", valor: "abc" },
+        ),
+        retorna("par", [{ tipo: "inteiro", valor: 4 }], { tipo: "logico", valor: true }),
+      ]);
+
+      await expect(check(code, exercise)).resolves.toMatchObject({ passed: true });
+    });
+
+    test.each([
+      ["passa dentro da tolerância dada", 0.001, undefined],
+      ["falha com a tolerância padrão", undefined, "differentReturn"],
+    ])("real: %s", async (_, tolerância, type) => {
+      const code = programa("funcao real terco() { retorne 1.0 / 3 }");
+      const exercise = advanced([retorna("terco", [], { tipo: "real", valor: 0.333 }, tolerância)]);
+
+      expect((await failure(code, exercise))?.type).toBe(type);
+    });
+
+    test("Uma cadeia que nunca recebeu valor retorna vazia", async () => {
+      const code = programa("funcao cadeia c() { cadeia x retorne x }");
+
+      await expect(failure(code, advanced([retorna("c", [], { tipo: "cadeia", valor: "" })]))).resolves.toBeUndefined();
+    });
+
+    test("Um leia dentro da função: a chamada dela pediu uma entrada", async () => {
+      const code = programa("funcao inteiro soma(inteiro a, inteiro b) { leia(a) retorne a + b }");
+
+      await expect(failure(code, advanced([soma]))).resolves.toEqual({ type: "missingInputs", name: "soma" });
+    });
+
+    test("Diz qual verificação de função falhou", async () => {
+      const code = programa(`
+        funcao inteiro soma(inteiro a, inteiro b) { retorne a + b }
+        funcao inteiro dobro(inteiro a) { retorne a }
+      `);
+      const exercise = advanced([
+        soma,
+        { ...retorna("dobro", [{ tipo: "inteiro", valor: 2 }], { tipo: "inteiro", valor: 4 }), descrição: "o dobro" },
+      ]);
+
+      await expect(failure(code, exercise)).resolves.toMatchObject({
+        type: "differentReturn",
+        check: 2,
+        description: "o dobro",
+        name: "dobro",
+      });
+    });
+
+    test("Um laço infinito na função esgota o tempo, e os outros casos não são conferidos", async () => {
+      const code = programa("funcao inteiro soma(inteiro a, inteiro b) { enquanto (verdadeiro) {} retorne 0 }");
+      const exercise: CheckableExercise = {
+        modo: "avançado",
+        exemplos: [{ entradas: [], verificações: [soma] }],
+        testes: [{ entradas: [], verificações: [soma] }],
+      };
+
+      const result = await check(code, exercise, 300);
+
+      expect(result).toMatchObject({ passed: false, total: 2, stopped: "timeout" });
+      expect(result.cases).toHaveLength(1);
+      expect(result.cases[0].failure).toEqual({ type: "timeout", name: "soma" });
+    });
+
+    test("Erro de execução na função", async () => {
+      const code = programa("funcao inteiro soma(inteiro a, inteiro b) { retorne a / (b - b) }");
+
+      await expect(failure(code, advanced([soma]))).resolves.toMatchObject({ type: "error" });
+    });
+
+    test("Com o escreva no mesmo caso: o inicio executa com as entradas", async () => {
+      const code = programa(
+        "funcao inteiro soma(inteiro a, inteiro b) { retorne a + b }",
+        "inteiro a leia(a) escreva(a)",
+      );
+      const exercise: CheckableExercise = {
+        modo: "avançado",
+        exemplos: [
+          {
+            entradas: ["7"],
+            verificações: [{ alvo: "escreva", regra: "igual", valores: [{ tipo: "inteiro", valor: 7 }] }, soma],
+          },
+        ],
+        testes: [],
+      };
+
+      await expect(failure(code, exercise)).resolves.toBeUndefined();
     });
   });
 
@@ -292,7 +516,7 @@ describe("Correção de exercícios", () => {
 
       const result = await checkExercise(
         PortugolWorkerThreadsRunner,
-        transpile(portugolInicio`enquanto (verdadeiro) {}`).js,
+        transpile(portugolInicio`enquanto (verdadeiro) {}`),
         exercise,
         { signal: controller.signal },
       );
@@ -312,7 +536,7 @@ describe("Correção de exercícios", () => {
 
       const result = await checkExercise(
         PortugolWorkerThreadsRunner,
-        transpile(portugolInicio`escreva("a")`).js,
+        transpile(portugolInicio`escreva("a")`),
         exercise,
         {
           signal: controller.signal,
@@ -334,7 +558,7 @@ describe("Correção de exercícios", () => {
 
       const result = await checkExercise(
         PortugolWorkerThreadsRunner,
-        transpile(portugolInicio`escreva("a")`).js,
+        transpile(portugolInicio`escreva("a")`),
         simple("a"),
         {
           signal: controller.signal,
@@ -368,7 +592,7 @@ describe("Correção de exercícios", () => {
         testes: [{ entradas: [], saída: "a" }],
       };
 
-      await checkExercise(PortugolWorkerThreadsRunner, transpile(portugolInicio`escreva("a")`).js, exercise, {
+      await checkExercise(PortugolWorkerThreadsRunner, transpile(portugolInicio`escreva("a")`), exercise, {
         onCase: (_, done, total) => {
           progress.push([done, total]);
         },
@@ -399,7 +623,7 @@ describe("Correção de exercícios", () => {
       const result = await check(code, exercise);
 
       expect(result.passed).toBe(false);
-      expect(result.cases.map(c => [c.kind, c.index, c.descrição, c.failure?.type])).toEqual([
+      expect(result.cases.map(c => [c.kind, c.index, c.description, c.failure?.type])).toEqual([
         ["exemplo", 1, "um", undefined],
         ["teste", 1, undefined, undefined],
         ["teste", 2, "três", "differentOutput"],

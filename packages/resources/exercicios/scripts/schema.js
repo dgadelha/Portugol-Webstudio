@@ -35,7 +35,23 @@ const valor = z
   ])
   .describe("Um valor escrito pelo programa, com o tipo");
 
-const verificação = z
+const vetor = z
+  .discriminatedUnion("tipo", [
+    z.object({ tipo: z.literal("inteiro[]"), valor: z.array(z.int()) }),
+    z.object({ tipo: z.literal("real[]"), valor: z.array(z.number()) }),
+    z.object({ tipo: z.literal("cadeia[]"), valor: z.array(z.string()) }),
+    z.object({ tipo: z.literal("caracter[]"), valor: z.array(z.string().length(1)) }),
+    z.object({ tipo: z.literal("logico[]"), valor: z.array(z.boolean()) }),
+  ])
+  .describe("Um vetor, com o tipo dos elementos");
+
+const tolerância = z
+  .number()
+  .nonnegative()
+  .optional()
+  .describe("Diferença aceita ao comparar valores do tipo real (padrão: 0.000001)");
+
+const verificaçãoDoEscreva = z
   .object({
     descrição,
     alvo: z.literal("escreva").describe("O que é verificado: os valores escritos pelo 'escreva', um por argumento"),
@@ -45,15 +61,36 @@ const verificação = z
         "'igual': os valores escritos são exatamente estes. 'contém': estes valores aparecem, nesta ordem, entre os escritos",
       ),
     valores: z.array(valor).min(1),
-    tolerância: z
-      .number()
-      .nonnegative()
-      .optional()
-      .describe("Diferença aceita ao comparar valores do tipo real (padrão: 0.000001)"),
+    tolerância,
   })
   .strict();
 
-const entradas = z.array(z.string()).describe("O que cada 'leia' recebe, na ordem, como se fosse digitado");
+const verificaçãoDeFunção = z
+  .object({
+    descrição,
+    alvo: z
+      .literal("função")
+      .describe(
+        "O que é verificado: o retorno de uma função do programa, chamada sozinha (sem o 'inicio' e sem entradas)",
+      ),
+    nome: z
+      .string()
+      .regex(/^[A-Za-z_][A-Za-z0-9_]*$/)
+      .describe("O nome da função. A assinatura esperada vem dos tipos dos argumentos e do valor"),
+    argumentos: z.array(z.union([valor, vetor])).describe("Os argumentos da chamada, na ordem, com o tipo"),
+    regra: z.literal("igual").describe("'igual': a função retorna exatamente este valor"),
+    valor: valor.describe("O valor que a função retorna, com o tipo"),
+    tolerância,
+  })
+  .strict();
+
+const verificação = z.discriminatedUnion("alvo", [verificaçãoDoEscreva, verificaçãoDeFunção]);
+
+const entradas = z
+  .array(z.string())
+  .describe(
+    "O que cada 'leia' recebe, na ordem, como se fosse digitado. Só o 'inicio' recebe entradas: as funções conferidas sozinhas não",
+  );
 
 const casoSimples = z
   .object({
@@ -69,7 +106,11 @@ const casoAvançado = z
     entradas,
     verificações: z.array(verificação).min(1),
   })
-  .strict();
+  .strict()
+  .refine(caso => caso.entradas.length === 0 || caso.verificações.some(verificação => verificação.alvo !== "função"), {
+    message: "Um caso só com verificações de função não executa o 'inicio': as entradas nunca seriam lidas",
+    path: ["entradas"],
+  });
 
 const comum = {
   $schema: z.literal(URL_DO_ESQUEMA),
@@ -105,7 +146,7 @@ export const schema = z.discriminatedUnion("modo", [
   z
     .object({
       ...comum,
-      modo: z.literal("avançado").describe("Compara os valores escritos, com o tipo"),
+      modo: z.literal("avançado").describe("Compara os valores escritos ou retornados, com o tipo"),
       exemplos: z.array(casoAvançado).min(1),
       testes: z.array(casoAvançado).min(1),
     })

@@ -1,11 +1,15 @@
 import { IPortugolCodeDiagnostic } from "@portugol-webstudio/antlr";
-import { PortugolCodeChecker } from "@portugol-webstudio/parser";
+import { FunctionSignature, PortugolCodeChecker } from "@portugol-webstudio/parser";
 import { PortugolJs } from "@portugol-webstudio/runtime";
 
 export interface PortugolTranspiledCode {
   js: string;
   diagnostics: IPortugolCodeDiagnostic[];
   parseErrors: IPortugolCodeDiagnostic[];
+  /**
+   * As funções declaradas no programa, para a correção conferir a assinatura.
+   */
+  functions: FunctionSignature[];
   times: { check: number; transpile: number };
 }
 
@@ -18,6 +22,7 @@ export interface PortugolTranspiledCode {
 export function transpile(code: string): PortugolTranspiledCode {
   let diagnostics: IPortugolCodeDiagnostic[] = [];
   let parseErrors: IPortugolCodeDiagnostic[] = [];
+  let functions: FunctionSignature[] = [];
   let js = "";
   let checkStart = 0;
   let checkEnd = 0;
@@ -30,6 +35,7 @@ export function transpile(code: string): PortugolTranspiledCode {
 
     diagnostics = checkResult.diagnostics;
     parseErrors = checkResult.parseErrors;
+    functions = checkResult.functions;
 
     checkEnd = performance.now();
 
@@ -42,6 +48,7 @@ export function transpile(code: string): PortugolTranspiledCode {
     js,
     diagnostics,
     parseErrors,
+    functions,
     times: {
       check: checkEnd - checkStart,
       transpile: transpileEnd - transpileStart,

@@ -269,10 +269,12 @@
         [copy]="exerciseCopy()"
         [checking]="checking()"
         [busy]="!canRun()"
+        [approvedChanged]="approvedCodeChanged()"
         (verify)="verifyExercise()"
         (stopCheck)="stopExerciseCheck()"
         (restart)="restartExercise()"
         (adopt)="adoptExercise()"
+        (restoreApproved)="restoreApprovedCode()"
       />
     }
   </as-split-area>

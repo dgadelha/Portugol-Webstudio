@@ -15,11 +15,23 @@ export enum TipoPrimitivo {
   CARACTER = "caracter",
 }
 
+/**
+ * O sufixo de cada dimensão num tipo escrito: `inteiro[]`, `real[][]`.
+ */
+export const SUFIXO_DA_DIMENSÃO = { vetor: "[]", matriz: "[][]" } as const;
+
 export type Tipo = { primitivo: TipoPrimitivo } & (
   | { dimensão?: undefined }
   | { dimensão: "vetor"; tamanho?: Expressão }
   | { dimensão: "matriz"; linhas?: Expressão; colunas?: Expressão }
 );
+
+/**
+ * Um tipo como se escreve no código: `inteiro`, `real[]`, `cadeia[][]`.
+ */
+export function tipoNoCódigo(primitivo: string, dimensão?: keyof typeof SUFIXO_DA_DIMENSÃO) {
+  return dimensão ? primitivo + SUFIXO_DA_DIMENSÃO[dimensão] : primitivo;
+}
 
 /**
  * O curinga `todos` só existe em assinaturas de biblioteca (ver `bibliotecas/`) e casa com

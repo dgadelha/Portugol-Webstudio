@@ -285,6 +285,26 @@ class PortugolRuntime {
     return variable;
   }
 
+  // O começo do programa: o 'inicio' ou, na correção de um exercício que confere o retorno
+  // de uma função, só essa função, com os argumentos do caso (initScope.call). Devolve o
+  // retorno dela.
+  async start() {
+    const call = this.initScope.call;
+
+    if (!call) {
+      return this.callFunction("inicio");
+    }
+
+    // Um valor simples, ou um vetor (vector) com os valores de um mesmo tipo
+    const args = call.args.map((arg) =>
+      arg.vector
+        ? new PortugolVar("vetor", arg.value.map((item) => new PortugolVar(arg.type, item)))
+        : new PortugolVar(arg.type, arg.value),
+    );
+
+    return this.callFunction(call.name, "", args);
+  }
+
   declareFunction(name, call) {
     if (this.globalScope.functions.hasOwnProperty(name)) {
       throw new Error("Função já declarada: " + name);

@@ -53,6 +53,7 @@ function transpileCode(code, debugSteps = false) {
   let js = "";
   let diagnostics = [];
   let parseErrors = [];
+  let functions = [];
   let checkTime = 0;
   let transpileTime = 0;
 
@@ -62,6 +63,7 @@ function transpileCode(code, debugSteps = false) {
 
     diagnostics = checkResult.diagnostics;
     parseErrors = checkResult.parseErrors;
+    functions = checkResult.functions;
 
     const checkEnd = performance.now();
 
@@ -83,6 +85,7 @@ function transpileCode(code, debugSteps = false) {
     js,
     diagnostics: diagnostics.map(error => mapError(error)),
     parseErrors: parseErrors.map(error => mapError(error)),
+    functions,
     times: {
       check: checkTime,
       transpile: transpileTime,

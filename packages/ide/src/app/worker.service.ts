@@ -1,5 +1,6 @@
 import { Service } from "@angular/core";
 import { IPortugolCodeDiagnostic, PortugolDiagnosticSeverity } from "@portugol-webstudio/antlr";
+import type { PortugolTranspiledCode } from "@portugol-webstudio/runner";
 import { WORKER_FILE_NAME } from "@portugol-webstudio/worker/lib/worker-manifest";
 
 /**
@@ -12,10 +13,7 @@ type CheckResult = {
   parseErrors: IPortugolCodeDiagnostic[];
 };
 
-type TranspileResult = CheckResult & {
-  js: string;
-  times: { check: number; transpile: number };
-};
+type TranspileResult = PortugolTranspiledCode;
 
 type Request = {
   message: { action: "check" | "transpile"; code: string; debugSteps?: boolean };

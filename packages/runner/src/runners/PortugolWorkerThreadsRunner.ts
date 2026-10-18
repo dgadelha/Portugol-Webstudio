@@ -60,9 +60,11 @@ export class PortugolWorkerThreadsRunner extends IPortugolRunner {
 
             const debug = data.debug;
             const writeValues = data.writeValues;
+            const call = data.call;
 
-            await exec({
+            const result = await exec({
               debug: debug && { ...debug, send: (message) => parentPort.postMessage(message) },
+              call,
               functions: {
                 __debug: async (...args) => {
                   for (const arg of args) {
@@ -113,6 +115,10 @@ export class PortugolWorkerThreadsRunner extends IPortugolRunner {
                 },
               },
             });
+
+            if (call) {
+              parentPort.postMessage({ type: "return", value: returnOf(result) });
+            }
           }
         } catch (error) {
           parentPort.postMessage({
@@ -141,6 +147,7 @@ export class PortugolWorkerThreadsRunner extends IPortugolRunner {
         message?: PortugolMessage;
         pause?: DebugPause;
         values?: WrittenValue[];
+        value?: WrittenValue | null;
       }) => {
         switch (data.type) {
           case "stdOut": {
@@ -199,6 +206,11 @@ export class PortugolWorkerThreadsRunner extends IPortugolRunner {
             break;
           }
 
+          case "return": {
+            this._run.next({ type: "return", value: data.value ?? null });
+            break;
+          }
+
           default: {
             throw new Error(`Unknown message type: ${data.type}`);
           }
@@ -224,7 +236,7 @@ export class PortugolWorkerThreadsRunner extends IPortugolRunner {
   run(options: RunOptions = {}) {
     this.startedAt = new Date();
 
-    this.worker.postMessage({ type: "start", debug: options.debug, writeValues: options.writeValues });
+    this.worker.postMessage({ type: "start", ...options });
 
     this.running = true;
     this.running$.next(this.running);
