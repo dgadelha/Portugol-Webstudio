@@ -1,0 +1,91 @@
+@let current = outcome();
+@if (progress(); as p) {
+  <p class="summary">
+    <span class="spinner" aria-hidden="true"></span>
+    Conferindo: {{ p.done }} de {{ p.total }} casos…
+  </p>
+} @else if (!current) {
+  <p class="summary muted">Clique em Verificar para testar o programa com as entradas do exercício.</p>
+} @else {
+  <p class="summary">
+    @if (current.type === "checked" && current.result.passed) {
+      <svg-icon src="assets/mdi/check-circle.svg" class="icon-green" aria-hidden="true" />
+    } @else if (current.type === "aborted" || (current.type === "checked" && current.result.stopped === "aborted")) {
+      <svg-icon src="assets/mdi/minus-circle-outline.svg" class="icon-muted" aria-hidden="true" />
+    } @else {
+      <svg-icon src="assets/mdi/close-circle-outline.svg" class="icon-red" aria-hidden="true" />
+    }
+    {{ summary() }}
+  </p>
+
+  @if (current.type === "checked") {
+    @let result = current.result;
+
+    @if (current.usesSorteia) {
+      <p class="note">
+        <svg-icon src="assets/mdi/alert-outline.svg" class="icon-yellow" aria-hidden="true" />
+        O programa usa sorteia: o resultado pode mudar a cada execução.
+      </p>
+    }
+
+    <ul class="cases">
+      @for (item of result.cases; track item.kind + item.index) {
+        <li class="case">
+          <p class="case-heading">
+            @if (item.failure?.type === "aborted") {
+              <svg-icon src="assets/mdi/minus-circle-outline.svg" class="icon-muted" aria-hidden="true" />
+              <span class="visually-hidden">Não conferido:</span>
+            } @else if (item.failure) {
+              <svg-icon src="assets/mdi/close-circle-outline.svg" class="icon-red" aria-hidden="true" />
+              <span class="visually-hidden">Falhou:</span>
+            } @else {
+              <svg-icon src="assets/mdi/check-circle.svg" class="icon-green" aria-hidden="true" />
+              <span class="visually-hidden">Passou:</span>
+            }
+            <span class="case-text">
+              <span>{{ caseLabel(item) }}</span>
+              @if (item.failure; as failure) {
+                <span class="case-kind">{{ failureKind(failure) }}</span>
+              }
+            </span>
+          </p>
+
+          @if (item.failure && item.kind === "exemplo" && hasDetails(item.failure)) {
+            @let failure = item.failure;
+            <div class="case-details">
+              @if (failure.type === "differentOutput") {
+                <p>
+                  Linha {{ failure.line }}. Esperado: {{ quoted(failure.expected) }}. Recebido:
+                  {{ quoted(failure.received) }}.
+                </p>
+                <p class="label">Saída do programa</p>
+                @if (item.run.output.trim()) {
+                  <pre>{{ item.run.output }}</pre>
+                } @else {
+                  <p class="muted">nenhuma</p>
+                }
+              } @else if (failure.type === "differentValues") {
+                <p>
+                  Valor {{ failure.position }} escrito. Esperado: <code>{{ failure.expected | exerciseValue }}</code
+                  >. Recebido: <code>{{ failure.received | exerciseValue }}</code
+                  >.
+                </p>
+              } @else if (failure.type === "missingValue") {
+                <p>
+                  O valor <code>{{ failure.expected | exerciseValue }}</code> não foi escrito.
+                </p>
+              } @else if (failure.type === "error") {
+                <p>
+                  {{ failure.message.split("\n", 1)[0] }}
+                  @if (failure.position) {
+                    (linha {{ failure.position.line }})
+                  }
+                </p>
+              }
+            </div>
+          }
+        </li>
+      }
+    </ul>
+  }
+}

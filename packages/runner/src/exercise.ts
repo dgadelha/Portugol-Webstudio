@@ -40,14 +40,15 @@ export type CheckableExercise =
     };
 
 /**
- *  * Como terminou a execução de um caso.
+ * Como terminou a execução de um caso.
  */
 export type CaseEnding =
   | { type: "finished" }
   | { type: "timeout" }
   | { type: "error"; message: string; position?: ErrorPosition }
   | { type: "missingInputs" }
-  | { type: "extraInputs"; remaining: number };
+  | { type: "extraInputs"; remaining: number }
+  | { type: "aborted" };
 
 export type CaseRun = {
   ending: CaseEnding;
@@ -91,7 +92,16 @@ export type CaseResult = {
 
 export type ExerciseResult = {
   passed: boolean;
+  /**
+   * Os casos conferidos, na ordem. Ficam de fora os que vinham depois de um tempo esgotado ou
+   * da correção interrompida (`stopped`).
+   */
   cases: CaseResult[];
+  /**
+   * Quantos casos o exercício tem.
+   */
+  total: number;
+  stopped?: "timeout" | "aborted";
 };
 
 export type CheckOptions = {
@@ -99,17 +109,52 @@ export type CheckOptions = {
    * Em milissegundos, por caso.
    */
   timeout?: number;
+  /**
+   * Interrompe a correção: o caso em execução para, e os seguintes não são conferidos.
+   */
+  signal?: AbortSignal;
+  /**
+   * Chamado depois de cada caso, para mostrar o andamento.
+   */
+  onCase?: (result: CaseResult, done: number, total: number) => void;
 };
 
 /**
- *  * Tempo limite de cada caso, o mesmo do corretor do Portugol Studio.
+ * Tempo limite de cada caso, o mesmo do corretor do Portugol Studio.
  */
 export const EXERCISE_TIMEOUT = 60_000;
 
 /**
- *  * Diferença aceita entre dois valores `real` quando a verificação não diz outra.
+ * Diferença aceita entre dois valores `real` quando a verificação não diz outra.
  */
 export const DEFAULT_TOLERANCE = 0.000001;
+
+/**
+ * Bibliotecas que precisam de interação ou que o IDE não tem: os exercícios não as aceitam.
+ */
+export const BLOCKED_LIBRARIES = new Set([
+  "Arquivos",
+  "Graficos",
+  "Internet",
+  "Mouse",
+  "ServicosWeb",
+  "Sons",
+  "Teclado",
+]);
+
+/**
+ * As bibliotecas bloqueadas que o código inclui e o uso do `sorteia`, fora dos comentários e
+ * das cadeias.
+ */
+export function analyzeExerciseCode(code: string) {
+  const stripped = code.replaceAll(/\/\*[\s\S]*?\*\/|\/\/[^\n]*|"(?:[^"\\\n]|\\.)*"|'(?:[^'\\\n]|\\.)*'/g, " ");
+  const libraries = Array.from(stripped.matchAll(/\binclua\s+biblioteca\s+(\w+)/g), match => match[1]);
+
+  return {
+    blockedLibraries: libraries.filter(library => BLOCKED_LIBRARIES.has(library)),
+    usesSorteia: /\bsorteia\s*\(/.test(stripped),
+  };
+}
 
 /**
  * Executa o programa já transpilado (`js`) com as entradas de um caso: cada `leia` recebe a
@@ -120,7 +165,11 @@ export function runExerciseCase(
   Runner: typeof IPortugolRunner,
   js: string,
   inputs: string[],
-  { timeout = EXERCISE_TIMEOUT, writeValues = false } = {},
+  {
+    timeout = EXERCISE_TIMEOUT,
+    writeValues = false,
+    signal,
+  }: { timeout?: number; writeValues?: boolean; signal?: AbortSignal } = {},
 ): Promise<CaseRun> {
   // @ts-expect-error A classe concreta, não a abstrata
   const runner: IPortugolRunner = new Runner(js);
@@ -134,6 +183,13 @@ export function runExerciseCase(
       ending ??= { type: "timeout" };
       runner.destroy(true);
     }, timeout);
+
+    const abort = () => {
+      ending ??= { type: "aborted" };
+      runner.destroy(true);
+    };
+
+    signal?.addEventListener("abort", abort, { once: true });
 
     const stdOut$ = runner.stdOut$.subscribe(text => {
       output += text;
@@ -166,6 +222,7 @@ export function runExerciseCase(
 
         case "finish": {
           clearTimeout(timer);
+          signal?.removeEventListener("abort", abort);
           stdOut$.unsubscribe();
 
           if (ending === undefined && pending.length > 0) {
@@ -177,6 +234,11 @@ export function runExerciseCase(
         }
       }
     });
+
+    // Um sinal que já chegou interrompido não dispara o evento `abort`
+    if (signal?.aborted) {
+      abort();
+    }
   });
 }
 
@@ -188,23 +250,36 @@ export async function checkExercise(
   Runner: typeof IPortugolRunner,
   js: string,
   exercise: CheckableExercise,
-  { timeout }: CheckOptions = {},
+  { timeout, signal, onCase }: CheckOptions = {},
 ): Promise<ExerciseResult> {
   const writeValues = exercise.modo === "avançado";
+  const total = exercise.exemplos.length + exercise.testes.length;
   const cases: CaseResult[] = [];
 
   for (const kind of ["exemplo", "teste"] as const) {
     const list: ExerciseCase[] = kind === "exemplo" ? exercise.exemplos : exercise.testes;
 
     for (const [i, testCase] of list.entries()) {
-      const run = await runExerciseCase(Runner, js, testCase.entradas, { timeout, writeValues });
-      const failure = run.ending.type === "finished" ? compareCase(testCase, run) : run.ending;
+      if (signal?.aborted) {
+        return { passed: false, cases, total, stopped: "aborted" };
+      }
 
-      cases.push({ kind, index: i + 1, descrição: testCase.descrição, run, failure });
+      const run = await runExerciseCase(Runner, js, testCase.entradas, { timeout, writeValues, signal });
+      const failure = run.ending.type === "finished" ? compareCase(testCase, run) : run.ending;
+      const result: CaseResult = { kind, index: i + 1, descrição: testCase.descrição, run, failure };
+
+      cases.push(result);
+      onCase?.(result, cases.length, total);
+
+      // Um laço infinito costuma prender todos os casos: esperar o tempo de cada um levaria
+      // minutos para dizer a mesma coisa
+      if (run.ending.type === "timeout" || run.ending.type === "aborted") {
+        return { passed: false, cases, total, stopped: run.ending.type };
+      }
     }
   }
 
-  return { passed: cases.every(result => result.failure === undefined), cases };
+  return { passed: cases.every(result => result.failure === undefined), cases, total };
 }
 
 /**
@@ -303,6 +378,5 @@ function sameValue(expected: ExpectedValue, received: WrittenValue, tolerance = 
     return Math.abs(expected.valor - (received.value as number)) <= tolerance;
   }
 
-  // O 'escreva' escreve uma cadeia que nunca recebeu valor como vazia
-  return expected.valor === (received.value ?? "");
+  return expected.valor === received.value;
 }

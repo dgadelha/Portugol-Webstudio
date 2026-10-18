@@ -1,0 +1,47 @@
+// O resto vem do diálogo de exemplos, que tem a mesma lista e a mesma prévia.
+// Com o fundo do editor, como o código na prévia dos exemplos: o enunciado se separa do
+// cabeçalho e da lista
+.preview-statement {
+  flex-grow: 1;
+  overflow-wrap: anywhere;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 1rem 1.25rem;
+  background-color: var(--pws-bg-editor);
+
+  .spinner {
+    margin: 2rem auto;
+  }
+}
+
+// A dificuldade é curta e não encolhe: quem encolhe é o nome do exercício
+.item-path {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 0.25rem;
+
+  .item & svg-icon {
+    width: 0.875rem;
+    height: 0.875rem;
+  }
+}
+
+.item svg-icon {
+  flex-shrink: 0;
+}
+
+// O nome completo do exercício escolhido aparece na prévia, em quantas linhas precisar
+.preview-text h3 {
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+// O ícone da lista é cinza no diálogo de exemplos; o de exercício concluído fica verde
+.item svg-icon.icon-green {
+  color: var(--pws-green);
+}
+
+.preview-error {
+  color: var(--pws-fg-muted);
+}

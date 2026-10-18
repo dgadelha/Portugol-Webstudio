@@ -65,8 +65,8 @@ as-split-area {
   color: var(--pws-fg-muted);
 
   svg-icon {
-    width: 16px;
-    height: 16px;
+    width: 1rem;
+    height: 1rem;
     transition: transform var(--pws-duration);
 
     &.open {
@@ -163,8 +163,8 @@ as-split-area {
       }
 
       svg {
-        width: 16px;
-        height: 16px;
+        width: 1rem;
+        height: 1rem;
         fill: currentColor;
       }
     }

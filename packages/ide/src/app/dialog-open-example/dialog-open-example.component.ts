@@ -42,12 +42,14 @@ export interface ExampleItem {
 interface ExampleEntry {
   item: ExampleItem;
   category: string;
+  categoryIcon: string;
   path: string[];
   searchText: string;
 }
 
 interface ExampleGroup {
   category: string;
+  icon: string;
   entries: ExampleEntry[];
 }
 
@@ -86,6 +88,23 @@ export class DialogOpenExampleComponent implements OnInit, OnDestroy {
 
   entries: ExampleEntry[] = [];
   filtered: ExampleEntry[] = [];
+  /**
+   * O ícone de cada categoria (as pastas de primeiro nível dos exemplos), os mesmos dos tópicos
+   * dos exercícios quando o assunto é o mesmo. Música e Jogos não aparecem: o IDE ainda não
+   * executa esses exemplos. Os caminhos ficam escritos por inteiro: o `cleanup-icons.sh` apaga
+   * do build os ícones cujo nome não aparece no código.
+   */
+  private readonly categoryIcons: Record<string, string> = {
+    "Entrada e Saída": "assets/mdi/console.svg",
+    "Operações Aritméticas": "assets/mdi/plus-minus-variant.svg",
+    "Algoritmos Sequenciais": "assets/mdi/format-list-numbered.svg",
+    "Desvios Condicionais": "assets/mdi/arrow-decision-outline.svg",
+    "Laços de Repetição": "assets/mdi/repeat.svg",
+    "Vetores e Matrizes": "assets/mdi/code-brackets.svg",
+    "Sub-rotinas": "assets/mdi/function-variant.svg",
+    Bibliotecas: "assets/mdi/bookshelf.svg",
+  };
+
   groups: ExampleGroup[] = [];
   query = "";
   current: ExampleItem | null = null;
@@ -183,7 +202,7 @@ export class DialogOpenExampleComponent implements OnInit, OnDestroy {
       if (group) {
         group.entries.push(entry);
       } else {
-        this.groups.push({ category: entry.category, entries: [entry] });
+        this.groups.push({ category: entry.category, icon: entry.categoryIcon, entries: [entry] });
       }
     }
 
@@ -323,6 +342,13 @@ export class DialogOpenExampleComponent implements OnInit, OnDestroy {
       .toLowerCase();
   }
 
+  /**
+   * O exemplo escolhido com a categoria, para a prévia.
+   */
+  currentEntry() {
+    return this.entries.find(entry => entry.item.id === this.current?.id);
+  }
+
   private flattenExamples(items: ExampleItem[], parents: string[] = []): ExampleEntry[] {
     return items.flatMap(item => {
       if (item.children?.length) {
@@ -333,9 +359,12 @@ export class DialogOpenExampleComponent implements OnInit, OnDestroy {
         return [];
       }
 
+      const category = parents[0] ?? "Exemplos";
+
       return {
         item,
-        category: parents[0] ?? "Exemplos",
+        category,
+        categoryIcon: this.categoryIcons[category] ?? "assets/mdi/folder-outline.svg",
         path: parents.slice(1),
         searchText: this.normalize([item.name, ...parents, item.description ?? ""].join(" ")),
       };

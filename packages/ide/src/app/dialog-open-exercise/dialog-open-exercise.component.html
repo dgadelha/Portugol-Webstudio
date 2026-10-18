@@ -1,0 +1,144 @@
+<header class="dialog-header">
+  <div class="dialog-title">
+    <h2 id="dialogo-exercicios-titulo">Exercícios</h2>
+    <p>
+      Escolha um exercício, escreva o programa e clique em Verificar: o programa é testado com várias entradas.
+      @if (entries().length > 0) {
+        Você concluiu {{ doneCount() }} de {{ entries().length }}.
+      }
+    </p>
+  </div>
+
+  <button type="button" class="icon-btn" aria-label="Fechar" appTooltip="Fechar" (click)="dialogRef.close()">
+    <svg-icon src="assets/mdi/close.svg" aria-hidden="true" />
+  </button>
+</header>
+
+<div class="examples">
+  <div class="list">
+    <label class="search">
+      <svg-icon src="assets/mdi/magnify.svg" aria-hidden="true" />
+      <input
+        type="search"
+        placeholder="Buscar exercícios…"
+        aria-label="Buscar exercícios"
+        aria-controls="exercise-list"
+        autocomplete="off"
+        cdkFocusInitial
+        [attr.aria-activedescendant]="activeDescendant()"
+        [value]="query()"
+        (input)="onSearchInput($event)"
+        (keydown)="onSearchKeydown($event)"
+      />
+    </label>
+
+    <div
+      id="exercise-list"
+      class="items"
+      role="listbox"
+      tabindex="0"
+      aria-label="Exercícios"
+      [attr.aria-activedescendant]="activeDescendant()"
+      (keydown)="onSearchKeydown($event)"
+    >
+      @if (loading()) {
+        <div class="spinner" role="status"><span class="visually-hidden">Carregando exercícios</span></div>
+      } @else if (failed()) {
+        <p class="empty">Não foi possível carregar os exercícios.</p>
+      } @else {
+        @for (group of groups(); track group.topic) {
+          <div class="group" role="group" [attr.aria-label]="group.topic">
+            <div class="group-heading" aria-hidden="true">
+              <svg-icon [src]="group.icon" />
+              {{ group.topic }}
+            </div>
+
+            @for (entry of group.entries; track entry.id) {
+              @let done = isDone(entry);
+              <div
+                class="item"
+                role="option"
+                tabindex="-1"
+                [id]="optionId(entry)"
+                [class.active]="current()?.id === entry.id"
+                [attr.aria-selected]="current()?.id === entry.id"
+                (click)="onItemClick(entry)"
+                (dblclick)="open(entry)"
+                (keydown.enter)="open(entry)"
+              >
+                <svg-icon
+                  aria-hidden="true"
+                  [src]="done ? 'assets/mdi/check-circle.svg' : 'assets/mdi/puzzle-outline.svg'"
+                  [class.icon-green]="done"
+                />
+                <span class="item-name">{{ entry.title }}</span>
+                <span class="item-path">
+                  <svg-icon aria-hidden="true" [src]="entry.difficultyIcon" />
+                  {{ difficultyLabels[entry.difficulty] }}
+                  @if (done) {
+                    <span class="visually-hidden">, concluído</span>
+                  }
+                </span>
+              </div>
+            }
+          </div>
+        } @empty {
+          <p class="empty">Nenhum exercício encontrado.</p>
+        }
+      }
+    </div>
+  </div>
+
+  <div class="preview">
+    @if (current(); as entry) {
+      <div class="preview-header">
+        <div class="preview-text">
+          <h3>{{ entry.title }}</h3>
+          <div class="preview-meta">
+            <span>
+              <svg-icon aria-hidden="true" [src]="entry.topicIcon" />
+              {{ entry.topic }}
+            </span>
+            <span>
+              <svg-icon aria-hidden="true" [src]="entry.difficultyIcon" />
+              {{ difficultyLabels[entry.difficulty] }}
+            </span>
+            @if (isDone(entry)) {
+              <span>
+                <svg-icon src="assets/mdi/check-circle.svg" class="icon-green" aria-hidden="true" />
+                Concluído
+              </span>
+            }
+          </div>
+        </div>
+      </div>
+
+      <div class="preview-statement" role="region" aria-label="Enunciado" tabindex="0">
+        @if (statement.hasValue()) {
+          <div class="markdown" [innerHTML]="statement.value()"></div>
+        } @else if (statement.error()) {
+          <p class="preview-error">Não foi possível carregar o enunciado.</p>
+        } @else {
+          <div class="spinner" role="status"><span class="visually-hidden">Carregando o enunciado</span></div>
+        }
+      </div>
+    } @else if (!loading()) {
+      <p class="preview-empty">Nenhum exercício para mostrar.</p>
+    }
+
+    @if (!loading()) {
+      <div class="preview-footer">
+        <span class="preview-hint"><kbd>Enter</kbd> abre o exercício escolhido</span>
+        <button
+          type="button"
+          class="btn btn-primary open-button"
+          [attr.aria-disabled]="!current() || null"
+          (click)="openCurrent()"
+        >
+          <svg-icon src="assets/mdi/tab-plus.svg" aria-hidden="true" />
+          Abrir exercício
+        </button>
+      </div>
+    }
+  </div>
+</div>

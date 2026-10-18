@@ -1,5 +1,8 @@
 import { DIALOG_DATA, DialogRef } from "@angular/cdk/dialog";
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
+import { AngularSvgIconModule } from "angular-svg-icon";
+
+import { TooltipDirective } from "../shared/tooltip.directive";
 
 interface DialogData {
   title: string;
@@ -7,6 +10,7 @@ interface DialogData {
 
 @Component({
   selector: "app-dialog-confirm-close-tab",
+  imports: [AngularSvgIconModule, TooltipDirective],
   templateUrl: "./dialog-confirm-close-tab.component.html",
   styleUrl: "./dialog-confirm-close-tab.component.scss",
   changeDetection: ChangeDetectionStrategy.OnPush,

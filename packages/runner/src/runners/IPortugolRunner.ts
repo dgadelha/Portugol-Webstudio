@@ -14,21 +14,24 @@ export type PortugolEvent =
 
 /**
  * Um valor escrito pelo `escreva`, com o tipo: um por argumento, como no corretor do Portugol
- * Studio. Uma `cadeia` que nunca recebeu valor vem como `null`.
+ * Studio.
  */
 export type WrittenValue =
   | { type: "inteiro" | "real"; value: number }
-  | { type: "cadeia"; value: string | null }
+  | { type: "cadeia"; value: string }
   | { type: "caracter"; value: string }
   | { type: "logico"; value: boolean };
 
 /**
  * Função `valuesOf(args)` dos workers: os valores dos argumentos de um `escreva`, no formato
- * de `WrittenValue`. Os argumentos sem valor são pulados, como no texto escrito.
+ * de `WrittenValue`. Os argumentos sem valor são pulados, como no texto escrito, e uma
+ * \`cadeia\` que nunca recebeu valor vale "", que é o que o \`escreva\` escreve.
  */
 export const WRITTEN_VALUES = /* javascript */ `
   const valuesOf = (args) =>
-    args.filter((arg) => typeof arg.value !== "undefined").map((arg) => ({ type: arg.type, value: arg.value }));
+    args
+      .filter((arg) => typeof arg.value !== "undefined")
+      .map((arg) => ({ type: arg.type, value: arg.type === "cadeia" ? (arg.value ?? "") : arg.value }));
 `;
 
 /**

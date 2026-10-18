@@ -15,16 +15,17 @@ Em alguns notebooks, as teclas de função, como o **F1** e o **F5**, só funcio
 
 ## Numa aba de código
 
-| Atalho        | O que faz                             |
-| ------------- | ------------------------------------- |
-| Ctrl + Enter  | Executa o programa                    |
-| Alt + P       | Executa o programa passo a passo      |
-| Shift + F5    | Para o programa                       |
-| Ctrl + S      | Baixa o código como um arquivo `.por` |
-| Ctrl + O      | Abre um arquivo do computador         |
-| F1            | Abre a Ajuda                          |
-| Ctrl + G      | Vai até uma linha                     |
-| Ctrl + Espaço | Abre a lista de sugestões             |
+| Atalho               | O que faz                                         |
+| -------------------- | ------------------------------------------------- |
+| Ctrl + Enter         | Executa o programa                                |
+| Ctrl + Shift + Enter | Num exercício, confere o programa (**Verificar**) |
+| Alt + P              | Executa o programa passo a passo                  |
+| Shift + F5           | Para o programa, ou a conferência de um exercício |
+| Ctrl + S             | Baixa o código como um arquivo `.por`             |
+| Ctrl + O             | Abre um arquivo do computador                     |
+| F1                   | Abre a Ajuda                                      |
+| Ctrl + G             | Vai até uma linha                                 |
+| Ctrl + Espaço        | Abre a lista de sugestões                         |
 
 ## Executando passo a passo
 

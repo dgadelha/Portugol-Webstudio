@@ -37,11 +37,14 @@
       (keydown)="onSearchKeydown($event)"
     >
       @if (loading) {
-        <div class="spinner" role="status" aria-label="Carregando exemplos"></div>
+        <div class="spinner" role="status"><span class="visually-hidden">Carregando exemplos</span></div>
       } @else {
         @for (group of groups; track group.category) {
           <div class="group" role="group" [attr.aria-label]="group.category">
-            <div class="group-heading" aria-hidden="true">{{ group.category }}</div>
+            <div class="group-heading" aria-hidden="true">
+              <svg-icon [src]="group.icon" />
+              {{ group.category }}
+            </div>
 
             @for (entry of group.entries; track entry.item.id) {
               <div
@@ -75,6 +78,14 @@
       <div class="preview-header">
         <div class="preview-text">
           <h3>{{ current.name }}</h3>
+          @if (currentEntry(); as entry) {
+            <div class="preview-meta">
+              <span>
+                <svg-icon aria-hidden="true" [src]="entry.categoryIcon" />
+                {{ [entry.category, ...entry.path].join(" › ") }}
+              </span>
+            </div>
+          }
           <p #description id="example-description" [class.expanded]="descriptionExpanded">{{ current.description }}</p>
           <button
             class="read-more"

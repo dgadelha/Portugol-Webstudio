@@ -30,6 +30,16 @@ export function atalhoDoEvento(event: KeyboardEvent): string | undefined {
     return undefined;
   }
 
+  // O Ctrl+Shift+Enter do Verificar, nos exercícios (no Mac, Cmd+Shift+Enter)
+  if (
+    event.key === "Enter" &&
+    event.shiftKey &&
+    !event.altKey &&
+    (isMacintosh ? event.metaKey !== event.ctrlKey : event.ctrlKey && !event.metaKey)
+  ) {
+    return "ctrl+shift+enter";
+  }
+
   // No Mac, o Cmd faz o papel do Ctrl, como no editor de código: Cmd+S é o "ctrl+s"
   if (event.metaKey) {
     return isMacintosh && !event.ctrlKey && !event.altKey && !event.shiftKey

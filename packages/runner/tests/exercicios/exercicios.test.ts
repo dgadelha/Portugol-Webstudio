@@ -2,16 +2,19 @@ import { PortugolDiagnosticSeverity } from "@portugol-webstudio/antlr";
 import { readFileSync, readdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, test } from "vitest";
-import { CheckableExercise, checkExercise, PortugolWorkerThreadsRunner, transpile } from "../../src";
+import {
+  analyzeExerciseCode,
+  CheckableExercise,
+  checkExercise,
+  PortugolWorkerThreadsRunner,
+  transpile,
+} from "../../src";
 import { runPortugolCode } from "../helpers/runner";
 
 // Os exercícios embutidos no IDE. Com `ATUALIZAR_EXERCICIOS=1`, a saída de cada caso do modo
 // simples é regravada com a da solução de referência, em vez de comparada.
 const exercisesDir = path.join(import.meta.dirname, "..", "..", "..", "resources", "exercicios");
 const update = process.env.ATUALIZAR_EXERCICIOS === "1";
-
-// Bibliotecas que precisam de interação ou que o IDE não tem: um exercício não pode usá-las
-const blockedLibraries = new Set(["Arquivos", "Graficos", "Internet", "Mouse", "ServicosWeb", "Sons", "Teclado"]);
 
 type Exercise = CheckableExercise & { id: string; solução: string; códigoInicial?: string };
 
@@ -37,9 +40,7 @@ describe("Exercícios", () => {
 
     test("Não usa bibliotecas bloqueadas", () => {
       for (const code of [exercise.solução, exercise.códigoInicial ?? ""]) {
-        const libraries = Array.from(code.matchAll(/inclua\s+biblioteca\s+(\w+)/g), match => match[1]);
-
-        expect(libraries.filter(library => blockedLibraries.has(library))).toEqual([]);
+        expect(analyzeExerciseCode(code).blockedLibraries).toEqual([]);
       }
     });
 

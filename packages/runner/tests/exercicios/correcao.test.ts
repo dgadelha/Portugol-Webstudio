@@ -1,10 +1,12 @@
 import { describe, expect, test } from "vitest";
 import {
+  analyzeExerciseCode,
   CheckableExercise,
   checkExercise,
   ExerciseCheck,
   normalizeOutput,
   PortugolWorkerThreadsRunner,
+  runExerciseCase,
   transpile,
 } from "../../src";
 import { portugolInicio } from "../helpers/code";
@@ -263,6 +265,121 @@ describe("Correção de exercícios", () => {
       await expect(failure(code, simple(""), 500)).resolves.toEqual({ type: "timeout" });
     });
 
+    test("Depois de um tempo esgotado, os outros casos não são conferidos", async () => {
+      const exercise: CheckableExercise = {
+        modo: "simples",
+        exemplos: [{ entradas: [], saída: "" }],
+        testes: [{ entradas: [], saída: "" }],
+      };
+
+      const result = await check(portugolInicio`enquanto (verdadeiro) {}`, exercise, 300);
+
+      expect(result).toMatchObject({ passed: false, total: 2, stopped: "timeout" });
+      expect(result.cases).toHaveLength(1);
+    });
+
+    test("A correção pode ser interrompida", async () => {
+      const controller = new AbortController();
+      const exercise: CheckableExercise = {
+        modo: "simples",
+        exemplos: [{ entradas: [], saída: "" }],
+        testes: [{ entradas: [], saída: "" }],
+      };
+
+      setTimeout(() => {
+        controller.abort();
+      }, 200);
+
+      const result = await checkExercise(
+        PortugolWorkerThreadsRunner,
+        transpile(portugolInicio`enquanto (verdadeiro) {}`).js,
+        exercise,
+        { signal: controller.signal },
+      );
+
+      expect(result).toMatchObject({ passed: false, total: 2, stopped: "aborted" });
+      expect(result.cases).toHaveLength(1);
+      expect(result.cases[0].failure).toEqual({ type: "aborted" });
+    });
+
+    test("Interrompida entre um caso e outro, não confere os seguintes", async () => {
+      const controller = new AbortController();
+      const exercise: CheckableExercise = {
+        modo: "simples",
+        exemplos: [{ entradas: [], saída: "a" }],
+        testes: [{ entradas: [], saída: "a" }],
+      };
+
+      const result = await checkExercise(
+        PortugolWorkerThreadsRunner,
+        transpile(portugolInicio`escreva("a")`).js,
+        exercise,
+        {
+          signal: controller.signal,
+          onCase: () => {
+            controller.abort();
+          },
+        },
+      );
+
+      expect(result).toMatchObject({ passed: false, total: 2, stopped: "aborted" });
+      expect(result.cases).toHaveLength(1);
+      expect(result.cases[0].failure).toBeUndefined();
+    });
+
+    test("Com o sinal já interrompido, nenhum caso é conferido", async () => {
+      const controller = new AbortController();
+
+      controller.abort();
+
+      const result = await checkExercise(
+        PortugolWorkerThreadsRunner,
+        transpile(portugolInicio`escreva("a")`).js,
+        simple("a"),
+        {
+          signal: controller.signal,
+        },
+      );
+
+      expect(result).toMatchObject({ passed: false, total: 1, stopped: "aborted" });
+      expect(result.cases).toHaveLength(0);
+    });
+
+    test("Um caso executado com o sinal já interrompido termina na hora", async () => {
+      const controller = new AbortController();
+
+      controller.abort();
+
+      const run = await runExerciseCase(
+        PortugolWorkerThreadsRunner,
+        transpile(portugolInicio`enquanto (verdadeiro) {}`).js,
+        [],
+        { signal: controller.signal },
+      );
+
+      expect(run.ending).toEqual({ type: "aborted" });
+    });
+
+    test("Avisa o andamento depois de cada caso", async () => {
+      const progress: Array<[number, number]> = [];
+      const exercise: CheckableExercise = {
+        modo: "simples",
+        exemplos: [{ entradas: [], saída: "a" }],
+        testes: [{ entradas: [], saída: "a" }],
+      };
+
+      await checkExercise(PortugolWorkerThreadsRunner, transpile(portugolInicio`escreva("a")`).js, exercise, {
+        onCase: (_, done, total) => {
+          progress.push([done, total]);
+        },
+      });
+
+      expect(progress).toEqual([
+        [1, 2],
+        [2, 2],
+      ]);
+    });
+
     test("Corrige os exemplos e depois os testes, e só passa se todos passarem", async () => {
       const exercise: CheckableExercise = {
         modo: "simples",
@@ -287,6 +404,32 @@ describe("Correção de exercícios", () => {
         ["teste", 1, undefined, undefined],
         ["teste", 2, "três", "differentOutput"],
       ]);
+    });
+  });
+
+  describe("Análise do código", () => {
+    test.each([
+      ["inclua biblioteca Teclado", ["Teclado"]],
+      ["inclua biblioteca Graficos --> g\ninclua biblioteca Sons", ["Graficos", "Sons"]],
+      ["inclua biblioteca Util", []],
+      ["inclua biblioteca Matematica --> mat", []],
+      ["// inclua biblioteca Teclado", []],
+      ["/* inclua biblioteca Teclado */", []],
+      ["/*\n inclua biblioteca Teclado\n*/", []],
+      ['escreva("inclua biblioteca Teclado")', []],
+    ])("Bibliotecas bloqueadas em %j", (code, expected) => {
+      expect(analyzeExerciseCode(code).blockedLibraries).toEqual(expected);
+    });
+
+    test.each([
+      ["u.sorteia(1, 2)", true],
+      ["sorteia (1, 2)", true],
+      ['escreva("sorteia(1, 2)")', false],
+      ["// sorteia(1, 2)", false],
+      ["/* sorteia(1, 2) */", false],
+      ["inteiro sorteiaNumero", false],
+    ])("Uso do sorteia em %j", (code, expected) => {
+      expect(analyzeExerciseCode(code).usesSorteia).toBe(expected);
     });
   });
 });

@@ -3,6 +3,8 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  DestroyRef,
+  effect,
   ElementRef,
   inject,
   Injector,
@@ -21,28 +23,26 @@ import { settings } from "../settings";
 import { IS_BETA } from "./beta";
 import { DialogConfirmCloseTabComponent } from "./dialog-confirm-close-tab/dialog-confirm-close-tab.component";
 import { DialogOpenExampleComponent } from "./dialog-open-example/dialog-open-example.component";
+import { DialogOpenExerciseComponent } from "./dialog-open-exercise/dialog-open-exercise.component";
 import { DialogRenameTabComponent } from "./dialog-rename-tab/dialog-rename-tab.component";
 import { DialogSettingsComponent, SettingsSectionId } from "./dialog-settings/dialog-settings.component";
+import { ExerciseNotFoundError, ExercisesService } from "./exercises.service";
 import { FileService } from "./file.service";
 import { SettingsService } from "./settings.service";
 import { ShareService } from "./share.service";
-import { SurveyService } from "./survey.service";
 import { atalhoDoEvento } from "./shared/atalhos";
 import { DialogService } from "./shared/dialog.service";
 import { ACTIVE_TAB_SELECTOR, focusAfterRender } from "./shared/focus";
 import { moveRovingFocus } from "./shared/roving-focus";
 import { TooltipDirective } from "./shared/tooltip.directive";
+import { SurveyService } from "./survey.service";
 import { TabChangelogComponent } from "./tab-changelog/tab-changelog.component";
 import { TabEditorComponent } from "./tab-editor/tab-editor.component";
 import { TabHelpComponent } from "./tab-help/tab-help.component";
 import { TabStartComponent } from "./tab-start/tab-start.component";
 import { WorkspaceService } from "./workspace.service";
-import { isMeaningfulCode, Tab, TabType } from "./workspace.types";
+import { defaultCode, isMeaningfulCode, isOwnExerciseTab, Tab, TabType } from "./workspace.types";
 
-/**
- * O IDE no formato do VS Code: barra de atividades à esquerda, abas em cima do
- * conteúdo e barra de status embaixo.
- */
 /**
  * De onde veio a ação, enviado como rótulo dos eventos do Analytics: a aba Inicial, o
  * editor, a barra de abas, um atalho de teclado, um atalho do app instalado (ou um
@@ -76,6 +76,7 @@ type Origin = "inicio" | "editor" | "abas" | "atalho" | "app" | "link" | "barra_
 })
 export class AppComponent implements OnInit {
   private gaService = inject(GoogleAnalyticsService);
+  private readonly lifetime = inject(DestroyRef);
   private toast = inject(HotToastService);
   private dialog = inject(DialogService);
   private fileService = inject(FileService);
@@ -85,6 +86,7 @@ export class AppComponent implements OnInit {
   private injector = inject(Injector);
   private zone = inject(NgZone);
   private survey = inject(SurveyService);
+  private exercises = inject(ExercisesService);
 
   private readonly tablist = viewChild.required<ElementRef<HTMLElement>>("tablist");
   private readonly fileInput = viewChild.required<ElementRef<HTMLInputElement>>("fileInput");
@@ -94,6 +96,7 @@ export class AppComponent implements OnInit {
   readonly tabs = this.workspace.tabs;
   readonly activeTabId = this.workspace.activeTabId;
   readonly isBeta = IS_BETA;
+  readonly isOwnExerciseTab = isOwnExerciseTab;
 
   readonly tabIcons: Record<TabType, string> = {
     editor: "assets/mdi/file-document-outline.svg",
@@ -132,9 +135,44 @@ export class AppComponent implements OnInit {
     return `${counts.slice(0, -1).join(", ")} e ${counts.at(-1)}. Ver os problemas do código`;
   });
 
+  constructor() {
+    // A lista de abas muda de largura (o celular girado, a janela redimensionada): a aba
+    // escolhida continua à vista
+    afterNextRender(() => {
+      const observer = new ResizeObserver(() => {
+        this.scrollActiveTabIntoView();
+      });
+
+      observer.observe(this.tablist().nativeElement);
+      this.lifetime.onDestroy(() => {
+        observer.disconnect();
+      });
+    });
+
+    // Um nome novo muda a largura da aba, mas não a da lista (renomear, ou uma cópia de
+    // exercício que vira o exercício): a aba escolhida também volta à vista. Os nomes viram um
+    // texto só para não rodar a cada tecla, que também muda a lista de abas.
+    const titles = computed(() => {
+      return this.workspace
+        .tabs()
+        .map(tab => tab.title)
+        .join("\n");
+    });
+
+    effect(() => {
+      titles();
+      afterNextRender(
+        () => {
+          this.scrollActiveTabIntoView();
+        },
+        { injector: this.injector },
+      );
+    });
+  }
+
   ngOnInit() {
     if (this.workspace.restoredFromPreviousSession()) {
-      this.toast.show("Recuperamos o código que você estava editando.", { duration: 8000 });
+      this.toast.show("Recuperamos o código que você estava editando.", { duration: 8000, dismissible: true });
 
       this.gaService.event(
         "workspace_restored",
@@ -195,7 +233,7 @@ export class AppComponent implements OnInit {
    * Endereços que abrem algo no IDE: `#share=<id>` (código compartilhado) e
    * `#ajuda=<arquivo>` (um tópico da Ajuda, como nos links entre tópicos). Os
    * atalhos do app instalado (`shortcuts` no `manifest.webmanifest`) usam
-   * `#novo`, `#exemplos` e `#ajuda`.
+   * `#novo`, `#exemplos` e `#ajuda`; `#exercicios` abre a lista de exercícios.
    */
   openFromHash() {
     const hash = window.location.hash;
@@ -212,6 +250,12 @@ export class AppComponent implements OnInit {
       case "#exemplos": {
         this.clearHash();
         this.openExamplesDialog("app");
+        return;
+      }
+
+      case "#exercicios": {
+        this.clearHash();
+        this.openExercisesDialog("app");
         return;
       }
 
@@ -262,7 +306,7 @@ export class AppComponent implements OnInit {
           const file = await (handle as FileSystemFileHandle).getFile();
 
           this.gaService.event("open_file_launch", "Interface", "Abrir arquivo pelo sistema");
-          this.addTab(file.name, await this.fileService.getContents(file));
+          await this.openCode(file.name, await this.fileService.getContents(file));
         }
       });
     });
@@ -279,7 +323,7 @@ export class AppComponent implements OnInit {
     loading.close();
 
     if (result.ok) {
-      this.addTab(`Código compartilhado (#${hash})`, result.value);
+      await this.openCode(`Código compartilhado (#${hash})`, result.value);
       this.gaService.event("load_shared_code_success", "Interface", "link");
     } else {
       this.toast.error(
@@ -395,13 +439,17 @@ export class AppComponent implements OnInit {
     // abas abertas
     afterNextRender(
       () => {
-        this.tablist()
-          .nativeElement.querySelector(ACTIVE_TAB_SELECTOR)
-          ?.closest(".tab")
-          ?.scrollIntoView({ block: "nearest", inline: "nearest" });
+        this.scrollActiveTabIntoView();
       },
       { injector: this.injector },
     );
+  }
+
+  private scrollActiveTabIntoView() {
+    this.tablist()
+      .nativeElement.querySelector(ACTIVE_TAB_SELECTOR)
+      ?.closest(".tab")
+      ?.scrollIntoView({ block: "nearest", inline: "nearest" });
   }
 
   /**
@@ -413,8 +461,8 @@ export class AppComponent implements OnInit {
     this.gaService.event("new_tab_top", "Editor", origin, this.workspace.tabs().length);
   }
 
-  addTab(title?: string, contents?: string) {
-    this.workspace.addTab(title, contents);
+  addTab(title?: string, contents?: string, exerciseId?: string, exerciseCopy = false) {
+    this.workspace.addTab(title, contents, exerciseId, exerciseCopy);
     this.selectTab(this.workspace.activeTabId());
     this.focusNewTab(this.workspace.activeTab());
   }
@@ -440,7 +488,7 @@ export class AppComponent implements OnInit {
 
     for (const file of files) {
       this.gaService.event("open_file", "Interface", this.openFileOrigin);
-      this.addTab(file.name, await this.fileService.getContents(file));
+      await this.openCode(file.name, await this.fileService.getContents(file));
     }
   }
 
@@ -461,8 +509,11 @@ export class AppComponent implements OnInit {
 
     // Só vale interromper quem tem algo a perder: aba de ajuda e aba intocada
     // fecham direto, e quem desligou a confirmação também.
+    // O código de um exercício fica guardado com o progresso: reabrir o exercício o traz de volta
+    // (uma cópia não guarda nada, então pergunta como uma aba comum)
     if (
       tab.type !== "editor" ||
+      isOwnExerciseTab(tab) ||
       !isMeaningfulCode(tab.contents) ||
       !this.settingsService.get(settings.interfaceConfirmCloseTab)
     ) {
@@ -492,7 +543,8 @@ export class AppComponent implements OnInit {
    * origem: o duplo clique ou o lápis (`abas`), ou o F2 (`atalho`). O nome não é enviado.
    */
   changeTabTitle(tab: Tab, origin: "abas" | "atalho") {
-    if (tab.type !== "editor") {
+    // A aba de um exercício tem o nome dele; uma cópia tem o nome do arquivo, e esse muda
+    if (tab.type !== "editor" || isOwnExerciseTab(tab)) {
       return;
     }
 
@@ -540,7 +592,7 @@ export class AppComponent implements OnInit {
     const ref = this.dialog.open<{ title: string; code: string; file?: string }, unknown, DialogOpenExampleComponent>(
       DialogOpenExampleComponent,
       {
-        width: "min(92vw, 960px)",
+        width: "min(92vw, 60rem)",
         height: "min(85dvh, 640px)",
         ariaLabelledBy: "dialogo-exemplos-titulo",
       },
@@ -565,6 +617,81 @@ export class AppComponent implements OnInit {
         this.addTab(example.title, example.code);
       }
     });
+  }
+
+  openExercisesDialog(origin: Origin) {
+    this.gaService.event("open_exercises_dialog", "Interface", origin);
+
+    const ref = this.dialog.open<{ id: string }, unknown, DialogOpenExerciseComponent>(DialogOpenExerciseComponent, {
+      width: "min(92vw, 60rem)",
+      height: "min(85dvh, 640px)",
+      ariaLabelledBy: "dialogo-exercicios-titulo",
+    });
+
+    ref.closed.subscribe(choice => {
+      if (choice) {
+        void this.openExercise(choice.id);
+      }
+    });
+  }
+
+  /**
+   * Cada exercício tem uma aba só: abrir de novo leva até ela. Uma aba nova começa com o
+   * último código escrito no exercício, ou com o código inicial dele.
+   */
+  async openExercise(exerciseId: string) {
+    const existing = this.workspace.exerciseTab(exerciseId);
+
+    if (existing) {
+      this.selectTab(existing.id);
+      this.focusNewTab(existing);
+      return;
+    }
+
+    try {
+      const exercise = await this.exercises.load(exerciseId);
+      const contents = this.exercises.initialCode(exercise, defaultCode(this.settingsService.editorIndentation()));
+      const opened = this.workspace.exerciseTab(exerciseId);
+
+      // Aberto por outro caminho enquanto carregava
+      if (opened) {
+        this.selectTab(opened.id);
+        this.focusNewTab(opened);
+        return;
+      }
+
+      this.gaService.event("open_exercise", "Exercícios", exerciseId);
+      this.addTab(exercise.título, contents, exerciseId);
+    } catch {
+      this.toast.error("Não foi possível carregar o exercício.", { duration: 5000 });
+    }
+  }
+
+  /**
+   * Abre o código de um arquivo ou de um link. Com o comentário de um exercício, ele abre como
+   * uma cópia do exercício, com o nome do arquivo: dá para abrir vários arquivos do mesmo
+   * exercício, e nenhum mexe no progresso. Se o exercício não existir aqui, abre numa aba
+   * comum, com o comentário, para nada se perder.
+   */
+  private async openCode(title: string, contents: string) {
+    const { code, exerciseId } = this.exercises.extractMarker(contents);
+
+    if (exerciseId) {
+      try {
+        await this.exercises.load(exerciseId);
+        this.addTab(title, code, exerciseId, true);
+        return;
+      } catch (error) {
+        // Sem conexão, abre como cópia mesmo assim: a aba tenta carregar o exercício de novo.
+        // Só um exercício que não existe aqui abre numa aba comum
+        if (!(error instanceof ExerciseNotFoundError)) {
+          this.addTab(title, code, exerciseId, true);
+          return;
+        }
+      }
+    }
+
+    this.addTab(title, contents);
   }
 
   openStatusBarSettings() {

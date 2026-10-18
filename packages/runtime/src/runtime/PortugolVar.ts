@@ -155,7 +155,8 @@ class PortugolVar {
   }
 
   // Reproduz o formato do Double.toString() do Java, usado pelo Portugol Studio
-  // para converter valores do tipo 'real' em texto.
+  // para converter valores do tipo 'real' em texto. O runner tem uma cópia
+  // (runner/src/realToString.ts), que o IDE usa: mude as duas juntas.
   static realToString(value) {
     if (typeof value !== "number") {
       return String(value);

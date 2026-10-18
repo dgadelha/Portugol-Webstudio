@@ -126,6 +126,18 @@
     type="button"
     class="activity-button"
     tabindex="-1"
+    appTooltip="Exercícios"
+    appTooltipPosition="right"
+    aria-label="Exercícios"
+    (click)="exercisesDialog.emit()"
+  >
+    <svg-icon src="assets/mdi/puzzle-outline.svg" class="icon-green" aria-hidden="true" />
+  </button>
+
+  <button
+    type="button"
+    class="activity-button"
+    tabindex="-1"
     appTooltip="Ajuda"
     appTooltipShortcut="F1"
     appTooltipPosition="right"
@@ -223,281 +235,356 @@
 </ng-template>
 
 <as-split
-  #split
-  direction="vertical"
-  unit="pixel"
-  gutterAriaLabel="Altura do painel"
-  (dragEnd)="onSplitDragEnd($event)"
+  class="exercise-split"
+  unit="percent"
+  gutterAriaLabel="Tamanho do enunciado"
+  [direction]="isBelowMd() ? 'vertical' : 'horizontal'"
 >
+  <as-split-area
+    class="statement-area"
+    [size]="isBelowMd() ? 40 : 35"
+    [visible]="exercise() !== null || exerciseFailed() !== null"
+  >
+    @if (exerciseFailed() === "missing") {
+      <div class="exercise-failed" role="alert">
+        <p>Este exercício não existe nesta versão do Portugol Webstudio. O código continua na aba.</p>
+      </div>
+    } @else if (exerciseFailed() === "network") {
+      <div class="exercise-failed" role="alert">
+        <p>Não foi possível carregar o exercício. O código continua na aba.</p>
+        <button
+          type="button"
+          class="btn"
+          [attr.aria-disabled]="loadingExercise() || null"
+          (click)="!loadingExercise() && retryExercise()"
+        >
+          <svg-icon src="assets/mdi/refresh.svg" aria-hidden="true" />
+          {{ loadingExercise() ? "Carregando…" : "Tentar de novo" }}
+        </button>
+      </div>
+    } @else if (exercise(); as currentExercise) {
+      <app-exercise-statement
+        [exercise]="currentExercise"
+        [done]="exerciseDone()"
+        [copy]="exerciseCopy()"
+        [checking]="checking()"
+        [busy]="!canRun()"
+        (verify)="verifyExercise()"
+        (stopCheck)="stopExerciseCheck()"
+        (restart)="restartExercise()"
+        (adopt)="adoptExercise()"
+      />
+    }
+  </as-split-area>
+
   <as-split-area size="*">
     <as-split
-      direction="horizontal"
-      class="thin-split"
-      gutterAriaLabel="Código gerado"
-      [gutterSize]="1"
-      (dragEnd)="onGeneratedCodeDragEnd($event)"
+      #split
+      direction="vertical"
+      unit="pixel"
+      gutterAriaLabel="Altura do painel"
+      (dragEnd)="onSplitDragEnd($event)"
     >
-      <as-split-area class="code-editor-area" [size]="100">
-        <ngx-monaco-editor
-          [options]="codeEditorOptions"
-          [ngModel]="code"
-          (ngModelChange)="onCodeChange($event)"
-          (init)="onEditorInit($event)"
-        />
-        @if (debugging && advancedDebugging) {
-          <div
-            class="debug-toolbar"
-            role="toolbar"
-            aria-label="Depuração"
-            cdkDrag
-            cdkDragBoundary=".code-editor-area"
-            [cdkDragFreeDragPosition]="debugToolbarPosition()"
-            (cdkDragEnded)="onDebugToolbarMoved($event)"
-          >
-            <button
-              type="button"
-              class="debug-toolbar-grip debug-toolbar-button"
-              tabindex="-1"
-              cdkDragHandle
-              aria-label="Voltar a barra ao lugar inicial"
-              appTooltip="Arrastar (dois cliques voltam ao lugar inicial)"
-              appTooltipPosition="below"
-              (click)="$event.detail === 0 && resetDebugToolbar()"
-              (dblclick)="resetDebugToolbar()"
-            >
-              <svg-icon src="assets/mdi/drag-vertical.svg" aria-hidden="true" />
-            </button>
+      <as-split-area size="*">
+        <as-split
+          direction="horizontal"
+          class="thin-split"
+          gutterAriaLabel="Código gerado"
+          [gutterSize]="1"
+          (dragEnd)="onGeneratedCodeDragEnd($event)"
+        >
+          <as-split-area class="code-editor-area" [size]="100">
+            <ngx-monaco-editor
+              [options]="codeEditorOptions"
+              [ngModel]="code"
+              (ngModelChange)="onCodeChange($event)"
+              (init)="onEditorInit($event)"
+            />
+            @if (debugging && advancedDebugging) {
+              <div
+                class="debug-toolbar"
+                role="toolbar"
+                aria-label="Depuração"
+                cdkDrag
+                cdkDragBoundary=".code-editor-area"
+                [cdkDragFreeDragPosition]="debugToolbarPosition()"
+                (cdkDragEnded)="onDebugToolbarMoved($event)"
+              >
+                <button
+                  type="button"
+                  class="debug-toolbar-grip debug-toolbar-button"
+                  tabindex="-1"
+                  cdkDragHandle
+                  aria-label="Voltar a barra ao lugar inicial"
+                  appTooltip="Arrastar (dois cliques voltam ao lugar inicial)"
+                  appTooltipPosition="below"
+                  (click)="$event.detail === 0 && resetDebugToolbar()"
+                  (dblclick)="resetDebugToolbar()"
+                >
+                  <svg-icon src="assets/mdi/drag-vertical.svg" aria-hidden="true" />
+                </button>
 
-            @let isPaused = paused();
-            <button
-              type="button"
-              class="icon-btn debug-toolbar-button"
-              tabindex="0"
-              appTooltipShortcut="Alt+C"
-              appTooltipPosition="below"
-              aria-keyshortcuts="Alt+C"
-              [appTooltip]="isPaused ? 'Continuar' : 'Pausar'"
-              [attr.aria-label]="isPaused ? 'Continuar' : 'Pausar'"
-              [attr.aria-disabled]="(!isPaused && executor.waitingForInput) || null"
-              (click)="isPaused ? resumeDebugging('continue', 'editor') : pauseDebugging('editor')"
-            >
-              <svg-icon
-                aria-hidden="true"
-                [src]="isPaused ? 'assets/mdi/play.svg' : 'assets/mdi/pause.svg'"
-                [class]="isPaused ? 'icon-green' : 'icon-yellow'"
-              />
-            </button>
+                @let isPaused = paused();
+                <button
+                  type="button"
+                  class="icon-btn debug-toolbar-button"
+                  tabindex="0"
+                  appTooltipShortcut="Alt+C"
+                  appTooltipPosition="below"
+                  aria-keyshortcuts="Alt+C"
+                  [appTooltip]="isPaused ? 'Continuar' : 'Pausar'"
+                  [attr.aria-label]="isPaused ? 'Continuar' : 'Pausar'"
+                  [attr.aria-disabled]="(!isPaused && executor.waitingForInput) || null"
+                  (click)="isPaused ? resumeDebugging('continue', 'editor') : pauseDebugging('editor')"
+                >
+                  <svg-icon
+                    aria-hidden="true"
+                    [src]="isPaused ? 'assets/mdi/play.svg' : 'assets/mdi/pause.svg'"
+                    [class]="isPaused ? 'icon-green' : 'icon-yellow'"
+                  />
+                </button>
 
-            @for (button of stepButtons; track button.type) {
+                @for (button of stepButtons; track button.type) {
+                  <button
+                    type="button"
+                    class="icon-btn debug-toolbar-button"
+                    tabindex="-1"
+                    appTooltipPosition="below"
+                    [appTooltip]="button.label"
+                    [appTooltipShortcut]="button.shortcut"
+                    [attr.aria-label]="button.label"
+                    [attr.aria-keyshortcuts]="button.shortcut"
+                    [attr.aria-disabled]="!isPaused || null"
+                    (click)="resumeDebugging(button.type, 'editor')"
+                  >
+                    <svg-icon class="icon-blue" aria-hidden="true" [src]="button.icon" />
+                  </button>
+                }
+
+                <button
+                  type="button"
+                  class="icon-btn debug-toolbar-button"
+                  tabindex="-1"
+                  appTooltip="Parar"
+                  appTooltipShortcut="Shift+F5"
+                  appTooltipPosition="below"
+                  aria-label="Parar"
+                  aria-keyshortcuts="Shift+F5"
+                  (click)="stopCode('editor')"
+                >
+                  <svg-icon src="assets/mdi/square-rounded-outline.svg" class="icon-red" aria-hidden="true" />
+                </button>
+              </div>
+            }
+          </as-split-area>
+
+          <as-split-area [size]="0" [attr.inert]="generatedCodeOpen() ? null : ''">
+            <ngx-monaco-editor [options]="generatedCodeEditorOptions" [(ngModel)]="executor.byteCode" />
+          </as-split-area>
+        </as-split>
+      </as-split-area>
+
+      <as-split-area [size]="outputSize" [minSize]="panelHeaderHeight">
+        <section class="panel" aria-label="Painel">
+          <header class="panel-header">
+            <div class="panel-tabs" role="tablist" aria-label="Painel">
               <button
                 type="button"
-                class="icon-btn debug-toolbar-button"
-                tabindex="-1"
-                appTooltipPosition="below"
-                [appTooltip]="button.label"
-                [appTooltipShortcut]="button.shortcut"
-                [attr.aria-label]="button.label"
-                [attr.aria-keyshortcuts]="button.shortcut"
-                [attr.aria-disabled]="!isPaused || null"
-                (click)="resumeDebugging(button.type, 'editor')"
+                role="tab"
+                class="panel-tab"
+                [id]="ids().outputTab"
+                [attr.aria-controls]="ids().outputPanel"
+                [attr.aria-selected]="panelView() === 'output'"
+                [attr.tabindex]="panelView() === 'output' ? 0 : -1"
+                (click)="selectPanelTab('output')"
+                (keydown)="onPanelTabsKeydown($event)"
               >
-                <svg-icon class="icon-blue" aria-hidden="true" [src]="button.icon" />
+                Saída
+              </button>
+
+              <button
+                type="button"
+                role="tab"
+                class="panel-tab"
+                [id]="ids().problemsTab"
+                [attr.aria-controls]="ids().problemsPanel"
+                [attr.aria-selected]="panelView() === 'problems'"
+                [attr.tabindex]="panelView() === 'problems' ? 0 : -1"
+                (click)="selectPanelTab('problems')"
+                (keydown)="onPanelTabsKeydown($event)"
+              >
+                Problemas
+                @if (problems().length > 0) {
+                  <span class="badge" aria-hidden="true">{{ problems().length }}</span>
+                }
+              </button>
+
+              @if (exercise()) {
+                <button
+                  type="button"
+                  role="tab"
+                  class="panel-tab"
+                  [id]="ids().checkTab"
+                  [attr.aria-controls]="ids().checkPanel"
+                  [attr.aria-selected]="panelView() === 'check'"
+                  [attr.tabindex]="panelView() === 'check' ? 0 : -1"
+                  (click)="selectPanelTab('check')"
+                  (keydown)="onPanelTabsKeydown($event)"
+                >
+                  Correção
+                </button>
+              }
+
+              <button
+                type="button"
+                role="tab"
+                class="panel-tab"
+                [id]="ids().variablesTab"
+                [attr.aria-controls]="ids().variablesPanel"
+                [attr.aria-selected]="panelView() === 'variables'"
+                [attr.tabindex]="panelView() === 'variables' ? 0 : -1"
+                (click)="selectPanelTab('variables')"
+                (keydown)="onPanelTabsKeydown($event)"
+              >
+                Variáveis
+              </button>
+            </div>
+
+            <span class="panel-status" role="status">
+              @if (paused()) {
+                <span class="run-status paused" aria-hidden="true">
+                  <span class="dot"></span>Pausado na linha {{ debugPause()?.line }}
+                </span>
+              } @else if (executor.waitingForInput) {
+                <span class="run-status waiting"><span class="dot"></span>Aguardando entrada</span>
+              } @else if (executor.running && !stepInFlight()) {
+                <span class="run-status running"><span class="dot"></span>Executando</span>
+              }
+            </span>
+
+            <span class="panel-spacer"></span>
+
+            @if (panelView() === "output") {
+              <button
+                type="button"
+                class="icon-btn"
+                aria-label="Limpar saída"
+                appTooltip="Limpar saída"
+                appTooltipPosition="above"
+                [disabled]="!executor.stdOut || executor.running"
+                (click)="clearOutput()"
+              >
+                <svg-icon src="assets/mdi/eraser.svg" aria-hidden="true" />
               </button>
             }
 
             <button
               type="button"
-              class="icon-btn debug-toolbar-button"
-              tabindex="-1"
-              appTooltip="Parar"
-              appTooltipShortcut="Shift+F5"
-              appTooltipPosition="below"
-              aria-label="Parar"
-              aria-keyshortcuts="Shift+F5"
-              (click)="stopCode('editor')"
+              class="icon-btn"
+              appTooltipPosition="above"
+              [attr.aria-label]="outputCollapsed ? 'Mostrar painel' : 'Recolher painel'"
+              [attr.aria-expanded]="!outputCollapsed"
+              [appTooltip]="outputCollapsed ? 'Mostrar painel' : 'Recolher painel'"
+              (click)="toggleOutput()"
             >
-              <svg-icon src="assets/mdi/square-rounded-outline.svg" class="icon-red" aria-hidden="true" />
+              <svg-icon
+                src="assets/mdi/chevron-up.svg"
+                class="chevron"
+                aria-hidden="true"
+                [class.open]="!outputCollapsed"
+              />
             </button>
-          </div>
-        }
-      </as-split-area>
+          </header>
 
-      <as-split-area [size]="0" [attr.inert]="generatedCodeOpen() ? null : ''">
-        <ngx-monaco-editor [options]="generatedCodeEditorOptions" [(ngModel)]="executor.byteCode" />
+          <div
+            class="panel-body"
+            role="tabpanel"
+            [id]="ids().outputPanel"
+            [attr.aria-labelledby]="ids().outputTab"
+            [hidden]="panelView() !== 'output'"
+          >
+            <ngx-monaco-editor
+              class="output-editor"
+              [options]="stdOutEditorOptions"
+              [(ngModel)]="executor.stdOut"
+              (init)="onStdOutEditorInit($event)"
+            />
+
+            @if (executor.waitingForInput && coarsePointer()) {
+              <form class="output-input" (ngSubmit)="sendProgramInput()">
+                <input
+                  #programInputField
+                  type="text"
+                  class="input"
+                  name="programInput"
+                  aria-label="Entrada do programa"
+                  placeholder="Digite e pressione Enter"
+                  autocomplete="off"
+                  enterkeyhint="send"
+                  [(ngModel)]="programInput"
+                />
+                <button type="submit" class="icon-btn" aria-label="Enviar entrada">
+                  <svg-icon src="assets/mdi/send.svg" class="icon-yellow" aria-hidden="true" />
+                </button>
+              </form>
+            }
+          </div>
+
+          <div
+            class="panel-body problems"
+            role="tabpanel"
+            [id]="ids().problemsPanel"
+            [attr.aria-labelledby]="ids().problemsTab"
+            [hidden]="panelView() !== 'problems'"
+          >
+            @if (problems().length === 0) {
+              <p class="problems-empty">Nenhum problema encontrado no código.</p>
+            } @else {
+              <ul class="problems-list">
+                @for (problem of problems(); track $index) {
+                  <li>
+                    <button type="button" class="problem" (click)="revealProblem(problem)">
+                      <svg-icon
+                        aria-hidden="true"
+                        [class]="`problem-icon ${problem.severity}`"
+                        [src]="problemIcons[problem.severity]"
+                      />
+                      <span class="visually-hidden">{{ severityLabels[problem.severity] }}:</span>
+                      <span class="problem-message">{{ problem.message }}</span>
+                      <span class="problem-location">linha {{ problem.line }}, coluna {{ problem.column }}</span>
+                    </button>
+                  </li>
+                }
+              </ul>
+            }
+          </div>
+
+          <app-debug-variables
+            class="panel-body"
+            role="tabpanel"
+            [id]="ids().variablesPanel"
+            [attr.aria-labelledby]="ids().variablesTab"
+            [hidden]="panelView() !== 'variables'"
+            [pause]="debugPause()"
+            [previousPause]="previousDebugPause()"
+            [debugging]="debugging"
+          />
+
+          @if (exercise()) {
+            <app-exercise-results
+              class="panel-body"
+              role="tabpanel"
+              tabindex="0"
+              [id]="ids().checkPanel"
+              [attr.aria-labelledby]="ids().checkTab"
+              [hidden]="panelView() !== 'check'"
+              [outcome]="checkOutcome()"
+              [progress]="checkProgress()"
+            />
+          }
+        </section>
       </as-split-area>
     </as-split>
-  </as-split-area>
-
-  <as-split-area [size]="outputSize" [minSize]="panelHeaderHeight">
-    <section class="panel" aria-label="Painel">
-      <header class="panel-header">
-        <div class="panel-tabs" role="tablist" aria-label="Painel">
-          <button
-            type="button"
-            role="tab"
-            class="panel-tab"
-            [id]="ids().outputTab"
-            [attr.aria-controls]="ids().outputPanel"
-            [attr.aria-selected]="panelView() === 'output'"
-            [attr.tabindex]="panelView() === 'output' ? 0 : -1"
-            (click)="selectPanelTab('output')"
-            (keydown)="onPanelTabsKeydown($event)"
-          >
-            Saída
-          </button>
-
-          <button
-            type="button"
-            role="tab"
-            class="panel-tab"
-            [id]="ids().problemsTab"
-            [attr.aria-controls]="ids().problemsPanel"
-            [attr.aria-selected]="panelView() === 'problems'"
-            [attr.tabindex]="panelView() === 'problems' ? 0 : -1"
-            (click)="selectPanelTab('problems')"
-            (keydown)="onPanelTabsKeydown($event)"
-          >
-            Problemas
-            @if (problems().length > 0) {
-              <span class="badge" aria-hidden="true">{{ problems().length }}</span>
-            }
-          </button>
-
-          <button
-            type="button"
-            role="tab"
-            class="panel-tab"
-            [id]="ids().variablesTab"
-            [attr.aria-controls]="ids().variablesPanel"
-            [attr.aria-selected]="panelView() === 'variables'"
-            [attr.tabindex]="panelView() === 'variables' ? 0 : -1"
-            (click)="selectPanelTab('variables')"
-            (keydown)="onPanelTabsKeydown($event)"
-          >
-            Variáveis
-          </button>
-        </div>
-
-        <span class="panel-status" role="status">
-          @if (paused()) {
-            <span class="run-status paused" aria-hidden="true">
-              <span class="dot"></span>Pausado na linha {{ debugPause()?.line }}
-            </span>
-          } @else if (executor.waitingForInput) {
-            <span class="run-status waiting"><span class="dot"></span>Aguardando entrada</span>
-          } @else if (executor.running && !stepInFlight()) {
-            <span class="run-status running"><span class="dot"></span>Executando</span>
-          }
-        </span>
-
-        <span class="panel-spacer"></span>
-
-        @if (panelView() === "output") {
-          <button
-            type="button"
-            class="icon-btn"
-            aria-label="Limpar saída"
-            appTooltip="Limpar saída"
-            appTooltipPosition="above"
-            [disabled]="!executor.stdOut || executor.running"
-            (click)="clearOutput()"
-          >
-            <svg-icon src="assets/mdi/eraser.svg" aria-hidden="true" />
-          </button>
-        }
-
-        <button
-          type="button"
-          class="icon-btn"
-          appTooltipPosition="above"
-          [attr.aria-label]="outputCollapsed ? 'Mostrar painel' : 'Recolher painel'"
-          [attr.aria-expanded]="!outputCollapsed"
-          [appTooltip]="outputCollapsed ? 'Mostrar painel' : 'Recolher painel'"
-          (click)="toggleOutput()"
-        >
-          <svg-icon
-            src="assets/mdi/chevron-up.svg"
-            class="chevron"
-            aria-hidden="true"
-            [class.open]="!outputCollapsed"
-          />
-        </button>
-      </header>
-
-      <div
-        class="panel-body"
-        role="tabpanel"
-        [id]="ids().outputPanel"
-        [attr.aria-labelledby]="ids().outputTab"
-        [hidden]="panelView() !== 'output'"
-      >
-        <ngx-monaco-editor
-          class="output-editor"
-          [options]="stdOutEditorOptions"
-          [(ngModel)]="executor.stdOut"
-          (init)="onStdOutEditorInit($event)"
-        />
-
-        @if (executor.waitingForInput && coarsePointer()) {
-          <form class="output-input" (ngSubmit)="sendProgramInput()">
-            <input
-              #programInputField
-              type="text"
-              class="input"
-              name="programInput"
-              aria-label="Entrada do programa"
-              placeholder="Digite e pressione Enter"
-              autocomplete="off"
-              enterkeyhint="send"
-              [(ngModel)]="programInput"
-            />
-            <button type="submit" class="icon-btn" aria-label="Enviar entrada">
-              <svg-icon src="assets/mdi/send.svg" class="icon-yellow" aria-hidden="true" />
-            </button>
-          </form>
-        }
-      </div>
-
-      <div
-        class="panel-body problems"
-        role="tabpanel"
-        [id]="ids().problemsPanel"
-        [attr.aria-labelledby]="ids().problemsTab"
-        [hidden]="panelView() !== 'problems'"
-      >
-        @if (problems().length === 0) {
-          <p class="problems-empty">Nenhum problema encontrado no código.</p>
-        } @else {
-          <ul class="problems-list">
-            @for (problem of problems(); track $index) {
-              <li>
-                <button type="button" class="problem" (click)="revealProblem(problem)">
-                  <svg-icon
-                    aria-hidden="true"
-                    [class]="`problem-icon ${problem.severity}`"
-                    [src]="problemIcons[problem.severity]"
-                  />
-                  <span class="visually-hidden">{{ severityLabels[problem.severity] }}:</span>
-                  <span class="problem-message">{{ problem.message }}</span>
-                  <span class="problem-location">linha {{ problem.line }}, coluna {{ problem.column }}</span>
-                </button>
-              </li>
-            }
-          </ul>
-        }
-      </div>
-
-      <app-debug-variables
-        class="panel-body"
-        role="tabpanel"
-        [id]="ids().variablesPanel"
-        [attr.aria-labelledby]="ids().variablesTab"
-        [hidden]="panelView() !== 'variables'"
-        [pause]="debugPause()"
-        [previousPause]="previousDebugPause()"
-        [debugging]="debugging"
-      />
-    </section>
   </as-split-area>
 </as-split>
 

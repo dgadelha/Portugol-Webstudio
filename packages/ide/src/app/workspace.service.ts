@@ -6,8 +6,10 @@ import {
   defaultCode,
   DEFAULT_TAB_TITLE,
   isMeaningfulCode,
+  isOwnExerciseTab,
   randomId,
   RecoverableWorkspace,
+  StoredTab,
   StoredWorkspaceMeta,
   Tab,
   TabType,
@@ -134,7 +136,7 @@ export class WorkspaceService {
     this.watchWindowLifecycle();
   }
 
-  addTab(title?: string, contents?: string) {
+  addTab(title?: string, contents?: string, exerciseId?: string, exerciseCopy = false) {
     const tab: Tab = {
       id: randomId(),
       title: title || DEFAULT_TAB_TITLE,
@@ -142,6 +144,8 @@ export class WorkspaceService {
       // Aba sem origem começa com o esqueleto de um programa. Um arquivo aberto
       // vazio continua vazio: só a ausência de conteúdo vira o modelo.
       contents: contents ?? defaultCode(this.settings.editorIndentation()),
+      ...(exerciseId && { exerciseId }),
+      ...(exerciseId && exerciseCopy && { exerciseCopy }),
     };
 
     this.tabs.update(tabs => [...tabs, tab]);
@@ -185,6 +189,13 @@ export class WorkspaceService {
     return { id: tab.id, created: true };
   }
 
+  /**
+   * A aba aberta para um exercício, se houver: cada exercício tem uma só. As cópias não contam.
+   */
+  exerciseTab(exerciseId: string) {
+    return untracked(this.tabs).find(tab => tab.exerciseId === exerciseId && isOwnExerciseTab(tab));
+  }
+
   closeTab(tabId: string) {
     const tabs = untracked(this.tabs);
     const position = tabs.findIndex(tab => tab.id === tabId);
@@ -200,6 +211,23 @@ export class WorkspaceService {
       const neighbour = tabs[position + 1] ?? tabs[position - 1];
       this.activeTabId.set(neighbour?.id ?? null);
     }
+  }
+
+  /**
+   * Uma cópia de exercício passa a ser a aba do exercício, com o nome dele.
+   */
+  adoptExerciseCopy(tabId: string, title: string) {
+    this.tabs.update(tabs => {
+      return tabs.map(tab => {
+        if (tab.id !== tabId) {
+          return tab;
+        }
+
+        const { exerciseCopy: _, ...rest } = tab;
+
+        return { ...rest, title };
+      });
+    });
   }
 
   renameTab(tabId: string, title: string) {
@@ -236,6 +264,11 @@ export class WorkspaceService {
           title: tab.title,
           type: "editor",
           contents: this.storage.readTab(workspaceId, tab.id) ?? "",
+          // O exercício já tem uma aba: a recuperada vira uma cópia
+          ...(tab.exerciseId && {
+            exerciseId: tab.exerciseId,
+            ...((tab.exerciseCopy || this.exerciseTab(tab.exerciseId)) && { exerciseCopy: true }),
+          }),
         };
       })
       .filter(tab => isMeaningfulCode(tab.contents));
@@ -479,10 +512,19 @@ export class WorkspaceService {
     });
   }
 
+  /**
+   * O que a lista de abas grava de cada uma: tudo menos o conteúdo, que tem uma chave própria.
+   */
+  private storedTab(tab: Tab): StoredTab {
+    const { contents: _, ...stored } = tab;
+
+    return stored;
+  }
+
   private serializeMeta(tabs: Tab[], activeTabId: string | null) {
     return JSON.stringify({
       activeTabId,
-      tabs: tabs.map(({ id, title, type }) => ({ id, title, type })),
+      tabs: tabs.map(tab => this.storedTab(tab)),
     });
   }
 
@@ -532,7 +574,7 @@ export class WorkspaceService {
         id: this.workspaceId,
         updatedAt: Date.now(),
         activeTabId,
-        tabs: tabs.map(({ id, title, type }) => ({ id, title, type })),
+        tabs: tabs.map(tab => this.storedTab(tab)),
       };
 
       this.storage.writeMeta(payload);

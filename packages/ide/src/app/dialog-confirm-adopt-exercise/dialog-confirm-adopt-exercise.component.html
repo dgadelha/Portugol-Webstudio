@@ -1,0 +1,30 @@
+<header class="dialog-header">
+  <h2 id="dialogo-usar-exercicio-titulo">Usar no meu exercício</h2>
+  <button type="button" class="icon-btn" aria-label="Fechar" appTooltip="Fechar" (click)="dialogRef.close(false)">
+    <svg-icon src="assets/mdi/close.svg" aria-hidden="true" />
+  </button>
+</header>
+
+<div class="dialog-body">
+  <p>
+    O código desta aba passa a ser o seu código no exercício <strong class="tab-name">{{ data.title }}</strong
+    >, e é conferido em seguida.
+    @if (data.done) {
+      O exercício só continua concluído se ele passar.
+    }
+  </p>
+  @if (data.closesTab || data.replacesCode) {
+    <p class="warning">
+      @if (data.closesTab) {
+        A aba que você tinha aberta para esse exercício será fechada, e o código dela será perdido.
+      } @else {
+        O código que você tinha escrito nesse exercício será perdido.
+      }
+    </p>
+  }
+</div>
+
+<footer class="dialog-footer">
+  <button type="button" class="btn" cdkFocusInitial (click)="dialogRef.close(false)">Cancelar</button>
+  <button type="button" class="btn btn-primary" (click)="dialogRef.close(true)">Usar no meu exercício</button>
+</footer>

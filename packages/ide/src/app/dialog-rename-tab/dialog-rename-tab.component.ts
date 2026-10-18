@@ -9,6 +9,9 @@ import {
   viewChild,
 } from "@angular/core";
 import { FormsModule } from "@angular/forms";
+import { AngularSvgIconModule } from "angular-svg-icon";
+
+import { TooltipDirective } from "../shared/tooltip.directive";
 
 interface DialogData {
   title: string;
@@ -16,7 +19,7 @@ interface DialogData {
 
 @Component({
   selector: "app-dialog-rename-tab",
-  imports: [FormsModule],
+  imports: [AngularSvgIconModule, FormsModule, TooltipDirective],
   templateUrl: "./dialog-rename-tab.component.html",
   styleUrl: "./dialog-rename-tab.component.scss",
   changeDetection: ChangeDetectionStrategy.OnPush,

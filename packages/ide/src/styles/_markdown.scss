@@ -1,7 +1,8 @@
-// Conteúdo em Markdown (novidades, histórico de atualizações e Ajuda). O
-// `ngx-markdown` injeta o HTML sem o escopo dos componentes, então os estilos
-// ficam aqui.
-markdown {
+// Conteúdo em Markdown (novidades, histórico de atualizações, Ajuda e o enunciado dos
+// exercícios, na classe `.markdown`). O HTML chega sem o escopo dos componentes, então os
+// estilos ficam aqui.
+markdown,
+.markdown {
   display: block;
   color: var(--pws-fg);
   font-size: var(--pws-text-md);

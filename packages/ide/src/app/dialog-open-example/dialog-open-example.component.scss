@@ -11,7 +11,8 @@
 
 .examples {
   display: grid;
-  grid-template-columns: 320px 1fr;
+  // Em rem, como o texto: com uma fonte maior, a lista também fica mais larga
+  grid-template-columns: 20rem minmax(0, 1fr);
   flex-grow: 1;
   min-height: 0;
 }
@@ -34,8 +35,8 @@
   cursor: text;
 
   svg-icon {
-    width: 16px;
-    height: 16px;
+    width: 1rem;
+    height: 1rem;
     color: var(--pws-fg-muted);
   }
 
@@ -81,7 +82,16 @@
 .group-heading {
   @include mixins.section-label;
 
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
   padding: 0.625rem 0.5rem 0.25rem;
+
+  svg-icon {
+    flex-shrink: 0;
+    width: 0.875rem;
+    height: 0.875rem;
+  }
 }
 
 .item {
@@ -94,8 +104,8 @@
   cursor: pointer;
 
   svg-icon {
-    width: 16px;
-    height: 16px;
+    width: 1rem;
+    height: 1rem;
     color: var(--pws-fg-muted);
   }
 
@@ -119,10 +129,23 @@
   white-space: nowrap;
 }
 
+// Quem encolhe primeiro é o nome: a pasta fica inteira até ocupar 40% da linha
+.item-name {
+  flex-shrink: 1;
+  min-width: 0;
+}
+
 .item-path {
+  flex-shrink: 0;
+  max-width: 40%;
   margin-left: auto;
   color: var(--pws-fg-muted);
   font-size: var(--pws-text-xs);
+
+  // No fundo do item escolhido, o cinza não teria o contraste mínimo (4,5:1)
+  .item.active & {
+    color: var(--pws-fg);
+  }
 }
 
 .empty {
@@ -149,6 +172,29 @@
 .preview-text {
   flex-grow: 1;
   min-width: 0;
+
+  // A categoria (e, nos exercícios, a dificuldade e a conclusão), cada uma com o seu ícone
+  .preview-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.25rem 0.75rem;
+    margin-top: 0.375rem;
+    color: var(--pws-fg-muted);
+    font-size: var(--pws-text-md);
+
+    > span {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    svg-icon {
+      flex-shrink: 0;
+      width: 1rem;
+      height: 1rem;
+    }
+  }
 
   h3 {
     overflow: hidden;
@@ -247,8 +293,10 @@
 }
 
 @media (max-width: 767px) {
+  // `minmax(0, …)`: senão a coluna cresce até caber o nome mais comprido, e ele sai do diálogo
+  // em vez de terminar em reticências
   .examples {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .list {

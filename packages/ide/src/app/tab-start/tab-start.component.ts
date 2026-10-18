@@ -39,6 +39,7 @@ export class TabStartComponent {
   readonly newTab = output<{ name: string; contents: string } | undefined>();
   readonly openFile = output();
   readonly examples = output();
+  readonly exercises = output();
   readonly help = output();
   readonly changelog = output<"inicio" | "sobre">();
   readonly settings = output();

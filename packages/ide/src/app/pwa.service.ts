@@ -251,12 +251,10 @@ export class PwaService {
   }
 
   /**
-   * O código das abas fica guardado no navegador e volta igual depois de recarregar, então
-   * só pergunta antes quando o navegador não está guardando nada. A área de trabalho é
-   * buscada aqui, e não injetada, para o serviço (criado na inicialização) não carregá-la antes.
-   */
-  /**
-   * Pelo botão Atualizar do aviso de versão nova (`aviso`) ou do Sobre (`sobre`).
+   * Pelo botão Atualizar do aviso de versão nova (`aviso`) ou do Sobre (`sobre`). O código das
+   * abas fica guardado no navegador e volta igual depois de recarregar, então só pergunta antes
+   * quando o navegador não está guardando nada. A área de trabalho é buscada aqui, e não
+   * injetada, para o serviço (criado na inicialização) não carregá-la antes.
    */
   reloadToUpdate(origin: "aviso" | "sobre") {
     this.gaService.event("pwa_update", "PWA", `atualizar_${origin}`);

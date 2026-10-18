@@ -31,7 +31,9 @@
             type="button"
             class="tab-label"
             role="tab"
-            [attr.aria-describedby]="tab.type === 'editor' ? 'atalhos-aba-codigo' : 'atalhos-aba'"
+            [attr.aria-describedby]="
+              tab.type === 'editor' && !isOwnExerciseTab(tab) ? 'atalhos-aba-codigo' : 'atalhos-aba'
+            "
             [id]="`aba-${tab.id}`"
             [attr.aria-controls]="`painel-${tab.id}`"
             [attr.aria-selected]="activeTabId() === tab.id"
@@ -43,13 +45,19 @@
             <svg-icon
               class="tab-icon"
               aria-hidden="true"
-              [src]="tabIcons[tab.type]"
+              [src]="tab.exerciseId ? 'assets/mdi/puzzle-outline.svg' : tabIcons[tab.type]"
               [class.icon-blue]="tab.type !== 'editor'"
+              [class.icon-green]="isOwnExerciseTab(tab)"
             />
-            <span class="tab-title">{{ tab.title }}</span>
+            <span class="tab-title">
+              @if (tab.exerciseId) {
+                <span class="visually-hidden">{{ tab.exerciseCopy ? "Cópia de exercício: " : "Exercício: " }}</span>
+              }
+              {{ tab.title }}
+            </span>
           </button>
 
-          @if (tab.type === "editor") {
+          @if (tab.type === "editor" && !isOwnExerciseTab(tab)) {
             <span
               class="icon-btn icon-btn-sm tab-action"
               aria-hidden="true"
@@ -104,6 +112,7 @@
       (newTab)="$event ? addTab($event.name, $event.contents) : newTab('inicio')"
       (openFile)="chooseFiles('inicio')"
       (examples)="openExamplesDialog('inicio')"
+      (exercises)="openExercisesDialog('inicio')"
       (help)="upsertHelpTab('inicio')"
       (changelog)="upsertChangelogTab($event)"
       (settings)="openSettingsDialog()"
@@ -127,6 +136,7 @@
             (settings)="openSettingsDialog($event)"
             (openFile)="chooseFiles($event)"
             (examples)="openExamplesDialog('editor')"
+            (exercisesDialog)="openExercisesDialog('editor')"
             (newTab)="newTab('atalho')"
             (closeTab)="closeActiveTab()"
           />

@@ -39,6 +39,13 @@
         </button>
       </li>
       <li>
+        <button type="button" class="tile" (click)="exercises.emit()">
+          <svg-icon src="assets/mdi/puzzle-outline.svg" class="tile-icon icon-green" aria-hidden="true" />
+          <span class="tile-title">Exercícios</span>
+          <span class="tile-hint">Programas para escrever e conferir</span>
+        </button>
+      </li>
+      <li>
         <button type="button" class="tile" (click)="help.emit()">
           <svg-icon src="assets/mdi/help-circle-outline.svg" class="tile-icon icon-blue" aria-hidden="true" />
           <span class="tile-title">Ajuda</span>

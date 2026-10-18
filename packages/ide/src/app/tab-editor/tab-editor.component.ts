@@ -13,10 +13,12 @@ import {
   TemplateRef,
   afterNextRender,
   computed,
+  effect,
   inject,
   input,
   output,
   signal,
+  untracked,
   viewChild,
 } from "@angular/core";
 import { FormsModule } from "@angular/forms";
@@ -43,8 +45,11 @@ import { isMacintosh, settings } from "../../settings";
 import { IExtendedWindowApi } from "../../types";
 import { describeChange, previousFrameVariables, variableChanges } from "../debug-variables/debug-values";
 import { DebugVariablesComponent } from "../debug-variables/debug-variables.component";
+import { DialogConfirmAdoptExerciseComponent } from "../dialog-confirm-adopt-exercise/dialog-confirm-adopt-exercise.component";
+import { DialogConfirmRestartExerciseComponent } from "../dialog-confirm-restart-exercise/dialog-confirm-restart-exercise.component";
 import { DialogRendererComponent, RendererDialogResult } from "../dialog-renderer/dialog-renderer.component";
 import type { SettingsSectionId } from "../dialog-settings/dialog-settings.component";
+import { ExerciseCheckOutcome, ExerciseNotFoundError, ExercisesService, Exercício } from "../exercises.service";
 import { ResponsiveService } from "../responsive.service";
 import { SettingsService } from "../settings.service";
 import { ShareService } from "../share.service";
@@ -54,8 +59,11 @@ import { focusAfterRender } from "../shared/focus";
 import { moveRovingFocus } from "../shared/roving-focus";
 import { TooltipDirective } from "../shared/tooltip.directive";
 import { ThemeService } from "../theme.service";
-import { WorkerService } from "../worker.service";
+import { WORKER_CRASH_ERROR, WorkerService } from "../worker.service";
 import { WorkspaceService } from "../workspace.service";
+import { defaultCode } from "../workspace.types";
+import { ExerciseResultsComponent } from "./exercise-results.component";
+import { ExerciseStatementComponent } from "./exercise-statement.component";
 
 export type ProblemSeverity = "error" | "warning" | "info";
 
@@ -76,7 +84,7 @@ const SEVERITIES: Record<PortugolDiagnosticSeverity, ProblemSeverity> = {
   [PortugolDiagnosticSeverity.Information]: "info",
 };
 
-type PanelView = "output" | "problems" | "variables";
+type PanelView = "output" | "problems" | "variables" | "check";
 
 /**
  * Quanto um passo da depuração pode levar, em milissegundos, antes de o status voltar a
@@ -104,6 +112,8 @@ export type EditorOrigin = "editor" | "atalho";
     CdkMenuTrigger,
     DebugVariablesComponent,
     DragDropModule,
+    ExerciseResultsComponent,
+    ExerciseStatementComponent,
     FormsModule,
     MonacoEditorModule,
     NgxGoogleAnalyticsModule,
@@ -114,6 +124,10 @@ export type EditorOrigin = "editor" | "atalho";
   changeDetection: ChangeDetectionStrategy.Eager,
   host: {
     "(document:keydown)": "onShortcut($event)",
+    "(window:pagehide)": "flushDraft()",
+    "(window:blur)": "flushDraft()",
+    "(document:visibilitychange)": "onVisibilityChange()",
+    "(window:online)": "onOnline()",
   },
 })
 export class TabEditorComponent implements OnInit, OnDestroy {
@@ -130,6 +144,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
   private workspace = inject(WorkspaceService);
   private announcer = inject(LiveAnnouncer);
   private storage = inject(LocalStorageService);
+  private exercises = inject(ExercisesService);
 
   private _code$?: Subscription;
   private _stdOut$?: Subscription;
@@ -169,6 +184,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
    */
   readonly openFile = output<EditorOrigin>();
   readonly examples = output();
+  readonly exercisesDialog = output();
   readonly newTab = output();
   readonly closeTab = output();
 
@@ -225,10 +241,78 @@ export class TabEditorComponent implements OnInit, OnDestroy {
       problemsPanel: `painel-problemas-${id}`,
       variablesTab: `painel-variaveis-aba-${id}`,
       variablesPanel: `painel-variaveis-${id}`,
+      checkTab: `painel-correcao-aba-${id}`,
+      checkPanel: `painel-correcao-${id}`,
     };
   });
 
+  /**
+   * O exercício que esta aba resolve, se for uma aba de exercício. Lido uma vez, ao abrir: a
+   * aba sai da lista antes de ser destruída, e o código ainda precisa ser guardado.
+   */
+  private exerciseId?: string;
+  /**
+   * Uma cópia do exercício, aberta de um arquivo ou link: confere, mas não mexe no progresso.
+   */
+  readonly exerciseCopy = signal(false);
+
+  /**
+   * O exercício carregado. Enquanto ele carrega, a aba é uma aba de código comum.
+   */
+  readonly exercise = signal<Exercício | null>(null);
+  /**
+   * O exercício não carregou (sem conexão, por exemplo): o enunciado dá lugar a um botão para
+   * tentar de novo.
+   */
+  readonly exerciseFailed = signal<"network" | "missing" | null>(null);
+  readonly loadingExercise = signal(false);
+
+  readonly exerciseDone = computed(() => {
+    const exercise = this.exercise();
+
+    return exercise !== null && !this.exerciseCopy() && this.exercises.isDone(exercise.id);
+  });
+
+  /**
+   * O andamento do Verificar, enquanto ele confere os casos.
+   */
+  readonly checkProgress = signal<{ done: number; total: number } | null>(null);
+  readonly checking = computed(() => this.checkProgress() !== null);
+  readonly checkOutcome = signal<ExerciseCheckOutcome | null>(null);
+  private checkAbort?: AbortController;
+  private recheckAbort?: AbortController;
+  /**
+   * A chave `pwsExercicio` de cada editor da aba (o do código e o da saída), que liga o
+   * Ctrl+Shift+Enter do Verificar.
+   */
+  private readonly exerciseContextKeys: Array<monaco.editor.IContextKey<boolean>> = [];
+
+  /**
+   * O enunciado fica ao lado do código; numa tela estreita, em cima dele.
+   */
+  readonly isBelowMd = this.responsive.isBelowMd;
+
   transpiling = false;
+  /**
+   * Interrompe a transpilação desta aba (o Parar, ou a aba fechando), sem mexer na das outras.
+   */
+  private transpileAbort?: AbortController;
+
+  /**
+   * A edição do exercício esperando uma pausa para ser gravada no progresso, que guarda todos
+   * os exercícios numa chave só: gravar a cada tecla avisaria as outras janelas a cada tecla.
+   */
+  private draftTimer?: ReturnType<typeof setTimeout>;
+
+  /**
+   * O último código do exercício que esta aba viu gravado, para notar quando outra janela o muda.
+   */
+  private knownDraft?: string;
+
+  /**
+   * A aba está fechando: o que acabar agora (a depuração, por exemplo) não agenda mais nada.
+   */
+  private closing = false;
   executor = new PortugolExecutor(PortugolWebWorkersRunner);
 
   /**
@@ -452,6 +536,27 @@ export class TabEditorComponent implements OnInit, OnDestroy {
       this.openPanelOnFirstLayout();
     });
 
+    // O Ctrl+Shift+Enter do Verificar só vale no editor depois que o exercício carrega
+    effect(() => {
+      const isExercise = this.exercise() !== null;
+
+      for (const key of this.exerciseContextKeys) {
+        key.set(isExercise);
+      }
+    });
+
+    // O código aprovado é conferido de novo quando a aba aparece pela primeira vez, não ao
+    // abrir o IDE: as abas restauradas que ficam escondidas não gastam o processador
+    effect(() => {
+      const exercise = this.exercise();
+
+      if (exercise && !this.exerciseCopy() && this.isActive() && !this.recheckAbort) {
+        untracked(() => {
+          void this.recheckExercise(exercise);
+        });
+      }
+    });
+
     // Na fase de captura, antes do `cdkMenuTrigger` do "Salvar como": nele, as
     // setas para cima e para baixo abririam o menu enquanto o foco itinerante
     // vai para o botão vizinho.
@@ -467,6 +572,12 @@ export class TabEditorComponent implements OnInit, OnDestroy {
   ngOnInit() {
     // O estado já entrega a aba pronta, inclusive o esqueleto de um programa novo.
     this.code = this.workspace.contentsOf(this.tabId());
+    const tab = this.workspace.tabs().find(item => item.id === this.tabId());
+
+    this.exerciseId = tab?.exerciseId;
+    this.exerciseCopy.set(tab?.exerciseCopy === true);
+    void this.loadExercise();
+    this.followStoredDraft();
 
     this._stdOut$ = this.executor.stdOut$.subscribe(() => {
       if (this.outputAutoScroll) {
@@ -711,11 +822,15 @@ export class TabEditorComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.closing = true;
+    this.checkAbort?.abort();
+    this.recheckAbort?.abort();
+    this.flushDraft();
     this.firstLayout?.disconnect();
     this.debugToolbarFit?.disconnect();
     clearTimeout(this.longStepTimer);
     this.executor.stop();
-    this.worker.abortTranspilation();
+    this.transpileAbort?.abort();
     this._code$?.unsubscribe();
     this._events$?.unsubscribe();
     this._stdOut$?.unsubscribe();
@@ -768,15 +883,31 @@ export class TabEditorComponent implements OnInit, OnDestroy {
 
     this.transpiling = true;
 
+    const abort = new AbortController();
+
+    this.transpileAbort = abort;
+
     let result;
 
     try {
-      result = await this.worker.transpileCode(this.code, { debugSteps: debug });
+      result = await this.worker.transpileCode(this.code, { debugSteps: debug, signal: abort.signal });
     } catch (error) {
+      // O Parar durante a transpilação: não é um erro
+      if (abort.signal.aborted) {
+        return;
+      }
+
       captureException(error, {
         tags: { transpile: true },
         extra: { code: this.code },
       });
+
+      // O worker caiu no meio (falta de memória, por exemplo): o navegador suporta Web Workers,
+      // e outras abas com uma transpilação pendente recebem o mesmo erro
+      if (error instanceof Error && error.name === WORKER_CRASH_ERROR) {
+        this.toast.error("O processo que prepara o programa para executar parou.", { duration: 5000 });
+        return;
+      }
 
       alert(
         "Ocorreu um erro ao transpilar o código, possivelmente o seu navegador não suporta Web Workers. Por favor, tente novamente em outro navegador. Caso o erro persista, acesse https://github.com/dgadelha/Portugol-Webstudio/issues/new/choose",
@@ -785,6 +916,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
       alert(error);
     } finally {
       this.transpiling = false;
+      this.transpileAbort = undefined;
     }
 
     if (result) {
@@ -793,12 +925,8 @@ export class TabEditorComponent implements OnInit, OnDestroy {
       this.setEditorDiagnostics(result.diagnostics.concat(result.parseErrors));
 
       // Com erro de compilação o programa não executa: a lista de Problemas, que leva até cada
-      // erro, é mais útil que a saída. O critério é o mesmo do executor.
-      const temErro =
-        result.parseErrors.length > 0 ||
-        result.diagnostics.some(diagnostic => diagnostic.severity === PortugolDiagnosticSeverity.Error);
-
-      if (temErro) {
+      // erro, é mais útil que a saída.
+      if (this.worker.hasCompileErrors(result)) {
         this.showPanel("problems");
       } else if (debug) {
         this.startDebugging();
@@ -813,6 +941,12 @@ export class TabEditorComponent implements OnInit, OnDestroy {
    * Pelo botão Parar, ou ao fechar a janela de gráficos (pelo botão dela ou com Esc).
    */
   stopCode(origin: "editor" | "janela_graficos" | "atalho") {
+    // O Parar (e o Shift+F5) também interrompe a correção de um exercício
+    if (this.checking()) {
+      this.stopExerciseCheck();
+      return;
+    }
+
     this.gaService.event("editor_stop_execution", "Editor", origin);
 
     // O fim da depuração já cuida do foco (e o anuncia): a saída só rola até o fim
@@ -821,7 +955,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     this.executor.stop();
 
     if (this.transpiling) {
-      this.worker.abortTranspilation();
+      this.transpileAbort?.abort();
       this.transpiling = false;
     }
 
@@ -863,6 +997,16 @@ export class TabEditorComponent implements OnInit, OnDestroy {
 
         if (this.canRun()) {
           void this.runCode("atalho");
+        }
+
+        break;
+      }
+
+      // Só numa aba de exercício: nas outras, a tecla fica com quem a recebeu
+      case "ctrl+shift+enter": {
+        if (this.exercise()) {
+          event.preventDefault();
+          void this.verifyExercise();
         }
 
         break;
@@ -930,8 +1074,372 @@ export class TabEditorComponent implements OnInit, OnDestroy {
   }
 
   onCodeChange(contents: string) {
+    // O editor também avisa quando recebe o código da própria aba (ao abrir, no Recomeçar, ou
+    // vindo de outra janela): só uma mudança no texto é uma edição
+    const edited = contents !== this.code;
+
     this.code = contents;
     this.workspace.setContents(this.tabId(), contents);
+
+    if (edited && this.exerciseId && !this.exerciseCopy()) {
+      clearTimeout(this.draftTimer);
+      this.draftTimer = setTimeout(() => {
+        this.flushDraft();
+      }, 500);
+    }
+  }
+
+  /**
+   * Grava a edição que esperava a pausa. O código de um exercício fica com o progresso: abrir o
+   * exercício de novo o traz de volta, mesmo que a aba não volte com a página. Só uma edição
+   * grava, então uma aba que não foi mexida não passa por cima do código de outra janela. Roda
+   * também quando a aba fecha, a página some ou a janela perde o foco, para nada ficar pendente.
+   */
+  protected flushDraft() {
+    if (this.draftTimer === undefined) {
+      return;
+    }
+
+    clearTimeout(this.draftTimer);
+    this.draftTimer = undefined;
+
+    // Mesmo sem o exercício carregado: a aba fecha sem confirmar, e o código não pode se perder
+    const exerciseId = this.exerciseId;
+
+    if (!exerciseId || this.exerciseCopy()) {
+      return;
+    }
+
+    // Outra aba passou a ser a do exercício (o Usar no meu exercício de uma cópia): esta, que
+    // está fechando, não grava por cima
+    const owner = this.workspace.exerciseTab(exerciseId);
+
+    if (!owner || owner.id === this.tabId()) {
+      this.exercises.saveDraft(exerciseId, this.code);
+    }
+  }
+
+  /**
+   * Outra janela editou o mesmo exercício: a aba do exercício passa a mostrar o código gravado,
+   * a não ser que tenha uma edição sua ainda por gravar (ela grava em seguida, e a última
+   * edição vale). Receber o código não é uma edição, então as janelas não ficam gravando o
+   * código uma da outra.
+   */
+  private followStoredDraft() {
+    const exerciseId = this.exerciseId;
+
+    if (!exerciseId) {
+      return;
+    }
+
+    const stored = this.exercises.progress()[exerciseId]?.código;
+
+    // Toda edição é gravada, então o rascunho gravado é o código mais novo: uma aba restaurada
+    // com outro código (de uma janela fechada antes) começa por ele
+    if (stored !== undefined && stored !== this.code && !this.exerciseCopy()) {
+      this.code = stored;
+      this.workspace.setContents(this.tabId(), stored);
+    }
+
+    // Sem rascunho gravado, a aba mostra o código inicial: o primeiro rascunho de outra janela
+    // também vale para ela
+    this.knownDraft = stored ?? this.code;
+
+    effect(
+      () => {
+        this.exercises.progress();
+
+        untracked(() => {
+          this.syncStoredDraft();
+        });
+      },
+      { injector: this.injector },
+    );
+
+    // Trocar de aba na mesma janela também grava na hora o que estava pendente
+    effect(
+      () => {
+        if (!this.isActive()) {
+          untracked(() => {
+            this.flushDraft();
+          });
+        }
+      },
+      { injector: this.injector },
+    );
+  }
+
+  /**
+   * Confere se outra janela gravou um rascunho novo e, se esta aba não tem edição sua por gravar,
+   * passa a mostrá-lo. Pelo que a aba mostra, não pelo foco: quem acabou de trocar de janela
+   * ainda recebe a última gravação da janela que deixou. A aba que mostra outro código foi
+   * editada.
+   */
+  private syncStoredDraft() {
+    const exerciseId = this.exerciseId;
+    const stored = exerciseId ? this.exercises.progress()[exerciseId]?.código : undefined;
+    const previous = this.knownDraft;
+
+    // Durante a depuração o editor não aceita edições, e os passos apontam para o código que
+    // está nele: o rascunho novo fica para quando ela acabar
+    if (stored === undefined || stored === previous || this.debugging) {
+      return;
+    }
+
+    this.knownDraft = stored;
+
+    if (this.draftTimer === undefined && this.code === previous && !this.exerciseCopy()) {
+      this.loadStoredDraft(stored);
+    }
+  }
+
+  /**
+   * Põe no editor o código gravado por outra janela como uma edição, que o Ctrl+Z desfaz, e
+   * mantém o cursor onde estava. O resultado do último Verificar era de outro código.
+   */
+  private loadStoredDraft(code: string) {
+    this.code = code;
+    this.workspace.setContents(this.tabId(), code);
+    this.checkOutcome.set(null);
+
+    const editor = this.codeEditor;
+    const model = editor?.getModel();
+
+    if (!editor || !model) {
+      return;
+    }
+
+    const selections = editor.getSelections();
+
+    editor.pushUndoStop();
+    editor.executeEdits("rascunho-de-outra-janela", [{ range: model.getFullModelRange(), text: code }]);
+    editor.pushUndoStop();
+
+    if (selections) {
+      editor.setSelections(selections);
+    }
+  }
+
+  /**
+   * No celular, a página muitas vezes some sem `pagehide`: ficar escondida é a última chance
+   * garantida de guardar o código.
+   */
+  protected onVisibilityChange() {
+    if (document.visibilityState === "hidden") {
+      this.flushDraft();
+    }
+  }
+
+  /**
+   * A conexão voltou: um exercício que não carregou tenta de novo sozinho.
+   */
+  protected onOnline() {
+    if (this.exerciseFailed() === "network") {
+      void this.loadExercise();
+    }
+  }
+
+  /**
+   * O botão Tentar de novo, quando o exercício não carregou.
+   */
+  retryExercise() {
+    void this.loadExercise();
+  }
+
+  private async loadExercise() {
+    const exerciseId = this.exerciseId;
+
+    if (!exerciseId || this.loadingExercise()) {
+      return;
+    }
+
+    let exercise: Exercício;
+
+    this.loadingExercise.set(true);
+
+    try {
+      exercise = await this.exercises.load(exerciseId);
+    } catch (error) {
+      this.exerciseFailed.set(error instanceof ExerciseNotFoundError ? "missing" : "network");
+      return;
+    } finally {
+      this.loadingExercise.set(false);
+    }
+
+    this.exerciseFailed.set(null);
+    this.exercise.set(exercise);
+  }
+
+  /**
+   * Os casos do exercício mudaram desde que ele passou: o código aprovado é conferido de novo.
+   * Fechar a aba interrompe a conferência.
+   */
+  private async recheckExercise(exercise: Exercício) {
+    const abort = new AbortController();
+
+    this.recheckAbort = abort;
+
+    const unapproved = await this.exercises.recheckIfChanged(exercise, abort.signal).catch((error: unknown) => {
+      captureException(error, { tags: { exercise: exercise.id } });
+      return false;
+    });
+
+    if (unapproved) {
+      this.toast.info(`O exercício "${exercise.título}" mudou, e o código que tinha passado não passa mais.`, {
+        duration: 10_000,
+        dismissible: true,
+      });
+    }
+  }
+
+  /**
+   * O botão Verificar: confere o código em todos os casos do exercício.
+   */
+  async verifyExercise() {
+    const exercise = this.exercise();
+
+    if (!exercise || !this.canRun()) {
+      return;
+    }
+
+    this.checkOutcome.set(null);
+    this.checkProgress.set({ done: 0, total: exercise.exemplos.length + exercise.testes.length });
+    this.showPanel("check");
+    // O botão vira Parar com o foco nele, e leitores de tela nem sempre anunciam a troca de nome
+    void this.announcer.announce("Conferindo…", "polite");
+
+    const abort = new AbortController();
+
+    this.checkAbort = abort;
+
+    let outcome: ExerciseCheckOutcome;
+
+    try {
+      outcome = await this.exercises.check(exercise, this.code, {
+        record: !this.exerciseCopy(),
+        signal: abort.signal,
+        onCase: (_, done, total) => {
+          this.checkProgress.set({ done, total });
+        },
+      });
+    } catch (error) {
+      captureException(error, { tags: { exercise: exercise.id } });
+      this.toast.error("Ocorreu um erro ao conferir o exercício.", { duration: 5000 });
+      return;
+    } finally {
+      this.checkProgress.set(null);
+      this.checkAbort = undefined;
+    }
+
+    // A aba fechou durante a correção: não há o que mostrar nem anunciar
+    if (this.closing) {
+      return;
+    }
+
+    this.checkOutcome.set(outcome);
+    void this.announcer.announce(this.exercises.summary(outcome), "polite");
+
+    this.gaService.event("exercise_check", "Exercícios", exercise.id, undefined, undefined, {
+      outcome: outcome.type === "checked" ? (outcome.result.passed ? "aprovado" : "reprovado") : outcome.type,
+    });
+  }
+
+  stopExerciseCheck() {
+    this.checkAbort?.abort();
+  }
+
+  /**
+   * O botão Recomeçar: o código volta ao inicial do exercício, depois de confirmar.
+   */
+  restartExercise() {
+    const exercise = this.exercise();
+
+    if (!exercise || this.exerciseCopy() || !this.canRun()) {
+      return;
+    }
+
+    const ref = this.dialog.open<boolean>(DialogConfirmRestartExerciseComponent, {
+      data: { title: exercise.título, done: this.exerciseDone() },
+      width: "28rem",
+      ariaLabelledBy: "dialogo-recomecar-exercicio-titulo",
+    });
+
+    ref.closed.subscribe(confirmed => {
+      this.gaService.event(confirmed ? "exercise_restart" : "exercise_restart_cancel", "Exercícios", exercise.id);
+
+      if (confirmed) {
+        const code = exercise.códigoInicial ?? defaultCode(this.settingsService.editorIndentation());
+
+        this.code = code;
+        this.codeEditor?.setValue(code);
+        this.workspace.setContents(this.tabId(), code);
+        this.exercises.restart(exercise.id, code);
+        this.checkOutcome.set(null);
+      }
+    });
+  }
+
+  /**
+   * O botão Usar no meu exercício, numa cópia: ela vira a aba do exercício, e o código dela,
+   * o código do exercício, conferido em seguida. Se a aba do exercício estiver aberta, ela
+   * fecha.
+   */
+  adoptExercise() {
+    const exercise = this.exercise();
+
+    // O código é conferido logo depois: com o programa executando, o Verificar não rodaria
+    if (!exercise || !this.exerciseCopy() || !this.canRun()) {
+      return;
+    }
+
+    const ownTab = this.workspace.exerciseTab(exercise.id);
+    // Só avisa quando há o que perder: um código diferente do inicial e do desta aba
+    const saved = this.exercises.progress()[exercise.id]?.código;
+    const replacesCode =
+      saved !== undefined && [exercise.códigoInicial ?? "", this.code].every(code => code.trim() !== saved.trim());
+    const ref = this.dialog.open<boolean>(DialogConfirmAdoptExerciseComponent, {
+      data: {
+        title: exercise.título,
+        closesTab: ownTab !== undefined,
+        replacesCode,
+        done: this.exercises.isDone(exercise.id),
+      },
+      width: "28rem",
+      ariaLabelledBy: "dialogo-usar-exercicio-titulo",
+    });
+
+    ref.closed.subscribe(confirmed => {
+      this.gaService.event(confirmed ? "exercise_adopt" : "exercise_adopt_cancel", "Exercícios", exercise.id);
+
+      if (!confirmed) {
+        return;
+      }
+
+      // A aba antiga sai antes: ao ser destruída, ela vê que esta é a aba do exercício agora
+      if (ownTab) {
+        this.workspace.closeTab(ownTab.id);
+      }
+
+      this.workspace.adoptExerciseCopy(this.tabId(), exercise.título);
+      this.exerciseCopy.set(false);
+      // A aprovação era de outro código: este é conferido agora, e aprova se passar
+      this.exercises.restart(exercise.id, this.code);
+      this.checkOutcome.set(null);
+      // O botão Usar no meu exercício, onde o foco voltou com o fim do diálogo, some: o foco vai
+      // para o Verificar, que já confere o código
+      focusAfterRender(this.injector, () => this.host.nativeElement.querySelector<HTMLElement>(".statement-verify"));
+      void this.verifyExercise();
+    });
+  }
+
+  /**
+   * O código como vai para o arquivo ou para o link: num exercício, com o comentário que o
+   * liga ao exercício no fim.
+   */
+  private codeToExport() {
+    const exerciseId = this.exerciseId;
+
+    return exerciseId ? this.exercises.addMarker(this.code, exerciseId) : this.code;
   }
 
   /**
@@ -949,12 +1457,12 @@ export class TabEditorComponent implements OnInit, OnDestroy {
   private prepareFile(as: "text" | "binary", compat = false) {
     const blob = (() => {
       if (compat) {
-        return new Blob([this.encodeLatin1(this.code)], {
+        return new Blob([this.encodeLatin1(this.codeToExport())], {
           type: `${as === "binary" ? "application/octet-stream" : "text/plain"}; charset=ISO-8859-1`,
         });
       }
 
-      return new Blob([this.code], {
+      return new Blob([this.codeToExport()], {
         type: as === "binary" ? "application/octet-stream" : "text/plain",
       });
     })();
@@ -1135,8 +1643,15 @@ export class TabEditorComponent implements OnInit, OnDestroy {
   onPanelTabsKeydown(event: KeyboardEvent) {
     const tablist = (event.currentTarget as HTMLElement).closest<HTMLElement>("[role=tablist]");
 
-    if (tablist) {
-      moveRovingFocus(event, tablist, "[role=tab]", "horizontal")?.click();
+    const tab = tablist ? moveRovingFocus(event, tablist, "[role=tab]", "horizontal") : null;
+
+    if (tab) {
+      tab.click();
+      // Numa tela estreita as abas rolam para o lado: trocar de aba muda os botões do painel e a
+      // largura da lista, então a aba escolhida é trazida à vista depois disso
+      requestAnimationFrame(() => {
+        tab.scrollIntoView({ block: "nearest", inline: "nearest" });
+      });
     }
   }
 
@@ -1148,11 +1663,11 @@ export class TabEditorComponent implements OnInit, OnDestroy {
   }
 
   canRun() {
-    return !this.transpiling && !this.executor.running;
+    return !this.transpiling && !this.executor.running && !this.checking();
   }
 
   canStop() {
-    return this.transpiling || this.executor.running;
+    return this.transpiling || this.executor.running || this.checking();
   }
 
   /**
@@ -1300,6 +1815,19 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     this.debugPause.set(null);
     this.clearCurrentLine();
     this.codeEditorOptions = { ...this.codeEditorOptions, readOnly: false };
+
+    // Um rascunho de outra janela que chegou durante a depuração, depois que o editor volta a
+    // aceitar edições. A depuração também acaba quando a aba fecha, e aí não há o que mostrar
+    if (this.closing) {
+      return;
+    }
+
+    afterNextRender(
+      () => {
+        this.syncStoredDraft();
+      },
+      { injector: this.injector },
+    );
   }
 
   private onDebugPause(pause: DebugPause) {
@@ -1804,6 +2332,23 @@ export class TabEditorComponent implements OnInit, OnDestroy {
       }
     });
 
+    // Ctrl+Shift+Enter: o Verificar, só numa aba de exercício (a chave `pwsExercicio`). Nas
+    // outras, a tecla continua com o Monaco, que insere uma linha acima
+    this.exerciseContextKeys.push(editor.createContextKey("pwsExercicio", this.exercise() !== null));
+
+    editor.addAction({
+      id: "verifyExercise",
+      keybindings: [
+        monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.Enter,
+        monaco.KeyMod.WinCtrl | monaco.KeyMod.Shift | monaco.KeyCode.Enter,
+      ],
+      precondition: "pwsExercicio",
+      label: "Verificar o exercício",
+      run: () => {
+        void this.verifyExercise();
+      },
+    });
+
     editor.addAction({
       id: "saveFile",
       keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, monaco.KeyMod.WinCtrl | monaco.KeyCode.KeyS],
@@ -1938,13 +2483,16 @@ export class TabEditorComponent implements OnInit, OnDestroy {
           return changes.pipe(
             startWith(null),
             debounceTime(500),
-            mergeMap(async () => this.worker.checkCode(this.code)),
+            // Se o worker quebrar, esta checagem falha sozinha: a próxima mudança tenta de novo
+            mergeMap(async () => this.worker.checkCode(this.code).catch(() => null)),
           );
         }),
       )
       .subscribe({
         next: result => {
-          this.setEditorDiagnostics(result.diagnostics.concat(result.parseErrors));
+          if (result) {
+            this.setEditorDiagnostics(result.diagnostics.concat(result.parseErrors));
+          }
         },
         error(err) {
           console.error(err);
@@ -2008,7 +2556,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
 
     this.sharing = true;
 
-    const result = await this.shareService.share(this.code);
+    const result = await this.shareService.share(this.codeToExport());
 
     if (result.ok) {
       this.toast.show(this.shareToastTemplate(), {

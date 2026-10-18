@@ -30,7 +30,7 @@
       "installMode": "lazy",
       "updateMode": "prefetch",
       "resources": {
-        "files": ["/assets/monaco-editor/**"]
+        "files": ["/assets/monaco-editor/**", "/media/KaTeX_*"]
       }
     }
   ]

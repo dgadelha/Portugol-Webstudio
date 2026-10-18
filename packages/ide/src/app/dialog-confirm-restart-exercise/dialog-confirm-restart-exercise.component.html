@@ -1,0 +1,23 @@
+<header class="dialog-header">
+  <h2 id="dialogo-recomecar-exercicio-titulo">Recomeçar exercício</h2>
+  <button type="button" class="icon-btn" aria-label="Fechar" appTooltip="Fechar" (click)="dialogRef.close(false)">
+    <svg-icon src="assets/mdi/close.svg" aria-hidden="true" />
+  </button>
+</header>
+
+<div class="dialog-body">
+  <p>
+    O código do exercício <strong class="tab-name">{{ data.title }}</strong> volta a ser o código inicial.
+  </p>
+  <p class="warning">
+    O código que está na aba agora será perdido.
+    @if (data.done) {
+      O exercício deixa de estar concluído.
+    }
+  </p>
+</div>
+
+<footer class="dialog-footer">
+  <button type="button" class="btn" cdkFocusInitial (click)="dialogRef.close(false)">Manter o código</button>
+  <button type="button" class="btn btn-primary" (click)="dialogRef.close(true)">Recomeçar</button>
+</footer>

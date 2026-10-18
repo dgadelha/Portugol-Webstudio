@@ -176,8 +176,8 @@ ngx-monaco-editor {
   }
 
   svg-icon {
-    width: 16px;
-    height: 16px;
+    width: 1rem;
+    height: 1rem;
   }
 }
 
@@ -275,15 +275,28 @@ ngx-monaco-editor {
   padding: 0 0.5rem;
 }
 
+// Numa tela estreita as abas rolam para o lado, e os botões do painel continuam à vista
 .panel-tabs {
   display: flex;
   align-items: center;
   gap: 0.25rem;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.panel-header > :not(.panel-tabs, .panel-spacer) {
+  flex-shrink: 0;
 }
 
 // Abas do painel como as do VS Code: a escolhida ganha fundo e texto forte.
 .panel-tab {
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   gap: 0.375rem;
   height: 24px;
@@ -455,8 +468,8 @@ ngx-monaco-editor {
 
 .problem-icon {
   align-self: center;
-  width: 16px;
-  height: 16px;
+  width: 1rem;
+  height: 1rem;
 
   &.error {
     color: var(--pws-danger-fg);
@@ -521,7 +534,25 @@ ngx-monaco-editor {
   font-size: var(--pws-text-sm);
 
   svg-icon {
-    width: 14px;
-    height: 14px;
+    width: 0.875rem;
+    height: 0.875rem;
   }
+}
+
+////////////////
+// Exercícios //
+////////////////
+
+// O enunciado de uma aba de exercício, ao lado do código (em cima, numa tela estreita)
+.statement-area {
+  border-right: 1px solid var(--pws-border);
+}
+
+.exercise-failed {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 1rem;
+  font-size: var(--pws-text-ui);
 }

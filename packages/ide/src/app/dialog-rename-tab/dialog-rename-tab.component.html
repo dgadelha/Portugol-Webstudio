@@ -1,6 +1,9 @@
 <form (ngSubmit)="onSubmit()">
   <header class="dialog-header">
     <h2 id="dialogo-renomear-aba-titulo">Renomear aba</h2>
+    <button type="button" class="icon-btn" aria-label="Fechar" appTooltip="Fechar" (click)="dialogRef.close()">
+      <svg-icon src="assets/mdi/close.svg" aria-hidden="true" />
+    </button>
   </header>
 
   <div class="dialog-body">

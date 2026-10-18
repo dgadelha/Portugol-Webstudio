@@ -8,6 +8,24 @@ export interface Tab {
   title: string;
   type: TabType;
   contents: string;
+  /**
+   * Numa aba de código, o exercício que ela resolve (`pws:<slug>`). A aba não muda de
+   * nome, e abrir o mesmo exercício de novo leva até ela.
+   */
+  exerciseId?: string;
+  /**
+   * O código de outra pessoa para o mesmo exercício, aberto de um arquivo ou link (um
+   * professor conferindo os trabalhos, por exemplo): tem o enunciado e o Verificar, mas não
+   * mexe no progresso de quem abriu. Cada arquivo abre na sua aba, com o nome dele.
+   */
+  exerciseCopy?: boolean;
+}
+
+/**
+ * A aba do exercício de quem usa o IDE, a que guarda o progresso. As cópias não contam.
+ */
+export function isOwnExerciseTab(tab: Pick<Tab, "exerciseId" | "exerciseCopy">) {
+  return tab.exerciseId !== undefined && !tab.exerciseCopy;
 }
 
 /**
