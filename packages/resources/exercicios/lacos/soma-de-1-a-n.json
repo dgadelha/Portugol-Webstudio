@@ -1,0 +1,58 @@
+{
+  "$schema": "https://portugol.dev/esquemas/exercicio/v1.json",
+  "id": "pws:soma-de-1-a-n",
+  "título": "Soma de 1 até n",
+  "tópico": "lacos",
+  "dificuldade": 1,
+  "enunciado": "Leia um número inteiro $n$, de 0 a 10000, e escreva a soma de todos os números inteiros de 1 até $n$:\n\n$$1 + 2 + 3 + \\cdots + n$$\n\nPara $n = 0$, a soma é 0. Por exemplo, para $n = 4$, escreva:\n\n```\n10\n```\n\nO programa não deve escrever mais nada: nem mensagens pedindo os dados.",
+  "modo": "simples",
+  "exemplos": [
+    {
+      "descrição": "até 4",
+      "entradas": ["4"],
+      "saída": "10\n"
+    }
+  ],
+  "testes": [
+    {
+      "descrição": "zero",
+      "entradas": ["0"],
+      "saída": "0\n"
+    },
+    {
+      "descrição": "um número só na soma",
+      "entradas": ["1"],
+      "saída": "1\n"
+    },
+    {
+      "descrição": "muitos números",
+      "entradas": ["100"],
+      "saída": "5050\n"
+    },
+    {
+      "descrição": "um número grande",
+      "entradas": ["10000"],
+      "saída": "50005000\n"
+    },
+    {
+      "descrição": "poucos números",
+      "entradas": ["2"],
+      "saída": "3\n"
+    },
+    {
+      "descrição": "outros poucos números",
+      "entradas": ["3"],
+      "saída": "6\n"
+    },
+    {
+      "descrição": "alguns números",
+      "entradas": ["10"],
+      "saída": "55\n"
+    },
+    {
+      "descrição": "vários números",
+      "entradas": ["50"],
+      "saída": "1275\n"
+    }
+  ]
+}

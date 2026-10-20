@@ -1,0 +1,62 @@
+{
+  "$schema": "https://portugol.dev/esquemas/exercicio/v1.json",
+  "id": "pws:troca-de-valores",
+  "título": "Troca de valores",
+  "tópico": "entrada-e-variaveis",
+  "dificuldade": 2,
+  "enunciado": "Leia dois números inteiros, guardando o primeiro na variável `a` e o segundo na variável `b`. Depois, troque os valores das duas variáveis: o valor que estava em `a` passa para `b`, e o que estava em `b` passa para `a`.\n\nPor fim, escreva os valores de `a` e `b` depois da troca, neste formato (para as entradas `3` e `7`):\n\n```\na = 7\nb = 3\n```\n\nO programa não deve escrever mais nada: nem mensagens pedindo os dados.",
+  "modo": "simples",
+  "exemplos": [
+    {
+      "descrição": "3 e 7",
+      "entradas": ["3", "7"],
+      "saída": "a = 7\nb = 3\n"
+    }
+  ],
+  "testes": [
+    {
+      "descrição": "valores iguais",
+      "entradas": ["5", "5"],
+      "saída": "a = 5\nb = 5\n"
+    },
+    {
+      "descrição": "números negativos",
+      "entradas": ["-1", "-20"],
+      "saída": "a = -20\nb = -1\n"
+    },
+    {
+      "descrição": "com zero",
+      "entradas": ["0", "42"],
+      "saída": "a = 42\nb = 0\n"
+    },
+    {
+      "descrição": "números grandes",
+      "entradas": ["123456", "987654"],
+      "saída": "a = 987654\nb = 123456\n"
+    },
+    {
+      "descrição": "o primeiro maior",
+      "entradas": ["9", "1"],
+      "saída": "a = 1\nb = 9\n"
+    },
+    {
+      "descrição": "o segundo maior",
+      "entradas": ["1", "9"],
+      "saída": "a = 9\nb = 1\n"
+    },
+    {
+      "descrição": "zero e negativo",
+      "entradas": ["0", "-5"],
+      "saída": "a = -5\nb = 0\n"
+    },
+    {
+      "descrição": "simétricos",
+      "entradas": ["-7", "7"],
+      "saída": "a = 7\nb = -7\n"
+    }
+  ],
+  "atribuição": {
+    "fonte": "Portugol Studio (UNIVALI), exercício 05",
+    "licença": "LGPL-3.0"
+  }
+}

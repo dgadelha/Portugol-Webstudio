@@ -185,6 +185,7 @@ describe("Correção de exercícios", () => {
         description: undefined,
         position: 2,
         expected: { tipo: "inteiro", valor: 3 },
+        afterLastInput: false,
       });
     });
 
@@ -215,6 +216,96 @@ describe("Correção de exercícios", () => {
       `;
 
       await expect(failure(code, advanced([igual([{ tipo: "cadeia", valor: "" }])]))).resolves.toBeUndefined();
+    });
+
+    test.each([
+      ["com uma quebra de linha no fim", String.raw`escreva("Par\n")`, undefined],
+      ["com várias no fim", String.raw`escreva("Par\n\r\n")`, undefined],
+      ["sem quebra de linha", `escreva("Par")`, undefined],
+      ["com espaço no fim", `escreva("Par ")`, "differentValues"],
+      ["com uma quebra de linha no meio", String.raw`escreva("P\nar")`, "differentValues"],
+      ["com a quebra de linha num argumento à parte", String.raw`escreva("Par", "\n")`, undefined],
+    ])("cadeia: ignora só as quebras de linha do fim (%s)", async (_, comando, type) => {
+      const exercise = advanced([igual([{ tipo: "cadeia", valor: "Par" }])]);
+
+      expect((await failure(portugolInicio`${comando}`, exercise))?.type).toBe(type);
+    });
+
+    test("contém: os valores escritos antes da última leitura não contam", async () => {
+      const exercise: CheckableExercise = {
+        modo: "avançado",
+        exemplos: [{ entradas: ["5", "7"], verificações: [contém([{ tipo: "inteiro", valor: 2 }])] }],
+        testes: [],
+      };
+      // A mensagem "Número 2: " escreve o 2 esperado, mas antes de ler
+      const code = portugolInicio`
+        inteiro a, b
+        escreva("Número ", 1, ": ")
+        leia(a)
+        escreva("Número ", 2, ": ")
+        leia(b)
+        escreva("Resultado: ", a + b)
+      `;
+
+      await expect(failure(code, exercise)).resolves.toMatchObject({ type: "missingValue" });
+    });
+
+    test("contém: um resultado escrito entre duas leituras também não conta", async () => {
+      const exercise: CheckableExercise = {
+        modo: "avançado",
+        exemplos: [{ entradas: ["5", "6"], verificações: [contém([{ tipo: "inteiro", valor: 10 }])] }],
+        testes: [],
+      };
+      const code = portugolInicio`
+        inteiro a, b
+        leia(a)
+        escreva(a * 2)
+        leia(b)
+      `;
+
+      await expect(failure(code, exercise)).resolves.toMatchObject({ type: "missingValue", afterLastInput: true });
+    });
+
+    test("igual: confere todos os valores escritos, mesmo os antes de uma leitura", async () => {
+      const exercise: CheckableExercise = {
+        modo: "avançado",
+        exemplos: [{ entradas: ["5"], verificações: [igual([{ tipo: "inteiro", valor: 10 }])] }],
+        testes: [],
+      };
+      const code = portugolInicio`
+        inteiro a
+        escreva("Digite: ")
+        leia(a)
+        escreva(a * 2)
+      `;
+
+      await expect(failure(code, exercise)).resolves.toMatchObject({ type: "differentValues", position: 1 });
+    });
+
+    test("contém: o resultado depois da última leitura conta, com outros textos junto", async () => {
+      const exercise: CheckableExercise = {
+        modo: "avançado",
+        exemplos: [{ entradas: ["5", "7"], verificações: [contém([{ tipo: "inteiro", valor: 12 }])] }],
+        testes: [],
+      };
+      const code = portugolInicio`
+        inteiro a, b
+        escreva("Número ", 1, ": ")
+        leia(a)
+        escreva("Número ", 2, ": ")
+        leia(b)
+        escreva("A soma de ", a, " e ", b, " é ", a + b, "\n")
+      `;
+
+      await expect(failure(code, exercise)).resolves.toBeUndefined();
+    });
+
+    test("Uma cadeia vazia esperada não é uma quebra de linha", async () => {
+      const exercise = advanced([igual([{ tipo: "cadeia", valor: "" }])]);
+
+      await expect(failure(portugolInicio`${String.raw`escreva("\n")`}`, exercise)).resolves.toMatchObject({
+        type: "differentValues",
+      });
     });
 
     test("Um argumento sem valor nenhum é pulado, como no texto escrito", async () => {
@@ -380,6 +471,16 @@ describe("Correção de exercícios", () => {
       const exercise = advanced([retorna("terco", [], { tipo: "real", valor: 0.333 }, tolerância)]);
 
       expect((await failure(code, exercise))?.type).toBe(type);
+    });
+
+    test("Um retorno é conferido como veio: a quebra de linha do fim conta", async () => {
+      const code = programa(String.raw`funcao cadeia c() { retorne "Par\n" }`);
+
+      await expect(
+        failure(code, advanced([retorna("c", [], { tipo: "cadeia", valor: "Par" })])),
+      ).resolves.toMatchObject({
+        type: "differentReturn",
+      });
     });
 
     test("Uma cadeia que nunca recebeu valor retorna vazia", async () => {

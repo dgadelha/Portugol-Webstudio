@@ -1,0 +1,83 @@
+{
+  "$schema": "https://portugol.dev/esquemas/exercicio/v1.json",
+  "id": "pws:ano-bissexto",
+  "título": "Ano bissexto",
+  "tópico": "condicionais",
+  "dificuldade": 2,
+  "enunciado": "Leia um ano (um número inteiro positivo) e escreva `bissexto` se ele for bissexto, ou `não é bissexto` se não for.\n\nUm ano é bissexto quando:\n\n- é divisível por 4 e não é divisível por 100; ou\n- é divisível por 400.\n\nAssim, 2024 é bissexto, 1900 não é (é divisível por 100, mas não por 400), e 2000 é (é divisível por 400).\n\nO programa não deve escrever mais nada: nem mensagens pedindo os dados.",
+  "modo": "simples",
+  "exemplos": [
+    {
+      "descrição": "um ano bissexto",
+      "entradas": ["2024"],
+      "saída": "bissexto\n"
+    },
+    {
+      "descrição": "um ano comum",
+      "entradas": ["2023"],
+      "saída": "não é bissexto\n"
+    }
+  ],
+  "testes": [
+    {
+      "descrição": "divisível por 100, mas não por 400",
+      "entradas": ["1900"],
+      "saída": "não é bissexto\n"
+    },
+    {
+      "descrição": "divisível por 400",
+      "entradas": ["2000"],
+      "saída": "bissexto\n"
+    },
+    {
+      "descrição": "outro divisível por 100",
+      "entradas": ["2100"],
+      "saída": "não é bissexto\n"
+    },
+    {
+      "descrição": "divisível por 4",
+      "entradas": ["1996"],
+      "saída": "bissexto\n"
+    },
+    {
+      "descrição": "ano ímpar",
+      "entradas": ["2019"],
+      "saída": "não é bissexto\n"
+    },
+    {
+      "descrição": "ano par, mas não divisível por 4",
+      "entradas": ["2026"],
+      "saída": "não é bissexto\n"
+    },
+    {
+      "descrição": "um ano muito antigo divisível por 4",
+      "entradas": ["4"],
+      "saída": "bissexto\n"
+    },
+    {
+      "descrição": "outro divisível por 400",
+      "entradas": ["1600"],
+      "saída": "bissexto\n"
+    },
+    {
+      "descrição": "mais um divisível por 100, mas não por 400",
+      "entradas": ["1700"],
+      "saída": "não é bissexto\n"
+    },
+    {
+      "descrição": "um ano futuro divisível por 400",
+      "entradas": ["2400"],
+      "saída": "bissexto\n"
+    },
+    {
+      "descrição": "um ano muito antigo e ímpar",
+      "entradas": ["1"],
+      "saída": "não é bissexto\n"
+    },
+    {
+      "descrição": "outro divisível por 4",
+      "entradas": ["2004"],
+      "saída": "bissexto\n"
+    }
+  ]
+}

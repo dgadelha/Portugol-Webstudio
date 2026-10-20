@@ -1,0 +1,264 @@
+{
+  "$schema": "https://portugol.dev/esquemas/exercicio/v1.json",
+  "id": "pws:area-do-retangulo",
+  "título": "Área do retângulo",
+  "tópico": "funcoes",
+  "dificuldade": 1,
+  "enunciado": "Escreva a função `area_retangulo`, que recebe a base e a altura de um retângulo, números reais, e retorna a área dele (a base vezes a altura).\n\nA função deve ter esta assinatura:\n\n```portugol\nfuncao real area_retangulo(real base, real altura)\n```\n\nSó a função é conferida: o `inicio` pode ficar vazio, ou testar a função como você quiser.",
+  "códigoInicial": "programa {\n  funcao real area_retangulo(real base, real altura) {\n    retorne 0.0\n  }\n\n  funcao inicio() {\n    escreva(area_retangulo(3.0, 4.0))\n  }\n}\n",
+  "modo": "avançado",
+  "exemplos": [
+    {
+      "descrição": "3 por 4",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "area_retangulo",
+          "argumentos": [
+            {
+              "tipo": "real",
+              "valor": 3.0
+            },
+            {
+              "tipo": "real",
+              "valor": 4.0
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "real",
+            "valor": 12.0
+          }
+        }
+      ]
+    }
+  ],
+  "testes": [
+    {
+      "descrição": "medidas com casas decimais",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "area_retangulo",
+          "argumentos": [
+            {
+              "tipo": "real",
+              "valor": 2.5
+            },
+            {
+              "tipo": "real",
+              "valor": 1.5
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "real",
+            "valor": 3.75
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "um quadrado",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "area_retangulo",
+          "argumentos": [
+            {
+              "tipo": "real",
+              "valor": 7.0
+            },
+            {
+              "tipo": "real",
+              "valor": 7.0
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "real",
+            "valor": 49.0
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "altura zero",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "area_retangulo",
+          "argumentos": [
+            {
+              "tipo": "real",
+              "valor": 10.0
+            },
+            {
+              "tipo": "real",
+              "valor": 0.0
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "real",
+            "valor": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "medidas pequenas",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "area_retangulo",
+          "argumentos": [
+            {
+              "tipo": "real",
+              "valor": 0.1
+            },
+            {
+              "tipo": "real",
+              "valor": 0.2
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "real",
+            "valor": 0.02
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "medidas grandes",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "area_retangulo",
+          "argumentos": [
+            {
+              "tipo": "real",
+              "valor": 1000.0
+            },
+            {
+              "tipo": "real",
+              "valor": 2500.0
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "real",
+            "valor": 2500000.0
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "base zero",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "area_retangulo",
+          "argumentos": [
+            {
+              "tipo": "real",
+              "valor": 0.0
+            },
+            {
+              "tipo": "real",
+              "valor": 5.0
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "real",
+            "valor": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "um quadrado pequeno",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "area_retangulo",
+          "argumentos": [
+            {
+              "tipo": "real",
+              "valor": 1.0
+            },
+            {
+              "tipo": "real",
+              "valor": 1.0
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "real",
+            "valor": 1.0
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "lados menores que um",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "area_retangulo",
+          "argumentos": [
+            {
+              "tipo": "real",
+              "valor": 0.5
+            },
+            {
+              "tipo": "real",
+              "valor": 0.5
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "real",
+            "valor": 0.25
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "base com casas decimais e altura inteira",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "area_retangulo",
+          "argumentos": [
+            {
+              "tipo": "real",
+              "valor": 12.5
+            },
+            {
+              "tipo": "real",
+              "valor": 4.0
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "real",
+            "valor": 50.0
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,518 @@
+{
+  "$schema": "https://portugol.dev/esquemas/exercicio/v1.json",
+  "id": "pws:palindromo",
+  "título": "Palíndromo",
+  "tópico": "funcoes",
+  "dificuldade": 3,
+  "enunciado": "Um palíndromo é um texto que se lê igual de trás para frente, como `arara` ou `Ana`.\n\nEscreva a função `e_palindromo`, que recebe um texto e retorna `verdadeiro` se ele for um palíndromo, ou `falso` se não for. Considere só as letras: ignore a diferença entre maiúsculas e minúsculas, e ignore os espaços, a pontuação e qualquer outro caractere que não seja letra. Assim, `Ana` e `Socorram-me, subi no onibus em Marrocos!` são palíndromos. O texto não tem acentos nem algarismos. Um texto sem nenhuma letra é um palíndromo.\n\nA função deve ter esta assinatura:\n\n```portugol\nfuncao logico e_palindromo(cadeia texto)\n```\n\nSó a função é conferida: o `inicio` pode ficar vazio, ou testar a função como você quiser.",
+  "códigoInicial": "programa {\n  inclua biblioteca Texto --> tx\n\n  funcao logico e_palindromo(cadeia texto) {\n    retorne falso\n  }\n\n  funcao inicio() {\n    escreva(e_palindromo(\"arara\"))\n  }\n}\n",
+  "modo": "avançado",
+  "exemplos": [
+    {
+      "descrição": "uma palavra palíndromo",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "e_palindromo",
+          "argumentos": [
+            {
+              "tipo": "cadeia",
+              "valor": "arara"
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "logico",
+            "valor": true
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "uma frase com pontuação",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "e_palindromo",
+          "argumentos": [
+            {
+              "tipo": "cadeia",
+              "valor": "Roma, me tem amor."
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "logico",
+            "valor": true
+          }
+        }
+      ]
+    }
+  ],
+  "testes": [
+    {
+      "descrição": "uma frase longa com hífen, vírgula e exclamação",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "e_palindromo",
+          "argumentos": [
+            {
+              "tipo": "cadeia",
+              "valor": "Socorram-me, subi no onibus em Marrocos!"
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "logico",
+            "valor": true
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "uma frase com ponto final",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "e_palindromo",
+          "argumentos": [
+            {
+              "tipo": "cadeia",
+              "valor": "A grama e amarga."
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "logico",
+            "valor": true
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "uma frase com pontuação que não é palíndromo",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "e_palindromo",
+          "argumentos": [
+            {
+              "tipo": "cadeia",
+              "valor": "Ola, mundo!"
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "logico",
+            "valor": false
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "maiúsculas e minúsculas",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "e_palindromo",
+          "argumentos": [
+            {
+              "tipo": "cadeia",
+              "valor": "Ana"
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "logico",
+            "valor": true
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "maiúsculas no meio",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "e_palindromo",
+          "argumentos": [
+            {
+              "tipo": "cadeia",
+              "valor": "ArArA"
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "logico",
+            "valor": true
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "uma letra",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "e_palindromo",
+          "argumentos": [
+            {
+              "tipo": "cadeia",
+              "valor": "x"
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "logico",
+            "valor": true
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "texto vazio",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "e_palindromo",
+          "argumentos": [
+            {
+              "tipo": "cadeia",
+              "valor": ""
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "logico",
+            "valor": true
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "só pontuação",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "e_palindromo",
+          "argumentos": [
+            {
+              "tipo": "cadeia",
+              "valor": "!?.,-"
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "logico",
+            "valor": true
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "só espaços",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "e_palindromo",
+          "argumentos": [
+            {
+              "tipo": "cadeia",
+              "valor": "   "
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "logico",
+            "valor": true
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "uma letra cercada de pontuação",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "e_palindromo",
+          "argumentos": [
+            {
+              "tipo": "cadeia",
+              "valor": ".a."
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "logico",
+            "valor": true
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "letras separadas por hífens",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "e_palindromo",
+          "argumentos": [
+            {
+              "tipo": "cadeia",
+              "valor": "a-b-a"
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "logico",
+            "valor": true
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "duas letras diferentes separadas por pontuação",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "e_palindromo",
+          "argumentos": [
+            {
+              "tipo": "cadeia",
+              "valor": "a.b"
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "logico",
+            "valor": false
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "pontuação só de um lado",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "e_palindromo",
+          "argumentos": [
+            {
+              "tipo": "cadeia",
+              "valor": "ab,ba!"
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "logico",
+            "valor": true
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "pontuação no fim de um texto que não é palíndromo",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "e_palindromo",
+          "argumentos": [
+            {
+              "tipo": "cadeia",
+              "valor": "abc?"
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "logico",
+            "valor": false
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "número par de letras",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "e_palindromo",
+          "argumentos": [
+            {
+              "tipo": "cadeia",
+              "valor": "osso"
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "logico",
+            "valor": true
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "só as pontas iguais",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "e_palindromo",
+          "argumentos": [
+            {
+              "tipo": "cadeia",
+              "valor": "abca"
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "logico",
+            "valor": false
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "quase um palíndromo",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "e_palindromo",
+          "argumentos": [
+            {
+              "tipo": "cadeia",
+              "valor": "arada"
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "logico",
+            "valor": false
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "duas letras que só diferem na maiúscula",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "e_palindromo",
+          "argumentos": [
+            {
+              "tipo": "cadeia",
+              "valor": "Aa"
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "logico",
+            "valor": true
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "uma frase com espaços em lugares diferentes",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "e_palindromo",
+          "argumentos": [
+            {
+              "tipo": "cadeia",
+              "valor": "a ba b a"
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "logico",
+            "valor": true
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "uma frase que não é palíndromo",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "e_palindromo",
+          "argumentos": [
+            {
+              "tipo": "cadeia",
+              "valor": "ab ba c"
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "logico",
+            "valor": false
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "aspas e parênteses",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "e_palindromo",
+          "argumentos": [
+            {
+              "tipo": "cadeia",
+              "valor": "\"(Oi, io)\""
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "logico",
+            "valor": true
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "uma letra do fim do alfabeto",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "e_palindromo",
+          "argumentos": [
+            {
+              "tipo": "cadeia",
+              "valor": "Az!"
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "logico",
+            "valor": false
+          }
+        }
+      ]
+    }
+  ]
+}

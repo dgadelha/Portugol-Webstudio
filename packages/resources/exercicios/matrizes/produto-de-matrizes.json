@@ -1,0 +1,58 @@
+{
+  "$schema": "https://portugol.dev/esquemas/exercicio/v1.json",
+  "id": "pws:produto-de-matrizes",
+  "título": "Produto de matrizes",
+  "tópico": "matrizes",
+  "dificuldade": 3,
+  "enunciado": "Leia, linha por linha, uma matriz $A$ de 2×3 (6 números inteiros) e depois uma matriz $B$ de 3×2 (6 números inteiros). Escreva o produto $C = A \\times B$, que é uma matriz 2×2 em que cada elemento é:\n\n$$C_{ij} = A_{i0} B_{0j} + A_{i1} B_{1j} + A_{i2} B_{2j}$$\n\nEscreva uma linha da matriz $C$ por linha, com os elementos separados por um espaço. Por exemplo, para\n\n$$A = \\begin{bmatrix} 1 & 2 & 3 \\\\ 4 & 5 & 6 \\end{bmatrix} \\qquad B = \\begin{bmatrix} 7 & 8 \\\\ 9 & 10 \\\\ 11 & 12 \\end{bmatrix}$$\n\nescreva:\n\n```\n58 64\n139 154\n```\n\nO programa não deve escrever mais nada: nem mensagens pedindo os dados.",
+  "modo": "simples",
+  "exemplos": [
+    {
+      "descrição": "de 1 a 12",
+      "entradas": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"],
+      "saída": "58 64\n139 154\n"
+    }
+  ],
+  "testes": [
+    {
+      "descrição": "B com zeros",
+      "entradas": ["1", "2", "3", "4", "5", "6", "0", "0", "0", "0", "0", "0"],
+      "saída": "0 0\n0 0\n"
+    },
+    {
+      "descrição": "números negativos",
+      "entradas": ["-1", "2", "-3", "4", "-5", "6", "1", "-1", "2", "-2", "3", "-3"],
+      "saída": "-6 6\n12 -12\n"
+    },
+    {
+      "descrição": "B parecida com a identidade",
+      "entradas": ["5", "6", "7", "8", "9", "10", "1", "0", "0", "1", "0", "0"],
+      "saída": "5 6\n8 9\n"
+    },
+    {
+      "descrição": "números grandes",
+      "entradas": ["100", "200", "300", "400", "500", "600", "10", "20", "30", "40", "50", "60"],
+      "saída": "22000 28000\n49000 64000\n"
+    },
+    {
+      "descrição": "A com zeros",
+      "entradas": ["0", "0", "0", "0", "0", "0", "1", "2", "3", "4", "5", "6"],
+      "saída": "0 0\n0 0\n"
+    },
+    {
+      "descrição": "A com uns",
+      "entradas": ["1", "1", "1", "1", "1", "1", "1", "2", "3", "4", "5", "6"],
+      "saída": "9 12\n9 12\n"
+    },
+    {
+      "descrição": "cada elemento de B importa",
+      "entradas": ["1", "10", "100", "2", "20", "200", "1", "2", "3", "4", "5", "6"],
+      "saída": "531 642\n1062 1284\n"
+    },
+    {
+      "descrição": "resultado negativo",
+      "entradas": ["-1", "-2", "-3", "-4", "-5", "-6", "7", "8", "9", "10", "11", "12"],
+      "saída": "-58 -64\n-139 -154\n"
+    }
+  ]
+}

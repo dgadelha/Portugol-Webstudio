@@ -1,0 +1,63 @@
+{
+  "$schema": "https://portugol.dev/esquemas/exercicio/v1.json",
+  "id": "pws:ola-nome",
+  "título": "Olá, nome",
+  "tópico": "entrada-e-variaveis",
+  "dificuldade": 1,
+  "enunciado": "Leia o nome de uma pessoa e escreva uma saudação neste formato (para o nome `Ana`):\n\n```\nOlá, Ana!\n```\n\nO nome pode ter espaços, como `Maria Clara`. O programa não deve escrever mais nada: nem mensagens pedindo os dados.",
+  "modo": "simples",
+  "exemplos": [
+    {
+      "descrição": "um nome",
+      "entradas": ["Ana"],
+      "saída": "Olá, Ana!\n"
+    },
+    {
+      "descrição": "outro nome",
+      "entradas": ["Pedro"],
+      "saída": "Olá, Pedro!\n"
+    }
+  ],
+  "testes": [
+    {
+      "descrição": "nome composto",
+      "entradas": ["Maria Clara"],
+      "saída": "Olá, Maria Clara!\n"
+    },
+    {
+      "descrição": "nome com acento",
+      "entradas": ["José"],
+      "saída": "Olá, José!\n"
+    },
+    {
+      "descrição": "nome de uma letra",
+      "entradas": ["X"],
+      "saída": "Olá, X!\n"
+    },
+    {
+      "descrição": "nome completo e comprido",
+      "entradas": ["Ana Beatriz dos Santos Oliveira"],
+      "saída": "Olá, Ana Beatriz dos Santos Oliveira!\n"
+    },
+    {
+      "descrição": "nome em maiúsculas",
+      "entradas": ["PEDRO"],
+      "saída": "Olá, PEDRO!\n"
+    },
+    {
+      "descrição": "nome com apóstrofo",
+      "entradas": ["Joana D'Arc"],
+      "saída": "Olá, Joana D'Arc!\n"
+    },
+    {
+      "descrição": "nome com hífen",
+      "entradas": ["Ana-Lúcia"],
+      "saída": "Olá, Ana-Lúcia!\n"
+    },
+    {
+      "descrição": "um número no lugar do nome",
+      "entradas": ["123"],
+      "saída": "Olá, 123!\n"
+    }
+  ]
+}

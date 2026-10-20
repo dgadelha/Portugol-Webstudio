@@ -1,0 +1,73 @@
+{
+  "$schema": "https://portugol.dev/esquemas/exercicio/v1.json",
+  "id": "pws:vogal-ou-consoante",
+  "título": "Vogal ou consoante",
+  "tópico": "escolha",
+  "dificuldade": 1,
+  "enunciado": "Leia um caractere, que é sempre uma letra minúscula sem acento, e escreva `vogal` se ele for uma vogal (`a`, `e`, `i`, `o` ou `u`), ou `consoante` se não for.\n\nO programa não deve escrever mais nada: nem mensagens pedindo os dados.",
+  "modo": "simples",
+  "exemplos": [
+    {
+      "descrição": "uma vogal",
+      "entradas": ["a"],
+      "saída": "vogal\n"
+    },
+    {
+      "descrição": "uma consoante",
+      "entradas": ["b"],
+      "saída": "consoante\n"
+    }
+  ],
+  "testes": [
+    {
+      "descrição": "uma vogal",
+      "entradas": ["u"],
+      "saída": "vogal\n"
+    },
+    {
+      "descrição": "outra vogal",
+      "entradas": ["i"],
+      "saída": "vogal\n"
+    },
+    {
+      "descrição": "uma consoante do fim do alfabeto",
+      "entradas": ["z"],
+      "saída": "consoante\n"
+    },
+    {
+      "descrição": "uma consoante pouco usada",
+      "entradas": ["y"],
+      "saída": "consoante\n"
+    },
+    {
+      "descrição": "mais uma vogal",
+      "entradas": ["e"],
+      "saída": "vogal\n"
+    },
+    {
+      "descrição": "outra vogal ainda",
+      "entradas": ["o"],
+      "saída": "vogal\n"
+    },
+    {
+      "descrição": "uma consoante do começo do alfabeto",
+      "entradas": ["c"],
+      "saída": "consoante\n"
+    },
+    {
+      "descrição": "uma consoante do meio do alfabeto",
+      "entradas": ["m"],
+      "saída": "consoante\n"
+    },
+    {
+      "descrição": "outra consoante pouco usada",
+      "entradas": ["w"],
+      "saída": "consoante\n"
+    },
+    {
+      "descrição": "mais uma consoante",
+      "entradas": ["q"],
+      "saída": "consoante\n"
+    }
+  ]
+}

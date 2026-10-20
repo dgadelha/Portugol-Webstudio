@@ -5,7 +5,6 @@
   "tópico": "operadores",
   "dificuldade": 1,
   "enunciado": "Leia dois números inteiros e escreva a soma deles.\n\nO programa pode escrever mensagens antes de cada leitura, como `Digite um número: `, mas a soma precisa ser escrita como um valor do tipo `inteiro`.",
-  "solução": "programa {\n  funcao inicio() {\n    inteiro a, b\n\n    escreva(\"Digite o primeiro número: \")\n    leia(a)\n    escreva(\"Digite o segundo número: \")\n    leia(b)\n    escreva(\"A soma é \", a + b, \"\\n\")\n  }\n}\n",
   "modo": "avançado",
   "exemplos": [
     {
@@ -69,6 +68,118 @@
             {
               "tipo": "inteiro",
               "valor": -5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "os dois zero",
+      "entradas": ["0", "0"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "números grandes",
+      "entradas": ["1000000", "2500000"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 3500000
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "resultado zero",
+      "entradas": ["8", "-8"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "o primeiro zero e o segundo negativo",
+      "entradas": ["0", "-3"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": -3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "números iguais",
+      "entradas": ["6", "6"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 12
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "um pequeno e um grande",
+      "entradas": ["1", "99999"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 100000
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "o primeiro negativo e o segundo positivo maior",
+      "entradas": ["-15", "40"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 25
             }
           ]
         }

@@ -1,0 +1,58 @@
+{
+  "$schema": "https://portugol.dev/esquemas/exercicio/v1.json",
+  "id": "pws:maior-da-matriz",
+  "título": "Maior elemento da matriz",
+  "tópico": "matrizes",
+  "dificuldade": 1,
+  "enunciado": "Leia os 9 números inteiros de uma matriz 3×3, linha por linha, guardando-os numa matriz. Escreva o maior elemento da matriz.\n\nO programa não deve escrever mais nada: nem mensagens pedindo os dados.",
+  "modo": "simples",
+  "exemplos": [
+    {
+      "descrição": "o maior no meio",
+      "entradas": ["1", "2", "3", "4", "9", "6", "7", "8", "5"],
+      "saída": "9\n"
+    }
+  ],
+  "testes": [
+    {
+      "descrição": "o maior no primeiro elemento",
+      "entradas": ["50", "2", "3", "4", "5", "6", "7", "8", "9"],
+      "saída": "50\n"
+    },
+    {
+      "descrição": "o maior no último elemento",
+      "entradas": ["1", "2", "3", "4", "5", "6", "7", "8", "90"],
+      "saída": "90\n"
+    },
+    {
+      "descrição": "todos negativos",
+      "entradas": ["-5", "-2", "-9", "-7", "-3", "-8", "-4", "-6", "-10"],
+      "saída": "-2\n"
+    },
+    {
+      "descrição": "todos iguais",
+      "entradas": ["3", "3", "3", "3", "3", "3", "3", "3", "3"],
+      "saída": "3\n"
+    },
+    {
+      "descrição": "o maior no começo da segunda linha",
+      "entradas": ["1", "2", "3", "50", "4", "5", "6", "7", "8"],
+      "saída": "50\n"
+    },
+    {
+      "descrição": "o maior no começo da última linha",
+      "entradas": ["1", "2", "3", "4", "5", "6", "60", "7", "8"],
+      "saída": "60\n"
+    },
+    {
+      "descrição": "positivos e negativos",
+      "entradas": ["-1", "2", "-3", "4", "-5", "6", "-7", "8", "-9"],
+      "saída": "8\n"
+    },
+    {
+      "descrição": "o zero é o maior",
+      "entradas": ["-1", "-2", "-3", "-4", "0", "-6", "-7", "-8", "-9"],
+      "saída": "0\n"
+    }
+  ]
+}

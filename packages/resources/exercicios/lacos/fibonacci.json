@@ -1,0 +1,68 @@
+{
+  "$schema": "https://portugol.dev/esquemas/exercicio/v1.json",
+  "id": "pws:fibonacci",
+  "título": "Sequência de Fibonacci",
+  "tópico": "lacos",
+  "dificuldade": 2,
+  "enunciado": "Na sequência de Fibonacci, os dois primeiros termos são 0 e 1, e cada termo seguinte é a soma dos dois anteriores: 0, 1, 1, 2, 3, 5, 8, 13…\n\nLeia um número inteiro $n$, de 1 a 40, e escreva os $n$ primeiros termos da sequência, um por linha. Por exemplo, para $n = 6$:\n\n```\n0\n1\n1\n2\n3\n5\n```\n\nO programa não deve escrever mais nada: nem mensagens pedindo os dados.",
+  "modo": "simples",
+  "exemplos": [
+    {
+      "descrição": "seis termos",
+      "entradas": ["6"],
+      "saída": "0\n1\n1\n2\n3\n5\n"
+    }
+  ],
+  "testes": [
+    {
+      "descrição": "um termo",
+      "entradas": ["1"],
+      "saída": "0\n"
+    },
+    {
+      "descrição": "dois termos",
+      "entradas": ["2"],
+      "saída": "0\n1\n"
+    },
+    {
+      "descrição": "poucos termos",
+      "entradas": ["3"],
+      "saída": "0\n1\n1\n"
+    },
+    {
+      "descrição": "vários termos",
+      "entradas": ["15"],
+      "saída": "0\n1\n1\n2\n3\n5\n8\n13\n21\n34\n55\n89\n144\n233\n377\n"
+    },
+    {
+      "descrição": "o maior valor permitido",
+      "entradas": ["40"],
+      "saída": "0\n1\n1\n2\n3\n5\n8\n13\n21\n34\n55\n89\n144\n233\n377\n610\n987\n1597\n2584\n4181\n6765\n10946\n17711\n28657\n46368\n75025\n121393\n196418\n317811\n514229\n832040\n1346269\n2178309\n3524578\n5702887\n9227465\n14930352\n24157817\n39088169\n63245986\n"
+    },
+    {
+      "descrição": "outros poucos termos",
+      "entradas": ["4"],
+      "saída": "0\n1\n1\n2\n"
+    },
+    {
+      "descrição": "mais alguns poucos termos",
+      "entradas": ["5"],
+      "saída": "0\n1\n1\n2\n3\n"
+    },
+    {
+      "descrição": "outros vários termos",
+      "entradas": ["10"],
+      "saída": "0\n1\n1\n2\n3\n5\n8\n13\n21\n34\n"
+    },
+    {
+      "descrição": "muitos termos",
+      "entradas": ["30"],
+      "saída": "0\n1\n1\n2\n3\n5\n8\n13\n21\n34\n55\n89\n144\n233\n377\n610\n987\n1597\n2584\n4181\n6765\n10946\n17711\n28657\n46368\n75025\n121393\n196418\n317811\n514229\n"
+    },
+    {
+      "descrição": "quase o máximo de termos",
+      "entradas": ["39"],
+      "saída": "0\n1\n1\n2\n3\n5\n8\n13\n21\n34\n55\n89\n144\n233\n377\n610\n987\n1597\n2584\n4181\n6765\n10946\n17711\n28657\n46368\n75025\n121393\n196418\n317811\n514229\n832040\n1346269\n2178309\n3524578\n5702887\n9227465\n14930352\n24157817\n39088169\n"
+    }
+  ]
+}

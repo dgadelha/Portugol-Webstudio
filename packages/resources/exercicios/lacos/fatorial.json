@@ -1,0 +1,68 @@
+{
+  "$schema": "https://portugol.dev/esquemas/exercicio/v1.json",
+  "id": "pws:fatorial",
+  "título": "Fatorial",
+  "tópico": "lacos",
+  "dificuldade": 2,
+  "enunciado": "Leia um número inteiro $n$, de 0 a 12, e escreva o fatorial dele:\n\n$$n! = 1 \\times 2 \\times 3 \\times \\cdots \\times n$$\n\nPor definição, $0! = 1$. Por exemplo, para $n = 5$, escreva:\n\n```\n120\n```\n\nO programa não deve escrever mais nada: nem mensagens pedindo os dados.",
+  "modo": "simples",
+  "exemplos": [
+    {
+      "descrição": "fatorial de 5",
+      "entradas": ["5"],
+      "saída": "120\n"
+    }
+  ],
+  "testes": [
+    {
+      "descrição": "zero",
+      "entradas": ["0"],
+      "saída": "1\n"
+    },
+    {
+      "descrição": "fatorial trivial",
+      "entradas": ["1"],
+      "saída": "1\n"
+    },
+    {
+      "descrição": "fatorial pequeno",
+      "entradas": ["2"],
+      "saída": "2\n"
+    },
+    {
+      "descrição": "fatorial grande",
+      "entradas": ["10"],
+      "saída": "3628800\n"
+    },
+    {
+      "descrição": "o maior valor permitido",
+      "entradas": ["12"],
+      "saída": "479001600\n"
+    },
+    {
+      "descrição": "outro fatorial pequeno",
+      "entradas": ["3"],
+      "saída": "6\n"
+    },
+    {
+      "descrição": "mais um fatorial pequeno",
+      "entradas": ["4"],
+      "saída": "24\n"
+    },
+    {
+      "descrição": "fatorial médio",
+      "entradas": ["6"],
+      "saída": "720\n"
+    },
+    {
+      "descrição": "outro fatorial médio",
+      "entradas": ["7"],
+      "saída": "5040\n"
+    },
+    {
+      "descrição": "fatorial quase no limite",
+      "entradas": ["11"],
+      "saída": "39916800\n"
+    }
+  ]
+}

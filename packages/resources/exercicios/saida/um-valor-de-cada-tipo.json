@@ -1,0 +1,76 @@
+{
+  "$schema": "https://portugol.dev/esquemas/exercicio/v1.json",
+  "id": "pws:um-valor-de-cada-tipo",
+  "título": "Um valor de cada tipo",
+  "tópico": "saida",
+  "dificuldade": 2,
+  "enunciado": "O Portugol tem cinco tipos de valores: `inteiro`, `real`, `caracter`, `logico` e `cadeia`. Faça um programa que escreva estes cinco valores, nesta ordem, cada um com o seu tipo:\n\n| Valor | Tipo |\n| --- | --- |\n| `10` | `inteiro` |\n| `2.5` | `real` |\n| `'A'` | `caracter` |\n| `verdadeiro` | `logico` |\n| `\"Portugol\"` | `cadeia` |\n\nO programa pode escrever outros textos entre eles, como espaços ou quebras de linha.",
+  "modo": "avançado",
+  "exemplos": [
+    {
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 10
+            },
+            {
+              "tipo": "real",
+              "valor": 2.5
+            },
+            {
+              "tipo": "caracter",
+              "valor": "A"
+            },
+            {
+              "tipo": "logico",
+              "valor": true
+            },
+            {
+              "tipo": "cadeia",
+              "valor": "Portugol"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "testes": [
+    {
+      "descrição": "os cinco valores na ordem",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 10
+            },
+            {
+              "tipo": "real",
+              "valor": 2.5
+            },
+            {
+              "tipo": "caracter",
+              "valor": "A"
+            },
+            {
+              "tipo": "logico",
+              "valor": true
+            },
+            {
+              "tipo": "cadeia",
+              "valor": "Portugol"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

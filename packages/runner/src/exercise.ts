@@ -45,6 +45,11 @@ export function vectorElementType(tipo: string) {
 export type WriteCheck = {
   descrição?: string;
   alvo: "escreva";
+  /**
+   * `igual`: os valores escritos são exatamente estes. `contém`: estes valores aparecem, nesta
+   * ordem, entre os escritos depois da última leitura (as mensagens antes de cada `leia` não
+   * contam).
+   */
   regra: "igual" | "contém";
   valores: ExpectedValue[];
   tolerância?: number;
@@ -117,6 +122,11 @@ export type CaseRun = {
    */
   values: WrittenValue[];
   /**
+   * Quantos dos `values` foram escritos antes da última leitura. O `contém` não confere nada
+   * disso: nem as mensagens antes de cada `leia`, nem um resultado escrito entre duas leituras.
+   */
+  valuesBeforeLastInput: number;
+  /**
    * O retorno da função chamada (`call`): `null` sem chamada, ou se ela não retornou nada.
    */
   returned: WrittenValue | null;
@@ -138,7 +148,17 @@ export type CaseFailure =
       expected: ExpectedValue | null;
       received: WrittenValue | null;
     }
-  | { type: "missingValue"; check: number; description?: string; position: number; expected: ExpectedValue }
+  | {
+      type: "missingValue";
+      check: number;
+      description?: string;
+      position: number;
+      expected: ExpectedValue;
+      /**
+       * O caso tem entradas: o `contém` só procurou no que foi escrito depois da última leitura.
+       */
+      afterLastInput: boolean;
+    }
   | { type: "missingFunction"; check: number; description?: string; name: string }
   | {
       type: "differentSignature";
@@ -273,6 +293,7 @@ export function runExerciseCase(
   const runner: IPortugolRunner = new Runner(js);
   const pending = [...inputs];
   const values: WrittenValue[] = [];
+  let valuesBeforeLastInput = 0;
   let returned: WrittenValue | null = null;
   let output = "";
   let ending: CaseEnding | undefined;
@@ -298,6 +319,8 @@ export function runExerciseCase(
       switch (event.type) {
         case "stdIn": {
           const input = pending.shift();
+
+          valuesBeforeLastInput = values.length;
 
           if (input === undefined) {
             ending ??= { type: "missingInputs" };
@@ -333,7 +356,7 @@ export function runExerciseCase(
             ending = { type: "extraInputs", remaining: pending.length };
           }
 
-          resolve({ ending: ending ?? { type: "finished" }, output, values, returned });
+          resolve({ ending: ending ?? { type: "finished" }, output, values, valuesBeforeLastInput, returned });
           break;
         }
       }
@@ -404,7 +427,7 @@ async function checkCase(
   options: { timeout?: number; signal?: AbortSignal },
 ): Promise<{ run: CaseRun; failure?: CaseFailure }> {
   const checks = testCase.verificações;
-  let run: CaseRun = { ending: { type: "finished" }, output: "", values: [], returned: null };
+  let run: CaseRun = { ending: { type: "finished" }, output: "", values: [], valuesBeforeLastInput: 0, returned: null };
 
   if (runsInicio(testCase)) {
     run = await runExerciseCase(Runner, program.js, testCase.entradas, {
@@ -425,7 +448,14 @@ async function checkCase(
     const where = { check: i + 1, description: check.descrição };
 
     if (check.alvo === "escreva") {
-      const failure = check.regra === "igual" ? compareEqual(check, run.values) : compareContains(check, run.values);
+      const failure =
+        check.regra === "igual"
+          ? compareEqual(check, withoutLineBreaks(run.values))
+          : compareContains(
+              check,
+              withoutLineBreaks(run.values.slice(run.valuesBeforeLastInput)),
+              testCase.entradas.length > 0,
+            );
 
       if (failure) {
         return { run, failure: { ...failure, ...where } };
@@ -548,7 +578,7 @@ function compareEqual(check: WriteCheck, values: WrittenValue[]) {
     const expected = check.valores[i];
     const received = values[i];
 
-    if (expected === undefined || received === undefined || !sameValue(expected, received, check.tolerância)) {
+    if (expected === undefined || received === undefined || !sameValue(expected, received, check.tolerância, true)) {
       return {
         type: "differentValues" as const,
         position: i + 1,
@@ -561,16 +591,16 @@ function compareEqual(check: WriteCheck, values: WrittenValue[]) {
   return;
 }
 
-function compareContains(check: WriteCheck, values: WrittenValue[]) {
+function compareContains(check: WriteCheck, values: WrittenValue[], afterLastInput: boolean) {
   let next = 0;
 
   for (const [i, expected] of check.valores.entries()) {
-    while (next < values.length && !sameValue(expected, values[next], check.tolerância)) {
+    while (next < values.length && !sameValue(expected, values[next], check.tolerância, true)) {
       next++;
     }
 
     if (next === values.length) {
-      return { type: "missingValue" as const, position: i + 1, expected };
+      return { type: "missingValue" as const, position: i + 1, expected, afterLastInput };
     }
 
     next++;
@@ -579,7 +609,12 @@ function compareContains(check: WriteCheck, values: WrittenValue[]) {
   return;
 }
 
-function sameValue(expected: ExpectedValue, received: WrittenValue, tolerance = DEFAULT_TOLERANCE) {
+/**
+ * Se o valor recebido é o esperado. Com `written`, é um valor escrito pelo `escreva`: uma cadeia
+ * vale com ou sem as quebras de linha do fim (`escreva("Par\n")` escreve "Par"). Um retorno é
+ * conferido como veio.
+ */
+function sameValue(expected: ExpectedValue, received: WrittenValue, tolerance = DEFAULT_TOLERANCE, written = false) {
   if (expected.tipo !== received.type) {
     return false;
   }
@@ -588,5 +623,29 @@ function sameValue(expected: ExpectedValue, received: WrittenValue, tolerance = 
     return Math.abs(expected.valor - (received.value as number)) <= tolerance;
   }
 
+  if (written && expected.tipo === "cadeia") {
+    return withoutTrailingLineBreaks(expected.valor) === withoutTrailingLineBreaks(received.value as string);
+  }
+
   return expected.valor === received.value;
+}
+
+/**
+ * Os valores escritos sem as cadeias que são só quebras de linha: `escreva("Par", "\n")` é o
+ * mesmo que `escreva("Par\n")`, e a quebra de linha é a formatação da saída, não um valor.
+ */
+function withoutLineBreaks(values: WrittenValue[]) {
+  return values.filter(
+    value => value.type !== "cadeia" || withoutTrailingLineBreaks(value.value) !== "" || value.value === "",
+  );
+}
+
+function withoutTrailingLineBreaks(text: string) {
+  let end = text.length;
+
+  while (end > 0 && (text[end - 1] === "\n" || text[end - 1] === "\r")) {
+    end--;
+  }
+
+  return text.slice(0, end);
 }

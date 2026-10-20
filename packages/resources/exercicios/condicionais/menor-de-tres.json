@@ -1,0 +1,73 @@
+{
+  "$schema": "https://portugol.dev/esquemas/exercicio/v1.json",
+  "id": "pws:menor-de-tres",
+  "título": "Menor de três",
+  "tópico": "condicionais",
+  "dificuldade": 2,
+  "enunciado": "Leia três números inteiros e escreva o menor deles.\n\nO programa não deve escrever mais nada: nem mensagens pedindo os dados.",
+  "modo": "simples",
+  "exemplos": [
+    {
+      "descrição": "o menor no meio",
+      "entradas": ["5", "2", "8"],
+      "saída": "2\n"
+    }
+  ],
+  "testes": [
+    {
+      "descrição": "o menor primeiro",
+      "entradas": ["1", "9", "4"],
+      "saída": "1\n"
+    },
+    {
+      "descrição": "o menor por último",
+      "entradas": ["7", "6", "-3"],
+      "saída": "-3\n"
+    },
+    {
+      "descrição": "todos iguais",
+      "entradas": ["4", "4", "4"],
+      "saída": "4\n"
+    },
+    {
+      "descrição": "dois iguais e menores",
+      "entradas": ["9", "2", "2"],
+      "saída": "2\n"
+    },
+    {
+      "descrição": "números negativos",
+      "entradas": ["-10", "-20", "-15"],
+      "saída": "-20\n"
+    },
+    {
+      "descrição": "o menor no meio e negativo",
+      "entradas": ["4", "-6", "2"],
+      "saída": "-6\n"
+    },
+    {
+      "descrição": "um negativo pequeno no fim",
+      "entradas": ["0", "0", "-1"],
+      "saída": "-1\n"
+    },
+    {
+      "descrição": "dois iguais e maiores",
+      "entradas": ["5", "5", "9"],
+      "saída": "5\n"
+    },
+    {
+      "descrição": "com zero",
+      "entradas": ["0", "5", "3"],
+      "saída": "0\n"
+    },
+    {
+      "descrição": "números grandes",
+      "entradas": ["100000", "99999", "100001"],
+      "saída": "99999\n"
+    },
+    {
+      "descrição": "o primeiro e o último iguais e menores",
+      "entradas": ["2", "9", "2"],
+      "saída": "2\n"
+    }
+  ]
+}

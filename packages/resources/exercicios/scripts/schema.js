@@ -58,7 +58,7 @@ const verificaçãoDoEscreva = z
     regra: z
       .enum(["igual", "contém"])
       .describe(
-        "'igual': os valores escritos são exatamente estes. 'contém': estes valores aparecem, nesta ordem, entre os escritos",
+        "'igual': os valores escritos são exatamente estes. 'contém': estes valores aparecem, nesta ordem, entre os escritos depois da última leitura (as mensagens antes de cada 'leia' não contam)",
       ),
     valores: z.array(valor).min(1),
     tolerância,
@@ -96,7 +96,9 @@ const casoSimples = z
   .object({
     descrição,
     entradas,
-    saída: z.string().describe("O texto escrito pela solução de referência (gerado, não editar à mão)"),
+    saída: z
+      .string()
+      .describe("O texto escrito pela solução de referência, em <slug>.solucao.por (gerado, não editar à mão)"),
   })
   .strict();
 
@@ -123,7 +125,6 @@ const comum = {
   dificuldade: z.union([z.literal(1), z.literal(2), z.literal(3)]).describe("1: fácil, 2: médio, 3: difícil"),
   enunciado: z.string().min(1).describe("Markdown sem HTML; fórmulas entre $ ou $$"),
   códigoInicial: z.string().optional().describe("Código que o aluno recebe ao abrir o exercício"),
-  solução: z.string().min(1).describe("Solução de referência: gera as saídas e é conferida no CI"),
   atribuição: z
     .object({
       fonte: z.string().min(1),

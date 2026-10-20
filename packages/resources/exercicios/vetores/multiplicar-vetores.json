@@ -1,0 +1,58 @@
+{
+  "$schema": "https://portugol.dev/esquemas/exercicio/v1.json",
+  "id": "pws:multiplicar-vetores",
+  "título": "Multiplicar dois vetores",
+  "tópico": "vetores",
+  "dificuldade": 1,
+  "enunciado": "Leia 4 números inteiros para um vetor $A$ e depois 4 números inteiros para um vetor $B$. Escreva o produto dos elementos de mesma posição, $A[i] \\times B[i]$, um por linha. Por exemplo, para $A = 1, 2, 3, 4$ e $B = 5, 6, 7, 8$:\n\n```\n5\n12\n21\n32\n```\n\nO programa não deve escrever mais nada: nem mensagens pedindo os dados.",
+  "modo": "simples",
+  "exemplos": [
+    {
+      "descrição": "de 1 a 8",
+      "entradas": ["1", "2", "3", "4", "5", "6", "7", "8"],
+      "saída": "5\n12\n21\n32\n"
+    }
+  ],
+  "testes": [
+    {
+      "descrição": "com zeros",
+      "entradas": ["0", "9", "0", "9", "9", "0", "9", "0"],
+      "saída": "0\n0\n0\n0\n"
+    },
+    {
+      "descrição": "números negativos",
+      "entradas": ["-1", "-2", "3", "-4", "5", "-6", "-7", "-8"],
+      "saída": "-5\n12\n-21\n32\n"
+    },
+    {
+      "descrição": "vetores iguais",
+      "entradas": ["3", "3", "3", "3", "3", "3", "3", "3"],
+      "saída": "9\n9\n9\n9\n"
+    },
+    {
+      "descrição": "números grandes",
+      "entradas": ["1000", "2000", "300", "40", "1000", "50", "300", "4000"],
+      "saída": "1000000\n100000\n90000\n160000\n"
+    },
+    {
+      "descrição": "um vetor de uns",
+      "entradas": ["1", "1", "1", "1", "9", "-8", "7", "-6"],
+      "saída": "9\n-8\n7\n-6\n"
+    },
+    {
+      "descrição": "produtos negativos",
+      "entradas": ["2", "-3", "4", "-5", "-2", "3", "-4", "5"],
+      "saída": "-4\n-9\n-16\n-25\n"
+    },
+    {
+      "descrição": "zeros em B",
+      "entradas": ["7", "8", "9", "10", "0", "0", "0", "0"],
+      "saída": "0\n0\n0\n0\n"
+    },
+    {
+      "descrição": "a posição de cada elemento importa",
+      "entradas": ["1", "2", "3", "4", "4", "3", "2", "1"],
+      "saída": "4\n6\n6\n4\n"
+    }
+  ]
+}

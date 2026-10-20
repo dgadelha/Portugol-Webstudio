@@ -1,0 +1,434 @@
+{
+  "$schema": "https://portugol.dev/esquemas/exercicio/v1.json",
+  "id": "pws:numero-romano",
+  "título": "Número romano",
+  "tópico": "funcoes",
+  "dificuldade": 3,
+  "enunciado": "Escreva a função `romano`, que recebe um número inteiro de 1 a 3999 e retorna esse número escrito em algarismos romanos, como uma cadeia.\n\nOs algarismos romanos são `I` (1), `V` (5), `X` (10), `L` (50), `C` (100), `D` (500) e `M` (1000). Um número é escrito do maior valor para o menor, somando os algarismos, como em `MMXXVI` (2026). Seis combinações usam subtração: `IV` (4), `IX` (9), `XL` (40), `XC` (90), `CD` (400) e `CM` (900), como em `XIV` (14) e `MCMXCIV` (1994). O mesmo algarismo nunca aparece mais de três vezes seguidas.\n\nA função deve ter esta assinatura:\n\n```portugol\nfuncao cadeia romano(inteiro numero)\n```\n\nSó a função é conferida: o `inicio` pode ficar vazio, ou testar a função como você quiser.",
+  "códigoInicial": "programa {\n  funcao cadeia romano(inteiro numero) {\n    retorne \"\"\n  }\n\n  funcao inicio() {\n    escreva(romano(2026))\n  }\n}\n",
+  "modo": "avançado",
+  "exemplos": [
+    {
+      "descrição": "2026",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "romano",
+          "argumentos": [
+            {
+              "tipo": "inteiro",
+              "valor": 2026
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "cadeia",
+            "valor": "MMXXVI"
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "14",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "romano",
+          "argumentos": [
+            {
+              "tipo": "inteiro",
+              "valor": 14
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "cadeia",
+            "valor": "XIV"
+          }
+        }
+      ]
+    }
+  ],
+  "testes": [
+    {
+      "descrição": "o menor número",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "romano",
+          "argumentos": [
+            {
+              "tipo": "inteiro",
+              "valor": 1
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "cadeia",
+            "valor": "I"
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "subtração nas unidades",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "romano",
+          "argumentos": [
+            {
+              "tipo": "inteiro",
+              "valor": 4
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "cadeia",
+            "valor": "IV"
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "outra subtração nas unidades",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "romano",
+          "argumentos": [
+            {
+              "tipo": "inteiro",
+              "valor": 9
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "cadeia",
+            "valor": "IX"
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "subtração nas dezenas",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "romano",
+          "argumentos": [
+            {
+              "tipo": "inteiro",
+              "valor": 40
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "cadeia",
+            "valor": "XL"
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "subtrações nas dezenas e nas unidades",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "romano",
+          "argumentos": [
+            {
+              "tipo": "inteiro",
+              "valor": 99
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "cadeia",
+            "valor": "XCIX"
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "subtração nas centenas",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "romano",
+          "argumentos": [
+            {
+              "tipo": "inteiro",
+              "valor": 400
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "cadeia",
+            "valor": "CD"
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "várias subtrações",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "romano",
+          "argumentos": [
+            {
+              "tipo": "inteiro",
+              "valor": 1994
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "cadeia",
+            "valor": "MCMXCIV"
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "o maior",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "romano",
+          "argumentos": [
+            {
+              "tipo": "inteiro",
+              "valor": 3999
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "cadeia",
+            "valor": "MMMCMXCIX"
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "três algarismos iguais",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "romano",
+          "argumentos": [
+            {
+              "tipo": "inteiro",
+              "valor": 3888
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "cadeia",
+            "valor": "MMMDCCCLXXXVIII"
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "algarismo repetido nas unidades",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "romano",
+          "argumentos": [
+            {
+              "tipo": "inteiro",
+              "valor": 3
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "cadeia",
+            "valor": "III"
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "um algarismo só",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "romano",
+          "argumentos": [
+            {
+              "tipo": "inteiro",
+              "valor": 5
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "cadeia",
+            "valor": "V"
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "soma nas unidades",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "romano",
+          "argumentos": [
+            {
+              "tipo": "inteiro",
+              "valor": 8
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "cadeia",
+            "valor": "VIII"
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "duas subtrações seguidas",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "romano",
+          "argumentos": [
+            {
+              "tipo": "inteiro",
+              "valor": 49
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "cadeia",
+            "valor": "XLIX"
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "subtrações em três casas",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "romano",
+          "argumentos": [
+            {
+              "tipo": "inteiro",
+              "valor": 444
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "cadeia",
+            "valor": "CDXLIV"
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "um algarismo só nas centenas",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "romano",
+          "argumentos": [
+            {
+              "tipo": "inteiro",
+              "valor": 500
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "cadeia",
+            "valor": "D"
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "outra subtração nas centenas",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "romano",
+          "argumentos": [
+            {
+              "tipo": "inteiro",
+              "valor": 900
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "cadeia",
+            "valor": "CM"
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "milhar exato",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "romano",
+          "argumentos": [
+            {
+              "tipo": "inteiro",
+              "valor": 1000
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "cadeia",
+            "valor": "M"
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "milhares repetidos",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "romano",
+          "argumentos": [
+            {
+              "tipo": "inteiro",
+              "valor": 3000
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "cadeia",
+            "valor": "MMM"
+          }
+        }
+      ]
+    }
+  ]
+}

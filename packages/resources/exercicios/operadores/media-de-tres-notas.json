@@ -4,8 +4,7 @@
   "título": "Média de três notas",
   "tópico": "operadores",
   "dificuldade": 1,
-  "enunciado": "Leia as três notas de um aluno, que podem ter casas decimais, e escreva a média aritmética delas:\n\n$$\\text{média} = \\frac{n_1 + n_2 + n_3}{3}$$\n\nA média precisa ser escrita como um valor do tipo `real`.",
-  "solução": "programa {\n  funcao inicio() {\n    real n1, n2, n3\n\n    escreva(\"Primeira nota: \")\n    leia(n1)\n    escreva(\"Segunda nota: \")\n    leia(n2)\n    escreva(\"Terceira nota: \")\n    leia(n3)\n    escreva(\"Média: \", (n1 + n2 + n3) / 3, \"\\n\")\n  }\n}\n",
+  "enunciado": "Leia as três notas de um aluno, que podem ter casas decimais, e escreva a média aritmética delas:\n\n$$\\text{média} = \\frac{n_1 + n_2 + n_3}{3}$$\n\nO programa pode escrever mensagens antes de cada leitura, como `Primeira nota: `, mas a média precisa ser escrita como um valor do tipo `real`, sem arredondar.\n\nOs números com casas decimais são digitados com ponto, como em `1.75`.",
   "modo": "avançado",
   "exemplos": [
     {
@@ -18,7 +17,7 @@
           "valores": [
             {
               "tipo": "real",
-              "valor": 8
+              "valor": 8.0
             }
           ]
         }
@@ -69,7 +68,121 @@
           "valores": [
             {
               "tipo": "real",
-              "valor": 0
+              "valor": 0.0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "todas dez",
+      "entradas": ["10", "10", "10"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "real",
+              "valor": 10.0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "uma nota zero",
+      "entradas": ["0", "5.5", "10"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "real",
+              "valor": 5.1667
+            }
+          ],
+          "tolerância": 0.001
+        }
+      ]
+    },
+    {
+      "descrição": "notas iguais com casas decimais",
+      "entradas": ["7.5", "7.5", "7.5"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "real",
+              "valor": 7.5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "só a primeira nota",
+      "entradas": ["9", "0", "0"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "real",
+              "valor": 3.0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "só a última nota",
+      "entradas": ["0", "0", "9"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "real",
+              "valor": 3.0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "notas inteiras com média que não termina",
+      "entradas": ["7", "8", "10"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "real",
+              "valor": 8.333333333333334
+            }
+          ],
+          "tolerância": 0.001
+        }
+      ]
+    },
+    {
+      "descrição": "notas pequenas",
+      "entradas": ["0.1", "0.2", "0.3"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "real",
+              "valor": 0.20000000000000004
             }
           ]
         }

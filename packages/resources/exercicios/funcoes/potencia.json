@@ -1,0 +1,364 @@
+{
+  "$schema": "https://portugol.dev/esquemas/exercicio/v1.json",
+  "id": "pws:potencia",
+  "título": "Potência",
+  "tópico": "funcoes",
+  "dificuldade": 2,
+  "enunciado": "Escreva a função `potencia`, que recebe uma base e um expoente, os dois inteiros, e retorna a base elevada ao expoente:\n\n$$\\text{base}^\\text{expoente} = \\underbrace{\\text{base} \\times \\text{base} \\times \\cdots \\times \\text{base}}_{\\text{expoente vezes}}$$\n\nO expoente é sempre zero ou positivo, e qualquer número elevado a zero é 1.\n\nA função deve ter esta assinatura:\n\n```portugol\nfuncao inteiro potencia(inteiro base, inteiro expoente)\n```\n\nSó a função é conferida: o `inicio` pode ficar vazio, ou testar a função como você quiser.",
+  "códigoInicial": "programa {\n  funcao inteiro potencia(inteiro base, inteiro expoente) {\n    retorne 0\n  }\n\n  funcao inicio() {\n    escreva(potencia(2, 10))\n  }\n}\n",
+  "modo": "avançado",
+  "exemplos": [
+    {
+      "descrição": "2 elevado a 10",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "potencia",
+          "argumentos": [
+            {
+              "tipo": "inteiro",
+              "valor": 2
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 10
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "inteiro",
+            "valor": 1024
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "3 elevado a 4",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "potencia",
+          "argumentos": [
+            {
+              "tipo": "inteiro",
+              "valor": 3
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 4
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "inteiro",
+            "valor": 81
+          }
+        }
+      ]
+    }
+  ],
+  "testes": [
+    {
+      "descrição": "expoente zero",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "potencia",
+          "argumentos": [
+            {
+              "tipo": "inteiro",
+              "valor": 7
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "inteiro",
+            "valor": 1
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "expoente um",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "potencia",
+          "argumentos": [
+            {
+              "tipo": "inteiro",
+              "valor": 9
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 1
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "inteiro",
+            "valor": 9
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "base negativa e expoente ímpar",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "potencia",
+          "argumentos": [
+            {
+              "tipo": "inteiro",
+              "valor": -2
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 3
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "inteiro",
+            "valor": -8
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "base negativa e expoente par",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "potencia",
+          "argumentos": [
+            {
+              "tipo": "inteiro",
+              "valor": -3
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 2
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "inteiro",
+            "valor": 9
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "base zero",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "potencia",
+          "argumentos": [
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 5
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "inteiro",
+            "valor": 0
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "base um e expoente grande",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "potencia",
+          "argumentos": [
+            {
+              "tipo": "inteiro",
+              "valor": 1
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 1000
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "inteiro",
+            "valor": 1
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "resultado grande com base pequena",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "potencia",
+          "argumentos": [
+            {
+              "tipo": "inteiro",
+              "valor": 2
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 30
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "inteiro",
+            "valor": 1073741824
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "potência de dez grande",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "potencia",
+          "argumentos": [
+            {
+              "tipo": "inteiro",
+              "valor": 10
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 9
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "inteiro",
+            "valor": 1000000000
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "base negativa pequena e expoente ímpar",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "potencia",
+          "argumentos": [
+            {
+              "tipo": "inteiro",
+              "valor": -1
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 7
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "inteiro",
+            "valor": -1
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "base negativa pequena e expoente par grande",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "potencia",
+          "argumentos": [
+            {
+              "tipo": "inteiro",
+              "valor": -1
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 100
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "inteiro",
+            "valor": 1
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "base e expoente zero",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "potencia",
+          "argumentos": [
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "inteiro",
+            "valor": 1
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "um quadrado",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "potencia",
+          "argumentos": [
+            {
+              "tipo": "inteiro",
+              "valor": 12
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 2
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "inteiro",
+            "valor": 144
+          }
+        }
+      ]
+    }
+  ]
+}

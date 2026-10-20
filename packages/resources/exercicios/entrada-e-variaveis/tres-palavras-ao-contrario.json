@@ -1,0 +1,58 @@
+{
+  "$schema": "https://portugol.dev/esquemas/exercicio/v1.json",
+  "id": "pws:tres-palavras-ao-contrario",
+  "título": "Três palavras ao contrário",
+  "tópico": "entrada-e-variaveis",
+  "dificuldade": 1,
+  "enunciado": "Leia três palavras, uma de cada vez, e escreva-as na ordem contrária à da leitura, uma por linha. Por exemplo, para as palavras `um`, `dois` e `três`:\n\n```\ntrês\ndois\num\n```\n\nO programa não deve escrever mais nada: nem mensagens pedindo os dados.",
+  "modo": "simples",
+  "exemplos": [
+    {
+      "descrição": "um, dois e três",
+      "entradas": ["um", "dois", "três"],
+      "saída": "três\ndois\num\n"
+    }
+  ],
+  "testes": [
+    {
+      "descrição": "palavras diferentes",
+      "entradas": ["café", "com", "leite"],
+      "saída": "leite\ncom\ncafé\n"
+    },
+    {
+      "descrição": "palavras repetidas",
+      "entradas": ["sim", "não", "sim"],
+      "saída": "sim\nnão\nsim\n"
+    },
+    {
+      "descrição": "números como palavras",
+      "entradas": ["10", "20", "30"],
+      "saída": "30\n20\n10\n"
+    },
+    {
+      "descrição": "palavras de uma letra",
+      "entradas": ["a", "b", "c"],
+      "saída": "c\nb\na\n"
+    },
+    {
+      "descrição": "a mesma palavra três vezes",
+      "entradas": ["oi", "oi", "oi"],
+      "saída": "oi\noi\noi\n"
+    },
+    {
+      "descrição": "palavras com letras maiúsculas",
+      "entradas": ["Brasil", "Portugal", "Angola"],
+      "saída": "Angola\nPortugal\nBrasil\n"
+    },
+    {
+      "descrição": "palavras compridas",
+      "entradas": ["paralelepípedo", "inconstitucionalmente", "otorrinolaringologista"],
+      "saída": "otorrinolaringologista\ninconstitucionalmente\nparalelepípedo\n"
+    },
+    {
+      "descrição": "números negativos como palavras",
+      "entradas": ["-1", "-2", "-3"],
+      "saída": "-3\n-2\n-1\n"
+    }
+  ]
+}

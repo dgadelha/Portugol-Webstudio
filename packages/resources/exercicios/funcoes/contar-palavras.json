@@ -1,0 +1,308 @@
+{
+  "$schema": "https://portugol.dev/esquemas/exercicio/v1.json",
+  "id": "pws:contar-palavras",
+  "título": "Contar palavras",
+  "tópico": "funcoes",
+  "dificuldade": 3,
+  "enunciado": "Escreva a função `contar_palavras`, que recebe uma frase e retorna quantas palavras ela tem. Uma palavra é um trecho de caracteres seguidos que não são espaço. As palavras podem estar separadas por mais de um espaço, e a frase pode começar ou terminar com espaços.\n\nPor exemplo, `contar_palavras(\"  Bom   dia, turma \")` retorna 3. Uma frase vazia, ou só com espaços, tem 0 palavras.\n\nA função deve ter esta assinatura:\n\n```portugol\nfuncao inteiro contar_palavras(cadeia frase)\n```\n\nSó a função é conferida: o `inicio` pode ficar vazio, ou testar a função como você quiser.",
+  "códigoInicial": "programa {\n  inclua biblioteca Texto --> tx\n\n  funcao inteiro contar_palavras(cadeia frase) {\n    retorne 0\n  }\n\n  funcao inicio() {\n    escreva(contar_palavras(\"Bom dia, turma\"))\n  }\n}\n",
+  "modo": "avançado",
+  "exemplos": [
+    {
+      "descrição": "uma frase simples",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "contar_palavras",
+          "argumentos": [
+            {
+              "tipo": "cadeia",
+              "valor": "Bom dia, turma"
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "inteiro",
+            "valor": 3
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "espaços sobrando",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "contar_palavras",
+          "argumentos": [
+            {
+              "tipo": "cadeia",
+              "valor": "  Bom   dia, turma "
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "inteiro",
+            "valor": 3
+          }
+        }
+      ]
+    }
+  ],
+  "testes": [
+    {
+      "descrição": "frase vazia",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "contar_palavras",
+          "argumentos": [
+            {
+              "tipo": "cadeia",
+              "valor": ""
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "inteiro",
+            "valor": 0
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "só espaços",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "contar_palavras",
+          "argumentos": [
+            {
+              "tipo": "cadeia",
+              "valor": "     "
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "inteiro",
+            "valor": 0
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "uma palavra",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "contar_palavras",
+          "argumentos": [
+            {
+              "tipo": "cadeia",
+              "valor": "Portugol"
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "inteiro",
+            "valor": 1
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "uma letra entre espaços",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "contar_palavras",
+          "argumentos": [
+            {
+              "tipo": "cadeia",
+              "valor": " a "
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "inteiro",
+            "valor": 1
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "muitas palavras",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "contar_palavras",
+          "argumentos": [
+            {
+              "tipo": "cadeia",
+              "valor": "o rato roeu a roupa do rei de Roma"
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "inteiro",
+            "valor": 9
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "números e pontuação",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "contar_palavras",
+          "argumentos": [
+            {
+              "tipo": "cadeia",
+              "valor": "1 + 1 = 2 !"
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "inteiro",
+            "valor": 6
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "palavra com hífen",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "contar_palavras",
+          "argumentos": [
+            {
+              "tipo": "cadeia",
+              "valor": "guarda-chuva"
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "inteiro",
+            "valor": 1
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "espaço só no começo",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "contar_palavras",
+          "argumentos": [
+            {
+              "tipo": "cadeia",
+              "valor": " olá mundo"
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "inteiro",
+            "valor": 2
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "espaço só no fim",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "contar_palavras",
+          "argumentos": [
+            {
+              "tipo": "cadeia",
+              "valor": "olá mundo "
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "inteiro",
+            "valor": 2
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "uma letra",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "contar_palavras",
+          "argumentos": [
+            {
+              "tipo": "cadeia",
+              "valor": "a"
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "inteiro",
+            "valor": 1
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "letras separadas",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "contar_palavras",
+          "argumentos": [
+            {
+              "tipo": "cadeia",
+              "valor": "a b c d"
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "inteiro",
+            "valor": 4
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "dois espaços entre as palavras",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "contar_palavras",
+          "argumentos": [
+            {
+              "tipo": "cadeia",
+              "valor": "um  dois  tres"
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "inteiro",
+            "valor": 3
+          }
+        }
+      ]
+    }
+  ]
+}

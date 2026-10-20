@@ -1,0 +1,93 @@
+{
+  "$schema": "https://portugol.dev/esquemas/exercicio/v1.json",
+  "id": "pws:quadrado-magico",
+  "título": "Quadrado mágico",
+  "tópico": "matrizes",
+  "dificuldade": 3,
+  "enunciado": "Uma matriz quadrada é um quadrado mágico quando a soma de cada linha, a soma de cada coluna e a soma de cada uma das duas diagonais são todas iguais. Por exemplo, esta matriz é um quadrado mágico, com todas as somas iguais a 15:\n\n$$\\begin{bmatrix} 2 & 7 & 6 \\\\ 9 & 5 & 1 \\\\ 4 & 3 & 8 \\end{bmatrix}$$\n\nA diagonal principal vai do canto de cima à esquerda até o de baixo à direita (2, 5, 8), e a secundária vai do canto de cima à direita até o de baixo à esquerda (6, 5, 4).\n\nLeia os 9 números inteiros de uma matriz 3×3, linha por linha, e escreva `mágico` se ela for um quadrado mágico, ou `não é mágico` se não for. Os números podem se repetir.\n\nO programa não deve escrever mais nada: nem mensagens pedindo os dados.",
+  "modo": "simples",
+  "exemplos": [
+    {
+      "descrição": "um quadrado mágico",
+      "entradas": ["2", "7", "6", "9", "5", "1", "4", "3", "8"],
+      "saída": "mágico\n"
+    },
+    {
+      "descrição": "de 1 a 9 em ordem",
+      "entradas": ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
+      "saída": "não é mágico\n"
+    }
+  ],
+  "testes": [
+    {
+      "descrição": "todos iguais",
+      "entradas": ["5", "5", "5", "5", "5", "5", "5", "5", "5"],
+      "saída": "mágico\n"
+    },
+    {
+      "descrição": "linhas e colunas iguais, mas uma diagonal diferente",
+      "entradas": ["1", "2", "3", "2", "3", "1", "3", "1", "2"],
+      "saída": "não é mágico\n"
+    },
+    {
+      "descrição": "linhas iguais, mas colunas diferentes",
+      "entradas": ["1", "2", "3", "3", "1", "2", "1", "2", "3"],
+      "saída": "não é mágico\n"
+    },
+    {
+      "descrição": "números negativos",
+      "entradas": ["-8", "-3", "-4", "-1", "-5", "-9", "-6", "-7", "-2"],
+      "saída": "mágico\n"
+    },
+    {
+      "descrição": "outro quadrado mágico",
+      "entradas": ["8", "1", "6", "3", "5", "7", "4", "9", "2"],
+      "saída": "mágico\n"
+    },
+    {
+      "descrição": "só um canto diferente",
+      "entradas": ["2", "2", "2", "2", "2", "2", "2", "2", "3"],
+      "saída": "não é mágico\n"
+    },
+    {
+      "descrição": "colunas e diagonais iguais, mas linhas diferentes",
+      "entradas": ["5", "5", "5", "6", "6", "6", "4", "4", "4"],
+      "saída": "não é mágico\n"
+    },
+    {
+      "descrição": "só a diagonal principal diferente",
+      "entradas": ["3", "8", "4", "5", "4", "6", "7", "3", "5"],
+      "saída": "não é mágico\n"
+    },
+    {
+      "descrição": "só a diagonal secundária diferente",
+      "entradas": ["4", "8", "3", "6", "4", "5", "5", "3", "7"],
+      "saída": "não é mágico\n"
+    },
+    {
+      "descrição": "só zeros",
+      "entradas": ["0", "0", "0", "0", "0", "0", "0", "0", "0"],
+      "saída": "mágico\n"
+    },
+    {
+      "descrição": "um quadrado mágico girado",
+      "entradas": ["4", "9", "2", "3", "5", "7", "8", "1", "6"],
+      "saída": "mágico\n"
+    },
+    {
+      "descrição": "um quadrado mágico com números grandes",
+      "entradas": ["200", "700", "600", "900", "500", "100", "400", "300", "800"],
+      "saída": "mágico\n"
+    },
+    {
+      "descrição": "linhas diferentes e colunas iguais, transposta de outro caso",
+      "entradas": ["1", "3", "1", "2", "1", "2", "3", "2", "3"],
+      "saída": "não é mágico\n"
+    },
+    {
+      "descrição": "linhas e diagonais iguais, mas colunas diferentes",
+      "entradas": ["5", "6", "4", "5", "6", "4", "5", "6", "4"],
+      "saída": "não é mágico\n"
+    }
+  ]
+}

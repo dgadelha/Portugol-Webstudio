@@ -85,6 +85,9 @@
 <div class="statement-body" role="region" aria-label="Enunciado" tabindex="0">
   @if (statement.hasValue()) {
     <div class="markdown" [innerHTML]="statement.value()"></div>
+    @if (view().attribution; as attribution) {
+      <p class="statement-attribution">{{ attribution }}</p>
+    }
   } @else if (statement.error()) {
     <div class="statement-error" role="alert">
       <p>Não foi possível mostrar o enunciado.</p>
@@ -142,7 +145,13 @@
             </dd>
           } @else {
             <dt>
-              {{ check.rule === "igual" ? "Valores escritos" : "Valores que precisam ser escritos, nesta ordem" }}
+              @if (check.rule === "igual") {
+                Valores escritos
+              } @else if (example.inputs.length > 0) {
+                Valores que precisam ser escritos depois da última leitura, nesta ordem
+              } @else {
+                Valores que precisam ser escritos, nesta ordem
+              }
               @if (check.description) {
                 <span class="example-description">({{ check.description }})</span>
               }

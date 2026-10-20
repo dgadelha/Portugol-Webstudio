@@ -1,0 +1,73 @@
+{
+  "$schema": "https://portugol.dev/esquemas/exercicio/v1.json",
+  "id": "pws:dia-da-semana",
+  "título": "Dia da semana",
+  "tópico": "escolha",
+  "dificuldade": 1,
+  "enunciado": "Leia um número inteiro de 1 a 7 e escreva o nome do dia da semana correspondente, em letras minúsculas, sem a palavra \"feira\":\n\n| Número | Dia |\n| --- | --- |\n| 1 | `domingo` |\n| 2 | `segunda` |\n| 3 | `terça` |\n| 4 | `quarta` |\n| 5 | `quinta` |\n| 6 | `sexta` |\n| 7 | `sábado` |\n\nPara qualquer outro número, escreva `dia inválido`.\n\nO programa não deve escrever mais nada: nem mensagens pedindo os dados.",
+  "modo": "simples",
+  "exemplos": [
+    {
+      "descrição": "o primeiro dia",
+      "entradas": ["1"],
+      "saída": "domingo\n"
+    },
+    {
+      "descrição": "um dia no meio da semana",
+      "entradas": ["4"],
+      "saída": "quarta\n"
+    }
+  ],
+  "testes": [
+    {
+      "descrição": "o último dia",
+      "entradas": ["7"],
+      "saída": "sábado\n"
+    },
+    {
+      "descrição": "um dia no meio da semana",
+      "entradas": ["3"],
+      "saída": "terça\n"
+    },
+    {
+      "descrição": "zero",
+      "entradas": ["0"],
+      "saída": "dia inválido\n"
+    },
+    {
+      "descrição": "logo depois do último dia",
+      "entradas": ["8"],
+      "saída": "dia inválido\n"
+    },
+    {
+      "descrição": "um número negativo",
+      "entradas": ["-2"],
+      "saída": "dia inválido\n"
+    },
+    {
+      "descrição": "o começo da semana",
+      "entradas": ["2"],
+      "saída": "segunda\n"
+    },
+    {
+      "descrição": "outro dia no meio da semana",
+      "entradas": ["5"],
+      "saída": "quinta\n"
+    },
+    {
+      "descrição": "perto do fim da semana",
+      "entradas": ["6"],
+      "saída": "sexta\n"
+    },
+    {
+      "descrição": "um número grande",
+      "entradas": ["100"],
+      "saída": "dia inválido\n"
+    },
+    {
+      "descrição": "outro número negativo",
+      "entradas": ["-7"],
+      "saída": "dia inválido\n"
+    }
+  ]
+}

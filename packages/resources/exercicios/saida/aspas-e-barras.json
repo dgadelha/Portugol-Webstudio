@@ -1,0 +1,22 @@
+{
+  "$schema": "https://portugol.dev/esquemas/exercicio/v1.json",
+  "id": "pws:aspas-e-barras",
+  "título": "Aspas e barras",
+  "tópico": "saida",
+  "dificuldade": 2,
+  "enunciado": "Escreva um programa que mostre as duas linhas abaixo, exatamente assim:\n\n```\nEla disse: \"Eu adoro programar!\"\nOs arquivos ficam em C:\\Portugol\\exercicios\n```",
+  "modo": "simples",
+  "exemplos": [
+    {
+      "entradas": [],
+      "saída": "Ela disse: \"Eu adoro programar!\"\nOs arquivos ficam em C:\\Portugol\\exercicios\n"
+    }
+  ],
+  "testes": [
+    {
+      "descrição": "as duas linhas",
+      "entradas": [],
+      "saída": "Ela disse: \"Eu adoro programar!\"\nOs arquivos ficam em C:\\Portugol\\exercicios\n"
+    }
+  ]
+}

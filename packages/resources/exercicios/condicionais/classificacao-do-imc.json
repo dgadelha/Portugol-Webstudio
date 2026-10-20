@@ -1,0 +1,83 @@
+{
+  "$schema": "https://portugol.dev/esquemas/exercicio/v1.json",
+  "id": "pws:classificacao-do-imc",
+  "título": "Classificação do IMC",
+  "tópico": "condicionais",
+  "dificuldade": 2,
+  "enunciado": "Leia o peso de uma pessoa, em quilos, e a altura dela, em metros, nesta ordem. Os dois podem ter casas decimais. Calcule o índice de massa corporal (IMC):\n\n$$\\text{IMC} = \\frac{\\text{peso}}{\\text{altura}^2}$$\n\nDepois, escreva a classificação do IMC, conforme a tabela:\n\n| IMC | Classificação |\n| --- | --- |\n| menor que `18.5` | `abaixo do peso` |\n| de `18.5` até menos de `25` | `peso normal` |\n| de `25` até menos de `30` | `sobrepeso` |\n| `30` ou mais | `obesidade` |\n\nO programa não deve escrever mais nada: nem mensagens pedindo os dados.\n\nOs números com casas decimais são digitados com ponto, como em `1.75`.",
+  "modo": "simples",
+  "exemplos": [
+    {
+      "descrição": "peso normal",
+      "entradas": ["70", "1.75"],
+      "saída": "peso normal\n"
+    },
+    {
+      "descrição": "obesidade",
+      "entradas": ["110.5", "1.80"],
+      "saída": "obesidade\n"
+    }
+  ],
+  "testes": [
+    {
+      "descrição": "abaixo do peso",
+      "entradas": ["50", "1.70"],
+      "saída": "abaixo do peso\n"
+    },
+    {
+      "descrição": "sobrepeso",
+      "entradas": ["85", "1.75"],
+      "saída": "sobrepeso\n"
+    },
+    {
+      "descrição": "IMC exatamente no primeiro limite",
+      "entradas": ["74", "2"],
+      "saída": "peso normal\n"
+    },
+    {
+      "descrição": "IMC exatamente no segundo limite",
+      "entradas": ["100", "2"],
+      "saída": "sobrepeso\n"
+    },
+    {
+      "descrição": "IMC exatamente no terceiro limite",
+      "entradas": ["120", "2"],
+      "saída": "obesidade\n"
+    },
+    {
+      "descrição": "IMC um pouco abaixo do segundo limite",
+      "entradas": ["98", "2"],
+      "saída": "peso normal\n"
+    },
+    {
+      "descrição": "IMC um pouco abaixo do terceiro limite",
+      "entradas": ["118", "2"],
+      "saída": "sobrepeso\n"
+    },
+    {
+      "descrição": "IMC um pouco abaixo do primeiro limite",
+      "entradas": ["73.6", "2"],
+      "saída": "abaixo do peso\n"
+    },
+    {
+      "descrição": "pessoa baixa",
+      "entradas": ["45", "1.50"],
+      "saída": "peso normal\n"
+    },
+    {
+      "descrição": "pessoa alta e pesada",
+      "entradas": ["150", "1.95"],
+      "saída": "obesidade\n"
+    },
+    {
+      "descrição": "altura com casas decimais",
+      "entradas": ["61", "1.60"],
+      "saída": "peso normal\n"
+    },
+    {
+      "descrição": "valores pequenos",
+      "entradas": ["30", "1.40"],
+      "saída": "abaixo do peso\n"
+    }
+  ]
+}

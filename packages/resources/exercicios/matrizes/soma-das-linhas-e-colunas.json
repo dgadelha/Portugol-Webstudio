@@ -1,0 +1,58 @@
+{
+  "$schema": "https://portugol.dev/esquemas/exercicio/v1.json",
+  "id": "pws:soma-das-linhas-e-colunas",
+  "título": "Soma das linhas e das colunas",
+  "tópico": "matrizes",
+  "dificuldade": 2,
+  "enunciado": "Leia os 12 números inteiros de uma matriz 3×4 (três linhas e quatro colunas), linha por linha. Escreva a soma de cada linha e depois a soma de cada coluna, neste formato (para a matriz abaixo):\n\n$$\\begin{bmatrix} 1 & 2 & 3 & 4 \\\\ 5 & 6 & 7 & 8 \\\\ 9 & 10 & 11 & 12 \\end{bmatrix}$$\n\n```\nlinha 0: 10\nlinha 1: 26\nlinha 2: 42\ncoluna 0: 15\ncoluna 1: 18\ncoluna 2: 21\ncoluna 3: 24\n```\n\nAs linhas e as colunas são contadas a partir de 0. O programa não deve escrever mais nada: nem mensagens pedindo os dados.",
+  "modo": "simples",
+  "exemplos": [
+    {
+      "descrição": "de 1 a 12",
+      "entradas": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"],
+      "saída": "linha 0: 10\nlinha 1: 26\nlinha 2: 42\ncoluna 0: 15\ncoluna 1: 18\ncoluna 2: 21\ncoluna 3: 24\n"
+    }
+  ],
+  "testes": [
+    {
+      "descrição": "só zeros",
+      "entradas": ["0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0"],
+      "saída": "linha 0: 0\nlinha 1: 0\nlinha 2: 0\ncoluna 0: 0\ncoluna 1: 0\ncoluna 2: 0\ncoluna 3: 0\n"
+    },
+    {
+      "descrição": "números negativos",
+      "entradas": ["-1", "2", "-3", "4", "5", "-6", "7", "-8", "-9", "10", "-11", "12"],
+      "saída": "linha 0: 2\nlinha 1: -2\nlinha 2: 2\ncoluna 0: -5\ncoluna 1: 6\ncoluna 2: -7\ncoluna 3: 8\n"
+    },
+    {
+      "descrição": "linhas iguais",
+      "entradas": ["1", "2", "3", "4", "1", "2", "3", "4", "1", "2", "3", "4"],
+      "saída": "linha 0: 10\nlinha 1: 10\nlinha 2: 10\ncoluna 0: 3\ncoluna 1: 6\ncoluna 2: 9\ncoluna 3: 12\n"
+    },
+    {
+      "descrição": "números grandes",
+      "entradas": ["100000", "0", "0", "0", "0", "200000", "0", "0", "0", "0", "300000", "400000"],
+      "saída": "linha 0: 100000\nlinha 1: 200000\nlinha 2: 700000\ncoluna 0: 100000\ncoluna 1: 200000\ncoluna 2: 300000\ncoluna 3: 400000\n"
+    },
+    {
+      "descrição": "só uma linha com números",
+      "entradas": ["0", "0", "0", "0", "1", "2", "3", "4", "0", "0", "0", "0"],
+      "saída": "linha 0: 0\nlinha 1: 10\nlinha 2: 0\ncoluna 0: 1\ncoluna 1: 2\ncoluna 2: 3\ncoluna 3: 4\n"
+    },
+    {
+      "descrição": "só uma coluna com números",
+      "entradas": ["0", "0", "5", "0", "0", "0", "6", "0", "0", "0", "7", "0"],
+      "saída": "linha 0: 5\nlinha 1: 6\nlinha 2: 7\ncoluna 0: 0\ncoluna 1: 0\ncoluna 2: 18\ncoluna 3: 0\n"
+    },
+    {
+      "descrição": "todos iguais",
+      "entradas": ["2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2"],
+      "saída": "linha 0: 8\nlinha 1: 8\nlinha 2: 8\ncoluna 0: 6\ncoluna 1: 6\ncoluna 2: 6\ncoluna 3: 6\n"
+    },
+    {
+      "descrição": "somas negativas",
+      "entradas": ["-1", "-2", "-3", "-4", "-5", "-6", "-7", "-8", "-9", "-10", "-11", "-12"],
+      "saída": "linha 0: -10\nlinha 1: -26\nlinha 2: -42\ncoluna 0: -15\ncoluna 1: -18\ncoluna 2: -21\ncoluna 3: -24\n"
+    }
+  ]
+}

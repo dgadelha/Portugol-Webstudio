@@ -3,7 +3,7 @@ import { portugolCall, runsInicio } from "@portugol-webstudio/runner";
 import { AngularSvgIconModule } from "angular-svg-icon";
 
 import { ExerciseMarkdownService } from "../exercise-markdown.service";
-import { DIFFICULTY_ICONS, DIFFICULTY_LABELS, Exercício } from "../exercises.service";
+import { attributionText, DIFFICULTY_ICONS, DIFFICULTY_LABELS, Exercício } from "../exercises.service";
 import { TooltipDirective } from "../shared/tooltip.directive";
 import { ExerciseValuePipe } from "./exercise-value.pipe";
 
@@ -73,6 +73,7 @@ export class ExerciseStatementComponent {
       title: exercise.título,
       difficulty: DIFFICULTY_LABELS[exercise.dificuldade],
       difficultyIcon: DIFFICULTY_ICONS[exercise.dificuldade],
+      attribution: attributionText(exercise),
       examples: exercise.exemplos.map(example => {
         const checks = "verificações" in example ? example.verificações : undefined;
 

@@ -59,11 +59,6 @@
           "description": "Código que o aluno recebe ao abrir o exercício",
           "type": "string"
         },
-        "solução": {
-          "type": "string",
-          "minLength": 1,
-          "description": "Solução de referência: gera as saídas e é conferida no CI"
-        },
         "atribuição": {
           "description": "Fonte e licença, quando o exercício foi adaptado de perto de outro",
           "type": "object",
@@ -108,7 +103,7 @@
               },
               "saída": {
                 "type": "string",
-                "description": "O texto escrito pela solução de referência (gerado, não editar à mão)"
+                "description": "O texto escrito pela solução de referência, em <slug>.solucao.por (gerado, não editar à mão)"
               }
             },
             "required": [
@@ -138,7 +133,7 @@
               },
               "saída": {
                 "type": "string",
-                "description": "O texto escrito pela solução de referência (gerado, não editar à mão)"
+                "description": "O texto escrito pela solução de referência, em <slug>.solucao.por (gerado, não editar à mão)"
               }
             },
             "required": [
@@ -156,7 +151,6 @@
         "tópico",
         "dificuldade",
         "enunciado",
-        "solução",
         "modo",
         "exemplos",
         "testes"
@@ -218,11 +212,6 @@
         "códigoInicial": {
           "description": "Código que o aluno recebe ao abrir o exercício",
           "type": "string"
-        },
-        "solução": {
-          "type": "string",
-          "minLength": 1,
-          "description": "Solução de referência: gera as saídas e é conferida no CI"
         },
         "atribuição": {
           "description": "Fonte e licença, quando o exercício foi adaptado de perto de outro",
@@ -290,7 +279,7 @@
                             "igual",
                             "contém"
                           ],
-                          "description": "'igual': os valores escritos são exatamente estes. 'contém': estes valores aparecem, nesta ordem, entre os escritos"
+                          "description": "'igual': os valores escritos são exatamente estes. 'contém': estes valores aparecem, nesta ordem, entre os escritos depois da última leitura (as mensagens antes de cada 'leia' não contam)"
                         },
                         "valores": {
                           "minItems": 1,
@@ -779,7 +768,7 @@
                             "igual",
                             "contém"
                           ],
-                          "description": "'igual': os valores escritos são exatamente estes. 'contém': estes valores aparecem, nesta ordem, entre os escritos"
+                          "description": "'igual': os valores escritos são exatamente estes. 'contém': estes valores aparecem, nesta ordem, entre os escritos depois da última leitura (as mensagens antes de cada 'leia' não contam)"
                         },
                         "valores": {
                           "minItems": 1,
@@ -1234,7 +1223,6 @@
         "tópico",
         "dificuldade",
         "enunciado",
-        "solução",
         "modo",
         "exemplos",
         "testes"

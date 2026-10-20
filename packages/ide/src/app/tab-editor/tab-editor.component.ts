@@ -1,7 +1,7 @@
 import { LiveAnnouncer } from "@angular/cdk/a11y";
 import { DialogRef } from "@angular/cdk/dialog";
-import { CdkMenu, CdkMenuItem, CdkMenuTrigger } from "@angular/cdk/menu";
 import { CdkDragEnd, DragDropModule } from "@angular/cdk/drag-drop";
+import { CdkMenu, CdkMenuItem, CdkMenuTrigger } from "@angular/cdk/menu";
 import { ConnectedPosition } from "@angular/cdk/overlay";
 import {
   ChangeDetectionStrategy,

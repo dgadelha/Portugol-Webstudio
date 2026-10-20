@@ -4,7 +4,14 @@ import { ChangeDetectionStrategy, Component, computed, inject, OnInit, resource,
 import { AngularSvgIconModule } from "angular-svg-icon";
 
 import { ExerciseMarkdownService } from "../exercise-markdown.service";
-import { DIFFICULTY_ICONS, DIFFICULTY_LABELS, ExercisesService, Exercício, TOPIC_ICONS } from "../exercises.service";
+import {
+  attributionText,
+  DIFFICULTY_ICONS,
+  DIFFICULTY_LABELS,
+  ExercisesService,
+  Exercício,
+  TOPIC_ICONS,
+} from "../exercises.service";
 import { ResponsiveService } from "../responsive.service";
 import { TooltipDirective } from "../shared/tooltip.directive";
 
@@ -55,11 +62,18 @@ export class DialogOpenExerciseComponent implements OnInit {
   readonly current = signal<ExerciseEntry | null>(null);
 
   /**
-   * O enunciado do exercício escolhido, para a prévia.
+   * O enunciado do exercício escolhido, para a prévia, e de onde ele foi adaptado, se foi.
    */
   readonly statement = resource({
     params: () => this.current()?.id,
-    loader: async ({ params }) => this.markdown.render((await this.exercises.load(params)).enunciado),
+    loader: async ({ params }) => {
+      const exercise = await this.exercises.load(params);
+
+      return {
+        html: await this.markdown.render(exercise.enunciado),
+        attribution: attributionText(exercise),
+      };
+    },
   });
 
   readonly filtered = computed(() => {

@@ -55,6 +55,20 @@ export type ExerciseCheckOutcome =
 const PROGRESS_KEY = "exercicios";
 
 /**
+ * De onde o exercício foi adaptado, como o enunciado e a prévia mostram: "Adaptado de: Portugol
+ * Studio (UNIVALI), exercício 05. Licença: LGPL-3.0." `null` num exercício original.
+ */
+export function attributionText({ atribuição }: Pick<Exercício, "atribuição">) {
+  if (!atribuição) {
+    return null;
+  }
+
+  const source = atribuição.fonte.replace(/\.$/, "");
+
+  return `Adaptado de: ${source}. Licença: ${atribuição.licença}.`;
+}
+
+/**
  * Como a dificuldade de um exercício aparece.
  */
 export const DIFFICULTY_LABELS: Record<Exercício["dificuldade"], string> = { 1: "Fácil", 2: "Médio", 3: "Difícil" };

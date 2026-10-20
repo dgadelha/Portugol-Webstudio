@@ -6,7 +6,6 @@
   "dificuldade": 1,
   "enunciado": "Escreva a função `maior`, que recebe dois números inteiros e retorna o maior deles. Se os dois forem iguais, ela retorna esse valor.\n\nA função deve ter esta assinatura:\n\n```portugol\nfuncao inteiro maior(inteiro a, inteiro b)\n```\n\nSó a função é conferida: o `inicio` pode ficar vazio, ou testar a função como você quiser.",
   "códigoInicial": "programa {\n  funcao inteiro maior(inteiro a, inteiro b) {\n    retorne 0\n  }\n\n  funcao inicio() {\n    escreva(maior(3, 8))\n  }\n}\n",
-  "solução": "programa {\n  funcao inteiro maior(inteiro a, inteiro b) {\n    se (a > b) {\n      retorne a\n    }\n\n    retorne b\n  }\n\n  funcao inicio() {\n    escreva(maior(3, 8))\n  }\n}\n",
   "modo": "avançado",
   "exemplos": [
     {
@@ -132,6 +131,231 @@
           "valor": {
             "tipo": "inteiro",
             "valor": 0
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "positivo e negativo",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "maior",
+          "argumentos": [
+            {
+              "tipo": "inteiro",
+              "valor": 5
+            },
+            {
+              "tipo": "inteiro",
+              "valor": -5
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "inteiro",
+            "valor": 5
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "números grandes e próximos",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "maior",
+          "argumentos": [
+            {
+              "tipo": "inteiro",
+              "valor": 99999
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 100000
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "inteiro",
+            "valor": 100000
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "o primeiro maior, os dois com dois dígitos",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "maior",
+          "argumentos": [
+            {
+              "tipo": "inteiro",
+              "valor": 20
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 15
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "inteiro",
+            "valor": 20
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "o primeiro maior e grande",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "maior",
+          "argumentos": [
+            {
+              "tipo": "inteiro",
+              "valor": 100
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 50
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "inteiro",
+            "valor": 100
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "o primeiro maior, os dois negativos",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "maior",
+          "argumentos": [
+            {
+              "tipo": "inteiro",
+              "valor": -5
+            },
+            {
+              "tipo": "inteiro",
+              "valor": -20
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "inteiro",
+            "valor": -5
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "zero e negativo",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "maior",
+          "argumentos": [
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": -1
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "inteiro",
+            "valor": 0
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "muito diferentes",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "maior",
+          "argumentos": [
+            {
+              "tipo": "inteiro",
+              "valor": 1000000
+            },
+            {
+              "tipo": "inteiro",
+              "valor": -1000000
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "inteiro",
+            "valor": 1000000
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "o primeiro maior por pouco",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "maior",
+          "argumentos": [
+            {
+              "tipo": "inteiro",
+              "valor": 12
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 11
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "inteiro",
+            "valor": 12
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "o segundo maior, os dois com dois dígitos",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "maior",
+          "argumentos": [
+            {
+              "tipo": "inteiro",
+              "valor": 15
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 20
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "inteiro",
+            "valor": 20
           }
         }
       ]

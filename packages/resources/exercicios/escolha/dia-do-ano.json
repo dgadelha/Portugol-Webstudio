@@ -1,0 +1,98 @@
+{
+  "$schema": "https://portugol.dev/esquemas/exercicio/v1.json",
+  "id": "pws:dia-do-ano",
+  "título": "Dia do ano",
+  "tópico": "escolha",
+  "dificuldade": 3,
+  "enunciado": "Leia uma data válida de um ano que não é bissexto: primeiro o dia, depois o mês, os dois números inteiros. Escreva que dia do ano é essa data, contando a partir de 1 de janeiro, que é o dia 1. Por exemplo, para o dia `1` e o mês `3`, escreva:\n\n```\n60\n```\n\nOs meses 1, 3, 5, 7, 8, 10 e 12 têm 31 dias; os meses 4, 6, 9 e 11 têm 30; e o mês 2 tem 28.\n\nO programa não deve escrever mais nada: nem mensagens pedindo os dados.",
+  "modo": "simples",
+  "exemplos": [
+    {
+      "descrição": "primeiro de março",
+      "entradas": ["1", "3"],
+      "saída": "60\n"
+    },
+    {
+      "descrição": "primeiro de janeiro",
+      "entradas": ["1", "1"],
+      "saída": "1\n"
+    }
+  ],
+  "testes": [
+    {
+      "descrição": "último dia do ano",
+      "entradas": ["31", "12"],
+      "saída": "365\n"
+    },
+    {
+      "descrição": "fim do mês mais curto",
+      "entradas": ["28", "2"],
+      "saída": "59\n"
+    },
+    {
+      "descrição": "fim do primeiro mês",
+      "entradas": ["31", "1"],
+      "saída": "31\n"
+    },
+    {
+      "descrição": "meio do ano",
+      "entradas": ["30", "6"],
+      "saída": "181\n"
+    },
+    {
+      "descrição": "meio de um mês do segundo semestre",
+      "entradas": ["15", "8"],
+      "saída": "227\n"
+    },
+    {
+      "descrição": "começo de um mês do primeiro semestre",
+      "entradas": ["1", "2"],
+      "saída": "32\n"
+    },
+    {
+      "descrição": "fim de um mês de 31 dias",
+      "entradas": ["31", "3"],
+      "saída": "90\n"
+    },
+    {
+      "descrição": "começo de outro mês do primeiro semestre",
+      "entradas": ["1", "4"],
+      "saída": "91\n"
+    },
+    {
+      "descrição": "começo de mais um mês do primeiro semestre",
+      "entradas": ["1", "5"],
+      "saída": "121\n"
+    },
+    {
+      "descrição": "começo de um mês do segundo semestre",
+      "entradas": ["1", "7"],
+      "saída": "182\n"
+    },
+    {
+      "descrição": "começo de outro mês do segundo semestre",
+      "entradas": ["1", "9"],
+      "saída": "244\n"
+    },
+    {
+      "descrição": "começo de mais um mês do segundo semestre",
+      "entradas": ["1", "10"],
+      "saída": "274\n"
+    },
+    {
+      "descrição": "começo de um mês perto do fim do ano",
+      "entradas": ["1", "11"],
+      "saída": "305\n"
+    },
+    {
+      "descrição": "começo do último mês",
+      "entradas": ["1", "12"],
+      "saída": "335\n"
+    },
+    {
+      "descrição": "fim de um mês de 30 dias",
+      "entradas": ["30", "11"],
+      "saída": "334\n"
+    }
+  ]
+}

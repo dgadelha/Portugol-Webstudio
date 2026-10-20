@@ -1,0 +1,103 @@
+{
+  "$schema": "https://portugol.dev/esquemas/exercicio/v1.json",
+  "id": "pws:conversao-para-binario",
+  "título": "Conversão para binário",
+  "tópico": "lacos",
+  "dificuldade": 3,
+  "enunciado": "Leia um número inteiro de 0 a 1023 e escreva-o na base 2 (em binário), sem zeros à esquerda. Por exemplo, 13 é $8 + 4 + 1 = 2^3 + 2^2 + 2^0$, então para 13 escreva:\n\n```\n1101\n```\n\nPara 0, escreva `0`. O programa não deve escrever mais nada: nem mensagens pedindo os dados.",
+  "modo": "simples",
+  "exemplos": [
+    {
+      "descrição": "treze",
+      "entradas": ["13"],
+      "saída": "1101\n"
+    }
+  ],
+  "testes": [
+    {
+      "descrição": "zero",
+      "entradas": ["0"],
+      "saída": "0\n"
+    },
+    {
+      "descrição": "um bit só",
+      "entradas": ["1"],
+      "saída": "1\n"
+    },
+    {
+      "descrição": "uma potência de dois pequena",
+      "entradas": ["2"],
+      "saída": "10\n"
+    },
+    {
+      "descrição": "dois bits ligados",
+      "entradas": ["3"],
+      "saída": "11\n"
+    },
+    {
+      "descrição": "outra potência de dois pequena",
+      "entradas": ["4"],
+      "saída": "100\n"
+    },
+    {
+      "descrição": "bits alternados, número pequeno",
+      "entradas": ["5"],
+      "saída": "101\n"
+    },
+    {
+      "descrição": "bits ligados no começo",
+      "entradas": ["6"],
+      "saída": "110\n"
+    },
+    {
+      "descrição": "três bits ligados",
+      "entradas": ["7"],
+      "saída": "111\n"
+    },
+    {
+      "descrição": "mais uma potência de dois",
+      "entradas": ["8"],
+      "saída": "1000\n"
+    },
+    {
+      "descrição": "um número par pequeno",
+      "entradas": ["10"],
+      "saída": "1010\n"
+    },
+    {
+      "descrição": "uma potência de dois maior",
+      "entradas": ["64"],
+      "saída": "1000000\n"
+    },
+    {
+      "descrição": "uma potência de dois menos um",
+      "entradas": ["255"],
+      "saída": "11111111\n"
+    },
+    {
+      "descrição": "bits alternados, número grande",
+      "entradas": ["341"],
+      "saída": "101010101\n"
+    },
+    {
+      "descrição": "outros bits alternados",
+      "entradas": ["682"],
+      "saída": "1010101010\n"
+    },
+    {
+      "descrição": "a maior potência de dois permitida",
+      "entradas": ["512"],
+      "saída": "1000000000\n"
+    },
+    {
+      "descrição": "um número grande",
+      "entradas": ["1000"],
+      "saída": "1111101000\n"
+    },
+    {
+      "descrição": "o maior valor permitido",
+      "entradas": ["1023"],
+      "saída": "1111111111\n"
+    }
+  ]
+}

@@ -1,0 +1,155 @@
+{
+  "$schema": "https://portugol.dev/esquemas/exercicio/v1.json",
+  "id": "pws:minimax",
+  "título": "Minimax",
+  "tópico": "matrizes",
+  "dificuldade": 3,
+  "enunciado": "O minimax de uma matriz é o menor elemento da linha em que está o maior elemento da matriz. Por exemplo, nesta matriz o maior elemento é 30, que está na linha 2 (contando a partir de 0), e o menor elemento dessa linha é 5, na coluna 1:\n\n$$\\begin{bmatrix} 10 & 3 & 8 & 6 \\\\ 9 & 15 & 2 & 4 \\\\ 7 & 5 & 30 & 12 \\\\ 1 & 20 & 11 & 8 \\end{bmatrix}$$\n\nLeia os 16 números inteiros de uma matriz 4×4, linha por linha. Encontre o maior elemento da matriz e, na linha dele, o menor elemento: esse é o minimax. Escreva o valor do minimax, a linha e a coluna em que ele está, neste formato:\n\n```\nvalor: 5\nlinha: 2\ncoluna: 1\n```\n\nSe o maior elemento aparecer mais de uma vez, considere o primeiro que aparece ao ler a matriz linha por linha, da esquerda para a direita. Do mesmo jeito, se o menor elemento da linha aparecer mais de uma vez, considere o que está mais à esquerda.\n\nO programa não deve escrever mais nada: nem mensagens pedindo os dados.",
+  "modo": "simples",
+  "exemplos": [
+    {
+      "descrição": "o maior na terceira linha",
+      "entradas": ["10", "3", "8", "6", "9", "15", "2", "4", "7", "5", "30", "12", "1", "20", "11", "8"],
+      "saída": "valor: 5\nlinha: 2\ncoluna: 1\n"
+    }
+  ],
+  "testes": [
+    {
+      "descrição": "maior na primeira linha",
+      "entradas": ["90", "3", "8", "1", "10", "20", "30", "40", "50", "60", "70", "80", "2", "4", "6", "8"],
+      "saída": "valor: 1\nlinha: 0\ncoluna: 3\n"
+    },
+    {
+      "descrição": "maior na última linha",
+      "entradas": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "16", "15", "14", "13"],
+      "saída": "valor: 13\nlinha: 3\ncoluna: 3\n"
+    },
+    {
+      "descrição": "o maior repetido em linhas diferentes",
+      "entradas": ["0", "0", "0", "0", "3", "9", "4", "3", "9", "1", "1", "1", "0", "0", "0", "0"],
+      "saída": "valor: 3\nlinha: 1\ncoluna: 0\n"
+    },
+    {
+      "descrição": "o menor repetido na linha",
+      "entradas": ["5", "5", "5", "5", "2", "7", "2", "99", "6", "6", "6", "6", "1", "1", "1", "1"],
+      "saída": "valor: 2\nlinha: 1\ncoluna: 0\n"
+    },
+    {
+      "descrição": "todos negativos",
+      "entradas": [
+        "-10",
+        "-20",
+        "-30",
+        "-40",
+        "-1",
+        "-50",
+        "-2",
+        "-3",
+        "-60",
+        "-70",
+        "-80",
+        "-90",
+        "-5",
+        "-5",
+        "-5",
+        "-5"
+      ],
+      "saída": "valor: -50\nlinha: 1\ncoluna: 1\n"
+    },
+    {
+      "descrição": "todos iguais",
+      "entradas": ["4", "4", "4", "4", "4", "4", "4", "4", "4", "4", "4", "4", "4", "4", "4", "4"],
+      "saída": "valor: 4\nlinha: 0\ncoluna: 0\n"
+    },
+    {
+      "descrição": "todos negativos, o maior na primeira linha",
+      "entradas": [
+        "-1",
+        "-9",
+        "-3",
+        "-4",
+        "-10",
+        "-20",
+        "-30",
+        "-40",
+        "-50",
+        "-60",
+        "-70",
+        "-80",
+        "-5",
+        "-6",
+        "-7",
+        "-8"
+      ],
+      "saída": "valor: -9\nlinha: 0\ncoluna: 1\n"
+    },
+    {
+      "descrição": "todos negativos, o maior no primeiro elemento",
+      "entradas": [
+        "-1",
+        "-2",
+        "-3",
+        "-4",
+        "-5",
+        "-6",
+        "-7",
+        "-8",
+        "-9",
+        "-10",
+        "-11",
+        "-12",
+        "-13",
+        "-14",
+        "-15",
+        "-16"
+      ],
+      "saída": "valor: -4\nlinha: 0\ncoluna: 3\n"
+    },
+    {
+      "descrição": "o maior no último elemento",
+      "entradas": ["1", "1", "1", "1", "2", "2", "2", "2", "3", "3", "3", "3", "4", "0", "4", "50"],
+      "saída": "valor: 0\nlinha: 3\ncoluna: 1\n"
+    },
+    {
+      "descrição": "o menor da linha no último lugar",
+      "entradas": ["1", "2", "3", "4", "90", "80", "70", "60", "5", "6", "7", "8", "9", "10", "11", "12"],
+      "saída": "valor: 60\nlinha: 1\ncoluna: 3\n"
+    },
+    {
+      "descrição": "o maior repetido na mesma linha",
+      "entradas": ["1", "2", "3", "4", "7", "9", "3", "9", "5", "6", "7", "8", "0", "0", "0", "0"],
+      "saída": "valor: 3\nlinha: 1\ncoluna: 2\n"
+    },
+    {
+      "descrição": "o maior positivo e o minimax negativo",
+      "entradas": ["0", "0", "0", "0", "0", "0", "0", "0", "-7", "100", "-3", "5", "1", "2", "3", "4"],
+      "saída": "valor: -7\nlinha: 2\ncoluna: 0\n"
+    },
+    {
+      "descrição": "todos negativos, o maior no primeiro elemento e o segundo bem menor",
+      "entradas": [
+        "-1",
+        "-10",
+        "-20",
+        "-30",
+        "-5",
+        "-6",
+        "-7",
+        "-8",
+        "-50",
+        "-51",
+        "-52",
+        "-53",
+        "-60",
+        "-61",
+        "-62",
+        "-63"
+      ],
+      "saída": "valor: -30\nlinha: 0\ncoluna: 3\n"
+    }
+  ],
+  "atribuição": {
+    "fonte": "Portugol Studio (UNIVALI), exercício 60",
+    "licença": "LGPL-3.0"
+  }
+}

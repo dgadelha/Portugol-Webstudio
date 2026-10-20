@@ -1,0 +1,204 @@
+{
+  "$schema": "https://portugol.dev/esquemas/exercicio/v1.json",
+  "id": "pws:media-ponderada",
+  "título": "Média ponderada",
+  "tópico": "operadores",
+  "dificuldade": 2,
+  "enunciado": "Numa disciplina, a primeira prova tem peso 2, a segunda tem peso 3 e a terceira tem peso 5. Leia as três notas de um aluno, nesta ordem, que podem ter casas decimais, e escreva a média ponderada delas:\n\n$$\\text{média} = \\frac{2 n_1 + 3 n_2 + 5 n_3}{2 + 3 + 5}$$\n\nO programa pode escrever mensagens antes de cada leitura, mas a média precisa ser escrita como um valor do tipo `real`, sem arredondar.\n\nOs números com casas decimais são digitados com ponto, como em `1.75`.",
+  "modo": "avançado",
+  "exemplos": [
+    {
+      "descrição": "7, 8 e 9",
+      "entradas": ["7", "8", "9"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "real",
+              "valor": 8.3
+            }
+          ],
+          "tolerância": 0.0001
+        }
+      ]
+    }
+  ],
+  "testes": [
+    {
+      "descrição": "todas dez",
+      "entradas": ["10", "10", "10"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "real",
+              "valor": 10.0
+            }
+          ],
+          "tolerância": 0.0001
+        }
+      ]
+    },
+    {
+      "descrição": "só a última prova",
+      "entradas": ["0", "0", "10"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "real",
+              "valor": 5.0
+            }
+          ],
+          "tolerância": 0.0001
+        }
+      ]
+    },
+    {
+      "descrição": "só a primeira prova",
+      "entradas": ["10", "0", "0"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "real",
+              "valor": 2.0
+            }
+          ],
+          "tolerância": 0.0001
+        }
+      ]
+    },
+    {
+      "descrição": "notas com casas decimais",
+      "entradas": ["5.5", "6.5", "7.5"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "real",
+              "valor": 6.8
+            }
+          ],
+          "tolerância": 0.0001
+        }
+      ]
+    },
+    {
+      "descrição": "todas zero",
+      "entradas": ["0", "0", "0"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "real",
+              "valor": 0.0
+            }
+          ],
+          "tolerância": 0.0001
+        }
+      ]
+    },
+    {
+      "descrição": "notas iguais",
+      "entradas": ["7", "7", "7"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "real",
+              "valor": 7.0
+            }
+          ],
+          "tolerância": 0.0001
+        }
+      ]
+    },
+    {
+      "descrição": "só a segunda prova",
+      "entradas": ["0", "10", "0"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "real",
+              "valor": 3.0
+            }
+          ],
+          "tolerância": 0.0001
+        }
+      ]
+    },
+    {
+      "descrição": "notas decrescentes",
+      "entradas": ["9", "5", "1"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "real",
+              "valor": 3.8
+            }
+          ],
+          "tolerância": 0.0001
+        }
+      ]
+    },
+    {
+      "descrição": "notas crescentes",
+      "entradas": ["6", "8", "10"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "real",
+              "valor": 8.6
+            }
+          ],
+          "tolerância": 0.0001
+        }
+      ]
+    },
+    {
+      "descrição": "notas pequenas com casas decimais",
+      "entradas": ["0.5", "1", "1.5"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "real",
+              "valor": 1.15
+            }
+          ],
+          "tolerância": 0.0001
+        }
+      ]
+    }
+  ],
+  "atribuição": {
+    "fonte": "Portugol Studio (UNIVALI), exercício 06",
+    "licença": "LGPL-3.0"
+  }
+}

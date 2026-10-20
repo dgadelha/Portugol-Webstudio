@@ -72,7 +72,9 @@
                 </p>
               } @else if (failure.type === "missingValue") {
                 <p>
-                  O valor <code>{{ failure.expected | exerciseValue }}</code> não foi escrito.
+                  O valor <code>{{ failure.expected | exerciseValue }}</code> não foi escrito{{
+                    failure.afterLastInput ? " depois da última leitura" : ""
+                  }}.
                 </p>
               } @else if (failure.type === "differentReturn") {
                 <p>

@@ -1,0 +1,131 @@
+{
+  "pws:maior-de-dois": {
+    "3:11 > → >=": "Com a igual a b, os dois ramos retornam o mesmo valor."
+  },
+  "pws:conta-de-agua": {
+    "9:17 > → >=": "Com consumo inteiro, só o limite em si muda de faixa, e no limite as duas fórmulas dão o mesmo valor (a conta é contínua).",
+    "9:19 50 → 49": "Com consumo inteiro, só o limite em si muda de faixa, e no limite as duas fórmulas dão o mesmo valor (a conta é contínua).",
+    "11:25 > → >=": "Com consumo inteiro, só o limite em si muda de faixa, e no limite as duas fórmulas dão o mesmo valor (a conta é contínua).",
+    "11:27 20 → 19": "Com consumo inteiro, só o limite em si muda de faixa, e no limite as duas fórmulas dão o mesmo valor (a conta é contínua).",
+    "13:25 > → >=": "Com consumo inteiro, só o limite em si muda de faixa, e no limite as duas fórmulas dão o mesmo valor (a conta é contínua).",
+    "13:27 10 → 9": "Com consumo inteiro, só o limite em si muda de faixa, e no limite as duas fórmulas dão o mesmo valor (a conta é contínua)."
+  },
+  "pws:equacao-do-segundo-grau": {
+    "27:14 < → <=": "Com delta positivo, as duas raízes nunca são iguais."
+  },
+  "pws:menor-de-tres": {
+    "9:11 < → <=": "Com valores iguais, trocar o menor por outro igual não muda o valor escrito.",
+    "13:11 < → <=": "Com valores iguais, trocar o menor por outro igual não muda o valor escrito."
+  },
+  "pws:tipo-de-triangulo": {
+    "9:8 ( → (falso e": "Um lado zero ou negativo já é maior ou igual à soma dos outros dois em uma das desigualdades seguintes, então esta parte da condição é redundante.",
+    "9:11 <= → <": "Um lado zero ou negativo já é maior ou igual à soma dos outros dois em uma das desigualdades seguintes, então esta parte da condição é redundante.",
+    "9:16 ou → e": "Um lado zero ou negativo já é maior ou igual à soma dos outros dois em uma das desigualdades seguintes, então esta parte da condição é redundante.",
+    "9:21 <= → <": "Um lado zero ou negativo já é maior ou igual à soma dos outros dois em uma das desigualdades seguintes, então esta parte da condição é redundante.",
+    "9:26 ou → e": "Um lado zero ou negativo já é maior ou igual à soma dos outros dois em uma das desigualdades seguintes, então esta parte da condição é redundante.",
+    "9:31 <= → <": "Um lado zero ou negativo já é maior ou igual à soma dos outros dois em uma das desigualdades seguintes, então esta parte da condição é redundante."
+  },
+  "pws:palindromo": {
+    "19:24 < → <=": "Com esquerda igual a direita, compara o caracter do meio com ele mesmo."
+  },
+  "pws:fatorial": {
+    "7:23 2 → 1": "Multiplicar por 1 não muda o produto."
+  },
+  "pws:soma-de-1-a-n": {
+    "7:23 1 → 0": "Somar 0 não muda a soma."
+  },
+  "pws:maior-sequencia-crescente": {
+    "3:32 0 → 1": "O anterior só é comparado quando já há um trecho (atual > 0), e aí ele já recebeu um número lido.",
+    "8:17 > → >=": "Com atual igual a 0, somar 1 dá o mesmo 1 do senão.",
+    "14:17 > → >=": "Com atual igual ao maior, a atribuição não muda o maior."
+  },
+  "pws:numero-primo": {
+    "9:18 ++ → --": "Só se compara a contagem com zero, e diminuir a partir de zero também a deixa diferente de zero."
+  },
+  "pws:maior-da-matriz": {
+    "3:20 3 → 4": "A matriz declarada maior que o necessário não muda o resultado.",
+    "3:23 3 → 4": "A matriz declarada maior que o necessário não muda o resultado.",
+    "11:20 0 → 1": "O valor inicial é um elemento da matriz, e o laço percorre todos os elementos depois.",
+    "11:23 0 → 1": "O valor inicial é um elemento da matriz, e o laço percorre todos os elementos depois.",
+    "15:35 > → >=": "Com um elemento igual ao maior, a atribuição não muda o maior."
+  },
+  "pws:matriz-identidade": {
+    "3:23 10 → 11": "A matriz declarada maior que o necessário não muda o resultado.",
+    "3:27 10 → 11": "A matriz declarada maior que o necessário não muda o resultado."
+  },
+  "pws:matriz-transposta": {
+    "3:20 2 → 3": "A matriz declarada maior que o necessário não muda o resultado.",
+    "3:23 3 → 4": "A matriz declarada maior que o necessário não muda o resultado.",
+    "3:38 3 → 4": "A matriz declarada maior que o necessário não muda o resultado.",
+    "3:41 2 → 3": "A matriz declarada maior que o necessário não muda o resultado."
+  },
+  "pws:minimax": {
+    "3:20 4 → 5": "A matriz declarada maior que o necessário não muda o resultado.",
+    "3:23 4 → 5": "A matriz declarada maior que o necessário não muda o resultado.",
+    "16:28 1 → 0": "Começar pela coluna 0 só compara o primeiro elemento com ele mesmo."
+  },
+  "pws:produto-de-matrizes": {
+    "3:15 2 → 3": "A matriz declarada maior que o necessário não muda o resultado.",
+    "3:18 3 → 4": "A matriz declarada maior que o necessário não muda o resultado.",
+    "3:24 3 → 4": "A matriz declarada maior que o necessário não muda o resultado.",
+    "3:27 2 → 3": "A matriz declarada maior que o necessário não muda o resultado.",
+    "3:33 2 → 3": "A matriz declarada maior que o necessário não muda o resultado.",
+    "3:36 2 → 3": "A matriz declarada maior que o necessário não muda o resultado."
+  },
+  "pws:quadrado-magico": {
+    "3:20 3 → 4": "A matriz declarada maior que o necessário não muda o resultado.",
+    "3:23 3 → 4": "A matriz declarada maior que o necessário não muda o resultado."
+  },
+  "pws:soma-da-diagonal": {
+    "3:23 10 → 11": "A matriz declarada maior que o necessário não muda o resultado.",
+    "3:27 10 → 11": "A matriz declarada maior que o necessário não muda o resultado."
+  },
+  "pws:soma-da-matriz": {
+    "3:20 3 → 4": "A matriz declarada maior que o necessário não muda o resultado.",
+    "3:23 3 → 4": "A matriz declarada maior que o necessário não muda o resultado."
+  },
+  "pws:soma-das-linhas-e-colunas": {
+    "3:20 3 → 4": "A matriz declarada maior que o necessário não muda o resultado.",
+    "3:23 4 → 5": "A matriz declarada maior que o necessário não muda o resultado."
+  },
+  "pws:acima-da-media": {
+    "3:24 100 → 101": "O vetor declarado maior que o necessário não muda o resultado.",
+    "18:19 ++ → --": "Só se compara a contagem com zero, e diminuir a partir de zero também a deixa diferente de zero."
+  },
+  "pws:contar-ocorrencias": {
+    "3:21 8 → 9": "O vetor declarado maior que o necessário não muda o resultado."
+  },
+  "pws:inverter-vetor": {
+    "3:21 5 → 6": "O vetor declarado maior que o necessário não muda o resultado."
+  },
+  "pws:maior-e-posicao": {
+    "3:24 100 → 101": "O vetor declarado maior que o necessário não muda o resultado.",
+    "11:23 1 → 0": "Começar pela posição 0 só compara o primeiro elemento com ele mesmo."
+  },
+  "pws:moda-do-vetor": {
+    "3:24 100 → 101": "O vetor declarado maior que o necessário não muda o resultado.",
+    "3:52 0 → 1": "Todo valor aparece pelo menos uma vez, então o primeiro elemento é escolhido do mesmo jeito.",
+    "11:20 0 → 1": "Na primeira volta, o primeiro elemento sempre substitui a moda inicial, pois a contagem dele é maior que zero.",
+    "14:15 0 → 1": "Somar 1 a todas as contagens não muda qual é a maior.",
+    "22:73 < → <=": "Num empate com o mesmo valor, a atribuição não muda a moda."
+  },
+  "pws:multiplicar-vetores": {
+    "3:15 4 → 5": "O vetor declarado maior que o necessário não muda o resultado.",
+    "3:21 4 → 5": "O vetor declarado maior que o necessário não muda o resultado."
+  },
+  "pws:ordenar-vetor": {
+    "3:24 100 → 101": "O vetor declarado maior que o necessário não muda o resultado.",
+    "11:28 < → <=": "A passada a mais do laço de fora não tem trocas a fazer: o laço de dentro não executa.",
+    "11:32 - → +": "As passadas a mais do laço de fora não têm trocas a fazer: o laço de dentro não executa.",
+    "11:34 1 → 0": "A passada a mais do laço de fora não tem trocas a fazer: o laço de dentro não executa.",
+    "13:24 > → >=": "Trocar dois valores iguais de lugar não muda o vetor."
+  },
+  "pws:rotacionar-vetor": {
+    "3:27 100 → 101": "O vetor declarado maior que o necessário não muda o resultado.",
+    "3:45 100 → 101": "O vetor declarado maior que o necessário não muda o resultado."
+  },
+  "pws:valores-sem-repeticao": {
+    "3:24 100 → 101": "O vetor declarado maior que o necessário não muda o resultado.",
+    "3:41 100 → 101": "O vetor declarado maior que o necessário não muda o resultado."
+  }
+}

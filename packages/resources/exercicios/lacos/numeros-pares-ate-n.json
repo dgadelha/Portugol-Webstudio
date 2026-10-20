@@ -1,0 +1,63 @@
+{
+  "$schema": "https://portugol.dev/esquemas/exercicio/v1.json",
+  "id": "pws:numeros-pares-ate-n",
+  "título": "Números pares até n",
+  "tópico": "lacos",
+  "dificuldade": 1,
+  "enunciado": "Leia um número inteiro $n$, zero ou positivo, e escreva todos os números pares de 0 até $n$, em ordem crescente, um por linha. Por exemplo, para $n = 7$:\n\n```\n0\n2\n4\n6\n```\n\nO programa não deve escrever mais nada: nem mensagens pedindo os dados.",
+  "modo": "simples",
+  "exemplos": [
+    {
+      "descrição": "até 7",
+      "entradas": ["7"],
+      "saída": "0\n2\n4\n6\n"
+    }
+  ],
+  "testes": [
+    {
+      "descrição": "zero",
+      "entradas": ["0"],
+      "saída": "0\n"
+    },
+    {
+      "descrição": "um ímpar pequeno",
+      "entradas": ["1"],
+      "saída": "0\n"
+    },
+    {
+      "descrição": "um número par",
+      "entradas": ["10"],
+      "saída": "0\n2\n4\n6\n8\n10\n"
+    },
+    {
+      "descrição": "um número maior",
+      "entradas": ["31"],
+      "saída": "0\n2\n4\n6\n8\n10\n12\n14\n16\n18\n20\n22\n24\n26\n28\n30\n"
+    },
+    {
+      "descrição": "um par pequeno",
+      "entradas": ["2"],
+      "saída": "0\n2\n"
+    },
+    {
+      "descrição": "outro ímpar pequeno",
+      "entradas": ["3"],
+      "saída": "0\n2\n"
+    },
+    {
+      "descrição": "outro número par",
+      "entradas": ["8"],
+      "saída": "0\n2\n4\n6\n8\n"
+    },
+    {
+      "descrição": "outro número ímpar",
+      "entradas": ["9"],
+      "saída": "0\n2\n4\n6\n8\n"
+    },
+    {
+      "descrição": "um número grande",
+      "entradas": ["100"],
+      "saída": "0\n2\n4\n6\n8\n10\n12\n14\n16\n18\n20\n22\n24\n26\n28\n30\n32\n34\n36\n38\n40\n42\n44\n46\n48\n50\n52\n54\n56\n58\n60\n62\n64\n66\n68\n70\n72\n74\n76\n78\n80\n82\n84\n86\n88\n90\n92\n94\n96\n98\n100\n"
+    }
+  ]
+}

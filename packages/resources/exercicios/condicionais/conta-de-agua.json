@@ -1,0 +1,269 @@
+{
+  "$schema": "https://portugol.dev/esquemas/exercicio/v1.json",
+  "id": "pws:conta-de-agua",
+  "título": "Conta de água",
+  "tópico": "condicionais",
+  "dificuldade": 3,
+  "enunciado": "Uma companhia de água cobra pelo consumo do mês, em metros cúbicos (m³), por faixas:\n\n| Consumo | Preço |\n| --- | --- |\n| até 10 m³ | 25 reais fixos, mesmo que o consumo seja menor que 10 m³ |\n| de 11 a 20 m³ | mais 3 reais por m³ acima de 10 |\n| de 21 a 50 m³ | mais 5 reais por m³ acima de 20 |\n| acima de 50 m³ | mais 8 reais por m³ acima de 50 |\n\nCada faixa soma com as anteriores. Por exemplo, 35 m³ custam 25 + 10 × 3 + 15 × 5 = 130 reais.\n\nLeia o consumo (um número inteiro, zero ou positivo) e escreva o valor da conta como um valor do tipo `real`. O programa pode escrever outros textos junto, e uma mensagem antes da leitura.",
+  "modo": "avançado",
+  "exemplos": [
+    {
+      "descrição": "35 m³",
+      "entradas": ["35"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "real",
+              "valor": 130.0
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "testes": [
+    {
+      "descrição": "consumo zero",
+      "entradas": ["0"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "real",
+              "valor": 25.0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "no fim da primeira faixa",
+      "entradas": ["10"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "real",
+              "valor": 25.0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "no começo da segunda faixa",
+      "entradas": ["11"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "real",
+              "valor": 28.0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "no fim da segunda faixa",
+      "entradas": ["20"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "real",
+              "valor": 55.0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "no começo da terceira faixa",
+      "entradas": ["21"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "real",
+              "valor": 60.0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "no fim da terceira faixa",
+      "entradas": ["50"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "real",
+              "valor": 205.0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "no começo da última faixa",
+      "entradas": ["51"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "real",
+              "valor": 213.0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "consumo alto",
+      "entradas": ["100"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "real",
+              "valor": 605.0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "consumo muito baixo",
+      "entradas": ["1"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "real",
+              "valor": 25.0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "abaixo do mínimo",
+      "entradas": ["5"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "real",
+              "valor": 25.0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "no meio da segunda faixa",
+      "entradas": ["15"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "real",
+              "valor": 40.0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "no meio da terceira faixa",
+      "entradas": ["30"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "real",
+              "valor": 105.0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "perto do fim da terceira faixa",
+      "entradas": ["49"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "real",
+              "valor": 200.0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "no meio da última faixa",
+      "entradas": ["75"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "real",
+              "valor": 405.0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "consumo muito alto",
+      "entradas": ["1000"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "real",
+              "valor": 7805.0
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

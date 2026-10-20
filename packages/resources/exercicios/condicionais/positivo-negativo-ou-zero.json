@@ -1,0 +1,63 @@
+{
+  "$schema": "https://portugol.dev/esquemas/exercicio/v1.json",
+  "id": "pws:positivo-negativo-ou-zero",
+  "título": "Positivo, negativo ou zero",
+  "tópico": "condicionais",
+  "dificuldade": 1,
+  "enunciado": "Leia um número inteiro e escreva `positivo` se ele for maior que zero, `negativo` se for menor que zero, ou `zero` se for igual a zero.\n\nO programa não deve escrever mais nada: nem mensagens pedindo os dados.",
+  "modo": "simples",
+  "exemplos": [
+    {
+      "descrição": "um número positivo",
+      "entradas": ["8"],
+      "saída": "positivo\n"
+    },
+    {
+      "descrição": "um número negativo",
+      "entradas": ["-3"],
+      "saída": "negativo\n"
+    }
+  ],
+  "testes": [
+    {
+      "descrição": "zero",
+      "entradas": ["0"],
+      "saída": "zero\n"
+    },
+    {
+      "descrição": "um positivo pequeno",
+      "entradas": ["1"],
+      "saída": "positivo\n"
+    },
+    {
+      "descrição": "um negativo pequeno",
+      "entradas": ["-1"],
+      "saída": "negativo\n"
+    },
+    {
+      "descrição": "um número positivo grande",
+      "entradas": ["2000000"],
+      "saída": "positivo\n"
+    },
+    {
+      "descrição": "um número negativo grande",
+      "entradas": ["-999999"],
+      "saída": "negativo\n"
+    },
+    {
+      "descrição": "outro positivo pequeno",
+      "entradas": ["2"],
+      "saída": "positivo\n"
+    },
+    {
+      "descrição": "um negativo médio",
+      "entradas": ["-100"],
+      "saída": "negativo\n"
+    },
+    {
+      "descrição": "um positivo médio",
+      "entradas": ["100"],
+      "saída": "positivo\n"
+    }
+  ]
+}

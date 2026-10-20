@@ -115,7 +115,10 @@
 
       <div class="preview-statement" role="region" aria-label="Enunciado" tabindex="0">
         @if (statement.hasValue()) {
-          <div class="markdown" [innerHTML]="statement.value()"></div>
+          <div class="markdown" [innerHTML]="statement.value().html"></div>
+          @if (statement.value().attribution; as attribution) {
+            <p class="preview-attribution">{{ attribution }}</p>
+          }
         } @else if (statement.error()) {
           <p class="preview-error">Não foi possível carregar o enunciado.</p>
         } @else {

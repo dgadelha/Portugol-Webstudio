@@ -11,6 +11,7 @@ import {
   runsInicio,
   transpile,
 } from "../../src";
+import { pool } from "../helpers/pool";
 import { runPortugolCode } from "../helpers/runner";
 
 // Os exercícios embutidos no IDE. Com `ATUALIZAR_EXERCICIOS=1`, a saída de cada caso do modo
@@ -18,7 +19,7 @@ import { runPortugolCode } from "../helpers/runner";
 const exercisesDir = path.join(import.meta.dirname, "..", "..", "..", "resources", "exercicios");
 const update = process.env.ATUALIZAR_EXERCICIOS === "1";
 
-type Exercise = CheckableExercise & { id: string; solução: string; códigoInicial?: string };
+type Exercise = CheckableExercise & { id: string; códigoInicial?: string };
 
 const files = readdirSync(exercisesDir, { recursive: true, encoding: "utf8" }).filter(
   file => file.endsWith(".json") && file.includes(path.sep),
@@ -32,9 +33,11 @@ describe("Exercícios", () => {
   describe.each(files)("%s", file => {
     const filePath = path.join(exercisesDir, file);
     const exercise = JSON.parse(readFileSync(filePath, "utf8")) as Exercise;
+    // A solução de referência fica ao lado do JSON, fora do que o IDE publica
+    const solution = readFileSync(filePath.replace(/\.json$/, ".solucao.por"), "utf8");
 
     test("A solução compila sem erros nem avisos", () => {
-      const { parseErrors, diagnostics } = transpile(exercise.solução);
+      const { parseErrors, diagnostics } = transpile(solution);
 
       expect(parseErrors).toEqual([]);
       expect(diagnostics.filter(d => d.severity !== PortugolDiagnosticSeverity.Information)).toEqual([]);
@@ -60,23 +63,24 @@ describe("Exercícios", () => {
     });
 
     test("Não usa bibliotecas bloqueadas", () => {
-      for (const code of [exercise.solução, exercise.códigoInicial ?? ""]) {
+      for (const code of [solution, exercise.códigoInicial ?? ""]) {
         expect(analyzeExerciseCode(code).blockedLibraries).toEqual([]);
       }
     });
 
-    test("A saída de cada caso é a da solução, também no Portugol Studio", async () => {
-      const cases = [...exercise.exemplos, ...exercise.testes];
+    // Cada caso abre o Portugol Studio (uma JVM, cerca de 1 s): quatro ao mesmo tempo, e com mais
+    // tempo que os outros testes, para os exercícios com muitos casos
+    test("A saída de cada caso é a da solução, também no Portugol Studio", { timeout: 180_000 }, async () => {
+      const cases: ExerciseCase[] = [...exercise.exemplos, ...exercise.testes];
+      // Compara com o Portugol CLI quando ele está disponível
+      const outputs = await pool(cases, 4, testCase => runPortugolCode(solution, testCase.entradas));
 
-      for (const testCase of cases) {
-        // Compara com o Portugol CLI quando ele está disponível
-        const output = await runPortugolCode(exercise.solução, testCase.entradas);
-
+      for (const [i, testCase] of cases.entries()) {
         if (exercise.modo === "simples") {
           if (update) {
-            (testCase as { saída: string }).saída = output;
+            testCase.saída = outputs[i];
           } else {
-            expect(output, `entradas: ${JSON.stringify(testCase.entradas)}`).toBe(testCase.saída);
+            expect(outputs[i], `entradas: ${JSON.stringify(testCase.entradas)}`).toBe(testCase.saída);
           }
         }
       }
@@ -88,7 +92,7 @@ describe("Exercícios", () => {
 
     test("A solução passa em todos os casos", async () => {
       const exerciseNow = JSON.parse(readFileSync(filePath, "utf8")) as Exercise;
-      const result = await checkExercise(PortugolWorkerThreadsRunner, transpile(exerciseNow.solução), exerciseNow);
+      const result = await checkExercise(PortugolWorkerThreadsRunner, transpile(solution), exerciseNow);
 
       expect(result.cases.filter(c => c.failure).map(c => ({ ...c, run: undefined }))).toEqual([]);
       expect(result.passed).toBe(true);

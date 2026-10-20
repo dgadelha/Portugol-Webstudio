@@ -1,0 +1,118 @@
+{
+  "$schema": "https://portugol.dev/esquemas/exercicio/v1.json",
+  "id": "pws:numero-por-extenso",
+  "título": "Número por extenso",
+  "tópico": "escolha",
+  "dificuldade": 3,
+  "enunciado": "Leia um número inteiro de 0 a 99 e escreva-o por extenso, em letras minúsculas. Por exemplo:\n\n| Número | Por extenso |\n| --- | --- |\n| 0 | `zero` |\n| 7 | `sete` |\n| 14 | `quatorze` |\n| 30 | `trinta` |\n| 58 | `cinquenta e oito` |\n\nOs números de 1 a 9 são `um`, `dois`, `três`, `quatro`, `cinco`, `seis`, `sete`, `oito` e `nove`. Os números de 10 a 19 são `dez`, `onze`, `doze`, `treze`, `quatorze`, `quinze`, `dezesseis`, `dezessete`, `dezoito` e `dezenove`. As dezenas são `vinte`, `trinta`, `quarenta`, `cinquenta`, `sessenta`, `setenta`, `oitenta` e `noventa`.\n\nO programa não deve escrever mais nada: nem mensagens pedindo os dados.",
+  "modo": "simples",
+  "exemplos": [
+    {
+      "descrição": "dezena e unidade",
+      "entradas": ["58"],
+      "saída": "cinquenta e oito\n"
+    },
+    {
+      "descrição": "um algarismo",
+      "entradas": ["7"],
+      "saída": "sete\n"
+    }
+  ],
+  "testes": [
+    {
+      "descrição": "zero",
+      "entradas": ["0"],
+      "saída": "zero\n"
+    },
+    {
+      "descrição": "dezena exata pequena",
+      "entradas": ["10"],
+      "saída": "dez\n"
+    },
+    {
+      "descrição": "número da casa dos dez",
+      "entradas": ["11"],
+      "saída": "onze\n"
+    },
+    {
+      "descrição": "número da casa dos dez",
+      "entradas": ["12"],
+      "saída": "doze\n"
+    },
+    {
+      "descrição": "número da casa dos dez",
+      "entradas": ["13"],
+      "saída": "treze\n"
+    },
+    {
+      "descrição": "número da casa dos dez",
+      "entradas": ["14"],
+      "saída": "quatorze\n"
+    },
+    {
+      "descrição": "número da casa dos dez",
+      "entradas": ["15"],
+      "saída": "quinze\n"
+    },
+    {
+      "descrição": "número da casa dos dez",
+      "entradas": ["16"],
+      "saída": "dezesseis\n"
+    },
+    {
+      "descrição": "número da casa dos dez",
+      "entradas": ["17"],
+      "saída": "dezessete\n"
+    },
+    {
+      "descrição": "número da casa dos dez",
+      "entradas": ["18"],
+      "saída": "dezoito\n"
+    },
+    {
+      "descrição": "o último da casa dos dez",
+      "entradas": ["19"],
+      "saída": "dezenove\n"
+    },
+    {
+      "descrição": "dezena exata",
+      "entradas": ["20"],
+      "saída": "vinte\n"
+    },
+    {
+      "descrição": "dezena composta",
+      "entradas": ["21"],
+      "saída": "vinte e um\n"
+    },
+    {
+      "descrição": "dezena composta",
+      "entradas": ["32"],
+      "saída": "trinta e dois\n"
+    },
+    {
+      "descrição": "dezena composta",
+      "entradas": ["43"],
+      "saída": "quarenta e três\n"
+    },
+    {
+      "descrição": "dezena composta",
+      "entradas": ["64"],
+      "saída": "sessenta e quatro\n"
+    },
+    {
+      "descrição": "dezena composta",
+      "entradas": ["76"],
+      "saída": "setenta e seis\n"
+    },
+    {
+      "descrição": "dezena composta",
+      "entradas": ["85"],
+      "saída": "oitenta e cinco\n"
+    },
+    {
+      "descrição": "o maior",
+      "entradas": ["99"],
+      "saída": "noventa e nove\n"
+    }
+  ]
+}

@@ -34,6 +34,14 @@ for (const [tópico, nome] of Object.entries(tópicos)) {
       throw new Error(`${caminho}: o tópico deveria ser "${tópico}", a pasta, mas é "${exercício.tópico}"`);
     }
 
+    // A solução de referência fica ao lado, num arquivo que não vai para o IDE: o JSON é
+    // publicado como está, e quem o abrisse veria a resposta
+    const solução = await fs.readFile(path.join(directory, `${slug}.solucao.por`), "utf8").catch(() => "");
+
+    if (!solução.trim()) {
+      throw new Error(`${caminho}: falta a solução de referência em ${tópico}/${slug}.solucao.por`);
+    }
+
     if (ids.has(exercício.id)) {
       throw new Error(`${caminho}: o id "${exercício.id}" também é de ${ids.get(exercício.id)}`);
     }
