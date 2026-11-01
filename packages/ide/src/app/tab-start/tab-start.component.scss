@@ -130,6 +130,20 @@
   transform: translateX(-50%);
 }
 
+// Um recurso novo ganha uma etiqueta verde no canto do botão, por dentro da borda: o selo
+// amarelo em cima da borda fica só para o "Recomendado para começar", sem concorrência
+.tile-tag {
+  position: absolute;
+  top: -1px;
+  right: -1px;
+  padding: 0.125rem 0.5rem;
+  border-radius: 0 var(--pws-radius-lg) 0 var(--pws-radius);
+  background-color: var(--pws-success-fg);
+  color: var(--pws-bg-chrome);
+  font-size: var(--pws-text-xs);
+  font-weight: 600;
+}
+
 .tiles-small {
   // Os atalhos menores continuam em quatro colunas
   grid-template-columns: repeat(4, minmax(0, 1fr));
