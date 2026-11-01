@@ -1,0 +1,397 @@
+{
+  "$id": "https://portugol.dev/esquemas/rascunho-de-exercicio/v1.json",
+  "title": "Arquivo-fonte de exercício do Portugol Webstudio",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "const": "https://portugol.dev/esquemas/rascunho-de-exercicio/v1.json"
+    },
+    "título": {
+      "type": "string"
+    },
+    "tópico": {
+      "type": "string",
+      "enum": [
+        "saida",
+        "entrada-e-variaveis",
+        "operadores",
+        "condicionais",
+        "escolha",
+        "lacos",
+        "vetores",
+        "matrizes",
+        "funcoes"
+      ]
+    },
+    "dificuldade": {
+      "anyOf": [
+        {
+          "type": "number",
+          "const": 1
+        },
+        {
+          "type": "number",
+          "const": 2
+        },
+        {
+          "type": "number",
+          "const": 3
+        }
+      ],
+      "description": "1: fácil, 2: médio, 3: difícil"
+    },
+    "enunciado": {
+      "type": "string",
+      "description": "Markdown sem HTML; fórmulas entre $ ou $$"
+    },
+    "códigoInicial": {
+      "type": "string"
+    },
+    "solução": {
+      "type": "string",
+      "description": "A solução de referência, de onde saem as respostas esperadas"
+    },
+    "modo": {
+      "type": "string",
+      "enum": [
+        "simples",
+        "avançado"
+      ]
+    },
+    "casos": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "tipo": {
+            "type": "string",
+            "enum": [
+              "exemplo",
+              "teste"
+            ]
+          },
+          "descrição": {
+            "type": "string"
+          },
+          "entradas": {
+            "type": "string",
+            "description": "Uma entrada por linha, como se fosse digitada"
+          },
+          "saída": {
+            "description": "A saída da solução no modo simples, gerada por 'Gerar respostas'",
+            "type": "string"
+          },
+          "verificações": {
+            "type": "array",
+            "items": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "descrição": {
+                      "type": "string"
+                    },
+                    "alvo": {
+                      "type": "string",
+                      "const": "escreva"
+                    },
+                    "regra": {
+                      "type": "string",
+                      "enum": [
+                        "igual",
+                        "contém"
+                      ]
+                    },
+                    "valores": {
+                      "type": "array",
+                      "items": {
+                        "oneOf": [
+                          {
+                            "type": "object",
+                            "properties": {
+                              "tipo": {
+                                "type": "string",
+                                "const": "inteiro"
+                              },
+                              "valor": {
+                                "type": "integer",
+                                "minimum": -9007199254740991,
+                                "maximum": 9007199254740991
+                              }
+                            },
+                            "required": [
+                              "tipo",
+                              "valor"
+                            ]
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "tipo": {
+                                "type": "string",
+                                "const": "real"
+                              },
+                              "valor": {
+                                "type": "number"
+                              }
+                            },
+                            "required": [
+                              "tipo",
+                              "valor"
+                            ]
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "tipo": {
+                                "type": "string",
+                                "const": "cadeia"
+                              },
+                              "valor": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "tipo",
+                              "valor"
+                            ]
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "tipo": {
+                                "type": "string",
+                                "const": "caracter"
+                              },
+                              "valor": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 1
+                              }
+                            },
+                            "required": [
+                              "tipo",
+                              "valor"
+                            ]
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "tipo": {
+                                "type": "string",
+                                "const": "logico"
+                              },
+                              "valor": {
+                                "type": "boolean"
+                              }
+                            },
+                            "required": [
+                              "tipo",
+                              "valor"
+                            ]
+                          }
+                        ],
+                        "description": "Um valor escrito pelo programa, com o tipo"
+                      },
+                      "description": "Gerados da solução por 'Gerar respostas'; quem cria pode tirar os que o 'contém' não deve exigir"
+                    },
+                    "tolerância": {
+                      "description": "Diferença aceita ao comparar valores do tipo real (padrão: 0.000001)",
+                      "type": "number",
+                      "minimum": 0
+                    }
+                  },
+                  "required": [
+                    "alvo",
+                    "regra",
+                    "valores"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "descrição": {
+                      "type": "string"
+                    },
+                    "alvo": {
+                      "type": "string",
+                      "const": "função"
+                    },
+                    "nome": {
+                      "type": "string"
+                    },
+                    "argumentos": {
+                      "type": "string",
+                      "description": "Os argumentos como numa chamada no código, separados por vírgula. Exemplos: 3, 5 / \"abc\", 'a' / {7.0, 8.5}, 2"
+                    },
+                    "tipos": {
+                      "description": "Os tipos dos parâmetros na solução ('real', 'inteiro[]'…), guardados ao gerar: '3' num parâmetro 'real' é o real 3, e a assinatura publicada é a da solução",
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "valor": {
+                      "description": "O retorno da solução, gerado por 'Gerar respostas'",
+                      "oneOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "tipo": {
+                              "type": "string",
+                              "const": "inteiro"
+                            },
+                            "valor": {
+                              "type": "integer",
+                              "minimum": -9007199254740991,
+                              "maximum": 9007199254740991
+                            }
+                          },
+                          "required": [
+                            "tipo",
+                            "valor"
+                          ]
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "tipo": {
+                              "type": "string",
+                              "const": "real"
+                            },
+                            "valor": {
+                              "type": "number"
+                            }
+                          },
+                          "required": [
+                            "tipo",
+                            "valor"
+                          ]
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "tipo": {
+                              "type": "string",
+                              "const": "cadeia"
+                            },
+                            "valor": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "tipo",
+                            "valor"
+                          ]
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "tipo": {
+                              "type": "string",
+                              "const": "caracter"
+                            },
+                            "valor": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 1
+                            }
+                          },
+                          "required": [
+                            "tipo",
+                            "valor"
+                          ]
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "tipo": {
+                              "type": "string",
+                              "const": "logico"
+                            },
+                            "valor": {
+                              "type": "boolean"
+                            }
+                          },
+                          "required": [
+                            "tipo",
+                            "valor"
+                          ]
+                        }
+                      ]
+                    },
+                    "tolerância": {
+                      "description": "Diferença aceita ao comparar valores do tipo real (padrão: 0.000001)",
+                      "type": "number",
+                      "minimum": 0
+                    }
+                  },
+                  "required": [
+                    "alvo",
+                    "nome",
+                    "argumentos"
+                  ],
+                  "additionalProperties": false
+                }
+              ]
+            }
+          },
+          "problema": {
+            "description": "O que deu errado ao executar a solução neste caso",
+            "type": "string"
+          },
+          "fechado": {
+            "description": "Recolhido na criação: só o resumo aparece. Não muda o exercício publicado",
+            "type": "boolean"
+          },
+          "geradoCom": {
+            "description": "A impressão digital do que gerou as respostas (a solução, o modo, as entradas e o que cada verificação confere): se mudou depois, as respostas estão desatualizadas",
+            "type": "string"
+          }
+        },
+        "required": [
+          "tipo",
+          "descrição",
+          "entradas",
+          "verificações"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "compartilhado": {
+      "description": "O link da última vez que este exercício foi compartilhado; sai quando o exercício muda",
+      "type": "object",
+      "properties": {
+        "link": {
+          "type": "string"
+        },
+        "até": {
+          "type": "string",
+          "format": "date",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$",
+          "description": "O último dia em que o link funciona"
+        }
+      },
+      "required": [
+        "link",
+        "até"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "$schema",
+    "título",
+    "tópico",
+    "dificuldade",
+    "enunciado",
+    "códigoInicial",
+    "solução",
+    "modo",
+    "casos"
+  ],
+  "additionalProperties": false
+}

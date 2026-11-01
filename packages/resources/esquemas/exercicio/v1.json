@@ -12,8 +12,8 @@
         },
         "id": {
           "type": "string",
-          "pattern": "^pws:[a-z0-9]+(?:-[a-z0-9]+)*$",
-          "description": "Identificador estável: 'pws:<slug>' nos exercícios embutidos. Nunca muda"
+          "pattern": "^(?:pws:[a-z0-9]+(?:-[a-z0-9]+)*|share:[a-z0-9]{6,32})$",
+          "description": "Identificador estável: 'pws:<slug>' nos exercícios embutidos, 'share:<id>' nos compartilhados por link. Nunca muda"
         },
         "título": {
           "type": "string",
@@ -166,8 +166,8 @@
         },
         "id": {
           "type": "string",
-          "pattern": "^pws:[a-z0-9]+(?:-[a-z0-9]+)*$",
-          "description": "Identificador estável: 'pws:<slug>' nos exercícios embutidos. Nunca muda"
+          "pattern": "^(?:pws:[a-z0-9]+(?:-[a-z0-9]+)*|share:[a-z0-9]{6,32})$",
+          "description": "Identificador estável: 'pws:<slug>' nos exercícios embutidos, 'share:<id>' nos compartilhados por link. Nunca muda"
         },
         "título": {
           "type": "string",

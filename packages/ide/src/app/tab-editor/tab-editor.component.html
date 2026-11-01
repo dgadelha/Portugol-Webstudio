@@ -247,7 +247,11 @@
   >
     @if (exerciseFailed() === "missing") {
       <div class="exercise-failed" role="alert">
-        <p>Este exercício não existe nesta versão do Portugol Webstudio. O código continua na aba.</p>
+        @if (sharedExercise) {
+          <p>O link deste exercício expirou ou não existe. O código continua na aba.</p>
+        } @else {
+          <p>Este exercício não existe nesta versão do Portugol Webstudio. O código continua na aba.</p>
+        }
       </div>
     } @else if (exerciseFailed() === "network") {
       <div class="exercise-failed" role="alert">

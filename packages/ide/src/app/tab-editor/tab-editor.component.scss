@@ -293,33 +293,6 @@ ngx-monaco-editor {
   flex-shrink: 0;
 }
 
-// Abas do painel como as do VS Code: a escolhida ganha fundo e texto forte.
-.panel-tab {
-  display: flex;
-  flex-shrink: 0;
-  align-items: center;
-  gap: 0.375rem;
-  height: 24px;
-  padding: 0 0.625rem;
-  border: 0;
-  border-radius: var(--pws-radius-sm);
-  background: transparent;
-  color: var(--pws-fg-muted);
-  font-size: var(--pws-text-ui);
-  transition:
-    background-color var(--pws-duration),
-    color var(--pws-duration);
-
-  &:hover {
-    color: var(--pws-fg);
-  }
-
-  &[aria-selected="true"] {
-    background-color: var(--pws-bg-active);
-    color: var(--pws-fg-strong);
-  }
-}
-
 .panel-status {
   display: flex;
   margin-left: 0.25rem;
@@ -396,10 +369,6 @@ ngx-monaco-editor {
   flex-direction: column;
   flex-grow: 1;
   min-height: 0;
-
-  &[hidden] {
-    display: none;
-  }
 }
 
 // Na saída não se edita: a mensagem "não é possível editar" do Monaco só

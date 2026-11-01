@@ -20,6 +20,7 @@ import { AngularSvgIconModule } from "angular-svg-icon";
 import { map, retry, Subscription } from "rxjs";
 
 import { ResponsiveService } from "../responsive.service";
+import { listboxTarget } from "../shared/roving-focus";
 import { TooltipDirective } from "../shared/tooltip.directive";
 import { ThemeService } from "../theme.service";
 import { converterExemplos, Exemplo } from "./exemplos";
@@ -238,12 +239,18 @@ export class DialogOpenExampleComponent implements OnInit, OnDestroy {
 
     switch (event.key) {
       case "ArrowDown":
-      case "ArrowUp": {
+      case "ArrowUp":
+      case "Home":
+      case "End": {
+        const target = listboxTarget(event, index, this.filtered.length);
+
+        if (target === null) {
+          break;
+        }
+
         event.preventDefault();
 
-        const next = this.filtered.at(
-          event.key === "ArrowDown" ? Math.min(index + 1, this.filtered.length - 1) : Math.max(index - 1, 0),
-        );
+        const next = this.filtered.at(target);
 
         if (next && next.item.id !== this.current?.id) {
           this.loadItem(next.item);

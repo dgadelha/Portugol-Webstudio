@@ -156,10 +156,6 @@
   min-height: 0;
   background-color: var(--pws-bg-editor);
 
-  &[hidden] {
-    display: none;
-  }
-
   > * {
     flex-grow: 1;
     min-width: 0;
@@ -237,4 +233,19 @@ button.status-item:hover {
   #aba-inicio .tab-title {
     @include mixins.visually-hidden;
   }
+}
+
+// O que está no painel cresce para ocupá-lo: o indicador fica num contêiner, centralizado
+.tab-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// A aba de criação de exercício vem num pacote à parte (`@defer`): se ele não carregar (sem
+// internet, por exemplo), a aba diz que não foi possível
+.tab-load-error {
+  margin: 0;
+  padding: 1rem;
+  color: var(--pws-fg-muted);
 }

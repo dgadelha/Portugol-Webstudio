@@ -4,7 +4,14 @@
   <ngx-monaco-editor />
 </div>
 
-<input #fileInput type="file" hidden multiple accept=".por,text/plain" (change)="openFiles($event)" />
+<input
+  #fileInput
+  type="file"
+  hidden
+  multiple
+  accept=".por,.json,text/plain,application/json"
+  (change)="openFiles($event)"
+/>
 
 <main id="conteudo" class="editor-area" tabindex="-1" aria-label="Abas">
   <div class="tab-strip">
@@ -148,6 +155,19 @@
 
         @case ("changelog") {
           <app-tab-changelog />
+        }
+
+        @case ("exercise-builder") {
+          @defer {
+            <app-tab-exercise-builder [tabId]="tab.id" />
+          } @loading (minimum 200ms) {
+            <div class="tab-loading" role="status">
+              <span class="spinner" aria-hidden="true"></span>
+              <span class="visually-hidden">Carregando a criação de exercício</span>
+            </div>
+          } @error {
+            <p class="tab-load-error">Não foi possível carregar a criação de exercício.</p>
+          }
         }
 
         @default never;

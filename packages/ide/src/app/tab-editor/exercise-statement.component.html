@@ -84,7 +84,7 @@
 
 <div class="statement-body" role="region" aria-label="Enunciado" tabindex="0">
   @if (statement.hasValue()) {
-    <div class="markdown" [innerHTML]="statement.value()"></div>
+    <div class="markdown exercise-markdown" [innerHTML]="statement.value()"></div>
     @if (view().attribution; as attribution) {
       <p class="statement-attribution">{{ attribution }}</p>
     }

@@ -448,14 +448,11 @@ async function checkCase(
     const where = { check: i + 1, description: check.descrição };
 
     if (check.alvo === "escreva") {
+      const values = comparedValues(run, check.regra);
       const failure =
         check.regra === "igual"
-          ? compareEqual(check, withoutLineBreaks(run.values))
-          : compareContains(
-              check,
-              withoutLineBreaks(run.values.slice(run.valuesBeforeLastInput)),
-              testCase.entradas.length > 0,
-            );
+          ? compareEqual(check, values)
+          : compareContains(check, values, testCase.entradas.length > 0);
 
       if (failure) {
         return { run, failure: { ...failure, ...where } };
@@ -628,6 +625,15 @@ function sameValue(expected: ExpectedValue, received: WrittenValue, tolerance = 
   }
 
   return expected.valor === received.value;
+}
+
+/**
+ * Os valores escritos que uma verificação do `escreva` compara: todos no `igual`, e os
+ * escritos depois da última leitura no `contém`. As cadeias que são só quebras de linha não
+ * contam. Quem cria um exercício gera os valores esperados daqui, da solução.
+ */
+export function comparedValues(run: CaseRun, regra: WriteCheck["regra"]) {
+  return withoutLineBreaks(regra === "igual" ? run.values : run.values.slice(run.valuesBeforeLastInput));
 }
 
 /**

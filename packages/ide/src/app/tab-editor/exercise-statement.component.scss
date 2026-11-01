@@ -44,17 +44,23 @@
 }
 
 @container (max-width: 24rem) {
-  .statement-header {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
+  // Os botões numa linha só deles; embaixo, o título e, ao lado dele, a dificuldade (uma linha
+  // a menos num celular, onde a altura é pouca)
   .statement-actions {
-    grid-column: 1;
+    grid-column: 1 / -1;
     margin-bottom: 0.25rem;
   }
 
   .statement-title {
     grid-row: 2;
+  }
+
+  .statement-meta {
+    grid-row: 2;
+    grid-column: 2;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.25rem 0.75rem;
   }
 }
 
@@ -229,4 +235,19 @@ pre {
   margin: 1rem 0 0;
   color: var(--pws-fg-muted);
   font-size: var(--pws-text-ui);
+}
+
+// Num enunciado baixo (celular, janela baixa, zoom), o cabeçalho fixo tomaria quase todo o
+// espaço: o enunciado rola inteiro, com o cabeçalho junto. Os 767px são o `isBelowMd`, quando
+// o enunciado fica em cima do código.
+@media (max-width: 767px), (max-height: 600px) {
+  :host {
+    overflow-y: auto;
+  }
+
+  .statement-body {
+    flex-grow: 0;
+    flex-shrink: 0;
+    overflow-y: visible;
+  }
 }

@@ -10,6 +10,11 @@ export interface PwsDialogConfig<D> {
    * `id` do título do diálogo: é o nome que o leitor de tela anuncia ao abrir.
    */
   ariaLabelledBy: string;
+  /**
+   * `id` do texto que explica o diálogo, lido depois do título: numa confirmação, o que vai
+   * acontecer, que o foco no primeiro botão não diz.
+   */
+  ariaDescribedBy?: string;
   panelClass?: string;
   disableClose?: boolean;
   /**
@@ -56,6 +61,7 @@ export class DialogService {
       // navegador, e um diálogo alto passava da área visível, sem as margens.
       maxHeight: "calc(100dvh - 2rem)",
       ariaLabelledBy: config.ariaLabelledBy,
+      ariaDescribedBy: config.ariaDescribedBy,
       ariaModal: !modeless,
       hasBackdrop: !modeless,
       backdropClass: "pws-backdrop",

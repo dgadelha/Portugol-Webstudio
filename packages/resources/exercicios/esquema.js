@@ -1,5 +1,8 @@
-import fs from "node:fs/promises";
-import path from "node:path";
+/**
+ * O esquema dos exercícios, em zod: a fonte da verdade do formato. Sem efeitos ao importar, para
+ * o IDE validar um exercício compartilhado por link; o `scripts/build.js` gera dele o
+ * `esquemas/exercicio/v1.json` e os tipos (`index.d.ts`).
+ */
 import { z } from "zod";
 
 export const URL_DO_ESQUEMA = "https://portugol.dev/esquemas/exercicio/v1.json";
@@ -118,8 +121,10 @@ const comum = {
   $schema: z.literal(URL_DO_ESQUEMA),
   id: z
     .string()
-    .regex(/^pws:[a-z0-9]+(?:-[a-z0-9]+)*$/)
-    .describe("Identificador estável: 'pws:<slug>' nos exercícios embutidos. Nunca muda"),
+    .regex(/^(?:pws:[a-z0-9]+(?:-[a-z0-9]+)*|share:[a-z0-9]{6,32})$/)
+    .describe(
+      "Identificador estável: 'pws:<slug>' nos exercícios embutidos, 'share:<id>' nos compartilhados por link. Nunca muda",
+    ),
   título: z.string().min(1),
   tópico: z.enum(Object.keys(tópicos)),
   dificuldade: z.union([z.literal(1), z.literal(2), z.literal(3)]).describe("1: fácil, 2: médio, 3: difícil"),
@@ -154,12 +159,86 @@ export const schema = z.discriminatedUnion("modo", [
     .strict(),
 ]);
 
-const jsonSchema = {
-  $id: URL_DO_ESQUEMA,
-  title: "Exercício do Portugol Webstudio",
-  ...z.toJSONSchema(schema, { io: "input" }),
-};
-const esquemaDirectory = path.join(import.meta.dirname, "..", "..", "esquemas", "exercicio");
+export const URL_DO_ESQUEMA_DO_RASCUNHO = "https://portugol.dev/esquemas/rascunho-de-exercicio/v1.json";
 
-await fs.mkdir(esquemaDirectory, { recursive: true });
-await fs.writeFile(path.join(esquemaDirectory, "v1.json"), JSON.stringify(jsonSchema, undefined, 2) + "\n");
+const verificaçãoDoEscrevaNoRascunho = z
+  .object({
+    descrição: z.string().optional(),
+    alvo: z.literal("escreva"),
+    regra: z.enum(["igual", "contém"]),
+    valores: z
+      .array(valor)
+      .describe("Gerados da solução por 'Gerar respostas'; quem cria pode tirar os que o 'contém' não deve exigir"),
+    tolerância,
+  })
+  .strict();
+
+const verificaçãoDeFunçãoNoRascunho = z
+  .object({
+    descrição: z.string().optional(),
+    alvo: z.literal("função"),
+    nome: z.string(),
+    argumentos: z
+      .string()
+      .describe(
+        "Os argumentos como numa chamada no código, separados por vírgula. Exemplos: 3, 5 / \"abc\", 'a' / {7.0, 8.5}, 2",
+      ),
+    tipos: z
+      .array(z.string())
+      .optional()
+      .describe(
+        "Os tipos dos parâmetros na solução ('real', 'inteiro[]'…), guardados ao gerar: '3' num parâmetro 'real' é o real 3, e a assinatura publicada é a da solução",
+      ),
+    valor: valor.optional().describe("O retorno da solução, gerado por 'Gerar respostas'"),
+    tolerância,
+  })
+  .strict();
+
+/**
+ * O arquivo-fonte de um exercício, que o "Baixar" do criador grava e o "Abrir" lê de volta: o
+ * exercício em construção, com a solução (que nunca vai para o link). Pode estar incompleto.
+ */
+export const esquemaDoRascunho = z
+  .object({
+    $schema: z.literal(URL_DO_ESQUEMA_DO_RASCUNHO),
+    título: z.string(),
+    tópico: comum.tópico,
+    dificuldade: comum.dificuldade,
+    enunciado: z.string().describe(comum.enunciado.description),
+    códigoInicial: z.string(),
+    solução: z.string().describe("A solução de referência, de onde saem as respostas esperadas"),
+    modo: z.enum(["simples", "avançado"]),
+    casos: z.array(
+      z
+        .object({
+          tipo: z.enum(["exemplo", "teste"]),
+          descrição: z.string(),
+          entradas: z.string().describe("Uma entrada por linha, como se fosse digitada"),
+          saída: z.string().optional().describe("A saída da solução no modo simples, gerada por 'Gerar respostas'"),
+          verificações: z.array(
+            z.discriminatedUnion("alvo", [verificaçãoDoEscrevaNoRascunho, verificaçãoDeFunçãoNoRascunho]),
+          ),
+          problema: z.string().optional().describe("O que deu errado ao executar a solução neste caso"),
+          fechado: z
+            .boolean()
+            .optional()
+            .describe("Recolhido na criação: só o resumo aparece. Não muda o exercício publicado"),
+          geradoCom: z
+            .string()
+            .optional()
+            .describe(
+              "A impressão digital do que gerou as respostas (a solução, o modo, as entradas e o que cada verificação confere): se mudou depois, as respostas estão desatualizadas",
+            ),
+        })
+        .strict(),
+    ),
+    compartilhado: z
+      .object({
+        link: z.string(),
+        até: z.iso.date().describe("O último dia em que o link funciona"),
+      })
+      .strict()
+      .optional()
+      .describe("O link da última vez que este exercício foi compartilhado; sai quando o exercício muda"),
+  })
+  .strict();

@@ -58,8 +58,8 @@ export class ExerciseStatementComponent {
   }
 
   readonly statement = resource({
-    params: () => this.exercise().enunciado,
-    loader: ({ params }) => this.markdown.render(params),
+    params: () => ({ text: this.exercise().enunciado, theme: this.markdown.theme() }),
+    loader: ({ params }) => this.markdown.render(params.text, params.theme),
   });
 
   /**

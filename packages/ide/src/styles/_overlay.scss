@@ -152,6 +152,16 @@
     height: 1rem;
     color: var(--pws-fg-muted);
   }
+
+  // Desativado (`cdkMenuItemDisabled`): continua alcançável pelas setas, mas apagado
+  &[aria-disabled="true"] {
+    color: var(--pws-fg-muted);
+    opacity: 0.6;
+
+    &:hover {
+      background-color: transparent;
+    }
+  }
 }
 
 ////////////

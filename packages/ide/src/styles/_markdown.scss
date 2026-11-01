@@ -126,3 +126,23 @@ markdown,
     }
   }
 }
+
+// O enunciado dos exercícios (`ExerciseMarkdownService`). Ele quebra palavras compridas
+// (`overflow-wrap: anywhere`), mas não dentro de uma tabela, que rola na própria caixa, nem
+// num bloco de código, que é texto exato e rola de lado.
+.exercise-markdown {
+  pre {
+    margin: 0 0 1em;
+    padding: 0.5rem 0.75rem;
+    overflow-x: auto;
+    border-radius: var(--pws-radius-sm);
+    background-color: var(--pws-bg-hover);
+    font-family: var(--pws-font-mono);
+    font-size: var(--pws-text-ui);
+    overflow-wrap: normal;
+  }
+
+  .tabela table {
+    overflow-wrap: normal;
+  }
+}

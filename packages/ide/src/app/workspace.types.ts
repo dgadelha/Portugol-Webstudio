@@ -1,4 +1,8 @@
-export type TabType = "editor" | "help" | "changelog";
+/**
+ * `exercise-builder`: a criação de um exercício, com o rascunho (o exercício e a solução) no
+ * conteúdo da aba.
+ */
+export type TabType = "editor" | "help" | "changelog" | "exercise-builder";
 
 /**
  * Aba como o resto da aplicação enxerga: o conteúdo faz parte do estado.

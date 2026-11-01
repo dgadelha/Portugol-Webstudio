@@ -128,6 +128,16 @@ svg-icon {
   }
 }
 
+// Um ícone apagado: o que ainda não aconteceu ou não foi conferido
+.icon-muted {
+  color: var(--pws-fg-muted);
+}
+
+// O `hidden` esconde sempre, também o que tem um `display` próprio (flex, grid)
+[hidden] {
+  display: none !important;
+}
+
 .visually-hidden {
   @include mixins.visually-hidden;
 }

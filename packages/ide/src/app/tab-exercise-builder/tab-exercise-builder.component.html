@@ -1,0 +1,784 @@
+@let current = view();
+
+<div class="builder">
+  <div class="builder-top">
+    <header class="builder-header">
+      <div class="builder-heading">
+        <svg-icon src="assets/mdi/puzzle-edit-outline.svg" class="icon-blue builder-icon" aria-hidden="true" />
+        <div>
+          <h2 class="builder-title">{{ current.heading }}</h2>
+          <p class="builder-subtitle">Rascunho salvo neste navegador. Baixe para guardar com a solução.</p>
+        </div>
+      </div>
+
+      <div class="builder-actions">
+        <button
+          type="button"
+          class="btn"
+          [class.btn-primary]="!progress()"
+          [appTooltip]="progress() ? 'Parar a geração' : 'Executar a solução em cada caso e preencher as respostas'"
+          [attr.aria-disabled]="(!progress() && busy()) || null"
+          (click)="progress() ? stopGenerating() : generate()"
+        >
+          @if (progress()) {
+            <svg-icon src="assets/mdi/square-rounded-outline.svg" class="icon-red" aria-hidden="true" />
+            Parar
+          } @else {
+            <svg-icon src="assets/mdi/auto-fix.svg" aria-hidden="true" />
+            Gerar respostas
+          }
+        </button>
+
+        <button
+          type="button"
+          class="btn"
+          appTooltip="Baixar o exercício com a solução, para editar depois"
+          (click)="download()"
+        >
+          <svg-icon src="assets/mdi/download-outline.svg" aria-hidden="true" />
+          Baixar
+        </button>
+      </div>
+    </header>
+
+    <div class="builder-status" role="status">
+      @if (progress(); as p) {
+        <p class="status-line">
+          <span class="spinner" aria-hidden="true"></span>
+          Gerando as respostas: {{ p.done }} de {{ p.total }} {{ p.total === 1 ? "caso" : "casos" }}…
+        </p>
+      } @else if (sharing()) {
+        <p class="status-line">
+          <span class="spinner" aria-hidden="true"></span>
+          Compartilhando…
+        </p>
+      }
+    </div>
+
+    @if (problems(); as list) {
+      @if (list.at === "top") {
+        <ng-container
+          *ngTemplateOutlet="problemsBox; context: { $implicit: list.items, place: 'top-problems', closable: true }"
+        />
+      }
+    }
+  </div>
+
+  <div class="builder-body">
+    <nav class="steps" aria-label="Etapas do exercício">
+      <ol>
+        @for (step of steps(); track step.id) {
+          <li>
+            <button
+              type="button"
+              class="step"
+              [attr.aria-current]="activeStep() === step.id ? 'step' : null"
+              [attr.aria-label]="step.ariaLabel"
+              [attr.data-target]="step.id"
+              (click)="goTo(step.id)"
+            >
+              <span class="step-status" aria-hidden="true">
+                <svg-icon [src]="statusIcons[step.status].src" [class]="statusIcons[step.status].color" />
+              </span>
+              <span class="step-text">
+                <span class="step-label">{{ step.label }}</span>
+                @if (step.detail) {
+                  <span class="step-detail">{{ step.detail }}</span>
+                }
+              </span>
+            </button>
+          </li>
+        }
+      </ol>
+    </nav>
+
+    <div class="sections">
+      <section class="card" data-step="dados" [attr.aria-labelledby]="`${tabId()}-dados`">
+        <h3 class="card-title" tabindex="-1" [id]="`${tabId()}-dados`">
+          <svg-icon src="assets/mdi/puzzle-outline.svg" aria-hidden="true" />
+          Exercício
+        </h3>
+
+        <div class="field-row">
+          <label class="field grow">
+            <span class="field-label">Título</span>
+            <input class="input" [ngModel]="current.title" (ngModelChange)="setTitle($event)" />
+          </label>
+        </div>
+
+        <div class="field-row">
+          <label class="field grow">
+            <span class="field-label">Tópico</span>
+            <select class="input" [ngModel]="current.topic" (ngModelChange)="setTopic($event)">
+              @for (topic of topics(); track topic.id) {
+                <option [value]="topic.id">{{ topic.name }}</option>
+              }
+            </select>
+          </label>
+
+          <label class="field grow">
+            <span class="field-label">Dificuldade</span>
+            <select class="input" [ngModel]="current.difficulty" (ngModelChange)="setDifficulty($event)">
+              @for (difficulty of difficulties; track difficulty.value) {
+                <option [ngValue]="difficulty.value">{{ difficulty.label }}</option>
+              }
+            </select>
+          </label>
+        </div>
+      </section>
+
+      <section class="card" data-step="enunciado" [attr.aria-labelledby]="`${tabId()}-enunciado`">
+        <h3 class="card-title" tabindex="-1" [id]="`${tabId()}-enunciado`">
+          <svg-icon src="assets/mdi/text-box-outline.svg" aria-hidden="true" />
+          Enunciado
+        </h3>
+        <p class="field-hint" [id]="`${tabId()}-enunciado-dica`">
+          Markdown, sem HTML; fórmulas entre $ ou $$. Diga o que o programa recebe e escreve, sem dizer como fazer.
+        </p>
+
+        @let tabs = narrowStatement();
+        @let writing = statementTab() === "write";
+
+        @if (tabs) {
+          <div class="statement-tabs" role="tablist" aria-label="Enunciado">
+            <button
+              type="button"
+              role="tab"
+              class="panel-tab"
+              data-statement-tab="write"
+              [id]="`${tabId()}-aba-escrever`"
+              [attr.aria-selected]="writing"
+              [attr.aria-controls]="`${tabId()}-painel-escrever`"
+              [tabIndex]="writing ? 0 : -1"
+              (click)="statementTab.set('write')"
+              (keydown)="onStatementTabsKeydown($event)"
+            >
+              Escrever
+            </button>
+            <button
+              type="button"
+              role="tab"
+              class="panel-tab"
+              data-statement-tab="preview"
+              [id]="`${tabId()}-aba-previa`"
+              [attr.aria-selected]="!writing"
+              [attr.aria-controls]="`${tabId()}-painel-previa`"
+              [tabIndex]="writing ? -1 : 0"
+              (click)="statementTab.set('preview')"
+              (keydown)="onStatementTabsKeydown($event)"
+            >
+              Prévia
+            </button>
+          </div>
+        }
+
+        <div class="statement-editor" [class.split]="!tabs">
+          <div
+            class="statement-input"
+            [id]="`${tabId()}-painel-escrever`"
+            [attr.role]="tabs ? 'tabpanel' : null"
+            [attr.aria-labelledby]="tabs ? `${tabId()}-aba-escrever` : null"
+            [hidden]="tabs && !writing"
+          >
+            <div class="format-bar" role="group" aria-label="Formatação do enunciado">
+              <button
+                type="button"
+                class="icon-btn"
+                aria-label="Negrito"
+                appTooltip="Negrito"
+                appTooltipShortcut="Ctrl+B"
+                aria-keyshortcuts="Control+B"
+                (click)="format(statementInput, 'bold')"
+              >
+                <svg-icon src="assets/mdi/format-bold.svg" aria-hidden="true" />
+              </button>
+              <button
+                type="button"
+                class="icon-btn"
+                aria-label="Itálico"
+                appTooltip="Itálico"
+                appTooltipShortcut="Ctrl+I"
+                aria-keyshortcuts="Control+I"
+                (click)="format(statementInput, 'italic')"
+              >
+                <svg-icon src="assets/mdi/format-italic.svg" aria-hidden="true" />
+              </button>
+              <button
+                type="button"
+                class="icon-btn"
+                aria-label="Código"
+                appTooltip="Código"
+                (click)="format(statementInput, 'code')"
+              >
+                <svg-icon src="assets/mdi/code-tags.svg" aria-hidden="true" />
+              </button>
+              <button
+                type="button"
+                class="icon-btn"
+                aria-label="Bloco de código em Portugol"
+                appTooltip="Bloco de código em Portugol"
+                (click)="format(statementInput, 'block')"
+              >
+                <svg-icon src="assets/mdi/code-block-tags.svg" aria-hidden="true" />
+              </button>
+              <button
+                type="button"
+                class="icon-btn"
+                aria-label="Lista"
+                appTooltip="Lista"
+                (click)="format(statementInput, 'list')"
+              >
+                <svg-icon src="assets/mdi/format-list-bulleted.svg" aria-hidden="true" />
+              </button>
+              <button
+                type="button"
+                class="icon-btn"
+                aria-label="Fórmula"
+                appTooltip="Fórmula"
+                (click)="format(statementInput, 'formula')"
+              >
+                <svg-icon src="assets/mdi/sigma.svg" aria-hidden="true" />
+              </button>
+            </div>
+            <textarea
+              #statementInput
+              class="input textarea"
+              rows="12"
+              aria-label="Enunciado"
+              [attr.aria-describedby]="`${tabId()}-enunciado-dica`"
+              [ngModel]="current.statement"
+              (ngModelChange)="setStatement($event)"
+              (keydown)="onStatementKeydown($event, statementInput)"
+            ></textarea>
+          </div>
+
+          <div
+            class="statement-preview"
+            tabindex="0"
+            [id]="`${tabId()}-painel-previa`"
+            [attr.role]="tabs ? 'tabpanel' : 'region'"
+            [attr.aria-label]="tabs ? null : 'Prévia do enunciado'"
+            [attr.aria-labelledby]="tabs ? `${tabId()}-aba-previa` : null"
+            [hidden]="tabs && writing"
+          >
+            @if (!tabs) {
+              <p class="preview-label" aria-hidden="true">Prévia</p>
+            }
+            @if (!current.statement.trim()) {
+              <p class="empty">O enunciado aparece aqui como o aluno vai ver.</p>
+            } @else if (statement.hasValue()) {
+              <div class="markdown exercise-markdown" [innerHTML]="statement.value()"></div>
+            }
+          </div>
+        </div>
+      </section>
+
+      <section class="card" data-step="codigo" [attr.aria-labelledby]="`${tabId()}-codigo`">
+        <h3 class="card-title" tabindex="-1" [id]="`${tabId()}-codigo`">
+          <svg-icon src="assets/mdi/code-braces.svg" aria-hidden="true" />
+          Código
+        </h3>
+
+        <div class="editor-block">
+          <p class="field-label">Solução</p>
+          <p class="field-hint">Gera as respostas esperadas. Nunca vai para o link: fica só no arquivo baixado.</p>
+          <div class="code-editor">
+            <ngx-monaco-editor
+              [options]="solutionOptions()"
+              [ngModel]="current.solution"
+              (ngModelChange)="setSolution($event)"
+            />
+          </div>
+          @if (solutionProblem()) {
+            <p class="case-note" role="status">
+              <svg-icon src="assets/mdi/close-circle-outline.svg" class="icon-red" aria-hidden="true" />
+              {{ solutionProblem() }}
+            </p>
+          }
+        </div>
+
+        <details class="editor-block starter" [open]="current.starterChanged">
+          <summary class="field-label">Código inicial (opcional)</summary>
+          <p class="field-hint">O código com que o aluno começa. Sem mudanças, é o mesmo de uma aba nova.</p>
+          <div class="code-editor">
+            <ngx-monaco-editor
+              [options]="starterOptions()"
+              [ngModel]="current.starter"
+              (ngModelChange)="setStarter($event)"
+            />
+          </div>
+        </details>
+
+        <p class="field-hint field-hint-small">
+          Nos editores, o Tab escreve uma tabulação. Para ir ao próximo campo com o Tab, use antes
+          {{ tabFocusShortcut }}.
+        </p>
+      </section>
+
+      <section class="card" data-step="casos" [attr.aria-labelledby]="`${tabId()}-casos`">
+        <h3 class="card-title" tabindex="-1" [id]="`${tabId()}-casos`">
+          <svg-icon src="assets/mdi/format-list-checks.svg" aria-hidden="true" />
+          Casos
+          <span class="card-count">{{ current.caseCount }}</span>
+        </h3>
+
+        <fieldset class="mode">
+          <legend class="field-label">Como conferir</legend>
+          <label class="mode-option" [class.selected]="current.mode === 'simples'">
+            <input
+              type="radio"
+              value="simples"
+              [name]="`${tabId()}-modo`"
+              [ngModel]="current.mode"
+              (ngModelChange)="setMode($event)"
+            />
+            <span>
+              <span class="mode-title">Texto escrito</span>
+              <span class="mode-detail">Compara o que o programa escreve, linha a linha.</span>
+            </span>
+          </label>
+          <label class="mode-option" [class.selected]="current.mode === 'avançado'">
+            <input
+              type="radio"
+              value="avançado"
+              [name]="`${tabId()}-modo`"
+              [ngModel]="current.mode"
+              (ngModelChange)="setMode($event)"
+            />
+            <span>
+              <span class="mode-title">Valores e funções</span>
+              <span class="mode-detail">Confere os valores escritos, com o tipo, ou o retorno de funções.</span>
+            </span>
+          </label>
+        </fieldset>
+
+        <p class="field-hint">
+          Os exemplos aparecem no enunciado; os testes ficam escondidos, e o aluno só vê se passou. As respostas saem da
+          solução: um caso que mudou depois fica desatualizado até gerar de novo.
+        </p>
+
+        @if (current.cases.length === 0) {
+          <p class="empty">Nenhum caso ainda. Um exercício precisa de pelo menos um exemplo e um teste.</p>
+        } @else if (current.cases.length > 1) {
+          <div class="case-list-tools">
+            <button type="button" class="btn btn-sm" (click)="toggleAllCases()">
+              @if (allCasesClosed()) {
+                <svg-icon src="assets/mdi/unfold-more-horizontal.svg" aria-hidden="true" />
+                Expandir todos
+              } @else {
+                <svg-icon src="assets/mdi/unfold-less-horizontal.svg" aria-hidden="true" />
+                Recolher todos
+              }
+            </button>
+          </div>
+        }
+
+        <div class="case-list" cdkDropList (cdkDropListDropped)="dropCase($event)">
+          @for (caso of current.cases; track $index; let i = $index; let first = $first; let last = $last) {
+            <article
+              cdkDrag
+              cdkDragLockAxis="y"
+              [class]="`case-card status-${caso.status}`"
+              [attr.aria-labelledby]="`${tabId()}-caso-${i}`"
+              [attr.data-case]="i"
+            >
+              <header class="case-head">
+                <span class="drag-handle" cdkDragHandle aria-hidden="true">
+                  <svg-icon src="assets/mdi/drag-vertical.svg" />
+                </span>
+
+                <button
+                  type="button"
+                  class="case-toggle"
+                  [id]="`${tabId()}-caso-${i}`"
+                  [attr.aria-expanded]="!caso.closed"
+                  [attr.aria-controls]="caso.closed ? null : `${tabId()}-caso-${i}-corpo`"
+                  (click)="toggleCase(i)"
+                >
+                  <svg-icon
+                    aria-hidden="true"
+                    [src]="caso.closed ? 'assets/mdi/chevron-right.svg' : 'assets/mdi/chevron-down.svg'"
+                  />
+                  <span class="case-name">{{ caso.name }}</span>
+                  @if (caso.description) {
+                    <span class="case-description">{{ caso.description }}</span>
+                  }
+                </button>
+
+                <span class="case-badge">
+                  <svg-icon aria-hidden="true" [src]="statusIcons[caseStepStatus[caso.status]].src" />
+                  {{ caseStatusLabels[caso.status] }}
+                </span>
+
+                <div class="case-tools">
+                  <button
+                    type="button"
+                    class="icon-btn"
+                    [attr.aria-label]="`Gerar as respostas do ${caso.name}`"
+                    [appTooltip]="`Gerar as respostas do ${caso.name}`"
+                    [attr.aria-disabled]="busy() || null"
+                    (click)="generate(i)"
+                  >
+                    <svg-icon src="assets/mdi/auto-fix.svg" aria-hidden="true" />
+                  </button>
+                  <button
+                    type="button"
+                    class="icon-btn"
+                    [attr.data-case-menu]="i"
+                    [attr.aria-label]="`Mais ações do ${caso.name}`"
+                    [appTooltip]="`Mais ações do ${caso.name}`"
+                    [cdkMenuTriggerFor]="caseMenu"
+                    [cdkMenuTriggerData]="{ $implicit: i, first, last, name: caso.name }"
+                  >
+                    <svg-icon src="assets/mdi/dots-vertical.svg" aria-hidden="true" />
+                  </button>
+                </div>
+              </header>
+
+              @if (problems(); as list) {
+                @if (list.at === i) {
+                  <ng-container
+                    *ngTemplateOutlet="
+                      problemsBox;
+                      context: { $implicit: list.items, place: 'case-problems', closable: true }
+                    "
+                  />
+                }
+              }
+
+              @if (caso.closed) {
+                <p class="case-summary">
+                  @for (part of caso.summary; track $index; let lastPart = $last) {
+                    @if (part.label) {
+                      <span class="summary-label">{{ part.label }}</span
+                      >{{ " " }}
+                    }
+                    <span [class]="part.empty ? 'empty' : 'summary-value'">{{ part.value }}</span>
+                    @if (!lastPart) {
+                      <span class="summary-label"> · </span>
+                    }
+                  }
+                </p>
+              } @else {
+                <div class="case-body" [id]="`${tabId()}-caso-${i}-corpo`">
+                  @if (caso.status === "problem") {
+                    <p class="case-note">
+                      <svg-icon src="assets/mdi/close-circle-outline.svg" class="icon-red" aria-hidden="true" />
+                      {{ caso.problem }}
+                    </p>
+                  } @else if (caso.status === "stale") {
+                    <p class="case-note">
+                      <svg-icon src="assets/mdi/alert-outline.svg" class="icon-yellow" aria-hidden="true" />
+                      O caso ou a solução mudou depois de gerar: gere as respostas de novo.
+                    </p>
+                  }
+
+                  <div class="case-columns">
+                    <div class="case-column">
+                      <div class="field-row">
+                        <label class="field">
+                          <span class="field-label">Tipo</span>
+                          <select class="input" [ngModel]="caso.kind" (ngModelChange)="setCaseKind(i, $event)">
+                            <option value="exemplo">Exemplo</option>
+                            <option value="teste">Teste</option>
+                          </select>
+                        </label>
+
+                        <label class="field grow">
+                          <span class="field-label">Descrição (opcional)</span>
+                          <input
+                            class="input"
+                            [ngModel]="caso.description"
+                            (ngModelChange)="setCaseDescription(i, $event)"
+                          />
+                        </label>
+                      </div>
+
+                      <label class="field">
+                        <span class="field-label">Entradas, uma por linha</span>
+                        <textarea
+                          class="input textarea"
+                          rows="4"
+                          [ngModel]="caso.inputs"
+                          (ngModelChange)="setCaseInputs(i, $event)"
+                        ></textarea>
+                      </label>
+                    </div>
+
+                    <div class="case-column expected" [class.stale]="caso.status === 'stale'">
+                      @if (current.mode === "simples") {
+                        <p class="field-label">Saída esperada</p>
+                        @if (caso.output === undefined) {
+                          <p class="empty">Ainda não gerada.</p>
+                        } @else if (caso.output.trim()) {
+                          <pre class="output">{{ caso.output }}</pre>
+                        } @else {
+                          <p class="empty">nenhuma</p>
+                        }
+                      } @else {
+                        <p class="field-label">Verificações</p>
+
+                        @for (check of caso.checks; track $index; let j = $index) {
+                          <div class="check" [attr.data-check]="j">
+                            @if (check.target === "write") {
+                              <div class="field-row">
+                                <label class="field grow">
+                                  <span class="field-label">Valores escritos</span>
+                                  <select class="input" [ngModel]="check.rule" (ngModelChange)="setRule(i, j, $event)">
+                                    <option value="contém">
+                                      Contém estes valores, nesta ordem, depois da última leitura
+                                    </option>
+                                    <option value="igual">São exatamente estes valores</option>
+                                  </select>
+                                </label>
+                                @if (check.hasReal) {
+                                  <ng-container
+                                    *ngTemplateOutlet="tolerance; context: { $implicit: check.tolerance, i, j }"
+                                  />
+                                }
+                              </div>
+
+                              @if (check.values.length === 0) {
+                                <p class="empty">Os valores saem da solução: gere as respostas.</p>
+                              } @else {
+                                <ul class="values" aria-label="Valores esperados">
+                                  @for (value of check.values; track $index; let k = $index) {
+                                    <li>
+                                      <code>{{ value | exerciseValue }}</code>
+                                      @if (check.rule === "contém") {
+                                        <button
+                                          type="button"
+                                          class="icon-btn icon-btn-sm"
+                                          [attr.data-value]="k"
+                                          [attr.aria-label]="`Remover o valor ${(value | exerciseValue)}`"
+                                          [appTooltip]="`Remover o valor ${(value | exerciseValue)}`"
+                                          (click)="removeValue(i, j, k)"
+                                        >
+                                          <svg-icon src="assets/mdi/close.svg" aria-hidden="true" />
+                                        </button>
+                                      }
+                                    </li>
+                                  }
+                                </ul>
+                              }
+                            } @else {
+                              <div class="field-row">
+                                <label class="field">
+                                  <span class="field-label">Função</span>
+                                  <input
+                                    class="input code-input"
+                                    spellcheck="false"
+                                    [ngModel]="check.name"
+                                    (ngModelChange)="setFunctionName(i, j, $event)"
+                                  />
+                                </label>
+                                <label class="field grow">
+                                  <span class="field-label">Argumentos, como numa chamada</span>
+                                  <input
+                                    class="input code-input"
+                                    spellcheck="false"
+                                    placeholder='3, 2.5, "texto", {1, 2, 3}'
+                                    [ngModel]="check.args"
+                                    (ngModelChange)="setArguments(i, j, $event)"
+                                  />
+                                </label>
+                                @if (check.hasReal) {
+                                  <ng-container
+                                    *ngTemplateOutlet="tolerance; context: { $implicit: check.tolerance, i, j }"
+                                  />
+                                }
+                              </div>
+                              <p class="call">
+                                @if (check.returned && caso.status !== "stale") {
+                                  <code>{{ check.name }}({{ check.args }})</code> retorna
+                                  <code>{{ check.returned | exerciseValue }}</code>
+                                } @else {
+                                  <span class="empty">O retorno sai da solução: gere as respostas.</span>
+                                }
+                              </p>
+                            }
+                            <button
+                              type="button"
+                              class="icon-btn icon-btn-sm check-remove"
+                              [attr.aria-label]="`Remover a verificação ${j + 1} do ${caso.name}`"
+                              [appTooltip]="`Remover a verificação ${j + 1} do ${caso.name}`"
+                              (click)="removeCheck(i, j)"
+                            >
+                              <svg-icon src="assets/mdi/delete-outline.svg" aria-hidden="true" />
+                            </button>
+                          </div>
+                        } @empty {
+                          <p class="empty">Nenhuma verificação: adicione uma abaixo.</p>
+                        }
+
+                        <div class="check-actions">
+                          <button type="button" class="btn btn-sm" (click)="addCheck(i, 'escreva')">
+                            <svg-icon src="assets/mdi/plus.svg" aria-hidden="true" />
+                            Conferir valores escritos
+                          </button>
+                          <button type="button" class="btn btn-sm" (click)="addCheck(i, 'função')">
+                            <svg-icon src="assets/mdi/plus.svg" aria-hidden="true" />
+                            Conferir uma função
+                          </button>
+                        </div>
+                      }
+                    </div>
+                  </div>
+                </div>
+              }
+            </article>
+          }
+        </div>
+
+        <div class="case-actions">
+          <button type="button" class="btn" (click)="addCase('exemplo')">
+            <svg-icon src="assets/mdi/plus.svg" aria-hidden="true" />
+            Adicionar exemplo
+          </button>
+          <button type="button" class="btn" (click)="addCase('teste')">
+            <svg-icon src="assets/mdi/plus.svg" aria-hidden="true" />
+            Adicionar teste
+          </button>
+        </div>
+      </section>
+
+      <section class="card" data-step="compartilhar" [attr.aria-labelledby]="`${tabId()}-compartilhar`">
+        <h3 class="card-title" tabindex="-1" [id]="`${tabId()}-compartilhar`">
+          <svg-icon src="assets/mdi/share-variant-outline.svg" aria-hidden="true" />
+          Compartilhar
+        </h3>
+
+        <p class="field-hint">
+          Publica o exercício num link para os alunos, sem a solução. Antes, o IDE confere tudo: o formato, se a solução
+          passa em todos os casos e se o código inicial compila. O link funciona por {{ sharedDays }} dias.
+        </p>
+
+        <ul class="checklist" aria-label="Situação do exercício">
+          @for (item of checklist(); track $index) {
+            <li>
+              <svg-icon
+                aria-hidden="true"
+                [src]="statusIcons[item.status].src"
+                [class]="statusIcons[item.status].color"
+              />
+              {{ item.text }}
+            </li>
+          }
+        </ul>
+
+        <button type="button" class="btn btn-primary" [attr.aria-disabled]="busy() || null" (click)="shareExercise()">
+          <svg-icon src="assets/mdi/share-variant-outline.svg" aria-hidden="true" />
+          Compartilhar
+        </button>
+
+        @if (problems(); as list) {
+          @if (list.at === "share") {
+            <ng-container
+              *ngTemplateOutlet="
+                problemsBox;
+                context: {
+                  $implicit: list.items,
+                  place: 'share-problems',
+                  prefix: 'O exercício não foi compartilhado. ',
+                }
+              "
+            />
+          }
+        }
+
+        @if (shared(); as link) {
+          <div class="builder-shared">
+            <p class="shared-title">
+              <svg-icon src="assets/mdi/check-circle.svg" class="icon-green" aria-hidden="true" />
+              Exercício compartilhado
+            </p>
+            <div class="link-row">
+              <input class="input" readonly aria-label="Link do exercício" [value]="link.url" />
+              <button type="button" class="btn" (click)="copyLink(link.url)">
+                <svg-icon src="assets/mdi/content-copy.svg" aria-hidden="true" />
+                Copiar
+              </button>
+            </div>
+            @if (link.expired) {
+              <p class="muted">O link expirou em {{ link.until }}.</p>
+            } @else {
+              <p class="muted">
+                O link funciona até {{ link.until }}. Para mudar o exercício, edite aqui e compartilhe de novo: o link
+                novo é outro.
+              </p>
+            }
+          </div>
+        }
+      </section>
+    </div>
+  </div>
+</div>
+
+<ng-template #caseMenu let-i let-first="first" let-last="last" let-name="name">
+  <div class="menu" cdkMenu [attr.aria-label]="`Ações do ${name}`">
+    <button
+      type="button"
+      class="menu-item"
+      cdkMenuItem
+      [cdkMenuItemDisabled]="first"
+      (cdkMenuItemTriggered)="moveCase(i, -1)"
+    >
+      <svg-icon src="assets/mdi/arrow-up.svg" aria-hidden="true" />
+      Subir
+    </button>
+    <button
+      type="button"
+      class="menu-item"
+      cdkMenuItem
+      [cdkMenuItemDisabled]="last"
+      (cdkMenuItemTriggered)="moveCase(i, 1)"
+    >
+      <svg-icon src="assets/mdi/arrow-down.svg" aria-hidden="true" />
+      Descer
+    </button>
+    <button type="button" class="menu-item" cdkMenuItem (cdkMenuItemTriggered)="removeCase(i)">
+      <svg-icon src="assets/mdi/delete-outline.svg" aria-hidden="true" />
+      Remover
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #problemsBox let-items let-place="place" let-prefix="prefix" let-closable="closable">
+  <div role="alert" [class]="`builder-problems ${place}`">
+    <div class="problems-head">
+      <p>
+        <svg-icon src="assets/mdi/close-circle-outline.svg" class="icon-red" aria-hidden="true" />
+        {{ problemsHeading(items.length, prefix) }}
+      </p>
+      @if (closable) {
+        <button
+          type="button"
+          class="icon-btn icon-btn-sm"
+          aria-label="Fechar os problemas"
+          appTooltip="Fechar os problemas"
+          (click)="dismissProblems()"
+        >
+          <svg-icon src="assets/mdi/close.svg" aria-hidden="true" />
+        </button>
+      }
+    </div>
+    <ul>
+      @for (problem of items; track $index) {
+        <li>{{ problem }}</li>
+      }
+    </ul>
+  </div>
+</ng-template>
+
+<ng-template #tolerance let-value let-i="i" let-j="j">
+  <label class="field narrow">
+    <span class="field-label">Tolerância</span>
+    <input
+      class="input"
+      inputmode="decimal"
+      placeholder="0.000001"
+      [ngModel]="value ?? ''"
+      (ngModelChange)="setTolerance(i, j, $event)"
+    />
+  </label>
+</ng-template>

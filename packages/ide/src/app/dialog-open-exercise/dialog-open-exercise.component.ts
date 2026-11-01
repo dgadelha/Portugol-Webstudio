@@ -13,6 +13,7 @@ import {
   TOPIC_ICONS,
 } from "../exercises.service";
 import { ResponsiveService } from "../responsive.service";
+import { listboxTarget } from "../shared/roving-focus";
 import { TooltipDirective } from "../shared/tooltip.directive";
 
 interface ExerciseEntry {
@@ -24,6 +25,11 @@ interface ExerciseEntry {
   topicIcon: string;
   searchText: string;
 }
+
+/**
+ * O que o diálogo devolve: o exercício escolhido, ou o pedido de criar um.
+ */
+export type ExerciseDialogResult = { id: string } | { create: true };
 
 interface ExerciseGroup {
   topic: string;
@@ -50,7 +56,7 @@ export class DialogOpenExerciseComponent implements OnInit {
   /**
    * O diálogo fecha com o exercício escolhido, e a janela o abre numa aba.
    */
-  readonly dialogRef = inject<DialogRef<{ id: string }>>(DialogRef);
+  readonly dialogRef = inject<DialogRef<ExerciseDialogResult>>(DialogRef);
 
   readonly difficultyLabels = DIFFICULTY_LABELS;
 
@@ -65,12 +71,16 @@ export class DialogOpenExerciseComponent implements OnInit {
    * O enunciado do exercício escolhido, para a prévia, e de onde ele foi adaptado, se foi.
    */
   readonly statement = resource({
-    params: () => this.current()?.id,
+    params: () => {
+      const id = this.current()?.id;
+
+      return id === undefined ? undefined : { id, theme: this.markdown.theme() };
+    },
     loader: async ({ params }) => {
-      const exercise = await this.exercises.load(params);
+      const exercise = await this.exercises.load(params.id);
 
       return {
-        html: await this.markdown.render(exercise.enunciado),
+        html: await this.markdown.render(exercise.enunciado, params.theme),
         attribution: attributionText(exercise),
       };
     },
@@ -111,11 +121,34 @@ export class DialogOpenExerciseComponent implements OnInit {
   }
 
   private async loadEntries() {
+    // Os compartilhados já abertos vêm primeiro: estão neste navegador, mesmo sem internet
+    const shared = Object.entries(this.exercises.shared())
+      .filter(
+        ([, entry]) =>
+          typeof entry?.exercício?.título === "string" && Object.hasOwn(DIFFICULTY_ICONS, entry.exercício.dificuldade),
+      )
+      // eslint-disable-next-line unicorn/no-array-sort -- o `Object.entries` já criou uma cópia
+      .sort(([, a], [, b]) => b.abertoEm - a.abertoEm)
+      .map(([id, { exercício }]): ExerciseEntry => {
+        return {
+          id,
+          title: exercício.título,
+          difficulty: exercício.dificuldade,
+          difficultyIcon: DIFFICULTY_ICONS[exercício.dificuldade],
+          topic: "Compartilhados com você",
+          topicIcon: "assets/mdi/share-variant-outline.svg",
+          searchText: this.normalize(
+            `${exercício.título} compartilhados ${this.difficultyLabels[exercício.dificuldade]}`,
+          ),
+        };
+      });
+
     try {
       const index = await this.exercises.loadIndex();
 
-      this.entries.set(
-        index.flatMap(topic => {
+      this.entries.set([
+        ...shared,
+        ...index.flatMap(topic => {
           return topic.itens.map(item => {
             return {
               id: item.id,
@@ -128,11 +161,13 @@ export class DialogOpenExerciseComponent implements OnInit {
             };
           });
         }),
-      );
+      ]);
 
       this.selectFirst();
     } catch {
-      this.failed.set(true);
+      this.entries.set(shared);
+      this.failed.set(shared.length === 0);
+      this.selectFirst();
     } finally {
       this.loading.set(false);
     }
@@ -165,10 +200,18 @@ export class DialogOpenExerciseComponent implements OnInit {
 
     switch (event.key) {
       case "ArrowDown":
-      case "ArrowUp": {
+      case "ArrowUp":
+      case "Home":
+      case "End": {
+        const target = listboxTarget(event, index, list.length);
+
+        if (target === null) {
+          break;
+        }
+
         event.preventDefault();
 
-        const next = list.at(event.key === "ArrowDown" ? Math.min(index + 1, list.length - 1) : Math.max(index - 1, 0));
+        const next = list.at(target);
 
         if (next && next.id !== this.current()?.id) {
           this.current.set(next);
@@ -210,6 +253,12 @@ export class DialogOpenExerciseComponent implements OnInit {
 
   open(entry: ExerciseEntry) {
     this.dialogRef.close({ id: entry.id });
+  }
+  /**
+   * Criar um exercício novo, para compartilhar por link.
+   */
+  createExercise() {
+    this.dialogRef.close({ create: true });
   }
 
   optionId(entry: ExerciseEntry) {

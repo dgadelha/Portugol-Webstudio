@@ -15,7 +15,7 @@ import {
 } from "@angular/core";
 import { toSignal } from "@angular/core/rxjs-interop";
 import { MonacoEditorModule } from "@materia-ui/ngx-monaco-editor";
-import { HotToastService } from "@ngxpert/hot-toast";
+import { CreateHotToastRef, HotToastService } from "@ngxpert/hot-toast";
 import { AngularSvgIconModule } from "angular-svg-icon";
 import { GoogleAnalyticsService, NgxGoogleAnalyticsModule } from "ngx-google-analytics";
 
@@ -23,10 +23,14 @@ import { settings } from "../settings";
 import { IS_BETA } from "./beta";
 import { DialogConfirmCloseTabComponent } from "./dialog-confirm-close-tab/dialog-confirm-close-tab.component";
 import { DialogOpenExampleComponent } from "./dialog-open-example/dialog-open-example.component";
-import { DialogOpenExerciseComponent } from "./dialog-open-exercise/dialog-open-exercise.component";
+import {
+  DialogOpenExerciseComponent,
+  ExerciseDialogResult,
+} from "./dialog-open-exercise/dialog-open-exercise.component";
 import { DialogRenameTabComponent } from "./dialog-rename-tab/dialog-rename-tab.component";
 import { DialogSettingsComponent, SettingsSectionId } from "./dialog-settings/dialog-settings.component";
-import { ExerciseNotFoundError, ExercisesService } from "./exercises.service";
+import { ExerciseBuilderService, ExerciseDraft } from "./exercise-builder.service";
+import { ExerciseNotFoundError, exerciseLabel, ExercisesService, SHARED_PREFIX } from "./exercises.service";
 import { FileService } from "./file.service";
 import { SettingsService } from "./settings.service";
 import { ShareService } from "./share.service";
@@ -39,6 +43,7 @@ import { SurveyService } from "./survey.service";
 import { TabChangelogComponent } from "./tab-changelog/tab-changelog.component";
 import { TabEditorComponent } from "./tab-editor/tab-editor.component";
 import { TabHelpComponent } from "./tab-help/tab-help.component";
+import { TabExerciseBuilderComponent } from "./tab-exercise-builder/tab-exercise-builder.component";
 import { TabStartComponent } from "./tab-start/tab-start.component";
 import { WorkspaceService } from "./workspace.service";
 import { defaultCode, isMeaningfulCode, isOwnExerciseTab, Tab, TabType } from "./workspace.types";
@@ -59,6 +64,8 @@ type Origin = "inicio" | "editor" | "abas" | "atalho" | "app" | "link" | "barra_
     TabChangelogComponent,
     TabEditorComponent,
     TabHelpComponent,
+    // Só dentro de um `@defer`: pouca gente cria exercícios, e a aba vem num pacote à parte
+    TabExerciseBuilderComponent,
     TabStartComponent,
     TooltipDirective,
   ],
@@ -87,6 +94,7 @@ export class AppComponent implements OnInit {
   private zone = inject(NgZone);
   private survey = inject(SurveyService);
   private exercises = inject(ExercisesService);
+  private exerciseBuilder = inject(ExerciseBuilderService);
 
   private readonly tablist = viewChild.required<ElementRef<HTMLElement>>("tablist");
   private readonly fileInput = viewChild.required<ElementRef<HTMLInputElement>>("fileInput");
@@ -102,6 +110,7 @@ export class AppComponent implements OnInit {
     editor: "assets/mdi/file-document-outline.svg",
     help: "assets/mdi/help-circle-outline.svg",
     changelog: "assets/mdi/newspaper.svg",
+    "exercise-builder": "assets/mdi/puzzle-edit-outline.svg",
   };
 
   /**
@@ -230,8 +239,8 @@ export class AppComponent implements OnInit {
   }
 
   /**
-   * Endereços que abrem algo no IDE: `#share=<id>` (código compartilhado) e
-   * `#ajuda=<arquivo>` (um tópico da Ajuda, como nos links entre tópicos). Os
+   * Endereços que abrem algo no IDE: `#share=<id>` (código compartilhado), `#exercise=<id>`
+   * (exercício compartilhado) e `#ajuda=<arquivo>` (um tópico da Ajuda, como nos links entre tópicos). Os
    * atalhos do app instalado (`shortcuts` no `manifest.webmanifest`) usam
    * `#novo`, `#exemplos` e `#ajuda`; `#exercicios` abre a lista de exercícios.
    */
@@ -271,6 +280,17 @@ export class AppComponent implements OnInit {
     if (hash.startsWith("#share=")) {
       this.clearHash();
       void this.loadSharedCode(hash.slice(7));
+    } else if (hash.startsWith("#exercise=")) {
+      this.clearHash();
+
+      // Só o que um id de link pode ser: o resto não chega ao armazenamento
+      const id = hash.slice(10);
+
+      if (/^[a-z0-9]{6,32}$/.test(id)) {
+        void this.loadSharedExercise(id);
+      } else {
+        this.toast.error("O link do exercício expirou ou não existe.", { duration: 5000 });
+      }
     } else if (hash.startsWith("#ajuda=")) {
       this.clearHash();
       this.upsertHelpTab("link");
@@ -333,6 +353,25 @@ export class AppComponent implements OnInit {
         { duration: 10_000, dismissible: true },
       );
       this.gaService.event("load_shared_code_error", "Interface", result.reason);
+    }
+  }
+
+  /**
+   * O aviso de carregando só aparece se demorar: com a aba já aberta ou o exercício guardado
+   * neste navegador, abrir termina antes de o aviso aparecer na tela, e o `close` de um aviso
+   * que ainda não apareceu não faz nada (ele ficaria aberto até o tempo dele acabar).
+   */
+  private async loadSharedExercise(id: string) {
+    let loading: CreateHotToastRef<unknown> | undefined;
+    const timer = setTimeout(() => {
+      loading = this.toast.loading("Carregando exercício compartilhado…");
+    }, 300);
+
+    try {
+      await this.openExercise(`${SHARED_PREFIX}${id}`);
+    } finally {
+      clearTimeout(timer);
+      loading?.close();
     }
   }
 
@@ -511,18 +550,19 @@ export class AppComponent implements OnInit {
     // fecham direto, e quem desligou a confirmação também.
     // O código de um exercício fica guardado com o progresso: reabrir o exercício o traz de volta
     // (uma cópia não guarda nada, então pergunta como uma aba comum)
-    if (
-      tab.type !== "editor" ||
-      isOwnExerciseTab(tab) ||
-      !isMeaningfulCode(tab.contents) ||
-      !this.settingsService.get(settings.interfaceConfirmCloseTab)
-    ) {
+    // A criação de um exercício pergunta como uma aba de código: o rascunho só está nela
+    const meaningful =
+      tab.type === "exercise-builder"
+        ? this.exerciseBuilder.isMeaningful(tab.contents)
+        : tab.type === "editor" && !isOwnExerciseTab(tab) && isMeaningfulCode(tab.contents);
+
+    if (!meaningful || !this.settingsService.get(settings.interfaceConfirmCloseTab)) {
       confirmClose();
       return;
     }
 
     const ref = this.dialog.open<boolean>(DialogConfirmCloseTabComponent, {
-      data: { title: tab.title },
+      data: { title: tab.title, exercise: tab.type === "exercise-builder" },
       width: "28rem",
       ariaLabelledBy: "dialogo-fechar-aba-titulo",
       restoreFocus: ACTIVE_TAB_SELECTOR,
@@ -622,17 +662,38 @@ export class AppComponent implements OnInit {
   openExercisesDialog(origin: Origin) {
     this.gaService.event("open_exercises_dialog", "Interface", origin);
 
-    const ref = this.dialog.open<{ id: string }, unknown, DialogOpenExerciseComponent>(DialogOpenExerciseComponent, {
-      width: "min(92vw, 60rem)",
-      height: "min(85dvh, 640px)",
-      ariaLabelledBy: "dialogo-exercicios-titulo",
-    });
+    const ref = this.dialog.open<ExerciseDialogResult, unknown, DialogOpenExerciseComponent>(
+      DialogOpenExerciseComponent,
+      {
+        width: "min(92vw, 60rem)",
+        height: "min(85dvh, 640px)",
+        ariaLabelledBy: "dialogo-exercicios-titulo",
+      },
+    );
 
     ref.closed.subscribe(choice => {
-      if (choice) {
+      if (choice && "create" in choice) {
+        this.newExerciseBuilder();
+      } else if (choice) {
         void this.openExercise(choice.id);
       }
     });
+  }
+
+  /**
+   * Uma aba para criar um exercício, que começa com o esqueleto de um programa na solução.
+   */
+  newExerciseBuilder() {
+    this.gaService.event("exercise_builder_new", "Exercícios");
+
+    const draft = this.exerciseBuilder.emptyDraft(defaultCode(this.settingsService.editorIndentation()));
+
+    this.openBuilderTab(draft);
+  }
+
+  private openBuilderTab(draft: ExerciseDraft) {
+    this.workspace.addBuilderTab(this.exerciseBuilder.titleOf(draft), JSON.stringify(draft));
+    this.focusNewTab(this.workspace.activeTab());
   }
 
   /**
@@ -660,10 +721,15 @@ export class AppComponent implements OnInit {
         return;
       }
 
-      this.gaService.event("open_exercise", "Exercícios", exerciseId);
+      this.gaService.event("open_exercise", "Exercícios", exerciseLabel(exerciseId));
       this.addTab(exercise.título, contents, exerciseId);
-    } catch {
-      this.toast.error("Não foi possível carregar o exercício.", { duration: 5000 });
+    } catch (error) {
+      const expired = error instanceof ExerciseNotFoundError && exerciseId.startsWith(SHARED_PREFIX);
+
+      this.toast.error(
+        expired ? "O link do exercício expirou ou não existe." : "Não foi possível carregar o exercício.",
+        { duration: 5000 },
+      );
     }
   }
 
@@ -674,6 +740,19 @@ export class AppComponent implements OnInit {
    * comum, com o comentário, para nada se perder.
    */
   private async openCode(title: string, contents: string) {
+    // Um exercício baixado da criação de exercícios volta para uma aba de criação
+    const draft = await this.exerciseBuilder.readDraftFile(title, contents);
+
+    if (draft === "invalid") {
+      this.toast.error("O arquivo do exercício não segue o formato e não foi aberto.", { duration: 5000 });
+      return;
+    }
+
+    if (draft) {
+      this.openBuilderTab(draft.draft);
+      return;
+    }
+
     const { code, exerciseId } = this.exercises.extractMarker(contents);
 
     if (exerciseId) {

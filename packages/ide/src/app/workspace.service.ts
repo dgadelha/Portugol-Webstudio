@@ -1,5 +1,6 @@
 import { computed, DestroyRef, effect, inject, NgZone, Service, signal, untracked } from "@angular/core";
 import { settings } from "../settings";
+import { ExerciseBuilderService } from "./exercise-builder.service";
 import { SettingsService } from "./settings.service";
 import { WorkspaceStorageService } from "./workspace-storage.service";
 import {
@@ -61,6 +62,7 @@ const MAX_AGE = MAX_AGE_DAYS * 24 * 60 * 60 * 1000;
 export class WorkspaceService {
   private readonly storage = inject(WorkspaceStorageService);
   private readonly settings = inject(SettingsService);
+  private readonly exerciseBuilder = inject(ExerciseBuilderService);
   private readonly zone = inject(NgZone);
   private readonly lifetime = inject(DestroyRef);
 
@@ -148,6 +150,20 @@ export class WorkspaceService {
       ...(exerciseId && exerciseCopy && { exerciseCopy }),
     };
 
+    return this.pushTab(tab);
+  }
+
+  /**
+   * Uma aba de criação de exercício, com o rascunho (o JSON do `ExerciseBuilderService`).
+   */
+  addBuilderTab(title: string, draft: string) {
+    return this.pushTab({ id: randomId(), title, type: "exercise-builder", contents: draft });
+  }
+
+  /**
+   * Põe uma aba nova no fim e a traz para frente.
+   */
+  private pushTab(tab: Tab) {
     this.tabs.update(tabs => [...tabs, tab]);
     this.activeTabId.set(tab.id);
 
@@ -257,12 +273,12 @@ export class WorkspaceService {
     const meta = this.storage.readMeta(workspaceId);
 
     const restored = (meta?.tabs ?? [])
-      .filter(tab => tab.type === "editor")
+      .filter(tab => tab.type === "editor" || tab.type === "exercise-builder")
       .map<Tab>(tab => {
         return {
           id: randomId(),
           title: tab.title,
-          type: "editor",
+          type: tab.type,
           contents: this.storage.readTab(workspaceId, tab.id) ?? "",
           // O exercício já tem uma aba: a recuperada vira uma cópia
           ...(tab.exerciseId && {
@@ -271,7 +287,11 @@ export class WorkspaceService {
           }),
         };
       })
-      .filter(tab => isMeaningfulCode(tab.contents));
+      .filter(tab => {
+        return tab.type === "exercise-builder"
+          ? this.exerciseBuilder.isMeaningful(tab.contents)
+          : isMeaningfulCode(tab.contents);
+      });
 
     if (restored.length > 0) {
       this.tabs.update(tabs => [...tabs, ...restored]);
@@ -350,7 +370,13 @@ export class WorkspaceService {
       }
 
       const tabTitles = meta.tabs
-        .filter(tab => tab.type === "editor" && isMeaningfulCode(this.storage.readTab(id, tab.id) ?? ""))
+        .filter(tab => {
+          return (
+            (tab.type === "exercise-builder" &&
+              this.exerciseBuilder.isMeaningful(this.storage.readTab(id, tab.id) ?? "")) ||
+            (tab.type === "editor" && isMeaningfulCode(this.storage.readTab(id, tab.id) ?? ""))
+          );
+        })
         .map(tab => tab.title);
 
       if (tabTitles.length > 0) {

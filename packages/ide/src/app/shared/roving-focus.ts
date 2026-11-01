@@ -42,3 +42,28 @@ export function moveRovingFocus(
   target?.focus();
   return target;
 }
+
+/**
+ * Para listas com `aria-activedescendant`, onde o foco fica no campo de busca ou na lista: a
+ * posição para onde a tecla leva. O Home e o End só valem na lista: no campo de busca, eles
+ * movem o cursor do texto (devolve `null`).
+ */
+export function listboxTarget(event: KeyboardEvent, index: number, length: number) {
+  switch (event.key) {
+    case "ArrowDown": {
+      return Math.min(index + 1, length - 1);
+    }
+
+    case "ArrowUp": {
+      return Math.max(index - 1, 0);
+    }
+
+    default: {
+      if (event.target instanceof HTMLInputElement) {
+        return null;
+      }
+
+      return event.key === "Home" ? 0 : length - 1;
+    }
+  }
+}

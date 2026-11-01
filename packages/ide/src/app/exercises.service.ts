@@ -11,6 +11,8 @@ import {
 import { LocalStorageService } from "ngx-webstorage";
 import { firstValueFrom, retry } from "rxjs";
 
+import { ShareService } from "./share.service";
+import { cyrb53 } from "./shared/hash";
 import { WorkerService } from "./worker.service";
 
 export type { Exercício } from "@portugol-webstudio/resources/exercicios";
@@ -53,6 +55,30 @@ export type ExerciseCheckOutcome =
     };
 
 const PROGRESS_KEY = "exercicios";
+
+/**
+ * Os exercícios compartilhados por link que este navegador já abriu, para funcionarem sem
+ * internet e aparecerem na lista. Não expiram aqui: o link expira, a cópia local não.
+ */
+const SHARED_KEY = "exercicios-compartilhados";
+
+/**
+ * Um exercício compartilhado aberto neste navegador, e quando foi aberto pela primeira vez.
+ */
+export type SharedExerciseEntry = { exercício: Exercício; abertoEm: number };
+
+/**
+ * O prefixo dos exercícios compartilhados por link: `share:<id do link>`.
+ */
+export const SHARED_PREFIX = "share:";
+
+/**
+ * Como um exercício aparece no Analytics e no Sentry: o id de um embutido, e só
+ * "compartilhado" para um compartilhado, cujo id é o do link e não sai do navegador.
+ */
+export function exerciseLabel(id: string) {
+  return id.startsWith(SHARED_PREFIX) ? "compartilhado" : id;
+}
 
 /**
  * De onde o exercício foi adaptado, como o enunciado e a prévia mostram: "Adaptado de: Portugol
@@ -126,10 +152,17 @@ export class ExercisesService {
   private storage = inject(LocalStorageService);
   private worker = inject(WorkerService);
 
+  private share = inject(ShareService);
+
   private readonly cache = new Map<string, Promise<Exercício>>();
   private index?: Promise<ÍndiceDeExercícios>;
 
   readonly progress = signal<Record<string, ExerciseProgress>>(this.readProgress());
+
+  /**
+   * Os exercícios compartilhados já abertos, para a lista.
+   */
+  readonly shared = signal<Record<string, SharedExerciseEntry>>(this.readShared());
 
   /**
    * Quantas vezes cada exercício recomeçou nesta janela: uma correção que começou antes não
@@ -141,6 +174,9 @@ export class ExercisesService {
     // Outra janela do IDE também grava o progresso: esta acompanha
     this.storage.observe(PROGRESS_KEY).subscribe(() => {
       this.progress.set(this.readProgress());
+    });
+    this.storage.observe(SHARED_KEY).subscribe(() => {
+      this.shared.set(this.readShared());
     });
   }
 
@@ -159,15 +195,19 @@ export class ExercisesService {
     let exercise = this.cache.get(id);
 
     if (!exercise) {
-      exercise = this.loadIndex().then(index => {
-        const item = index.flatMap(topic => topic.itens).find(entry => entry.id === id);
+      exercise = id.startsWith(SHARED_PREFIX)
+        ? this.loadShared(id)
+        : this.loadIndex().then(index => {
+            const item = index.flatMap(topic => topic.itens).find(entry => entry.id === id);
 
-        if (!item) {
-          throw new ExerciseNotFoundError(id);
-        }
+            if (!item) {
+              throw new ExerciseNotFoundError(id);
+            }
 
-        return firstValueFrom(this.http.get<Exercício>(`assets/recursos/exercicios/${item.arquivo}`).pipe(retry(2)));
-      });
+            return firstValueFrom(
+              this.http.get<Exercício>(`assets/recursos/exercicios/${item.arquivo}`).pipe(retry(2)),
+            );
+          });
 
       exercise.catch(() => this.cache.delete(id));
       this.cache.set(id, exercise);
@@ -369,21 +409,7 @@ export class ExercisesService {
     const withoutDescriptions = (key: string, value: unknown) => (key === "descrição" ? undefined : value);
     const text = JSON.stringify([exercise.modo, exercise.exemplos, exercise.testes], withoutDescriptions);
 
-    // cyrb53: não precisa ser criptográfico, e funciona fora de um contexto seguro
-    let h1 = 0xde_ad_be_ef;
-    let h2 = 0x41_c6_ce_57;
-
-    for (let i = 0; i < text.length; i++) {
-      const char = text.codePointAt(i)!;
-
-      h1 = Math.imul(h1 ^ char, 2_654_435_761);
-      h2 = Math.imul(h2 ^ char, 1_597_334_677);
-    }
-
-    h1 = Math.imul(h1 ^ (h1 >>> 16), 2_246_822_507) ^ Math.imul(h2 ^ (h2 >>> 13), 3_266_489_909);
-    h2 = Math.imul(h2 ^ (h2 >>> 16), 2_246_822_507) ^ Math.imul(h1 ^ (h1 >>> 13), 3_266_489_909);
-
-    return (4_294_967_296 * (2_097_151 & h2) + (h1 >>> 0)).toString(36);
+    return cyrb53(text);
   }
 
   private updateProgress(id: string, progress: ExerciseProgress) {
@@ -397,9 +423,87 @@ export class ExercisesService {
     }
   }
 
-  private readProgress(): Record<string, ExerciseProgress> {
-    const stored: unknown = this.storage.retrieve(PROGRESS_KEY);
+  /**
+   * Um exercício compartilhado: a cópia deste navegador, ou a do link, validada pelo esquema. Um
+   * link que expirou, que não existe ou que não tem um exercício válido conta como exercício que
+   * não existe; sem internet, como falha de conexão.
+   */
+  private async loadShared(id: string) {
+    const cached = this.shared()[id];
 
-    return stored && typeof stored === "object" ? (stored as Record<string, ExerciseProgress>) : {};
+    // Aberto de novo: sobe na lista dos compartilhados
+    if (cached) {
+      this.storeShared(id, { ...cached, abertoEm: Date.now() });
+      return cached.exercício;
+    }
+
+    const result = await this.share.loadExercise(id.slice(SHARED_PREFIX.length));
+
+    if (!result.ok) {
+      if (["object-not-found", "unauthorized", "invalid-argument"].includes(result.reason)) {
+        throw new ExerciseNotFoundError(id);
+      }
+
+      throw new Error(`O exercício compartilhado não carregou: ${result.reason}`);
+    }
+
+    const exercise = await this.parseShared(result.value, id);
+
+    this.storeShared(id, { exercício: exercise, abertoEm: Date.now() });
+
+    return exercise;
+  }
+
+  /**
+   * Valida um exercício compartilhado com o esquema, carregado só quando é preciso. O `id` de
+   * dentro precisa ser o do link: um arquivo não se passa por outro exercício.
+   */
+  private async parseShared(json: string, id: string): Promise<Exercício> {
+    const { schema } = await import("@portugol-webstudio/resources/exercicios/esquema");
+    let data: unknown;
+
+    try {
+      data = JSON.parse(json);
+    } catch {
+      throw new ExerciseNotFoundError(id);
+    }
+
+    const result = schema.safeParse(data);
+
+    if (!result.success || result.data.id !== id) {
+      throw new ExerciseNotFoundError(id);
+    }
+
+    return result.data;
+  }
+
+  private storeShared(id: string, entry: SharedExerciseEntry) {
+    const shared = { ...this.shared(), [id]: entry };
+
+    this.shared.set(shared);
+
+    try {
+      this.storage.store(SHARED_KEY, shared);
+    } catch (error) {
+      // Sem espaço: o exercício abre do mesmo jeito, só não fica para depois sem internet
+      console.error(error);
+    }
+  }
+
+  private readShared() {
+    return this.readRecord<SharedExerciseEntry>(SHARED_KEY);
+  }
+
+  private readProgress() {
+    return this.readRecord<ExerciseProgress>(PROGRESS_KEY);
+  }
+
+  /**
+   * Um objeto do armazenamento local, por id; vazio quando não há ou não é um objeto.
+   */
+  private readRecord<T>(key: string): Record<string, T> {
+    const stored: unknown = this.storage.retrieve(key);
+
+    return stored && typeof stored === "object" ? (stored as Record<string, T>) : {};
   }
 }

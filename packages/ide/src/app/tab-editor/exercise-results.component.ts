@@ -1,5 +1,13 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from "@angular/core";
-import { CaseFailure, CaseResult, EXERCISE_TIMEOUT, portugolCall, portugolSignature } from "@portugol-webstudio/runner";
+import {
+  CaseFailure,
+  CaseResult,
+  CaseRun,
+  comparedValues,
+  EXERCISE_TIMEOUT,
+  portugolCall,
+  portugolSignature,
+} from "@portugol-webstudio/runner";
 import { AngularSvgIconModule } from "angular-svg-icon";
 
 import { ExerciseCheckOutcome, ExercisesService } from "../exercises.service";
@@ -87,6 +95,14 @@ export class ExerciseResultsComponent {
         return "correção interrompida";
       }
     }
+  }
+
+  /**
+   * Os valores em que o `contém` procurou: um valor que faltou pode ter sido escrito com outro
+   * tipo (`inteiro 8` no lugar de `real 8.0`), e a saída do programa não mostra o tipo.
+   */
+  writtenValues(run: CaseRun) {
+    return comparedValues(run, "contém");
   }
 
   /**

@@ -76,6 +76,16 @@
                     failure.afterLastInput ? " depois da última leitura" : ""
                   }}.
                 </p>
+                @let written = writtenValues(item.run);
+                <p>
+                  Valores escritos{{ failure.afterLastInput ? " depois da última leitura" : "" }}:
+                  @for (value of written; track $index) {
+                    <code>{{ value | exerciseValue }}</code
+                    >{{ $last ? "." : ", " }}
+                  } @empty {
+                    nenhum.
+                  }
+                </p>
               } @else if (failure.type === "differentReturn") {
                 <p>
                   Chamada: <code>{{ call(failure.name, failure.arguments) }}</code

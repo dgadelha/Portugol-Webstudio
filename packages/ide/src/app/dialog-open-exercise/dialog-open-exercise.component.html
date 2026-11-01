@@ -87,6 +87,15 @@
         }
       }
     </div>
+
+    @if (!loading()) {
+      <div class="list-footer">
+        <button type="button" class="btn" (click)="createExercise()">
+          <svg-icon src="assets/mdi/puzzle-edit-outline.svg" aria-hidden="true" />
+          Criar exercício
+        </button>
+      </div>
+    }
   </div>
 
   <div class="preview">
@@ -115,7 +124,7 @@
 
       <div class="preview-statement" role="region" aria-label="Enunciado" tabindex="0">
         @if (statement.hasValue()) {
-          <div class="markdown" [innerHTML]="statement.value().html"></div>
+          <div class="markdown exercise-markdown" [innerHTML]="statement.value().html"></div>
           @if (statement.value().attribution; as attribution) {
             <p class="preview-attribution">{{ attribution }}</p>
           }
@@ -132,6 +141,10 @@
     @if (!loading()) {
       <div class="preview-footer">
         <span class="preview-hint"><kbd>Enter</kbd> abre o exercício escolhido</span>
+        <button type="button" class="btn" (click)="createExercise()">
+          <svg-icon src="assets/mdi/puzzle-edit-outline.svg" aria-hidden="true" />
+          Criar exercício
+        </button>
         <button
           type="button"
           class="btn btn-primary open-button"

@@ -8,6 +8,7 @@ import {
   Component,
   ElementRef,
   Injector,
+  NgZone,
   OnDestroy,
   OnInit,
   TemplateRef,
@@ -49,7 +50,14 @@ import { DialogConfirmAdoptExerciseComponent } from "../dialog-confirm-adopt-exe
 import { DialogConfirmRestartExerciseComponent } from "../dialog-confirm-restart-exercise/dialog-confirm-restart-exercise.component";
 import { DialogRendererComponent, RendererDialogResult } from "../dialog-renderer/dialog-renderer.component";
 import type { SettingsSectionId } from "../dialog-settings/dialog-settings.component";
-import { ExerciseCheckOutcome, ExerciseNotFoundError, ExercisesService, Exercício } from "../exercises.service";
+import {
+  ExerciseCheckOutcome,
+  exerciseLabel,
+  ExerciseNotFoundError,
+  ExercisesService,
+  Exercício,
+  SHARED_PREFIX,
+} from "../exercises.service";
 import { ResponsiveService } from "../responsive.service";
 import { SettingsService } from "../settings.service";
 import { ShareService } from "../share.service";
@@ -143,6 +151,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
   private host = inject<ElementRef<HTMLElement>>(ElementRef);
   private workspace = inject(WorkspaceService);
   private announcer = inject(LiveAnnouncer);
+  private zone = inject(NgZone);
   private storage = inject(LocalStorageService);
   private exercises = inject(ExercisesService);
 
@@ -266,6 +275,13 @@ export class TabEditorComponent implements OnInit, OnDestroy {
    */
   readonly exerciseFailed = signal<"network" | "missing" | null>(null);
   readonly loadingExercise = signal(false);
+
+  /**
+   * Um exercício compartilhado por link (`share:<id>`), não um dos que vêm com o IDE.
+   */
+  get sharedExercise() {
+    return this.exerciseId?.startsWith(SHARED_PREFIX) ?? false;
+  }
 
   readonly exerciseDone = computed(() => {
     const exercise = this.exercise();
@@ -460,6 +476,14 @@ export class TabEditorComponent implements OnInit, OnDestroy {
   private lastOpenOutputSize: number | null = null;
 
   /**
+   * O painel ocupa no máximo esta fração da altura do editor com o painel: a altura dele é em
+   * px, e numa janela que diminuiu (ou com zoom) ele tomaria o lugar do código inteiro.
+   */
+  private readonly maxPanelShare = 0.6;
+
+  private panelFit?: ResizeObserver;
+
+  /**
    * Em telas de toque, o teclado virtual não manda para o editor da saída
    * teclas que dê para ler (no Android, quase todas chegam como
    * "Unidentified"), e acentos e o corretor nem passam por elas. Lá, a entrada
@@ -546,10 +570,40 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     this.firstLayout.observe(element);
   }
 
+  /**
+   * Quando a altura muda (a janela, o zoom, o teclado virtual), o painel aberto encolhe se
+   * passar do máximo. Um painel arrastado não muda a altura do `split`, então não é afetado.
+   */
+  private keepPanelFit() {
+    const element = this.split().nativeElement;
+
+    this.panelFit = new ResizeObserver(() => {
+      const max = this.maxPanelSize();
+
+      if (max !== null && !this.outputCollapsed && this.outputSize > max) {
+        this.zone.run(() => {
+          this.outputSize = max;
+        });
+      }
+    });
+
+    this.panelFit.observe(element);
+  }
+
+  /**
+   * A maior altura do painel na altura atual, ou `null` se a aba está escondida (altura zero).
+   */
+  private maxPanelSize() {
+    const height = this.split().nativeElement.clientHeight;
+
+    return height > 0 ? Math.max(Math.round(height * this.maxPanelShare), this.panelHeaderHeight + 2) : null;
+  }
+
   constructor() {
     // O `split` só existe depois da primeira renderização.
     afterNextRender(() => {
       this.openPanelOnFirstLayout();
+      this.keepPanelFit();
     });
 
     // O Ctrl+Shift+Enter do Verificar só vale no editor depois que o exercício carrega
@@ -843,6 +897,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     this.recheckAbort?.abort();
     this.flushDraft();
     this.firstLayout?.disconnect();
+    this.panelFit?.disconnect();
     this.debugToolbarFit?.disconnect();
     clearTimeout(this.longStepTimer);
     this.executor.stop();
@@ -1281,7 +1336,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     this.checkOutcome.set(null);
     this.codeEditor?.focus();
     void this.announcer.announce("O código que passou voltou para o editor.", "polite");
-    this.gaService.event("exercise_restore_approved", "Exercícios", exercise.id);
+    this.gaService.event("exercise_restore_approved", "Exercícios", exerciseLabel(exercise.id));
   }
 
   /**
@@ -1344,7 +1399,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     this.recheckAbort = abort;
 
     const unapproved = await this.exercises.recheckIfChanged(exercise, abort.signal).catch((error: unknown) => {
-      captureException(error, { tags: { exercise: exercise.id } });
+      captureException(error, { tags: { exercise: exerciseLabel(exercise.id) } });
       return false;
     });
 
@@ -1387,7 +1442,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
         },
       });
     } catch (error) {
-      captureException(error, { tags: { exercise: exercise.id } });
+      captureException(error, { tags: { exercise: exerciseLabel(exercise.id) } });
       this.toast.error("Ocorreu um erro ao conferir o exercício.", { duration: 5000 });
       return;
     } finally {
@@ -1403,7 +1458,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     this.checkOutcome.set(outcome);
     void this.announcer.announce(this.exercises.summary(outcome), "polite");
 
-    this.gaService.event("exercise_check", "Exercícios", exercise.id, undefined, undefined, {
+    this.gaService.event("exercise_check", "Exercícios", exerciseLabel(exercise.id), undefined, undefined, {
       outcome: outcome.type === "checked" ? (outcome.result.passed ? "aprovado" : "reprovado") : outcome.type,
     });
   }
@@ -1426,10 +1481,15 @@ export class TabEditorComponent implements OnInit, OnDestroy {
       data: { title: exercise.título, done: this.exerciseDone() },
       width: "28rem",
       ariaLabelledBy: "dialogo-recomecar-exercicio-titulo",
+      ariaDescribedBy: "dialogo-recomecar-exercicio-descricao",
     });
 
     ref.closed.subscribe(confirmed => {
-      this.gaService.event(confirmed ? "exercise_restart" : "exercise_restart_cancel", "Exercícios", exercise.id);
+      this.gaService.event(
+        confirmed ? "exercise_restart" : "exercise_restart_cancel",
+        "Exercícios",
+        exerciseLabel(exercise.id),
+      );
 
       if (confirmed) {
         const code = exercise.códigoInicial ?? defaultCode(this.settingsService.editorIndentation());
@@ -1438,6 +1498,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
         this.codeEditor?.setValue(code);
         this.exercises.restart(exercise.id, code);
         this.checkOutcome.set(null);
+        void this.announcer.announce("O código voltou a ser o código inicial.", "polite");
       }
     });
   }
@@ -1472,7 +1533,11 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     });
 
     ref.closed.subscribe(confirmed => {
-      this.gaService.event(confirmed ? "exercise_adopt" : "exercise_adopt_cancel", "Exercícios", exercise.id);
+      this.gaService.event(
+        confirmed ? "exercise_adopt" : "exercise_adopt_cancel",
+        "Exercícios",
+        exerciseLabel(exercise.id),
+      );
 
       if (!confirmed) {
         return;
@@ -1667,7 +1732,10 @@ export class TabEditorComponent implements OnInit, OnDestroy {
 
   expandOutput() {
     if (this.outputCollapsed) {
-      this.outputSize = this.lastOpenOutputSize ?? Math.round(this.split().nativeElement.clientHeight * 0.3);
+      const size = this.lastOpenOutputSize ?? Math.round(this.split().nativeElement.clientHeight * 0.3);
+      const max = this.maxPanelSize();
+
+      this.outputSize = max === null ? size : Math.min(size, max);
     }
   }
 

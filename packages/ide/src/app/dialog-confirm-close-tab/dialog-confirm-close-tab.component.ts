@@ -6,6 +6,10 @@ import { TooltipDirective } from "../shared/tooltip.directive";
 
 interface DialogData {
   title: string;
+  /**
+   * Uma aba de criação de exercício: o que se perde é o exercício, não um código.
+   */
+  exercise?: boolean;
 }
 
 @Component({

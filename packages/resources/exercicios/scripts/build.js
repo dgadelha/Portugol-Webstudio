@@ -2,7 +2,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { z } from "zod";
 import { createAuxiliaryTypeStore, createTypeAlias, printNode, zodToTs } from "zod-to-ts";
-import { schema, tópicos } from "./schema.js";
+import { esquemaDoRascunho, schema, tópicos, URL_DO_ESQUEMA, URL_DO_ESQUEMA_DO_RASCUNHO } from "../esquema.js";
 
 const baseDirectory = path.join(import.meta.dirname, "..");
 const ids = new Map();
@@ -59,12 +59,42 @@ for (const [tópico, nome] of Object.entries(tópicos)) {
 
 await fs.writeFile(path.join(baseDirectory, "index.json"), JSON.stringify(índice, undefined, 2) + "\n");
 
+// O esquema publicado em https://portugol.dev/esquemas/exercicio/v1.json, para os editores
+const jsonSchema = {
+  $id: URL_DO_ESQUEMA,
+  title: "Exercício do Portugol Webstudio",
+  ...z.toJSONSchema(schema, { io: "input" }),
+};
+// E o do arquivo-fonte que o criador de exercícios baixa, em .../rascunho-de-exercicio/v1.json
+const jsonSchemaDoRascunho = {
+  $id: URL_DO_ESQUEMA_DO_RASCUNHO,
+  title: "Arquivo-fonte de exercício do Portugol Webstudio",
+  ...z.toJSONSchema(esquemaDoRascunho, { io: "input" }),
+};
+
+for (const [pasta, conteúdo] of [
+  ["exercicio", jsonSchema],
+  ["rascunho-de-exercicio", jsonSchemaDoRascunho],
+]) {
+  const esquemaDirectory = path.join(baseDirectory, "..", "esquemas", pasta);
+
+  await fs.mkdir(esquemaDirectory, { recursive: true });
+  await fs.writeFile(path.join(esquemaDirectory, "v1.json"), JSON.stringify(conteúdo, undefined, 2) + "\n");
+}
+
 const auxiliaryTypeStore = createAuxiliaryTypeStore();
 const { node } = zodToTs(schema, { auxiliaryTypeStore });
+const { node: nodeDoRascunho } = zodToTs(esquemaDoRascunho, { auxiliaryTypeStore });
 
 await fs.writeFile(
   path.join(baseDirectory, "index.d.ts"),
   printNode(createTypeAlias(node, "Exercício")).replace(/^type /, "export type ") +
+    "\n\n" +
+    // Sem o `[x: string]: never` do `.strict()`: o IDE monta rascunhos com este tipo, e nenhum
+    // objeto satisfaria esse índice
+    printNode(createTypeAlias(nodeDoRascunho, "RascunhoDeExercício"))
+      .replace(/^type /, "export type ")
+      .replaceAll(/^\s*\[x: string\]: never;\n/gm, "") +
     `
 
 export type ÍndiceDeExercícios = Array<{

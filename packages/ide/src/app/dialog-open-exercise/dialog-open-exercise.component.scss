@@ -51,3 +51,18 @@
   color: var(--pws-fg-muted);
   font-size: var(--pws-text-ui);
 }
+
+// Só em telas pequenas, quando a prévia (com o rodapé dela) some
+.list-footer {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .list-footer {
+    display: flex;
+    flex-shrink: 0;
+    justify-content: flex-end;
+    padding: 0.75rem 1.25rem;
+    border-top: 1px solid var(--pws-border);
+  }
+}

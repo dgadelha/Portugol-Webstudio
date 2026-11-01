@@ -14,39 +14,75 @@ export class ShareService {
   storage = inject(Storage);
 
   async share(code: string): Promise<ShareResult> {
+    const shareId = this.newId();
+
+    return this.upload(`share/${shareId}.por`, code, "text/plain", `https://portugol.dev/#share=${shareId}`);
+  }
+
+  load(shareId: string): Promise<ShareResult> {
+    return this.download(`share/${shareId}.por`);
+  }
+
+  /**
+   * Compartilha um exercício (o JSON publicado, sem a solução) com o id que ele tem dentro
+   * (`newId`): o link abre o exercício para quem o recebe. Diferente do código, o link vale por
+   * um semestre.
+   */
+  shareExercise(shareId: string, json: string): Promise<ShareResult> {
+    return this.upload(
+      `exercises/${shareId}.json`,
+      json,
+      "application/json",
+      `https://portugol.dev/#exercise=${shareId}`,
+    );
+  }
+
+  loadExercise(shareId: string): Promise<ShareResult> {
+    return this.download(`exercises/${shareId}.json`);
+  }
+
+  /**
+   * Grava um arquivo no Storage; no sucesso, o valor é o link (`url`).
+   */
+  private async upload(path: string, text: string, contentType: string, url: string): Promise<ShareResult> {
     // Sem internet, nem tenta: o Firebase só desistiria depois de várias tentativas.
     if (!navigator.onLine) {
       return { ok: false, reason: "offline" };
     }
 
-    const shareId = (Math.random() + 1).toString(36).slice(2, 9);
-
     try {
-      await uploadString(ref(this.storage, `share/${shareId}.por`), code, undefined, {
-        contentType: "text/plain",
-      });
+      await uploadString(ref(this.storage, path), text, undefined, { contentType });
 
-      return { ok: true, value: `https://portugol.dev/#share=${shareId}` };
+      return { ok: true, value: url };
     } catch (error) {
       console.error(error);
       return { ok: false, reason: this.reason(error) };
     }
   }
 
-  async load(shareId: string): Promise<ShareResult> {
+  /**
+   * Lê um arquivo do Storage; no sucesso, o valor é o conteúdo dele.
+   */
+  private async download(path: string): Promise<ShareResult> {
     if (!navigator.onLine) {
       return { ok: false, reason: "offline" };
     }
 
     try {
-      const data = await getBlob(ref(this.storage, `share/${shareId}.por`));
-      const contents = await data.text();
+      const data = await getBlob(ref(this.storage, path));
 
-      return { ok: true, value: contents };
+      return { ok: true, value: await data.text() };
     } catch (error) {
       console.error(error);
       return { ok: false, reason: this.reason(error) };
     }
+  }
+
+  /**
+   * Sete caracteres de 0-9 e a-z, como nos links de código.
+   */
+  newId() {
+    return (Math.random() + 1).toString(36).slice(2, 9);
   }
 
   private reason(error: unknown) {

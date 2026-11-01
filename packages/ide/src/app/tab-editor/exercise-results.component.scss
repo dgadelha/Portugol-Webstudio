@@ -57,6 +57,7 @@ svg-icon {
 }
 
 .case {
+  position: relative;
   padding: 0.25rem 0;
 }
 
@@ -71,11 +72,6 @@ svg-icon {
   p + pre {
     margin-top: 0.25rem;
   }
-}
-
-// Um caso que a correção interrompida não chegou a conferir: nem passou, nem falhou
-.icon-muted {
-  color: var(--pws-fg-muted);
 }
 
 .label,
