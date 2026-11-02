@@ -1,16 +1,6 @@
 import { MarkedExtension, Tokens } from "marked";
 
-export const escapeHtml = (text: string) =>
-  text.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;");
-
-/**
- * Cada tabela fica numa caixa que rola na horizontal, como a `.table-responsive` do Bootstrap:
- * numa tela estreita, só a tabela rola, e não a página toda. A aba de ajuda torna a caixa
- * alcançável pelo teclado quando a tabela não cabe nela. As tabelas do Markdown não se
- * aninham, e o `<table>` dentro de um código chega aqui escapado.
- */
-export const wrapTables = (html: string) =>
-  html.replaceAll("<table>", '<div class="tabela"><table>').replaceAll("</table>", "</table></div>");
+import { escapeHtml, wrapTables } from "../shared/markdown";
 
 /**
  * Blocos de código da Ajuda: ```portugol <exemplo|sintaxe|assinatura> title="..."

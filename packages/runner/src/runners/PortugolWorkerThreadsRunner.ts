@@ -10,9 +10,9 @@ import {
   IPortugolRunner,
   PortugolEvent,
   PortugolMessage,
+  PortugolValue,
   RunOptions,
   WRITTEN_VALUES,
-  WrittenValue,
 } from "./IPortugolRunner.js";
 
 export class PortugolWorkerThreadsRunner extends IPortugolRunner {
@@ -146,8 +146,8 @@ export class PortugolWorkerThreadsRunner extends IPortugolRunner {
         position?: ErrorPosition;
         message?: PortugolMessage;
         pause?: DebugPause;
-        values?: WrittenValue[];
-        value?: WrittenValue | null;
+        values?: PortugolValue[];
+        value?: PortugolValue | null;
       }) => {
         switch (data.type) {
           case "stdOut": {
@@ -236,7 +236,12 @@ export class PortugolWorkerThreadsRunner extends IPortugolRunner {
   run(options: RunOptions = {}) {
     this.startedAt = new Date();
 
-    this.worker.postMessage({ type: "start", ...options });
+    this.worker.postMessage({
+      type: "start",
+      debug: options.debug,
+      writeValues: options.writeValues,
+      call: options.call,
+    });
 
     this.running = true;
     this.running$.next(this.running);

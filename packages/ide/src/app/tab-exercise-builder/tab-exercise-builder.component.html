@@ -245,6 +245,7 @@
               class="input textarea"
               rows="12"
               aria-label="Enunciado"
+              [attr.maxlength]="statementMaxLength"
               [attr.aria-describedby]="`${tabId()}-enunciado-dica`"
               [ngModel]="current.statement"
               (ngModelChange)="setStatement($event)"

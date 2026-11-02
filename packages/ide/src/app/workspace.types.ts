@@ -26,6 +26,11 @@ export interface Tab {
 }
 
 /**
+ * O exercício de uma aba nova (`WorkspaceService.addTab`): o id e se ela é uma cópia.
+ */
+export type TabExercise = { id: string; copy?: boolean };
+
+/**
  * A aba do exercício de quem usa o IDE, a que guarda o progresso. As cópias não contam.
  */
 export function isOwnExerciseTab(tab: Pick<Tab, "exerciseId" | "exerciseCopy">) {

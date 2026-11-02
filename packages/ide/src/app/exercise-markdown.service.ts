@@ -7,7 +7,7 @@ import { Marked, Tokens } from "marked";
 import { settings } from "../settings";
 import { MonacoService } from "./monaco.service";
 import { SettingsService } from "./settings.service";
-import { escapeHtml, wrapTables } from "./tab-help/marked-portugol";
+import { escapeHtml, wrapTables } from "./shared/markdown";
 import { Theme, ThemeService } from "./theme.service";
 
 /**
@@ -172,9 +172,12 @@ export class ExerciseMarkdownService {
         {
           name: "formulaEmBloco",
           level: "block",
-          start: (src: string) => src.indexOf("$$"),
+          // Só no começo de uma linha: com um `$$` em qualquer lugar, o Marked cortava o parágrafo
+          // em cada um, e um texto com muitos deles levava segundos. O conteúdo não tem `$$`, para
+          // a busca parar no primeiro que fecha
+          start: (src: string) => /^\$\$/m.exec(src)?.index,
           tokenizer: (src: string) => {
-            const match = /^\$\$([\s\S]+?)\$\$(?:\n|$)/.exec(src);
+            const match = /^\$\$((?:(?!\$\$)[\s\S])+?)\$\$(?:\n|$)/.exec(src);
 
             return match ? { type: "formulaEmBloco", raw: match[0], text: match[1].trim() } : undefined;
           },

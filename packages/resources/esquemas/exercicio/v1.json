@@ -53,6 +53,7 @@
         "enunciado": {
           "type": "string",
           "minLength": 1,
+          "maxLength": 10000,
           "description": "Markdown sem HTML; fórmulas entre $ ou $$"
         },
         "códigoInicial": {
@@ -207,6 +208,7 @@
         "enunciado": {
           "type": "string",
           "minLength": 1,
+          "maxLength": 10000,
           "description": "Markdown sem HTML; fórmulas entre $ ou $$"
         },
         "códigoInicial": {

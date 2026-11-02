@@ -5,6 +5,8 @@
  */
 import { z } from "zod";
 
+import { TAMANHO_MAXIMO_DO_ENUNCIADO } from "./limites.js";
+
 export const URL_DO_ESQUEMA = "https://portugol.dev/esquemas/exercicio/v1.json";
 
 /**
@@ -128,7 +130,7 @@ const comum = {
   título: z.string().min(1),
   tópico: z.enum(Object.keys(tópicos)),
   dificuldade: z.union([z.literal(1), z.literal(2), z.literal(3)]).describe("1: fácil, 2: médio, 3: difícil"),
-  enunciado: z.string().min(1).describe("Markdown sem HTML; fórmulas entre $ ou $$"),
+  enunciado: z.string().min(1).max(TAMANHO_MAXIMO_DO_ENUNCIADO).describe("Markdown sem HTML; fórmulas entre $ ou $$"),
   códigoInicial: z.string().optional().describe("Código que o aluno recebe ao abrir o exercício"),
   atribuição: z
     .object({
@@ -204,7 +206,7 @@ export const esquemaDoRascunho = z
     título: z.string(),
     tópico: comum.tópico,
     dificuldade: comum.dificuldade,
-    enunciado: z.string().describe(comum.enunciado.description),
+    enunciado: z.string().max(TAMANHO_MAXIMO_DO_ENUNCIADO).describe(comum.enunciado.description),
     códigoInicial: z.string(),
     solução: z.string().describe("A solução de referência, de onde saem as respostas esperadas"),
     modo: z.enum(["simples", "avançado"]),

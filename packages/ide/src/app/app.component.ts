@@ -29,7 +29,7 @@ import {
 } from "./dialog-open-exercise/dialog-open-exercise.component";
 import { DialogRenameTabComponent } from "./dialog-rename-tab/dialog-rename-tab.component";
 import { DialogSettingsComponent, SettingsSectionId } from "./dialog-settings/dialog-settings.component";
-import { ExerciseBuilderService, ExerciseDraft } from "./exercise-builder.service";
+import { draftTitle, emptyDraft, ExerciseDraft, readDraftFile } from "./exercise-draft";
 import { ExerciseNotFoundError, exerciseLabel, ExercisesService, SHARED_PREFIX } from "./exercises.service";
 import { FileService } from "./file.service";
 import { SettingsService } from "./settings.service";
@@ -46,7 +46,8 @@ import { TabHelpComponent } from "./tab-help/tab-help.component";
 import { TabExerciseBuilderComponent } from "./tab-exercise-builder/tab-exercise-builder.component";
 import { TabStartComponent } from "./tab-start/tab-start.component";
 import { WorkspaceService } from "./workspace.service";
-import { defaultCode, isMeaningfulCode, isOwnExerciseTab, Tab, TabType } from "./workspace.types";
+import { hasMeaningfulContents } from "./tab-contents";
+import { defaultCode, isOwnExerciseTab, Tab, TabExercise, TabType } from "./workspace.types";
 
 /**
  * De onde veio a ação, enviado como rótulo dos eventos do Analytics: a aba Inicial, o
@@ -94,7 +95,6 @@ export class AppComponent implements OnInit {
   private zone = inject(NgZone);
   private survey = inject(SurveyService);
   private exercises = inject(ExercisesService);
-  private exerciseBuilder = inject(ExerciseBuilderService);
 
   private readonly tablist = viewChild.required<ElementRef<HTMLElement>>("tablist");
   private readonly fileInput = viewChild.required<ElementRef<HTMLInputElement>>("fileInput");
@@ -500,8 +500,8 @@ export class AppComponent implements OnInit {
     this.gaService.event("new_tab_top", "Editor", origin, this.workspace.tabs().length);
   }
 
-  addTab(title?: string, contents?: string, exerciseId?: string, exerciseCopy = false) {
-    this.workspace.addTab(title, contents, exerciseId, exerciseCopy);
+  addTab(title?: string, contents?: string, exercise?: TabExercise) {
+    this.workspace.addTab(title, contents, exercise);
     this.selectTab(this.workspace.activeTabId());
     this.focusNewTab(this.workspace.activeTab());
   }
@@ -551,10 +551,7 @@ export class AppComponent implements OnInit {
     // O código de um exercício fica guardado com o progresso: reabrir o exercício o traz de volta
     // (uma cópia não guarda nada, então pergunta como uma aba comum)
     // A criação de um exercício pergunta como uma aba de código: o rascunho só está nela
-    const meaningful =
-      tab.type === "exercise-builder"
-        ? this.exerciseBuilder.isMeaningful(tab.contents)
-        : tab.type === "editor" && !isOwnExerciseTab(tab) && isMeaningfulCode(tab.contents);
+    const meaningful = !isOwnExerciseTab(tab) && hasMeaningfulContents(tab.type, tab.contents);
 
     if (!meaningful || !this.settingsService.get(settings.interfaceConfirmCloseTab)) {
       confirmClose();
@@ -686,13 +683,13 @@ export class AppComponent implements OnInit {
   newExerciseBuilder() {
     this.gaService.event("exercise_builder_new", "Exercícios");
 
-    const draft = this.exerciseBuilder.emptyDraft(defaultCode(this.settingsService.editorIndentation()));
+    const draft = emptyDraft(defaultCode(this.settingsService.editorIndentation()));
 
     this.openBuilderTab(draft);
   }
 
   private openBuilderTab(draft: ExerciseDraft) {
-    this.workspace.addBuilderTab(this.exerciseBuilder.titleOf(draft), JSON.stringify(draft));
+    this.workspace.addBuilderTab(draftTitle(draft), JSON.stringify(draft));
     this.focusNewTab(this.workspace.activeTab());
   }
 
@@ -722,7 +719,7 @@ export class AppComponent implements OnInit {
       }
 
       this.gaService.event("open_exercise", "Exercícios", exerciseLabel(exerciseId));
-      this.addTab(exercise.título, contents, exerciseId);
+      this.addTab(exercise.título, contents, { id: exerciseId });
     } catch (error) {
       const expired = error instanceof ExerciseNotFoundError && exerciseId.startsWith(SHARED_PREFIX);
 
@@ -741,7 +738,7 @@ export class AppComponent implements OnInit {
    */
   private async openCode(title: string, contents: string) {
     // Um exercício baixado da criação de exercícios volta para uma aba de criação
-    const draft = await this.exerciseBuilder.readDraftFile(title, contents);
+    const draft = await readDraftFile(title, contents);
 
     if (draft === "invalid") {
       this.toast.error("O arquivo do exercício não segue o formato e não foi aberto.", { duration: 5000 });
@@ -758,13 +755,13 @@ export class AppComponent implements OnInit {
     if (exerciseId) {
       try {
         await this.exercises.load(exerciseId);
-        this.addTab(title, code, exerciseId, true);
+        this.addTab(title, code, { id: exerciseId, copy: true });
         return;
       } catch (error) {
         // Sem conexão, abre como cópia mesmo assim: a aba tenta carregar o exercício de novo.
         // Só um exercício que não existe aqui abre numa aba comum
         if (!(error instanceof ExerciseNotFoundError)) {
-          this.addTab(title, code, exerciseId, true);
+          this.addTab(title, code, { id: exerciseId, copy: true });
           return;
         }
       }

@@ -10,21 +10,35 @@ export type PortugolEvent =
   | { type: "finish"; stopped: boolean; time: number }
   | { type: "message"; message: PortugolMessage }
   | { type: "paused"; pause: DebugPause }
-  | { type: "write"; values: WrittenValue[] }
-  | { type: "return"; value: WrittenValue | null };
+  | { type: "write"; values: PortugolValue[] }
+  | { type: "return"; value: PortugolValue | null };
 
 /**
- * Um valor escrito pelo `escreva`, com o tipo: um por argumento, como no corretor do Portugol
- * Studio.
+ * Um valor do Portugol com o tipo, no formato dos exercícios (`@portugol-webstudio/resources/
+ * exercicios`): o esperado num exercício, cada argumento de um `escreva` (como no corretor do
+ * Portugol Studio) e o retorno de uma função conferida.
  */
-export type WrittenValue =
-  | { type: "inteiro" | "real"; value: number }
-  | { type: "cadeia"; value: string }
-  | { type: "caracter"; value: string }
-  | { type: "logico"; value: boolean };
+export type PortugolValue =
+  | { tipo: "inteiro" | "real"; valor: number }
+  | { tipo: "cadeia" | "caracter"; valor: string }
+  | { tipo: "logico"; valor: boolean };
 
 /**
- * Funções `valuesOf(args)` e `returnOf(result)` dos workers, no formato de `WrittenValue`. Uma
+ * Um vetor num argumento de uma função conferida.
+ */
+export type PortugolVector =
+  | { tipo: "inteiro[]" | "real[]"; valor: number[] }
+  | { tipo: "cadeia[]" | "caracter[]"; valor: string[] }
+  | { tipo: "logico[]"; valor: boolean[] };
+
+/**
+ * Um argumento de uma função conferida (`RunOptions.call`), como no exercício: um valor
+ * simples ou um vetor. O runtime o recebe assim mesmo.
+ */
+export type ExerciseArgument = PortugolValue | PortugolVector;
+
+/**
+ * Funções `valuesOf(args)` e `returnOf(result)` dos workers, no formato de `PortugolValue`. Uma
  * \`cadeia\` sem valor vale "", que é o que o \`escreva\` escreve.
  * - `valuesOf`: os valores dos argumentos de um `escreva`. Os argumentos sem valor nenhum
  *   (\`undefined\`) são pulados, como no texto escrito.
@@ -33,7 +47,7 @@ export type WrittenValue =
  *   \`cadeia\`).
  */
 export const WRITTEN_VALUES = /* javascript */ `
-  const writtenValue = (arg) => ({ type: arg.type, value: arg.type === "cadeia" ? (arg.value ?? "") : arg.value });
+  const writtenValue = (arg) => ({ tipo: arg.type, valor: arg.type === "cadeia" ? (arg.value ?? "") : arg.value });
 
   const valuesOf = (args) => args.filter((arg) => typeof arg.value !== "undefined").map(writtenValue);
 
@@ -42,13 +56,6 @@ export const WRITTEN_VALUES = /* javascript */ `
       ? writtenValue(result)
       : null;
 `;
-
-/**
- * Um argumento de uma função chamada pela correção (`RunOptions.call`): um valor simples, como
- * os escritos, ou um vetor deles (`vector`).
- */
-export type CallArgument =
-  WrittenValue | { type: WrittenValue["type"]; vector: true; value: Array<WrittenValue["value"]> };
 
 /**
  * Onde aconteceu um erro de execução: o começo do comando, com a linha e a coluna contadas
@@ -101,7 +108,7 @@ export type RunOptions = {
    * Chama só esta função do programa, com estes argumentos, em vez do `inicio`, e manda um
    * evento `return` com o retorno dela. Para a correção dos exercícios.
    */
-  call?: { name: string; args: CallArgument[] };
+  call?: { name: string; args: ExerciseArgument[] };
 };
 
 export type PortugolMessage = {

@@ -44,6 +44,7 @@
     },
     "enunciado": {
       "type": "string",
+      "maxLength": 10000,
       "description": "Markdown sem HTML; fórmulas entre $ ou $$"
     },
     "códigoInicial": {

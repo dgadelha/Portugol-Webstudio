@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from "@angular/core";
-import { ExpectedValue, portugolLiteral, WrittenValue } from "@portugol-webstudio/runner";
+import { portugolLiteral, PortugolValue } from "@portugol-webstudio/runner";
 
 /**
  * Um valor esperado ou escrito como o Portugol o escreve, com o tipo antes: `inteiro 42`,
@@ -7,13 +7,7 @@ import { ExpectedValue, portugolLiteral, WrittenValue } from "@portugol-webstudi
  */
 @Pipe({ name: "exerciseValue" })
 export class ExerciseValuePipe implements PipeTransform {
-  transform(value: ExpectedValue | WrittenValue | null): string {
-    if (value === null) {
-      return "nada";
-    }
-
-    const [type, raw] = "tipo" in value ? [value.tipo, value.valor] : [value.type, value.value];
-
-    return `${type} ${portugolLiteral(type, raw)}`;
+  transform(value: PortugolValue | null): string {
+    return value === null ? "nada" : `${value.tipo} ${portugolLiteral(value.tipo, value.valor)}`;
   }
 }

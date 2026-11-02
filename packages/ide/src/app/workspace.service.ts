@@ -1,18 +1,18 @@
 import { computed, DestroyRef, effect, inject, NgZone, Service, signal, untracked } from "@angular/core";
 import { settings } from "../settings";
-import { ExerciseBuilderService } from "./exercise-builder.service";
 import { SettingsService } from "./settings.service";
+import { hasMeaningfulContents } from "./tab-contents";
 import { WorkspaceStorageService } from "./workspace-storage.service";
 import {
   defaultCode,
   DEFAULT_TAB_TITLE,
-  isMeaningfulCode,
   isOwnExerciseTab,
   randomId,
   RecoverableWorkspace,
   StoredTab,
   StoredWorkspaceMeta,
   Tab,
+  TabExercise,
   TabType,
   WORKSPACE_SCHEMA_VERSION,
 } from "./workspace.types";
@@ -62,7 +62,6 @@ const MAX_AGE = MAX_AGE_DAYS * 24 * 60 * 60 * 1000;
 export class WorkspaceService {
   private readonly storage = inject(WorkspaceStorageService);
   private readonly settings = inject(SettingsService);
-  private readonly exerciseBuilder = inject(ExerciseBuilderService);
   private readonly zone = inject(NgZone);
   private readonly lifetime = inject(DestroyRef);
 
@@ -138,7 +137,11 @@ export class WorkspaceService {
     this.watchWindowLifecycle();
   }
 
-  addTab(title?: string, contents?: string, exerciseId?: string, exerciseCopy = false) {
+  /**
+   * Uma aba de código. Com `exercise`, ela é a aba de um exercício: a do aluno, ou uma cópia
+   * (`copy`), aberta de um arquivo ou de um link, que não mexe no progresso.
+   */
+  addTab(title?: string, contents?: string, exercise?: TabExercise) {
     const tab: Tab = {
       id: randomId(),
       title: title || DEFAULT_TAB_TITLE,
@@ -146,8 +149,8 @@ export class WorkspaceService {
       // Aba sem origem começa com o esqueleto de um programa. Um arquivo aberto
       // vazio continua vazio: só a ausência de conteúdo vira o modelo.
       contents: contents ?? defaultCode(this.settings.editorIndentation()),
-      ...(exerciseId && { exerciseId }),
-      ...(exerciseId && exerciseCopy && { exerciseCopy }),
+      ...(exercise && { exerciseId: exercise.id }),
+      ...(exercise?.copy && { exerciseCopy: true }),
     };
 
     return this.pushTab(tab);
@@ -287,11 +290,7 @@ export class WorkspaceService {
           }),
         };
       })
-      .filter(tab => {
-        return tab.type === "exercise-builder"
-          ? this.exerciseBuilder.isMeaningful(tab.contents)
-          : isMeaningfulCode(tab.contents);
-      });
+      .filter(tab => hasMeaningfulContents(tab.type, tab.contents));
 
     if (restored.length > 0) {
       this.tabs.update(tabs => [...tabs, ...restored]);
@@ -370,13 +369,7 @@ export class WorkspaceService {
       }
 
       const tabTitles = meta.tabs
-        .filter(tab => {
-          return (
-            (tab.type === "exercise-builder" &&
-              this.exerciseBuilder.isMeaningful(this.storage.readTab(id, tab.id) ?? "")) ||
-            (tab.type === "editor" && isMeaningfulCode(this.storage.readTab(id, tab.id) ?? ""))
-          );
-        })
+        .filter(tab => hasMeaningfulContents(tab.type, this.storage.readTab(id, tab.id) ?? ""))
         .map(tab => tab.title);
 
       if (tabTitles.length > 0) {

@@ -21,23 +21,27 @@ import { toSignal } from "@angular/core/rxjs-interop";
 import { NgTemplateOutlet } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { MonacoEditorModule } from "@materia-ui/ngx-monaco-editor";
-import { ExpectedValue, portugolLiteral } from "@portugol-webstudio/runner";
+import { portugolLiteral, PortugolValue } from "@portugol-webstudio/runner";
+import { captureException } from "@sentry/angular";
 import { AngularSvgIconModule } from "angular-svg-icon";
 import { saveAs } from "file-saver";
 import { GoogleAnalyticsService } from "ngx-google-analytics";
 import { map } from "rxjs";
 
+import { TAMANHO_MAXIMO_DO_ENUNCIADO } from "@portugol-webstudio/resources/exercicios/limites.js";
+
 import { isMacintosh } from "../../settings";
+import { CaseStatus, ExerciseBuilderService, SHARED_EXERCISE_DAYS } from "../exercise-builder.service";
 import {
-  CaseStatus,
   DraftCase,
   DraftCheck,
   DraftFunctionCheck,
   DraftWriteCheck,
-  ExerciseBuilderService,
+  draftTitle,
+  emptyDraft,
   ExerciseDraft,
-  SHARED_EXERCISE_DAYS,
-} from "../exercise-builder.service";
+  parseDraft,
+} from "../exercise-draft";
 import { ExerciseMarkdownService } from "../exercise-markdown.service";
 import { DIFFICULTY_LABELS, Exercício, ExercisesService } from "../exercises.service";
 import { SettingsService } from "../settings.service";
@@ -106,7 +110,12 @@ export class TabExerciseBuilderComponent implements OnInit {
    */
   readonly tabFocusShortcut = isMacintosh ? "Ctrl+Shift+M" : "Ctrl+M";
 
-  readonly draft = signal<ExerciseDraft>(this.builder.emptyDraft(""));
+  /**
+   * O tamanho máximo do enunciado, o mesmo do esquema.
+   */
+  readonly statementMaxLength = TAMANHO_MAXIMO_DO_ENUNCIADO;
+
+  readonly draft = signal<ExerciseDraft>(emptyDraft(""));
   readonly topics = signal<Array<{ id: Exercício["tópico"]; name: string }>>([]);
   readonly difficulties = Object.entries(DIFFICULTY_LABELS).map(([value, label]) => {
     return {
@@ -313,7 +322,7 @@ export class TabExerciseBuilderComponent implements OnInit {
 
     return {
       title: draft.título,
-      heading: this.builder.titleOf(draft),
+      heading: draftTitle(draft),
       caseCount: this.countLabel(examples, tests),
       topic: draft.tópico,
       difficulty: draft.dificuldade,
@@ -398,7 +407,7 @@ export class TabExerciseBuilderComponent implements OnInit {
     });
 
     // O nome da aba é o título: só muda quando ele muda
-    const tabTitle = computed(() => this.builder.titleOf(this.draft()));
+    const tabTitle = computed(() => draftTitle(this.draft()));
 
     effect(() => {
       const title = tabTitle();
@@ -466,7 +475,7 @@ export class TabExerciseBuilderComponent implements OnInit {
   }
 
   ngOnInit() {
-    const saved = this.builder.parseDraft(this.workspace.contentsOf(this.tabId()));
+    const saved = parseDraft(this.workspace.contentsOf(this.tabId()));
 
     if (saved) {
       this.draft.set(saved);
@@ -808,7 +817,7 @@ export class TabExerciseBuilderComponent implements OnInit {
       const aborted = abort.signal.aborted;
 
       if (!aborted) {
-        console.error(error);
+        captureException(error, { tags: { exercise: "builder", action: "generate" } });
       }
 
       this.showProblems(only ?? "top", [
@@ -1006,8 +1015,12 @@ export class TabExerciseBuilderComponent implements OnInit {
       this.draft.update(current => ({ ...current, compartilhado }));
       void this.announcer.announce("Exercício compartilhado. O link está logo abaixo.", "polite");
     } catch (error) {
-      // O esquema vem num pacote à parte, e a conferência roda a solução no worker
-      console.error(error);
+      // O esquema vem num pacote à parte, e a conferência roda a solução no worker. Sem
+      // conexão, a falha é esperada e não vai para o Sentry
+      if (navigator.onLine) {
+        captureException(error, { tags: { exercise: "builder", action: "share" } });
+      }
+
       this.showProblems("share", [
         navigator.onLine
           ? "Não foi possível compartilhar o exercício."
@@ -1127,7 +1140,7 @@ export class TabExerciseBuilderComponent implements OnInit {
     return parts;
   }
 
-  private literal(value: ExpectedValue) {
+  private literal(value: PortugolValue) {
     return portugolLiteral(value.tipo, value.valor);
   }
 

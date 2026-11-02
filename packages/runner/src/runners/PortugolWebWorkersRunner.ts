@@ -4,9 +4,9 @@ import { Subject, Subscription } from "rxjs";
 import {
   DebugCommand,
   IPortugolRunner,
-  RunOptions,
   PortugolEvent,
   PortugolMessage,
+  RunOptions,
   WRITTEN_VALUES,
 } from "./IPortugolRunner.js";
 
@@ -222,7 +222,12 @@ export class PortugolWebWorkersRunner extends IPortugolRunner {
   run(options: RunOptions = {}) {
     this.startedAt = new Date();
 
-    this.worker.postMessage({ type: "start", ...options });
+    this.worker.postMessage({
+      type: "start",
+      debug: options.debug,
+      writeValues: options.writeValues,
+      call: options.call,
+    });
 
     this.running = true;
     this.running$.next(this.running);

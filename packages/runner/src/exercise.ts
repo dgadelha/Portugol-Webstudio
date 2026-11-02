@@ -1,27 +1,6 @@
 import type { FunctionSignature } from "@portugol-webstudio/parser";
 
-import type { CallArgument, ErrorPosition, IPortugolRunner, WrittenValue } from "./runners/IPortugolRunner.js";
-
-/**
- * Um valor esperado num exercício, como no JSON (`@portugol-webstudio/resources/exercicios`).
- */
-export type ExpectedValue =
-  | { tipo: "inteiro" | "real"; valor: number }
-  | { tipo: "cadeia" | "caracter"; valor: string }
-  | { tipo: "logico"; valor: boolean };
-
-/**
- * Um vetor num argumento de uma função conferida, como no JSON.
- */
-export type ExpectedVector =
-  | { tipo: "inteiro[]" | "real[]"; valor: number[] }
-  | { tipo: "cadeia[]" | "caracter[]"; valor: string[] }
-  | { tipo: "logico[]"; valor: boolean[] };
-
-/**
- * Um argumento de uma função conferida, como no JSON: um valor simples ou um vetor.
- */
-export type ExerciseArgument = ExpectedValue | ExpectedVector;
+import type { ErrorPosition, ExerciseArgument, IPortugolRunner, PortugolValue } from "./runners/IPortugolRunner.js";
 
 /**
  * O tipo dos elementos de um tipo de vetor (`real[]` → `real`), ou `undefined` num tipo
@@ -39,7 +18,7 @@ export function vectorElementType(tipo: string) {
     throw new Error(`Tipo de argumento não suportado: ${tipo}`);
   }
 
-  return element as ExpectedValue["tipo"];
+  return element as PortugolValue["tipo"];
 }
 
 export type WriteCheck = {
@@ -51,7 +30,7 @@ export type WriteCheck = {
    * contam).
    */
   regra: "igual" | "contém";
-  valores: ExpectedValue[];
+  valores: PortugolValue[];
   tolerância?: number;
 };
 
@@ -65,7 +44,7 @@ export type FunctionCheck = {
   nome: string;
   argumentos: ExerciseArgument[];
   regra: "igual";
-  valor: ExpectedValue;
+  valor: PortugolValue;
   tolerância?: number;
 };
 
@@ -120,7 +99,7 @@ export type CaseRun = {
   /**
    * Os valores escritos, só quando a execução pediu (`writeValues`).
    */
-  values: WrittenValue[];
+  values: PortugolValue[];
   /**
    * Quantos dos `values` foram escritos antes da última leitura. O `contém` não confere nada
    * disso: nem as mensagens antes de cada `leia`, nem um resultado escrito entre duas leituras.
@@ -129,7 +108,7 @@ export type CaseRun = {
   /**
    * O retorno da função chamada (`call`): `null` sem chamada, ou se ela não retornou nada.
    */
-  returned: WrittenValue | null;
+  returned: PortugolValue | null;
 };
 
 /**
@@ -145,15 +124,15 @@ export type CaseFailure =
       check: number;
       description?: string;
       position: number;
-      expected: ExpectedValue | null;
-      received: WrittenValue | null;
+      expected: PortugolValue | null;
+      received: PortugolValue | null;
     }
   | {
       type: "missingValue";
       check: number;
       description?: string;
       position: number;
-      expected: ExpectedValue;
+      expected: PortugolValue;
       /**
        * O caso tem entradas: o `contém` só procurou no que foi escrito depois da última leitura.
        */
@@ -174,8 +153,8 @@ export type CaseFailure =
       description?: string;
       name: string;
       arguments: ExerciseArgument[];
-      expected: ExpectedValue;
-      received: WrittenValue | null;
+      expected: PortugolValue;
+      received: PortugolValue | null;
     };
 
 export type CaseResult = {
@@ -285,16 +264,16 @@ export function runExerciseCase(
     /**
      * Chama só esta função, em vez do `inicio`: o retorno fica em `returned`.
      */
-    call?: { name: string; args: CallArgument[] };
+    call?: { name: string; args: ExerciseArgument[] };
     signal?: AbortSignal;
   } = {},
 ): Promise<CaseRun> {
   // @ts-expect-error A classe concreta, não a abstrata
   const runner: IPortugolRunner = new Runner(js);
   const pending = [...inputs];
-  const values: WrittenValue[] = [];
+  const values: PortugolValue[] = [];
   let valuesBeforeLastInput = 0;
-  let returned: WrittenValue | null = null;
+  let returned: PortugolValue | null = null;
   let output = "";
   let ending: CaseEnding | undefined;
 
@@ -410,10 +389,13 @@ export async function checkExercise(
 
 /**
  * Se o caso executa o `inicio` com as entradas: no modo simples, ou quando confere o `escreva`.
- * Um caso só com verificações de função chama cada função sozinha, sem entradas.
+ * Um caso só com verificações de função chama cada função sozinha, sem entradas. Vale também
+ * para um caso da criação de exercício, que tem as mesmas verificações.
  */
-export function runsInicio(testCase: ExerciseCase) {
-  return testCase.verificações?.some(check => check.alvo !== "função") ?? true;
+export function runsInicio(testCase: ExerciseCase | { verificações: ReadonlyArray<{ alvo: string }> }) {
+  const checks = "verificações" in testCase ? testCase.verificações : undefined;
+
+  return checks?.some(check => check.alvo !== "função") ?? true;
 }
 
 /**
@@ -500,7 +482,7 @@ async function checkFunction(
 
   const run = await runExerciseCase(Runner, program.js, [], {
     ...options,
-    call: { name: check.nome, args: check.argumentos.map(argument => callArgument(argument)) },
+    call: { name: check.nome, args: check.argumentos },
   });
 
   if (run.ending.type !== "finished") {
@@ -522,17 +504,6 @@ async function checkFunction(
   }
 
   return { run };
-}
-
-/**
- * Um argumento do JSON no formato que o runtime recebe (`RunOptions.call`).
- */
-function callArgument(argument: ExerciseArgument): CallArgument {
-  const element = vectorElementType(argument.tipo);
-
-  return element
-    ? { type: element, vector: true, value: argument.valor as Array<WrittenValue["value"]> }
-    : ({ type: argument.tipo, value: argument.valor } as WrittenValue);
 }
 
 /**
@@ -568,7 +539,7 @@ function compareOutput(expected: string, received: string): CaseFailure | undefi
   return undefined;
 }
 
-function compareEqual(check: WriteCheck, values: WrittenValue[]) {
+function compareEqual(check: WriteCheck, values: PortugolValue[]) {
   const length = Math.max(check.valores.length, values.length);
 
   for (let i = 0; i < length; i++) {
@@ -588,7 +559,7 @@ function compareEqual(check: WriteCheck, values: WrittenValue[]) {
   return;
 }
 
-function compareContains(check: WriteCheck, values: WrittenValue[], afterLastInput: boolean) {
+function compareContains(check: WriteCheck, values: PortugolValue[], afterLastInput: boolean) {
   let next = 0;
 
   for (const [i, expected] of check.valores.entries()) {
@@ -611,20 +582,16 @@ function compareContains(check: WriteCheck, values: WrittenValue[], afterLastInp
  * vale com ou sem as quebras de linha do fim (`escreva("Par\n")` escreve "Par"). Um retorno é
  * conferido como veio.
  */
-function sameValue(expected: ExpectedValue, received: WrittenValue, tolerance = DEFAULT_TOLERANCE, written = false) {
-  if (expected.tipo !== received.type) {
-    return false;
+function sameValue(expected: PortugolValue, received: PortugolValue, tolerance = DEFAULT_TOLERANCE, written = false) {
+  if (expected.tipo === "real" && received.tipo === "real") {
+    return Math.abs(expected.valor - received.valor) <= tolerance;
   }
 
-  if (expected.tipo === "real") {
-    return Math.abs(expected.valor - (received.value as number)) <= tolerance;
+  if (written && expected.tipo === "cadeia" && received.tipo === "cadeia") {
+    return withoutTrailingLineBreaks(expected.valor) === withoutTrailingLineBreaks(received.valor);
   }
 
-  if (written && expected.tipo === "cadeia") {
-    return withoutTrailingLineBreaks(expected.valor) === withoutTrailingLineBreaks(received.value as string);
-  }
-
-  return expected.valor === received.value;
+  return expected.tipo === received.tipo && expected.valor === received.valor;
 }
 
 /**
@@ -640,9 +607,9 @@ export function comparedValues(run: CaseRun, regra: WriteCheck["regra"]) {
  * Os valores escritos sem as cadeias que são só quebras de linha: `escreva("Par", "\n")` é o
  * mesmo que `escreva("Par\n")`, e a quebra de linha é a formatação da saída, não um valor.
  */
-function withoutLineBreaks(values: WrittenValue[]) {
+function withoutLineBreaks(values: PortugolValue[]) {
   return values.filter(
-    value => value.type !== "cadeia" || withoutTrailingLineBreaks(value.value) !== "" || value.value === "",
+    value => value.tipo !== "cadeia" || withoutTrailingLineBreaks(value.valor) !== "" || value.valor === "",
   );
 }
 

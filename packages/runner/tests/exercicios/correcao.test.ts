@@ -117,15 +117,15 @@ describe("Correção de exercícios", () => {
       const result = await check(portugolInicio`escreva("a", 1, 2.5, 'c', verdadeiro)`, advanced([contém([])]));
 
       expect(result.cases[0].run.values).toEqual([
-        { type: "cadeia", value: "a" },
-        { type: "inteiro", value: 1 },
-        { type: "real", value: 2.5 },
-        { type: "caracter", value: "c" },
-        { type: "logico", value: true },
+        { tipo: "cadeia", valor: "a" },
+        { tipo: "inteiro", valor: 1 },
+        { tipo: "real", valor: 2.5 },
+        { tipo: "caracter", valor: "c" },
+        { tipo: "logico", valor: true },
       ]);
     });
 
-    test("igual: o tipo conta", async () => {
+    test("igual: um valor de outro tipo falha", async () => {
       await expect(
         failure(portugolInicio`escreva("42")`, advanced([igual([{ tipo: "inteiro", valor: 42 }])])),
       ).resolves.toEqual({
@@ -134,32 +134,33 @@ describe("Correção de exercícios", () => {
         description: undefined,
         position: 1,
         expected: { tipo: "inteiro", valor: 42 },
-        received: { type: "cadeia", value: "42" },
+        received: { tipo: "cadeia", valor: "42" },
       });
+    });
 
+    test("igual: o mesmo valor, do mesmo tipo, passa", async () => {
       await expect(
         failure(portugolInicio`escreva(42)`, advanced([igual([{ tipo: "inteiro", valor: 42 }])])),
       ).resolves.toBeUndefined();
     });
 
-    test("igual: um valor a mais falha", async () => {
+    test.each([
+      ["antes", `escreva("Soma: ", 8)`, { position: 1, received: { tipo: "cadeia", valor: "Soma: " } }],
+      ["depois", "escreva(8, 9)", { position: 2, expected: null }],
+    ])("igual: um valor a mais (%s) falha", async (_, comando, expected) => {
       await expect(
-        failure(portugolInicio`escreva("Soma: ", 8)`, advanced([igual([{ tipo: "inteiro", valor: 8 }])])),
-      ).resolves.toMatchObject({ type: "differentValues", position: 1, received: { type: "cadeia", value: "Soma: " } });
-
-      await expect(
-        failure(portugolInicio`escreva(8, 9)`, advanced([igual([{ tipo: "inteiro", valor: 8 }])])),
-      ).resolves.toMatchObject({ type: "differentValues", position: 2, expected: null });
+        failure(portugolInicio`${comando}`, advanced([igual([{ tipo: "inteiro", valor: 8 }])])),
+      ).resolves.toMatchObject({ type: "differentValues", ...expected });
     });
 
-    test("contém: ignora os outros valores, mas não a ordem", async () => {
-      const code = portugolInicio`
-        escreva("Digite: ", 3, " e ", 5, "\\n")
-      `;
+    const digite = portugolInicio`
+      escreva("Digite: ", 3, " e ", 5, "\\n")
+    `;
 
+    test("contém: ignora os outros valores", async () => {
       await expect(
         failure(
-          code,
+          digite,
           advanced([
             contém([
               { tipo: "inteiro", valor: 3 },
@@ -168,10 +169,12 @@ describe("Correção de exercícios", () => {
           ]),
         ),
       ).resolves.toBeUndefined();
+    });
 
+    test("contém: a ordem conta", async () => {
       await expect(
         failure(
-          code,
+          digite,
           advanced([
             contém([
               { tipo: "inteiro", valor: 5 },
@@ -189,18 +192,14 @@ describe("Correção de exercícios", () => {
       });
     });
 
-    test("real: compara com uma tolerância", async () => {
-      await expect(
-        failure(portugolInicio`escreva(0.1 + 0.2)`, advanced([igual([{ tipo: "real", valor: 0.3 }])])),
-      ).resolves.toBeUndefined();
+    test.each([
+      ["0.1 + 0.2 com a tolerância padrão", "escreva(0.1 + 0.2)", 0.3, undefined, undefined],
+      ["10.0 / 3 longe demais da padrão", "escreva(10.0 / 3)", 3.33, undefined, "differentValues"],
+      ["10.0 / 3 dentro da tolerância do exercício", "escreva(10.0 / 3)", 3.33, 0.01, undefined],
+    ])("real: compara com uma tolerância (%s)", async (_, comando, valor, tolerância, type) => {
+      const exercise = advanced([igual([{ tipo: "real", valor }], tolerância)]);
 
-      await expect(
-        failure(portugolInicio`escreva(10.0 / 3)`, advanced([igual([{ tipo: "real", valor: 3.33 }])])),
-      ).resolves.toMatchObject({ type: "differentValues" });
-
-      await expect(
-        failure(portugolInicio`escreva(10.0 / 3)`, advanced([igual([{ tipo: "real", valor: 3.33 }], 0.01)])),
-      ).resolves.toBeUndefined();
+      expect((await failure(portugolInicio`${comando}`, exercise))?.type).toBe(type);
     });
 
     test("real e inteiro são tipos diferentes", async () => {
@@ -385,7 +384,7 @@ describe("Correção de exercícios", () => {
           { tipo: "inteiro", valor: 5 },
         ],
         expected: { tipo: "inteiro", valor: 8 },
-        received: { type: "inteiro", value: -2 },
+        received: { tipo: "inteiro", valor: -2 },
       });
     });
 

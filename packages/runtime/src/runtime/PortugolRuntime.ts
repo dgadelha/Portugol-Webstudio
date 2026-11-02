@@ -295,11 +295,15 @@ class PortugolRuntime {
       return this.callFunction("inicio");
     }
 
-    // Um valor simples, ou um vetor (vector) com os valores de um mesmo tipo
+    // Os argumentos como no exercício: um valor simples ({ tipo, valor }) ou um vetor, com o
+    // tipo dos elementos antes de "[]" ("real[]")
     const args = call.args.map((arg) =>
-      arg.vector
-        ? new PortugolVar("vetor", arg.value.map((item) => new PortugolVar(arg.type, item)))
-        : new PortugolVar(arg.type, arg.value),
+      arg.tipo.endsWith("[]")
+        ? new PortugolVar(
+            "vetor",
+            arg.valor.map((item) => new PortugolVar(arg.tipo.slice(0, -2), item)),
+          )
+        : new PortugolVar(arg.tipo, arg.valor),
     );
 
     return this.callFunction(call.name, "", args);
