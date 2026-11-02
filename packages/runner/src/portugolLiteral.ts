@@ -18,6 +18,10 @@ const ESCAPES: Record<string, string> = {
  *
  * Um `real` sai como o `escreva` o escreve (`8.0`, `1.0E7`), para bater com a saída. Com
  * `code`, sai como pode ser escrito no código, que não aceita expoente: `10000000.0`.
+ *
+ * Um caractere de controle sem sequência própria sai como `\u0001`. Num caracter, o Portugol
+ * aceita isso no código; numa cadeia, não (só `\t \n \b \r \f \" \\`), então ali ele serve só para
+ * mostrar o valor.
  */
 export function portugolLiteral(type: string, value: unknown, { code = false } = {}): string {
   const element = vectorElementType(type);
@@ -100,10 +104,15 @@ const UNESCAPES: Record<string, string> = Object.fromEntries(
  * Um valor escrito como no código em Portugol, do tipo pedido (`inteiro`, `real[]`…), ou
  * `undefined` se o texto não for um valor desse tipo. O caminho inverso de `portugolLiteral`
  * com `code`: um vetor entre chaves, cadeias e caracteres entre aspas com as sequências de
- * escape da gramática (`\n`, `\"`, `A`, `\101`…). Um inteiro vale onde se espera um real,
- * como numa chamada.
+ * escape que o Portugol aceita (veja `unquote`). Um inteiro vale onde se espera um real, como
+ * numa chamada. Uma matriz (`inteiro[][]`) ainda não vale nos exercícios: o resultado é
+ * `undefined`, como o de um texto inválido.
  */
 export function parsePortugolLiteral(text: string, type: string): ExerciseArgument | undefined {
+  if (type.endsWith("[][]")) {
+    return undefined;
+  }
+
   const trimmed = text.trim();
   const element = vectorElementType(type);
 
@@ -132,7 +141,8 @@ export function parsePortugolLiteral(text: string, type: string): ExerciseArgume
 
   switch (type) {
     case "inteiro": {
-      return /^-?\d+$/.test(trimmed) && Number(trimmed) >= -2_147_483_648 && Number(trimmed) <= 2_147_483_647
+      // Como no Portugol, -2147483648 não se escreve: é o 2147483648, fora do intervalo, com o sinal
+      return /^-?\d+$/.test(trimmed) && Math.abs(Number(trimmed)) <= 2_147_483_647
         ? { tipo: "inteiro", valor: Number(trimmed) }
         : undefined;
     }
@@ -212,8 +222,11 @@ export function splitPortugolList(text: string) {
 
 /**
  * O texto entre aspas, com as sequências de escape resolvidas, ou `undefined` se não estiver
- * entre as aspas pedidas, tiver uma aspa solta no meio ou uma sequência que a gramática não
- * aceita.
+ * entre as aspas pedidas, tiver uma aspa solta no meio ou uma sequência que o Portugol recusa.
+ *
+ * Numa cadeia, como no analisador e no Portugol Studio, só valem `\t \n \b \r \f \" \\`, e a
+ * cadeia não quebra a linha. Num caracter, valem também as da gramática: `\'`, `\u0041` e as
+ * octais (`\101`).
  */
 function unquote(text: string, quote: string) {
   if (text.length < 2 || !text.startsWith(quote) || !text.endsWith(quote)) {
@@ -226,7 +239,7 @@ function unquote(text: string, quote: string) {
   for (let i = 0; i < body.length; i++) {
     const character = body[i];
 
-    if (character === quote) {
+    if (character === quote || (quote === '"' && character === "\n")) {
       return;
     }
 
@@ -236,9 +249,10 @@ function unquote(text: string, quote: string) {
     }
 
     const next = body[i + 1];
-    const unicode = /^u([\da-f]{4})/i.exec(body.slice(i + 1));
+    const isCharacter = quote === "'";
+    const unicode = isCharacter ? /^u([\da-f]{4})/i.exec(body.slice(i + 1)) : null;
     // Como no Java: até três dígitos, e só até \377
-    const octal = /^(?:[0-3][0-7]{2}|[0-7]{1,2})/.exec(body.slice(i + 1));
+    const octal = isCharacter ? /^(?:[0-3][0-7]{2}|[0-7]{1,2})/.exec(body.slice(i + 1)) : null;
 
     if (unicode) {
       value += String.fromCodePoint(Number.parseInt(unicode[1], 16));
@@ -246,7 +260,7 @@ function unquote(text: string, quote: string) {
     } else if (octal) {
       value += String.fromCodePoint(Number.parseInt(octal[0], 8));
       i += octal[0].length;
-    } else if (next === '"' || next === "'" || next === "\\" || Object.hasOwn(UNESCAPES, next ?? "")) {
+    } else if (next === '"' || next === "\\" || (isCharacter && next === "'") || Object.hasOwn(UNESCAPES, next ?? "")) {
       value += UNESCAPES[next] ?? next;
       i++;
     } else {

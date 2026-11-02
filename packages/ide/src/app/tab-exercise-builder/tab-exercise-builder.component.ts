@@ -21,7 +21,7 @@ import { toSignal } from "@angular/core/rxjs-interop";
 import { NgTemplateOutlet } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { MonacoEditorModule } from "@materia-ui/ngx-monaco-editor";
-import { portugolLiteral, PortugolValue } from "@portugol-webstudio/runner";
+import { portugolLiteral, PortugolValue, runsInicio } from "@portugol-webstudio/runner";
 import { captureException } from "@sentry/angular";
 import { AngularSvgIconModule } from "angular-svg-icon";
 import { saveAs } from "file-saver";
@@ -817,7 +817,7 @@ export class TabExerciseBuilderComponent implements OnInit {
       const aborted = abort.signal.aborted;
 
       if (!aborted) {
-        captureException(error, { tags: { exercise: "builder", action: "generate" } });
+        captureException(error, { tags: { area: "exercise-builder", action: "generate" } });
       }
 
       this.showProblems(only ?? "top", [
@@ -1018,7 +1018,7 @@ export class TabExerciseBuilderComponent implements OnInit {
       // O esquema vem num pacote à parte, e a conferência roda a solução no worker. Sem
       // conexão, a falha é esperada e não vai para o Sentry
       if (navigator.onLine) {
-        captureException(error, { tags: { exercise: "builder", action: "share" } });
+        captureException(error, { tags: { area: "exercise-builder", action: "share" } });
       }
 
       this.showProblems("share", [
@@ -1108,7 +1108,7 @@ export class TabExerciseBuilderComponent implements OnInit {
     }
 
     // Um caso só com funções não tem entradas: nem aparecem
-    if (inputs.length > 0 || caso.verificações.some(check => check.alvo === "escreva")) {
+    if (inputs.length > 0 || runsInicio(caso)) {
       parts.push(inputsPart());
     }
 

@@ -390,7 +390,8 @@ export async function checkExercise(
 /**
  * Se o caso executa o `inicio` com as entradas: no modo simples, ou quando confere o `escreva`.
  * Um caso só com verificações de função chama cada função sozinha, sem entradas. Vale também
- * para um caso da criação de exercício, que tem as mesmas verificações.
+ * para um caso da criação de exercício, mas só no modo avançado: lá, um caso do modo simples
+ * guarda as verificações vazias, e daria `false`.
  */
 export function runsInicio(testCase: ExerciseCase | { verificações: ReadonlyArray<{ alvo: string }> }) {
   const checks = "verificações" in testCase ? testCase.verificações : undefined;

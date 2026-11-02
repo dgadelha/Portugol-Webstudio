@@ -173,9 +173,15 @@ export class ExerciseMarkdownService {
           name: "formulaEmBloco",
           level: "block",
           // Só no começo de uma linha: com um `$$` em qualquer lugar, o Marked cortava o parágrafo
-          // em cada um, e um texto com muitos deles levava segundos. O conteúdo não tem `$$`, para
-          // a busca parar no primeiro que fecha
-          start: (src: string) => /^\$\$/m.exec(src)?.index,
+          // em cada um, e um texto com muitos deles levava segundos. O Marked passa o texto sem o
+          // primeiro caractere, e um `$$` logo no começo já é tentado pelo tokenizer: basta
+          // procurar depois de uma quebra de linha. O conteúdo não tem `$$`, para a busca parar no
+          // primeiro que fecha
+          start: (src: string) => {
+            const match = /\n\$\$/.exec(src);
+
+            return match ? match.index + 1 : undefined;
+          },
           tokenizer: (src: string) => {
             const match = /^\$\$((?:(?!\$\$)[\s\S])+?)\$\$(?:\n|$)/.exec(src);
 

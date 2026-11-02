@@ -347,6 +347,10 @@ export class ExerciseBuilderService {
       return `a função ${check.nome} não retorna nenhum valor.`;
     }
 
+    if (signature.parameters.some(type => type.endsWith("[][]"))) {
+      return `a função ${check.nome} recebe uma matriz, e as verificações de função não aceitam matrizes.`;
+    }
+
     const texts = splitPortugolList(check.argumentos);
 
     if (texts.length !== signature.parameters.length) {
