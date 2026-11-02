@@ -8,8 +8,12 @@ import { Theme, ThemeService } from "../theme.service";
  * Um trecho curto de Portugol, colorido como no editor: `<code [appPortugol]="texto"></code>`.
  * Usado nos valores dos exercícios (`real 12.0`, `cadeia "Área: "`), que também são Portugol
  * válido. Até o Monaco carregar, mostra o texto sem cores; o leitor de tela lê o mesmo texto.
+ *
+ * O Monaco escreve cada espaço como um espaço não separável (U+00A0): eles voltam a ser espaços
+ * comuns, para o valor copiado sair como no código, e o `white-space: pre-wrap` mantém os
+ * espaços seguidos de uma cadeia, como em `cadeia "a  b"`.
  */
-@Directive({ selector: "[appPortugol]" })
+@Directive({ selector: "[appPortugol]", host: { "[style.white-space]": "'pre-wrap'" } })
 export class PortugolCodeDirective {
   private element = inject<ElementRef<HTMLElement>>(ElementRef);
   private monacoService = inject(MonacoService);
@@ -56,7 +60,9 @@ export class PortugolCodeDirective {
       monaco.editor.setTheme(`portugol-${theme}`);
 
       // O Monaco termina cada linha com um <br/>: num trecho de uma linha, ele quebraria o texto
-      return (await monaco.editor.colorize(text, "portugol", {})).replace(/(?:<br\s*\/?>)+$/, "");
+      return (await monaco.editor.colorize(text, "portugol", {}))
+        .replace(/(?:<br\s*\/?>)+$/, "")
+        .replaceAll(/\u{A0}|&#160;|&nbsp;/gu, " ");
     } catch {
       // Sem o Monaco, o texto fica sem cores
       return;
