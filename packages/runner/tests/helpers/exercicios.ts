@@ -1,0 +1,115 @@
+import { PortugolDiagnosticSeverity } from "@portugol-webstudio/antlr";
+import { readFileSync, readdirSync, writeFileSync } from "node:fs";
+import path from "node:path";
+import { describe, expect, test } from "vitest";
+import {
+  analyzeExerciseCode,
+  CheckableExercise,
+  checkExercise,
+  ExerciseCase,
+  PortugolWorkerThreadsRunner,
+  runsInicio,
+  transpile,
+} from "../../src";
+import { pool } from "./pool";
+import { runPortugolCode } from "./runner";
+
+// Os exercícios embutidos no IDE. Com `ATUALIZAR_EXERCICIOS=1`, a saída de cada caso do modo
+// simples é regravada com a da solução de referência, em vez de comparada.
+export const exercisesDir = path.join(import.meta.dirname, "..", "..", "..", "resources", "exercicios");
+const update = process.env.ATUALIZAR_EXERCICIOS === "1";
+
+type Exercise = CheckableExercise & { id: string; códigoInicial?: string };
+
+/**
+ * As pastas dos tópicos, como `saida` e `lacos`: uma pasta por tópico em `exercicios/`.
+ */
+export function topicFolders() {
+  return readdirSync(exercisesDir, { withFileTypes: true })
+    .filter(entry => entry.isDirectory() && entry.name !== "scripts")
+    .map(entry => entry.name);
+}
+
+/**
+ * Os testes de cada exercício de um tópico. Cada tópico tem o seu arquivo de teste em
+ * `tests/exercicios/topicos/`: o vitest divide os arquivos entre os shards do CI, e a conferência
+ * com o Portugol Studio, a parte demorada, fica espalhada entre eles em vez de cair num só.
+ */
+export function testExercises(topic: string) {
+  const files = readdirSync(path.join(exercisesDir, topic))
+    .filter(file => file.endsWith(".json"))
+    .map(file => path.join(topic, file));
+
+  test("O tópico tem exercícios", () => {
+    expect(files.length).toBeGreaterThan(0);
+  });
+
+  describe.each(files)("%s", file => {
+    const filePath = path.join(exercisesDir, file);
+    const exercise = JSON.parse(readFileSync(filePath, "utf8")) as Exercise;
+    // A solução de referência fica ao lado do JSON, fora do que o IDE publica
+    const solution = readFileSync(filePath.replace(/\.json$/, ".solucao.por"), "utf8");
+
+    test("A solução compila sem erros nem avisos", () => {
+      const { parseErrors, diagnostics } = transpile(solution);
+
+      expect(parseErrors).toEqual([]);
+      expect(diagnostics.filter(d => d.severity !== PortugolDiagnosticSeverity.Information)).toEqual([]);
+    });
+
+    // Sem código inicial, o IDE abre o esqueleto de um programa
+    test.skipIf(exercise.códigoInicial === undefined)("O código inicial compila sem erros", () => {
+      const { parseErrors, diagnostics } = transpile(exercise.códigoInicial!);
+
+      expect(parseErrors).toEqual([]);
+      expect(diagnostics.filter(d => d.severity === PortugolDiagnosticSeverity.Error)).toEqual([]);
+    });
+
+    test("Um caso só com verificações de função não tem entradas", () => {
+      // O inicio não executa nesses casos: entradas ali nunca seriam lidas
+      const cases: ExerciseCase[] = [...exercise.exemplos, ...exercise.testes];
+
+      for (const testCase of cases) {
+        if (!runsInicio(testCase)) {
+          expect(testCase.entradas, testCase.descrição).toEqual([]);
+        }
+      }
+    });
+
+    test("Não usa bibliotecas bloqueadas", () => {
+      for (const code of [solution, exercise.códigoInicial ?? ""]) {
+        expect(analyzeExerciseCode(code).blockedLibraries).toEqual([]);
+      }
+    });
+
+    // Cada caso abre o Portugol Studio (uma JVM, cerca de 1 s): quatro ao mesmo tempo, e com mais
+    // tempo que os outros testes, para os exercícios com muitos casos
+    test("A saída de cada caso é a da solução, também no Portugol Studio", { timeout: 180_000 }, async () => {
+      const cases: ExerciseCase[] = [...exercise.exemplos, ...exercise.testes];
+      // Compara com o Portugol CLI quando ele está disponível
+      const outputs = await pool(cases, 4, testCase => runPortugolCode(solution, testCase.entradas));
+
+      for (const [i, testCase] of cases.entries()) {
+        if (exercise.modo === "simples") {
+          if (update) {
+            testCase.saída = outputs[i];
+          } else {
+            expect(outputs[i], `entradas: ${JSON.stringify(testCase.entradas)}`).toBe(testCase.saída);
+          }
+        }
+      }
+
+      if (update && exercise.modo === "simples") {
+        writeFileSync(filePath, JSON.stringify(exercise, undefined, 2) + "\n");
+      }
+    });
+
+    test("A solução passa em todos os casos", async () => {
+      const exerciseNow = JSON.parse(readFileSync(filePath, "utf8")) as Exercise;
+      const result = await checkExercise(PortugolWorkerThreadsRunner, transpile(solution), exerciseNow);
+
+      expect(result.cases.filter(c => c.failure).map(c => ({ ...c, run: undefined }))).toEqual([]);
+      expect(result.passed).toBe(true);
+    });
+  });
+}
