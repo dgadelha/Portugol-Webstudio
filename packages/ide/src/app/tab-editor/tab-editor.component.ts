@@ -1530,6 +1530,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
       },
       width: "28rem",
       ariaLabelledBy: "dialogo-usar-exercicio-titulo",
+      ariaDescribedBy: "dialogo-usar-exercicio-descricao",
     });
 
     ref.closed.subscribe(confirmed => {

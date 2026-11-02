@@ -562,6 +562,7 @@ export class AppComponent implements OnInit {
       data: { title: tab.title, exercise: tab.type === "exercise-builder" },
       width: "28rem",
       ariaLabelledBy: "dialogo-fechar-aba-titulo",
+      ariaDescribedBy: "dialogo-fechar-aba-descricao",
       restoreFocus: ACTIVE_TAB_SELECTOR,
     });
 
