@@ -11,6 +11,7 @@ import {
 import { AngularSvgIconModule } from "angular-svg-icon";
 
 import { ExerciseCheckOutcome, ExercisesService } from "../exercises.service";
+import { PortugolCodeDirective } from "../shared/portugol-code.directive";
 import { ExerciseValuePipe } from "./exercise-value.pipe";
 
 /**
@@ -19,7 +20,7 @@ import { ExerciseValuePipe } from "./exercise-value.pipe";
  */
 @Component({
   selector: "app-exercise-results",
-  imports: [AngularSvgIconModule, ExerciseValuePipe],
+  imports: [AngularSvgIconModule, ExerciseValuePipe, PortugolCodeDirective],
   templateUrl: "./exercise-results.component.html",
   styleUrl: "./exercise-results.component.scss",
   changeDetection: ChangeDetectionStrategy.OnPush,

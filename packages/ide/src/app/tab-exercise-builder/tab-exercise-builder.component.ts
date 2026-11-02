@@ -47,6 +47,7 @@ import { DIFFICULTY_LABELS, Exercício, ExercisesService } from "../exercises.se
 import { SettingsService } from "../settings.service";
 import { ShareService } from "../share.service";
 import { focusAfterRender } from "../shared/focus";
+import { PortugolCodeDirective } from "../shared/portugol-code.directive";
 import { moveRovingFocus } from "../shared/roving-focus";
 import { TooltipDirective } from "../shared/tooltip.directive";
 import { ExerciseValuePipe } from "../tab-editor/exercise-value.pipe";
@@ -80,6 +81,7 @@ type ProblemsPlace = "top" | "share" | number;
     CdkMenuTrigger,
     DragDropModule,
     ExerciseValuePipe,
+    PortugolCodeDirective,
     FormsModule,
     MonacoEditorModule,
     NgTemplateOutlet,

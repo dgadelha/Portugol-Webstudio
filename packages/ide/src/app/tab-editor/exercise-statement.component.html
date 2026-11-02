@@ -141,7 +141,7 @@
               }
             </dt>
             <dd>
-              <code>{{ check.returned | exerciseValue }}</code>
+              <code [appPortugol]="check.returned | exerciseValue"></code>
             </dd>
           } @else {
             <dt>
@@ -160,7 +160,7 @@
               <ul class="values">
                 @for (value of check.values; track $index) {
                   <li>
-                    <code>{{ value | exerciseValue }}</code>
+                    <code [appPortugol]="value | exerciseValue"></code>
                   </li>
                 }
               </ul>

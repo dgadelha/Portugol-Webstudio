@@ -545,7 +545,7 @@
                                 <ul class="values" aria-label="Valores esperados">
                                   @for (value of check.values; track $index; let k = $index) {
                                     <li>
-                                      <code>{{ value | exerciseValue }}</code>
+                                      <code [appPortugol]="value | exerciseValue"></code>
                                       @if (check.rule === "contém") {
                                         <button
                                           type="button"
@@ -592,7 +592,7 @@
                               <p class="call">
                                 @if (check.returned && caso.status !== "stale") {
                                   <code>{{ check.name }}({{ check.args }})</code> retorna
-                                  <code>{{ check.returned | exerciseValue }}</code>
+                                  <code [appPortugol]="check.returned | exerciseValue"></code>
                                 } @else {
                                   <span class="empty">O retorno sai da solução: gere as respostas.</span>
                                 }

@@ -66,13 +66,13 @@
                 }
               } @else if (failure.type === "differentValues") {
                 <p>
-                  Valor {{ failure.position }} escrito. Esperado: <code>{{ failure.expected | exerciseValue }}</code
-                  >. Recebido: <code>{{ failure.received | exerciseValue }}</code
-                  >.
+                  Valor {{ failure.position }} escrito. Esperado:
+                  <code [appPortugol]="failure.expected | exerciseValue"></code>. Recebido:
+                  <code [appPortugol]="failure.received | exerciseValue"></code>.
                 </p>
               } @else if (failure.type === "missingValue") {
                 <p>
-                  O valor <code>{{ failure.expected | exerciseValue }}</code> não foi escrito{{
+                  O valor <code [appPortugol]="failure.expected | exerciseValue"></code> não foi escrito{{
                     failure.afterLastInput ? " depois da última leitura" : ""
                   }}.
                 </p>
@@ -80,8 +80,7 @@
                 <p>
                   Valores escritos{{ failure.afterLastInput ? " depois da última leitura" : "" }}:
                   @for (value of written; track $index) {
-                    <code>{{ value | exerciseValue }}</code
-                    >{{ $last ? "." : ", " }}
+                    <code [appPortugol]="value | exerciseValue"></code>{{ $last ? "." : ", " }}
                   } @empty {
                     nenhum.
                   }
@@ -89,9 +88,8 @@
               } @else if (failure.type === "differentReturn") {
                 <p>
                   Chamada: <code>{{ call(failure.name, failure.arguments) }}</code
-                  >. Esperado: <code>{{ failure.expected | exerciseValue }}</code
-                  >. Recebido: <code>{{ failure.received | exerciseValue }}</code
-                  >.
+                  >. Esperado: <code [appPortugol]="failure.expected | exerciseValue"></code>. Recebido:
+                  <code [appPortugol]="failure.received | exerciseValue"></code>.
                 </p>
               } @else if (failure.type === "differentSignature") {
                 <p>

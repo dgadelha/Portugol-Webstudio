@@ -5,6 +5,7 @@ import { AngularSvgIconModule } from "angular-svg-icon";
 import { ExerciseMarkdownService } from "../exercise-markdown.service";
 import { attributionText, DIFFICULTY_ICONS, DIFFICULTY_LABELS, Exercício } from "../exercises.service";
 import { TooltipDirective } from "../shared/tooltip.directive";
+import { PortugolCodeDirective } from "../shared/portugol-code.directive";
 import { ExerciseValuePipe } from "./exercise-value.pipe";
 
 /**
@@ -13,7 +14,7 @@ import { ExerciseValuePipe } from "./exercise-value.pipe";
  */
 @Component({
   selector: "app-exercise-statement",
-  imports: [AngularSvgIconModule, ExerciseValuePipe, TooltipDirective],
+  imports: [AngularSvgIconModule, ExerciseValuePipe, PortugolCodeDirective, TooltipDirective],
   templateUrl: "./exercise-statement.component.html",
   styleUrl: "./exercise-statement.component.scss",
   changeDetection: ChangeDetectionStrategy.OnPush,
