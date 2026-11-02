@@ -309,6 +309,12 @@
   &.narrow {
     flex: 0 1 8rem;
   }
+
+  // O texto da regra é comprido: sem lugar para ele inteiro, a tolerância desce para a linha de
+  // baixo, em vez de cortar o texto
+  &.rule {
+    flex-basis: 27rem;
+  }
 }
 
 .field-label {
@@ -344,6 +350,12 @@
   &:focus {
     background-color: var(--pws-bg-editor);
   }
+}
+
+// O `padding` acima vence o do `select.input` global, que guarda à direita o lugar da seta: sem
+// isto, um texto comprido passa por baixo dela
+select.input {
+  padding-right: 1.75rem;
 }
 
 .textarea {

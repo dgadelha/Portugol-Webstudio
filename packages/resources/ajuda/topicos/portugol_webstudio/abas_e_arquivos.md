@@ -2,7 +2,7 @@
 
 ## Abas
 
-Cada programa fica numa aba. A primeira aba, **Portugol Webstudio**, é a aba inicial, e ao lado dela ficam as abas de código, a Ajuda e o histórico de atualizações.
+Cada programa fica numa aba. A primeira aba, **Portugol Webstudio**, é a aba inicial, e ao lado dela ficam as abas de código, a Ajuda e o histórico de atualizações. Os [exercícios](exercicios.md) e a [criação de exercícios](criando_exercicios.md) também abrem em abas próprias.
 
 - **Nova aba**: clique no **+** ao lado da última aba, ou aperte **Alt + N**. A aba nova se chama "Sem título" e já vem com o modelo do programa.
 - **Trocar de aba**: clique na aba, ou, com uma aba selecionada, use as **setas para a esquerda e para a direita**.

@@ -15,17 +15,26 @@ Em alguns notebooks, as teclas de função, como o **F1** e o **F5**, só funcio
 
 ## Numa aba de código
 
-| Atalho               | O que faz                                         |
-| -------------------- | ------------------------------------------------- |
-| Ctrl + Enter         | Executa o programa                                |
-| Ctrl + Shift + Enter | Num exercício, confere o programa (**Verificar**) |
-| Alt + P              | Executa o programa passo a passo                  |
-| Shift + F5           | Para o programa, ou a conferência de um exercício |
-| Ctrl + S             | Baixa o código como um arquivo `.por`             |
-| Ctrl + O             | Abre um arquivo do computador                     |
-| F1                   | Abre a Ajuda                                      |
-| Ctrl + G             | Vai até uma linha                                 |
-| Ctrl + Espaço        | Abre a lista de sugestões                         |
+| Atalho               | O que faz                                                          |
+| -------------------- | ------------------------------------------------------------------ |
+| Ctrl + Enter         | Executa o programa                                                 |
+| Ctrl + Shift + Enter | Num [exercício](exercicios.md), confere o programa (**Verificar**) |
+| Alt + P              | Executa o programa passo a passo                                   |
+| Shift + F5           | Para o programa, ou a conferência de um exercício                  |
+| Ctrl + S             | Baixa o código como um arquivo `.por`                              |
+| Ctrl + O             | Abre um arquivo do computador                                      |
+| F1                   | Abre a Ajuda                                                       |
+| Ctrl + G             | Vai até uma linha                                                  |
+| Ctrl + Espaço        | Abre a lista de sugestões                                          |
+
+## Na criação de exercícios
+
+Numa aba de [criação de exercício](criando_exercicios.md):
+
+| Atalho                              | O que faz                                                                                |
+| ----------------------------------- | ---------------------------------------------------------------------------------------- |
+| Ctrl + B / Ctrl + I                 | No enunciado, deixa o texto selecionado em negrito ou em itálico                         |
+| Ctrl + M (no Mac, Ctrl + Shift + M) | Num editor de código, faz o **Tab** ir ao próximo campo em vez de escrever uma tabulação |
 
 ## Executando passo a passo
 
@@ -78,7 +87,8 @@ Com o mouse, um duplo clique renomeia a aba e um clique com o botão do meio fec
 | ------------------------- | ---------------------------- | ----------------------------------------------------------------------------------------------- |
 | Barra de ações            | Setas, Home e End            | Andam entre os botões                                                                           |
 | Painel de baixo           | Seta para a esquerda/direita | Troca entre Saída, Problemas e Variáveis                                                        |
-| Exemplos                  | Seta para cima/baixo e Enter | Escolhem e abrem um exemplo                                                                     |
+| Exemplos                  | Setas, Home, End e Enter     | Escolhem e abrem um exemplo                                                                     |
+| Exercícios                | Setas, Home, End e Enter     | Escolhem e abrem um exercício                                                                   |
 | Lista de tópicos da Ajuda | Setas, Home, End e Enter     | Andam entre os tópicos e abrem um deles. Digitar uma letra vai para o tópico que começa com ela |
 | Janela de gráficos        | Esc                          | Fecha a janela e para o programa                                                                |
 | Qualquer janela           | Esc                          | Fecha a janela                                                                                  |

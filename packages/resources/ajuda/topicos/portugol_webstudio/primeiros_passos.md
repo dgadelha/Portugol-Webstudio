@@ -9,9 +9,10 @@ Ao abrir o Portugol Webstudio em [portugol.dev](https://portugol.dev), você vê
 - Começar um programa do zero com **Novo arquivo**
 - Abrir um arquivo `.por` do seu computador com **Abrir arquivo**
 - Escolher um programa pronto com **Abrir exemplo**, o jeito mais fácil de começar
+- Praticar com os **Exercícios**, que conferem na hora se o seu programa está certo (veja [Exercícios](exercicios.md))
 - Consultar a **Ajuda**, com a linguagem e as bibliotecas do Portugol
 
-![A aba inicial, com os botões Novo arquivo, Abrir arquivo, Abrir exemplo e Ajuda](../../recursos/imagens/light/webstudio/inicio@2x.webp)
+![A aba inicial, com os botões Novo arquivo, Abrir arquivo, Abrir exemplo, Exercícios e Ajuda](../../recursos/imagens/light/webstudio/inicio@2x.webp)
 
 Mais abaixo, a aba inicial mostra as novidades da última atualização e, quando houver, o código que ficou aberto da última vez (veja [Abas e arquivos](abas_e_arquivos.md)).
 

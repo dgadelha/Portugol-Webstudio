@@ -29,8 +29,9 @@ const IMAGENS = process.env.DESTINO ?? path.resolve(import.meta.dirname, "../../
 const ESCALA = Number(process.env.ESCALA ?? 2);
 const TEMAS = ["light", "dark"];
 
-// O selo da versão beta e as mensagens no canto da tela não aparecem nas capturas.
-const SEM_BETA = ".beta-badge, .status-beta { display: none !important; }";
+// O selo da versão beta, a etiqueta "Novidade" da aba inicial (que sai depois de um tempo) e as
+// mensagens no canto da tela não aparecem nas capturas.
+const SEM_BETA = ".beta-badge, .status-beta, .tile-tag { display: none !important; }";
 const SEM_MENSAGENS = "hot-toast-container { display: none !important; }";
 
 const UA_CELULAR =
@@ -80,6 +81,17 @@ async function novaPágina(
 
   contextosDaCena.push(contexto);
 
+  // A logo da aba inicial muda em algumas datas (Carnaval, Halloween, Natal…): as capturas usam
+  // sempre a de todo dia, para a Ajuda não ficar com a logo da data em que foram tiradas
+  await contexto.route(/\/assets\/logo\/(?!default\.svg)[^/]+\.svg$/, rota => {
+    return rota.continue({
+      url: rota
+        .request()
+        .url()
+        .replace(/[^/]+\.svg$/, "default.svg"),
+    });
+  });
+
   const página = await contexto.newPage();
 
   await página.goto(url, { waitUntil: "networkidle" });
@@ -91,14 +103,15 @@ async function novaPágina(
 
 /**
  * Abre um programa de `programas/` pelo próprio "Abrir arquivo" do IDE, numa aba com o nome do
- * arquivo.
+ * arquivo, ou com o `nomeDaAba` (um rascunho de exercício abre com o título dele).
  *
  * @param {import("playwright-core").Page} página
  * @param {string} arquivo
+ * @param {string} [nomeDaAba]
  */
-async function abrir(página, arquivo) {
+async function abrir(página, arquivo, nomeDaAba = arquivo.replace(/\.por$/, "")) {
   await página.locator("input[type=file][multiple]").setInputFiles(path.join(PROGRAMAS, arquivo));
-  await página.getByRole("tab", { name: arquivo.replace(/\.por$/, "") }).waitFor();
+  await página.getByRole("tab", { name: nomeDaAba }).waitFor();
   await página.waitForTimeout(1500);
 }
 
@@ -192,6 +205,42 @@ async function semFoco(página) {
 async function digitarNome(página) {
   await página.getByText("Aguardando entrada").first().waitFor();
   await página.keyboard.type("Ana");
+}
+
+/**
+ * Abre a lista de exercícios pelo botão da aba inicial, com o foco na busca.
+ *
+ * @param {import("playwright-core").Page} página
+ */
+async function abrirExercícios(página) {
+  await página.locator(".tile", { hasText: "Exercícios" }).click();
+
+  const diálogo = página.getByRole("dialog");
+
+  await diálogo.getByRole("searchbox", { name: "Buscar exercícios" }).waitFor();
+  await diálogo.getByRole("option").first().waitFor();
+
+  return diálogo;
+}
+
+/**
+ * Troca o código do editor da aba aberta, como uma edição: o exercício salva o código.
+ *
+ * @param {import("playwright-core").Page} página
+ * @param {string} código
+ */
+async function escreverNoEditor(página, código) {
+  await página.evaluate(texto => {
+    const editor = monaco.editor
+      .getEditors()
+      .find(item => !item.getDomNode()?.closest(".output-editor") && (item.getDomNode()?.offsetWidth ?? 0) > 100);
+
+    if (!editor) {
+      throw new Error("O editor de código não foi encontrado");
+    }
+
+    editor.executeEdits("capturas-da-ajuda", [{ range: editor.getModel().getFullModelRange(), text: texto }]);
+  }, código);
 }
 
 /**
@@ -441,6 +490,59 @@ const cenas = {
     await página.keyboard.type("media");
     await página.waitForTimeout(800);
     await capturar(diálogo, tema, "exemplos");
+  },
+
+  async exercicios(tema) {
+    const página = await novaPágina(tema);
+    const diálogo = await abrirExercícios(página);
+
+    await página.keyboard.type("soma de dois");
+    await diálogo.locator(".preview-statement .markdown").waitFor();
+    await página.waitForTimeout(800);
+    await capturar(diálogo, tema, "exercicios");
+  },
+
+  async "exercicio-correcao"(tema) {
+    // Média de três notas com variáveis inteiras: a média sai como inteiro, e a Correção mostra
+    // o valor esperado (real) e os valores escritos
+    const página = await novaPágina(tema, { altura: 820 });
+
+    await abrirExercícios(página);
+    await página.keyboard.type("media de tres notas");
+    await página.waitForTimeout(600);
+    await página.keyboard.press("Enter");
+    await página.getByRole("tab", { name: "Média de três notas" }).waitFor();
+    await página.waitForTimeout(1500);
+    await escreverNoEditor(
+      página,
+      "programa {\n  funcao inicio() {\n    inteiro n1, n2, n3\n\n    leia(n1, n2, n3)\n    escreva((n1 + n2 + n3) / 3)\n  }\n}\n",
+    );
+    await página.getByRole("button", { name: "Verificar", exact: true }).click();
+    await página.getByText(/^Passou em \d+ de \d+ casos/).waitFor({ timeout: 60_000 });
+    await semFoco(página);
+    await capturar(página, tema, "exercicio-correcao");
+  },
+
+  async "criar-exercicio"(tema) {
+    const página = await novaPágina(tema, { altura: 820 });
+
+    await abrir(página, "Área do retângulo.exercicio.json", "Área do retângulo");
+    await página.getByRole("button", { name: "Gerar respostas" }).waitFor({ timeout: 30_000 });
+    await página.getByRole("button", { name: "Gerar respostas" }).click();
+    await página.getByText("Respostas geradas").first().waitFor({ timeout: 60_000 });
+    await semFoco(página);
+    await capturar(página, tema, "criar-exercicio");
+
+    // O primeiro caso, com os valores que a solução escreveu, menos a mensagem "Área: ", tirada
+    // com o X: o enunciado deixa o aluno escrever outras mensagens. A seção inteira passa da
+    // altura da janela, e ela rola dentro da aba: a captura de um elemento maior que a tela sai
+    // cortada
+    const caso = página.locator(".case-card").first();
+
+    await caso.scrollIntoViewIfNeeded();
+    await caso.getByRole("button", { name: 'Remover o valor cadeia "Área: "' }).click();
+    await semFoco(página);
+    await capturar(caso, tema, "criar-exercicio-casos");
   },
 
   async configuracoes(tema) {

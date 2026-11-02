@@ -246,6 +246,14 @@
         "arquivo": "topicos/portugol_webstudio/exemplos.md"
       },
       {
+        "titulo": "Exercícios",
+        "arquivo": "topicos/portugol_webstudio/exercicios.md"
+      },
+      {
+        "titulo": "Criando exercícios",
+        "arquivo": "topicos/portugol_webstudio/criando_exercicios.md"
+      },
+      {
         "titulo": "Compartilhando código",
         "arquivo": "topicos/portugol_webstudio/compartilhando.md"
       },

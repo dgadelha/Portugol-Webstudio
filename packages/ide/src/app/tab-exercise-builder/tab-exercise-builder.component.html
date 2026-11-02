@@ -7,7 +7,7 @@
         <svg-icon src="assets/mdi/puzzle-edit-outline.svg" class="icon-blue builder-icon" aria-hidden="true" />
         <div>
           <h2 class="builder-title">{{ current.heading }}</h2>
-          <p class="builder-subtitle">Rascunho salvo neste navegador. Baixe para guardar com a solução.</p>
+          <p class="builder-subtitle">Rascunho salvo neste navegador. Baixe para guardar de vez.</p>
         </div>
       </div>
 
@@ -32,7 +32,7 @@
         <button
           type="button"
           class="btn"
-          appTooltip="Baixar o exercício com a solução, para editar depois"
+          appTooltip="Baixar o rascunho com a solução, para editar depois"
           (click)="download()"
         >
           <svg-icon src="assets/mdi/download-outline.svg" aria-hidden="true" />
@@ -523,11 +523,11 @@
                           <div class="check" [attr.data-check]="j">
                             @if (check.target === "write") {
                               <div class="field-row">
-                                <label class="field grow">
+                                <label class="field grow rule">
                                   <span class="field-label">Valores escritos</span>
                                   <select class="input" [ngModel]="check.rule" (ngModelChange)="setRule(i, j, $event)">
                                     <option value="contém">
-                                      Contém estes valores, nesta ordem, depois da última leitura
+                                      Contém estes valores, em ordem, após a última leitura
                                     </option>
                                     <option value="igual">São exatamente estes valores</option>
                                   </select>

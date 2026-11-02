@@ -2,7 +2,7 @@
 
 O Portugol Webstudio é um ambiente para escrever, executar e aprender programação em Portugol direto no navegador. Não é preciso instalar nada: ele funciona no computador, no tablet e no celular, e depois da primeira visita funciona até sem internet.
 
-![A aba inicial do Portugol Webstudio, com os botões Novo arquivo, Abrir arquivo, Abrir exemplo e Ajuda](../../recursos/imagens/light/webstudio/inicio@2x.webp)
+![A aba inicial do Portugol Webstudio, com os botões Novo arquivo, Abrir arquivo, Abrir exemplo, Exercícios e Ajuda](../../recursos/imagens/light/webstudio/inicio@2x.webp)
 
 Este guia mostra tudo o que dá para fazer no Portugol Webstudio:
 
@@ -12,6 +12,8 @@ Este guia mostra tudo o que dá para fazer no Portugol Webstudio:
 - [Executando passo a passo](depurando.md): um comando de cada vez, vendo as variáveis
 - [Abas e arquivos](abas_e_arquivos.md): abrir, salvar e organizar o código
 - [Exemplos](exemplos.md): programas prontos para estudar e modificar
+- [Exercícios](exercicios.md): escrever um programa e conferir na hora se ele está certo
+- [Criando exercícios](criando_exercicios.md): para professores, criar um exercício e mandar o link
 - [Compartilhando código](compartilhando.md): mandar o código para outra pessoa por um link
 - [Configurações](configuracoes.md): o tema, o editor, a saída e as abas
 - [Atalhos de teclado](atalhos.md): tudo o que dá para fazer sem o mouse

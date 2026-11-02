@@ -1,0 +1,48 @@
+{
+  "$schema": "https://portugol.dev/esquemas/rascunho-de-exercicio/v1.json",
+  "título": "Área do retângulo",
+  "tópico": "operadores",
+  "dificuldade": 1,
+  "enunciado": "Leia a base e a altura de um retângulo, dois números reais, e escreva a área dele:\n\n$$\\text{área} = \\text{base} \\times \\text{altura}$$\n\nO programa pode escrever mensagens antes de cada leitura, mas a área precisa ser escrita como um valor do tipo `real`.",
+  "códigoInicial": "programa {\n  funcao inicio() {\n    \n  }\n}\n",
+  "solução": "programa {\n  funcao inicio() {\n    real base, altura\n\n    escreva(\"Base: \")\n    leia(base)\n    escreva(\"Altura: \")\n    leia(altura)\n    escreva(\"Área: \", base * altura, \"\\n\")\n  }\n}\n",
+  "modo": "avançado",
+  "casos": [
+    {
+      "tipo": "exemplo",
+      "descrição": "números inteiros",
+      "entradas": "3\n4",
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": []
+        }
+      ]
+    },
+    {
+      "tipo": "teste",
+      "descrição": "números com casas decimais",
+      "entradas": "2.5\n1.5",
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": []
+        }
+      ]
+    },
+    {
+      "tipo": "teste",
+      "descrição": "altura zero",
+      "entradas": "7\n0",
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": []
+        }
+      ]
+    }
+  ]
+}
