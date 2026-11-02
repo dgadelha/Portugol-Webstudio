@@ -1243,17 +1243,8 @@ class AnalisadorSintático extends BaseErrorListener {
     return token;
   }
 
-  /**
-   * O léxico não reconhece um comentário de bloco sem fechamento: sobram um `/` e um `*` colados,
-   * que nenhum código válido tem (não existe `*` unário).
-   */
   private comentárioSemFim(tokens: CommonTokenStream) {
-    const visíveis = tokens.getTokens().filter(token => token.channel === Token.DEFAULT_CHANNEL);
-    const barra = visíveis.find((token, i) => {
-      const próximo = visíveis[i + 1];
-
-      return token.text === "/" && próximo?.text === "*" && próximo.start === token.stop + 1;
-    });
+    const barra = barraDeComentárioSemFim(tokens.getTokens().filter(token => token.channel === Token.DEFAULT_CHANNEL));
 
     return barra && erroComentárioSemFim(barra);
   }
@@ -1282,4 +1273,16 @@ class AnalisadorSintático extends BaseErrorListener {
 
 export function analisarSintaxe(código: string): ResultadoSintaxe {
   return new AnalisadorSintático(código).analisar();
+}
+
+/**
+ * O léxico não reconhece um comentário de bloco sem fechamento: sobram um `/` e um `*` colados,
+ * que nenhum código válido tem (não existe `*` unário). Recebe só os tokens visíveis.
+ */
+export function barraDeComentárioSemFim(visíveis: Token[]) {
+  return visíveis.find((token, i) => {
+    const próximo = visíveis[i + 1];
+
+    return token.text === "/" && próximo?.text === "*" && próximo.start === token.stop + 1;
+  });
 }

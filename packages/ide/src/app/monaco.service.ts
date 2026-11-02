@@ -1,12 +1,20 @@
 import { inject, Service } from "@angular/core";
 import { MonacoEditorLoaderService } from "@materia-ui/ngx-monaco-editor";
+import type { AjudaAssinatura, ItemCompletar } from "@portugol-webstudio/parser";
 import { filter, take } from "rxjs/operators";
+import { WorkerService } from "./worker.service";
 
 @Service()
 export class MonacoService {
   private monacoLoaderService = inject(MonacoEditorLoaderService);
+  private workerService = inject(WorkerService);
 
   private resolveReady!: () => void;
+
+  /**
+   * Só existe depois que o Monaco carrega.
+   */
+  private completionKinds!: Record<ItemCompletar["tipo"], monaco.languages.CompletionItemKind>;
 
   /**
    * Resolve quando o Monaco carregou e a linguagem Portugol (com os temas) está
@@ -230,6 +238,8 @@ export class MonacoService {
             },
           } satisfies monaco.languages.IMonarchLanguage);
 
+          this.registerLanguageFeatures();
+
           monaco.editor.defineTheme("portugol-dark", {
             base: "vs-dark",
             inherit: true,
@@ -293,5 +303,103 @@ export class MonacoService {
           window.location.reload();
         }
       });
+  }
+
+  /**
+   * As sugestões e a ajuda de assinatura, como as do VS Code. Elas vêm do worker, que tem o
+   * analisador; valem para todo editor `portugol` (as abas de código e o criador de exercícios).
+   */
+  private registerLanguageFeatures() {
+    this.completionKinds = {
+      variável: monaco.languages.CompletionItemKind.Variable,
+      constante: monaco.languages.CompletionItemKind.Constant,
+      função: monaco.languages.CompletionItemKind.Function,
+      biblioteca: monaco.languages.CompletionItemKind.Module,
+      palavra: monaco.languages.CompletionItemKind.Keyword,
+      trecho: monaco.languages.CompletionItemKind.Snippet,
+    };
+
+    monaco.languages.registerCompletionItemProvider("portugol", {
+      triggerCharacters: ["."],
+      provideCompletionItems: async (model, position, _context, token) => {
+        const items = await this.workerService
+          .complete(model.getValue(), this.toPosition(position), this.toSignal(token))
+          .catch((): ItemCompletar[] => []);
+
+        return { suggestions: items.map(item => this.toCompletionItem(item, position)) };
+      },
+    });
+
+    monaco.languages.registerSignatureHelpProvider("portugol", {
+      signatureHelpTriggerCharacters: ["(", ","],
+      // O `)` fecha uma chamada de dentro e volta para a de fora, ou fecha a ajuda.
+      signatureHelpRetriggerCharacters: [",", ")"],
+      provideSignatureHelp: async (model, position, token) => {
+        const help = await this.workerService
+          .signatureHelp(model.getValue(), this.toPosition(position), this.toSignal(token))
+          .catch(() => null);
+
+        return help ? { value: this.toSignatureHelp(help), dispose: () => {} } : null;
+      },
+    });
+  }
+
+  private toPosition(position: monaco.Position) {
+    return { linha: position.lineNumber, coluna: position.column };
+  }
+
+  /**
+   * O pedido é cancelado quando a pessoa continua digitando antes da resposta.
+   */
+  private toSignal(token: monaco.CancellationToken) {
+    const controller = new AbortController();
+
+    token.onCancellationRequested(() => {
+      controller.abort();
+    });
+
+    return controller.signal;
+  }
+
+  private toCompletionItem(item: ItemCompletar, position: monaco.Position): monaco.languages.CompletionItem {
+    const { linha, início, fim } = item.intervalo;
+
+    return {
+      // O leitor de tela lê o rótulo, o detalhe dele e a descrição: "idade, inteiro".
+      label: { label: item.rótulo, detail: item.detalheDoRótulo, description: item.descrição },
+      kind: this.completionKinds[item.tipo],
+      detail: item.detalhe,
+      documentation: item.documentação ? { value: item.documentação } : undefined,
+      insertText: item.inserir,
+      insertTextRules: item.trecho ? monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet : undefined,
+      sortText: item.ordem,
+      range: {
+        insert: new monaco.Range(linha, início, linha, position.column),
+        replace: new monaco.Range(linha, início, linha, fim),
+      },
+      command:
+        item.comando === "ajudaDeAssinatura"
+          ? { id: "editor.action.triggerParameterHints", title: "Mostrar os parâmetros" }
+          : undefined,
+    };
+  }
+
+  private toSignatureHelp(help: AjudaAssinatura): monaco.languages.SignatureHelp {
+    return {
+      signatures: [
+        {
+          label: help.rótulo,
+          documentation: help.documentação ? { value: help.documentação } : undefined,
+          parameters: help.parâmetros.map(parameter => {
+            return {
+              label: parameter.rótulo,
+              documentation: parameter.documentação ? { value: parameter.documentação } : undefined,
+            };
+          }),
+        },
+      ],
+      activeSignature: 0,
+      activeParameter: help.parâmetroAtivo,
+    };
   }
 }

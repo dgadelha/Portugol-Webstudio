@@ -30,7 +30,10 @@ Passe o mouse sobre um botão, ou chegue nele pelo teclado, para ver o nome e o 
 O editor ajuda enquanto você escreve:
 
 - **Cores**: palavras como `programa`, `se` e `inteiro`, textos, números e comentários ganham cores diferentes, o que ajuda a perceber uma aspa ou um comentário que ficou aberto.
-- **Sugestões**: enquanto você digita, aparece uma lista com as palavras do programa e da linguagem. Escolha uma com as setas e aperte **Enter** ou **Tab**. Para abrir a lista a qualquer momento, aperte **Ctrl + Espaço**.
+- **Sugestões**: enquanto você digita, aparece uma lista com o que pode ser escrito ali: as variáveis e funções do programa, com o tipo de cada uma, as funções da linguagem, como `escreva` e `leia`, as palavras da linguagem e as estruturas, como `se` e `para`. Escolha uma com as setas e aperte **Enter** ou **Tab**. Para abrir a lista a qualquer momento, aperte **Ctrl + Espaço**; com a lista aberta, o mesmo atalho mostra ou esconde a explicação da sugestão escolhida.
+  - Depois do nome de uma biblioteca incluída e de um ponto, como em `mat.`, a lista mostra as funções e constantes dela, com a explicação de cada uma.
+  - Uma função entra com os parênteses, e uma estrutura entra completa, com as chaves. Os trechos a preencher, como a condição de um `se`, ficam marcados: escreva o primeiro e aperte **Tab** para ir ao próximo.
+- **Parâmetros**: ao abrir o parêntese de uma função, aparece o que ela recebe, com o parâmetro que você está escrevendo destacado e a explicação dele. Para ver de novo, aperte **Ctrl + Shift + Espaço**.
 - **Fechamento automático**: ao abrir chaves, parênteses ou aspas, o fechamento já aparece.
 - **Pares de chaves**: cada nível de chaves e parênteses ganha uma cor, e as linhas verticais ligam o começo e o fim de cada bloco.
 - **Recolher blocos**: as setas na margem, ao lado dos números das linhas, escondem e mostram o conteúdo de uma função ou de um bloco. Também dá para criar um bloco recolhível com os comentários `// regiao` e `// fimregiao` (veja abaixo).

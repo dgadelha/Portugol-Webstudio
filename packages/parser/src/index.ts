@@ -5,3 +5,4 @@ export * from "./helpers/ParseError.js";
 export * from "./nodes/index.js";
 export * from "./PortugolCodeChecker.js";
 export * from "./PortugolNode.js";
+export * from "./servico/index.js";

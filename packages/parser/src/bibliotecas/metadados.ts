@@ -6,7 +6,7 @@ import type { NomeBiblioteca } from "./suporte.gerado.js";
 export type Biblioteca = (typeof bibliotecasRecursos)[number];
 export type FunçãoBiblioteca = Biblioteca["funções"][number];
 export type ConstanteBiblioteca = Biblioteca["constantes"][number];
-type TipoBiblioteca = FunçãoBiblioteca["retorno"]["tipo"];
+export type TipoBiblioteca = FunçãoBiblioteca["retorno"]["tipo"];
 
 /**
  * O `@portugol-webstudio/resources/bibliotecas` escreve o curinga como `"*"`; as tabelas de

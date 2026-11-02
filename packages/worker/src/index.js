@@ -1,4 +1,4 @@
-import { PortugolCodeChecker } from "@portugol-webstudio/parser";
+import { ajudaDeAssinatura, completar, PortugolCodeChecker } from "@portugol-webstudio/parser";
 import { PortugolJs } from "@portugol-webstudio/runtime";
 
 function mapError(error) {
@@ -93,8 +93,27 @@ function transpileCode(code, debugSteps = false) {
   };
 }
 
+/**
+ * As sugestões e a ajuda de assinatura do editor. Um erro aqui não pode atrapalhar a digitação:
+ * sem resposta, o editor só não mostra nada.
+ *
+ * @template T
+ * @param {string} name
+ * @param {() => T} fn
+ * @param {T} fallback
+ */
+function safely(name, fn, fallback) {
+  try {
+    return fn();
+  } catch (error) {
+    console.error(`${name} error`, error);
+
+    return fallback;
+  }
+}
+
 self.addEventListener("message", function onmessage(event) {
-  const { action, id, code, debugSteps } = event.data;
+  const { action, id, code, debugSteps, position } = event.data;
   let result;
 
   switch (action) {
@@ -108,13 +127,20 @@ self.addEventListener("message", function onmessage(event) {
       break;
     }
 
+    case "complete": {
+      result = safely("complete", () => completar(code, position), []);
+      break;
+    }
+
+    case "signatureHelp": {
+      result = safely("signatureHelp", () => ajudaDeAssinatura(code, position), null);
+      break;
+    }
+
     default: {
       throw new Error(`Unknown action: ${action}`);
     }
   }
 
-  self.postMessage({
-    id,
-    ...result,
-  });
+  self.postMessage({ id, result });
 });

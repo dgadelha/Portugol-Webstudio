@@ -1,12 +1,18 @@
 import { bibliotecas } from "@portugol-webstudio/resources/bibliotecas";
-import { BIBLIOTECAS_IMPLEMENTADAS, SUFIXO_DA_DIMENSÃO, tipoNoCódigo } from "@portugol-webstudio/parser";
+import {
+  assinaturaDaConstante,
+  assinaturaDaFunção,
+  BIBLIOTECAS_IMPLEMENTADAS,
+  descriçãoDoParâmetro,
+  descriçãoDoRetorno,
+  emUmaLinha,
+} from "@portugol-webstudio/parser";
 import { portugolLiteral } from "@portugol-webstudio/runner";
 import { TreeItem } from "./types";
 
 type Biblioteca = (typeof bibliotecas)[number];
 type Constante = Biblioteca["constantes"][number];
 type Função = Biblioteca["funções"][number];
-type Tipo = Função["retorno"]["tipo"];
 
 /**
  * As páginas das bibliotecas são geradas dos metadados, em Markdown como os
@@ -15,28 +21,6 @@ type Tipo = Função["retorno"]["tipo"];
  * como nos outros tópicos.
  */
 const PASTA = "bibliotecas";
-
-/**
- * `inteiro`, `real[]`… O tipo `*` dos metadados aceita qualquer tipo.
- */
-function nomeDoTipo(tipo: Tipo) {
-  const primitivo = tipo.primitivo === "*" ? "qualquer tipo" : tipo.primitivo;
-
-  return tipoNoCódigo(primitivo, tipo.dimensão);
-}
-
-/**
- * Parâmetros vetores e matrizes são passados por referência no Portugol: `inteiro &vetor[]`.
- */
-function parâmetroNaAssinatura({ tipo, nome }: Função["parâmetros"][number]) {
-  return tipo.dimensão ? `${tipo.primitivo} &${nome}${SUFIXO_DA_DIMENSÃO[tipo.dimensão]}` : `${tipo.primitivo} ${nome}`;
-}
-
-function assinaturaDaFunção(função: Função) {
-  const retorno = função.retorno.tipo;
-
-  return `funcao ${tipoNoCódigo(retorno.primitivo, retorno.dimensão)} ${função.nome}(${função.parâmetros.map(p => parâmetroNaAssinatura(p)).join(", ")})`;
-}
 
 function blocoDeSintaxe(código: string) {
   return "```portugol sintaxe\n" + código + "\n```";
@@ -47,13 +31,6 @@ function blocoDeSintaxe(código: string) {
  */
 function blocoDeAssinatura(código: string) {
   return "```portugol assinatura\n" + código + "\n```";
-}
-
-/**
- * As descrições dos metadados podem ter várias linhas; nas listas, cabem numa só.
- */
-function emUmaLinha(texto: string) {
-  return texto.replaceAll(/\s+/g, " ").trim();
 }
 
 function referência(url: string | undefined) {
@@ -115,7 +92,7 @@ function páginaDaConstante(biblioteca: Biblioteca, constante: Constante) {
     `# ${constante.nome}`,
     `Constante da biblioteca [${biblioteca.nome}](../${biblioteca.nome}.md).`,
     blocoDeAssinatura(
-      `const ${nomeDoTipo(constante.tipo)} ${constante.nome} = ${portugolLiteral(constante.tipo.primitivo, constante.valor)}`,
+      `${assinaturaDaConstante(constante)} = ${portugolLiteral(constante.tipo.primitivo, constante.valor)}`,
     ),
     constante.descrição.trim(),
     "## Para usar",
@@ -133,13 +110,11 @@ function páginaDaFunção(biblioteca: Biblioteca, função: Função) {
     blocoDeAssinatura(assinaturaDaFunção(função)),
     função.descrição.trim(),
     função.parâmetros.length > 0 ? "## Parâmetros" : "",
-    função.parâmetros.map(p => `- \`${p.nome}\` (${nomeDoTipo(p.tipo)}): ${emUmaLinha(p.descrição)}`).join("\n"),
+    função.parâmetros.map(p => `- ${descriçãoDoParâmetro(p)}`).join("\n"),
     "## Para usar",
     blocoDeSintaxe(`${biblioteca.nome}.${função.nome}(${função.parâmetros.map(p => p.nome).join(", ")})`),
     retorno.tipo.primitivo === "vazio" ? "" : "## Retorno",
-    retorno.tipo.primitivo === "vazio"
-      ? ""
-      : `${nomeDoTipo(retorno.tipo)}${retorno.descrição ? `: ${emUmaLinha(retorno.descrição)}` : ""}`,
+    descriçãoDoRetorno(função),
     referência(função.referência),
   );
 }

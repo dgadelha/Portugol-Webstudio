@@ -95,6 +95,11 @@ export class SettingsService {
             // Desativadas, as sugestões ainda aparecem com Ctrl + Espaço.
             quickSuggestions,
             suggestOnTriggerCharacters: quickSuggestions,
+            // As palavras soltas dos arquivos abertos: as sugestões já vêm do que o programa
+            // declarou. Os tipos do ngx-monaco-editor dizem `boolean`, mas o Monaco só desliga
+            // com "off": o `false` vira "off" nas opções do editor, mas não na configuração de
+            // onde o `editorWorkerService` lê esta opção.
+            wordBasedSuggestions: "off" as unknown as boolean,
             renderLineHighlight,
             folding,
             stickyScroll: { enabled: stickyScroll },
