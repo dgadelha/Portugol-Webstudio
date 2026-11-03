@@ -1,4 +1,10 @@
-import { ajudaDeAssinatura, completar, PortugolCodeChecker } from "@portugol-webstudio/parser";
+import {
+  ajudaDeAssinatura,
+  completar,
+  definição,
+  informaçãoDoNome,
+  PortugolCodeChecker,
+} from "@portugol-webstudio/parser";
 import { PortugolJs } from "@portugol-webstudio/runtime";
 
 function mapError(error) {
@@ -94,8 +100,8 @@ function transpileCode(code, debugSteps = false) {
 }
 
 /**
- * As sugestões e a ajuda de assinatura do editor. Um erro aqui não pode atrapalhar a digitação:
- * sem resposta, o editor só não mostra nada.
+ * As sugestões, a ajuda de assinatura, a informação e a definição do editor. Um erro aqui não
+ * pode atrapalhar a digitação: sem resposta, o editor só não mostra nada.
  *
  * @template T
  * @param {string} name
@@ -134,6 +140,16 @@ self.addEventListener("message", function onmessage(event) {
 
     case "signatureHelp": {
       result = safely("signatureHelp", () => ajudaDeAssinatura(code, position), null);
+      break;
+    }
+
+    case "hover": {
+      result = safely("hover", () => informaçãoDoNome(code, position), null);
+      break;
+    }
+
+    case "definition": {
+      result = safely("definition", () => definição(code, position), null);
       break;
     }
 

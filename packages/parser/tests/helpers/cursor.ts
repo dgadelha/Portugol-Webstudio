@@ -1,4 +1,13 @@
-import { type AjudaAssinatura, ajudaDeAssinatura, completar, type ItemCompletar, type Posição } from "../../src";
+import {
+  type AjudaAssinatura,
+  ajudaDeAssinatura,
+  completar,
+  definição,
+  informaçãoDoNome,
+  type InformaçãoDoNome,
+  type ItemCompletar,
+  type Posição,
+} from "../../src";
 import { portugol } from "./code";
 
 const CURSOR = "▮";
@@ -21,16 +30,42 @@ export function comCursor(códigoComCursor: string): { código: string; posiçã
   };
 }
 
+function lerCursor(strings: TemplateStringsArray | string, values: unknown[]) {
+  return comCursor(typeof strings === "string" ? strings : portugol(strings, ...values));
+}
+
 export function completarEm(strings: TemplateStringsArray | string, ...values: unknown[]): ItemCompletar[] {
-  const { código, posição } = comCursor(typeof strings === "string" ? strings : portugol(strings, ...values));
+  const { código, posição } = lerCursor(strings, values);
 
   return completar(código, posição);
 }
 
 export function assinaturaEm(strings: TemplateStringsArray | string, ...values: unknown[]): AjudaAssinatura | null {
-  const { código, posição } = comCursor(typeof strings === "string" ? strings : portugol(strings, ...values));
+  const { código, posição } = lerCursor(strings, values);
 
   return ajudaDeAssinatura(código, posição);
+}
+
+export function informaçãoEm(strings: TemplateStringsArray | string, ...values: unknown[]): InformaçãoDoNome | null {
+  const { código, posição } = lerCursor(strings, values);
+
+  return informaçãoDoNome(código, posição);
+}
+
+/**
+ * A definição, com o texto do código no intervalo dela.
+ */
+export function definiçãoEm(strings: TemplateStringsArray | string, ...values: unknown[]) {
+  const { código, posição } = lerCursor(strings, values);
+  const encontrada = definição(código, posição);
+
+  if (!encontrada) {
+    return null;
+  }
+
+  const { linha, início, fim } = encontrada.intervalo;
+
+  return { ...encontrada.intervalo, texto: código.split("\n")[linha - 1].slice(início - 1, fim - 1) };
 }
 
 export function rótulos(itens: readonly ItemCompletar[]): string[] {

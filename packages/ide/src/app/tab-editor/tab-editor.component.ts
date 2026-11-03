@@ -27,6 +27,7 @@ import { MonacoEditorModule } from "@materia-ui/ngx-monaco-editor";
 import { CreateHotToastRef, HotToastService } from "@ngxpert/hot-toast";
 import type { IPortugolCodeDiagnostic } from "@portugol-webstudio/antlr";
 import { PortugolDiagnosticSeverity } from "@portugol-webstudio/antlr";
+import { textoLiteral } from "@portugol-webstudio/parser";
 import {
   DebugCommand,
   DebugPause,
@@ -2250,7 +2251,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
       // Só a primeira linha: as mensagens do Portugol Studio seguem com explicações e
       // exemplos de código, que ficam na saída. É texto, e não Markdown: `[5]` ou `*`
       // aparecem como foram escritos
-      hoverMessage: { value: message.split("\n", 1)[0].replaceAll(/[\\`*_{}[\]()#+\-.!|<>]/g, String.raw`\$&`) },
+      hoverMessage: { value: textoLiteral(message.split("\n", 1)[0]) },
     };
 
     this.errorLineDecoration =

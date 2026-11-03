@@ -27,6 +27,9 @@ Em alguns notebooks, as teclas de função, como o **F1** e o **F5**, só funcio
 | Ctrl + G              | Vai até uma linha                                                  |
 | Ctrl + Espaço         | Abre a lista de sugestões                                          |
 | Ctrl + Shift + Espaço | Mostra os parâmetros da função em que o cursor está                |
+| Ctrl + K, Ctrl + I    | Mostra o que é o nome em que o cursor está; de novo, foca o texto  |
+| F12 ou Ctrl + F12     | Vai até onde o nome em que o cursor está foi declarado             |
+| Ctrl + clique         | Vai até onde o nome clicado foi declarado                          |
 
 ## Na criação de exercícios
 

@@ -1,9 +1,7 @@
 import { PortugolLexer } from "@portugol-webstudio/antlr";
 import type { Token } from "antlr4ng";
 
-import { obterFunção } from "../bibliotecas/metadados.js";
-import { funçãoImplementada } from "../bibliotecas/suporte.js";
-import { type Chamável, chamávelDaBiblioteca, chamávelDoPrograma, FUNÇÕES_DA_LINGUAGEM } from "./chamáveis.js";
+import { type Chamável, chamávelDoPrograma, funçãoDaBiblioteca, FUNÇÕES_DA_LINGUAGEM } from "./chamáveis.js";
 import { analisarContexto, BLOCO_DO_COMANDO, éListaDeParâmetros, type Posição } from "./contexto.js";
 import { bibliotecaIncluída, coletarSímbolos } from "./símbolos.js";
 
@@ -154,9 +152,8 @@ function procurar(código: string, nome: string, escopo: string | undefined): Ch
 
   if (escopo !== undefined) {
     const biblioteca = bibliotecaIncluída(programa, escopo);
-    const função = biblioteca && obterFunção(biblioteca.nome, nome);
 
-    return função && funçãoImplementada(biblioteca.nome, nome) ? chamávelDaBiblioteca(função) : undefined;
+    return biblioteca && funçãoDaBiblioteca(biblioteca.nome, nome);
   }
 
   const daLinguagem = FUNÇÕES_DA_LINGUAGEM.get(nome);

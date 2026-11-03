@@ -1,6 +1,6 @@
 import { inject, Service } from "@angular/core";
 import { MonacoEditorLoaderService } from "@materia-ui/ngx-monaco-editor";
-import type { AjudaAssinatura, ItemCompletar } from "@portugol-webstudio/parser";
+import type { AjudaAssinatura, Intervalo, ItemCompletar } from "@portugol-webstudio/parser";
 import { filter, take } from "rxjs/operators";
 import { WorkerService } from "./worker.service";
 
@@ -306,8 +306,9 @@ export class MonacoService {
   }
 
   /**
-   * As sugestões e a ajuda de assinatura, como as do VS Code. Elas vêm do worker, que tem o
-   * analisador; valem para todo editor `portugol` (as abas de código e o criador de exercícios).
+   * As sugestões, a ajuda de assinatura, a informação ao parar o mouse e a ida para a definição,
+   * como as do VS Code. Elas vêm do worker, que tem o analisador; valem para todo editor
+   * `portugol` (as abas de código e o criador de exercícios).
    */
   private registerLanguageFeatures() {
     this.completionKinds = {
@@ -342,10 +343,79 @@ export class MonacoService {
         return help ? { value: this.toSignatureHelp(help), dispose: () => {} } : null;
       },
     });
+
+    monaco.languages.registerHoverProvider("portugol", {
+      provideHover: async (model, position, token) => {
+        const hover = await this.workerService
+          .hover(model.getValue(), this.toPosition(position), this.toSignal(token))
+          .catch(() => null);
+
+        if (!hover) {
+          return null;
+        }
+
+        const link = hover.ajuda ? `\n\n[Ver na Ajuda](${this.helpLink(hover.ajuda)})` : "";
+
+        return { range: this.toRange(hover.intervalo), contents: [{ value: hover.conteúdo + link }] };
+      },
+    });
+
+    // O "Ver na Ajuda" abre o tópico na aba de Ajuda, como um endereço `#ajuda=`, e não numa
+    // aba nova do navegador. Os tipos do ngx-monaco-editor são de um Monaco antigo, sem o
+    // `registerLinkOpener`.
+    const editorApi = monaco.editor as typeof monaco.editor & {
+      registerLinkOpener(opener: { open(resource: monaco.Uri): boolean }): monaco.IDisposable;
+    };
+
+    editorApi.registerLinkOpener({
+      open: resource => {
+        // Comparados como `URL`, que codifica o caminho dos dois lados do mesmo jeito: o `path`
+        // do `Uri` vem decodificado, e o `pathname` da página, não. Sem o `true`, o `Uri`
+        // codificaria também o `=` e as barras do fragmento.
+        const page = new URL(window.location.href);
+        const target = new URL(resource.toString(true));
+
+        if (target.origin !== page.origin || target.pathname !== page.pathname || !target.hash.startsWith("#ajuda=")) {
+          return false;
+        }
+
+        window.location.hash = target.hash;
+
+        return true;
+      },
+    });
+
+    // F12, Ctrl + clique e "Go to Definition" no menu de contexto.
+    monaco.languages.registerDefinitionProvider("portugol", {
+      provideDefinition: async (model, position, token) => {
+        const definition = await this.workerService
+          .definition(model.getValue(), this.toPosition(position), this.toSignal(token))
+          .catch(() => null);
+
+        return definition ? { uri: model.uri, range: this.toRange(definition.intervalo) } : null;
+      },
+    });
+
+    // No navegador, o F12 pode abrir as ferramentas do desenvolvedor: o Monaco tem também o
+    // Ctrl + F12, que o menu de contexto mostra, mas só o liga com a chave `isWeb`, que ele não
+    // define fora do VS Code para a web.
+    monaco.editor.onDidCreateEditor(editor => {
+      if ("createContextKey" in editor) {
+        (editor as monaco.editor.IStandaloneCodeEditor).createContextKey("isWeb", true);
+      }
+    });
   }
 
   private toPosition(position: monaco.Position) {
     return { linha: position.lineNumber, coluna: position.column };
+  }
+
+  private helpLink(topic: string) {
+    return new URL(`#ajuda=${topic}`, window.location.href).href;
+  }
+
+  private toRange({ linha, início, fim }: Intervalo) {
+    return new monaco.Range(linha, início, linha, fim);
   }
 
   /**
@@ -362,7 +432,7 @@ export class MonacoService {
   }
 
   private toCompletionItem(item: ItemCompletar, position: monaco.Position): monaco.languages.CompletionItem {
-    const { linha, início, fim } = item.intervalo;
+    const { linha, início } = item.intervalo;
 
     return {
       // O leitor de tela lê o rótulo, o detalhe dele e a descrição: "idade, inteiro".
@@ -375,7 +445,7 @@ export class MonacoService {
       sortText: item.ordem,
       range: {
         insert: new monaco.Range(linha, início, linha, position.column),
-        replace: new monaco.Range(linha, início, linha, fim),
+        replace: this.toRange(item.intervalo),
       },
       command:
         item.comando === "ajudaDeAssinatura"

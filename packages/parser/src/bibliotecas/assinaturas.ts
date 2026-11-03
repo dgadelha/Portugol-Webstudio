@@ -55,6 +55,21 @@ export function assinaturaDaConstante(constante: ConstanteBiblioteca) {
 }
 
 /**
+ * A pasta das páginas das bibliotecas na Ajuda, que as gera dos metadados.
+ */
+export const PASTA_DAS_BIBLIOTECAS = "bibliotecas";
+
+/**
+ * A página da Ajuda de uma biblioteca, ou de uma função ou constante dela, como nos endereços
+ * `#ajuda=`: `bibliotecas/Matematica.md`, `bibliotecas/Matematica/potencia.md`.
+ */
+export function páginaNaAjuda(biblioteca: string, membro?: string) {
+  const pasta = PASTA_DAS_BIBLIOTECAS;
+
+  return membro === undefined ? `${pasta}/${biblioteca}.md` : `${pasta}/${biblioteca}/${membro}.md`;
+}
+
+/**
  * As descrições dos metadados podem ter várias linhas; nas listas, cabem numa só.
  */
 export function emUmaLinha(texto: string) {

@@ -13,6 +13,16 @@ export interface Posição {
 }
 
 /**
+ * Um nome numa linha do código. As colunas são como as de `Posição` (UTF-16, a partir de 1), e
+ * `fim` é a coluna logo depois do nome.
+ */
+export interface Intervalo {
+  linha: number;
+  início: number;
+  fim: number;
+}
+
+/**
  * O tipo de bloco que uma `{` abre, pelo token antes dela.
  */
 export type TipoBloco =

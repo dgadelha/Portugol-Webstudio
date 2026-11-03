@@ -3,7 +3,8 @@ import { assinaturaDaConstante, nomeDoTipo } from "../bibliotecas/assinaturas.js
 import { obterBiblioteca } from "../bibliotecas/metadados.js";
 import { BIBLIOTECAS_IMPLEMENTADAS, constanteImplementada, funçãoImplementada } from "../bibliotecas/suporte.js";
 import { type Chamável, chamávelDaBiblioteca, chamávelDoPrograma, FUNÇÕES_DA_LINGUAGEM } from "./chamáveis.js";
-import { analisarContexto, type Contexto, type Lugar, type Posição } from "./contexto.js";
+import { analisarContexto, type Contexto, type Intervalo, type Lugar, type Posição } from "./contexto.js";
+import { bloco } from "./markdown.js";
 import {
   type BibliotecaIncluída,
   bibliotecaIncluída,
@@ -57,7 +58,7 @@ export interface ItemCompletar {
    * A palavra que o item substitui, na linha do cursor: de `início` até o cursor, ou até `fim`
    * para trocar a palavra inteira.
    */
-  intervalo: { linha: number; início: number; fim: number };
+  intervalo: Intervalo;
 }
 
 /**
@@ -340,7 +341,7 @@ class Completador {
         descrição: trecho.descrição,
         tipo: "trecho",
         detalhe: trecho.descrição,
-        documentação: "```portugol\n" + prévia(trecho) + "\n```",
+        documentação: bloco(prévia(trecho)),
         inserir: trecho.código,
         trecho: true,
         ordem: GRUPO.trecho + trecho.palavra,

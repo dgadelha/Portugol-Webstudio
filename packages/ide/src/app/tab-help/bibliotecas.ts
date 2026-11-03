@@ -6,6 +6,8 @@ import {
   descriçãoDoParâmetro,
   descriçãoDoRetorno,
   emUmaLinha,
+  PASTA_DAS_BIBLIOTECAS,
+  páginaNaAjuda,
 } from "@portugol-webstudio/parser";
 import { portugolLiteral } from "@portugol-webstudio/runner";
 import { TreeItem } from "./types";
@@ -14,13 +16,10 @@ type Biblioteca = (typeof bibliotecas)[number];
 type Constante = Biblioteca["constantes"][number];
 type Função = Biblioteca["funções"][number];
 
-/**
- * As páginas das bibliotecas são geradas dos metadados, em Markdown como os
- * outros tópicos da Ajuda. Cada uma tem um caminho de arquivo (que não existe
- * no servidor) para os links entre elas e os endereços `#ajuda=` funcionarem
- * como nos outros tópicos.
- */
-const PASTA = "bibliotecas";
+// As páginas das bibliotecas são geradas dos metadados, em Markdown como os outros tópicos
+// da Ajuda. Cada uma tem um caminho de arquivo (que não existe no servidor) para os links
+// entre elas e os endereços `#ajuda=` funcionarem como nos outros tópicos. A pasta e os
+// caminhos vêm do parser, que os usa no link "Ver na Ajuda" da informação do editor.
 
 function blocoDeSintaxe(código: string) {
   return "```portugol sintaxe\n" + código + "\n```";
@@ -139,9 +138,10 @@ const implementadas = new Set<string>(BIBLIOTECAS_IMPLEMENTADAS);
  * e quem usa o teclado pula um grupo inteiro com uma seta.
  */
 function itensDaBiblioteca(b: Biblioteca): TreeItem[] {
-  const pasta = `${PASTA}/${b.nome}`;
-  const constantes = b.constantes.map(c => item(`${pasta}/${c.nome}.md`, c.nome, páginaDaConstante(b, c)));
-  const funções = b.funções.map(f => item(`${pasta}/${f.nome}.md`, f.nome, páginaDaFunção(b, f)));
+  const pasta = `${PASTA_DAS_BIBLIOTECAS}/${b.nome}`;
+  // O mesmo caminho dos links "Ver na Ajuda" do editor.
+  const constantes = b.constantes.map(c => item(páginaNaAjuda(b.nome, c.nome), c.nome, páginaDaConstante(b, c)));
+  const funções = b.funções.map(f => item(páginaNaAjuda(b.nome, f.nome), f.nome, páginaDaFunção(b, f)));
 
   if (constantes.length === 0 || funções.length === 0) {
     return [...constantes, ...funções];
@@ -161,9 +161,9 @@ export function criarAjudaDasBibliotecas(): TreeItem {
   const lista = bibliotecas.filter(b => implementadas.has(b.nome));
 
   return item(
-    `${PASTA}/index.md`,
+    `${PASTA_DAS_BIBLIOTECAS}/index.md`,
     "Bibliotecas",
     páginaDoÍndice(lista),
-    lista.map(b => item(`${PASTA}/${b.nome}.md`, b.nome, páginaDaBiblioteca(b), itensDaBiblioteca(b))),
+    lista.map(b => item(páginaNaAjuda(b.nome), b.nome, páginaDaBiblioteca(b), itensDaBiblioteca(b))),
   );
 }

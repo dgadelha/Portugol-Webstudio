@@ -1,6 +1,6 @@
 import { describe, expect, test, vi } from "vitest";
 
-import { assinaturaEm, completarEm, rótulos } from "../helpers/cursor";
+import { assinaturaEm, completarEm, informaçãoEm, rótulos } from "../helpers/cursor";
 
 // Hoje o runtime executa tudo das bibliotecas que ele tem: aqui, a Matematica perde uma
 // função e uma constante.
@@ -33,5 +33,14 @@ describe("símbolos que o Webstudio não executa", () => {
         "programa {\n  inclua biblioteca Matematica\n  funcao inicio() {\n    Matematica.potencia(▮\n  }\n}",
       ),
     ).toBeNull();
+  });
+
+  test("e sem informação ao parar sobre eles", () => {
+    const código =
+      "programa {\n  inclua biblioteca Matematica\n  funcao inicio() {\n    Matematica.potencia(Matematica.PI, 2.0)\n  }\n}";
+
+    expect(informaçãoEm(código.replace("potencia", "poten▮cia"))).toBeNull();
+    expect(informaçãoEm(código.replace("PI", "P▮I"))).toBeNull();
+    expect(informaçãoEm(código.replace("Matematica.potencia", "Matematica.raiz▮"))).not.toBeNull();
   });
 });

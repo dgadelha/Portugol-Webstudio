@@ -1,6 +1,6 @@
 import { Service } from "@angular/core";
 import { IPortugolCodeDiagnostic, PortugolDiagnosticSeverity } from "@portugol-webstudio/antlr";
-import type { AjudaAssinatura, ItemCompletar, Posição } from "@portugol-webstudio/parser";
+import type { AjudaAssinatura, Definição, InformaçãoDoNome, ItemCompletar, Posição } from "@portugol-webstudio/parser";
 import type { PortugolTranspiledCode } from "@portugol-webstudio/runner";
 import { WORKER_FILE_NAME } from "@portugol-webstudio/worker/lib/worker-manifest";
 
@@ -19,7 +19,7 @@ type TranspileResult = PortugolTranspiledCode;
 type Message =
   | { action: "check"; code: string }
   | { action: "transpile"; code: string; debugSteps: boolean }
-  | { action: "complete" | "signatureHelp"; code: string; position: Posição };
+  | { action: "complete" | "signatureHelp" | "hover" | "definition"; code: string; position: Posição };
 
 type Request = {
   message: Message;
@@ -61,6 +61,20 @@ export class WorkerService {
    */
   async signatureHelp(code: string, position: Posição, signal?: AbortSignal) {
     return (await this.query<AjudaAssinatura | null>({ action: "signatureHelp", code, position }, signal)) ?? null;
+  }
+
+  /**
+   * O que o nome na posição é, para mostrar ao parar o mouse sobre ele, ou `null` fora de um nome.
+   */
+  async hover(code: string, position: Posição, signal?: AbortSignal) {
+    return (await this.query<InformaçãoDoNome | null>({ action: "hover", code, position }, signal)) ?? null;
+  }
+
+  /**
+   * Onde o nome na posição foi declarado, ou `null` sem declaração no código.
+   */
+  async definition(code: string, position: Posição, signal?: AbortSignal) {
+    return (await this.query<Definição | null>({ action: "definition", code, position }, signal)) ?? null;
   }
 
   /**

@@ -1,4 +1,7 @@
 // Só o que o editor usa: o resto é do próprio serviço.
 export { type AjudaAssinatura, ajudaDeAssinatura } from "./assinatura.js";
 export { completar, type ItemCompletar, type TipoItem } from "./completar.js";
-export type { Posição } from "./contexto.js";
+export type { Intervalo, Posição } from "./contexto.js";
+export { type Definição, definição } from "./definição.js";
+export { informaçãoDoNome, type InformaçãoDoNome } from "./informação.js";
+export { textoLiteral } from "./markdown.js";

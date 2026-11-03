@@ -1,13 +1,20 @@
 import {
   type ArquivoContext,
+  CaracterContext,
   CasoContext,
   DeclaracaoFuncaoContext,
+  type DeclaracaoVariavelContext,
   ListaComandosContext,
   ListaDeclaracoesContext,
+  MenosUnarioContext,
+  NumeroInteiroContext,
+  NumeroRealContext,
   ParaContext,
   type ParametroContext,
   PortugolLexer,
   PortugolParser,
+  StringContext,
+  ValorLogicoContext,
 } from "@portugol-webstudio/antlr";
 import {
   CharStream,
@@ -51,6 +58,15 @@ export interface SímboloDeclarado {
    */
   referência: boolean;
   parâmetros: ParâmetroDeclarado[];
+  /**
+   * O valor de uma constante, quando é um literal: `10`, `"Olá"`, `-1.5`.
+   */
+  valor?: string;
+  /**
+   * Onde a declaração está nos tokens do código (os índices em `CódigoLido.tokens`): o primeiro
+   * token, o do nome e o último. A função não tem `fim`: a linha dela continua no corpo.
+   */
+  índices: { início: number; nome: number; fim?: number };
   posição: number;
   início: number;
   fim: number;
@@ -60,6 +76,11 @@ export interface BibliotecaIncluída {
   nome: string;
   alias?: string;
   posição: number;
+  /**
+   * O token do nome e o do apelido, em `CódigoLido.tokens`.
+   */
+  índice: number;
+  índiceDoApelido?: number;
 }
 
 export interface SímbolosDoPrograma {
@@ -92,24 +113,43 @@ function lerÁrvore(código: string) {
 }
 
 /**
- * A completação e a ajuda de assinatura pedem os símbolos do mesmo código, uma logo depois da
- * outra.
+ * O código lido: os símbolos e todos os tokens, os escondidos também, na ordem do código.
  */
-let último: { código: string; símbolos: SímbolosDoPrograma } | undefined;
-
-export function coletarSímbolos(código: string): SímbolosDoPrograma {
-  if (último?.código !== código) {
-    último = { código, símbolos: new Coletor(código).coletar() };
-  }
-
-  return último.símbolos;
+export interface CódigoLido {
+  símbolos: SímbolosDoPrograma;
+  tokens: Token[];
 }
 
 /**
- * A biblioteca incluída com esse nome ou apelido, como o analisador aceita depois do ponto.
+ * A completação, a ajuda de assinatura, a informação e a definição pedem o mesmo código, uma
+ * logo depois da outra, e a informação a cada parada do mouse.
+ */
+let último: { código: string; lido: CódigoLido } | undefined;
+
+export function lerCódigo(código: string): CódigoLido {
+  if (último?.código !== código) {
+    último = { código, lido: new Coletor(código).coletar() };
+  }
+
+  return último.lido;
+}
+
+export function coletarSímbolos(código: string): SímbolosDoPrograma {
+  return lerCódigo(código).símbolos;
+}
+
+/**
+ * A inclusão com esse nome ou apelido, como o analisador aceita depois do ponto.
+ */
+export function inclusãoDe(programa: SímbolosDoPrograma, nomeOuApelido: string) {
+  return programa.bibliotecas.find(b => b.nome === nomeOuApelido || b.alias === nomeOuApelido);
+}
+
+/**
+ * Os metadados da biblioteca incluída com esse nome ou apelido.
  */
 export function bibliotecaIncluída(programa: SímbolosDoPrograma, nomeOuApelido: string) {
-  const incluída = programa.bibliotecas.find(b => b.nome === nomeOuApelido || b.alias === nomeOuApelido);
+  const incluída = inclusãoDe(programa, nomeOuApelido);
 
   return incluída && obterBiblioteca(incluída.nome);
 }
@@ -165,7 +205,7 @@ class Coletor {
     this.tokens = lido.tokens;
   }
 
-  coletar(): SímbolosDoPrograma {
+  coletar(): CódigoLido {
     const bibliotecas: BibliotecaIncluída[] = [];
 
     for (const inclusão of this.árvore.inclusaoBiblioteca()) {
@@ -176,6 +216,8 @@ class Coletor {
           nome: nome.getText(),
           alias: real(alias) ? alias.getText() : undefined,
           posição: nome.symbol.start,
+          índice: nome.symbol.tokenIndex,
+          índiceDoApelido: real(alias) ? alias.symbol.tokenIndex : undefined,
         });
       }
     }
@@ -188,7 +230,8 @@ class Coletor {
       this.declararFunção(função);
     }
 
-    return { bibliotecas, símbolos: this.símbolos };
+    // Sem o EOF, o último.
+    return { símbolos: { bibliotecas, símbolos: this.símbolos }, tokens: this.tokens.getTokens().slice(0, -1) };
   }
 
   private declararFunção(função: DeclaracaoFuncaoContext) {
@@ -211,6 +254,7 @@ class Coletor {
       origem: "função",
       referência: false,
       parâmetros: declarados,
+      índices: { início: função.start!.tokenIndex, nome: nome.symbol.tokenIndex },
       posição: nome.symbol.start,
       início: 0,
       fim: Infinity,
@@ -228,6 +272,11 @@ class Coletor {
         origem: "parâmetro",
         referência,
         parâmetros: [],
+        índices: {
+          início: parâmetros[i].start!.tokenIndex,
+          nome: parâmetros[i].ID().symbol.tokenIndex,
+          fim: (parâmetros[i].stop ?? parâmetros[i].ID().symbol).tokenIndex,
+        },
         posição: parâmetros[i].ID().symbol.start,
         início,
         fim,
@@ -272,16 +321,24 @@ class Coletor {
       }
 
       const dimensão = declaração.declaracaoMatriz() ? "matriz" : declaração.declaracaoArray() ? "vetor" : undefined;
+      const constante = real(lista.CONSTANTE());
+      const variável = declaração.declaracaoVariavel();
 
       this.símbolos.push({
         nome: nome.getText(),
         classe: dimensão ?? "variável",
         tipo: tipo.getText(),
         dimensão,
-        constante: real(lista.CONSTANTE()),
+        constante,
         origem,
         referência: false,
         parâmetros: [],
+        valor: constante && variável ? valorLiteral(variável) : undefined,
+        índices: {
+          início: lista.start!.tokenIndex,
+          nome: nome.symbol.tokenIndex,
+          fim: (declaração.stop ?? nome.symbol).tokenIndex,
+        },
         posição: nome.symbol.start,
         início: origem === "global" ? início : nome.symbol.start,
         fim,
@@ -344,6 +401,26 @@ class Coletor {
 
     return Infinity;
   }
+}
+
+/**
+ * O valor de uma constante, se ele é um literal; o que precisa de conta fica de fora.
+ */
+function valorLiteral(declaração: DeclaracaoVariavelContext) {
+  const expressão = declaração.expressao();
+  const número = (e: unknown) => e instanceof NumeroInteiroContext || e instanceof NumeroRealContext;
+
+  if (
+    número(expressão) ||
+    (expressão instanceof MenosUnarioContext && número(expressão.expressao())) ||
+    expressão instanceof ValorLogicoContext ||
+    expressão instanceof CaracterContext ||
+    expressão instanceof StringContext
+  ) {
+    return expressão.getText();
+  }
+
+  return;
 }
 
 /**

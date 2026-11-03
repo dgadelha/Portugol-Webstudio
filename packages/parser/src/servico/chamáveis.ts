@@ -7,6 +7,7 @@ import {
   parâmetroNaAssinatura,
 } from "../bibliotecas/assinaturas.js";
 import { type FunçãoBiblioteca, obterFunção } from "../bibliotecas/metadados.js";
+import { funçãoImplementada } from "../bibliotecas/suporte.js";
 import { parâmetroNoCódigo, type SímboloDeclarado } from "./símbolos.js";
 
 /**
@@ -34,6 +35,11 @@ export interface Chamável {
    * Para a ajuda de assinatura, que mostra cada parâmetro à parte.
    */
   documentaçãoSemParâmetros?: string;
+  /**
+   * A página da Ajuda, como nos endereços `#ajuda=`, das funções da linguagem que têm uma só
+   * delas. As das bibliotecas saem de `páginaNaAjuda`.
+   */
+  ajuda?: string;
 }
 
 function montar(nome: string, retorno: string, parâmetros: Chamável["parâmetros"], extra: Partial<Chamável> = {}) {
@@ -74,6 +80,15 @@ export function chamávelDaBiblioteca(função: FunçãoBiblioteca): Chamável {
   return chamável;
 }
 
+/**
+ * A função da biblioteca, se o Webstudio a executa: o analisador recusa o resto.
+ */
+export function funçãoDaBiblioteca(biblioteca: string, nome: string): Chamável | undefined {
+  const função = obterFunção(biblioteca, nome);
+
+  return função && funçãoImplementada(biblioteca, nome) ? chamávelDaBiblioteca(função) : undefined;
+}
+
 export function chamávelDoPrograma(função: SímboloDeclarado): Chamável {
   return montar(
     função.nome,
@@ -83,7 +98,12 @@ export function chamávelDoPrograma(função: SímboloDeclarado): Chamável {
 }
 
 function reservada(nome: string, documentação: string, parâmetros: Chamável["parâmetros"], ilimitado = false) {
-  return montar(nome, "vazio", parâmetros, { documentação, documentaçãoSemParâmetros: documentação, ilimitado });
+  return montar(nome, "vazio", parâmetros, {
+    documentação,
+    documentaçãoSemParâmetros: documentação,
+    ilimitado,
+    ajuda: `topicos/linguagem_portugol/entrada_saida/${nome}.md`,
+  });
 }
 
 /**
