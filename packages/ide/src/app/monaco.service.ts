@@ -460,24 +460,11 @@ export class MonacoService {
           // mostram o modelo do endereço, com a declaração escrita como no código.
           const uri = monaco.Uri.parse(this.helpLink(definition.ajuda));
           const help = monaco.editor.getModel(uri) ?? this.createHelpModel(definition.declaração.texto, uri);
-          const name = this.toRange(definition.declaração.intervalo);
 
-          // A prévia mostra a linha toda da assinatura; o Peek destaca o nome.
-          return [
-            {
-              uri,
-              range: new monaco.Range(
-                name.startLineNumber,
-                1,
-                name.startLineNumber,
-                help.getLineMaxColumn(name.startLineNumber),
-              ),
-              targetSelectionRange: name,
-            },
-          ];
+          return [this.declarationLink(help, definition.declaração.intervalo)];
         }
 
-        return { uri: model.uri, range: this.toRange(definition.intervalo) };
+        return [this.declarationLink(model, definition.intervalo)];
       },
     });
 
@@ -595,6 +582,18 @@ export class MonacoService {
     window.location.hash = topic;
 
     return true;
+  }
+
+  /**
+   * A definição com a linha toda da declaração, que a prévia com o Ctrl mostra, e o nome, que o
+   * F12 seleciona e o Peek destaca.
+   */
+  private declarationLink(model: monaco.editor.ITextModel, name: Intervalo): monaco.languages.LocationLink {
+    return {
+      uri: model.uri,
+      range: new monaco.Range(name.linha, 1, name.linha, model.getLineMaxColumn(name.linha)),
+      targetSelectionRange: this.toRange(name),
+    };
   }
 
   private toRange({ linha, início, fim }: Intervalo) {

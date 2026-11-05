@@ -36,7 +36,7 @@ O botão **Copiar a declaração**, depois de cada valor, copia a linha inteira,
 
 ## O valor no código
 
-Com o programa pausado, parar o mouse sobre uma variável no código mostra a declaração dela com o valor de agora, como na aba **Variáveis**: `inteiro total = 12`. Uma variável que ainda não recebeu um valor aparece como `inteiro total // sem valor`. Uma matriz aparece como uma tabela, com uma linha dela em cada linha, até 10 linhas de 10 valores. Pelo teclado, com o cursor no nome, aperte **Ctrl + K** e depois **Ctrl + I**.
+Com o programa pausado, parar o mouse sobre uma variável no código mostra a declaração dela com o valor de agora, como na aba **Variáveis**: `inteiro total = 12`. Uma variável que ainda não recebeu um valor aparece como `inteiro total // sem valor`. Uma matriz aparece como uma tabela, com uma linha dela em cada linha, até 10 linhas de 10 valores. Pelo teclado, com o cursor no nome, aperte **Ctrl + K** e depois **Ctrl + I** (no Mac, **Cmd + K** e **Cmd + I**).
 
 O valor só aparece quando ele é mesmo o daquela declaração. Na função em que o programa está parado, a variável de um laço que já terminou, ou uma declarada mais abaixo, que o programa ainda não alcançou, aparece sem o valor.
 
@@ -65,7 +65,7 @@ Com pontos de parada marcados, o **Depurar** executa o programa normalmente e s�
 
 A cada pausa, o leitor de tela anuncia a linha, a função quando ela muda e o que mudou nas variáveis, como "Linha 12. total passou de 2 para 6". Na depuração avançada, marcar e desmarcar um ponto de parada também é anunciado.
 
-Com o cursor numa variável, **Ctrl + K** e depois **Ctrl + I** mostram a declaração dela com o valor de agora. Apertando de novo, o foco vai para esse texto, e o leitor de tela o lê; **Esc** volta ao código.
+Com o cursor numa variável, **Ctrl + K** e depois **Ctrl + I** (no Mac, **Cmd + K** e **Cmd + I**) mostram a declaração dela com o valor de agora. Apertando de novo, o foco vai para esse texto, e o leitor de tela o lê; **Esc** volta ao código.
 
 ## Terminar
 

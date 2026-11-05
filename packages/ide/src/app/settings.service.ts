@@ -106,6 +106,9 @@ export class SettingsService {
             // A informação aparece 200 ms depois que o mouse para, e não nos 300 do Monaco. Com
             // o mouse andando pelo código, ela continua sem aparecer.
             hover: { delay: 200 },
+            // No nome de uma declaração, a definição é ele mesmo: o Monaco procuraria as
+            // referências, que o editor ainda não tem, e diria em inglês que não há nenhuma.
+            gotoLocation: { alternativeDefinitionCommand: "" },
           };
         },
       ),
