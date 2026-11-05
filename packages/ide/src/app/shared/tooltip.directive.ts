@@ -19,6 +19,8 @@ import {
   signal,
 } from "@angular/core";
 
+import { isMacintosh } from "../../settings";
+
 type TooltipPosition = "above" | "below" | "left" | "right";
 
 const POSITIONS: Record<TooltipPosition, ConnectedPosition[]> = {
@@ -91,6 +93,11 @@ export class TooltipDirective implements OnDestroy {
   readonly appTooltip = input.required<string>();
   readonly appTooltipPosition = input<TooltipPosition>("below");
   readonly appTooltipShortcut = input<string>("");
+  /**
+   * O atalho no Mac, quando ele não é o mesmo com Cmd no lugar do Ctrl e Option no lugar do Alt,
+   * como o Ctrl+G do editor de código.
+   */
+  readonly appTooltipShortcutMac = input<string>();
 
   constructor() {
     // Depois da renderização, quando o `aria-label` do controle já está no DOM.
@@ -170,7 +177,7 @@ export class TooltipDirective implements OnDestroy {
    */
   private description() {
     const text = this.appTooltip();
-    const shortcut = this.appTooltipShortcut();
+    const shortcut = this.shortcut();
     const element = this.element.nativeElement;
     const name = this.normalize(element.getAttribute("aria-label") ?? element.textContent ?? "");
     const parts = [];
@@ -184,6 +191,19 @@ export class TooltipDirective implements OnDestroy {
     }
 
     return parts.join(". ");
+  }
+
+  /**
+   * O atalho com as teclas do sistema: no Mac, Cmd e Option.
+   */
+  private shortcut() {
+    const shortcut = this.appTooltipShortcut();
+
+    if (!isMacintosh) {
+      return shortcut;
+    }
+
+    return this.appTooltipShortcutMac() ?? shortcut.replaceAll("Ctrl+", "Cmd+").replaceAll("Alt+", "Option+");
   }
 
   /**
@@ -207,7 +227,7 @@ export class TooltipDirective implements OnDestroy {
 
     const ref = this.overlayRef.attach(new ComponentPortal(TooltipComponent));
     ref.instance.text.set(this.appTooltip());
-    ref.instance.shortcut.set(this.appTooltipShortcut());
+    ref.instance.shortcut.set(this.shortcut());
 
     // Com o ponteiro sobre a dica, ela continua aberta, para quem usa lupa ler.
     const tooltip = ref.location.nativeElement as HTMLElement;

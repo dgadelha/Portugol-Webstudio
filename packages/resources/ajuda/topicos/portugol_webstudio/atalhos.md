@@ -82,7 +82,7 @@ Com uma aba selecionada (clique nela, ou chegue nela com o **Tab**):
 | Seta para a esquerda/direita | Seta para a esquerda/direita      | Vai para a aba ao lado              |
 | Home / End                   | Fn + seta para a esquerda/direita | Vai para a primeira ou a última aba |
 | F2                           | F2                                | Renomeia a aba                      |
-| Delete                       | Fn + Delete                       | Fecha a aba                         |
+| Delete                       | Delete                            | Fecha a aba                         |
 
 Com o mouse, um duplo clique renomeia a aba e um clique com o botão do meio fecha.
 

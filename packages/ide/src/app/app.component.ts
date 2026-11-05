@@ -19,7 +19,7 @@ import { CreateHotToastRef, HotToastService } from "@ngxpert/hot-toast";
 import { AngularSvgIconModule } from "angular-svg-icon";
 import { GoogleAnalyticsService, NgxGoogleAnalyticsModule } from "ngx-google-analytics";
 
-import { settings } from "../settings";
+import { isMacintosh, settings } from "../settings";
 import { IS_BETA } from "./beta";
 import { DialogConfirmCloseTabComponent } from "./dialog-confirm-close-tab/dialog-confirm-close-tab.component";
 import { DialogOpenExampleComponent } from "./dialog-open-example/dialog-open-example.component";
@@ -428,12 +428,12 @@ export class AppComponent implements OnInit {
 
   /**
    * Nas abas, as setas trocam de aba (como no VS Code e no padrão de abas da
-   * WAI-ARIA), Delete fecha e F2 renomeia.
+   * WAI-ARIA), Delete fecha e F2 renomeia. No Mac, a tecla Delete é o Backspace.
    */
   private onTabKeydown(event: KeyboardEvent) {
     const tab = this.workspace.activeTab();
 
-    if (tab && event.key === "Delete") {
+    if (tab && (event.key === "Delete" || (isMacintosh && event.key === "Backspace"))) {
       event.preventDefault();
       this.closeTab(tab, "atalho");
       return;
