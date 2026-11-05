@@ -117,6 +117,26 @@ function contarQuebras(texto: string | undefined) {
 }
 
 /**
+ * O comentário de bloco sem o `/*` e o `*\/`, com os asteriscos colados neles. Sem expressão
+ * regular: a `\*+\/$` testaria cada asterisco de uma sequência longa no meio do texto, e
+ * milhares deles levariam segundos.
+ */
+function semAsPontasDoBloco(comentário: string) {
+  let início = 1;
+  let fim = comentário.endsWith("*/") ? comentário.length - 2 : comentário.length;
+
+  while (início < fim && comentário[início] === "*") {
+    início++;
+  }
+
+  while (fim > início && comentário[fim - 1] === "*") {
+    fim--;
+  }
+
+  return comentário.slice(início, fim);
+}
+
+/**
  * Linhas só de traços, iguais ou asteriscos, que separam partes do código.
  */
 const LINHA_DE_ENFEITE = /^[-=*_#~+/\\|.]+$/;
@@ -125,9 +145,7 @@ const LINHA_DE_ENFEITE = /^[-=*_#~+/\\|.]+$/;
  * O texto do comentário, sem `//`, `/*`, `*\/` nem o `*` do começo das linhas.
  */
 export function textoDoComentário(comentário: string) {
-  const texto = comentário.startsWith("//")
-    ? comentário.replace(/^\/+/, "")
-    : comentário.replace(/^\/\*+/, "").replace(/\*+\/$/, "");
+  const texto = comentário.startsWith("//") ? comentário.replace(/^\/+/, "") : semAsPontasDoBloco(comentário);
 
   return texto
     .split(/\r?\n/)

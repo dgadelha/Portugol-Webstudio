@@ -149,6 +149,22 @@ describe("o que cabe em cada lugar", () => {
     expect(rótulos(itens)).toContain("pare");
   });
 
+  test.each([
+    ["na inicialização de um vetor", "inteiro n = 1\n    inteiro v[3] = {1, ▮", "n", []],
+    ["na segunda linha de uma matriz", "inteiro n = 1\n    inteiro m[2][2] = {{1, 2}, {▮", "n", []],
+    ["no bloco de um faca", "faca {\n      ▮\n    } enquanto (verdadeiro)", "pare", []],
+    ["no bloco de um senao", "se (verdadeiro) {\n    } senao {\n      ▮\n    }", "escreva", ["pare"]],
+    ["no bloco de um caso", "escolha (1) {\n      caso 1: {\n        ▮\n      }\n    }", "pare", []],
+  ])("%s", (_, linhas, esperado, semEles) => {
+    const itens = rótulos(completarEm(`programa {\n  funcao inicio() {\n    ${linhas}\n  }\n}`));
+
+    expect(itens).toContain(esperado);
+
+    for (const rótulo of semEles) {
+      expect(itens).not.toContain(rótulo);
+    }
+  });
+
   test("caso, caso contrario e pare num escolha", () => {
     const itens = completarEm`
       programa {

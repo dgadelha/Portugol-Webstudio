@@ -48,15 +48,20 @@ export function textoComLinks(texto: string) {
  * `https://pt.wikipedia.org/wiki/Pi_(constante)`.
  */
 function semPontuaçãoFinal(endereço: string) {
+  const abertos = contar(endereço, "(");
+  let fechados = contar(endereço, ")");
   let fim = endereço.length;
 
   while (fim > 0) {
     const último = endereço[fim - 1];
-    const parte = endereço.slice(0, fim);
-    const parênteseSobrando = último === ")" && contar(parte, "(") < contar(parte, ")");
+    const parênteseSobrando = último === ")" && abertos < fechados;
 
     if (!parênteseSobrando && !".,;:!?'\"".includes(último)) {
       break;
+    }
+
+    if (último === ")") {
+      fechados--;
     }
 
     fim--;

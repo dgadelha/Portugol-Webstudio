@@ -182,6 +182,27 @@ describe("ir para a definição", () => {
       ).toBeNull();
     });
 
+    // Com erro de redeclaração, o nome é o que o analisador guardou.
+    test.each([
+      [
+        "a função, e não a global com o nome dela",
+        "inteiro f = 1\n\n  funcao inicio() {\n    f▮()\n  }\n\n  funcao f() {\n  }",
+        8,
+      ],
+      [
+        "o parâmetro, e não a local com o nome dele",
+        "funcao g(inteiro a) {\n    inteiro a = 2\n    escreva(a▮)\n  }",
+        2,
+      ],
+      [
+        "a local de fora, e não a de um bloco interno",
+        "funcao inicio() {\n    inteiro a = 1\n    se (verdadeiro) {\n      inteiro a = 2\n      escreva(a▮)\n    }\n  }",
+        3,
+      ],
+    ])("redeclarado: %s", (_, corpo, linha) => {
+      expect(definiçãoEm(`programa {\n  ${corpo}\n}`)).toMatchObject({ linha });
+    });
+
     test("a local de outra função não vale", () => {
       expect(
         definiçãoEm`

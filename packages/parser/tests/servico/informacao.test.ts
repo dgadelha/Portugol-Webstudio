@@ -370,6 +370,14 @@ describe("informação ao parar sobre um nome", () => {
       expect(textoDoComentário("// ---------------")).toBe("");
       expect(textoDoComentário("//    com espaços   \n")).toBe("com espaços");
     });
+
+    // A expressão regular que tirava o `*\/` testava cada asterisco: 200 mil levavam 18 s.
+    test("milhares de asteriscos no meio do comentário, sem demora", () => {
+      const asteriscos = "*".repeat(200_000);
+
+      expect(textoDoComentário(`/* a${asteriscos}b */`)).toBe(`a${asteriscos}b`);
+      expect(textoDoComentário("/** com asteriscos nas pontas **/")).toBe("com asteriscos nas pontas");
+    });
   });
 
   describe("com o código pela metade", () => {

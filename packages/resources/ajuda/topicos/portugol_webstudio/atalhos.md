@@ -15,22 +15,22 @@ Em alguns notebooks, e na maioria dos Macs, as teclas de função, como o **F1**
 
 ## Numa aba de código
 
-| Windows e Linux                          | macOS                | O que faz                                                          |
-| ---------------------------------------- | -------------------- | ------------------------------------------------------------------ |
-| Ctrl + Enter                             | Cmd + Enter          | Executa o programa                                                 |
-| Ctrl + Shift + Enter                     | Cmd + Shift + Enter  | Num [exercício](exercicios.md), confere o programa (**Verificar**) |
-| Alt + P                                  | Option + P           | Executa o programa passo a passo                                   |
-| Shift + F5                               | Shift + F5           | Para o programa, ou a conferência de um exercício                  |
-| Ctrl + S                                 | Cmd + S              | Baixa o código como um arquivo `.por`                              |
-| Ctrl + O                                 | Cmd + O              | Abre um arquivo do computador                                      |
-| F1                                       | F1                   | Abre a Ajuda                                                       |
-| Ctrl + G                                 | Ctrl + G             | Vai até uma linha                                                  |
-| Ctrl + Espaço                            | Ctrl + Espaço        | Abre a lista de sugestões                                          |
-| Ctrl + Shift + Espaço                    | Cmd + Shift + Espaço | Mostra os parâmetros da função em que o cursor está                |
-| Ctrl + K, Ctrl + I                       | Cmd + K, Cmd + I     | Mostra o que é o nome em que o cursor está; de novo, foca o texto  |
-| F12 ou Ctrl + F12                        | F12 ou Cmd + F12     | Vai até a declaração do nome no cursor, ou à página dele na Ajuda  |
-| Ctrl + clique                            | Cmd + clique         | Vai até a declaração do nome clicado, ou à página dele na Ajuda    |
-| Alt + F12 (no Linux, Ctrl + Shift + F10) | Option + F12         | Mostra a declaração do nome no cursor numa janela dentro do código |
+| Windows e Linux                          | macOS                         | O que faz                                                          |
+| ---------------------------------------- | ----------------------------- | ------------------------------------------------------------------ |
+| Ctrl + Enter                             | Cmd + Enter                   | Executa o programa                                                 |
+| Ctrl + Shift + Enter                     | Cmd + Shift + Enter           | Num [exercício](exercicios.md), confere o programa (**Verificar**) |
+| Alt + P                                  | Option + P                    | Executa o programa passo a passo                                   |
+| Shift + F5                               | Shift + F5                    | Para o programa, ou a conferência de um exercício                  |
+| Ctrl + S                                 | Cmd + S                       | Baixa o código como um arquivo `.por`                              |
+| Ctrl + O                                 | Cmd + O                       | Abre um arquivo do computador                                      |
+| F1                                       | F1                            | Abre a Ajuda                                                       |
+| Ctrl + G                                 | Ctrl + G                      | Vai até uma linha                                                  |
+| Ctrl + Espaço                            | Ctrl + Espaço ou Option + Esc | Abre a lista de sugestões                                          |
+| Ctrl + Shift + Espaço                    | Cmd + Shift + Espaço          | Mostra os parâmetros da função em que o cursor está                |
+| Ctrl + K, Ctrl + I                       | Cmd + K, Cmd + I              | Mostra o que é o nome em que o cursor está; de novo, foca o texto  |
+| F12 ou Ctrl + F12                        | F12 ou Cmd + F12              | Vai até a declaração do nome no cursor, ou à página dele na Ajuda  |
+| Ctrl + clique                            | Cmd + clique                  | Vai até a declaração do nome clicado, ou à página dele na Ajuda    |
+| Alt + F12 (no Linux, Ctrl + Shift + F10) | Option + F12                  | Mostra a declaração do nome no cursor numa janela dentro do código |
 
 ## Na criação de exercícios
 

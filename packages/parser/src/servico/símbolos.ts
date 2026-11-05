@@ -30,7 +30,7 @@ import type { ClasseSímbolo } from "../analise/Símbolo.js";
 import { SUFIXO_DA_DIMENSÃO, tipoNoCódigo } from "../analise/TipoDado.js";
 import { obterBiblioteca } from "../bibliotecas/metadados.js";
 
-export type Dimensão = "vetor" | "matriz";
+export type Dimensão = keyof typeof SUFIXO_DA_DIMENSÃO;
 
 export interface ParâmetroDeclarado {
   nome: string;
@@ -172,7 +172,7 @@ export function símbolosVisíveis(programa: SímbolosDoPrograma, deslocamento: 
 
     const outro = visíveis.get(símbolo.nome);
 
-    if (!outro || maisInterno(símbolo, outro)) {
+    if (!outro || prevalece(símbolo, outro)) {
       visíveis.set(símbolo.nome, símbolo);
     }
   }
@@ -180,14 +180,23 @@ export function símbolosVisíveis(programa: SímbolosDoPrograma, deslocamento: 
   return Array.from(visíveis.values());
 }
 
-const PRIORIDADE = { local: 3, parâmetro: 2, global: 1, função: 0 } as const;
+/**
+ * Como na `Memória` do analisador: uma local ou um parâmetro esconde a função e a global; a
+ * função entra antes das globais, e a global com o nome dela é redeclaração.
+ */
+const PRIORIDADE = { local: 2, parâmetro: 2, função: 1, global: 0 } as const;
 
-function maisInterno(a: SímboloDeclarado, b: SímboloDeclarado) {
+/**
+ * Se `a` vale no lugar de `b`, com o mesmo nome. No mesmo nível, o nome repetido é
+ * redeclaração, e fica a primeira declaração: dentro de uma função, até a de um bloco interno
+ * ou a local com o nome de um parâmetro.
+ */
+function prevalece(a: SímboloDeclarado, b: SímboloDeclarado) {
   if (PRIORIDADE[a.origem] !== PRIORIDADE[b.origem]) {
     return PRIORIDADE[a.origem] > PRIORIDADE[b.origem];
   }
 
-  return a.início > b.início;
+  return a.início < b.início;
 }
 
 /**

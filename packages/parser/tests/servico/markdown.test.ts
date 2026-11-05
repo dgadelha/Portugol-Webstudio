@@ -50,4 +50,11 @@ describe("textoComLinks", () => {
   ])("%s", (_, texto, esperado) => {
     expect(textoComLinks(texto)).toBe(esperado);
   });
+
+  // Recontar os parênteses a cada `)` tirado levava segundos.
+  test("milhares de parênteses no fim, sem demora", () => {
+    const parênteses = ")".repeat(100_000);
+
+    expect(textoComLinks(`http://a${parênteses}`)).toBe(link("http://a") + "\\)".repeat(100_000));
+  });
 });
