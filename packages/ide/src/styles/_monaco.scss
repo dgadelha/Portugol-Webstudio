@@ -1,0 +1,21 @@
+// A informação do editor (ao parar o mouse sobre um nome), em todos os editores de código.
+//
+// O Monaco nunca limita a largura dela a menos de 750 px, mesmo numa janela mais estreita: ela
+// fica no máximo da largura da janela, com 16 px de margem dos dois lados, e o texto quebra. O
+// limite do próprio Monaco (`--vscode-hover-maxWidth`) continua valendo nas janelas largas. A
+// largura vem nos estilos dela, por isso o `!important`.
+.monaco-editor .monaco-resizable-hover {
+  max-width: calc(100vw - 32px) !important;
+}
+
+.monaco-editor .monaco-resizable-hover .monaco-hover,
+.monaco-editor .monaco-resizable-hover .monaco-scrollable-element,
+.monaco-editor .monaco-resizable-hover .monaco-hover-content {
+  max-width: min(var(--vscode-hover-maxWidth, 100vw), calc(100vw - 32px)) !important;
+}
+
+// O código na informação quebra dentro de uma palavra longa, como uma cadeia sem espaços,
+// em vez de sumir na borda.
+.monaco-hover .monaco-tokenized-source {
+  overflow-wrap: anywhere;
+}

@@ -15,21 +15,22 @@ Em alguns notebooks, as teclas de função, como o **F1** e o **F5**, só funcio
 
 ## Numa aba de código
 
-| Atalho                | O que faz                                                          |
-| --------------------- | ------------------------------------------------------------------ |
-| Ctrl + Enter          | Executa o programa                                                 |
-| Ctrl + Shift + Enter  | Num [exercício](exercicios.md), confere o programa (**Verificar**) |
-| Alt + P               | Executa o programa passo a passo                                   |
-| Shift + F5            | Para o programa, ou a conferência de um exercício                  |
-| Ctrl + S              | Baixa o código como um arquivo `.por`                              |
-| Ctrl + O              | Abre um arquivo do computador                                      |
-| F1                    | Abre a Ajuda                                                       |
-| Ctrl + G              | Vai até uma linha                                                  |
-| Ctrl + Espaço         | Abre a lista de sugestões                                          |
-| Ctrl + Shift + Espaço | Mostra os parâmetros da função em que o cursor está                |
-| Ctrl + K, Ctrl + I    | Mostra o que é o nome em que o cursor está; de novo, foca o texto  |
-| F12 ou Ctrl + F12     | Vai até onde o nome em que o cursor está foi declarado             |
-| Ctrl + clique         | Vai até onde o nome clicado foi declarado                          |
+| Atalho                                   | O que faz                                                          |
+| ---------------------------------------- | ------------------------------------------------------------------ |
+| Ctrl + Enter                             | Executa o programa                                                 |
+| Ctrl + Shift + Enter                     | Num [exercício](exercicios.md), confere o programa (**Verificar**) |
+| Alt + P                                  | Executa o programa passo a passo                                   |
+| Shift + F5                               | Para o programa, ou a conferência de um exercício                  |
+| Ctrl + S                                 | Baixa o código como um arquivo `.por`                              |
+| Ctrl + O                                 | Abre um arquivo do computador                                      |
+| F1                                       | Abre a Ajuda                                                       |
+| Ctrl + G                                 | Vai até uma linha                                                  |
+| Ctrl + Espaço                            | Abre a lista de sugestões                                          |
+| Ctrl + Shift + Espaço                    | Mostra os parâmetros da função em que o cursor está                |
+| Ctrl + K, Ctrl + I                       | Mostra o que é o nome em que o cursor está; de novo, foca o texto  |
+| F12 ou Ctrl + F12                        | Vai até a declaração do nome no cursor, ou à página dele na Ajuda  |
+| Ctrl + clique                            | Vai até a declaração do nome clicado, ou à página dele na Ajuda    |
+| Alt + F12 (no Linux, Ctrl + Shift + F10) | Mostra a declaração do nome no cursor numa janela dentro do código |
 
 ## Na criação de exercícios
 

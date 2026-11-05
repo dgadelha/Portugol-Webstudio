@@ -52,6 +52,28 @@ export function informaçãoEm(strings: TemplateStringsArray | string, ...values
   return informaçãoDoNome(código, posição);
 }
 
+const PAUSA = "⏸";
+
+/**
+ * A informação do nome no `▮` com a depuração parada no `⏸`, que vai no começo do comando,
+ * onde o depurador para.
+ */
+export function informaçãoNaPausa(códigoComMarcas: string) {
+  if (códigoComMarcas.split(PAUSA).length !== 2) {
+    throw new Error("O código precisa de um, e só um, ⏸");
+  }
+
+  const { código, posição } = comCursor(códigoComMarcas.replace(PAUSA, ""));
+  const pausa = comCursor(códigoComMarcas.replace(CURSOR, "").replace(PAUSA, CURSOR)).posição;
+  // O depurador conta a coluna como o ANTLR: pontos de código, a partir de 0.
+  const linha = código.split("\n")[pausa.linha - 1];
+
+  return informaçãoDoNome(código, posição, {
+    linha: pausa.linha,
+    coluna: Array.from(linha.slice(0, pausa.coluna - 1)).length,
+  });
+}
+
 /**
  * A definição, com o texto do código no intervalo dela.
  */
@@ -59,8 +81,8 @@ export function definiçãoEm(strings: TemplateStringsArray | string, ...values:
   const { código, posição } = lerCursor(strings, values);
   const encontrada = definição(código, posição);
 
-  if (!encontrada) {
-    return null;
+  if (!encontrada || "ajuda" in encontrada) {
+    return encontrada;
   }
 
   const { linha, início, fim } = encontrada.intervalo;

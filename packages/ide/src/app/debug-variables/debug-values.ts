@@ -34,13 +34,7 @@ export function dimensions(value: DebugValue) {
  */
 export function valueText(value: DebugValue, limit = 10): string {
   if (value.items) {
-    const items = value.items.slice(0, limit).map(item => valueText(item, limit));
-
-    if (value.items.length > limit) {
-      items.push("…");
-    }
-
-    return `{${items.join(", ")}}`;
+    return `{${firstItems(value.items, limit, item => valueText(item, limit)).join(", ")}}`;
   }
 
   return value.text ?? "sem valor";
@@ -51,9 +45,30 @@ export function valueText(value: DebugValue, limit = 10): string {
  * `real notas[4] = {7.5, 8.0, 6.5, 9.0}`.
  */
 export function declarationText(variable: DebugVariable) {
-  const declaration = `${variable.constant ? "const " : ""}${baseType(variable)} ${variable.name}${dimensions(variable)}`;
+  const declaration = declarationStart(variable);
 
   return variable.text === null ? declaration : `${declaration} = ${valueText(variable, Infinity)}`;
+}
+
+/**
+ * A declaração para a informação do editor: o vetor até 10 itens, a matriz com uma linha dela
+ * por linha (`matrixText`) e, sem valor, `inteiro x // sem valor`.
+ */
+export function hoverDeclarationText(variable: DebugVariable) {
+  const declaration = declarationStart(variable);
+
+  if (variable.text === null) {
+    return `${declaration} // sem valor`;
+  }
+
+  return `${declaration} = ${variable.type === "matriz" ? matrixText(variable) : valueText(variable)}`;
+}
+
+/**
+ * A declaração sem o valor: `const real notas[4]`.
+ */
+function declarationStart(variable: DebugVariable) {
+  return `${variable.constant ? "const " : ""}${baseType(variable)} ${variable.name}${dimensions(variable)}`;
 }
 
 /**
@@ -65,13 +80,43 @@ export function summaryText(value: DebugValue): string {
     return valueText(value);
   }
 
-  const rows = (value.items ?? []).slice(0, 2).map(row => valueText(row, 4));
+  return `{${firstItems(value.items ?? [], 2, row => valueText(row, 4)).join(", ")}}`;
+}
 
-  if ((value.items?.length ?? 0) > 2) {
-    rows.push("…");
+/**
+ * A matriz como uma tabela, uma linha dela por linha do texto, até 10 linhas de 10 itens, com
+ * reticências depois:
+ *
+ * ```
+ * {
+ *   {1, 2, 3},
+ *   {4, 5, 6}
+ * }
+ * ```
+ */
+function matrixText(value: DebugValue): string {
+  const rows = value.items ?? [];
+
+  if (rows.length === 0) {
+    return "{}";
   }
 
-  return `{${rows.join(", ")}}`;
+  const lines = firstItems(rows, 10, row => valueText(row, 10)).map(line => `  ${line}`);
+
+  return `{\n${lines.join(",\n")}\n}`;
+}
+
+/**
+ * Os textos dos primeiros `limit` itens, com reticências no lugar dos que ficam de fora.
+ */
+function firstItems(items: readonly DebugValue[], limit: number, text: (item: DebugValue) => string) {
+  const texts = items.slice(0, limit).map(item => text(item));
+
+  if (items.length > limit) {
+    texts.push("…");
+  }
+
+  return texts;
 }
 
 /**

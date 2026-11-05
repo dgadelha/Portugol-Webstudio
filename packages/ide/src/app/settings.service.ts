@@ -103,6 +103,9 @@ export class SettingsService {
             renderLineHighlight,
             folding,
             stickyScroll: { enabled: stickyScroll },
+            // A informação aparece 200 ms depois que o mouse para, e não nos 300 do Monaco. Com
+            // o mouse andando pelo código, ela continua sem aparecer.
+            hover: { delay: 200 },
           };
         },
       ),

@@ -39,6 +39,7 @@ describe("informação ao parar sobre um nome", () => {
     expect(informação).toEqual({
       intervalo: { linha: 4, início: 13, fim: 18 },
       conteúdo: bloco("inteiro idade") + "\n\nvariável local",
+      variável: { nome: "idade", função: "inicio", descrição: "variável local" },
     });
   });
 
@@ -354,6 +355,7 @@ describe("informação ao parar sobre um nome", () => {
       expect(informação).toEqual({
         intervalo: { linha: 6, início: 13, fim: 14 },
         conteúdo: bloco("inteiro x") + "\n\nvariável global\n\ncontador de voltas\n\nem segundos",
+        variável: { nome: "x", função: null, descrição: "variável global\n\ncontador de voltas\n\nem segundos" },
       });
     });
 

@@ -1,13 +1,14 @@
 import { PortugolLexer } from "@portugol-webstudio/antlr";
 import { Token } from "antlr4ng";
 
+import { assinaturaDaConstante, páginaNaAjuda } from "../bibliotecas/assinaturas.js";
 import {
   type Biblioteca,
   type ConstanteBiblioteca,
   obterBiblioteca,
   obterConstante,
 } from "../bibliotecas/metadados.js";
-import { constanteImplementada } from "../bibliotecas/suporte.js";
+import { bibliotecaImplementada, constanteImplementada } from "../bibliotecas/suporte.js";
 import { type Chamável, funçãoDaBiblioteca, FUNÇÕES_DA_LINGUAGEM } from "./chamáveis.js";
 import type { Intervalo, Posição } from "./contexto.js";
 import {
@@ -115,6 +116,59 @@ function resolver({ símbolos: programa, tokens }: CódigoLido, índice: number)
   return símbolo && { tipo: "símbolo", símbolo };
 }
 
+/**
+ * A página da Ajuda sobre o que o nome é, como nos endereços `#ajuda=`: as bibliotecas e o que
+ * elas têm, e as funções da linguagem que têm uma página só delas.
+ */
+export function páginaDaAjuda(significado: Significado) {
+  switch (significado.tipo) {
+    case "biblioteca": {
+      // A Ajuda só tem as páginas das bibliotecas que o Webstudio executa.
+      const { nome } = significado.biblioteca;
+
+      return bibliotecaImplementada(nome) ? páginaNaAjuda(nome) : undefined;
+    }
+
+    case "função": {
+      return significado.biblioteca === undefined
+        ? significado.função.ajuda
+        : páginaNaAjuda(significado.biblioteca, significado.função.nome);
+    }
+
+    case "constante": {
+      return páginaNaAjuda(significado.biblioteca, significado.constante.nome);
+    }
+
+    case "símbolo": {
+      return;
+    }
+  }
+}
+
+/**
+ * A assinatura e a explicação do que vem das bibliotecas e da linguagem, iguais na informação e
+ * na declaração do Peek. A de uma biblioteca é o `inclua`, sem apelido.
+ */
+export function assinaturaEExplicação(
+  significado: Extract<Significado, { tipo: "função" | "constante" | "biblioteca" }>,
+) {
+  if (significado.tipo === "biblioteca") {
+    const { nome, descrição } = significado.biblioteca;
+
+    return { nome, assinatura: `inclua biblioteca ${nome}`, explicação: descrição.trim() };
+  }
+
+  if (significado.tipo === "função") {
+    const { nome, assinatura, documentação } = significado.função;
+
+    return { nome, assinatura, explicação: documentação };
+  }
+
+  const { constante } = significado;
+
+  return { nome: constante.nome, assinatura: assinaturaDaConstante(constante), explicação: constante.descrição.trim() };
+}
+
 function comoBiblioteca(incluída: BibliotecaIncluída): Significado | undefined {
   const biblioteca = obterBiblioteca(incluída.nome);
 
@@ -147,7 +201,7 @@ function membro(biblioteca: Biblioteca | undefined, nome: string): Significado |
 /**
  * O token visível antes (`passo` -1) ou depois (1) do índice, pulando espaços e comentários.
  */
-function visível(tokens: Token[], índice: number, passo: 1 | -1) {
+export function visível(tokens: Token[], índice: number, passo: 1 | -1) {
   for (let i = índice + passo; i >= 0 && i < tokens.length; i += passo) {
     if (tokens[i].channel === Token.DEFAULT_CHANNEL) {
       return tokens[i];

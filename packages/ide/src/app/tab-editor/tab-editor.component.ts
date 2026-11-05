@@ -59,6 +59,7 @@ import {
   Exercício,
   SHARED_PREFIX,
 } from "../exercises.service";
+import { type DebugHoverState, MonacoService } from "../monaco.service";
 import { ResponsiveService } from "../responsive.service";
 import { SettingsService } from "../settings.service";
 import { ShareService } from "../share.service";
@@ -155,6 +156,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
   private zone = inject(NgZone);
   private storage = inject(LocalStorageService);
   private exercises = inject(ExercisesService);
+  private monacoService = inject(MonacoService);
 
   private _code$?: Subscription;
   private _stdOut$?: Subscription;
@@ -433,6 +435,12 @@ export class TabEditorComponent implements OnInit, OnDestroy {
 
   codeEditor?: monaco.editor.IStandaloneCodeEditor;
 
+  /**
+   * O modelo ligado à depuração em `onEditorInit`: no `ngOnDestroy`, o editor pode já ter sido
+   * descartado, e o `getModel()` dele, voltar `null`.
+   */
+  private debugModel?: monaco.editor.ITextModel;
+
   // As cores dos pares são uma opção do modelo de texto, e o Monaco só repassa
   // ao modelo as chaves registradas na configuração: `bracketPairColorization`
   // não é uma delas, só `bracketPairColorization.enabled`.
@@ -496,6 +504,12 @@ export class TabEditorComponent implements OnInit, OnDestroy {
   programInput = "";
 
   private readonly programInputField = viewChild<ElementRef<HTMLInputElement>>("programInputField");
+
+  /**
+   * A aba Variáveis, que sabe a chamada escolhida: a informação do editor mostra o valor das
+   * variáveis dela.
+   */
+  private readonly debugVariables = viewChild(DebugVariablesComponent);
 
   /**
    * A saída está na tela: a aba é a que está em foco, o painel está aberto e
@@ -894,6 +908,11 @@ export class TabEditorComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.closing = true;
+
+    if (this.debugModel) {
+      this.monacoService.setDebugState(this.debugModel, null);
+    }
+
     this.checkAbort?.abort();
     this.recheckAbort?.abort();
     this.flushDraft();
@@ -1947,6 +1966,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     this.previousDebugPause.set(null);
     this.debugPause.set(null);
     this.clearCurrentLine();
+    this.hideEditorHover();
     this.codeEditorOptions = { ...this.codeEditorOptions, readOnly: false };
 
     // Um rascunho de outra janela que chegou durante a depuração, depois que o editor volta a
@@ -1995,6 +2015,25 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     if (this.isActive()) {
       void this.announcer.announce(this.pauseAnnouncement(pause, previous), "polite");
     }
+  }
+
+  /**
+   * Com o programa pausado, a pausa e a chamada escolhida na aba Variáveis. Durante um passo, a
+   * pausa que a aba ainda mostra já não vale.
+   */
+  private debugHoverState(): DebugHoverState | null {
+    const pause = this.debugPause();
+
+    return pause && this.paused() ? { pause, frame: this.debugVariables()?.selectedFrame() ?? 0 } : null;
+  }
+
+  /**
+   * A informação aberta no editor pode ter o valor de uma variável, que deixa de valer quando o
+   * programa segue. Focada, pelo teclado, ela não fecharia sozinha; fechada, o Monaco devolve o
+   * foco para o código.
+   */
+  private hideEditorHover() {
+    this.codeEditor?.trigger("depuração", "editor.action.hideHover", null);
   }
 
   private emptyDebugCounts(): Record<DebugResume | "pause", number> {
@@ -2167,6 +2206,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
 
     this.paused.set(false);
     this.stepInFlight.set(type !== "continue");
+    this.hideEditorHover();
 
     // Um passo que demora (pular uma função com um laço longo) volta a mostrar o "Executando",
     // senão a depuração pareceria travada
@@ -2567,6 +2607,12 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     this.codeEditor = editor;
     this.initShortcuts(editor);
     this.debuggingInEditor = editor.createContextKey("pwsDepurando", false);
+
+    this.debugModel = editor.getModel() ?? undefined;
+
+    if (this.debugModel) {
+      this.monacoService.setDebugState(this.debugModel, () => this.debugHoverState());
+    }
 
     // Mudar o código tira a marca do erro de execução, que pode não estar mais naquela linha
     editor.onDidChangeModelContent(() => {

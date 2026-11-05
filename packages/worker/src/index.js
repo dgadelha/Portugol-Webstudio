@@ -119,7 +119,7 @@ function safely(name, fn, fallback) {
 }
 
 self.addEventListener("message", function onmessage(event) {
-  const { action, id, code, debugSteps, position } = event.data;
+  const { action, id, code, debugSteps, position, pause } = event.data;
   let result;
 
   switch (action) {
@@ -144,7 +144,7 @@ self.addEventListener("message", function onmessage(event) {
     }
 
     case "hover": {
-      result = safely("hover", () => informaçãoDoNome(code, position), null);
+      result = safely("hover", () => informaçãoDoNome(code, position, pause), null);
       break;
     }
 

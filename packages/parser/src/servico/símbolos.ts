@@ -63,6 +63,10 @@ export interface SímboloDeclarado {
    */
   valor?: string;
   /**
+   * A função de um parâmetro ou de uma variável local, com o trecho do código dela.
+   */
+  função?: { nome: string; início: number; fim: number };
+  /**
    * Onde a declaração está nos tokens do código (os índices em `CódigoLido.tokens`): o primeiro
    * token, o do nome e o último. A função não tem `fim`: a linha dela continua no corpo.
    */
@@ -245,6 +249,7 @@ class Coletor {
     const parâmetros = (lista?.parametro() ?? []).filter(p => real(p.TIPO()) && real(p.ID()));
     const declarados = parâmetros.map(p => this.parâmetro(p));
     const fim = this.fimDoEscopo(função);
+    const daFunção = { nome: nome.getText(), início: função.start!.start, fim };
 
     this.símbolos.push({
       nome: nome.getText(),
@@ -280,13 +285,14 @@ class Coletor {
         posição: parâmetros[i].ID().symbol.start,
         início,
         fim,
+        função: daFunção,
       });
     }
 
     for (const lista of listasDeDeclarações(função)) {
       const escopo = this.escopoDe(lista);
 
-      this.declarar(lista, "local", escopo.início, escopo.fim);
+      this.declarar(lista, "local", escopo.início, escopo.fim, daFunção);
     }
   }
 
@@ -305,7 +311,13 @@ class Coletor {
    * Cada nome visível desde a própria declaração: `inteiro c = c + 1` enxerga o `c`, e o
    * analisador acusa que ele não foi inicializado.
    */
-  private declarar(lista: ListaDeclaracoesContext, origem: "global" | "local", início: number, fim: number) {
+  private declarar(
+    lista: ListaDeclaracoesContext,
+    origem: "global" | "local",
+    início: number,
+    fim: number,
+    função?: SímboloDeclarado["função"],
+  ) {
     const tipo = lista.TIPO();
 
     if (!real(tipo)) {
@@ -342,6 +354,7 @@ class Coletor {
         posição: nome.symbol.start,
         início: origem === "global" ? início : nome.symbol.start,
         fim,
+        função,
       });
     }
   }

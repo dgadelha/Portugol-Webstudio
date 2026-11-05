@@ -1,8 +1,23 @@
 import { inject, Service } from "@angular/core";
 import { MonacoEditorLoaderService } from "@materia-ui/ngx-monaco-editor";
-import type { AjudaAssinatura, Intervalo, ItemCompletar } from "@portugol-webstudio/parser";
+import {
+  type AjudaAssinatura,
+  chamadaDoValor,
+  comValorAtual,
+  type InformaçãoDoNome,
+  type Intervalo,
+  type ItemCompletar,
+} from "@portugol-webstudio/parser";
+import type { DebugPause, DebugVariable } from "@portugol-webstudio/runner";
 import { filter, take } from "rxjs/operators";
+import { hoverDeclarationText } from "./debug-variables/debug-values";
 import { WorkerService } from "./worker.service";
+
+/**
+ * A depuração de um editor, para a informação mostrar o valor das variáveis: a pausa e a chamada
+ * escolhida na aba Variáveis (um índice em `pause.frames`).
+ */
+export type DebugHoverState = { pause: DebugPause; frame: number };
 
 @Service()
 export class MonacoService {
@@ -10,6 +25,11 @@ export class MonacoService {
   private workerService = inject(WorkerService);
 
   private resolveReady!: () => void;
+
+  /**
+   * A depuração de cada editor de código, pelo modelo dele: `null` sem o programa pausado.
+   */
+  private readonly debugStates = new WeakMap<monaco.editor.ITextModel, () => DebugHoverState | null>();
 
   /**
    * Só existe depois que o Monaco carrega.
@@ -306,6 +326,17 @@ export class MonacoService {
   }
 
   /**
+   * Liga a informação do modelo à depuração do editor dele, ou desliga, com `null`.
+   */
+  setDebugState(model: monaco.editor.ITextModel, state: (() => DebugHoverState | null) | null) {
+    if (state) {
+      this.debugStates.set(model, state);
+    } else {
+      this.debugStates.delete(model);
+    }
+  }
+
+  /**
    * As sugestões, a ajuda de assinatura, a informação ao parar o mouse e a ida para a definição,
    * como as do VS Code. Elas vêm do worker, que tem o analisador; valem para todo editor
    * `portugol` (as abas de código e o criador de exercícios).
@@ -323,6 +354,10 @@ export class MonacoService {
     monaco.languages.registerCompletionItemProvider("portugol", {
       triggerCharacters: ["."],
       provideCompletionItems: async (model, position, _context, token) => {
+        if (this.helpTopic(model.uri)) {
+          return { suggestions: [] };
+        }
+
         const items = await this.workerService
           .complete(model.getValue(), this.toPosition(position), this.toSignal(token))
           .catch((): ItemCompletar[] => []);
@@ -336,6 +371,10 @@ export class MonacoService {
       // O `)` fecha uma chamada de dentro e volta para a de fora, ou fecha a ajuda.
       signatureHelpRetriggerCharacters: [",", ")"],
       provideSignatureHelp: async (model, position, token) => {
+        if (this.helpTopic(model.uri)) {
+          return null;
+        }
+
         const help = await this.workerService
           .signatureHelp(model.getValue(), this.toPosition(position), this.toSignal(token))
           .catch(() => null);
@@ -346,53 +385,99 @@ export class MonacoService {
 
     monaco.languages.registerHoverProvider("portugol", {
       provideHover: async (model, position, token) => {
-        const hover = await this.workerService
-          .hover(model.getValue(), this.toPosition(position), this.toSignal(token))
-          .catch(() => null);
-
-        if (!hover) {
+        // O texto da Ajuda, no Peek, é só para ler.
+        if (this.helpTopic(model.uri)) {
           return null;
         }
 
+        // A pausa de agora: a resposta pode chegar depois de outro passo.
+        const debug = this.debugStates.get(model)?.() ?? null;
+        const hover = await this.workerService
+          .hover(
+            model.getValue(),
+            this.toPosition(position),
+            this.toSignal(token),
+            debug ? { linha: debug.pause.line, coluna: debug.pause.column } : undefined,
+          )
+          .catch(() => null);
+
+        // O programa seguiu, ou outra chamada foi escolhida na aba Variáveis, enquanto o worker
+        // respondia: o valor já não vale, e o `hideEditorHover` do passo já passou.
+        const now = debug && this.debugStates.get(model)?.();
+
+        if (!hover || (debug && (now?.pause !== debug.pause || now.frame !== debug.frame))) {
+          return null;
+        }
+
+        // A declaração com o valor de agora, como na aba Variáveis.
+        const { variável } = hover;
+        const variable = debug && variável && this.debugVariable(variável, debug);
+        const content = variável && variable ? comValorAtual(variável, hoverDeclarationText(variable)) : hover.conteúdo;
         const link = hover.ajuda ? `\n\n[Ver na Ajuda](${this.helpLink(hover.ajuda)})` : "";
 
-        return { range: this.toRange(hover.intervalo), contents: [{ value: hover.conteúdo + link }] };
+        return { range: this.toRange(hover.intervalo), contents: [{ value: content + link }] };
       },
     });
 
-    // O "Ver na Ajuda" abre o tópico na aba de Ajuda, como um endereço `#ajuda=`, e não numa
-    // aba nova do navegador. Os tipos do ngx-monaco-editor são de um Monaco antigo, sem o
-    // `registerLinkOpener`.
+    // O "Ver na Ajuda" e a definição de uma função de biblioteca abrem o tópico na aba de
+    // Ajuda, como um endereço `#ajuda=`, e não numa aba nova do navegador. Os tipos do
+    // ngx-monaco-editor são de um Monaco antigo, sem o `registerLinkOpener` e o
+    // `registerEditorOpener`.
     const editorApi = monaco.editor as typeof monaco.editor & {
       registerLinkOpener(opener: { open(resource: monaco.Uri): boolean }): monaco.IDisposable;
+      registerEditorOpener(opener: {
+        openCodeEditor(source: monaco.editor.ICodeEditor, resource: monaco.Uri): boolean;
+      }): monaco.IDisposable;
     };
 
     editorApi.registerLinkOpener({
-      open: resource => {
-        // Comparados como `URL`, que codifica o caminho dos dois lados do mesmo jeito: o `path`
-        // do `Uri` vem decodificado, e o `pathname` da página, não. Sem o `true`, o `Uri`
-        // codificaria também o `=` e as barras do fragmento.
-        const page = new URL(window.location.href);
-        const target = new URL(resource.toString(true));
-
-        if (target.origin !== page.origin || target.pathname !== page.pathname || !target.hash.startsWith("#ajuda=")) {
-          return false;
-        }
-
-        window.location.hash = target.hash;
-
-        return true;
-      },
+      open: resource => this.openHelpLink(resource),
     });
 
-    // F12, Ctrl + clique e "Go to Definition" no menu de contexto.
+    // A definição em outro recurso: só as páginas da Ajuda.
+    editorApi.registerEditorOpener({
+      openCodeEditor: (_source, resource) => this.openHelpLink(resource),
+    });
+
+    // F12, Ctrl + clique e "Go to Definition" no menu de contexto. O que vem das bibliotecas e
+    // da linguagem vai para a página na Ajuda.
     monaco.languages.registerDefinitionProvider("portugol", {
       provideDefinition: async (model, position, token) => {
+        if (this.helpTopic(model.uri)) {
+          return null;
+        }
+
         const definition = await this.workerService
           .definition(model.getValue(), this.toPosition(position), this.toSignal(token))
           .catch(() => null);
 
-        return definition ? { uri: model.uri, range: this.toRange(definition.intervalo) } : null;
+        if (!definition) {
+          return null;
+        }
+
+        if ("ajuda" in definition) {
+          // O F12 e o Ctrl + clique abrem a Ajuda (`openHelpLink`); a prévia com o Ctrl e o Peek
+          // mostram o modelo do endereço, com a declaração escrita como no código.
+          const uri = monaco.Uri.parse(this.helpLink(definition.ajuda));
+          const help = monaco.editor.getModel(uri) ?? this.createHelpModel(definition.declaração.texto, uri);
+          const name = this.toRange(definition.declaração.intervalo);
+
+          // A prévia mostra a linha toda da assinatura; o Peek destaca o nome.
+          return [
+            {
+              uri,
+              range: new monaco.Range(
+                name.startLineNumber,
+                1,
+                name.startLineNumber,
+                help.getLineMaxColumn(name.startLineNumber),
+              ),
+              targetSelectionRange: name,
+            },
+          ];
+        }
+
+        return { uri: model.uri, range: this.toRange(definition.intervalo) };
       },
     });
 
@@ -403,15 +488,113 @@ export class MonacoService {
       if ("createContextKey" in editor) {
         (editor as monaco.editor.IStandaloneCodeEditor).createContextKey("isWeb", true);
       }
+
+      // A declaração da Ajuda, no Peek, é só para ler, e as linhas longas da explicação quebram.
+      // O Peek guarda o que muda nas opções dele: quando ele volta a mostrar o código, as
+      // opções de antes voltam também.
+      let before: monaco.editor.IEditorOptions | undefined;
+
+      editor.onDidChangeModel(() => {
+        const model = editor.getModel();
+        const help = Boolean(model && this.helpTopic(model.uri));
+
+        if (help && !before) {
+          const { readOnly = false, wordWrap = "off" } = editor.getRawOptions();
+
+          before = { readOnly, wordWrap };
+          editor.updateOptions({
+            readOnly: true,
+            readOnlyMessage: { value: "O texto da Ajuda não pode ser editado." },
+            wordWrap: "on",
+          } as monaco.editor.IEditorOptions & { readOnlyMessage: monaco.IMarkdownString });
+        } else if (!help && before) {
+          editor.updateOptions(before);
+          before = undefined;
+        }
+      });
     });
+  }
+
+  /**
+   * O modelo de uma declaração da Ajuda, para a prévia e o Peek. Os das declarações vistas antes,
+   * que nenhum editor mostra mais, são descartados.
+   */
+  private createHelpModel(text: string, uri: monaco.Uri) {
+    for (const model of monaco.editor.getModels()) {
+      if (this.helpTopic(model.uri) && !model.isAttachedToEditor()) {
+        model.dispose();
+      }
+    }
+
+    return monaco.editor.createModel(text, "portugol", uri);
   }
 
   private toPosition(position: monaco.Position) {
     return { linha: position.lineNumber, coluna: position.column };
   }
 
+  /**
+   * A variável da pausa que é com certeza a do nome, na chamada que `chamadaDoValor` escolhe.
+   */
+  private debugVariable(
+    variable: NonNullable<InformaçãoDoNome["variável"]>,
+    { pause, frame }: DebugHoverState,
+  ): DebugVariable | undefined {
+    const call = chamadaDoValor(
+      variable,
+      pause.frames.map(item => item.name),
+      frame,
+    );
+
+    if (call === undefined) {
+      return;
+    }
+
+    const variables = call === "globais" ? pause.globals : pause.frames[call].variables;
+
+    return variables.find(item => item.name === variable.nome);
+  }
+
   private helpLink(topic: string) {
-    return new URL(`#ajuda=${topic}`, window.location.href).href;
+    // Sem a busca do endereço da página, para cada tópico ter um endereço só.
+    return `${window.location.origin}${window.location.pathname}#ajuda=${topic}`;
+  }
+
+  /**
+   * O fragmento `#ajuda=…` de um endereço desta página, ou `null` para os outros.
+   */
+  private helpTopic(resource: monaco.Uri) {
+    // Comparados como `URL`, que codifica o caminho dos dois lados do mesmo jeito: o `path`
+    // do `Uri` vem decodificado, e o `pathname` da página, não. Sem o `true`, o `Uri`
+    // codificaria também o `=` e as barras do fragmento.
+    const page = new URL(window.location.href);
+
+    // Os modelos dos editores (`inmemory:`) nem chegam a ser lidos como endereço.
+    if (`${resource.scheme}:` !== page.protocol) {
+      return null;
+    }
+
+    const target = new URL(resource.toString(true));
+
+    return target.origin === page.origin && target.pathname === page.pathname && target.hash.startsWith("#ajuda=")
+      ? target.hash
+      : null;
+  }
+
+  /**
+   * Abre na aba de Ajuda um endereço `#ajuda=` desta página. Outros endereços ficam com o
+   * Monaco.
+   */
+  private openHelpLink(resource: monaco.Uri) {
+    const topic = this.helpTopic(resource);
+
+    if (!topic) {
+      return false;
+    }
+
+    window.location.hash = topic;
+
+    return true;
   }
 
   private toRange({ linha, início, fim }: Intervalo) {

@@ -79,6 +79,10 @@ export type DebugVariable = DebugValue & {
 };
 
 export type DebugPause = {
+  /**
+   * O começo do comando em que o programa parou, como o ANTLR conta: a linha a partir de 1 e a
+   * coluna em pontos de código a partir de 0. A informação do editor procura o comando assim.
+   */
   line: number;
   column: number;
   /**

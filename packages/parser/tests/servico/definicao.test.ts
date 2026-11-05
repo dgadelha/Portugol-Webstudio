@@ -215,33 +215,121 @@ describe("ir para a definição", () => {
       expect(definiçãoEm(código)).toMatchObject({ linha: 2, texto: "mat" });
     });
 
-    test("o nome da biblioteca vai para o nome no inclua", () => {
-      expect(definiçãoEm(código.replace("▮mat", "mat").replace("Texto.", "Tex▮to."))).toMatchObject({
-        linha: 3,
-        texto: "Texto",
-      });
-    });
-
-    test("no inclua, o próprio nome ou apelido", () => {
-      expect(definiçãoEm(código.replace("--> mat", "--> ma▮t").replace("▮mat.", "mat."))).toMatchObject({
-        linha: 2,
-        texto: "mat",
-      });
-      expect(definiçãoEm(código.replace("Matematica -->", "Mate▮matica -->").replace("▮mat.", "mat."))).toMatchObject({
-        linha: 2,
-        texto: "Matematica",
-      });
-    });
-
     test.each([
-      ["a função", "▮mat.potencia", "mat.pot▮encia"],
-      ["a constante", "▮mat.potencia(2.0, 3.0)", "mat.PI▮"],
-    ])("%s da biblioteca não tem declaração no código", (_, de, para) => {
-      expect(definiçãoEm(código.replace(de, para))).toBeNull();
+      ["o nome da biblioteca usado no código", "Texto.", "Tex▮to.", "bibliotecas/Texto.md"],
+      ["o nome da biblioteca no inclua", "Matematica -->", "Mate▮matica -->", "bibliotecas/Matematica.md"],
+      ["o apelido no próprio inclua", "--> mat", "--> ma▮t", "bibliotecas/Matematica.md"],
+    ])("%s vai para a página da biblioteca na Ajuda", (_, de, para, ajuda) => {
+      expect(definiçãoEm(código.replace("▮mat", "mat").replace(de, para))).toMatchObject({ ajuda });
     });
 
-    test("nem as funções da linguagem", () => {
-      expect(definiçãoEm(código.replace("escreva(▮mat", "escr▮eva(mat"))).toBeNull();
+    // Sem declaração no código, a definição é a página na Ajuda, a mesma do link da informação.
+    test.each([
+      ["a função da biblioteca", "mat.potencia", "mat.pot▮encia", "bibliotecas/Matematica/potencia.md"],
+      ["a constante da biblioteca", "mat.potencia(2.0, 3.0)", "mat.PI▮", "bibliotecas/Matematica/PI.md"],
+      [
+        "a função pelo nome da biblioteca",
+        "Texto.numero_caracteres",
+        "Texto.numero_carac▮teres",
+        "bibliotecas/Texto/numero_caracteres.md",
+      ],
+      ["a função da linguagem", "escreva(mat", "escr▮eva(mat", "topicos/linguagem_portugol/entrada_saida/escreva.md"],
+    ])("%s vai para a página dela na Ajuda", (_, de, para, ajuda) => {
+      expect(definiçãoEm(código.replace("▮mat", "mat").replace(de, para))).toMatchObject({ ajuda });
+    });
+
+    describe("a declaração escrita como no código, para a prévia e o Peek", () => {
+      /**
+       * A declaração e o texto do nome no intervalo dela.
+       */
+      function declaração(de: string, para: string) {
+        const definição = definiçãoEm(código.replace("▮mat", "mat").replace(de, para));
+
+        if (!definição || !("ajuda" in definição)) {
+          throw new Error("Sem página na Ajuda");
+        }
+
+        const { texto, intervalo } = definição.declaração;
+        const linha = texto.split("\n")[intervalo.linha - 1];
+
+        return { texto, nome: linha.slice(intervalo.início - 1, intervalo.fim - 1), última: intervalo.linha };
+      }
+
+      test("a função da biblioteca: a explicação em comentários e a assinatura", () => {
+        const { texto, nome, última } = declaração("mat.potencia", "mat.pot▮encia");
+
+        expect(texto).toBe(
+          [
+            "// Calcula a potência de um número, ou seja, a `base` elevada ao `expoente`",
+            "//",
+            "// Parâmetros:",
+            "//",
+            "// - `base` (real): o número que será elevado ao expoente",
+            "// - `expoente` (real): o expoente, que pode ser negativo ou fracionário. Ex.: com expoente 2, a base é multiplicada por ela mesma.",
+            "//",
+            "// Retorno (real): a `base` elevada ao `expoente`",
+            "funcao real potencia(real base, real expoente)",
+          ].join("\n"),
+        );
+        expect({ nome, última }).toEqual({ nome: "potencia", última: 9 });
+      });
+
+      test("a biblioteca: a explicação e o inclua, sem apelido", () => {
+        const { texto, nome } = declaração("Matematica -->", "Mate▮matica -->");
+
+        expect(texto.split("\n").at(-1)).toBe("inclua biblioteca Matematica");
+        expect(texto.startsWith("// ")).toBe(true);
+        expect(nome).toBe("Matematica");
+      });
+
+      test("a constante", () => {
+        const { texto, nome } = declaração("mat.potencia(2.0, 3.0)", "mat.PI▮");
+
+        expect(texto).toBe(
+          "// A constante matemática π (pi): a razão entre o perímetro de uma circunferência e o seu diâmetro\nconst real PI",
+        );
+        expect(nome).toBe("PI");
+      });
+
+      test("a função da linguagem", () => {
+        const { texto, nome } = declaração("escreva(mat", "escr▮eva(mat");
+
+        expect(texto).toBe(
+          "// Escreve no console os valores entre parênteses, um depois do outro. Eles podem ser textos, variáveis ou operações, separados por vírgulas.\nfuncao vazio escreva(...)",
+        );
+        expect(nome).toBe("escreva");
+      });
+    });
+
+    test("a função da linguagem sem página não tem definição", () => {
+      expect(definiçãoEm(código.replace("escreva(▮mat", "sortei▮a(1, 6) + escreva(mat"))).toBeNull();
+    });
+
+    test("a biblioteca que o Webstudio não executa não tem definição", () => {
+      expect(
+        definiçãoEm`
+          programa {
+            inclua biblioteca Arquivos --> a
+
+            funcao inicio() {
+              a.abrir_arq▮uivo("x", a.MODO_LEITURA)
+            }
+          }
+        `,
+      ).toBeNull();
+    });
+
+    test("o nome de uma biblioteca que o Webstudio não executa fica no inclua", () => {
+      expect(
+        definiçãoEm`
+          programa {
+            inclua biblioteca Arqui▮vos --> a
+
+            funcao inicio() {
+            }
+          }
+        `,
+      ).toMatchObject({ linha: 2, texto: "Arquivos" });
     });
   });
 

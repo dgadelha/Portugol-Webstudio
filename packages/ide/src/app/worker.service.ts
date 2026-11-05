@@ -1,6 +1,13 @@
 import { Service } from "@angular/core";
 import { IPortugolCodeDiagnostic, PortugolDiagnosticSeverity } from "@portugol-webstudio/antlr";
-import type { AjudaAssinatura, Definição, InformaçãoDoNome, ItemCompletar, Posição } from "@portugol-webstudio/parser";
+import type {
+  AjudaAssinatura,
+  Definição,
+  InformaçãoDoNome,
+  ItemCompletar,
+  PontoDaPausa,
+  Posição,
+} from "@portugol-webstudio/parser";
 import type { PortugolTranspiledCode } from "@portugol-webstudio/runner";
 import { WORKER_FILE_NAME } from "@portugol-webstudio/worker/lib/worker-manifest";
 
@@ -19,7 +26,8 @@ type TranspileResult = PortugolTranspiledCode;
 type Message =
   | { action: "check"; code: string }
   | { action: "transpile"; code: string; debugSteps: boolean }
-  | { action: "complete" | "signatureHelp" | "hover" | "definition"; code: string; position: Posição };
+  | { action: "complete" | "signatureHelp" | "definition"; code: string; position: Posição }
+  | { action: "hover"; code: string; position: Posição; pause?: PontoDaPausa };
 
 type Request = {
   message: Message;
@@ -65,13 +73,15 @@ export class WorkerService {
 
   /**
    * O que o nome na posição é, para mostrar ao parar o mouse sobre ele, ou `null` fora de um nome.
+   * Com `pause`, onde a depuração parou, para achar o valor de uma variável.
    */
-  async hover(code: string, position: Posição, signal?: AbortSignal) {
-    return (await this.query<InformaçãoDoNome | null>({ action: "hover", code, position }, signal)) ?? null;
+  async hover(code: string, position: Posição, signal?: AbortSignal, pause?: PontoDaPausa) {
+    return (await this.query<InformaçãoDoNome | null>({ action: "hover", code, position, pause }, signal)) ?? null;
   }
 
   /**
-   * Onde o nome na posição foi declarado, ou `null` sem declaração no código.
+   * Onde o nome na posição foi declarado, a página dele na Ajuda (o que vem das bibliotecas e
+   * da linguagem), ou `null`.
    */
   async definition(code: string, position: Posição, signal?: AbortSignal) {
     return (await this.query<Definição | null>({ action: "definition", code, position }, signal)) ?? null;
