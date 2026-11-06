@@ -501,12 +501,16 @@
           </header>
 
           <div
-            class="panel-body"
+            class="panel-body output"
             role="tabpanel"
             [id]="ids().outputPanel"
             [attr.aria-labelledby]="ids().outputTab"
             [hidden]="panelView() !== 'output'"
           >
+            @if (!executor.stdOut && !executor.running && !transpiling) {
+              <p class="output-empty">Use Executar para ver aqui a saída do programa.</p>
+            }
+
             <ngx-monaco-editor
               class="output-editor"
               [options]="stdOutEditorOptions"

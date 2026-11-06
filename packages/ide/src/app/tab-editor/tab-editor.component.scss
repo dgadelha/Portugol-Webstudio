@@ -371,6 +371,22 @@ ngx-monaco-editor {
   min-height: 0;
 }
 
+.panel-body.output {
+  position: relative;
+}
+
+// Por cima do editor da saída, sem ocupar espaço nem receber os cliques: ele continua no
+// lugar e pronto para o foco
+.output-empty {
+  position: absolute;
+  z-index: 1;
+  inset: 0 0 auto;
+  margin: 0;
+  padding: 0.25rem 1rem;
+  color: var(--pws-fg-muted);
+  pointer-events: none;
+}
+
 // Na saída não se edita: a mensagem "não é possível editar" do Monaco só
 // atrapalharia quem digita a entrada do programa.
 .output-editor ::ng-deep .monaco-editor-overlaymessage {
