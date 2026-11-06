@@ -605,6 +605,87 @@ describe("casos de borda", () => {
     expect(erro?.message).not.toContain("\n");
   });
 
+  test("uma cadeia sendo escrita no meio do programa não marca as linhas até a próxima aspa", () => {
+    const código = portugol`
+      programa {
+        funcao inicio() {
+          inteiro x
+          escreva("Digite
+          leia(x)
+          escreva("fim")
+        }
+      }
+    `;
+
+    expect(errosDeSintaxe(código)).toEqual([
+      {
+        code: "ErroSintatico.ErroParentesis.2",
+        message: "A expressão não foi finalizada corretamente. Insira o caracter ')' para corrigir o problema.",
+        startLine: 4,
+        startCol: 12,
+        endLine: 4,
+        endCol: 18,
+      },
+    ]);
+  });
+
+  test("uma aspa esquecida é o erro, e não o texto da cadeia seguinte que virou código", () => {
+    const código = portugol`
+      programa {
+        funcao inicio() {
+          se (verdadeiro) {
+            escreva("\\nParabéns!
+          } senao {
+            escreva("\\nFalta 1 dia\\n")
+          }
+        }
+      }
+    `;
+
+    expect(errosDeSintaxe(código)).toEqual([
+      {
+        code: "ErroSintatico.ErroCadeiaIncompleta",
+        message:
+          "A expressão do tipo 'cadeia' não foi finalizada corretamente. Insira o caracter '\"' para corrigir o problema.",
+        startLine: 4,
+        startCol: 14,
+        endLine: 4,
+        endCol: 25,
+      },
+    ]);
+  });
+
+  test("uma cadeia de várias linhas fechada não muda os erros de depois dela", () => {
+    const código = portugol`
+      programa {
+        funcao inicio() {
+          escreva("uma
+      duas")
+          inteiro x = )
+        }
+      }
+    `;
+
+    expect(errosDeSintaxe(código).map(({ code, startLine }) => ({ code, startLine }))).toEqual([
+      { code: expect.not.stringContaining("CadeiaIncompleta") as unknown, startLine: 5 },
+    ]);
+  });
+
+  test("um erro mais adiante na linha em que a cadeia de várias linhas fecha não é da aspa", () => {
+    const código = portugol`
+      programa {
+        funcao inicio() {
+          escreva("uma
+      duas", 1 2)
+        }
+      }
+    `;
+
+    expect(errosDeSintaxe(código).map(({ code, startLine }) => ({ code, startLine }))).toEqual([
+      { code: expect.not.stringContaining("CadeiaIncompleta") as unknown, startLine: 4 },
+    ]);
+  });
+
   test.each([
     ["caracter sem fim", "    caracter c = 'a", "não foi finalizada"],
     ["caracter vazio", "    caracter c = ''", "está vazia"],

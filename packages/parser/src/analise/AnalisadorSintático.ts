@@ -1,5 +1,4 @@
-import { type ArquivoContext, PortugolLexer, PortugolParser } from "@portugol-webstudio/antlr";
-import type { PortugolCodeDiagnostic } from "@portugol-webstudio/antlr";
+import { type ArquivoContext, PortugolCodeDiagnostic, PortugolLexer, PortugolParser } from "@portugol-webstudio/antlr";
 import {
   type ATNSimulator,
   BailErrorStrategy,
@@ -171,6 +170,8 @@ class AnalisadorSintático extends BaseErrorListener {
       erro = inteiro;
     }
 
+    erro = this.cadeiaQueEngoliuLinhas(tokens, erro) ?? erro;
+
     // O texto de um comentário sem fim vira código, e o parser tropeça nele em algum ponto
     // depois do `/*`: o comentário é a causa.
     const comentário = this.comentárioSemFim(tokens);
@@ -181,7 +182,32 @@ class AnalisadorSintático extends BaseErrorListener {
 
     erro ??= this.códigoApósPrograma(tokens, árvore);
 
-    return { árvore, erros: erro ? [erro] : [] };
+    return { árvore, erros: erro ? [this.naPrimeiraLinha(erro)] : [] };
+  }
+
+  /**
+   * Um erro de sintaxe é sobre um token, mas uma aspa sem par junta as linhas seguintes numa
+   * cadeia só, até a próxima aspa: enquanto a pessoa escreve uma cadeia no meio do programa, o
+   * erro marcava todas essas linhas. Ele marca só a linha em que o token começa.
+   */
+  private naPrimeiraLinha(erro: PortugolCodeDiagnostic) {
+    if (erro.endLine === erro.startLine) {
+      return erro;
+    }
+
+    const linha = (this.código.split("\n")[erro.startLine - 1] ?? "").replace(/\r$/, "");
+    const fim = Math.max(Array.from(linha).length - 1, erro.startCol);
+
+    return new PortugolCodeDiagnostic(
+      erro.severity,
+      erro.message,
+      erro.context,
+      erro.startLine,
+      erro.startCol,
+      erro.startLine,
+      fim,
+      erro.code,
+    );
   }
 
   /**
@@ -1241,6 +1267,53 @@ class AnalisadorSintático extends BaseErrorListener {
     token.column = eof.column;
 
     return token;
+  }
+
+  /**
+   * Uma aspa esquecida junta as linhas seguintes numa cadeia só, até a aspa que abre a próxima,
+   * e o resto dessa linha vira código: o erro aparece ali, logo depois da cadeia, longe da aspa
+   * esquecida. Com o erro na linha em que uma cadeia de várias linhas termina, a causa é a aspa
+   * que a abriu.
+   *
+   * Divergência: o Java mostra o erro onde o resto da linha virou código.
+   */
+  private cadeiaQueEngoliuLinhas(tokens: CommonTokenStream, erro: PortugolCodeDiagnostic | undefined) {
+    if (!erro) {
+      return;
+    }
+
+    const todos = tokens.getTokens();
+    const cadeia = todos.findLast(token => {
+      if (token.type !== PortugolLexer.STRING || !token.text?.includes("\n")) {
+        return false;
+      }
+
+      const linhas = token.text.split("\n");
+      const últimaLinha = token.line + linhas.length - 1;
+      const últimaColuna = Array.from(linhas.at(-1)!).length - 1;
+
+      return últimaLinha === erro.startLine && últimaColuna < erro.startCol;
+    });
+
+    if (!cadeia) {
+      return;
+    }
+
+    // Uma cadeia de várias linhas é válida: o erro só é da aspa esquecida quando vem logo depois
+    // dela, no que sobrou da linha, e não num token mais adiante (`"a⏎b" + )`).
+    const seguinte = todos.find(
+      token => token.tokenIndex > cadeia.tokenIndex && token.channel === Token.DEFAULT_CHANNEL,
+    );
+
+    if (seguinte && seguinte.type !== Token.EOF && this.vemAntesDoErro(seguinte, erro)) {
+      return;
+    }
+
+    return erroCadeiaIncompleta(this.primeiraLinha(cadeia));
+  }
+
+  private vemAntesDoErro(token: Token, erro: PortugolCodeDiagnostic) {
+    return token.line < erro.startLine || (token.line === erro.startLine && token.column < erro.startCol);
   }
 
   private comentárioSemFim(tokens: CommonTokenStream) {

@@ -92,10 +92,12 @@ describe.skipIf(!temCorpus)("Exemplos quebrados", () => {
     }
 
     // As divergências deliberadas de posição, documentadas no `AnalisadorSintático`: o Java
-    // marca 1:1 o código fora do programa, e aqui o comentário sem fim é marcado no `/*`.
+    // marca 1:1 o código fora do programa, aqui o comentário sem fim é marcado no `/*`, e a
+    // aspa esquecida que juntou linhas numa cadeia, antes de onde o Java mostra o erro.
     if (
       doStudio.código === "ErroSintatico.ErroExpressoesForaEscopoPrograma" ||
-      erro.code === "ErroWebstudio.ErroComentarioSemFim"
+      erro.code === "ErroWebstudio.ErroComentarioSemFim" ||
+      (erro.code === "ErroSintatico.ErroCadeiaIncompleta" && erro.startLine < doStudio.linha)
     ) {
       return;
     }
