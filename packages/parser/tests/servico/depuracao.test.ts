@@ -111,16 +111,22 @@ describe("a variável na informação, para o valor na depuração", () => {
     {
       caso: "o parâmetro, e não a local com o nome dele",
       código: "programa {\n  funcao g(inteiro a) {\n    inteiro a = 2\n    ⏸escreva(a▮)\n  }\n}",
-      esperada: { nome: "a", função: "g", únicaNaFunção: false, vistaNaPausa: true },
+      esperada: { nome: "a", função: "g", descrição: "parâmetro", únicaNaFunção: false, vistaNaPausa: true },
     },
     {
       caso: "a local de fora, e não a de um bloco interno",
       código:
-        "programa {\n  funcao inicio() {\n    inteiro a = 1\n    se (verdadeiro) {\n      inteiro a = 2\n      ⏸escreva(a▮)\n    }\n  }\n}",
-      esperada: { nome: "a", função: "inicio", únicaNaFunção: false, vistaNaPausa: true },
+        "programa {\n  funcao inicio() {\n    // a de fora\n    inteiro a = 1\n    se (verdadeiro) {\n      inteiro a = 2\n      ⏸escreva(a▮)\n    }\n  }\n}",
+      esperada: {
+        nome: "a",
+        função: "inicio",
+        descrição: "variável local\n\na de fora",
+        únicaNaFunção: false,
+        vistaNaPausa: true,
+      },
     },
   ])("redeclarada: $caso", ({ código, esperada }) => {
-    expect(variávelNaPausa(código)).toEqual(esperada);
+    expect(informaçãoNaPausa(código)?.variável).toEqual(esperada);
   });
 
   test("a global com o nome de uma função não é variável", () => {

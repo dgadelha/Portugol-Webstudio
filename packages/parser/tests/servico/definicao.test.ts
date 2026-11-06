@@ -194,6 +194,14 @@ describe("ir para a definição", () => {
       });
     });
 
+    test("o próximo comando colado, sem espaço, já é de fora", () => {
+      expect(
+        definiçãoEm(
+          "programa {\n  inteiro x = 5\n  funcao inicio() {\n    se (verdadeiro) inteiro x = f(1)x▮ = 2\n  }\n  funcao inteiro f(inteiro a) {\n    retorne a\n  }\n}",
+        ),
+      ).toMatchObject({ linha: 2 });
+    });
+
     test("dentro de um se sem chaves, a local", () => {
       expect(
         definiçãoEm("programa {\n  inteiro x = 5\n  funcao inicio() {\n    se (verdadeiro) inteiro x = x▮\n  }\n}"),

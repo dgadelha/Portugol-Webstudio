@@ -377,7 +377,24 @@ describe("informação ao parar sobre um nome", () => {
     test("as linhas de enfeite ficam de fora", () => {
       expect(textoDoComentário("/*****************\n * Placar\n *****************/")).toBe("Placar");
       expect(textoDoComentário("// ---------------")).toBe("");
+      expect(textoDoComentário("// ═══════════════")).toBe("");
+      expect(textoDoComentário("// ───────────────")).toBe("");
       expect(textoDoComentário("//    com espaços   \n")).toBe("com espaços");
+    });
+
+    // Cada comentário numa linha nova: procurar de novo o começo da linha levava segundos.
+    test("milhares de comentários de bloco de várias linhas, sem demora", () => {
+      const comentários = "/*\n*/ ".repeat(20_000);
+
+      expect(noUso(`${comentários}\n      inteiro x = 0`, "escreva(x▮)")).toContain("variável global");
+    });
+
+    test("o comentário no fim da linha de cima é dela, e não entra", () => {
+      const informação = informaçãoEm(
+        "programa {\n  inteiro a = 1 // de a\n  // de b\n  inteiro b = 2\n\n  funcao inicio() {\n    escreva(b▮)\n  }\n}",
+      );
+
+      expect(informação?.conteúdo).toBe(bloco("inteiro b") + "\n\nvariável global\n\nde b");
     });
 
     // Conferir de novo o começo da linha a cada comentário levava 9 s com 10 mil deles.

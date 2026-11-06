@@ -210,6 +210,7 @@ class Coletor {
   private readonly árvore: ArquivoContext;
   private readonly tokens: CommonTokenStream;
   private readonly símbolos: SímboloDeclarado[] = [];
+  private readonly fins = new Map<ParserRuleContext, number>();
 
   constructor(código: string) {
     const lido = lerÁrvore(código);
@@ -333,6 +334,8 @@ class Coletor {
       return;
     }
 
+    const constante = real(lista.CONSTANTE());
+
     for (const declaração of lista.declaracao()) {
       const nó = declaração.declaracaoVariavel() ?? declaração.declaracaoArray() ?? declaração.declaracaoMatriz();
       const nome = nó?.ID();
@@ -342,7 +345,6 @@ class Coletor {
       }
 
       const dimensão = declaração.declaracaoMatriz() ? "matriz" : declaração.declaracaoArray() ? "vetor" : undefined;
-      const constante = real(lista.CONSTANTE());
       const variável = declaração.declaracaoVariavel();
 
       this.símbolos.push({
@@ -393,16 +395,29 @@ class Coletor {
    * escopo vai até o token seguinte, que é onde a pessoa provavelmente está escrevendo.
    */
   private fimDoEscopo(nó: ParserRuleContext) {
+    // Guardado por bloco: cada declaração dele pergunta de novo, e a resposta percorre o bloco.
+    let fim = this.fins.get(nó);
+
+    if (fim === undefined) {
+      fim = this.calcularFimDoEscopo(nó);
+      this.fins.set(nó, fim);
+    }
+
+    return fim;
+  }
+
+  private calcularFimDoEscopo(nó: ParserRuleContext) {
     const chave = nó.getToken(PortugolLexer.FECHA_CHAVES, 0);
 
     if (real(chave)) {
       return chave.symbol.start;
     }
 
-    // Um comando só, sem chaves (`se (v) inteiro x = 1`): o escopo acaba nele, e o próximo
-    // comando já é de fora, como no analisador.
-    if (nó instanceof ListaComandosContext && !real(nó.getToken(PortugolLexer.ABRE_CHAVES, 0)) && nó.stop) {
-      return nó.stop.stop + 1;
+    // Um comando só, sem chaves (`se (v) inteiro x = 1`): o escopo acaba antes do próximo
+    // comando, que já é de fora, como no analisador. Até lá, como no corpo de um `para` ainda
+    // sendo escrito, a variável do bloco continua valendo.
+    if (nó instanceof ListaComandosContext && !real(nó.getToken(PortugolLexer.ABRE_CHAVES, 0))) {
+      return this.depoisDe(nó) - 1;
     }
 
     return this.depoisDe(nó);

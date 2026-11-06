@@ -12,6 +12,11 @@ describe("bloco", () => {
   });
 });
 
+// Com `Math.max(...lista)`, a lista de sequências não caberia nos argumentos.
+test("bloco com milhares de sequências de crases", () => {
+  expect(bloco("` ".repeat(200_000))).toMatch(/^```portugol\n/u);
+});
+
 describe("textoLiteral", () => {
   test.each([
     ["a * b em v[i]", String.raw`a \* b em v\[i\]`],
@@ -47,6 +52,7 @@ describe("textoComLinks", () => {
       "a " + link("https://a.com") + " e\\_b " + link("https://b.com"),
     ],
     ["sem endereço, é como o textoLiteral", "a * b", String.raw`a \* b`],
+    ["as aspas curvas de fora ficam fora", "“veja https://a.com”", "“veja " + link("https://a.com") + "”"],
     ["a barra invertida fica fora do endereço", String.raw`https://a.com\b`, link("https://a.com") + String.raw`\\b`],
   ])("%s", (_, texto, esperado) => {
     expect(textoComLinks(texto)).toBe(esperado);

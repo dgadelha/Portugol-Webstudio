@@ -433,7 +433,9 @@ export class AppComponent implements OnInit {
   private onTabKeydown(event: KeyboardEvent) {
     const tab = this.workspace.activeTab();
 
-    if (tab && (event.key === "Delete" || (isMacintosh && event.key === "Backspace"))) {
+    const semModificador = !event.ctrlKey && !event.metaKey && !event.altKey && !event.shiftKey;
+
+    if (tab && semModificador && (event.key === "Delete" || (isMacintosh && event.key === "Backspace"))) {
       event.preventDefault();
       this.closeTab(tab, "atalho");
       return;

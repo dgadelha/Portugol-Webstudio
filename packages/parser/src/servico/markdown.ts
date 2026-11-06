@@ -61,7 +61,7 @@ function semPontuaçãoFinal(endereço: string) {
     const último = endereço[fim - 1];
     const parênteseSobrando = último === ")" && abertos < fechados;
 
-    if (!parênteseSobrando && !".,;:!?'\"".includes(último)) {
+    if (!parênteseSobrando && !".,;:!?'\"”’»".includes(último)) {
       break;
     }
 

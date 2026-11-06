@@ -25,9 +25,13 @@ export function comentárioDe({ índices }: SímboloDeclarado, tokens: readonly 
  * seguidos. O comentário no fim da linha de outro comando é desse comando, e não conta.
  */
 function acima(tokens: readonly Token[], índice: number) {
-  const comentários: string[] = [];
+  // O primeiro comentário aceito: andando para trás, os aceitos ficam juntos até ele.
+  let primeiro = índice;
   let quebras = 0;
-  let linhaConferida = -1;
+  // O token abaixo do comentário que decide se ele começa a linha, e a resposta. Os comentários
+  // entre ele e o atual têm a mesma: procurar de novo para cada um levaria segundos com
+  // milhares de comentários seguidos.
+  let decisivo = Infinity;
   let começa = true;
 
   for (let i = índice - 1; i >= 0; i--) {
@@ -50,25 +54,33 @@ function acima(tokens: readonly Token[], índice: number) {
     // O `//` termina com a quebra de linha.
     const própria = anterior.type === PortugolLexer.COMENTARIO_SIMPLES && anterior.text?.endsWith("\n") ? 1 : 0;
 
-    if (anterior.line !== linhaConferida) {
-      linhaConferida = anterior.line;
-      começa = começaALinha(tokens, i);
+    if (i <= decisivo) {
+      ({ decisivo, começa } = começoDaLinha(tokens, i));
     }
 
     if (!começa || quebras + própria > 1) {
       break;
     }
 
-    comentários.unshift(textoDoComentário(anterior.text ?? ""));
+    primeiro = i;
     quebras = 0;
   }
 
-  const texto = comentários.join("\n").trim();
+  const texto = tokens
+    .slice(primeiro, índice)
+    .filter(token => token.type !== PortugolLexer.WS)
+    .map(token => textoDoComentário(token.text ?? ""))
+    .join("\n")
+    .trim();
 
   return texto || undefined;
 }
 
-function começaALinha(tokens: readonly Token[], índice: number) {
+/**
+ * Se o token começa a linha, e o token antes dele que decide: um `//` ou uma quebra de linha
+ * (começa), ou código (não começa). Sem nenhum antes, é o começo do arquivo (-1).
+ */
+function começoDaLinha(tokens: readonly Token[], índice: number) {
   for (let i = índice - 1; i >= 0; i--) {
     const anterior = tokens[i];
 
@@ -76,15 +88,15 @@ function começaALinha(tokens: readonly Token[], índice: number) {
       anterior.type === PortugolLexer.COMENTARIO_SIMPLES ||
       (anterior.type === PortugolLexer.WS && contarQuebras(anterior.text) > 0)
     ) {
-      return true;
+      return { decisivo: i, começa: true };
     }
 
     if (anterior.channel === Token.DEFAULT_CHANNEL) {
-      return false;
+      return { decisivo: i, começa: false };
     }
   }
 
-  return true;
+  return { decisivo: -1, começa: true };
 }
 
 /**
@@ -146,7 +158,7 @@ function semAsPontasDoBloco(comentário: string) {
 /**
  * Linhas só de traços, iguais ou asteriscos, que separam partes do código.
  */
-const LINHA_DE_ENFEITE = /^[-=*_#~+/\\|.]+$/;
+const LINHA_DE_ENFEITE = /^[-=*_#~+/\\|.─━═]+$/u;
 
 /**
  * O texto do comentário, sem `//`, `/*`, `*\/` nem o `*` do começo das linhas.

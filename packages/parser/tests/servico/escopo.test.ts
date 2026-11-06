@@ -170,6 +170,30 @@ describe("símbolos visíveis no cursor", () => {
     });
   });
 
+  // Conferir o `const` da lista a cada nome levava 6 s com 40 mil nomes.
+  test("uma lista com milhares de nomes, sem demora", () => {
+    const nomes = Array.from({ length: 40_000 }, (_, i) => `a${i}`).join(", ");
+    const itens = completarEm(`programa {\n  inteiro ${nomes}\n  funcao inicio() {\n    ▮\n  }\n}`);
+
+    expect(rótulos(itens)).toContain("a39999");
+  });
+
+  // O bloco ainda sendo escrito: a variável dele vale até o próximo comando ou a `}`.
+  test.each([
+    ["o corpo vazio de um para sem chaves", "para (inteiro i = 0; i < 3; i++)\n      ▮", "i"],
+    ["o corpo pela metade de um para sem chaves", 'para (inteiro i = 0; i < 3; i++)\n      escreva("a", ▮', "i"],
+    ["um se com a { ainda sem a }", "se (verdadeiro) {\n      inteiro valor = 1\n      ▮", "valor"],
+  ])("%s", (_, linhas, nome) => {
+    expect(rótulos(completarEm(`programa {\n  funcao inicio() {\n    ${linhas}\n  }\n}`))).toContain(nome);
+  });
+
+  // Redeclaração: o analisador guarda o parâmetro, e a local com o nome dele fica de fora.
+  test("o parâmetro com o nome de uma local: o parâmetro", () => {
+    const itens = completarEm("programa {\n  funcao g(real a) {\n    inteiro a = 2\n    ▮\n  }\n}");
+
+    expect(itens.filter(i => i.rótulo === "a")).toEqual([expect.objectContaining({ descrição: "real" })]);
+  });
+
   // Redeclaração: o analisador guarda a função, e a global com o nome dela fica de fora.
   test("a global com o nome de uma função: a função", () => {
     const itens = completarEm(
