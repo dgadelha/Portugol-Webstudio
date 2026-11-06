@@ -55,6 +55,11 @@ export interface ItemCompletar {
    */
   comando?: "ajudaDeAssinatura";
   /**
+   * Com a palavra escrita com acentos (`senã`), o texto que o editor compara com ela, no lugar
+   * do rótulo: o editor não ignora os acentos e esconderia o item.
+   */
+  filtro?: string;
+  /**
    * A palavra que o item substitui, na linha do cursor: de `início` até o cursor, ou até `fim`
    * para trocar a palavra inteira.
    */
@@ -350,6 +355,29 @@ class Completador {
   }
 
   private adicionar(item: Omit<ItemCompletar, "intervalo">) {
-    this.lista.push({ ...item, intervalo: this.intervalo });
+    this.lista.push({ ...item, filtro: this.filtro(item.rótulo), intervalo: this.intervalo });
   }
+
+  /**
+   * Os nomes não têm acentos: `funçã` é o começo de `funcao`. O filtro é a palavra escrita e o
+   * resto do rótulo (`função`), para o item continuar na lista enquanto a pessoa escreve.
+   */
+  private filtro(rótulo: string) {
+    const { palavra } = this.contexto;
+
+    if (/^\w*$/.test(palavra)) {
+      return;
+    }
+
+    const base = semAcentos(palavra);
+
+    return rótulo.toLowerCase().startsWith(base.toLowerCase()) ? palavra + rótulo.slice(base.length) : undefined;
+  }
+}
+
+/**
+ * Tira os acentos e a cedilha: `ç` vira `c`, `ã` vira `a`.
+ */
+function semAcentos(texto: string) {
+  return texto.normalize("NFD").replaceAll(/\p{M}/gu, "");
 }

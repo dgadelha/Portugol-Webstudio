@@ -491,6 +491,25 @@ export class MonacoService {
         (editor as monaco.editor.IStandaloneCodeEditor).createContextKey("isWeb", true);
       }
 
+      // O Monaco filtra a lista pedida com `sen` sem ignorar os acentos: o `ã` de `senã` a
+      // esvazia e ele a fecha sem pedir outra. A letra com acento pode vir de uma tecla morta,
+      // que compõe o caractere; colar ou desfazer não abre a lista.
+      let composing = false;
+
+      editor.onDidCompositionStart(() => (composing = true));
+      editor.onDidCompositionEnd(() => {
+        composing = false;
+        this.suggestAgain(editor);
+      });
+      editor.onDidChangeModelContent(({ changes, isUndoing, isRedoing, isFlush }) => {
+        const [change] = changes;
+        const typed = changes.length === 1 && change.rangeLength === 0 && Array.from(change.text).length === 1;
+
+        if (typed && !composing && !isUndoing && !isRedoing && !isFlush && /\P{ASCII}/u.test(change.text)) {
+          this.suggestAgain(editor);
+        }
+      });
+
       // A declaração da Ajuda, no Peek, é só para ler, e as linhas longas da explicação quebram.
       // O Peek guarda o que muda nas opções dele: quando ele volta a mostrar o código, as
       // opções de antes voltam também.
@@ -514,6 +533,32 @@ export class MonacoService {
           before = undefined;
         }
       });
+    });
+  }
+
+  /**
+   * Pede as sugestões de novo depois da letra com acento, como as sugestões rápidas pediriam
+   * depois de outra letra. O serviço de linguagem compara a palavra sem os acentos e manda o
+   * filtro com eles.
+   */
+  private suggestAgain(editor: monaco.editor.ICodeEditor) {
+    // Depois de o Monaco filtrar e fechar a lista.
+    setTimeout(() => {
+      const model = editor.getModel();
+      const position = editor.getPosition();
+
+      if (
+        !model ||
+        !position ||
+        model.getLanguageId() !== "portugol" ||
+        !editor.hasTextFocus() ||
+        editor.getOption(monaco.editor.EditorOption.quickSuggestions).other !== "on" ||
+        !/\P{ASCII}/u.test(model.getWordUntilPosition(position).word)
+      ) {
+        return;
+      }
+
+      editor.trigger("keyboard", "editor.action.triggerSuggest", { auto: true });
     });
   }
 
@@ -683,6 +728,7 @@ export class MonacoService {
       insertText: item.inserir,
       insertTextRules: item.trecho ? monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet : undefined,
       sortText: item.ordem,
+      filterText: item.filtro,
       range: {
         insert: new monaco.Range(linha, início, linha, position.column),
         replace: this.toRange(item.intervalo),

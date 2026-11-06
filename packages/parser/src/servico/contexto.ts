@@ -125,7 +125,9 @@ class AspasAbertas extends BaseErrorListener {
 }
 
 const PALAVRA = /^[A-Z_a-z]\w*$/;
-const CARACTERE_DE_NOME = /\w/;
+// Os nomes do Portugol não têm acentos, mas quem escreve `senão` ou `média` está escrevendo
+// uma palavra só: a letra acentuada não pode cortar a palavra ao meio.
+const CARACTERE_DE_NOME = /[\p{L}\p{M}\p{N}_]/u;
 const NÚMEROS = new Set([PortugolLexer.INT, PortugolLexer.REAL, PortugolLexer.HEXADECIMAL]);
 
 /**
@@ -172,8 +174,7 @@ export const BLOCO_DO_COMANDO: ReadonlyMap<number, TipoBloco> = new Map<number, 
 ]);
 
 /**
- * Os tokens do texto, os escondidos também, as aspas que ficaram abertas e o tamanho do texto
- * em pontos de código.
+ * Os tokens do texto, os escondidos também, e as aspas que ficaram abertas.
  */
 function lerTokens(texto: string) {
   const entrada = CharStream.fromString(texto);
@@ -190,7 +191,6 @@ function lerTokens(texto: string) {
   return {
     tokens: fluxo.getTokens().filter(token => token.type !== Token.EOF),
     aspas: aspas.posições,
-    tamanho: entrada.size,
   };
 }
 
@@ -209,9 +209,6 @@ export function analisarContexto(código: string, posição: Posição): Context
   const linhas = código.split("\n");
   const linhaDoCursor = linhas[posição.linha - 1] ?? "";
   const prefixo = [...linhas.slice(0, posição.linha - 1), linhaDoCursor.slice(0, posição.coluna - 1)].join("\n");
-  const { tokens, aspas, tamanho: fim } = lerTokens(prefixo);
-  const visíveis = tokens.filter(token => token.channel === Token.DEFAULT_CHANNEL);
-  const último = tokens.at(-1);
 
   let colunaInicial = posição.coluna;
   let colunaFinal = posição.coluna;
@@ -224,8 +221,16 @@ export function analisarContexto(código: string, posição: Posição): Context
     colunaFinal++;
   }
 
+  const palavra = linhaDoCursor.slice(colunaInicial - 1, posição.coluna - 1);
+  // O léxico parte a palavra com acento em pedaços (`m`, `é`, `d`): os tokens vão até antes dela.
+  const comAcento = /^\D/.test(palavra) && !/^\w*$/.test(palavra);
+  const { tokens, aspas } = lerTokens(comAcento ? prefixo.slice(0, prefixo.length - palavra.length) : prefixo);
+  const fim = Array.from(prefixo).length;
+  const visíveis = tokens.filter(token => token.channel === Token.DEFAULT_CHANNEL);
+  const último = tokens.at(-1);
+
   const base = {
-    palavra: linhaDoCursor.slice(colunaInicial - 1, posição.coluna - 1),
+    palavra,
     colunaInicial,
     colunaFinal,
     depoisDaPalavra: linhaDoCursor.slice(colunaFinal - 1),
@@ -233,7 +238,7 @@ export function analisarContexto(código: string, posição: Posição): Context
   };
 
   const últimoVisível = visíveis.at(-1);
-  const colado = últimoVisível !== undefined && últimoVisível.stop === fim - 1;
+  const colado = !comAcento && últimoVisível !== undefined && últimoVisível.stop === fim - 1;
   const parcial = colado && PALAVRA.test(últimoVisível.text ?? "") ? últimoVisível : undefined;
   const antes = parcial ? visíveis.slice(0, -1) : visíveis;
   const nada = { lugar: { tipo: "nada" } as const, ...base, tokens: antes, emTextoOuComentário: false };
