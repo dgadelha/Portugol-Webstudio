@@ -240,48 +240,46 @@
   gutterAriaLabel="Tamanho do enunciado"
   [direction]="isBelowMd() ? 'vertical' : 'horizontal'"
 >
-  <as-split-area
-    class="statement-area"
-    [size]="isBelowMd() ? 40 : 35"
-    [visible]="exercise() !== null || exerciseFailed() !== null"
-  >
-    @if (exerciseFailed() === "missing") {
-      <div class="exercise-failed" role="alert">
-        @if (sharedExercise) {
-          <p>O link deste exercício expirou ou não existe. O código continua na aba.</p>
-        } @else {
-          <p>Este exercício não existe nesta versão do Portugol Webstudio. O código continua na aba.</p>
-        }
-      </div>
-    } @else if (exerciseFailed() === "network") {
-      <div class="exercise-failed" role="alert">
-        <p>Não foi possível carregar o exercício. O código continua na aba.</p>
-        <button
-          type="button"
-          class="btn"
-          [attr.aria-disabled]="loadingExercise() || null"
-          (click)="!loadingExercise() && retryExercise()"
-        >
-          <svg-icon src="assets/mdi/refresh.svg" aria-hidden="true" />
-          {{ loadingExercise() ? "Carregando…" : "Tentar de novo" }}
-        </button>
-      </div>
-    } @else if (exercise(); as currentExercise) {
-      <app-exercise-statement
-        [exercise]="currentExercise"
-        [done]="exerciseDone()"
-        [copy]="exerciseCopy()"
-        [checking]="checking()"
-        [busy]="!canRun()"
-        [approvedChanged]="approvedCodeChanged()"
-        (verify)="verifyExercise()"
-        (stopCheck)="stopExerciseCheck()"
-        (restart)="restartExercise()"
-        (adopt)="adoptExercise()"
-        (restoreApproved)="restoreApprovedCode()"
-      />
-    }
-  </as-split-area>
+  @if (exercise() !== null || exerciseFailed() !== null) {
+    <as-split-area class="statement-area" [size]="isBelowMd() ? 40 : 35">
+      @if (exerciseFailed() === "missing") {
+        <div class="exercise-failed" role="alert">
+          @if (sharedExercise) {
+            <p>O link deste exercício expirou ou não existe. O código continua na aba.</p>
+          } @else {
+            <p>Este exercício não existe nesta versão do Portugol Webstudio. O código continua na aba.</p>
+          }
+        </div>
+      } @else if (exerciseFailed() === "network") {
+        <div class="exercise-failed" role="alert">
+          <p>Não foi possível carregar o exercício. O código continua na aba.</p>
+          <button
+            type="button"
+            class="btn"
+            [attr.aria-disabled]="loadingExercise() || null"
+            (click)="!loadingExercise() && retryExercise()"
+          >
+            <svg-icon src="assets/mdi/refresh.svg" aria-hidden="true" />
+            {{ loadingExercise() ? "Carregando…" : "Tentar de novo" }}
+          </button>
+        </div>
+      } @else if (exercise(); as currentExercise) {
+        <app-exercise-statement
+          [exercise]="currentExercise"
+          [done]="exerciseDone()"
+          [copy]="exerciseCopy()"
+          [checking]="checking()"
+          [busy]="!canRun()"
+          [approvedChanged]="approvedCodeChanged()"
+          (verify)="verifyExercise()"
+          (stopCheck)="stopExerciseCheck()"
+          (restart)="restartExercise()"
+          (adopt)="adoptExercise()"
+          (restoreApproved)="restoreApprovedCode()"
+        />
+      }
+    </as-split-area>
+  }
 
   <as-split-area size="*">
     <as-split
