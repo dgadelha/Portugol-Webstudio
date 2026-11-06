@@ -270,6 +270,16 @@ describe("informação ao parar sobre um nome", () => {
       expect(conteúdo).toBe(bloco("inteiro idade") + "\n\nvariável global\n\nA idade da pessoa,\\\nem anos\\.");
     });
 
+    test("dois /* */ em linhas seguidas", () => {
+      expect(noUso("/* primeira */\n      /* segunda */\n      inteiro x = 0", "escreva(x▮)")).toContain(
+        "\n\nprimeira\\\nsegunda",
+      );
+    });
+
+    test("o /* */ colado na declaração", () => {
+      expect(noUso("/* quantos pontos */inteiro pontos = 0", "escreva(pontos▮)")).toContain("\n\nquantos pontos");
+    });
+
     test("o /* */ acima", () => {
       expect(noUso("/* quantos pontos */\n      inteiro pontos = 0", "escreva(pontos▮)")).toContain(
         "\n\nquantos pontos",
@@ -374,12 +384,17 @@ describe("informação ao parar sobre um nome", () => {
       );
     });
 
-    test("as linhas de enfeite ficam de fora", () => {
-      expect(textoDoComentário("/*****************\n * Placar\n *****************/")).toBe("Placar");
-      expect(textoDoComentário("// ---------------")).toBe("");
-      expect(textoDoComentário("// ═══════════════")).toBe("");
-      expect(textoDoComentário("// ───────────────")).toBe("");
-      expect(textoDoComentário("//    com espaços   \n")).toBe("com espaços");
+    test.each([
+      ["/*****************\n * Placar\n *****************/", "Placar"],
+      ["// ---------------", ""],
+      ["// - - - - - - - -", ""],
+      ["// ═══════════════", ""],
+      ["// ───────────────", ""],
+      ["// ━━━━━━━━━━━━━━━", ""],
+      ["// ———————————————", ""],
+      ["//    com espaços   \n", "com espaços"],
+    ])("as linhas de enfeite ficam de fora: %j", (comentário, texto) => {
+      expect(textoDoComentário(comentário)).toBe(texto);
     });
 
     // Cada comentário numa linha nova: procurar de novo o começo da linha levava segundos.

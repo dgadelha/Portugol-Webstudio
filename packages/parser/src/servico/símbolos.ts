@@ -470,15 +470,24 @@ function valorLiteral(declaração: DeclaracaoVariavelContext) {
  * As declarações dentro do nó, sem montar a lista de todos os descendentes: o corpo da função
  * é percorrido a cada tecla.
  */
-function* listasDeDeclarações(nó: ParseTree): Generator<ListaDeclaracoesContext> {
-  for (let i = 0; i < nó.getChildCount(); i++) {
-    const filho = nó.getChild(i)!;
+function* listasDeDeclarações(raiz: ParseTree): Generator<ListaDeclaracoesContext> {
+  // Com uma pilha, na ordem do código, e não recursivo: com milhares de blocos aninhados, a
+  // recursão estouraria a pilha do JavaScript.
+  const pilha: ParseTree[] = [];
+  const empilharFilhos = (nó: ParseTree) => {
+    for (let i = nó.getChildCount() - 1; i >= 0; i--) {
+      pilha.push(nó.getChild(i)!);
+    }
+  };
 
-    if (filho instanceof ListaDeclaracoesContext) {
-      yield filho;
+  empilharFilhos(raiz);
+
+  for (let nó = pilha.pop(); nó; nó = pilha.pop()) {
+    if (nó instanceof ListaDeclaracoesContext) {
+      yield nó;
     }
 
-    yield* listasDeDeclarações(filho);
+    empilharFilhos(nó);
   }
 }
 

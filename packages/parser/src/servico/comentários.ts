@@ -158,7 +158,7 @@ function semAsPontasDoBloco(comentário: string) {
 /**
  * Linhas só de traços, iguais ou asteriscos, que separam partes do código.
  */
-const LINHA_DE_ENFEITE = /^[-=*_#~+/\\|.─━═]+$/u;
+const LINHA_DE_ENFEITE = /^[-=*_#~+/\\|. ─━═—–]+$/u;
 
 /**
  * O texto do comentário, sem `//`, `/*`, `*\/` nem o `*` do começo das linhas.

@@ -7,6 +7,7 @@ describe("bloco", () => {
     ["sem crases", "inteiro x", "```"],
     ["com três crases numa linha", 'cadeia X = "a\n```\nb"', "````"],
     ["com dez crases", "`".repeat(10), "`".repeat(11)],
+    ["com sequências de tamanhos diferentes, pela maior", "``` ````` `", "`".repeat(6)],
   ])("%s: a cerca é maior que qualquer sequência de crases", (_, código, cerca) => {
     expect(bloco(código)).toBe(`${cerca}portugol\n${código}\n${cerca}`);
   });
@@ -53,6 +54,9 @@ describe("textoComLinks", () => {
     ],
     ["sem endereço, é como o textoLiteral", "a * b", String.raw`a \* b`],
     ["as aspas curvas de fora ficam fora", "“veja https://a.com”", "“veja " + link("https://a.com") + "”"],
+    ["o apóstrofo curvo fica fora", "‘https://a.com’", "‘" + link("https://a.com") + "’"],
+    ["as aspas angulares ficam fora", "«https://a.com»", "«" + link("https://a.com") + "»"],
+    ["as reticências ficam fora", "veja https://a.com…", "veja " + link("https://a.com") + "…"],
     ["a barra invertida fica fora do endereço", String.raw`https://a.com\b`, link("https://a.com") + String.raw`\\b`],
   ])("%s", (_, texto, esperado) => {
     expect(textoComLinks(texto)).toBe(esperado);
