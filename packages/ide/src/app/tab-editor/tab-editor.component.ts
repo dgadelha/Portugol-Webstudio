@@ -722,6 +722,13 @@ export class TabEditorComponent implements OnInit, OnDestroy {
 
             this.endDebugging();
 
+            // Um programa que acaba sozinho com o foco no Parar: o foco vai para a saída, como
+            // no Parar, ou para o Executar
+            // (o Parar emite o fim na hora, dentro do `stopCode`, que já cuida do foco)
+            if (!debug && !event.stopped && this.stopButtonFocused()) {
+              this.leaveStopButton(this.stdOutEditorCursorEnd());
+            }
+
             const rendererModal = this.graphicsRendererModal;
 
             if (rendererModal) {
@@ -1032,9 +1039,18 @@ export class TabEditorComponent implements OnInit, OnDestroy {
    * Pelo botão Parar, ou ao fechar a janela de gráficos (pelo botão dela ou com Esc).
    */
   stopCode(origin: "editor" | "janela_graficos" | "atalho") {
+    // O Parar da barra de ações fica desativado: o foco que estava nele vai para o Executar,
+    // quando a saída não o recebe, e não se perde. Na depuração, quem cuida é o fim dela
+    const stopFocused = this.stopButtonFocused();
+
     // O Parar (e o Shift+F5) também interrompe a correção de um exercício
     if (this.checking()) {
       this.stopExerciseCheck();
+
+      if (stopFocused) {
+        focusAfterRender(this.injector, () => this.rovingTarget(".activity-button", ".run-button"));
+      }
+
       return;
     }
 
@@ -1050,7 +1066,23 @@ export class TabEditorComponent implements OnInit, OnDestroy {
       this.transpiling = false;
     }
 
-    this.stdOutEditorCursorEnd(!wasDebugging);
+    const outputFocused = this.stdOutEditorCursorEnd(!wasDebugging);
+
+    if (stopFocused && !wasDebugging) {
+      this.leaveStopButton(outputFocused);
+    }
+  }
+
+  /**
+   * Tira o foco do Parar da barra de ações, que fica desativado: ele vai para o Executar, se a
+   * saída não o recebeu. Mesmo com o foco na saída, o Tab volta para a barra pelo Executar.
+   */
+  private leaveStopButton(outputFocused: boolean) {
+    const runButton = this.rovingTarget(".activity-button", ".run-button");
+
+    if (!outputFocused) {
+      focusAfterRender(this.injector, () => runButton);
+    }
   }
 
   /**
@@ -1946,11 +1978,11 @@ export class TabEditorComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // A barra flutuante some com o fim da depuração: o foco que estava nela (no Parar dela,
-    // por exemplo) vai para o Depurar da barra de ações, e não se perde
+    // A barra flutuante some com o fim da depuração, e o Parar da barra de ações fica
+    // desativado: o foco que estava num deles vai para o Depurar da barra de ações, e não se perde
     const host = this.host.nativeElement;
 
-    if (host.querySelector(".debug-toolbar")?.contains(document.activeElement)) {
+    if (host.querySelector(".debug-toolbar")?.contains(document.activeElement) || this.stopButtonFocused()) {
       focusAfterRender(this.injector, () => this.rovingTarget(".activity-button", ".debug-button"));
     }
 
@@ -2109,6 +2141,15 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     }
 
     return target;
+  }
+
+  /**
+   * Se o foco está no Parar da barra de ações, que fica desativado quando o programa acaba.
+   */
+  private stopButtonFocused() {
+    const stopButton = this.host.nativeElement.querySelector(".stop-button");
+
+    return stopButton !== null && stopButton === document.activeElement;
   }
 
   /**
@@ -2424,9 +2465,12 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     this.panelTab(this.ids().outputTab)?.focus();
   }
 
+  /**
+   * Leva o cursor da saída para o fim. Devolve se ela recebe o foco.
+   */
   stdOutEditorCursorEnd(focus = true) {
     if (!this.stdOutEditor) {
-      return;
+      return false;
     }
 
     const editor = this.stdOutEditor;
@@ -2466,8 +2510,12 @@ export class TabEditorComponent implements OnInit, OnDestroy {
           },
           { injector: this.injector },
         );
+
+        return true;
       }
     }
+
+    return false;
   }
 
   /**
