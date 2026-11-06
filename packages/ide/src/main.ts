@@ -18,6 +18,7 @@ Sentry.init({
     Sentry.replayIntegration({
       maskAllInputs: false,
       maskAllText: false,
+      block: [".monaco-editor"],
     }),
     Sentry.extraErrorDataIntegration(),
     Sentry.browserTracingIntegration(),
