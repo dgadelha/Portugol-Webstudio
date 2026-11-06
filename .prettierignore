@@ -20,3 +20,4 @@ packages/resources/exercicios/index.json
 packages/resources/exercicios/index.d.ts
 packages/ide/src/index.html
 packages/ide/src/app/changelog.gerado.md
+packages/ide/src/monaco-pt-br.gerado.js

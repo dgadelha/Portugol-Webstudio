@@ -61,6 +61,12 @@ Depois, rode os testes:
 npm test
 ```
 
+Depois de atualizar o Monaco Editor, os testes da IDE falham até as mensagens do editor em português serem geradas de novo. Isso leva alguns minutos e precisa de internet e de uns 2 GB livres:
+
+```sh
+npm run monaco:pt-br -w @portugol-webstudio/ide
+```
+
 ## Antes de abrir o pull request
 
 1. Confira se o código passa nas mesmas verificações do CI:

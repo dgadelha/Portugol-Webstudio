@@ -11,6 +11,7 @@ import {
 import { initializeApp, provideFirebaseApp } from "@angular/fire/app";
 import { getStorage, provideStorage } from "@angular/fire/storage";
 import { provideServiceWorker } from "@angular/service-worker";
+import { MonacoEditorLoaderService } from "@materia-ui/ngx-monaco-editor";
 import { provideHotToastConfig } from "@ngxpert/hot-toast";
 import * as Sentry from "@sentry/angular";
 import { provideAngularSplitOptions } from "angular-split";
@@ -22,6 +23,7 @@ import { provideNgxWebstorage, withNgxWebstorageConfig } from "ngx-webstorage";
 import { environment } from "../environments/environment";
 import { withNgxLocalStorageFallback } from "../helpers/local-storage";
 import { RELEASE_CHANNEL } from "./beta";
+import { MonacoLoaderService } from "./monaco-loader.service";
 import { MonacoService } from "./monaco.service";
 import { PwaService } from "./pwa.service";
 import { markedPortugol } from "./tab-help/marked-portugol";
@@ -63,6 +65,7 @@ export const appConfig: ApplicationConfig = {
       // Registra o service worker quando a aplicação fica estável, ou depois de 10 segundos.
       registrationStrategy: "registerWhenStable:10000",
     }),
+    { provide: MonacoEditorLoaderService, useExisting: MonacoLoaderService },
     provideAppInitializer(() => {
       inject(MonacoService);
       inject(ThemeService);

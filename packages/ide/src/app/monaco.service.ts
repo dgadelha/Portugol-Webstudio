@@ -19,6 +19,14 @@ import { WorkerService } from "./worker.service";
  */
 export type DebugHoverState = { pause: DebugPause; frame: number };
 
+/**
+ * A parte do serviço de menu de contexto do Monaco (interno, sem tipo público) que
+ * `hideCommandPalette` usa.
+ */
+type ContextMenuService = {
+  showContextMenu(delegate: { getActions(): ReadonlyArray<{ id: string }> }): void;
+};
+
 @Service()
 export class MonacoService {
   private monacoLoaderService = inject(MonacoEditorLoaderService);
@@ -35,6 +43,11 @@ export class MonacoService {
    * Só existe depois que o Monaco carrega.
    */
   private completionKinds!: Record<ItemCompletar["tipo"], monaco.languages.CompletionItemKind>;
+
+  /**
+   * Se o menu de contexto já deixa de fora a "Paleta de Comandos" (ver `hideCommandPalette`).
+   */
+  private commandPaletteHidden = false;
 
   /**
    * Resolve quando o Monaco carregou e a linguagem Portugol (com os temas) está
@@ -468,10 +481,12 @@ export class MonacoService {
       },
     });
 
-    // No navegador, o F12 pode abrir as ferramentas do desenvolvedor: o Monaco tem também o
-    // Ctrl + F12, que o menu de contexto mostra, mas só o liga com a chave `isWeb`, que ele não
-    // define fora do VS Code para a web.
     monaco.editor.onDidCreateEditor(editor => {
+      this.hideCommandPalette(editor);
+
+      // No navegador, o F12 pode abrir as ferramentas do desenvolvedor: o Monaco tem também o
+      // Ctrl + F12, que o menu de contexto mostra, mas só o liga com a chave `isWeb`, que ele não
+      // define fora do VS Code para a web.
       if ("createContextKey" in editor) {
         (editor as monaco.editor.IStandaloneCodeEditor).createContextKey("isWeb", true);
       }
@@ -500,6 +515,49 @@ export class MonacoService {
         }
       });
     });
+  }
+
+  /**
+   * Tira a "Paleta de Comandos" do menu de contexto: o atalho dela, o F1, abre a Ajuda, e com o
+   * zone.js do Angular ela abre vazia (o Monaco não reconhece a promessa da lista de comandos).
+   *
+   * O Monaco não tem como tirar um item do menu, então o serviço do menu de contexto, um só para
+   * todos os editores, passa a filtrar o item antes de mostrar o menu. O serviço é achado pelo
+   * método `showContextMenu` entre os campos do menu de contexto do editor, que são privados:
+   * se uma versão do Monaco mudar isso, ou o que o menu recebe, o item só volta a aparecer.
+   */
+  private hideCommandPalette(editor: monaco.editor.ICodeEditor) {
+    if (this.commandPaletteHidden) {
+      return;
+    }
+
+    const contextMenu = editor.getContribution("editor.contrib.contextmenu") ?? {};
+    const service = Object.values(contextMenu).find(
+      (value): value is ContextMenuService =>
+        typeof (value as Partial<ContextMenuService>)?.showContextMenu === "function",
+    );
+
+    if (!service) {
+      return;
+    }
+
+    const showContextMenu = service.showContextMenu.bind(service);
+
+    service.showContextMenu = delegate => {
+      let menu = delegate;
+
+      // Se o Monaco mudar o que o menu recebe, ele aparece como veio, em vez de não abrir.
+      try {
+        const actions = delegate.getActions().filter(action => action.id !== "editor.action.quickCommand");
+
+        menu = { ...delegate, getActions: () => actions };
+      } catch (error) {
+        console.error(error);
+      }
+
+      showContextMenu(menu);
+    };
+    this.commandPaletteHidden = true;
   }
 
   /**

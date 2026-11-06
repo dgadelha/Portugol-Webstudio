@@ -32,7 +32,8 @@
     "watch": "ng build --watch --configuration development",
     "lint": "ng lint",
     "typecheck": "tsc -p tsconfig.spec.json --noEmit",
-    "capturas-da-ajuda": "node scripts/capturas-da-ajuda/capturar.mjs"
+    "capturas-da-ajuda": "node scripts/capturas-da-ajuda/capturar.mjs",
+    "monaco:pt-br": "node scripts/monaco-pt-br/gerar.mjs"
   },
   "dependencies": {
     "@angular/cdk": "^22.2.2",

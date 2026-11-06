@@ -88,6 +88,7 @@ export default defineConfig(
       "packages/resources/bibliotecas/index.d.ts",
       "packages/resources/exercicios/index.d.ts",
       "packages/ide/src/index.html",
+      "packages/ide/src/monaco-pt-br.gerado.js",
     ],
   },
   {
