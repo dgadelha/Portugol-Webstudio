@@ -34,6 +34,7 @@
         class="node"
         [isExpandable]="true"
         [cdkTreeNodeTypeaheadLabel]="node.text"
+        [attr.aria-label]="node.text"
         [attr.aria-current]="current?.id === node.id ? 'page' : null"
         (activation)="tree.expand(node); loadItem(node, 'arvore')"
       >

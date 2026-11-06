@@ -24,7 +24,7 @@
             "arquivo": "topicos/linguagem_portugol/tipos/cadeia.md"
           },
           {
-            "titulo": "Logico",
+            "titulo": "Lógico",
             "arquivo": "topicos/linguagem_portugol/tipos/logico.md"
           },
           {
@@ -110,7 +110,7 @@
                 "arquivo": "topicos/linguagem_portugol/expressao/operacoes_aritimeticas/operacao_divisao.md"
               },
               {
-                "titulo": "Operação de Modulo",
+                "titulo": "Operação de Módulo",
                 "arquivo": "topicos/linguagem_portugol/expressao/operacoes_aritimeticas/operacao_modulo.md"
               }
             ]
@@ -174,11 +174,11 @@
                 "arquivo": "topicos/linguagem_portugol/estruturas_controle/desvio/se.md"
               },
               {
-                "titulo": "Se senao",
+                "titulo": "Se senão",
                 "arquivo": "topicos/linguagem_portugol/estruturas_controle/desvio/se_senao.md"
               },
               {
-                "titulo": "Se senao se",
+                "titulo": "Se senão se",
                 "arquivo": "topicos/linguagem_portugol/estruturas_controle/desvio/se_senao_se.md"
               },
               {
@@ -196,7 +196,7 @@
                 "arquivo": "topicos/linguagem_portugol/estruturas_controle/repeticao/enquanto.md"
               },
               {
-                "titulo": "Faca enquanto",
+                "titulo": "Faça enquanto",
                 "arquivo": "topicos/linguagem_portugol/estruturas_controle/repeticao/faca_enquanto.md"
               },
               {
@@ -208,7 +208,7 @@
         ]
       },
       {
-        "titulo": "Bibliotecas",
+        "titulo": "Usando bibliotecas",
         "arquivo": "topicos/linguagem_portugol/bibliotecas/index.md"
       }
     ]

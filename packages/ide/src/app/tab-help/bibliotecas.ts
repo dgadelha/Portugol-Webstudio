@@ -121,7 +121,7 @@ function páginaDaFunção(biblioteca: Biblioteca, função: Função) {
 function páginaDoÍndice(implementadas: Biblioteca[]) {
   return juntar(
     "# Bibliotecas",
-    "Conjuntos de funções e constantes prontas para usar nos programas. Veja como incluir uma biblioteca em [Bibliotecas, na Linguagem Portugol](../topicos/linguagem_portugol/bibliotecas/index.md).",
+    "Conjuntos de funções e constantes prontas para usar nos programas. Veja como incluir uma biblioteca em [Usando bibliotecas](../topicos/linguagem_portugol/bibliotecas/index.md).",
     implementadas.map(b => `- [${b.nome}](${b.nome}.md): ${emUmaLinha(b.descrição)}`).join("\n"),
   );
 }
