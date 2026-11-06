@@ -47,6 +47,7 @@ describe("textoComLinks", () => {
       "a " + link("https://a.com") + " e\\_b " + link("https://b.com"),
     ],
     ["sem endereço, é como o textoLiteral", "a * b", String.raw`a \* b`],
+    ["a barra invertida fica fora do endereço", String.raw`https://a.com\b`, link("https://a.com") + String.raw`\\b`],
   ])("%s", (_, texto, esperado) => {
     expect(textoComLinks(texto)).toBe(esperado);
   });

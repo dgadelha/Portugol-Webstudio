@@ -92,6 +92,45 @@ describe("a variável na informação, para o valor na depuração", () => {
     expect(variável).not.toHaveProperty("vistaNaPausa");
   });
 
+  test("parada no comando depois de um se sem chaves, a global", () => {
+    expect(
+      variávelNaPausa(`programa {
+  inteiro x = 5
+
+  funcao inicio() {
+    se (verdadeiro) inteiro x = 1
+    ⏸x▮ = 2
+  }
+}`),
+    ).toEqual({ nome: "x", função: null });
+  });
+
+  // Com erro de redeclaração (o programa nem executa), a pausa vê a mesma declaração que a
+  // informação: a que o analisador guardou.
+  test.each([
+    {
+      caso: "o parâmetro, e não a local com o nome dele",
+      código: "programa {\n  funcao g(inteiro a) {\n    inteiro a = 2\n    ⏸escreva(a▮)\n  }\n}",
+      esperada: { nome: "a", função: "g", únicaNaFunção: false, vistaNaPausa: true },
+    },
+    {
+      caso: "a local de fora, e não a de um bloco interno",
+      código:
+        "programa {\n  funcao inicio() {\n    inteiro a = 1\n    se (verdadeiro) {\n      inteiro a = 2\n      ⏸escreva(a▮)\n    }\n  }\n}",
+      esperada: { nome: "a", função: "inicio", únicaNaFunção: false, vistaNaPausa: true },
+    },
+  ])("redeclarada: $caso", ({ código, esperada }) => {
+    expect(variávelNaPausa(código)).toEqual(esperada);
+  });
+
+  test("a global com o nome de uma função não é variável", () => {
+    const informação = informaçãoNaPausa(
+      "programa {\n  inteiro f = 1\n\n  funcao inicio() {\n    ⏸f▮()\n  }\n\n  funcao f() {\n  }\n}",
+    );
+
+    expect(informação?.variável).toBeUndefined();
+  });
+
   test("a variável de um bloco, depois do bloco", () => {
     expect(
       variávelNaPausa(`programa {

@@ -399,6 +399,12 @@ class Coletor {
       return chave.symbol.start;
     }
 
+    // Um comando só, sem chaves (`se (v) inteiro x = 1`): o escopo acaba nele, e o próximo
+    // comando já é de fora, como no analisador.
+    if (nó instanceof ListaComandosContext && !real(nó.getToken(PortugolLexer.ABRE_CHAVES, 0)) && nó.stop) {
+      return nó.stop.stop + 1;
+    }
+
     return this.depoisDe(nó);
   }
 

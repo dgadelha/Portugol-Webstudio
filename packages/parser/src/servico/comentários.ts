@@ -27,6 +27,8 @@ export function comentárioDe({ índices }: SímboloDeclarado, tokens: readonly 
 function acima(tokens: readonly Token[], índice: number) {
   const comentários: string[] = [];
   let quebras = 0;
+  let linhaConferida = -1;
+  let começa = true;
 
   for (let i = índice - 1; i >= 0; i--) {
     const anterior = tokens[i];
@@ -48,7 +50,12 @@ function acima(tokens: readonly Token[], índice: number) {
     // O `//` termina com a quebra de linha.
     const própria = anterior.type === PortugolLexer.COMENTARIO_SIMPLES && anterior.text?.endsWith("\n") ? 1 : 0;
 
-    if (quebras + própria > 1 || !começaALinha(tokens, i)) {
+    if (anterior.line !== linhaConferida) {
+      linhaConferida = anterior.line;
+      começa = começaALinha(tokens, i);
+    }
+
+    if (!começa || quebras + própria > 1) {
       break;
     }
 

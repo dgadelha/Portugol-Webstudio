@@ -170,6 +170,15 @@ describe("símbolos visíveis no cursor", () => {
     });
   });
 
+  // Redeclaração: o analisador guarda a função, e a global com o nome dela fica de fora.
+  test("a global com o nome de uma função: a função", () => {
+    const itens = completarEm(
+      "programa {\n  inteiro f = 1\n\n  funcao inicio() {\n    ▮\n  }\n\n  funcao f() {\n  }\n}",
+    );
+
+    expect(itens.filter(i => i.rótulo === "f")).toEqual([expect.objectContaining({ tipo: "função" })]);
+  });
+
   test("const é uma constante", () => {
     const itens = completarEm`
       programa {

@@ -182,6 +182,24 @@ describe("ir para a definição", () => {
       ).toBeNull();
     });
 
+    // Sem chaves, o bloco é um comando só: o próximo comando já vê a global.
+    test.each([
+      ["se", "se (verdadeiro) inteiro x = 1\n    x▮ = 2"],
+      ["senao", "se (falso) escreva(1)\n    senao inteiro x = 1\n    x▮ = 2"],
+      ["enquanto", "enquanto (falso) inteiro x = 1\n    x▮ = 2"],
+      ["para", "para (inteiro x = 0; x < 2; x++) escreva(x)\n    x▮ = 2"],
+    ])("depois de um %s sem chaves, a global", (_, linhas) => {
+      expect(definiçãoEm(`programa {\n  inteiro x = 5\n  funcao inicio() {\n    ${linhas}\n  }\n}`)).toMatchObject({
+        linha: 2,
+      });
+    });
+
+    test("dentro de um se sem chaves, a local", () => {
+      expect(
+        definiçãoEm("programa {\n  inteiro x = 5\n  funcao inicio() {\n    se (verdadeiro) inteiro x = x▮\n  }\n}"),
+      ).toMatchObject({ linha: 4 });
+    });
+
     // Com erro de redeclaração, o nome é o que o analisador guardou.
     test.each([
       [

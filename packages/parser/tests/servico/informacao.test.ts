@@ -26,6 +26,15 @@ function noUso(declaração: string, uso: string) {
 }
 
 describe("informação ao parar sobre um nome", () => {
+  // Redeclaração: o analisador guarda a função, e a global com o nome dela fica de fora.
+  test("a global com o nome de uma função: a função", () => {
+    const informação = informaçãoEm(
+      "programa {\n  inteiro f = 1\n\n  funcao inicio() {\n    f▮()\n  }\n\n  funcao f() {\n  }\n}",
+    );
+
+    expect(informação?.conteúdo).toBe(bloco("funcao vazio f()"));
+  });
+
   test("a variável local: a declaração e o que ela é", () => {
     const informação = informaçãoEm`
       programa {
@@ -371,11 +380,21 @@ describe("informação ao parar sobre um nome", () => {
       expect(textoDoComentário("//    com espaços   \n")).toBe("com espaços");
     });
 
+    // Conferir de novo o começo da linha a cada comentário levava 9 s com 10 mil deles.
+    test("milhares de comentários de bloco numa linha, sem demora", () => {
+      const comentários = "/**/ ".repeat(10_000);
+
+      expect(noUso(`${comentários}\n      inteiro x = 0`, "escreva(x▮)")).toContain("variável global");
+    });
+
     // A expressão regular que tirava o `*\/` testava cada asterisco: 200 mil levavam 18 s.
     test("milhares de asteriscos no meio do comentário, sem demora", () => {
       const asteriscos = "*".repeat(200_000);
 
       expect(textoDoComentário(`/* a${asteriscos}b */`)).toBe(`a${asteriscos}b`);
+    });
+
+    test("os asteriscos colados nas pontas ficam de fora", () => {
       expect(textoDoComentário("/** com asteriscos nas pontas **/")).toBe("com asteriscos nas pontas");
     });
   });

@@ -5,7 +5,12 @@
  * deixando o resto do texto virar Markdown (links e imagens) na informação.
  */
 export function bloco(código: string) {
-  const maior = Math.max(2, ...(código.match(/`+/g) ?? []).map(crases => crases.length));
+  let maior = 2;
+
+  for (const { 0: crases } of código.matchAll(/`+/g)) {
+    maior = Math.max(maior, crases.length);
+  }
+
   const cerca = "`".repeat(maior + 1);
 
   return `${cerca}portugol\n${código}\n${cerca}`;
@@ -21,7 +26,7 @@ export function textoLiteral(texto: string) {
   return texto.replaceAll(CARACTERES_DO_MARKDOWN, String.raw`\$&`);
 }
 
-const ENDEREÇO = /https?:\/\/[^\s<>]+/g;
+const ENDEREÇO = /https?:\/\/[^\s<>\\]+/g;
 
 /**
  * Como `textoLiteral`, mas os endereços continuam links: escapados, eles mudariam

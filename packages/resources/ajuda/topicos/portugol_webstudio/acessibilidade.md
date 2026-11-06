@@ -18,9 +18,7 @@ O Portugol Webstudio pode ser usado só com o teclado e com leitores de tela, co
 - Nos [exercícios](exercicios.md), o resultado do **Verificar** é anunciado, e cada caso da aba **Correção** começa com "Passou", "Falhou" ou "Não conferido", nunca só pela cor.
 - Na aba **Problemas**, cada item é anunciado como erro, aviso ou informação, com a linha e a coluna.
 - A quantidade de erros e de avisos, na barra de status, é anunciada por extenso.
-- No editor, **Ctrl + K** e depois **Ctrl + I** (no Mac, **Cmd + K** e **Cmd + I**) mostram o que é o nome em que o cursor está, como a declaração e o tipo de uma variável ou a explicação de uma função. Apertando de novo, o foco vai para esse texto, e o leitor de tela o lê; **Esc** volta ao código. Com o modo para leitores de tela do editor ligado, o foco vai para o texto já na primeira vez.
-
-O editor de código é o mesmo do Visual Studio Code, que tem um modo próprio para leitores de tela: aperte **Alt + F1**, dentro do editor, para ver as opções de acessibilidade dele.
+- No editor, **Ctrl + K** e depois **Ctrl + I** (no Mac, **Cmd + K** e **Cmd + I**) mostram o que é o nome em que o cursor está, como a declaração e o tipo de uma variável ou a explicação de uma função. Apertando de novo, o foco vai para esse texto, e o leitor de tela o lê; **Esc** volta ao código.
 
 ## Tamanho e contraste
 
