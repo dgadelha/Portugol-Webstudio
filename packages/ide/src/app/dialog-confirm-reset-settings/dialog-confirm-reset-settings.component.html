@@ -1,0 +1,16 @@
+<header class="dialog-header">
+  <h2 id="dialogo-restaurar-padroes-titulo">Restaurar padrões</h2>
+  <button type="button" class="icon-btn" aria-label="Fechar" appTooltip="Fechar" (click)="dialogRef.close(false)">
+    <svg-icon src="assets/mdi/close.svg" aria-hidden="true" />
+  </button>
+</header>
+
+<div class="dialog-body" id="dialogo-restaurar-padroes-descricao">
+  <p>Todas as configurações, de todas as seções, voltam ao padrão.</p>
+  <p>O código das abas não muda.</p>
+</div>
+
+<footer class="dialog-footer">
+  <button type="button" class="btn" cdkFocusInitial (click)="dialogRef.close(false)">Manter as configurações</button>
+  <button type="button" class="btn btn-primary" (click)="dialogRef.close(true)">Restaurar padrões</button>
+</footer>

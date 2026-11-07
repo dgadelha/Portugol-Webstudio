@@ -1,3 +1,4 @@
+import { LiveAnnouncer } from "@angular/cdk/a11y";
 import { DIALOG_DATA, DialogRef } from "@angular/cdk/dialog";
 import { NgComponentOutlet } from "@angular/common";
 import { ChangeDetectionStrategy, Component, computed, inject, signal, Type } from "@angular/core";
@@ -7,6 +8,8 @@ import { GoogleAnalyticsService } from "ngx-google-analytics";
 import { LocalStorageService } from "ngx-webstorage";
 import { debounceTime, filter, map, merge } from "rxjs";
 import { settings } from "../../settings";
+import { DialogConfirmResetSettingsComponent } from "../dialog-confirm-reset-settings/dialog-confirm-reset-settings.component";
+import { DialogService } from "../shared/dialog.service";
 import { TooltipDirective } from "../shared/tooltip.directive";
 import { AppearanceSectionComponent } from "./appearance-section.component";
 import { EditorSectionComponent } from "./editor-section.component";
@@ -74,6 +77,8 @@ const SECTIONS: Array<{
 export class DialogSettingsComponent {
   private localStorageService = inject(LocalStorageService);
   private gaService = inject(GoogleAnalyticsService);
+  private dialog = inject(DialogService);
+  private announcer = inject(LiveAnnouncer);
   readonly dialogRef = inject(DialogRef);
   private readonly data = inject<{ section?: SettingsSectionId } | undefined>(DIALOG_DATA, { optional: true });
 
@@ -102,14 +107,33 @@ export class DialogSettingsComponent {
     });
   }
 
+  /**
+   * Pede confirmação antes: volta ao padrão tudo, não só a seção aberta. O foco volta ao
+   * botão, e o leitor de tela ouve o aviso, já que a seção aberta pode não ter mudado.
+   */
   resetDefaults() {
-    this.gaService.event("settings_reset", "Configurações", "Restaurar padrões");
+    const ref = this.dialog.open<boolean>(DialogConfirmResetSettingsComponent, {
+      width: "28rem",
+      ariaLabelledBy: "dialogo-restaurar-padroes-titulo",
+      ariaDescribedBy: "dialogo-restaurar-padroes-descricao",
+    });
 
-    // `clear()` do ngx-webstorage apaga o `localStorage` inteiro, inclusive o
-    // código que o usuário está editando: aqui só as configurações voltam ao
-    // padrão.
-    for (const { key } of Object.values(settings)) {
-      this.localStorageService.clear(key);
-    }
+    ref.closed.subscribe(confirmed => {
+      if (!confirmed) {
+        this.gaService.event("settings_reset_cancel", "Configurações", "Restaurar padrões");
+        return;
+      }
+
+      this.gaService.event("settings_reset", "Configurações", "Restaurar padrões");
+
+      // `clear()` do ngx-webstorage apaga o `localStorage` inteiro, inclusive o
+      // código que o usuário está editando: aqui só as configurações voltam ao
+      // padrão.
+      for (const { key } of Object.values(settings)) {
+        this.localStorageService.clear(key);
+      }
+
+      void this.announcer.announce("As configurações voltaram ao padrão.", "polite");
+    });
   }
 }

@@ -2,7 +2,7 @@
 
 Para abrir as configurações, clique na engrenagem no pé da barra de ações, ou em **Configurações** na aba inicial. Elas são divididas em cinco seções: **Aparência**, **Editor**, **Saída**, **Execução** e **Abas**.
 
-As mudanças valem na hora e ficam salvas no navegador. Para voltar ao jeito original, clique em **Restaurar padrões**.
+As mudanças valem na hora e ficam salvas no navegador. Para voltar ao jeito original, clique em **Restaurar padrões** e confirme: todas as configurações, de todas as seções, voltam ao padrão.
 
 ## Aparência
 
