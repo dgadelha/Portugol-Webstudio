@@ -1,10 +1,12 @@
 <div class="field">
   <div class="field-text">
     <span id="setting-theme" class="field-label">Tema</span>
-    <p class="field-description">Sistema acompanha o modo claro ou escuro do seu dispositivo.</p>
+    <p id="setting-theme-descricao" class="field-description">
+      Sistema acompanha o modo claro ou escuro do seu dispositivo.
+    </p>
   </div>
 
-  <div role="radiogroup" aria-labelledby="setting-theme" class="themes">
+  <div role="radiogroup" aria-labelledby="setting-theme" aria-describedby="setting-theme-descricao" class="themes">
     @for (option of themes; track option.value) {
       <button
         type="button"
