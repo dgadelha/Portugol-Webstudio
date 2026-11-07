@@ -8,10 +8,12 @@ Em alguns notebooks, e na maioria dos Macs, as teclas de função, como o **F1**
 
 ## Em qualquer lugar
 
-| Windows e Linux | macOS      | O que faz                   |
-| --------------- | ---------- | --------------------------- |
-| Alt + N         | Option + N | Abre uma aba de código nova |
-| Alt + W         | Option + W | Fecha a aba aberta          |
+| Windows e Linux | macOS      | O que faz                     |
+| --------------- | ---------- | ----------------------------- |
+| Alt + N         | Option + N | Abre uma aba de código nova   |
+| Alt + W         | Option + W | Fecha a aba aberta            |
+| Ctrl + O        | Cmd + O    | Abre um arquivo do computador |
+| F1              | F1         | Abre a Ajuda                  |
 
 ## Numa aba de código
 
@@ -22,8 +24,6 @@ Em alguns notebooks, e na maioria dos Macs, as teclas de função, como o **F1**
 | Alt + P                                                  | Option + P                    | Executa o programa passo a passo                                   |
 | Shift + F5                                               | Shift + F5                    | Para o programa, ou a conferência de um exercício                  |
 | Ctrl + S                                                 | Cmd + S                       | Baixa o código como um arquivo `.por`                              |
-| Ctrl + O                                                 | Cmd + O                       | Abre um arquivo do computador                                      |
-| F1                                                       | F1                            | Abre a Ajuda                                                       |
 | Ctrl + G                                                 | Ctrl + G                      | Vai até uma linha                                                  |
 | Ctrl + Espaço                                            | Ctrl + Espaço ou Option + Esc | Abre a lista de sugestões                                          |
 | Ctrl + Shift + Espaço                                    | Cmd + Shift + Espaço          | Mostra os parâmetros da função em que o cursor está                |

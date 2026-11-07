@@ -7,7 +7,6 @@
     appTooltipShortcut="Ctrl+Enter"
     appTooltipPosition="right"
     aria-label="Executar"
-    aria-keyshortcuts="Control+Enter"
     [attr.aria-disabled]="!canRun() || null"
     (click)="canRun() && runCode('editor')"
   >
@@ -22,7 +21,6 @@
     appTooltipShortcut="Shift+F5"
     appTooltipPosition="right"
     aria-label="Parar"
-    aria-keyshortcuts="Shift+F5"
     [attr.aria-disabled]="!canStop() || null"
     (click)="canStop() && stopCode('editor')"
   >
@@ -36,7 +34,6 @@
     tabindex="-1"
     appTooltipShortcut="Alt+P"
     appTooltipPosition="right"
-    aria-keyshortcuts="Alt+P"
     [appTooltip]="stepping ? 'Próximo passo' : 'Depurar (passo a passo)'"
     [attr.aria-label]="stepping ? 'Próximo passo' : 'Depurar'"
     [attr.aria-disabled]="(stepping ? !paused() : !canRun()) || null"
@@ -59,7 +56,6 @@
     appTooltipShortcut="Ctrl+O"
     appTooltipPosition="right"
     aria-label="Abrir arquivo"
-    aria-keyshortcuts="Control+O"
     (click)="openFile.emit('editor')"
   >
     <svg-icon src="assets/mdi/folder-open-outline.svg" class="icon-yellow" aria-hidden="true" />
@@ -73,7 +69,6 @@
     appTooltipShortcut="Ctrl+S"
     appTooltipPosition="right"
     aria-label="Salvar"
-    aria-keyshortcuts="Control+S"
     (click)="saveFromEditor('editor')"
   >
     <svg-icon src="assets/mdi/content-save-outline.svg" class="icon-blue" aria-hidden="true" />
@@ -142,7 +137,6 @@
     appTooltipShortcut="F1"
     appTooltipPosition="right"
     aria-label="Ajuda"
-    aria-keyshortcuts="F1"
     (click)="openHelp('editor')"
   >
     <svg-icon src="assets/mdi/help-circle-outline.svg" class="icon-blue" aria-hidden="true" />
@@ -337,7 +331,6 @@
                   tabindex="0"
                   appTooltipShortcut="Alt+C"
                   appTooltipPosition="below"
-                  aria-keyshortcuts="Alt+C"
                   [appTooltip]="isPaused ? 'Continuar' : 'Pausar'"
                   [attr.aria-label]="isPaused ? 'Continuar' : 'Pausar'"
                   [attr.aria-disabled]="(!isPaused && executor.waitingForInput) || null"
@@ -359,7 +352,6 @@
                     [appTooltip]="button.label"
                     [appTooltipShortcut]="button.shortcut"
                     [attr.aria-label]="button.label"
-                    [attr.aria-keyshortcuts]="button.shortcut"
                     [attr.aria-disabled]="!isPaused || null"
                     (click)="resumeDebugging(button.type, 'editor')"
                   >
@@ -375,7 +367,6 @@
                   appTooltipShortcut="Shift+F5"
                   appTooltipPosition="below"
                   aria-label="Parar"
-                  aria-keyshortcuts="Shift+F5"
                   (click)="stopCode('editor')"
                 >
                   <svg-icon src="assets/mdi/square-rounded-outline.svg" class="icon-red" aria-hidden="true" />

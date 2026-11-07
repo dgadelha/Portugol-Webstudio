@@ -6,7 +6,14 @@
   [cdkDragDisabled]="fullscreen()"
 >
   <h2 [id]="data.titleId">{{ title() || "Gráficos" }}</h2>
-  <button type="button" class="icon-btn" aria-label="Fechar janela" appTooltip="Fechar janela" (click)="close()">
+  <button
+    type="button"
+    class="icon-btn"
+    aria-label="Fechar janela"
+    appTooltip="Fechar janela"
+    appTooltipShortcut="Esc"
+    (click)="close()"
+  >
     <svg-icon src="assets/mdi/close.svg" aria-hidden="true" />
   </button>
 </header>

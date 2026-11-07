@@ -13,14 +13,26 @@
   <nav class="actions" aria-label="Começar">
     <ul class="tiles">
       <li>
-        <button type="button" class="tile" (click)="newTab.emit(undefined)">
+        <button
+          type="button"
+          class="tile"
+          appTooltip="Novo arquivo"
+          appTooltipShortcut="Alt+N"
+          (click)="newTab.emit(undefined)"
+        >
           <svg-icon src="assets/mdi/file-plus-outline.svg" class="tile-icon icon-green" aria-hidden="true" />
           <span class="tile-title">Novo arquivo</span>
           <span class="tile-hint">Comece um programa do zero</span>
         </button>
       </li>
       <li>
-        <button type="button" class="tile" (click)="openFile.emit()">
+        <button
+          type="button"
+          class="tile"
+          appTooltip="Abrir arquivo"
+          appTooltipShortcut="Ctrl+O"
+          (click)="openFile.emit()"
+        >
           <svg-icon src="assets/mdi/folder-open-outline.svg" class="tile-icon icon-yellow" aria-hidden="true" />
           <span class="tile-title">Abrir arquivo</span>
           <span class="tile-hint">Um arquivo .por do seu computador</span>
@@ -47,7 +59,7 @@
         </button>
       </li>
       <li>
-        <button type="button" class="tile" (click)="help.emit()">
+        <button type="button" class="tile" appTooltip="Ajuda" appTooltipShortcut="F1" (click)="help.emit()">
           <svg-icon src="assets/mdi/help-circle-outline.svg" class="tile-icon icon-blue" aria-hidden="true" />
           <span class="tile-title">Ajuda</span>
           <span class="tile-hint">A linguagem e as bibliotecas do Portugol</span>

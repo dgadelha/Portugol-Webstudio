@@ -33,6 +33,7 @@ type MonacoEditorApi = typeof monaco.editor & {
     openCodeEditor(source: monaco.editor.ICodeEditor, resource: monaco.Uri): boolean;
   }): monaco.IDisposable;
   addEditorAction(descriptor: monaco.editor.IActionDescriptor): monaco.IDisposable;
+  addKeybindingRule(rule: { keybinding: number; command: string }): monaco.IDisposable;
 };
 
 /**
@@ -494,6 +495,7 @@ export class MonacoService {
     });
 
     this.addScreenReaderToggle();
+    this.freeF1();
 
     monaco.editor.onDidCreateEditor(editor => {
       this.hideCommandPalette(editor);
@@ -597,6 +599,18 @@ export class MonacoService {
           on ? "Editor otimizado para leitores de tela." : "Otimização para leitores de tela desligada.",
         );
       },
+    });
+  }
+
+  /**
+   * O F1 abre a Ajuda em qualquer lugar (`AppComponent.onShortcut`), mas, nos editores que não
+   * têm o próprio F1 (`TabEditorComponent.initShortcuts`), o Monaco o usaria para abrir a paleta
+   * de comandos, que com o zone.js abre vazia (`hideCommandPalette`).
+   */
+  private freeF1() {
+    (monaco.editor as MonacoEditorApi).addKeybindingRule({
+      keybinding: monaco.KeyCode.F1,
+      command: "-editor.action.quickCommand",
     });
   }
 

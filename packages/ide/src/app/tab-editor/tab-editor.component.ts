@@ -1104,7 +1104,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
 
   /**
    * Os atalhos da aba de código quando o foco não está no editor, que tem os
-   * mesmos atalhos (em `onEditorInit`) e consome o evento antes daqui.
+   * mesmos atalhos (em `initShortcuts`) e consome o evento antes daqui.
    */
   onShortcut(event: KeyboardEvent) {
     if (!this.isActive()) {
@@ -1113,22 +1113,11 @@ export class TabEditorComponent implements OnInit, OnDestroy {
 
     const shortcut = atalhoDoEvento(event);
 
+    // O F1 e o Ctrl+O valem em qualquer aba: ficam no `AppComponent`
     switch (shortcut) {
-      case "f1": {
-        event.preventDefault();
-        this.openHelp("atalho");
-        break;
-      }
-
       case "ctrl+s": {
         event.preventDefault();
         this.saveFromEditor("atalho");
-        break;
-      }
-
-      case "ctrl+o": {
-        event.preventDefault();
-        this.openFile.emit("atalho");
         break;
       }
 
@@ -2536,8 +2525,9 @@ export class TabEditorComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * `CtrlCmd` é o Cmd no Mac; o `WinCtrl` acrescenta o Ctrl de verdade, que é o
-   * atalho mostrado nas dicas (no Mac, o Ctrl+O do Monaco inseriria uma linha).
+   * Os atalhos dos editores de código e de saída. `CtrlCmd` é o Cmd no Mac, e o `WinCtrl`
+   * faz valer lá também o Ctrl. Menos no Abrir arquivo: no Mac, o Ctrl+O insere uma linha,
+   * no Monaco e nos campos de texto, e só o Cmd+O abre arquivos (`atalhoDoEvento`).
    */
   initShortcuts(editor: monaco.editor.IStandaloneCodeEditor) {
     editor.addAction({
@@ -2598,7 +2588,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
 
     editor.addAction({
       id: "openFile",
-      keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyO, monaco.KeyMod.WinCtrl | monaco.KeyCode.KeyO],
+      keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyO],
       label: "Abrir arquivo",
       run: () => {
         this.openFile.emit("atalho");

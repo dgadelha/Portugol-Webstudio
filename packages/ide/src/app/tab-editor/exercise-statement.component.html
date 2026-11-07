@@ -5,7 +5,6 @@
     <button
       type="button"
       class="btn statement-verify"
-      [attr.aria-keyshortcuts]="checking() ? 'Shift+F5' : 'Control+Shift+Enter'"
       [appTooltip]="checking() ? 'Parar a correção' : 'Testar o programa com as entradas do exercício'"
       [appTooltipShortcut]="checking() ? 'Shift+F5' : 'Ctrl+Shift+Enter'"
       [class.btn-primary]="!checking()"

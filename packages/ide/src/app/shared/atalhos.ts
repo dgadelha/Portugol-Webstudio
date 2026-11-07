@@ -6,26 +6,48 @@ const EDITÁVEIS = new Set(["INPUT", "TEXTAREA", "SELECT"]);
  * O atalho de teclado de um `keydown` ouvido no `document`, como "ctrl+s",
  * "alt+n" ou "f1", ou `undefined` quando o evento não deve virar atalho:
  *
- * - quando alguém já o tratou: o editor de código tem os próprios atalhos
- *   (Ctrl+Enter, Ctrl+S…) e consome o evento;
+ * - quando alguém já o tratou: os editores de código e de saída têm os próprios atalhos
+ *   (Ctrl+Enter, Ctrl+S…, em `TabEditorComponent.initShortcuts`) e consomem o evento;
  * - quando vem de um campo de texto ou de um editor do Monaco, em que as teclas são
  *   do campo (no Chrome, o Monaco recebe o texto num `<div>` com o `EditContext`, e não
- *   num `<textarea>`): o editor de código registra os atalhos que valem nele;
+ *   num `<textarea>`), menos o F1 e o Ctrl+O (`valeNoCampo`);
  * - quando vem de um diálogo ou menu, que ficam por cima do IDE.
  */
 export function atalhoDoEvento(event: KeyboardEvent): string | undefined {
   const alvo = event.target as HTMLElement;
 
-  if (
-    event.defaultPrevented ||
-    EDITÁVEIS.has(alvo.nodeName) ||
-    alvo.isContentEditable ||
-    alvo.closest(".monaco-editor") ||
-    alvo.closest(".cdk-overlay-container")
-  ) {
+  if (event.defaultPrevented || alvo.closest(".cdk-overlay-container")) {
     return undefined;
   }
 
+  const atalho = atalhoDaTecla(event);
+  const numCampo = EDITÁVEIS.has(alvo.nodeName) || alvo.isContentEditable || alvo.closest(".monaco-editor");
+
+  return !numCampo || valeNoCampo(atalho, event) ? atalho : undefined;
+}
+
+/**
+ * Se o atalho vale também com o foco num campo de texto ou num editor do Monaco: só o F1 e o
+ * Ctrl+O, que não digitam nada.
+ */
+function valeNoCampo(atalho: string | undefined, event: KeyboardEvent) {
+  switch (atalho) {
+    case "f1": {
+      return true;
+    }
+
+    // No Mac, o Ctrl+O é do campo, que insere uma linha, como o Monaco: só o Cmd+O abre arquivos
+    case "ctrl+o": {
+      return !isMacintosh || event.metaKey;
+    }
+
+    default: {
+      return false;
+    }
+  }
+}
+
+function atalhoDaTecla(event: KeyboardEvent): string | undefined {
   if (event.ctrlKey && event.altKey) {
     return undefined;
   }

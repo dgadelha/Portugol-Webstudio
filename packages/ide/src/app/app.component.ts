@@ -226,7 +226,27 @@ export class AppComponent implements OnInit {
         break;
       }
 
-      default:
+      // Em todas as abas, a Inicial também: sem isso, o F1 do navegador abriria a ajuda dele.
+      // Nos editores de código e de saída, os atalhos são deles (`TabEditorComponent.initShortcuts`).
+      case "f1": {
+        event.preventDefault();
+        this.upsertHelpTab("atalho");
+        break;
+      }
+
+      case "ctrl+o": {
+        event.preventDefault();
+        this.chooseFiles("atalho");
+        break;
+      }
+
+      default: {
+        // Num diálogo, o F1 não faz nada: a Ajuda abriria atrás dele, e a do navegador, numa aba
+        // nova. Só o F1 sem outras teclas abre a ajuda do navegador.
+        if (event.key === "F1" && !event.ctrlKey && !event.altKey && !event.shiftKey && !event.metaKey) {
+          event.preventDefault();
+        }
+      }
     }
   }
 

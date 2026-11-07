@@ -10,6 +10,7 @@ import {
   afterRenderEffect,
   ChangeDetectionStrategy,
   Component,
+  computed,
   Directive,
   ElementRef,
   inject,
@@ -54,6 +55,16 @@ const HOVER_DELAY = 500;
  */
 const LEAVE_DELAY = 150;
 
+/**
+ * As teclas da dica com outro nome no `aria-keyshortcuts`, que usa os valores do `KeyboardEvent.key`.
+ */
+const ARIA_KEYS: Record<string, string> = {
+  Ctrl: "Control",
+  Cmd: "Meta",
+  Option: "Alt",
+  Esc: "Escape",
+};
+
 @Component({
   selector: "app-tooltip",
   templateUrl: "./tooltip.component.html",
@@ -73,7 +84,7 @@ class TooltipComponent {
  * Para leitores de tela, a dica vira a descrição do controle quando diz algo
  * além do nome dele (que vem do `aria-label` ou do próprio texto), como a ação
  * de "Ln 3, Col 25". O atalho de teclado (`appTooltipShortcut`) aparece na dica
- * com outra fonte e também entra na descrição.
+ * com outra fonte, também entra na descrição e vira o `aria-keyshortcuts` do controle.
  */
 @Directive({
   selector: "[appTooltip]",
@@ -83,6 +94,7 @@ class TooltipComponent {
     "(focusin)": "onFocus()",
     "(focusout)": "hide()",
     "(click)": "hide()",
+    "[attr.aria-keyshortcuts]": "ariaKeyShortcuts()",
   },
 })
 export class TooltipDirective implements OnDestroy {
@@ -98,6 +110,23 @@ export class TooltipDirective implements OnDestroy {
    * como o Ctrl+G do editor de código.
    */
   readonly appTooltipShortcutMac = input<string>();
+
+  /**
+   * O atalho com os nomes de tecla do `aria-keyshortcuts`, do mesmo jeito que a dica o mostra: no
+   * Mac, o Cmd é o "Meta" e o Option, o "Alt".
+   */
+  protected readonly ariaKeyShortcuts = computed(() => {
+    const shortcut = this.shortcut();
+
+    if (!shortcut) {
+      return null;
+    }
+
+    return shortcut
+      .split("+")
+      .map(key => ARIA_KEYS[key] ?? key)
+      .join("+");
+  });
 
   constructor() {
     // Depois da renderização, quando o `aria-label` do controle já está no DOM.
