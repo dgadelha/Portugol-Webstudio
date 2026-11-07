@@ -15,3 +15,21 @@ export function escapeHtml(text: string) {
 export function wrapTables(html: string) {
   return html.replaceAll("<table>", '<div class="tabela"><table>').replaceAll("</table>", "</table></div>");
 }
+
+/**
+ * O aviso, só para os leitores de tela, de que o link abre em outra aba do navegador, como nos
+ * links fora do Markdown. Não aparece na tela nem entra no que se copia. Os templates escrevem o
+ * mesmo texto à mão, num `<span class="visually-hidden">`: se mudar aqui, mude lá.
+ */
+export const NEW_TAB_HINT = " (abre em outra aba)";
+
+/**
+ * Os links para fora do IDE abrem em outra aba do navegador, sem tirar o usuário do IDE, e
+ * avisam isso ao leitor de tela. Os links do Markdown não se aninham.
+ */
+export function openExternalLinksInNewTab(html: string) {
+  return html.replaceAll(
+    /<a href="(https?:\/\/[^"]*)"([^>]*)>([\s\S]*?)<\/a>/g,
+    `<a target="_blank" rel="external noreferrer noopener nofollow" href="$1"$2>$3<span class="visually-hidden">${NEW_TAB_HINT}</span></a>`,
+  );
+}

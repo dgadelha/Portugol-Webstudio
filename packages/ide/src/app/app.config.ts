@@ -26,6 +26,7 @@ import { RELEASE_CHANNEL } from "./beta";
 import { MonacoLoaderService } from "./monaco-loader.service";
 import { MonacoService } from "./monaco.service";
 import { PwaService } from "./pwa.service";
+import { openExternalLinksInNewTab } from "./shared/markdown";
 import { markedPortugol } from "./tab-help/marked-portugol";
 import { ThemeService } from "./theme.service";
 
@@ -78,13 +79,7 @@ export const appConfig: ApplicationConfig = {
           multi: true,
           useValue: {
             hooks: {
-              // Links externos abrem em outra aba do navegador, sem tirar o usuário do IDE
-              postprocess: (html: string) => {
-                return html.replaceAll(
-                  /<a href="(https?:\/\/)/g,
-                  '<a target="_blank" rel="external noreferrer noopener nofollow" href="$1',
-                );
-              },
+              postprocess: openExternalLinksInNewTab,
             },
           },
         },

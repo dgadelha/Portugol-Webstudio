@@ -7,7 +7,7 @@ import { Marked, Tokens } from "marked";
 import { settings } from "../settings";
 import { MonacoService } from "./monaco.service";
 import { SettingsService } from "./settings.service";
-import { escapeHtml, wrapTables } from "./shared/markdown";
+import { escapeHtml, NEW_TAB_HINT, wrapTables } from "./shared/markdown";
 import { Theme, ThemeService } from "./theme.service";
 
 /**
@@ -211,6 +211,12 @@ export class ExerciseMarkdownService {
       if (node.tagName === "A") {
         node.setAttribute("target", "_blank");
         node.setAttribute("rel", "noopener noreferrer");
+
+        const hint = node.ownerDocument.createElement("span");
+
+        hint.className = "visually-hidden";
+        hint.textContent = NEW_TAB_HINT;
+        node.append(hint);
       }
 
       // Só imagens que vêm com o IDE: uma imagem de fora saberia quem abriu o exercício

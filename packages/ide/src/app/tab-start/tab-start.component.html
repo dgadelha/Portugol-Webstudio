@@ -167,6 +167,7 @@
         (click)="gaService.event('open_stable_version', 'Aba Inicial', 'Ir para a versão estável')"
       >
         Ir para a versão estável
+        <span class="visually-hidden">(abre em outra aba)</span>
       </a>
     } @else {
       <a
@@ -177,6 +178,7 @@
         (click)="gaService.event('open_beta_version', 'Aba Inicial', 'Experimentar a versão beta')"
       >
         Experimentar a versão beta
+        <span class="visually-hidden">(abre em outra aba)</span>
       </a>
     }
   </footer>

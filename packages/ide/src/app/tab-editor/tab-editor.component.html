@@ -599,7 +599,9 @@
 <ng-template #shareToastTemplate let-toastRef>
   <div class="share-toast">
     <p class="share-toast-title">Link gerado</p>
-    <a class="share-toast-link" target="_blank" rel="noopener" [href]="toastRef.data.url">{{ toastRef.data.url }}</a>
+    <a class="share-toast-link" target="_blank" rel="noopener" [href]="toastRef.data.url"
+      >{{ toastRef.data.url }}<span class="visually-hidden"> (abre em outra aba)</span></a
+    >
     <p class="share-toast-note">
       <svg-icon src="assets/mdi/clock-alert-outline.svg" class="icon-red" aria-hidden="true" />
       Este link expira em 90 dias.

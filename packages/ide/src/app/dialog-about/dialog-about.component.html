@@ -27,7 +27,9 @@
       <svg-icon src="assets/mdi/tag-outline.svg" aria-hidden="true" />
       @if (commitUrl) {
         <span
-          >Versão <a class="version" target="_blank" rel="external noopener" [href]="commitUrl">{{ version.label }}</a
+          >Versão
+          <a class="version" target="_blank" rel="external noopener" [href]="commitUrl"
+            >{{ version.label }}<span class="visually-hidden"> (abre em outra aba)</span></a
           >{{ dateSuffix }}</span
         >
       } @else {
@@ -74,6 +76,7 @@
     >
       <svg-icon src="assets/mdi/clipboard-text-outline.svg" aria-hidden="true" />
       Responder pesquisa
+      <span class="visually-hidden">(abre em outra aba)</span>
     </a>
   }
 
@@ -99,6 +102,7 @@
   >
     <svg-icon src="assets/icon-github.svg" aria-hidden="true" />
     Código-fonte
+    <span class="visually-hidden">(abre em outra aba)</span>
   </a>
 
   <a
@@ -112,6 +116,7 @@
   >
     <svg-icon src="assets/mdi/bug-outline.svg" class="icon-red" aria-hidden="true" />
     Reportar um problema
+    <span class="visually-hidden">(abre em outra aba)</span>
   </a>
 
   <button

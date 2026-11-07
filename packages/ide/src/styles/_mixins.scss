@@ -1,7 +1,8 @@
 // Mixins compartilhados pelos estilos globais e pelos componentes. Este
 // arquivo não gera CSS por si: pode ser usado com `@use` em qualquer lugar.
 
-// Some da tela, mas continua lido por leitores de tela.
+// Some da tela, mas continua lido por leitores de tela. Não entra no que se copia, e fica como
+// está escrito mesmo dentro de um texto em maiúsculas, que chegaria assim ao leitor de tela.
 @mixin visually-hidden {
   position: absolute;
   width: 1px;
@@ -12,6 +13,8 @@
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
+  text-transform: none;
+  user-select: none;
 }
 
 // Rótulo pequeno em maiúsculas, como os títulos das barras laterais do VS Code.
