@@ -28,6 +28,7 @@ import { settings } from "../../settings";
 import { MonacoService } from "../monaco.service";
 import { SettingsService } from "../settings.service";
 import { focusAfterRender } from "../shared/focus";
+import { SplitAccessibilityDirective } from "../shared/split-accessibility.directive";
 import { WorkspaceService } from "../workspace.service";
 import { ResponsiveService } from "../responsive.service";
 import { Theme, ThemeService } from "../theme.service";
@@ -44,7 +45,7 @@ type OrigemTopico = "arvore" | "link" | "abertura";
 
 @Component({
   selector: "app-tab-help",
-  imports: [AngularSplitModule, AngularSvgIconModule, CdkTreeModule, MarkdownComponent],
+  imports: [AngularSplitModule, AngularSvgIconModule, CdkTreeModule, MarkdownComponent, SplitAccessibilityDirective],
   templateUrl: "./tab-help.component.html",
   styleUrl: "./tab-help.component.scss",
   changeDetection: ChangeDetectionStrategy.Eager,

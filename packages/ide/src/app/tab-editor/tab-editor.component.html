@@ -287,6 +287,7 @@
       direction="vertical"
       unit="pixel"
       gutterAriaLabel="Altura do painel"
+      appGutterArea="after"
       (dragEnd)="onSplitDragEnd($event)"
     >
       <as-split-area size="*">
@@ -294,6 +295,7 @@
           direction="horizontal"
           class="thin-split"
           gutterAriaLabel="Código gerado"
+          appGutterArea="after"
           [gutterSize]="1"
           (dragEnd)="onGeneratedCodeDragEnd($event)"
         >

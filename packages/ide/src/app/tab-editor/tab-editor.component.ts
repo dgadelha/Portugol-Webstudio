@@ -67,6 +67,7 @@ import { atalhoDoEvento } from "../shared/atalhos";
 import { DialogService } from "../shared/dialog.service";
 import { focusAfterRender } from "../shared/focus";
 import { moveRovingFocus } from "../shared/roving-focus";
+import { SplitAccessibilityDirective } from "../shared/split-accessibility.directive";
 import { TooltipDirective } from "../shared/tooltip.directive";
 import { ThemeService } from "../theme.service";
 import { WORKER_CRASH_ERROR, WorkerService } from "../worker.service";
@@ -127,6 +128,7 @@ export type EditorOrigin = "editor" | "atalho";
     FormsModule,
     MonacoEditorModule,
     NgxGoogleAnalyticsModule,
+    SplitAccessibilityDirective,
     TooltipDirective,
   ],
   templateUrl: "./tab-editor.component.html",
