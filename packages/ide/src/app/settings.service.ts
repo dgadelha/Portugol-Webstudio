@@ -1,7 +1,24 @@
 import { inject, Service } from "@angular/core";
 import { LocalStorageService } from "ngx-webstorage";
-import { combineLatest, defer, map, Observable, shareReplay, startWith } from "rxjs";
-import { Setting, settings } from "../settings";
+import { combineLatest, defer, distinctUntilChanged, map, Observable, shareReplay, startWith } from "rxjs";
+import { isMacintosh, Setting, settings } from "../settings";
+
+/**
+ * O nome de um editor para o leitor de tela. Com o modo para leitores de tela desligado, ele
+ * diz o atalho que liga o modo (`MonacoService.addScreenReaderToggle`), como no VS Code.
+ */
+export function editorAriaLabel(
+  name: string,
+  accessibilitySupport: monaco.editor.IEditorOptions["accessibilitySupport"],
+): string {
+  if (accessibilitySupport === "on") {
+    return name;
+  }
+
+  const shortcut = isMacintosh ? "Shift + Option + F1" : "Shift + Alt + F1";
+
+  return `${name}. Para otimizar o editor para leitores de tela, aperte ${shortcut}`;
+}
 
 @Service()
 export class SettingsService {
@@ -40,8 +57,19 @@ export class SettingsService {
   }
 
   /**
+   * Só o modo para leitores de tela das opções do editor, para os editores que não seguem as
+   * outras configurações (a saída, a prévia dos exemplos).
+   */
+  accessibilitySupport() {
+    return this.editorOptions$.pipe(
+      map(options => options.accessibilitySupport),
+      distinctUntilChanged(),
+    );
+  }
+
+  /**
    * Um só fluxo para todas as abas e a prévia das configurações: cada uma
-   * observaria as 15 chaves do armazenamento por conta própria.
+   * observaria as 16 chaves do armazenamento por conta própria.
    */
   private readonly editorOptions$: Observable<monaco.editor.IEditorOptions & monaco.editor.IGlobalEditorOptions> =
     combineLatest([
@@ -60,6 +88,7 @@ export class SettingsService {
       this.observe(settings.editorRenderLineHighlight),
       this.observe(settings.editorFolding),
       this.observe(settings.editorStickyScroll),
+      this.observe(settings.editorAccessibilitySupport),
     ]).pipe(
       map(
         ([
@@ -78,6 +107,7 @@ export class SettingsService {
           renderLineHighlight,
           folding,
           stickyScroll,
+          accessibilitySupport,
         ]) => {
           return {
             fontSize,
@@ -103,6 +133,10 @@ export class SettingsService {
             renderLineHighlight,
             folding,
             stickyScroll: { enabled: stickyScroll },
+            // Desligado, fica no "auto", que no navegador age como sem leitor de tela. O "off" seria
+            // pior: o Monaco deixaria de passar o código ao leitor também no Firefox, e o nome do
+            // editor viraria "O editor não está acessível no momento".
+            accessibilitySupport: accessibilitySupport ? ("on" as const) : ("auto" as const),
             // A informação aparece 200 ms depois que o mouse para, e não nos 300 do Monaco. Com
             // o mouse andando pelo código, ela continua sem aparecer.
             hover: { delay: 200 },

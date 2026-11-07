@@ -12,13 +12,15 @@ O Portugol Webstudio pode ser usado só com o teclado e com leitores de tela, co
 
 ## Leitores de tela
 
+Se você usa um leitor de tela, ligue **Otimizar para leitor de tela**, na seção **Editor** das [configurações](configuracoes.md), ou aperte **Shift + Alt + F1** (no Mac, **Shift + Option + F1**) no editor de código ou na saída, que é o que o leitor diz ao chegar neles. Com ela, o leitor recebe mais do código do editor e da saída. No Chrome e no Edge, sem ela, o leitor não recebe o código do editor.
+
 - As abas, a barra de ações, o painel e as janelas são anunciados com os nomes e os papéis certos.
 - O estado do programa, **Executando** e **Aguardando entrada**, é anunciado quando muda.
 - Executando passo a passo, cada pausa é anunciada com a linha e o que mudou nas variáveis. Veja [Executando passo a passo](depurando.md).
 - Nos [exercícios](exercicios.md), o resultado do **Verificar** é anunciado, e cada caso da aba **Correção** começa com "Passou", "Falhou" ou "Não conferido", nunca só pela cor.
 - Na aba **Problemas**, cada item é anunciado como erro, aviso ou informação, com a linha e a coluna.
 - A quantidade de erros e de avisos, na barra de status, é anunciada por extenso.
-- No editor, **Ctrl + K** e depois **Ctrl + I** (no Mac, **Cmd + K** e **Cmd + I**) mostram o que é o nome em que o cursor está, como a declaração e o tipo de uma variável ou a explicação de uma função. Apertando de novo, o foco vai para esse texto, e o leitor de tela o lê; **Esc** volta ao código.
+- No editor, **Ctrl + K** e depois **Ctrl + I** (no Mac, **Cmd + K** e **Cmd + I**) mostram o que é o nome em que o cursor está, como a declaração e o tipo de uma variável ou a explicação de uma função. Apertando de novo, o foco vai para esse texto, e o leitor de tela o lê; **Esc** volta ao código. Com **Otimizar para leitor de tela** ligada, o foco já vai para o texto na primeira vez.
 
 ## Tamanho e contraste
 

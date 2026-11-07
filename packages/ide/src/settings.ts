@@ -100,6 +100,8 @@ export const settings = {
   editorRenderLineHighlight: oneOf("editorRenderLineHighlight", ["none", "line", "all"], "line"),
   editorFolding: boolean("editorFolding", true),
   editorStickyScroll: boolean("editorStickyScroll", true),
+  // O modo do Monaco para leitores de tela. No navegador, ele não detecta um leitor sozinho.
+  editorAccessibilitySupport: boolean("editorAccessibilitySupport", false),
   // Sem valor, acompanha o tamanho da fonte do editor.
   outputFontSize: integer("outputFontSize", null, fontSizeRange),
   outputClearOnRun: boolean("outputClearOnRun", true),

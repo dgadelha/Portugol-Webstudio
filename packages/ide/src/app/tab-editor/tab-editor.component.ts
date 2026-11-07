@@ -61,7 +61,7 @@ import {
 } from "../exercises.service";
 import { type DebugHoverState, MonacoService } from "../monaco.service";
 import { ResponsiveService } from "../responsive.service";
-import { SettingsService } from "../settings.service";
+import { editorAriaLabel, SettingsService } from "../settings.service";
 import { ShareService } from "../share.service";
 import { atalhoDoEvento } from "../shared/atalhos";
 import { DialogService } from "../shared/dialog.service";
@@ -813,6 +813,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
       this.codeEditorOptions = {
         ...this.codeEditorOptions,
         ...options,
+        ariaLabel: editorAriaLabel("Código", options.accessibilitySupport),
         // No celular, o minimapa cobriria o fim das linhas de código.
         minimap: { enabled: options.minimap?.enabled === true && !this.isBelowSm() },
       };
@@ -821,8 +822,22 @@ export class TabEditorComponent implements OnInit, OnDestroy {
         ...this.generatedCodeEditorOptions,
         fontSize: options.fontSize,
         wordWrap: options.wordWrap,
+        accessibilitySupport: options.accessibilitySupport,
+        ariaLabel: editorAriaLabel("Código JavaScript gerado", options.accessibilitySupport),
       };
     });
+
+    // O modo para leitores de tela vale para a saída também: é nela que o `leia` recebe o que se
+    // digita. Só ele: as outras configurações do editor não mexem na saída
+    this._settings$.add(
+      this.settingsService.accessibilitySupport().subscribe(accessibilitySupport => {
+        this.stdOutEditorOptions = {
+          ...this.stdOutEditorOptions,
+          accessibilitySupport,
+          ariaLabel: editorAriaLabel("Saída do programa", accessibilitySupport),
+        };
+      }),
+    );
 
     this._settings$.add(
       this.settingsService.outputFontSize().subscribe(fontSize => {

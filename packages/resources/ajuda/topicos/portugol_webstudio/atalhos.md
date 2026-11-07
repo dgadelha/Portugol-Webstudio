@@ -28,6 +28,7 @@ Em alguns notebooks, e na maioria dos Macs, as teclas de função, como o **F1**
 | Ctrl + Espaço                                            | Ctrl + Espaço ou Option + Esc | Abre a lista de sugestões                                          |
 | Ctrl + Shift + Espaço                                    | Cmd + Shift + Espaço          | Mostra os parâmetros da função em que o cursor está                |
 | Ctrl + K, Ctrl + I                                       | Cmd + K, Cmd + I              | Mostra o que é o nome em que o cursor está; de novo, foca o texto  |
+| Shift + Alt + F1                                         | Shift + Option + F1           | Liga e desliga **Otimizar para leitor de tela**                    |
 | F12 ou Ctrl + F12                                        | F12 ou Cmd + F12              | Vai até a declaração do nome no cursor, ou à página dele na Ajuda  |
 | Ctrl + clique                                            | Cmd + clique                  | Vai até a declaração do nome clicado, ou à página dele na Ajuda    |
 | Alt + F12 (no Linux e no Chromebook, Ctrl + Shift + F10) | Option + F12                  | Mostra a declaração do nome no cursor numa janela dentro do código |

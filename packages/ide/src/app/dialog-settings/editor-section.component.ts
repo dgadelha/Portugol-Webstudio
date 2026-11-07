@@ -11,7 +11,7 @@ import {
   EditorRenderWhitespace,
   settings,
 } from "../../settings";
-import { SettingsService } from "../settings.service";
+import { editorAriaLabel, SettingsService } from "../settings.service";
 import { ThemeService } from "../theme.service";
 import { FontSizeControlComponent } from "./font-size-control.component";
 
@@ -129,6 +129,9 @@ export class EditorSectionComponent {
   @LocalStorage(settings.editorStickyScroll.key, settings.editorStickyScroll.default)
   editorStickyScroll!: boolean;
 
+  @LocalStorage(settings.editorAccessibilitySupport.key, settings.editorAccessibilitySupport.default)
+  editorAccessibilitySupport!: boolean;
+
   /**
    * Com a prévia fixa no topo, um controle focado pelo teclado pode ficar
    * escondido atrás dela: o navegador o considera visível e não rola. Aqui a
@@ -165,6 +168,7 @@ export class EditorSectionComponent {
           ...options,
           minimap: { enabled: false },
           theme: `portugol-${theme}`,
+          ariaLabel: editorAriaLabel("Prévia", options.accessibilitySupport),
         };
 
         // Só a indentação muda o texto da prévia.

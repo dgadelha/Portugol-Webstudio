@@ -20,6 +20,7 @@ import { AngularSvgIconModule } from "angular-svg-icon";
 import { map, retry, Subscription } from "rxjs";
 
 import { ResponsiveService } from "../responsive.service";
+import { editorAriaLabel, SettingsService } from "../settings.service";
 import { listboxTarget } from "../shared/roving-focus";
 import { TooltipDirective } from "../shared/tooltip.directive";
 import { ThemeService } from "../theme.service";
@@ -65,6 +66,7 @@ export class DialogOpenExampleComponent implements OnInit, OnDestroy {
   private http = inject(HttpClient);
   private responsive = inject(ResponsiveService);
   private themeService = inject(ThemeService);
+  private settingsService = inject(SettingsService);
   private injector = inject(Injector);
   private announcer = inject(LiveAnnouncer);
   /**
@@ -75,6 +77,7 @@ export class DialogOpenExampleComponent implements OnInit, OnDestroy {
   private _loadSubscription$?: Subscription;
   private _data$?: Subscription;
   private _theme$?: Subscription;
+  private _settings$?: Subscription;
 
   private readonly description = viewChild<ElementRef<HTMLParagraphElement>>("description");
 
@@ -164,11 +167,22 @@ export class DialogOpenExampleComponent implements OnInit, OnDestroy {
     this._theme$ = this.themeService.theme$.subscribe(theme => {
       this.editorOptions = { ...this.editorOptions, theme: `portugol-${theme}` };
     });
+
+    // Das configurações do editor, a prévia só segue o modo para leitores de tela: o resto dela
+    // é fixo, para o exemplo caber
+    this._settings$ = this.settingsService.accessibilitySupport().subscribe(accessibilitySupport => {
+      this.editorOptions = {
+        ...this.editorOptions,
+        accessibilitySupport,
+        ariaLabel: editorAriaLabel("Prévia do exemplo", accessibilitySupport),
+      };
+    });
   }
 
   ngOnDestroy() {
     this._data$?.unsubscribe();
     this._theme$?.unsubscribe();
+    this._settings$?.unsubscribe();
     this._loadSubscription$?.unsubscribe();
     this.descriptionObserver.disconnect();
   }

@@ -5,6 +5,27 @@
   </div>
 </figure>
 
+<div class="field inline">
+  <div class="field-text">
+    <span id="setting-editor-accessibility-support" class="field-label">Otimizar para leitor de tela</span>
+    <p id="setting-editor-accessibility-support-descricao" class="field-description">
+      Para quem usa NVDA, JAWS ou VoiceOver: o leitor de tela recebe mais do código, e as informações abertas pelo
+      teclado já abrem com o foco.
+    </p>
+  </div>
+
+  <input
+    type="checkbox"
+    role="switch"
+    class="switch"
+    aria-labelledby="setting-editor-accessibility-support"
+    aria-describedby="setting-editor-accessibility-support-descricao"
+    [(ngModel)]="editorAccessibilitySupport"
+  />
+</div>
+
+<hr />
+
 <div class="field">
   <div class="field-text">
     <span id="setting-editor-font-size" class="field-label">Tamanho da fonte</span>

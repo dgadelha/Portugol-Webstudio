@@ -14,6 +14,7 @@ import {
   input,
   OnInit,
   resource,
+  Signal,
   signal,
   untracked,
 } from "@angular/core";
@@ -44,7 +45,7 @@ import {
 } from "../exercise-draft";
 import { ExerciseMarkdownService } from "../exercise-markdown.service";
 import { DIFFICULTY_LABELS, Exercício, ExercisesService } from "../exercises.service";
-import { SettingsService } from "../settings.service";
+import { editorAriaLabel, SettingsService } from "../settings.service";
 import { ShareService } from "../share.service";
 import { focusAfterRender } from "../shared/focus";
 import { PortugolCodeDirective } from "../shared/portugol-code.directive";
@@ -383,7 +384,9 @@ export class TabExerciseBuilderComponent implements OnInit {
   private readonly editorTheme = toSignal(this.themeService.theme$.pipe(map(theme => `portugol-${theme}`)), {
     initialValue: "portugol-dark",
   });
-  private readonly editorSettings = toSignal(this.settings.editorOptions(), { initialValue: {} });
+  private readonly editorSettings: Signal<monaco.editor.IEditorOptions> = toSignal(this.settings.editorOptions(), {
+    initialValue: {},
+  });
 
   /**
    * A solução sozinha: o efeito que a confere não roda de novo quando muda outro campo.
@@ -1266,12 +1269,14 @@ export class TabExerciseBuilderComponent implements OnInit {
   }
 
   private editorOptions(ariaLabel: string): monaco.editor.IStandaloneEditorConstructionOptions {
+    const editorSettings = this.editorSettings();
+
     return {
       // As configurações do editor (fonte, tabulação, quebra de linha), como nas abas de código
-      ...this.editorSettings(),
+      ...editorSettings,
       theme: this.editorTheme(),
       language: "portugol",
-      ariaLabel,
+      ariaLabel: editorAriaLabel(ariaLabel, editorSettings.accessibilitySupport),
       automaticLayout: true,
       minimap: { enabled: false },
       // Menos margem à esquerda: no celular, sobra mais largura para o código

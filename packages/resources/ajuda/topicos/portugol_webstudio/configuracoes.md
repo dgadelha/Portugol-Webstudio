@@ -22,6 +22,7 @@ Como o código aparece enquanto você escreve. A **Prévia**, no alto, mostra ca
 
 | Configuração                          | O que faz                                                                                     | Padrão             |
 | ------------------------------------- | --------------------------------------------------------------------------------------------- | ------------------ |
+| Otimizar para leitor de tela          | O leitor de tela recebe mais do código. Veja [Acessibilidade](acessibilidade.md)              | Desligada          |
 | Tamanho da fonte                      | O tamanho das letras no editor e, até ser alterado na seção Saída, também na saída            | 14px (12px no Mac) |
 | Quebra de linha                       | Linhas longas continuam embaixo em vez de rolar para o lado                                   | Desligada          |
 | Tamanho da tabulação                  | Quantos espaços vale cada nível de indentação                                                 | 2                  |

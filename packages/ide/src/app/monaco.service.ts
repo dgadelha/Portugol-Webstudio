@@ -1,3 +1,4 @@
+import { LiveAnnouncer } from "@angular/cdk/a11y";
 import { inject, Service } from "@angular/core";
 import { MonacoEditorLoaderService } from "@materia-ui/ngx-monaco-editor";
 import {
@@ -9,8 +10,11 @@ import {
   type ItemCompletar,
 } from "@portugol-webstudio/parser";
 import type { DebugPause, DebugVariable } from "@portugol-webstudio/runner";
+import { LocalStorageService } from "ngx-webstorage";
 import { filter, take } from "rxjs/operators";
+import { settings } from "../settings";
 import { hoverDeclarationText } from "./debug-variables/debug-values";
+import { SettingsService } from "./settings.service";
 import { WorkerService } from "./worker.service";
 
 /**
@@ -18,6 +22,18 @@ import { WorkerService } from "./worker.service";
  * escolhida na aba Variáveis (um índice em `pause.frames`).
  */
 export type DebugHoverState = { pause: DebugPause; frame: number };
+
+/**
+ * O `monaco.editor` com as funções que faltam nos tipos do `ngx-monaco-editor`, que são de um
+ * Monaco antigo.
+ */
+type MonacoEditorApi = typeof monaco.editor & {
+  registerLinkOpener(opener: { open(resource: monaco.Uri): boolean }): monaco.IDisposable;
+  registerEditorOpener(opener: {
+    openCodeEditor(source: monaco.editor.ICodeEditor, resource: monaco.Uri): boolean;
+  }): monaco.IDisposable;
+  addEditorAction(descriptor: monaco.editor.IActionDescriptor): monaco.IDisposable;
+};
 
 /**
  * A parte do serviço de menu de contexto do Monaco (interno, sem tipo público) que
@@ -31,6 +47,9 @@ type ContextMenuService = {
 export class MonacoService {
   private monacoLoaderService = inject(MonacoEditorLoaderService);
   private workerService = inject(WorkerService);
+  private localStorage = inject(LocalStorageService);
+  private settingsService = inject(SettingsService);
+  private announcer = inject(LiveAnnouncer);
 
   private resolveReady!: () => void;
 
@@ -433,15 +452,8 @@ export class MonacoService {
     });
 
     // O "Ver na Ajuda" e a definição de uma função de biblioteca abrem o tópico na aba de
-    // Ajuda, como um endereço `#ajuda=`, e não numa aba nova do navegador. Os tipos do
-    // ngx-monaco-editor são de um Monaco antigo, sem o `registerLinkOpener` e o
-    // `registerEditorOpener`.
-    const editorApi = monaco.editor as typeof monaco.editor & {
-      registerLinkOpener(opener: { open(resource: monaco.Uri): boolean }): monaco.IDisposable;
-      registerEditorOpener(opener: {
-        openCodeEditor(source: monaco.editor.ICodeEditor, resource: monaco.Uri): boolean;
-      }): monaco.IDisposable;
-    };
+    // Ajuda, como um endereço `#ajuda=`, e não numa aba nova do navegador.
+    const editorApi = monaco.editor as MonacoEditorApi;
 
     editorApi.registerLinkOpener({
       open: resource => this.openHelpLink(resource),
@@ -480,6 +492,8 @@ export class MonacoService {
         return [this.declarationLink(model, definition.intervalo)];
       },
     });
+
+    this.addScreenReaderToggle();
 
     monaco.editor.onDidCreateEditor(editor => {
       this.hideCommandPalette(editor);
@@ -559,6 +573,30 @@ export class MonacoService {
       }
 
       editor.trigger("keyboard", "editor.action.triggerSuggest", { auto: true });
+    });
+  }
+
+  /**
+   * Shift + Alt + F1 liga e desliga o modo para leitores de tela, como no VS Code. Enquanto ele
+   * está desligado, o nome do editor diz esse atalho a quem usa um leitor de tela: no navegador,
+   * o Monaco não percebe o leitor sozinho, e no Chrome e no Edge não passa o código a ele.
+   */
+  private addScreenReaderToggle() {
+    // Para todos os editores de uma vez: o `addAction` de cada um não funciona no
+    // `onDidCreateEditor`, que vem antes de o editor estar pronto para atalhos.
+    (monaco.editor as MonacoEditorApi).addEditorAction({
+      id: "portugol.screenReaderMode",
+      label: "Otimizar para leitor de tela",
+      keybindings: [monaco.KeyMod.Shift | monaco.KeyMod.Alt | monaco.KeyCode.F1],
+      run: () => {
+        const setting = settings.editorAccessibilitySupport;
+        const on = !this.settingsService.get(setting);
+
+        this.localStorage.store(setting.key, on);
+        void this.announcer.announce(
+          on ? "Editor otimizado para leitores de tela." : "Otimização para leitores de tela desligada.",
+        );
+      },
     });
   }
 
