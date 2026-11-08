@@ -88,7 +88,13 @@
       right: 0;
       left: 0;
       height: 2px;
-      background-color: var(--pws-accent);
+      background-color: var(--pws-accent-indicator);
+
+      // Nas cores forçadas, a linha some com o fundo: ela fica com a cor de seleção do sistema
+      @media (forced-colors: active) {
+        background-color: Highlight;
+        forced-color-adjust: none;
+      }
     }
   }
 

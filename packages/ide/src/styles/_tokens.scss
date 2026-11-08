@@ -39,6 +39,9 @@ $themes: (
     on-accent: #1f1f1f,
     // Destaque usado como texto, borda ou foco sobre os fundos
     accent-fg: #ffc200,
+    // O destaque de um item escolhido (a aba ativa, a seção das configurações): no claro, o
+    // amarelo some no fundo, e o escurecido passa de 3:1
+    accent-indicator: #ffc200,
     focus: #ffc200,
     // Cores dos ícones e estados
     "green": #89d185,
@@ -73,6 +76,7 @@ $themes: (
     accent-hover: #ffcf3d,
     on-accent: #1f1f1f,
     accent-fg: #8a6200,
+    accent-indicator: #9a6f00,
     focus: #8a6200,
     "green": #388a34,
     "red": #d32f2f,

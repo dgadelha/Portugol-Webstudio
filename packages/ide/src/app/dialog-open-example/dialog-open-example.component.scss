@@ -125,8 +125,20 @@
   // foco de `aria-activedescendant` não desenharia sozinho.
   &.active {
     background-color: var(--pws-bg-active);
-    box-shadow: inset 2px 0 0 var(--pws-accent);
+    box-shadow: inset 2px 0 0 var(--pws-accent-indicator);
     color: var(--pws-fg-strong);
+
+    // Nas cores forçadas, o fundo da escolhida some: ela fica com as cores de seleção do sistema
+    @media (forced-colors: active) {
+      background-color: Highlight;
+      color: HighlightText;
+      forced-color-adjust: none;
+
+      // Sem o ajuste do sistema, os ícones e os textos de dentro manteriam as próprias cores
+      * {
+        color: inherit;
+      }
+    }
   }
 }
 
@@ -153,6 +165,10 @@
   // No fundo do item escolhido, o cinza não teria o contraste mínimo (4,5:1)
   .item.active & {
     color: var(--pws-fg);
+
+    @media (forced-colors: active) {
+      color: inherit;
+    }
   }
 }
 

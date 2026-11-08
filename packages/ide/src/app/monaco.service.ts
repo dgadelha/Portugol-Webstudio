@@ -297,6 +297,7 @@ export class MonacoService {
             base: "vs-dark",
             inherit: true,
             rules: [
+              { token: "comment", foreground: "76A55F" },
               { token: "functions", foreground: "F5D7A9" },
               { token: "string.escape", foreground: "D2BB85" },
               { token: "string.escape.invalid", foreground: "DF5953" },

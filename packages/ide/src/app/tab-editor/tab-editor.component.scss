@@ -76,7 +76,7 @@ as-split {
   }
 
   &[aria-expanded="true"]::before {
-    background-color: var(--pws-accent);
+    background-color: var(--pws-accent-indicator);
   }
 }
 
