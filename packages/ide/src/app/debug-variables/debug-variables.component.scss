@@ -110,10 +110,8 @@
 .declaration {
   font-family: var(--pws-font-mono);
   overflow-wrap: anywhere;
-
-  > span + span {
-    margin-left: 1ch;
-  }
+  // Os espaços entre as partes são texto (`&ngsp;` no template): o leitor de tela e o copiar
+  // leem "inteiro n = 42", e não "inteiron=42"
 }
 
 // O botão de copiar, logo depois do valor

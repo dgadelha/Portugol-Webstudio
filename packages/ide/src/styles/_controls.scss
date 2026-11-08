@@ -165,6 +165,17 @@
   }
 }
 
+// Um campo com erro: a mensagem embaixo dele, ligada pelo `aria-describedby`. Com o foco, a
+// borda é a do foco; fora dele, a do erro
+.input[aria-invalid="true"]:not(:focus) {
+  border-color: var(--pws-danger-fg);
+}
+
+.field-error {
+  color: var(--pws-danger-fg);
+  font-size: var(--pws-text-sm);
+}
+
 // A seta da lista é desenhada com dois gradientes, na cor do tema (a do navegador destoa)
 select.input {
   padding-right: 1.75rem;

@@ -108,18 +108,19 @@
 <ng-template #declaration let-variable="variable" let-changed="changed">
   <code class="declaration">
     @if (variable.constant) {
-      <span class="keyword">const</span>
+      <span class="keyword">const</span>&ngsp;
     }
-    <span class="keyword">{{ baseType(variable) }}</span>
-    <span class="name">{{ variable.name }}{{ dimensions(variable) }}</span>
+    <span class="keyword">{{ baseType(variable) }}</span
+    >&ngsp; <span class="name">{{ variable.name }}{{ dimensions(variable) }}</span
+    >&ngsp;
     @if (variable.text === null) {
       <span class="no-value">(sem valor)</span>
     } @else {
-      <span class="operator">=</span>
+      <span class="operator">=</span>&ngsp;
       <span class="value">{{ summaryText(variable) }}</span>
     }
     @if (changed) {
-      <span class="visually-hidden">(mudou)</span>
+      &ngsp;<span class="visually-hidden">(mudou)</span>
     }
   </code>
 </ng-template>

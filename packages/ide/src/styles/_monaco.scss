@@ -19,3 +19,10 @@
 .monaco-hover .monaco-tokenized-source {
   overflow-wrap: anywhere;
 }
+
+// O navegador de problemas (Alt+F8) mostra o nome do arquivo do modelo antes de "1 de 4
+// problemas", e o código das abas não tem nome de arquivo para o Monaco: aparecia um número.
+// O Visualizar, que usa o mesmo título para o arquivo de uma definição, continua com ele.
+.monaco-editor .zone-widget:has(.marker-widget) .peekview-title .filename {
+  display: none;
+}

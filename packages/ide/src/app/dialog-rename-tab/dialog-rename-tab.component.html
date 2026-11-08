@@ -16,13 +16,18 @@
         placeholder="Olá Mundo"
         required
         autocomplete="off"
+        [attr.aria-invalid]="empty() || null"
+        [attr.aria-describedby]="empty() ? 'renomear-aba-erro' : null"
         [(ngModel)]="title"
       />
+      @if (empty()) {
+        <span id="renomear-aba-erro" class="field-error" role="alert">Digite um nome para a aba.</span>
+      }
     </label>
   </div>
 
   <footer class="dialog-footer">
     <button type="button" class="btn" (click)="dialogRef.close()">Cancelar</button>
-    <button type="submit" class="btn btn-primary" [attr.aria-disabled]="!title().trim() || null">Renomear</button>
+    <button type="submit" class="btn btn-primary">Renomear</button>
   </footer>
 </form>

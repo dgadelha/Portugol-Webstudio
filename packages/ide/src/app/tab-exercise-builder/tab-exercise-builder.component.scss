@@ -340,16 +340,6 @@
   font-size: var(--pws-text-sm);
 }
 
-.field-error {
-  color: var(--pws-danger-fg);
-  font-size: var(--pws-text-sm);
-}
-
-// Com o foco, a borda é a do foco; fora dele, a do erro
-.input[aria-invalid="true"]:not(:focus) {
-  border-color: var(--pws-danger-fg);
-}
-
 // Num formulário, os campos ficam mais altos que os do IDE, num fundo rebaixado em relação ao
 // cartão; ao focar, ganham o fundo do cartão
 .input {
@@ -535,7 +525,7 @@ select.input {
   }
 
   &.selected {
-    border-color: var(--pws-accent);
+    border-color: var(--pws-accent-indicator);
   }
 
   &:has(input:focus-visible) {

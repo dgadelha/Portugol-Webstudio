@@ -1,4 +1,4 @@
-# Se-senao
+# Se senão
 
 Agora vamos imaginar que se a condição for falsa um outro conjunto de comandos deve ser executado. Quando iremos encontrar esta situação?
 

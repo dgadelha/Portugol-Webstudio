@@ -3,6 +3,7 @@ import {
   afterNextRender,
   ChangeDetectionStrategy,
   Component,
+  computed,
   ElementRef,
   inject,
   signal,
@@ -31,6 +32,12 @@ export class DialogRenameTabComponent {
 
   private readonly input = viewChild.required<ElementRef<HTMLInputElement>>("input");
 
+  /**
+   * Renomear com o campo vazio: o erro aparece e fica até haver um nome.
+   */
+  private readonly submitted = signal(false);
+  readonly empty = computed(() => this.submitted() && !this.title().trim());
+
   constructor() {
     // O nome atual vem todo selecionado, para digitar o novo por cima. O
     // `ngModel` preenche o campo depois do foco, então a seleção espera.
@@ -46,6 +53,9 @@ export class DialogRenameTabComponent {
 
     if (title) {
       this.dialogRef.close(title);
+    } else {
+      this.submitted.set(true);
+      this.input().nativeElement.focus();
     }
   }
 }
