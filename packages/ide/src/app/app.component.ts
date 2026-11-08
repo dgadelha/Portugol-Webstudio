@@ -246,6 +246,14 @@ export class AppComponent implements OnInit {
         if (event.key === "F1" && !event.ctrlKey && !event.altKey && !event.shiftKey && !event.metaKey) {
           event.preventDefault();
         }
+
+        // Nem o Ctrl+O (no Mac, Cmd+O): o do navegador abriria o arquivo no lugar do IDE. No Mac,
+        // o Ctrl+O de um campo insere uma linha e continua
+        const openKey = isMacintosh ? event.metaKey && !event.ctrlKey : event.ctrlKey && !event.metaKey;
+
+        if (openKey && event.key.toLowerCase() === "o" && !event.altKey && !event.shiftKey) {
+          event.preventDefault();
+        }
       }
     }
   }

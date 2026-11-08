@@ -55,7 +55,7 @@ Ligando a **Depuração avançada**, na seção **Execução** das [configuraç�
 
 ### Pontos de parada
 
-Num programa grande, ir passo a passo até o trecho que interessa demora. Marque um ponto de parada nesse trecho, clicando na margem à esquerda do número da linha, ou com o cursor na linha e o atalho **Alt + M**. Uma bolinha vermelha aparece na margem. Para desmarcar, clique na bolinha ou aperte **Alt + M** de novo. O programa só para numa linha que tenha um comando: numa linha em branco ou só com um `}`, ele passa direto.
+Num programa grande, ir passo a passo até o trecho que interessa demora. Marque um ponto de parada nesse trecho, clicando na margem à esquerda do número da linha, ou com o cursor na linha e o atalho **Alt + M** (no Mac, o **Option + M** no código só funciona com o programa já sendo depurado: antes, ele escreve um caractere). Uma bolinha vermelha aparece na margem. Para desmarcar, clique na bolinha ou aperte **Alt + M** de novo. O programa só para numa linha que tenha um comando: numa linha em branco ou só com um `}`, ele passa direto.
 
 ![O código com dois pontos de parada, nas linhas 5 e 13, e o programa pausado na linha 5, com a seta por cima da bolinha e a barra flutuante da depuração no alto do editor](../../recursos/imagens/light/webstudio/depurar-ponto-de-parada@2x.webp)
 

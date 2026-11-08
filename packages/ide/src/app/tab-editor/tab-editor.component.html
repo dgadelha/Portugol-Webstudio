@@ -498,6 +498,7 @@
             role="tabpanel"
             [id]="ids().outputPanel"
             [attr.aria-labelledby]="ids().outputTab"
+            [attr.inert]="outputCollapsed ? '' : null"
             [hidden]="panelView() !== 'output'"
           >
             @if (!executor.stdOut && !executor.running && !transpiling) {
@@ -536,6 +537,7 @@
             role="tabpanel"
             [id]="ids().problemsPanel"
             [attr.aria-labelledby]="ids().problemsTab"
+            [attr.inert]="outputCollapsed ? '' : null"
             [hidden]="panelView() !== 'problems'"
           >
             @if (problems().length === 0) {
@@ -565,6 +567,7 @@
             role="tabpanel"
             [id]="ids().variablesPanel"
             [attr.aria-labelledby]="ids().variablesTab"
+            [attr.inert]="outputCollapsed ? '' : null"
             [hidden]="panelView() !== 'variables'"
             [pause]="debugPause()"
             [previousPause]="previousDebugPause()"
@@ -578,6 +581,7 @@
               tabindex="0"
               [id]="ids().checkPanel"
               [attr.aria-labelledby]="ids().checkTab"
+              [attr.inert]="outputCollapsed ? '' : null"
               [hidden]="panelView() !== 'check'"
               [outcome]="checkOutcome()"
               [progress]="checkProgress()"
