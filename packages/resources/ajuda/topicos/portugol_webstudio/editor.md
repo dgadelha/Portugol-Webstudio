@@ -6,7 +6,7 @@ Cada programa fica numa aba de código. Ela tem a barra de ações à esquerda, 
 
 ## A barra de ações
 
-![A barra de ações, com os botões de executar, parar, depurar, abrir, salvar, compartilhar, exemplos, ajuda e configurações](../../recursos/imagens/light/webstudio/barra-de-acoes@2x.webp)
+![A barra de ações, com os botões de executar, parar, depurar, abrir, salvar, compartilhar, exemplos, exercícios, ajuda e configurações](../../recursos/imagens/light/webstudio/barra-de-acoes@2x.webp)
 
 De cima para baixo:
 
@@ -20,10 +20,13 @@ De cima para baixo:
 | **Salvar como…**        | Mostra outras formas de salvar (veja [Abas e arquivos](abas_e_arquivos.md))  |              |
 | **Compartilhar código** | Gera um link para o código (veja [Compartilhando código](compartilhando.md)) |              |
 | **Abrir exemplo**       | Abre a lista de [exemplos](exemplos.md)                                      |              |
+| **Exercícios**          | Abre a lista de [exercícios](exercicios.md)                                  |              |
 | **Ajuda**               | Abre a Ajuda                                                                 | F1           |
 | **Configurações**       | Abre as [configurações](configuracoes.md)                                    |              |
 
 Passe o mouse sobre um botão, ou chegue nele pelo teclado, para ver o nome e o atalho.
+
+Numa tela baixa, como a de um celular deitado, os botões **Abrir exemplo** e **Exercícios** saem da barra, para os outros caberem. Eles continuam na aba inicial.
 
 ## Escrevendo o código
 

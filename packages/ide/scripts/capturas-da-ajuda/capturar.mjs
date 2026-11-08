@@ -306,7 +306,7 @@ const cenas = {
 
   async "barra-de-acoes"(tema) {
     // Numa janela baixa, sobra pouco espaço entre a Ajuda e as Configurações.
-    const página = await novaPágina(tema, { altura: 560 });
+    const página = await novaPágina(tema, { altura: 620 });
 
     await abrir(página, "Primeiro programa.por");
     await capturar(página.getByRole("toolbar", { name: "Ações" }), tema, "barra-de-acoes");

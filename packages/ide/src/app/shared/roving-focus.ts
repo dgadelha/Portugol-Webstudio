@@ -19,7 +19,8 @@ export function moveRovingFocus(
     return;
   }
 
-  const items = [...container.querySelectorAll<HTMLElement>(selector)];
+  // Um item escondido (como os da barra de ações numa tela baixa) não recebe o foco: fica de fora
+  const items = [...container.querySelectorAll<HTMLElement>(selector)].filter(item => item.getClientRects().length > 0);
   const index = items.indexOf(document.activeElement as HTMLElement);
 
   let target: HTMLElement | undefined;

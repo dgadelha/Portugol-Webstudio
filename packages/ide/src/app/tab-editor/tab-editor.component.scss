@@ -108,6 +108,12 @@ as-split {
   }
 }
 
+@media (max-height: 585px) {
+  .activity-button.optional {
+    display: none;
+  }
+}
+
 // Em telas pequenas, a barra de atividades fica mais estreita.
 @media (max-width: 575px) {
   :host {
