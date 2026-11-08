@@ -253,7 +253,8 @@
   border: 1px solid var(--pws-border);
   border-radius: var(--pws-radius-sm);
   background-color: var(--pws-bg-editor);
-  scroll-margin-top: 4rem;
+  // Abaixo da faixa fixa das etapas
+  scroll-margin-top: calc(var(--builder-steps, 3rem) + 0.75rem);
 
   // Abaixo do cabeçalho fixo
   @container (min-width: 52rem) {
@@ -337,6 +338,16 @@
 
 .field-hint-small {
   font-size: var(--pws-text-sm);
+}
+
+.field-error {
+  color: var(--pws-danger-fg);
+  font-size: var(--pws-text-sm);
+}
+
+// Com o foco, a borda é a do foco; fora dele, a do erro
+.input[aria-invalid="true"]:not(:focus) {
+  border-color: var(--pws-danger-fg);
 }
 
 // Num formulário, os campos ficam mais altos que os do IDE, num fundo rebaixado em relação ao
@@ -783,13 +794,20 @@ select.input {
     padding: 0.125rem 0.125rem 0.125rem 0.5rem;
     border: 1px solid var(--pws-border);
     border-radius: var(--pws-radius-sm);
-    background-color: var(--pws-bg-input);
+    // O fundo do editor, onde as cores do Portugol têm o contraste certo (no fundo dos campos do
+    // tema escuro, o azul das palavras-chave não tem)
+    background-color: var(--pws-bg-editor);
   }
 }
 
 .call {
   margin: 0;
   font-size: var(--pws-text-ui);
+}
+
+// Valores e chamadas, como nos resultados dos exercícios: na fonte do editor
+code {
+  font-family: var(--pws-font-mono);
 }
 
 .case-actions {

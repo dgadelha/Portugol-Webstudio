@@ -56,6 +56,7 @@ import { ThemeService } from "../theme.service";
 import { WorkerService } from "../worker.service";
 import { WorkspaceService } from "../workspace.service";
 import { isMeaningfulCode } from "../workspace.types";
+import { ToleranceInputDirective } from "./tolerance-input.directive";
 
 type Step = "dados" | "enunciado" | "codigo" | "casos" | "compartilhar";
 
@@ -86,6 +87,7 @@ type ProblemsPlace = "top" | "share" | number;
     FormsModule,
     MonacoEditorModule,
     NgTemplateOutlet,
+    ToleranceInputDirective,
     TooltipDirective,
   ],
   templateUrl: "./tab-exercise-builder.component.html",
@@ -707,14 +709,10 @@ export class TabExerciseBuilderComponent implements OnInit {
   }
 
   /**
-   * A tolerância de um campo de texto: vazio é a padrão.
+   * A tolerância do campo, já conferida (`ToleranceInputDirective`): `undefined` é a padrão.
    */
-  setTolerance(caseIndex: number, checkIndex: number, text: string) {
-    const value = Number(text.replace(",", "."));
-
-    this.updateCheck(caseIndex, checkIndex, {
-      tolerância: text.trim() && Number.isFinite(value) && value >= 0 ? value : undefined,
-    });
+  setTolerance(caseIndex: number, checkIndex: number, value: number | undefined) {
+    this.updateCheck(caseIndex, checkIndex, { tolerância: value });
   }
 
   setTitle(text: string) {
@@ -1190,6 +1188,7 @@ export class TabExerciseBuilderComponent implements OnInit {
   private watchLayout() {
     const root = this.host.nativeElement;
     const top = root.querySelector<HTMLElement>(".builder-top");
+    const steps = root.querySelector<HTMLElement>(".steps");
     const rem = () => Number.parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
     let topMargin = -1;
     let stopSteps = () => {};
@@ -1203,9 +1202,14 @@ export class TabExerciseBuilderComponent implements OnInit {
       this.narrowStatement.set(root.clientWidth < 60 * rem());
       root.style.setProperty("--builder-top", `${height}px`);
 
-      // Um cabeçalho fixo cobre o alto da área: a etapa ativa é a que está logo abaixo dele. Um
-      // pixel a mais: ao levar até uma seção, a de cima termina rente ao cabeçalho e não conta
-      const margin = sticky ? height + 1 : 0;
+      // Numa área estreita, quem fica fixo no alto é a faixa das etapas
+      const stepsHeight = steps?.offsetHeight ?? 0;
+
+      root.style.setProperty("--builder-steps", `${stepsHeight}px`);
+
+      // O que fica fixo cobre o alto da área: a etapa ativa é a que está logo abaixo dele. Um
+      // pixel a mais: ao levar até uma seção, a de cima termina rente a ele e não conta
+      const margin = (sticky ? height : stepsHeight) + 1;
 
       if (margin !== topMargin) {
         topMargin = margin;
@@ -1220,6 +1224,10 @@ export class TabExerciseBuilderComponent implements OnInit {
 
     if (top) {
       resize.observe(top);
+    }
+
+    if (steps) {
+      resize.observe(steps);
     }
 
     measure();

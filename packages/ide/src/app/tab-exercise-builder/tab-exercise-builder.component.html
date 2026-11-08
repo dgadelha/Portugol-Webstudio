@@ -327,9 +327,9 @@
             <input
               type="radio"
               value="simples"
-              [name]="`${tabId()}-modo`"
-              [ngModel]="current.mode"
-              (ngModelChange)="setMode($event)"
+              [attr.name]="`${tabId()}-modo`"
+              [checked]="current.mode === 'simples'"
+              (change)="setMode('simples')"
             />
             <span>
               <span class="mode-title">Texto escrito</span>
@@ -340,9 +340,9 @@
             <input
               type="radio"
               value="avançado"
-              [name]="`${tabId()}-modo`"
-              [ngModel]="current.mode"
-              (ngModelChange)="setMode($event)"
+              [attr.name]="`${tabId()}-modo`"
+              [checked]="current.mode === 'avançado'"
+              (change)="setMode('avançado')"
             />
             <span>
               <span class="mode-title">Valores e funções</span>
@@ -460,8 +460,9 @@
                 </p>
               } @else {
                 <div class="case-body" [id]="`${tabId()}-caso-${i}-corpo`">
+                  @let problemId = caso.status === "problem" ? `${tabId()}-caso-${i}-problema` : null;
                   @if (caso.status === "problem") {
-                    <p class="case-note">
+                    <p class="case-note" [id]="problemId">
                       <svg-icon src="assets/mdi/close-circle-outline.svg" class="icon-red" aria-hidden="true" />
                       {{ caso.problem }}
                     </p>
@@ -498,6 +499,7 @@
                         <textarea
                           class="input textarea"
                           rows="4"
+                          [attr.aria-describedby]="problemId"
                           [ngModel]="caso.inputs"
                           (ngModelChange)="setCaseInputs(i, $event)"
                         ></textarea>
@@ -567,6 +569,7 @@
                                   <input
                                     class="input code-input"
                                     spellcheck="false"
+                                    [attr.aria-describedby]="problemId"
                                     [ngModel]="check.name"
                                     (ngModelChange)="setFunctionName(i, j, $event)"
                                   />
@@ -577,6 +580,7 @@
                                     class="input code-input"
                                     spellcheck="false"
                                     placeholder='3, 2.5, "texto", {1, 2, 3}'
+                                    [attr.aria-describedby]="problemId"
                                     [ngModel]="check.args"
                                     (ngModelChange)="setArguments(i, j, $event)"
                                   />
@@ -589,7 +593,7 @@
                               </div>
                               <p class="call">
                                 @if (check.returned && caso.status !== "stale") {
-                                  <code>{{ check.name }}({{ check.args }})</code> retorna
+                                  <code [appPortugol]="`${check.name}(${check.args})`"></code> retorna
                                   <code [appPortugol]="check.returned | exerciseValue"></code>
                                 } @else {
                                   <span class="empty">O retorno sai da solução: gere as respostas.</span>
@@ -770,14 +774,22 @@
 </ng-template>
 
 <ng-template #tolerance let-value let-i="i" let-j="j">
+  @let errorId = `${tabId()}-caso-${i}-tolerancia-${j}`;
   <label class="field narrow">
     <span class="field-label">Tolerância</span>
     <input
+      #field="appToleranceInput"
+      appToleranceInput
       class="input"
       inputmode="decimal"
       placeholder="0.000001"
-      [ngModel]="value ?? ''"
-      (ngModelChange)="setTolerance(i, j, $event)"
+      [tolerance]="value"
+      [attr.aria-invalid]="field.invalid() || null"
+      [attr.aria-describedby]="field.invalid() ? errorId : null"
+      (toleranceChange)="setTolerance(i, j, $event)"
     />
+    @if (field.invalid()) {
+      <span class="field-error" [id]="errorId">Use um número maior ou igual a zero, como 0.01.</span>
+    }
   </label>
 </ng-template>

@@ -296,6 +296,14 @@ export class ExerciseBuilderService {
       return { ...next, problema: "o caso não tem nenhuma verificação." };
     }
 
+    if (!runsInicio(caso) && inputs.length > 0) {
+      return {
+        ...next,
+        problema:
+          "o caso só confere funções, e o programa não é executado: as entradas nunca seriam lidas. Apague as entradas ou confira também o que o programa escreve.",
+      };
+    }
+
     let run: CaseRun | undefined;
 
     if (runsInicio(caso)) {
