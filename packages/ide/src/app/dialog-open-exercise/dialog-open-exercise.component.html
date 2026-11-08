@@ -24,9 +24,9 @@
         type="search"
         placeholder="Buscar exercícios…"
         aria-label="Buscar exercícios"
-        aria-controls="exercise-list"
         autocomplete="off"
         cdkFocusInitial
+        [attr.aria-controls]="failed() ? null : 'exercise-list'"
         [attr.aria-activedescendant]="activeDescendant()"
         [value]="query()"
         (input)="onSearchInput($event)"
@@ -34,61 +34,69 @@
       />
     </label>
 
-    <div
-      id="exercise-list"
-      class="items"
-      role="listbox"
-      tabindex="0"
-      aria-label="Exercícios"
-      [attr.aria-activedescendant]="activeDescendant()"
-      (keydown)="onSearchKeydown($event)"
-    >
-      @if (loading()) {
-        <div class="spinner" role="status"><span class="visually-hidden">Carregando exercícios</span></div>
-      } @else if (failed()) {
-        <p class="empty">Não foi possível carregar os exercícios.</p>
-      } @else {
-        @for (group of groups(); track group.topic) {
-          <div class="group" role="group" [attr.aria-label]="group.topic">
-            <div class="group-heading" aria-hidden="true">
-              <svg-icon [src]="group.icon" />
-              {{ group.topic }}
-            </div>
-
-            @for (entry of group.entries; track entry.id) {
-              @let done = isDone(entry);
-              <div
-                class="item"
-                role="option"
-                tabindex="-1"
-                [id]="optionId(entry)"
-                [class.active]="current()?.id === entry.id"
-                [attr.aria-selected]="current()?.id === entry.id"
-                (click)="onItemClick(entry)"
-                (dblclick)="open(entry)"
-                (keydown.enter)="open(entry)"
-              >
-                <svg-icon
-                  aria-hidden="true"
-                  [src]="done ? 'assets/mdi/check-circle.svg' : 'assets/mdi/puzzle-outline.svg'"
-                  [class.icon-green]="done"
-                />
-                <span class="item-name">{{ entry.title }}</span>
-                <span class="item-path">
-                  <svg-icon aria-hidden="true" [src]="entry.difficultyIcon" />
-                  {{ difficultyLabels[entry.difficulty] }}
-                  @if (done) {
-                    <span class="visually-hidden">, concluído</span>
-                  }
-                </span>
+    @if (failed()) {
+      <div class="items load-failed" role="alert">
+        <p>Não foi possível carregar os exercícios.</p>
+        <button type="button" class="btn" (click)="retry()">
+          <svg-icon src="assets/mdi/refresh.svg" aria-hidden="true" />
+          Tentar de novo
+        </button>
+      </div>
+    } @else {
+      <div
+        id="exercise-list"
+        class="items"
+        role="listbox"
+        tabindex="0"
+        aria-label="Exercícios"
+        [attr.aria-activedescendant]="activeDescendant()"
+        (keydown)="onSearchKeydown($event)"
+      >
+        @if (loading()) {
+          <div class="spinner" role="status"><span class="visually-hidden">Carregando exercícios</span></div>
+        } @else {
+          @for (group of groups(); track group.topic) {
+            <div class="group" role="group" [attr.aria-label]="group.topic">
+              <div class="group-heading" aria-hidden="true">
+                <svg-icon [src]="group.icon" />
+                {{ group.topic }}
               </div>
-            }
-          </div>
-        } @empty {
-          <p class="empty">Nenhum exercício encontrado.</p>
+
+              @for (entry of group.entries; track entry.id) {
+                @let done = isDone(entry);
+                <div
+                  class="item"
+                  role="option"
+                  tabindex="-1"
+                  [id]="optionId(entry)"
+                  [class.active]="current()?.id === entry.id"
+                  [attr.aria-selected]="current()?.id === entry.id"
+                  (click)="onItemClick(entry)"
+                  (dblclick)="open(entry)"
+                  (keydown.enter)="open(entry)"
+                >
+                  <svg-icon
+                    aria-hidden="true"
+                    [src]="done ? 'assets/mdi/check-circle.svg' : 'assets/mdi/puzzle-outline.svg'"
+                    [class.icon-green]="done"
+                  />
+                  <span class="item-name">{{ entry.title }}</span>
+                  <span class="item-path">
+                    <svg-icon aria-hidden="true" [src]="entry.difficultyIcon" />
+                    {{ difficultyLabels[entry.difficulty] }}
+                    @if (done) {
+                      <span class="visually-hidden">, concluído</span>
+                    }
+                  </span>
+                </div>
+              }
+            </div>
+          } @empty {
+            <p class="empty">Nenhum exercício encontrado.</p>
+          }
         }
-      }
-    </div>
+      </div>
+    }
 
     @if (!loading()) {
       <div class="list-footer">
@@ -142,7 +150,9 @@
 
     @if (!loading()) {
       <div class="preview-footer">
-        <span class="preview-hint"><kbd>Enter</kbd> abre o exercício escolhido</span>
+        @if (current()) {
+          <span class="preview-hint"><kbd>Enter</kbd> abre o exercício escolhido</span>
+        }
         <button type="button" class="btn" (click)="createExercise()">
           <svg-icon src="assets/mdi/puzzle-edit-outline.svg" aria-hidden="true" />
           Criar exercício

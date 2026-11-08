@@ -1,6 +1,17 @@
 import { LiveAnnouncer } from "@angular/cdk/a11y";
 import { DialogRef } from "@angular/cdk/dialog";
-import { ChangeDetectionStrategy, Component, computed, inject, OnInit, resource, signal } from "@angular/core";
+import {
+  afterNextRender,
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  ElementRef,
+  inject,
+  Injector,
+  OnInit,
+  resource,
+  signal,
+} from "@angular/core";
 import { AngularSvgIconModule } from "angular-svg-icon";
 
 import { ExerciseMarkdownService } from "../exercise-markdown.service";
@@ -52,6 +63,8 @@ export class DialogOpenExerciseComponent implements OnInit {
   private markdown = inject(ExerciseMarkdownService);
   private responsive = inject(ResponsiveService);
   private announcer = inject(LiveAnnouncer);
+  private host = inject<ElementRef<HTMLElement>>(ElementRef);
+  private injector = inject(Injector);
 
   /**
    * O diálogo fecha com o exercício escolhido, e a janela o abre numa aba.
@@ -162,15 +175,25 @@ export class DialogOpenExerciseComponent implements OnInit {
           });
         }),
       ]);
-
-      this.selectFirst();
     } catch {
       this.entries.set(shared);
       this.failed.set(shared.length === 0);
-      this.selectFirst();
     } finally {
       this.loading.set(false);
+      this.selectNext();
     }
+  }
+
+  /**
+   * Busca a lista de novo. A mensagem e o botão ficam fora da lista (um botão não pode ficar
+   * dentro de um listbox) e somem ao tentar de novo: o foco vai para a busca, o primeiro
+   * lugar do diálogo.
+   */
+  retry() {
+    this.failed.set(false);
+    this.loading.set(true);
+    this.host.nativeElement.querySelector<HTMLInputElement>("input[type=search]")?.focus();
+    void this.loadEntries();
   }
 
   onSearchInput(event: Event) {
@@ -267,6 +290,30 @@ export class DialogOpenExerciseComponent implements OnInit {
 
   isDone(entry: ExerciseEntry) {
     return this.exercises.isDone(entry.id);
+  }
+
+  /**
+   * Ao abrir, o primeiro exercício ainda não concluído, na ordem da lista: quem volta continua
+   * de onde parou, em vez de começar sempre pelo primeiro.
+   */
+  private selectNext() {
+    const entries = this.filtered();
+    const next = entries.find(entry => !this.isDone(entry)) ?? entries[0];
+
+    if (!next || this.isBelowMd()) {
+      return;
+    }
+
+    this.current.set(next);
+
+    afterNextRender(
+      () => {
+        this.host.nativeElement
+          .querySelector(`#${CSS.escape(this.optionId(next))}`)
+          ?.scrollIntoView({ block: "nearest" });
+      },
+      { injector: this.injector },
+    );
   }
 
   private selectFirst() {

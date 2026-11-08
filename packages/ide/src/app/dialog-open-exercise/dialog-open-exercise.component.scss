@@ -42,6 +42,17 @@
   color: var(--pws-green);
 }
 
+.load-failed {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1.5rem;
+  color: var(--pws-fg-muted);
+  text-align: center;
+  user-select: auto;
+}
+
 .preview-error {
   color: var(--pws-fg-muted);
 }
