@@ -1,12 +1,10 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input, output, resource } from "@angular/core";
-import { portugolCall, runsInicio } from "@portugol-webstudio/runner";
 import { AngularSvgIconModule } from "angular-svg-icon";
 
 import { ExerciseMarkdownService } from "../exercise-markdown.service";
 import { attributionText, DIFFICULTY_ICONS, DIFFICULTY_LABELS, Exercício } from "../exercises.service";
 import { TooltipDirective } from "../shared/tooltip.directive";
-import { PortugolCodeDirective } from "../shared/portugol-code.directive";
-import { ExerciseValuePipe } from "./exercise-value.pipe";
+import { ExerciseExamplesComponent } from "./exercise-examples.component";
 
 /**
  * O lado do enunciado numa aba de exercício: o texto, os exemplos e os botões Verificar e
@@ -14,7 +12,7 @@ import { ExerciseValuePipe } from "./exercise-value.pipe";
  */
 @Component({
   selector: "app-exercise-statement",
-  imports: [AngularSvgIconModule, ExerciseValuePipe, PortugolCodeDirective, TooltipDirective],
+  imports: [AngularSvgIconModule, ExerciseExamplesComponent, TooltipDirective],
   templateUrl: "./exercise-statement.component.html",
   styleUrl: "./exercise-statement.component.scss",
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -75,34 +73,6 @@ export class ExerciseStatementComponent {
       difficulty: DIFFICULTY_LABELS[exercise.dificuldade],
       difficultyIcon: DIFFICULTY_ICONS[exercise.dificuldade],
       attribution: attributionText(exercise),
-      examples: exercise.exemplos.map(example => {
-        const checks = "verificações" in example ? example.verificações : undefined;
-
-        return {
-          description: example.descrição,
-          // Um exemplo só com funções não executa o inicio: não há entrada para mostrar
-          showsInputs: runsInicio(example),
-          inputs: example.entradas,
-          output: "saída" in example ? example.saída : undefined,
-          checks: (checks ?? []).map(check => {
-            if (check.alvo === "função") {
-              return {
-                target: "function" as const,
-                description: check.descrição,
-                call: portugolCall(check.nome, check.argumentos),
-                returned: check.valor,
-              };
-            }
-
-            return {
-              target: "write" as const,
-              description: check.descrição,
-              rule: check.regra,
-              values: check.valores,
-            };
-          }),
-        };
-      }),
     };
   });
 }

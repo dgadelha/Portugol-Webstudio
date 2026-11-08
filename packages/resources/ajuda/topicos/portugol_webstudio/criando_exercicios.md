@@ -18,7 +18,7 @@ Na etapa **Exercício**, preencha o **título**, o **tópico** e a **dificuldade
 
 ## Enunciado
 
-O enunciado é escrito em Markdown: `**negrito**`, `_itálico_`, `` `código` ``, listas e blocos de código. A barra acima do campo tem botões para isso, e **Ctrl + B** e **Ctrl + I** também funcionam. Ao lado, a **Prévia** mostra o enunciado como o aluno vai ver.
+O enunciado é escrito em Markdown: `**negrito**`, `_itálico_`, `` `código` ``, listas e blocos de código. A barra acima do campo tem botões para isso, e **Ctrl + B** e **Ctrl + I** também funcionam. Ao lado, a **Prévia** mostra o enunciado como o aluno vai ver, e embaixo dele os exemplos, depois de gerar as respostas.
 
 - Fórmulas ficam entre `$`, como `$a + b$`, ou entre `$$`, numa linha só delas, para uma fórmula em destaque. Elas usam a notação do LaTeX, desenhada pelo [KaTeX](https://katex.org/): `$\frac{a}{b}$` é uma fração, `$x^2$` uma potência, `$\sqrt{x}$` uma raiz e `$a \le b$` um "menor ou igual". O guia [Fórmulas TeX](https://pt.wikipedia.org/wiki/Ajuda:Guia_de_edição/Fórmulas_TeX), da Wikipédia, mostra muitas outras, em português (lá, as fórmulas ficam entre `<math>` e `</math>`; aqui, entre `$`). A lista completa do que o KaTeX aceita, em inglês, está em [Supported Functions](https://katex.org/docs/supported).
 - Código Portugol num bloco ` ```portugol ` aparece colorido, como no editor.
@@ -63,7 +63,7 @@ Se a solução falhar num caso, como um erro, um tempo esgotado ou entradas que 
 
 ## Compartilhando
 
-Clique em **Compartilhar**, na última etapa. Antes, o Portugol Webstudio confere tudo, como faz com os exercícios que vêm com ele: o formato, se a solução passa nos próprios casos, se o código inicial compila e se as bibliotecas usadas valem num exercício. A lista acima do botão mostra o que já está pronto e o que ainda falta, e o que impedir o compartilhamento aparece logo abaixo do botão.
+Clique em **Compartilhar**, na última etapa. Antes, o Portugol Webstudio confere tudo, como faz com os exercícios que vêm com ele: o formato, se a solução passa nos próprios casos, se o código inicial compila, se as bibliotecas usadas valem num exercício e se o enunciado não tem HTML nem imagens. A lista acima do botão mostra o que já está pronto e o que ainda falta, e o que impedir o compartilhamento aparece logo abaixo do botão.
 
 Depois, aparece o link do exercício, com o botão **Copiar**, e até quando ele funciona: 180 dias, cerca de um semestre.
 

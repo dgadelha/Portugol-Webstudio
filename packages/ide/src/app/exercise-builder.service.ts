@@ -17,6 +17,7 @@ import {
 import { TAMANHO_MAXIMO_DO_ENUNCIADO } from "@portugol-webstudio/resources/exercicios/limites.js";
 
 import type { DraftCase, DraftCheck, DraftFunctionCheck, ExerciseDraft } from "./exercise-draft";
+import { ExerciseMarkdownService } from "./exercise-markdown.service";
 import { Exercício, SHARED_PREFIX } from "./exercises.service";
 import { cyrb53 } from "./shared/hash";
 import { WorkerService } from "./worker.service";
@@ -40,6 +41,7 @@ export const SHARED_EXERCISE_DAYS = 180;
 @Service()
 export class ExerciseBuilderService {
   private worker = inject(WorkerService);
+  private markdown = inject(ExerciseMarkdownService);
 
   /**
    * Executa a solução em cada caso e preenche o que cada um espera: a saída no modo simples, os
@@ -121,6 +123,8 @@ export class ExerciseBuilderService {
       problems.push("O exercício não tem enunciado.");
     } else if (draft.enunciado.trim().length > TAMANHO_MAXIMO_DO_ENUNCIADO) {
       problems.push(`O enunciado tem mais de ${TAMANHO_MAXIMO_DO_ENUNCIADO.toLocaleString("pt-BR")} caracteres.`);
+    } else {
+      problems.push(...(await this.statementProblems(draft.enunciado)));
     }
 
     for (const tipo of ["exemplo", "teste"] as const) {
@@ -256,6 +260,26 @@ export class ExerciseBuilderService {
   }
 
   /**
+   * A Ajuda diz que o enunciado não aceita HTML nem imagens: o aluno veria o HTML como texto, e
+   * as imagens sumiriam sem aviso. Se a conferência não carregar, o enunciado passa: o aluno
+   * continua seguro, só sem o aviso para quem cria.
+   */
+  private async statementProblems(statement: string) {
+    const found = await this.markdown.unsupported(statement).catch(() => ({ html: false, images: false }));
+    const problems: string[] = [];
+
+    if (found.html) {
+      problems.push("O enunciado tem HTML, que os exercícios mostram como texto.");
+    }
+
+    if (found.images) {
+      problems.push("O enunciado tem imagens, e os exercícios não mostram imagens.");
+    }
+
+    return problems;
+  }
+
+  /**
    * O que as respostas de um caso dependem: a solução, o modo, as entradas e o que cada
    * verificação confere (não a descrição, a tolerância nem os valores tirados à mão).
    */
@@ -345,10 +369,14 @@ export class ExerciseBuilderService {
     program: { js: string; functions: FunctionSignature[] },
     signal?: AbortSignal,
   ): Promise<DraftFunctionCheck | string> {
+    if (!check.nome) {
+      return "uma verificação de função está sem o nome da função.";
+    }
+
     const signature = program.functions.find(fn => fn.name === check.nome);
 
     if (!signature) {
-      return `a solução não tem a função ${check.nome || "(sem nome)"}.`;
+      return `a solução não tem a função ${check.nome}.`;
     }
 
     if (signature.returns === "vazio") {
@@ -362,7 +390,11 @@ export class ExerciseBuilderService {
     const texts = splitPortugolList(check.argumentos);
 
     if (texts.length !== signature.parameters.length) {
-      return `a função ${check.nome} recebe ${signature.parameters.length} argumento(s), e a chamada tem ${texts.length}.`;
+      const expected = signature.parameters.length;
+      const receives =
+        expected === 0 ? "não recebe argumentos" : `recebe ${expected} ${expected === 1 ? "argumento" : "argumentos"}`;
+
+      return `a função ${check.nome} ${receives}, e a chamada tem ${texts.length}.`;
     }
 
     const args: ExerciseArgument[] = [];
@@ -400,16 +432,28 @@ export class ExerciseBuilderService {
   /**
    * O exercício no formato publicado, a partir do rascunho (sem a solução).
    */
-  private build(draft: ExerciseDraft, linkId: string, schemaUrl: string): Record<string, unknown> {
-    const caseOf = (caso: DraftCase) => {
-      return {
-        ...(caso.descrição.trim() && { descrição: caso.descrição.trim() }),
-        entradas: this.inputsOf(caso),
-        ...(draft.modo === "simples"
-          ? { saída: caso.saída }
-          : { verificações: caso.verificações.map(check => this.publishedCheck(check)) }),
-      };
+  /**
+   * Os exemplos com as respostas em dia, como o aluno vai vê-los embaixo do enunciado: para a
+   * prévia. São os mesmos objetos do link, que o esquema confere ao compartilhar.
+   */
+  readyExamples(draft: ExerciseDraft) {
+    return draft.casos
+      .filter(caso => caso.tipo === "exemplo" && this.caseStatus(draft, caso) === "ready")
+      .map(caso => this.publishedCase(draft, caso)) as Exercício["exemplos"];
+  }
+
+  private publishedCase(draft: ExerciseDraft, caso: DraftCase) {
+    return {
+      ...(caso.descrição.trim() && { descrição: caso.descrição.trim() }),
+      entradas: this.inputsOf(caso),
+      ...(draft.modo === "simples"
+        ? { saída: caso.saída }
+        : { verificações: caso.verificações.map(check => this.publishedCheck(check)) }),
     };
+  }
+
+  private build(draft: ExerciseDraft, linkId: string, schemaUrl: string): Record<string, unknown> {
+    const caseOf = (caso: DraftCase) => this.publishedCase(draft, caso);
 
     return {
       $schema: schemaUrl,
@@ -471,7 +515,9 @@ export class ExerciseBuilderService {
       }
 
       if (check.alvo === "função" && (check.valor === undefined || check.tipos === undefined)) {
-        return `a verificação da função ${check.nome || "(sem nome)"} não tem o retorno: gere as respostas.`;
+        return check.nome
+          ? `a verificação da função ${check.nome} não tem o retorno: gere as respostas.`
+          : "uma verificação de função não tem o retorno: gere as respostas.";
       }
     }
 

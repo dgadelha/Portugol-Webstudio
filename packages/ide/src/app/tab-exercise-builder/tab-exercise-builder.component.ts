@@ -51,6 +51,7 @@ import { focusAfterRender } from "../shared/focus";
 import { PortugolCodeDirective } from "../shared/portugol-code.directive";
 import { moveRovingFocus } from "../shared/roving-focus";
 import { TooltipDirective } from "../shared/tooltip.directive";
+import { ExerciseExamplesComponent } from "../tab-editor/exercise-examples.component";
 import { ExerciseValuePipe } from "../tab-editor/exercise-value.pipe";
 import { ThemeService } from "../theme.service";
 import { WorkerService } from "../worker.service";
@@ -82,6 +83,7 @@ type ProblemsPlace = "top" | "share" | number;
     CdkMenuItem,
     CdkMenuTrigger,
     DragDropModule,
+    ExerciseExamplesComponent,
     ExerciseValuePipe,
     PortugolCodeDirective,
     FormsModule,
@@ -347,7 +349,8 @@ export class TabExerciseBuilderComponent implements OnInit {
           description: caso.descrição,
           inputs: caso.entradas,
           output: caso.saída,
-          problem: caso.problema,
+          // Na lista de problemas ele vem depois de "Teste 1: "; aqui é uma frase sozinha.
+          problem: caso.problema && this.sentence(caso.problema),
           checks: caso.verificações.map(check => {
             return check.alvo === "escreva"
               ? {
@@ -370,6 +373,16 @@ export class TabExerciseBuilderComponent implements OnInit {
       }),
     };
   });
+
+  /**
+   * Os exemplos já gerados, embaixo do enunciado na prévia, como o aluno vai vê-los. Só muda
+   * quando os exemplos mudam: o rascunho muda a cada tecla, em qualquer campo.
+   */
+  readonly previewExamples = computed(() => this.builder.readyExamples(this.draft()), {
+    equal: (a, b) => JSON.stringify(a) === JSON.stringify(b),
+  });
+
+  readonly exampleCaseCount = computed(() => this.draft().casos.filter(caso => caso.tipo === "exemplo").length);
 
   /**
    * O enunciado da prévia, um pouco depois da última tecla: o KaTeX e o DOMPurify não rodam de
@@ -924,6 +937,13 @@ export class TabExerciseBuilderComponent implements OnInit {
         { injector: this.injector },
       );
     }
+  }
+
+  /**
+   * O texto com a primeira letra maiúscula.
+   */
+  private sentence(text: string) {
+    return text.charAt(0).toLocaleUpperCase("pt-BR") + text.slice(1);
   }
 
   /**

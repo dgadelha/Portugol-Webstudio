@@ -1,0 +1,67 @@
+:host {
+  display: block;
+}
+
+.examples-heading {
+  margin: 1.5rem 0 0.5rem;
+  font-size: var(--pws-text-md);
+}
+
+.example {
+  margin-bottom: 0.75rem;
+  padding: 0.75rem;
+  border: 1px solid var(--pws-border);
+  border-radius: var(--pws-radius-sm);
+}
+
+.example-title {
+  margin-bottom: 0.5rem;
+  font-size: var(--pws-text-ui);
+}
+
+.example-description {
+  color: var(--pws-fg-muted);
+  font-weight: normal;
+}
+
+// `minmax(0, …)`: senão a coluna cresce até caber a entrada mais comprida, e o `pre` estica o
+// exemplo em vez de rolar para o lado
+dl {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.25rem;
+  margin: 0;
+  font-size: var(--pws-text-ui);
+}
+
+dt {
+  color: var(--pws-fg-muted);
+}
+
+dd {
+  margin: 0 0 0.5rem;
+}
+
+// A chamada e o valor dos exemplos são exatos: na fonte do editor, com os espaços seguidos
+code {
+  font-family: var(--pws-font-mono);
+  white-space: pre-wrap;
+}
+
+pre {
+  margin: 0;
+  padding: 0.375rem 0.5rem;
+  overflow-x: auto;
+  border-radius: var(--pws-radius-sm);
+  background-color: var(--pws-bg-hover);
+  font-family: var(--pws-font-mono);
+}
+
+.values {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.muted {
+  color: var(--pws-fg-muted);
+}

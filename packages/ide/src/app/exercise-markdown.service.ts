@@ -37,7 +37,7 @@ export class ExerciseMarkdownService {
     initialValue: (this.document.body.dataset["theme"] as Theme | undefined) ?? "dark",
   });
 
-  private renderer?: Promise<{ parse: (markdown: string) => Parsed; sanitize: (html: string) => string }>;
+  private renderer?: ReturnType<ExerciseMarkdownService["createRenderer"]>;
 
   /**
    * Os enunciados já renderizados, por tema: o mesmo enunciado aparece na prévia do diálogo e
@@ -68,13 +68,27 @@ export class ExerciseMarkdownService {
     return html;
   }
 
-  private async renderNow(markdown: string, theme: Theme) {
+  /**
+   * O que o enunciado tem e o exercício não mostra: HTML (vira texto) e imagens (somem). Os
+   * blocos de código e as fórmulas não contam.
+   */
+  async unsupported(markdown: string) {
+    const { find } = await this.loadRenderer();
+
+    return find(markdown);
+  }
+
+  private loadRenderer() {
     this.renderer ??= this.createRenderer().catch((error: unknown) => {
       this.renderer = undefined;
       throw error;
     });
 
-    const { parse, sanitize } = await this.renderer;
+    return this.renderer;
+  }
+
+  private async renderNow(markdown: string, theme: Theme) {
+    const { parse, sanitize } = await this.loadRenderer();
     const parsed = parse(markdown);
     const html = parsed.codes.size > 0 ? await this.colorize(parsed, theme) : parsed.html;
 
@@ -226,6 +240,17 @@ export class ExerciseMarkdownService {
     });
 
     return {
+      find: (markdown: string) => {
+        const found = { html: false, images: false };
+
+        // Sem extensões assíncronas, o `walkTokens` não devolve promessas para esperar
+        void marked.walkTokens(marked.lexer(markdown), token => {
+          found.html ||= token.type === "html";
+          found.images ||= token.type === "image";
+        });
+
+        return found;
+      },
       parse: (markdown: string): Parsed => {
         codes = new Map();
 
