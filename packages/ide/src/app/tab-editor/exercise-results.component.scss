@@ -79,6 +79,17 @@ svg-icon {
   color: var(--pws-fg-muted);
 }
 
+// Valores, chamadas e linhas da saída são exatos: na fonte do editor, com os espaços seguidos e
+// as tabulações como estão, para uma diferença só de espaços aparecer. No fundo do editor, onde
+// as cores do Portugol têm o contraste certo (no fundo do painel, o verde dos números não tem).
+code {
+  padding: 0 0.25em;
+  border-radius: var(--pws-radius-sm);
+  background-color: var(--pws-bg-editor);
+  font-family: var(--pws-font-mono);
+  white-space: pre-wrap;
+}
+
 pre {
   margin: 0;
   padding: 0.375rem 0.5rem;

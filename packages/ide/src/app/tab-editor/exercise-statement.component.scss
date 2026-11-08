@@ -212,6 +212,12 @@ dd {
   margin: 0 0 0.5rem;
 }
 
+// A chamada e o valor dos exemplos são exatos: na fonte do editor, com os espaços seguidos
+code {
+  font-family: var(--pws-font-mono);
+  white-space: pre-wrap;
+}
+
 pre {
   margin: 0;
   padding: 0.375rem 0.5rem;

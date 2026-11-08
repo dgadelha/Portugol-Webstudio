@@ -55,8 +55,20 @@
             <div class="case-details">
               @if (failure.type === "differentOutput") {
                 <p>
-                  Linha {{ failure.line }}. Esperado: {{ quoted(failure.expected) }}. Recebido:
-                  {{ quoted(failure.received) }}.
+                  Linha {{ failure.line }}. Esperado:
+                  @if (failure.expected === null) {
+                    nada.
+                  } @else {
+                    <code>{{ quoted(failure.expected) }}</code
+                    >.
+                  }
+                  Recebido:
+                  @if (failure.received === null) {
+                    nada.
+                  } @else {
+                    <code>{{ quoted(failure.received) }}</code
+                    >.
+                  }
                 </p>
                 <p class="label">Saída do programa</p>
                 @if (item.run.output.trim()) {

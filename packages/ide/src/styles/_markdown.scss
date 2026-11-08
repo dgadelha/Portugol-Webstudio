@@ -145,4 +145,9 @@ markdown,
   .tabela table {
     overflow-wrap: normal;
   }
+
+  // Um valor no meio do texto, como `"  Bom   dia"`, é exato: os espaços seguidos ficam
+  :not(pre) > code {
+    white-space: pre-wrap;
+  }
 }
