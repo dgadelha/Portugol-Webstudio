@@ -52,6 +52,14 @@
   font-size: var(--pws-text-ui);
 }
 
+// Com um botão a mais que o rodapé dos exemplos, a dica não cabe ao lado deles até uns 900px e
+// passaria por cima da lista. O Enter continua abrindo o exercício.
+@media (max-width: 899px) {
+  .preview-hint {
+    display: none;
+  }
+}
+
 // Só em telas pequenas, quando a prévia (com o rodapé dela) some
 .list-footer {
   display: none;

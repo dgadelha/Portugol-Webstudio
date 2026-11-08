@@ -9,6 +9,14 @@
   min-width: 0;
 }
 
+// Em telas baixas (ou com zoom), o subtítulo sai para sobrar altura para a lista. O mesmo corte
+// da barra de ações (`tab-editor`). Vale também para o diálogo de exercícios.
+@media (max-height: 585px) {
+  .dialog-title .intro {
+    display: none;
+  }
+}
+
 .examples {
   display: grid;
   // Em rem, como o texto: com uma fonte maior, a lista também fica mais larga
