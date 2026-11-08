@@ -345,6 +345,17 @@ export class MonacoService {
               "editorSuggestWidget.background": "#ffffff",
               "editorSuggestWidget.border": "#d4d4d4",
               "editorSuggestWidget.selectedBackground": "#e4e6f1",
+              // A seleção das listas (sugestões, Visualizar, Ir para a linha) é a da interface
+              // (`bg-active`, com o texto escuro): o branco que o tema `vs` usa no item escolhido
+              // é para o fundo azul dele, e no fundo claro some.
+              "list.activeSelectionBackground": "#e4e6f1",
+              "list.activeSelectionForeground": "#1f1f1f",
+              "list.activeSelectionIconForeground": "#1f1f1f",
+              "list.focusHighlightForeground": "#005fb8",
+              "editorSuggestWidget.selectedForeground": "#1f1f1f",
+              "editorSuggestWidget.selectedIconForeground": "#1f1f1f",
+              "editorSuggestWidget.focusHighlightForeground": "#005fb8",
+              "peekViewResult.selectionForeground": "#1f1f1f",
               "input.border": "#8a8a8a",
               "focusBorder": "#8a6200",
             },
