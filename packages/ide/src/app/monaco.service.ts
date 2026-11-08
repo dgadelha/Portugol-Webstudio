@@ -406,7 +406,10 @@ export class MonacoService {
           .complete(model.getValue(), this.toPosition(position), this.toSignal(token))
           .catch((): ItemCompletar[] => []);
 
-        return { suggestions: items.map(item => this.toCompletionItem(item, position)) };
+        // A prévia de um trecho recua como o editor vai recuar ao inserir.
+        const indent = " ".repeat(model.getOptions().tabSize);
+
+        return { suggestions: items.map(item => this.toCompletionItem(item, position, indent)) };
       },
     });
 
@@ -779,15 +782,20 @@ export class MonacoService {
     return controller.signal;
   }
 
-  private toCompletionItem(item: ItemCompletar, position: monaco.Position): monaco.languages.CompletionItem {
+  private toCompletionItem(
+    item: ItemCompletar,
+    position: monaco.Position,
+    indent: string,
+  ): monaco.languages.CompletionItem {
     const { linha, início } = item.intervalo;
+    const documentation = item.trecho ? item.documentação?.replaceAll("\t", indent) : item.documentação;
 
     return {
       // O leitor de tela lê o rótulo, o detalhe dele e a descrição: "idade, inteiro".
       label: { label: item.rótulo, detail: item.detalheDoRótulo, description: item.descrição },
       kind: this.completionKinds[item.tipo],
       detail: item.detalhe,
-      documentation: item.documentação ? { value: item.documentação } : undefined,
+      documentation: documentation ? { value: documentation } : undefined,
       insertText: item.inserir,
       insertTextRules: item.trecho ? monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet : undefined,
       sortText: item.ordem,

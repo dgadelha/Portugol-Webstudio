@@ -388,7 +388,8 @@ ngx-monaco-editor {
   z-index: 1;
   inset: 0 0 auto;
   margin: 0;
-  padding: 0.25rem 1rem;
+  // 10 px: onde o texto da saída começa, depois da margem de decorações do Monaco
+  padding: 0.25rem 10px;
   color: var(--pws-fg-muted);
   pointer-events: none;
 }

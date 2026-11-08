@@ -23,7 +23,15 @@ Sentry.init({
     Sentry.extraErrorDataIntegration(),
     Sentry.browserTracingIntegration(),
   ],
-  ignoreErrors: [/failed to fetch/i, /networkerror/i, /http failure response/i, /monaco-editor/i],
+  ignoreErrors: [
+    /failed to fetch/i,
+    /networkerror/i,
+    /http failure response/i,
+    /monaco-editor/i,
+    // O Monaco cancela as próprias promessas (a ajuda de assinatura, a paleta) quando a
+    // pessoa segue digitando; o zone.js as entrega como erros sem tratamento.
+    /^Canceled(: Canceled)?$/,
+  ],
 });
 
 if (environment.production) {
