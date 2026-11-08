@@ -16,9 +16,12 @@ export class PortugolExecutor {
   constructor(private runner: typeof IPortugolRunner) {
     this.stdIn.subscribe(data => {
       if (data === "\b") {
-        if (this.stdInBuffer.length > 0) {
-          this.stdInBuffer = this.stdInBuffer.slice(0, -1);
-          this.stdOut = this.stdOut.slice(0, -1);
+        // Um caractere inteiro: um emoji ocupa duas posições na string
+        const last = /.$/su.exec(this.stdInBuffer)?.[0];
+
+        if (last) {
+          this.stdInBuffer = this.stdInBuffer.slice(0, -last.length);
+          this.stdOut = this.stdOut.slice(0, -last.length);
         }
       } else if (data === "\r") {
         this._runner?.stdIn.next(this.stdInBuffer);

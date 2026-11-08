@@ -536,6 +536,14 @@ export class TabEditorComponent implements OnInit, OnDestroy {
    */
   private readonly saidaSemBlocos = { stickyScroll: { enabled: false }, folding: false };
 
+  /**
+   * No Chrome e no Edge, o Monaco recebe o texto pelo `EditContext`, sem eventos no DOM: o que
+   * chega sem tecla (acentos compostos, emojis, ditado) não passaria pelo `onStdOutInput`. A
+   * saída usa o campo de texto, como no Firefox. Fora dos tipos pelo mesmo motivo do
+   * `saidaSemBlocos`.
+   */
+  private readonly saidaSemEditContext = { editContext: false };
+
   stdOutEditorOptions: monaco.editor.IStandaloneEditorConstructionOptions = {
     theme: "portugol-dark",
     ariaLabel: "Saída do programa",
@@ -548,6 +556,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     // vazia em volta da primeira linha.
     renderLineHighlight: "none",
     ...this.saidaSemBlocos,
+    ...this.saidaSemEditContext,
     // Sem `tabSize`: no Monaco ele vale para todos os editores da página, e um
     // valor aqui sobrescreveria o das configurações no editor de código.
     guides: { indentation: false },
@@ -721,6 +730,8 @@ export class TabEditorComponent implements OnInit, OnDestroy {
 
             if (debug) {
               this.showDebugEnd(event.stopped);
+            } else {
+              this.announceRunEnd(event.stopped);
             }
 
             this.endDebugging();
@@ -774,6 +785,17 @@ export class TabEditorComponent implements OnInit, OnDestroy {
 
             // Sem o programa, a depuração que começou não recebe o fim
             this.endDebugging();
+
+            // O painel passa para os Problemas sem nada dizer: o leitor de tela anuncia, como na
+            // saída
+            if (this.isActive()) {
+              const count = event.errors.length;
+
+              void this.announcer.announce(
+                `O código tem ${count} ${count === 1 ? "erro" : "erros"} de compilação e não foi executado.`,
+                "polite",
+              );
+            }
 
             break;
           }
@@ -1733,19 +1755,105 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     this.stdOutEditor = editor;
     this.debuggingInOutput = editor.createContextKey("pwsDepurando", false);
 
-    editor.onKeyDown(e => {
-      if (!this.executor.waitingForInput) {
+    // Na fase de captura, antes do campo escondido do Monaco: a saída é somente leitura, e o
+    // Monaco anunciaria "Não é possível editar" a cada tecla do leia
+    const node = editor.getDomNode();
+
+    for (const type of [
+      "keydown",
+      "paste",
+      "beforeinput",
+      "input",
+      "compositionstart",
+      "compositionupdate",
+      "compositionend",
+    ]) {
+      node?.addEventListener(
+        type,
+        event => {
+          this.onStdOutInput(event);
+        },
+        { capture: true },
+      );
+    }
+  }
+
+  /**
+   * O que é digitado na saída enquanto o leia espera vai para o programa: as teclas, o colar e
+   * o texto que chega sem tecla (acentos compostos, emojis, ditado). Os atalhos (copiar,
+   * selecionar tudo) continuam com o Monaco.
+   */
+  private onStdOutInput(event: Event) {
+    if (!this.executor.waitingForInput) {
+      return;
+    }
+
+    // O texto já foi mandado no `beforeinput` ou no fim da composição: o `input` só não pode
+    // chegar ao Monaco, que mostraria a mensagem de somente leitura
+    if (event.type === "input") {
+      event.stopPropagation();
+      return;
+    }
+
+    let text: string | null = null;
+
+    if (event instanceof KeyboardEvent) {
+      // O AltGr, no Windows, chega como Ctrl + Alt e escreve um caractere (como o @)
+      const shortcut = event.metaKey || (event.ctrlKey && !event.altKey);
+
+      if (shortcut || event.isComposing) {
         return;
       }
 
-      if (e.code === "Enter" || e.browserEvent.key === "Enter") {
-        this.executor.stdIn.next("\r");
-      } else if (e.code === "Backspace") {
-        this.executor.stdIn.next("\b");
-      } else if (e.browserEvent.key.length === 1) {
-        this.executor.stdIn.next(e.browserEvent.key);
+      if (event.key === "Enter") {
+        text = "\n";
+      } else if (event.key === "Backspace") {
+        text = "\b";
+      } else if (/^.$/su.test(event.key)) {
+        // Um caractere só, um emoji inclusive: as outras teclas (Tab, Esc, setas) têm nomes
+        text = event.key;
+      } else {
+        return;
       }
-    });
+    } else if (event instanceof ClipboardEvent) {
+      text = event.clipboardData?.getData("text/plain") ?? "";
+    } else if (event instanceof CompositionEvent) {
+      text = event.type === "compositionend" ? event.data : "";
+    } else if (event instanceof InputEvent) {
+      // O texto composto já veio no fim da composição. O apagar dos teclados de celular chega
+      // aqui, sem a tecla
+      if (event.inputType === "deleteContentBackward") {
+        text = "\b";
+      } else {
+        text = event.inputType === "insertCompositionText" ? "" : event.data;
+      }
+    }
+
+    if (text === null) {
+      return;
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+    this.sendInput(text);
+  }
+
+  /**
+   * Manda o texto para o leia como se fosse digitado: cada quebra de linha é um Enter, e um
+   * `\b` apaga o último caractere.
+   */
+  private sendInput(text: string) {
+    const lines = text.split(/\r\n|\r|\n/);
+
+    for (const [i, line] of lines.entries()) {
+      if (i > 0) {
+        this.executor.stdIn.next("\r");
+      }
+
+      for (const char of line) {
+        this.executor.stdIn.next(char);
+      }
+    }
   }
 
   /**
@@ -2124,6 +2232,14 @@ export class TabEditorComponent implements OnInit, OnDestroy {
       }
     }
 
+    this.announceRunEnd(stopped);
+  }
+
+  /**
+   * Como o programa acabou, para o leitor de tela: o "Executando" só some do status, e o fim
+   * passaria em silêncio.
+   */
+  private announceRunEnd(stopped: boolean) {
     if (this.isActive()) {
       const message = stopped
         ? "Programa interrompido."
@@ -2455,11 +2571,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
   sendProgramInput() {
     this.gaService.event("touch_input_submit", "Saída", "Campo de entrada");
 
-    for (const char of this.programInput) {
-      this.executor.stdIn.next(char);
-    }
-
-    this.executor.stdIn.next("\r");
+    this.sendInput(`${this.programInput}\n`);
     this.programInput = "";
   }
 
