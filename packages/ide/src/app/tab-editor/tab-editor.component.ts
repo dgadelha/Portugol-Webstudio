@@ -29,6 +29,7 @@ import type { IPortugolCodeDiagnostic } from "@portugol-webstudio/antlr";
 import { PortugolDiagnosticSeverity } from "@portugol-webstudio/antlr";
 import { textoLiteral } from "@portugol-webstudio/parser";
 import {
+  casesToCheck,
   DebugCommand,
   DebugPause,
   PortugolExecutor,
@@ -1480,7 +1481,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     }
 
     this.checkOutcome.set(null);
-    this.checkProgress.set({ done: 0, total: exercise.exemplos.length + exercise.testes.length });
+    this.checkProgress.set({ done: 0, total: casesToCheck(exercise).length });
     this.showPanel("check");
     // O botão vira Parar com o foco nele, e leitores de tela nem sempre anunciam a troca de nome
     void this.announcer.announce("Conferindo…", "polite");

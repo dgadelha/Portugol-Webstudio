@@ -349,6 +349,26 @@ export function runExerciseCase(
 }
 
 /**
+ * Os casos que o Verificar executa, na ordem: os exemplos e depois os testes. Um teste igual a um
+ * exemplo (só a descrição muda) não entra: num exercício sem entradas, como os de Saída, o único
+ * teste repete o exemplo, e uma resposta errada falharia duas vezes no mesmo caso. O `index` é a
+ * posição na lista do exercício, com os nomes da criação de exercício ("Teste 2").
+ */
+export function casesToCheck(exercise: CheckableExercise) {
+  const withoutDescriptions = (key: string, value: unknown) => (key === "descrição" ? undefined : value);
+  const exemplos: ExerciseCase[] = exercise.exemplos;
+  const testes: ExerciseCase[] = exercise.testes;
+  const examples = new Set(exemplos.map(testCase => JSON.stringify(testCase, withoutDescriptions)));
+
+  return [
+    ...exemplos.map((testCase, i) => ({ kind: "exemplo" as const, index: i + 1, testCase })),
+    ...testes
+      .map((testCase, i) => ({ kind: "teste" as const, index: i + 1, testCase }))
+      .filter(({ testCase }) => !examples.has(JSON.stringify(testCase, withoutDescriptions))),
+  ];
+}
+
+/**
  * Corrige um exercício: executa o programa já transpilado em cada exemplo e em cada teste, um
  * de cada vez, e compara o resultado com o esperado. Uma verificação de função confere a
  * assinatura e chama a função sozinha, numa execução à parte.
@@ -359,28 +379,25 @@ export async function checkExercise(
   exercise: CheckableExercise,
   { timeout, signal, onCase }: CheckOptions = {},
 ): Promise<ExerciseResult> {
-  const total = exercise.exemplos.length + exercise.testes.length;
+  const toCheck = casesToCheck(exercise);
+  const total = toCheck.length;
   const cases: CaseResult[] = [];
 
-  for (const kind of ["exemplo", "teste"] as const) {
-    const list: ExerciseCase[] = kind === "exemplo" ? exercise.exemplos : exercise.testes;
+  for (const { kind, index, testCase } of toCheck) {
+    if (signal?.aborted) {
+      return { passed: false, cases, total, stopped: "aborted" };
+    }
 
-    for (const [i, testCase] of list.entries()) {
-      if (signal?.aborted) {
-        return { passed: false, cases, total, stopped: "aborted" };
-      }
+    const { run, failure } = await checkCase(Runner, program, testCase, { timeout, signal });
+    const result: CaseResult = { kind, index, description: testCase.descrição, run, failure };
 
-      const { run, failure } = await checkCase(Runner, program, testCase, { timeout, signal });
-      const result: CaseResult = { kind, index: i + 1, description: testCase.descrição, run, failure };
+    cases.push(result);
+    onCase?.(result, cases.length, total);
 
-      cases.push(result);
-      onCase?.(result, cases.length, total);
-
-      // Um laço infinito costuma prender todos os casos: esperar o tempo de cada um levaria
-      // minutos para dizer a mesma coisa
-      if (run.ending.type === "timeout" || run.ending.type === "aborted") {
-        return { passed: false, cases, total, stopped: run.ending.type };
-      }
+    // Um laço infinito costuma prender todos os casos: esperar o tempo de cada um levaria
+    // minutos para dizer a mesma coisa
+    if (run.ending.type === "timeout" || run.ending.type === "aborted") {
+      return { passed: false, cases, total, stopped: run.ending.type };
     }
   }
 

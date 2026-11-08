@@ -517,7 +517,7 @@ describe("Correção de exercícios", () => {
       const exercise: CheckableExercise = {
         modo: "avançado",
         exemplos: [{ entradas: [], verificações: [soma] }],
-        testes: [{ entradas: [], verificações: [soma] }],
+        testes: [{ entradas: [], verificações: [soma, soma] }],
       };
 
       const result = await check(code, exercise, 300);
@@ -593,7 +593,7 @@ describe("Correção de exercícios", () => {
       const exercise: CheckableExercise = {
         modo: "simples",
         exemplos: [{ entradas: [], saída: "" }],
-        testes: [{ entradas: [], saída: "" }],
+        testes: [{ entradas: [], saída: "b" }],
       };
 
       const result = await check(portugolInicio`enquanto (verdadeiro) {}`, exercise, 300);
@@ -607,7 +607,7 @@ describe("Correção de exercícios", () => {
       const exercise: CheckableExercise = {
         modo: "simples",
         exemplos: [{ entradas: [], saída: "" }],
-        testes: [{ entradas: [], saída: "" }],
+        testes: [{ entradas: [], saída: "b" }],
       };
 
       setTimeout(() => {
@@ -631,7 +631,7 @@ describe("Correção de exercícios", () => {
       const exercise: CheckableExercise = {
         modo: "simples",
         exemplos: [{ entradas: [], saída: "a" }],
-        testes: [{ entradas: [], saída: "a" }],
+        testes: [{ entradas: [], saída: "b" }],
       };
 
       const result = await checkExercise(
@@ -689,7 +689,7 @@ describe("Correção de exercícios", () => {
       const exercise: CheckableExercise = {
         modo: "simples",
         exemplos: [{ entradas: [], saída: "a" }],
-        testes: [{ entradas: [], saída: "a" }],
+        testes: [{ entradas: [], saída: "b" }],
       };
 
       await checkExercise(PortugolWorkerThreadsRunner, transpile(portugolInicio`escreva("a")`), exercise, {
@@ -701,6 +701,25 @@ describe("Correção de exercícios", () => {
       expect(progress).toEqual([
         [1, 2],
         [2, 2],
+      ]);
+    });
+
+    test("Não corrige de novo um teste igual a um exemplo, mesmo com outra descrição", async () => {
+      const exercise: CheckableExercise = {
+        modo: "simples",
+        exemplos: [{ entradas: [], saída: "a" }],
+        testes: [
+          { descrição: "o mesmo do exemplo", entradas: [], saída: "a" },
+          { entradas: [], saída: "b" },
+        ],
+      };
+
+      const result = await check(portugolInicio`escreva("x")`, exercise);
+
+      expect(result.total).toBe(2);
+      expect(result.cases.map(item => [item.kind, item.index])).toEqual([
+        ["exemplo", 1],
+        ["teste", 2],
       ]);
     });
 
