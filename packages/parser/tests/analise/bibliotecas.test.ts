@@ -45,7 +45,7 @@ describe("Bibliotecas", () => {
       `),
     ).toMatchInlineSnapshot(`
       [
-        4:18/4:34 E [ErroSemantico.ErroInclusaoBiblioteca]: A biblioteca 'Texto' não foi incluída no programa,
+        4:12/4:16 E [ErroSemantico.ErroInclusaoBiblioteca]: A biblioteca "Texto" não foi incluída no programa,
         5:16/5:25 E [ErroSemantico.ErroSimboloNaoDeclarado]: A função "nao_existe" não existe na biblioteca "mat",
         6:16/6:25 E [ErroSemantico.ErroConstanteNaoEncontradaNaBiblioteca]: A constante "NAO_EXISTE" não existe na biblioteca "Matematica",
         7:8/7:9 E [ErroSemantico.ErroAtribuirConstanteBiblioteca]: "PI" é uma constante da biblioteca "Matematica", e portanto, não pode ter seu valor alterado,
@@ -64,7 +64,7 @@ describe("Bibliotecas", () => {
       `),
     ).toMatchInlineSnapshot(`
       [
-        3:23/3:24 E [ErroSemantico.ErroBibliotecaNaoInserida]: A biblioteca "Matematica" não foi incluída no programa,
+        3:12/3:21 E [ErroSemantico.ErroBibliotecaNaoInserida]: A biblioteca "Matematica" não foi incluída no programa,
       ]
     `);
   });

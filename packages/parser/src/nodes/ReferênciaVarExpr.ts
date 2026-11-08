@@ -8,6 +8,7 @@ export class ReferênciaVarExpr extends Expressão<ReferenciaParaVariavelContext
   nome = this.ctx.ID().getText();
   nomeToken: Token = this.ctx.ID().symbol;
   escopoBiblioteca?: string = this.ctx.escopoBiblioteca()?.ID()?.getText();
+  escopoToken?: Token = this.ctx.escopoBiblioteca()?.ID()?.symbol;
 
   addChild(child: Node) {
     this.unexpectedChild(child);

@@ -1638,7 +1638,7 @@ export class AnalisadorSemântico {
 
   private resolverReferênciaVariável(nó: ReferênciaVarExpr): TipoPrimitivo | undefined {
     if (nó.escopoBiblioteca !== undefined) {
-      return this.resolverConstanteBiblioteca(nó.escopoBiblioteca, nó.nome, nó.nomeToken);
+      return this.resolverConstanteBiblioteca(nó.escopoBiblioteca, nó.nome, nó.nomeToken, nó.escopoToken);
     }
 
     const símbolo = this.memória.obterSímbolo(nó.nome);
@@ -1775,11 +1775,17 @@ export class AnalisadorSemântico {
     return símbolo.tipo;
   }
 
-  private resolverConstanteBiblioteca(escopo: string, nome: string, origem: Token): TipoPrimitivo | undefined {
+  private resolverConstanteBiblioteca(
+    escopo: string,
+    nome: string,
+    origem: Token,
+    escopoToken?: Token,
+  ): TipoPrimitivo | undefined {
     const biblioteca = this.bibliotecas.get(escopo);
 
     if (!biblioteca) {
-      this.registrar(erroBibliotecaNãoInserida(origem, escopo));
+      // No nome da biblioteca, que é o que falta incluir (o Portugol Studio marca a constante)
+      this.registrar(erroBibliotecaNãoInserida(escopoToken ?? origem, escopo));
 
       return undefined;
     }
@@ -1956,8 +1962,10 @@ export class AnalisadorSemântico {
     const biblioteca = this.bibliotecas.get(nó.escopoBiblioteca);
 
     if (!biblioteca) {
-      // O Portugol Studio reporta na posição do nome da função, não do escopo.
-      this.registrar(erroInclusãoBiblioteca(nó.nomeToken, { tipo: "nãoIncluída", escopo: nó.escopoBiblioteca }));
+      // No nome da biblioteca, que é o que falta incluir (o Portugol Studio marca a função)
+      this.registrar(
+        erroInclusãoBiblioteca(nó.escopoToken ?? nó.nomeToken, { tipo: "nãoIncluída", escopo: nó.escopoBiblioteca }),
+      );
 
       return undefined;
     }

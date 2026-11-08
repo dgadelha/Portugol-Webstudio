@@ -10,6 +10,7 @@ export class ChamadaFunçãoExpr extends Expressão<ChamadaFuncaoContext> {
   nomeToken: Token = this.ctx.ID().symbol;
   argumentos: Array<AtribuiçãoCmd | Expressão> = [];
   escopoBiblioteca?: string = this.ctx.escopoBiblioteca()?.ID()?.getText();
+  escopoToken?: Token = this.ctx.escopoBiblioteca()?.ID()?.symbol;
 
   addChild(child: Node) {
     if (child instanceof Expressão || child instanceof AtribuiçãoCmd) {

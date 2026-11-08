@@ -956,8 +956,8 @@ export function erroInclusãoBiblioteca(
     }
 
     default: {
-      // Aspas simples aqui e duplas em `erroBibliotecaNãoInserida`: é assim no Java.
-      mensagem = `A biblioteca '${causa.escopo}' não foi incluída no programa`;
+      // Com aspas duplas, como as outras mensagens (o Java usa aspas simples só nesta)
+      mensagem = `A biblioteca "${causa.escopo}" não foi incluída no programa`;
       break;
     }
   }
