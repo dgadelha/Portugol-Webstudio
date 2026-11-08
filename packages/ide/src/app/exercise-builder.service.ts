@@ -127,6 +127,11 @@ export class ExerciseBuilderService {
       problems.push(...(await this.statementProblems(draft.enunciado)));
     }
 
+    // Sem ela, os casos só diriam que as respostas não foram geradas, sem dizer por quê
+    if (!isMeaningfulCode(draft.solução)) {
+      problems.push("O exercício não tem solução.");
+    }
+
     for (const tipo of ["exemplo", "teste"] as const) {
       if (draft.casos.every(caso => caso.tipo !== tipo)) {
         problems.push(tipo === "exemplo" ? "O exercício não tem nenhum exemplo." : "O exercício não tem nenhum teste.");
