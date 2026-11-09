@@ -275,29 +275,40 @@ export class AppComponent implements OnInit {
   openFromHash() {
     const hash = window.location.hash;
 
+    // Um diálogo aberto ficaria por cima do que o endereço abre (o tópico do "Ver na Ajuda" de
+    // um exemplo, inclusive): ele fecha, menos quando o endereço pede ele mesmo
+    const reopens =
+      (hash === "#exemplos" && this.dialog.isOpen(DialogOpenExampleComponent)) ||
+      (hash === "#exercicios" && this.dialog.isOpen(DialogOpenExerciseComponent));
+
+    if (reopens) {
+      this.clearHash();
+      return;
+    }
+
     // O que o endereço pede é aberto uma vez só: mantê-lo faria cada
     // recarregamento abrir de novo (ou repetir o erro de um link inválido).
     switch (hash) {
       case "#novo": {
-        this.clearHash();
+        this.consumeHash();
         this.newTab("app");
         return;
       }
 
       case "#exemplos": {
-        this.clearHash();
+        this.consumeHash();
         this.openExamplesDialog("app");
         return;
       }
 
       case "#exercicios": {
-        this.clearHash();
+        this.consumeHash();
         this.openExercisesDialog("app");
         return;
       }
 
       case "#ajuda": {
-        this.clearHash();
+        this.consumeHash();
         this.upsertHelpTab("app");
         return;
       }
@@ -306,10 +317,10 @@ export class AppComponent implements OnInit {
     }
 
     if (hash.startsWith("#share=")) {
-      this.clearHash();
+      this.consumeHash();
       void this.loadSharedCode(hash.slice(7));
     } else if (hash.startsWith("#exercise=")) {
-      this.clearHash();
+      this.consumeHash();
 
       // Só o que um id de link pode ser: o resto não chega ao armazenamento
       const id = hash.slice(10);
@@ -320,7 +331,7 @@ export class AppComponent implements OnInit {
         this.toast.error("O link do exercício expirou ou não existe.", { duration: 5000 });
       }
     } else if (hash.startsWith("#ajuda=")) {
-      this.clearHash();
+      this.consumeHash();
       this.upsertHelpTab("link");
 
       // Um `%` solto num endereço colado à mão faz o `decodeURIComponent` lançar.
@@ -358,6 +369,14 @@ export class AppComponent implements OnInit {
         }
       });
     });
+  }
+
+  /**
+   * Tira do endereço o que ele pediu e fecha os diálogos, que ficariam por cima do que ele abre.
+   */
+  private consumeHash() {
+    this.clearHash();
+    this.dialog.closeModals();
   }
 
   private clearHash() {

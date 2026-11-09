@@ -42,12 +42,13 @@ export class DialogService {
   private readonly dialog = inject(Dialog);
 
   /**
-   * Quantos diálogos com fundo escurecido estão abertos. Os avisos ficam na camada do topo do
-   * navegador, acima de qualquer diálogo, e cobririam os botões dele: enquanto um está aberto,
-   * eles se escondem (veja `_overlay.scss`). A janela de gráficos não conta: ela fica aberta
-   * o programa inteiro, e os avisos de então (como o do arquivo salvo) sumiriam sem ser vistos.
+   * Os diálogos com fundo escurecido abertos, para um endereço novo fechá-los. Os avisos ficam
+   * na camada do topo do navegador, acima de qualquer diálogo, e cobririam os botões dele:
+   * enquanto um está aberto, eles se escondem (veja `_overlay.scss`). A janela de gráficos não
+   * conta: ela fica aberta o programa inteiro, e os avisos de então (como o do arquivo salvo)
+   * sumiriam sem ser vistos.
    */
-  private modalCount = 0;
+  private readonly modals = new Set<Pick<DialogRef, "close" | "componentInstance">>();
 
   open<R, D = unknown, C = unknown>(component: ComponentType<C>, config: PwsDialogConfig<D>): DialogRef<R, C> {
     const modeless = config.modeless ?? false;
@@ -69,25 +70,46 @@ export class DialogService {
       disableClose: config.disableClose,
       autoFocus: "first-tabbable",
       restoreFocus: config.restoreFocus ?? true,
+      // O IDE não tem rotas: a mudança do endereço que fecharia o diálogo é a do próprio
+      // `#exercicios` ou `#exemplos` que acabou de abri-lo. Um endereço que abre outra coisa
+      // fecha os diálogos pelo `closeModals`
+      closeOnNavigation: false,
     };
 
     const opener = document.activeElement;
     const ref = this.dialog.open<R, D, C>(component, dialogConfig);
 
     if (!modeless) {
-      this.modalCount++;
+      this.modals.add(ref);
       document.body.classList.add("pws-dialog-open");
 
       const behind = this.hideDialogsBehind(ref);
 
       ref.closed.subscribe(() => {
-        this.modalCount--;
-        document.body.classList.toggle("pws-dialog-open", this.modalCount > 0);
+        this.modals.delete(ref);
+        document.body.classList.toggle("pws-dialog-open", this.modals.size > 0);
         this.showDialogsBehind(behind, opener, dialogConfig.restoreFocus);
       });
     }
 
     return ref;
+  }
+
+  /**
+   * Se um diálogo com fundo escurecido deste componente está aberto.
+   */
+  isOpen(component: ComponentType<unknown>) {
+    return [...this.modals].some(ref => ref.componentInstance instanceof component);
+  }
+
+  /**
+   * Fecha os diálogos com fundo escurecido, como se a pessoa cancelasse: o que um endereço
+   * abre (uma aba, outro diálogo) não pode ficar atrás deles. A janela de gráficos fica.
+   */
+  closeModals() {
+    for (const ref of [...this.modals].toReversed()) {
+      ref.close();
+    }
   }
 
   /**
