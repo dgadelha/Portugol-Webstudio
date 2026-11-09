@@ -108,6 +108,7 @@ as-split {
   }
 }
 
+// O mesmo corte do `isShortScreen`, em `responsive.service.ts`
 @media (max-height: 585px) {
   .activity-button.optional {
     display: none;

@@ -664,7 +664,56 @@ export class TabEditorComponent implements OnInit, OnDestroy {
       },
       { capture: true },
     );
+
+    // Com a tela baixa, a barra de ações esconde botões
+    effect(() => {
+      if (this.responsive.isShortScreen()) {
+        untracked(() => {
+          this.onShortScreen();
+        });
+      }
+    });
+
+    this.host.nativeElement.addEventListener("focusout", this.onActivityFocusOut);
   }
+
+  /**
+   * Se o botão da barra de ações que está na ordem do Tab (o último que as setas escolheram) é
+   * um dos que a tela baixa esconde, o lugar passa para o Executar: senão, o Tab pularia a
+   * barra inteira.
+   */
+  private onShortScreen() {
+    if (this.host.nativeElement.querySelector(".activity-button.optional[tabindex='0']")) {
+      this.rovingTarget(".activity-button", ".run-button");
+    }
+  }
+
+  /**
+   * O foco num botão que a tela baixa escondeu cairia na página: ele passa para o Executar.
+   * O navegador tira o foco antes ou depois de avisar a mudança da tela, por isso o aviso é o
+   * do foco que saiu, sem destino.
+   */
+  private onActivityFocusOut = (event: FocusEvent) => {
+    const button = event.target;
+
+    if (
+      event.relatedTarget !== null ||
+      !(button instanceof HTMLElement) ||
+      !button.matches(".activity-button.optional")
+    ) {
+      return;
+    }
+
+    // Saindo da janela, o botão continua à mostra e o foco volta para ele
+    requestAnimationFrame(() => {
+      const lost = !document.activeElement || document.activeElement === document.body;
+
+      // Sem caixas, o botão não está à mostra (o `checkVisibility` só chega no Safari 17.4)
+      if (lost && button.getClientRects().length === 0) {
+        this.rovingTarget(".activity-button", ".run-button")?.focus();
+      }
+    });
+  };
 
   ngOnInit() {
     // O estado já entrega a aba pronta, inclusive o esqueleto de um programa novo.
@@ -1784,12 +1833,13 @@ export class TabEditorComponent implements OnInit, OnDestroy {
    * selecionar tudo) continuam com o Monaco.
    */
   private onStdOutInput(event: Event) {
-    if (!this.executor.waitingForInput) {
+    // A busca do Monaco (Ctrl + F) também fica dentro da saída
+    if (!(event.target instanceof HTMLTextAreaElement && event.target.classList.contains("inputarea"))) {
       return;
     }
 
-    // O texto já foi mandado no `beforeinput` ou no fim da composição: o `input` só não pode
-    // chegar ao Monaco, que mostraria a mensagem de somente leitura
+    // O texto já foi mandado no `beforeinput` ou no fim da composição (ou descartado, fora do
+    // leia): o `input` só não pode chegar ao Monaco, que mostraria a mensagem de somente leitura
     if (event.type === "input") {
       event.stopPropagation();
       return;
@@ -1798,8 +1848,11 @@ export class TabEditorComponent implements OnInit, OnDestroy {
     let text: string | null = null;
 
     if (event instanceof KeyboardEvent) {
-      // O AltGr, no Windows, chega como Ctrl + Alt e escreve um caractere (como o @)
-      const shortcut = event.metaKey || (event.ctrlKey && !event.altKey);
+      // O AltGr, no Windows, chega como Ctrl + Alt e escreve um caractere (como o @). O Alt
+      // sozinho é dos atalhos (Alt + N, os da depuração), menos no Mac, onde o Option escreve
+      // caracteres
+      const shortcut =
+        event.metaKey || (event.ctrlKey && !event.altKey) || (!isMacintosh && event.altKey && !event.ctrlKey);
 
       if (shortcut || event.isComposing) {
         return;
@@ -1835,25 +1888,9 @@ export class TabEditorComponent implements OnInit, OnDestroy {
 
     event.preventDefault();
     event.stopPropagation();
-    this.sendInput(text);
-  }
 
-  /**
-   * Manda o texto para o leia como se fosse digitado: cada quebra de linha é um Enter, e um
-   * `\b` apaga o último caractere.
-   */
-  private sendInput(text: string) {
-    const lines = text.split(/\r\n|\r|\n/);
-
-    for (const [i, line] of lines.entries()) {
-      if (i > 0) {
-        this.executor.stdIn.next("\r");
-      }
-
-      for (const char of line) {
-        this.executor.stdIn.next(char);
-      }
-    }
+    // Sem um leia esperando, o texto vai para a fila atrás do resto de um colar, ou se perde
+    this.executor.sendInput(text);
   }
 
   /**
@@ -2571,7 +2608,7 @@ export class TabEditorComponent implements OnInit, OnDestroy {
   sendProgramInput() {
     this.gaService.event("touch_input_submit", "Saída", "Campo de entrada");
 
-    this.sendInput(`${this.programInput}\n`);
+    this.executor.sendInput(`${this.programInput}\n`);
     this.programInput = "";
   }
 

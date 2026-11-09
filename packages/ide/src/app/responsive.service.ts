@@ -27,6 +27,12 @@ export class ResponsiveService {
    */
   readonly coarsePointer = this.query("(pointer: coarse)");
 
+  /**
+   * Telas baixas (celulares deitados), em que a barra de ações do editor esconde os botões
+   * opcionais. O mesmo corte do `tab-editor.component.scss`.
+   */
+  readonly isShortScreen = this.query("(max-height: 585px)");
+
   private query(media: string): Signal<boolean> {
     return toSignal(this.observer.observe(media).pipe(map(state => state.matches)), {
       initialValue: this.observer.isMatched(media),
