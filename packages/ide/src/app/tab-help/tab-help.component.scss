@@ -29,6 +29,15 @@ as-split-area {
   &:focus-visible > .node-row {
     outline: 1px solid var(--pws-focus);
     outline-offset: -1px;
+
+    // A escolhida não segue o ajuste do sistema (`forced-color-adjust: none`): sem isto, o
+    // contorno ficaria na cor do tema, quase invisível sobre o fundo de seleção
+    @media (forced-colors: active) {
+      &.active {
+        outline: 2px solid HighlightText;
+        outline-offset: -3px;
+      }
+    }
   }
 }
 

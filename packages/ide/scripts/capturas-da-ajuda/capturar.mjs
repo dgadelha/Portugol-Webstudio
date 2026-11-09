@@ -16,12 +16,23 @@
 // densidade das imagens (2 por padrão) e `DESTINO` grava as imagens em outra pasta.
 //
 import { execFileSync } from "node:child_process";
-import { mkdirSync, mkdtempSync, rmSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import process from "node:process";
 
 import { chromium } from "playwright-core";
+
+// O convite para a pesquisa aparece um pouco depois de o IDE abrir, e entraria em algumas
+// capturas: ele fica como respondido. O `id` vem de `survey.ts`, que muda a cada pesquisa, e a
+// chave vai em minúsculas, como o `ngx-webstorage` grava
+const PESQUISA = /\bid:\s*"([^"]+)"/
+  .exec(readFileSync(path.resolve(import.meta.dirname, "../../src/app/survey.ts"), "utf8"))?.[1]
+  ?.toLowerCase();
+
+if (!PESQUISA) {
+  throw new Error("O id da pesquisa não foi encontrado em survey.ts: o convite entraria nas capturas.");
+}
 
 const URL_IDE = process.env.URL_IDE ?? "http://localhost:4200/";
 const PROGRAMAS = path.join(import.meta.dirname, "programas");
@@ -71,13 +82,18 @@ async function novaPágina(
     ...(celular && { userAgent: UA_CELULAR }),
   });
 
-  await contexto.addInitScript(avançada => {
-    localStorage.setItem("pws:editorfontsize", "14");
+  await contexto.addInitScript(
+    ({ avançada, pesquisa }) => {
+      localStorage.setItem("pws:editorfontsize", "14");
 
-    if (avançada) {
-      localStorage.setItem("pws:executionadvanceddebugging", "true");
-    }
-  }, depuraçãoAvançada);
+      if (avançada) {
+        localStorage.setItem("pws:executionadvanceddebugging", "true");
+      }
+
+      localStorage.setItem(`pws:survey:${pesquisa}`, JSON.stringify({ answered: true }));
+    },
+    { avançada: depuraçãoAvançada, pesquisa: PESQUISA },
+  );
 
   contextosDaCena.push(contexto);
 
@@ -113,6 +129,16 @@ async function abrir(página, arquivo, nomeDaAba = arquivo.replace(/\.por$/, "")
   await página.locator("input[type=file][multiple]").setInputFiles(path.join(PROGRAMAS, arquivo));
   await página.getByRole("tab", { name: nomeDaAba }).waitFor();
   await página.waitForTimeout(1500);
+}
+
+/**
+ * O texto da saída do programa. Na página inteira, "Programa finalizado" também acharia o aviso
+ * do fim da execução para os leitores de tela.
+ *
+ * @param {import("playwright-core").Page} página
+ */
+function saída(página) {
+  return página.locator(".output-editor");
 }
 
 /**
@@ -299,7 +325,7 @@ const cenas = {
 
     await abrir(página, "Primeiro programa.por");
     await executar(página);
-    await página.getByText("Programa finalizado").waitFor();
+    await saída(página).getByText("Programa finalizado").waitFor();
     await página.waitForTimeout(400);
     await capturar(página, tema, "primeiro-programa");
   },
@@ -339,7 +365,7 @@ const cenas = {
     await página.waitForTimeout(500);
     await página.keyboard.type("2010");
     await página.keyboard.press("Enter");
-    await página.getByText("Programa finalizado").waitFor();
+    await saída(página).getByText("Programa finalizado").waitFor();
     await página.waitForTimeout(400);
     await capturar(página, tema, "leia-concluido");
   },
@@ -374,7 +400,7 @@ const cenas = {
     await executar(página);
     // Com erro, o painel abre nos Problemas: a captura mostra a mensagem da Saída.
     await página.getByRole("tab", { name: "Saída" }).click();
-    await página.getByText("não foi executado").waitFor();
+    await saída(página).getByText("não foi executado").waitFor();
     await página.waitForTimeout(400);
     await capturar(página, tema, "executar-com-erros");
   },
