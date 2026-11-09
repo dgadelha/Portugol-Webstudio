@@ -6,7 +6,7 @@ Cada programa fica numa aba de código. Ela tem a barra de ações à esquerda, 
 
 ## A barra de ações
 
-![A barra de ações, com os botões de executar, parar, depurar, abrir, salvar, compartilhar, exemplos, ajuda e configurações](../../recursos/imagens/light/webstudio/barra-de-acoes@2x.webp)
+![A barra de ações, com os botões de executar, parar, depurar, abrir, salvar, compartilhar, exemplos, exercícios, ajuda e configurações](../../recursos/imagens/light/webstudio/barra-de-acoes@2x.webp)
 
 De cima para baixo:
 
@@ -20,17 +20,25 @@ De cima para baixo:
 | **Salvar como…**        | Mostra outras formas de salvar (veja [Abas e arquivos](abas_e_arquivos.md))  |              |
 | **Compartilhar código** | Gera um link para o código (veja [Compartilhando código](compartilhando.md)) |              |
 | **Abrir exemplo**       | Abre a lista de [exemplos](exemplos.md)                                      |              |
+| **Exercícios**          | Abre a lista de [exercícios](exercicios.md)                                  |              |
 | **Ajuda**               | Abre a Ajuda                                                                 | F1           |
 | **Configurações**       | Abre as [configurações](configuracoes.md)                                    |              |
 
 Passe o mouse sobre um botão, ou chegue nele pelo teclado, para ver o nome e o atalho.
+
+Numa tela baixa, como a de um celular deitado, os botões **Abrir exemplo** e **Exercícios** saem da barra, para os outros caberem. Eles continuam na aba inicial.
 
 ## Escrevendo o código
 
 O editor ajuda enquanto você escreve:
 
 - **Cores**: palavras como `programa`, `se` e `inteiro`, textos, números e comentários ganham cores diferentes, o que ajuda a perceber uma aspa ou um comentário que ficou aberto.
-- **Sugestões**: enquanto você digita, aparece uma lista com as palavras do programa e da linguagem. Escolha uma com as setas e aperte **Enter** ou **Tab**. Para abrir a lista a qualquer momento, aperte **Ctrl + Espaço**.
+- **Sugestões**: enquanto você digita, aparece uma lista com o que pode ser escrito ali: as variáveis e funções do programa, com o tipo de cada uma, as funções da linguagem, como `escreva` e `leia`, as palavras da linguagem e as estruturas, como `se` e `para`. Escolha uma com as setas e aperte **Enter** ou **Tab**. Para abrir a lista a qualquer momento, aperte **Ctrl + Espaço** (no Mac, também **Option + Esc**); com a lista aberta, o **Ctrl + Espaço** mostra ou esconde a explicação da sugestão escolhida.
+  - Depois do nome de uma biblioteca incluída e de um ponto, como em `mat.`, a lista mostra as funções e constantes dela, com a explicação de cada uma.
+  - Uma função entra com os parênteses, e uma estrutura entra completa, com as chaves. Os trechos a preencher, como a condição de um `se`, ficam marcados: escreva o primeiro e aperte **Tab** para ir ao próximo.
+- **Parâmetros**: ao abrir o parêntese de uma função, aparece o que ela recebe, com o parâmetro que você está escrevendo destacado e a explicação dele. Para ver de novo, aperte **Ctrl + Shift + Espaço** (no Mac, **Cmd + Shift + Espaço**).
+- **Informações**: parando o mouse sobre um nome, aparece o que ele é. Numa variável, a declaração, se ela é local ou global e o comentário escrito logo acima dela ou no fim da linha dela; numa função do programa, o que ela recebe e devolve; numa função ou constante de biblioteca, a explicação, com o link **Ver na Ajuda**, que abre a página dela. Pelo teclado, com o cursor no nome, aperte **Ctrl + K** e depois **Ctrl + I** (no Mac, **Cmd + K** e **Cmd + I**); apertando de novo, o foco vai para a informação.
+- **Ir para a declaração**: **F12** (ou **Ctrl + F12**, nos navegadores em que o F12 abre as ferramentas do desenvolvedor; no Mac, **Cmd + F12**), ou **Ctrl + clique** (no Mac, **Cmd + clique**) no nome, leva o cursor até onde a variável, a constante, a função ou o apelido da biblioteca foi declarado. No nome de uma biblioteca, numa função ou constante dela, como `mat.potencia`, e no `escreva`, no `leia` e no `limpa`, que não são declarados no programa, abre a página deles na aba de Ajuda. Com o **Ctrl** (no Mac, **Cmd**) apertado, o nome que leva a uma declaração fica sublinhado. O mesmo está no menu do botão direito, em **Ir para Definição**. Já o **Alt + F12** (no Linux e no Chromebook, **Ctrl + Shift + F10**; no Mac, **Option + F12**) mostra a declaração numa janela dentro do próprio código, sem sair dele; numa função de biblioteca, a explicação e o que ela recebe e devolve. **Esc** fecha essa janela.
 - **Fechamento automático**: ao abrir chaves, parênteses ou aspas, o fechamento já aparece.
 - **Pares de chaves**: cada nível de chaves e parênteses ganha uma cor, e as linhas verticais ligam o começo e o fim de cada bloco.
 - **Recolher blocos**: as setas na margem, ao lado dos números das linhas, escondem e mostram o conteúdo de uma função ou de um bloco. Também dá para criar um bloco recolhível com os comentários `// regiao` e `// fimregiao` (veja abaixo).
@@ -84,7 +92,7 @@ A barra no rodapé mostra informações sobre a aba de código aberta:
 
 ## Outros recursos do editor
 
-O editor é o mesmo do Visual Studio Code, e muitos dos atalhos dele também funcionam, como **Ctrl + F** para procurar, **Ctrl + H** para substituir, **Ctrl + /** para comentar e descomentar linhas e **Alt + seta para cima/baixo** para mover uma linha. Veja a lista em [Atalhos de teclado](atalhos.md).
+O editor é o mesmo do Visual Studio Code, e muitos dos atalhos dele também funcionam, como **Ctrl + F** para procurar, **Ctrl + H** para substituir, **Ctrl + /** para comentar e descomentar linhas (no Mac, **Cmd + F**, **Cmd + Option + F** e **Cmd + /**) e **Alt + seta para cima/baixo** para mover uma linha. Veja a lista em [Atalhos de teclado](atalhos.md).
 
 ### Para curiosos: o código gerado
 

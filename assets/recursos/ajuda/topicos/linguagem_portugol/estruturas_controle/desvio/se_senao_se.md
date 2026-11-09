@@ -1,4 +1,4 @@
-# Se-senao se
+# Se senão se
 
 Agora imagine que você precise verificar a nota da prova de um aluno e falar se ele foi muito bem, bem, razoável ou mau em uma prova. Como fazer isto?
 

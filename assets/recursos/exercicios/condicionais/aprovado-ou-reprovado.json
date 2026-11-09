@@ -1,0 +1,68 @@
+{
+  "$schema": "https://portugol.dev/esquemas/exercicio/v1.json",
+  "id": "pws:aprovado-ou-reprovado",
+  "título": "Aprovado ou reprovado",
+  "tópico": "condicionais",
+  "dificuldade": 1,
+  "enunciado": "Leia a média final de um aluno, um número real de 0 a 10. Escreva `aprovado` se a média for 6 ou mais, ou `reprovado` se for menor que 6.\n\nO programa não deve escrever mais nada: nem mensagens pedindo os dados.\n\nOs números com casas decimais são digitados com ponto, como em `1.75`.",
+  "modo": "simples",
+  "exemplos": [
+    {
+      "descrição": "média alta",
+      "entradas": ["8.5"],
+      "saída": "aprovado\n"
+    },
+    {
+      "descrição": "média baixa",
+      "entradas": ["4"],
+      "saída": "reprovado\n"
+    }
+  ],
+  "testes": [
+    {
+      "descrição": "exatamente no limite",
+      "entradas": ["6"],
+      "saída": "aprovado\n"
+    },
+    {
+      "descrição": "um pouco abaixo do limite",
+      "entradas": ["5.99"],
+      "saída": "reprovado\n"
+    },
+    {
+      "descrição": "nota máxima",
+      "entradas": ["10"],
+      "saída": "aprovado\n"
+    },
+    {
+      "descrição": "zero",
+      "entradas": ["0"],
+      "saída": "reprovado\n"
+    },
+    {
+      "descrição": "um pouco acima do limite",
+      "entradas": ["6.01"],
+      "saída": "aprovado\n"
+    },
+    {
+      "descrição": "média com meio ponto",
+      "entradas": ["5.5"],
+      "saída": "reprovado\n"
+    },
+    {
+      "descrição": "quase a nota máxima",
+      "entradas": ["9.99"],
+      "saída": "aprovado\n"
+    },
+    {
+      "descrição": "média muito baixa",
+      "entradas": ["1"],
+      "saída": "reprovado\n"
+    },
+    {
+      "descrição": "média acima do limite",
+      "entradas": ["7"],
+      "saída": "aprovado\n"
+    }
+  ]
+}

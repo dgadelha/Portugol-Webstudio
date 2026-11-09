@@ -1,0 +1,103 @@
+{
+  "$schema": "https://portugol.dev/esquemas/exercicio/v1.json",
+  "id": "pws:tipo-de-triangulo",
+  "título": "Tipo de triângulo",
+  "tópico": "condicionais",
+  "dificuldade": 3,
+  "enunciado": "Leia os comprimentos dos três lados de um triângulo (três números inteiros) e escreva o tipo dele:\n\n- `equilátero`: os três lados são iguais;\n- `isósceles`: exatamente dois lados são iguais;\n- `escaleno`: os três lados são diferentes.\n\nAntes, confira se os lados formam mesmo um triângulo: todos precisam ser maiores que zero, e cada lado precisa ser menor que a soma dos outros dois. Se não formarem, escreva `não forma um triângulo`.\n\nO programa não deve escrever mais nada: nem mensagens pedindo os dados.",
+  "modo": "simples",
+  "exemplos": [
+    {
+      "descrição": "três lados iguais",
+      "entradas": ["3", "3", "3"],
+      "saída": "equilátero\n"
+    },
+    {
+      "descrição": "três lados diferentes",
+      "entradas": ["3", "4", "5"],
+      "saída": "escaleno\n"
+    }
+  ],
+  "testes": [
+    {
+      "descrição": "dois lados iguais",
+      "entradas": ["5", "5", "8"],
+      "saída": "isósceles\n"
+    },
+    {
+      "descrição": "o primeiro e o último iguais",
+      "entradas": ["7", "4", "7"],
+      "saída": "isósceles\n"
+    },
+    {
+      "descrição": "um lado igual à soma dos outros",
+      "entradas": ["1", "2", "3"],
+      "saída": "não forma um triângulo\n"
+    },
+    {
+      "descrição": "um lado maior que a soma dos outros",
+      "entradas": ["2", "2", "5"],
+      "saída": "não forma um triângulo\n"
+    },
+    {
+      "descrição": "um lado zero",
+      "entradas": ["0", "4", "4"],
+      "saída": "não forma um triângulo\n"
+    },
+    {
+      "descrição": "um lado negativo",
+      "entradas": ["-3", "-3", "-3"],
+      "saída": "não forma um triângulo\n"
+    },
+    {
+      "descrição": "o primeiro lado igual à soma dos outros",
+      "entradas": ["3", "1", "2"],
+      "saída": "não forma um triângulo\n"
+    },
+    {
+      "descrição": "o segundo lado igual à soma dos outros",
+      "entradas": ["1", "3", "2"],
+      "saída": "não forma um triângulo\n"
+    },
+    {
+      "descrição": "o primeiro lado maior que a soma dos outros",
+      "entradas": ["5", "2", "2"],
+      "saída": "não forma um triângulo\n"
+    },
+    {
+      "descrição": "o segundo lado maior que a soma dos outros",
+      "entradas": ["2", "5", "2"],
+      "saída": "não forma um triângulo\n"
+    },
+    {
+      "descrição": "equilátero com lados pequenos",
+      "entradas": ["1", "1", "1"],
+      "saída": "equilátero\n"
+    },
+    {
+      "descrição": "dois lados iguais, o diferente primeiro",
+      "entradas": ["1", "2", "2"],
+      "saída": "isósceles\n"
+    },
+    {
+      "descrição": "outro escaleno",
+      "entradas": ["6", "8", "10"],
+      "saída": "escaleno\n"
+    },
+    {
+      "descrição": "lados grandes, quase sem formar um triângulo",
+      "entradas": ["1000", "1000", "1999"],
+      "saída": "isósceles\n"
+    },
+    {
+      "descrição": "todos os lados zero",
+      "entradas": ["0", "0", "0"],
+      "saída": "não forma um triângulo\n"
+    },
+    {
+      "descrição": "escaleno em outra ordem",
+      "entradas": ["5", "3", "4"],
+      "saída": "escaleno\n"
+    }
+  ]
+}

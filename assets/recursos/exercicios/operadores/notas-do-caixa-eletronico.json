@@ -1,0 +1,697 @@
+{
+  "$schema": "https://portugol.dev/esquemas/exercicio/v1.json",
+  "id": "pws:notas-do-caixa-eletronico",
+  "título": "Notas do caixa eletrônico",
+  "tópico": "operadores",
+  "dificuldade": 3,
+  "enunciado": "Um caixa eletrônico tem notas de 100, 50, 20, 10, 5 e 2 reais, e moedas de 1 real. Leia o valor de um saque (um número inteiro, zero ou positivo) e escreva quantas notas e moedas de cada valor o caixa entrega, usando sempre a menor quantidade possível de notas e moedas.\n\nEscreva as sete quantidades nesta ordem: notas de 100, de 50, de 20, de 10, de 5, de 2 e moedas de 1, como valores do tipo `inteiro`. O programa pode escrever outros textos junto, e uma mensagem antes da leitura.\n\nPor exemplo, para 388 reais: 3 notas de 100, 1 de 50, 1 de 20, 1 de 10, 1 de 5, 1 de 2 e 1 moeda de 1.",
+  "modo": "avançado",
+  "exemplos": [
+    {
+      "descrição": "388 reais",
+      "entradas": ["388"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 3
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 1
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 1
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 1
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 1
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 1
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 1
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "testes": [
+    {
+      "descrição": "zero",
+      "entradas": ["0"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "só moedas",
+      "entradas": ["1"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "uma nota só, a maior",
+      "entradas": ["100"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 1
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "várias notas do mesmo valor",
+      "entradas": ["99"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 1
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 2
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 1
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 2
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "valor grande",
+      "entradas": ["1234"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 12
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 1
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 1
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 2
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "uma nota só, de valor médio",
+      "entradas": ["50"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 1
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "duas notas de valores diferentes",
+      "entradas": ["70"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 1
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 1
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "duas notas pequenas",
+      "entradas": ["15"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 1
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 1
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "uma nota e uma moeda",
+      "entradas": ["3"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 1
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "duas notas iguais pequenas",
+      "entradas": ["4"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 2
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "uma de cada",
+      "entradas": ["188"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 1
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 1
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 1
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 1
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 1
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 1
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "várias notas pequenas",
+      "entradas": ["9"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 1
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 2
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "um valor que não usa a nota de valor médio",
+      "entradas": ["40"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 2
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "valor muito grande",
+      "entradas": ["1000000"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 10000
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "outra nota só",
+      "entradas": ["10"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 1
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "notas grandes e pequenas, sem a de valor médio",
+      "entradas": ["130"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 1
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 1
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 1
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "atribuição": {
+    "fonte": "Portugol Studio (UNIVALI), exercício 07",
+    "licença": "LGPL-3.0"
+  }
+}

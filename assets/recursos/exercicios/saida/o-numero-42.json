@@ -1,0 +1,48 @@
+{
+  "$schema": "https://portugol.dev/esquemas/exercicio/v1.json",
+  "id": "pws:o-numero-42",
+  "título": "O número 42",
+  "tópico": "saida",
+  "dificuldade": 1,
+  "enunciado": "Faça um programa que escreva o número `42` como um valor do tipo `inteiro`.\n\nUma `cadeia` com os caracteres `42` não vale: o valor escrito precisa ser do tipo `inteiro`. O programa pode escrever outros textos junto, mas o 42 precisa ser um valor à parte, do tipo `inteiro`, e não parte de um texto como `\"O número é 42\"`.",
+  "modo": "avançado",
+  "exemplos": [
+    {
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 42
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "testes": [
+    {
+      "descrição": "o número escrito como inteiro",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 42
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "atribuição": {
+    "fonte": "Portugol Studio (UNIVALI), exercício 01",
+    "licença": "LGPL-3.0"
+  }
+}

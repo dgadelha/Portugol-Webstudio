@@ -1,0 +1,180 @@
+{
+  "$schema": "https://portugol.dev/esquemas/exercicio/v1.json",
+  "id": "pws:moda-do-vetor",
+  "título": "Moda",
+  "tópico": "vetores",
+  "dificuldade": 3,
+  "enunciado": "A moda de uma lista de números é o valor que aparece mais vezes nela.\n\nLeia um número inteiro $n$, de 1 a 100, e depois $n$ números inteiros, guardando-os num vetor. Escreva a moda. Se houver empate entre valores que aparecem o mesmo número de vezes, escreva o menor deles.\n\nPor exemplo, para os números `4`, `7`, `4`, `1`, `7`, `7`, escreva:\n\n```\n7\n```\n\nO programa não deve escrever mais nada: nem mensagens pedindo os dados.",
+  "modo": "simples",
+  "exemplos": [
+    {
+      "descrição": "um valor que aparece mais",
+      "entradas": ["6", "4", "7", "4", "1", "7", "7"],
+      "saída": "7\n"
+    }
+  ],
+  "testes": [
+    {
+      "descrição": "um número só",
+      "entradas": ["1", "9"],
+      "saída": "9\n"
+    },
+    {
+      "descrição": "todos diferentes",
+      "entradas": ["4", "5", "3", "8", "6"],
+      "saída": "3\n"
+    },
+    {
+      "descrição": "empate entre dois valores",
+      "entradas": ["5", "8", "2", "8", "2", "5"],
+      "saída": "2\n"
+    },
+    {
+      "descrição": "números negativos",
+      "entradas": ["5", "-1", "-3", "-3", "-1", "-3"],
+      "saída": "-3\n"
+    },
+    {
+      "descrição": "todos iguais",
+      "entradas": ["3", "6", "6", "6"],
+      "saída": "6\n"
+    },
+    {
+      "descrição": "empate com o menor no fim",
+      "entradas": ["6", "10", "10", "20", "20", "1", "1"],
+      "saída": "1\n"
+    },
+    {
+      "descrição": "o maior tamanho permitido",
+      "entradas": [
+        "100",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "0",
+        "1",
+        "2"
+      ],
+      "saída": "1\n"
+    },
+    {
+      "descrição": "todos diferentes, o menor primeiro",
+      "entradas": ["3", "1", "5", "3"],
+      "saída": "1\n"
+    },
+    {
+      "descrição": "a moda no começo",
+      "entradas": ["3", "7", "7", "5"],
+      "saída": "7\n"
+    },
+    {
+      "descrição": "o zero aparece menos vezes",
+      "entradas": ["3", "3", "3", "0"],
+      "saída": "3\n"
+    },
+    {
+      "descrição": "três vezes contra duas",
+      "entradas": ["5", "2", "9", "9", "2", "9"],
+      "saída": "9\n"
+    },
+    {
+      "descrição": "empate entre um negativo e um positivo",
+      "entradas": ["4", "-4", "4", "-4", "4"],
+      "saída": "-4\n"
+    }
+  ]
+}

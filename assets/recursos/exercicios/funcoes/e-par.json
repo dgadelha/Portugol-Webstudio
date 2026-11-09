@@ -1,0 +1,245 @@
+{
+  "$schema": "https://portugol.dev/esquemas/exercicio/v1.json",
+  "id": "pws:e-par",
+  "título": "É par?",
+  "tópico": "funcoes",
+  "dificuldade": 1,
+  "enunciado": "Escreva a função `e_par`, que recebe um número inteiro e retorna `verdadeiro` se ele for par, ou `falso` se for ímpar.\n\nA função deve ter esta assinatura:\n\n```portugol\nfuncao logico e_par(inteiro numero)\n```\n\nSó a função é conferida: o `inicio` pode ficar vazio, ou testar a função como você quiser.",
+  "códigoInicial": "programa {\n  funcao logico e_par(inteiro numero) {\n    retorne falso\n  }\n\n  funcao inicio() {\n    escreva(e_par(4))\n  }\n}\n",
+  "modo": "avançado",
+  "exemplos": [
+    {
+      "descrição": "um número par",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "e_par",
+          "argumentos": [
+            {
+              "tipo": "inteiro",
+              "valor": 4
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "logico",
+            "valor": true
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "um número ímpar",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "e_par",
+          "argumentos": [
+            {
+              "tipo": "inteiro",
+              "valor": 7
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "logico",
+            "valor": false
+          }
+        }
+      ]
+    }
+  ],
+  "testes": [
+    {
+      "descrição": "zero",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "e_par",
+          "argumentos": [
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "logico",
+            "valor": true
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "um negativo ímpar",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "e_par",
+          "argumentos": [
+            {
+              "tipo": "inteiro",
+              "valor": -3
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "logico",
+            "valor": false
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "um negativo par",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "e_par",
+          "argumentos": [
+            {
+              "tipo": "inteiro",
+              "valor": -10
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "logico",
+            "valor": true
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "um ímpar pequeno",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "e_par",
+          "argumentos": [
+            {
+              "tipo": "inteiro",
+              "valor": 1
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "logico",
+            "valor": false
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "um número grande",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "e_par",
+          "argumentos": [
+            {
+              "tipo": "inteiro",
+              "valor": 1000000
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "logico",
+            "valor": true
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "um par pequeno",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "e_par",
+          "argumentos": [
+            {
+              "tipo": "inteiro",
+              "valor": 2
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "logico",
+            "valor": true
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "um negativo ímpar pequeno",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "e_par",
+          "argumentos": [
+            {
+              "tipo": "inteiro",
+              "valor": -1
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "logico",
+            "valor": false
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "um ímpar grande",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "e_par",
+          "argumentos": [
+            {
+              "tipo": "inteiro",
+              "valor": 999999
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "logico",
+            "valor": false
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "um negativo par grande",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "e_par",
+          "argumentos": [
+            {
+              "tipo": "inteiro",
+              "valor": -1000000
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "logico",
+            "valor": true
+          }
+        }
+      ]
+    }
+  ]
+}

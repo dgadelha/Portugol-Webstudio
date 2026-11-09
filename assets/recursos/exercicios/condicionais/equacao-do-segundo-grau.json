@@ -1,0 +1,386 @@
+{
+  "$schema": "https://portugol.dev/esquemas/exercicio/v1.json",
+  "id": "pws:equacao-do-segundo-grau",
+  "título": "Equação do segundo grau",
+  "tópico": "condicionais",
+  "dificuldade": 3,
+  "enunciado": "Leia os coeficientes $a$, $b$ e $c$ de uma equação do segundo grau $ax^2 + bx + c = 0$, nesta ordem. São números reais, e $a$ nunca é zero. Calcule o discriminante:\n\n$$\\Delta = b^2 - 4ac$$\n\nEscreva primeiro quantas raízes reais a equação tem, como um valor do tipo `inteiro`, e depois as raízes, como valores do tipo `real`:\n\n- Se $\\Delta < 0$, a equação não tem raízes reais: escreva só `0`.\n- Se $\\Delta = 0$, a equação tem uma raiz real, $x = \\frac{-b}{2a}$: escreva `1` e essa raiz.\n- Se $\\Delta > 0$, a equação tem duas raízes reais, $x = \\frac{-b \\pm \\sqrt{\\Delta}}{2a}$: escreva `2` e as duas raízes, primeiro a menor e depois a maior.\n\nO programa pode escrever outros textos junto, e mensagens antes de cada leitura.\n\nOs números com casas decimais são digitados com ponto, como em `1.75`.",
+  "modo": "avançado",
+  "exemplos": [
+    {
+      "descrição": "duas raízes",
+      "entradas": ["1", "-3", "2"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 2
+            },
+            {
+              "tipo": "real",
+              "valor": 1.0
+            },
+            {
+              "tipo": "real",
+              "valor": 2.0
+            }
+          ],
+          "tolerância": 0.0001
+        }
+      ]
+    },
+    {
+      "descrição": "sem raízes reais",
+      "entradas": ["1", "0", "1"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "testes": [
+    {
+      "descrição": "uma raiz",
+      "entradas": ["1", "2", "1"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 1
+            },
+            {
+              "tipo": "real",
+              "valor": -1.0
+            }
+          ],
+          "tolerância": 0.0001
+        }
+      ]
+    },
+    {
+      "descrição": "uma raiz com casas decimais",
+      "entradas": ["4", "4", "1"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 1
+            },
+            {
+              "tipo": "real",
+              "valor": -0.5
+            }
+          ],
+          "tolerância": 0.0001
+        }
+      ]
+    },
+    {
+      "descrição": "uma raiz positiva",
+      "entradas": ["1", "-6", "9"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 1
+            },
+            {
+              "tipo": "real",
+              "valor": 3.0
+            }
+          ],
+          "tolerância": 0.0001
+        }
+      ]
+    },
+    {
+      "descrição": "uma raiz com a negativo",
+      "entradas": ["-1", "2", "-1"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 1
+            },
+            {
+              "tipo": "real",
+              "valor": 1.0
+            }
+          ],
+          "tolerância": 0.0001
+        }
+      ]
+    },
+    {
+      "descrição": "duas raízes com a maior positiva",
+      "entradas": ["2", "-4", "-6"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 2
+            },
+            {
+              "tipo": "real",
+              "valor": -1.0
+            },
+            {
+              "tipo": "real",
+              "valor": 3.0
+            }
+          ],
+          "tolerância": 0.0001
+        }
+      ]
+    },
+    {
+      "descrição": "a negativo",
+      "entradas": ["-1", "0", "4"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 2
+            },
+            {
+              "tipo": "real",
+              "valor": -2.0
+            },
+            {
+              "tipo": "real",
+              "valor": 2.0
+            }
+          ],
+          "tolerância": 0.0001
+        }
+      ]
+    },
+    {
+      "descrição": "outro a negativo",
+      "entradas": ["-2", "3", "5"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 2
+            },
+            {
+              "tipo": "real",
+              "valor": -1.0
+            },
+            {
+              "tipo": "real",
+              "valor": 2.5
+            }
+          ],
+          "tolerância": 0.0001
+        }
+      ]
+    },
+    {
+      "descrição": "raízes irracionais",
+      "entradas": ["1", "-2", "-1"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 2
+            },
+            {
+              "tipo": "real",
+              "valor": -0.414214
+            },
+            {
+              "tipo": "real",
+              "valor": 2.414214
+            }
+          ],
+          "tolerância": 0.0001
+        }
+      ]
+    },
+    {
+      "descrição": "b igual a zero",
+      "entradas": ["1", "0", "-4"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 2
+            },
+            {
+              "tipo": "real",
+              "valor": -2.0
+            },
+            {
+              "tipo": "real",
+              "valor": 2.0
+            }
+          ],
+          "tolerância": 0.0001
+        }
+      ]
+    },
+    {
+      "descrição": "c igual a zero",
+      "entradas": ["1", "5", "0"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 2
+            },
+            {
+              "tipo": "real",
+              "valor": -5.0
+            },
+            {
+              "tipo": "real",
+              "valor": 0.0
+            }
+          ],
+          "tolerância": 0.0001
+        }
+      ]
+    },
+    {
+      "descrição": "coeficientes com casas decimais",
+      "entradas": ["0.5", "-1.5", "1"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 2
+            },
+            {
+              "tipo": "real",
+              "valor": 1.0
+            },
+            {
+              "tipo": "real",
+              "valor": 2.0
+            }
+          ],
+          "tolerância": 0.0001
+        }
+      ]
+    },
+    {
+      "descrição": "raízes muito diferentes",
+      "entradas": ["1", "-100", "1"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 2
+            },
+            {
+              "tipo": "real",
+              "valor": 0.010001
+            },
+            {
+              "tipo": "real",
+              "valor": 99.989999
+            }
+          ],
+          "tolerância": 0.0001
+        }
+      ]
+    },
+    {
+      "descrição": "discriminante negativo pequeno",
+      "entradas": ["1", "1", "1"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "sem raízes com a negativo",
+      "entradas": ["-1", "0", "-1"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "sem raízes com coeficientes grandes",
+      "entradas": ["100", "10", "50"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "$schema": "https://portugol.dev/esquemas/exercicio/v1.json",
+  "id": "pws:perguntas-e-respostas",
+  "título": "Perguntas e respostas",
+  "tópico": "entrada-e-variaveis",
+  "dificuldade": 2,
+  "enunciado": "Escreva um programa que faça duas perguntas e depois junte as respostas numa frase.\n\n1. Escreva a pergunta `Qual é o seu nome?` e leia o nome.\n2. Escreva a pergunta `Qual é o seu animal favorito?` e leia o animal.\n3. Escreva a frase `<nome> gosta de <animal>.`\n\nCada pergunta e a frase ficam numa linha própria. O que a pessoa digita não faz parte do que o programa escreve, então, para as respostas `Ana` e `gato`, o programa escreve exatamente:\n\n```\nQual é o seu nome?\nQual é o seu animal favorito?\nAna gosta de gato.\n```",
+  "modo": "simples",
+  "exemplos": [
+    {
+      "descrição": "Ana e gato",
+      "entradas": ["Ana", "gato"],
+      "saída": "Qual é o seu nome?\nQual é o seu animal favorito?\nAna gosta de gato.\n"
+    }
+  ],
+  "testes": [
+    {
+      "descrição": "animal com espaço",
+      "entradas": ["Pedro", "peixe palhaço"],
+      "saída": "Qual é o seu nome?\nQual é o seu animal favorito?\nPedro gosta de peixe palhaço.\n"
+    },
+    {
+      "descrição": "nome composto",
+      "entradas": ["Luiz Fernando", "cachorro"],
+      "saída": "Qual é o seu nome?\nQual é o seu animal favorito?\nLuiz Fernando gosta de cachorro.\n"
+    },
+    {
+      "descrição": "palavras com acento",
+      "entradas": ["Júlia", "tamanduá"],
+      "saída": "Qual é o seu nome?\nQual é o seu animal favorito?\nJúlia gosta de tamanduá.\n"
+    },
+    {
+      "descrição": "respostas de uma letra",
+      "entradas": ["X", "Y"],
+      "saída": "Qual é o seu nome?\nQual é o seu animal favorito?\nX gosta de Y.\n"
+    },
+    {
+      "descrição": "nome com acento e espaço",
+      "entradas": ["João Vítor", "papagaio"],
+      "saída": "Qual é o seu nome?\nQual é o seu animal favorito?\nJoão Vítor gosta de papagaio.\n"
+    },
+    {
+      "descrição": "animal no plural",
+      "entradas": ["Bia", "gatos"],
+      "saída": "Qual é o seu nome?\nQual é o seu animal favorito?\nBia gosta de gatos.\n"
+    },
+    {
+      "descrição": "respostas com números",
+      "entradas": ["R2", "3 cachorros"],
+      "saída": "Qual é o seu nome?\nQual é o seu animal favorito?\nR2 gosta de 3 cachorros.\n"
+    },
+    {
+      "descrição": "respostas iguais",
+      "entradas": ["Lua", "Lua"],
+      "saída": "Qual é o seu nome?\nQual é o seu animal favorito?\nLua gosta de Lua.\n"
+    }
+  ]
+}

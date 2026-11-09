@@ -1,0 +1,180 @@
+{
+  "$schema": "https://portugol.dev/esquemas/exercicio/v1.json",
+  "id": "pws:acima-da-media",
+  "título": "Acima da média",
+  "tópico": "vetores",
+  "dificuldade": 2,
+  "enunciado": "Leia um número inteiro $n$, de 1 a 100, e depois $n$ números inteiros, guardando-os num vetor. Calcule a média dos números, com as casas decimais, e escreva os números que são maiores que a média, na ordem em que foram lidos, um por linha.\n\nSe nenhum número for maior que a média (o que acontece quando todos são iguais), escreva `nenhum`.\n\nPor exemplo, para $n = 4$ e os números `2`, `9`, `4` e `7` (média `5.5`), escreva:\n\n```\n9\n7\n```\n\nO programa não deve escrever mais nada: nem mensagens pedindo os dados.",
+  "modo": "simples",
+  "exemplos": [
+    {
+      "descrição": "quatro números",
+      "entradas": ["4", "2", "9", "4", "7"],
+      "saída": "9\n7\n"
+    }
+  ],
+  "testes": [
+    {
+      "descrição": "todos iguais",
+      "entradas": ["3", "5", "5", "5"],
+      "saída": "nenhum\n"
+    },
+    {
+      "descrição": "um número só",
+      "entradas": ["1", "42"],
+      "saída": "nenhum\n"
+    },
+    {
+      "descrição": "números negativos",
+      "entradas": ["2", "-1", "-2"],
+      "saída": "-1\n"
+    },
+    {
+      "descrição": "média com casas decimais",
+      "entradas": ["3", "1", "2", "2"],
+      "saída": "2\n2\n"
+    },
+    {
+      "descrição": "muitos números",
+      "entradas": ["12", "10", "3", "8", "1", "9", "2", "7", "4", "6", "5", "11", "0"],
+      "saída": "10\n8\n9\n7\n6\n11\n"
+    },
+    {
+      "descrição": "o maior tamanho permitido",
+      "entradas": [
+        "100",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+        "16",
+        "17",
+        "18",
+        "19",
+        "20",
+        "21",
+        "22",
+        "23",
+        "24",
+        "25",
+        "26",
+        "27",
+        "28",
+        "29",
+        "30",
+        "31",
+        "32",
+        "33",
+        "34",
+        "35",
+        "36",
+        "37",
+        "38",
+        "39",
+        "40",
+        "41",
+        "42",
+        "43",
+        "44",
+        "45",
+        "46",
+        "47",
+        "48",
+        "49",
+        "50",
+        "51",
+        "52",
+        "53",
+        "54",
+        "55",
+        "56",
+        "57",
+        "58",
+        "59",
+        "60",
+        "61",
+        "62",
+        "63",
+        "64",
+        "65",
+        "66",
+        "67",
+        "68",
+        "69",
+        "70",
+        "71",
+        "72",
+        "73",
+        "74",
+        "75",
+        "76",
+        "77",
+        "78",
+        "79",
+        "80",
+        "81",
+        "82",
+        "83",
+        "84",
+        "85",
+        "86",
+        "87",
+        "88",
+        "89",
+        "90",
+        "91",
+        "92",
+        "93",
+        "94",
+        "95",
+        "96",
+        "97",
+        "98",
+        "99",
+        "100"
+      ],
+      "saída": "51\n52\n53\n54\n55\n56\n57\n58\n59\n60\n61\n62\n63\n64\n65\n66\n67\n68\n69\n70\n71\n72\n73\n74\n75\n76\n77\n78\n79\n80\n81\n82\n83\n84\n85\n86\n87\n88\n89\n90\n91\n92\n93\n94\n95\n96\n97\n98\n99\n100\n"
+    },
+    {
+      "descrição": "dois números",
+      "entradas": ["2", "3", "4"],
+      "saída": "4\n"
+    },
+    {
+      "descrição": "um número maior no fim",
+      "entradas": ["4", "1", "1", "1", "10"],
+      "saída": "10\n"
+    },
+    {
+      "descrição": "um número menor no começo",
+      "entradas": ["4", "0", "5", "5", "5"],
+      "saída": "5\n5\n5\n"
+    },
+    {
+      "descrição": "média inteira",
+      "entradas": ["3", "2", "4", "6"],
+      "saída": "6\n"
+    },
+    {
+      "descrição": "números negativos com média quebrada",
+      "entradas": ["3", "-5", "-2", "-3"],
+      "saída": "-2\n-3\n"
+    },
+    {
+      "descrição": "números grandes",
+      "entradas": ["3", "100000", "200000", "300001"],
+      "saída": "300001\n"
+    }
+  ]
+}

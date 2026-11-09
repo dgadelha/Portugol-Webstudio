@@ -7,21 +7,24 @@ O Portugol Webstudio pode ser usado só com o teclado e com leitores de tela, co
 - Todos os botões, abas e listas podem ser alcançados com o **Tab** e usados com o teclado. Veja [Atalhos de teclado](atalhos.md).
 - Logo no começo da página, o link **Ir para o conteúdo da aba** pula a barra de abas.
 - Nas abas, na barra de ações e no painel de baixo, o **Tab** entra no grupo e as **setas** andam dentro dele.
+- No editor de código, o **Tab** escreve uma tabulação. Para sair do editor com o **Tab**, aperte antes **Ctrl + M** (no Mac, **Ctrl + Shift + M**); apertando de novo, o **Tab** volta a escrever.
 - As dicas dos botões aparecem também ao chegar neles pelo teclado, com o nome e o atalho.
 - Ao abrir uma aba de código, o cursor vai para o editor. Ao fechar uma aba, vai para a aba ao lado. Ao fechar uma janela, volta para onde estava.
 
 ## Leitores de tela
 
+Se você usa um leitor de tela, ligue **Otimizar para leitor de tela**, na seção **Editor** das [configurações](configuracoes.md), ou aperte **Shift + Alt + F1** (no Mac, **Shift + Option + F1**) no editor de código ou na saída, que é o que o leitor diz ao chegar neles. Com ela, o leitor recebe mais do código do editor e da saída. No Chrome e no Edge, sem ela, o leitor não recebe o código do editor.
+
 - As abas, a barra de ações, o painel e as janelas são anunciados com os nomes e os papéis certos.
-- O estado do programa, **Executando** e **Aguardando entrada**, é anunciado quando muda.
+- O estado do programa, **Executando** e **Aguardando entrada**, é anunciado quando muda. O fim também: se o programa terminou, foi interrompido ou parou num erro (com a linha), ou se o código tem erros de compilação e nem executou.
 - Executando passo a passo, cada pausa é anunciada com a linha e o que mudou nas variáveis. Veja [Executando passo a passo](depurando.md).
+- Nos [exercícios](exercicios.md), o resultado do **Verificar** é anunciado, e cada caso da aba **Correção** começa com "Passou", "Falhou" ou "Não conferido", nunca só pela cor.
 - Na aba **Problemas**, cada item é anunciado como erro, aviso ou informação, com a linha e a coluna.
 - A quantidade de erros e de avisos, na barra de status, é anunciada por extenso.
-
-O editor de código é o mesmo do Visual Studio Code, que tem um modo próprio para leitores de tela: aperte **Alt + F1**, dentro do editor, para ver as opções de acessibilidade dele.
+- No editor, **Ctrl + K** e depois **Ctrl + I** (no Mac, **Cmd + K** e **Cmd + I**) mostram o que é o nome em que o cursor está, como a declaração e o tipo de uma variável ou a explicação de uma função. Apertando de novo, o foco vai para esse texto, e o leitor de tela o lê; **Esc** volta ao código. Com **Otimizar para leitor de tela** ligada, o foco já vai para o texto na primeira vez.
 
 ## Tamanho e contraste
 
-Nas [configurações](configuracoes.md), dá para aumentar o tamanho da fonte do editor e da saída, e escolher o tema claro ou escuro. O zoom do navegador (**Ctrl +** e **Ctrl -**) também aumenta toda a interface.
+Nas [configurações](configuracoes.md), dá para aumentar o tamanho da fonte do editor e da saída, e escolher o tema claro ou escuro. O zoom do navegador (**Ctrl +** e **Ctrl -**; no Mac, **Cmd +** e **Cmd -**) também aumenta toda a interface.
 
 Encontrou uma dificuldade? Conte para nós em [Reportar um problema](https://github.com/dgadelha/Portugol-Webstudio/issues).

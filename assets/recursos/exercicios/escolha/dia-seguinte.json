@@ -1,0 +1,108 @@
+{
+  "$schema": "https://portugol.dev/esquemas/exercicio/v1.json",
+  "id": "pws:dia-seguinte",
+  "título": "Dia seguinte",
+  "tópico": "escolha",
+  "dificuldade": 3,
+  "enunciado": "Leia uma data válida de um ano que não é bissexto: primeiro o dia, depois o mês, os dois números inteiros. Escreva a data do dia seguinte no formato `dia/mês`, sem zeros à esquerda. Por exemplo, para o dia `28` e o mês `2`, escreva:\n\n```\n1/3\n```\n\nOs meses 1, 3, 5, 7, 8, 10 e 12 têm 31 dias; os meses 4, 6, 9 e 11 têm 30; e o mês 2 tem 28. Depois de 31/12 vem 1/1.\n\nO programa não deve escrever mais nada: nem mensagens pedindo os dados.",
+  "modo": "simples",
+  "exemplos": [
+    {
+      "descrição": "fim de fevereiro",
+      "entradas": ["28", "2"],
+      "saída": "1/3\n"
+    },
+    {
+      "descrição": "meio do mês",
+      "entradas": ["15", "6"],
+      "saída": "16/6\n"
+    }
+  ],
+  "testes": [
+    {
+      "descrição": "fim de um mês de 30 dias",
+      "entradas": ["30", "4"],
+      "saída": "1/5\n"
+    },
+    {
+      "descrição": "fim de um mês de 31 dias",
+      "entradas": ["31", "7"],
+      "saída": "1/8\n"
+    },
+    {
+      "descrição": "penúltimo dia do primeiro mês",
+      "entradas": ["30", "1"],
+      "saída": "31/1\n"
+    },
+    {
+      "descrição": "fim do ano",
+      "entradas": ["31", "12"],
+      "saída": "1/1\n"
+    },
+    {
+      "descrição": "primeiro dia do ano",
+      "entradas": ["1", "1"],
+      "saída": "2/1\n"
+    },
+    {
+      "descrição": "véspera do fim do mês mais curto",
+      "entradas": ["27", "2"],
+      "saída": "28/2\n"
+    },
+    {
+      "descrição": "fim de um mês de 30 dias no meio do ano",
+      "entradas": ["30", "6"],
+      "saída": "1/7\n"
+    },
+    {
+      "descrição": "fim de um mês de 30 dias do segundo semestre",
+      "entradas": ["30", "9"],
+      "saída": "1/10\n"
+    },
+    {
+      "descrição": "fim de um mês de 30 dias perto do fim do ano",
+      "entradas": ["30", "11"],
+      "saída": "1/12\n"
+    },
+    {
+      "descrição": "penúltimo dia de um mês de 30 dias",
+      "entradas": ["29", "4"],
+      "saída": "30/4\n"
+    },
+    {
+      "descrição": "penúltimo dia de um mês de 31 dias",
+      "entradas": ["30", "7"],
+      "saída": "31/7\n"
+    },
+    {
+      "descrição": "penúltimo dia de outro mês de 31 dias",
+      "entradas": ["30", "8"],
+      "saída": "31/8\n"
+    },
+    {
+      "descrição": "penúltimo dia de mais um mês de 31 dias",
+      "entradas": ["30", "10"],
+      "saída": "31/10\n"
+    },
+    {
+      "descrição": "penúltimo dia do ano",
+      "entradas": ["30", "12"],
+      "saída": "31/12\n"
+    },
+    {
+      "descrição": "fim de um mês de 31 dias do primeiro semestre",
+      "entradas": ["31", "3"],
+      "saída": "1/4\n"
+    },
+    {
+      "descrição": "penúltimo dia de um mês de 31 dias do primeiro semestre",
+      "entradas": ["30", "5"],
+      "saída": "31/5\n"
+    },
+    {
+      "descrição": "fim de um mês de 31 dias do segundo semestre",
+      "entradas": ["31", "10"],
+      "saída": "1/11\n"
+    }
+  ]
+}

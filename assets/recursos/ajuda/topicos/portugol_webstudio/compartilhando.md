@@ -10,4 +10,6 @@ Quem abrir o link vê o Portugol Webstudio com o código numa aba nova, chamada 
 
 > O link expira em 90 dias. Para guardar o código por mais tempo, baixe o arquivo (veja [Abas e arquivos](abas_e_arquivos.md)).
 
+Num [exercício](exercicios.md), o link leva junto a identificação do exercício: quem abrir vê o código com o enunciado e pode usar o **Verificar**.
+
 O código é enviado para a internet ao gerar o link, e qualquer pessoa com o link pode vê-lo. Não compartilhe informações pessoais no código.

@@ -1,0 +1,244 @@
+{
+  "$schema": "https://portugol.dev/esquemas/exercicio/v1.json",
+  "id": "pws:conta-do-restaurante",
+  "título": "Conta do restaurante",
+  "tópico": "operadores",
+  "dificuldade": 2,
+  "enunciado": "Leia o valor de uma conta de restaurante, em reais (um número real), e o número de pessoas que vão dividi-la (um número inteiro, pelo menos 1). Ao valor da conta é somada uma taxa de serviço de 10%.\n\nEscreva, nesta ordem, o total com a taxa de serviço e quanto cada pessoa paga, dividindo o total igualmente. Os dois precisam ser escritos como valores do tipo `real`. O programa pode escrever outros textos junto, e mensagens antes de cada leitura.\n\nPor exemplo, para uma conta de 100 reais dividida por 4 pessoas, o total é `110.0` e cada pessoa paga `27.5`.\n\nOs números com casas decimais são digitados com ponto, como em `1.75`.",
+  "modo": "avançado",
+  "exemplos": [
+    {
+      "descrição": "100 reais para 4 pessoas",
+      "entradas": ["100", "4"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "real",
+              "valor": 110.0
+            },
+            {
+              "tipo": "real",
+              "valor": 27.5
+            }
+          ],
+          "tolerância": 0.01
+        }
+      ]
+    }
+  ],
+  "testes": [
+    {
+      "descrição": "uma pessoa só",
+      "entradas": ["55.5", "1"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "real",
+              "valor": 61.05
+            },
+            {
+              "tipo": "real",
+              "valor": 61.05
+            }
+          ],
+          "tolerância": 0.01
+        }
+      ]
+    },
+    {
+      "descrição": "divisão que não termina",
+      "entradas": ["200", "3"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "real",
+              "valor": 220.0
+            },
+            {
+              "tipo": "real",
+              "valor": 73.3333
+            }
+          ],
+          "tolerância": 0.01
+        }
+      ]
+    },
+    {
+      "descrição": "conta com centavos",
+      "entradas": ["89.9", "2"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "real",
+              "valor": 98.89
+            },
+            {
+              "tipo": "real",
+              "valor": 49.445
+            }
+          ],
+          "tolerância": 0.01
+        }
+      ]
+    },
+    {
+      "descrição": "conta zero",
+      "entradas": ["0", "5"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "real",
+              "valor": 0.0
+            },
+            {
+              "tipo": "real",
+              "valor": 0.0
+            }
+          ],
+          "tolerância": 0.01
+        }
+      ]
+    },
+    {
+      "descrição": "muitas pessoas",
+      "entradas": ["1000", "8"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "real",
+              "valor": 1100.0
+            },
+            {
+              "tipo": "real",
+              "valor": 137.5
+            }
+          ],
+          "tolerância": 0.01
+        }
+      ]
+    },
+    {
+      "descrição": "duas pessoas",
+      "entradas": ["40", "2"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "real",
+              "valor": 44.0
+            },
+            {
+              "tipo": "real",
+              "valor": 22.0
+            }
+          ],
+          "tolerância": 0.01
+        }
+      ]
+    },
+    {
+      "descrição": "conta pequena",
+      "entradas": ["0.5", "1"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "real",
+              "valor": 0.55
+            },
+            {
+              "tipo": "real",
+              "valor": 0.55
+            }
+          ],
+          "tolerância": 0.01
+        }
+      ]
+    },
+    {
+      "descrição": "três pessoas com centavos",
+      "entradas": ["33.33", "3"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "real",
+              "valor": 36.663000000000004
+            },
+            {
+              "tipo": "real",
+              "valor": 12.221000000000002
+            }
+          ],
+          "tolerância": 0.01
+        }
+      ]
+    },
+    {
+      "descrição": "muitas pessoas e conta pequena",
+      "entradas": ["10", "7"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "real",
+              "valor": 11.0
+            },
+            {
+              "tipo": "real",
+              "valor": 1.5714285714285714
+            }
+          ],
+          "tolerância": 0.01
+        }
+      ]
+    },
+    {
+      "descrição": "conta grande",
+      "entradas": ["12345.67", "5"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "real",
+              "valor": 13580.237000000001
+            },
+            {
+              "tipo": "real",
+              "valor": 2716.0474000000004
+            }
+          ],
+          "tolerância": 0.01
+        }
+      ]
+    }
+  ]
+}

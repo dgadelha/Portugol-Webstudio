@@ -1,0 +1,293 @@
+{
+  "$schema": "https://portugol.dev/esquemas/exercicio/v1.json",
+  "id": "pws:duracao-entre-horarios",
+  "título": "Duração entre dois horários",
+  "tópico": "operadores",
+  "dificuldade": 3,
+  "enunciado": "Leia dois horários, cada um como dois números inteiros, a hora (de 0 a 23) e o minuto (de 0 a 59): primeiro a hora e o minuto do início, depois a hora e o minuto do fim. Escreva quanto tempo passou do início até o fim, em horas e minutos (os minutos de 0 a 59).\n\nO fim pode ser no dia seguinte: de 22:00 até 02:30 passam 4 horas e 30 minutos. Se os dois horários forem iguais, a duração é de 0 horas e 0 minutos.\n\nEscreva as horas e os minutos, nesta ordem, como valores do tipo `inteiro`. O programa pode escrever outros textos junto, e mensagens antes de cada leitura.",
+  "modo": "avançado",
+  "exemplos": [
+    {
+      "descrição": "no mesmo dia",
+      "entradas": ["8", "30", "17", "15"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 8
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 45
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "passando da meia-noite",
+      "entradas": ["22", "0", "2", "30"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 4
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 30
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "testes": [
+    {
+      "descrição": "horários iguais",
+      "entradas": ["10", "0", "10", "0"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "um minuto depois da meia-noite",
+      "entradas": ["23", "59", "0", "0"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "o dia quase inteiro",
+      "entradas": ["0", "0", "23", "59"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 23
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 59
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "um minuto antes do início",
+      "entradas": ["13", "45", "13", "44"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 23
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 59
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "minutos do fim menores que os do início",
+      "entradas": ["9", "50", "11", "10"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 1
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 20
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "exatamente uma hora",
+      "entradas": ["10", "0", "11", "0"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 1
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "duas horas exatas",
+      "entradas": ["14", "15", "16", "15"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 2
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "da meia-noite ao meio-dia",
+      "entradas": ["0", "0", "12", "0"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 12
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "do meio-dia à meia-noite",
+      "entradas": ["12", "0", "0", "0"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 12
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "um minuto",
+      "entradas": ["7", "0", "7", "1"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "passando da meia-noite com minutos menores",
+      "entradas": ["23", "45", "0", "15"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 30
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "passando da meia-noite por muitas horas",
+      "entradas": ["18", "30", "6", "0"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 11
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 30
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

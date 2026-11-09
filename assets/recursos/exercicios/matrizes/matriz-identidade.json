@@ -1,0 +1,58 @@
+{
+  "$schema": "https://portugol.dev/esquemas/exercicio/v1.json",
+  "id": "pws:matriz-identidade",
+  "título": "Matriz identidade",
+  "tópico": "matrizes",
+  "dificuldade": 1,
+  "enunciado": "Na matriz identidade, os elementos da diagonal principal (onde a linha e a coluna são iguais) valem 1, e todos os outros valem 0.\n\nLeia um número inteiro $n$, de 1 a 10, preencha uma matriz identidade $n \\times n$ e escreva-a, uma linha da matriz por linha, com os elementos separados por um espaço. Por exemplo, para $n = 3$:\n\n```\n1 0 0\n0 1 0\n0 0 1\n```\n\nO programa não deve escrever mais nada: nem mensagens pedindo os dados.",
+  "modo": "simples",
+  "exemplos": [
+    {
+      "descrição": "3×3",
+      "entradas": ["3"],
+      "saída": "1 0 0 \n0 1 0 \n0 0 1 \n"
+    }
+  ],
+  "testes": [
+    {
+      "descrição": "o menor tamanho",
+      "entradas": ["1"],
+      "saída": "1 \n"
+    },
+    {
+      "descrição": "tamanho pequeno",
+      "entradas": ["2"],
+      "saída": "1 0 \n0 1 \n"
+    },
+    {
+      "descrição": "tamanho médio",
+      "entradas": ["5"],
+      "saída": "1 0 0 0 0 \n0 1 0 0 0 \n0 0 1 0 0 \n0 0 0 1 0 \n0 0 0 0 1 \n"
+    },
+    {
+      "descrição": "o maior tamanho permitido",
+      "entradas": ["10"],
+      "saída": "1 0 0 0 0 0 0 0 0 0 \n0 1 0 0 0 0 0 0 0 0 \n0 0 1 0 0 0 0 0 0 0 \n0 0 0 1 0 0 0 0 0 0 \n0 0 0 0 1 0 0 0 0 0 \n0 0 0 0 0 1 0 0 0 0 \n0 0 0 0 0 0 1 0 0 0 \n0 0 0 0 0 0 0 1 0 0 \n0 0 0 0 0 0 0 0 1 0 \n0 0 0 0 0 0 0 0 0 1 \n"
+    },
+    {
+      "descrição": "tamanho par pequeno",
+      "entradas": ["4"],
+      "saída": "1 0 0 0 \n0 1 0 0 \n0 0 1 0 \n0 0 0 1 \n"
+    },
+    {
+      "descrição": "tamanho par médio",
+      "entradas": ["6"],
+      "saída": "1 0 0 0 0 0 \n0 1 0 0 0 0 \n0 0 1 0 0 0 \n0 0 0 1 0 0 \n0 0 0 0 1 0 \n0 0 0 0 0 1 \n"
+    },
+    {
+      "descrição": "tamanho ímpar médio",
+      "entradas": ["7"],
+      "saída": "1 0 0 0 0 0 0 \n0 1 0 0 0 0 0 \n0 0 1 0 0 0 0 \n0 0 0 1 0 0 0 \n0 0 0 0 1 0 0 \n0 0 0 0 0 1 0 \n0 0 0 0 0 0 1 \n"
+    },
+    {
+      "descrição": "tamanho ímpar grande",
+      "entradas": ["9"],
+      "saída": "1 0 0 0 0 0 0 0 0 \n0 1 0 0 0 0 0 0 0 \n0 0 1 0 0 0 0 0 0 \n0 0 0 1 0 0 0 0 0 \n0 0 0 0 1 0 0 0 0 \n0 0 0 0 0 1 0 0 0 \n0 0 0 0 0 0 1 0 0 \n0 0 0 0 0 0 0 1 0 \n0 0 0 0 0 0 0 0 1 \n"
+    }
+  ]
+}

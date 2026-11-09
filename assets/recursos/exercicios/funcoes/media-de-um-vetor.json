@@ -1,0 +1,295 @@
+{
+  "$schema": "https://portugol.dev/esquemas/exercicio/v1.json",
+  "id": "pws:media-de-um-vetor",
+  "título": "Média de um vetor",
+  "tópico": "funcoes",
+  "dificuldade": 2,
+  "enunciado": "Escreva a função `media`, que recebe um vetor de números reais e o número de elementos dele, e retorna a média dos elementos:\n\n$$\\text{média} = \\frac{v_0 + v_1 + \\cdots + v_{n-1}}{n}$$\n\nA função deve ter esta assinatura:\n\n```portugol\nfuncao real media(real valores[], inteiro tamanho)\n```\n\nO vetor sempre tem pelo menos um elemento. Só a função é conferida: o `inicio` pode ficar vazio, ou testar a função como você quiser.",
+  "códigoInicial": "programa {\n  funcao real media(real valores[], inteiro tamanho) {\n    retorne 0.0\n  }\n\n  funcao inicio() {\n    real notas[] = {7.0, 8.5, 6.0}\n\n    escreva(media(notas, 3))\n  }\n}\n",
+  "modo": "avançado",
+  "exemplos": [
+    {
+      "descrição": "três notas",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "media",
+          "argumentos": [
+            {
+              "tipo": "real[]",
+              "valor": [7.0, 8.5, 6.0]
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 3
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "real",
+            "valor": 7.166667
+          },
+          "tolerância": 0.0001
+        }
+      ]
+    }
+  ],
+  "testes": [
+    {
+      "descrição": "um elemento",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "media",
+          "argumentos": [
+            {
+              "tipo": "real[]",
+              "valor": [4.5]
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 1
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "real",
+            "valor": 4.5
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "números negativos",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "media",
+          "argumentos": [
+            {
+              "tipo": "real[]",
+              "valor": [-2.0, -4.0, 3.0, -1.0]
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 4
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "real",
+            "valor": -1.0
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "média com casas decimais",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "media",
+          "argumentos": [
+            {
+              "tipo": "real[]",
+              "valor": [1.0, 2.0]
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 2
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "real",
+            "valor": 1.5
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "todos zero",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "media",
+          "argumentos": [
+            {
+              "tipo": "real[]",
+              "valor": [0.0, 0.0, 0.0]
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 3
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "real",
+            "valor": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "vetor com muitos elementos",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "media",
+          "argumentos": [
+            {
+              "tipo": "real[]",
+              "valor": [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0]
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 10
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "real",
+            "valor": 5.5
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "três elementos com dízima",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "media",
+          "argumentos": [
+            {
+              "tipo": "real[]",
+              "valor": [1.0, 2.0, 2.0]
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 3
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "real",
+            "valor": 1.666667
+          },
+          "tolerância": 0.0001
+        }
+      ]
+    },
+    {
+      "descrição": "valores grandes",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "media",
+          "argumentos": [
+            {
+              "tipo": "real[]",
+              "valor": [1000000.0, 2000000.0]
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 2
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "real",
+            "valor": 1500000.0
+          },
+          "tolerância": 0.0001
+        }
+      ]
+    },
+    {
+      "descrição": "que se anulam",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "media",
+          "argumentos": [
+            {
+              "tipo": "real[]",
+              "valor": [-3.0, 3.0]
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 2
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "real",
+            "valor": 0.0
+          },
+          "tolerância": 0.0001
+        }
+      ]
+    },
+    {
+      "descrição": "um elemento negativo",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "media",
+          "argumentos": [
+            {
+              "tipo": "real[]",
+              "valor": [-7.5]
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 1
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "real",
+            "valor": -7.5
+          },
+          "tolerância": 0.0001
+        }
+      ]
+    },
+    {
+      "descrição": "casas decimais pequenas",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "media",
+          "argumentos": [
+            {
+              "tipo": "real[]",
+              "valor": [0.1, 0.2, 0.3]
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 3
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "real",
+            "valor": 0.2
+          },
+          "tolerância": 0.0001
+        }
+      ]
+    }
+  ]
+}

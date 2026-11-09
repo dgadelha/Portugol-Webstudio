@@ -1,0 +1,58 @@
+{
+  "$schema": "https://portugol.dev/esquemas/exercicio/v1.json",
+  "id": "pws:ficha-de-cadastro",
+  "título": "Ficha de cadastro",
+  "tópico": "entrada-e-variaveis",
+  "dificuldade": 1,
+  "enunciado": "Leia, nesta ordem, o nome de uma pessoa, a idade dela (um número inteiro) e a cidade onde ela mora. Depois, escreva uma ficha neste formato (para `Ana`, `15` e `Recife`):\n\n```\nNome: Ana\nIdade: 15 anos\nCidade: Recife\n```\n\nO nome e a cidade podem ter espaços. O programa não deve escrever mais nada: nem mensagens pedindo os dados.",
+  "modo": "simples",
+  "exemplos": [
+    {
+      "descrição": "Ana, de Recife",
+      "entradas": ["Ana", "15", "Recife"],
+      "saída": "Nome: Ana\nIdade: 15 anos\nCidade: Recife\n"
+    }
+  ],
+  "testes": [
+    {
+      "descrição": "cidade com espaço",
+      "entradas": ["Carlos", "17", "São Paulo"],
+      "saída": "Nome: Carlos\nIdade: 17 anos\nCidade: São Paulo\n"
+    },
+    {
+      "descrição": "nome composto",
+      "entradas": ["Maria Eduarda", "16", "Manaus"],
+      "saída": "Nome: Maria Eduarda\nIdade: 16 anos\nCidade: Manaus\n"
+    },
+    {
+      "descrição": "idade zero",
+      "entradas": ["Bia", "0", "Natal"],
+      "saída": "Nome: Bia\nIdade: 0 anos\nCidade: Natal\n"
+    },
+    {
+      "descrição": "idade alta",
+      "entradas": ["Joaquim", "102", "Belo Horizonte"],
+      "saída": "Nome: Joaquim\nIdade: 102 anos\nCidade: Belo Horizonte\n"
+    },
+    {
+      "descrição": "idade de um dígito",
+      "entradas": ["Lia", "7", "Belém"],
+      "saída": "Nome: Lia\nIdade: 7 anos\nCidade: Belém\n"
+    },
+    {
+      "descrição": "nome com acento",
+      "entradas": ["Átila", "30", "Goiânia"],
+      "saída": "Nome: Átila\nIdade: 30 anos\nCidade: Goiânia\n"
+    },
+    {
+      "descrição": "cidade com hífen",
+      "entradas": ["Rui", "45", "Embu-Guaçu"],
+      "saída": "Nome: Rui\nIdade: 45 anos\nCidade: Embu-Guaçu\n"
+    },
+    {
+      "descrição": "nome igual à cidade",
+      "entradas": ["Natal", "10", "Natal"],
+      "saída": "Nome: Natal\nIdade: 10 anos\nCidade: Natal\n"
+    }
+  ]
+}

@@ -1,0 +1,193 @@
+{
+  "$schema": "https://portugol.dev/esquemas/exercicio/v1.json",
+  "id": "pws:inverter-numero-de-tres-digitos",
+  "título": "Inverter um número de três dígitos",
+  "tópico": "operadores",
+  "dificuldade": 3,
+  "enunciado": "Leia um número inteiro de três dígitos (de 100 a 999) e escreva o número com os dígitos na ordem inversa. Por exemplo, 136 vira 631.\n\nO resultado precisa ser escrito como um valor do tipo `inteiro`. Por isso, um zero que fica à esquerda some: 120 vira 21, e 100 vira 1.\n\nO programa pode escrever mensagens antes da leitura.",
+  "modo": "avançado",
+  "exemplos": [
+    {
+      "descrição": "136",
+      "entradas": ["136"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 631
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "testes": [
+    {
+      "descrição": "termina em zero",
+      "entradas": ["120"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 21
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "o menor número de três dígitos",
+      "entradas": ["100"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "o maior número de três dígitos",
+      "entradas": ["999"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 999
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "zero no meio",
+      "entradas": ["407"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 704
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "um número que é igual ao contrário",
+      "entradas": ["525"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 525
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "dígitos iguais",
+      "entradas": ["777"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 777
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "dígitos em ordem crescente",
+      "entradas": ["123"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 321
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "dois zeros no fim",
+      "entradas": ["500"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "zero só no fim",
+      "entradas": ["990"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 99
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "dígitos das pontas diferentes",
+      "entradas": ["109"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 901
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "atribuição": {
+    "fonte": "Portugol Studio (UNIVALI), exercício 09",
+    "licença": "LGPL-3.0"
+  }
+}

@@ -1,0 +1,266 @@
+{
+  "$schema": "https://portugol.dev/esquemas/exercicio/v1.json",
+  "id": "pws:contar-vogais",
+  "título": "Contar vogais",
+  "tópico": "funcoes",
+  "dificuldade": 2,
+  "enunciado": "Escreva a função `contar_vogais`, que recebe um texto e retorna quantas vogais (`a`, `e`, `i`, `o` e `u`) ele tem, contando tanto as minúsculas quanto as maiúsculas. O texto não tem acentos.\n\nPor exemplo, `contar_vogais(\"Portugol\")` retorna 3.\n\nA função deve ter esta assinatura:\n\n```portugol\nfuncao inteiro contar_vogais(cadeia texto)\n```\n\nSó a função é conferida: o `inicio` pode ficar vazio, ou testar a função como você quiser.",
+  "códigoInicial": "programa {\n  inclua biblioteca Texto --> tx\n\n  funcao inteiro contar_vogais(cadeia texto) {\n    retorne 0\n  }\n\n  funcao inicio() {\n    escreva(contar_vogais(\"Portugol\"))\n  }\n}\n",
+  "modo": "avançado",
+  "exemplos": [
+    {
+      "descrição": "uma palavra",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "contar_vogais",
+          "argumentos": [
+            {
+              "tipo": "cadeia",
+              "valor": "Portugol"
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "inteiro",
+            "valor": 3
+          }
+        }
+      ]
+    }
+  ],
+  "testes": [
+    {
+      "descrição": "texto vazio",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "contar_vogais",
+          "argumentos": [
+            {
+              "tipo": "cadeia",
+              "valor": ""
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "inteiro",
+            "valor": 0
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "sem vogais",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "contar_vogais",
+          "argumentos": [
+            {
+              "tipo": "cadeia",
+              "valor": "xyz"
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "inteiro",
+            "valor": 0
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "vogais maiúsculas e minúsculas",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "contar_vogais",
+          "argumentos": [
+            {
+              "tipo": "cadeia",
+              "valor": "AEIOU aeiou"
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "inteiro",
+            "valor": 10
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "uma frase",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "contar_vogais",
+          "argumentos": [
+            {
+              "tipo": "cadeia",
+              "valor": "Programar e divertido"
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "inteiro",
+            "valor": 8
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "com números e pontuação",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "contar_vogais",
+          "argumentos": [
+            {
+              "tipo": "cadeia",
+              "valor": "Ola, mundo! 123"
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "inteiro",
+            "valor": 4
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "só vogais repetidas",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "contar_vogais",
+          "argumentos": [
+            {
+              "tipo": "cadeia",
+              "valor": "aaaa"
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "inteiro",
+            "valor": 4
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "vogais no começo e no fim",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "contar_vogais",
+          "argumentos": [
+            {
+              "tipo": "cadeia",
+              "valor": "abacate"
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "inteiro",
+            "valor": 4
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "maiúsculas e minúsculas misturadas",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "contar_vogais",
+          "argumentos": [
+            {
+              "tipo": "cadeia",
+              "valor": "PoRtUgOl"
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "inteiro",
+            "valor": 3
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "só espaços",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "contar_vogais",
+          "argumentos": [
+            {
+              "tipo": "cadeia",
+              "valor": "   "
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "inteiro",
+            "valor": 0
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "só uma consoante que às vezes soa como vogal",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "contar_vogais",
+          "argumentos": [
+            {
+              "tipo": "cadeia",
+              "valor": "yyy"
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "inteiro",
+            "valor": 0
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "uma frase longa",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "contar_vogais",
+          "argumentos": [
+            {
+              "tipo": "cadeia",
+              "valor": "O rato roeu a roupa do rei de Roma"
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "inteiro",
+            "valor": 16
+          }
+        }
+      ]
+    }
+  ]
+}

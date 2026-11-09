@@ -1,4 +1,4 @@
-# Bibliotecas
+# Usando bibliotecas
 
 Em todo algoritmo que se possa elaborar, existe a possibilidade da utilização de um conjunto de funções e comandos já existentes. A estes conjuntos de funções e comandos, dá-se o nome de Bibliotecas.
 

@@ -1,0 +1,68 @@
+{
+  "$schema": "https://portugol.dev/esquemas/exercicio/v1.json",
+  "id": "pws:cor-do-semaforo",
+  "título": "Cor do semáforo",
+  "tópico": "escolha",
+  "dificuldade": 1,
+  "enunciado": "Leia um caractere que representa a cor de um semáforo e escreva o que o motorista deve fazer:\n\n| Caractere | Escreva |\n| --- | --- |\n| `v` ou `V` (verde) | `siga` |\n| `a` ou `A` (amarelo) | `atenção` |\n| `r` ou `R` (vermelho) | `pare` |\n\nPara qualquer outro caractere, escreva `cor inválida`.\n\nO programa não deve escrever mais nada: nem mensagens pedindo os dados.",
+  "modo": "simples",
+  "exemplos": [
+    {
+      "descrição": "verde",
+      "entradas": ["v"],
+      "saída": "siga\n"
+    },
+    {
+      "descrição": "vermelho em maiúscula",
+      "entradas": ["R"],
+      "saída": "pare\n"
+    }
+  ],
+  "testes": [
+    {
+      "descrição": "uma cor em minúscula",
+      "entradas": ["a"],
+      "saída": "atenção\n"
+    },
+    {
+      "descrição": "uma cor em maiúscula",
+      "entradas": ["A"],
+      "saída": "atenção\n"
+    },
+    {
+      "descrição": "outra cor em maiúscula",
+      "entradas": ["V"],
+      "saída": "siga\n"
+    },
+    {
+      "descrição": "outra cor em minúscula",
+      "entradas": ["r"],
+      "saída": "pare\n"
+    },
+    {
+      "descrição": "outra letra",
+      "entradas": ["x"],
+      "saída": "cor inválida\n"
+    },
+    {
+      "descrição": "um número",
+      "entradas": ["1"],
+      "saída": "cor inválida\n"
+    },
+    {
+      "descrição": "a inicial de uma cor em inglês",
+      "entradas": ["g"],
+      "saída": "cor inválida\n"
+    },
+    {
+      "descrição": "uma letra maiúscula que não é cor",
+      "entradas": ["B"],
+      "saída": "cor inválida\n"
+    },
+    {
+      "descrição": "um sinal",
+      "entradas": ["?"],
+      "saída": "cor inválida\n"
+    }
+  ]
+}

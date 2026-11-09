@@ -1,0 +1,58 @@
+{
+  "$schema": "https://portugol.dev/esquemas/exercicio/v1.json",
+  "id": "pws:inverter-vetor",
+  "título": "Inverter um vetor",
+  "tópico": "vetores",
+  "dificuldade": 1,
+  "enunciado": "Leia 5 números inteiros e guarde-os num vetor. Depois, escreva os números na ordem contrária à da leitura, um por linha. Por exemplo, para `1`, `2`, `3`, `4` e `5`:\n\n```\n5\n4\n3\n2\n1\n```\n\nO programa não deve escrever mais nada: nem mensagens pedindo os dados.",
+  "modo": "simples",
+  "exemplos": [
+    {
+      "descrição": "de 1 a 5",
+      "entradas": ["1", "2", "3", "4", "5"],
+      "saída": "5\n4\n3\n2\n1\n"
+    }
+  ],
+  "testes": [
+    {
+      "descrição": "números fora de ordem",
+      "entradas": ["8", "-3", "15", "0", "7"],
+      "saída": "7\n0\n15\n-3\n8\n"
+    },
+    {
+      "descrição": "números repetidos",
+      "entradas": ["4", "4", "9", "4", "4"],
+      "saída": "4\n4\n9\n4\n4\n"
+    },
+    {
+      "descrição": "todos iguais",
+      "entradas": ["2", "2", "2", "2", "2"],
+      "saída": "2\n2\n2\n2\n2\n"
+    },
+    {
+      "descrição": "números negativos e grandes",
+      "entradas": ["-100", "250000", "-1", "99999", "-42"],
+      "saída": "-42\n99999\n-1\n250000\n-100\n"
+    },
+    {
+      "descrição": "com zeros",
+      "entradas": ["0", "1", "0", "2", "0"],
+      "saída": "0\n2\n0\n1\n0\n"
+    },
+    {
+      "descrição": "em ordem decrescente",
+      "entradas": ["50", "40", "30", "20", "10"],
+      "saída": "10\n20\n30\n40\n50\n"
+    },
+    {
+      "descrição": "um negativo no meio",
+      "entradas": ["1", "2", "-3", "4", "5"],
+      "saída": "5\n4\n-3\n2\n1\n"
+    },
+    {
+      "descrição": "primeiro e último diferentes do resto",
+      "entradas": ["9", "0", "0", "0", "-9"],
+      "saída": "-9\n0\n0\n0\n9\n"
+    }
+  ]
+}

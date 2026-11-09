@@ -1,0 +1,88 @@
+{
+  "$schema": "https://portugol.dev/esquemas/exercicio/v1.json",
+  "id": "pws:maior-sequencia-crescente",
+  "título": "Maior sequência crescente",
+  "tópico": "lacos",
+  "dificuldade": 3,
+  "enunciado": "Leia números inteiros, um de cada vez, até que seja lido o número 0, que não faz parte da lista. Escreva o tamanho do maior trecho de números seguidos em que cada número é maior que o anterior.\n\nPor exemplo, na lista `3`, `1`, `4`, `6`, `9`, `2`, `5` (seguida do 0), o maior trecho crescente é 1, 4, 6, 9. Escreva:\n\n```\n4\n```\n\nUm número sozinho é um trecho de tamanho 1. Números iguais não são crescentes. Se a lista estiver vazia (o primeiro número já é 0), escreva `0`. O programa não deve escrever mais nada: nem mensagens pedindo os dados.",
+  "modo": "simples",
+  "exemplos": [
+    {
+      "descrição": "um trecho no meio",
+      "entradas": ["3", "1", "4", "6", "9", "2", "5", "0"],
+      "saída": "4\n"
+    }
+  ],
+  "testes": [
+    {
+      "descrição": "lista vazia",
+      "entradas": ["0"],
+      "saída": "0\n"
+    },
+    {
+      "descrição": "um número",
+      "entradas": ["8", "0"],
+      "saída": "1\n"
+    },
+    {
+      "descrição": "números iguais",
+      "entradas": ["4", "4", "4", "0"],
+      "saída": "1\n"
+    },
+    {
+      "descrição": "em ordem decrescente",
+      "entradas": ["5", "4", "3", "2", "0"],
+      "saída": "1\n"
+    },
+    {
+      "descrição": "números negativos crescentes",
+      "entradas": ["-3", "-2", "-1", "0"],
+      "saída": "3\n"
+    },
+    {
+      "descrição": "o maior trecho no fim",
+      "entradas": ["1", "2", "1", "2", "3", "4", "5", "0"],
+      "saída": "5\n"
+    },
+    {
+      "descrição": "o maior trecho no começo",
+      "entradas": ["1", "2", "3", "1", "0"],
+      "saída": "3\n"
+    },
+    {
+      "descrição": "dois trechos do mesmo tamanho",
+      "entradas": ["1", "2", "1", "2", "0"],
+      "saída": "2\n"
+    },
+    {
+      "descrição": "números negativos decrescentes",
+      "entradas": ["-1", "-2", "-3", "0"],
+      "saída": "1\n"
+    },
+    {
+      "descrição": "números iguais no meio",
+      "entradas": ["1", "2", "2", "3", "4", "0"],
+      "saída": "3\n"
+    },
+    {
+      "descrição": "um número negativo",
+      "entradas": ["-5", "0"],
+      "saída": "1\n"
+    },
+    {
+      "descrição": "números grandes",
+      "entradas": ["100", "1000", "10000", "100000", "0"],
+      "saída": "4\n"
+    },
+    {
+      "descrição": "positivos e negativos alternados",
+      "entradas": ["-1", "1", "-1", "1", "-1", "0"],
+      "saída": "2\n"
+    },
+    {
+      "descrição": "dois números crescentes",
+      "entradas": ["1", "2", "0"],
+      "saída": "2\n"
+    }
+  ]
+}

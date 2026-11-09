@@ -1,0 +1,1235 @@
+{
+  "$id": "https://portugol.dev/esquemas/exercicio/v1.json",
+  "title": "Exercício do Portugol Webstudio",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "oneOf": [
+    {
+      "type": "object",
+      "properties": {
+        "$schema": {
+          "type": "string",
+          "const": "https://portugol.dev/esquemas/exercicio/v1.json"
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^(?:pws:[a-z0-9]+(?:-[a-z0-9]+)*|share:[a-z0-9]{6,32})$",
+          "description": "Identificador estável: 'pws:<slug>' nos exercícios embutidos, 'share:<id>' nos compartilhados por link. Nunca muda"
+        },
+        "título": {
+          "type": "string",
+          "minLength": 1
+        },
+        "tópico": {
+          "type": "string",
+          "enum": [
+            "saida",
+            "entrada-e-variaveis",
+            "operadores",
+            "condicionais",
+            "escolha",
+            "lacos",
+            "vetores",
+            "matrizes",
+            "funcoes"
+          ]
+        },
+        "dificuldade": {
+          "anyOf": [
+            {
+              "type": "number",
+              "const": 1
+            },
+            {
+              "type": "number",
+              "const": 2
+            },
+            {
+              "type": "number",
+              "const": 3
+            }
+          ],
+          "description": "1: fácil, 2: médio, 3: difícil"
+        },
+        "enunciado": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 10000,
+          "description": "Markdown sem HTML; fórmulas entre $ ou $$"
+        },
+        "códigoInicial": {
+          "description": "Código que o aluno recebe ao abrir o exercício",
+          "type": "string"
+        },
+        "atribuição": {
+          "description": "Fonte e licença, quando o exercício foi adaptado de perto de outro",
+          "type": "object",
+          "properties": {
+            "fonte": {
+              "type": "string",
+              "minLength": 1
+            },
+            "licença": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "fonte",
+            "licença"
+          ],
+          "additionalProperties": false
+        },
+        "modo": {
+          "type": "string",
+          "const": "simples",
+          "description": "Compara o texto escrito, linha a linha"
+        },
+        "exemplos": {
+          "minItems": 1,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "descrição": {
+                "description": "Descrição curta, mostrada no resultado: \"teste 8 (números negativos)\"",
+                "type": "string",
+                "minLength": 1
+              },
+              "entradas": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "O que cada 'leia' recebe, na ordem, como se fosse digitado. Só o 'inicio' recebe entradas: as funções conferidas sozinhas não"
+              },
+              "saída": {
+                "type": "string",
+                "description": "O texto escrito pela solução de referência, em <slug>.solucao.por (gerado, não editar à mão)"
+              }
+            },
+            "required": [
+              "entradas",
+              "saída"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "testes": {
+          "minItems": 1,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "descrição": {
+                "description": "Descrição curta, mostrada no resultado: \"teste 8 (números negativos)\"",
+                "type": "string",
+                "minLength": 1
+              },
+              "entradas": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "O que cada 'leia' recebe, na ordem, como se fosse digitado. Só o 'inicio' recebe entradas: as funções conferidas sozinhas não"
+              },
+              "saída": {
+                "type": "string",
+                "description": "O texto escrito pela solução de referência, em <slug>.solucao.por (gerado, não editar à mão)"
+              }
+            },
+            "required": [
+              "entradas",
+              "saída"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "$schema",
+        "id",
+        "título",
+        "tópico",
+        "dificuldade",
+        "enunciado",
+        "modo",
+        "exemplos",
+        "testes"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "$schema": {
+          "type": "string",
+          "const": "https://portugol.dev/esquemas/exercicio/v1.json"
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^(?:pws:[a-z0-9]+(?:-[a-z0-9]+)*|share:[a-z0-9]{6,32})$",
+          "description": "Identificador estável: 'pws:<slug>' nos exercícios embutidos, 'share:<id>' nos compartilhados por link. Nunca muda"
+        },
+        "título": {
+          "type": "string",
+          "minLength": 1
+        },
+        "tópico": {
+          "type": "string",
+          "enum": [
+            "saida",
+            "entrada-e-variaveis",
+            "operadores",
+            "condicionais",
+            "escolha",
+            "lacos",
+            "vetores",
+            "matrizes",
+            "funcoes"
+          ]
+        },
+        "dificuldade": {
+          "anyOf": [
+            {
+              "type": "number",
+              "const": 1
+            },
+            {
+              "type": "number",
+              "const": 2
+            },
+            {
+              "type": "number",
+              "const": 3
+            }
+          ],
+          "description": "1: fácil, 2: médio, 3: difícil"
+        },
+        "enunciado": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 10000,
+          "description": "Markdown sem HTML; fórmulas entre $ ou $$"
+        },
+        "códigoInicial": {
+          "description": "Código que o aluno recebe ao abrir o exercício",
+          "type": "string"
+        },
+        "atribuição": {
+          "description": "Fonte e licença, quando o exercício foi adaptado de perto de outro",
+          "type": "object",
+          "properties": {
+            "fonte": {
+              "type": "string",
+              "minLength": 1
+            },
+            "licença": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "fonte",
+            "licença"
+          ],
+          "additionalProperties": false
+        },
+        "modo": {
+          "type": "string",
+          "const": "avançado",
+          "description": "Compara os valores escritos ou retornados, com o tipo"
+        },
+        "exemplos": {
+          "minItems": 1,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "descrição": {
+                "description": "Descrição curta, mostrada no resultado: \"teste 8 (números negativos)\"",
+                "type": "string",
+                "minLength": 1
+              },
+              "entradas": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "O que cada 'leia' recebe, na ordem, como se fosse digitado. Só o 'inicio' recebe entradas: as funções conferidas sozinhas não"
+              },
+              "verificações": {
+                "minItems": 1,
+                "type": "array",
+                "items": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "descrição": {
+                          "description": "Descrição curta, mostrada no resultado: \"teste 8 (números negativos)\"",
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "alvo": {
+                          "type": "string",
+                          "const": "escreva",
+                          "description": "O que é verificado: os valores escritos pelo 'escreva', um por argumento"
+                        },
+                        "regra": {
+                          "type": "string",
+                          "enum": [
+                            "igual",
+                            "contém"
+                          ],
+                          "description": "'igual': os valores escritos são exatamente estes. 'contém': estes valores aparecem, nesta ordem, entre os escritos depois da última leitura (as mensagens antes de cada 'leia' não contam)"
+                        },
+                        "valores": {
+                          "minItems": 1,
+                          "type": "array",
+                          "items": {
+                            "oneOf": [
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "tipo": {
+                                    "type": "string",
+                                    "const": "inteiro"
+                                  },
+                                  "valor": {
+                                    "type": "integer",
+                                    "minimum": -9007199254740991,
+                                    "maximum": 9007199254740991
+                                  }
+                                },
+                                "required": [
+                                  "tipo",
+                                  "valor"
+                                ]
+                              },
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "tipo": {
+                                    "type": "string",
+                                    "const": "real"
+                                  },
+                                  "valor": {
+                                    "type": "number"
+                                  }
+                                },
+                                "required": [
+                                  "tipo",
+                                  "valor"
+                                ]
+                              },
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "tipo": {
+                                    "type": "string",
+                                    "const": "cadeia"
+                                  },
+                                  "valor": {
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "tipo",
+                                  "valor"
+                                ]
+                              },
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "tipo": {
+                                    "type": "string",
+                                    "const": "caracter"
+                                  },
+                                  "valor": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 1
+                                  }
+                                },
+                                "required": [
+                                  "tipo",
+                                  "valor"
+                                ]
+                              },
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "tipo": {
+                                    "type": "string",
+                                    "const": "logico"
+                                  },
+                                  "valor": {
+                                    "type": "boolean"
+                                  }
+                                },
+                                "required": [
+                                  "tipo",
+                                  "valor"
+                                ]
+                              }
+                            ],
+                            "description": "Um valor escrito pelo programa, com o tipo"
+                          }
+                        },
+                        "tolerância": {
+                          "description": "Diferença aceita ao comparar valores do tipo real (padrão: 0.000001)",
+                          "type": "number",
+                          "minimum": 0
+                        }
+                      },
+                      "required": [
+                        "alvo",
+                        "regra",
+                        "valores"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "descrição": {
+                          "description": "Descrição curta, mostrada no resultado: \"teste 8 (números negativos)\"",
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "alvo": {
+                          "type": "string",
+                          "const": "função",
+                          "description": "O que é verificado: o retorno de uma função do programa, chamada sozinha (sem o 'inicio' e sem entradas)"
+                        },
+                        "nome": {
+                          "type": "string",
+                          "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+                          "description": "O nome da função. A assinatura esperada vem dos tipos dos argumentos e do valor"
+                        },
+                        "argumentos": {
+                          "type": "array",
+                          "items": {
+                            "anyOf": [
+                              {
+                                "oneOf": [
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "tipo": {
+                                        "type": "string",
+                                        "const": "inteiro"
+                                      },
+                                      "valor": {
+                                        "type": "integer",
+                                        "minimum": -9007199254740991,
+                                        "maximum": 9007199254740991
+                                      }
+                                    },
+                                    "required": [
+                                      "tipo",
+                                      "valor"
+                                    ]
+                                  },
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "tipo": {
+                                        "type": "string",
+                                        "const": "real"
+                                      },
+                                      "valor": {
+                                        "type": "number"
+                                      }
+                                    },
+                                    "required": [
+                                      "tipo",
+                                      "valor"
+                                    ]
+                                  },
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "tipo": {
+                                        "type": "string",
+                                        "const": "cadeia"
+                                      },
+                                      "valor": {
+                                        "type": "string"
+                                      }
+                                    },
+                                    "required": [
+                                      "tipo",
+                                      "valor"
+                                    ]
+                                  },
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "tipo": {
+                                        "type": "string",
+                                        "const": "caracter"
+                                      },
+                                      "valor": {
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "maxLength": 1
+                                      }
+                                    },
+                                    "required": [
+                                      "tipo",
+                                      "valor"
+                                    ]
+                                  },
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "tipo": {
+                                        "type": "string",
+                                        "const": "logico"
+                                      },
+                                      "valor": {
+                                        "type": "boolean"
+                                      }
+                                    },
+                                    "required": [
+                                      "tipo",
+                                      "valor"
+                                    ]
+                                  }
+                                ],
+                                "description": "Um valor escrito pelo programa, com o tipo"
+                              },
+                              {
+                                "oneOf": [
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "tipo": {
+                                        "type": "string",
+                                        "const": "inteiro[]"
+                                      },
+                                      "valor": {
+                                        "type": "array",
+                                        "items": {
+                                          "type": "integer",
+                                          "minimum": -9007199254740991,
+                                          "maximum": 9007199254740991
+                                        }
+                                      }
+                                    },
+                                    "required": [
+                                      "tipo",
+                                      "valor"
+                                    ]
+                                  },
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "tipo": {
+                                        "type": "string",
+                                        "const": "real[]"
+                                      },
+                                      "valor": {
+                                        "type": "array",
+                                        "items": {
+                                          "type": "number"
+                                        }
+                                      }
+                                    },
+                                    "required": [
+                                      "tipo",
+                                      "valor"
+                                    ]
+                                  },
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "tipo": {
+                                        "type": "string",
+                                        "const": "cadeia[]"
+                                      },
+                                      "valor": {
+                                        "type": "array",
+                                        "items": {
+                                          "type": "string"
+                                        }
+                                      }
+                                    },
+                                    "required": [
+                                      "tipo",
+                                      "valor"
+                                    ]
+                                  },
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "tipo": {
+                                        "type": "string",
+                                        "const": "caracter[]"
+                                      },
+                                      "valor": {
+                                        "type": "array",
+                                        "items": {
+                                          "type": "string",
+                                          "minLength": 1,
+                                          "maxLength": 1
+                                        }
+                                      }
+                                    },
+                                    "required": [
+                                      "tipo",
+                                      "valor"
+                                    ]
+                                  },
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "tipo": {
+                                        "type": "string",
+                                        "const": "logico[]"
+                                      },
+                                      "valor": {
+                                        "type": "array",
+                                        "items": {
+                                          "type": "boolean"
+                                        }
+                                      }
+                                    },
+                                    "required": [
+                                      "tipo",
+                                      "valor"
+                                    ]
+                                  }
+                                ],
+                                "description": "Um vetor, com o tipo dos elementos"
+                              }
+                            ]
+                          },
+                          "description": "Os argumentos da chamada, na ordem, com o tipo"
+                        },
+                        "regra": {
+                          "type": "string",
+                          "const": "igual",
+                          "description": "'igual': a função retorna exatamente este valor"
+                        },
+                        "valor": {
+                          "oneOf": [
+                            {
+                              "type": "object",
+                              "properties": {
+                                "tipo": {
+                                  "type": "string",
+                                  "const": "inteiro"
+                                },
+                                "valor": {
+                                  "type": "integer",
+                                  "minimum": -9007199254740991,
+                                  "maximum": 9007199254740991
+                                }
+                              },
+                              "required": [
+                                "tipo",
+                                "valor"
+                              ]
+                            },
+                            {
+                              "type": "object",
+                              "properties": {
+                                "tipo": {
+                                  "type": "string",
+                                  "const": "real"
+                                },
+                                "valor": {
+                                  "type": "number"
+                                }
+                              },
+                              "required": [
+                                "tipo",
+                                "valor"
+                              ]
+                            },
+                            {
+                              "type": "object",
+                              "properties": {
+                                "tipo": {
+                                  "type": "string",
+                                  "const": "cadeia"
+                                },
+                                "valor": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "tipo",
+                                "valor"
+                              ]
+                            },
+                            {
+                              "type": "object",
+                              "properties": {
+                                "tipo": {
+                                  "type": "string",
+                                  "const": "caracter"
+                                },
+                                "valor": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 1
+                                }
+                              },
+                              "required": [
+                                "tipo",
+                                "valor"
+                              ]
+                            },
+                            {
+                              "type": "object",
+                              "properties": {
+                                "tipo": {
+                                  "type": "string",
+                                  "const": "logico"
+                                },
+                                "valor": {
+                                  "type": "boolean"
+                                }
+                              },
+                              "required": [
+                                "tipo",
+                                "valor"
+                              ]
+                            }
+                          ],
+                          "description": "O valor que a função retorna, com o tipo"
+                        },
+                        "tolerância": {
+                          "description": "Diferença aceita ao comparar valores do tipo real (padrão: 0.000001)",
+                          "type": "number",
+                          "minimum": 0
+                        }
+                      },
+                      "required": [
+                        "alvo",
+                        "nome",
+                        "argumentos",
+                        "regra",
+                        "valor"
+                      ],
+                      "additionalProperties": false
+                    }
+                  ]
+                }
+              }
+            },
+            "required": [
+              "entradas",
+              "verificações"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "testes": {
+          "minItems": 1,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "descrição": {
+                "description": "Descrição curta, mostrada no resultado: \"teste 8 (números negativos)\"",
+                "type": "string",
+                "minLength": 1
+              },
+              "entradas": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "O que cada 'leia' recebe, na ordem, como se fosse digitado. Só o 'inicio' recebe entradas: as funções conferidas sozinhas não"
+              },
+              "verificações": {
+                "minItems": 1,
+                "type": "array",
+                "items": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "descrição": {
+                          "description": "Descrição curta, mostrada no resultado: \"teste 8 (números negativos)\"",
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "alvo": {
+                          "type": "string",
+                          "const": "escreva",
+                          "description": "O que é verificado: os valores escritos pelo 'escreva', um por argumento"
+                        },
+                        "regra": {
+                          "type": "string",
+                          "enum": [
+                            "igual",
+                            "contém"
+                          ],
+                          "description": "'igual': os valores escritos são exatamente estes. 'contém': estes valores aparecem, nesta ordem, entre os escritos depois da última leitura (as mensagens antes de cada 'leia' não contam)"
+                        },
+                        "valores": {
+                          "minItems": 1,
+                          "type": "array",
+                          "items": {
+                            "oneOf": [
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "tipo": {
+                                    "type": "string",
+                                    "const": "inteiro"
+                                  },
+                                  "valor": {
+                                    "type": "integer",
+                                    "minimum": -9007199254740991,
+                                    "maximum": 9007199254740991
+                                  }
+                                },
+                                "required": [
+                                  "tipo",
+                                  "valor"
+                                ]
+                              },
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "tipo": {
+                                    "type": "string",
+                                    "const": "real"
+                                  },
+                                  "valor": {
+                                    "type": "number"
+                                  }
+                                },
+                                "required": [
+                                  "tipo",
+                                  "valor"
+                                ]
+                              },
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "tipo": {
+                                    "type": "string",
+                                    "const": "cadeia"
+                                  },
+                                  "valor": {
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "tipo",
+                                  "valor"
+                                ]
+                              },
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "tipo": {
+                                    "type": "string",
+                                    "const": "caracter"
+                                  },
+                                  "valor": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 1
+                                  }
+                                },
+                                "required": [
+                                  "tipo",
+                                  "valor"
+                                ]
+                              },
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "tipo": {
+                                    "type": "string",
+                                    "const": "logico"
+                                  },
+                                  "valor": {
+                                    "type": "boolean"
+                                  }
+                                },
+                                "required": [
+                                  "tipo",
+                                  "valor"
+                                ]
+                              }
+                            ],
+                            "description": "Um valor escrito pelo programa, com o tipo"
+                          }
+                        },
+                        "tolerância": {
+                          "description": "Diferença aceita ao comparar valores do tipo real (padrão: 0.000001)",
+                          "type": "number",
+                          "minimum": 0
+                        }
+                      },
+                      "required": [
+                        "alvo",
+                        "regra",
+                        "valores"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "descrição": {
+                          "description": "Descrição curta, mostrada no resultado: \"teste 8 (números negativos)\"",
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "alvo": {
+                          "type": "string",
+                          "const": "função",
+                          "description": "O que é verificado: o retorno de uma função do programa, chamada sozinha (sem o 'inicio' e sem entradas)"
+                        },
+                        "nome": {
+                          "type": "string",
+                          "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+                          "description": "O nome da função. A assinatura esperada vem dos tipos dos argumentos e do valor"
+                        },
+                        "argumentos": {
+                          "type": "array",
+                          "items": {
+                            "anyOf": [
+                              {
+                                "oneOf": [
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "tipo": {
+                                        "type": "string",
+                                        "const": "inteiro"
+                                      },
+                                      "valor": {
+                                        "type": "integer",
+                                        "minimum": -9007199254740991,
+                                        "maximum": 9007199254740991
+                                      }
+                                    },
+                                    "required": [
+                                      "tipo",
+                                      "valor"
+                                    ]
+                                  },
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "tipo": {
+                                        "type": "string",
+                                        "const": "real"
+                                      },
+                                      "valor": {
+                                        "type": "number"
+                                      }
+                                    },
+                                    "required": [
+                                      "tipo",
+                                      "valor"
+                                    ]
+                                  },
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "tipo": {
+                                        "type": "string",
+                                        "const": "cadeia"
+                                      },
+                                      "valor": {
+                                        "type": "string"
+                                      }
+                                    },
+                                    "required": [
+                                      "tipo",
+                                      "valor"
+                                    ]
+                                  },
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "tipo": {
+                                        "type": "string",
+                                        "const": "caracter"
+                                      },
+                                      "valor": {
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "maxLength": 1
+                                      }
+                                    },
+                                    "required": [
+                                      "tipo",
+                                      "valor"
+                                    ]
+                                  },
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "tipo": {
+                                        "type": "string",
+                                        "const": "logico"
+                                      },
+                                      "valor": {
+                                        "type": "boolean"
+                                      }
+                                    },
+                                    "required": [
+                                      "tipo",
+                                      "valor"
+                                    ]
+                                  }
+                                ],
+                                "description": "Um valor escrito pelo programa, com o tipo"
+                              },
+                              {
+                                "oneOf": [
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "tipo": {
+                                        "type": "string",
+                                        "const": "inteiro[]"
+                                      },
+                                      "valor": {
+                                        "type": "array",
+                                        "items": {
+                                          "type": "integer",
+                                          "minimum": -9007199254740991,
+                                          "maximum": 9007199254740991
+                                        }
+                                      }
+                                    },
+                                    "required": [
+                                      "tipo",
+                                      "valor"
+                                    ]
+                                  },
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "tipo": {
+                                        "type": "string",
+                                        "const": "real[]"
+                                      },
+                                      "valor": {
+                                        "type": "array",
+                                        "items": {
+                                          "type": "number"
+                                        }
+                                      }
+                                    },
+                                    "required": [
+                                      "tipo",
+                                      "valor"
+                                    ]
+                                  },
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "tipo": {
+                                        "type": "string",
+                                        "const": "cadeia[]"
+                                      },
+                                      "valor": {
+                                        "type": "array",
+                                        "items": {
+                                          "type": "string"
+                                        }
+                                      }
+                                    },
+                                    "required": [
+                                      "tipo",
+                                      "valor"
+                                    ]
+                                  },
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "tipo": {
+                                        "type": "string",
+                                        "const": "caracter[]"
+                                      },
+                                      "valor": {
+                                        "type": "array",
+                                        "items": {
+                                          "type": "string",
+                                          "minLength": 1,
+                                          "maxLength": 1
+                                        }
+                                      }
+                                    },
+                                    "required": [
+                                      "tipo",
+                                      "valor"
+                                    ]
+                                  },
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "tipo": {
+                                        "type": "string",
+                                        "const": "logico[]"
+                                      },
+                                      "valor": {
+                                        "type": "array",
+                                        "items": {
+                                          "type": "boolean"
+                                        }
+                                      }
+                                    },
+                                    "required": [
+                                      "tipo",
+                                      "valor"
+                                    ]
+                                  }
+                                ],
+                                "description": "Um vetor, com o tipo dos elementos"
+                              }
+                            ]
+                          },
+                          "description": "Os argumentos da chamada, na ordem, com o tipo"
+                        },
+                        "regra": {
+                          "type": "string",
+                          "const": "igual",
+                          "description": "'igual': a função retorna exatamente este valor"
+                        },
+                        "valor": {
+                          "oneOf": [
+                            {
+                              "type": "object",
+                              "properties": {
+                                "tipo": {
+                                  "type": "string",
+                                  "const": "inteiro"
+                                },
+                                "valor": {
+                                  "type": "integer",
+                                  "minimum": -9007199254740991,
+                                  "maximum": 9007199254740991
+                                }
+                              },
+                              "required": [
+                                "tipo",
+                                "valor"
+                              ]
+                            },
+                            {
+                              "type": "object",
+                              "properties": {
+                                "tipo": {
+                                  "type": "string",
+                                  "const": "real"
+                                },
+                                "valor": {
+                                  "type": "number"
+                                }
+                              },
+                              "required": [
+                                "tipo",
+                                "valor"
+                              ]
+                            },
+                            {
+                              "type": "object",
+                              "properties": {
+                                "tipo": {
+                                  "type": "string",
+                                  "const": "cadeia"
+                                },
+                                "valor": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "tipo",
+                                "valor"
+                              ]
+                            },
+                            {
+                              "type": "object",
+                              "properties": {
+                                "tipo": {
+                                  "type": "string",
+                                  "const": "caracter"
+                                },
+                                "valor": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 1
+                                }
+                              },
+                              "required": [
+                                "tipo",
+                                "valor"
+                              ]
+                            },
+                            {
+                              "type": "object",
+                              "properties": {
+                                "tipo": {
+                                  "type": "string",
+                                  "const": "logico"
+                                },
+                                "valor": {
+                                  "type": "boolean"
+                                }
+                              },
+                              "required": [
+                                "tipo",
+                                "valor"
+                              ]
+                            }
+                          ],
+                          "description": "O valor que a função retorna, com o tipo"
+                        },
+                        "tolerância": {
+                          "description": "Diferença aceita ao comparar valores do tipo real (padrão: 0.000001)",
+                          "type": "number",
+                          "minimum": 0
+                        }
+                      },
+                      "required": [
+                        "alvo",
+                        "nome",
+                        "argumentos",
+                        "regra",
+                        "valor"
+                      ],
+                      "additionalProperties": false
+                    }
+                  ]
+                }
+              }
+            },
+            "required": [
+              "entradas",
+              "verificações"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "$schema",
+        "id",
+        "título",
+        "tópico",
+        "dificuldade",
+        "enunciado",
+        "modo",
+        "exemplos",
+        "testes"
+      ],
+      "additionalProperties": false
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "$schema": "https://portugol.dev/esquemas/exercicio/v1.json",
+  "id": "pws:contagem-regressiva",
+  "título": "Contagem regressiva",
+  "tópico": "lacos",
+  "dificuldade": 1,
+  "enunciado": "Leia um número inteiro $n$, zero ou positivo, e escreva os números de $n$ até 1, um por linha. Depois, escreva `Fim!`. Por exemplo, para $n = 3$:\n\n```\n3\n2\n1\nFim!\n```\n\nPara $n = 0$, o programa escreve só `Fim!`. O programa não deve escrever mais nada: nem mensagens pedindo os dados.",
+  "modo": "simples",
+  "exemplos": [
+    {
+      "descrição": "a partir de 3",
+      "entradas": ["3"],
+      "saída": "3\n2\n1\nFim!\n"
+    }
+  ],
+  "testes": [
+    {
+      "descrição": "um número só",
+      "entradas": ["1"],
+      "saída": "1\nFim!\n"
+    },
+    {
+      "descrição": "zero",
+      "entradas": ["0"],
+      "saída": "Fim!\n"
+    },
+    {
+      "descrição": "contagem média",
+      "entradas": ["10"],
+      "saída": "10\n9\n8\n7\n6\n5\n4\n3\n2\n1\nFim!\n"
+    },
+    {
+      "descrição": "contagem mais longa",
+      "entradas": ["25"],
+      "saída": "25\n24\n23\n22\n21\n20\n19\n18\n17\n16\n15\n14\n13\n12\n11\n10\n9\n8\n7\n6\n5\n4\n3\n2\n1\nFim!\n"
+    },
+    {
+      "descrição": "contagem curta",
+      "entradas": ["2"],
+      "saída": "2\n1\nFim!\n"
+    },
+    {
+      "descrição": "outra contagem curta",
+      "entradas": ["5"],
+      "saída": "5\n4\n3\n2\n1\nFim!\n"
+    },
+    {
+      "descrição": "contagem longa",
+      "entradas": ["50"],
+      "saída": "50\n49\n48\n47\n46\n45\n44\n43\n42\n41\n40\n39\n38\n37\n36\n35\n34\n33\n32\n31\n30\n29\n28\n27\n26\n25\n24\n23\n22\n21\n20\n19\n18\n17\n16\n15\n14\n13\n12\n11\n10\n9\n8\n7\n6\n5\n4\n3\n2\n1\nFim!\n"
+    },
+    {
+      "descrição": "contagem bem longa",
+      "entradas": ["100"],
+      "saída": "100\n99\n98\n97\n96\n95\n94\n93\n92\n91\n90\n89\n88\n87\n86\n85\n84\n83\n82\n81\n80\n79\n78\n77\n76\n75\n74\n73\n72\n71\n70\n69\n68\n67\n66\n65\n64\n63\n62\n61\n60\n59\n58\n57\n56\n55\n54\n53\n52\n51\n50\n49\n48\n47\n46\n45\n44\n43\n42\n41\n40\n39\n38\n37\n36\n35\n34\n33\n32\n31\n30\n29\n28\n27\n26\n25\n24\n23\n22\n21\n20\n19\n18\n17\n16\n15\n14\n13\n12\n11\n10\n9\n8\n7\n6\n5\n4\n3\n2\n1\nFim!\n"
+    }
+  ]
+}

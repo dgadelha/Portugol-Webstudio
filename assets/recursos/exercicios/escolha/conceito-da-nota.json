@@ -1,0 +1,83 @@
+{
+  "$schema": "https://portugol.dev/esquemas/exercicio/v1.json",
+  "id": "pws:conceito-da-nota",
+  "título": "Conceito da nota",
+  "tópico": "escolha",
+  "dificuldade": 2,
+  "enunciado": "Leia a nota de um aluno, um número inteiro, e escreva o conceito correspondente:\n\n| Nota | Conceito |\n| --- | --- |\n| 9 ou 10 | `A` |\n| 7 ou 8 | `B` |\n| 5 ou 6 | `C` |\n| de 0 a 4 | `D` |\n\nUma nota fora do intervalo de 0 a 10 é inválida: para ela, escreva `nota inválida`.\n\nO programa não deve escrever mais nada: nem mensagens pedindo os dados.",
+  "modo": "simples",
+  "exemplos": [
+    {
+      "descrição": "nota máxima",
+      "entradas": ["10"],
+      "saída": "A\n"
+    },
+    {
+      "descrição": "nota média",
+      "entradas": ["6"],
+      "saída": "C\n"
+    }
+  ],
+  "testes": [
+    {
+      "descrição": "nota alta",
+      "entradas": ["9"],
+      "saída": "A\n"
+    },
+    {
+      "descrição": "nota boa",
+      "entradas": ["7"],
+      "saída": "B\n"
+    },
+    {
+      "descrição": "nota média",
+      "entradas": ["5"],
+      "saída": "C\n"
+    },
+    {
+      "descrição": "nota baixa",
+      "entradas": ["4"],
+      "saída": "D\n"
+    },
+    {
+      "descrição": "zero",
+      "entradas": ["0"],
+      "saída": "D\n"
+    },
+    {
+      "descrição": "acima do máximo",
+      "entradas": ["11"],
+      "saída": "nota inválida\n"
+    },
+    {
+      "descrição": "negativa",
+      "entradas": ["-1"],
+      "saída": "nota inválida\n"
+    },
+    {
+      "descrição": "outra nota boa",
+      "entradas": ["8"],
+      "saída": "B\n"
+    },
+    {
+      "descrição": "outra nota baixa",
+      "entradas": ["3"],
+      "saída": "D\n"
+    },
+    {
+      "descrição": "nota muito baixa",
+      "entradas": ["2"],
+      "saída": "D\n"
+    },
+    {
+      "descrição": "quase zero",
+      "entradas": ["1"],
+      "saída": "D\n"
+    },
+    {
+      "descrição": "muito acima do máximo",
+      "entradas": ["100"],
+      "saída": "nota inválida\n"
+    }
+  ]
+}

@@ -1,0 +1,88 @@
+{
+  "$schema": "https://portugol.dev/esquemas/exercicio/v1.json",
+  "id": "pws:dias-do-mes",
+  "título": "Dias do mês",
+  "tópico": "escolha",
+  "dificuldade": 2,
+  "enunciado": "Leia o número de um mês (de 1 a 12) e escreva quantos dias ele tem, num ano que não é bissexto (fevereiro tem 28 dias). Por exemplo, para o mês `4` (abril), escreva:\n\n```\n30\n```\n\nPara um número fora do intervalo de 1 a 12, escreva `mês inválido`.\n\nO programa não deve escrever mais nada: nem mensagens pedindo os dados.",
+  "modo": "simples",
+  "exemplos": [
+    {
+      "descrição": "abril",
+      "entradas": ["4"],
+      "saída": "30\n"
+    },
+    {
+      "descrição": "janeiro",
+      "entradas": ["1"],
+      "saída": "31\n"
+    }
+  ],
+  "testes": [
+    {
+      "descrição": "um mês do primeiro trimestre",
+      "entradas": ["2"],
+      "saída": "28\n"
+    },
+    {
+      "descrição": "um mês do terceiro trimestre",
+      "entradas": ["8"],
+      "saída": "31\n"
+    },
+    {
+      "descrição": "um mês do último trimestre",
+      "entradas": ["12"],
+      "saída": "31\n"
+    },
+    {
+      "descrição": "outro mês do último trimestre",
+      "entradas": ["11"],
+      "saída": "30\n"
+    },
+    {
+      "descrição": "zero",
+      "entradas": ["0"],
+      "saída": "mês inválido\n"
+    },
+    {
+      "descrição": "um número logo acima do intervalo",
+      "entradas": ["13"],
+      "saída": "mês inválido\n"
+    },
+    {
+      "descrição": "outro mês do primeiro trimestre",
+      "entradas": ["3"],
+      "saída": "31\n"
+    },
+    {
+      "descrição": "um mês do segundo trimestre",
+      "entradas": ["5"],
+      "saída": "31\n"
+    },
+    {
+      "descrição": "outro mês do segundo trimestre",
+      "entradas": ["6"],
+      "saída": "30\n"
+    },
+    {
+      "descrição": "outro mês do terceiro trimestre",
+      "entradas": ["7"],
+      "saída": "31\n"
+    },
+    {
+      "descrição": "mais um mês do terceiro trimestre",
+      "entradas": ["9"],
+      "saída": "30\n"
+    },
+    {
+      "descrição": "mais um mês do último trimestre",
+      "entradas": ["10"],
+      "saída": "31\n"
+    },
+    {
+      "descrição": "um número negativo",
+      "entradas": ["-1"],
+      "saída": "mês inválido\n"
+    }
+  ]
+}

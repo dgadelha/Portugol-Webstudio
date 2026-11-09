@@ -17,7 +17,7 @@ As bibliotecas abaixo existem no Portugol Studio, mas ainda não no Webstudio. U
 - Sons
 - Teclado
 
-As outras bibliotecas funcionam como no Portugol Studio, com as exceções da Graficos, abaixo. Veja a lista em [Bibliotecas](../linguagem_portugol/bibliotecas/index.md).
+As outras bibliotecas funcionam como no Portugol Studio, com as exceções da Graficos, abaixo. Veja a lista em [Usando bibliotecas](../linguagem_portugol/bibliotecas/index.md).
 
 ---
 
@@ -125,6 +125,7 @@ As mensagens de erro são as do Portugol Studio, com algumas diferenças:
 
 - O sublinhado marca só o trecho onde está o erro, e não o começo do comando. Em `escreva(a b)`, o Webstudio aponta o `b`, e o Portugol Studio aponta o `(`.
 - Quando falta fechar um `(`, `[` ou `{` no fim de uma linha, o erro aparece no fim dessa linha, e não no começo da próxima.
+- Quando falta fechar uma cadeia, as linhas seguintes viram parte dela até a próxima aspa, e o que vem depois dessa aspa vira código. O Webstudio aponta a aspa que ficou aberta, e o Portugol Studio, o erro nesse código, algumas linhas abaixo.
 - Quando a mensagem do Portugol Studio aponta o problema errado, o Webstudio mostra uma mensagem corrigida. Por exemplo, em `inteiro x =` sem um valor, o Portugol Studio pede para inserir um `(`, e o Webstudio diz que era esperada uma expressão.
 - Algumas mensagens são exclusivas do Webstudio, como a de um comentário que não foi fechado, a de um acento no nome de uma variável e a de um `caracter` vazio.
 - Onde o Portugol Studio mostra uma mensagem em inglês ou para com um erro interno, o Webstudio mostra uma mensagem em português.

@@ -1,0 +1,58 @@
+{
+  "$schema": "https://portugol.dev/esquemas/exercicio/v1.json",
+  "id": "pws:soma-da-matriz",
+  "título": "Soma de uma matriz",
+  "tópico": "matrizes",
+  "dificuldade": 1,
+  "enunciado": "Leia os 9 números inteiros de uma matriz 3×3, linha por linha (os três da primeira linha, depois os três da segunda e por fim os três da terceira), guardando-os numa matriz. Depois, escreva a soma de todos os elementos.\n\nPor exemplo, para a matriz\n\n$$\\begin{bmatrix} 1 & 2 & 3 \\\\ 4 & 5 & 6 \\\\ 7 & 8 & 9 \\end{bmatrix}$$\n\nescreva:\n\n```\n45\n```\n\nO programa não deve escrever mais nada: nem mensagens pedindo os dados.",
+  "modo": "simples",
+  "exemplos": [
+    {
+      "descrição": "de 1 a 9",
+      "entradas": ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
+      "saída": "45\n"
+    }
+  ],
+  "testes": [
+    {
+      "descrição": "só zeros",
+      "entradas": ["0", "0", "0", "0", "0", "0", "0", "0", "0"],
+      "saída": "0\n"
+    },
+    {
+      "descrição": "números negativos",
+      "entradas": ["-1", "-2", "-3", "-4", "-5", "-6", "-7", "-8", "-9"],
+      "saída": "-45\n"
+    },
+    {
+      "descrição": "soma que dá zero",
+      "entradas": ["5", "-5", "0", "10", "-10", "0", "3", "-3", "0"],
+      "saída": "0\n"
+    },
+    {
+      "descrição": "números grandes",
+      "entradas": ["100000", "200000", "300000", "400000", "500000", "600000", "700000", "800000", "900000"],
+      "saída": "4500000\n"
+    },
+    {
+      "descrição": "só a diagonal",
+      "entradas": ["1", "0", "0", "0", "1", "0", "0", "0", "1"],
+      "saída": "3\n"
+    },
+    {
+      "descrição": "só o último elemento",
+      "entradas": ["0", "0", "0", "0", "0", "0", "0", "0", "7"],
+      "saída": "7\n"
+    },
+    {
+      "descrição": "só a primeira coluna",
+      "entradas": ["2", "0", "0", "3", "0", "0", "4", "0", "0"],
+      "saída": "9\n"
+    },
+    {
+      "descrição": "todos iguais",
+      "entradas": ["-2", "-2", "-2", "-2", "-2", "-2", "-2", "-2", "-2"],
+      "saída": "-18\n"
+    }
+  ]
+}

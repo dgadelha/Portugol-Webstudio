@@ -1,0 +1,63 @@
+{
+  "$schema": "https://portugol.dev/esquemas/exercicio/v1.json",
+  "id": "pws:soma-ate-zero",
+  "título": "Soma até o zero",
+  "tópico": "lacos",
+  "dificuldade": 2,
+  "enunciado": "Leia números inteiros, um de cada vez, até que seja lido o número 0. Depois, escreva a soma de todos os números lidos. O programa não sabe de antemão quantos números serão lidos: o 0 marca o fim.\n\nPor exemplo, para as entradas `4`, `10`, `-2` e `0`, escreva:\n\n```\n12\n```\n\nSe o primeiro número já for 0, a soma é 0. O programa não deve escrever mais nada: nem mensagens pedindo os dados.",
+  "modo": "simples",
+  "exemplos": [
+    {
+      "descrição": "três números",
+      "entradas": ["4", "10", "-2", "0"],
+      "saída": "12\n"
+    }
+  ],
+  "testes": [
+    {
+      "descrição": "só o zero",
+      "entradas": ["0"],
+      "saída": "0\n"
+    },
+    {
+      "descrição": "um número",
+      "entradas": ["7", "0"],
+      "saída": "7\n"
+    },
+    {
+      "descrição": "números negativos",
+      "entradas": ["-5", "-8", "-1", "0"],
+      "saída": "-14\n"
+    },
+    {
+      "descrição": "soma que dá zero",
+      "entradas": ["5", "-5", "0"],
+      "saída": "0\n"
+    },
+    {
+      "descrição": "muitos números",
+      "entradas": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "0"],
+      "saída": "78\n"
+    },
+    {
+      "descrição": "um número negativo",
+      "entradas": ["-3", "0"],
+      "saída": "-3\n"
+    },
+    {
+      "descrição": "números grandes",
+      "entradas": ["100000", "200000", "300000", "0"],
+      "saída": "600000\n"
+    },
+    {
+      "descrição": "um número positivo pequeno",
+      "entradas": ["1", "0"],
+      "saída": "1\n"
+    },
+    {
+      "descrição": "positivos e negativos alternados",
+      "entradas": ["1", "-2", "3", "-4", "5", "-6", "0"],
+      "saída": "-3\n"
+    }
+  ]
+}

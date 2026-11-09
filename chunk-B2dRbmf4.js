@@ -13,5 +13,5 @@ import{n as o}from"./chunk-Cvof6wl4.js";var l=o(()=>`
     stroke-width: revert;
   }
 `,`getIconStyles`);export{l as t};
-//# debugId=957f10fa-bc10-5ba1-8c5b-c74aa63f49c0
+//# debugId=0c7d4650-ca22-5263-9993-84b22533bdd0
 //# sourceMappingURL=chunk-B2dRbmf4.js.map

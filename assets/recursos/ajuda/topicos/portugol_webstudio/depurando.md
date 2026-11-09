@@ -34,6 +34,12 @@ O valor que mudou desde a última pausa fica destacado. Vetores e matrizes apare
 
 O botão **Copiar a declaração**, depois de cada valor, copia a linha inteira, com todos os valores de um vetor ou matriz, como `real notas[4] = {7.5, 8.0, 6.5, 9.0}`. Ela pode ser colada direto num programa.
 
+## O valor no código
+
+Com o programa pausado, parar o mouse sobre uma variável no código mostra a declaração dela com o valor de agora, como na aba **Variáveis**: `inteiro total = 12`. Uma variável que ainda não recebeu um valor aparece como `inteiro total // sem valor`. Uma matriz aparece como uma tabela, com uma linha dela em cada linha, até 10 linhas de 10 valores. Pelo teclado, com o cursor no nome, aperte **Ctrl + K** e depois **Ctrl + I** (no Mac, **Cmd + K** e **Cmd + I**).
+
+O valor só aparece quando ele é mesmo o daquela declaração. Na função em que o programa está parado, a variável de um laço que já terminou, ou uma declarada mais abaixo, que o programa ainda não alcançou, aparece sem o valor.
+
 ## Depuração avançada
 
 Ligando a **Depuração avançada**, na seção **Execução** das [configurações](configuracoes.md), a execução passo a passo ganha mais botões e os pontos de parada. Os botões ficam numa barra flutuante, no alto do código, e não na barra de ações. A barra pode ser arrastada pela alça à esquerda para qualquer lugar do editor, e o Webstudio lembra onde ela ficou. Dois cliques na alça, ou o Enter com o foco nela, a levam de volta ao lugar inicial, no alto do editor. Com o teclado, as setas andam entre os botões dela. O editor também ganha uma margem à esquerda dos números das linhas, com uma seta na linha em que o programa está pausado e os pontos de parada.
@@ -49,7 +55,7 @@ Ligando a **Depuração avançada**, na seção **Execução** das [configuraç�
 
 ### Pontos de parada
 
-Num programa grande, ir passo a passo até o trecho que interessa demora. Marque um ponto de parada nesse trecho, clicando na margem à esquerda do número da linha, ou com o cursor na linha e o atalho **Alt + M**. Uma bolinha vermelha aparece na margem. Para desmarcar, clique na bolinha ou aperte **Alt + M** de novo. O programa só para numa linha que tenha um comando: numa linha em branco ou só com um `}`, ele passa direto.
+Num programa grande, ir passo a passo até o trecho que interessa demora. Marque um ponto de parada nesse trecho, clicando na margem à esquerda do número da linha, ou com o cursor na linha e o atalho **Alt + M** (no Mac, o **Option + M** no código só funciona com o programa já sendo depurado: antes, ele escreve um caractere). Uma bolinha vermelha aparece na margem. Para desmarcar, clique na bolinha ou aperte **Alt + M** de novo. O programa só para numa linha que tenha um comando: numa linha em branco ou só com um `}`, ele passa direto.
 
 ![O código com dois pontos de parada, nas linhas 5 e 13, e o programa pausado na linha 5, com a seta por cima da bolinha e a barra flutuante da depuração no alto do editor](../../recursos/imagens/light/webstudio/depurar-ponto-de-parada@2x.webp)
 
@@ -58,6 +64,8 @@ Com pontos de parada marcados, o **Depurar** executa o programa normalmente e s�
 ## Com um leitor de tela
 
 A cada pausa, o leitor de tela anuncia a linha, a função quando ela muda e o que mudou nas variáveis, como "Linha 12. total passou de 2 para 6". Na depuração avançada, marcar e desmarcar um ponto de parada também é anunciado.
+
+Com o cursor numa variável, **Ctrl + K** e depois **Ctrl + I** (no Mac, **Cmd + K** e **Cmd + I**) mostram a declaração dela com o valor de agora. Apertando de novo, o foco vai para esse texto, e o leitor de tela o lê; **Esc** volta ao código.
 
 ## Terminar
 

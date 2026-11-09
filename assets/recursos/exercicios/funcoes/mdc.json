@@ -1,0 +1,339 @@
+{
+  "$schema": "https://portugol.dev/esquemas/exercicio/v1.json",
+  "id": "pws:mdc",
+  "título": "Máximo divisor comum",
+  "tópico": "funcoes",
+  "dificuldade": 2,
+  "enunciado": "O máximo divisor comum (MDC) de dois números é o maior número que divide os dois sem deixar resto. Por exemplo, o MDC de 12 e 18 é 6.\n\nEscreva a função `mdc`, que recebe dois números inteiros positivos e retorna o MDC deles.\n\nA função deve ter esta assinatura:\n\n```portugol\nfuncao inteiro mdc(inteiro a, inteiro b)\n```\n\nSó a função é conferida: o `inicio` pode ficar vazio, ou testar a função como você quiser.",
+  "códigoInicial": "programa {\n  funcao inteiro mdc(inteiro a, inteiro b) {\n    retorne 0\n  }\n\n  funcao inicio() {\n    escreva(mdc(12, 18))\n  }\n}\n",
+  "modo": "avançado",
+  "exemplos": [
+    {
+      "descrição": "12 e 18",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "mdc",
+          "argumentos": [
+            {
+              "tipo": "inteiro",
+              "valor": 12
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 18
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "inteiro",
+            "valor": 6
+          }
+        }
+      ]
+    }
+  ],
+  "testes": [
+    {
+      "descrição": "números primos entre si",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "mdc",
+          "argumentos": [
+            {
+              "tipo": "inteiro",
+              "valor": 7
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 13
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "inteiro",
+            "valor": 1
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "números iguais",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "mdc",
+          "argumentos": [
+            {
+              "tipo": "inteiro",
+              "valor": 10
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 10
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "inteiro",
+            "valor": 10
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "um divide o outro",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "mdc",
+          "argumentos": [
+            {
+              "tipo": "inteiro",
+              "valor": 100
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 25
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "inteiro",
+            "valor": 25
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "o primeiro menor que o segundo",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "mdc",
+          "argumentos": [
+            {
+              "tipo": "inteiro",
+              "valor": 48
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 180
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "inteiro",
+            "valor": 12
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "um dos números é 1",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "mdc",
+          "argumentos": [
+            {
+              "tipo": "inteiro",
+              "valor": 1
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 999
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "inteiro",
+            "valor": 1
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "números grandes",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "mdc",
+          "argumentos": [
+            {
+              "tipo": "inteiro",
+              "valor": 1071
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 462
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "inteiro",
+            "valor": 21
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "o maior primeiro",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "mdc",
+          "argumentos": [
+            {
+              "tipo": "inteiro",
+              "valor": 18
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 12
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "inteiro",
+            "valor": 6
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "os dois números iguais e mínimos",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "mdc",
+          "argumentos": [
+            {
+              "tipo": "inteiro",
+              "valor": 1
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 1
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "inteiro",
+            "valor": 1
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "um é o dobro do outro",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "mdc",
+          "argumentos": [
+            {
+              "tipo": "inteiro",
+              "valor": 13
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 26
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "inteiro",
+            "valor": 13
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "números grandes e consecutivos",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "mdc",
+          "argumentos": [
+            {
+              "tipo": "inteiro",
+              "valor": 1000000
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 999999
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "inteiro",
+            "valor": 1
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "divisor comum que não é nenhum dos dois",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "mdc",
+          "argumentos": [
+            {
+              "tipo": "inteiro",
+              "valor": 36
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 48
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "inteiro",
+            "valor": 12
+          }
+        }
+      ]
+    },
+    {
+      "descrição": "outro par",
+      "entradas": [],
+      "verificações": [
+        {
+          "alvo": "função",
+          "nome": "mdc",
+          "argumentos": [
+            {
+              "tipo": "inteiro",
+              "valor": 270
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 192
+            }
+          ],
+          "regra": "igual",
+          "valor": {
+            "tipo": "inteiro",
+            "valor": 6
+          }
+        }
+      ]
+    }
+  ]
+}

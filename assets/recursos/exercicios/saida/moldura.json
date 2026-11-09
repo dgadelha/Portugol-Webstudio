@@ -1,0 +1,22 @@
+{
+  "$schema": "https://portugol.dev/esquemas/exercicio/v1.json",
+  "id": "pws:moldura",
+  "título": "Moldura",
+  "tópico": "saida",
+  "dificuldade": 1,
+  "enunciado": "Escreva um programa que mostre a palavra `Portugol` dentro de uma moldura, exatamente assim:\n\n```\n+----------+\n| Portugol |\n+----------+\n```\n\nA moldura usa o sinal de mais (`+`) nos cantos, hífens (`-`) nas linhas de cima e de baixo, e uma barra vertical (`|`) dos lados. Há um espaço entre cada barra e a palavra.",
+  "modo": "simples",
+  "exemplos": [
+    {
+      "entradas": [],
+      "saída": "+----------+\n| Portugol |\n+----------+\n"
+    }
+  ],
+  "testes": [
+    {
+      "descrição": "a moldura completa",
+      "entradas": [],
+      "saída": "+----------+\n| Portugol |\n+----------+\n"
+    }
+  ]
+}

@@ -1,0 +1,301 @@
+{
+  "$schema": "https://portugol.dev/esquemas/exercicio/v1.json",
+  "id": "pws:horas-minutos-e-segundos",
+  "título": "Horas, minutos e segundos",
+  "tópico": "operadores",
+  "dificuldade": 2,
+  "enunciado": "Leia uma duração em segundos (um número inteiro, zero ou positivo) e escreva quantas horas, minutos e segundos ela tem. Por exemplo, 3725 segundos são 1 hora, 2 minutos e 5 segundos.\n\nEscreva as horas, os minutos e os segundos, nesta ordem, como valores do tipo `inteiro`. Os minutos e os segundos vão de 0 a 59; as horas podem passar de 24. O programa pode escrever outros textos junto, como `1 h 2 min 5 s`, e uma mensagem antes da leitura.",
+  "modo": "avançado",
+  "exemplos": [
+    {
+      "descrição": "3725 segundos",
+      "entradas": ["3725"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 1
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 2
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 5
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "testes": [
+    {
+      "descrição": "zero",
+      "entradas": ["0"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "menos de um minuto",
+      "entradas": ["59"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 59
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "horas exatas",
+      "entradas": ["7200"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 2
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "um segundo antes de um dia",
+      "entradas": ["86399"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 23
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 59
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 59
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "mais de um dia",
+      "entradas": ["90061"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 25
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 1
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "exatamente um minuto",
+      "entradas": ["60"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 1
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "um segundo antes de uma hora",
+      "entradas": ["3599"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 59
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 59
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "uma hora e um segundo",
+      "entradas": ["3601"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 1
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "exatamente um dia",
+      "entradas": ["86400"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 24
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "muitos dias",
+      "entradas": ["1000000"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 277
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 46
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 40
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "descrição": "minutos e segundos sem horas",
+      "entradas": ["754"],
+      "verificações": [
+        {
+          "alvo": "escreva",
+          "regra": "contém",
+          "valores": [
+            {
+              "tipo": "inteiro",
+              "valor": 0
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 12
+            },
+            {
+              "tipo": "inteiro",
+              "valor": 34
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

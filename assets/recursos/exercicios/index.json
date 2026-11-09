@@ -1,0 +1,506 @@
+[
+  {
+    "tópico": "saida",
+    "nome": "Saída",
+    "itens": [
+      {
+        "id": "pws:boas-vindas",
+        "título": "Boas-vindas",
+        "dificuldade": 1,
+        "arquivo": "saida/boas-vindas.json"
+      },
+      {
+        "id": "pws:moldura",
+        "título": "Moldura",
+        "dificuldade": 1,
+        "arquivo": "saida/moldura.json"
+      },
+      {
+        "id": "pws:o-numero-42",
+        "título": "O número 42",
+        "dificuldade": 1,
+        "arquivo": "saida/o-numero-42.json"
+      },
+      {
+        "id": "pws:aspas-e-barras",
+        "título": "Aspas e barras",
+        "dificuldade": 2,
+        "arquivo": "saida/aspas-e-barras.json"
+      },
+      {
+        "id": "pws:um-valor-de-cada-tipo",
+        "título": "Um valor de cada tipo",
+        "dificuldade": 2,
+        "arquivo": "saida/um-valor-de-cada-tipo.json"
+      }
+    ]
+  },
+  {
+    "tópico": "entrada-e-variaveis",
+    "nome": "Entrada e variáveis",
+    "itens": [
+      {
+        "id": "pws:ficha-de-cadastro",
+        "título": "Ficha de cadastro",
+        "dificuldade": 1,
+        "arquivo": "entrada-e-variaveis/ficha-de-cadastro.json"
+      },
+      {
+        "id": "pws:ola-nome",
+        "título": "Olá, nome",
+        "dificuldade": 1,
+        "arquivo": "entrada-e-variaveis/ola-nome.json"
+      },
+      {
+        "id": "pws:tres-palavras-ao-contrario",
+        "título": "Três palavras ao contrário",
+        "dificuldade": 1,
+        "arquivo": "entrada-e-variaveis/tres-palavras-ao-contrario.json"
+      },
+      {
+        "id": "pws:perguntas-e-respostas",
+        "título": "Perguntas e respostas",
+        "dificuldade": 2,
+        "arquivo": "entrada-e-variaveis/perguntas-e-respostas.json"
+      },
+      {
+        "id": "pws:troca-de-valores",
+        "título": "Troca de valores",
+        "dificuldade": 2,
+        "arquivo": "entrada-e-variaveis/troca-de-valores.json"
+      }
+    ]
+  },
+  {
+    "tópico": "operadores",
+    "nome": "Operadores",
+    "itens": [
+      {
+        "id": "pws:celsius-para-fahrenheit",
+        "título": "Celsius para Fahrenheit",
+        "dificuldade": 1,
+        "arquivo": "operadores/celsius-para-fahrenheit.json"
+      },
+      {
+        "id": "pws:media-de-tres-notas",
+        "título": "Média de três notas",
+        "dificuldade": 1,
+        "arquivo": "operadores/media-de-tres-notas.json"
+      },
+      {
+        "id": "pws:soma-de-dois-numeros",
+        "título": "Soma de dois números",
+        "dificuldade": 1,
+        "arquivo": "operadores/soma-de-dois-numeros.json"
+      },
+      {
+        "id": "pws:conta-do-restaurante",
+        "título": "Conta do restaurante",
+        "dificuldade": 2,
+        "arquivo": "operadores/conta-do-restaurante.json"
+      },
+      {
+        "id": "pws:horas-minutos-e-segundos",
+        "título": "Horas, minutos e segundos",
+        "dificuldade": 2,
+        "arquivo": "operadores/horas-minutos-e-segundos.json"
+      },
+      {
+        "id": "pws:media-ponderada",
+        "título": "Média ponderada",
+        "dificuldade": 2,
+        "arquivo": "operadores/media-ponderada.json"
+      },
+      {
+        "id": "pws:duracao-entre-horarios",
+        "título": "Duração entre dois horários",
+        "dificuldade": 3,
+        "arquivo": "operadores/duracao-entre-horarios.json"
+      },
+      {
+        "id": "pws:inverter-numero-de-tres-digitos",
+        "título": "Inverter um número de três dígitos",
+        "dificuldade": 3,
+        "arquivo": "operadores/inverter-numero-de-tres-digitos.json"
+      },
+      {
+        "id": "pws:notas-do-caixa-eletronico",
+        "título": "Notas do caixa eletrônico",
+        "dificuldade": 3,
+        "arquivo": "operadores/notas-do-caixa-eletronico.json"
+      }
+    ]
+  },
+  {
+    "tópico": "condicionais",
+    "nome": "Desvios condicionais",
+    "itens": [
+      {
+        "id": "pws:aprovado-ou-reprovado",
+        "título": "Aprovado ou reprovado",
+        "dificuldade": 1,
+        "arquivo": "condicionais/aprovado-ou-reprovado.json"
+      },
+      {
+        "id": "pws:par-ou-impar",
+        "título": "Par ou ímpar",
+        "dificuldade": 1,
+        "arquivo": "condicionais/par-ou-impar.json"
+      },
+      {
+        "id": "pws:positivo-negativo-ou-zero",
+        "título": "Positivo, negativo ou zero",
+        "dificuldade": 1,
+        "arquivo": "condicionais/positivo-negativo-ou-zero.json"
+      },
+      {
+        "id": "pws:ano-bissexto",
+        "título": "Ano bissexto",
+        "dificuldade": 2,
+        "arquivo": "condicionais/ano-bissexto.json"
+      },
+      {
+        "id": "pws:classificacao-do-imc",
+        "título": "Classificação do IMC",
+        "dificuldade": 2,
+        "arquivo": "condicionais/classificacao-do-imc.json"
+      },
+      {
+        "id": "pws:menor-de-tres",
+        "título": "Menor de três",
+        "dificuldade": 2,
+        "arquivo": "condicionais/menor-de-tres.json"
+      },
+      {
+        "id": "pws:conta-de-agua",
+        "título": "Conta de água",
+        "dificuldade": 3,
+        "arquivo": "condicionais/conta-de-agua.json"
+      },
+      {
+        "id": "pws:equacao-do-segundo-grau",
+        "título": "Equação do segundo grau",
+        "dificuldade": 3,
+        "arquivo": "condicionais/equacao-do-segundo-grau.json"
+      },
+      {
+        "id": "pws:tipo-de-triangulo",
+        "título": "Tipo de triângulo",
+        "dificuldade": 3,
+        "arquivo": "condicionais/tipo-de-triangulo.json"
+      }
+    ]
+  },
+  {
+    "tópico": "escolha",
+    "nome": "Escolha",
+    "itens": [
+      {
+        "id": "pws:cor-do-semaforo",
+        "título": "Cor do semáforo",
+        "dificuldade": 1,
+        "arquivo": "escolha/cor-do-semaforo.json"
+      },
+      {
+        "id": "pws:dia-da-semana",
+        "título": "Dia da semana",
+        "dificuldade": 1,
+        "arquivo": "escolha/dia-da-semana.json"
+      },
+      {
+        "id": "pws:vogal-ou-consoante",
+        "título": "Vogal ou consoante",
+        "dificuldade": 1,
+        "arquivo": "escolha/vogal-ou-consoante.json"
+      },
+      {
+        "id": "pws:calculadora",
+        "título": "Calculadora",
+        "dificuldade": 2,
+        "arquivo": "escolha/calculadora.json"
+      },
+      {
+        "id": "pws:conceito-da-nota",
+        "título": "Conceito da nota",
+        "dificuldade": 2,
+        "arquivo": "escolha/conceito-da-nota.json"
+      },
+      {
+        "id": "pws:dias-do-mes",
+        "título": "Dias do mês",
+        "dificuldade": 2,
+        "arquivo": "escolha/dias-do-mes.json"
+      },
+      {
+        "id": "pws:dia-do-ano",
+        "título": "Dia do ano",
+        "dificuldade": 3,
+        "arquivo": "escolha/dia-do-ano.json"
+      },
+      {
+        "id": "pws:dia-seguinte",
+        "título": "Dia seguinte",
+        "dificuldade": 3,
+        "arquivo": "escolha/dia-seguinte.json"
+      },
+      {
+        "id": "pws:numero-por-extenso",
+        "título": "Número por extenso",
+        "dificuldade": 3,
+        "arquivo": "escolha/numero-por-extenso.json"
+      }
+    ]
+  },
+  {
+    "tópico": "lacos",
+    "nome": "Laços de repetição",
+    "itens": [
+      {
+        "id": "pws:contagem-regressiva",
+        "título": "Contagem regressiva",
+        "dificuldade": 1,
+        "arquivo": "lacos/contagem-regressiva.json"
+      },
+      {
+        "id": "pws:numeros-pares-ate-n",
+        "título": "Números pares até n",
+        "dificuldade": 1,
+        "arquivo": "lacos/numeros-pares-ate-n.json"
+      },
+      {
+        "id": "pws:soma-de-1-a-n",
+        "título": "Soma de 1 até n",
+        "dificuldade": 1,
+        "arquivo": "lacos/soma-de-1-a-n.json"
+      },
+      {
+        "id": "pws:fatorial",
+        "título": "Fatorial",
+        "dificuldade": 2,
+        "arquivo": "lacos/fatorial.json"
+      },
+      {
+        "id": "pws:fibonacci",
+        "título": "Sequência de Fibonacci",
+        "dificuldade": 2,
+        "arquivo": "lacos/fibonacci.json"
+      },
+      {
+        "id": "pws:soma-ate-zero",
+        "título": "Soma até o zero",
+        "dificuldade": 2,
+        "arquivo": "lacos/soma-ate-zero.json"
+      },
+      {
+        "id": "pws:tabuada",
+        "título": "Tabuada",
+        "dificuldade": 2,
+        "arquivo": "lacos/tabuada.json"
+      },
+      {
+        "id": "pws:conversao-para-binario",
+        "título": "Conversão para binário",
+        "dificuldade": 3,
+        "arquivo": "lacos/conversao-para-binario.json"
+      },
+      {
+        "id": "pws:maior-sequencia-crescente",
+        "título": "Maior sequência crescente",
+        "dificuldade": 3,
+        "arquivo": "lacos/maior-sequencia-crescente.json"
+      },
+      {
+        "id": "pws:numero-primo",
+        "título": "Número primo",
+        "dificuldade": 3,
+        "arquivo": "lacos/numero-primo.json"
+      }
+    ]
+  },
+  {
+    "tópico": "vetores",
+    "nome": "Vetores",
+    "itens": [
+      {
+        "id": "pws:contar-ocorrencias",
+        "título": "Contar ocorrências",
+        "dificuldade": 1,
+        "arquivo": "vetores/contar-ocorrencias.json"
+      },
+      {
+        "id": "pws:inverter-vetor",
+        "título": "Inverter um vetor",
+        "dificuldade": 1,
+        "arquivo": "vetores/inverter-vetor.json"
+      },
+      {
+        "id": "pws:multiplicar-vetores",
+        "título": "Multiplicar dois vetores",
+        "dificuldade": 1,
+        "arquivo": "vetores/multiplicar-vetores.json"
+      },
+      {
+        "id": "pws:acima-da-media",
+        "título": "Acima da média",
+        "dificuldade": 2,
+        "arquivo": "vetores/acima-da-media.json"
+      },
+      {
+        "id": "pws:maior-e-posicao",
+        "título": "O maior e a posição dele",
+        "dificuldade": 2,
+        "arquivo": "vetores/maior-e-posicao.json"
+      },
+      {
+        "id": "pws:valores-sem-repeticao",
+        "título": "Valores sem repetição",
+        "dificuldade": 2,
+        "arquivo": "vetores/valores-sem-repeticao.json"
+      },
+      {
+        "id": "pws:moda-do-vetor",
+        "título": "Moda",
+        "dificuldade": 3,
+        "arquivo": "vetores/moda-do-vetor.json"
+      },
+      {
+        "id": "pws:ordenar-vetor",
+        "título": "Ordenar um vetor",
+        "dificuldade": 3,
+        "arquivo": "vetores/ordenar-vetor.json"
+      },
+      {
+        "id": "pws:rotacionar-vetor",
+        "título": "Rotacionar um vetor",
+        "dificuldade": 3,
+        "arquivo": "vetores/rotacionar-vetor.json"
+      }
+    ]
+  },
+  {
+    "tópico": "matrizes",
+    "nome": "Matrizes",
+    "itens": [
+      {
+        "id": "pws:maior-da-matriz",
+        "título": "Maior elemento da matriz",
+        "dificuldade": 1,
+        "arquivo": "matrizes/maior-da-matriz.json"
+      },
+      {
+        "id": "pws:matriz-identidade",
+        "título": "Matriz identidade",
+        "dificuldade": 1,
+        "arquivo": "matrizes/matriz-identidade.json"
+      },
+      {
+        "id": "pws:soma-da-matriz",
+        "título": "Soma de uma matriz",
+        "dificuldade": 1,
+        "arquivo": "matrizes/soma-da-matriz.json"
+      },
+      {
+        "id": "pws:matriz-transposta",
+        "título": "Matriz transposta",
+        "dificuldade": 2,
+        "arquivo": "matrizes/matriz-transposta.json"
+      },
+      {
+        "id": "pws:soma-da-diagonal",
+        "título": "Soma da diagonal",
+        "dificuldade": 2,
+        "arquivo": "matrizes/soma-da-diagonal.json"
+      },
+      {
+        "id": "pws:soma-das-linhas-e-colunas",
+        "título": "Soma das linhas e das colunas",
+        "dificuldade": 2,
+        "arquivo": "matrizes/soma-das-linhas-e-colunas.json"
+      },
+      {
+        "id": "pws:minimax",
+        "título": "Minimax",
+        "dificuldade": 3,
+        "arquivo": "matrizes/minimax.json"
+      },
+      {
+        "id": "pws:produto-de-matrizes",
+        "título": "Produto de matrizes",
+        "dificuldade": 3,
+        "arquivo": "matrizes/produto-de-matrizes.json"
+      },
+      {
+        "id": "pws:quadrado-magico",
+        "título": "Quadrado mágico",
+        "dificuldade": 3,
+        "arquivo": "matrizes/quadrado-magico.json"
+      }
+    ]
+  },
+  {
+    "tópico": "funcoes",
+    "nome": "Funções",
+    "itens": [
+      {
+        "id": "pws:area-do-retangulo",
+        "título": "Área do retângulo",
+        "dificuldade": 1,
+        "arquivo": "funcoes/area-do-retangulo.json"
+      },
+      {
+        "id": "pws:e-par",
+        "título": "É par?",
+        "dificuldade": 1,
+        "arquivo": "funcoes/e-par.json"
+      },
+      {
+        "id": "pws:maior-de-dois",
+        "título": "Maior de dois",
+        "dificuldade": 1,
+        "arquivo": "funcoes/maior-de-dois.json"
+      },
+      {
+        "id": "pws:contar-vogais",
+        "título": "Contar vogais",
+        "dificuldade": 2,
+        "arquivo": "funcoes/contar-vogais.json"
+      },
+      {
+        "id": "pws:mdc",
+        "título": "Máximo divisor comum",
+        "dificuldade": 2,
+        "arquivo": "funcoes/mdc.json"
+      },
+      {
+        "id": "pws:media-de-um-vetor",
+        "título": "Média de um vetor",
+        "dificuldade": 2,
+        "arquivo": "funcoes/media-de-um-vetor.json"
+      },
+      {
+        "id": "pws:potencia",
+        "título": "Potência",
+        "dificuldade": 2,
+        "arquivo": "funcoes/potencia.json"
+      },
+      {
+        "id": "pws:contar-palavras",
+        "título": "Contar palavras",
+        "dificuldade": 3,
+        "arquivo": "funcoes/contar-palavras.json"
+      },
+      {
+        "id": "pws:numero-romano",
+        "título": "Número romano",
+        "dificuldade": 3,
+        "arquivo": "funcoes/numero-romano.json"
+      },
+      {
+        "id": "pws:palindromo",
+        "título": "Palíndromo",
+        "dificuldade": 3,
+        "arquivo": "funcoes/palindromo.json"
+      }
+    ]
+  }
+]

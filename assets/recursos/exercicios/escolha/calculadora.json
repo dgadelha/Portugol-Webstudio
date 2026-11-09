@@ -1,0 +1,98 @@
+{
+  "$schema": "https://portugol.dev/esquemas/exercicio/v1.json",
+  "id": "pws:calculadora",
+  "título": "Calculadora",
+  "tópico": "escolha",
+  "dificuldade": 2,
+  "enunciado": "Leia, nesta ordem, um número real, um operador (um `caracter`: `+`, `-`, `*` ou `/`) e outro número real. Escreva só o resultado da conta, como um número real e sem arredondar, numa linha. Por exemplo, para `7`, `/` e `2`, escreva:\n\n```\n3.5\n```\n\nUm resultado sem casas decimais também é escrito como real: para `1.5`, `*` e `4`, escreva `6.0`.\n\nSe o operador for qualquer outro caractere, escreva só `operador inválido`. Numa divisão, o segundo número nunca é zero.\n\nO programa não deve escrever mais nada: nem mensagens pedindo os dados.\n\nOs números com casas decimais são digitados com ponto, como em `1.75`.",
+  "modo": "simples",
+  "exemplos": [
+    {
+      "descrição": "uma divisão",
+      "entradas": ["7", "/", "2"],
+      "saída": "3.5\n"
+    },
+    {
+      "descrição": "uma soma",
+      "entradas": ["2.5", "+", "4"],
+      "saída": "6.5\n"
+    }
+  ],
+  "testes": [
+    {
+      "descrição": "uma subtração com resultado negativo",
+      "entradas": ["3", "-", "10"],
+      "saída": "-7.0\n"
+    },
+    {
+      "descrição": "uma multiplicação",
+      "entradas": ["1.5", "*", "4"],
+      "saída": "6.0\n"
+    },
+    {
+      "descrição": "multiplicação por zero",
+      "entradas": ["123.4", "*", "0"],
+      "saída": "0.0\n"
+    },
+    {
+      "descrição": "divisão com dízima",
+      "entradas": ["10", "/", "3"],
+      "saída": "3.3333333333333335\n"
+    },
+    {
+      "descrição": "divisão de um número negativo",
+      "entradas": ["-9", "/", "4"],
+      "saída": "-2.25\n"
+    },
+    {
+      "descrição": "uma letra como operador",
+      "entradas": ["5", "x", "2"],
+      "saída": "operador inválido\n"
+    },
+    {
+      "descrição": "um símbolo que não é operador",
+      "entradas": ["8", "%", "3"],
+      "saída": "operador inválido\n"
+    },
+    {
+      "descrição": "subtração de negativos",
+      "entradas": ["-3", "-", "-8"],
+      "saída": "5.0\n"
+    },
+    {
+      "descrição": "multiplicação de negativos",
+      "entradas": ["-2", "*", "-3"],
+      "saída": "6.0\n"
+    },
+    {
+      "descrição": "divisão por um número negativo",
+      "entradas": ["5", "/", "-2"],
+      "saída": "-2.5\n"
+    },
+    {
+      "descrição": "divisão de números iguais",
+      "entradas": ["7", "/", "7"],
+      "saída": "1.0\n"
+    },
+    {
+      "descrição": "soma que dá zero",
+      "entradas": ["2.5", "+", "-2.5"],
+      "saída": "0.0\n"
+    },
+    {
+      "descrição": "outro símbolo que não é operador",
+      "entradas": ["1", ".", "2"],
+      "saída": "operador inválido\n"
+    },
+    {
+      "descrição": "multiplicação com casas decimais",
+      "entradas": ["0.5", "*", "0.5"],
+      "saída": "0.25\n"
+    },
+    {
+      "descrição": "soma de números grandes",
+      "entradas": ["123456.5", "+", "654321.5"],
+      "saída": "777778.0\n"
+    }
+  ]
+}

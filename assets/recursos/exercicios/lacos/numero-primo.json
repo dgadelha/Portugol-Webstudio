@@ -1,0 +1,103 @@
+{
+  "$schema": "https://portugol.dev/esquemas/exercicio/v1.json",
+  "id": "pws:numero-primo",
+  "título": "Número primo",
+  "tópico": "lacos",
+  "dificuldade": 3,
+  "enunciado": "Um número primo é um número inteiro maior que 1 que só é divisível por 1 e por ele mesmo, como 2, 3, 5, 7 e 11.\n\nLeia um número inteiro, de -1000 a 1000000, e escreva `primo` se ele for primo, ou `não é primo` se não for. Números menores que 2, inclusive os negativos, não são primos.\n\nO programa não deve escrever mais nada: nem mensagens pedindo os dados.",
+  "modo": "simples",
+  "exemplos": [
+    {
+      "descrição": "um número primo",
+      "entradas": ["7"],
+      "saída": "primo\n"
+    },
+    {
+      "descrição": "um número que não é primo",
+      "entradas": ["9"],
+      "saída": "não é primo\n"
+    }
+  ],
+  "testes": [
+    {
+      "descrição": "o menor primo",
+      "entradas": ["2"],
+      "saída": "primo\n"
+    },
+    {
+      "descrição": "abaixo do menor primo",
+      "entradas": ["1"],
+      "saída": "não é primo\n"
+    },
+    {
+      "descrição": "zero",
+      "entradas": ["0"],
+      "saída": "não é primo\n"
+    },
+    {
+      "descrição": "um número negativo",
+      "entradas": ["-7"],
+      "saída": "não é primo\n"
+    },
+    {
+      "descrição": "produto de dois primos",
+      "entradas": ["91"],
+      "saída": "não é primo\n"
+    },
+    {
+      "descrição": "um primo grande",
+      "entradas": ["7919"],
+      "saída": "primo\n"
+    },
+    {
+      "descrição": "um quadrado",
+      "entradas": ["49"],
+      "saída": "não é primo\n"
+    },
+    {
+      "descrição": "um número composto pequeno",
+      "entradas": ["4"],
+      "saída": "não é primo\n"
+    },
+    {
+      "descrição": "um primo pequeno",
+      "entradas": ["3"],
+      "saída": "primo\n"
+    },
+    {
+      "descrição": "o quadrado de um primo",
+      "entradas": ["25"],
+      "saída": "não é primo\n"
+    },
+    {
+      "descrição": "um primo de dois dígitos",
+      "entradas": ["13"],
+      "saída": "primo\n"
+    },
+    {
+      "descrição": "um número par grande",
+      "entradas": ["1000000"],
+      "saída": "não é primo\n"
+    },
+    {
+      "descrição": "o quadrado de um primo grande",
+      "entradas": ["9409"],
+      "saída": "não é primo\n"
+    },
+    {
+      "descrição": "um negativo par",
+      "entradas": ["-2"],
+      "saída": "não é primo\n"
+    },
+    {
+      "descrição": "um primo maior",
+      "entradas": ["104729"],
+      "saída": "primo\n"
+    },
+    {
+      "descrição": "um ímpar que não é primo",
+      "entradas": ["15"],
+      "saída": "não é primo\n"
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+import"./main-ZEDJFXT7.js";import{D as C,O as v}from"./chunk-QhmV-1td.js";export{C as ArchitectureModule,v as createArchitectureServices};
