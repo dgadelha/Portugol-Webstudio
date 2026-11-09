@@ -752,6 +752,12 @@ select.input {
   border-radius: var(--pws-radius-sm);
 }
 
+// O erro da tolerância fica embaixo da linha dos campos, fora do rótulo: dentro dele, viraria
+// parte do nome do campo e empurraria os campos vizinhos para baixo
+.check > .field-error {
+  margin: 0.375rem 0;
+}
+
 // No canto do cartão: não vira um ícone solto numa linha própria quando os campos quebram
 .check-remove {
   position: absolute;

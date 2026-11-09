@@ -180,6 +180,13 @@ export class TabExerciseBuilderComponent implements OnInit {
   readonly statementTab = signal<"write" | "preview">("write");
 
   /**
+   * O aviso de uma tolerância recusada (`ToleranceInputDirective`): o texto digitado que não era
+   * um número, embaixo da linha do campo. Só um de cada vez, e sai com a próxima tolerância ou
+   * quando os casos e as verificações mudam de lugar.
+   */
+  readonly toleranceNotice = signal<{ caseIndex: number; checkIndex: number; text: string } | null>(null);
+
+  /**
    * Todos os casos recolhidos: o botão do alto da lista expande todos, senão recolhe.
    */
   readonly allCasesClosed = computed(() => this.draft().casos.every(caso => caso.fechado === true));
@@ -326,6 +333,7 @@ export class TabExerciseBuilderComponent implements OnInit {
   readonly view = computed(() => {
     const draft = this.draft();
     const { statuses, examples, tests } = this.caseStats();
+    const notice = this.toleranceNotice();
 
     return {
       title: draft.título,
@@ -351,13 +359,17 @@ export class TabExerciseBuilderComponent implements OnInit {
           output: caso.saída,
           // Na lista de problemas ele vem depois de "Teste 1: "; aqui é uma frase sozinha.
           problem: caso.problema && this.sentence(caso.problema),
-          checks: caso.verificações.map(check => {
+          checks: caso.verificações.map((check, j) => {
+            // O texto recusado no campo da tolerância desta verificação
+            const rejected = notice?.caseIndex === i && notice.checkIndex === j ? notice.text : undefined;
+
             return check.alvo === "escreva"
               ? {
                   target: "write" as const,
                   rule: check.regra,
                   values: check.valores,
                   tolerance: check.tolerância,
+                  rejectedTolerance: rejected,
                   hasReal: check.valores.some(value => value.tipo === "real"),
                 }
               : {
@@ -366,6 +378,7 @@ export class TabExerciseBuilderComponent implements OnInit {
                   args: check.argumentos,
                   returned: check.valor,
                   tolerance: check.tolerância,
+                  rejectedTolerance: rejected,
                   hasReal: check.valor?.tipo === "real",
                 };
           }),
@@ -515,6 +528,9 @@ export class TabExerciseBuilderComponent implements OnInit {
 
     // Mudar o exercício invalida um link já mostrado: o novo precisa ser compartilhado de novo
     this.draft.update(draft => ({ ...draft, ...changes, compartilhado: undefined }));
+    // O aviso de uma tolerância recusada é preso à posição do campo, e a edição seguinte o
+    // tira: com os casos mudando de lugar, ele iria parar em outro
+    this.toleranceNotice.set(null);
   }
 
   private updateCase(index: number, changes: Partial<DraftCase>) {
@@ -728,6 +744,24 @@ export class TabExerciseBuilderComponent implements OnInit {
     this.updateCheck(caseIndex, checkIndex, { tolerância: value });
   }
 
+  /**
+   * O campo recusou um texto que não é número e voltou ao valor de antes: o aviso diz por quê.
+   */
+  rejectTolerance(caseIndex: number, checkIndex: number, text: string) {
+    const trimmed = text.trim();
+
+    this.toleranceNotice.set({ caseIndex, checkIndex, text: trimmed });
+    void this.announcer.announce(this.toleranceMessage(trimmed), "polite");
+  }
+
+  toleranceMessage(text: string) {
+    return `Tolerância: "${text}" não é um número maior ou igual a zero, como 0.01. O campo voltou ao valor anterior.`;
+  }
+
+  toleranceNoticeId(caseIndex: number, checkIndex: number) {
+    return `${this.tabId()}-caso-${caseIndex}-tolerancia-${checkIndex}`;
+  }
+
   setTitle(text: string) {
     this.update({ título: text });
   }
@@ -820,6 +854,8 @@ export class TabExerciseBuilderComponent implements OnInit {
         ...result.draft,
         casos: result.draft.casos.map((caso, i) => ({ ...caso, fechado: current.casos[i]?.fechado })),
       });
+      // As verificações podem mudar: o aviso de uma tolerância, preso à posição, iria para outra
+      this.toleranceNotice.set(null);
 
       // A caixa dos problemas é um `role="alert"`: o leitor de tela já a lê
       if (result.problems.length > 0) {

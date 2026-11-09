@@ -544,10 +544,18 @@
                                 </label>
                                 @if (check.hasReal) {
                                   <ng-container
-                                    *ngTemplateOutlet="tolerance; context: { $implicit: check.tolerance, i, j }"
+                                    *ngTemplateOutlet="
+                                      tolerance;
+                                      context: { $implicit: check.tolerance, rejected: check.rejectedTolerance, i, j }
+                                    "
                                   />
                                 }
                               </div>
+                              @if (check.rejectedTolerance !== undefined) {
+                                <p class="field-error" [id]="toleranceNoticeId(i, j)">
+                                  {{ toleranceMessage(check.rejectedTolerance) }}
+                                </p>
+                              }
 
                               @if (check.values.length === 0) {
                                 <p class="empty">Os valores saem da solução: gere as respostas.</p>
@@ -597,10 +605,18 @@
                                 </label>
                                 @if (check.hasReal) {
                                   <ng-container
-                                    *ngTemplateOutlet="tolerance; context: { $implicit: check.tolerance, i, j }"
+                                    *ngTemplateOutlet="
+                                      tolerance;
+                                      context: { $implicit: check.tolerance, rejected: check.rejectedTolerance, i, j }
+                                    "
                                   />
                                 }
                               </div>
+                              @if (check.rejectedTolerance !== undefined) {
+                                <p class="field-error" [id]="toleranceNoticeId(i, j)">
+                                  {{ toleranceMessage(check.rejectedTolerance) }}
+                                </p>
+                              }
                               <p class="call">
                                 @if (check.returned && caso.status !== "stale") {
                                   <code [appPortugol]="`${check.name}(${check.args})`"></code> retorna
@@ -783,23 +799,18 @@
   </div>
 </ng-template>
 
-<ng-template #tolerance let-value let-i="i" let-j="j">
-  @let errorId = `${tabId()}-caso-${i}-tolerancia-${j}`;
+<ng-template #tolerance let-value let-rejected="rejected" let-i="i" let-j="j">
   <label class="field narrow">
     <span class="field-label">Tolerância</span>
     <input
-      #field="appToleranceInput"
       appToleranceInput
       class="input"
       inputmode="decimal"
       placeholder="0.000001"
       [tolerance]="value"
-      [attr.aria-invalid]="field.invalid() || null"
-      [attr.aria-describedby]="field.invalid() ? errorId : null"
+      [attr.aria-describedby]="rejected !== undefined ? toleranceNoticeId(i, j) : null"
       (toleranceChange)="setTolerance(i, j, $event)"
+      (rejected)="rejectTolerance(i, j, $event)"
     />
-    @if (field.invalid()) {
-      <span class="field-error" [id]="errorId">Use um número maior ou igual a zero, como 0.01.</span>
-    }
   </label>
 </ng-template>
