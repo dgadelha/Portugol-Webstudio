@@ -11,6 +11,45 @@ Quando o beta chega na main, o deploy junta os arquivos de `changelog/` aqui, nu
 
 As mudanças mais recentes do Portugol Webstudio aparecem primeiro.
 
+## 09/11/2026
+
+Chegaram os **Exercícios**: o seu programa é testado com várias entradas, e você fica sabendo na hora se ele está certo. Foi o segundo pedido mais votado na pesquisa!
+
+- São 75 exercícios, de **Saída** até **Funções**, em três níveis de dificuldade. Eles abrem pelo botão **Exercícios**, na barra da esquerda ou na aba inicial
+- O enunciado fica ao lado do código. O botão **Verificar** (ou **Ctrl + Shift + Enter**) testa o programa com as entradas dos exemplos e de testes escondidos, e a nova aba **Correção** mostra o resultado de cada um: nos exemplos, o que era esperado e o que o programa escreveu
+- O progresso fica salvo neste navegador: os exercícios concluídos ganham um ✓, e o seu código continua lá quando você volta
+- Para entregar ao professor, salve ou compartilhe o código como sempre: quem abrir o arquivo ou o link vê o código junto com o enunciado e pode usar o **Verificar**
+
+Professores também podem criar os próprios exercícios, em **Criar exercício**, na lista de exercícios:
+
+- Escreva o enunciado, a solução e os casos de teste. As respostas esperadas saem da sua solução, com **Gerar respostas**
+- **Compartilhar** cria um link que vale por 180 dias, sem a solução. Os alunos abrem o link e resolvem como qualquer outro exercício
+- **Baixar** guarda o exercício num arquivo, para continuar depois ou compartilhar de novo
+
+---
+
+As sugestões do editor agora conhecem o programa:
+
+- Enquanto você digita, a lista mostra as variáveis e funções que existem naquele ponto do programa, com o tipo de cada uma, as funções da linguagem, como `escreva` e `leia`, e as palavras da linguagem
+- Depois do nome de uma biblioteca incluída e de um ponto, como em `mat.`, aparecem as funções e constantes dela, com a explicação de cada uma
+- Ao abrir o parêntese de uma função, aparece o que ela recebe, com o parâmetro que você está escrevendo destacado. **Ctrl + Shift + Espaço** (no Mac, **Cmd + Shift + Espaço**) mostra de novo
+- As estruturas, como `se`, `para` e `escolha`, entram completas, e o **Tab** leva de um trecho a preencher para o próximo
+
+Com um leitor de tela, as sugestões são lidas com o tipo, e os parâmetros com a explicação de cada um.
+
+---
+
+O editor agora explica cada nome do programa:
+
+- Parando o mouse sobre um nome, aparece a declaração dele e o comentário escrito logo acima. Com o programa pausado na depuração, aparece também o valor atual da variável
+- **F12**, ou **Ctrl + clique** (no Mac, **Cmd + clique**), leva até onde o nome foi declarado. Numa biblioteca ou numa função dela, como `mat.potencia`, abre a página na Ajuda
+
+Pelo teclado, **Ctrl + K** e depois **Ctrl + I** (no Mac, **Cmd + K** e **Cmd + I**) mostram a mesma informação, que o leitor de tela lê.
+
+---
+
+Os menus e as mensagens do editor de código agora estão em português. Com um leitor de tela, o que o editor anuncia também é lido em português.
+
 ## 15/10/2026
 
 - Os links de compartilhamento agora valem por 90 dias, e não mais 15
